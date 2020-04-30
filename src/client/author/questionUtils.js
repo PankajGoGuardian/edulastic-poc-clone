@@ -305,7 +305,15 @@ const answerValidator = {
     return hasEmpty;
   },
   [questionType.CHOICE_MATRIX](answers) {
-    const hasEmpty = this.generalValidator(answers);
+    /**
+     * all rows should not be empty
+     * but, some rows can be empty
+     * @see  https://snapwiz.atlassian.net/browse/EV-13694
+     */
+    const hasEmpty = answers.some(answer => {
+      const { value = [] } = answer;
+      return isEmpty(value) || value.every(row => isEmpty(row));
+    });
     return hasEmpty;
   },
   [questionType.MULTIPLE_CHOICE](answers) {

@@ -83,7 +83,7 @@ export const assignmentSettings = createReducer(initialState, {
       state.openPolicy = assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS;
     }
   },
-  [CLEAR_ASSIGNMENT_SETTINGS]: state => {
-    state = initialState;
+  [CLEAR_ASSIGNMENT_SETTINGS]: () => {
+    return initialState;
   }
 });

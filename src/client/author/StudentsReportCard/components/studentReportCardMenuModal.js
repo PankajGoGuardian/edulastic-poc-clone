@@ -3,8 +3,16 @@ import { Button, Modal } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { StyledCard } from "../../Reports/common/styled";
-import { secondaryTextColor, lightGreySecondary, white,
-  themeColor, lightGreen5, greenDark1, darkGrey2, greyScoreCardTitleColor } from "@edulastic/colors";
+import {
+  secondaryTextColor,
+  lightGreySecondary,
+  white,
+  themeColor,
+  lightGreen5,
+  greenDark1,
+  darkGrey2,
+  greyScoreCardTitleColor
+} from "@edulastic/colors";
 
 const StudentReportCardMenuModal = props => {
   const { className, visible, title, onOk, onCancel, assignmentId, groupId, selectedStudents = [] } = props;
@@ -32,7 +40,11 @@ const StudentReportCardMenuModal = props => {
       <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
         CANCEL
       </EduButton>
-      <a disabled={!selectedOptions.length} href={`/author/students-report-card/${assignmentId}/${groupId}?options=${selectedOptions}`} target="_blank">
+      <a
+        disabled={!selectedOptions.length}
+        href={`/author/students-report-card/${assignmentId}/${groupId}?options=${selectedOptions}`}
+        target="_blank"
+      >
         <EduButton height="40px" data-cy="PRINT" onClick={onCancel}>
           GENERATE
         </EduButton>
@@ -53,13 +65,19 @@ const StudentReportCardMenuModal = props => {
       <div className="container">
         <StyledCard bordered={false}>
           <p>
-            Print report card for all students that can be shared with their parentes. Only those students who are in "Graded" status would be included.
+            Print report card for all students that can be shared with their parentes. Only those students who are in
+            "Graded" status would be included.
           </p>
           <p>Select information you would like to print in the report card.</p>
           <div className="form-groups">
             <div className="group-seperator">
               <div className="form-item">
-                <CheckboxLabel name="performanceBand" onClick={onCheckBoxClick} checked={state.performanceBand}>
+                <CheckboxLabel
+                  data-cy="performanceBand"
+                  name="performanceBand"
+                  onClick={onCheckBoxClick}
+                  checked={state.performanceBand}
+                >
                   Performance Band
                 </CheckboxLabel>
               </div>
@@ -67,17 +85,33 @@ const StudentReportCardMenuModal = props => {
             <div className="group-seperator">
               <p className="group-heading">QUESTION TABLE</p>
               <div className="form-item">
-                <CheckboxLabel name="questionPerformance" onClick={onCheckBoxClick} checked={state.questionPerformance}>
+                <CheckboxLabel
+                  data-cy="score"
+                  dataCy="455455"
+                  name="questionPerformance"
+                  onClick={onCheckBoxClick}
+                  checked={state.questionPerformance}
+                >
                   Question Performance
                 </CheckboxLabel>
               </div>
               <div className="form-item">
-                <CheckboxLabel name="studentResponse" onClick={onCheckBoxClick} checked={state.studentResponse}>
+                <CheckboxLabel
+                  data-cy="studentResponse"
+                  name="studentResponse"
+                  onClick={onCheckBoxClick}
+                  checked={state.studentResponse}
+                >
                   Students Response
                 </CheckboxLabel>
               </div>
               <div className="form-item">
-                <CheckboxLabel name="correctAnswer" onClick={onCheckBoxClick} checked={state.correctAnswer}>
+                <CheckboxLabel
+                  data-cy="correctResponse"
+                  name="correctAnswer"
+                  onClick={onCheckBoxClick}
+                  checked={state.correctAnswer}
+                >
                   Correct Answer
                 </CheckboxLabel>
               </div>
@@ -86,6 +120,7 @@ const StudentReportCardMenuModal = props => {
               <p className="group-heading">STANDARD TABLE</p>
               <div className="form-item">
                 <CheckboxLabel
+                  data-cy="standardPerf"
                   name="standardsPerformance"
                   onClick={onCheckBoxClick}
                   checked={state.standardsPerformance}
@@ -94,7 +129,12 @@ const StudentReportCardMenuModal = props => {
                 </CheckboxLabel>
               </div>
               <div className="form-item">
-                <CheckboxLabel name="masteryStatus" onClick={onCheckBoxClick} checked={state.masteryStatus}>
+                <CheckboxLabel
+                  data-cy="masteryStatus"
+                  name="masteryStatus"
+                  onClick={onCheckBoxClick}
+                  checked={state.masteryStatus}
+                >
                   Mastery Status
                 </CheckboxLabel>
               </div>
@@ -174,7 +214,7 @@ const StyledStudentReportCardMenuModal = styled(StudentReportCardMenuModal)`
     font-size: 14px;
   }
   p + p {
-    margin-bottom: 0; 
+    margin-bottom: 0;
   }
   .ant-card-body {
     display: flex;

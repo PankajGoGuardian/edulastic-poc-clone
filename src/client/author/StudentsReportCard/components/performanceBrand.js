@@ -43,7 +43,7 @@ const PerformanceBrand = (props, ref) => {
               lastic
             </StyledTitle>
           </div>
-          <div className="test-name">
+          <div data-cy="report-test-name" className="test-name">
             <p>{testData.title}</p>
           </div>
         </Row>
@@ -51,15 +51,21 @@ const PerformanceBrand = (props, ref) => {
           <Row type="flex" justify="start">
             <Col className="student-report-card-description-area">
               <Row className="student-report-card-details student-name" type="flex" justify="start">
-                <Col className="student-report-card-value">{data.studentName}</Col>
+                <Col data-cy="report-student-name" className="student-report-card-value">
+                  {data.studentName}
+                </Col>
               </Row>
               <Row className="student-report-card-details" type="flex" justify="start">
                 <Col className="student-report-card-key">Class: </Col>
-                <Col className="student-report-card-value">{classTitle}</Col>
+                <Col data-cy="report-class-name" className="student-report-card-value">
+                  {classTitle}
+                </Col>
               </Row>
               <Row className="student-report-card-details" type="flex" justify="start">
                 <Col className="student-report-card-key">Date: </Col>
-                <Col className="student-report-card-value">{Moment(testData.createdDate).format("MMM DD, YYYY")}</Col>
+                <Col data-cy="report-test-date" className="student-report-card-value">
+                  {Moment(testData.createdDate).format("MMM DD, YYYY")}
+                </Col>
               </Row>
               <Row
                 className="student-report-card-details student-report-card-details-subject"
@@ -67,7 +73,9 @@ const PerformanceBrand = (props, ref) => {
                 justify="start"
               >
                 <Col className="student-report-card-key">Subject: </Col>
-                <Col className="student-report-card-value">{classResponse?.subjects?.join(", ")}</Col>
+                <Col data-cy="report-subject" className="student-report-card-value">
+                  {classResponse?.subjects?.join(", ")}
+                </Col>
               </Row>
               <Row className="student-report-card-details" type="flex" justify="start">
                 <Col className="student-report-card-key">Teacher: </Col>
@@ -76,7 +84,9 @@ const PerformanceBrand = (props, ref) => {
               {feedback && (
                 <Row className="student-report-card-details">
                   <p className="student-report-card-key">Overall Feedback </p>
-                  <p className="student-report-card-value">{feedback.text}</p>
+                  <p data-cy="report-feedback" className="student-report-card-value">
+                    {feedback.text}
+                  </p>
                 </Row>
               )}
             </Col>
@@ -84,8 +94,10 @@ const PerformanceBrand = (props, ref) => {
               <div style={{ display: "flex" }}>
                 <StyledCard>
                   <Row className={"student-report-card-total-score"} type="flex">
-                    <Col>{obtainedScore.toFixed(2)}</Col>
-                    <Col style={{ fontSize: "35px" }}>{totalScore}</Col>
+                    <Col data-cy="report-score"> {obtainedScore.toFixed(2)}</Col>
+                    <Col data-cy="report-max-score" style={{ fontSize: "35px" }}>
+                      {totalScore}
+                    </Col>
                     <Col style={{ marginTop: "12px" }}>
                       <p>SCORE</p>
                     </Col>
@@ -96,12 +108,17 @@ const PerformanceBrand = (props, ref) => {
                   backGroundcolor={mastery?.fill}
                   color={mastery?.color}
                 >
-                  <div className="student-report-card-chart-area-score">{Math.round(perfomancePercentage)}%</div>
+                  <div data-cy="report-overall-performance" className="student-report-card-chart-area-score">
+                    {Math.round(perfomancePercentage)}%
+                  </div>
                 </StyledPerformancePercent>
               </div>
               {showPerformanceBand && (
                 <PerformanceTitle>
-                  PERFORMANCE: <span style={{ color: mastery?.fill }}>{mastery.masteryLevel}</span>
+                  PERFORMANCE:{" "}
+                  <span data-cy="report-performance-band" style={{ color: mastery?.fill }}>
+                    {mastery.masteryLevel}
+                  </span>
                 </PerformanceTitle>
               )}
             </Col>

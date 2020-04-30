@@ -82,5 +82,13 @@ export const StandardTableContainer = props => {
     _columns = [..._columns, columns[5]];
   }
 
-  return <StyledTable columns={_columns} dataSource={dataSource} rowKey={"standardId"} pagination={false} />;
+  return (
+    <StyledTable
+      data-cy="report-standard-table"
+      columns={_columns}
+      dataSource={dataSource}
+      rowKey={"standardId"}
+      pagination={false}
+    />
+  );
 };

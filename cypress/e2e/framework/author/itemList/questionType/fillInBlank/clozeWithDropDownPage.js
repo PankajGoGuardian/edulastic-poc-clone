@@ -112,7 +112,7 @@ class ClozeDropDownPage {
     item.createNewItem(onlyItem);
     item.chooseQuestion(questionGroup.FILL_IN_BLANK, questionType.CLOZE_DROP_DOWN);
     cy.fixture("questionAuthoring").then(authoringData => {
-      const { quetext, setAns } = authoringData[questionTypeKey.CLOZE_DROP_DOWN][queKey];
+      const { quetext, setAns, choices } = authoringData[questionTypeKey.CLOZE_DROP_DOWN][queKey];
       const ans = setAns.correct;
       if (quetext) {
         this.getQuestionEditor()
@@ -125,9 +125,9 @@ class ClozeDropDownPage {
         });
       }
 
-      if (setAns.choices) {
-        Object.keys(setAns.choices).forEach((rep, repIndex) => {
-          setAns.choices[rep].forEach((choice, chIndex) => {
+      if (choices) {
+        Object.keys(choices).forEach((rep, repIndex) => {
+          choices[rep].forEach((choice, chIndex) => {
             this.addNewChoiceByResponseIndex(repIndex);
             this.getChoiceByIndexAndResponseIndex(repIndex, chIndex)
               .type("{selectall}", { force: true })

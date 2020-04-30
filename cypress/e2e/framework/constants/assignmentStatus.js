@@ -97,17 +97,53 @@ export const recommendationType = {
 };
 
 export const regradeOptions = {
-  edited: {
+  added: {
     NO_POINTS: "no-points",
     FULL_POINTS: "full-points",
     MANUAL_POINTS: "manual-points"
   },
-  added: {
+  edited: {
     NO_POINTS: "skip-grading",
     AUTO_POINTS: "restore-grading",
     MANUAL_POINTS: "manual-grading"
   },
   deleted: {
     REMOVE: "discard-item"
+  }
+};
+
+export const MASTERY = {
+  EXCEEDS: "Exceeds Mastery",
+  MASTERED: "Mastered",
+  ALMOST_MASTERED: "Almost Mastered",
+  NOT_MASTERED: "Not Mastered"
+};
+
+export const REPORT_HEADERS = {
+  OVER_ALL_PERF: "performanceBand",
+  QEST_TABLE: {
+    allowedSequence: ["questionNo", "studentResponse", "correctResponse", "score", "maxScore"],
+    madatory: {
+      questionNo: "questionNo",
+      maxScore: "maxScore"
+    },
+    optional: {
+      score: "score",
+      studentResponse: "studentResponse",
+      correctAnswer: "correctResponse"
+    }
+  },
+  STAND_TABLE: {
+    allowedSequence: ["standardDomain", "standard", "questions", "score", "standardPerf", "masteryStatus"],
+    madatory: {
+      standardDomain: "standardDomain",
+      standard: "standard",
+      questions: "questions",
+      score: "score"
+    },
+    optional: {
+      standardPerf: "standardPerf",
+      masteryStatus: "masteryStatus"
+    }
   }
 };

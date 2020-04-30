@@ -74,5 +74,13 @@ export const QuestionTableContainer = props => {
     return true;
   });
 
-  return <StyledTable columns={columns} dataSource={dataSource} rowKey={"_id"} pagination={false} />;
+  return (
+    <StyledTable
+      data-cy="report-question-table"
+      columns={columns}
+      dataSource={dataSource}
+      rowKey={"_id"}
+      pagination={false}
+    />
+  );
 };

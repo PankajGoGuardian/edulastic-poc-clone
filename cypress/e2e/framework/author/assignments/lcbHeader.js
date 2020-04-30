@@ -15,6 +15,8 @@ export default class LCBHeader {
 
   getSettingsTab = () => cy.get('[data-cy="LCBAssignmentSettings"]');
 
+  getStudentReportButton = () => cy.get('[data-cy="studentReportCard"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -90,7 +92,14 @@ export default class LCBHeader {
     this.getSettingsTab().click();
     cy.wait("@load-settings");
     cy.contains("TEST LEVEL SETTINGS");
-  }; // *** ACTIONS END ***
+  };
+
+  clickStudentReportInDropDown = () => {
+    this.getDropDown().click();
+    this.getStudentReportButton().click();
+  };
+
+  // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 

@@ -20,23 +20,26 @@ const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClo
         },
         modal: {
           background: "linear-gradient(to top,rgb(155, 225, 93) , rgb(0, 179, 115))",
-          width: "480px",
-          minHeight: "680px",
+          width: "320px",
+          minHeight: "385px",
           borderRadius: "none",
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
           boxShadow: "none",
-          opacity: 1
+          opacity: 1,
+          padding: "40px 20px"
         }
       }}
     >
       <EduLogo src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
       <StyledLogo src={CLILogo} />
-      <StyledText margin="50px auto 30px auto">
+      <StyledText margin="50px auto 20px auto">
         Welcome <HighlightedText>{`${firstName} ${lastName}`}!</HighlightedText>
       </StyledText>
-      <StyledText width="300px">You now have access to CLI collection.</StyledText>
+      <StyledText fontSize="16px">
+        You now have access to <br /> CLI collection.
+      </StyledText>
       <Button
         onClick={() => {
           onClose();

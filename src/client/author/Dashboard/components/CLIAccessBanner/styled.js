@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { themeColor } from "@edulastic/colors";
 
 export const EduLogo = styled.img`
   position: fixed;
@@ -7,38 +8,35 @@ export const EduLogo = styled.img`
 `;
 
 export const StyledLogo = styled.img`
-  transform: scale(3);
-  margin: 90px auto;
+  min-height: 75px;
 `;
 
 export const StyledText = styled.div`
   width: ${({ width }) => width || "100%"};
   color: white;
-  font-size: 26px;
+  font-size: ${props => props.fontSize || "18px"};
   font-weight: 600;
   text-align: center;
-  margin: ${({ margin }) => margin || "20px auto"};
-  /* font-family: sans-serif; */
+  margin: ${({ margin }) => margin || "0px"};
 `;
 
 export const HighlightedText = styled.span`
   display: inline-block;
   color: white;
   font-weight: 800;
-  font-size: 28px;
+  font-size: 22px;
 `;
 
 export const Button = styled.button`
-  color: #00ad50;
+  color: ${themeColor};
   font-weight: 600;
-  font-size: 26px;
+  font-size: 16px;
   background: white;
   outline: none;
-  margin-top: auto;
-  margin-bottom: 50px;
+  margin-top: 50px;
   border: none;
-  width: 350px;
-  padding: 10px;
+  width: 70%;
+  padding: 5px;
   text-align: center;
   border-radius: 8px;
   cursor: pointer;

@@ -527,7 +527,7 @@ class Questions extends React.Component {
             totalQuestions={list.length}
             visible={shouldModalBeVisibile}
             question={this.currentQuestion}
-            index={currentEditQuestionIndex}
+            index={questionIndex[currentEditQuestionIndex]}
             onClose={this.handleCloseEditModal}
             onUpdate={this.handleUpdateData}
             onCurrentChange={this.handleOpenEditModal}

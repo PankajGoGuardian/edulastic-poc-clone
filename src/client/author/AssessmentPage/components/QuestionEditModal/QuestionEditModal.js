@@ -98,7 +98,7 @@ export default class QuestionEditModal extends React.Component {
       <Modal open={visible} onClose={onClose} styles={modalStyles} overlayId="docBasedModalOverlay" center>
         <ModalWrapper>
           <ModalHeader>
-            <QuestionNumber>{qIndex || index + 1}</QuestionNumber>
+            <QuestionNumber>{index}</QuestionNumber>
             <ModalTitle>{title === "True or false" ? title : questionTypeTitles[type]}</ModalTitle>
           </ModalHeader>
 

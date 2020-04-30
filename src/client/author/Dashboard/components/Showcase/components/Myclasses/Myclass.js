@@ -1,22 +1,38 @@
-import { title } from "@edulastic/colors";
-import { MainContentWrapper } from "@edulastic/common";
-import { Col, Row, Spin } from "antd";
-import { get } from "lodash";
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import { compose } from "redux";
-import { receiveSearchCourseAction } from "../../../../../Courses/ducks";
-import { fetchClassListAction } from "../../../../../ManageClass/ducks";
-import { getDictCurriculumsAction } from "../../../../../src/actions/dictionaries";
-import { receiveTeacherDashboardAction } from "../../../../duck";
+import { get } from "lodash";
+
+// components
+import { Col, Row, Spin } from "antd";
+import { MainContentWrapper } from "@edulastic/common";
 import { TextWrapper } from "../../../styledComponents";
+import { CardBox } from "./styled";
 import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
-import { CardBox } from "./styled";
 import Launch from "../../../LaunchHangout/Launch";
-import { getGoogleAllowedInstitionPoliciesSelector } from "../../../../../src/selectors/user";
+import ClassSelectModal from "../../../../../ManageClass/components/ClassListContainer/ClassSelectModal";
+
+// static data
+import { title } from "@edulastic/colors";
+
+// ducks
+import { getDictCurriculumsAction } from "../../../../../src/actions/dictionaries";
+import { receiveSearchCourseAction } from "../../../../../Courses/ducks";
+import {
+  fetchClassListAction,
+  fetchCleverClassListRequestAction,
+  syncClassesWithCleverAction,
+  getCleverClassListSelector
+} from "../../../../../ManageClass/ducks";
+import { receiveTeacherDashboardAction } from "../../../../duck";
+import {
+  getGoogleAllowedInstitionPoliciesSelector,
+  getCleverSyncEnabledInstitutionPoliciesSelector
+} from "../../../../../src/selectors/user";
+import { getFormattedCurriculumsSelector } from "../../../../../src/selectors/dictionaries";
 
 const Card = ({ data }) => (
   <CardBox data-cy={data.name}>
@@ -39,8 +55,24 @@ const MyClasses = ({
   getDictCurriculums,
   receiveSearchCourse,
   districtId,
-  googleAllowedInstitutions
+  googleAllowedInstitutions,
+  courseList,
+  cleverSyncEnabledInstitutions,
+  loadingCleverClassList,
+  cleverClassList,
+  getStandardsListBySubject,
+  fetchCleverClassList,
+  syncCleverClassList
 }) => {
+  const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
+
+  useEffect(() => {
+    // fetch clever classes on modal display
+    if (showCleverSyncModal) {
+      fetchCleverClassList();
+    }
+  }, [showCleverSyncModal]);
+
   useEffect(() => {
     getTeacherDashboard();
     getDictCurriculums();
@@ -62,6 +94,17 @@ const MyClasses = ({
 
   return (
     <MainContentWrapper padding="30px">
+      <ClassSelectModal
+        type="clever"
+        visible={showCleverSyncModal}
+        onSubmit={syncCleverClassList}
+        onCancel={() => setShowCleverSyncModal(false)}
+        loading={loadingCleverClassList}
+        classListToSync={cleverClassList}
+        courseList={courseList}
+        getStandardsListBySubject={getStandardsListBySubject}
+        refreshPage="dashboard"
+      />
       <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
         My Classes
       </TextWrapper>
@@ -73,6 +116,8 @@ const MyClasses = ({
           history={history}
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
           allowGoogleLogin={googleAllowedInstitutions.length > 0}
+          enableCleverSync={cleverSyncEnabledInstitutions.length > 0}
+          setShowCleverSyncModal={setShowCleverSyncModal}
         />
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
@@ -91,13 +136,20 @@ export default compose(
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: get(state, "user.user.orgData.districtId"),
-      loading: state.dashboardTeacher.loading
+      loading: state.dashboardTeacher.loading,
+      courseList: get(state, "coursesReducer.searchResult"),
+      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
+      loadingCleverClassList: get(state, "manageClass.loadingCleverClassList"),
+      cleverClassList: getCleverClassListSelector(state),
+      getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject })
     }),
     {
       fetchClassList: fetchClassListAction,
       receiveSearchCourse: receiveSearchCourseAction,
       getDictCurriculums: getDictCurriculumsAction,
-      getTeacherDashboard: receiveTeacherDashboardAction
+      getTeacherDashboard: receiveTeacherDashboardAction,
+      fetchCleverClassList: fetchCleverClassListRequestAction,
+      syncCleverClassList: syncClassesWithCleverAction
     }
   )
 )(MyClasses);

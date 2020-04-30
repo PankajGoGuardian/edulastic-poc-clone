@@ -1,31 +1,29 @@
-import { EduButton, MainHeader, HeaderTabs } from "@edulastic/common";
-import { IconGoogleClassroom, IconManage, IconPlusCircle, IconClass, IconGroup } from "@edulastic/icons";
-import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
-import { get } from "lodash";
-import { withNamespaces } from "react-i18next";
-import PropTypes from "prop-types";
 import React from "react";
-import { GoogleLogin } from "react-google-login";
-import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { compose } from "redux";
-// ducks
-import { fetchClassListAction } from "../../ducks";
-import { scopes } from "./ClassCreatePage";
+import { withNamespaces } from "react-i18next";
+import { GoogleLogin } from "react-google-login";
+
+// components
+import { EduButton, MainHeader, HeaderTabs } from "@edulastic/common";
+import { IconGoogleClassroom, IconManage, IconPlusCircle, IconClass, IconGroup, IconClever } from "@edulastic/icons";
+import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { ButtonsWrapper } from "./styled";
-import { getGoogleAllowedInstitionPoliciesSelector } from "../../../src/selectors/user";
+
+import { scopes } from "./ClassCreatePage";
 
 const Header = ({
-  cleverId,
-  fetchClassList,
+  fetchGoogleClassList,
   googleAllowedInstitutions,
   isUserGoogleLoggedIn,
+  setShowCleverSyncModal,
   t,
   currentTab,
-  onClickHandler
+  onClickHandler,
+  enableCleverSync
 }) => {
   const handleLoginSucess = data => {
-    fetchClassList({ data });
+    fetchGoogleClassList({ data });
   };
 
   const handleError = err => {
@@ -63,7 +61,13 @@ const Header = ({
         })}
       </StyledTabs>
       <ButtonsWrapper>
-        {googleAllowedInstitutions.length > 0 && !cleverId && (
+        {enableCleverSync && (
+          <EduButton isGhost onClick={() => setShowCleverSyncModal(true)}>
+            <IconClever width={18} height={18} />
+            <span>SYNC NOW WITH CLEVER</span>
+          </EduButton>
+        )}
+        {googleAllowedInstitutions.length > 0 && !enableCleverSync && (
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"
@@ -92,19 +96,7 @@ const Header = ({
 };
 
 Header.propTypes = {
-  fetchClassList: PropTypes.func.isRequired
+  fetchGoogleClassList: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces("header"),
-  connect(
-    state => ({
-      cleverId: get(state, "user.user.cleverId"),
-      isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
-      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state)
-    }),
-    { fetchClassList: fetchClassListAction }
-  )
-);
-
-export default enhance(Header);
+export default withNamespaces("header")(Header);

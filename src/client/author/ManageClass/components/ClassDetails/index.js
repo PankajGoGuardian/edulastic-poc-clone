@@ -1,12 +1,22 @@
-import { MainContentWrapper } from "@edulastic/common";
-import { Input, message, Spin } from "antd";
-import { get } from "lodash";
-import PropTypes from "prop-types";
 import React, { useEffect, useState, useMemo } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import { compose } from "redux";
+import PropTypes from "prop-types";
+import { get } from "lodash";
+
+// components
+import { Input, message, Spin } from "antd";
+import { MainContentWrapper, EduButton } from "@edulastic/common";
+import Header from "./Header";
+import MainInfo from "./MainInfo";
+import StudentsList from "./StudentsList";
 import BreadCrumb from "../../../src/components/Breadcrumb";
+import ActionContainer from "./ActionContainer";
+import CanvasSyncModal from "./CanvasSyncModal";
+import { ButtonWrapper, GoogleClassSyncModal } from "./styled";
+
+// ducks
 import { archiveClassAction } from "../../../Classes/ducks";
 import {
   fetchClassListAction,
@@ -15,16 +25,10 @@ import {
   syncClassUsingCodeAction,
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
-  syncClassWithCanvasAction
+  syncClassWithCanvasAction,
+  syncClassesWithCleverAction
 } from "../../ducks";
-
-import ActionContainer from "./ActionContainer";
-import Header from "./Header";
-import MainInfo from "./MainInfo";
-import StudentsList from "./StudentsList";
-import { ButtonWrapper, GoogleClassSyncModal } from "./styled";
-import CanvasSyncModal from "./CanvasSyncModal";
-import { EduButton } from "@edulastic/common";
+import { getCleverSyncEnabledInstitutionPoliciesSelector } from "../../../src/selectors/user";
 
 const ClassDetails = ({
   selectedClass,
@@ -43,9 +47,13 @@ const ClassDetails = ({
   canvasCourseList,
   canvasSectionList,
   syncClassWithCanvas,
-  user
+  syncClassesWithClever,
+  user,
+  cleverSyncEnabledInstitutions
 }) => {
   const { _id, name, type, cleverId, institutionId } = selectedClass;
+
+  // sync checks for institution
   const { allowGoogleClassroom: allowGoogleLogin, allowCanvas: allowCanvasLogin, searchAndAddStudents } = useMemo(
     () =>
       user?.orgData?.policies?.institutions?.find(i => i.institutionId === institutionId) ||
@@ -53,10 +61,14 @@ const ClassDetails = ({
       {},
     [user?.orgData?.policies, institutionId]
   );
+  const enableCleverSync = cleverSyncEnabledInstitutions.find(i => i.institutionId === institutionId) && cleverId;
+
+  const googleCode = React.createRef();
+
   const [disabled, setDisabled] = useState(selectedClass && !selectedClass.googleCode);
   const [showCanvasSyncModal, setCanvasSyncModalVisibility] = useState(false);
-  const googleCode = React.createRef();
   const [openGCModal, setOpenGCModal] = useState(false);
+
   useEffect(() => {
     if (!fetchClassListLoading) setOpenGCModal(true);
   }, [fetchClassListLoading]);
@@ -179,6 +191,8 @@ const ClassDetails = ({
             allowGoogleLogin={allowGoogleLogin}
             syncGCModal={() => setOpenGCModal(true)}
             isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+            enableCleverSync={enableCleverSync}
+            syncClassesWithClever={syncClassesWithClever}
           />
           <MainContentWrapper>
             <BreadCrumb ellipsis="calc(100% - 200px)" data={getBreadCrumbData()} style={{ position: "unset" }} />
@@ -232,7 +246,8 @@ const enhance = compose(
       classLoaded: get(state, "manageClass.classLoaded"),
       canvasCourseList: get(state, "manageClass.canvasCourseList", []),
       canvasSectionList: get(state, "manageClass.canvasSectionList", []),
-      user: get(state, "user.user", {})
+      user: get(state, "user.user", {}),
+      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state)
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
@@ -242,7 +257,8 @@ const enhance = compose(
       archiveClass: archiveClassAction,
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
-      syncClassWithCanvas: syncClassWithCanvasAction
+      syncClassWithCanvas: syncClassWithCanvasAction,
+      syncClassesWithClever: syncClassesWithCleverAction
     }
   )
 );

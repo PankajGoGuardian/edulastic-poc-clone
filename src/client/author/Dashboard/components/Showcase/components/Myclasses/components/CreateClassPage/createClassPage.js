@@ -2,10 +2,17 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { CreateCardBox, CreateClassDiv, SyncClassDiv } from "./styled";
 import GoogleLogin from "react-google-login";
-import { IconPlusCircle, IconGoogleClassroom } from "@edulastic/icons";
+import { IconPlusCircle, IconGoogleClassroom, IconClever } from "@edulastic/icons";
 import styled from "styled-components";
 import { scopes } from "../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage";
-const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassList, history }) => {
+const CreateClassPage = ({
+  allowGoogleLogin,
+  isUserGoogleLoggedIn,
+  fetchClassList,
+  enableCleverSync,
+  setShowCleverSyncModal,
+  history
+}) => {
   const handleLoginSucess = data => {
     fetchClassList({ data });
     history.push("/author/manageClass");
@@ -41,6 +48,15 @@ const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassLis
           prompt={isUserGoogleLoggedIn ? "" : "consent"}
           responseType="code"
         />
+      )}
+      {enableCleverSync && (
+        <>
+          <StyledP>OR</StyledP>
+          <SyncClassDiv onClick={() => setShowCleverSyncModal(true)}>
+            <IconClever />
+            <p>Sync Class Roster from Clever</p>
+          </SyncClassDiv>
+        </>
       )}
     </CreateCardBox>
   );

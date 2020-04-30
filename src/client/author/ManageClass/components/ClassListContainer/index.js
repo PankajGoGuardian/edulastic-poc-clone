@@ -1,5 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { get } from "lodash";
+
+// ducks
+import {
+  getCleverClassListSelector,
+  fetchCleverClassListRequestAction,
+  syncClassesWithCleverAction
+} from "../../ducks";
+import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
+
+// components
 import ClassList from "./ClassList";
 import ClassSelectModal from "./ClassSelectModal";
 import ShowSyncDetailsModal from "./ShowSyncDetailsModal";
@@ -12,35 +24,64 @@ const ClassListContainer = ({
   googleCourseList,
   courseList,
   googleAllowedInstitutions,
-  closeModal,
+  closeGoogleModal,
   syncClassResponse,
   showBanner,
-  isModalVisible,
+  isGoogleModalVisible,
   setShowBanner,
   showDetails,
   setShowDetails,
   syncClassLoading = false,
   updateGoogleCourseList,
   syncClass,
-  state
+  loadingCleverClassList,
+  cleverClassList,
+  fetchCleverClassList,
+  syncCleverClassList,
+  getStandardsListBySubject
 }) => {
-  const selectedGroups = groups.filter(i => !!i.googleCode).map(i => i.googleCode);
+  const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
+
+  useEffect(() => {
+    // fetch clever classes on modal display
+    if (showCleverSyncModal) {
+      fetchCleverClassList();
+    }
+  }, [showCleverSyncModal]);
+
+  const syncedGoogleClassroomIds = groups.filter(g => !!g.googleCode).map(g => g.googleCode);
+  const syncedCleverIds = groups.filter(g => !!g.cleverId).map(g => g.cleverId);
 
   return (
     <React.Fragment>
       <ClassSelectModal
-        style={{ width: "700px" }}
-        visible={isModalVisible}
-        close={closeModal}
-        groups={googleCourseList}
-        state={state}
-        setShowBanner={setShowBanner}
+        type="clever"
+        visible={showCleverSyncModal}
+        onCancel={() => setShowCleverSyncModal(false)}
+        loading={loadingCleverClassList}
+        syncedIds={syncedCleverIds}
+        classListToSync={cleverClassList}
+        onSubmit={syncCleverClassList}
         courseList={courseList}
-        syncClassLoading={syncClassLoading}
-        updateGoogleCourseList={updateGoogleCourseList}
-        syncClass={syncClass}
-        selectedGroups={selectedGroups}
-        googleAllowedInstitutions={googleAllowedInstitutions}
+        getStandardsListBySubject={getStandardsListBySubject}
+        refreshPage="manageClass"
+      />
+      <ClassSelectModal
+        style={{ width: "700px" }}
+        type="googleClassroom"
+        visible={isGoogleModalVisible}
+        onCancel={closeGoogleModal}
+        loading={syncClassLoading}
+        syncedIds={syncedGoogleClassroomIds}
+        classListToSync={googleCourseList}
+        onSubmit={payload => {
+          syncClass(payload);
+          updateGoogleCourseList(payload.classList);
+          setShowBanner(true);
+        }}
+        courseList={courseList}
+        getStandardsListBySubject={getStandardsListBySubject}
+        allowedInstitutions={googleAllowedInstitutions}
       />
       <ShowSyncDetailsModal
         syncClassResponse={syncClassResponse}
@@ -53,6 +94,7 @@ const ClassListContainer = ({
         archiveGroups={archiveGroups}
         syncClassLoading={syncClassLoading}
         showBanner={showBanner}
+        setShowCleverSyncModal={setShowCleverSyncModal}
       />
     </React.Fragment>
   );
@@ -64,9 +106,19 @@ ClassListContainer.propTypes = {
   groups: PropTypes.array.isRequired,
   syncClassLoading: PropTypes.bool,
   archiveGroups: PropTypes.array.isRequired,
-  isModalVisible: PropTypes.bool.isRequired,
+  isGoogleModalVisible: PropTypes.bool.isRequired,
   googleCourseList: PropTypes.array.isRequired,
   updateGoogleCourseList: PropTypes.func
 };
 
-export default ClassListContainer;
+export default connect(
+  state => ({
+    loadingCleverClassList: get(state, "manageClass.loadingCleverClassList"),
+    cleverClassList: getCleverClassListSelector(state),
+    getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject })
+  }),
+  {
+    fetchCleverClassList: fetchCleverClassListRequestAction,
+    syncCleverClassList: syncClassesWithCleverAction
+  }
+)(ClassListContainer);

@@ -226,3 +226,16 @@ export const getGoogleAllowedInstitionPoliciesSelector = createSelector(
   getInstitutionPoliciesSelector,
   state => state.filter(s => !!s.allowGoogleClassroom)
 );
+
+export const getCleverLibraryUserSelector = createSelector(
+  getUser,
+  getOrgDataSelector,
+  (user, orgData) => !orgData.isCleverDistrict && user.cleverId
+);
+
+export const getCleverSyncEnabledInstitutionPoliciesSelector = createSelector(
+  getCleverLibraryUserSelector,
+  getInstitutionPoliciesSelector,
+  (user, policies) =>
+    user ? policies.filter(p => !(p.allowGoogleClassroom || p.allowCanvas || p.allowSchoology || p.allowClassLink)) : []
+);

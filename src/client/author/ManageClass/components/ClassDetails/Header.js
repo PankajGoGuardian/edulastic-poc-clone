@@ -6,7 +6,7 @@ import { compose } from "redux";
 // components
 import { message } from "antd";
 import GoogleLogin from "react-google-login";
-import { IconGoogleClassroom } from "@edulastic/icons";
+import { IconGoogleClassroom, IconClever } from "@edulastic/icons";
 import { canvasApi } from "@edulastic/api";
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
@@ -20,7 +20,9 @@ const Header = ({
   syncCanvasModal,
   allowGoogleLogin,
   syncGCModal,
-  isUserGoogleLoggedIn
+  isUserGoogleLoggedIn,
+  enableCleverSync,
+  syncClassesWithClever
 }) => {
   const { name, type, institutionId, institutionName = "", districtName = "", cleverId, active } = selectedClass;
 
@@ -61,12 +63,23 @@ const Header = ({
     </span>
   );
 
+  const handleCleverSync = () => {
+    const classList = [{ ...selectedClass, course: selectedClass?.course?.id }];
+    syncClassesWithClever({ classList });
+  };
+
+  const showSyncButtons = type === "class" && cleverId && active === 1;
+
   return (
     <MainHeader headingText={name} headingSubContent={headingSubContent} flexDirection="column" alignItems="flex-start">
       <div style={{ display: "flex", alignItems: "right" }}>
-        {type === "class" &&
-          cleverId &&
-          active === 1 &&
+        {showSyncButtons && enableCleverSync && (
+          <EduButton isGhost onClick={handleCleverSync}>
+            <IconClever width={18} height={18} />
+            <span>SYNC NOW WITH CLEVER</span>
+          </EduButton>
+        )}
+        {showSyncButtons &&
           allowGoogleLogin !== false &&
           (isUserGoogleLoggedIn ? (
             <EduButton isghost onClick={syncGCModal}>
@@ -90,7 +103,7 @@ const Header = ({
               responseType="code"
             />
           ))}
-        {type === "class" && cleverId && allowCanvasLogin && active === 1 && (
+        {showSyncButtons && allowCanvasLogin && (
           <EduButton isGhost onClick={handleSyncWithCanvas}>
             <img
               alt="Canvas"

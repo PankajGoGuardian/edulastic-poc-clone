@@ -224,3 +224,4 @@ export { default as IconCanvasBook } from "./src/IconCanvasBook";
 export { default as IconHangouts } from "./src/IconHangouts";
 export { default as IconGroup } from "./src/IconGroup";
 export { default as IconClass } from "./src/IconClass";
+export { default as IconClever } from "./src/IconClever";

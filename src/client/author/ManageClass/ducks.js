@@ -4,10 +4,10 @@ import { all, takeEvery, call, put, select, takeLatest } from "redux-saga/effect
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { get, findIndex, keyBy } from "lodash";
-import { googleApi, groupApi, enrollmentApi, userApi, canvasApi } from "@edulastic/api";
+import { googleApi, groupApi, enrollmentApi, userApi, canvasApi, cleverApi } from "@edulastic/api";
 
+import { receiveTeacherDashboardAction } from "../Dashboard/duck";
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
-
 import { setUserGoogleLoggedInAction } from "../../student/Login/ducks";
 import { requestEnrolExistingUserToClassAction } from "../ClassEnrollment/ducks";
 
@@ -26,6 +26,12 @@ export const getGoogleCourseListSelector = createSelector(
   manageClassSelector,
   state => state.googleCourseList
 );
+
+export const getCleverClassListSelector = createSelector(
+  manageClassSelector,
+  state => state.cleverClassList
+);
+
 export const getSelectedClass = createSelector(
   manageClassSelector,
   state => state.entity
@@ -90,6 +96,11 @@ export const GET_CANVAS_SECTION_LIST_SUCCESS = "[manageClass] get canvas section
 export const GET_CANVAS_SECTION_LIST_FAILED = "[manageClass] get canvas section list failed";
 export const SYNC_CLASS_WITH_CANVAS = "[manageClass] sync class with canvas";
 
+export const FETCH_CLEVER_CLASS_LIST_REQUEST = "[manageclass] get class list from clever request";
+export const FETCH_CLEVER_CLASS_LIST_SUCCESS = "[manageClass] get class list from clever success";
+export const FETCH_CLEVER_CLASS_LIST_FAILED = "[manageClass] get class list from clever failed";
+export const SYNC_CLASS_LIST_WITH_CLEVER = "[manageClass] sync class list with clever";
+
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
@@ -148,6 +159,12 @@ export const getCanvasSectionListRequestAction = createAction(GET_CANVAS_SECTION
 export const getCanvasSectionListSuccessAction = createAction(GET_CANVAS_SECTION_LIST_SUCCESS);
 export const getCanvasSectionListFailedAction = createAction(GET_CANVAS_SECTION_LIST_FAILED);
 export const syncClassWithCanvasAction = createAction(SYNC_CLASS_WITH_CANVAS);
+
+export const fetchCleverClassListRequestAction = createAction(FETCH_CLEVER_CLASS_LIST_REQUEST);
+export const fetchCleverClassListSuccessAction = createAction(FETCH_CLEVER_CLASS_LIST_SUCCESS);
+export const fetchCleverClassListFailedAction = createAction(FETCH_CLEVER_CLASS_LIST_FAILED);
+export const syncClassesWithCleverAction = createAction(SYNC_CLASS_LIST_WITH_CLEVER);
+
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -166,7 +183,9 @@ const initialState = {
   classLoaded: false,
   canvasCourseList: [],
   canvasSectionList: [],
-  isFetchingCanvasData: false
+  isFetchingCanvasData: false,
+  loadingCleverClassList: false,
+  cleverClassList: []
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -177,15 +196,9 @@ const setGoogleCourseList = (state, { payload }) => {
 };
 
 const updateGoogleCourseList = (state, { payload }) => {
-  const { index, key, value } = payload;
-  const { googleCourseList } = state;
-  googleCourseList.forEach((googleCourse, ind) => {
-    if (ind === index) {
-      googleCourse[key] = value;
-    }
-  });
-  state.showModal = true;
+  state.googleCourseList = payload;
 };
+
 // toggle modal
 const setModal = (state, { payload }) => {
   state.showModal = payload;
@@ -327,6 +340,12 @@ const setCanvasSectionList = (state, { payload }) => {
   state.canvasSectionList = payload;
   state.isFetchingCanvasData = false;
 };
+
+const setCleverClassList = (state, { payload }) => {
+  state.cleverClassList = payload;
+  state.loadingCleverClassList = false;
+};
+
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -371,6 +390,14 @@ export default createReducer(initialState, {
   [GET_CANVAS_SECTION_LIST_FAILED]: state => {
     state.isFetchingCanvasData = false;
     state.canvasSectionList = [];
+  },
+  [FETCH_CLEVER_CLASS_LIST_REQUEST]: state => {
+    state.loadingCleverClassList = true;
+  },
+  [FETCH_CLEVER_CLASS_LIST_SUCCESS]: setCleverClassList,
+  [FETCH_CLEVER_CLASS_LIST_FAILED]: state => {
+    state.loadingCleverClassList = false;
+    state.cleverClassList = [];
   }
 });
 
@@ -610,6 +637,47 @@ function* syncClassWithCanvasSaga({ payload }) {
   }
 }
 
+function* fetchCleverClassListRequestSaga() {
+  try {
+    const cleverClassList = yield call(cleverApi.fetchCleverClasses);
+    yield put(fetchCleverClassListSuccessAction(cleverClassList));
+    if (cleverClassList.length === 0) {
+      yield call(message.info, "No classes found in Clever account.");
+    }
+  } catch (err) {
+    console.error(err);
+    yield put(fetchCleverClassListFailedAction());
+    yield call(message.error, "Failed to fetch Clever classes");
+  }
+}
+
+function* syncClassListWithCleverSaga({ payload }) {
+  try {
+    const { classList, refreshPage } = payload;
+    const filteredPayload = classList.map(c => ({
+      name: c.name,
+      cleverId: c.cleverId,
+      course: c.course,
+      subject: c.subject,
+      grades: c.grades,
+      standardSets: c.standardSets
+    }));
+    yield call(cleverApi.syncCleverClasses, filteredPayload);
+    yield call(message.success, "Sync with Clever is complete.");
+    switch (refreshPage) {
+      case "dashboard":
+        yield put(receiveTeacherDashboardAction());
+        break;
+      case "manageClass":
+        yield put(fetchGroupsAction());
+        break;
+    }
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Sync with Clever failed");
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -626,6 +694,8 @@ export function* watcherSaga() {
     yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest),
     yield takeLatest(GET_CANVAS_COURSE_LIST_REQUEST, getCanvasCourseListRequestSaga),
     yield takeLatest(GET_CANVAS_SECTION_LIST_REQUEST, getCanvasSectionListRequestSaga),
-    yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga)
+    yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga),
+    yield takeLatest(FETCH_CLEVER_CLASS_LIST_REQUEST, fetchCleverClassListRequestSaga),
+    yield takeLatest(SYNC_CLASS_LIST_WITH_CLEVER, syncClassListWithCleverSaga)
   ]);
 }

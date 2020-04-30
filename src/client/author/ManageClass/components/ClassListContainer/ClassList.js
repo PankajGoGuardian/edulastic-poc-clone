@@ -17,7 +17,10 @@ import BreadCrumb from "../../../src/components/Breadcrumb";
 import { getUserDetails } from "../../../../student/Login/ducks";
 import Header from "./Header";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
-import { getGoogleAllowedInstitionPoliciesSelector } from "../../../src/selectors/user";
+import {
+  getGoogleAllowedInstitionPoliciesSelector,
+  getCleverSyncEnabledInstitutionPoliciesSelector
+} from "../../../src/selectors/user";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -33,7 +36,10 @@ const ClassList = ({
   user,
   fetchClassList,
   setAssignmentFilters,
-  googleAllowedInstitutions
+  isUserGoogleLoggedIn,
+  googleAllowedInstitutions,
+  setShowCleverSyncModal,
+  cleverSyncEnabledInstitutions
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
@@ -205,6 +211,11 @@ const ClassList = ({
         archiveGroups={archiveGroups}
         currentTab={currentTab}
         onClickHandler={onClickHandler}
+        isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+        googleAllowedInstitutions={googleAllowedInstitutions}
+        fetchGoogleClassList={fetchClassList}
+        setShowCleverSyncModal={setShowCleverSyncModal}
+        enableCleverSync={cleverSyncEnabledInstitutions.length > 0}
       />
       <MainContentWrapper>
         <SubHeader>
@@ -275,7 +286,9 @@ const enhance = compose(
     state => ({
       institutions: get(state, "user.user.orgData.schools"),
       user: getUserDetails(state),
-      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state)
+      isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
+      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
+      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state)
     }),
     {
       fetchClassList: fetchClassListAction,

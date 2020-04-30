@@ -1,314 +1,342 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { themeColorLight } from "@edulastic/colors";
+import { capitalize } from "lodash";
+
+// components
+import { Spin, Select, Input, message } from "antd";
 import { EduButton } from "@edulastic/common";
-import { Select, Input, message } from "antd";
+import { IconClever, IconClose } from "@edulastic/icons";
+import { StyledSelect, ClassListModal, ModalClassListTable, InstitutionSelectWrapper } from "./styled";
+
+// constants
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { StyledSelect, GoogleClassroomModal, GoogleClassroomTable, InstitutionSelectWrapper } from "./styled";
-import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
+const { allGrades, allSubjects } = selectsData;
 
-const ClassListModal = ({
+const ClassSelectModal = ({
+  type,
   visible,
-  close,
-  groups,
+  onSubmit,
+  onCancel,
+  loading,
+  syncedIds = [],
+  classListToSync,
   courseList,
-  syncClass,
-  selectedGroups,
-  setShowBanner,
-  syncClassLoading,
-  updateGoogleCourseList,
-  state,
-  googleAllowedInstitutions
+  getStandardsListBySubject,
+  refreshPage,
+  allowedInstitutions
 }) => {
+  const [classListData, setClassListData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedInstitution, setInstitution] = useState(undefined);
-  // clear selected class while modal changes
+  const [institutionId, setInstitutionId] = useState("");
+
+  // set classListData
   useEffect(() => {
-    const selRows = [];
-    groups.forEach((gr, index) => {
-      if (!selectedGroups.includes(gr.enrollmentCode)) selRows.push(index);
-    });
-    setSelectedRows(selRows);
-  }, [visible]);
+    if (type === "clever") {
+      setClassListData(
+        classListToSync.map(c => ({
+          name: c.name,
+          cleverId: c.id,
+          // TODO: verify use-case & remove this
+          // course: c.course,
+          course: "",
+          subject: c.subject ? capitalize(c.subject) : "",
+          grades: c.grade ? [c.grade] : [],
+          standards: [],
+          standardSets: [],
+          disabled: syncedIds.includes(c.id)
+        }))
+      );
+    }
+    if (type === "googleClassroom") {
+      setClassListData(
+        classListToSync.map(c => ({
+          ...c,
+          disabled: syncedIds.includes(c.enrollmentCode)
+        }))
+      );
+    }
+  }, [classListToSync]);
 
   useEffect(() => {
-    if (googleAllowedInstitutions.length === 1) setInstitution(googleAllowedInstitutions[0].institutionId);
-  }, [googleAllowedInstitutions]);
+    if (allowedInstitutions?.length === 1) {
+      setInstitutionId(allowedInstitutions[0].institutionId);
+    }
+  }, [allowedInstitutions]);
 
-  const handleStandardsChange = (index, key, value, options) => {
-    let standardSets = options.map(option => {
-      return { _id: option.props.value, name: option.props.children };
-    });
-    handleChange(index, "standardSets", standardSets);
-    handleChange(index, key, value);
+  const handleClassListSync = () => {
+    const classList = classListData.filter((_, index) => selectedRows.includes(index));
+    if (!classList?.length) {
+      message.error("Please select a class to sync.");
+    } else if (type === "googleClassroom" && !institutionId) {
+      return message.error("Please select an institution.");
+    } else {
+      onSubmit({ classList, institutionId, refreshPage });
+      onCancel();
+    }
   };
 
-  const handleCourseChange = (index, option) => {
-    let course = { id: option.props.value, name: option.props.children };
-    handleChange(index, "course", course);
-  };
-
-  // add keys to  each group. antd table selection works based on keys.
-  groups = groups.map((group, index) => ({ ...group, key: index }));
-
-  // for antd row selection
-  const rowSelection = {
-    selectedRowKeys: selectedRows,
-    onChange: rows => {
-      setSelectedRows(rows);
-    },
-    getCheckboxProps: record => ({
-      // eslint-disable-next-line max-len
-      disabled: selectedGroups.includes(record.enrollmentCode), // Column configuration not to be checked
-      name: record.name
-    })
-  };
-
-  const handleChange = (index, key, value) => {
-    updateGoogleCourseList({ index, key, value });
-  };
-
-  const columns = [
-    {
-      title: <b>{"GOOGLE CLASS CODE"}</b>,
-      key: "enrollmentCode",
-      width: "15%",
-      dataIndex: "enrollmentCode",
-      align: "left"
-    },
-    {
-      title: <b>{"CLASS NAME"}</b>,
-      key: "name",
-      width: "15%",
-      dataIndex: "name",
-      align: "center",
-      render: (name, row, ind) => (
-        <Input
-          style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", width: "100%" }}
-          title={name}
-          value={name}
-          disabled={selectedGroups.includes(row.enrollmentCode)}
-          onChange={e => handleChange(ind, "name", e.target.value)}
-        />
-      )
-    },
-    {
-      title: <b>{"GRADE"}</b>,
-      key: "grades",
-      width: "15%",
-      dataIndex: "grades",
-      align: "center",
-      render: (_, row, ind) => (
-        <StyledSelect
-          disabled={selectedGroups.includes(row.enrollmentCode)}
-          value={row.grades || []}
-          mode="multiple"
-          placeholder="Select Grades"
-          onChange={val => handleChange(ind, "grades", val)}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
-        >
-          {selectsData.allGrades.map(allGrade => {
-            return (
-              <Select.Option value={allGrade.value} key={allGrade.value}>
-                {allGrade.text}
-              </Select.Option>
-            );
-          })}
-        </StyledSelect>
-      )
-    },
-    {
-      title: <b>{"SUBJECT"}</b>,
-      key: "subject",
-      width: "15%",
-      dataIndex: "subject",
-      align: "center",
-      render: (_, row, ind) => (
-        <StyledSelect
-          style={{ minWidth: "80px" }}
-          disabled={selectedGroups.includes(row.enrollmentCode)}
-          value={row.subject || []}
-          placeholder="Select Subject"
-          onChange={val => {
-            handleChange(ind, "standards", []);
-            handleChange(ind, "standardSets", []);
-            handleChange(ind, "subject", val);
-          }}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
-        >
-          {selectsData.allSubjects.map(allSubject => {
-            return (
-              allSubject.value && (
-                <Select.Option value={allSubject.value} key={allSubject.value}>
-                  {allSubject.text}
-                </Select.Option>
-              )
-            );
-          })}
-        </StyledSelect>
-      )
-    },
-    {
-      title: <b>{"STANDARDS"}</b>,
-      key: "standards",
-      width: "20%",
-      dataIndex: "standards",
-      align: "center",
-      render: (_, row, ind) => {
-        const standardsList = getFormattedCurriculumsSelector(state, { subject: row.subject });
-        return (
-          <StyledSelect
-            showSearch
-            filterOption={(input, option) =>
-              option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+  const getColumns = () => {
+    const width = type === "googleClassroom" ? "15%" : "20%";
+    const googleCode =
+      type === "googleClassroom"
+        ? [
+            {
+              title: <b>GOOGLE CLASS CODE</b>,
+              key: "enrollmentCode",
+              width,
+              dataIndex: "enrollmentCode",
+              align: "left"
             }
-            disabled={selectedGroups.includes(row.enrollmentCode)}
+          ]
+        : [];
+
+    return [
+      ...googleCode,
+      {
+        title: <b>CLASS NAME</b>,
+        key: "name",
+        width,
+        dataIndex: "name",
+        align: "center",
+        render: (data, row, index) => (
+          <Input
+            title={data}
+            value={data}
+            disabled={row.disabled}
+            onChange={e => {
+              const classList = [...classListData];
+              classList[index].name = e.target.value;
+              setClassListData(classList);
+            }}
+          />
+        )
+      },
+      {
+        title: <b>GRADE</b>,
+        key: "grades",
+        width,
+        dataIndex: "grades",
+        align: "center",
+        render: (data, row, index) => (
+          <StyledSelect
+            value={data || []}
             mode="multiple"
-            value={row.standards || []}
-            placeholder="Select Standards"
-            onChange={(val, options) => {
-              handleStandardsChange(ind, "standards", val, options);
+            placeholder="Select Grades"
+            disabled={row.disabled}
+            onChange={grades => {
+              const classList = [...classListData];
+              classList[index].grades = grades;
+              setClassListData(classList);
             }}
             getPopupContainer={triggerNode => triggerNode.parentNode}
           >
-            {standardsList.map(standard => {
-              return (
-                <Select.Option value={standard.value} key={standard.value} disabled={standard.disabled}>
-                  {standard.text}
-                </Select.Option>
-              );
-            })}
+            {allGrades.map(grade => (
+              <Select.Option value={grade.value} key={grade.value}>
+                {grade.text}
+              </Select.Option>
+            ))}
           </StyledSelect>
-        );
-      }
-    },
-    {
-      title: <b>{"COURSE"}</b>,
-      key: "course",
-      width: "20%",
-      dataIndex: "course",
-      align: "center",
-      render: (_, row, ind) => (
-        <StyledSelect
-          showSearch
-          filterOption={(input, option) =>
-            option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
-          disabled={selectedGroups.includes(row.enrollmentCode)}
-          value={row.courseId || []}
-          placeholder="Select Course"
-          onChange={(val, option) => {
-            handleCourseChange(ind, option);
-            handleChange(ind, "courseId", val);
-          }}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
-        >
-          {courseList &&
-            courseList.map(course => {
-              return (
+        )
+      },
+      {
+        title: <b>SUBJECT</b>,
+        key: "subject",
+        width,
+        dataIndex: "subject",
+        align: "center",
+        render: (data, row, index) => (
+          <StyledSelect
+            style={{ minWidth: "80px" }}
+            value={data || []}
+            placeholder="Select Subject"
+            disabled={row.disabled}
+            onChange={subject => {
+              const classList = [...classListData];
+              classList[index].subject = capitalize(subject);
+              classList[index].standards = [];
+              classList[index].standardSets = [];
+              setClassListData(classList);
+            }}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
+            {allSubjects.map(
+              subject =>
+                subject.value && (
+                  <Select.Option value={subject.value} key={subject.value}>
+                    {subject.text}
+                  </Select.Option>
+                )
+            )}
+          </StyledSelect>
+        )
+      },
+      {
+        title: <b>STANDARDS</b>,
+        key: "standards",
+        width,
+        dataIndex: "standards",
+        align: "center",
+        render: (data, row, index) => {
+          const standardsList = getStandardsListBySubject(row.subject);
+          return (
+            <StyledSelect
+              showSearch
+              filterOption={(input, option) =>
+                option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              mode="multiple"
+              value={data}
+              placeholder="Select Standards"
+              disabled={row.disabled}
+              onChange={standards => {
+                const classList = [...classListData];
+                classList[index].standards = standards;
+                classList[index].standardsList = standardsList
+                  .filter(s => standards.includes(s.value))
+                  .map(({ value, text }) => ({ _id: value, name: text }));
+                setClassListData(classList);
+              }}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {standardsList.map(({ value, text, disabled }) => (
+                <Select.Option value={value} key={value} disabled={disabled}>
+                  {!value.toString().includes("-") ? (
+                    text
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "2px",
+                        borderRadius: "20px",
+                        backgroundColor: "rgba(0, 0, 0, 0.65)"
+                      }}
+                    />
+                  )}
+                </Select.Option>
+              ))}
+            </StyledSelect>
+          );
+        }
+      },
+      {
+        title: <b>COURSE</b>,
+        key: "course",
+        width,
+        dataIndex: "course",
+        align: "center",
+        render: (data, row, index) => (
+          <StyledSelect
+            showSearch
+            labelInValue
+            filterOption={(input, option) =>
+              option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            value={{ value: row.courseId || data || [] }}
+            placeholder="Select Course"
+            disabled={row.disabled}
+            onChange={course => {
+              const classList = [...classListData];
+              if (type === "clever") {
+                classList[index].course = course.value;
+              } else if (type === "googleClassroom") {
+                classList[index].course = { id: course.value, name: course.label };
+                classList[index].courseId = course.value;
+              }
+              setClassListData(classList);
+            }}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
+            {courseList &&
+              courseList.map(course => (
                 <Select.Option value={course._id} key={course._id}>
                   {course.name}
                 </Select.Option>
-              );
-            })}
-        </StyledSelect>
-      )
-    }
-  ];
-
-  const addGroups = () => {
-    // eslint-disable-next-line max-len
-    const selected = groups.filter((_, index) => selectedRows.includes(index));
-
-    if (selected && selected.length) {
-      if (!selectedInstitution) {
-        return message.error("Please select an institution.");
+              ))}
+          </StyledSelect>
+        )
       }
-      syncClass({ classList: selected, institutionId: selectedInstitution });
-      close();
-      setShowBanner(true);
-    } else {
-      message.error("Please select a class to Sync.");
-    }
+    ];
   };
 
+  const InstitutionSelection = () => (
+    <InstitutionSelectWrapper>
+      <label>We found the account is linked to multiple Institutions. Please select the one for synced classes.</label>
+      <StyledSelect
+        width="170px"
+        showSearch
+        filterOption={(input, option) =>
+          option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
+        placeholder="Select Institution"
+        getPopupContainer={triggerNode => triggerNode.parentNode}
+        value={selectedInstitution}
+        onChange={value => setInstitution(value)}
+      >
+        {allowedInstitutions.map(i => (
+          <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
+        ))}
+      </StyledSelect>
+    </InstitutionSelectWrapper>
+  );
+
   return (
-    <GoogleClassroomModal
+    <ClassListModal
       visible={visible}
-      onCancel={close}
-      onOk={addGroups}
-      centered={true}
+      onCancel={onCancel}
+      centered
       title={
         <>
-          <span>{"Import Classes and Students from Google"}</span>
-          <p>The following classes will be imported from you Google Classroom account.</p>
+          <div>
+            {type === "clever" && <IconClever height={20} width={20} style={{ position: "absolute", left: "20px" }} />}
+            <span>Import Classes and Students from {type === "clever" ? "Clever" : "Google"}</span>
+            <IconClose height={20} width={20} onClick={onCancel} style={{ cursor: "pointer" }} />
+          </div>
+          <p>
+            The following classes will be imported from you {type === "clever" ? "Clever" : "Google Classroom"} account.
+          </p>
           <p>
             Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
-            successful, Students accounts will be automatically created in Edulastic.{" "}
+            successful, Students accounts will be automatically created in Edulastic.
           </p>
-          {googleAllowedInstitutions.length > 1 && (
-            <>
-              <InstitutionSelectWrapper>
-                <label>
-                  We found the account is linked to multiple Institutions. Please select the one for synced classes.
-                </label>
-                <StyledSelect
-                  width="170px"
-                  showSearch
-                  filterOption={(input, option) =>
-                    option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
-                  placeholder="Select Institution"
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                  value={selectedInstitution}
-                  onChange={value => setInstitution(value)}
-                >
-                  {googleAllowedInstitutions.map(i => (
-                    <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
-                  ))}
-                </StyledSelect>
-              </InstitutionSelectWrapper>
-            </>
-          )}
+          {type === "googleClassRoom" && allowedInstitutions.length > 1 && <InstitutionSelection />}
         </>
       }
-      okText="IMPORT"
-      cancelText="CANCEL"
-      okButtonProps={{
-        style: { "background-color": themeColorLight, "border-color": themeColorLight },
-        loading: syncClassLoading,
-        shape: "round"
-      }}
-      footer={
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <EduButton height="40px" isGhost onClick={close}>
-            CANCEL
-          </EduButton>
-          <EduButton height="40px" onClick={addGroups} loading={syncClassLoading}>
-            IMPORT
-          </EduButton>
-        </div>
-      }
+      footer={[
+        <EduButton isGhost onClick={onCancel}>
+          CANCEL
+        </EduButton>,
+        <EduButton onClick={handleClassListSync} loading={loading}>
+          IMPORT
+        </EduButton>
+      ]}
+      centered
     >
-      <GoogleClassroomTable
-        style={{ width: "100%" }}
-        columns={columns}
-        dataSource={groups}
-        bordered
-        rowSelection={rowSelection}
-        pagination={{ defaultPageSize: (groups && groups.length) || 10, hideOnSinglePage: true }}
-      />
-    </GoogleClassroomModal>
+      {loading ? (
+        <Spin />
+      ) : (
+        <ModalClassListTable
+          columns={getColumns()}
+          dataSource={classListData}
+          bordered
+          rowSelection={{
+            selectedRowKeys: selectedRows,
+            onChange: setSelectedRows,
+            getCheckboxProps: row => ({ disabled: row.disabled, name: row.name })
+          }}
+          pagination={{ defaultPageSize: classListData?.length || 10, hideOnSinglePage: true }}
+        />
+      )}
+    </ClassListModal>
   );
 };
 
-ClassListModal.propTypes = {
+ClassSelectModal.propTypes = {
+  type: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,
-  selectedGroups: PropTypes.array.isRequired,
-  groups: PropTypes.array.isRequired,
-  syncClassLoading: PropTypes.bool,
-  updateGoogleCourseList: PropTypes.func,
-  close: PropTypes.func.isRequired,
-  syncClass: PropTypes.func.isRequired
+  syncedIds: PropTypes.array.isRequired,
+  classListToSync: PropTypes.array.isRequired,
+  loading: PropTypes.bool,
+  onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired
 };
-export default ClassListModal;
+export default ClassSelectModal;

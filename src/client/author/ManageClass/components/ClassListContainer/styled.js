@@ -11,7 +11,9 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   smallDesktopWidth,
-  borderGrey
+  borderGrey,
+  greyThemeDark1,
+  darkGrey2
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon, Dropdown } from "antd";
 import { IconPlusCircle } from "@edulastic/icons";
@@ -261,8 +263,28 @@ export const ClassListTable = styled(Table)`
     }
   }
 `;
+
 export const StyledSelect = styled(Select)`
-  width: ${({ width }) => width || "100%"};
+  width: ${props => props.width || "100%"};
+  .ant-select-selection {
+    border-radius: 2px;
+    border: 1px solid ${borderGrey};
+    min-width: 100%;
+    max-width: 100%;
+    .ant-select-selection__choice {
+      background: ${themeColor}33;
+      border-radius: 5px;
+      color: ${themeColor};
+      font-weight: ${props => props.theme.semiBold};
+      text-transform: uppercase;
+      font-size: ${props => props.theme.tagFontSize};
+      border: none;
+      border-radius: 2px;
+      i {
+        color: ${themeColor};
+      }
+    }
+  }
 `;
 
 export const BannerDiv = styled.div`
@@ -294,85 +316,70 @@ export const SubHeader = styled.div`
   align-items: center;
 `;
 
-export const GoogleClassroomModal = styled(ConfirmationModal)`
-  min-width: 90%;
+export const ClassListModal = styled(ConfirmationModal)`
+  min-width: 85%;
   .ant-modal-content {
     border-radius: 10px;
-    padding: 45px;
+    padding: 30px 45px 45px 50px;
+    .ant-modal-close {
+      display: none;
+    }
     .ant-modal-header {
-      padding: 0px 0px 25px;
+      padding: 0px;
+      margin-bottom: 40px;
       border: none;
       .ant-modal-title {
-        span {
-          padding-bottom: 20px;
-          display: inline-block;
-          font-size: ${props => props.theme.headerTitle};
-          font-weight: ${props => props.theme.bold};
+        > div {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 30px;
+          span {
+            color: ${greyThemeDark1};
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 30px;
+          }
         }
         p {
-          font-size: ${props => props.theme.standardFont};
-          font-weight: ${props => props.theme.semiBold};
+          color: ${darkGrey2};
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 19px;
         }
       }
     }
     .ant-modal-body {
+      min-height: 100px;
       border-radius: 10px;
-      padding: 15px 10px;
+      padding: 15px 10px 20px 10px;
+      margin-bottom: 40px;
+      .ant-spin {
+        padding-top: 65px;
+      }
     }
     .ant-modal-footer {
+      padding: 0px;
       .ant-btn {
         width: 200px;
         height: 40px;
         border-radius: 4px;
         font-size: ${props => props.theme.linkFontSize};
-        text-transform: uppercase;
-      }
-      .cancel-button {
-        background: transparent;
-        border: 1px solid ${themeColor};
-        color: ${themeColor};
-      }
-      .import-button {
-        background: ${themeColor};
-        border: 1px solid ${themeColor};
-        color: ${white};
       }
     }
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    min-width: 95%;
-    .ant-modal-content {
-      padding: 25px;
-      .ant-modal-header {
-        padding: 0px 0px 25px;
-        .ant-modal-title {
-          span {
-            padding-bottom: 15px;
-            font-size: ${props => props.theme.titleSectionFontSize};
-            font-weight: ${props => props.theme.bold};
-          }
-          p {
-            font-size: ${props => props.theme.smallFontSize};
-            font-weight: ${props => props.theme.semiBold};
-          }
-        }
-      }
-
-      .ant-modal-footer {
-        .ant-btn {
-          width: 200px;
-          height: 36px;
-        }
-      }
-    }
+    min-width: 90%;
   }
 `;
 
-export const GoogleClassroomTable = styled(Table)`
+export const ModalClassListTable = styled(Table)`
+  width: 100%;
   .ant-table {
     .ant-table-content {
       .ant-table-body {
+        min-height: auto;
         table {
           border: none;
           .ant-table-thead {
@@ -380,7 +387,8 @@ export const GoogleClassroomTable = styled(Table)`
               background: ${white};
               th {
                 border: none;
-                padding: 16px 6px;
+                background: ${white};
+                padding: 5px 10px 25px 10px;
                 .ant-table-column-title {
                   white-space: nowrap;
                   font-size: ${props => props.theme.smallFontSize};
@@ -389,46 +397,23 @@ export const GoogleClassroomTable = styled(Table)`
             }
           }
           .ant-table-tbody {
+            border-collapse: collapse;
             tr {
               border-bottom: 11px solid ${white};
               td {
                 border: none;
-                padding: 6px;
+                padding: 5px 10px;
                 background: ${lightGreySecondary};
                 &.ant-table-selection-column {
                   background: ${white};
                 }
               }
-            }
-          }
-        }
-        .ant-input,
-        .ant-select-selection {
-          border-radius: 2px;
-          border: 1px solid ${borderGrey};
-          min-width: 120px;
-          max-width: 120px;
-          margin: auto;
-
-          @media (min-width: ${mediumDesktopExactWidth}) {
-            min-width: 150px;
-            max-width: 180px;
-          }
-          @media (min-width: ${extraDesktopWidthMax}) {
-            min-width: 180px;
-            max-width: 280px;
-          }
-          .ant-select-selection__choice {
-            background: ${themeColor}33;
-            border-radius: 5px;
-            color: ${themeColor};
-            font-weight: ${props => props.theme.semiBold};
-            text-transform: uppercase;
-            font-size: ${props => props.theme.tagFontSize};
-            border: none;
-            border-radius: 2px;
-            i {
-              color: ${themeColor};
+              td:nth-child(2) {
+                padding-left: 15px;
+              }
+              td:last-child {
+                padding-right: 15px;
+              }
             }
           }
         }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Modal, Table, Button } from "antd";
 import { FlexContainer } from "./styled";
@@ -78,11 +78,7 @@ const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
 
 ShowSyncDetailsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
-  selectedGroups: PropTypes.array.isRequired,
-  groups: PropTypes.array.isRequired,
-  syncClassLoading: PropTypes.bool,
-  updateGoogleCourseList: PropTypes.func,
   close: PropTypes.func.isRequired,
-  syncClass: PropTypes.func.isRequired
+  syncClassResponse: PropTypes.object
 };
 export default ShowSyncDetailsModal;

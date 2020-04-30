@@ -256,6 +256,23 @@ const fetchUsersFromDistrict = districtId =>
     })
     .then(result => result.data.result);
 
+const fetchUsersForMerge = ({ type, userIds }) =>
+  api
+    .callApi({
+      url: `${prefix}/${type}/${userIds}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
+const mergeUsers = ({ primaryUserId, userIds }) =>
+  api
+    .callApi({
+      url: `${prefix}/merge-user`,
+      method: "post",
+      data: { primaryUserId, userIds }
+    })
+    .then(result => result.data);
+
 export default {
   getUser,
   fetchUsers,
@@ -284,5 +301,7 @@ export default {
   deleteAccount,
   removeSchool,
   fetchUsersFromDistrict,
-  sendParentCode
+  sendParentCode,
+  fetchUsersForMerge,
+  mergeUsers
 };

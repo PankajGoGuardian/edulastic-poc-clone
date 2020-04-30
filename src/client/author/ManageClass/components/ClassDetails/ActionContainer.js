@@ -7,7 +7,8 @@ import {
   IconPlusCircle,
   IconPrint,
   IconRemove,
-  IconVolumeUp
+  IconVolumeUp,
+  IconShare
 } from "@edulastic/icons";
 import { Dropdown, message } from "antd";
 import React, { useEffect, useState } from "react";
@@ -43,6 +44,7 @@ import InviteMultipleStudentModal from "../../../Student/components/StudentTable
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
+import { MergeStudentsModal } from "../../../MergeUsers";
 
 const modalStatus = {};
 
@@ -255,6 +257,13 @@ const ActionContainer = ({
         break;
       case "addToGroup":
         toggleModal("addToGroup");
+        break;
+      case "mergeStudents":
+        if (selectedStudent.length > 1) {
+          toggleModal("mergeStudents");
+        } else {
+          message.info("Please select two or more students to merge");
+        }
       default:
         break;
     }
@@ -264,6 +273,11 @@ const ActionContainer = ({
     // if school policy does not exists then action will populate district policy
     loadSchoolPolicy(selectedClass.institutionId);
   }, []);
+
+  const onMergeStudents = () => {
+    toggleModal("mergeStudents");
+    loadStudents({ classId });
+  };
 
   return (
     <>
@@ -310,6 +324,15 @@ const ActionContainer = ({
           visible={isOpen.addToGroup}
           onCancel={() => toggleModal("addToGroup")}
           checkedStudents={selectedStudent}
+        />
+      )}
+
+      {type === "class" && (
+        <MergeStudentsModal
+          visible={isOpen.mergeStudents}
+          userIds={selectedStudent.map(s => s._id)}
+          onSubmit={onMergeStudents}
+          onCancel={() => toggleModal("mergeStudents")}
         />
       )}
 
@@ -373,6 +396,12 @@ const ActionContainer = ({
                   <MenuItems key="addToGroup">
                     <IconPlus />
                     <span>Add To Group</span>
+                  </MenuItems>
+                )}
+                {type === "class" && (
+                  <MenuItems key="mergeStudents">
+                    <IconShare />
+                    <span>Merge Students</span>
                   </MenuItems>
                 )}
               </DropMenu>

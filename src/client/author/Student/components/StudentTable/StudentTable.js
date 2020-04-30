@@ -75,6 +75,7 @@ import { AddStudentsToOtherClassModal } from "./AddStudentToOtherClass";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
 import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
 import { StyledStudentTable } from "./styled";
+import { MergeStudentsModal } from "../../../MergeUsers";
 
 const menuActive = { mainMenu: "Users", subMenu: "Student" };
 
@@ -102,7 +103,7 @@ class StudentTable extends Component {
       editStudentKey: "",
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
-
+      showMergeStudentsModal: false,
       showActive: true,
       searchByName: "",
       filtersData: [
@@ -254,6 +255,13 @@ class StudentTable extends Component {
     if (e.key === "add student") {
       this.setState({ addStudentModalVisible: true });
     }
+    if (e.key === "merge user") {
+      if (selectedRowKeys.length > 1) {
+        this.setState({ showMergeStudentsModal: true });
+      } else {
+        message.info("Select two or more students to merge");
+      }
+    }
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
         message.error(t("users.validations.edituser"));
@@ -366,6 +374,15 @@ class StudentTable extends Component {
     this.setState({
       addStudentModalVisible: false
     });
+  };
+
+  onCloseMergeStudentsModal = () => {
+    this.setState({ showMergeStudentsModal: false });
+  };
+
+  onSubmitMergeStudentsModal = () => {
+    this.handleSearchName(" ");
+    this.onCloseMergeStudentsModal();
   };
 
   confirmDeactivate = () => {
@@ -583,7 +600,7 @@ class StudentTable extends Component {
       editStudentKey,
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
-
+      showMergeStudentsModal,
       filtersData,
       currentPage,
       refineButtonActive
@@ -630,6 +647,7 @@ class StudentTable extends Component {
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="add student">{t("users.student.addstudent")}</Menu.Item>
         <Menu.Item key="edit user">{t("users.student.updateuser")}</Menu.Item>
+        <Menu.Item key="merge user">{t("users.student.mergeuser")}</Menu.Item>
         <Menu.Item key="deactivate user">{t("users.student.deactivateuser")}</Menu.Item>
         <Menu.Item key="addStudentsToAnotherClass">{t("users.student.addstudentootherclass")}</Menu.Item>
       </Menu>
@@ -862,6 +880,12 @@ class StudentTable extends Component {
           onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           t={t}
+        />
+        <MergeStudentsModal
+          visible={showMergeStudentsModal}
+          userIds={selectedRowKeys}
+          onSubmit={this.onSubmitMergeStudentsModal}
+          onCancel={this.onCloseMergeStudentsModal}
         />
       </MainContainer>
     );

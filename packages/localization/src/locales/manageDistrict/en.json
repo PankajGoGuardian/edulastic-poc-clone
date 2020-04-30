@@ -155,6 +155,7 @@
       "addteacher": "Add Teacher",
       "updateuser": "Update Selected User",
       "deactivateuser": "Deactivate Selected User(s)",
+      "mergeuser": "Merge Selected User(s)",
       "inviteteachers": "+ Invite Multiple Teachers",
       "deactivateTeacher": {
         "title": "Deactivate Teacher(s)",
@@ -218,6 +219,7 @@
       "addstudent": "Add Student",
       "updateuser": "Update Selected User",
       "deactivateuser": "Deactivate Selected User(s)",
+      "mergeuser": "Merge Selected User(s)",
       "addstudentootherclass": "Add student(s) to another class",
       "addmultiplestudents": "+ Add Multiple Students",
       "addstudents": "Add Student(s)",

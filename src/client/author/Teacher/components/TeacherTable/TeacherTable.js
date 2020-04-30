@@ -60,6 +60,7 @@ import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import { StyledTeacherTable } from "./styled";
+import { MergeTeachersModal } from "../../../MergeUsers";
 
 const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
 
@@ -87,7 +88,7 @@ class TeacherTable extends Component {
       editTeacherKey: "",
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
-
+      showMergeTeachersModal: false,
       showActive: true,
       searchByName: "",
       filtersData: [
@@ -227,6 +228,13 @@ class TeacherTable extends Component {
     if (e.key === "add teacher") {
       this.setState({ addTeacherModalVisible: true });
     }
+    if (e.key === "merge user") {
+      if (selectedRowKeys.length > 1) {
+        this.setState({ showMergeTeachersModal: true });
+      } else {
+        message.info("Select two or more teachers to merge");
+      }
+    }
     if (e.key === "edit user") {
       if (selectedRowKeys.length == 0) {
         message.error("Please select user to edit.");
@@ -294,6 +302,15 @@ class TeacherTable extends Component {
     this.setState({
       addTeacherModalVisible: false
     });
+  };
+
+  onCloseMergeTeachersModal = () => {
+    this.setState({ showMergeTeachersModal: false });
+  };
+
+  onSubmitMergeTeachersModal = () => {
+    this.handleSearchName(" ");
+    this.onCloseMergeTeachersModal();
   };
 
   confirmDeactivate = () => {
@@ -516,7 +533,7 @@ class TeacherTable extends Component {
       editTeacherKey,
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
-
+      showMergeTeachersModal,
       filtersData,
       currentPage,
       refineButtonActive
@@ -552,6 +569,8 @@ class TeacherTable extends Component {
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="add teacher">{t("users.teacher.addteacher")}</Menu.Item>
         <Menu.Item key="edit user">{t("users.teacher.updateuser")}</Menu.Item>
+        {/* TODO: Enable merge user when required */}
+        {/* <Menu.Item key="merge user">{t("users.teacher.mergeuser")}</Menu.Item> */}
         <Menu.Item key="deactivate user">{t("users.teacher.deactivateuser")}</Menu.Item>
       </Menu>
     );
@@ -764,6 +783,12 @@ class TeacherTable extends Component {
             title="Teacher Details"
           />
         )}
+        <MergeTeachersModal
+          visible={showMergeTeachersModal}
+          userIds={selectedRowKeys}
+          onSubmit={this.onSubmitMergeTeachersModal}
+          onCancel={this.onCloseMergeTeachersModal}
+        />
       </MainContainer>
     );
   }

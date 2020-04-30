@@ -59,6 +59,7 @@ import playlistTestBoxSlice from "../../CurriculumSequence/components/ManageCont
 import { externalToolsReducer } from "../../ExternalTools";
 import testPlayer from "../../sharedDucks/testPlayer";
 import { feedback } from "./feedback";
+import { mergeUsersReducer } from "../../MergeUsers";
 
 const authorReducers = {
   authorUi,
@@ -121,7 +122,8 @@ const authorReducers = {
   playlistTestBox: playlistTestBoxSlice.reducer,
   externalToolsReducer,
   testPlayer,
-  feedback
+  feedback,
+  mergeUsersReducer
 };
 
 export default authorReducers;

@@ -178,7 +178,7 @@ class StudentTestPage {
 
   clickOnChoice = ch =>
     cy
-      .contains(ch)
+      .contains("label", ch)
       .should("be.visible")
       .click({ force: true });
 

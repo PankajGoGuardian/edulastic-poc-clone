@@ -28,7 +28,16 @@ export class PlayListRecommendation {
 
   clickOnRecommendation = () => cy.get("[data-cy=recommendations]").click();
 
-  clickOnPracticeById = resourceId => this.getPracticeButtonById(resourceId).click();
+  clickOnPracticeById = resourceId => {
+    cy.server();
+    cy.route("POST", "**/test-activity").as("test-activity");
+    cy.route("GET", "**/test/**").as("gettest");
+    this.getPracticeButtonById(resourceId).click();
+    cy.wait("@test-activity").then(({ status }) =>
+      expect(status, "verify start recommendated practice i.e. posting test activity").to.eq(200)
+    );
+    cy.wait("@gettest");
+  };
 
   clickOnPracticeByAssignmentName = assignmentName => {
     cy.server();

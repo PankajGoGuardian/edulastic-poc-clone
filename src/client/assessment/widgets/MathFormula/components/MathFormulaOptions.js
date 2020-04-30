@@ -1,12 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { cloneDeep, isObject } from "lodash"; // , findIndex
+import { cloneDeep } from "lodash"; // , findIndex
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType, questionType } from "@edulastic/constants";
-import { MathKeyboard } from "@edulastic/common";
 
 import Layout from "./Layout";
 import CustomKeys from "./CustomKeys";
@@ -28,14 +27,6 @@ const MathFormulaOptions = ({
   setKeyPadOffest,
   showResponseBoxes
 }) => {
-  useEffect(() => {
-    if (item.showDropdown) {
-      const keypadMode = item.symbols[0];
-      if (isObject(keypadMode)) {
-        return;
-      }
-    }
-  }, [item.symbols]);
   const changeCustomKey = ({ index, value }) => {
     const newCustomKeys = cloneDeep(customKeys);
     newCustomKeys[index] = value;
@@ -93,7 +84,6 @@ const MathFormulaOptions = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
         renderExtra={
-          // eslint-disable-next-line react/jsx-wrap-multilines
           <CustomKeys
             blocks={customKeys}
             onChange={changeCustomKey}

@@ -1,9 +1,9 @@
 import React from "react";
 
-import Group940 from "../keyboardButtons/fractionwhite.svg";
-import LeftIco from "../keyboardButtons/left.svg";
-import RightIco from "../keyboardButtons/right.svg";
-import DeleteIco from "../keyboardButtons/delete.svg";
+import Group940 from "../assets/keyboardButtons/fractionwhite.svg";
+import LeftIco from "../assets/keyboardButtons/left.svg";
+import RightIco from "../assets/keyboardButtons/right.svg";
+import DeleteIco from "../assets/keyboardButtons/delete.svg";
 
 import { CustomImage } from "./keyboardButtons";
 

@@ -4,8 +4,6 @@ import { isObject, get } from "lodash";
 import { MathKeyboard } from "@edulastic/common";
 import CustomGroup from "./CustomGroup";
 
-import { SymbolsWrapper, Symbol } from "./styled";
-
 export default class KeyPad extends React.Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
@@ -77,12 +75,6 @@ export default class KeyPad extends React.Component {
       );
     }
 
-    return (
-      <SymbolsWrapper cols={cols} isAll={symbol === "all"}>
-        {btns.map(({ label }, i) => (
-          <Symbol key={i}>{label}</Symbol>
-        ))}
-      </SymbolsWrapper>
-    );
+    return <MathKeyboard symbols={[symbol]} showDropdown={false} />;
   }
 }

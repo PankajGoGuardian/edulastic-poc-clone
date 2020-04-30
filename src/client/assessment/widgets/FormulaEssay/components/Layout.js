@@ -13,7 +13,6 @@ import FontSizeSelect from "../../../components/FontSizeSelect";
 import KeyPadOptions from "../../../components/KeyPadOptions";
 import TypedList from "../../../components/TypedList";
 
-import { StyledRow } from "../styled/StyledRow";
 import { SelectInputStyled } from "../../../styled/InputStyles";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";

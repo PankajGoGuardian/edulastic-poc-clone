@@ -1,15 +1,15 @@
-/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import { Select, Input } from "antd";
+import { Select } from "antd";
 import { isObject } from "lodash";
 import { math } from "@edulastic/constants";
 import { MathKeyboard, Keyboard, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { numBtnColors } from "@edulastic/colors";
 
-import NumberPad from "../NumberPad";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+// import NumberPad from "../NumberPad";
 import KeyPad from "../KeyPad";
 import Question from "../Question";
 import { Subtitle } from "../../styled/Subtitle";
@@ -17,7 +17,6 @@ import { Label } from "../../styled/WidgetOptions/Label";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { SelectInputStyled, TextInputStyled } from "../../styled/InputStyles";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const defaultNumberPad = [
   "1",
@@ -178,24 +177,14 @@ class KeyPadOptions extends Component {
           <Col span={24}>
             <FlexContainer justifyContent="flex-start" flexWrap="wrap">
               {symbol === "qwerty" && <Keyboard onInput={() => {}} />}
-              {symbol !== "qwerty" && (
-                <>
-                  <NumberPad
-                    onChange={this.handleChangeNumberPad}
-                    items={this.getNumberPad(isCustom)}
-                    buttonStyle={btnStyle}
-                  />
-                  {!item.showDropdown && (
-                    <KeyPad symbol={symbol} onChange={onChange} item={item} buttonStyle={btnStyle} />
-                  )}
-                </>
+              {symbol !== "qwerty" && !item.showDropdown && (
+                <KeyPad symbol={symbol} onChange={onChange} item={item} buttonStyle={btnStyle} />
               )}
             </FlexContainer>
           </Col>
-          <Col span={12} />
         </Row>
 
-        {renderExtra}
+        {isCustom && renderExtra}
       </Question>
     );
   }

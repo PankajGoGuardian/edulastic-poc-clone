@@ -48,9 +48,9 @@ const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", 
 const symbols = [
   { value: "basic", label: "Basic" },
   { value: "intermediate", label: "Intermediate" },
-  { value: "advanced_matrices", label: "Advanced (Matrices)" },
-  { value: "advanced_trignometry", label: "Advanced (Trignometry)" },
-  { value: "geometry", label: "Advanced (Geometry)" },
+  { value: "advanced_matrices", label: "Matrices" },
+  { value: "advanced_trignometry", label: "Trignometry" },
+  { value: "geometry", label: "Geometry" },
   { value: "units_si", label: "Units (SI)" },
   { value: "units_us", label: "Units (US)" },
   { value: "all", label: "Full" }

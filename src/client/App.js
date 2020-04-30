@@ -10,7 +10,7 @@ import { DndProvider } from "react-dnd";
 import TouchBackend from "react-dnd-touch-backend";
 import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
-import { Spin, Modal, message } from "antd";
+import { Spin, message } from "antd";
 import Joyride from "react-joyride";
 import * as firebase from "firebase/app";
 import { test, signUpState } from "@edulastic/constants";
@@ -28,6 +28,7 @@ import PrivateRoute from "./common/components/privateRoute";
 import V1Redirect from "./author/V1Redirect";
 import Kid from "./kid/app";
 import NotificationListener from "./HangoutVideoCallNotification";
+import AppUpdateModal from "./common/components/AppUpdateModal";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type;
 // route wise splitting
@@ -154,12 +155,6 @@ class App extends Component {
     );
   };
 
-  handleCancel = () => {
-    this.setState({
-      showAppUpdate: false
-    });
-  };
-
   render() {
     const cliBannerVisible = sessionStorage.cliBannerVisible || false;
 
@@ -253,9 +248,7 @@ class App extends Component {
     // signup routes hidden till org reference is not done
     return (
       <div>
-        <Modal title="App Update" visible={this.state.showAppUpdate} onOk={this.handleOk} onCancel={this.handleCancel}>
-          A newer version of app is available. do you want to refresh?
-        </Modal>
+        <AppUpdateModal visible={this.state.showAppUpdate} onRefresh={this.handleOk} />
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>

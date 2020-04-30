@@ -101,7 +101,7 @@ const UnitsDropdownPure = ({
                 disabled={disabled}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 style={{ visibility: item.showDropdown ? "visible" : "hidden", height: item.showDropdown ? "100%" : 0 }}
-                statusColor={statusColor}
+                bg={statusColor}
               >
                 {allBtns.map((btn, i) => (
                   <Option value={btn.handler} key={i}>

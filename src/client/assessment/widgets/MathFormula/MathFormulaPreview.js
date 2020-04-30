@@ -314,6 +314,7 @@ class MathFormulaPreview extends Component {
                     item={item}
                     selected={this.selectedUnit}
                     onChange={this.selectUnitFromDropdown}
+                    statusColor={statusColor}
                   />
                 )}
               </FlexContainer>

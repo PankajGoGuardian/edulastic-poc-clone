@@ -12,7 +12,7 @@ const ACTIONS = {
 };
 
 const MainContent = ({ regradeSettings, onUpdateSettings }) => {
-  const { editedQuestion, addedQuestion } = regradeSettings.options;
+  const { editedQuestion, addedQuestion, testSettings } = regradeSettings.options;
   return (
     <Container>
       <h2>Following assignments will be updated and re-scored if applicable.</h2>
@@ -60,6 +60,23 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
             </Radio>
           </Row>
         </Group>
+      </InputsWrapper>
+      <InputsWrapper>
+        <Row>
+          <OptionTitle>Add, Apply updated settings options </OptionTitle>
+        </Row>
+        <Row>
+          <Group
+            style={{ marginLeft: "20px" }}
+            defaultValue={testSettings}
+            onChange={e => onUpdateSettings("testSettings", e.target.value)}
+          >
+            <Row>
+              <Radio value={"ALL"}>Choose all assignments</Radio>
+              <Radio value={"EXCLUDE"}>Exclude assignments where overridden</Radio>
+            </Row>
+          </Group>
+        </Row>
       </InputsWrapper>
       <InputsWrapper>
         <Row>

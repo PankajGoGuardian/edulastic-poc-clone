@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import BreadCrumb from "../src/components/Breadcrumb";
 import { fetchAssignmentsAction } from "../TestPage/components/Assign/ducks";
-import { setRegradeSettingsDataAction } from "../TestPage/ducks";
+import { setRegradeSettingsDataAction, getRegradingSelector } from "../TestPage/ducks";
 import Header from "./Header";
 import MainContent from "./MainContent";
 import { SecondHeader } from "./styled";
 
-const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, districtId, history }) => {
+const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, districtId, history, isRegrading }) => {
   const { oldTestId, newTestId } = match.params;
   const { state: _locationState } = history.location;
   const settings = {
@@ -21,6 +21,7 @@ const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, dis
     options: {
       removedQuestion: "DISCARD",
       addedQuestion: "SKIP",
+      testSettings: "ALL",
       editedQuestion: "SKIP"
     }
   };
@@ -75,7 +76,12 @@ const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, dis
   });
   return (
     <Fragment>
-      <Header onApplySettings={onApplySettings} onCancelRegrade={onCancelRegrade} title={title} />
+      <Header
+        onApplySettings={onApplySettings}
+        onCancelRegrade={onCancelRegrade}
+        title={title}
+        isRegrading={isRegrading}
+      />
       <SecondHeader>
         <BreadCrumb data={breadcrumbData} style={{ position: "unset" }} />
       </SecondHeader>
@@ -88,7 +94,8 @@ export default withRouter(
   connect(
     state => ({
       title: get(state, ["authorTestAssignments", "assignments", 0, "title"], ""),
-      districtId: get(state, ["user", "user", "orgData", "districtId"])
+      districtId: get(state, ["user", "user", "orgData", "districtId"]),
+      isRegrading: getRegradingSelector(state)
     }),
     {
       getAssignmentsByTestId: fetchAssignmentsAction,

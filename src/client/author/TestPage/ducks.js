@@ -203,6 +203,7 @@ export const UPDATE_LAST_USED_COLLECTION_LIST = "[test] update recent collection
 export const UPDATE_CREATING = "[test] create test request initiated";
 export const SET_DEFAULT_SETTINGS_LOADING = "[test] deafult settings loading";
 export const SET_AUTOSELECT_ITEMS_FETCHING_STATUS = "[test] set autoselect items fetching status";
+export const SET_REGRADING_STATE = "[test] set regrading state";
 
 // actions
 
@@ -234,6 +235,7 @@ export const updateLastUsedCollectionListAction = createAction(UPDATE_LAST_USED_
 export const setIsCreatingAction = createAction(UPDATE_CREATING);
 export const setDefaultSettingsLoadingAction = createAction(SET_DEFAULT_SETTINGS_LOADING);
 export const setAutoselectItemsFetchingStatusAction = createAction(SET_AUTOSELECT_ITEMS_FETCHING_STATUS);
+export const setRegradingStateAction = createAction(SET_REGRADING_STATE);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -453,6 +455,11 @@ export const shouldDisableSelector = createSelector(
   (testLoading, assignmentsLoading) => testLoading || assignmentsLoading
 );
 
+export const getRegradingSelector = createSelector(
+  stateSelector,
+  state => state.regrading
+);
+
 export const getUserListSelector = createSelector(
   stateSelector,
   state => {
@@ -587,7 +594,8 @@ const initialState = {
   tagsList: { playlist: [], test: [], group: [], testitem: [] },
   defaultTestTypeProfiles: {},
   currentGroupIndex: 0,
-  isFetchingAutoselectItems: false
+  isFetchingAutoselectItems: false,
+  regrading: false
 };
 
 export const testTypeAsProfileNameType = {
@@ -935,6 +943,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         isFetchingAutoselectItems: payload
+      };
+    case SET_REGRADING_STATE:
+      return {
+        ...state,
+        regrading: payload
       };
     default:
       return state;
@@ -1289,6 +1302,7 @@ function* updateTestDocBasedSaga({ payload }) {
 
 function* updateRegradeDataSaga({ payload }) {
   try {
+    yield put(setRegradingStateAction(true));
     yield call(testsApi.publishTest, payload.newTestId);
     yield call(assignmentApi.regrade, payload);
     yield call(message.success, "Success update");
@@ -1296,6 +1310,8 @@ function* updateRegradeDataSaga({ payload }) {
   } catch (e) {
     const errorMessage = e?.data?.message || "Update test is failing";
     yield call(message.error, errorMessage);
+  } finally {
+    yield put(setRegradingStateAction(false));
   }
 }
 

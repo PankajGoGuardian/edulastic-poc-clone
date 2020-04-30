@@ -233,6 +233,7 @@ const AddToGroupModal = ({
                 </Select.Option>
               ))}
             </SelectInputStyled>
+
             <StyledEduButton
               data-cy="addNew"
               height="40px"
@@ -310,8 +311,10 @@ export default compose(
 
 const StyledModal = styled(Modal)`
   min-width: 996px;
+  padding-bottom: 0px;
   .ant-modal-content {
     width: 996px;
+
     .ant-modal-close {
       display: none;
     }
@@ -319,9 +322,10 @@ const StyledModal = styled(Modal)`
       display: none;
     }
     .ant-modal-body {
+      background-color: #ffffff;
       padding: 24px 46px 32px;
       @media (max-width: ${largeDesktopWidth}) {
-        padding: 20px 30px 30px;
+        padding: 20px 30px 32px;
       }
     }
     @media (max-width: ${largeDesktopWidth}) {
@@ -390,7 +394,7 @@ const ScrollbarContainer = styled.div`
   .scrollbar-container {
     padding: 0 20px;
     width: 428px;
-    height: 380px;
+    height: 40vh;
     .scrollbar-element {
       width: 100%;
       height: 50px;

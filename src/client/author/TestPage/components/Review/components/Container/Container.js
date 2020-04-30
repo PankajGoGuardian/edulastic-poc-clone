@@ -430,6 +430,7 @@ class Review extends PureComponent {
     const collections = get(test, "collections", []);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
+    const isPublishers = userFeatures.isPublisherAuthor || userFeatures.isCurator;
 
     return (
       <Content ref={this.containerRef}>
@@ -464,7 +465,7 @@ class Review extends PureComponent {
           )}
           <ReviewContentWrapper>
             <ReviewLeftContainer lg={24} xl={18}>
-              <Paper padding="15px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
+              <Paper padding="7px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
                 <ReviewItems
                   items={testItems}
                   scoring={test.scoring}
@@ -484,6 +485,8 @@ class Review extends PureComponent {
                   selected={selected}
                   questions={questions}
                   owner={owner}
+                  itemGroups={test.itemGroups}
+                  isPublishers={isPublishers}
                   isFetchingAutoselectItems={isFetchingAutoselectItems}
                 />
               </Paper>
@@ -502,6 +505,7 @@ class Review extends PureComponent {
                   onChangeSubjects={onChangeSubjects}
                   onChangeCollection={onChangeCollection}
                   windowWidth={windowWidth}
+                  isPublishers={isPublishers}
                 />
               </ReviewSummaryWrapper>
             )}

@@ -399,6 +399,7 @@ export const getTestItemsSelector = createSelector(
       itemGroup =>
         itemGroup.items.map(item => ({
           ...item,
+          groupId: itemGroup._id,
           isLimitedDeliveryType: itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         })) || []
     ) || []

@@ -5,11 +5,7 @@ import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import { getInterestedStandards } from "../../../../../dataUtils";
 import Tags from "../../../../../src/components/common/Tags";
-import {
-  getInterestedCurriculumsSelector,
-  getItemBucketsSelector,
-  getUserFeatures
-} from "../../../../../src/selectors/user";
+import { getInterestedCurriculumsSelector, getItemBucketsSelector } from "../../../../../src/selectors/user";
 import {
   getDisableAnswerOnPaperSelector as hasRandomQuestions,
   getTestEntitySelector,
@@ -47,14 +43,13 @@ const ReviewSummary = ({
   interestedCurriculums,
   windowWidth,
   orgCollections,
-  userFeatures,
   test: { itemGroups },
   summary,
-  hasRandomQuestions
+  hasRandomQuestions,
+  isPublishers
 }) => {
   let subjectsList = [...selectsData.allSubjects];
   subjectsList.splice(0, 1);
-  const isPublishers = userFeatures.isPublisherAuthor || userFeatures.isCurator;
   const questionsCount = summary?.totalItems || 0;
   const totalPoints = summary?.totalPoints || 0;
   const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
@@ -219,7 +214,6 @@ export default connect(
   state => ({
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     orgCollections: getItemBucketsSelector(state),
-    userFeatures: getUserFeatures(state),
     test: getTestEntitySelector(state),
     hasRandomQuestions: hasRandomQuestions(state),
     summary: getTestSummarySelector(state)

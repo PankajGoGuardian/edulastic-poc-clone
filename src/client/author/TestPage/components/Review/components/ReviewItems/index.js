@@ -8,6 +8,7 @@ import { StyledSpinnerContainer } from "./styled";
 
 const ReviewItems = ({
   items,
+  itemGroups,
   standards,
   userFeatures,
   isEditable,
@@ -25,6 +26,7 @@ const ReviewItems = ({
   selected,
   questions,
   getContainer,
+  isPublishers,
   isFetchingAutoselectItems = false
 }) => {
   const container = getContainer();
@@ -51,7 +53,8 @@ const ReviewItems = ({
       id: item._id,
       points: item.isLimitedDeliveryType ? 1 : scoring[item._id] || helpers.getPoints(item),
       title: item._id,
-      isScoringDisabled
+      isScoringDisabled,
+      groupId: item.groupId
     };
 
     const meta = {
@@ -111,6 +114,8 @@ const ReviewItems = ({
         rows={rows}
         removeItem={removeTestItem}
         getContainer={getContainer}
+        itemGroups={itemGroups}
+        isPublishers={isPublishers}
       />
 
       {isFetchingAutoselectItems && (

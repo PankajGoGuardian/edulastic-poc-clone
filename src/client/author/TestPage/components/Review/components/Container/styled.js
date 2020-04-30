@@ -66,6 +66,7 @@ export const ReviewSummaryWrapper = styled(Col)`
   padding: 0px 15px;
   border: 1px solid ${grey};
   border-radius: 8px;
+  margin-top: 7px;
   @media (max-width: 1199px) {
     order: 1;
     width: 100%;

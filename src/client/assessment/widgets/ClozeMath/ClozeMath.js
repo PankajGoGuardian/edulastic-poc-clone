@@ -1,6 +1,5 @@
 /* eslint-disable func-names */
-/* eslint-disable no-undef */
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import PropTypes from "prop-types";
 import {
   WithResources,
@@ -34,6 +33,14 @@ import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
 import AppConfig from "../../../../../app-config";
 import Question from "../../components/Question";
 import QuestionOptions from "../ClozeImageDropDown/QuestionOptions";
+
+const latexKeys = [
+  "options",
+  "stimulus",
+  "hints",
+  "validation.validResponse.textinput.value.value",
+  "validation.validResponse.dropdown.value.value"
+];
 
 const ClozeMath = ({
   view,
@@ -93,7 +100,8 @@ const ClozeMath = ({
     );
   };
 
-  const itemForPreview = replaceVariables(item);
+  const itemForPreview = useMemo(() => replaceVariables(item, latexKeys), [item]);
+
   const isV1Multipart = get(col, "isV1Multipart", false);
   const { qLabel, isV1Migrated = false, qSubLabel } = item;
   let options = [];

@@ -732,17 +732,21 @@ function* calculateFormulaSaga({ payload }) {
     for (const result of results) {
       if (result.id === "definition") {
         Object.keys(result.values).forEach(key => {
-          // if the question is Math type, we should not use math template.
+          // if the question is Math and clozeMath type, we should not use math template.
           // because it will cause issue with evaluation.
           // so should use latex for math type
           newQuestion.variable.variables[key].exampleValue =
-            newQuestion.type === questionType.MATH ? result.values[key] : getMathTemplate(result.values[key]);
+            newQuestion.type === questionType.MATH || newQuestion.type === questionType.EXPRESSION_MULTIPART
+              ? result.values[key]
+              : getMathTemplate(result.values[key]);
         });
       } else {
         const idx = newQuestion.variable.examples.findIndex(example => `example${example.key}` === result.id);
         Object.keys(result.values).forEach(key => {
           newQuestion.variable.examples[idx][key] =
-            newQuestion.type === questionType.MATH ? result.values[key] : getMathTemplate(result.values[key]);
+            newQuestion.type === questionType.MATH || newQuestion.type === questionType.EXPRESSION_MULTIPART
+              ? result.values[key]
+              : getMathTemplate(result.values[key]);
         });
       }
     }

@@ -65,7 +65,10 @@ class Variables extends Component {
     const variableCombinationCount = get(questionData, "variable.combinationsCount", 25);
     const examples = get(questionData, "variable.examples", []);
 
-    const renderExampleValue = val => (questionData.type === questionType.MATH ? getMathTemplate(val) : val);
+    const renderExampleValue = val =>
+      questionData.type === questionType.MATH || questionData.type === questionType.EXPRESSION_MULTIPART
+        ? getMathTemplate(val)
+        : val;
 
     const types = Object.keys(variableTypes);
     const columns = Object.keys(variables).map(variableName => ({

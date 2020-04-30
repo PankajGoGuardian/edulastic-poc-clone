@@ -10,7 +10,7 @@ import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-import { StyledButton, ItemsPagination } from "./styled";
+import { StyledButton, ItemsPagination, Selected } from "./styled";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
@@ -455,9 +455,9 @@ class AddItems extends PureComponent {
                   type="testitem"
                 />
                 <FlexContainer alignItems="center" justifyContent="space-between">
-                  <span style={{ fontSize: "12px" }}>
+                  <Selected style={{ fontSize: "12px" }}>
                     {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
-                  </span>
+                  </Selected>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
                     <StyledButton
                       data-cy="createNewItem"

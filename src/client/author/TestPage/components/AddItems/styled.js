@@ -143,3 +143,6 @@ export const ListWrapper = styled(Paper)`
     padding: 0;
   }
 `;
+export const Selected = styled.span`
+  white-space: nowrap;
+`;

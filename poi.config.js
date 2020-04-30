@@ -6,12 +6,18 @@ const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 const webpack = require("webpack");
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
+const packageJson = require("./package.json");
 
 console.log("port", port);
 let config = {
   entry: "./src/client/index.js",
   devServer: {
     port
+  },
+  envs: {
+    // add the client package json env to be be consumed in the app
+    // as process.env.__CLIENT_VERSION__
+    __CLIENT_VERSION__: packageJson.version
   },
   output: {
     dir: process.env.DESTINATION || "./dist",
@@ -56,8 +62,6 @@ let config = {
     }
 
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
-
-    chain.resolve.alias.set("appDetails", path.resolve(__dirname, "package.json"));
 
     chain.plugin("BannerPlugin").use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }]);
     // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);

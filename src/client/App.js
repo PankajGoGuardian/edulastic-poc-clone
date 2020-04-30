@@ -141,10 +141,17 @@ class App extends Component {
   }
 
   handleOk = () => {
-    window.location.reload(true);
-    this.setState({
-      showAppUpdate: false
-    });
+    // below is set in src/utils/API.js
+    this.setState(
+      {
+        showAppUpdate: false
+      },
+      () => {
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 100);
+      }
+    );
   };
 
   handleCancel = () => {

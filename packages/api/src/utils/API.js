@@ -1,10 +1,10 @@
-//@ts-check
 import axios from "axios";
+import { storeInLocalStorage, getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import config from "../config";
 import { getAccessToken, getTraceId, initKID, initTID } from "./Storage";
-import AppDetails from "appDetails";
-import semverCompare from "semver-compare";
-//import { getStore } from 'reduxStore';
+
+const ASSETS_REFRESH_STAMP = "assetsRefreshDateStamp";
+
 const getCurrentPath = () => {
   const location = window.location;
   return `${location.pathname}${location.search}${location.hash}`;
@@ -13,9 +13,9 @@ const getCurrentPath = () => {
 const getWordsInURLPathName = pathname => {
   // When u try to change this function change the duplicate function in "src/client/common/utils/helpers.js" also
   let path = pathname;
-  path = path + "";
+  path += "";
   path = path.split("/");
-  path = path.filter(item => (item && item.trim() ? true : false));
+  path = path.filter(item => item);
   return path;
 };
 
@@ -25,33 +25,39 @@ const getLoggedOutUrl = () => {
   const pathname = window.location.pathname.toLocaleLowerCase();
   if (pathname === "/getstarted") {
     return "/getStarted";
-  } else if (pathname === "/signup") {
-    return "/signup";
-  } else if (pathname === "/studentsignup") {
-    return "/studentsignup";
-  } else if (pathname === "/adminsignup") {
-    return "/adminsignup";
-  } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
-    let arr = [...path];
-    arr.shift();
-    let restOfPath = arr.join("/");
-    return "/district/" + restOfPath;
-  } else if (pathname === "/resetpassword") {
-    return window.location.href.split(window.location.origin)[1];
-  } else if (pathname === "/inviteteacher") {
-    return `${location.pathname}${location.search}${location.hash}`;
-  } else {
-    return "/login";
   }
+  if (pathname === "/signup") {
+    return "/signup";
+  }
+  if (pathname === "/studentsignup") {
+    return "/studentsignup";
+  }
+  if (pathname === "/adminsignup") {
+    return "/adminsignup";
+  }
+  if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+    const arr = [...path];
+    arr.shift();
+    const restOfPath = arr.join("/");
+    return `/district/${restOfPath}`;
+  }
+  if (pathname === "/resetpassword") {
+    return window.location.href.split(window.location.origin)[1];
+  }
+  if (pathname === "/inviteteacher") {
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  }
+
+  return "/login";
 };
 
-function getParentsStudentToken(config) {
+function getParentsStudentToken(_config) {
   try {
-    if (config.method !== "get") {
+    if (_config.method !== "get") {
       return false;
     }
 
-    if (["/user/me", "/logout", "/login", "/signUp", "/user/parent-code"].find(x => config.url?.includes(x))) {
+    if (["/user/me", "/logout", "/login", "/signUp", "/user/parent-code"].find(x => _config.url?.includes(x))) {
       return false;
     }
     const currentUserFromRedux = window?.getStore()?.getState()?.user || {};
@@ -65,6 +71,35 @@ function getParentsStudentToken(config) {
   }
 }
 
+/**
+ * A helper to check if the date object is a a valid one
+ * @param {Date} d
+ *
+ */
+const isValidDate = d => d instanceof Date && Number.isFinite(Number(d));
+
+/**
+ * A helper to get difference in ms for dates
+ */
+const diffInSeconds = (dt2, dt1) => (dt2.getTime() - dt1.getTime()) / 1000;
+
+/** A small function to compare semver versions
+ * TODO: Move this into utils, if needed at multiple places
+ */
+const SemverCompare = (a, b) => {
+  const pa = a.split(".");
+  const pb = b.split(".");
+  for (let i = 0; i < 3; i++) {
+    const na = Number(pa[i]);
+    const nb = Number(pb[i]);
+    if (na > nb) return 1;
+    if (nb > na) return -1;
+    if (!Number.isNaN(na) && Number.isNaN(nb)) return 1;
+    if (Number.isNaN(na) && !Number.isNaN(nb)) return -1;
+  }
+  return 0;
+};
+
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
     this.baseURL = baseURL;
@@ -75,11 +110,10 @@ export default class API {
         "Content-Type": "application/json"
       }
     });
-    this.instance.interceptors.request.use(config => {
-      let token = getParentsStudentToken(config) || defaultToken || getAccessToken();
-      //let token = defaultToken || getAccessToken();
+    this.instance.interceptors.request.use(_config => {
+      const token = getParentsStudentToken(_config) || defaultToken || getAccessToken();
       if (token) {
-        config.headers["Authorization"] = token;
+        config.headers.Authorization = token;
       }
       // Initialise browser tab id
       initTID();
@@ -92,18 +126,24 @@ export default class API {
     });
     this.instance.interceptors.response.use(
       response => {
-        // has support since IE8.
-        if (window.sessionStorage) {
-          // if appVersion sent recieved from api is greater than in the client, then dispatch an event.
-          const appVersion = AppDetails?.version;
-          const apiAppVersion = response.headers["app-version"] || "";
-          const refreshRequested = window.sessionStorage["refreshRequested"];
-          if (semverCompare(apiAppVersion, appVersion) == 1 && !refreshRequested && apiAppVersion) {
-            const event = new Event("request-client-update");
-            window.dispatchEvent(event);
-            window.sessionStorage["refreshRequested"] = true;
-          }
+        const appVersion = process.env.__CLIENT_VERSION__ || "NA";
+        const serverAppVersion = response.headers["server-version"] || "";
+
+        // if the server version is higher than the client version, then try to resync
+        if (serverAppVersion && SemverCompare(serverAppVersion, appVersion) === 1) {
+          const lastAssetRefresh = new Date(parseInt(getFromLocalStorage(ASSETS_REFRESH_STAMP), 10));
+          const currentDate = new Date();
+          const lastRefreshDate = isValidDate(lastAssetRefresh) ? lastAssetRefresh : currentDate;
+          const diffInSec = diffInSeconds(currentDate, lastRefreshDate);
+
+          // retry only if 15 minutes are passed or there was no time stamp stored.
+          if (diffInSec > 0 && diffInSec < 15 * 60) return response;
+
+          storeInLocalStorage(ASSETS_REFRESH_STAMP, new Date().getTime());
+          const event = new Event("request-client-update");
+          window.dispatchEvent(event);
         }
+
         return response;
       },
       data => {
@@ -113,7 +153,7 @@ export default class API {
             const loginRedirectUrl = localStorage.getItem("loginRedirectUrl");
             localStorage.clear();
             localStorage.setItem("loginRedirectUrl", loginRedirectUrl);
-            if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+            if (!window.location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
               localStorage.setItem("loginRedirectUrl", getCurrentPath());
             }
             window.location.href = "/login";

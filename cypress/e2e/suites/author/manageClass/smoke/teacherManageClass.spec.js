@@ -117,7 +117,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.getClassRowDetails(className).then(cls => {
         expect(cls.name).to.eq(className);
         expect(cls.grades).to.contain(grade);
-        expect(cls.classCode).to.have.length(6);
+        expect(cls.classCode).to.have.length(8);
         expect(cls.subject).to.eq(subject);
         expect(cls.students).to.eq("0");
         expect(cls.assignments).to.eq("0");
@@ -127,6 +127,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
 
   context("> add students", () => {
     beforeEach(() => {
+      sideBar.clickOnAssignment();
       sideBar.clickOnManageClass();
     });
 
@@ -195,6 +196,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
     const endDate = new Date(new Date().setDate(startDate.getDate() + 30));
 
     beforeEach(() => {
+      sideBar.clickOnAssignment();
       sideBar.clickOnManageClass();
     });
 
@@ -209,7 +211,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.getClassRowDetails(className).then(cls => {
         expect(cls.name).to.eq(className);
         expect(cls.grades).to.contain(grade);
-        expect(cls.classCode).to.have.length(6);
+        expect(cls.classCode).to.have.length(8);
         expect(cls.subject).to.eq(subject);
         // expect(cls.students).to.eq("0");
         expect(cls.assignments).to.eq("0");

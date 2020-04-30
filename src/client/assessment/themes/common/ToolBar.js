@@ -42,13 +42,6 @@ const ToolBar = ({
     changeTool(value);
   };
 
-  useEffect(() => {
-    if (qType === questionType.HIGHLIGHT_IMAGE) {
-      // 5 is Scratchpad mode
-      changeTool(5);
-    }
-  }, [qType]);
-
   return (
     <Container>
       <ActionButton

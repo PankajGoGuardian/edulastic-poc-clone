@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { test } from "@edulastic/constants";
+import { test, questionType } from "@edulastic/constants";
 import PracticePlayerHeader from "./AssessmentPlayerSimple/PlayerHeader";
 import DocBasedPlayerHeader from "./AssessmentPlayerDocBased/PlayerHeader";
 import DefaultAssessmentPlayerHeader from "./AssessmentPlayerDefault/PlayerHeader";
@@ -26,11 +26,18 @@ const AssessmentPlayerSkinWrapper = ({
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
+  const { moveToNext, moveToPrev, currentItem, qType, toggleToolsOpenStatus } = restProps;
+  useEffect(() => {
+    if (qType === questionType.HIGHLIGHT_IMAGE) {
+      // 5 is Scratchpad mode
+      toggleToolsOpenStatus(5);
+    }
+  }, [qType]);
 
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
-  const { moveToNext, moveToPrev, currentItem } = restProps;
+
   const header = () => {
     if (playerSkinType === "parcc") {
       return (
@@ -66,11 +73,7 @@ const AssessmentPlayerSkinWrapper = ({
       );
     } else {
       return (
-        <PracticePlayerHeader
-          {...restProps}
-          handleMagnifier={handleMagnifier}
-          enableMagnifier={enableMagnifier}
-        />
+        <PracticePlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />
       );
     }
   };

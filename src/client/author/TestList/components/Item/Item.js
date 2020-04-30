@@ -204,6 +204,9 @@ class Item extends Component {
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
+    const standardsIdentifiers = isPlaylist
+      ? flattenPlaylistStandards(_source?.modules)
+      : standards.map(item => item.identifier);
 
     let collectionName = "PRIVATE";
     if (collections?.length > 0 && itemBanks.length > 0) {
@@ -293,10 +296,8 @@ class Item extends Component {
             {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
 
             <TagsWrapper isPlaylist={isPlaylist}>
-              {isPlaylist && (
-                <Tags show={2} tags={flattenPlaylistStandards(_source?.modules)} key="standards" isStandards />
-              )}
-              <Tags show={2} tags={_source.tags || tags} key="tags" />
+              <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards />
+              {isPlaylist && <Tags show={2} tags={_source.tags || tags} key="tags" />}
             </TagsWrapper>
           </TestInfo>
 

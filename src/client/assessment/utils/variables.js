@@ -76,16 +76,24 @@ export const updateVariables = (item, latexKeys = []) => {
   item.variable.variables = newVariables;
 };
 
-export const getMathTemplate = latex =>
-  latex !== "Recursion_Error" ? `<span class="input__math" data-latex="${latex}"></span>` : latex;
+const getMathTemplate = exampleValue => `<span class="input__math" data-latex="${exampleValue}"></span>`;
 
-const replaceValue = (str, variables) => {
+const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   if (!variables) return str;
   let result = str.replace(mathRegex, "{math-latex}");
   let mathContent = str.match(mathRegex);
   Object.keys(variables).forEach(variableName => {
-    // replace dynamic variables here.
-    result = result.replace(new RegExp(`@${variableName}`, "g"), variables[variableName].exampleValue);
+    if (isLatex) {
+      result = result.replace(
+        new RegExp(`@${variableName}`, "g"),
+        useMathTemplate ? getMathTemplate(variables[variableName].exampleValue) : variables[variableName].exampleValue
+      );
+    } else {
+      result = result.replace(
+        new RegExp(`@${variableName}`, "g"),
+        useMathTemplate ? getMathTemplate(variables[variableName].exampleValue) : variables[variableName].exampleValue
+      );
+    }
     if (mathContent) {
       mathContent = mathContent.map(content =>
         content.replace(new RegExp(`@${variableName}`, "g"), variables[variableName].exampleValue)
@@ -101,38 +109,47 @@ const replaceValue = (str, variables) => {
   return result;
 };
 
-export const replaceValues = (item, variableConfig, key = null, latexKeys = []) => {
+export const replaceValues = (item, variableConfig, key = null, latexKeys = [], useMathTemplate) => {
   if (!item || !variableConfig || !variableConfig.enabled) return item;
   const { variables } = variableConfig;
   if (!variables) return item;
   if (typeof item === "string") {
     if (key && latexKeys.includes(key)) {
-      item = replaceValue(item, variables);
+      item = replaceValue(item, variables, true, useMathTemplate);
     } else {
-      item = replaceValue(item, variables);
+      item = replaceValue(item, variables, false, useMathTemplate);
       const latexes = item.match(mathRegex) || [];
       for (let i = 0; i < latexes.length; i++) {
-        item = item.replace(latexes[i], replaceValue(latexes[i], variables));
+        item = item.replace(latexes[i], replaceValue(latexes[i], variables, true, useMathTemplate));
       }
     }
   } else if (Array.isArray(item)) {
     for (let i = 0; i < item.length; i++) {
-      item[i] = replaceValues(item[i], variableConfig, key, latexKeys);
+      item[i] = replaceValues(item[i], variableConfig, key, latexKeys, useMathTemplate);
     }
   } else if (typeof item === "object") {
     for (const itemKey of Object.keys(item)) {
-      item[itemKey] = replaceValues(item[itemKey], variableConfig, key ? `${key}.${itemKey}` : itemKey, latexKeys);
+      item[itemKey] = replaceValues(
+        item[itemKey],
+        variableConfig,
+        key ? `${key}.${itemKey}` : itemKey,
+        latexKeys,
+        useMathTemplate
+      );
     }
   }
   return item;
 };
 
-export const replaceVariables = (item, latexKeys = []) => {
+export const replaceVariables = (item, latexKeys = [], useMathTemplate = true) => {
   if (!has(item, "variable.variables") || !has(item, "variable.enabled") || !item.variable.enabled) return item;
   return produce(item, draft => {
     Object.keys(item).forEach(key => {
       if (key === "id" || key === "variable") return;
-      draft[key] = replaceValues(draft[key], item.variable, key, latexKeys);
+      if (key === "validation") {
+        useMathTemplate = false;
+      }
+      draft[key] = replaceValues(draft[key], item.variable, key, latexKeys, useMathTemplate);
     });
   });
 };

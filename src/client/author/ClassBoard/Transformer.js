@@ -286,10 +286,10 @@ const extractFunctions = {
       return getMathHtml(`${userResponse.expression} ${userResponse.unit}`);
     return getMathHtml(userResponse);
   },
-  [questionType.SHORT_TEXT]: () => "CR",
-  [questionType.ESSAY_PLAIN_TEXT]: () => "CR",
-  [questionType.ESSAY_RICH_TEXT]: () => "CR",
-  [questionType.FORMULA_ESSAY]: () => "CR"
+  [questionType.SHORT_TEXT]: (question, userResponse = "") => (userResponse ? "CR" : ""),
+  [questionType.ESSAY_PLAIN_TEXT]: (question, userResponse = "") => (userResponse ? "CR" : ""),
+  [questionType.ESSAY_RICH_TEXT]: (question, userResponse = "") => (userResponse ? "CR" : ""),
+  [questionType.FORMULA_ESSAY]: (question, userResponse = "") => (userResponse ? "CR" : "")
 };
 export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId) {
   const question = (testItem.data?.questions || [])?.find(q => q.id === questionId) || {};
@@ -300,11 +300,11 @@ export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId
     testItem.itemLevelScoring
   ) {
     //MULTIPART
-    return "TEI";
+    return userResponse ? "TEI" : "";
   } else if (extractFunctions[qType]) {
     return extractFunctions[qType](question, userResponse);
   } else {
-    return "TEI";
+    return userResponse ? "TEI" : "";
   }
 }
 

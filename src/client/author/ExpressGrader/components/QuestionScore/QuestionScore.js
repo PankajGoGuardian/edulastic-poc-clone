@@ -38,8 +38,8 @@ class QuestionScore extends Component {
               <StyledText>{graded || skipped ? round(studentScore, 2) : "-"}</StyledText>
             ) : (
               <StyledText
-                title={graded || skipped ? stripHtml(responseToDisplay) : "-"}
-                dangerouslySetInnerHTML={{ __html: graded || skipped ? responseToDisplay : "-" }}
+                title={stripHtml(responseToDisplay) || "-"}
+                dangerouslySetInnerHTML={{ __html: responseToDisplay || "-" }}
               />
             )}
           </StyledWrapper>

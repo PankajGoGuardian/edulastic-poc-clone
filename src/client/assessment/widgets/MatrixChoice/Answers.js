@@ -3,14 +3,13 @@ import PropTypes from "prop-types";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";
 import Question from "../../components/Question";
-
 import Matrix from "./components/Matrix";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const MatrixWithPoints = withPoints(Matrix);
 
@@ -35,7 +34,7 @@ class Answers extends Component {
           }
           draft.validation.altResponses.push({
             score: 1,
-            value: item.validation.validResponse.value.map(() => null)
+            value: item.validation.validResponse.value
           });
         })
       );
@@ -112,9 +111,7 @@ class Answers extends Component {
           draft.multipleResponses = checked;
 
           if (!checked) {
-            draft.validation.validResponse.value = reduceResponse(
-              draft.validation.validResponse.value
-            );
+            draft.validation.validResponse.value = reduceResponse(draft.validation.validResponse.value);
 
             if (draft.validation.altResponses && draft.validation.altResponses.length) {
               draft.validation.altResponses.map(res => {
@@ -139,11 +136,7 @@ class Answers extends Component {
 
     const renderOptions = () => (
       <div>
-        <CheckboxLabel
-          data-cy="multi"
-          onChange={handleChangeMultiple}
-          checked={item.multipleResponses}
-        >
+        <CheckboxLabel data-cy="multi" onChange={handleChangeMultiple} checked={item.multipleResponses}>
           {t("component.matrix.multipleResponses")}
         </CheckboxLabel>
       </div>

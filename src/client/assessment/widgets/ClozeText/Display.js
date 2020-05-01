@@ -38,10 +38,27 @@ class ClozeTextDisplay extends Component {
     return { parsedTemplate: helpers.parseTemplate(stimulus.replace(/\u200B/gi, "")) };
   }
 
+  getFontSize = size => {
+    switch (size) {
+      case "small":
+        return "11px";
+      case "normal":
+        return "14px";
+      case "large":
+        return "17px";
+      case "xlarge":
+        return "20px";
+      case "xxlarge":
+        return "24px";
+      default:
+        return "14px";
+    }
+  };
+
   getUiStyles = (responseBoxId, responseIndex) => {
     const { uiStyle } = this.props;
     const { widthpx, heightpx, placeholder, inputtype, stemNumeration, responsecontainerindividuals } = uiStyle;
-    const fontSize = getFontSize(uiStyle.fontsize);
+    const fontSize = this.getFontSize(uiStyle.fontsize);
 
     const btnStyle = {
       position: "relative",

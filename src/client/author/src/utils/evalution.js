@@ -3,7 +3,12 @@ import produce from "immer";
 import evaluators from "./evaluators";
 import { replaceVariables } from "../../../assessment/utils/variables";
 
-export const evaluateItem = async (answers, validations, itemLevelScoring = false, itemLevelScore = 0) => {
+export const evaluateItem = async (
+  answers,
+  validations,
+  itemLevelScoring = false,
+  itemLevelScore = 0
+) => {
   const questionIds = Object.keys(validations);
   const results = {};
   let totalScore = 0;
@@ -12,7 +17,7 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
   for (const id of questionIds) {
     const answer = answers[id];
     if (validations && validations[id]) {
-      const validation = replaceVariables(validations[id], []);
+      const validation = replaceVariables(validations[id], [], false);
       const { type } = validations[id];
       const evaluator = evaluators[validation.type];
       if (!evaluator) {

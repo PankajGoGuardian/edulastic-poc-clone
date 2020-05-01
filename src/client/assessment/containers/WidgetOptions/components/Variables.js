@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, get, has, isEmpty, difference, shuffle } from "lodash";
-import { Select, Table } from "antd";
+import { Input, Select, Table } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { variableTypes, math, questionType } from "@edulastic/constants";
+import { variableTypes, math } from "@edulastic/constants";
 import { MathInput, MathFormulaDisplay } from "@edulastic/common";
 import { mediumDesktopExactWidth } from "@edulastic/colors";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -29,7 +29,6 @@ import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 import Spinner from "./Spinner";
 import ErrorText from "./ErrorText";
 import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
-import { getMathTemplate } from "../../../utils/variables";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const { defaultNumberPad } = math;
@@ -38,12 +37,23 @@ const InlineLabel = styled(Label)`
   display: inline-block;
 `;
 
+const CombinationInput = styled(Input)`
+  display: inline-block;
+  width: 70px;
+  margin-left: 10px;
+  margin-right: 10px;
+`;
+
 const DynamicText = styled.div`
   font-size: ${props => props.theme.widgetOptions.labelFontSize};
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     font-size: ${props => props.theme.smallFontSize};
   }
+`;
+
+const VariableLabel = styled(Label)`
+  text-transform: none;
 `;
 
 class Variables extends Component {
@@ -60,21 +70,20 @@ class Variables extends Component {
       isCalculating
     } = this.props;
     const mathFieldRef = React.createRef();
+    const getMathFormulaTemplate = latex => `<span class="input__math" data-latex="${latex}"></span>`;
     const variableEnabled = get(questionData, "variable.enabled", false);
     const variables = get(questionData, "variable.variables", {});
     const variableCombinationCount = get(questionData, "variable.combinationsCount", 25);
     const examples = get(questionData, "variable.examples", []);
-
-    const renderExampleValue = val => (questionData.type === questionType.MATH ? getMathTemplate(val) : val);
 
     const types = Object.keys(variableTypes);
     const columns = Object.keys(variables).map(variableName => ({
       title: variableName,
       dataIndex: variableName,
       key: variables[variableName].id,
-      render: value =>
-        value !== "Recursion_Error" ? (
-          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: renderExampleValue(value) }} />
+      render: latex =>
+        latex !== "Recursion_Error" ? (
+          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(latex) }} />
         ) : (
           <ErrorText />
         )
@@ -544,7 +553,7 @@ class Variables extends Component {
                     {variable.exampleValue !== "Recursion_Error" && (
                       <MathFormulaDisplay
                         dangerouslySetInnerHTML={{
-                          __html: renderExampleValue(variable.exampleValue)
+                          __html: getMathFormulaTemplate(variable.exampleValue)
                         }}
                       />
                     )}

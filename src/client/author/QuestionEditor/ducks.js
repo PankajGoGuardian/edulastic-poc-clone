@@ -9,7 +9,6 @@ import { helpers } from "@edulastic/common";
 import { push } from "connected-react-router";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
-import { getMathTemplate } from "../../assessment/utils/variables";
 
 import {
   getItemDetailSelector,
@@ -732,17 +731,12 @@ function* calculateFormulaSaga({ payload }) {
     for (const result of results) {
       if (result.id === "definition") {
         Object.keys(result.values).forEach(key => {
-          // if the question is Math type, we should not use math template.
-          // because it will cause issue with evaluation.
-          // so should use latex for math type
-          newQuestion.variable.variables[key].exampleValue =
-            newQuestion.type === questionType.MATH ? result.values[key] : getMathTemplate(result.values[key]);
+          newQuestion.variable.variables[key].exampleValue = result.values[key];
         });
       } else {
         const idx = newQuestion.variable.examples.findIndex(example => `example${example.key}` === result.id);
         Object.keys(result.values).forEach(key => {
-          newQuestion.variable.examples[idx][key] =
-            newQuestion.type === questionType.MATH ? result.values[key] : getMathTemplate(result.values[key]);
+          newQuestion.variable.examples[idx][key] = result.values[key];
         });
       }
     }

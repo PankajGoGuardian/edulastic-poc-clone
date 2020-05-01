@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { Icon } from "antd";
 import { StyledTable } from "./styles";
 import tableColumnsData from "../utils/tableColumnData.json";
-import { formatAnswertoDisplay } from "../utils/transformers";
 import { MathFormulaDisplay } from "@edulastic/common";
 
 const Check = props => {
@@ -48,12 +47,18 @@ export const QuestionTableContainer = props => {
     };
     arr[1].render = (data, record, index) => {
       return data.map(yAnswer => (
-        <MathFormulaDisplay style={{ marginBottom: "10px" }} dangerouslySetInnerHTML={{ __html: yAnswer }} />
+        <MathFormulaDisplay
+          style={{ marginBottom: "10px", minHeight: "22px" }}
+          dangerouslySetInnerHTML={{ __html: yAnswer }}
+        />
       ));
     };
     arr[2].render = (data, record, index) => {
       return data.map(cAnswer => (
-        <MathFormulaDisplay style={{ marginBottom: "10px" }} dangerouslySetInnerHTML={{ __html: cAnswer }} />
+        <MathFormulaDisplay
+          style={{ marginBottom: "10px", minHeight: "22px" }}
+          dangerouslySetInnerHTML={{ __html: cAnswer }}
+        />
       ));
     };
   });

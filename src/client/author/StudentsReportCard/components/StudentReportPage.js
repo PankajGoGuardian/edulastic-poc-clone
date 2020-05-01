@@ -27,7 +27,8 @@ const StudentReportPage = ({
   groupId,
   loadStudentResponse,
   sections,
-  classResponse
+  classResponse,
+  performanceBandsData
 }) => {
   const performanceRef = useRef();
   const mainContainerRef = useRef();
@@ -186,6 +187,7 @@ const StudentReportPage = ({
             data={data}
             performanceRef={performanceRef}
             className="hide-on-print"
+            performanceBandsData={performanceBandsData}
           />
         }
         {showQuestionsTable && !!data.questionTableData?.length && (
@@ -216,6 +218,7 @@ const StudentReportPage = ({
                 testData={testData}
                 data={data}
                 className="hide-without-print"
+                performanceBandsData={performanceBandsData}
               />
             )}
             {i !== 0 && (

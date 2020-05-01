@@ -133,6 +133,7 @@ export const PerformanceBrandWrapper = styled(StyledCard)`
         border: 1px solid ${borderGrey4};
         border-radius: 10px;
         width: 140px;
+        margin-right: 43px;
       }
     }
     .student-report-card-description-area {
@@ -183,7 +184,7 @@ export const PerformanceBrandWrapper = styled(StyledCard)`
         font-weight: bold;
         margin: 20px auto;
       }
-      margin: 0 26px 0 69px;
+      margin: 0 26px 0 26px;
     }
   }
 `;
@@ -211,6 +212,8 @@ export const PerformanceTitle = styled(Row)`
   color: ${secondaryTextColor};
   font-weight: bold;
   text-transform: uppercase;
+  width: 192px;
+  text-align: center;
 `;
 
 export const StyledTableWrapper = styled(StyledCard)`

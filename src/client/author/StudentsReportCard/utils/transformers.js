@@ -2,8 +2,15 @@ import { get, keyBy, values, round, groupBy } from "lodash";
 import next from "immer";
 import { responseDisplayOption } from "./constants";
 
+const CORRECT = "Correct";
+const PARTIAL_CORRECT = "Partial Correct";
+const INCORRECT = "Incorrect";
+
+const formatMathTypeQuestion = (answer = "") =>
+  answer.search("input__math") !== -1 ? answer : `<span class="input__math" data-latex="${answer}"></span>`;
+
 //to format correct/user answer
-const formatAnswers = (data, options, type, title) => {
+const formatAnswers = (data, options, type, title, qActivity = null, context = "") => {
   let responses = data;
   if (!Array.isArray(responses)) {
     responses = [responses];
@@ -12,7 +19,7 @@ const formatAnswers = (data, options, type, title) => {
   const answer = responses.map((item, index) => {
     if (type === "multipleChoice") {
       if (title === "True or false") {
-        return options[item].label;
+        return options[item].label || "-";
       }
       return String.fromCharCode(65 + Object.keys(options).indexOf(item));
     } else if (item?.value) {
@@ -21,11 +28,22 @@ const formatAnswers = (data, options, type, title) => {
       return options[item].label;
     } else if (item?.id && item?.index) {
       return options[(item?.id)][(item?.index)];
+    } else if (typeof item === "string") {
+      return item;
     }
-    return "";
+    return "-";
   });
-  const result = formatAnswertoDisplay(answer.length ? answer : "", type, title);
-  return Array.isArray(result) ? result : [result];
+  let result = formatAnswertoDisplay(answer.length ? answer : "-", type, title);
+
+  //to display 'Correct/PartialCorrect/Incorrect' for 'TEI' type question for user response
+  //for qType = math, needs to reformat latex to correct format, so function formatMathTypeQuestion do this.
+  if (result === "TEI" && context === "userResponse") {
+    const { correct, partialCorrect } = qActivity || {};
+    result = correct ? CORRECT : partialCorrect ? PARTIAL_CORRECT : INCORRECT;
+  } else if (type === "math" && result !== "TEI") {
+    result = Array.isArray(result) ? result.map(ans => formatMathTypeQuestion(ans)) : formatMathTypeQuestion(result);
+  }
+  return Array.isArray(result) ? result.join(", ") : result;
 };
 
 export const getQuestionTableData = (studentResponse, author_classboard_testActivity) => {
@@ -49,15 +67,18 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
             const options = keyBy(q.options, "value");
             const correctAnswers = get(q, "validation.validResponse.value", []);
             const userResponse = qActivity?.userResponse ? qActivity.userResponse : [];
-            acc.yourAnswer = [...acc.yourAnswer, ...formatAnswers(userResponse, options, q.type, q.title)];
-            acc.correctAnswer = [...acc.correctAnswer, ...formatAnswers(correctAnswers, options, q.type, q.title)];
+            acc.yourAnswer = [
+              ...acc.yourAnswer,
+              formatAnswers(userResponse, options, q.type, q.title, qActivity, "userResponse")
+            ];
+            acc.correctAnswer = [...acc.correctAnswer, formatAnswers(correctAnswers, options, q.type, q.title)];
             acc.partialCorrect = acc.partialCorrect || qActivity?.partialCorrect;
             acc.correct = acc.correct || qActivity?.correct;
             acc.score += round(qActivity?.score || 0, 2);
             acc.itemLevelScoring = true;
             return acc;
           },
-          { yourAnswer: [], correctAnswer: [], score: 0 }
+          { yourAnswer: [], correctAnswer: [], score: 0, maxScore: 0 }
         );
 
         totalScore += questions[0]?.itemScore || 0;
@@ -79,8 +100,8 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
           const options = keyBy(q.options, "value");
           const correctAnswers = get(q, "validation.validResponse.value", []);
           const userResponse = qActivity?.userResponse ? qActivity.userResponse : [];
-          q.yourAnswer = formatAnswers(userResponse, options, q.type, q.title);
-          q.correctAnswer = formatAnswers(correctAnswers, options, q.type, q.title);
+          q.yourAnswer = [formatAnswers(userResponse, options, q.type, q.title, qActivity, "userResponse")];
+          q.correctAnswer = [formatAnswers(correctAnswers, options, q.type, q.title)];
           q.maxScore = get(q, "validation.validResponse.score", 0);
           q.score = round(qActivity?.score || 0, 2);
           q.isCorrect = qActivity?.score;
@@ -127,18 +148,6 @@ export const getChartAndStandardTableData = (studentResponse, author_classboard_
         if (!maxScore) {
           maxScore = q.validation?.validResponse?.score;
         }
-        let performance = Number(((score / maxScore) * 100).toFixed(2));
-        performance = !isNaN(performance) ? performance : 0;
-
-        //calculating mastery
-        let mastery = assignmentMastery.find((_item, index) => {
-          if (performance >= _item.threshold) {
-            return true;
-          }
-        });
-        if (mastery) {
-          assignmentMasteryMap[mastery.masteryLevel].count++;
-        }
 
         //formatting uniq standards from each domain
         return domains.flatMap(d => {
@@ -146,7 +155,6 @@ export const getChartAndStandardTableData = (studentResponse, author_classboard_
             ...std,
             domain: d.name,
             question: q.qLabel,
-            masterySummary: mastery ? mastery.masteryLevel : "",
             performance: performance,
             score: round(score, 2),
             maxScore
@@ -160,9 +168,32 @@ export const getChartAndStandardTableData = (studentResponse, author_classboard_
   );
 
   const data = Object.values(standardsTableData).flatMap(std => {
+    // this is to add score or maxScore of all questions belongs to same standard
+    const formatScore = std.reduce(
+      (acc, s) => {
+        acc.question.push(s.question);
+        acc.score += s.score;
+        acc.maxScore += s.maxScore;
+        const performance = Number(((acc.score / acc.maxScore) * 100).toFixed(2));
+        acc.performance = !isNaN(performance) ? performance : 0;
+
+        //calculating mastery
+        let mastery = assignmentMastery.find((_item, index) => {
+          if (acc.performance >= _item.threshold) {
+            return true;
+          }
+        });
+        if (mastery) {
+          assignmentMasteryMap[mastery.masteryLevel].count++;
+        }
+        acc.masterySummary = mastery ? mastery.masteryLevel : "";
+        return acc;
+      },
+      { question: [], score: 0, maxScore: 0 }
+    );
     return {
       ...std[0],
-      question: std.map(s => s.question)
+      ...formatScore
     };
   });
 

@@ -8,8 +8,18 @@ import queryString from "query-string";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { getSortedTestActivitySelector } from "../ClassBoard/ducks";
 import StudentReportPage from "./components/StudentReportPage";
+import { getDefaultTestSettingsAction } from "../TestPage/ducks";
+import { performanceBandSelector } from "../AssignTest/duck";
 
-const StudentsReportCard = ({ location, match, loadTestActivity, testActivity, classResponse }) => {
+const StudentsReportCard = ({
+  location,
+  match,
+  loadTestActivity,
+  testActivity,
+  classResponse,
+  loadTestSettings,
+  performanceBandsData
+}) => {
   const { assignmentId, classId } = match.params;
   const gradedTestActivities = testActivity.filter(ta => ta.status === "submitted" && ta.graded === "GRADED");
   let { options } = queryString.parse(location.search);
@@ -22,6 +32,7 @@ const StudentsReportCard = ({ location, match, loadTestActivity, testActivity, c
   //load all test activity;
   useEffect(() => {
     loadTestActivity(assignmentId, classId);
+    loadTestSettings();
   }, []);
 
   //change page title to <test title> - <date>
@@ -32,7 +43,13 @@ const StudentsReportCard = ({ location, match, loadTestActivity, testActivity, c
   return (
     <StudentsReportCardContainer>
       {gradedTestActivities.map(ta => (
-        <StudentReportPage testActivity={ta} groupId={classId} sections={options} classResponse={classResponse} />
+        <StudentReportPage
+          testActivity={ta}
+          groupId={classId}
+          sections={options}
+          classResponse={classResponse}
+          performanceBandsData={performanceBandsData}
+        />
       ))}
     </StudentsReportCardContainer>
   );
@@ -54,10 +71,12 @@ const enhance = connect(
     testActivity: getSortedTestActivitySelector(state),
     author_classboard_testActivity: get(state, ["author_classboard_testActivity"], []),
     entities: get(state, ["author_classboard_testActivity", "entities"], []),
-    classResponse: get(state, ["classResponse", "data"])
+    classResponse: get(state, ["classResponse", "data"]),
+    performanceBandsData: performanceBandSelector(state)
   }),
   {
-    loadTestActivity: receiveTestActivitydAction
+    loadTestActivity: receiveTestActivitydAction,
+    loadTestSettings: getDefaultTestSettingsAction
   }
 );
 

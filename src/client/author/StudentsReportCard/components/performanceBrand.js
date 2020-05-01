@@ -1,7 +1,7 @@
 import React from "react";
 import Moment from "moment";
 import { Row, Col } from "antd";
-
+import { round } from "lodash";
 import { StyledCard } from "../../Reports/common/styled";
 import {
   PerformanceBrandWrapper,
@@ -13,12 +13,19 @@ import {
 } from "./styles";
 
 const PerformanceBrand = (props, ref) => {
-  const { testData = {}, data = {}, className, showPerformanceBand } = props;
-  const { chartData, classResponse, totalScore, obtainedScore, feedback, classTitle } = data;
+  const { testData = {}, data = {}, className, showPerformanceBand, performanceBandsData } = props;
+  const { chartData, classResponse = {}, totalScore, obtainedScore, feedback, classTitle } = data;
   const perfomancePercentage = (data.obtainedScore / data.totalScore) * 100;
-  let mastery = null;
+
+  //finding matching performance band wrt scored percentange from selected performance band group
+  const { performanceBand } = classResponse;
+  const selectedBandsData = performanceBandsData.find(o => o._id === performanceBand._id) ||
+    performanceBandsData[0] || { performanceBand: [] };
+  const selectedPerformanceBand =
+    selectedBandsData.performanceBand.find(pb => perfomancePercentage > pb.to && pb.from >= perfomancePercentage) || {};
 
   //finding the mestry
+  let mastery = null;
   for (let i = 0; i < chartData.length; i++) {
     const data = chartData[i];
     if (perfomancePercentage >= data.threshold) {
@@ -94,9 +101,9 @@ const PerformanceBrand = (props, ref) => {
               <div style={{ display: "flex" }}>
                 <StyledCard>
                   <Row className={"student-report-card-total-score"} type="flex">
-                    <Col data-cy="report-score"> {obtainedScore.toFixed(2)}</Col>
+                    <Col data-cy="report-score"> {round(obtainedScore, 2) || 0}</Col>
                     <Col data-cy="report-max-score" style={{ fontSize: "35px" }}>
-                      {totalScore}
+                      {round(totalScore, 2) || 0}
                     </Col>
                     <Col style={{ marginTop: "12px" }}>
                       <p>SCORE</p>
@@ -116,8 +123,8 @@ const PerformanceBrand = (props, ref) => {
               {showPerformanceBand && (
                 <PerformanceTitle>
                   PERFORMANCE:{" "}
-                  <span data-cy="report-performance-band" style={{ color: mastery?.fill }}>
-                    {mastery.masteryLevel}
+                  <span data-cy="report-performance-band" style={{ color: selectedPerformanceBand?.color || "black" }}>
+                    {selectedPerformanceBand?.name || ""}
                   </span>
                 </PerformanceTitle>
               )}

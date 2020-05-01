@@ -7,7 +7,7 @@ import { TAB_BUTTONS } from "../constants/keyboardButtons";
 const { TabPane } = AntTabs;
 
 const FullKeybord = ({ onInput }) => (
-  <Tabs defaultActiveKey="GREEK">
+  <Tabs>
     {TAB_BUTTONS.map(({ label, key, buttons }) => (
       <TabPane tab={label} key={key}>
         <MainKeyboard onInput={onInput} btns={buttons} fullKeybord />

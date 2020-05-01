@@ -16,9 +16,14 @@ import Group2206 from "../assets/keyboardButtons/2206.svg";
 import Group1006 from "../assets/keyboardButtons/1006.svg";
 import Group1007 from "../assets/keyboardButtons/1007.svg";
 import Group2207 from "../assets/keyboardButtons/2207.svg";
-import Group1004 from "../assets/keyboardButtons/1004.svg";
 import Group2208 from "../assets/keyboardButtons/2208.svg";
+import Group2209 from "../assets/keyboardButtons/2209.svg";
+import Group2210 from "../assets/keyboardButtons/2210.svg";
+import Group2211 from "../assets/keyboardButtons/2211.svg";
+import Group1004 from "../assets/keyboardButtons/1004.svg";
 import Group1005 from "../assets/keyboardButtons/1005.svg";
+import Group1008 from "../assets/keyboardButtons/1008.svg";
+import Group1009 from "../assets/keyboardButtons/1009.svg";
 import Group2256 from "../assets/keyboardButtons/2256.svg";
 import Group2253 from "../assets/keyboardButtons/2253.svg";
 import Group2263 from "../assets/keyboardButtons/2263.svg";
@@ -38,6 +43,18 @@ import Group1029 from "../assets/keyboardButtons/1029.svg";
 import Group1030 from "../assets/keyboardButtons/1030.svg";
 import Group1058 from "../assets/keyboardButtons/1058.svg";
 import Group2357 from "../assets/keyboardButtons/2357.svg";
+import Group6105 from "../assets/keyboardButtons/6105.svg";
+import Group6106 from "../assets/keyboardButtons/6106.svg";
+
+// Operators
+import Group2737 from "../assets/keyboardButtons/2737.svg";
+import Group2735 from "../assets/keyboardButtons/2735.svg";
+import Group2736 from "../assets/keyboardButtons/2736.svg";
+import Group2788 from "../assets/keyboardButtons/2788.svg";
+// trignometry
+import Group2243 from "../assets/keyboardButtons/2243.svg";
+import Group2248 from "../assets/keyboardButtons/2248.svg";
+
 // geometry
 import Group3171 from "../assets/keyboardButtons/3171.svg";
 import Group2744 from "../assets/keyboardButtons/2744.svg";
@@ -61,6 +78,8 @@ import Group3177 from "../assets/keyboardButtons/3177.svg";
 import Group2751 from "../assets/keyboardButtons/2751.svg";
 import Group2752 from "../assets/keyboardButtons/2752.svg";
 import Group2478 from "../assets/keyboardButtons/2478.svg";
+import Group2252 from "../assets/keyboardButtons/2252.svg";
+import Group2254 from "../assets/keyboardButtons/2254.svg";
 // Basic
 import Fraction from "../assets/keyboardButtons/fraction.svg";
 import Sqrt from "../assets/keyboardButtons/sqrt.svg";
@@ -84,23 +103,28 @@ export const CustomImage = styled.img.attrs({ className: "keyboardButton", dragg
 const OPERATORS = [
   {
     handler: "+",
-    label: "+",
+    label: <CustomImage src={Group2735} width={12} height={12} role="presentation" />,
     types: ["basic"],
     command: "write"
   },
   {
     handler: "-",
-    label: "-",
+    label: <CustomImage src={Group2737} width={12} height={8} role="presentation" />,
     types: ["basic"],
     command: "write"
   },
   {
     handler: "\\times",
-    label: "×",
+    label: <CustomImage src={Group2736} width={10} height={10} role="presentation" />,
     types: ["basic"],
     command: "write"
   },
-  { handler: "\\div", label: "÷", command: "cmd", types: ["pending"] },
+  {
+    handler: "\\div",
+    label: <CustomImage src={Group2788} width={12} height={12} role="presentation" />,
+    command: "cmd",
+    types: ["pending"]
+  },
   {
     handler: "/",
     labelcy: "divide",
@@ -167,6 +191,12 @@ const INTERMEDIATE = [
     command: "cmd"
   },
   {
+    handler: "\\times",
+    label: <CustomImage src={Group2736} width={10} height={10} role="presentation" />,
+    types: ["intermediate"],
+    command: "write"
+  },
+  {
     handler: "=",
     label: "=",
     types: ["intermediate"],
@@ -181,6 +211,12 @@ const INTERMEDIATE = [
   {
     handler: "\\pi",
     label: "π",
+    types: ["intermediate"],
+    command: "cmd"
+  },
+  {
+    handler: "\\log", // handler: "\\iota"
+    label: "log",
     types: ["intermediate"],
     command: "cmd"
   },
@@ -408,6 +444,18 @@ const ADVANCED_TRIGNOMETRY = [
     label: <CustomImage src={Group2245} role="presentation" />,
     types: ["advanced_trignometry"],
     command: "write"
+  },
+  {
+    handler: "\\tan^{-1}",
+    label: <CustomImage src={Group2243} role="presentation" />,
+    types: ["advanced_trignometry"],
+    command: "write"
+  },
+  {
+    handler: "\\cot^{-1}",
+    label: <CustomImage src={Group2248} role="presentation" />,
+    types: ["advanced_trignometry"],
+    command: "write"
   }
 ];
 
@@ -600,6 +648,12 @@ const UNITS_SI = [
     command: "cmd"
   },
   {
+    handler: "µm",
+    label: "µm",
+    types: ["units_si"],
+    command: "cmd"
+  },
+  {
     handler: "mm",
     label: "mm",
     types: ["units_si"],
@@ -620,6 +674,12 @@ const UNITS_SI = [
   {
     handler: "km",
     label: "km",
+    types: ["units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "µs",
+    label: "µs",
     types: ["units_si"],
     command: "cmd"
   },
@@ -785,6 +845,30 @@ const UNITS_US = [
     label: "cup",
     types: ["units_us"],
     command: "cmd"
+  },
+  {
+    handler: "\\text{qt}",
+    label: "qt",
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{tbsp}",
+    label: "tbsp",
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{ton}",
+    label: "ton",
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{tsp}",
+    label: "tsp",
+    types: ["units_us"],
+    command: "write"
   }
 ];
 
@@ -800,8 +884,8 @@ export const KEYBOARD_BUTTONS = [
 ];
 
 const tabIconSize = {
-  width: 24,
-  height: 24
+  width: 23,
+  height: 23
 };
 export const TAB_BUTTONS = [
   {
@@ -888,49 +972,9 @@ export const TAB_BUTTONS = [
       ...UNITS_SI,
       ...UNITS_US,
       {
-        handler: "mm^{2}",
-        label: (
-          <span role="presentation">
-            mm<sup>2</sup>
-          </span>
-        ),
-        types: ["all", "units_si"],
-        command: "write"
-      },
-      {
-        handler: "cm^{2}",
-        label: (
-          <span role="presentation">
-            cm<sup>2</sup>
-          </span>
-        ),
-        types: ["all", "units_si"],
-        command: "write"
-      },
-      {
-        handler: "m^{2}",
-        label: (
-          <span role="presentation">
-            m<sup>2</sup>
-          </span>
-        ),
-        types: ["all", "units_si"],
-        command: "write"
-      },
-      {
-        handler: "km^{2}",
-        label: (
-          <span role="presentation">
-            km<sup>2</sup>
-          </span>
-        ),
-        types: ["all", "units_si"],
-        command: "write"
-      },
-      {
-        handler: "\\$",
-        label: "$",
-        types: ["all"],
+        handler: "\\text{g}\\ \\text{mol}^{-1}",
+        label: <CustomImage src={Group1054} role="presentation" />,
+        types: ["all", "chemistry"],
         command: "write"
       }
     ]
@@ -939,12 +983,6 @@ export const TAB_BUTTONS = [
     label: <CustomImage src={Grupo6135} {...tabIconSize} role="presentation" />,
     key: "SYMBOLS",
     buttons: [
-      {
-        handler: "=",
-        label: "=",
-        types: ["all"],
-        command: "write"
-      },
       {
         handler: "\\sim",
         label: <CustomImage src={Group3167} width={16} height={16} role="presentation" />,
@@ -1012,6 +1050,12 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
+        handler: "\\infinity",
+        label: "∞",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
         handler: "\\subset",
         label: <CustomImage src={Group2256} width={12} height={12} role="presentation" />,
         types: ["all"],
@@ -1049,13 +1093,13 @@ export const TAB_BUTTONS = [
       },
       {
         handler: "\\union",
-        label: "∪",
+        label: <CustomImage src={Group2252} width={14} height={14} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
       {
         handler: "\\intersection",
-        label: "∩",
+        label: <CustomImage src={Group2254} width={14} height={14} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
@@ -1139,34 +1183,40 @@ export const TAB_BUTTONS = [
       },
       {
         handler: "\\vdots",
-        label: <CustomImage src={Group2208} role="presentation" />,
+        label: <CustomImage src={Group2208} width={18} height={18} role="presentation" />,
         types: ["all"],
         command: "cmd",
         name: "vdots"
       },
       {
         handler: "\\ldots",
-        label: <CustomImage src={Group2206} role="presentation" />,
+        label: <CustomImage src={Group2206} width={20} height={20} role="presentation" />,
         types: ["all"],
         command: "cmd",
         name: "ldots"
       },
       {
         handler: "\\ddots",
-        label: <CustomImage src={Group2207} width={24} height={24} role="presentation" />,
+        label: <CustomImage src={Group2207} width={18} height={18} role="presentation" />,
         types: ["all"],
         command: "cmd",
         name: "ldoddotsts"
       },
       {
         handler: "\\therefore",
-        label: "∴",
+        label: <CustomImage src={Group2209} width={18} height={18} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\because",
+        label: <CustomImage src={Group2210} width={18} height={18} role="presentation" />,
         types: ["all"],
         command: "cmd"
       },
       {
         handler: ":",
-        label: ":",
+        label: <CustomImage src={Group2211} width={16} height={16} role="presentation" />,
         types: ["all"],
         command: "cmd"
       }
@@ -1201,14 +1251,44 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
-        handler: "\\sigma",
-        label: "σ",
+        handler: "\\varepsilon",
+        label: "ε",
         types: ["all"],
         command: "cmd"
       },
       {
-        handler: "\\Sigma",
-        label: "Σ",
+        handler: "\\zeta",
+        label: "ζ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\eta",
+        label: "η",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\theta",
+        label: <CustomImage src={Group2478} width={14} height={14} role="presentation" />,
+        types: ["all", "geometry"],
+        command: "cmd"
+      },
+      {
+        handler: "\\vartheta",
+        label: "ϑ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\iota",
+        label: "ι",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\kappa",
+        label: "κ",
         types: ["all"],
         command: "cmd"
       },
@@ -1219,8 +1299,56 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
-        handler: "\\phi",
-        label: "ϕ",
+        handler: "\\mu",
+        label: "μ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\nu",
+        label: "ν",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\xi",
+        label: "ξ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "o",
+        label: "ο",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\pi",
+        label: "π",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\varpi",
+        label: "ϖ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\rho",
+        label: "ρ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\varsigma",
+        label: "ς",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\sigma",
+        label: "σ",
         types: ["all"],
         command: "cmd"
       },
@@ -1231,21 +1359,186 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
+        handler: "\\upsilon",
+        label: "υ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\varphi",
+        label: "φ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\phi",
+        label: "ϕ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\chi",
+        label: "χ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\psi",
+        label: "ψ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
         handler: "\\omega",
         label: "ω",
         types: ["all"],
         command: "cmd"
       },
       {
-        handler: "\\varepsilon",
-        label: "ε",
+        handler: "\\Alpha",
+        label: "Α",
         types: ["all"],
         command: "cmd"
       },
       {
-        handler: "\\theta",
-        label: <CustomImage src={Group2478} width={14} height={14} role="presentation" />,
-        types: ["all", "geometry"],
+        handler: "\\Beta",
+        label: "Β",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Gamma",
+        label: "Γ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Delta",
+        label: "Δ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Epsilon",
+        label: "Ε",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Zeta",
+        label: "Ζ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Eta",
+        label: "Η",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Theta",
+        label: "Θ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Iota",
+        label: "Ι",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Kappa",
+        label: "Κ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Lambda",
+        label: "Λ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "Μ",
+        label: "Μ",
+        types: ["all"],
+        command: "cmd",
+        name: "Mu"
+      },
+      {
+        handler: "Ν",
+        label: "Ν",
+        types: ["all"],
+        command: "cmd",
+        name: "Nu"
+      },
+      {
+        handler: "\\Xi",
+        label: "Ξ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "Ο",
+        label: "Ο",
+        types: ["all"],
+        command: "cmd",
+        name: "Omicron"
+      },
+      {
+        handler: "\\Pi",
+        label: "Π",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Rho",
+        label: "Ρ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Sigma",
+        label: "Σ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Tau",
+        label: "Τ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Upsilon",
+        label: "Υ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Phi",
+        label: "Φ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Chi",
+        label: "Χ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Psi",
+        label: "Ψ",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\Omega",
+        label: "Ω",
+        types: ["all"],
         command: "cmd"
       },
       {
@@ -1260,6 +1553,20 @@ export const TAB_BUTTONS = [
     label: <CustomImage src={Grupo6138} {...tabIconSize} role="presentation" />,
     key: "MATRIX",
     buttons: [
+      {
+        handler: "\\begin{bmatrix}{}\\\\{}\\end{bmatrix}",
+        label: <CustomImage src={Group1008} width={28} height={28} role="presentation" />,
+        types: ["all"],
+        command: "write",
+        name: "bmatrix"
+      },
+      {
+        handler: "\\begin{bmatrix}{}&{}\\end{bmatrix}",
+        label: <CustomImage src={Group1009} width={29} height={29} role="presentation" />,
+        types: ["all"],
+        command: "write",
+        name: "bmatrix"
+      },
       {
         handler: "\\bmatrix",
         label: <CustomImage src={Group1004} role="presentation" />,
@@ -1295,7 +1602,7 @@ export const TAB_BUTTONS = [
     key: "DECORATIONS",
     buttons: [
       {
-        handler: "\\xrightarrow[]{}",
+        handler: "\\xrightarrow[{}]{}",
         label: <CustomImage src={Group1022} role="presentation" />,
         types: ["all"],
         command: "write"
@@ -1430,13 +1737,13 @@ export const TAB_BUTTONS = [
       },
       {
         handler: "\\union",
-        label: "∪",
+        label: <CustomImage src={Group2252} width={14} height={14} role="presentation" />,
         types: ["all", "sets"],
         command: "cmd"
       },
       {
         handler: "\\intersection",
-        label: "∩",
+        label: <CustomImage src={Group2254} width={14} height={14} role="presentation" />,
         types: ["all", "sets"],
         command: "cmd"
       },
@@ -1470,6 +1777,18 @@ export const TAB_BUTTONS = [
     label: <CustomImage src={Grupo6142} {...tabIconSize} role="presentation" />,
     key: "CALCULUS",
     buttons: [
+      {
+        handler: "\\frac{\\operatorname d{}}{\\operatorname d{}}",
+        label: <CustomImage src={Group6105} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\frac{\\partial{}}{\\partial{}}",
+        label: <CustomImage src={Group6106} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
       {
         handler: "\\int_{}^{}",
         label: <CustomImage src={Group1029} role="presentation" />,
@@ -1577,12 +1896,6 @@ export const TAB_BUTTONS = [
         label: "e",
         types: ["all"],
         command: "cmd"
-      },
-      {
-        handler: "\\text{g}\\ \\text{mol}^{-1}",
-        label: <CustomImage src={Group1054} role="presentation" />,
-        types: ["all", "chemistry"],
-        command: "write"
       }
     ]
   }

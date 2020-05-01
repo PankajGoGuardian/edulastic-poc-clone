@@ -136,8 +136,8 @@ export default MathKeyboard;
 const MathKeyboardContainer = styled.div`
   /* border: 1px solid ${props => props.theme.mathKeyboard.keyboardBorderColor}; */
   background: ${props => props.theme.mathKeyboard.keyboardBgColor};
-  padding: 10px;
+  /* padding: 10px; */
   min-width: 180px;
-  max-width: 380px;
+  max-width: 370px;
   width: max-content;
 `;

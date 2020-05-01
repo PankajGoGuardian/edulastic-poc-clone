@@ -39,6 +39,14 @@ export const MathInputStyles = styled.div`
     display: flex;
     align-items: center;
 
+    /**
+    * should override margin for matrix
+    * @see https://github.com/snapwiz/edulastic-poc/blob/560a65c0c8026b121fdd8384468bf510da34b4e0/src/client/index.css#L1935
+    */
+    table {
+      margin: 0;
+    }
+
     &.mq-focused {
       box-shadow: none;
       border: 0;

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import chunk from "lodash/chunk";
 import cloneDeep from "lodash/cloneDeep";
 import { white, darkGrey } from "@edulastic/colors";
 
-const limitButtons = 18;
+const limitRow = 3;
 const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
-  const [btnRows, updateRows] = useState([]);
-  const [showMore, updateShowMore] = useState(false);
+  const [boards, updateBoards] = useState({});
+  const [current, updateCurrent] = useState(0);
   const numOfKeys = btns.length;
 
   useEffect(() => {
@@ -26,16 +26,9 @@ const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
       keysPerRow = 6;
     }
 
-    if (numOfKeys > limitButtons && !showMore) {
-      keybuttons.splice(limitButtons, numOfKeys - limitButtons + 1);
-    }
     const rows = chunk(keybuttons, keysPerRow);
-    updateRows(rows);
-  }, [btns, showMore]);
-
-  const handleExpend = () => {
-    updateShowMore(!showMore);
-  };
+    updateBoards(chunk(rows, limitRow));
+  }, [btns]);
 
   const handleClick = (handler, command) => () => {
     if (handler && command) {
@@ -43,9 +36,25 @@ const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
     }
   };
 
+  const onClickNext = () => {
+    const next = current + 1;
+    if (next < boards.length) {
+      updateCurrent(next);
+    }
+  };
+
+  const onClickPrev = () => {
+    const prev = current - 1;
+    if (prev >= 0) {
+      updateCurrent(prev);
+    }
+  };
+
+  const currentBoard = boards[current] || [];
   return (
     <Wrapper>
-      {btnRows.map((row, rowIndex) => (
+      <PrevButton onClick={onClickPrev} hidden={current <= 0} />
+      {currentBoard.map((row, rowIndex) => (
         <Row key={rowIndex} data-cy={`button-row-${rowIndex}`}>
           {row.map(({ label, handler, command = "cmd" }, i) => {
             let fontRate = 1;
@@ -66,7 +75,7 @@ const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
           })}
         </Row>
       ))}
-      {numOfKeys > limitButtons && <Row showMore={showMore} isExpendRow onClick={handleExpend} />}
+      <NextButton onClick={onClickNext} hidden={boards.length <= 0 || current >= boards.length - 1} />
     </Wrapper>
   );
 };
@@ -84,46 +93,49 @@ MainKeyboard.defaultProps = {
 export default MainKeyboard;
 
 const Wrapper = styled.div`
+  padding: 10px;
   display: flex;
   flex-wrap: wrap;
+  position: relative;
   flex-direction: column;
 `;
 
-const expendRowStyle = css`
-  position: relative;
-  cursor: pointer;
-  min-height: 6px;
+const PrevNext = styled.div`
+  top: 0px;
+  width: 10px;
+  height: 100%;
   background: transparent;
-
+  position: absolute;
+  display: ${({ hidden }) => (hidden ? "none" : null)};
+  cursor: pointer;
   &::after {
     content: "";
     position: absolute;
     border: 6px solid;
-    border-right-color: transparent;
-    border-left-color: transparent;
-    left: calc(50% - 6px);
+    top: calc(50% - 6px);
+    border-color: transparent;
+  }
+`;
 
-    ${({ showMore }) => {
-      if (showMore) {
-        return `
-          border-top-color: transparent;
-          border-bottom-color: ${darkGrey};
-          top: -6px;    
-        `;
-      }
-      return `
-        border-top-color: ${darkGrey};
-        border-bottom-color: transparent;
-        top: 0px;
-      `;
-    }}
+const PrevButton = styled(PrevNext)`
+  left: 0px;
+  &::after {
+    left: -4px;
+    border-right-color: #a3a0a0;
+  }
+`;
+
+const NextButton = styled(PrevNext)`
+  right: 0px;
+  &::after {
+    right: -4px;
+    border-left-color: ${darkGrey};
   }
 `;
 
 const Row = styled.div`
   display: flex;
   margin-bottom: 10px;
-  ${({ isExpendRow }) => isExpendRow && expendRowStyle}
   &:last-child {
     margin-bottom: 0px;
   }

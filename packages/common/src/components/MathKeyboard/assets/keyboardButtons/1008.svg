@@ -1,0 +1,17 @@
+<svg width="27px" height="23px" viewBox="0 0 27 23" version="1.1" 
+    xmlns="http://www.w3.org/2000/svg" 
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1004">
+            <path d="M3.68,19.531 L0.003,19.531 L0.003,5.578 L3.683,5.578 L3.683,6.953 L1.683,6.953 L1.683,18.153 L3.683,18.153 L3.68,19.531 Z M22.726,18.148 L24.726,18.148 L24.726,6.948 L22.726,6.948 L22.726,5.573 L26.39,5.573 L26.39,19.531 L22.726,19.531 L22.726,18.148 Z" id="Shape" fill="#707070" fill-rule="nonzero"></path>
+            <g id="Group" transform="translate(8.703000, 0.000000)">
+                <polygon id="Path" points="0 0 10 0 10 10 0 10"></polygon>
+                <path d="M3,0 L5,0 L5,1 L3,1 L3,0 Z M6,0 L8,0 L8,1 L6,1 L6,0 Z M9,0 L10,0 L10,1 L9,1 L9,1 L9,1 L9,0 Z M9,2 L10,2 C10,2 10,4 10,4 L9,4 L9,2 Z M9,5 L10,5 C10,5 10,7 10,7 L9,7 L9,5 Z M9,8 L10,8 C10,8 10,10 10,10 L9,10 L9,8 Z M7,9 L9,9 L9,10 C9,10 7,10 7,10 L7,9 Z M4,9 L6,9 L6,10 C6,10 4,10 4,10 L4,9 Z M1,9 L3,9 L3,10 C3,10 1,10 1,10 L1,9 Z M0,8 L1,8 L1,10 L0,10 L0,8 Z M0,5 L1,5 L1,7 L0,7 L0,5 Z M0,2 L1,2 L1,4 L0,4 L0,2 Z M0,0 L2,0 L2,1 L0,1 L0,0 Z" id="Shape" fill="#707070" fill-rule="nonzero"></path>
+            </g>
+            <g id="Group" transform="translate(8.703000, 13.000000)">
+                <polygon id="Path" points="0 0 10 0 10 10 0 10"></polygon>
+                <path d="M3,0 L5,0 L5,1 L3,1 L3,0 Z M6,0 L8,0 L8,1 L6,1 L6,0 Z M9,0 L10,0 L10,1 L9,1 L9,1 L9,1 L9,0 Z M9,2 L10,2 C10,2 10,4 10,4 L9,4 L9,2 Z M9,5 L10,5 C10,5 10,7 10,7 L9,7 L9,5 Z M9,8 L10,8 C10,8 10,10 10,10 L9,10 L9,8 Z M7,9 L9,9 L9,10 C9,10 7,10 7,10 L7,9 Z M4,9 L6,9 L6,10 C6,10 4,10 4,10 L4,9 Z M1,9 L3,9 L3,10 C3,10 1,10 1,10 L1,9 Z M0,8 L1,8 L1,10 L0,10 L0,8 Z M0,5 L1,5 L1,7 L0,7 L0,5 Z M0,2 L1,2 L1,4 L0,4 L0,2 Z M0,0 L2,0 L2,1 L0,1 L0,0 Z" id="Shape" fill="#707070" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

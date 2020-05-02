@@ -94,6 +94,30 @@ var transformArray = function transformArray() {
 };
 /**
  *
+ * @param {Array<Number[]>} answers particular answer set (correct answer | alt answer 1 | alt answer 2 | ... )
+ * @returns total number of correct answers set by author in the current anwwer set
+ */
+
+var totalAnswerCount = function totalAnswerCount() {
+  var answers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var answersFlattened = answers.reduce(function(acc, curr) {
+    // total correct answers set by user for current answer set
+    if (Array.isArray(curr)) {
+      /**
+       * if user does not set answers for some rows,
+       * it comes as null
+       * that should not be considered for actualCorrectAnswers,
+       * else it will mess up the count
+       */
+      acc = acc.concat(curr);
+    }
+
+    return acc;
+  });
+  return answersFlattened.length;
+};
+/**
+ *
  * @param {Array<Number[]>} userResponse
  * @param {Array<Object>} allAnswers
  *
@@ -106,17 +130,13 @@ var getEvaluationExactMatch = function getEvaluationExactMatch(userResponse, all
   var evaluations = allAnswers.map(function(answer) {
     var value = answer.value,
       maxScoreForAllCorrect = answer.score;
-    var actualCorrectAnswers = value.reduce(function(acc, curr) {
-      return acc.concat(curr);
-    }).length; // total correct answers set by user for current answer set
-
+    var actualCorrectAnswers = totalAnswerCount(value);
     var correctAttempts = 0;
     var incorrectAttempts = 0;
 
     if (!userResponse.length) {
       // user did not attempt, no score and evaluation highlights
       return {
-        // allCorrect: false,
         result: [],
         maxScore: maxScoreForAllCorrect,
         correctAttempts: correctAttempts,
@@ -249,9 +269,7 @@ var getEvaluationPartialMatch = function getEvaluationPartialMatch(userResponse,
   var evaluations = allAnswers.map(function(answer) {
     var correctAnsMaxScore = answer.score,
       value = answer.value;
-    var actualCorrectAnswers = value.reduce(function(acc, curr) {
-      return acc.concat(curr);
-    }).length; // total correct answers set by user for current answer set
+    var actualCorrectAnswers = totalAnswerCount(value); // total correct answers set by user for current answer set
 
     var scorePerCorrectAnswer = correctAnsMaxScore / actualCorrectAnswers;
     var penaltyPerIncorrectAnswer = penalty / actualCorrectAnswers;

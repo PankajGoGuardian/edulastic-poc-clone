@@ -43,6 +43,28 @@ const transformArray = (arr = []) =>
 
 /**
  *
+ * @param {Array<Number[]>} answers particular answer set (correct answer | alt answer 1 | alt answer 2 | ... )
+ * @returns total number of correct answers set by author in the current anwwer set
+ */
+const totalAnswerCount = (answers = []) => {
+  const answersFlattened = answers.reduce((acc, curr) => {
+    // total correct answers set by user for current answer set
+    if (Array.isArray(curr)) {
+      /**
+       * if user does not set answers for some rows,
+       * it comes as null
+       * that should not be considered for actualCorrectAnswers,
+       * else it will mess up the count
+       */
+      acc = acc.concat(curr);
+    }
+    return acc;
+  });
+  return answersFlattened.length;
+};
+
+/**
+ *
  * @param {Array<Number[]>} userResponse
  * @param {Array<Object>} allAnswers
  *
@@ -53,13 +75,13 @@ const transformArray = (arr = []) =>
 const getEvaluationExactMatch = (userResponse, allAnswers) => {
   const evaluations = allAnswers.map(answer => {
     const { value, score: maxScoreForAllCorrect } = answer;
-    const actualCorrectAnswers = value.reduce((acc, curr) => acc.concat(curr)).length; // total correct answers set by user for current answer set
+
+    const actualCorrectAnswers = totalAnswerCount(value);
     let correctAttempts = 0;
     let incorrectAttempts = 0;
     if (!userResponse.length) {
       // user did not attempt, no score and evaluation highlights
       return {
-        // allCorrect: false,
         result: [],
         maxScore: maxScoreForAllCorrect,
         correctAttempts,
@@ -114,7 +136,6 @@ const exactMatchEvaluator = (userResponse = [], validation = {}) => {
   }
   const transformedUserAnswer = transformArray(userResponse);
   const evaluations = getEvaluationExactMatch(transformedUserAnswer, allAnswers);
-
   const allCorrectAnswerAttempt = evaluations.find(obj => {
     const { correctAttempts, incorrectAttempts, actualCorrectAnswers } = obj;
     return incorrectAttempts === 0 && correctAttempts === actualCorrectAnswers; // no incorrect answer, and exactly same answer as set by user
@@ -170,7 +191,7 @@ const exactMatchEvaluator = (userResponse = [], validation = {}) => {
 const getEvaluationPartialMatch = (userResponse, allAnswers, penalty) => {
   const evaluations = allAnswers.map(answer => {
     const { score: correctAnsMaxScore, value } = answer;
-    const actualCorrectAnswers = value.reduce((acc, curr) => acc.concat(curr)).length; // total correct answers set by user for current answer set
+    const actualCorrectAnswers = totalAnswerCount(value); // total correct answers set by user for current answer set
     const scorePerCorrectAnswer = correctAnsMaxScore / actualCorrectAnswers;
     const penaltyPerIncorrectAnswer = penalty / actualCorrectAnswers;
     const transformedAnswer = transformArray(value); // move values in array to proper indexes
@@ -206,7 +227,6 @@ const partialMatchEvaluator = (userResponse, validation) => {
   const transformedUserAnswer = transformArray(userResponse);
 
   const evaluations = getEvaluationPartialMatch(transformedUserAnswer, allAnswers, penalty);
-
   if (evaluations.length > 0) {
     const maxByScore = evaluations.reduce((acc, curr) => {
       if (curr.score > acc.score) {

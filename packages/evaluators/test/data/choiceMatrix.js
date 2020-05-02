@@ -109,21 +109,28 @@ export const exactMatch = {
     },
     {
       userResponse: {
-        value: [[1], [0], [1], [0]]
+        value: [[0], null, null, [1]]
       },
       validation: {
         scoringType: "exactMatch",
         validResponse: {
           score: 1,
-          value: [[0], [1], [0], [1]]
+          value: [[0], null, null, [1]]
         },
-        altResponses: [
-          {
-            score: 1,
-            value: [[1], [0], [1], [0]]
-          }
-        ],
-        penalty: 1
+        altResponses: []
+      }
+    },
+    {
+      userResponse: {
+        value: [[0], null, null, [0]]
+      },
+      validation: {
+        scoringType: "exactMatch",
+        validResponse: {
+          score: 1,
+          value: [[0], null, null, [1]]
+        },
+        altResponses: []
       }
     }
   ]
@@ -202,6 +209,48 @@ export const partialMatch = {
             value: [[1], [0], [1], [0]]
           }
         ],
+        penalty: 1
+      }
+    },
+    {
+      userResponse: {
+        value: [[0], null, null, [1]]
+      },
+      validation: {
+        scoringType: "partialMatch",
+        validResponse: {
+          score: 1,
+          value: [[0], null, null, [1]]
+        },
+        altResponses: [],
+        penalty: 0
+      }
+    },
+    {
+      userResponse: {
+        value: [[0], null, null, [0]]
+      },
+      validation: {
+        scoringType: "partialMatch",
+        validResponse: {
+          score: 1,
+          value: [[0], null, null, [1]]
+        },
+        altResponses: [],
+        penalty: 0
+      }
+    },
+    {
+      userResponse: {
+        value: [[0], null, null, [0]]
+      },
+      validation: {
+        scoringType: "partialMatch",
+        validResponse: {
+          score: 1,
+          value: [[0], null, null, [1]]
+        },
+        altResponses: [],
         penalty: 1
       }
     }

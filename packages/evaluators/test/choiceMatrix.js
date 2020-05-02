@@ -59,6 +59,20 @@ test("exact match: case #6 no user response", t => {
   t.deepEqual(result.evaluation, [], "evaluation is incorrect for case #6");
 });
 
+test("exact match: case #7 answer not set for some rows #1 correct answer by user", t => {
+  const result = evaluator(exactMatch.multipleResponsesOff[6]);
+  t.is(result.score, 1, "incorrect score for case #7");
+  t.is(result.maxScore, 1, "incorrect max score for case #7");
+  t.deepEqual(result.evaluation, [[true], [], [], [undefined, true]], "evaluation is incorrect for case #7");
+});
+
+test("exact match: case #8 answer not set for some rows #1 incorrect answer by user", t => {
+  const result = evaluator(exactMatch.multipleResponsesOff[7]);
+  t.is(result.score, 0, "incorrect score for case #8");
+  t.is(result.maxScore, 1, "incorrect max score for case #8");
+  t.deepEqual(result.evaluation, [[true], [], [], [false]], "evaluation is incorrect for case #8");
+});
+
 test("partial match: case #1 all correct against (correct answer)", t => {
   const result = evaluator(partialMatch.multipleResponsesOff[0]);
   t.is(result.score, 1, "incorrect score for case #1");
@@ -97,4 +111,25 @@ test("partial match: case #4 half correct against correct answer (with penalty)"
     [[true], [undefined, true], [undefined, false], [false]],
     "evaluation is incorrect for case #4"
   );
+});
+
+test("partial match: case #5 some rows not set correct answer, full correct user response (no penalty)", t => {
+  const result = evaluator(partialMatch.multipleResponsesOff[4]);
+  t.is(result.score, 1, "incorrect score for case #5");
+  t.is(result.maxScore, 1, "incorrect max score for case #5");
+  t.deepEqual(result.evaluation, [[true], [], [], [undefined, true]], "evaluation is incorrect for case #5");
+});
+
+test("partial match: case #6 some rows not set correct answer, partially correct user response (no penalty)", t => {
+  const result = evaluator(partialMatch.multipleResponsesOff[5]);
+  t.is(result.score, 0.5, "incorrect score for case #6");
+  t.is(result.maxScore, 1, "incorrect max score for case #6");
+  t.deepEqual(result.evaluation, [[true], [], [], [false]], "evaluation is incorrect for case #6");
+});
+
+test("partial match: case #7 some rows not set correct answer, partially correct user response (with penalty 0.5 each)", t => {
+  const result = evaluator(partialMatch.multipleResponsesOff[6]);
+  t.is(result.score, 0, "incorrect score for case #7");
+  t.is(result.maxScore, 1, "incorrect max score for case #7");
+  t.deepEqual(result.evaluation, [[true], [], [], [false]], "evaluation is incorrect for case #7");
 });

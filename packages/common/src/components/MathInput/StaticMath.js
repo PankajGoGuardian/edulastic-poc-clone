@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
-
+import { Popover } from "antd";
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
 import AppConfig from "../../../../../app-config";
@@ -152,7 +152,9 @@ const StaticMath = ({
   };
 
   const onBlurInput = () => {
-    onBlur(getLatex());
+    if (onBlur) {
+      onBlur(getLatex());
+    }
   };
 
   useEffect(() => {
@@ -191,42 +193,49 @@ const StaticMath = ({
     setInnerFieldValues(innerValues);
   }, [innerValues]);
 
+  const keypad = (
+    <MathKeyboard
+      symbols={symbols}
+      numberPad={numberPad}
+      restrictKeys={restrictKeys}
+      customKeys={customKeys}
+      showResponse={false}
+      onClose={onKeyboardClose}
+      onInput={onInputKeyboard}
+    />
+  );
+
+  const mathInputFieldStyle = {
+    minWidth: style.width,
+    minHeight: style.height,
+    fontSize: style.fontSize ? style.fontSize : "inherit",
+    background: style.background
+  };
+
   return (
-    <MathInputStyles minWidth={style.minWidth}>
-      <div ref={containerRef} className="input" onBlur={onBlurInput}>
-        <div
-          className="input__math"
-          style={{
-            minWidth: style.width,
-            minHeight: style.height,
-            fontSize: style.fontSize ? style.fontSize : "inherit",
-            background: style.background
-          }}
-          data-cy="answer-math-input-style"
-        >
-          <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
+    <MathInputStyles minWidth={style.minWidth} ref={containerRef}>
+      <Popover
+        content={keypad}
+        trigger="click"
+        placement="bottomLeft"
+        visible={showKeyboard && !alwaysShowKeyboard}
+        overlayClassName="math-keyboard-popover"
+        getPopupContainer={trigger => trigger.parentNode}
+      >
+        <div className="input" onBlur={onBlurInput}>
+          <div className="input__math" style={mathInputFieldStyle} data-cy="answer-math-input-style">
+            <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
+          </div>
+          {alwaysShowKeyboard && <div className="input__keyboard">{keypad}</div>}
         </div>
-        <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
-          {showKeyboard && (
-            <MathKeyboard
-              symbols={symbols}
-              restrictKeys={restrictKeys}
-              customKeys={customKeys}
-              numberPad={numberPad}
-              onInput={onInputKeyboard}
-              showResponse={false}
-              onClose={onKeyboardClose}
-            />
-          )}
-        </div>
-      </div>
+      </Popover>
     </MathInputStyles>
   );
 };
 
 StaticMath.propTypes = {
   style: PropTypes.object,
-  onBlur: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
   onInput: PropTypes.func.isRequired,
   onInnerFieldClick: PropTypes.func,
   symbols: PropTypes.array.isRequired,
@@ -244,6 +253,7 @@ StaticMath.defaultProps = {
   restrictKeys: [],
   innerValues: [],
   onInnerFieldClick: () => {},
+  onBlur: () => {},
   alwaysShowKeyboard: false
 };
 

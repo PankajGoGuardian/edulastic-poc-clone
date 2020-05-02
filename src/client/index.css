@@ -1899,7 +1899,6 @@ span.token.active-word {
 .mq-math-mode .mq-editable-field.mq-focused {
   border-color: #1ab394;
   box-shadow: 0 0 1px 1px #5eb50066;
-  border-radius: 4px !important;
 }
 
 .jsx-parser p {

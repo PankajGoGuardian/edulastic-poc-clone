@@ -2,9 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { find } from "lodash";
-import { Input } from "antd";
-import CheckedBlock from "./CheckedBlock";
 import { TextInputStyled } from "@edulastic/common";
+import CheckedBlock from "./CheckedBlock";
 
 const ClozeInput = ({ id, resprops = {} }) => {
   const {
@@ -59,7 +58,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
           width: !width ? "auto" : width,
           height: !height ? "auto" : height,
           minHeight: "35px",
-          textAlign: "left"
+          textAlign: "left",
+          borderRadius: 0
         }}
       />
     </InputDiv>
@@ -76,5 +76,4 @@ export default ClozeInput;
 const InputDiv = styled.div`
   display: inline-block;
   vertical-align: middle;
-  margin: 2px 2px 4px;
 `;

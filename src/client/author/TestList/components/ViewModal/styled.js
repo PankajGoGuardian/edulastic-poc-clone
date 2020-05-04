@@ -45,9 +45,7 @@ export const Image = styled.div`
   height: 150px;
   position: relative;
   background: ${props =>
-    props.src
-      ? `url(${props.src})`
-      : `url("https://cdn2.edulastic.com/default/default-test-1.jpg")`};
+    props.src ? `url(${props.src})` : `url("https://cdn2.edulastic.com/default/default-test-1.jpg")`};
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -280,15 +278,16 @@ export const IconWrapper = styled.span`
 `;
 
 export const TestStatus = styled.span`
-  margin-left: 10px;
-  padding: 2px 20px;
+  margin-left: ${({ noMargin }) => !noMargin && "10px"};
+  padding: 4px 10px;
   position: relative;
   font-size: 9px;
   color: ${({ status }) => textColor[status]};
   background-color: ${({ status }) => backgroundColor[status]};
-  border-radius: 4px;
-  border: 1px solid ${borders.tag};
+  border-radius: 5px;
   text-transform: uppercase;
+  font-weight: bold;
+  line-height: 16px;
 `;
 
 export const TestTitleWrapper = styled.span`

@@ -97,7 +97,7 @@ const Labels = styled.div`
   flex-wrap: wrap;
   align-items: ${({ isPlaylist }) => isPlaylist && "flex-start"};
   justify-content: ${({ isPlaylist }) => isPlaylist && "flex-start"};
-  width: ${({ isPlaylist }) => isPlaylist && "100%"};
+  width: ${({ isPlaylist }) => isPlaylist && "auto"};
   margin: ${({ margin, completed, isPlaylist }) =>
     margin || `4px 0px 4px ${isPlaylist ? (completed ? "8px" : "56px") : 0}`};
 `;

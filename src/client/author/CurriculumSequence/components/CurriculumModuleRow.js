@@ -22,7 +22,7 @@ import {
   white,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
-import { EduButton, ProgressBar } from "@edulastic/common";
+import { EduButton, ProgressBar, FlexContainer } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVerified, IconVisualization } from "@edulastic/icons";
 import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row as AntRow, message } from "antd";
@@ -61,6 +61,7 @@ import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
 import { LTIResourceRow } from "./LTIResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
+import { TestStatus } from "../../TestList/components/ViewModal/styled";
 
 const SortableHOC = sortableContainer(({ children }) => (
   <div style={{ marginLeft: "30px" }} onClick={e => e.stopPropagation()}>
@@ -659,6 +660,7 @@ class ModuleRow extends Component {
                         deleteTest={this.deleteTest}
                         onClick={e => e.stopPropagation()}
                         showResource={this.showResource}
+                        urlHasUseThis={urlHasUseThis}
                         {...this.props}
                       />
                     );
@@ -704,11 +706,14 @@ class ModuleRow extends Component {
                                     }
                                   >
                                     <Tooltip placement="bottomLeft" title={moduleData.contentTitle}>
-                                      <EllipticSpan width="calc(100% - 30px)">{moduleData.contentTitle}</EllipticSpan>
+                                      <EllipticSpan width={urlHasUseThis ? "calc(100% - 30px)" : "auto"}>
+                                        {moduleData.contentTitle}
+                                      </EllipticSpan>
                                     </Tooltip>
-                                    {urlHasUseThis && (
+                                    {
                                       <CustomIcon marginLeft={10} marginRight={5}>
-                                        {!isAssigned || moduleData.assignments[0].testType === "practice" ? (
+                                        {urlHasUseThis &&
+                                        (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
                                           <Avatar
                                             size={18}
                                             style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}
@@ -719,23 +724,42 @@ class ModuleRow extends Component {
                                           <Avatar
                                             size={18}
                                             style={{
-                                              backgroundColor: testTypeColor[moduleData.assignments[0].testType],
+                                              backgroundColor:
+                                                testTypeColor[(moduleData.assignments?.[0]?.testType)] ||
+                                                testTypeColor[moduleData.testType],
                                               fontSize: "13px"
                                             }}
                                           >
-                                            {moduleData.assignments[0].testType[0].toUpperCase()}
+                                            {moduleData.assignments?.[0]?.testType[0].toUpperCase() ||
+                                              moduleData.testType[0].toUpperCase() ||
+                                              null}
                                           </Avatar>
                                         )}
                                       </CustomIcon>
-                                    )}
+                                    }
                                   </ModuleDataName>
-                                  <Tags
-                                    margin="5px 0px 0px 0px"
-                                    tags={moduleData.standardIdentifiers}
-                                    completed={!hideEditOptions && contentCompleted}
-                                    show={2}
-                                    isPlaylist
-                                  />
+
+                                  <FlexContainer
+                                    width="100%"
+                                    height="40px"
+                                    alignItems="center"
+                                    justifyContent="flex-start"
+                                  >
+                                    <Tags
+                                      margin="5px 0px 0px 0px"
+                                      tags={moduleData.standardIdentifiers}
+                                      completed={!hideEditOptions && contentCompleted}
+                                      show={2}
+                                      isPlaylist
+                                    />
+                                    <TestStatus
+                                      status={moduleData.status}
+                                      view="tile"
+                                      noMargin={!moduleData.standardIdentifiers}
+                                    >
+                                      {moduleData.status}
+                                    </TestStatus>
+                                  </FlexContainer>
                                 </ModuleDataWrapper>
                               </FirstColumn>
                               {urlHasUseThis ? (

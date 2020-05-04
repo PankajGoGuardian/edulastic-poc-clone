@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Dropdown, Icon, Button } from "antd";
+import { Dropdown, Icon, Button, Avatar } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
-import { lightBlue, white, themeColor } from "@edulastic/colors";
+import { lightBlue, white, themeColor, testTypeColor } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
 import { IconVisualization, IconTrash, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
 import Tags from "../../src/components/common/Tags";
-import { matchAssigned } from "../util";
 import {
   AssignmentContent,
   CustomIcon,
@@ -18,6 +17,8 @@ import {
   AssignmentButton
 } from "./CurriculumModuleRow";
 import { LTIResourceRow } from "./LTIResourceRow";
+import { FlexContainer } from "@edulastic/common";
+import { TestStatus } from "../../TestList/components/ViewModal/styled";
 
 /**
  * @typedef Props
@@ -67,7 +68,8 @@ class AssignmentDragItem extends Component {
       isDragging,
       togglePlaylistTestDetails,
       showResource,
-      userRole
+      userRole,
+      urlHasUseThis
     } = this.props;
 
     return connectDragSource(
@@ -101,13 +103,37 @@ class AssignmentDragItem extends Component {
                   {/* <CustomIcon marginLeft={16}>
                 <Icon type="right" style={{ color: "#707070" }} />
               </CustomIcon> */}
-                  <ModuleDataName
-                    onClick={() => togglePlaylistTestDetails({ id: moduleData?.contentId })}
-                    isDragging={isDragging}
-                    isReview
-                  >
-                    {moduleData.contentTitle}
-                  </ModuleDataName>
+                  <FlexContainer>
+                    <ModuleDataName
+                      onClick={() => togglePlaylistTestDetails({ id: moduleData?.contentId })}
+                      isDragging={isDragging}
+                      isReview
+                    >
+                      {moduleData.contentTitle}
+                    </ModuleDataName>
+
+                    <CustomIcon marginLeft={10} marginRight={5}>
+                      {urlHasUseThis && (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
+                        <Avatar size={18} style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}>
+                          {" P "}
+                        </Avatar>
+                      ) : (
+                        <Avatar
+                          size={18}
+                          style={{
+                            backgroundColor:
+                              testTypeColor[(moduleData.assignments?.[0]?.testType)] ||
+                              testTypeColor[moduleData.testType],
+                            fontSize: "13px"
+                          }}
+                        >
+                          {moduleData.assignments?.[0]?.testType[0].toUpperCase() ||
+                            moduleData.testType[0].toUpperCase() ||
+                            null}
+                        </Avatar>
+                      )}
+                    </CustomIcon>
+                  </FlexContainer>
                 </AssignmentContent>
                 {!hideEditOptions && (
                   <ModuleAssignedUnit>
@@ -123,7 +149,12 @@ class AssignmentDragItem extends Component {
                     )}
                   </ModuleAssignedUnit>
                 )}
-                <Tags tags={standardTags} />
+                <FlexContainer width="100%" height="35px" alignItems="center" justifyContent="flex-start">
+                  <Tags tags={standardTags} />
+                  <TestStatus status={moduleData.status} view="tile" noMargin={!standardTags}>
+                    {moduleData.status}
+                  </TestStatus>
+                </FlexContainer>
               </WrapperContainer>
               <AssignmentIconsHolder>
                 <AssignmentIcon marginRight="10px">

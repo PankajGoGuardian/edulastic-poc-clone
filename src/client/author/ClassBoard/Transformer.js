@@ -263,6 +263,7 @@ const extractFunctions = {
       .filter(x => x)
       .map(r => question?.options?.find(x => x?.value === r)?.label)
       .map(x => stripHtml(x || ""))
+      .filter(x => x)
       .join(",");
   },
   [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) => {
@@ -270,6 +271,7 @@ const extractFunctions = {
       .filter(x => x)
       .map(x => x?.value)
       .map(x => stripHtml(x || ""))
+      .filter(x => x)
       .join(",");
   },
   [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) => {
@@ -277,6 +279,7 @@ const extractFunctions = {
       .filter(x => x)
       .map(x => x?.value)
       .map(x => stripHtml(x || ""))
+      .filter(x => x)
       .join(",");
   },
   [questionType.MATH]: (question, userResponse = "") => {

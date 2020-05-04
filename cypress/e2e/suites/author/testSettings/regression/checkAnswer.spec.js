@@ -58,6 +58,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       assignmentPage.clickOnAssignmentButton();
     });
 
+    beforeEach("routes", () => {
+      cy.server();
+      cy.route("POST", "**/test-activity/**").as("test-activity");
+    });
+
     after("exit test", () => studentTest.clickOnExitTest());
 
     Object.keys(attempts).forEach((queNum, i) => {
@@ -67,6 +72,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
 
         // attempt as right
         studentTest.getQuestionByIndex(i);
+        if (i !== 0) cy.wait("@test-activity");
         cy.wait(500); // allow questions to render
 
         studentTest.attemptQuestion(queType, attemptTypes.RIGHT, attemptData);
@@ -77,7 +83,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
         if (queType === questionTypeKey.MULTIPLE_CHOICE_MULTIPLE)
           cy.get("label")
             .find("input:checked")
-            .each(ele => cy.wrap(ele).click({ force: true }));
+            .as("checked")
+            .each(ele => {
+              cy.get("@checked")
+                .eq(0)
+                .click({ force: true });
+            });
 
         studentTest.attemptQuestion(queType, attemptTypes.WRONG, attemptData);
         studentTest.checkAnsValidateAsWrong(points);

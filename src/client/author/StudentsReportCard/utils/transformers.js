@@ -11,7 +11,7 @@ const INCORRECT = "Incorrect";
 
 //format answers for doc based
 const formatAnswerForDocBased = (value, q, options = {}) => {
-  return options[value]?.label || value?.value || "-";
+  return options[value]?.label || value?.value || value || "-";
 };
 
 //to format correct/user answer
@@ -189,7 +189,7 @@ export const getChartAndStandardTableData = (studentResponse, author_classboard_
           return (d.standards || []).map(std => ({
             ...std,
             domain: d.name,
-            question: q.qLabel?.substr(1) || q.qLabel,
+            question: typeof q.qLabel === "string" ? q.qLabel?.substr(1) : q.qLabel,
             performance: performance,
             score: round(score, 2),
             maxScore

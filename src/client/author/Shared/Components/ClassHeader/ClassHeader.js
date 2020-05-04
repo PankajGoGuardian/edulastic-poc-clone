@@ -34,7 +34,11 @@ import {
   showScoreSelector
 } from "../../../ClassBoard/ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
-import { googleSyncAssignmentAction, toggleReleaseScoreSettingsAction, toggleStudentReportCardSettingsAction } from "../../../src/actions/assignments";
+import {
+  googleSyncAssignmentAction,
+  toggleReleaseScoreSettingsAction,
+  toggleStudentReportCardSettingsAction
+} from "../../../src/actions/assignments";
 import {
   canvasSyncGradesAction,
   closeAssignmentAction,
@@ -47,7 +51,11 @@ import {
 } from "../../../src/actions/classBoard";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
-import { getAssignmentSyncInProgress, getToggleReleaseGradeStateSelector, getToggleStudentReportCardStateSelector } from "../../../src/selectors/assignments";
+import {
+  getAssignmentSyncInProgress,
+  getToggleReleaseGradeStateSelector,
+  getToggleStudentReportCardStateSelector
+} from "../../../src/selectors/assignments";
 import { getGroupList, getOrgDataSelector } from "../../../src/selectors/user";
 import {
   CaretUp,
@@ -201,7 +209,7 @@ class ClassHeader extends Component {
 
   onStudentReportCardsClick = () => {
     const { testActivity, toggleStudentReportCardPopUp } = this.props;
-    const isAnyBodyGraded = testActivity.some(item => item.status === "submitted" && item.graded);
+    const isAnyBodyGraded = testActivity.some(item => item.status === "submitted" && item.graded === "GRADED");
     if (isAnyBodyGraded) {
       toggleStudentReportCardPopUp(true);
     } else {
@@ -331,7 +339,7 @@ class ClassHeader extends Component {
           actionOnInaccessible="hidden"
           groupId={classId}
         >
-          <MenuItems data-cy="studentReportCard" onClick={ this.onStudentReportCardsClick }>
+          <MenuItems data-cy="studentReportCard" onClick={this.onStudentReportCardsClick}>
             Student Report Cards
           </MenuItems>
         </FeaturesSwitch>
@@ -461,13 +469,15 @@ class ClassHeader extends Component {
               classId={classId}
               lcb
             />
-            {isShowStudentReportCardSettingPopup && <StudentReportCardMenuModal
-              title="Student Report Card"
-              visible={isShowStudentReportCardSettingPopup}
-              onCancel={() => toggleStudentReportCardPopUp(false)}
-              groupId={classId}
-              assignmentId={assignmentId}
-            />}
+            {isShowStudentReportCardSettingPopup && (
+              <StudentReportCardMenuModal
+                title="Student Report Card"
+                visible={isShowStudentReportCardSettingPopup}
+                onCancel={() => toggleStudentReportCardPopUp(false)}
+                groupId={classId}
+                assignmentId={assignmentId}
+              />
+            )}
             {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
             {isViewPassword && <ViewPasswordModal />}
             <ConfirmationModal
@@ -573,7 +583,7 @@ const enhance = compose(
       toggleViewPassword: toggleViewPasswordAction,
       canvasSyncGrades: canvasSyncGradesAction,
       googleSyncAssignment: googleSyncAssignmentAction,
-      toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction,
+      toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction
     }
   )
 );

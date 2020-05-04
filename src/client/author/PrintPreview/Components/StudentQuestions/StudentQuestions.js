@@ -113,13 +113,19 @@ class StudentQuestions extends Component {
     if (type === "manualGraded") {
       testItems = testItems.reduce((acc, ti) => {
         let qs = ti.data?.questions;
-        if (ti.multipartItem) {
-          qs = qs.filter(q => !q.validation?.automarkable).length > 0 ? qs : [];
+        if (ti.multipartItem || ti.itemLevelScoring) {
+          qs =
+            qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false).length > 0
+              ? qs
+              : [];
         } else {
-          qs = qs.filter(q => defaultManualGradedType.includes(q.type) || !qs.validation?.automarkable);
+          qs = qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false);
         }
-        ti.data.questions = qs;
-        return [...acc, ti];
+        if (qs.length) {
+          ti.data.questions = qs;
+          return [...acc, ti];
+        }
+        return [...acc];
       }, []);
     }
     return [...testItems];

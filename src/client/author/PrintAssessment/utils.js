@@ -17,10 +17,13 @@ export const getOrderedQuestionsAndAnswers = (testItems, passages, type, filterQ
     if (type === "custom") {
       qs = qs.filter(q => filterQs.includes(q.qLabel));
     } else if (type === "manualGraded") {
-      if (item.multipartItem) {
-        qs = qs.filter(q => !q.validation?.automarkable).length > 0 ? qs : [];
+      if (item.multipartItem || item.itemLevelScoring) {
+        qs =
+          qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false).length > 0
+            ? qs
+            : [];
       } else {
-        qs = qs.filter(q => defaultManualGradedType.includes(q.type) || !qs.validation?.automarkable);
+        qs = qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false);
       }
     }
 

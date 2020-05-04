@@ -151,7 +151,8 @@ const TestPageHeader = ({
   creating,
   isLoadingData,
   playlistStatus,
-  testItems
+  testItems,
+  isTestLoading
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -332,11 +333,11 @@ const TestPageHeader = ({
           />
 
           <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
-            {/* {showShareButton && (
+            {showShareButton && (
               <EduButton title="Print" data-cy="printTest" disabled={isTestLoading} onClick={handlePrintTest}>
                 <IconPrint />
               </EduButton>
-            )} */}
+            )}
             {showShareButton && (owner || features.isCurator) && !isEdulasticCurator && (
               <EduButton isGhost IconBtn title="Share" data-cy="share" onClick={onShare} disabled={disableButtons}>
                 <IconShare style={{ transform: "rotate(180deg)" }} />

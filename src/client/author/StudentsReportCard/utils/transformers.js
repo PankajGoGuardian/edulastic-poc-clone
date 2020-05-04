@@ -41,12 +41,15 @@ const formatAnswers = (data, options, q, qActivity = null, context = "") => {
       return String.fromCharCode(65 + Object.keys(options).indexOf(item));
     } else if (type == questionType.MATH && title === "Units") {
       if (context === "userResponse") {
+        if (typeof item === "string") {
+          return item;
+        }
         return `${item.expression || "-"}${item.unit || ""}`;
       }
       const value = item?.value;
       if (item.options) {
         const unit = Array.isArray(item.options) ? item.options.map(o => o.unit).join(",") : item.options?.unit;
-        return `${value}${unit}`;
+        return `${value}${unit || ""}`;
       }
       return value;
     } else if (item?.value) {

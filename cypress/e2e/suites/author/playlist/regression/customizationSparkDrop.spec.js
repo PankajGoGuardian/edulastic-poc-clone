@@ -224,6 +224,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.playlistCustom.clickOnManageContent();
         playlistlibraryPage.addTestTab.clickOnManageModule();
         playlistlibraryPage.addTestTab.clickOnAddModule();
+        playlistlibraryPage.addTestTab.setModuleGroupNameByModule(2, "module-group-3");
         playlistlibraryPage.addTestTab.setModuleName(2, "module-3");
         playlistlibraryPage.addTestTab.clickOnSaveByModule(2);
       });

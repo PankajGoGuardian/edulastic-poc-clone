@@ -15,6 +15,9 @@ export default class PlayListAddTest {
 
   getModuleNameByModule = mod => this.getModuleContainerByModule(mod).find('[placeholder="Enter module name"]');
 
+  getModuleGroupNameByModule = mod =>
+    this.getModuleContainerByModule(mod).find('[placeholder="Enter module group name"]');
+
   getModuleIdByModule = mod => this.getModuleContainerByModule(mod).find('[placeholder="Enter ID"]');
 
   getModuleSaveByModuleNo = mod => this.getModuleContainerByModule(mod).find('[data-cy="manageModuleApply"]');
@@ -59,6 +62,8 @@ export default class PlayListAddTest {
   selectModuleWhileAdding = mod => this.getModuleWhileAdding(mod).click();
 
   setModuleName = (mod, name) => this.getModuleNameByModule(mod).type(`{selectall}${name}`);
+
+  setModuleGroupNameByModule = (mod, groupName) => this.getModuleGroupNameByModule(mod).type(`{selectall}${groupName}`);
 
   setModuleId = (mod, id) => this.getModuleIdByModule(mod).type(`{selectall}${id}`);
 

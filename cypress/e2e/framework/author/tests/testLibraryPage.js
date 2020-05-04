@@ -163,7 +163,7 @@ export default class TestLibrary {
 
   clickOnDetailsOfCard = () => {
     cy.server();
-    cy.route("GET", "**/assignments").as("assignment");
+    cy.route("GET", "**/regrade-assignments").as("assignment");
     cy.get('[data-cy="details-button"]')
       .click({ force: true })
       .then(() => {
@@ -218,7 +218,7 @@ export default class TestLibrary {
       .parent()
       .parent()
       .contains(option)
-      .click();
+      .click({ force: true });
   };
 
   selectPeopletoshare = (email, edit = false, validuser = true) => {
@@ -405,7 +405,7 @@ export default class TestLibrary {
 
   visitTestById = id => {
     cy.server();
-    cy.route("GET", "**/test/*/assignments").as("load-test-review");
+    cy.route("GET", "**/test/*/regrade-assignments").as("load-test-review");
     cy.visit(`/author/tests/tab/review/id/${id}`);
     cy.wait("@load-test-review");
   };

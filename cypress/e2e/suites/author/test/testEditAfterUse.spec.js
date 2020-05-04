@@ -1,17 +1,17 @@
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
-import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
-import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
-import TestAddItemTab from "../../../../framework/author/tests/testDetail/testAddItemTab";
-import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
-import SidebarPage from "../../../../framework/student/sidebarPage";
-import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-import StudentTestPage from "../../../../framework/student/studentTestPage";
-import Regrade from "../../../../framework/author/tests/testDetail/regrade";
-import FileHelper from "../../../../framework/util/fileHelper";
-import ReportsPage from "../../../../framework/student/reportsPage";
-import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
-import { openPolicyTypes } from "../../../../framework/constants/assignmentStatus";
+import TestLibrary from "../../../framework/author/tests/testLibraryPage";
+import ItemListPage from "../../../framework/author/itemList/itemListPage";
+import TestSummayTab from "../../../framework/author/tests/testDetail/testSummaryTab";
+import TestReviewTab from "../../../framework/author/tests/testDetail/testReviewTab";
+import TestAddItemTab from "../../../framework/author/tests/testDetail/testAddItemTab";
+import TestAssignPage from "../../../framework/author/tests/testDetail/testAssignPage";
+import SidebarPage from "../../../framework/student/sidebarPage";
+import AssignmentsPage from "../../../framework/student/assignmentsPage";
+import StudentTestPage from "../../../framework/student/studentTestPage";
+import Regrade from "../../../framework/author/tests/testDetail/regrade";
+import FileHelper from "../../../framework/util/fileHelper";
+import ReportsPage from "../../../framework/student/reportsPage";
+import MCQTrueFalsePage from "../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
+import { openPolicyTypes } from "../../../framework/constants/assignmentStatus";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Without Regrade`, () => {
   const testLibraryPage = new TestLibrary();

@@ -248,19 +248,22 @@ class StudentTestPage {
 
   // CHOICE MATRIX
   checkAnsMatrix = (answer, steams) => {
-    Object.keys(answer).forEach(chKey => {
-      cy.get('[data-cy="matrixTable"]')
-        .children()
-        .find("tr.ant-table-row")
-        .contains(chKey)
-        .closest("tr")
-        .then(ele => {
-          cy.wrap(ele)
-            .find("input")
-            .eq(steams.indexOf(answer[chKey]))
-            .click({ force: true });
+    cy.get('[data-cy="matrixTable"]')
+      .children()
+      .find("tr.ant-table-row")
+      .then($rows => {
+        Object.keys(answer).forEach(chKey => {
+          cy.wrap($rows)
+            .contains(chKey)
+            .closest("tr")
+            .then(ele => {
+              cy.wrap(ele)
+                .find("input")
+                .eq(steams.indexOf(answer[chKey]))
+                .click({ force: true });
+            });
         });
-    });
+      });
   };
 
   verifyAnseredMatrix = (card, attempt, steams) => {

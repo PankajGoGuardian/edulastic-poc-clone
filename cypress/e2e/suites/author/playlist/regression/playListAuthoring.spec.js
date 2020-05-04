@@ -79,6 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
 
       for (let i = 0; i < tests.length; i++) {
         if (i !== 0) playListLibrary.addTestTab.clickOnAddModule();
+        playListLibrary.addTestTab.setModuleGroupNameByModule(i + 1, `module-group-${i + 1}`);
         playListLibrary.addTestTab.setModuleName(i + 1, `module-${i + 1}`);
         playListLibrary.addTestTab.setModuleId(i + 1, `module-id-${i + 1}`);
         playListLibrary.addTestTab.clickOnSaveByModule(i + 1);

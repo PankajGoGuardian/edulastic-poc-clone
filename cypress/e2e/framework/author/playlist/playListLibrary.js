@@ -128,6 +128,8 @@ export default class PlayListLibrary {
 
     for (let i = 0; i < NoOfModules; i++) {
       if (i !== 0) this.addTestTab.clickOnAddModule();
+      // TODO review and add module group name specific tests, adding group name to unblock the current flow, since its mandatory field now.
+      this.addTestTab.setModuleGroupNameByModule(i + 1, `module-group-${i + 1}`);
       this.addTestTab.setModuleName(i + 1, `module-${i + 1}`);
       this.addTestTab.setModuleId(i + 1, `mod${i + 1}`);
       this.addTestTab.clickOnSaveByModule(i + 1);

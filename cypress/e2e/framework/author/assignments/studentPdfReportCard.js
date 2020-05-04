@@ -207,9 +207,11 @@ export default class StudentsReportCard {
 
   indexToOption = ind => String.fromCharCode(ind + 65);
 
-  getQuestionTableData = ({ attempt, questionTypeMap }) => {
+  getQuestionTableData = ({ attempt, questionTypeMap, isGradeBook = false }) => {
     const questinoWiseData = {};
-    const TEI_AttemptTypes = { right: "Correct", wrong: "Incorrect", partialCorrect: "Partial Correct" };
+    let TEI_AttemptTypes;
+    if (isGradeBook) TEI_AttemptTypes = { right: "TEI", wrong: "TEI", partialCorrect: "TEI" };
+    else TEI_AttemptTypes = { right: "Correct", wrong: "Incorrect", partialCorrect: "Partial Correct" };
     const TEI_CorrectAns = "TEI";
     const CR_Questions = "Constructed Response";
     const skippedResponse = "-";
@@ -231,7 +233,6 @@ export default class StudentsReportCard {
       let studentResponseByAttempt;
       let studentResponse;
       let correctResponse;
-
       switch (queKey.split(".")[0]) {
         case queTypes.MULTIPLE_CHOICE_BLOCK:
         case queTypes.MULTIPLE_CHOICE_STANDARD:
@@ -240,7 +241,6 @@ export default class StudentsReportCard {
           studentResponseByAttempt = Array.isArray(attemptData[attemptType])
             ? attemptData[attemptType]
             : [attemptData[attemptType]];
-
           studentResponse =
             attemptType === attemptTypes.SKIP
               ? skippedResponse

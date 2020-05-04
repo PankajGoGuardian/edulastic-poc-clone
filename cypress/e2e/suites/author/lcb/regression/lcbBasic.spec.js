@@ -352,6 +352,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
         it(` > verify scores and color for student :: ${studentName}`, () => {
+          expressg.verifyScoreToggleButtonEnabled(true);
           const { attempt, score, perfValue } = statsMap[studentName];
           expressg.verifyScoreGrid(studentName, attempt, score, perfValue, questionTypeMap);
           expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap); // assert color
@@ -359,6 +360,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       });
     });
 
+    context(" > verify Responses", () => {
+      before("Change toggle button to Response view", () => {
+        expressg.getScoreToggleButton().click({ force: true });
+      });
+      submittedStudentList.forEach(studentName => {
+        // ["Student01"].forEach(studentName => {
+        it(` > verify response and color for student :: ${studentName}`, () => {
+          expressg.verifyScoreToggleButtonEnabled(false);
+          const { attempt } = statsMap[studentName];
+          expressg.verifyResponseGrid(attempt, questionTypeMap, studentName);
+          expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap); // assert color
+        });
+      });
+    });
     // [TODO] context >> verify response
     context(" > verify question level data", () => {
       queList.forEach(queNum => {

@@ -1,15 +1,15 @@
 import { attemptTypes, queColor } from "../../constants/questionTypes";
 import LiveClassboardPage from "./LiveClassboardPage";
 import StudentTestPage from "../../student/studentTestPage";
-
+import StudentsReportCard from "../../author/assignments/studentPdfReportCard";
 export default class ExpressGraderPage extends LiveClassboardPage {
   constructor() {
     super();
     this.rowAlias = "studentRow";
+    this.StudentsReportCard = new StudentsReportCard();
     this.attemptQuestion = (attemptQueType, attemptType, attemptData) =>
       new StudentTestPage().attemptQuestion(attemptQueType, attemptType, attemptData);
   }
-
   // *** ELEMENTS START ***
 
   getGridRowByStudent = student =>
@@ -121,6 +121,9 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       );
   };
 
+  getScoreToggleButton = () => {
+    return cy.get(".ant-switch").first();
+  };
   getScoreforQueNum = queNum => this.getCellforQueNum(queNum).find("span");
 
   getCellforQueNum = queNum => {
@@ -169,6 +172,11 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.getCellforQueNum(queNum).should("have.css", "background-color", color);
   };
 
+  verifyResponseEntryByIndexOfSelectedRow = (data, questionNumber) => {
+    if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
+    else this.getCellforQueNum(questionNumber).should("have.text", data);
+  };
+
   verifyScoreGrid(studentName, studentAttempts, score, perfValue, questionTypeMap) {
     this.getGridRowByStudent(studentName);
 
@@ -210,6 +218,26 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     });
   };
 
+  verifyScoreToggleButtonEnabled = value => {
+    if (value) {
+      this.getScoreToggleButton().should("have.class", "ant-switch-checked");
+    } else {
+      this.getScoreToggleButton().should("not.have.class", "ant-switch-checked");
+    }
+  };
+
+  verifyResponseGrid = (attempt, questionTypeMap, studentName) => {
+    this.getGridRowByStudent(studentName);
+    const questionTableData = this.StudentsReportCard.getQuestionTableData({
+      attempt,
+      questionTypeMap,
+      isGradeBook: true
+    });
+    Object.keys(questionTypeMap).forEach(questionNumber => {
+      const { studentResponse } = questionTableData[questionNumber];
+      this.verifyResponseEntryByIndexOfSelectedRow(studentResponse, questionNumber);
+    });
+  };
   verifyResponsesInGridStudentLevel = (studentName, studentAttempts, questionTypeMap, useKeyBoardKeys = false) => {
     this.routeAPIs();
     this.getGridRowByStudent(studentName);

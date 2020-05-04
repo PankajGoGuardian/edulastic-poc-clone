@@ -1,49 +1,86 @@
 import { get, keyBy, values, round, groupBy } from "lodash";
 import next from "immer";
 import { responseDisplayOption } from "./constants";
+import { replaceVariables } from "../../../assessment/utils/variables";
+import { questionType } from "@edulastic/constants";
+import { formatToMathAnswer } from "../../../assessment/widgets/MathFormula/components/CorrectAnswerBox";
 
 const CORRECT = "Correct";
 const PARTIAL_CORRECT = "Partial Correct";
 const INCORRECT = "Incorrect";
 
-const formatMathTypeQuestion = (answer = "") =>
-  answer.search("input__math") !== -1 ? answer : `<span class="input__math" data-latex="${answer}"></span>`;
+//format answers for doc based
+const formatAnswerForDocBased = (value, q, options = {}) => {
+  return options[value]?.label || value?.value || "-";
+};
 
 //to format correct/user answer
-const formatAnswers = (data, options, type, title, qActivity = null, context = "") => {
+const formatAnswers = (data, options, q, qActivity = null, context = "") => {
+  if ((!qActivity || qActivity.skipped) && context === "userResponse") {
+    return "-";
+  }
+  const { type, title, isDocBased } = q;
   let responses = data;
   if (!Array.isArray(responses)) {
     responses = [responses];
   }
 
   const answer = responses.map((item, index) => {
-    if (type === "multipleChoice") {
-      if (title === "True or false") {
+    if (isDocBased) {
+      return formatAnswerForDocBased(item, q, options);
+    } else if (type === questionType.MULTIPLE_CHOICE) {
+      //to check if 'True or false' qType have more then 2 options and option label othern then 'True' or 'False'
+      //then considering it as standard multipleChoice type
+      if (
+        title === "True or false" &&
+        Object.keys(options).length === 2 &&
+        ["true", "false"].includes(options[item]?.label?.toLowerCase())
+      ) {
         return options[item].label || "-";
       }
       return String.fromCharCode(65 + Object.keys(options).indexOf(item));
+    } else if (type == questionType.MATH && title === "Units") {
+      if (context === "userResponse") {
+        return `${item.expression || "-"}${item.unit || ""}`;
+      }
+      const value = item?.value;
+      if (item.options) {
+        const unit = Array.isArray(item.options) ? item.options.map(o => o.unit).join(",") : item.options?.unit;
+        return `${value}${unit}`;
+      }
+      return value;
     } else if (item?.value) {
       return item?.value;
-    } else if (options[item]) {
+    } else if (options && options[item]) {
       return options[item].label;
-    } else if (item?.id && item?.index) {
+    } else if (options && item?.id && item?.index) {
       return options[(item?.id)][(item?.index)];
     } else if (typeof item === "string") {
       return item;
     }
     return "-";
   });
+
   let result = formatAnswertoDisplay(answer.length ? answer : "-", type, title);
 
   //to display 'Correct/PartialCorrect/Incorrect' for 'TEI' type question for user response
-  //for qType = math, needs to reformat latex to correct format, so function formatMathTypeQuestion do this.
+  //for qType = math, needs to reformat latex to correct format, so using formatToMathAnswer util function do this.
   if (result === "TEI" && context === "userResponse") {
     const { correct, partialCorrect } = qActivity || {};
     result = correct ? CORRECT : partialCorrect ? PARTIAL_CORRECT : INCORRECT;
   } else if (type === "math" && result !== "TEI") {
-    result = Array.isArray(result) ? result.map(ans => formatMathTypeQuestion(ans)) : formatMathTypeQuestion(result);
+    result = Array.isArray(result) ? result.map(ans => formatToMathAnswer(ans)) : formatToMathAnswer(result);
   }
   return Array.isArray(result) ? result.join(", ") : result;
+};
+
+//use `replaceVariables` util function to replace variables from answers
+const formatOptions = q => {
+  let options = replaceVariables(q).options;
+  if (Array.isArray(options)) {
+    options = keyBy(options, "value");
+  }
+  return options;
 };
 
 export const getQuestionTableData = (studentResponse, author_classboard_testActivity) => {
@@ -64,14 +101,12 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
         const data = questions.reduce(
           (acc, q) => {
             const qActivity = qActivityById[q.id];
-            const options = keyBy(q.options, "value");
-            const correctAnswers = get(q, "validation.validResponse.value", []);
+            const options = formatOptions(q);
+            const correctAnswers =
+              get(qActivity, "correctAnswer.value") || get(q, "validation.validResponse.value", []);
             const userResponse = qActivity?.userResponse ? qActivity.userResponse : [];
-            acc.yourAnswer = [
-              ...acc.yourAnswer,
-              formatAnswers(userResponse, options, q.type, q.title, qActivity, "userResponse")
-            ];
-            acc.correctAnswer = [...acc.correctAnswer, formatAnswers(correctAnswers, options, q.type, q.title)];
+            acc.yourAnswer = [...acc.yourAnswer, formatAnswers(userResponse, options, q, qActivity, "userResponse")];
+            acc.correctAnswer = [...acc.correctAnswer, formatAnswers(correctAnswers, options, q)];
             acc.partialCorrect = acc.partialCorrect || qActivity?.partialCorrect;
             acc.correct = acc.correct || qActivity?.correct;
             acc.score += round(qActivity?.score || 0, 2);
@@ -97,11 +132,11 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
         for (let i = 0; i < arr.length; i++) {
           const q = arr[i];
           const qActivity = qActivityById[q.id];
-          const options = keyBy(q.options, "value");
-          const correctAnswers = get(q, "validation.validResponse.value", []);
+          const options = formatOptions(q);
+          const correctAnswers = get(qActivity, "correctAnswer.value") || get(q, "validation.validResponse.value");
           const userResponse = qActivity?.userResponse ? qActivity.userResponse : [];
-          q.yourAnswer = [formatAnswers(userResponse, options, q.type, q.title, qActivity, "userResponse")];
-          q.correctAnswer = [formatAnswers(correctAnswers, options, q.type, q.title)];
+          q.yourAnswer = [formatAnswers(userResponse, options, q, qActivity, "userResponse")];
+          q.correctAnswer = [formatAnswers(correctAnswers, options, q)];
           q.maxScore = get(q, "validation.validResponse.score", 0);
           q.score = round(qActivity?.score || 0, 2);
           q.isCorrect = qActivity?.score;
@@ -154,7 +189,7 @@ export const getChartAndStandardTableData = (studentResponse, author_classboard_
           return (d.standards || []).map(std => ({
             ...std,
             domain: d.name,
-            question: q.qLabel,
+            question: q.qLabel?.substr(1) || q.qLabel,
             performance: performance,
             score: round(score, 2),
             maxScore

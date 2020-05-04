@@ -7,12 +7,11 @@ import { withNamespaces } from "@edulastic/localization";
 import { Wrapper } from "./styled/Wrapper";
 import { Answer } from "./styled/Answer";
 
+export const formatToMathAnswer = answer =>
+  answer.search("input__math") !== -1 ? answer : `<span class="input__math" data-latex="${answer}"></span>`;
+
 const CorrectAnswerBox = ({ answer = "", t, altAnswers }) => {
-  const displayAnswer =
-    answer.search("input__math") !== -1
-      ? answer
-      : `<span class="input__math" data-latex="${answer}"></span>
-  `;
+  const displayAnswer = formatToMathAnswer(answer);
 
   return (
     <Wrapper>

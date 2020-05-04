@@ -84,13 +84,15 @@ const StudentReportPage = ({
       ta => ta.userId === testActivity.studentId
     )?.feedback;
     const classTitle = author_classboard_testActivity.additionalData?.className;
+    const studentActivityStartDate = get(studentResponse, "data.testActivity.startDate");
     return {
       ...chartAndStandardTable,
       ...questionTableData,
       studentName,
       classResponse,
       feedback,
-      classTitle
+      classTitle,
+      studentActivityStartDate
     };
   }, [studentResponse, author_classboard_testActivity, testActivity]);
 

@@ -14,7 +14,15 @@ import {
 
 const PerformanceBrand = (props, ref) => {
   const { testData = {}, data = {}, className, showPerformanceBand, performanceBandsData } = props;
-  const { chartData, classResponse = {}, totalScore, obtainedScore, feedback, classTitle } = data;
+  const {
+    chartData,
+    classResponse = {},
+    totalScore,
+    obtainedScore,
+    feedback,
+    classTitle,
+    studentActivityStartDate
+  } = data;
   const perfomancePercentage = (data.obtainedScore / data.totalScore) * 100;
 
   //finding matching performance band wrt scored percentange from selected performance band group
@@ -71,7 +79,7 @@ const PerformanceBrand = (props, ref) => {
               <Row className="student-report-card-details" type="flex" justify="start">
                 <Col className="student-report-card-key">Date: </Col>
                 <Col data-cy="report-test-date" className="student-report-card-value">
-                  {Moment(testData.createdDate).format("MMM DD, YYYY")}
+                  {Moment(studentActivityStartDate).format("MMM DD, YYYY")}
                 </Col>
               </Row>
               <Row

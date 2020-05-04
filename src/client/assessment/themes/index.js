@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Spin, message } from "antd";
-import { isUndefined, get } from "lodash";
-import { test as testTypes, assignmentPolicyOptions } from "@edulastic/constants";
+import { isUndefined, get, isEmpty } from "lodash";
+import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
 import useInterval from "@use-it/interval";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
@@ -22,6 +22,7 @@ import AssessmentPlayerTestlet from "./AssessmentPlayerTestlet";
 import { CHECK, CLEAR } from "../constants/constantsForQuestions";
 import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
 import { hideHintsAction } from "../actions/userInteractions";
+import UnansweredPopup from "./common/UnansweredPopup";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -89,6 +90,7 @@ const AssessmentContainer = ({
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
+  const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({ qLabels: [], show: false });
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
@@ -146,23 +148,75 @@ const AssessmentContainer = ({
     changePreview(previewTab);
   }, [userPrevAnswer, answersById, items]);
 
-  const gotoQuestion = index => {
+  const getUnAnsweredQuestions = () => {
+    const questions = items[currentItem]?.data?.questions || [];
+    return questions.filter(q => {
+      switch (q.type) {
+        case questionType.TOKEN_HIGHLIGHT:
+          return answersById[q.id].filter(token => token?.selected).length === 0;
+        case questionType.LINE_CHART:
+        case questionType.BAR_CHART:
+        case questionType.HISTOGRAM:
+        case questionType.DOT_PLOT:
+        case questionType.LINE_PLOT:
+          const initialData = q.chart_data.data;
+          const currentData = answersById[q.id];
+          return initialData.every((d, i) => d.y === currentData[i].y);
+        default:
+          return isEmpty(answersById[q.id]);
+      }
+    });
+  };
+
+  const onSkipUnansweredPopup = async () => {
+    setUnansweredPopupSetting({
+      ...unansweredPopupSetting,
+      show: false
+    });
+    const { index, context } = unansweredPopupSetting;
+    if (context === "next") {
+      await moveToNext(null, true);
+    } else if (context === "prev") {
+      moveToPrev(null, true);
+    } else {
+      gotoQuestion(index, true);
+    }
+  };
+
+  const onCloseUnansweedPopup = () => {
+    setUnansweredPopupSetting({
+      ...unansweredPopupSetting,
+      show: false
+    });
+  };
+
+  const gotoQuestion = (index, needsToProceed = false, context = "") => {
     if (preview) {
       hideHints();
       setCurrentItem(index);
     } else {
-      const previewTab = getPreviewTab(index);
-      saveCurrentAnswer({
-        urlToGo: `${url}/qid/${index}`,
-        locState: history?.location?.state,
-        callback: () => changePreview(previewTab)
-      });
+      const unansweredQs = getUnAnsweredQuestions();
+      if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
+        const previewTab = getPreviewTab(index);
+        saveCurrentAnswer({
+          urlToGo: `${url}/qid/${index}`,
+          locState: history?.location?.state,
+          callback: () => changePreview(previewTab)
+        });
+      } else {
+        setUnansweredPopupSetting({
+          show: true,
+          qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
+          index,
+          context
+        });
+      }
     }
   };
 
-  const moveToNext = async () => {
+  const moveToNext = async (e, needsToProceed = false) => {
     if (!isLast()) {
-      gotoQuestion(Number(currentItem) + 1);
+      gotoQuestion(Number(currentItem) + 1, needsToProceed, "next");
     }
 
     if (isLast() && preview && !demo) {
@@ -170,11 +224,21 @@ const AssessmentContainer = ({
     }
 
     if (isLast() && !preview) {
-      const timeSpent = Date.now() - lastTime.current;
-      await saveUserAnswer(currentItem, timeSpent, false, groupId, {
-        urlToGo: `${url}/${"test-summary"}`,
-        locState: history?.location?.state
-      });
+      const unansweredQs = getUnAnsweredQuestions();
+      if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
+        const timeSpent = Date.now() - lastTime.current;
+        await saveUserAnswer(currentItem, timeSpent, false, groupId, {
+          urlToGo: `${url}/${"test-summary"}`,
+          locState: history?.location?.state
+        });
+      } else {
+        setUnansweredPopupSetting({
+          show: true,
+          qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
+          index: Number(currentItem) + 1,
+          context: "next"
+        });
+      }
     }
     if (enableMagnifier) {
       updateTestPlayer({ enableMagnifier: false });
@@ -198,8 +262,8 @@ const AssessmentContainer = ({
     }
   };
 
-  const moveToPrev = () => {
-    if (!isFirst()) gotoQuestion(Number(currentItem) - 1);
+  const moveToPrev = (e, needsToProceed = false) => {
+    if (!isFirst()) gotoQuestion(Number(currentItem) - 1, needsToProceed, "prev");
     if (enableMagnifier) {
       updateTestPlayer({ enableMagnifier: false });
     }
@@ -275,8 +339,9 @@ const AssessmentContainer = ({
     return <Spin />;
   }
 
+  let playerComponent = null;
   if (!isUndefined(docUrl)) {
-    return (
+    playerComponent = (
       <AssessmentPlayerDocBased
         docUrl={docUrl}
         annotations={annotations}
@@ -291,7 +356,7 @@ const AssessmentContainer = ({
   }
 
   if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
-    return (
+    playerComponent = (
       <AssessmentPlayerTestlet
         {...props}
         testletConfig={testletConfig}
@@ -307,7 +372,21 @@ const AssessmentContainer = ({
    * at student side only scratchPad should be enabled,
    * highlight image default pen should be disabled
    */
-  return defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />;
+  playerComponent = defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />;
+  return (
+    <>
+      {unansweredPopupSetting.show && (
+        <UnansweredPopup
+          visible
+          title=""
+          onSkip={onSkipUnansweredPopup}
+          onClose={onCloseUnansweedPopup}
+          data={unansweredPopupSetting.qLabels}
+        />
+      )}
+      {playerComponent}
+    </>
+  );
 };
 
 AssessmentContainer.propTypes = {

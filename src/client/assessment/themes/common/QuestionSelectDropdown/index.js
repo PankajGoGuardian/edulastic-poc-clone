@@ -21,10 +21,16 @@ const QuestionSelectDropdown = ({
   const dropdownWrapper = useRef(null);
   const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
   return (
-    <SelectContainer ref={dropdownWrapper} menuStyle={menuStyle} style={dropdownStyle} skinb={skinb} className="question-select-dropdown">
+    <SelectContainer
+      ref={dropdownWrapper}
+      menuStyle={menuStyle}
+      style={dropdownStyle}
+      skinb={skinb}
+      className="question-select-dropdown"
+    >
       <Select
         getPopupContainer={triggerNode => triggerNode.parentNode}
-        defaultValue={currentItem}
+        value={currentItem}
         data-cy="options"
         onChange={value => {
           gotoQuestion(parseInt(value, 10));

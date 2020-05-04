@@ -334,7 +334,14 @@ const TestPageHeader = ({
 
           <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
             {showShareButton && (
-              <EduButton title="Print" data-cy="printTest" disabled={isTestLoading} onClick={handlePrintTest}>
+              <EduButton
+                title="Print"
+                isGhost
+                IconBtn
+                data-cy="printTest"
+                disabled={isTestLoading}
+                onClick={handlePrintTest}
+              >
                 <IconPrint />
               </EduButton>
             )}

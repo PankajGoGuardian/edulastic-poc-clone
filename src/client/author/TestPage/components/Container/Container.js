@@ -352,7 +352,10 @@ class Container extends PureComponent {
       } else {
         const { id } = match.params;
         if (id) {
-          history.push(`/author/assignments/${id}`);
+          history.push({
+            pathname: `/author/assignments/${id}`,
+            state: { fromText: "TEST LIBRARY", toUrl: "/author/tests" }
+          });
         }
       }
     }

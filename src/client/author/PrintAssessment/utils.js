@@ -2,17 +2,26 @@ import { keyBy, identity, flatten, groupBy, sortBy, flattenDeep } from "lodash";
 import { questionType } from "@edulastic/constants";
 import { markQuestionLabel } from "../ClassBoard/Transformer";
 
+const defaultManualGradedType = questionType.manuallyGradableQn;
+
+const TEI = "Tech Enhanced Item";
+const CR = "Constructed Response";
+
 export const getOrderedQuestionsAndAnswers = (testItems, passages, type, filterQs) => {
   passages = keyBy(passages, "_id");
   markQuestionLabel(testItems);
   let questions = testItems?.reduce((acc, item, index) => {
     // if it's a passage type question, insert passage before the questions
     // also, if the current testItem has same passageId as previous one, dont insert the passage again!
-    let qs = (item?.data?.questions || []);
+    let qs = item?.data?.questions || [];
     if (type === "custom") {
       qs = qs.filter(q => filterQs.includes(q.qLabel));
     } else if (type === "manualGraded") {
-      qs = item.autoGrade ? [] : qs;
+      if (item.multipartItem) {
+        qs = qs.filter(q => !q.validation?.automarkable).length > 0 ? qs : [];
+      } else {
+        qs = qs.filter(q => defaultManualGradedType.includes(q.type) || !qs.validation?.automarkable);
+      }
     }
 
     if (item.passageId && item.passageId !== testItems?.[index - 1]?.passageId) {
@@ -33,13 +42,16 @@ export const getOrderedQuestionsAndAnswers = (testItems, passages, type, filterQ
     return acc;
   }, []);
 
-  const answers = questions
+  let answers = questions
     .filter(q => ![questionType.PASSAGE, questionType.VIDEO, questionType.PROTRACTOR].includes(q.type))
     .map(q => ({
       qLabel: q.qLabel,
       answer: createAnswer(q)
     }));
-
+  const allTEIAnswers = answers.filter(a => a.answer === TEI);
+  if (allTEIAnswers.length === answers.length) {
+    answers = [];
+  }
   return {
     questions,
     answers
@@ -58,9 +70,9 @@ const createAnswer = q => {
     case questionType.ESSAY_RICH_TEXT:
     case questionType.HIGHLIGHT_IMAGE:
     case questionType.ESSAY_PLAIN_TEXT:
-      return "Constructed Response Question";
+      return CR;
     default:
-      return "Tech Enhanced Question";
+      return TEI;
   }
 };
 
@@ -112,18 +124,20 @@ const createClozeTextAnswerChoice = question => {
 
 export const formatQuestionLists = (qs = "") =>
   qs
-  .split(',')
-  .map(q => {
-    const range = q.split("-");
-    let start = parseInt(range[0]);
-    let end = parseInt(range[1]);
-    if (start > end) {
-      const temp = start;
-      start = end;
-      end = temp
-    }
-    if (range.length > 1) {
-      return Array.from({ length: (end || start) - start + 1 }, (_, i) => i + start);
-    }
-    return [start, end];
-  }).flat().filter(q => !isNaN(q));
+    .split(",")
+    .map(q => {
+      const range = q.split("-");
+      let start = parseInt(range[0]);
+      let end = parseInt(range[1]);
+      if (start > end) {
+        const temp = start;
+        start = end;
+        end = temp;
+      }
+      if (range.length > 1) {
+        return Array.from({ length: (end || start) - start + 1 }, (_, i) => i + start);
+      }
+      return [start, end];
+    })
+    .flat()
+    .filter(q => !isNaN(q));

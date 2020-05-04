@@ -8,6 +8,9 @@ import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
 import { QuestionDiv, Content } from "./styled";
 import { formatQuestionLists } from "../../../PrintAssessment/utils";
+import { questionType } from "@edulastic/constants";
+
+const defaultManualGradedType = questionType.manuallyGradableQn;
 
 function Preview({ item, passages, evaluation }) {
   const rows = getRows(item);
@@ -108,7 +111,16 @@ class StudentQuestions extends Component {
 
     //If search type is 'manualGraded', then accept manual graded items only
     if (type === "manualGraded") {
-      testItems = testItems.filter(ti => !ti.autoGrade);
+      testItems = testItems.reduce((acc, ti) => {
+        let qs = ti.data?.questions;
+        if (ti.multipartItem) {
+          qs = qs.filter(q => !q.validation?.automarkable).length > 0 ? qs : [];
+        } else {
+          qs = qs.filter(q => defaultManualGradedType.includes(q.type) || !qs.validation?.automarkable);
+        }
+        ti.data.questions = qs;
+        return [...acc, ti];
+      }, []);
     }
     return [...testItems];
   }

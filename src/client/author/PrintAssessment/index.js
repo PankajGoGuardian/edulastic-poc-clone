@@ -100,19 +100,21 @@ const PrintAssessment = ({ match, userRole, location }) => {
               </div>
             );
           })}
-          <StyledAnswerWrapper>
-            <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
-              Answer Key of {test.title}
-            </span>
-            {test.answers.map(answer => (
-              <AnswerContainer>
-                <div className="answer-wrapper">
-                  {answer.qLabel}. {answer.answer}
-                </div>
-                <hr />
-              </AnswerContainer>
-            ))}
-          </StyledAnswerWrapper>
+          {test.answers.length && (
+            <StyledAnswerWrapper>
+              <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
+                Answer Key of {test.title}
+              </span>
+              {test.answers.map(answer => (
+                <AnswerContainer>
+                  <div className="answer-wrapper">
+                    {answer.qLabel}. {answer.answer}
+                  </div>
+                  <hr />
+                </AnswerContainer>
+              ))}
+            </StyledAnswerWrapper>
+          )}
         </AnswerContext.Provider>
       ) : (
         <div>

@@ -20,6 +20,7 @@ cypress/fixtures/toDelete/
 cypress/.snapshot-report
 cypress/videos/
 dist/
+public/testlets/
 
 # vi swap files
 *.sw*

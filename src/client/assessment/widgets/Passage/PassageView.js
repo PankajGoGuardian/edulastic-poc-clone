@@ -121,9 +121,9 @@ const PassageView = ({
     content = decodeHTML(content);
     if (isEmpty(_highlights)) {
       return content
-        .replace(/(<p>)/g, "")
-        .replace(/(<\/p>)/g, "<br/>")
-        .replace(/background-color: (.*?);/g, "");
+        ?.replace(/(<p>)/g, "")
+        ?.replace(/(<\/p>)/g, "<br/>")
+        ?.replace(/background-color: (.*?);/g, "");
     }
     return _highlights;
   };

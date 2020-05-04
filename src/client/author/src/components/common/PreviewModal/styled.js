@@ -79,24 +79,14 @@ export const ButtonsWrapper = styled.div`
   ${({ style }) => style};
   .ant-btn {
     margin-bottom: ${props => props.mb || "0px"};
-    &[title="Delete item"],
-    &[title="Delete item"]:hover,
-    &[title="Delete item"]:focus {
-      border-color: red;
-      background: white;
-      color: red;
-      svg {
-        fill: red !important;
-      }
-    }
   }
   flex-wrap: wrap;
 `;
 
 export const ColumnContentArea = styled.div`
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.1);
   background: #fff;
-  border-radius: 10px;
+  border-radius: 0px;
   width: 100%;
   display: ${props => (props.hideColumn ? "none" : "flex")};
   flex-direction: column;

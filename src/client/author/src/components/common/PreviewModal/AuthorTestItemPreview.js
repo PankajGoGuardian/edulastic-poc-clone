@@ -272,41 +272,45 @@ class AuthorTestItemPreview extends Component {
         <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
           <ButtonsWrapper justifyContent="flex-start">
             {allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR && (
-              <EduButton isGhost height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
+              <EduButton IconBtn isGhost width="28px" height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
                 <IconCopy color={themeColor} />
-                <span>CLONE</span>
+                {/* <span>CLONE</span> */}
               </EduButton>
             )}
             {(isEditable || userRole === roleuser.EDULASTIC_CURATOR) &&
               (disableEdit && userRole !== roleuser.EDULASTIC_CURATOR ? (
                 <EduButton
+                  IconBtn
                   noHover
                   isGhost
                   disabled
                   height="28px"
+                  width="28px"
                   title="Editing the question with dynamic parameters is disabled during the Test edit and regrade."
                 >
                   <IconPencilEdit color={themeColor} />
-                  <span>edit</span>
+                  {/* <span>edit</span> */}
                 </EduButton>
               ) : (
-                <EduButton isGhost height="28px" title="Edit item" onClick={editTestItem}>
-                  <IconPencilEdit color={themeColor} />
-                  <span>edit</span>
+                <EduButton IconBtn isGhost height="28px" width="28px" title="Edit item" onClick={editTestItem}>
+                  <IconPencilEdit color={themeColor} title="Edit item" />
+                  {/* <span>edit</span> */}
                 </EduButton>
               ))}
             {isOwner &&
               !(userFeatures?.isPublisherAuthor && item.status === "published") &&
               (page === "addItems" || page === "itemList") && (
                 <EduButton
+                  IconBtn
                   title="Delete item"
                   isGhost
                   height="28px"
+                  width="28px"
                   onClick={this.handleDeleteItem}
                   disabled={deleting}
                 >
-                  <IconTrash />
-                  <span>delete</span>
+                  <IconTrash title="Delete item" />
+                  {/* <span>delete</span> */}
                 </EduButton>
               )}
             <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
@@ -398,9 +402,9 @@ class AuthorTestItemPreview extends Component {
             </EduButton>
           )}
 
-          <ReportIssueButton title="Report Issue" type="danger" ghost onClick={toggleReportIssue}>
+          <EduButton title="Report Issue" height="28px" width="28px" IconBtn isGhost onClick={toggleReportIssue}>
             <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
-          </ReportIssueButton>
+          </EduButton>
         </ButtonsWrapper>
       </>
     );

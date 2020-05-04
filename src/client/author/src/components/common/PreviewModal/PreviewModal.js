@@ -5,14 +5,14 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
 import { Spin, Button, Modal, message } from "antd";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { withWindowSizes, EduButton, FlexContainer } from "@edulastic/common";
 import { questionType, roleuser } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { IconClose, IconExpand, IconCollapse } from "@edulastic/icons";
 import {
   getItemDetailSelectorForPreview,
@@ -219,7 +219,7 @@ class PreviewModal extends React.Component {
     const { nextItem, prevItem } = this.props;
     return (
       <>
-        <Nav.BackArrow
+        <PrevArrow
           onClick={() => {
             this.clearView();
             prevItem();
@@ -227,8 +227,8 @@ class PreviewModal extends React.Component {
           position="absolute"
         >
           <FontAwesomeIcon icon={faAngleLeft} />
-        </Nav.BackArrow>
-        <Nav.NextArrow
+        </PrevArrow>
+        <NextArrow
           onClick={() => {
             this.clearView();
             nextItem();
@@ -236,7 +236,7 @@ class PreviewModal extends React.Component {
           position="absolute"
         >
           <FontAwesomeIcon icon={faAngleRight} />
-        </Nav.NextArrow>
+        </NextArrow>
       </>
     );
   };
@@ -292,7 +292,7 @@ class PreviewModal extends React.Component {
     const isTestInRegrade = !!test?._id && (testAssignments.length && test.isUsed);
     return (
       <PreviewModalWrapper
-        bodyStyle={{ padding: 30 }}
+        bodyStyle={{ padding: 0 }}
         isSmallSize={isSmallSize}
         width={isSmallSize || fullModal ? "100%" : "70%"}
         height={isSmallSize || fullModal ? "100%" : null}
@@ -490,12 +490,41 @@ const PreviewModalWrapper = styled(Modal)`
   }
 `;
 
+const ArrowStyle = css`
+  max-width: 30px;
+  font-size: 26px;
+  border-radius: 0px;
+  left: 0px;
+  svg {
+    fill: #878a91;
+    path {
+      fill: unset;
+    }
+  }
+
+  &:hover {
+    svg {
+      fill: ${white};
+    }
+  }
+`;
+
+const PrevArrow = styled(Nav.BackArrow)`
+  ${ArrowStyle};
+`;
+
+const NextArrow = styled(Nav.NextArrow)`
+  ${ArrowStyle};
+  left: unset;
+  right: 0px;
+`;
+
 const HeadingWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px 10px 20px 10px;
+  padding: 15px 30px;
+  background: ${white};
   justify-content: space-between;
-  margin-top: -15px;
   position: relative;
 `;
 
@@ -560,4 +589,7 @@ const QuestionWrapper = styled.div`
   display: flex;
 `;
 
-const ModalContentArea = styled.div``;
+const ModalContentArea = styled.div`
+  border-radius: 0px;
+  padding: 0px 30px;
+`;

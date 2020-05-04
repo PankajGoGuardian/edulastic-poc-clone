@@ -157,6 +157,14 @@ export default class QuestionResponsePage {
         }
         break;
 
+      case queTypes.ESSAY_RICH:
+        score =
+          attemptType === attemptTypes.RIGHT
+            ? points
+            : attemptType === attemptTypes.PARTIAL_CORRECT
+            ? Cypress._.round(points / 2, 2)
+            : 0;
+        break;
       default:
         break;
     }

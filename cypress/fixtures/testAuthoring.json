@@ -184,5 +184,21 @@
     "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_TF.1", "MCQ_TF.1"]
+  },
+  "STUDENT_REPORT_CARD": {
+    "name": "LCB Test Assessment 01",
+    "grade": ["Kindergarten"],
+    "subject": ["Mathematics"],
+    "itemKeys": [
+      "MCQ_STD.1",
+      "MCQ_MULTI.5",
+      "MCQ_TF.1",
+      "MCQ_BLOCK.2",
+      "CHOICE_STD.1",
+      "CHOICE_INLINE.1",
+      "CHOICE_LABEL.1",
+      "CLOZE_DROPDOWN.default",
+      "ESSAY_RICH.1"
+    ]
   }
 }

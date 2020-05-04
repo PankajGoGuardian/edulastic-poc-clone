@@ -50,7 +50,11 @@ export const StandardTableContainer = props => {
         </StyledDomain>
       );
     };
-    arr[1].render = (data, record, index) => <span style={{ fontWeight: "bold" }}>{data}</span>;
+    arr[1].render = (data, record, index) => (
+      <span data-cy={data} style={{ fontWeight: "bold" }}>
+        {data}
+      </span>
+    );
     arr[2].render = (data, record, index) => {
       return data.map((q, i) => (
         <>

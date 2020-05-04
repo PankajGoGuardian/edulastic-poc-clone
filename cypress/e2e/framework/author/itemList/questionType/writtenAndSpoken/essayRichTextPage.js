@@ -100,9 +100,7 @@ class EssayRichTextPage {
       .find("li")
       .contains("Dynamic Parameters")
       .click({ force: true });
-    cy.get('[data-cy="maxscore"]')
-      .should("be.visible")
-      .type(`{selectall}${points}`, { force: true });
+    cy.get('[data-cy="maxscore"]').type(`{selectall}${points}`, { force: true });
   };
 
   createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {

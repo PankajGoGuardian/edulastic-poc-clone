@@ -181,7 +181,7 @@ const StudentReportPage = ({
 
   return (
     <StyledPage>
-      <div id={`report-${testActivity.studentId}`} ref={mainContainerRef}>
+      <div id={`report-${testActivity.studentId}`} data-cy={testActivity.studentName} ref={mainContainerRef}>
         {
           <PerformanceBrand
             showPerformanceBand={showPerformanceBand}

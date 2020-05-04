@@ -119,13 +119,12 @@ const PerformanceBrand = (props, ref) => {
                   </Row>
                 </StyledCard>
                 <StyledPerformancePercent
+                  data-cy="report-overall-performance"
                   className="student-report-card-chart-area"
                   backGroundcolor={mastery?.fill}
                   color={mastery?.color}
                 >
-                  <div data-cy="report-overall-performance" className="student-report-card-chart-area-score">
-                    {Math.round(perfomancePercentage)}%
-                  </div>
+                  <div className="student-report-card-chart-area-score">{Math.round(perfomancePercentage)}%</div>
                 </StyledPerformancePercent>
               </div>
               {showPerformanceBand && (

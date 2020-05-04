@@ -119,6 +119,12 @@ export const MASTERY = {
   NOT_MASTERED: "Not Mastered"
 };
 
+export const PERF_BANDS = {
+  PROFICIENT: "Proficient",
+  BASIC: "Basic",
+  BELOW_BASIC: "Below Basic"
+};
+
 export const REPORT_HEADERS = {
   OVER_ALL_PERF: "performanceBand",
   QEST_TABLE: {

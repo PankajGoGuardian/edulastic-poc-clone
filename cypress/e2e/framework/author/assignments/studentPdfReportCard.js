@@ -1,40 +1,47 @@
+/* eslint-disable prefer-const */
 import StandardBasedReportPage from "./standardBasedReportPage";
 import { attemptTypes, questionTypeKey as queTypes, queColor } from "../../constants/questionTypes";
-import { MASTERY, REPORT_HEADERS } from "../../constants/assignmentStatus";
+import { REPORT_HEADERS } from "../../constants/assignmentStatus";
+import { getPerformanceBandAndColor, getMasteryStatus } from "../../constants/constantFunctions";
 
 const { _ } = Cypress;
+
 export default class StudentsReportCard {
   constructor() {
     this.standardBasedReportPage = new StandardBasedReportPage();
-    this.tableRowToSelected = "selected-row";
-    this.studentIndex = 0;
+    this.tablerowalias = "selected-table-row";
   }
+
+  /* GET ELEMENTS START */
+  getReportContainerByStudent = studName => cy.get(`[data-cy="${studName}"]`).as("report-container-by-student-name");
+
+  selectedReportContainer = () => cy.get("@report-container-by-student-name");
 
   getCheckBoxOptionByValue = value => cy.get(`[data-cy="${value}"]`);
 
-  getStudentName = () => cy.get('[data-cy="report-student-name"]').eq(this.studentIndex);
+  getStudentName = () => this.selectedReportContainer().find('[data-cy="report-student-name"]');
 
-  getTestName = () => cy.get('[data-cy="report-test-name"]').eq(this.studentIndex);
+  getTestName = () => this.selectedReportContainer().find('[data-cy="report-test-name"]');
 
-  getSubjects = () => cy.get('[data-cy="report-subject"]').eq(this.studentIndex);
+  getSubjects = () => this.selectedReportContainer().find('[data-cy="report-subject"]');
 
-  getClassName = () => cy.get('[data-cy="report-class-name"]').eq(this.studentIndex);
+  getClassName = () => this.selectedReportContainer().find('[data-cy="report-class-name"]');
 
-  getTestStartDate = () => cy.get('[data-cy="report-test-date"]').eq(this.studentIndex);
+  getTestStartDate = () => this.selectedReportContainer().find('[data-cy="report-test-date"]');
 
-  getOverallFeedBack = () => cy.get('[data-cy="report-feedback" ]').eq(this.studentIndex);
+  getOverallFeedBack = () => this.selectedReportContainer().find('[data-cy="report-feedback" ]');
 
-  getOverallPerformance = () => cy.get('[data-cy="report-overall-performance"]').eq(this.studentIndex);
+  getOverallPerformance = () => this.selectedReportContainer().find('[data-cy="report-overall-performance"]');
 
-  getOverallPerformanceScore = () => cy.get('[data-cy="report-score"]').eq(this.studentIndex);
+  getOverallPerformanceScore = () => this.selectedReportContainer().find('[data-cy="report-score"]');
 
-  getOverallPerformanceMaxScore = () => cy.get('[data-cy="report-max-score"]').eq(this.studentIndex);
+  getOverallPerformanceMaxScore = () => this.selectedReportContainer().find('[data-cy="report-max-score"]');
 
-  getPerformanceBand = () => cy.get('[data-cy="report-performance-band"]').eq(this.studentIndex);
+  getPerformanceBand = () => this.selectedReportContainer().find('[data-cy="report-performance-band"]');
 
-  getQuestionTable = () => cy.get('[data-cy="report-question-table"]').eq(this.studentIndex);
+  getQuestionTable = () => this.selectedReportContainer().find('[data-cy="report-question-table"]');
 
-  getStandardTable = () => cy.get('[data-cy="report-standard-table"]').eq(this.studentIndex);
+  getStandardTable = () => this.selectedReportContainer().find('[data-cy="report-standard-table"]');
 
   getQuestionTableHeader = () => this.getQuestionTable().find("thead");
 
@@ -50,13 +57,22 @@ export default class StudentsReportCard {
 
   getQuestionTableRowByIndex = index => this.getQuestionTableBody().find(`[data-row-key="${index - 1}"]`);
 
-  getStandardTableRowByIndex = index => this.getStandardTableBody().find(`[data-row-key=${index - 1}]`);
+  getStandardTableRowByStandard = standard =>
+    this.getStandardTableBody()
+      .find(`[data-cy="${standard}"]`)
+      .closest("tr");
 
   getEntryByIndexOfSelectedRow = index =>
     cy
-      .get(`@${this.tableRowToSelected}`)
+      .get(`@${this.tablerowalias}`)
       .find("td")
       .eq(index);
+
+  getReportGenerateButton = () => cy.get('[data-cy="PRINT"]');
+
+  /* GET ELEMENTS END */
+
+  /* ACTIONS START */
 
   uncheckAllHeaderOptionsCheckBoxes = () => {
     [..._.values(REPORT_HEADERS.QEST_TABLE.optional), ..._.values(REPORT_HEADERS.STAND_TABLE.optional)].forEach(
@@ -69,20 +85,32 @@ export default class StudentsReportCard {
 
   checkOptionByValue = value => this.getCheckBoxOptionByValue(value).check({ force: true });
 
-  getReportGenerateButton = () => cy.get('[data-cy="PRINT"]');
+  navigateBacktolcb = () => {
+    cy.server();
+    cy.route("GET", "**/*/group/*/student/*/test-activity").as("load-lcb-page");
+    cy.go("back");
+    cy.wait("@load-lcb-page");
+  };
 
-  clickReportGeanerateButton = () =>
+  clickReportGeanerateButton = () => {
+    cy.server();
+    cy.route("GET", "**/test-activity/**").as("load-report");
     this.getReportGenerateButton()
       .parent()
       .invoke("removeAttr", "target")
       .click()
-      .then(() => cy.wait(10000));
+      .then(() => cy.wait("@load-report"));
+  };
+
+  /* ACTIONS END */
+
+  /* APP HELPERS START */
 
   verifyTestName = testname => this.getTestName().should("have.text", testname);
 
   verifyStudentName = studentName => this.getStudentName().should("contain.text", studentName);
 
-  verifySubject = subjects => this.getSubjects().should("have.text", subjects.join(","));
+  verifySubject = subjects => this.getSubjects().should("have.text", subjects.join(", "));
 
   verifyClassName = className => this.getClassName().should("have.text", className);
 
@@ -90,36 +118,20 @@ export default class StudentsReportCard {
     this.getTestStartDate().should("contain.text", Cypress.moment(new Date()).format("MMM DD, YYYY"));
 
   verifyOverallPerfomanceScore = (score, maxScore, perf) => {
-    this.getOverallPerformanceScore().should("have.text", ` ${parseFloat(score).toFixed(2)}`);
+    this.getOverallPerformanceScore().should("have.text", ` ${_.round(parseFloat(score), 2)}`);
     this.getOverallPerformanceMaxScore().should("have.text", maxScore.toString());
     this.getOverallPerformance().should("have.text", `${_.round(perf.split("%")[0])}%`);
   };
 
   verifyPerformanceBand = perf => {
     const performance = parseInt(perf, 10);
-    const performanceBand =
-      performance <= 100 && performance > 90
-        ? "PROFICIENT"
-        : performance <= 90 && performance > 50
-        ? "BASIC"
-        : "BELOW BASIC";
+    const { bgColor, performanceBand } = getPerformanceBandAndColor(performance);
     this.getPerformanceBand().should("have.text", performanceBand);
-    // TODO: add color assertions
+    this.getPerformanceBand().should("have.css", "color", bgColor);
   };
 
   verifyAttemptTypeInQuestionTable = attemptType => {
-    const evaluationClass =
-      attemptType === attemptTypes.RIGHT || attemptType === attemptTypes.PARTIAL_CORRECT
-        ? "anticon-check"
-        : "anticon-close";
-
-    const evaluationColor =
-      attemptType === attemptTypes.RIGHT
-        ? queColor.PLAIN_GREEN
-        : attemptType === attemptTypes.PARTIAL_CORRECT
-        ? queColor.ORANGE
-        : queColor.PLAIN_RED;
-
+    const { evaluationClass, evaluationColor } = this.getEvaluationClassAndColor(attemptType);
     this.getEntryByIndexOfSelectedRow(0)
       .find("i")
       .should("have.class", evaluationClass)
@@ -130,11 +142,11 @@ export default class StudentsReportCard {
     this.getEntryByIndexOfSelectedRow(0)
       .invoke("text")
       .then(txt => {
-        expect(standard.includes(txt)).to.be.true;
+        expect(standard.includes(txt), `expected standard domain is ${standard} and got ${txt}`).to.be.true;
       });
   };
 
-  verifyEntryByIndexOfSelectedRow = (index, data, delimeter = "") => {
+  verifyEntryByIndexOfSelectedRow = (index, data, delimeter = ", ") => {
     if (Array.isArray(data)) this.getEntryByIndexOfSelectedRow(index).should("contain.text", data.join(`${delimeter}`));
     else this.getEntryByIndexOfSelectedRow(index).should("contain.text", data);
   };
@@ -252,11 +264,7 @@ export default class StudentsReportCard {
         case queTypes.CLOZE_DROP_DOWN:
           studentResponseByAttempt = attemptData[attemptType];
           correctResponse = _.values(correct);
-          // .map((ch, ind) => _.values(choices)[ind].indexOf(ch))
-          // .map(ind => this.indexToOption(ind));
           studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : studentResponseByAttempt;
-          // .map((dropDownOption, dropDownIndex) => _.values(correct)[dropDownIndex].indexOf(dropDownOption))
-          // .map(ind => this.indexToOption(ind));
           break;
 
         case queTypes.CHOICE_MATRIX_STANDARD:
@@ -289,12 +297,13 @@ export default class StudentsReportCard {
     return questinoWiseData;
   };
 
-  getStandardTableData = ({ attemptData, questionTypeMap }) => {
+  getStandardTableData = ({ stuAttempt, questionTypeMap }) => {
     const standardTableDataByStudent = {};
-    const standardBasedReport = this.standardBasedReportPage.getStandardPerformance(attemptData, questionTypeMap);
+    const standardBasedReport = this.standardBasedReportPage.getStandardPerformance(stuAttempt, questionTypeMap);
     _.keys(standardBasedReport).forEach(stand => {
-      standardTableDataByStudent[`${stand}`] = standardBasedReport[stand].students[`${attemptData[0].stuName}`];
+      standardTableDataByStudent[`${stand}`] = standardBasedReport[stand].students[`${stuAttempt[0].stuName}`];
     });
+
     _.keys(standardTableDataByStudent).forEach(standard => {
       standardTableDataByStudent[`${standard}`].standard = standard;
 
@@ -308,20 +317,29 @@ export default class StudentsReportCard {
         standardTableDataByStudent[standard].max
       }`;
 
-      const perf = _.round(
-        (standardTableDataByStudent[`${standard}`].obtain / standardTableDataByStudent[`${standard}`].max) * 100
-      );
-      standardTableDataByStudent[`${standard}`].standardPerf = `${perf}%`;
+      const perf =
+        (standardTableDataByStudent[`${standard}`].obtain / standardTableDataByStudent[`${standard}`].max) * 100;
 
-      standardTableDataByStudent[`${standard}`].masteryStatus =
-        perf <= 100 && perf > 90
-          ? MASTERY.EXCEEDS
-          : perf <= 90 && perf > 80
-          ? MASTERY.MASTERED
-          : perf <= 80 && perf > 70
-          ? MASTERY.ALMOST_MASTERED
-          : MASTERY.NOT_MASTERED;
+      standardTableDataByStudent[`${standard}`].standardPerf =
+        perf % 1 !== 0 ? `${perf.toFixed(2)}%` : `${parseInt(perf, 10)}%`;
+
+      standardTableDataByStudent[`${standard}`].masteryStatus = getMasteryStatus(perf);
     });
     return standardTableDataByStudent;
   };
+
+  getEvaluationClassAndColor = attempttype => {
+    const evaluationClass =
+      attempttype === attemptTypes.RIGHT || attempttype === attemptTypes.PARTIAL_CORRECT
+        ? "anticon-check"
+        : "anticon-close";
+    const evaluationColor =
+      attempttype === attemptTypes.RIGHT
+        ? queColor.PLAIN_GREEN
+        : attempttype === attemptTypes.PARTIAL_CORRECT
+        ? queColor.ORANGE
+        : queColor.PLAIN_RED;
+    return { evaluationClass, evaluationColor };
+  };
+  /* APP HELPERS END */
 }

@@ -42,6 +42,7 @@ import {
 } from "./styled";
 
 import ImageCard from "./ImageCard";
+import { getAssignmentsSelector, fetchAssignmentsAction } from "../Assign/ducks";
 
 const { statusConstants, passwordPolicy } = test;
 
@@ -56,7 +57,16 @@ class SuccessPage extends React.Component {
   }
 
   componentDidMount() {
-    const { fetchTestByID, match, isPlaylist, fetchPlaylistById, isAssignSuccess, fetchAssignmentById } = this.props;
+    const {
+      fetchTestByID,
+      match,
+      isPlaylist,
+      fetchPlaylistById,
+      isAssignSuccess,
+      fetchAssignmentById,
+      isRegradeSuccess,
+      fetchAssignmentsByTestId
+    } = this.props;
     const { id: testId, assignmentId } = match.params;
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
@@ -67,12 +77,15 @@ class SuccessPage extends React.Component {
     }
     if (isAssignSuccess) {
       fetchAssignmentById(assignmentId);
+    } else if (isRegradeSuccess) {
+      fetchAssignmentsByTestId({ testId, regradeAssignments: true });
     }
   }
 
   handleAssign = () => {
-    const { test, history, isAssignSuccess, isRegradeSuccess, assignment } = this.props;
+    const { test, history, isAssignSuccess, isRegradeSuccess, regradedAssignments } = this.props;
     const { _id } = test;
+    const assignment = isAssignSuccess ? this.props.assignment : isRegradeSuccess ? regradedAssignments[0] : {};
     if (isAssignSuccess || isRegradeSuccess) {
       history.push(`/author/classboard/${assignment._id}/${assignment.class?.[0]?._id}`);
     } else {
@@ -87,8 +100,11 @@ class SuccessPage extends React.Component {
   };
 
   renderHeaderButton = () => {
-    const { isAssignSuccess, isPlaylist, isRegradeSuccess, history, location } = this.props;
-    const { fromText, toUrl } = location.state || {};
+    const { isAssignSuccess, isRegradeSuccess, history, location, regradedAssignments } = this.props;
+    const { fromText, toUrl } = location.state || { fromText: "Assignments", toUrl: "/author/assignments" };
+    if (isRegradeSuccess && !regradedAssignments.length) {
+      return null;
+    }
     return (
       <>
         {(isAssignSuccess || isRegradeSuccess) && (
@@ -327,10 +343,12 @@ const enhance = compose(
       assignment: getCurrentAssignmentSelector(state),
       playListSharedUsersList: getPlayListSharedListSelector(state),
       testSharedUsersList: getTestSharedListSelector(state),
-      collections: getCollectionsSelector(state)
+      collections: getCollectionsSelector(state),
+      regradedAssignments: getAssignmentsSelector(state)
     }),
     {
       fetchAssignmentById: receiveAssignmentByAssignmentIdAction,
+      fetchAssignmentsByTestId: fetchAssignmentsAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction
     }

@@ -291,8 +291,9 @@ const extractFunctions = {
   [questionType.MATH]: (question, userResponse = "") => {
     const restrictedMathTypes = ["Matrices", "Complete the Equation", "Formula Essay"];
     if (restrictedMathTypes.includes(question.title)) return "TEI";
-    if (question.title === "Units" && typeof userResponse === "object")
-      return getMathHtml(`${userResponse.expression} ${userResponse.unit}`);
+    if (question.title === "Units" && typeof userResponse === "object") {
+      return getMathHtml(`${userResponse.expression || ""} ${userResponse.unit || ""}`);
+    }
     return getMathHtml(userResponse);
   },
   [questionType.SHORT_TEXT]: (question, userResponse = "") => (userResponse ? "CR" : ""),

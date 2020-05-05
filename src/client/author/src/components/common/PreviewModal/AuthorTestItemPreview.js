@@ -223,7 +223,7 @@ class AuthorTestItemPreview extends Component {
     const borderRadius = widgetIndex === 0 || widgetIndex === widgets.length - 1 ? "10px" : "0px";
 
     return (
-      <Tabs.TabContainer style={{ width: "auto" }}>
+      <Tabs.TabContainer style={{ width: "100%" }}>
         <QuestionWrapper
           showFeedback={showFeedback}
           evaluation={evaluation}

@@ -84,11 +84,11 @@ class TestItemCol extends Component {
     const displayFeedback = true;
     return (
       <TabContainer
-        updatePositionToStore={showStackedView && widget.widgetType === "question"}
+        updatePositionToStore={(showStackedView || isDocBased) && widget.widgetType === "question"}
         questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
-        minHeight={showStackedView && widget.widgetType === "question" && "458px"}
+        minHeight={(showStackedView || isDocBased) && widget.widgetType === "question" && "458px"}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== "resource"}

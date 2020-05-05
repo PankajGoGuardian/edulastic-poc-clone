@@ -98,6 +98,44 @@ class TestItemPreview extends Component {
     );
   };
 
+  getFeedBackVisibility = ({ widgetIndex, colIndex, stackedView }) => {
+    const { isDocBased, isPassageWithQuestions } = this.props;
+    let shouldShowFeedback;
+    let shoudlTakeDimensionsFromStore;
+
+    switch (true) {
+      case isDocBased || stackedView:
+        /**
+         * stacked view
+         * need to show separate feeback blocks for each question
+         */
+        shouldShowFeedback = true;
+        shoudlTakeDimensionsFromStore = true;
+        break;
+
+      case isPassageWithQuestions:
+        /**
+         * Feedback not supported for passages with item level scoring off
+         * will be fixed with EV-12830
+         */
+        shouldShowFeedback = widgetIndex === 0;
+        shoudlTakeDimensionsFromStore = false;
+        break;
+
+      default:
+        /**
+         *  multipart with item level scoring on
+         *  or single question view
+         *  show only one feedback block
+         */
+        shouldShowFeedback = widgetIndex === 0 && colIndex === 0;
+        shoudlTakeDimensionsFromStore = false;
+        break;
+    }
+
+    return [shouldShowFeedback, shoudlTakeDimensionsFromStore];
+  };
+
   renderFeedback = (widget, index, colIndex, stackedView) => {
     const {
       showFeedback,
@@ -106,34 +144,17 @@ class TestItemPreview extends Component {
       isPresentationMode,
       questions,
       isPrintPreview,
-      showCollapseBtn,
-      isPassageWithQuestions
+      showCollapseBtn
     } = this.props;
 
-    let shouldShow;
-    let shoudlTakeDimensionsFromStore;
-    if (stackedView) {
-      // stacked view
-      // need to show separate feeback blocks for each question
-      shouldShow = true;
-      shoudlTakeDimensionsFromStore = true;
-    } else if (isPassageWithQuestions) {
-      // Feedback not supported for passages with item level scoring off
-      //  will be fixed with EV-12830
-      shouldShow = index === 0;
-      shoudlTakeDimensionsFromStore = false;
-    } else {
-      // multipart with item level scoring is true
-      // or single question view
-      // show only one feedback block
-      shouldShow = index === 0 && colIndex === 0;
-      shoudlTakeDimensionsFromStore = false;
-    }
-
-    const displayFeedback = shouldShow;
-
+    const [displayFeedback, shoudlTakeDimensionsFromStore] = this.getFeedBackVisibility({
+      widgetIndex: index,
+      colIndex,
+      stackedView
+    });
     const question = questions[widget.reference];
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
+
     return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
@@ -152,6 +173,7 @@ class TestItemPreview extends Component {
   renderFeedbacks = showStackedView => {
     const { cols } = this.props;
     const { value } = this.state;
+
     return cols.map((col, colIndex) =>
       col.widgets
         .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")

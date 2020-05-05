@@ -311,6 +311,7 @@ class Scoring extends Component {
                 <QuestionTextArea
                   border="border"
                   toolbarSize="SM"
+                  toolbarId="scoringInstructions"
                   value={questionData?.scoringInstructions || ""}
                   placeholder="Add instructions - This is a placeholder text"
                   onChange={(value = "") => handleChangeInstructions("scoringInstructions", value)}

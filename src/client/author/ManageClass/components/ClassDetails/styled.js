@@ -1,19 +1,21 @@
 import {
-  cardTitleColor,
   desktopWidth,
   extraDesktopWidthMax,
-  greyDarken,
-  mainTextColor,
   mediumDesktopExactWidth,
   mediumDesktopWidth,
   mobileWidthLarge,
-  secondaryTextColor,
   smallDesktopWidth,
-  textColor,
+  greenDark7,
   themeColor,
   themeColorLighter,
   title,
   titleColor,
+  textColor,
+  secondaryTextColor,
+  cardTitleColor,
+  greyDarken,
+  mainTextColor,
+  backgroundGrey,
   white
 } from "@edulastic/colors";
 import { Paper } from "@edulastic/common";
@@ -84,24 +86,22 @@ export const StudentsTable = styled(Table)`
           padding: 10px 10px;
         }
         & > td:last-child {
-          position: absolute;
-          left: 3em;
-          right: 0.7em;
-          text-align: center;
-          color: transparent;
-          background: none;
-          span {
-            text-transform: uppercase;
-            display: block;
+          padding: 0px;
+          width: 40px;
+          svg {
+            display: none;
+            width: auto;
+            height: 28px;
+            fill: ${greenDark7};
           }
         }
         &:hover:not(.ant-table-expanded-row) > td {
-          opacity: 0.3;
+          background: ${backgroundGrey};
         }
         &:hover:not(.ant-table-expanded-row) > td:last-child {
-          opacity: 1;
-          background: none;
-          color: ${secondaryTextColor};
+          svg {
+            display: block;
+          }
         }
       }
     }

@@ -1,23 +1,34 @@
-import { MainContentWrapper, MainHeader, EduButton } from "@edulastic/common";
-import { IconClockDashboard, IconHangouts } from "@edulastic/icons";
-import { white, themeColor } from "@edulastic/colors";
-import { Row, Layout, Spin } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { getEnrollClassAction, setFilterClassAction } from "../../ManageClass/ducks";
+
+// hoc
+import { withNamespaces } from "react-i18next";
+
+// components
+import { Row, Layout, Spin } from "antd";
+import { MainContentWrapper, MainHeader, EduButton } from "@edulastic/common";
+import { IconClockDashboard, IconHangouts } from "@edulastic/icons";
 import ClassSelect, { StudentSlectCommon } from "../../sharedComponents/ClassSelector";
 import AssignmentContainer from "./Container";
 import SubHeader from "./SubHeader";
 import HangoutsModal from "./HangoutsModal";
-import { withNamespaces } from "react-i18next";
+
+// api
+import { userApi } from "@edulastic/api";
+
+// ducks
+import { getEnrollClassAction, setFilterClassAction } from "../../ManageClass/ducks";
+
+// constants
+import { white, themeColor } from "@edulastic/colors";
 
 const Wrapper = styled(Layout)`
   width: 100%;
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 
-const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }) => {
+const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, currentChild, t }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   const classListWithHangouts = activeEnrolledClasses.filter(c => c.hangoutLink);
@@ -49,7 +60,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
       />
       <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
         <Row type="flex" align="middle">
-          {!!classListWithHangouts.length && (
+          {!!classListWithHangouts.length && !(userRole === "parent" || userApi.isProxyUser()) && (
             <StyledEduButton
               height="40px"
               style={{ "margin-right": "20px" }}
@@ -75,6 +86,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
 export default withNamespaces("header")(
   connect(
     state => ({
+      userRole: state?.user?.user?.role,
       allClasses: state.studentEnrollClassList.allClasses,
       activeClasses: state.studentEnrollClassList.filteredClasses,
       loading: state.studentEnrollClassList.loading,

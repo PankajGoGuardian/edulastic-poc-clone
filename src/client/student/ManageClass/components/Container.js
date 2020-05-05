@@ -1,18 +1,27 @@
-import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
-import { MainHeader, EduButton, MainContentWrapper } from "@edulastic/common";
-import { IconPlus, IconManage } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { Button, Col, Input, Modal, Row, Spin } from "antd";
-import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { compose } from "redux";
+import PropTypes from "prop-types";
 import styled from "styled-components";
-import NoDataIcon from "../../assets/nodata.svg";
+
+// hoc
+import { withNamespaces } from "@edulastic/localization";
+
+// components
+import { Button, Col, Input, Modal, Row, Spin } from "antd";
+import { MainHeader, EduButton, MainContentWrapper } from "@edulastic/common";
+import { IconPlus, IconManage } from "@edulastic/icons";
 import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
 import { StudentSlectCommon } from "../../sharedComponents/ClassSelector";
 import { NoDataBox } from "../../styled";
 import ClassCard from "./CardContainer";
 import ManageClassSubHeader from "./SubHeader";
+import NoDataIcon from "../../assets/nodata.svg";
+
+// api
+import { userApi } from "@edulastic/api";
+
+// constants
+import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
 
 const ClassCards = ({ classList, t }) => {
   const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
@@ -53,10 +62,12 @@ const ManageClassContainer = ({
         {userRole === "parent" ? (
           <StudentSlectCommon />
         ) : (
-          <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
-            <IconPlus width={12} height={12} color="white" stroke="white" />
-            <span>{t("common.joinClass")}</span>
-          </JoinClassBtn>
+          !userApi.isProxyUser() && (
+            <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
+              <IconPlus width={12} height={12} color="white" stroke="white" />
+              <span>{t("common.joinClass")}</span>
+            </JoinClassBtn>
+          )
         )}
         {isJoinClassModalVisible && (
           <JoinClassModal

@@ -4,6 +4,13 @@ import * as Storage from "./utils/Storage";
 const api = new API();
 const prefix = "/user";
 
+// check for proxy user
+const isProxyUser = () => {
+  const sessionKey = Storage.getFromSessionStorage("tokenKey"),
+    defaultSessionKey = Storage.getFromLocalStorage("defaultTokenKey");
+  return sessionKey && sessionKey !== defaultSessionKey;
+};
+
 /*
  * api for fetching logged in users details
  */
@@ -274,6 +281,7 @@ const mergeUsers = ({ primaryUserId, userIds }) =>
     .then(result => result.data);
 
 export default {
+  isProxyUser,
   getUser,
   fetchUsers,
   fetchUsersForShare,

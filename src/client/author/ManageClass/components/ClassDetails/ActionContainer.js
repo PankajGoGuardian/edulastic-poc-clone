@@ -7,9 +7,9 @@ import {
   IconPlusCircle,
   IconPrint,
   IconRemove,
-  IconVolumeUp,
-  IconShare
+  IconVolumeUp
 } from "@edulastic/icons";
+import { MdCallMerge } from "react-icons/md";
 import { Dropdown, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -400,7 +400,7 @@ const ActionContainer = ({
                 )}
                 {type === "class" && (
                   <MenuItems key="mergeStudents">
-                    <IconShare />
+                    <MdCallMerge style={{ width: "15px", height: "22px" }} />
                     <span>Merge Students</span>
                   </MenuItems>
                 )}

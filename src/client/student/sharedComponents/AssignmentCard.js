@@ -19,7 +19,7 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
 import { Row, Col, message, Icon, Modal } from "antd";
-import { TokenStorage } from "@edulastic/api";
+import { userApi, TokenStorage } from "@edulastic/api";
 import { maxDueDateFromClassess } from "../utils";
 
 //  components
@@ -76,343 +76,351 @@ const SafeBrowserButton = ({
   );
 };
 
-const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, classId, user: { role: userRole, _id: userId } }) => {
-  const [showAttempts, setShowAttempts] = useState(false);
-  const toggleAttemptsView = () => setShowAttempts(prev => !prev);
-  const { releaseGradeLabels } = testConstants;
-  const [retakeConfirmation, setRetakeConfirmation] = useState(false);
-  const [showRetakeModal, setShowRetakeModal] = useState(false);
+const AssignmentCard = memo(
+  ({ startAssignment, resumeAssignment, data, theme, t, type, classId, user: { role: userRole, _id: userId } }) => {
+    const [showAttempts, setShowAttempts] = useState(false);
+    const toggleAttemptsView = () => setShowAttempts(prev => !prev);
+    const { releaseGradeLabels } = testConstants;
+    const [retakeConfirmation, setRetakeConfirmation] = useState(false);
+    const [showRetakeModal, setShowRetakeModal] = useState(false);
 
-  let {
-    test = {},
-    reports = [],
-    endDate,
-    testId,
-    startDate,
-    open = false,
-    close = false,
-    _id: assignmentId,
-    safeBrowser,
-    isPaused = false,
-    testType,
-    class: clazz = [],
-    maxAttempts = 1,
-    title,
-    thumbnail,
-    timedAssignment,
-    pauseAllowed,
-    allowedTime,
-    dueDate
-  } = data;
+    let {
+      test = {},
+      reports = [],
+      endDate,
+      testId,
+      startDate,
+      open = false,
+      close = false,
+      _id: assignmentId,
+      safeBrowser,
+      isPaused = false,
+      testType,
+      class: clazz = [],
+      maxAttempts = 1,
+      title,
+      thumbnail,
+      timedAssignment,
+      pauseAllowed,
+      allowedTime,
+      dueDate
+    } = data;
 
-  const currentClassList = clazz.filter(cl => cl._id === classId);
-  if (!startDate || !endDate) {
-    const maxCurrentClass =
-      currentClassList && currentClassList.length > 0
-        ? maxBy(currentClassList, "endDate") || currentClassList[currentClassList.length - 1]
-        : {};
-    open = maxCurrentClass.open;
-    close = maxCurrentClass.close;
-    startDate = maxCurrentClass.startDate;
-    endDate = maxCurrentClass.endDate;
-    isPaused = maxCurrentClass.isPaused;
-  }
-  if (!startDate && open) {
-    const maxCurrentClass =
-      currentClassList && currentClassList.length > 0
-        ? maxBy(currentClassList, "openDate") || currentClassList[currentClassList.length - 1]
-        : {};
-    startDate = maxCurrentClass.openDate;
-    isPaused = maxCurrentClass.isPaused;
-  }
-  if (!endDate && close) {
-    endDate = (currentClass && currentClass.length > 0
-      ? maxBy(currentClass, "closedDate") || currentClass[currentClass.length - 1]
-      : {}
-    ).closedDate;
-  }
-
-  // if duedate is not passed get max due date from classAssessments
-  if (!dueDate) {
-    //to find all classes have specific student and get max dueDate
-    dueDate = maxDueDateFromClassess(currentClassList, userId);
-  }
-
-  const lastAttempt = maxBy(reports, o => parseInt(o.startDate)) || {};
-  // if last test attempt was not *submitted*, user should be able to resume it.
-  const resume = lastAttempt.status == 0;
-  const absent = lastAttempt.status == 2;
-  const graded =
-    lastAttempt.graded && lastAttempt.graded.toLowerCase() === "in grading" ? "submitted" : lastAttempt.graded;
-  let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
-  newReports = newReports || [];
-  const { maxScore = 0, score = 0 } = first(newReports) || {};
-  const attempted = !!(newReports && newReports.length);
-  const attemptCount = newReports && newReports.length;
-  const scorePercentage = (score / maxScore) * 100 || 0;
-  const arrow = showAttempts ? "\u2191" : "\u2193";
-
-  const startTest = () => {
-    if (endDate < Date.now()) {
-      return message.error("Test is expired");
+    const currentClassList = clazz.filter(cl => cl._id === classId);
+    if (!startDate || !endDate) {
+      const maxCurrentClass =
+        currentClassList && currentClassList.length > 0
+          ? maxBy(currentClassList, "endDate") || currentClassList[currentClassList.length - 1]
+          : {};
+      open = maxCurrentClass.open;
+      close = maxCurrentClass.close;
+      startDate = maxCurrentClass.startDate;
+      endDate = maxCurrentClass.endDate;
+      isPaused = maxCurrentClass.isPaused;
+    }
+    if (!startDate && open) {
+      const maxCurrentClass =
+        currentClassList && currentClassList.length > 0
+          ? maxBy(currentClassList, "openDate") || currentClassList[currentClassList.length - 1]
+          : {};
+      startDate = maxCurrentClass.openDate;
+      isPaused = maxCurrentClass.isPaused;
+    }
+    if (!endDate && close) {
+      endDate = (currentClass && currentClass.length > 0
+        ? maxBy(currentClass, "closedDate") || currentClass[currentClass.length - 1]
+        : {}
+      ).closedDate;
     }
 
-    if (!resume && timedAssignment) {
-      const content = pauseAllowed ? (
-        <p>
-          {" "}
-          This is a timed assignment which should be finished within the time limit set for this assignment. The time
-          limit for this assignment is{" "}
-          <span data-cy="test-time" style={{ fontWeight: 700 }}>
+    // if duedate is not passed get max due date from classAssessments
+    if (!dueDate) {
+      //to find all classes have specific student and get max dueDate
+      dueDate = maxDueDateFromClassess(currentClassList, userId);
+    }
+
+    const lastAttempt = maxBy(reports, o => parseInt(o.startDate)) || {};
+    // if last test attempt was not *submitted*, user should be able to resume it.
+    const resume = lastAttempt.status == 0;
+    const absent = lastAttempt.status == 2;
+    const graded =
+      lastAttempt.graded && lastAttempt.graded.toLowerCase() === "in grading" ? "submitted" : lastAttempt.graded;
+    let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
+    newReports = newReports || [];
+    const { maxScore = 0, score = 0 } = first(newReports) || {};
+    const attempted = !!(newReports && newReports.length);
+    const attemptCount = newReports && newReports.length;
+    const scorePercentage = (score / maxScore) * 100 || 0;
+    const arrow = showAttempts ? "\u2191" : "\u2193";
+
+    const startTest = () => {
+      if (endDate < Date.now()) {
+        return message.error("Test is expired");
+      }
+
+      if (!resume && timedAssignment) {
+        const content = pauseAllowed ? (
+          <p>
             {" "}
-            {allowedTime / (60 * 1000)} minutes
-          </span>
-          . Do you want to continue?
-        </p>
-      ) : (
-        <p>
-          {" "}
-          This is a timed assignment which should be finished within the time limit set for this assignment. The time
-          limit for this assignment is{" "}
-          <span data-cy="test-time" style={{ fontWeight: 700 }}>
-            {" "}
-            {allowedTime / (60 * 1000)} minutes
-          </span>{" "}
-          and you can’t quit in between. Do you want to continue?
-        </p>
-      );
-
-      Modal.confirm({
-        title: "Do you want to Continue ?",
-        content,
-        onOk: () => {
-          if (attemptCount < maxAttempts) startAssignment({ testId, assignmentId, testType, classId });
-          Modal.destroyAll();
-        },
-        okText: "Continue",
-        // okType: "danger",
-        centered: true,
-        width: 500,
-        okButtonProps: {
-          style: { background: themeColor }
-        }
-      });
-      return;
-    }
-
-    if (resume) {
-      resumeAssignment({
-        testId,
-        testType,
-        assignmentId,
-        testActivityId: lastAttempt._id,
-        classId
-      });
-    } else if (attemptCount < maxAttempts) {
-      startAssignment({ testId, assignmentId, testType, classId });
-    }
-  };
-
-  const checkRetakeOrStart = () => {
-    if (!resume && attempted && !retakeConfirmation) {
-      setShowRetakeModal(true);
-    } else {
-      startTest();
-    }
-  };
-
-  const { activityReview = true } = data;
-  let { releaseScore } = data.class.find(item => item._id === classId) || {};
-
-  if (!releaseScore) {
-    releaseScore = data.releaseScore;
-  }
-
-  const showReviewButton =
-    releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
-  const StartButtonContainer =
-    type === "assignment"
-      ? userRole !== "parent" &&
-        (safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
-          <SafeBrowserButton
-            data-cy="start"
-            testId={testId}
-            testType={testType}
-            testActivityId={lastAttempt._id}
-            assignmentId={assignmentId}
-            btnName={t("common.startAssignment")}
-            startDate={startDate}
-            t={t}
-            startTest={startTest}
-            attempted={attempted}
-            resume={resume}
-            classId={classId}
-          />
+            This is a timed assignment which should be finished within the time limit set for this assignment. The time
+            limit for this assignment is{" "}
+            <span data-cy="test-time" style={{ fontWeight: 700 }}>
+              {" "}
+              {allowedTime / (60 * 1000)} minutes
+            </span>
+            . Do you want to continue?
+          </p>
         ) : (
-          <StartButton
-            assessment
-            data-cy="start"
-            safeBrowser={safeBrowser}
-            startDate={startDate}
-            t={t}
-            isPaused={isPaused}
-            startTest={checkRetakeOrStart}
-            attempted={attempted}
-            resume={resume}
-            classId={classId}
-          />
-        ))
-      : showReviewButton &&
-        !absent && (
-          <ReviewButton
-            data-cy="review"
-            testId={testId}
-            isPaused={isPaused}
-            testActivityId={lastAttempt._id}
-            title={test.title}
-            activityReview={activityReview}
-            t={t}
-            attempted={attempted}
-            classId={classId}
-          />
+          <p>
+            {" "}
+            This is a timed assignment which should be finished within the time limit set for this assignment. The time
+            limit for this assignment is{" "}
+            <span data-cy="test-time" style={{ fontWeight: 700 }}>
+              {" "}
+              {allowedTime / (60 * 1000)} minutes
+            </span>{" "}
+            and you can’t quit in between. Do you want to continue?
+          </p>
         );
 
-  const isValidAttempt = attempted;
+        Modal.confirm({
+          title: "Do you want to Continue ?",
+          content,
+          onOk: () => {
+            if (attemptCount < maxAttempts) startAssignment({ testId, assignmentId, testType, classId });
+            Modal.destroyAll();
+          },
+          okText: "Continue",
+          // okType: "danger",
+          centered: true,
+          width: 500,
+          okButtonProps: {
+            style: { background: themeColor }
+          }
+        });
+        return;
+      }
 
-  const getColSize = type => {
-    let colsCount = 1;
+      if (resume) {
+        resumeAssignment({
+          testId,
+          testType,
+          assignmentId,
+          testActivityId: lastAttempt._id,
+          classId
+        });
+      } else if (attemptCount < maxAttempts) {
+        startAssignment({ testId, assignmentId, testType, classId });
+      }
+    };
 
-    if (isValidAttempt) {
-      colsCount += 1;
+    const checkRetakeOrStart = () => {
+      if (!resume && attempted && !retakeConfirmation) {
+        setShowRetakeModal(true);
+      } else {
+        startTest();
+      }
+    };
+
+    const { activityReview = true } = data;
+    let { releaseScore } = data.class.find(item => item._id === classId) || {};
+
+    if (!releaseScore) {
+      releaseScore = data.releaseScore;
     }
 
-    if (type == "assignment") {
-      return colsCount;
-    }
-
-    return 4;
-  };
-
-  const onRetakeModalConfirm = () => {
-    setShowRetakeModal(false);
-    setRetakeConfirmation(true);
-    startTest();
-  };
-
-  const selectedColSize = 24 / getColSize(type);
-  let btnWrapperSize = 24;
-  if (type !== "assignment") {
-    btnWrapperSize =
-      releaseScore === releaseGradeLabels.DONT_RELEASE ? 18 : releaseScore === releaseGradeLabels.WITH_ANSWERS ? 6 : 12;
-  } else if (isValidAttempt) {
-    btnWrapperSize = 12;
-  }
-
-  const ScoreDetail = (
-    <React.Fragment>
-      {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
-        <AnswerAndScore xs={selectedColSize}>
-          <span data-cy="score">
-            {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
-          </span>
-          <Title>{t("common.correctAnswer")}</Title>
-        </AnswerAndScore>
-      )}
-      <AnswerAndScore xs={selectedColSize}>
-        <span data-cy="percent">{Math.round(scorePercentage)}%</span>
-        <Title>{t("common.score")}</Title>
-      </AnswerAndScore>
-    </React.Fragment>
-  );
-
-  return (
-    <CardWrapper data-cy={`test-${data.testId}`}>
-      {showRetakeModal && (
-        <ConfirmationModal
-          title="Retake Assignment"
-          visible={showRetakeModal}
-          destroyOnClose
-          onCancel={() => setShowRetakeModal(false)}
-          footer={[
-            <EduButton isGhost onClick={() => setShowRetakeModal(false)}>
-              Cancel
-            </EduButton>,
-            <EduButton data-cy="launch-retake" onClick={onRetakeModalConfirm}>Launch</EduButton>
-          ]}
-        >
-          <p>You are going to attempt the assignment again. Are you sure you want to Start?</p>
-        </ConfirmationModal>
-      )}
-      <AssessmentDetails
-        data-cy={`test-${data.testId}`}
-        title={title}
-        thumbnail={thumbnail}
-        theme={theme}
-        testType={testType}
-        t={t}
-        type={type}
-        started={attempted}
-        resume={resume}
-        dueDate={dueDate || endDate}
-        startDate={startDate}
-        safeBrowser={safeBrowser}
-        graded={graded}
-        absent={absent}
-        isPaused={isPaused}
-        lastAttempt={lastAttempt}
-        isDueDate={!!dueDate}
-      />
-      {timedAssignment && (
-        <TimeIndicator>
-          <Icon className="timerIcon" color={black} type={theme.assignment.cardTimeIconType} />
-          <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
-        </TimeIndicator>
-      )}
-
-      <ButtonAndDetail>
-        <DetailContainer>
-          <AttemptDetails isValidAttempt={isValidAttempt}>
-            {isValidAttempt && (
-              <React.Fragment>
-                <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
-                  <span data-cy="attemptsCount">
-                    {attemptCount}/{maxAttempts || attemptCount}
-                  </span>
-                  <AttemptsTitle data-cy="attemptClick">
-                    {arrow} &nbsp;&nbsp;{t("common.attemps")}
-                  </AttemptsTitle>
-                </Attempts>
-                {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
-              </React.Fragment>
-            )}
-            {StartButtonContainer && (
-              <StyledActionButton
-                isAssignment={type == "assignment"}
-                isValidAttempt={isValidAttempt}
-                sm={btnWrapperSize}
-              >
-                {StartButtonContainer}
-              </StyledActionButton>
-            )}
-          </AttemptDetails>
-        </DetailContainer>
-        {showAttempts &&
-          newReports.map(attempt => (
-            <Attempt
-              key={attempt._id}
-              data={attempt}
-              activityReview={activityReview}
-              type={type}
-              releaseScore={releaseScore}
-              showReviewButton={showReviewButton}
-              releaseGradeLabels={releaseGradeLabels}
-              classId={attempt.groupId}
+    const showReviewButton =
+      releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
+    const StartButtonContainer =
+      type === "assignment"
+        ? !(userRole === "parent" || userApi.isProxyUser()) &&
+          (safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
+            <SafeBrowserButton
+              data-cy="start"
+              testId={testId}
+              testType={testType}
+              testActivityId={lastAttempt._id}
+              assignmentId={assignmentId}
+              btnName={t("common.startAssignment")}
+              startDate={startDate}
+              t={t}
+              startTest={startTest}
+              attempted={attempted}
+              resume={resume}
+              classId={classId}
             />
-          ))}
-      </ButtonAndDetail>
-    </CardWrapper>
-  );
-});
+          ) : (
+            <StartButton
+              assessment
+              data-cy="start"
+              safeBrowser={safeBrowser}
+              startDate={startDate}
+              t={t}
+              isPaused={isPaused}
+              startTest={checkRetakeOrStart}
+              attempted={attempted}
+              resume={resume}
+              classId={classId}
+            />
+          ))
+        : showReviewButton &&
+          !absent && (
+            <ReviewButton
+              data-cy="review"
+              testId={testId}
+              isPaused={isPaused}
+              testActivityId={lastAttempt._id}
+              title={test.title}
+              activityReview={activityReview}
+              t={t}
+              attempted={attempted}
+              classId={classId}
+            />
+          );
+
+    const isValidAttempt = attempted;
+
+    const getColSize = type => {
+      let colsCount = 1;
+
+      if (isValidAttempt) {
+        colsCount += 1;
+      }
+
+      if (type == "assignment") {
+        return colsCount;
+      }
+
+      return 4;
+    };
+
+    const onRetakeModalConfirm = () => {
+      setShowRetakeModal(false);
+      setRetakeConfirmation(true);
+      startTest();
+    };
+
+    const selectedColSize = 24 / getColSize(type);
+    let btnWrapperSize = 24;
+    if (type !== "assignment") {
+      btnWrapperSize =
+        releaseScore === releaseGradeLabels.DONT_RELEASE
+          ? 18
+          : releaseScore === releaseGradeLabels.WITH_ANSWERS
+          ? 6
+          : 12;
+    } else if (isValidAttempt) {
+      btnWrapperSize = 12;
+    }
+
+    const ScoreDetail = (
+      <React.Fragment>
+        {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
+          <AnswerAndScore xs={selectedColSize}>
+            <span data-cy="score">
+              {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
+            </span>
+            <Title>{t("common.correctAnswer")}</Title>
+          </AnswerAndScore>
+        )}
+        <AnswerAndScore xs={selectedColSize}>
+          <span data-cy="percent">{Math.round(scorePercentage)}%</span>
+          <Title>{t("common.score")}</Title>
+        </AnswerAndScore>
+      </React.Fragment>
+    );
+
+    return (
+      <CardWrapper data-cy={`test-${data.testId}`}>
+        {showRetakeModal && (
+          <ConfirmationModal
+            title="Retake Assignment"
+            visible={showRetakeModal}
+            destroyOnClose
+            onCancel={() => setShowRetakeModal(false)}
+            footer={[
+              <EduButton isGhost onClick={() => setShowRetakeModal(false)}>
+                Cancel
+              </EduButton>,
+              <EduButton data-cy="launch-retake" onClick={onRetakeModalConfirm}>
+                Launch
+              </EduButton>
+            ]}
+          >
+            <p>You are going to attempt the assignment again. Are you sure you want to Start?</p>
+          </ConfirmationModal>
+        )}
+        <AssessmentDetails
+          data-cy={`test-${data.testId}`}
+          title={title}
+          thumbnail={thumbnail}
+          theme={theme}
+          testType={testType}
+          t={t}
+          type={type}
+          started={attempted}
+          resume={resume}
+          dueDate={dueDate || endDate}
+          startDate={startDate}
+          safeBrowser={safeBrowser}
+          graded={graded}
+          absent={absent}
+          isPaused={isPaused}
+          lastAttempt={lastAttempt}
+          isDueDate={!!dueDate}
+        />
+        {timedAssignment && (
+          <TimeIndicator>
+            <Icon className="timerIcon" color={black} type={theme.assignment.cardTimeIconType} />
+            <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
+          </TimeIndicator>
+        )}
+
+        <ButtonAndDetail>
+          <DetailContainer>
+            <AttemptDetails isValidAttempt={isValidAttempt}>
+              {isValidAttempt && (
+                <React.Fragment>
+                  <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
+                    <span data-cy="attemptsCount">
+                      {attemptCount}/{maxAttempts || attemptCount}
+                    </span>
+                    <AttemptsTitle data-cy="attemptClick">
+                      {arrow} &nbsp;&nbsp;{t("common.attemps")}
+                    </AttemptsTitle>
+                  </Attempts>
+                  {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
+                </React.Fragment>
+              )}
+              {StartButtonContainer && (
+                <StyledActionButton
+                  isAssignment={type == "assignment"}
+                  isValidAttempt={isValidAttempt}
+                  sm={btnWrapperSize}
+                >
+                  {StartButtonContainer}
+                </StyledActionButton>
+              )}
+            </AttemptDetails>
+          </DetailContainer>
+          {showAttempts &&
+            newReports.map(attempt => (
+              <Attempt
+                key={attempt._id}
+                data={attempt}
+                activityReview={activityReview}
+                type={type}
+                releaseScore={releaseScore}
+                showReviewButton={showReviewButton}
+                releaseGradeLabels={releaseGradeLabels}
+                classId={attempt.groupId}
+              />
+            ))}
+        </ButtonAndDetail>
+      </CardWrapper>
+    );
+  }
+);
 
 const enhance = compose(
   withTheme,

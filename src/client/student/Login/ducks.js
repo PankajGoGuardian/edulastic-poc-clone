@@ -5,7 +5,6 @@ import { message } from "antd";
 import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage, settingsApi, segmentApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
-import { getFromLocalStorage, getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import {
@@ -135,13 +134,13 @@ const initialState = {
 
 const setUser = (state, { payload }) => {
   const defaultGrades =
-    getFromLocalStorage("defaultGrades") != null
-      ? getFromLocalStorage("defaultGrades")
-        ? getFromLocalStorage("defaultGrades").split(",")
+    TokenStorage.getFromLocalStorage("defaultGrades") != null
+      ? TokenStorage.getFromLocalStorage("defaultGrades")
+        ? TokenStorage.getFromLocalStorage("defaultGrades").split(",")
         : []
       : null;
 
-  const defaultSubject = getFromLocalStorage("defaultSubject");
+  const defaultSubject = TokenStorage.getFromLocalStorage("defaultSubject");
   const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
   if (payload.role === "parent" && payload?.children?.length > 0) {
@@ -709,9 +708,7 @@ export function* fetchV1Redirect({ payload: id }) {
 
 function* logout() {
   try {
-    const sessionKey = getFromSessionStorage("tokenKey"),
-      defaultSessionKey = getFromLocalStorage("defaultTokenKey");
-    if (sessionKey && sessionKey !== defaultSessionKey) {
+    if (userApi.isProxyUser()) {
       window.close();
     } else {
       const user = yield select(getUser);
@@ -937,7 +934,7 @@ function* getUserData({ payload: res }) {
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction());
     }
-    const redirectUrl = getFromLocalStorage("loginRedirectUrl");
+    const redirectUrl = TokenStorage.getFromLocalStorage("loginRedirectUrl");
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl);
     if (redirectUrl && !isAuthUrl) {

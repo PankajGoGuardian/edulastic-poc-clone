@@ -1,16 +1,23 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Spin, Switch } from "antd";
 import { get, isEmpty, pullAt } from "lodash";
-import { lightBlue3 } from "@edulastic/colors";
+
+// components
+import { Spin, Switch, Tooltip } from "antd";
+import { GiDominoMask } from "react-icons/gi";
 import { IconClose, IconCorrect } from "@edulastic/icons";
 import { NoStudents, NoConentDesc, StyledIcon, StudentsTable, TableWrapper, SwitchBox } from "./styled";
+import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+
+// ducks
+import { proxyUser } from "../../../authUtils";
 import { selectStudentAction } from "../../ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getGroupList } from "../../../src/selectors/user";
-import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
-import { proxyUser } from "../../../authUtils";
+
+// constants
+import { lightBlue3 } from "@edulastic/colors";
 
 const StudentsList = ({
   loaded,
@@ -119,9 +126,12 @@ const StudentsList = ({
       render: enrollmentStatus => <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>
     },
     {
-      title: "View as Student",
-      colSpan: 0,
-      render: (_, { _id }) => <span onClick={() => proxyUser({ userId: _id, groupId })}>View as Student</span>
+      render: (_, { _id, enrollmentStatus }) =>
+        enrollmentStatus == 1 && (
+          <Tooltip placement="topRight" title="View as Student">
+            <GiDominoMask onClick={() => proxyUser({ userId: _id, groupId })} />
+          </Tooltip>
+        )
     }
   ];
 

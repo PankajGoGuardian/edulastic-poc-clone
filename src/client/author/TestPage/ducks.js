@@ -1192,6 +1192,12 @@ function* updateTestSaga({ payload }) {
     delete payload.data.currentTab;
     delete payload.data.summary;
 
+    // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
+    // Penalty true/false is set to determine the case
+    if (payload.data.scoringType === test.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) {
+      payload.data.scoringType = test.evalTypeLabels.PARTIAL_CREDIT;
+    }
+
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
       _id: undefined

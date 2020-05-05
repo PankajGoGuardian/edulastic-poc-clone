@@ -75,7 +75,7 @@ const testTypes = {
   [PRACTICE]: "Practice"
 };
 
-const { ALL_OR_NOTHING, PARTIAL_CREDIT, ITEM_LEVEL_EVALUATION } = evalTypeLabels;
+const { ALL_OR_NOTHING, PARTIAL_CREDIT, ITEM_LEVEL_EVALUATION, PARTIAL_CREDIT_IGNORE_INCORRECT } = evalTypeLabels;
 
 class MainSetting extends Component {
   constructor(props) {
@@ -112,6 +112,13 @@ class MainSetting extends Component {
       };
     }
   }
+
+  componentDidMount = () => {
+    const { entity } = this.props;
+    if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
+      this.updateTestData("scoringType")(PARTIAL_CREDIT_IGNORE_INCORRECT);
+    }
+  };
 
   handleShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }));
@@ -190,9 +197,8 @@ class MainSetting extends Component {
         }
         break;
       case "scoringType":
-        setTestData({
-          penalty: false
-        });
+        let penalty = value === evalTypeLabels.PARTIAL_CREDIT;
+        setTestData({ penalty });
         break;
       case "safeBrowser":
         if (!value)
@@ -713,21 +719,13 @@ class MainSetting extends Component {
                     <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
                       {evalTypes.PARTIAL_CREDIT}
                     </RadioBtn>
-                    {/* effective margin 9px between checkbox and radio button */}
-                    {/* half of the margin (18px) if checkbox is not getting rendered */}
-                    {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
-                      <CheckboxLabel
-                        disabled={!owner || !isEditable}
-                        checked={penalty === false}
-                        data-cy="PENALIZE"
-                        onChange={e => this.updateTestData("penalty")(!e.target.checked)}
-                        mt="-9px"
-                        ml="40px"
-                        mb="18px"
-                      >
-                        Don’t penalize for incorrect selection
-                      </CheckboxLabel>
-                    )}
+                    <RadioBtn
+                      value={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                      data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                      key={PARTIAL_CREDIT}
+                    >
+                      {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
+                    </RadioBtn>
                     {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
                     {/* not setting mb (margin bottom) as it is common component */}
                     <RadioBtn
@@ -739,10 +737,6 @@ class MainSetting extends Component {
                       {evalTypes.ITEM_LEVEL_EVALUATION}
                     </RadioBtn>
                   </StyledRadioGroup>
-                  <Description>
-                    Choose if students should be awarded partial credit for their answers or not. If partial credit is
-                    allowed, then choose whether the student should be penalized for.
-                  </Description>
                 </Body>
               </Block>
             ) : (

@@ -165,6 +165,12 @@ export const getHasDuplicateAssignmentsSelector = createSelector(
 
 function* saveAssignment({ payload }) {
   try {
+    // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
+    // Penalty true/false is set to determine the case
+    if (payload.scoringType === testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) {
+      payload.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT;
+    }
+
     let testIds;
     yield put(setAssignmentSavingAction(true));
     if (!payload.playlistModuleId && !payload.playlistId) {

@@ -55,6 +55,8 @@ const {
   accessibilities
 } = test;
 
+const { ALL_OR_NOTHING, PARTIAL_CREDIT, ITEM_LEVEL_EVALUATION, PARTIAL_CREDIT_IGNORE_INCORRECT } = evalTypeLabels;
+
 const Settings = ({
   testSettings,
   assignmentSettings,
@@ -111,13 +113,17 @@ const Settings = ({
     if (key === "answerOnPaper" && value && disableAnswerOnPaper) {
       return message.error("Answer on paper not suppported for this test");
     }
+
+    const penalty = value === evalTypeLabels.PARTIAL_CREDIT;
     const newSettingsState = {
       ...assignmentSettings,
-      [key]: value
+      [key]: value,
+      penalty
     };
     const newTempTestSettingsState = {
       ...tempTestSettings,
-      [key]: value
+      [key]: value,
+      penalty
     };
     if (key === "safeBrowser" && value === false) {
       delete newSettingsState.sebPassword;
@@ -130,6 +136,11 @@ const Settings = ({
     updateAssignmentSettings(newSettingsState);
     changeField(key)(value);
   };
+
+  useEffect(() => {
+    const { scoringType, penalty } = assignmentSettings;
+    if (scoringType === PARTIAL_CREDIT && !penalty) overRideSettings("scoringType", PARTIAL_CREDIT_IGNORE_INCORRECT);
+  }, []);
 
   const handleUpdatePasswordExpireIn = e => {
     let { value = 1 } = e.target;
@@ -179,7 +190,6 @@ const Settings = ({
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     scoringType = assignmentSettings.scoringType || evalTypes.ITEM_LEVEL_EVALUATION,
-    penalty = tempTestSettings.penalty,
     passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
     maxAttempts = tempTestSettings.maxAttempts,
@@ -554,10 +564,10 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16}>
-            <Col span={12}>
+            <Col span={6}>
               <Label>EVALUATION METHOD</Label>
             </Col>
-            <Col span={12}>
+            <Col span={18}>
               <AlignRight
                 forClassLevel={forClassLevel}
                 // disabled={forClassLevel}
@@ -568,23 +578,23 @@ const Settings = ({
                 }}
                 value={scoringType}
               >
-                {Object.keys(evalTypes).map(item => (
-                  <RadioBtn value={item} data-cy={item} key={item}>
-                    {evalTypes[item]}
-                  </RadioBtn>
-                ))}
+                <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
+                  {evalTypes.ALL_OR_NOTHING}
+                </RadioBtn>
+                <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
+                  {evalTypes.PARTIAL_CREDIT}
+                </RadioBtn>
+                <RadioBtn
+                  value={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                  data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                  key={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                >
+                  {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
+                </RadioBtn>
+                <RadioBtn value={ITEM_LEVEL_EVALUATION} data-cy={ITEM_LEVEL_EVALUATION} key={ITEM_LEVEL_EVALUATION}>
+                  {evalTypes.ITEM_LEVEL_EVALUATION}
+                </RadioBtn>
               </AlignRight>
-              {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
-                <CheckBoxWrapper>
-                  <CheckboxLabel
-                    disabled={forClassLevel}
-                    checked={penalty === false}
-                    onChange={e => overRideSettings("penalty", !e.target.checked)}
-                  >
-                    <Label>DON’T PENALIZE FOR INCORRECT SELECTION</Label>
-                  </CheckboxLabel>
-                </CheckBoxWrapper>
-              )}
             </Col>
           </StyledRowSettings>
         </FeaturesSwitch>

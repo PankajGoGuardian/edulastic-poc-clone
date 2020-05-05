@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white } from "@edulastic/colors";
+import { title } from "@edulastic/colors";
 
 export const WithIndex = styled.div`
   font-size: ${props => props.theme.widgets.sortList.dragItemWithIndexFontSize};
@@ -12,7 +12,7 @@ export const WithIndex = styled.div`
         ? `${theme.widgets.sortList.dragItemIndexBoxValidBgColor}`
         : `${theme.widgets.sortList.dragItemIndexBoxNotValidBgColor}`
       : "none"};
-  color: ${white};
+  color: ${title};
   flex-shrink: 0;
   display: flex;
   justify-content: center;

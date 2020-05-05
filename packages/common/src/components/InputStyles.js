@@ -86,6 +86,12 @@ export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${props => props.width || "100%"};
     margin: ${props => props.margin || "0px"};
+    &.ant-select-disabled {
+      .ant-select-selection {
+        background-color: ${props => props.bg || greyThemeLighter};
+        cursor: not-allowed;
+      }
+    }
     .ant-select-selection {
       display: flex;
       align-items: center;

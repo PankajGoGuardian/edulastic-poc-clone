@@ -12,7 +12,8 @@ import {
   FlexContainer,
   QuestionLabelWrapper,
   QuestionSubLabel,
-  QuestionContentWrapper
+  QuestionContentWrapper,
+  TextInputStyled
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -115,7 +116,7 @@ const ShortTextPreview = ({
           )}
 
           <InputWrapper>
-            <Input
+            <TextInputStyled
               style={style}
               value={text}
               disabled={disableResponse}

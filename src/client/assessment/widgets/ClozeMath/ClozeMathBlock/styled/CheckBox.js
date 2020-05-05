@@ -1,6 +1,16 @@
 import styled from "styled-components";
 
-import { white, textColor, fadedRed, red, lightGreen3, greenDark4, darkGrey, lightGrey4 } from "@edulastic/colors";
+import {
+  white,
+  textColor,
+  fadedRed,
+  red,
+  lightGreen3,
+  greenDark4,
+  darkGrey,
+  greyThemeLight,
+  greyThemeLighter
+} from "@edulastic/colors";
 
 export const CheckBox = styled.div`
   min-height: 35px;
@@ -14,11 +24,12 @@ export const CheckBox = styled.div`
   align-items: center;
   border-radius: 5px;
   padding-right: 24px;
-  background: ${lightGrey4};
+  background: ${greyThemeLighter};
+  border: 1px solid ${greyThemeLight};
   vertical-align: middle;
 
   .index {
-    background: ${darkGrey};
+    background: ${greyThemeLight};
   }
 
   .mq-math-mode {
@@ -40,8 +51,6 @@ export const CheckBox = styled.div`
   }
 
   .index {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
     min-width: 30px;
     min-height: 35px;
     color: ${white};

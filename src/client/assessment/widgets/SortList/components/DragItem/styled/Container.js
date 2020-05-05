@@ -10,5 +10,5 @@ export const Container = styled.div`
       ? correct
         ? `${theme.widgets.sortList.dragItemCorrectTextBgColor}`
         : `${theme.widgets.sortList.dragItemIncorrectTextBgColor}`
-      : theme.widgets.sortList.dragItemContainerBorderColor};
+      : theme.widgets.sortList.dragItemContainerBgColor};
 `;

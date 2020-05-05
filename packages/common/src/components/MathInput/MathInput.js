@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
-import styled from "styled-components";
-import { Popover } from "antd";
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 import { math } from "@edulastic/constants";
-
+import { Popover } from "antd";
+import { isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import styled from "styled-components";
 import { MathInputStyles } from "./MathInputStyles";
 
 const { EMBED_RESPONSE } = math;
@@ -290,7 +290,8 @@ class MathInput extends React.PureComponent {
               style={{
                 minHeight: style.height,
                 fontSize: style.fontSize ? style.fontSize : "inherit",
-                background: style.background
+                background: greyThemeLighter,
+                border: `1px solid ${greyThemeLight}`
               }}
               data-cy="answer-math-input-field"
             >

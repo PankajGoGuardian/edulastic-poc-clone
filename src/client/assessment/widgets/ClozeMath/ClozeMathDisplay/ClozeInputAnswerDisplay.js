@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 
 const StyledSpan = styled.span`
   padding: 4px 5px;
   border-radius: 2px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid ${greyThemeLight};
+  background: ${greyThemeLighter};
   display: inline-block;
   vertical-align: middle;
   margin-top: 2px;

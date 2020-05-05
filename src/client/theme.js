@@ -571,7 +571,7 @@ export const defaultTheme = {
     buttonBorderColor: keyboardBorderColor
   },
   mathEssayInput: {
-    inputLineWrapperBorderColor: borderColor,
+    inputLineWrapperBorderColor: greyThemeLight,
     inputLineButtonFontSize: linkFontSize,
     inputLineButtonBorderColor: "none",
     inputLineButtonBgHoverActiveClassColor: themeColorHover,
@@ -579,7 +579,7 @@ export const defaultTheme = {
     inputLineLabelBgColor: labelBgColor,
     inputLineLabelColor: labelStyle,
     inputLineLabelFontSize: subtitleFontSize,
-    inputWrapperBorderColor: borderColor,
+    inputWrapperBorderColor: greyThemeLight,
     inputWrapperActiveClassBorderColor: borderColor,
     inputWrapperActiveClassBorderLeftColor: borderColor,
     inputWrapperActiveClassBorderRightColor: borderColor
@@ -678,8 +678,8 @@ export const defaultTheme = {
     titleFontSize: questionTextextraFontSize
   },
   dropContainer: {
-    isOverBorderColor: "#b9b9b9",
-    isNotOverBorderColor: borderColor,
+    isOverBorderColor: greyThemeLight,
+    isNotOverBorderColor: greyThemeLight,
     noBorderColor: "none"
   },
   dropArea: {
@@ -840,8 +840,8 @@ export const defaultTheme = {
       pointsFontFamily: "Open Sans",
       correctAnswerHeaderFontFamily: "Open Sans",
       controlButtonFontFamily: "Open Sans",
-      responseContainerDashedBorderColor: borderColor,
-      responseContainerSolidBorderColor: borderColor,
+      responseContainerDashedBorderColor: greyThemeLight,
+      responseContainerSolidBorderColor: greyThemeLight,
       iconPlusColor: themeColor,
       controlBarContainerBgColor: containerWhite,
       iconDrawResizeColor: actionIconColor,
@@ -898,8 +898,8 @@ export const defaultTheme = {
       pointsFontFamily: "Open Sans",
       correctAnswerHeaderFontFamily: "Open Sans",
       controlButtonFontFamily: "Open Sans",
-      responseContainerDashedBorderColor: borderColor,
-      responseContainerSolidBorderColor: borderColor,
+      responseContainerDashedBorderColor: greyThemeLight,
+      responseContainerSolidBorderColor: greyThemeLight,
       iconPlusColor: actionIconActiveColor,
       controlBarContainerBgColor: containerWhite,
       iconDrawResizeColor: actionIconColor,
@@ -1010,7 +1010,7 @@ export const defaultTheme = {
       instructorStimulusBgColor: containerGrey
     },
     mathFormula: {
-      inputColor: labelBgColorOverlayingContainer,
+      inputColor: greyThemeLighter,
       inputCorrectColor: rightIconColor,
       inputCorrectBorderColor: rightBorderColor,
       inputIncorrectColor: wrongBgColor,
@@ -1224,10 +1224,11 @@ export const defaultTheme = {
       dragItemIncorrectTextBgColor: wrongBgColor,
       dragItemTextFontSize: questionTextnormalFontSize,
       dragItemTextSmallFontSize: subtitleFontSize,
-      dragItemContainerBorderColor: borderColor,
+      dragItemContainerBgColor: "#f8f8f8",
+      dragItemContainerBorderColor: greyThemeLight,
       iconCheckColor: checkColor,
       iconCloseColor: closeColor,
-      styledDragHandleBorderColor: borderColor,
+      styledDragHandleBorderColor: greyThemeLight,
       flexCenterFontWeight: semiBold,
       dragHandleContainerColor: themeColor,
       dragHandleContainerHoverColor: themeColorHover,

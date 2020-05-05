@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { greyThemeLight } from "@edulastic/colors";
 
 export const AnswerBox = styled.div`
   display: inline-flex;
@@ -6,6 +7,7 @@ export const AnswerBox = styled.div`
   cursor: pointer;
   margin: 0px 4px 4px;
   border-radius: 4px;
+  border: 1px solid ${greyThemeLight};
   background: ${({ theme, checked, correct }) => {
     if (checked === undefined && correct === undefined) {
       return theme.widgets.clozeText.boxBgColor;
@@ -20,4 +22,8 @@ export const AnswerBox = styled.div`
       return theme.widgets.clozeText.boxBgCorrectColor;
     }
   }};
+
+  &.answer-list {
+    border: none;
+  }
 `;

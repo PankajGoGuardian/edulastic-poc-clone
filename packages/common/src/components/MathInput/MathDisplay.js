@@ -1,16 +1,16 @@
-import React from "react";
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 import PropTypes from "prop-types";
+import React from "react";
 import styled from "styled-components";
-
 import { withMathFormula } from "../../HOC/withMathFormula";
-
 import MathSpan from "../MathSpan";
 
 const MathDisplayWrapper = styled.span`
   .input__math {
     padding: 2px 5px 3px;
     border-radius: 2px;
-    border: 1px solid #d9d9d9;
+    border: 1px solid ${greyThemeLight};
+    background: ${greyThemeLighter};
     margin-top: 2px;
     margin-bottom: 2px;
     display: inline-flex;

@@ -137,7 +137,7 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent, 
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
-          background: item.background,
+          background: item.background || "#f8f8f8",
           padding: lessPadding ? "3px" : null
         }}
         placeholder={placeholder}

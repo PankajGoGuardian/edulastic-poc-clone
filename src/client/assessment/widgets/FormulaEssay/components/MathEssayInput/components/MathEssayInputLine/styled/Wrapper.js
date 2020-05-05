@@ -1,7 +1,9 @@
 import styled, { css } from "styled-components";
+import { greyThemeLighter } from "@edulastic/colors";
 
 export const Wrapper = styled.div`
   border: 1px solid ${props => props.theme.mathEssayInput.inputWrapperBorderColor};
+  background: ${greyThemeLighter};
   position: relative;
 
   ${props =>

@@ -6,6 +6,7 @@ import { AutoExpandInput } from "@edulastic/common";
 import { math } from "@edulastic/constants";
 import NumberPad from "../../components/NumberPad";
 import { getInputSelection } from "../../utils/helpers";
+import { greyThemeLighter, greyThemeLight } from "@edulastic/colors";
 
 const { characterMapButtons } = math;
 
@@ -13,21 +14,10 @@ const ClozeTextInput = ({ resprops, id }) => {
   if (!id) {
     return null;
   }
-  const {
-    item,
-    onChange,
-    getUiStyles,
-    userAnswers,
-    disableResponse,
-    isReviewTab,
-    cAnswers
-  } = resprops;
+  const { item, onChange, getUiStyles, userAnswers, disableResponse, isReviewTab, cAnswers } = resprops;
   const ref = useRef();
 
-  let { value, index: responseIndex } = find(
-    userAnswers,
-    answer => (answer ? answer.id : "") === id
-  ) || { value: "" };
+  let { value, index: responseIndex } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
 
   if (isReviewTab) {
     const { value: correctValue, index: correctAnswerIndex } = find(
@@ -154,6 +144,8 @@ const CustomInput = styled.div`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 
   .ant-input {
-    border-radius: 0px;
+    border-radius: 4px;
+    background: ${greyThemeLighter};
+    border: 1px solid ${greyThemeLight};
   }
 `;

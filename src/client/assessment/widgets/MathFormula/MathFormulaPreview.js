@@ -29,6 +29,7 @@ import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 import Instructions from "../../components/Instructions";
 import Spinner from "./components/Spinner";
+import { greyThemeLight } from "@edulastic/colors";
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -436,6 +437,6 @@ const MathInputSpan = styled.div`
   padding-right: ${({ width }) => (width ? "unset" : "40px")};
   position: relative;
   border-radius: 5px;
-  border: 1px solid #dfdfdf;
+  border: 1px solid ${greyThemeLight};
   padding: ${({ width }) => (width ? "3px" : "5px 25px")};
 `;

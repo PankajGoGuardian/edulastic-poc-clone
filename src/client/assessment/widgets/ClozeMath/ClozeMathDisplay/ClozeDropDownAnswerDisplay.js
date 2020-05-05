@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
-import PropTypes from "prop-types";
-import { find, indexOf } from "lodash";
-import styled from "styled-components";
+import { SelectInputStyled } from "@edulastic/common";
 import { Select } from "antd";
+import { find, indexOf } from "lodash";
+import PropTypes from "prop-types";
+import React, { useRef } from "react";
+import styled from "styled-components";
 import { getStemNumeration } from "../../../utils/helpers";
 
 const { Option } = Select;
@@ -24,8 +25,9 @@ const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
 
   return (
     <SelectWrapper ref={dropDownWrapper} menuStyle={menuStyle}>
-      <Select
+      <SelectInputStyled
         width={width}
+        height="31px"
         disabled
         value={val}
         getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -38,7 +40,7 @@ const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
               {response}
             </Option>
           ))}
-      </Select>
+      </SelectInputStyled>
     </SelectWrapper>
   );
 };

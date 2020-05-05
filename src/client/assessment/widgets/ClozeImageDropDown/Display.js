@@ -263,7 +263,7 @@ class Display extends Component {
                     : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
                   : 0,
                 position: "absolute",
-                borderRadius: 5
+                borderRadius: 0
               };
 
               return (

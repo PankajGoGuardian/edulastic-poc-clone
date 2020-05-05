@@ -38,11 +38,11 @@ const DropContainer = ({
   const border = `${
     !noBorder
       ? isOver
-        ? `2px dashed ${theme.dropContainer.isOverBorderColor}`
-        : `2px dashed ${isPlaylist ? "transparent" : theme.dropContainer.isNotOverBorderColor}`
+        ? `1px dashed ${theme.dropContainer.isOverBorderColor}`
+        : `1px dashed ${isPlaylist ? "transparent" : theme.dropContainer.isNotOverBorderColor}`
       : isOver
-      ? `2px solid ${theme.dropContainer.isOverBorderColor}`
-      : `2px solid ${theme.dropContainer.isNotOverBorderColor}`
+      ? `1px solid ${theme.dropContainer.isOverBorderColor}`
+      : `1px solid ${theme.dropContainer.isNotOverBorderColor}`
   }`;
 
   return connectDropTarget(
@@ -54,6 +54,7 @@ const DropContainer = ({
         zIndex: 50,
         ...style,
         border: borderNone ? "none" : border,
+        background: "#f8f8f8",
         borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border
       }}
     >

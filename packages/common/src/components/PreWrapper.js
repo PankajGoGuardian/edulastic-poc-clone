@@ -9,7 +9,7 @@ const PreWrapper = styled.pre`
     padding: ${props => (props.view === "preview" ? props.padding : "15px")} !important;
     .jsx-parser {
       & p,
-      & span {
+      & span:not(.index) {
         color: ${title} !important;
       }
     }

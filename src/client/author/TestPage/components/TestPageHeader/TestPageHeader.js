@@ -42,6 +42,7 @@ import {
   ShareIcon,
   TestStatus
 } from "./styled";
+import PrintTestModal from "../../../src/components/common/PrintTestModal";
 
 const { statusConstants, testContentVisibility: testContentVisibilityOptions } = test;
 
@@ -160,6 +161,7 @@ const TestPageHeader = ({
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
   const [showCancelPopup, setShowCancelPopup] = useState(false);
+  const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false);
 
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor);
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
@@ -271,8 +273,16 @@ const TestPageHeader = ({
         `View of Items is restricted by the admin if content visibility is set to "Always hidden" OR "Hide prior to grading"`
       );
     }
-    window.open(`/author/printAssessment/${test?._id}`, "_blank");
+    setShowPrintOptionPopup(true);
   };
+
+  const handleOnClickPrintConfirm = params => {
+    const { type, customValue } = params;
+    handleOnClickPrintCancel();
+    window.open(`/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}`, "_blank");
+  };
+
+  const handleOnClickPrintCancel = () => setShowPrintOptionPopup(false);
 
   const headingSubContent = (
     <TestStatus
@@ -317,6 +327,9 @@ const TestPageHeader = ({
         onOk={confirmCancel}
         onClose={() => setCancelState(false)}
       />
+      {showPrintOptionPopup && (
+        <PrintTestModal onProceed={handleOnClickPrintConfirm} onCancel={handleOnClickPrintCancel} />
+      )}
       {windowWidth > parseInt(desktopWidth, 10) ? (
         <MainHeader
           headingText={title || (isPlaylist ? "Untitled Playlist" : "Untitled Test")}

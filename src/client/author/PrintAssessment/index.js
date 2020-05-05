@@ -100,7 +100,7 @@ const PrintAssessment = ({ match, userRole, location }) => {
               </div>
             );
           })}
-          {test.answers.length && (
+          {!!test.answers.length && (
             <StyledAnswerWrapper>
               <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
                 Answer Key of {test.title}

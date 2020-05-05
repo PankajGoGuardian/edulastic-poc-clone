@@ -991,6 +991,12 @@ export function* updateItemSaga({ payload }) {
       call(testItemsApi.updateById, payload.id, data, payload.testId),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null
     ]);
+
+    yield put({
+      type: UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { item }
+    });
+
     // on update, if there is only question.. set it as the questionId, since we are changing the view
     // to singleQuestionView!
     if (questions.length === 1) {
@@ -1009,10 +1015,6 @@ export function* updateItemSaga({ payload }) {
     if (testId) {
       yield put(setRedirectTestAction(testId));
     }
-    yield put({
-      type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item }
-    });
     const alignments = yield select(getDictionariesAlignmentsSelector);
     const { standards = [] } = alignments[0];
     // to update recent standards used in local storage and store

@@ -231,13 +231,13 @@ const ClassSelectModal = ({
             filterOption={(input, option) =>
               option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
-            value={{ value: row.courseId || data || [] }}
+            value={{ key: row.courseId || data || [] }}
             placeholder="Select Course"
             disabled={row.disabled}
             onChange={course => {
               const classList = [...classListData];
               if (type === "clever") {
-                classList[index].course = course.value;
+                classList[index].course = course.key;
               } else if (type === "googleClassroom") {
                 classList[index].course = { id: course.value, name: course.label };
                 classList[index].courseId = course.value;

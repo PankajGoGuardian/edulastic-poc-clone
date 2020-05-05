@@ -94,7 +94,15 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   render() {
-    const { theme, items, currentItem, selectedTheme = "default", settings, timedAssignment = false } = this.props;
+    const {
+      theme,
+      items,
+      currentItem,
+      selectedTheme = "default",
+      settings,
+      timedAssignment = false,
+      previewPlayer
+    } = this.props;
     const { showExitPopup, currentTool } = this.state;
     const item = items[currentItem];
     if (!item) {
@@ -121,12 +129,14 @@ class AssessmentPlayerTestlet extends React.Component {
             saveTestletLog={this.saveTestletLog}
             timedAssignment={timedAssignment}
           />
-          <SubmitConfirmation
-            settings={settings}
-            isVisible={showExitPopup}
-            onClose={this.hideExitPopup}
-            finishTest={this.finishTest}
-          />
+          {!previewPlayer && (
+            <SubmitConfirmation
+              settings={settings}
+              isVisible={showExitPopup}
+              onClose={this.hideExitPopup}
+              finishTest={this.finishTest}
+            />
+          )}
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}

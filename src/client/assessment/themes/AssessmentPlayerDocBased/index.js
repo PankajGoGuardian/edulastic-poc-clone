@@ -12,9 +12,8 @@ import { questionType } from "@edulastic/constants";
 import { withWindowSizes } from "@edulastic/common";
 import { Container, CalculatorContainer } from "../common";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import PlayerHeader from "./PlayerHeader";
 import { themes } from "../../../theme";
-import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
+import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle.json";
 import WorksheetComponent from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
 import { testLoadingSelector } from "../../selectors/test";
@@ -136,9 +135,7 @@ class AssessmentPlayerDocBased extends React.Component {
       selectedTheme,
       previewPlayer,
       settings,
-      playerSkinType,
-      showMagnifier,
-      timedAssignment = false
+      playerSkinType
     } = this.props;
 
     const item = items[0];
@@ -188,16 +185,18 @@ class AssessmentPlayerDocBased extends React.Component {
                 noCheck
                 testMode
                 extraPaddingTop={extraPaddingTop}
-                onPageChange={currentPage => this.setState({ currentPage })}
+                onPageChange={cpage => this.setState({ currentPage: cpage })}
                 currentPage={currentPage}
               />
             )}
-            <SubmitConfirmation
-              settings={settings}
-              isVisible={showExitPopup}
-              onClose={this.hideExitPopup}
-              finishTest={this.finishTest}
-            />
+            {!previewPlayer && (
+              <SubmitConfirmation
+                settings={settings}
+                isVisible={showExitPopup}
+                onClose={this.hideExitPopup}
+                finishTest={this.finishTest}
+              />
+            )}
             {currentToolMode.calculator ? (
               <CalculatorContainer
                 changeTool={() => this.onChangeTool("calculator")}

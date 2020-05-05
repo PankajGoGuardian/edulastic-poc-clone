@@ -21,7 +21,7 @@ import PlayerMainContentArea from "./PlayerMainContentArea";
 
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { themes } from "../../../theme";
-import assessmentPlayerTheme from "./themeStyle";
+import assessmentPlayerTheme from "./themeStyle.json";
 import { unansweredQuestionCountSelector } from "../../../student/TestAttemptReview/ducks";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
@@ -250,8 +250,6 @@ class AssessmentPlayerSimple extends React.Component {
       scratchPadData,
       showHints,
       timedAssignment = false,
-      currentAssignmentTime = null,
-      stopTimerFlag = false,
       groupId,
       utaId
     } = this.props;
@@ -346,12 +344,14 @@ class AssessmentPlayerSimple extends React.Component {
               history={scratchPad}
               changePreview={this.handleChangePreview}
             />
-            <SubmitConfirmation
-              settings={settings}
-              isVisible={showExitPopup}
-              onClose={this.hideExitPopup}
-              finishTest={this.finishTest}
-            />
+            {!previewPlayer && (
+              <SubmitConfirmation
+                settings={settings}
+                isVisible={showExitPopup}
+                onClose={this.hideExitPopup}
+                finishTest={this.finishTest}
+              />
+            )}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

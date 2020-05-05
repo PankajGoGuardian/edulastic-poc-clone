@@ -166,6 +166,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
           manualGradeItems[questNo],
           attemptData[studentindex].attempt[questNo]
         );
+
         lcb.questionResponsePage.getQuestionContainerByStudent(student.name).as("studentQuesCard");
         lcb.questionResponsePage.updateScoreAndFeedbackForStudent(student.name, score);
       });
@@ -179,6 +180,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
       reportOptions.standard = Cypress._.values(REPORT_HEADERS.STAND_TABLE.optional);
     });
     before("> login as teacher and generate report", () => {
+      testLibraryPage.sidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       lcb.header.clickStudentReportInDropDown();
       studentReportsCardPage.clickReportGeanerateButton();
     });
@@ -401,6 +404,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
     });
 
     before("> login as teacher and generate report", () => {
+      testLibraryPage.sidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       lcb.header.clickStudentReportInDropDown();
       reportOptions.overAllPerformanceBand = true;
       reportOptions.question = Cypress._.values(REPORT_HEADERS.QEST_TABLE.optional);

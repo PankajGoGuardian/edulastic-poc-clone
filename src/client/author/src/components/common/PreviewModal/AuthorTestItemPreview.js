@@ -85,11 +85,13 @@ class AuthorTestItemPreview extends Component {
       item: { _id },
       deleteItem,
       isEditable,
-      page
+      page,
+      closeModal
     } = this.props;
     if (!isEditable) {
       return message.error("Don't have write permission to delete the item");
     }
+    if (closeModal) closeModal();
     return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });
   };
 

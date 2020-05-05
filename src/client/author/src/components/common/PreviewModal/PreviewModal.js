@@ -375,6 +375,7 @@ class PreviewModal extends React.Component {
                   changePreviewTab={changePreviewMode}
                   onlySratchpad={onlySratchpad}
                   isTestInRegrade={isTestInRegrade}
+                  closeModal={this.closeModal}
                 />
                 {/* we may need to bring hint button back */}
                 {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}

@@ -523,8 +523,8 @@ class LiveClassboardPage {
     itemKeys.forEach((queKey, index) => {
       const [queType, questionKey] = queKey.split(".");
       const { attemptData, standards, choices } = questionData[queType][questionKey];
-      const { points } = questionData[queType][questionKey].setAns;
-      const queMap = { queKey, points, attemptData, standards, choices };
+      const { points, correct } = questionData[queType][questionKey].setAns;
+      const queMap = { queKey, points, attemptData, standards, choices, correct };
       questionTypeMap[`Q${index + 1}`] = queMap;
     });
     return questionTypeMap;

@@ -125,9 +125,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
   lcb.getQuestionTypeMap(testDetails.items, question, questionTypeMap);
 
   before("> create test and assign", () => {
+    cy.deleteAllAssignments("", teacher.username);
     cy.login("teacher", teacher.username, teacher.password);
     testLibraryPage.assignPage.visitAssignPageById("5eab1c248c602c000868bc10");
-    testLibraryPage.clickOnAssign();
     testLibraryPage.assignPage.selectClass("Class");
     testLibraryPage.assignPage.clickOnAssign();
     //   // testLibraryPage.createTest(testName).then(id => {

@@ -298,6 +298,7 @@ export default class TestAssignPage {
     cy.route("POST", "**/api/group/search").as("classes");
     cy.visit(`/author/assignments/${id}`);
     cy.wait("@classes");
+    cy.contains("OVERRIDE TEST SETTINGS");
   };
 
   verifyTimeAssignedForTest = questionCount => this.getTimeSettingTextBox().should("have.value", `${questionCount}`);

@@ -221,9 +221,7 @@ export default class StudentsReportCard {
 
   getQuestionTableData = ({ attempt, questionTypeMap }) => {
     const questinoWiseData = {};
-    let TEI_AttemptTypes;
-    TEI_AttemptTypes = { right: "Correct", wrong: "Incorrect", partialCorrect: "Partial Correct" };
-    const TEI_CorrectAns = "TEI";
+    const TEI = "TEI";
     const CR_Questions = "Constructed Response";
     const skippedResponse = "-";
 
@@ -269,8 +267,8 @@ export default class StudentsReportCard {
         case queTypes.CHOICE_MATRIX_STANDARD:
         case queTypes.CHOICE_MATRIX_LABEL:
         case queTypes.CHOICE_MATRIX_INLINE:
-          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : TEI_AttemptTypes[attemptType];
-          correctResponse = TEI_CorrectAns;
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : TEI;
+          correctResponse = TEI;
           break;
 
         case queTypes.ESSAY_RICH:

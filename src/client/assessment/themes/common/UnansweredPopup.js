@@ -9,10 +9,10 @@ const UnansweredPopup = props => {
 
   const footer = (
     <StyledFooter>
-      <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onSkip}>
+      <EduButton isGhost data-cy="proceed-skip" height="40px" onClick={onSkip}>
         SKIP
       </EduButton>
-      <EduButton height="40px" data-cy="PRINT" onClick={onClose}>
+      <EduButton height="40px" data-cy="cancel-skip" onClick={onClose}>
         CLOSE
       </EduButton>
     </StyledFooter>

@@ -103,7 +103,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       Object.keys(itemKeys).forEach(que => {
         cy.wait(1000);
         studentTest.getQuestionText().then(queText => student1Sequence.push(queText.text()));
-        studentTest.clickOnNext();
+        studentTest.clickOnNext(false, true);
       });
 
       studentTest.submitTest().then(() => {
@@ -120,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       Object.keys(itemKeys).forEach(que => {
         cy.wait(1000);
         studentTest.getQuestionText().then(queText => student2Sequence.push(queText.text()));
-        studentTest.clickOnNext();
+        studentTest.clickOnNext(false, true);
       });
 
       studentTest.submitTest().then(() => {
@@ -139,7 +139,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       Object.keys(itemKeys).forEach(que => {
         cy.wait(1000);
         studentTest.getQuestionText().then(queText => student3Sequence.push(queText.text()));
-        studentTest.clickOnNext();
+        studentTest.clickOnNext(false, true);
       });
 
       studentTest.submitTest().then(() => {

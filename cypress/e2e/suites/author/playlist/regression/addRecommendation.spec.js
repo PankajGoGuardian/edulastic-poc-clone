@@ -113,7 +113,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
 
       for (let q = 1; q <= 2; q++) {
         // TODO: attempt with actual response once items are identified
-        studentTestPage.clickOnNext();
+        studentTestPage.clickOnNext(false, true);
       }
       studentTestPage.clickSubmitButton();
     });
@@ -205,7 +205,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
 
       for (let q = 1; q <= 2; q++) {
         // TODO: attempt with actual response once items are identified
-        studentTestPage.clickOnNext();
+        studentTestPage.clickOnNext(false, true);
       }
       studentTestPage.clickSubmitButton();
     });
@@ -297,7 +297,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
 
       for (let q = 1; q <= 2; q++) {
         // TODO: attempt with actual response once items are identified
-        studentTestPage.clickOnNext();
+        studentTestPage.clickOnNext(false, true);
       }
       studentTestPage.clickSubmitButton();
     });

@@ -87,7 +87,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
       /* since time is updated to 10 mns and student1 is already used 1 minute, he should get 9 minutes and remaining time */
 
       studentTestPage.getExitButton().should("not.exist");
-      studentTestPage.clickOnNext();
+      studentTestPage.clickOnNext(false, true);
       studentTestPage.submitTest();
     });
 
@@ -101,7 +101,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
       studentTestPage.verifyAndGetRemainingTime("00:09:50", 10);
       /* since student2 is in not started status he should get whole 10 mns */
       studentTestPage.getExitButton().should("not.exist");
-      studentTestPage.clickOnNext();
+      studentTestPage.clickOnNext(false, true);
       studentTestPage.submitTest();
     });
     context(">redirect", () => {
@@ -128,7 +128,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
         studentTestPage.verifyAndGetRemainingTime("00:09:50", 10);
 
         studentTestPage.getExitButton().should("not.exist");
-        studentTestPage.clickOnNext();
+        studentTestPage.clickOnNext(false, true);
         studentTestPage.submitTest();
       });
 
@@ -146,7 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
         studentTestPage.verifyAndGetRemainingTime("00:09:50", 10);
 
         studentTestPage.getExitButton().should("not.exist");
-        studentTestPage.clickOnNext();
+        studentTestPage.clickOnNext(false, true);
         studentTestPage.submitTest();
       });
     });

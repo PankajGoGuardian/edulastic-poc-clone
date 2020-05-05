@@ -28,11 +28,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
     before("create test and assign", () => {
       cy.deleteAllAssignments(student, teacher);
       cy.login("teacher", teacher, password);
-      testLibrary.createTest("STUDENT_ATTEMPT").then(() => {
-        testLibrary.clickOnAssign();
-        testLibrary.assignPage.selectClass(className);
-        testLibrary.assignPage.clickOnAssign();
-      });
+      // TODO : test creation to be enable
+      // testLibrary.createTest("STUDENT_ATTEMPT").then(() => {
+      // testLibrary.clickOnAssign();
+      cy.visit("/author/assignments/5eb05e459c6bec0008146070");
+      cy.wait(5000);
+      testLibrary.assignPage.selectClass(className);
+      testLibrary.assignPage.clickOnAssign();
+      // });
     });
 
     context(" > attempt,exit,review question navigation by student", () => {
@@ -64,13 +67,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
           cy.server();
           cy.route("POST", "**/test-item/*").as("load-question");
           CypressHelper.selectDropDownByAttribute("options", `Question ${i + 1}/${itemKeys.length}`);
-          if (!(i === itemKeys.length - 1)) cy.wait("@load-question");
+          if (!(i === itemKeys.length - 1)) {
+            studentTestPage.clickOnSkipOnPopUp();
+            cy.wait("@load-question");
+          }
           studentTestPage.verifyQuestionResponseRetained(queType, RIGHT, attemptData);
 
           // navigate to question from review
           studentTestPage.getQuestionByIndex(itemKeys.length - 1);
-          if (!(i === itemKeys.length - 1)) cy.wait("@load-question");
-          studentTestPage.clickOnNext();
+          if (!(i === itemKeys.length - 1)) {
+            cy.wait("@load-question");
+            studentTestPage.clickOnNext(false, true);
+          } else studentTestPage.clickOnNext();
+
           studentTestPage.clickOnReviewQuestion(queNum);
           cy.contains(queNum).should("be.visible");
           studentTestPage.verifyQuestionResponseRetained(queType, RIGHT, attemptData);

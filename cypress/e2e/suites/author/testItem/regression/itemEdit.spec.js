@@ -191,7 +191,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       studentTestPage.getQuestionByIndex(0);
       itemsInTest.forEach(() => {
         studentTestPage.getQuestionText().should("contain", UPDATED_TEXT);
-        studentTestPage.clickOnNext();
+        studentTestPage.clickOnNext(false, true);
       });
       studentTestPage.submitTest();
       assignmentsPage.reviewSubmittedTestById(testId);
@@ -270,12 +270,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       });
     });
   });
+
   context("Edit After Use/Attempt-- Question Text", () => {
     before("login As Teacher And Edit Test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
     });
 
-    it("Edit Points of each item", () => {
+    it("Edit question text of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
       itemListPage.searchFilters.clearAll();
       itemIds.forEach((ele, i) => {
@@ -306,14 +307,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       });
     });
 
-    it(" Login As student and verify points", () => {
+    it(" Login As student and verify text", () => {
       cy.login("student", Student2.email, Student2.pass);
       assignmentsPage.verifyPresenceOfTest(testId);
       assignmentsPage.clickOnAssigmentByTestId(testId);
       studentTestPage.getQuestionByIndex(0);
       itemsInTest.forEach((item, index) => {
         studentTestPage.getQuestionText().should("contain", questText[index]);
-        studentTestPage.clickOnNext();
+        studentTestPage.clickOnNext(false, true);
       });
       studentTestPage.submitTest();
     });

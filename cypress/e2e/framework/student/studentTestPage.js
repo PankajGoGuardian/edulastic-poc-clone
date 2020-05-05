@@ -86,6 +86,8 @@ class StudentTestPage {
 
   // *** ACTIONS START ***
 
+  clickOnSkipOnPopUp = () => cy.get('[data-cy="proceed-skip"]').click({ force: true });
+
   clickOnCheckAns = (isExhausted = false) => {
     cy.server();
     cy.route("POST", "**/evaluation").as("evaluation");
@@ -102,13 +104,16 @@ class StudentTestPage {
       );
   };
 
-  clickOnNext = (onlyPreview = false) => {
+  clickOnNext = (onlyPreview = false, isSkipped = false) => {
     cy.server();
     cy.route("POST", "**/test-activity/**").as("saved");
     cy.wait(300);
     this.getNext()
       .should("be.visible")
       .click();
+    if (isSkipped) {
+      this.clickOnSkipOnPopUp();
+    }
     if (!onlyPreview) cy.wait("@saved");
   };
 
@@ -732,7 +737,7 @@ class StudentTestPage {
           this.verifyQuestionLeft(index, att.length);
         }
         this.attemptQuestion(queType, attempt[queNum], attemptData);
-        this.clickOnNext();
+        this.clickOnNext(false, attempt[queNum] === attemptTypes.SKIP);
       });
 
       if (status === studentSide.IN_PROGRESS) {

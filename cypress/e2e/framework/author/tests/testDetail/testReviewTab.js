@@ -41,6 +41,13 @@ export default class TestReviewTab {
 
   getQueContainer = () => cy.get('[data-cy="question-container"]');
 
+  getGroupContainerByGroupIndex = group => cy.get(".ant-collapse-header").eq(group - 1);
+
+  getAllQuestionsByGroupIndex = group =>
+    this.getGroupContainerByGroupIndex(group)
+      .next()
+      .find('[data-cy="styled-wrapped-component"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -120,6 +127,11 @@ export default class TestReviewTab {
       .click({ force: true });
   };
 
+  expandGroupByGroupIndex = group =>
+    this.getGroupContainerByGroupIndex(group).then(ele => {
+      if (ele.attr("aria-expanded") === "false") cy.wrap(ele).click();
+    });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -165,5 +177,10 @@ export default class TestReviewTab {
 
   verifyItemCoutInPreview = count => this.getAllquestionInReview().should("have.length", count);
 
+  verifyItemCoutByGroupInPublisherPreview = (count, group = 1) => {
+    this.expandGroupByGroupIndex(group);
+    this.getGroupContainerByGroupIndex(group).should("contain.text", `TOTAL ITEMS${count}`);
+    this.getAllQuestionsByGroupIndex(group).should("have.length", count);
+  };
   // *** APPHELPERS END ***
 }

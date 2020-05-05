@@ -46,7 +46,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       standardsToSelect: ["K.CC.A.2"]
     },
     collection: "auto collection 1",
-    deliveryCount: 3
+    deliveryCount: 2
   };
 
   const deliveredArray = [[], []];
@@ -145,7 +145,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       it(">verify review", () => {
         // TODO: Add count by group verification
         // TODO: Need to clarify this
-        testLibraryPage.review.verifyItemCoutInPreview(5);
+        testLibraryPage.review.verifyItemCoutInPreview(4);
         testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
           testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
             expect(val).to.be.oneOf(itemIds);
@@ -256,30 +256,39 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     context(">auto select + static", () => {
       before("login", () => {
         groups = { 1: {}, 2: {} };
-        groups[1].items = itemIds.slice(0, 4);
-        groups[1].deliveryCount = groups[1].items.length;
-        groups[1].deliverType = DELIVERY_TYPE.ALL;
-        groups[2].items = itemIds.slice(4);
-        groups[2].deliveryCount = filterForAutoselect2.deliveryCount;
-        groups[2].deliverType = DELIVERY_TYPE.ALL_RANDOM;
+        groups[2].items = itemIds.slice(0, 4);
+        groups[2].deliveryCount = groups[2].items.length;
+        groups[2].deliverType = DELIVERY_TYPE.ALL;
+        groups[1].items = itemIds.slice(4);
+        groups[1].deliveryCount = filterForAutoselect2.deliveryCount;
+        groups[1].deliverType = DELIVERY_TYPE.ALL_RANDOM;
         cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
       before("create test", () => {
         testLibraryPage.createNewTestAndFillDetails(testData);
       });
-      it(">create static group", () => {
-        groupItemsPage.addItemsToGroup(groups[1].items).then(id => {
-          testID = id;
-        });
-        testLibraryPage.testAddItem.clickOnGroupItem();
-        groupItemsPage.clickOnEditByGroup(1);
-        groupItemsPage.checkDeliverAllItemForGroup(1);
-        groupItemsPage.clickOnSaveByGroup(1);
-      });
+
       it(">create dynamic group", () => {
+        testLibraryPage.header.clickOnAddItems();
+        testLibraryPage.testAddItem.clickOnGroupItem();
+        groupItemsPage.createDynamicTest(1, filterForAutoselect2);
+        cy.server();
+        cy.route("POST", "**api/test").as("createTest");
+        testLibraryPage.testAddItem.header.clickOnReview();
+        cy.wait("@createTest").then(xhr => {
+          testLibraryPage.saveTestId(xhr);
+          testID = xhr.response.body.result._id;
+        });
+      });
+      it(">create static group", () => {
+        testLibraryPage.testAddItem.clickOnGroupItem();
         groupItemsPage.clickOnAddGroup();
-        groupItemsPage.createDynamicTest(2, filterForAutoselect2);
+        groupItemsPage.addItemsToGroup(groups[2].items, false);
+        testLibraryPage.testAddItem.clickOnGroupItem();
+        groupItemsPage.clickOnEditByGroup(2);
+        groupItemsPage.checkDeliverAllItemForGroup(2);
+        groupItemsPage.clickOnSaveByGroup(2);
         testLibraryPage.testAddItem.header.clickOnReview();
         testLibraryPage.review.testheader.clickOnPublishButton();
       });
@@ -292,9 +301,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         testLibraryPage.clickOnDetailsOfCard();
       });
       it(">verify review", () => {
-        // TODO: Add count by group verification
-        // TODO: Need to clarify this as no of appearing on review is inconsistent
-        testLibraryPage.review.verifyItemCoutInPreview(4);
+        testLibraryPage.review.verifyItemCoutInPreview(6);
         testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
           testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
             expect(val).to.be.oneOf(itemIds);
@@ -325,8 +332,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         cy.wait(1).then(() => {
           CypressHelper.checkObjectInEquality(deliveredArray[0], deliveredArray[1], message[1]);
           CypressHelper.checkObjectEquality(
-            deliveredArray[0].slice(0, groups[1].items.length + 1),
-            deliveredArray[1].slice(0, groups[1].items.length + 1),
+            deliveredArray[0].slice(filterForAutoselect2.deliveryCount),
+            deliveredArray[1].slice(filterForAutoselect2.deliveryCount),
             message[0]
           );
         });

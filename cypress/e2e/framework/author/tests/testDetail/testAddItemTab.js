@@ -65,6 +65,7 @@ export default class TestAddItemTab {
     cy.server();
     cy.route("POST", "**/api/search/browse-standards").as("browseStandards");
     cy.get('[data-cy="groupItem"]').click();
+    cy.get('[data-cy="done"]'); // wait to render UI
     // cy.wait("@browseStandards");
   };
 

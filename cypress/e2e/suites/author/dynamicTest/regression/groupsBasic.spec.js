@@ -86,7 +86,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
-          testReviewTab.verifyItemCoutInPreview(groups.group1.length);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group1.length, 1);
         });
         it(">remove items and verify group page", () => {
           itemCount = groups.group1.length;
@@ -103,7 +103,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           addItemTab.header.clickOnReview();
           testReviewTab.testheader.clickOnSaveButton(true);
           testReviewTab.verifyNoOfItemsInGroupByNo(1, itemCount);
-          testReviewTab.verifyItemCoutInPreview(itemCount);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(itemCount);
         });
       });
       context(">add item to default group from 'itemgroup' page", () => {
@@ -137,7 +137,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
-          testReviewTab.verifyItemCoutInPreview(groups.group1.length);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group1.length);
         });
         it(">remove items and verify group page", () => {
           itemCount = groups.group2.length;
@@ -153,7 +153,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, itemCount);
-          testReviewTab.verifyItemCoutInPreview(itemCount);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(itemCount);
         });
       });
     });
@@ -193,7 +193,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(2, groups.group2.length);
-          testReviewTab.verifyItemCoutInPreview(groups.group2.length);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group2.length, 2);
         });
       });
       context(">add item to group from 'items group page'", () => {
@@ -220,7 +220,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(2, groups.group2.length + groups.group1.length);
-          testReviewTab.verifyItemCoutInPreview(groups.group2.length + groups.group1.length);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group2.length + groups.group1.length, 2);
         });
       });
       context(">remove items", () => {
@@ -238,7 +238,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(2, itemCount);
-          testReviewTab.verifyItemCoutInPreview(itemCount);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(itemCount, 2);
         });
       });
     });
@@ -276,7 +276,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         addItemTab.header.clickOnReview();
         testReviewTab.verifyNoOfItemsInGroupByNo(2, groups.group2.length);
         testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
-        testReviewTab.verifyItemCoutInPreview(groups.group2.length + groups.group1.length);
+        testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group2.length, 2);
+        testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group1.length, 1);
       });
       it(">remove item and verify review tab", () => {
         itemCount = groups.group2.length + groups.group2.length;
@@ -295,7 +296,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, itemCount1);
           testReviewTab.verifyNoOfItemsInGroupByNo(2, itemCount2);
-          testReviewTab.verifyItemCoutInPreview(itemCount1 + itemCount2);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(itemCount1, 1);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(itemCount2, 2);
         });
       });
     });
@@ -332,7 +334,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 2);
-          testReviewTab.verifyItemCoutInPreview(groups.group2.length + groups.group1.length);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group2.length + groups.group1.length);
         });
       });
       context(">auto select", () => {
@@ -343,7 +345,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           testLibraryPage.testSummary.header.clickOnAddItems();
           addItemTab.clickOnGroupItem();
           groupItemsPage.createDynamicTest(1, filterForAutoselect);
-          // TODO : Remove this static wait and verify once you get 2 or 3 results
         });
         it(">verify review tab", () => {
           cy.server();
@@ -354,7 +355,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           });
           testLibraryPage.header.clickOnReview(); /* current behaviour */
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 2);
-          testReviewTab.verifyItemCoutInPreview(2);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(2);
         });
         it(">edit dynamic group", () => {
           testLibraryPage.testSummary.header.clickOnAddItems();
@@ -370,7 +371,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 3);
-          testReviewTab.verifyItemCoutInPreview(3);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(3);
         });
       });
       context(">manual to auto select", () => {
@@ -401,7 +402,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
-          testReviewTab.verifyItemCoutInPreview(groups.group1.length);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(groups.group1.length);
         });
         it(">edit group", () => {
           testReviewTab.testheader.clickOnAddItems();
@@ -411,7 +412,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 2);
-          testReviewTab.verifyItemCoutInPreview(2);
+          testReviewTab.verifyItemCoutByGroupInPublisherPreview(2);
         });
       });
     });

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { get } from "lodash";
+import { get, debounce } from "lodash";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -130,7 +130,7 @@ class Container extends Component {
     }, 0);
   };
 
-  handleSave = () => {
+  handleSave = debounce(() => {
     const {
       saveQuestion,
       savePassage,
@@ -151,7 +151,7 @@ class Container extends Component {
     saveQuestion(testId, isTestFlow, isEditFlow);
     removeAnswers();
     if (setAuthoredByMeFilter) setAuthoredByMeFilter();
-  };
+  }, 1000);
 
   handleChangePreviewTab = previewTab => {
     const { checkAnswer, showAnswer, changePreview, preview } = this.props;

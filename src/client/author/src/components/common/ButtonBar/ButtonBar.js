@@ -1,3 +1,4 @@
+import { debounce, get } from "lodash";
 import { themeColor, white } from "@edulastic/colors";
 import { HeaderTabs, withWindowSizes, EduButton } from "@edulastic/common";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
@@ -16,7 +17,6 @@ import {
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
 import { Button } from "antd";
-import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -71,6 +71,11 @@ class ButtonBar extends Component {
     changePreviewTab("clear");
   };
 
+  handleSave = debounce(() => {
+    const { onSave } = this.props;
+    onSave();
+  }, 1000);
+
   render() {
     const {
       t,
@@ -95,7 +100,6 @@ class ButtonBar extends Component {
       qTitle,
       userRole
     } = this.props;
-
     return (
       <React.Fragment>
         {windowWidth > MAX_TAB_WIDTH ? (
@@ -160,7 +164,7 @@ class ButtonBar extends Component {
                           id={getFormattedAttrId(`${qTitle}-save`)}
                           disabled={disableSave}
                           data-cy="saveButton"
-                          onClick={onSave}
+                          onClick={this.handleSave}
                         >
                           <IconSaveNew />
                           SAVE

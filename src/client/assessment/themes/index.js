@@ -158,29 +158,15 @@ const AssessmentContainer = ({
         case questionType.BAR_CHART:
         case questionType.HISTOGRAM:
         case questionType.DOT_PLOT:
-        case questionType.LINE_PLOT:
+        case questionType.LINE_PLOT: {
           const initialData = q.chart_data.data;
           const currentData = answersById[q.id];
           return initialData.every((d, i) => d.y === currentData[i].y);
+        }
         default:
           return isEmpty(answersById[q.id]);
       }
     });
-  };
-
-  const onSkipUnansweredPopup = async () => {
-    setUnansweredPopupSetting({
-      ...unansweredPopupSetting,
-      show: false
-    });
-    const { index, context } = unansweredPopupSetting;
-    if (context === "next") {
-      await moveToNext(null, true);
-    } else if (context === "prev") {
-      moveToPrev(null, true);
-    } else {
-      gotoQuestion(index, true);
-    }
   };
 
   const onCloseUnansweedPopup = () => {
@@ -266,6 +252,21 @@ const AssessmentContainer = ({
     if (!isFirst()) gotoQuestion(Number(currentItem) - 1, needsToProceed, "prev");
     if (enableMagnifier) {
       updateTestPlayer({ enableMagnifier: false });
+    }
+  };
+
+  const onSkipUnansweredPopup = async () => {
+    setUnansweredPopupSetting({
+      ...unansweredPopupSetting,
+      show: false
+    });
+    const { index, context } = unansweredPopupSetting;
+    if (context === "next") {
+      await moveToNext(null, true);
+    } else if (context === "prev") {
+      moveToPrev(null, true);
+    } else {
+      gotoQuestion(index, true);
     }
   };
 

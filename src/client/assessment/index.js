@@ -68,7 +68,7 @@ const AssessmentPlayer = ({
 
   useEffect(() => {
     if (isPublic) {
-      //can't return undefined from useEffect hook
+      // can't return undefined from useEffect hook
       return () => {};
     }
     window.addEventListener("beforeunload", confirmBeforeQuitting);

@@ -43,7 +43,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
 
     it(">assign the test", () => {
       testlibraryPage.assignPage.verifyInfoAboutTestTime();
-      testlibraryPage.assignPage.selectClass("Class");
+      testlibraryPage.assignPage.selectClass("Class2");
       testlibraryPage.assignPage.clickOnAssign();
     });
 

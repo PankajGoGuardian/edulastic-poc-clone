@@ -20,7 +20,7 @@ import {
   Label,
   StyledRow
 } from "./styled";
-import { getListOfStudents } from "../../utils";
+import { getListOfActiveStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
@@ -240,7 +240,7 @@ class SimpleOptions extends React.Component {
       closePolicy = selectsData.closePolicyForAdmin;
     }
     const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
-    const studentOfSelectedClass = getListOfStudents(students, classIds);
+    const studentOfSelectedClass = getListOfActiveStudents(students, classIds);
     const playerSkinType = assignment.playerSkinType || testSettings.playerSkinType;
 
     return (

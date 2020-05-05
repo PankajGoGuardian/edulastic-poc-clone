@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isEmpty, debounce } from "lodash";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { roleuser } from "@edulastic/constants";
 import { StyledFilterDiv } from "../../../../admin/Common/StyledComponents";
 
@@ -120,7 +120,22 @@ const ContentBucketsTable = ({
         return next.localeCompare(prev);
       },
       className: "column-align-left",
-      width: 300
+      width: 300,
+      render: (value, collection) => {
+        const textTooltip = (
+          <div>
+            <p style={{ paddingBottom: "5px" }}>{value}</p>
+            <p>{collection.description}</p>
+          </div>
+        );
+        return (
+          <>
+            <Tooltip placement="right" title={textTooltip}>
+              {value}
+            </Tooltip>
+          </>
+        );
+      }
     },
     {
       title: t("content.buckets.tableHeader.collectionName"),
@@ -134,7 +149,22 @@ const ContentBucketsTable = ({
         const next = `${get(b, "name", "")}${get(b, "name", "")}`;
         return next.localeCompare(prev);
       },
-      className: "column-align-left"
+      className: "column-align-left",
+      render: (value, collection) => {
+        const textTooltip = (
+          <div>
+            <p style={{ paddingBottom: "5px" }}>{value}</p>
+            <p>{collection.description}</p>
+          </div>
+        );
+        return (
+          <>
+            <Tooltip placement="right" title={textTooltip}>
+              {value}
+            </Tooltip>
+          </>
+        );
+      }
     },
     {
       title: t("content.buckets.tableHeader.owner"),

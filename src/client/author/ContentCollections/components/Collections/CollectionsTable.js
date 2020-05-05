@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { get } from "lodash";
 import { connect } from "react-redux";
-import { Icon } from "antd";
+import { Icon, Tooltip } from "antd";
 import {
   CollectionTableContainer,
   PermissionsButton,
@@ -115,6 +115,21 @@ const CollectionsTable = ({
         const prev = get(a, "name", "");
         const next = get(b, "name", "");
         return next.localeCompare(prev);
+      },
+      render: (value, collection) => {
+        const textTooltip = (
+          <div>
+            <p style={{ paddingBottom: "5px" }}>{value}</p>
+            <p>{collection.description}</p>
+          </div>
+        );
+        return (
+          <>
+            <Tooltip placement="right" title={textTooltip}>
+              {value}
+            </Tooltip>
+          </>
+        );
       }
     },
     {

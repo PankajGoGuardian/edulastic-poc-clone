@@ -1,4 +1,5 @@
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { connect } from "react-redux";
 import { roleuser, test } from "@edulastic/constants";
 import { Col, Select } from "antd";
 import React from "react";
@@ -13,7 +14,8 @@ const TestTypeSelector = ({
   userRole,
   isAdvanceView,
   disabled = false,
-  fullwidth = false
+  fullwidth = false,
+  districtPermissions = []
 }) => {
   const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
   const testTypes = {
@@ -23,7 +25,7 @@ const TestTypeSelector = ({
 
   const SelectOption = (
     <SelectInputStyled data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
-      {isAdmin && (
+      {isAdmin && !districtPermissions.includes("publisher") && (
         <Select.Option key={COMMON} value={COMMON}>
           Common Assessment
         </Select.Option>
@@ -57,4 +59,6 @@ const TestTypeSelector = ({
   );
 };
 
-export default TestTypeSelector;
+export default connect(state => ({
+  districtPermissions: state?.user?.user?.orgData.districtPermissions
+}))(TestTypeSelector);

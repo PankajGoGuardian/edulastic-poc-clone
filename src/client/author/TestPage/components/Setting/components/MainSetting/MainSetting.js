@@ -307,7 +307,8 @@ class MainSetting extends Component {
       timedAssignment,
       allowedTime,
       pauseAllowed,
-      enableScratchpad = true
+      enableScratchpad = true,
+      districtPermissions = []
     } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
@@ -412,11 +413,12 @@ class MainSetting extends Component {
                     >
                       {(userRole === roleuser.DISTRICT_ADMIN ||
                         userRole === roleuser.SCHOOL_ADMIN ||
-                        testType === COMMON) && (
-                        <Option key={COMMON} value={COMMON}>
-                          Common Assessment
-                        </Option>
-                      )}
+                        testType === COMMON) &&
+                        !districtPermissions.includes("publisher") && (
+                          <Option key={COMMON} value={COMMON}>
+                            Common Assessment
+                          </Option>
+                        )}
                       {Object.keys(testTypes).map(key => (
                         <Option key={key} value={key}>
                           {testTypes[key]}
@@ -1092,6 +1094,7 @@ export default connect(
     performanceBandsData: get(state, ["performanceBandReducer", "profiles"], []),
     isReleaseScorePremium: getReleaseScorePremiumSelector(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+    districtPermissions: state?.user?.user?.orgData.districtPermissions,
     premium: state?.user?.user?.features?.premium,
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions

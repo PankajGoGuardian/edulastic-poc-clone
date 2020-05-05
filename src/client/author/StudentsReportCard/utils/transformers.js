@@ -5,10 +5,6 @@ import { replaceVariables } from "../../../assessment/utils/variables";
 import { questionType } from "@edulastic/constants";
 import { formatToMathAnswer } from "../../../assessment/widgets/MathFormula/components/CorrectAnswerBox";
 
-const CORRECT = "Correct";
-const PARTIAL_CORRECT = "Partial Correct";
-const INCORRECT = "Incorrect";
-
 //format answers for doc based
 const formatAnswerForDocBased = (value, q, options = {}) => {
   return options[value]?.label || value?.value || value || "-";
@@ -66,12 +62,8 @@ const formatAnswers = (data, options, q, qActivity = null, context = "") => {
 
   let result = formatAnswertoDisplay(answer.length ? answer : "-", type, title);
 
-  //to display 'Correct/PartialCorrect/Incorrect' for 'TEI' type question for user response
   //for qType = math, needs to reformat latex to correct format, so using formatToMathAnswer util function do this.
-  if (result === "TEI" && context === "userResponse") {
-    const { correct, partialCorrect } = qActivity || {};
-    result = correct ? CORRECT : partialCorrect ? PARTIAL_CORRECT : INCORRECT;
-  } else if (type === "math" && result !== "TEI") {
+  if (type === "math" && result !== "TEI") {
     result = Array.isArray(result) ? result.map(ans => formatToMathAnswer(ans)) : formatToMathAnswer(result);
   }
   return Array.isArray(result) ? result.join(", ") : result;

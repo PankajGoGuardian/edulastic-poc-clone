@@ -61,7 +61,7 @@ const ModuleItem = SortableElement(props => {
         val.toString().length <= 24 && setEditModuleGroupName(val);
         break;
       case "moduleId":
-        val.toString() <= 4 && setEditModuleId(val);
+        val.toString().length <= 4 && setEditModuleId(val);
         break;
       case "moduleName":
         val.toString().length <= 100 && setEditModuleName(val);
@@ -277,13 +277,6 @@ const SortableModules = SortableContainer(props => (
 ));
 
 const ManageModulesModalBody = props => {
-  const [addState, toggleAddState] = useState(props.addState || true);
-
-  const [moduleGroupName, setModuleGroupName] = useState("");
-  const [moduleId, setModuleId] = useState("");
-  const [moduleName, setModuleName] = useState("");
-  const [moduleDescription, setModuleDescription] = useState("");
-
   const {
     destinationCurriculumSequence,
     onCloseManageModule,
@@ -294,6 +287,13 @@ const ManageModulesModalBody = props => {
     handleApply,
     handleTestAdded
   } = props;
+
+  const [addState, toggleAddState] = useState(props.addState || !destinationCurriculumSequence.modules.length);
+
+  const [moduleGroupName, setModuleGroupName] = useState("");
+  const [moduleId, setModuleId] = useState("");
+  const [moduleName, setModuleName] = useState("");
+  const [moduleDescription, setModuleDescription] = useState("");
 
   const setEditModuleData = (moduleGroupName, moduleId, moduleName, moduleDescription) => {
     setEditModuleGroupName(moduleGroupName);

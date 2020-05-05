@@ -1,12 +1,10 @@
-import { attemptTypes, queColor } from "../../constants/questionTypes";
+import { attemptTypes, questionTypeKey as queTypes, queColor } from "../../constants/questionTypes";
 import LiveClassboardPage from "./LiveClassboardPage";
 import StudentTestPage from "../../student/studentTestPage";
-import StudentsReportCard from "../../author/assignments/studentPdfReportCard";
 export default class ExpressGraderPage extends LiveClassboardPage {
   constructor() {
     super();
     this.rowAlias = "studentRow";
-    this.StudentsReportCard = new StudentsReportCard();
     this.attemptQuestion = (attemptQueType, attemptType, attemptData) =>
       new StudentTestPage().attemptQuestion(attemptQueType, attemptType, attemptData);
   }
@@ -121,6 +119,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       );
   };
 
+  indexToOption = ind => String.fromCharCode(ind + 65);
+
   getScoreToggleButton = () => {
     return cy.get(".ant-switch").first();
   };
@@ -133,6 +133,58 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       .find(".sub-thead-th")
       .eq(queIndex)
       .find("div");
+  };
+
+  getQuestionTableResponseData = ({ attempt, questionTypeMap }) => {
+    const questinoWiseData = {};
+    const TEI_Attempt = "TEI";
+    const CR_Questions = "Constructed Response";
+    const skippedResponse = "-";
+
+    Object.keys(attempt).forEach(queNo => {
+      const attemptType = attempt[queNo];
+      let { queKey, attemptData, choices } = questionTypeMap[queNo];
+      let studentResponseByAttempt;
+      let studentResponse;
+
+      switch (queKey.split(".")[0]) {
+        case queTypes.MULTIPLE_CHOICE_BLOCK:
+        case queTypes.MULTIPLE_CHOICE_STANDARD:
+        case queTypes.TRUE_FALSE:
+        case queTypes.MULTIPLE_CHOICE_MULTIPLE:
+          studentResponseByAttempt = Array.isArray(attemptData[attemptType])
+            ? attemptData[attemptType]
+            : [attemptData[attemptType]];
+          studentResponse =
+            attemptType === attemptTypes.SKIP
+              ? skippedResponse
+              : studentResponseByAttempt.map(ele => choices.indexOf(ele)).map(ind => this.indexToOption(ind));
+          break;
+
+        case queTypes.CLOZE_DROP_DOWN:
+          studentResponseByAttempt = attemptData[attemptType];
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : studentResponseByAttempt;
+          break;
+
+        case queTypes.CHOICE_MATRIX_STANDARD:
+        case queTypes.CHOICE_MATRIX_LABEL:
+        case queTypes.CHOICE_MATRIX_INLINE:
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : TEI_Attempt;
+          break;
+
+        case queTypes.ESSAY_RICH:
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : CR_Questions;
+          break;
+
+        default:
+          assert.fail(1, 2, "Qusetion type does not match while calculating question table data");
+          break;
+      }
+      questinoWiseData[`${queNo}`] = {
+        studentResponse
+      };
+    });
+    return questinoWiseData;
   };
 
   verifyScoreAndPerformanceForQueNum = (queNum, score, perf) => {
@@ -228,11 +280,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   verifyResponseGrid = (attempt, questionTypeMap, studentName) => {
     this.getGridRowByStudent(studentName);
-    const questionTableData = this.StudentsReportCard.getQuestionTableData({
-      attempt,
-      questionTypeMap,
-      isGradeBook: true
-    });
+    const questionTableData = this.getQuestionTableResponseData({ attempt, questionTypeMap });
     Object.keys(questionTypeMap).forEach(questionNumber => {
       const { studentResponse } = questionTableData[questionNumber];
       this.verifyResponseEntryByIndexOfSelectedRow(studentResponse, questionNumber);

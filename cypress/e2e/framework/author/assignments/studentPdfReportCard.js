@@ -219,11 +219,10 @@ export default class StudentsReportCard {
 
   indexToOption = ind => String.fromCharCode(ind + 65);
 
-  getQuestionTableData = ({ attempt, questionTypeMap, isGradeBook = false }) => {
+  getQuestionTableData = ({ attempt, questionTypeMap }) => {
     const questinoWiseData = {};
     let TEI_AttemptTypes;
-    if (isGradeBook) TEI_AttemptTypes = { right: "TEI", wrong: "TEI", partialCorrect: "TEI" };
-    else TEI_AttemptTypes = { right: "Correct", wrong: "Incorrect", partialCorrect: "Partial Correct" };
+    TEI_AttemptTypes = { right: "Correct", wrong: "Incorrect", partialCorrect: "Partial Correct" };
     const TEI_CorrectAns = "TEI";
     const CR_Questions = "Constructed Response";
     const skippedResponse = "-";

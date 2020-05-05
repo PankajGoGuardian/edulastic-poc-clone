@@ -76,7 +76,8 @@ export const FlexContainerWrapper = styled(FlexContainer)`
 export const FlexContainerWrapperLeft = styled(FlexContainer)`
   flex-direction: column;
   justify-content: flex-start;
-  margin-right: 100px;
+  margin-right: 5%;
+  width: 31%;
   .anticon-star {
     svg {
       width: 11px;
@@ -84,26 +85,29 @@ export const FlexContainerWrapperLeft = styled(FlexContainer)`
     }
   }
   .ant-card-bordered {
-    width: 264px;
+    width: 100%;
   }
   @media (max-width: ${largeDesktopWidth}) {
     width: 25%;
   }
   @media (max-width: ${tabletWidth}) {
     width: 50%;
+    margin-right: 0;
   }
 `;
 export const FlexContainerWrapperRight = styled(FlexContainer)`
-  width: calc(100% - 300px);
+  width: 69%;
   justify-content: ${props => (props.isAssignSuccess ? "flex-start" : "center")};
   align-items: flex-start;
   flex-direction: column;
+  margin-left: 5%;
 
   @media (max-width: ${largeDesktopWidth}) {
     width: 75%;
   }
   @media (max-width: ${tabletWidth}) {
     width: 100%;
+    margin-left: 0;
   }
 `;
 

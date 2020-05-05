@@ -20,7 +20,8 @@ const Header = ({
   t,
   currentTab,
   onClickHandler,
-  enableCleverSync
+  enableCleverSync,
+  isCleverDistrictUser
 }) => {
   const handleLoginSucess = data => {
     fetchGoogleClassList({ data });
@@ -67,7 +68,7 @@ const Header = ({
             <span>SYNC NOW WITH CLEVER</span>
           </EduButton>
         )}
-        {googleAllowedInstitutions.length > 0 && !enableCleverSync && (
+        {googleAllowedInstitutions.length > 0 && !(enableCleverSync || isCleverDistrictUser) && (
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"

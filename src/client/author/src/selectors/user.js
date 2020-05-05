@@ -233,6 +233,11 @@ export const getGoogleAllowedInstitionPoliciesSelector = createSelector(
   state => state.filter(s => !!s.allowGoogleClassroom)
 );
 
+export const getCleverDistrictUserSelector = createSelector(
+  getOrgDataSelector,
+  orgData => !!orgData.isCleverDistrict
+);
+
 export const getCleverLibraryUserSelector = createSelector(
   getUser,
   getOrgDataSelector,

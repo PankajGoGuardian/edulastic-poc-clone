@@ -13,7 +13,7 @@ import {
 } from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
-  margin-bottom: 20px;
+  margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
   width: 100%;
   height: auto;
   border-radius: 0px;

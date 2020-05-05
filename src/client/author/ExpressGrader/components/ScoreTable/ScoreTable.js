@@ -127,7 +127,6 @@ class ScoreTable extends Component {
       const key = `Q${index}`;
       const qids = students[0].questionActivities[index].qids;
       const title = <StyledDivMid>{students[0].questionActivities[index].barLabel}</StyledDivMid>;
-
       students
         .filter(x => x.status === "submitted")
         .forEach(student => {
@@ -193,9 +192,11 @@ class ScoreTable extends Component {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength, showColumnsCount);
     }
     const scrollX = columnsLength * 100 + 300;
+    const scrollY = window.innerHeight - 210;
+    const showY = columnData.length * 41 > scrollY;
 
     return (
-      <StyledCard bordered={false}>
+      <StyledCard bordered={false} marginBottom="0px">
         <TableData
           pagination={false}
           columns={columnInfo}
@@ -204,7 +205,7 @@ class ScoreTable extends Component {
           //Column data length will be number of students
           scroll={{
             x: !scoreMode ? true : columnsLength > showColumnsCount ? scrollX : false,
-            y: false
+            y: showY ? scrollY : false
           }}
           rowKey={(record, i) => i}
         />

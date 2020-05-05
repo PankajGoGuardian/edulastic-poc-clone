@@ -152,7 +152,10 @@ const AssignmentCard = memo(
     const attemptCount = newReports && newReports.length;
     const scorePercentage = (score / maxScore) * 100 || 0;
     const arrow = showAttempts ? "\u2191" : "\u2193";
-
+    //To handle regrade reduce max attempt settings.
+    if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
+      maxAttempts = reports.length;
+    }
     const startTest = () => {
       if (endDate < Date.now()) {
         return message.error("Test is expired");

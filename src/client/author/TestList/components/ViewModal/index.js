@@ -1,65 +1,72 @@
-import React from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import Modal from "react-responsive-modal";
-import { find } from "lodash";
-import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
-import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription, IconTrashAlt } from "@edulastic/icons";
-import { roleuser } from "@edulastic/constants";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Tooltip, Icon, Select } from "antd";
+import { darkGrey, white } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
 import {
-  ModalTitle,
-  ModalContainer,
-  ModalColumn,
-  Image,
-  AssessmentNameLabel,
-  AssessmentName,
-  DescriptionLabel,
-  Description,
-  TagsLabel,
-  TagsConatiner,
-  GradeLabel,
-  GradeConatiner,
-  SubjectLabel,
-  Subject,
-  Footer,
-  FooterIcon,
-  IconText,
-  TagGrade,
-  ButtonContainer,
-  SummaryContainer,
-  SummaryTitle,
-  SummaryCardContainer,
-  SummaryCard,
-  SummaryCardLabel,
-  SummaryCardValue,
-  SummaryList,
-  ListHeader,
-  ListRow,
-  ListHeaderCell,
-  ListCell,
-  SammaryMark,
-  TestStatus,
-  IconWrapper,
-  TestTitleWrapper,
-  ViewModalButton,
-  GroupName,
-  GroupSummaryCard,
-  GroupSummaryCardValue
-} from "./styled";
+  IconCopy,
+  IconDescription,
+  IconHeart,
+  IconShare,
+  IconTrashAlt,
+  IconWorldWide,
+  IconEye,
+  IconPencilEdit,
+  IconAssignment
+} from "@edulastic/icons";
+import { Icon, Select, Tooltip } from "antd";
+import { find } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { connect } from "react-redux";
+import Modal from "react-responsive-modal";
+import { StyledSelect } from "../../../../common/styled";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import Tags from "../../../src/components/common/Tags";
 import {
+  getCollectionsSelector,
   getInterestedCurriculumsSelector,
   getUserIdSelector,
-  getCollectionsSelector,
   getUserRole
 } from "../../../src/selectors/user";
-import { getInterestedStandards } from "../../../dataUtils";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { StyledSelect } from "../../../../common/styled";
-import Tags from "../../../src/components/common/Tags";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+import {
+  AssessmentName,
+  AssessmentNameLabel,
+  ButtonContainer,
+  Description,
+  DescriptionLabel,
+  Footer,
+  FooterIcon,
+  GradeConatiner,
+  GradeLabel,
+  GroupName,
+  GroupSummaryCard,
+  GroupSummaryCardValue,
+  IconText,
+  Image,
+  ListCell,
+  ListHeader,
+  ListHeaderCell,
+  ListRow,
+  ModalColumn,
+  ModalContainer,
+  ModalTitle,
+  SammaryMark,
+  Subject,
+  SubjectLabel,
+  SummaryCard,
+  SummaryCardContainer,
+  SummaryCardLabel,
+  SummaryCardValue,
+  SummaryContainer,
+  SummaryList,
+  SummaryTitle,
+  TagGrade,
+  TagsConatiner,
+  TagsLabel,
+  TestStatus,
+  TestTitleWrapper
+} from "./styled";
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -116,7 +123,8 @@ class ViewModal extends React.Component {
       userId,
       collections,
       allowDuplicate,
-      userRole
+      userRole,
+      previewLink
     } = this.props;
     const {
       title = "",
@@ -141,8 +149,8 @@ class ViewModal extends React.Component {
 
     const modalStyles = {
       modal: {
-        background: backgrounds.primary,
-        padding: "20px 29px 28px",
+        background: white,
+        padding: "20px 40px",
         width: windowWidth < 768 ? "100%" : windowWidth < 1200 ? "750px" : "920px",
         maxWidth: "unset",
         borderRadius: "5px"
@@ -189,7 +197,7 @@ class ViewModal extends React.Component {
                 <IconDescription />
                 <span>DETAILS</span>
               </EduButton>
-              {allowDuplicate && status !== "draft" && !isEdulasticCurator && (
+              {allowDuplicate && !isEdulasticCurator && (
                 <EduButton
                   isGhost
                   height="40px"
@@ -253,18 +261,41 @@ class ViewModal extends React.Component {
                 </FeaturesSwitch>
               ) : null}
             </ButtonContainer>
-            {(permission !== "VIEW" || status === "published") && !isEdulasticCurator && (
-              <ButtonContainer>
+            <ButtonContainer>
+              <EduButton
+                height="40px"
+                width="100%"
+                isGhost
+                noHover
+                justifyContent="center"
+                data-cy="preview-button"
+                onClick={previewLink}
+              >
+                <IconEye />
+                Preview
+              </EduButton>
+              {(permission !== "VIEW" || status === "published") && !isEdulasticCurator && (
                 <EduButton
                   height="40px"
                   width="100%"
+                  justifyContent="center"
                   data-cy="edit/assign-button"
                   onClick={status === "published" ? assign : onEdit}
                 >
-                  {status === "published" ? "ASSIGN" : "EDIT"}
+                  {status === "published" ? (
+                    <>
+                      <IconAssignment />
+                      <span>ASSIGN</span>
+                    </>
+                  ) : (
+                    <>
+                      <IconPencilEdit height={14} />
+                      <span>EDIT</span>
+                    </>
+                  )}
                 </EduButton>
-              </ButtonContainer>
-            )}
+              )}
+            </ButtonContainer>
             {status === "inreview" || status === "rejected" ? (
               <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
                 <ButtonContainer>

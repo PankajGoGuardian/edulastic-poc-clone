@@ -22,11 +22,11 @@ EduButton.defaultProps = {
 
 export default EduButton;
 
-const getStyle = ({ height, width, fontSize, IconBtn, style = {} }) => {
+const getStyle = ({ height, width, justifyContent, fontSize, IconBtn, style = {} }) => {
   const defaultStyle = {
     display: "flex",
     "align-items": "center",
-    "justify-content": "space-evenly",
+    "justify-content": justifyContent || "space-evenly",
     fontSize: fontSize || "11px",
     fontWeight: "600",
     marginLeft: "10px",

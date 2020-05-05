@@ -27,11 +27,12 @@ export const ModalTitle = styled.h2`
 export const ModalContainer = styled(Card)`
   color: ${secondaryTextColor};
   margin-top: 20px;
+  box-shadow: none;
   .ant-card-body {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding: 30px;
+    padding: 0px;
     min-width: 100%;
     &:before,
     &:after {

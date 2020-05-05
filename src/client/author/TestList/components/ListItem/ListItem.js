@@ -2,7 +2,7 @@ import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
 import { CheckboxLabel } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { IconClose, IconEye, IconHeart, IconId, IconPlus, IconShare, IconUser } from "@edulastic/icons";
+import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col } from "antd";
 import PropTypes from "prop-types";
@@ -17,7 +17,7 @@ import {
   ViewButtonStyled
 } from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
-import { getUserRole, isPublisherUserSelector } from "../../../src/selectors/user";
+import { getUserRole, isPublisherUserSelector, getCollectionsSelector } from "../../../src/selectors/user";
 import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector } from "../../ducks";
 import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -45,6 +45,7 @@ import {
   TestStatus,
   ViewButtonWrapper
 } from "./styled";
+import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 
 class ListItem extends Component {
   static propTypes = {
@@ -53,7 +54,9 @@ class ListItem extends Component {
     match: PropTypes.object.isRequired,
     authorName: PropTypes.string,
     owner: PropTypes.object,
-    testItemId: PropTypes.string
+    testItemId: PropTypes.string,
+    orgCollections: PropTypes.array.isRequired,
+    isPreviewModalVisible: PropTypes.bool
   };
 
   static defaultProps = {
@@ -160,7 +163,8 @@ class ListItem extends Component {
       onAddToCart,
       t,
       userRole,
-      isPublisherUser
+      isPublisherUser,
+      orgCollections
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -170,6 +174,8 @@ class ListItem extends Component {
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;
     const isInCart = !!selectedTests.find(o => o._id === item._id);
+    const allowDuplicate = allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test");
+
     return (
       <>
         <ViewModal
@@ -183,7 +189,12 @@ class ListItem extends Component {
           onApprove={this.onApprove}
           assign={this.assignTest}
           isPlaylist={isPlaylist}
+          windowWidth={windowWidth}
+          allowDuplicate={allowDuplicate}
+          onDeletonDuplicatee={this.onDelete}
+          previewLink={e => this.showPreviewModal(item._id)}
         />
+
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
@@ -349,6 +360,7 @@ const enhance = compose(
   connect(
     state => ({
       selectedTests: getSelectedTestsSelector(state),
+      orgCollections: getCollectionsSelector(state),
       userRole: getUserRole(state),
       isPublisherUser: isPublisherUserSelector(state)
     }),

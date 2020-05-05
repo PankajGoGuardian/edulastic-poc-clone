@@ -247,6 +247,7 @@ class Item extends Component {
           isPlaylist={isPlaylist}
           windowWidth={windowWidth}
           allowDuplicate={allowDuplicate}
+          previewLink={e => this.showPreviewModal(testId, e)}
         />
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}

@@ -36,11 +36,9 @@ const ClassSelectModal = ({
         classListToSync.map(c => ({
           name: c.name,
           cleverId: c.id,
-          // TODO: verify use-case & remove this
-          // course: c.course,
-          course: "",
-          subject: c.subject ? capitalize(c.subject) : "",
-          grades: c.grade ? [c.grade] : [],
+          // course: "",
+          // subject: "",
+          grades: [],
           standards: [],
           standardSets: [],
           disabled: syncedIds.includes(c.id)
@@ -119,7 +117,7 @@ const ClassSelectModal = ({
         align: "center",
         render: (data, row, index) => (
           <StyledSelect
-            value={data || []}
+            value={data}
             mode="multiple"
             placeholder="Select Grades"
             disabled={row.disabled}
@@ -147,7 +145,7 @@ const ClassSelectModal = ({
         render: (data, row, index) => (
           <StyledSelect
             style={{ minWidth: "80px" }}
-            value={data || []}
+            value={data}
             placeholder="Select Subject"
             disabled={row.disabled}
             onChange={subject => {
@@ -222,7 +220,7 @@ const ClassSelectModal = ({
         title: <b>COURSE</b>,
         key: "course",
         width,
-        dataIndex: "course",
+        dataIndex: "courseId",
         align: "center",
         render: (data, row, index) => (
           <StyledSelect
@@ -231,27 +229,26 @@ const ClassSelectModal = ({
             filterOption={(input, option) =>
               option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
-            value={{ key: row.courseId || data || [] }}
+            value={data && { key: data }}
             placeholder="Select Course"
             disabled={row.disabled}
             onChange={course => {
               const classList = [...classListData];
+              classList[index].courseId = course.key;
               if (type === "clever") {
                 classList[index].course = course.key;
               } else if (type === "googleClassroom") {
-                classList[index].course = { id: course.value, name: course.label };
-                classList[index].courseId = course.value;
+                classList[index].course = { id: course.key, name: course.label };
               }
               setClassListData(classList);
             }}
             getPopupContainer={triggerNode => triggerNode.parentNode}
           >
-            {courseList &&
-              courseList.map(course => (
-                <Select.Option value={course._id} key={course._id}>
-                  {course.name}
-                </Select.Option>
-              ))}
+            {(courseList || []).map(course => (
+              <Select.Option value={course._id} key={course._id}>
+                {course.name}
+              </Select.Option>
+            ))}
           </StyledSelect>
         )
       }

@@ -7,7 +7,7 @@ import { Radio, Select } from "antd";
 import { get, isObject } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
-import { white } from "@edulastic/colors";
+import { white, red } from "@edulastic/colors";
 import { Label } from "../../../../../styled/WidgetOptions/Label";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 import { SelectInputStyled } from "../../../../../styled/InputStyles";
@@ -81,6 +81,7 @@ const UnitsDropdownPure = ({
           <Col span={24}>
             <Label marginBottom="0" data-cy="answer-math-unit-dropdown">
               {t("component.math.showDropdown")}
+              <SubLabel>&nbsp;(Use keypad section to customize)</SubLabel>
             </Label>
           </Col>
           <Col span={24}>
@@ -167,4 +168,9 @@ const DropdownWrapper = styled.div`
     padding: 5px 2px;
     background: ${({ statusColor }) => statusColor || white};
   }
+`;
+
+const SubLabel = styled.span`
+  color: ${red};
+  text-transform: initial;
 `;

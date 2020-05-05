@@ -399,7 +399,7 @@ export default class QuestionResponsePage {
           cy.get("@responseBox")
             // .should("not.have.class", "check-answer")
             // .and("have.class", "wrong");
-            .should("have.css", "background-color", queColor.LIGHT_GREY);
+            .should("have.css", "background-color", queColor.GREY_2);
         }
       });
   };

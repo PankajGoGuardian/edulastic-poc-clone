@@ -363,6 +363,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       });
     });
 
+    context(" > verify question level data", () => {
+      queList.forEach(queNum => {
+        // ["Q1"].forEach(queNum => {
+        it(` > verify for :: ${queNum}`, () => {
+          const attempt = submittedQueCentric[queNum];
+          expressg.verifyQuestionLevelGrid(queNum, attempt, questionTypeMap);
+        });
+      });
+    });
+
     context(" > verify Responses", () => {
       before("Change toggle button to Response view", () => {
         expressg.getScoreToggleButton().click({ force: true });
@@ -374,15 +384,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           const { attempt } = statsMap[studentName];
           expressg.verifyResponseGrid(attempt, questionTypeMap, studentName);
           expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap); // assert color
-        });
-      });
-    });
-    context(" > verify question level data", () => {
-      queList.forEach(queNum => {
-        // ["Q1"].forEach(queNum => {
-        it(` > verify for :: ${queNum}`, () => {
-          const attempt = submittedQueCentric[queNum];
-          expressg.verifyQuestionLevelGrid(queNum, attempt, questionTypeMap);
         });
       });
     });

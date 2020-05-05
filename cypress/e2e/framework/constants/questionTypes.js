@@ -75,6 +75,7 @@ export const queColor = {
   LIGHT_GREY: "rgb(211, 211, 211)",
   GREY: "rgb(74, 180, 149)",
   GREY_1: "rgb(229, 229, 229)",
+  GREY_2: "rgb(248, 248, 248)",
   BLUE: "rgba(26, 179, 148, 0.5)",
   BLUE_1: "rgb(87, 107, 169)",
   WHITE: "rgb(255, 255, 255)",

@@ -185,7 +185,7 @@ class ScoreTable extends Component {
   render() {
     let columnInfo = [];
     const { columnData } = this.state;
-    const { testActivity, windowWidth } = this.props;
+    const { testActivity, windowWidth, scoreMode } = this.props;
     const columnsLength = testActivity && testActivity.length !== 0 ? testActivity[0].questionActivities.length : 0;
     const submittedLength = testActivity.filter(x => x.status === "submitted").length;
     const showColumnsCount = windowWidth < 1366 ? 5 : windowWidth < 1600 ? 7 : 10;
@@ -203,7 +203,7 @@ class ScoreTable extends Component {
           //Columns length will be the number of questions
           //Column data length will be number of students
           scroll={{
-            x: columnsLength > showColumnsCount ? scrollX : false,
+            x: !scoreMode ? true : columnsLength > showColumnsCount ? scrollX : false,
             y: false
           }}
           rowKey={(record, i) => i}

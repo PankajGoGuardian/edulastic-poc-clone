@@ -80,7 +80,6 @@ export const TableData = styled(Table)`
     text-align: center;
   }
   .ant-table-thead > tr > th.student-names {
-    width: 100px;
     text-align: left;
   }
   .ant-table-thead > tr > th.score-title {

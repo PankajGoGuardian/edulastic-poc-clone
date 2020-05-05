@@ -12,7 +12,7 @@ import { AnswerContext } from "@edulastic/common";
 import { roleuser, test as testConstants } from "@edulastic/constants";
 import { getOrderedQuestionsAndAnswers, formatQuestionLists } from "./utils";
 import QuestionWrapper from "../../assessment/components/QuestionWrapper";
-import { getCollectionsSelector, getUserRole } from "../src/selectors/user";
+import { getCollectionsSelector, getUserRole, getUserFeatures } from "../src/selectors/user";
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants;
 
@@ -48,7 +48,7 @@ function useTestFetch(testId, type, filterQuestions) {
   return testDetails;
 }
 
-const PrintAssessment = ({ match, userRole, location }) => {
+const PrintAssessment = ({ match, userRole, features, location }) => {
   const query = queryString.parse(location.search);
   const { type, qs } = query;
   const filterQuestions = type === "custom" ? formatQuestionLists(qs) : [];
@@ -100,7 +100,7 @@ const PrintAssessment = ({ match, userRole, location }) => {
               </div>
             );
           })}
-          {!!test.answers.length && (
+          {!!test.answers.length && features.premium && (
             <StyledAnswerWrapper>
               <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
                 Answer Key of {test.title}
@@ -136,7 +136,11 @@ PrintAssessment.propTypes = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({ collections: getCollectionsSelector(state), userRole: getUserRole(state) }),
+    state => ({
+      collections: getCollectionsSelector(state),
+      userRole: getUserRole(state),
+      features: getUserFeatures(state)
+    }),
     {}
   )
 );

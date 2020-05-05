@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getStatus } from "../../../src/utils/getStatus";
-import { isPublisherUserSelector } from "../../../src/selectors/user";
+import { showItemStatusSelector } from "../../../src/selectors/user";
 import PropTypes from "prop-types";
 
 const TestStatusWrapper = ({ children: TestStatus, status, isPublisherUser, checkUser }) => {
@@ -16,5 +16,5 @@ TestStatusWrapper.defaultProps = {
 };
 
 export default connect(state => ({
-  isPublisherUser: isPublisherUserSelector(state)
+  isPublisherUser: showItemStatusSelector(state)
 }))(TestStatusWrapper);

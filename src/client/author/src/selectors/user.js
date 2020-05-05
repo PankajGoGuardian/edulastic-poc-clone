@@ -158,6 +158,12 @@ export const isPublisherUserSelector = createSelector(
   (isPublisherAuthor, isCurator) => isPublisherAuthor || isCurator
 );
 
+export const showItemStatusSelector = createSelector(
+  isPublisherUserSelector,
+  getUserRole,
+  (isPublisher, role) => isPublisher || role === roleuser.EDULASTIC_CURATOR
+);
+
 export const getUserSchoolsListSelector = createSelector(
   getOrgDataSelector,
   state => state.schools

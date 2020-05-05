@@ -187,7 +187,7 @@ const getSkippedStatusOfQuestion = (testItemId, questionActivitiesMap, testItems
     }
     return false;
   }
-  return questionActivitiesMap[questionActivityId].skipped;
+  return questionActivitiesMap[questionActivityId]?.skipped;
 };
 
 /**
@@ -259,28 +259,34 @@ const extractFunctions = {
       .join(",");
   },
   [questionType.CLOZE_DRAG_DROP]: (question = {}, userResponse = []) => {
-    return userResponse
-      .filter(x => x)
-      .map(r => question?.options?.find(x => x?.value === r)?.label)
-      .map(x => stripHtml(x || ""))
-      .filter(x => x)
-      .join(",");
+    return typeof userResponse === "object"
+      ? userResponse
+          .filter(x => x)
+          .map(r => question?.options?.find(x => x?.value === r)?.label)
+          .map(x => stripHtml(x || ""))
+          .filter(x => x)
+          .join(",")
+      : userResponse;
   },
   [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) => {
-    return userResponse
-      .filter(x => x)
-      .map(x => x?.value)
-      .map(x => stripHtml(x || ""))
-      .filter(x => x)
-      .join(",");
+    return typeof userResponse === "object"
+      ? userResponse
+          .filter(x => x)
+          .map(x => x?.value)
+          .map(x => stripHtml(x || ""))
+          .filter(x => x)
+          .join(",")
+      : userResponse;
   },
   [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) => {
-    return userResponse
-      .filter(x => x)
-      .map(x => x?.value)
-      .map(x => stripHtml(x || ""))
-      .filter(x => x)
-      .join(",");
+    return typeof userResponse === "object"
+      ? userResponse
+          .filter(x => x)
+          .map(x => x?.value)
+          .map(x => stripHtml(x || ""))
+          .filter(x => x)
+          .join(",")
+      : userResponse;
   },
   [questionType.MATH]: (question, userResponse = "") => {
     const restrictedMathTypes = ["Matrices", "Complete the Equation", "Formula Essay"];

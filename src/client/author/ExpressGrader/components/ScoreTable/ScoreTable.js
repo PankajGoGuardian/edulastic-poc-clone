@@ -81,17 +81,17 @@ class ScoreTable extends Component {
         title: <TableTitle>Score Grid</TableTitle>,
         className: "main-heading",
         // Make score grid column fixed when more than 10 questions data exist
-        fixed: length > showColumnsCount ? "left" : false,
+        fixed: "left",
         width: 300,
         children: [
           {
             key: "students",
             title: <StudentsTitle>students</StudentsTitle>,
             dataIndex: "students",
-            className: "th-border-bottom",
-            width: 200,
+            className: "th-border-bottom student-names",
+            width: 180,
             render: record => (
-              <StyledDivMid style={{ color: "#000" }} className="name-col">
+              <StyledDivMid style={{ color: "#000", textAlign: "left" }} className="name-col">
                 {isPresentationMode ? record.fakeName : record.studentName}
               </StyledDivMid>
             ),
@@ -102,12 +102,12 @@ class ScoreTable extends Component {
             title: <ScoreTitle>score</ScoreTitle>,
             className: "th-border-bottom score-title",
             dataIndex: "score",
-            width: 100,
+            width: 120,
             render: record => {
               const { score = 0, maxScore = 0 } = record;
               const percent = maxScore === 0 ? "-" : `${((100 * score) / maxScore).toFixed(0)}%`;
               return (
-                <StyledDivMid style={{ color: "#000" }}>
+                <StyledDivMid style={{ color: "#000", textAlign: "left" }}>
                   <StyledText color={greenThird}>{percent}</StyledText> ({round(score, 1)}/{maxScore})
                 </StyledDivMid>
               );
@@ -193,7 +193,6 @@ class ScoreTable extends Component {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength, showColumnsCount);
     }
     const scrollX = columnsLength * 100 + 300;
-    const scrollY = window.innerHeight - 360;
 
     return (
       <StyledCard bordered={false}>
@@ -205,7 +204,7 @@ class ScoreTable extends Component {
           //Column data length will be number of students
           scroll={{
             x: columnsLength > showColumnsCount ? scrollX : false,
-            y: columnData.length > 6 ? scrollY : false
+            y: false
           }}
           rowKey={(record, i) => i}
         />

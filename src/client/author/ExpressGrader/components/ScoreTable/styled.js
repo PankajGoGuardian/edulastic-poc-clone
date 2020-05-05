@@ -37,7 +37,7 @@ export const TableData = styled(Table)`
     white-space: nowrap;
   }
   .ant-table-thead > tr:first-child > th:not(:first-child) {
-    background-color: #2acc00;
+    background-color: #5eb500;
     & .anticon {
       color: #fff;
     }
@@ -52,16 +52,7 @@ export const TableData = styled(Table)`
     background: ${white};
     padding: 3px 0px;
     border-bottom: 0px;
-    width: 107px;
-    @media only screen and (max-width: ${extraDesktopWidthMax}) {
-      width: 108px;
-    }
-    @media only screen and (max-width: ${mediumDesktopExactWidth}) {
-      width: 105px;
-    }
-    @media only screen and (max-width: ${smallDesktopWidth}) {
-      width: 100px;
-    }
+    min-width: 105px;
   }
   .ant-table-tbody > tr > td {
     background-color: ${white};
@@ -88,8 +79,12 @@ export const TableData = styled(Table)`
     background-color: ${white} !important;
     text-align: center;
   }
+  .ant-table-thead > tr > th.student-names {
+    width: 100px;
+    text-align: left;
+  }
   .ant-table-thead > tr > th.score-title {
-    text-align: center;
+    text-align: left;
   }
   .ant-table-tbody > tr > td.score-title > div {
     font-size: 14px;

@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 const statusColors = {
-  correct: "rgba(94, 181, 0, 0.4)",
-  partiallyCorrect: "rgba(253, 204, 59, 0.4)",
-  ungraded: "rgba(56, 150, 190, 0.4)",
-  wrong: "rgba(243, 95, 95, 0.4)",
-  skipped: "rgba(106, 115, 127, 0.4)"
+  correct: "#DEF4E8",
+  partiallyCorrect: "#FFE9A8",
+  ungraded: "#BEDEFF",
+  wrong: "#FDE0E9",
+  skipped: "#E5E5E5"
 };
 
 export const StyledWrapper = styled.div`

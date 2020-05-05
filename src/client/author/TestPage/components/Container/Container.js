@@ -857,6 +857,7 @@ class Container extends PureComponent {
           handleDuplicateTest={this.handleDuplicateTest}
           showCancelButton={showCancelButton}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
+          validateTest={this.validateTest}
         />
         {this.renderContent()}
       </>

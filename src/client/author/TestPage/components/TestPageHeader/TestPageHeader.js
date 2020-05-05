@@ -153,7 +153,8 @@ const TestPageHeader = ({
   isLoadingData,
   playlistStatus,
   testItems,
-  isTestLoading
+  isTestLoading,
+  validateTest
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -177,7 +178,9 @@ const TestPageHeader = ({
   }, [test?._id, match?.params?.oldId]);
 
   const onRegradeConfirm = () => {
-    publishForRegrade(test._id);
+    if (validateTest(test)) {
+      publishForRegrade(test._id);
+    }
   };
 
   const onCancelRegrade = () => {

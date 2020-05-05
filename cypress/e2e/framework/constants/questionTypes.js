@@ -58,11 +58,10 @@ export const queColor = {
   SKIP: "rgb(106, 115, 127)",
   NO_ATTEMPT: "rgb(229, 229, 229)",
   YELLOW: "rgb(253, 204, 59)",
-  YELLOW_1: "rgba(253, 204, 59, 0.4)",
   CLEAR_DAY: "rgb(225, 251, 242)",
   PLAIN_RED: "rgb(255, 0, 0)",
   RED: "rgb(255, 0, 87)",
-  RED_2: "rgba(243, 95, 95, 0.4)",
+  RED_2: "rgb(253, 224, 233)",
   LIGHT_RED: "rgb(252, 224, 232)",
   RED_1: "rgb(221, 46, 68)",
   PLAIN_GREEN: "rgb(0, 128, 0)",
@@ -70,17 +69,18 @@ export const queColor = {
   GREEN_1: "rgb(0, 173, 80)",
   GREEN_2: "rgb(26, 179, 148)",
   GREEN_3: "rgb(135, 138, 145)",
-  GREEN_4: "rgba(94, 181, 0, 0.4)",
+  GREEN_4: "rgb(222, 244, 232)",
   GREEN_5: "rgb(61, 176, 78)",
   LIGHT_GREEN: "rgb(211, 254, 166)",
   LIGHT_GREY: "rgb(211, 211, 211)",
   GREY: "rgb(74, 180, 149)",
-  GREY_1: "rgba(106, 115, 127, 0.4)",
+  GREY_1: "rgb(229, 229, 229)",
   BLUE: "rgba(26, 179, 148, 0.5)",
   BLUE_1: "rgb(87, 107, 169)",
   WHITE: "rgb(255, 255, 255)",
   ORANGE: "rgb(255, 165, 0)",
-  ORANGE_1: "rgb(243, 147, 0)"
+  ORANGE_1: "rgb(243, 147, 0)",
+  ORANGE_2: "rgb(255, 233, 168)"
 };
 
 export const questionGroup = {

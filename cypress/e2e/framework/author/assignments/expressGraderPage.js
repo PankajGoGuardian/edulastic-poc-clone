@@ -219,7 +219,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         : attemptType === attemptTypes.WRONG
         ? queColor.RED_2
         : attemptType === attemptTypes.PARTIAL_CORRECT
-        ? queColor.YELLOW_1
+        ? queColor.ORANGE_2
         : queColor.GREY_1;
     this.getCellforQueNum(queNum).should("have.css", "background-color", color);
   };

@@ -236,13 +236,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
     cy.deleteAllAssignments(student, teacher);
     cy.login("teacher", teacher);
-    testLibrary.createTest("LCB_1").then(() => {
-      testLibrary.clickOnAssign();
-      // cy.visit("/author/assignments/5e43b7147861bb000702b9c7");
-      // cy.wait(10000);
-      testLibrary.assignPage.selectClass(className);
-      testLibrary.assignPage.clickOnAssign();
-    });
+    // TODO: to be enable test creation later
+    // testLibrary.createTest("LCB_1").then(() => {
+    //   testLibrary.clickOnAssign();
+    //   // cy.visit("/author/assignments/5e43b7147861bb000702b9c7");
+    //   // cy.wait(10000);
+    cy.visit("/author/assignments/5eb1659d459501000777a9a7");
+    cy.wait(10000);
+    testLibrary.assignPage.selectClass(className);
+    testLibrary.assignPage.clickOnAssign();
+    // });
   });
 
   before(" > attempt by all students", () => {
@@ -374,7 +377,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         });
       });
     });
-    // [TODO] context >> verify response
     context(" > verify question level data", () => {
       queList.forEach(queNum => {
         // ["Q1"].forEach(queNum => {

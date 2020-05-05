@@ -193,8 +193,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         cy.login("student", Student1Class1.email, Student1Class1.pass);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
 
-        assignmentsPage.getStatusByPosition(0).should("contain", teacherSide.IN_PROGRESS);
-        assignmentsPage.getStatusByPosition(1).should("contain", teacherSide.NOT_STARTED);
+        assignmentsPage.getStatusByPosition(0).should("contain", teacherSide.NOT_STARTED);
+        assignmentsPage.getStatusByPosition(1).should("contain", teacherSide.IN_PROGRESS);
 
         cy.login("student", Student1Class2.email, Student1Class2.pass);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass2);
@@ -283,7 +283,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnAssign();
         testAssignPage.selectClass(CLASS_3);
-        testAssignPage.clickOnAssign({ duplicate: false }).then(() => {
+        testAssignPage.clickOnAssign().then(() => {
           cy.contains("Success!");
           testAssignPage.sidebar.clickOnAssignment();
           authorAssignmentPage.getStatus().should("have.length", assignCountForClass1 + assignCountForClass3);

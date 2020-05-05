@@ -37,6 +37,7 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
   const utaStartTime = useMemo(() => uta?.startTime?.toDate()?.getTime(), [uta?.startTime]);
 
   const [currentAssignmentTime, setCurrentAssignmentTime] = useState(Date.now() - utaStartTime || 0);
+  // const [_lastAssignmentTime, setPreviousAssignedTime] = useState(0);
   const autoSubmitPopUp = currentAssignmentTime < 0;
 
   useEffect(() => {
@@ -69,6 +70,10 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
       let timeRemaining = 0;
       const now = Date.now();
       if (utaStartTime) {
+        if (uta && uta.lastResumed === null) {
+          setCurrentAssignmentTime(timeRemaining);
+          return;
+        }
         if (uta?.timeSpent && uta?.lastResumed) {
           timeRemaining = uta?.allowedTime - (now - uta?.lastResumed?.toDate()?.getTime() + uta?.timeSpent);
         } else {
@@ -78,6 +83,15 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
       setCurrentAssignmentTime(timeRemaining);
     }
   }, 1000);
+
+  // if (currentAssignmentTime === 0 || _lastAssignmentTime === currentAssignmentTime) {
+  //   return null;
+  // } else if (currentAssignmentTime > 0) {
+  //   if (_lastAssignmentTime === 0 || ((_lastAssignmentTime - currentAssignmentTime) % 1000 !== 0)) {
+  //     setPreviousAssignedTime(currentAssignmentTime);
+  //     return null;
+  //   }
+  // }
 
   return (
     <>

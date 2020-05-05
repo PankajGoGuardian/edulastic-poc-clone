@@ -17,6 +17,7 @@ import {
   desktopWidth
 } from "@edulastic/colors";
 import { themes } from "../../../../theme";
+import { FixedHeaderStyle } from "../../../StudentView/styled";
 
 const classBoardTheme = themes.default.classboard;
 
@@ -58,6 +59,15 @@ export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: ${({ marginBottom }) => marginBottom || "15px"};
   padding-right: ${({ paddingRight }) => paddingRight || "0px"};
+`;
+
+export const StickyFlex = styled(FlexContainer)`
+  width: 100%;
+  margin-bottom: 0px;
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
+  ${props => props.hasStickyHeader && FixedHeaderStyle}
 `;
 
 export const GraphContainer = styled(FlexContainer)`

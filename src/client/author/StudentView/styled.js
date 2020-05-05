@@ -11,16 +11,17 @@ import {
   mobileWidthLarge
 } from "@edulastic/colors";
 
-const FixedHeaderStyle = css`
+//left 70 as the side menu space need to be considered.
+export const FixedHeaderStyle = css`
   width: auto;
   position: fixed;
   top: 0;
-  right: 30px;
+  right: 0px;
   background: #fff;
   z-index: 999;
-  left: 130px;
+  left: 70px;
   box-shadow: 1px 8px 11px rgba(0, 0, 0, 0.2);
-  padding: 5px;
+  padding: ${props => props.padding || "18px 30px"};
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`

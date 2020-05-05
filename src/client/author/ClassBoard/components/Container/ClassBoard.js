@@ -96,7 +96,8 @@ import {
   StudentButtonDiv,
   StudentGrapContainer,
   StyledCard,
-  StyledFlexContainer
+  StyledFlexContainer,
+  StickyFlex
 } from "./styled";
 
 class ClassBoard extends Component {
@@ -134,9 +135,12 @@ class ClassBoard extends Component {
       showMarkSubmittedPopup: false,
       modalInputVal: "",
       selectedNotStartedStudents: [],
-      showScoreImporvement: false
+      showScoreImporvement: false,
+      hasStickyHeader: false
     };
   }
+
+  disneyCardsContainerRef = React.createRef();
 
   changeCondition = value => {
     this.setState({ condition: value });
@@ -166,11 +170,26 @@ class ClassBoard extends Component {
     }
   };
 
+  handleScroll = () => {
+    const { hasStickyHeader } = this.state;
+    const elementTop = this.disneyCardsContainerRef.current?.getBoundingClientRect().top || 0;
+    if (elementTop < 100 && !hasStickyHeader) {
+      this.setState({ hasStickyHeader: true });
+    } else if (elementTop > 100 && hasStickyHeader) {
+      this.setState({ hasStickyHeader: false });
+    }
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
   componentDidMount() {
     const { loadTestActivity, match, studentUnselectAll } = this.props;
     const { assignmentId, classId } = match.params;
     loadTestActivity(assignmentId, classId);
     studentUnselectAll();
+    window.addEventListener("scroll", this.handleScroll);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -532,7 +551,7 @@ class ClassBoard extends Component {
     event.preventDefault();
 
     const { testActivity, selectedStudents, match } = this.props;
-    
+
     const selectedStudentsKeys = Object.keys(selectedStudents);
 
     const studentsMap = keyBy(testActivity, "studentId");
@@ -560,9 +579,13 @@ class ClassBoard extends Component {
     const { type, customValue } = data;
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const selectedStudentsStr = selectedStudentsKeys.join(",");
-    window.open(`/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}&type=${type}&qs=${type === "custom" ? customValue : ""}`);
+    window.open(
+      `/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}&type=${type}&qs=${
+        type === "custom" ? customValue : ""
+      }`
+    );
     this.closePrintModal();
-  }
+  };
 
   closeRedirectPopup = (reload = false) => {
     this.setState({ redirectPopup: false });
@@ -623,7 +646,8 @@ class ClassBoard extends Component {
       showRemoveStudentsPopup,
       showAddStudentsPopup,
       showMarkSubmittedPopup,
-      openPrintModal
+      openPrintModal,
+      hasStickyHeader
     } = this.state;
     const { assignmentId, classId } = match.params;
     const studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
@@ -724,7 +748,7 @@ class ClassBoard extends Component {
             okText="Yes, Remove"
           />
         )}
-        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.closePrintModal}/>}
+        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.closePrintModal} />}
         <HooksContainer additionalData={additionalData} classId={classId} assignmentId={assignmentId} />
         <ClassHeader
           classId={classId}
@@ -819,7 +843,11 @@ class ClassBoard extends Component {
                   />
                 </StyledCard>
               </GraphContainer>
-              <StyledFlexContainer justifyContent="space-between" marginBottom="0px">
+              <StickyFlex
+                justifyContent="space-between"
+                hasStickyHeader={hasStickyHeader}
+                className="lcb-student-sticky-bar"
+              >
                 <CheckboxLabel
                   data-cy="selectAllCheckbox"
                   checked={unselectedStudents.length === 0}
@@ -848,6 +876,7 @@ class ClassBoard extends Component {
                     REDIRECT
                   </RedirectButton>
                   <Dropdown
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                     overlay={
                       <DropMenu>
                         <FeaturesSwitch
@@ -917,37 +946,39 @@ class ClassBoard extends Component {
                     </RedirectButton>
                   </Dropdown>
                 </ClassBoardFeats>
-              </StyledFlexContainer>
-              {flag ? (
-                <DisneyCardContainer
-                  selectedStudents={selectedStudents}
-                  testActivity={testActivity}
-                  assignmentId={assignmentId}
-                  classId={classId}
-                  studentSelect={this.onSelectCardOne}
-                  endDate={additionalData.endDate || additionalData.closedDate}
-                  dueDate={additionalData.dueDate}
-                  closed={additionalData.closed}
-                  detailedClasses={additionalData.detailedClasses}
-                  studentUnselect={this.onUnselectCardOne}
-                  viewResponses={(e, selected, testActivityId) => {
-                    setCurrentTestActivityId(testActivityId);
-                    if (!isItemsVisible) {
-                      return;
-                    }
-                    getAllTestActivitiesForStudent({
-                      studentId: selected,
-                      assignmentId,
-                      groupId: classId
-                    });
-                    this.onTabChange(e, "Student", selected, testActivityId);
-                  }}
-                  isPresentationMode={isPresentationMode}
-                  enrollmentStatus={enrollmentStatus}
-                />
-              ) : (
-                <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
-              )}
+              </StickyFlex>
+              <div ref={this.disneyCardsContainerRef}>
+                {flag ? (
+                  <DisneyCardContainer
+                    selectedStudents={selectedStudents}
+                    testActivity={testActivity}
+                    assignmentId={assignmentId}
+                    classId={classId}
+                    studentSelect={this.onSelectCardOne}
+                    endDate={additionalData.endDate || additionalData.closedDate}
+                    dueDate={additionalData.dueDate}
+                    closed={additionalData.closed}
+                    detailedClasses={additionalData.detailedClasses}
+                    studentUnselect={this.onUnselectCardOne}
+                    viewResponses={(e, selected, testActivityId) => {
+                      setCurrentTestActivityId(testActivityId);
+                      if (!isItemsVisible) {
+                        return;
+                      }
+                      getAllTestActivitiesForStudent({
+                        studentId: selected,
+                        assignmentId,
+                        groupId: classId
+                      });
+                      this.onTabChange(e, "Student", selected, testActivityId);
+                    }}
+                    isPresentationMode={isPresentationMode}
+                    enrollmentStatus={enrollmentStatus}
+                  />
+                ) : (
+                  <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
+                )}
+              </div>
 
               {redirectPopup && (
                 <RedirectPopup

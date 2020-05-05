@@ -22,17 +22,31 @@ const AssessmentPlayerSkinWrapper = ({
   playerSkinType = test.playerSkinTypes.edulastic,
   showMagnifier = true,
   handleMagnifier,
+  qId,
   enableMagnifier = false,
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
-  const { moveToNext, moveToPrev, currentItem, qType, toggleToolsOpenStatus } = restProps;
+  const {
+    moveToNext,
+    moveToPrev,
+    currentItem,
+    qType,
+    changeTool,
+    toggleToolsOpenStatus,
+    tool,
+    toolsOpenStatus
+  } = restProps;
   useEffect(() => {
     if (qType === questionType.HIGHLIGHT_IMAGE) {
+      const toolsStatusArray = toolsOpenStatus || tool;
+      const toolToggleFunc = toggleToolsOpenStatus || changeTool;
       // 5 is Scratchpad mode
-      toggleToolsOpenStatus(5);
+      if (toolToggleFunc && !toolsStatusArray?.includes(5)) {
+        toolToggleFunc(5);
+      }
     }
-  }, [qType]);
+  }, [qType, qId]);
 
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);

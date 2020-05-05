@@ -363,9 +363,6 @@ class AssessmentPlayerDefault extends React.Component {
       item.data.questions.forEach(question => {
         if (nonAutoGradableTypes.includes(question.type)) {
           isNonAutoGradable = true;
-          if (question.type === questionType.HIGHLIGHT_IMAGE) {
-            currentToolMode.push(5);
-          }
         }
       });
     }
@@ -479,6 +476,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             changeTool={this.changeTool}
             qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+            qId={get(items, `[${currentItem}].data.questions[0].id`, null)}
             previewPlayer={previewPlayer}
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}

@@ -294,6 +294,7 @@ class AssessmentPlayerSimple extends React.Component {
             bookmarks={bookmarksInOrder}
             skipped={skippedInOrder}
             qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+            qId={get(items, `[${currentItem}].data.questions[0].id`, null)}
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}

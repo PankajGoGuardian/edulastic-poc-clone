@@ -2,18 +2,29 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Radio, Modal, Input, Alert } from "antd";
 import { EduButton, FlexContainer } from "@edulastic/common";
-import {
-  greyThemeDark1,
-  greyishBorder,
-  lightGreySecondary
-} from "@edulastic/colors";
+import { greyThemeDark1, greyishBorder, lightGreySecondary } from "@edulastic/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 const regexStr = /^[0-9,-]+$/;
+const optionInfos = {
+  complete: ["All the items in the test will be printed."],
+  manualGraded: [
+    "Items that are marked as manual graded will be printed.",
+    "e.g. Essay with rich Text, Math Essay etc..."
+  ],
+  custom: ["Enter the item numbers in the below box to print"]
+};
 
 const PrintTestModal = ({ onCancel, onProceed }) => {
   const [option, setOption] = useState("complete");
   const [customValue, setCustomValue] = useState("");
   const [error, setError] = useState("");
+
+  const handleChangeOption = e => {
+    setError("");
+    setOption(e.target.value);
+  };
 
   const onChangeInput = e => {
     const { value } = e.target;
@@ -21,7 +32,8 @@ const PrintTestModal = ({ onCancel, onProceed }) => {
     if (regexStr.test(value)) {
       setCustomValue(value);
     }
-  }
+  };
+
   const handleSubmit = () => {
     const params = {
       type: option,
@@ -31,7 +43,7 @@ const PrintTestModal = ({ onCancel, onProceed }) => {
       return setError("Please enter custom inputs");
     }
     onProceed(params);
-  }
+  };
 
   return (
     <StyledModal
@@ -39,33 +51,51 @@ const PrintTestModal = ({ onCancel, onProceed }) => {
       visible
       onCancel={onCancel}
       title="Print Test"
-      footer={<StyledFooter>
-        <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
-          CANCEL
-        </EduButton>,
-        <EduButton height="40px" data-cy="PRINT" onClick={handleSubmit}>
-          PRINT
-        </EduButton>
-      </StyledFooter>}
+      footer={
+        <StyledFooter>
+          <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
+            CANCEL
+          </EduButton>
+          ,
+          <EduButton height="40px" data-cy="PRINT" onClick={handleSubmit}>
+            PRINT
+          </EduButton>
+        </StyledFooter>
+      }
       width={626}
     >
-      <FlexContainer style={{ flexDirection: "column", alignItems: "flex-start", fontWeight: "600", minHeight: "180px", justifyContent: "flex-start" }}>
-        
-        <div style={{marginBottom: "31px", fontSize: "14px"}}>Select the print type based on your need.</div>
-        <StyledRadioGroup
-          onChange={e => setOption(e.target.value)}
-          value={option}
-        >
+      <FlexContainer
+        style={{
+          flexDirection: "column",
+          alignItems: "flex-start",
+          fontWeight: "600",
+          minHeight: "180px",
+          justifyContent: "flex-start"
+        }}
+      >
+        <div style={{ marginBottom: "31px", fontSize: "14px" }}>Select the print type based on your need.</div>
+        <StyledRadioGroup onChange={handleChangeOption} value={option}>
           <Radio value="complete">COMPLETE TEST</Radio>
           <Radio value="manualGraded">MANUAL GRADED ITEMS</Radio>
           <Radio value="custom">CUSTOM</Radio>
         </StyledRadioGroup>
-        {option === "custom" && <StyledInput size="large" placeholder="e.g. 1-4, 8, 11-13" onChange={onChangeInput} value={customValue}/>}
+
+        <Info>
+          <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" />
+          <div style={{ marginLeft: "5px" }}>
+            {optionInfos[option].map((txt, i) => (
+              <span key={i}>{txt}</span>
+            ))}
+          </div>
+        </Info>
+        {option === "custom" && (
+          <StyledInput size="large" placeholder="e.g. 1-4, 8, 11-13" onChange={onChangeInput} value={customValue} />
+        )}
         {error && <Alert message={error} type="error" showIcon closable />}
       </FlexContainer>
     </StyledModal>
   );
-}
+};
 
 const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -91,6 +121,10 @@ const StyledModal = styled(Modal)`
       width: 20px;
       height: 20px;
     }
+  }
+  .ant-alert-error {
+    width: 100%;
+    margin-top: 10px;
   }
 `;
 const StyledFooter = styled.div`
@@ -125,5 +159,17 @@ const StyledInput = styled(Input)`
   border-radius: 0;
 `;
 
+const Info = styled.div`
+  font-weight: 500;
+  align-items: flex=start;
+  display: flex;
+  margin-bottom: 5px;
+  span {
+    display: block;
+  }
+  svg {
+    margin-top: 4px;
+  }
+`;
 
 export default PrintTestModal;

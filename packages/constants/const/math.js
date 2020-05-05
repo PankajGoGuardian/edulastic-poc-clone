@@ -107,7 +107,7 @@ const methodOptions = {
     "interpretAsInterval",
     "interpretAsNumber",
     "isRationalized",
-    "setListTypeResponse",
+    "interpretAsList",
     "compareSides",
     "unit",
     "setDecimalSeparator",
@@ -142,7 +142,7 @@ const methodOptions = {
     "interpretAsInterval",
     "interpretAsNumber",
     "compareSides",
-    "setListTypeResponse",
+    "interpretAsList",
     "setThousandsSeparator"
   ],
 
@@ -167,7 +167,7 @@ const methodOptionsGrouped = {
       "isMixedFraction",
       "isRationalized"
     ],
-    "INTERPRET THE VALUES AS: ": ["interpretAsSet", "interpretAsInterval", "interpretAsNumber", "setListTypeResponse"],
+    "INTERPRET THE VALUES AS: ": ["interpretAsSet", "interpretAsInterval", "interpretAsNumber", "interpretAsList"],
     "SPECIAL HANDLING: ": [
       "ariaLabel",
       "allowEulersNumber",

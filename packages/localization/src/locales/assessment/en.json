@@ -891,7 +891,7 @@
       "setEvaluation": "Set Evaluation",
       "interpretAsSet": "Set",
       "isRationalized": "Rationalized",
-      "setListTypeResponse": "Ordered List",
+      "interpretAsList": "Ordered List",
       "setDecimalSeparator": "Set Decimal Separator",
       "interpretAsInterval": "Interval",
       "interpretAsNumber": "Number"

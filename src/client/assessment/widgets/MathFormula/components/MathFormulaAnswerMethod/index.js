@@ -365,14 +365,14 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.interpretTrigArgAsDegree")}
             />
           );
-        case "setListTypeResponse":
+        case "interpretAsList":
           return (
             <CheckOption
               dataCy="answer-list-evaluation"
               optionKey="interpretAsList"
               options={options}
               onChange={changeOptions}
-              label={t("component.math.setListTypeResponse")}
+              label={t("component.math.interpretAsList")}
             />
           );
         case "isRationalized":

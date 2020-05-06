@@ -27,6 +27,7 @@ export { default as IconBarChart } from "./src/IconBarChart";
 export { default as IconManage } from "./src/IconManage";
 export { default as IconMenuOpenClose } from "./src/IconMenuOpenClose";
 export { default as IconCircle } from "./src/IconCircle";
+export { default as IconEclipse } from "./src/IconEclipse";
 export { default as IconLogoCompact } from "./src/IconLogoCompact";
 export { default as IconReport } from "./src/IconReport";
 export { default as IconShare } from "./src/IconShare";

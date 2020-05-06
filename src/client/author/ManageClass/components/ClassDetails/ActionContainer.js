@@ -7,9 +7,9 @@ import {
   IconPlusCircle,
   IconPrint,
   IconRemove,
-  IconVolumeUp
+  IconVolumeUp,
+  IconEclipse
 } from "@edulastic/icons";
-import { MdCallMerge } from "react-icons/md";
 import { Dropdown, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -27,16 +27,7 @@ import { getUserOrgData, getUserOrgId } from "../../../src/selectors/user";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import ResetPwd from "./ResetPwd/ResetPwd";
-import {
-  AddStudentDivider,
-  ButtonIconWrap,
-  ButtonsWrapper,
-  CaretUp,
-  CustomRedirectButton,
-  DropMenu,
-  MenuItems,
-  RedirectButton
-} from "./styled";
+import { AddStudentDivider, ButtonsWrapper, CaretUp, DropMenu, MenuItems } from "./styled";
 import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
 
 import AddStudentModal from "./AddStudent/AddStudentModal";
@@ -400,7 +391,7 @@ const ActionContainer = ({
                 )}
                 {type === "class" && (
                   <MenuItems key="mergeStudents">
-                    <MdCallMerge style={{ width: "15px", height: "22px" }} />
+                    <IconEclipse />
                     <span>Merge Students</span>
                   </MenuItems>
                 )}

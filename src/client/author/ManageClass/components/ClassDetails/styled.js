@@ -517,6 +517,9 @@ export const MenuItems = styled(Menu.Item)`
         fill: ${white};
         stroke: ${white};
       }
+      circle {
+        stroke: ${mainTextColor};
+      }
     }
   }
   svg,

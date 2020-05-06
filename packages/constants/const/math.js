@@ -167,7 +167,13 @@ const methodOptionsGrouped = {
       "isMixedFraction",
       "isRationalized"
     ],
-    "INTERPRET THE VALUES AS: ": ["interpretAsSet", "interpretAsInterval", "interpretAsNumber", "interpretAsList"],
+    "INTERPRET THE VALUES AS: ": [
+      "automatic",
+      "interpretAsSet",
+      "interpretAsInterval",
+      "interpretAsNumber",
+      "interpretAsList"
+    ],
     "SPECIAL HANDLING: ": [
       "ariaLabel",
       "allowEulersNumber",

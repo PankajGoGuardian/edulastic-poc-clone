@@ -829,6 +829,7 @@
       "scientific": "Scientific",
       "variable": "Variable",
       "number": "Number",
+      "automatic": "Automatic",
       "pointSlopeForm": "Point SlopeForm",
       "method": "Method",
       "field": "Field",

@@ -288,9 +288,7 @@ const AssessmentContainer = ({
         {...props}
       />
     );
-  }
-
-  if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
+  } else if (testType === testTypes.type.TESTLET || test.testType === testTypes.type.TESTLET) {
     return (
       <AssessmentPlayerTestlet
         {...props}
@@ -301,13 +299,13 @@ const AssessmentContainer = ({
         {...test}
       />
     );
+  } else {
+    /**
+     * at student side only scratchPad should be enabled,
+     * highlight image default pen should be disabled
+     */
+    return defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />;
   }
-
-  /**
-   * at student side only scratchPad should be enabled,
-   * highlight image default pen should be disabled
-   */
-  return defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />;
 };
 
 AssessmentContainer.propTypes = {

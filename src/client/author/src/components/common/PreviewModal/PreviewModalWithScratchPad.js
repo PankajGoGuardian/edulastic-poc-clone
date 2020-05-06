@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
-import { AnswerContext, ScratchPadContext, hexToRGB } from "@edulastic/common";
+import { AnswerContext, ScratchPadContext, hexToRGB, FlexContainer } from "@edulastic/common";
 import SvgDraw from "../../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 import Tools from "../../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import { allThemeVars } from "../../../../../theme";
@@ -93,7 +93,7 @@ const PreviewModalWithScratchPad = ({
   const handleSubmit = () => submitReviewFeedback(note, scratchPad);
 
   const _renderAddRejectNoteSection = () => (
-    <StyledFlex style={{ marginTop: "18px" }}>
+    <StyledFlex style={{ margin: "18px auto", width: "100%" }}>
       <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} rows={1} />
       <StyledRejectionSubmitBtn onClick={handleSubmit}>Submit</StyledRejectionSubmitBtn>
     </StyledFlex>
@@ -101,54 +101,56 @@ const PreviewModalWithScratchPad = ({
 
   return (
     <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-      <StyledFlexContainer
-        style={{
-          alignItems: "flex-start",
-          width: "100%",
-          background: allThemeVars.containerWhite,
-          borderRadius: "10px"
-        }}
-      >
-        {!onlySratchpad && (
-          <Tools
-            onFillColorChange={onFillColorChange}
-            fillColor={fillColor}
-            deleteMode={deleteMode}
-            currentColor={currentColor}
-            onToolChange={handleScratchToolChange}
-            activeMode={activeMode}
-            undo={handleUndo}
-            redo={handleRedo}
-            onColorChange={handleColorChange}
-            lineWidth={lineWidth}
-            className="review-scratchpad"
-            style={{ minHeight: "auto" }}
-          />
-        )}
-        <div style={{ width: "100%", position: "relative", overflow: "auto" }} ref={containerRef}>
-          <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
-            <ColumnsContentArea
-              sectionQue={sectionQue}
-              resourceCount={resourceCount}
-              className="scratchpad-wrapper"
-              style={{ position: "relative", minWidth: "1200px" }}
-            >
-              <SvgDraw
-                activeMode={activeMode}
-                scratchPadMode
-                lineColor={currentColor}
-                deleteMode={deleteMode}
-                lineWidth={lineWidth}
-                fillColor={fillColor}
-                saveHistory={saveHistory("scratchpad")}
-                position="absolute"
-                history={scratchPad}
-              />
-            </ColumnsContentArea>
-          </ScratchPadContext.Provider>
-        </div>
-      </StyledFlexContainer>
-      {!onlySratchpad && _renderAddRejectNoteSection()}
+      <FlexContainer width="100%" flexDirection="column">
+        <StyledFlexContainer
+          style={{
+            alignItems: "flex-start",
+            width: "100%",
+            background: allThemeVars.containerWhite,
+            borderRadius: "10px"
+          }}
+        >
+          {!onlySratchpad && (
+            <Tools
+              onFillColorChange={onFillColorChange}
+              fillColor={fillColor}
+              deleteMode={deleteMode}
+              currentColor={currentColor}
+              onToolChange={handleScratchToolChange}
+              activeMode={activeMode}
+              undo={handleUndo}
+              redo={handleRedo}
+              onColorChange={handleColorChange}
+              lineWidth={lineWidth}
+              className="review-scratchpad"
+              style={{ minHeight: "auto" }}
+            />
+          )}
+          <div style={{ width: "100%", position: "relative", overflow: "auto" }} ref={containerRef}>
+            <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
+              <ColumnsContentArea
+                sectionQue={sectionQue}
+                resourceCount={resourceCount}
+                className="scratchpad-wrapper"
+                style={{ position: "relative", minWidth: "1200px" }}
+              >
+                <SvgDraw
+                  activeMode={activeMode}
+                  scratchPadMode
+                  lineColor={currentColor}
+                  deleteMode={deleteMode}
+                  lineWidth={lineWidth}
+                  fillColor={fillColor}
+                  saveHistory={saveHistory("scratchpad")}
+                  position="absolute"
+                  history={scratchPad}
+                />
+              </ColumnsContentArea>
+            </ScratchPadContext.Provider>
+          </div>
+        </StyledFlexContainer>
+        {!onlySratchpad && _renderAddRejectNoteSection()}
+      </FlexContainer>
     </AnswerContext.Provider>
   );
 };

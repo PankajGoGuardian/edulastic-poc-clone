@@ -4,7 +4,7 @@ import { get } from "lodash";
 import React, { useEffect, useState } from "react";
 import { doValidate } from "./apis";
 
-const Field = ({ displayName, type, validate, onChange, ...rest }) => {
+const Field = ({ displayName, type, validate, onChange, message, ...rest }) => {
   const [response, setResponse] = useState();
   const [value, setValue] = useState();
   useEffect(() => {
@@ -95,6 +95,8 @@ const Field = ({ displayName, type, validate, onChange, ...rest }) => {
             ))}
           </Radio.Group>
         );
+      case "p":
+        return <p>{message}</p>;
       default:
         return null;
     }

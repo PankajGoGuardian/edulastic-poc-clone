@@ -159,6 +159,22 @@ export const apiForms = [
     ]
   },
   {
+    id: "delta-sync",
+    name: "Trigger Clever Delta Sync",
+    endPoint: "clever/delta-sync",
+    method: "post",
+    fields: [
+      {
+        name: "caution",
+        displayName: "Caution",
+        message: "Delta sync takes time to complete, so don't trigger it frequently.",
+        placeholder: "",
+        type: "p",
+        required: false
+      }
+    ]
+  },
+  {
     id: "other1",
     name: "Other 1",
     endPoint: "other1",

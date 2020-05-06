@@ -151,6 +151,9 @@ class MathInput extends React.PureComponent {
   onInput = (key, command = "cmd") => {
     const { mathField } = this.state;
 
+    // keys for which actions need to be ignored
+    const blacklistKeys = ["}", "]"];
+
     if (!mathField) return;
     if (key === "in") {
       mathField.write("in");
@@ -172,7 +175,11 @@ class MathInput extends React.PureComponent {
       mathField.keystroke("Up");
     } else if (key === "\\embed{response}") {
       mathField.write(key);
-    } else {
+    } else if (key === "{") {
+      mathField.write("\\left\\{\\right\\}");
+    } else if (key === "[") {
+      mathField.write("\\left[\\right]");
+    } else if (!blacklistKeys.includes(key)) {
       mathField[command](key);
     }
     mathField.focus();

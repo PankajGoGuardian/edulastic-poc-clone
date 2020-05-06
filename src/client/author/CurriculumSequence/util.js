@@ -23,16 +23,15 @@ export const getSummaryData = (modules, playlistMetrics, isStudent) => {
     }
     const assignments = data?.flatMap(x => x?.assignments) || [];
     const classes = assignments?.reduce((a, c) => a + (c?.class?.length || 0), 0) || "-";
+    const classAssignmentData = assignments.flatMap(a => a.class) || [];
     let submitted = "-";
-    if (metricModule.length) {
+    if (classAssignmentData.length) {
       let totalGradedCount = 0;
       let totalAssignedCount = 0;
-      for (let i = 0; i < metricModule.length; i++) {
-        const { totalAssigned = 0, gradedCount = 0, assignmentId = "" } = metricModule[i];
-        if (assignmentId.length) {
-          totalGradedCount += gradedCount ? +gradedCount : 0;
-          totalAssignedCount += totalAssigned ? +totalAssigned : 0;
-        }
+      for (let i = 0; i < classAssignmentData.length; i++) {
+        const { assignedCount = 0, gradedNumber = 0 } = classAssignmentData[i];
+        totalGradedCount += gradedNumber ? +gradedNumber : 0;
+        totalAssignedCount += assignedCount ? +assignedCount : 0;
       }
       if (totalAssignedCount) {
         submitted = round((totalGradedCount / totalAssignedCount) * 100);
@@ -64,14 +63,15 @@ export const getSummaryData = (modules, playlistMetrics, isStudent) => {
 };
 
 export const getProgressData = (playlistMetrics, _id, contentId, assignments) => {
+  const classAssignmentData = assignments.flatMap(a => a.class) || [];
   const data = playlistMetrics?.[_id]?.filter(x => x.testId === contentId) || [];
   const totalScore = data.reduce((a, c) => a + parseInt(c.totalScore || 0), 0);
   const maxScore = data.reduce((a, c) => a + parseInt(c.maxScore || 0), 0);
   const progress = maxScore ? round((totalScore / maxScore) * 100, 0) : 0;
   const classes = assignments.reduce((a, c) => a + (c?.["class"]?.length || 0), 0);
   const tSpent = data.reduce((a, c) => a + parseInt(c.timeSpent || 0), 0);
-  const totalAssigned = data.reduce((a, c) => (c.assignmentId ? a + parseInt(c.totalAssigned || 0) : 0), 0);
-  const totalGraded = data.reduce((a, c) => (c.assignmentId ? a + parseInt(c.gradedCount || 0) : 0), 0);
+  const totalAssigned = classAssignmentData.reduce((a, c) => a + parseInt(c.assignedCount || 0), 0);
+  const totalGraded = classAssignmentData.reduce((a, c) => a + parseInt(c.gradedNumber || 0), 0);
   const submitted = (totalAssigned && totalGraded && round((totalGraded / totalAssigned) * 100, 0)) || 0;
   const duration = moment.duration(parseInt(tSpent || 0, 10));
   const h = Math.floor(duration.asHours());

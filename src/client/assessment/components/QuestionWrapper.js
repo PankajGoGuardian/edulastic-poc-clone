@@ -459,8 +459,7 @@ class QuestionWrapper extends Component {
                   isPrintPreview={isPrintPreview}
                   {...userAnswerProps}
                 />
-
-                {!restProps.viewAtStudentRes && showFeedback && timeSpent ? (
+                {!restProps.viewAtStudentRes && showFeedback && (
                   <>
                     <TimeSpentWrapper>
                       {!!showStudentWork && (
@@ -479,11 +478,15 @@ class QuestionWrapper extends Component {
                           Show student work
                         </ShowUserWork>
                       )}
-                      <FontAwesomeIcon icon={faClock} aria-hidden="true" />
-                      {round(timeSpent / 1000, 1)}s
+                      {timeSpent && (
+                        <>
+                          <FontAwesomeIcon icon={faClock} aria-hidden="true" />
+                          {round(timeSpent / 1000, 1)}s
+                        </>
+                      )}
                     </TimeSpentWrapper>
                   </>
-                ) : null}
+                )}
                 {rubricDetails && studentReportFeedbackVisible && (
                   <RubricTableWrapper>
                     <span>Graded Rubric</span>

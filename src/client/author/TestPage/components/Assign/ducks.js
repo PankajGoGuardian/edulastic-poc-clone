@@ -279,12 +279,17 @@ function* saveAssignment({ payload }) {
     if (!assignmentId && !payload.playlistModuleId) return;
 
     const prevLocState = yield select(state => state.router.location.state);
+    // if there are no previous location , by default redirect to tests
+    let locationState = { fromText: "TEST LIBRARY", toUrl: "/author/tests" };
+    if (prevLocState?.fromText && prevLocState?.toUrl) {
+      locationState = prevLocState;
+    }
     yield put(
       push({
         pathname: `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
           payload.playlistModuleId ? payload.playlistId : testIds[0]
         }/assign/${assignmentId}`,
-        state: prevLocState
+        state: locationState
       })
     );
   } catch (err) {

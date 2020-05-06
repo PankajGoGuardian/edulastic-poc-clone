@@ -80,8 +80,8 @@ const MergeUsersModal = ({
     },
     {
       title: "Id",
-      dataIndex: "_id",
-      sorter: (a, b) => a._id.localeCompare(b._id)
+      dataIndex: "openId",
+      sorter: (a, b) => a.openId.localeCompare(b.openId)
     },
     {
       title: "Assignments",
@@ -103,7 +103,7 @@ const MergeUsersModal = ({
     username: u.username || "-",
     email: u.email || "-",
     lms: u.lms || "-",
-    _id: u._id,
+    openId: u.openId,
     assignments: parseInt(u.assignments || 0),
     createdAt: moment(u.createdAt).format("MMM D, YYYY")
   }));

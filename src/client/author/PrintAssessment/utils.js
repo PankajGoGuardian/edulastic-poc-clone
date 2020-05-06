@@ -1,11 +1,13 @@
-import { keyBy, identity, flatten, groupBy, sortBy, flattenDeep } from "lodash";
+import { keyBy, sortBy, get } from "lodash";
 import { questionType } from "@edulastic/constants";
 import { markQuestionLabel } from "../ClassBoard/Transformer";
+import { formatAnswers, formatOptions } from "../StudentsReportCard/utils/transformers";
+import { replaceVariables } from "../../assessment/utils/variables";
 
 const defaultManualGradedType = questionType.manuallyGradableQn;
 
 const TEI = "Tech Enhanced Item";
-const CR = "Constructed Response";
+const CR = "Constructed Response Item";
 
 export const getOrderedQuestionsAndAnswers = (testItems, passages, type, filterQs) => {
   passages = keyBy(passages, "_id");
@@ -45,84 +47,35 @@ export const getOrderedQuestionsAndAnswers = (testItems, passages, type, filterQ
     return acc;
   }, []);
 
-  let answers = questions
-    .filter(q => ![questionType.PASSAGE, questionType.VIDEO, questionType.PROTRACTOR].includes(q.type))
-    .map(q => ({
-      qLabel: q.qLabel,
-      answer: createAnswer(q)
-    }));
-  const allTEIAnswers = answers.filter(a => a.answer === TEI);
-  if (allTEIAnswers.length === answers.length) {
-    answers = [];
-  }
+  let answers = questions.map(q => {
+    const { options, validResponse, altResponse } = formatOptions(q);
+    const answer = formatAnswers(validResponse, options, q);
+    const formatedAltResponse = altResponse.map(res => formatAnswers(res, options, q));
+    return {
+      qLabel: `${q.qLabel || q.barLabel?.substr(1) || ""}${q.qSubLabel || ""}`,
+      answers: [answer, ...formatedAltResponse]
+    };
+  });
+
+  answers = answers.reduce((acc, a) => {
+    if (!a.qLabel) {
+      return [...acc];
+    }
+    const answers = a.answers.map(ans => {
+      if (ans === "TEI") {
+        return TEI;
+      } else if (ans === "Constructed Response") {
+        return CR;
+      }
+      return ans;
+    });
+    a.answers = answers;
+    return [...acc, a];
+  }, []);
   return {
     questions,
     answers
   };
-};
-
-const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
-
-const createAnswer = q => {
-  switch (q.type) {
-    case questionType.MULTIPLE_CHOICE:
-      return createAnswerMultipleChoiceAnswer(q);
-    case questionType.CLOZE_TEXT:
-    case questionType.CLOZE_DROP_DOWN:
-      return createClozeTextAnswerChoice(q);
-    case questionType.ESSAY_RICH_TEXT:
-    case questionType.HIGHLIGHT_IMAGE:
-    case questionType.ESSAY_PLAIN_TEXT:
-      return CR;
-    default:
-      return TEI;
-  }
-};
-
-const createAnswerMultipleChoiceAnswer = (question = {}) => {
-  const options = question?.options?.map(i => i.value);
-  const altResp = (question?.validation?.altResponses || []).map(i => i?.value) || [];
-
-  if (!question.multipleResponses) {
-    // this will have to be modified, since True or false implementation is not proper now.
-    if (question.title === "True or false") {
-      const correct = question?.validation?.validResponse?.value?.[0] || "";
-      return question?.options?.find(i => i.value === correct)?.label;
-    }
-
-    let answers = [...(question?.validation?.validResponse.value || []), ...flatten(altResp)]
-      .filter(identity)
-
-      .map(i => options.indexOf(i))
-      .map(i => alphabets[i]?.toUpperCase())
-      .filter(identity);
-
-    return answers.join(" ");
-  }
-
-  // in case of multiple choice with multiple responses.
-
-  let answers = [question?.validation?.validResponse?.value, ...altResp]
-    .map(i => {
-      let ans = i.map(j => options.indexOf(j)).map(j => alphabets[j]?.toUpperCase());
-      return ans.join(",");
-    })
-    .join(" ");
-  return answers;
-};
-
-const createClozeTextAnswerChoice = question => {
-  const altResp = (question?.validation?.altResponses || []).map(i => i?.value) || [];
-  const groupByKey = question.type === question.CLOZE_TEXT ? "index" : "id";
-  let answers = groupBy([...(question?.validation?.validResponse.value || []), ...flatten(altResp)], groupByKey);
-  let keys = Object.keys(answers);
-  let index = 0;
-  let answerString = "";
-  for (let key of keys) {
-    let tempAns = answers[key].map(i => i?.value).join(",");
-    answerString = `${answerString} ${Number(++index)}. ${tempAns}`;
-  }
-  return answerString;
 };
 
 export const formatQuestionLists = (qs = "") =>

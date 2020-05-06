@@ -8,7 +8,7 @@ import queryString from "query-string";
 
 import { withRouter } from "react-router-dom";
 import { testsApi } from "@edulastic/api";
-import { AnswerContext } from "@edulastic/common";
+import { AnswerContext, MathFormulaDisplay } from "@edulastic/common";
 import { roleuser, test as testConstants } from "@edulastic/constants";
 import { getOrderedQuestionsAndAnswers, formatQuestionLists } from "./utils";
 import QuestionWrapper from "../../assessment/components/QuestionWrapper";
@@ -107,8 +107,18 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
               </span>
               {test.answers.map(answer => (
                 <AnswerContainer>
+                  {answer.qLabel}.
                   <div className="answer-wrapper">
-                    {answer.qLabel}. {answer.answer}
+                    {answer.answers.map((ans, i) => (
+                      <div style={{ display: "flex" }}>
+                        <MathFormulaDisplay
+                          key={i}
+                          style={{ margin: "0 0 10px 10px", minHeight: "22px" }}
+                          dangerouslySetInnerHTML={{ __html: ans || "" }}
+                        />
+                        {i !== answer.answers.length - 1 && ";"}
+                      </div>
+                    ))}
                   </div>
                   <hr />
                 </AnswerContainer>
@@ -241,8 +251,14 @@ export const Color = styled.span`
 `;
 
 const AnswerContainer = styled.div`
+  display: flex;
+  padding: 5px 30px;
   .answer-wrapper {
-    padding: 5px 30px;
+    display: flex;
+    flex-direction: column;
+    .math-formula-display {
+      margin-bottom: 0 !important;
+    }
   }
 `;
 

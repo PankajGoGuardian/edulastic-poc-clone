@@ -1,4 +1,4 @@
-import { get, keyBy, values, round, groupBy } from "lodash";
+import { get, keyBy, values, round, groupBy, isUndefined } from "lodash";
 import next from "immer";
 import { responseDisplayOption } from "./constants";
 import { replaceVariables } from "../../../assessment/utils/variables";
@@ -11,7 +11,7 @@ const formatAnswerForDocBased = (value, q, options = {}) => {
 };
 
 //to format correct/user answer
-const formatAnswers = (data, options, q, qActivity = null, context = "") => {
+export const formatAnswers = (data, options, q, qActivity = null, context = "") => {
   if ((!qActivity || qActivity.skipped) && context === "userResponse") {
     return "-";
   }
@@ -48,12 +48,12 @@ const formatAnswers = (data, options, q, qActivity = null, context = "") => {
         return `${value}${unit || ""}`;
       }
       return value;
-    } else if (item?.value) {
-      return item?.value;
+    } else if (options && item?.id && !isUndefined(item?.index)) {
+      return options[(item?.id)][(item?.index)];
     } else if (options && options[item]) {
       return options[item].label;
-    } else if (options && item?.id && item?.index) {
-      return options[(item?.id)][(item?.index)];
+    } else if (item?.value) {
+      return item?.value;
     } else if (typeof item === "string") {
       return item;
     }
@@ -70,12 +70,17 @@ const formatAnswers = (data, options, q, qActivity = null, context = "") => {
 };
 
 //use `replaceVariables` util function to replace variables from answers
-const formatOptions = q => {
-  let options = replaceVariables(q).options;
+export const formatOptions = q => {
+  const formattedQuestion = replaceVariables(q);
+  let options = formattedQuestion.options;
   if (Array.isArray(options)) {
     options = keyBy(options, "value");
   }
-  return options;
+  return {
+    options,
+    validResponse: get(formattedQuestion, "validation.validResponse.value", []),
+    altResponse: get(formattedQuestion, "validation.altResponses", []).flatMap(res => res.value)
+  };
 };
 
 export const getQuestionTableData = (studentResponse, author_classboard_testActivity) => {
@@ -96,9 +101,8 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
         const data = questions.reduce(
           (acc, q) => {
             const qActivity = qActivityById[q.id];
-            const options = formatOptions(q);
-            const correctAnswers =
-              get(qActivity, "correctAnswer.value") || get(q, "validation.validResponse.value", []);
+            const { options, validResponse } = formatOptions(q);
+            const correctAnswers = get(qActivity, "correctAnswer.value") || validResponse;
             const userResponse = qActivity?.userResponse ? qActivity.userResponse : [];
             acc.yourAnswer = [...acc.yourAnswer, formatAnswers(userResponse, options, q, qActivity, "userResponse")];
             acc.correctAnswer = [...acc.correctAnswer, formatAnswers(correctAnswers, options, q)];
@@ -127,8 +131,8 @@ export const getQuestionTableData = (studentResponse, author_classboard_testActi
         for (let i = 0; i < arr.length; i++) {
           const q = arr[i];
           const qActivity = qActivityById[q.id];
-          const options = formatOptions(q);
-          const correctAnswers = get(qActivity, "correctAnswer.value") || get(q, "validation.validResponse.value");
+          const { options, validResponse } = formatOptions(q);
+          const correctAnswers = get(qActivity, "correctAnswer.value") || validResponse;
           const userResponse = qActivity?.userResponse ? qActivity.userResponse : [];
           q.yourAnswer = [formatAnswers(userResponse, options, q, qActivity, "userResponse")];
           q.correctAnswer = [formatAnswers(correctAnswers, options, q)];

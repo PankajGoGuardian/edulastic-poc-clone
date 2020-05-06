@@ -23,7 +23,10 @@ class PlaylistCustom extends PlayListReview {
     cy.server();
     cy.route("POST", "**/playlists/**").as("duplicate-playlist");
     //  this.searchContainer.routeTestSearch();
-    this.getManageContentButton().click();
+    this.getManageContentButton().then($ele => {
+      if (Cypress.$('[placeholder="Search by keywords"]').length === 0) cy.wrap($ele).click();
+    });
+
     if (customize) {
       cy.wait(500);
       this.getOkWhileCustomize().click({ force: true });

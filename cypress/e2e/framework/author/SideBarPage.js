@@ -68,7 +68,7 @@ export default class TeacherSideBar {
 
   clickOnRecentUsedPlayList = (isLoading = true) => {
     cy.server();
-    cy.route("GET", "**/content-sharing/**").as("loadPlayContent");
+    cy.route("GET", "**/playlists/**").as("loadPlayContent");
     cy.get(`[data-cy="My Playlist"]`).dblclick({ force: true });
     if (isLoading) cy.wait("@loadPlayContent");
   };

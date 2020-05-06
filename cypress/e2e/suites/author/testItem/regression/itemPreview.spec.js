@@ -232,6 +232,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         itemListPage.clickOnViewItemById(itemIds[itemsInTest.length], questText[0]);
         itemPreview.clickOnDeleteOnPreview(false);
         itemPreview.closePreiview();
+        itemListPage.sidebar.clickOnDashboard();
+        itemListPage.sidebar.clickOnItemBank();
         itemListPage.searchFilters.typeInSearchBox(itemIds[itemsInTest.length]);
         itemListPage.getViewItemById(itemIds[itemsInTest.length]).should("not.be.visible");
       });

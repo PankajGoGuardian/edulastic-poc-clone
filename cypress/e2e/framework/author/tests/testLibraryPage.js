@@ -203,10 +203,10 @@ export default class TestLibrary {
       .click({ force: true })
       .then(() => {
         if (validEmail) {
-          cy.wait("@testload").then(xhr => expect(xhr.status === 200, "verify share request"));
+          cy.wait("@testload").then(xhr => assert(xhr.status === 200, "verify share request"));
           cy.wait("@testload1");
         } else {
-          cy.wait("@testload").then(xhr => expect(xhr.status === 404, "Cancel share request"));
+          cy.wait("@testload").then(xhr => assert(xhr.status === 404, "Cancel share request"));
           cy.contains(`Invalid mails found (${email})`);
         }
       });

@@ -101,7 +101,8 @@ class AssessmentPlayerTestlet extends React.Component {
       selectedTheme = "default",
       settings,
       timedAssignment = false,
-      previewPlayer
+      previewPlayer,
+      demo
     } = this.props;
     const { showExitPopup, currentTool } = this.state;
     const item = items[currentItem];
@@ -129,7 +130,7 @@ class AssessmentPlayerTestlet extends React.Component {
             saveTestletLog={this.saveTestletLog}
             timedAssignment={timedAssignment}
           />
-          {!previewPlayer && (
+          {(!previewPlayer || demo) && (
             <SubmitConfirmation
               settings={settings}
               isVisible={showExitPopup}

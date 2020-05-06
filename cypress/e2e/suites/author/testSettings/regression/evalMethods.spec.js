@@ -33,7 +33,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
   };
   const questionType = [];
   const attempt = [];
-  const evalMethods = ["ALL_OR_NOTHING", "PARTIAL_CREDIT", "PENALIZE"];
+  const evalMethods = ["ALL_OR_NOTHING", "PARTIAL_CREDIT_IGNORE_INCORRECT", "PARTIAL_CREDIT"];
   const points = [[0, 0], [1, 1], [0, 0]];
 
   let qType;

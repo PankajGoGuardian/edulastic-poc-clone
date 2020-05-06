@@ -305,6 +305,7 @@ const AssessmentContainer = ({
     freeFormNotes,
     finishTest: () => finishTest(groupId),
     history,
+    demo,
     previewPlayer: preview,
     LCBPreviewModal,
     closeTestPreviewModal,

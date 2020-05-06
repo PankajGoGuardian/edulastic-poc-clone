@@ -4,24 +4,41 @@ import { get } from "lodash";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
+
+import { largeDesktopWidth, mobileWidth } from "@edulastic/colors";
+
 import { Dump } from "../../components";
 import Card from "../Card/Card";
 import { getCards } from "./constants";
-import { largeDesktopWidth, mobileWidth } from "@edulastic/colors";
 
-const PickUpQuestionTypes = ({ onSelectQuestionType, questionType, isPassageItem }) => (
-  <FlexContainer>
-    {getCards(onSelectQuestionType, isPassageItem).map(
-      ({ cardImage, data, onSelectQuestionType: onSelect, type }) =>
-        type === questionType && (
-          <Card key={data.title} title={data.title} data={data} cardImage={cardImage} onSelectQuestionType={onSelect} />
-        )
-    )}
-    {[1, 2, 3, 4, 5, 6, 7].map(() => (
-      <Dump />
-    ))}
-  </FlexContainer>
-);
+const dummyArray = Array(7)
+  .fill()
+  .map((value, index) => index);
+
+const PickUpQuestionTypes = ({ onSelectQuestionType, questionType, isPassageItem }) => {
+  const allQuestionTypes = getCards(onSelectQuestionType, isPassageItem);
+  const selectedQuestionTypes = allQuestionTypes.filter(({ type }) => {
+    if (Array.isArray(type)) {
+      /**
+       * some question types can be part of multiple categories
+       * like math, text and dropdown
+       * @see https://snapwiz.atlassian.net/browse/EV-13704
+       */
+      return type.includes(questionType);
+    }
+    return type === questionType;
+  });
+  return (
+    <FlexContainer>
+      {selectedQuestionTypes.map(({ cardImage, data, onSelectQuestionType: onSelect }) => (
+        <Card key={data.title} title={data.title} data={data} cardImage={cardImage} onSelectQuestionType={onSelect} />
+      ))}
+      {dummyArray.map(() => (
+        <Dump />
+      ))}
+    </FlexContainer>
+  );
+};
 
 const FlexContainer = styled.div`
   display: grid;

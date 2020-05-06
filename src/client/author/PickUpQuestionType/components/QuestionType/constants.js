@@ -2363,7 +2363,34 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
-      type: "multipart",
+      type: "math",
+      cardImage: MTEssay,
+      stimulus: "",
+      data: {
+        title: "Math essay",
+        stimulus: "",
+        type: questionType.FORMULA_ESSAY,
+        uiStyle: {
+          defaultMode: "math",
+          fontsize: "Normal",
+          textFormattingOptions: ["bold", "italic", "underline", "unorderedList"],
+          responseFontScale: "Normal (100%)"
+        },
+        validation: {
+          validResponse: {
+            score: 1
+          }
+        },
+        numberPad: defaultNumberPad,
+        metadata: {},
+        isMath: true,
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: ["fill-blanks", "math", "multipart"],
       cardImage: MTCombinationClozeText,
       stimulus: "",
       data: {
@@ -2425,33 +2452,6 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       data: {
         title: "Combination Multipart",
         type: questionType.COMBINATION_MULTIPART
-      },
-      onSelectQuestionType
-    },
-    {
-      type: "math",
-      cardImage: MTEssay,
-      stimulus: "",
-      data: {
-        title: "Math essay",
-        stimulus: "",
-        type: questionType.FORMULA_ESSAY,
-        uiStyle: {
-          defaultMode: "math",
-          fontsize: "Normal",
-          textFormattingOptions: ["bold", "italic", "underline", "unorderedList"],
-          responseFontScale: "Normal (100%)"
-        },
-        validation: {
-          validResponse: {
-            score: 1
-          }
-        },
-        numberPad: defaultNumberPad,
-        metadata: {},
-        isMath: true,
-        symbols: ["basic", "qwerty"],
-        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },

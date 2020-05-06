@@ -390,35 +390,37 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const onChangeHandler = ({ target }) => {
-    const { value: _value, checked } = target;
-    if (_value) {
-      const newOptions = produce(options, draft => {
-        draft = { ...draft, [_value]: checked };
-        const radioLabelOptions = methodOptionsGrouped.equivSymbolic["INTERPRET THE VALUES AS: "];
-        Object.keys(draft).forEach(key => {
-          if (radioLabelOptions.includes(key)) {
+  const onClickRadioHandler = opt => () => {
+    const newOptions = produce(options, draft => {
+      const radioLabelOptions = methodOptionsGrouped.equivSymbolic["INTERPRET THE VALUES AS: "];
+      Object.keys(draft).forEach(key => {
+        console.log(opt, key);
+        if (radioLabelOptions.includes(key)) {
+          if (opt === "automatic" || key !== opt) {
             // remove all other radio options which were selected previously
-            if (key !== _value) {
-              delete draft[key];
-            }
+            // remove all radio options when option is automatic
+            delete draft[key];
           }
-        });
-        return draft;
+        } else if (!draft[opt] && opt !== "automatic") {
+          draft[opt] = true;
+        } else {
+          // remove option if it was selected previously
+          delete draft[opt];
+        }
       });
-      onChange("options", newOptions);
-    }
+    });
+    onChange("options", newOptions);
   };
 
   const renderRadioMethodOptions = (name, radioOptions) => {
     const optionsKeyed = Object.keys(options);
     const radioLabelOptions = methodOptionsGrouped.equivSymbolic["INTERPRET THE VALUES AS: "];
-    const selected = optionsKeyed.find(key => radioLabelOptions.includes(key) && options[key] === true);
+    const selected = optionsKeyed.find(key => radioLabelOptions.includes(key) && options[key] === true) || "automatic";
     return (
       <Col>
-        <RadioLabelGroup name={name} onChange={onChangeHandler} value={selected}>
+        <RadioLabelGroup name={name} value={selected}>
           {radioOptions.map(opt => (
-            <RadioLabel value={opt} checked={opt === selected}>
+            <RadioLabel key={opt} value={opt} checked={opt === selected} onClick={onClickRadioHandler(opt)}>
               {t(`component.math.${opt}`)}
             </RadioLabel>
           ))}

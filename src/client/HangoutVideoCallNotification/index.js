@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { getUser } from "../author/src/selectors/user";
-import { destroyNotificationMessage, notificationMessage } from "../common/components/Notification";
+import {
+  closeHangoutNotification,
+  destroyNotificationMessage,
+  notificationMessage
+} from "../common/components/Notification";
 import { FireBaseService as Fbs } from "@edulastic/common";
 import { uniqBy, pull } from "lodash";
 
@@ -33,6 +37,7 @@ const NotificationListener = ({ user }) => {
   const onNotificationClick = (event, key, status) => {
     // update status to clicked
     if (status !== "clicked" && event?.target?.tagName.toLowerCase() === "a") {
+      closeHangoutNotification(key);
       updateNotificationStatus(key, "clicked");
     }
   };

@@ -46,3 +46,7 @@ export const notificationMessage = ({
 export const destroyNotificationMessage = () => {
   notification.destroy();
 };
+
+export const closeHangoutNotification = key => {
+  notification.close(key);
+};

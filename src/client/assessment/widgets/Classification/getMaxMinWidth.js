@@ -6,7 +6,7 @@ import { measureText, getImageDimensions } from "@edulastic/common";
 
 const getMaxMinWidth = (choices, fontSize) => {
   const dimensionsRef = useRef([null]);
-
+  const [loading, setLoading] = useState(false);
   const setDimensions = (dimensions, index) => {
     dimensionsRef.current[index] = dimensions;
   };
@@ -28,6 +28,7 @@ const getMaxMinWidth = (choices, fontSize) => {
               const imageSrc = $(this).attr("src");
               const imageDimensions = await getImageDimensions(imageSrc);
               setDimensions(imageDimensions, index);
+              setLoading(true);
             } else {
               setDimensions({ width, height }, index);
             }

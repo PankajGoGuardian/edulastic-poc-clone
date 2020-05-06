@@ -5,6 +5,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getClassAndGroupIds } from "../common/utils/transformers";
 
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST = "[reports] get reports peer progress analysis request";
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS = "[reports] get reports peer progress analysis success";
@@ -66,9 +67,12 @@ export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
 
 function* getReportsPeerProgressAnalysisRequest({ payload }) {
   try {
-    payload.classIds = payload?.classIds?.join(",") || payload.classId || "";
-    payload.groupIds = payload?.groupIds?.join(",") || payload.groupId || "";
-    const peerProgressAnalysis = yield call(reportsApi.fetchPeerProgressAnalysisReport, payload);
+    const { classIds, groupIds } = getClassAndGroupIds(payload);
+    const peerProgressAnalysis = yield call(reportsApi.fetchPeerProgressAnalysisReport, {
+      ...payload,
+      classIds,
+      groupIds
+    });
 
     yield put({
       type: GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS,

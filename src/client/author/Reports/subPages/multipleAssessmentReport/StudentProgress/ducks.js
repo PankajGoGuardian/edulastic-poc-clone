@@ -5,6 +5,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getClassAndGroupIds } from "../common/utils/transformers";
 
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST = "[reports] get reports student progress request";
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS = "[reports] get reports student progress success";
@@ -66,9 +67,12 @@ export const reportStudentProgressReducer = createReducer(initialState, {
 
 function* getReportsStudentProgressRequest({ payload }) {
   try {
-    payload.classIds = payload?.classIds?.join(",") || payload.classId || "";
-    payload.groupIds = payload?.groupIds?.join(",") || payload.groupId || "";
-    const studentProgress = yield call(reportsApi.fetchStudentProgressReport, payload);
+    const { classIds, groupIds } = getClassAndGroupIds(payload);
+    const studentProgress = yield call(reportsApi.fetchStudentProgressReport, {
+      ...payload,
+      classIds,
+      groupIds
+    });
 
     yield put({
       type: GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS,

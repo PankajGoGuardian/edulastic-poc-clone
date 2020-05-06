@@ -7,6 +7,7 @@ import { keyBy } from "lodash";
 import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
+import { getClassAndGroupIds } from "../common/utils/transformers";
 
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST = "[reports] get reports performance over time request";
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS = "[reports] get reports performance over time success";
@@ -68,9 +69,12 @@ export const reportPerformanceOverTimeReducer = createReducer(initialState, {
 
 function* getReportsPerformanceOverTimeRequest({ payload }) {
   try {
-    payload.classIds = payload?.classIds?.join(",") || payload.classId || "";
-    payload.groupIds = payload?.groupIds?.join(",") || payload.groupId || "";
-    let performanceOverTime = yield call(reportsApi.fetchPerformanceOverTimeReport, payload);
+    const { classIds, groupIds } = getClassAndGroupIds(payload);
+    const performanceOverTime = yield call(reportsApi.fetchPerformanceOverTimeReport, {
+      ...payload,
+      classIds,
+      groupIds
+    });
     const selectedProfile = yield select(getReportsMARSelectedPerformanceBandProfile);
     const thresholdNameIndexed = keyBy(selectedProfile?.performanceBand || [], "threshold");
     const metricInfo = (performanceOverTime?.data?.result?.metricInfo || []).map(x => ({

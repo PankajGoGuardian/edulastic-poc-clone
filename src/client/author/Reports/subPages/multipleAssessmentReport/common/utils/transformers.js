@@ -1,6 +1,22 @@
 import { getDropDownTestIds, processClassAndGroupIds, processFilteredClassAndGroupIds } from "../../../../common/util";
 import { get, groupBy } from "lodash";
 
+export const getClassAndGroupIds = payload => {
+  let classIds = "";
+  let groupIds = "";
+  if (payload?.classIds && Array.isArray(payload?.classIds)) {
+    classIds = payload.classIds.join(",");
+  } else if (payload?.classId) {
+    classIds = payload.classId;
+  }
+  if (payload?.groupIds && Array.isArray(payload?.groupIds)) {
+    groupIds = payload.groupIds.join(",");
+  } else if (payload?.groupId) {
+    groupIds = payload.groupId;
+  }
+  return { classIds, groupIds };
+};
+
 const processSchoolYear = user => {
   let schoolYear = [];
   let arr = get(user, "orgData.terms", []);

@@ -7,7 +7,11 @@ import { isRichTextFieldEmpty } from "../../author/questionUtils";
 const Instructions = ({ item }) =>
   item.isScoringInstructionsEnabled && !isRichTextFieldEmpty(item.scoringInstructions) ? (
     <InstructionsContainer>
-      <i style={{ lineHeight: "24px" }} className="fa fa-info-circle" aria-hidden="true" />
+      <i
+        style={{ display: "flex", alignItems: "center" }}
+        className="fa fa-info-circle"
+        aria-hidden="true"
+      />
       <MathFormulaDisplay
         style={{ marginLeft: "10px" }}
         dangerouslySetInnerHTML={{ __html: item.scoringInstructions }}

@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "antd";
 import { connect } from "react-redux";
@@ -68,6 +68,17 @@ const Summary = ({
     getAllTags({ type: isPlaylist ? "playlist" : "test" });
   }, []);
 
+  useEffect(() => {
+    // pre-populate collections initially
+    const bucketIds = lastUsedCollections.flatMap(c => c.bucketIds);
+    const populatedCollections = orgCollections
+      .filter(item => bucketIds.includes(item.bucketId))
+      .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
+    if (!test.title && !test.collections?.length) {
+      onChangeCollection(null, populatedCollections);
+    }
+  }, [lastUsedCollections, orgCollections]);
+
   const breadcrumbData = [
     {
       title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
@@ -90,12 +101,6 @@ const Summary = ({
   ];
   const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
   const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
-
-  // pre-populate collections
-  const bucketIds = lastUsedCollections.flatMap(c => c.bucketIds);
-  const populatedCollections = orgCollections
-    .filter(item => bucketIds.includes(item.bucketId))
-    .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
 
   return (
     <Container>
@@ -120,7 +125,6 @@ const Summary = ({
         analytics={test.analytics}
         collections={test.collections}
         orgCollections={orgCollections}
-        populatedCollections={populatedCollections}
         onChangeField={handleChangeField}
         windowWidth={windowWidth}
         grades={grades}

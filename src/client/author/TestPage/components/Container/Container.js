@@ -706,7 +706,7 @@ class Container extends PureComponent {
   };
 
   handlePublishTest = (assignFlow = false) => {
-    const { publishTest, test, match, currentTab } = this.props;
+    const { publishTest, test, match, currentTab, updateLastUsedCollectionList } = this.props;
     const { _id } = test;
     if (this.validateTest(test)) {
       const newTest = this.modifyTest();
@@ -718,6 +718,7 @@ class Container extends PureComponent {
         currentTab
       });
       this.setState({ editEnable: false });
+      updateLastUsedCollectionList(test.collections);
     }
   };
 

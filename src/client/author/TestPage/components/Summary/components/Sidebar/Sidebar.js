@@ -28,7 +28,6 @@ const Sidebar = ({
   onChangeGrade,
   collections = [],
   orgCollections = [],
-  populatedCollections,
   onChangeCollection,
   features = {},
   description,
@@ -42,7 +41,6 @@ const Sidebar = ({
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "_id");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
-  const [loadDefaultCollections, setLoadDefaultCollections] = useState(true);
   const testTitleInput = createRef();
   const isPublishers = !!(features.isPublisherAuthor || features.isCurator);
 
@@ -51,14 +49,6 @@ const Sidebar = ({
       testTitleInput.current.input.focus();
     }
   }, []);
-
-  const setDefaultCollections = () => {
-    setLoadDefaultCollections(false);
-    onChangeCollection(null, populatedCollections);
-  };
-
-  // set last used collections as the default collection if test collection is empty initially
-  loadDefaultCollections && !collections.length && populatedCollections.length && setDefaultCollections();
 
   const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
     collections,

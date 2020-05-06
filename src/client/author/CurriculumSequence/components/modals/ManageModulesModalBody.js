@@ -208,6 +208,11 @@ const DragHandle = styled.div`
   &:active {
     cursor: grabbing;
   }
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
 `;
 
 const ModuleContent = styled.div`
@@ -481,7 +486,7 @@ const ManageModulesModalBody = props => {
           CANCEL
         </EduButton>
         <EduButton width="200px" data-cy="done-module" key="submit" type="primary" onClick={applyHandler}>
-          SAVE
+          DONE
         </EduButton>
       </ModalFooter>
     </ModalContainer>

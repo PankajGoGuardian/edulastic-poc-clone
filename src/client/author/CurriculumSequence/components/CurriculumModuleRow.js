@@ -752,13 +752,15 @@ class ModuleRow extends Component {
                                       show={2}
                                       isPlaylist
                                     />
-                                    <TestStatus
-                                      status={moduleData.status}
-                                      view="tile"
-                                      noMargin={!moduleData.standardIdentifiers}
-                                    >
-                                      {moduleData.status}
-                                    </TestStatus>
+                                    {!urlHasUseThis && (
+                                      <TestStatus
+                                        status={moduleData.status}
+                                        view="tile"
+                                        noMargin={!moduleData.standardIdentifiers}
+                                      >
+                                        {moduleData.status}
+                                      </TestStatus>
+                                    )}
                                   </FlexContainer>
                                 </ModuleDataWrapper>
                               </FirstColumn>

@@ -57,9 +57,11 @@ function* fetchUserDetailsSaga({ payload }) {
 
 function* mergeUsersSaga({ payload }) {
   try {
-    const response = yield call(userApi.mergeUsers, payload);
+    const { primaryUserId, userIds, onMergeAction } = payload;
+    const response = yield call(userApi.mergeUsers, { primaryUserId, userIds });
     yield put(actions.mergeUsersSuccess({}));
     yield call(message.success, response.message);
+    yield call(onMergeAction);
   } catch (err) {
     yield put(actions.mergeUsersFailed());
     yield call(message.error, "Failed to merge selected users");

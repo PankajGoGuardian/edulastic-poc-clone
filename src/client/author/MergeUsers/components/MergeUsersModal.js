@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import moment from "moment";
 
 // components
-import { Spin, Row, Radio } from "antd";
+import { Radio, Tooltip } from "antd";
 import { IconClose } from "@edulastic/icons";
 import { EduButton } from "@edulastic/common";
-import { StyledModal, DetailsContainer } from "./styled";
+import { StyledModal, StyledTable } from "./styled";
 
 // ducks
 import { actions, selectors } from "../ducks";
@@ -23,7 +23,7 @@ const MergeUsersModal = ({
   mergeUsers
 }) => {
   // state
-  const [mergeData, setMergeData] = useState([]);
+  const [primaryUserId, setPrimaryUserId] = useState([]);
 
   useEffect(() => {
     if (userIds.length > 1 && visible) {
@@ -32,33 +32,81 @@ const MergeUsersModal = ({
   }, [userIds, visible]);
 
   useEffect(() => {
-    setMergeData(userDetails[0]);
+    setPrimaryUserId(userDetails[0]?._id);
   }, [userDetails]);
 
   const handleMerge = () => {
     mergeUsers({
-      primaryUserId: mergeData._id,
-      userIds: userIds.filter(id => id !== mergeData._id)
+      primaryUserId,
+      userIds: userIds.filter(id => id !== primaryUserId),
+      onMergeAction: onSubmit
     });
-
-    setTimeout(onSubmit, 5000);
   };
 
-  const nameKeys = ["firstName", "middleName", "lastName"];
+  const columns = [
+    {
+      title: "Name",
+      key: "name",
+      dataIndex: "name",
+      render: (data, { _id }) =>
+        _id === primaryUserId ? (
+          <Tooltip title="The selected user will remain active">
+            <Radio onClick={() => setPrimaryUserId(_id)} checked>
+              {data}
+            </Radio>
+          </Tooltip>
+        ) : (
+          <Radio onClick={() => setPrimaryUserId(_id)}>{data}</Radio>
+        ),
+      sorter: (a, b) => a.name.localeCompare(b.name)
+    },
+    {
+      title: "Username",
+      key: "username",
+      dataIndex: "username",
+      sorter: (a, b) => a.username.localeCompare(b.username)
+    },
+    {
+      title: "Email",
+      key: "email",
+      dataIndex: "email",
+      sorter: (a, b) => a.email.localeCompare(b.email)
+    },
+    {
+      title: "LMS",
+      key: "lms",
+      dataIndex: "lms",
+      sorter: (a, b) => a.lms.localeCompare(b.lms)
+    },
+    {
+      title: "Id",
+      dataIndex: "_id",
+      sorter: (a, b) => a._id.localeCompare(b._id)
+    },
+    {
+      title: "Assignments",
+      key: "assignments",
+      align: "center",
+      dataIndex: "assignments",
+      sorter: (a, b) => a.assignments < b.assignments
+    },
+    {
+      title: "Created Date",
+      key: "createdAt",
+      dataIndex: "createdAt",
+      sorter: (a, b) => a < b
+    }
+  ];
 
-  const dataKeys = ["name", ...new Set(userDetails.flatMap(u => Object.keys(u)))].filter(
-    k => !(nameKeys.includes(k) || k === "_id")
-  );
-
-  const curatedDetails = userDetails.map(user => {
-    const u = { ...user };
-    u.createdAt = user.createdAt && moment(user.createdAt).format("MMMM Do YYYY");
-    u.name = nameKeys
-      .map(k => user[k])
-      .filter(n => n)
-      .join(" ");
-    return u;
-  });
+  const curatedDetails = userDetails.map(u => ({
+    name: [u.firstName || "", u.middleName || "", u.lastName || ""].join(" ") || "-",
+    username: u.username || "-",
+    email: u.email || "-",
+    lms: u.lms || "-",
+    _id: u._id,
+    assignments: parseInt(u.assignments || 0),
+    createdAt: moment(u.createdAt).format("MMM D, YYYY")
+  }));
 
   return (
     <StyledModal
@@ -86,23 +134,7 @@ const MergeUsersModal = ({
       ]}
       centered
     >
-      {loading ? (
-        <Spin />
-      ) : (
-        <DetailsContainer>
-          {curatedDetails.map(user => (
-            <div onClick={() => setMergeData(userDetails.find(u => u._id === user._id))}>
-              <Radio checked={user?._id === mergeData?._id} />
-              {dataKeys.map(dataKey => (
-                <Row>
-                  <b>{dataKey[0].toUpperCase() + dataKey.substring(1)}: </b>
-                  {user[dataKey] === undefined ? "" : user[dataKey]}
-                </Row>
-              ))}
-            </div>
-          ))}
-        </DetailsContainer>
-      )}
+      <StyledTable loading={loading} columns={columns} dataSource={curatedDetails} pagination={false} />
     </StyledModal>
   );
 };

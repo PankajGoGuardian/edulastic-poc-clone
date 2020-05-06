@@ -1,18 +1,19 @@
 import styled from "styled-components";
 
 // components
-import { Modal } from "antd";
+import { Modal, Table } from "antd";
 
 // constants
-import { greyThemeDark1, darkGrey2, smallDesktopWidth } from "@edulastic/colors";
+import { greyThemeDark1, darkGrey2, smallDesktopWidth, lightGrey11 } from "@edulastic/colors";
 
 export const StyledModal = styled(Modal)`
   min-width: fit-content;
   .ant-modal-content {
-    max-width: 80vw;
+    min-width: 70vw;
+    max-width: 90vw;
     width: fit-content;
     border-radius: 10px;
-    padding: 30px 45px 45px 50px;
+    padding: 25px 50px 30px 50px;
     .ant-modal-close {
       display: none;
     }
@@ -25,7 +26,7 @@ export const StyledModal = styled(Modal)`
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 30px;
+          margin-bottom: 25px;
           span {
             color: ${greyThemeDark1};
             font-size: 22px;
@@ -38,15 +39,14 @@ export const StyledModal = styled(Modal)`
           font-size: 14px;
           font-weight: 600;
           line-height: 19px;
+          margin-bottom: 30px;
         }
       }
     }
     .ant-modal-body {
-      height: fit-content;
-      overflow: scroll;
       border-radius: 10px;
-      padding: 0px;
-      margin-bottom: 40px;
+      padding: 0px 20px 0px 5px;
+      margin-bottom: 30px;
       .ant-spin {
         padding-top: 65px;
       }
@@ -61,26 +61,64 @@ export const StyledModal = styled(Modal)`
         width: 200px;
         height: 40px;
         border-radius: 4px;
-        font-size: ${props => props.theme.linkFontSize};
+        margin-right: 10px;
+        letter-spacing: 0.2px;
+        font-size: 11px;
+        line-height: 15px;
       }
     }
   }
 `;
 
-export const DetailsContainer = styled.div`
-  display: inline-flex;
-  > div {
-    cursor: pointer;
-    min-width: 200px;
-    margin: 10px 10px;
-    span {
-      float: right;
+export const StyledTable = styled(Table)`
+  width: 100%;
+  .ant-table {
+    .ant-table-content {
+      height: 365px;
+      overflow: auto;
+      .ant-table-body {
+        min-height: auto;
+        table {
+          border: none;
+          .ant-table-thead {
+            tr {
+              background: white;
+              th {
+                border: none;
+                background: white;
+                padding: 5px 10px 20px 10px;
+                .ant-table-column-title {
+                  white-space: nowrap;
+                  font-size: 12px;
+                  line-height: 17px;
+                  font-weight: 700;
+                  color: ${lightGrey11};
+                  text-transform: uppercase;
+                }
+              }
+            }
+          }
+          .ant-table-tbody {
+            border-collapse: collapse;
+            tr {
+              td {
+                height: 40px;
+                padding: 5px 10px;
+                font-size: 14px;
+                line-height: 19px;
+                font-weight: 600;
+                color: ${greyThemeDark1};
+                .ant-radio {
+                  margin-right: 10px;
+                }
+              }
+            }
+          }
+        }
+      }
+      .ant-table-placeholder {
+        border: none;
+      }
     }
-  }
-  > div:first-child {
-    margin-left: 0px;
-  }
-  > div:last-child {
-    margin-right: 0px;
   }
 `;

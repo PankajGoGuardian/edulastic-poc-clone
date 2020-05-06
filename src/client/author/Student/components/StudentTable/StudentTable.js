@@ -251,12 +251,17 @@ class StudentTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
-    const { setAddStudentsToOtherClassVisiblity, t } = this.props;
+    const { adminUsersData, setAddStudentsToOtherClassVisiblity, t } = this.props;
     if (e.key === "add student") {
       this.setState({ addStudentModalVisible: true });
     }
     if (e.key === "merge user") {
-      if (selectedRowKeys.length > 1) {
+      const inactiveUsers = Object.values(adminUsersData).filter(
+        u => selectedRowKeys.includes(u._id) && u._source.status !== 1
+      );
+      if (inactiveUsers.length) {
+        message.error("Deactivated users selected, please select active students only");
+      } else if (selectedRowKeys.length > 1) {
         this.setState({ showMergeStudentsModal: true });
       } else {
         message.info("Select two or more students to merge");

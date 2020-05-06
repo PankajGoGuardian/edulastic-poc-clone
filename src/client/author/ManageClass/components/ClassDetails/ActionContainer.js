@@ -250,7 +250,10 @@ const ActionContainer = ({
         toggleModal("addToGroup");
         break;
       case "mergeStudents":
-        if (selectedStudent.length > 1) {
+        const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1);
+        if (inactiveStudents.length) {
+          message.error("Deactivated students selected, please select active students only");
+        } else if (selectedStudent.length > 1) {
           toggleModal("mergeStudents");
         } else {
           message.info("Please select two or more students to merge");

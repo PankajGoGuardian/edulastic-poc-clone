@@ -225,11 +225,17 @@ class TeacherTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
+    const { adminUsersData } = this.props;
     if (e.key === "add teacher") {
       this.setState({ addTeacherModalVisible: true });
     }
     if (e.key === "merge user") {
-      if (selectedRowKeys.length > 1) {
+      const inactiveUsers = Object.values(adminUsersData).filter(
+        u => selectedRowKeys.includes(u._id) && u._source.status !== 1
+      );
+      if (inactiveUsers.length) {
+        message.error("Deactivated users selected, please select active students only");
+      } else if (selectedRowKeys.length > 1) {
         this.setState({ showMergeTeachersModal: true });
       } else {
         message.info("Select two or more teachers to merge");

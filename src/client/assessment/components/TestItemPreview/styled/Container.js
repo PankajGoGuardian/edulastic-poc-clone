@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import { themeColor,greyDarken,boxShadowColor  } from "@edulastic/colors";
 import { SMALL_DESKTOP_WIDTH } from "../../../constants/others";
 
 export const Container = styled.div`
@@ -20,25 +20,26 @@ export const Divider = styled.div`
   z-index: 1;
   > div {
     position: absolute;
-    background: #fff;
-    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+    background-color: #FFFFFF ;
+    box-shadow: 0px 2px 7px ${boxShadowColor};
     border-radius: 5px;
-    top: 20px;
+    width:70px;
+    top:4px;
     display: flex;
+    justify-content:center;
     align-items: center;
-    justify-content: space-between;
     left: ${props =>
-      props.collapseDirection === "left" ? "auto" : props.collapseDirection === "right" ? "-76px" : "-41px"};
+      props.collapseDirection === "left" ? "auto" : props.collapseDirection === "right" ? "-30px" : "-25px"};
     right: ${props =>
-      props.collapseDirection === "right" ? "auto" : props.collapseDirection === "left" ? "-76px" : "-41px"};
+      props.collapseDirection === "right" ? "auto" : props.collapseDirection === "left" ? "-30px" : "-25px"};
   }
 `;
 
 export const CollapseBtn = styled.i`
   cursor: pointer;
-  font-size: 15px;
-  cursor: pointer;
-  padding: 5px 15px;
+  font-size: 12px;
+  height:27px;
+  padding: 5px 8px;
   color: ${themeColor};
   ${props => {
     if (props.right) {
@@ -66,4 +67,10 @@ export const CollapseBtn = styled.i`
         }`;
     }
   }}
+`;
+
+export const Dividerlines=styled.span`
+color:${greyDarken};
+transform: scaley(1.5);
+text-align:center;
 `;

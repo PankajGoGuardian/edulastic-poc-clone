@@ -8,12 +8,12 @@ import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { white } from "@edulastic/colors";
 
 import { withWindowSizes, ScratchPadContext, ScrollContext, EduButton, FlexContainer } from "@edulastic/common";
-import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
 import { questionType } from "@edulastic/constants";
+import { Icon } from "antd";
 
 import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
-import { Container, Divider, CollapseBtn } from "./styled/Container";
+import { Container, Divider, CollapseBtn, Dividerlines } from "./styled/Container";
 import FeedbackWrapper from "../FeedbackWrapper";
 import SvgDraw from "../../themes/AssessmentPlayerDefault/SvgDraw";
 
@@ -83,15 +83,16 @@ class TestItemPreview extends Component {
             left
             className="left-collapse-btn"
           >
-            <IconArrowLeft />
+            <Icon type="left" />
           </CollapseBtn>
+          <Dividerlines>III</Dividerlines>
           <CollapseBtn
             collapseDirection={collapseDirection}
             onClick={() => this.setCollapseView("right")}
             right
             className="right-collapse-btn"
           >
-            <IconArrowRight />
+            <Icon type="right" />
           </CollapseBtn>
         </div>
       </Divider>

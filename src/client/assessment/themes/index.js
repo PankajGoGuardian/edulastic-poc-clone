@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Spin, message } from "antd";
-import { isUndefined, get, isEmpty } from "lodash";
+import { isUndefined, get, isEmpty, isNull, isEqual } from "lodash";
 import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
 import useInterval from "@use-it/interval";
 
@@ -151,6 +151,7 @@ const AssessmentContainer = ({
   const getUnAnsweredQuestions = () => {
     const questions = items[currentItem]?.data?.questions || [];
     return questions.filter(q => {
+      const answers = answersById[q.id];
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return answersById[q.id].filter(token => token?.selected).length === 0;
@@ -160,8 +161,44 @@ const AssessmentContainer = ({
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
           const initialData = q.chart_data.data;
-          const currentData = answersById[q.id];
-          return initialData.every((d, i) => d.y === currentData[i].y);
+          return initialData.every((d, i) => d.y === answers[i].y);
+        }
+        case questionType.SORT_LIST:
+        case questionType.MATCH_LIST:
+          return answers.every(d => isNull(d));
+        case questionType.ORDER_LIST:
+          const prevOrder = [...Array(q.list.length).keys()];
+          return isEqual(prevOrder, answers);
+        case questionType.MATH:
+          if (q.title === "Complete the Equation") {
+            const ans = (answers || "").replace(/\\ /g, "");
+            return isEmpty(ans) || ans === "+=";
+          }
+          return isEmpty(answers);
+        case questionType.FORMULA_ESSAY:
+          return (answers || []).every(d => {
+            const ans = (d.text || "").replace(/\\ /g, "");
+            return isEmpty(ans);
+          });
+        case questionType.EXPRESSION_MULTIPART:
+          const { inputs = {}, dropdowns = {}, maths = {}, mathUnits = {} } = answers || {};
+          let isAnswered = Object.values({ ...inputs, ...dropdowns, ...maths }).some(d => d.value?.trim());
+          if (!isAnswered) {
+            isAnswered = Object.values(mathUnits).some(d => d.value || d.unit);
+          }
+          return !isAnswered;
+        case questionType.CLOZE_TEXT:
+        case questionType.CLASSIFICATION:
+        case questionType.CLOZE_IMAGE_TEXT: {
+          return answers.every((d, i) => {
+            if (typeof d === "string") {
+              return isEmpty(d);
+            } else if (Array.isArray(d)) {
+              return isEmpty(d || d.value);
+            } else {
+              return isEmpty(d.value);
+            }
+          });
         }
         default:
           return isEmpty(answersById[q.id]);

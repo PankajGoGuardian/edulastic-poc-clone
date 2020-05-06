@@ -31,7 +31,7 @@ const UnansweredPopup = props => {
         <p>
           You must answer all questions on this page before moving to the next page. (You may have to scroll down to see
           all the questions.) Question(s) that still require an answer:
-          <b>{data.join(", ")}</b>
+          <b> {data.join(", ")}</b>
         </p>
       </div>
     </Modal>

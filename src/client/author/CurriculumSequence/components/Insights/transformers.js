@@ -298,9 +298,9 @@ export const getQuadsData = data => {
     // add the color and quad info
     if (item.effort < 0 && item.performance > 0) {
       quads[0].push({ ...item, color: lightBlue8, quad: 1 });
-    } else if (item.effort > 0 && item.performance > 0) {
+    } else if (item.effort >= 0 && item.performance >= 0) {
       quads[1].push({ ...item, color: lightGreen7, quad: 2 });
-    } else if (item.effort < 0 && item.performance < 0) {
+    } else if (item.effort <= 0 && item.performance <= 0) {
       quads[2].push({ ...item, color: lightRed2, quad: 3 });
     } else {
       quads[3].push({ ...item, color: lightBlue8, quad: 4 });

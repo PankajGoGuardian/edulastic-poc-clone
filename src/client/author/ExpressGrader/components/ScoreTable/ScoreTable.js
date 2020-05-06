@@ -78,7 +78,7 @@ class ScoreTable extends Component {
 
     const columns = [
       {
-        title: <TableTitle>Question & Standard</TableTitle>,
+        title: <TableTitle>Score Grid</TableTitle>,
         className: "main-heading",
         // Make score grid column fixed when more than 10 questions data exist
         fixed: "left",

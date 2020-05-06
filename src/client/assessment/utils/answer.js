@@ -18,15 +18,15 @@ export const hasValidAnswers = (type, answer) => {
       return !isEmpty(answer?.filter(ans => ans?.toString()));
     case questionType.EDITING_TASK:
     case questionType.CLOZE_TEXT:
-      return !isEmpty(answer?.filter(ans => ans.value));
+      return !isEmpty(answer?.filter(ans => ans?.value));
     case questionType.CLOZE_IMAGE_DRAG_DROP:
-      return !isEmpty(answer?.filter(ans => !isEmpty(ans.value)));
+      return !isEmpty(answer?.filter(ans => !isEmpty(ans?.value)));
     case questionType.CLASSIFICATION:
       return !isEmpty(answer?.filter(ans => !isEmpty(ans)));
     case questionType.TOKEN_HIGHLIGHT:
-      return !isEmpty(answer?.filter(ans => ans.selected));
+      return !isEmpty(answer?.filter(ans => ans?.selected));
     case questionType.FORMULA_ESSAY:
-      return !isEmpty(answer?.filter(ans => ans.text));
+      return !isEmpty(answer?.filter(ans => ans?.text));
     case questionType.EXPRESSION_MULTIPART: {
       const filtered = values(answer)
         .reduce((sum, current) => sum?.concat(values(current)), [])

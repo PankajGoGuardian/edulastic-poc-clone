@@ -18,22 +18,18 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
             <>
               {i !== 0 && <>&nbsp;/&nbsp;</>}
               <Tooltip title={title}>
-                <AnchorLink
-                  to={bc.to}
-                >
-                  {title}
-                </AnchorLink>
+                <AnchorLink to={bc.to}>{title}</AnchorLink>
               </Tooltip>
             </>
-          )
-      })}
+          );
+        })}
       </PaginationInfo>
     );
-  };
+  }
 
   return (
     <PaginationInfo xs={24} md={8}>
-      <RecentLink to="/author/assignments">RECENTS ASSIGNMENTS</RecentLink>
+      <RecentLink to="/author/assignments">ASSIGNMENTS</RecentLink>
       {data?.testName && (
         <>
           &nbsp;{"/"}&nbsp;
@@ -55,7 +51,7 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
         </>
       )}
     </PaginationInfo>
-  )
+  );
 };
 
 export default connect(

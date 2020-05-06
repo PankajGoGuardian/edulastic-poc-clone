@@ -1,9 +1,9 @@
 import React from "react";
-import { Switch, message } from "antd";
+import { Switch, message, Button } from "antd";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import styled from "styled-components";
-import { mobileWidthLarge } from "@edulastic/colors";
+import { mobileWidthLarge, themeColor, white } from "@edulastic/colors";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { togglePresentationModeAction } from "../../src/actions/testActivity";
 
@@ -11,24 +11,17 @@ const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, 
   const toggleCurrentMode = () => {
     togglePresentationMode();
     if (!isPresentationMode)
-      message.info(
-        "Presentation mode is ON. You can present assessment data without revealing student identity."
-      );
+      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
   };
 
   const title = !isPresentationMode
     ? "Presentation Mode will anonymize the names of students"
     : " Presentation Mode will get OFF";
   return (
-    <FeaturesSwitch
-      inputFeatures="presentationMode"
-      actionOnInaccessible="hidden"
-      groupId={groupId}
-    >
-      <SwitchBox>
+    <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden" groupId={groupId}>
+      <StyledButton title={title} onClick={toggleCurrentMode}>
         {isPresentationMode ? "RESET" : "PRESENT"}{" "}
-        <Switch checked={isPresentationMode} title={title} onClick={toggleCurrentMode} />
-      </SwitchBox>
+      </StyledButton>
     </FeaturesSwitch>
   );
 };
@@ -42,18 +35,21 @@ export default connect(
   }
 )(PresentationToggleSwitch);
 
-const SwitchBox = styled.span`
-  font-size: 11px;
+const StyledButton = styled.div`
   display: flex;
   align-items: center;
-  .ant-switch {
-    min-width: 32px;
-    height: 16px;
-    margin-left: 10px;
-    &:after {
-      width: 12px;
-      height: 12px;
-    }
+  justify-content: center;
+  font-size: 12px;
+  background: ${themeColor} 0% 0% no-repeat padding-box;
+  color: ${white};
+  width: 126px;
+  height: 28px;
+  border-radius: 4px;
+  opacity: 1;
+  margin-left: 18px;
+
+  &:hover {
+    cursor: pointer;
   }
 
   @media (max-width: ${mobileWidthLarge}) {

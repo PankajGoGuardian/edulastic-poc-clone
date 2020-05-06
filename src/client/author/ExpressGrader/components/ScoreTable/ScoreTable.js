@@ -78,18 +78,18 @@ class ScoreTable extends Component {
 
     const columns = [
       {
-        title: <TableTitle>Score Grid</TableTitle>,
+        title: <TableTitle>Question & Standard</TableTitle>,
         className: "main-heading",
         // Make score grid column fixed when more than 10 questions data exist
         fixed: "left",
-        width: 300,
+        width: 320,
         children: [
           {
             key: "students",
             title: <StudentsTitle>students</StudentsTitle>,
             dataIndex: "students",
             className: "th-border-bottom student-names",
-            width: 180,
+            width: 220,
             render: record => (
               <StyledDivMid style={{ color: "#000", textAlign: "left" }} className="name-col">
                 {isPresentationMode ? record.fakeName : record.studentName}
@@ -102,7 +102,7 @@ class ScoreTable extends Component {
             title: <ScoreTitle>score</ScoreTitle>,
             className: "th-border-bottom score-title",
             dataIndex: "score",
-            width: 120,
+            width: 100,
             render: record => {
               const { score = 0, maxScore = 0 } = record;
               const percent = maxScore === 0 ? "-" : `${((100 * score) / maxScore).toFixed(0)}%`;

@@ -134,7 +134,7 @@ export const StyledDivMid = styled.div`
     margin-left: 18px;
   }
   &.name-col {
-    max-width: 160px;
+    max-width: 200px;
     font-size: 14px;
     text-overflow: ellipsis;
     overflow: hidden;

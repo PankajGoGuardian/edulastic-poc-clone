@@ -8,7 +8,7 @@ import { Switch } from "antd";
 import styled, { ThemeProvider } from "styled-components";
 import { mobileWidthLarge } from "@edulastic/colors";
 import AppConfig from "../../../../../../app-config";
-import { withWindowSizes, MainContentWrapper, WithResources } from "@edulastic/common";
+import { withWindowSizes, MainContentWrapper, WithResources, FlexContainer } from "@edulastic/common";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
 import { clearAnswersAction } from "../../../src/actions/answers";
@@ -31,6 +31,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { StyledFlexContainer } from "./styled";
 import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
 import { toggleScoreModeAction, enableScoreModeAction } from "../../ducks";
+import ExpressGraderScoreColors from "../ExpressGraderScoreColors";
 
 /**
  *
@@ -152,10 +153,15 @@ class ExpressGrader extends Component {
             >
               <StyledFlexContainer justifyContent="space-between">
                 <ClassBreadBrumb />
-                <SwitchBox>
-                  RESPONSE <Switch checked={scoreMode} onChange={() => toggleScoreMode()} /> SCORE
-                </SwitchBox>
-                <PresentationToggleSwitch groupId={classId} />
+
+                <ExpressGraderScoreColors />
+
+                <FlexContainer justifyContent="space-between">
+                  <SwitchBox>
+                    RESPONSE <Switch checked={scoreMode} onChange={() => toggleScoreMode()} /> SCORE
+                  </SwitchBox>
+                  <PresentationToggleSwitch groupId={classId} />
+                </FlexContainer>
               </StyledFlexContainer>
               {!isMobile && (
                 <ScoreTable

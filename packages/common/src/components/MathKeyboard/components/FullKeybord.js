@@ -1,15 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import { Tabs as AntTabs } from "antd";
+import { Tabs as AntTabs, Tooltip } from "antd";
 import MainKeyboard from "./MainKeyboard";
 import { TAB_BUTTONS } from "../constants/keyboardButtons";
 
 const { TabPane } = AntTabs;
 
+const tabLabel = (label, name) => <Tooltip title={name}>{label}</Tooltip>;
+
 const FullKeybord = ({ onInput }) => (
   <Tabs>
-    {TAB_BUTTONS.map(({ label, key, buttons }) => (
-      <TabPane tab={label} key={key}>
+    {TAB_BUTTONS.map(({ label, name, key, buttons }) => (
+      <TabPane tab={tabLabel(label, name)} key={key}>
         <MainKeyboard onInput={onInput} btns={buttons} fullKeybord />
       </TabPane>
     ))}

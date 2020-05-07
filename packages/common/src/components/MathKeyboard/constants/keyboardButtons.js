@@ -22,6 +22,7 @@ import Group2210 from "../assets/keyboardButtons/2210.svg";
 import Group2211 from "../assets/keyboardButtons/2211.svg";
 import Group1004 from "../assets/keyboardButtons/1004.svg";
 import Group1005 from "../assets/keyboardButtons/1005.svg";
+import Group1015 from "../assets/keyboardButtons/1015.svg";
 import Group1008 from "../assets/keyboardButtons/1008.svg";
 import Group1009 from "../assets/keyboardButtons/1009.svg";
 import Group2256 from "../assets/keyboardButtons/2256.svg";
@@ -80,6 +81,8 @@ import Group2752 from "../assets/keyboardButtons/2752.svg";
 import Group2478 from "../assets/keyboardButtons/2478.svg";
 import Group2252 from "../assets/keyboardButtons/2252.svg";
 import Group2254 from "../assets/keyboardButtons/2254.svg";
+import Group2738 from "../assets/keyboardButtons/2738.svg";
+
 // Basic
 import Fraction from "../assets/keyboardButtons/fraction.svg";
 import Sqrt from "../assets/keyboardButtons/sqrt.svg";
@@ -123,8 +126,12 @@ const OPERATORS = [
     handler: "\\div",
     label: <CustomImage src={Group2788} width={12} height={12} role="presentation" />,
     command: "cmd",
-    types: ["pending"]
-  },
+    types: ["all"]
+  }
+];
+
+// keypad mode buttons
+const BASIC = [
   {
     handler: "/",
     labelcy: "divide",
@@ -132,11 +139,7 @@ const OPERATORS = [
     label: <CustomImage src={Fraction} width={25} height={40} role="presentation" />,
     types: ["basic"],
     command: "cmd"
-  }
-];
-
-// keypad mode buttons
-const BASIC = [
+  },
   {
     handler: "\\sqrt",
     labelcy: "sqrt",
@@ -706,6 +709,104 @@ const UNITS_SI = [
     label: "L",
     types: ["units_si"],
     command: "cmd"
+  },
+  {
+    handler: "\\text{m/s}",
+    label: "m/s",
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "\\text{cm/s}",
+    label: "cm/s",
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "\\text{km/s}",
+    label: "km/s",
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "\\text{m/}s^2",
+    label: (
+      <span role="presentation">
+        m/s<sup>2</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "\\text{m/}s^2",
+    label: (
+      <span role="presentation">
+        m/s<sup>2</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "mm^3",
+    label: (
+      <span role="presentation">
+        mm<sup>3</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "cm^3",
+    label: (
+      <span role="presentation">
+        cm<sup>3</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "m^3",
+    label: (
+      <span role="presentation">
+        m<sup>3</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "km^3",
+    label: (
+      <span role="presentation">
+        km<sup>3</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "\\text{kg/}m^3",
+    label: (
+      <span role="presentation">
+        kg/m<sup>3</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
+  },
+  {
+    handler: "\\text{g/}cm^3",
+    label: (
+      <span role="presentation">
+        g/cm<sup>3</sup>
+      </span>
+    ),
+    types: ["units_si"],
+    command: "write"
   }
 ];
 
@@ -741,16 +842,6 @@ const UNITS_US = [
     command: "write"
   },
   {
-    handler: "pt^{2}",
-    label: (
-      <span role="presentation">
-        pt<sup>2</sup>
-      </span>
-    ),
-    types: ["all", "units_us"],
-    command: "write"
-  },
-  {
     handler: "feet",
     label: "feet",
     types: ["units_us"],
@@ -778,7 +869,7 @@ const UNITS_US = [
     handler: "\\text{ft}",
     label: "ft",
     types: ["units_us"],
-    command: "cmd"
+    command: "write"
   },
   {
     handler: "mi",
@@ -869,6 +960,58 @@ const UNITS_US = [
     label: "tsp",
     types: ["units_us"],
     command: "write"
+  },
+  {
+    handler: "\\text{mph}",
+    label: "mph",
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{fps}",
+    label: "fps",
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{ft/sec}^2",
+    label: (
+      <span role="presentation">
+        ft/sec<sup>2</sup>
+      </span>
+    ),
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{in}^3",
+    label: (
+      <span role="presentation">
+        in<sup>3</sup>
+      </span>
+    ),
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{mi}^3",
+    label: (
+      <span role="presentation">
+        mi<sup>3</sup>
+      </span>
+    ),
+    types: ["units_us"],
+    command: "write"
+  },
+  {
+    handler: "\\text{ft}^3",
+    label: (
+      <span role="presentation">
+        ft<sup>3</sup>
+      </span>
+    ),
+    types: ["units_us"],
+    command: "write"
   }
 ];
 
@@ -890,27 +1033,10 @@ const tabIconSize = {
 export const TAB_BUTTONS = [
   {
     label: <CustomImage src={Grupo6134} {...tabIconSize} role="presentation" />,
+    name: "General",
     key: "GENERAL",
     buttons: [
-      {
-        handler: "+",
-        label: "+",
-        types: ["basic"],
-        command: "write"
-      },
-      {
-        handler: "-",
-        label: "-",
-        types: ["basic"],
-        command: "write"
-      },
-      {
-        handler: "\\times",
-        label: "×",
-        types: ["all"],
-        command: "write"
-      },
-      { handler: "\\div", label: "÷", command: "cmd", types: ["all"] },
+      ...OPERATORS,
       {
         handler: "\\pm",
         label: "±",
@@ -962,12 +1088,25 @@ export const TAB_BUTTONS = [
         label: <CustomImage src={Group999} role="presentation" />,
         types: ["all"],
         command: "write"
+      },
+      {
+        handler: "\\pi",
+        label: "π",
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "e",
+        label: "e",
+        types: ["all"],
+        command: "cmd"
       }
     ]
   },
   {
     label: "Kg",
     key: "UNIT",
+    name: "Units",
     buttons: [
       ...UNITS_SI,
       ...UNITS_US,
@@ -981,6 +1120,7 @@ export const TAB_BUTTONS = [
   },
   {
     label: <CustomImage src={Grupo6135} {...tabIconSize} role="presentation" />,
+    name: "Symbols",
     key: "SYMBOLS",
     buttons: [
       {
@@ -1131,6 +1271,7 @@ export const TAB_BUTTONS = [
   },
   {
     label: <CustomImage src={Grupo6136} {...tabIconSize} role="presentation" />,
+    name: "Arrows",
     key: "ARROW",
     buttons: [
       {
@@ -1159,7 +1300,7 @@ export const TAB_BUTTONS = [
       },
       {
         handler: "\\longleftrightarrow",
-        label: "←→",
+        label: <CustomImage src={Group2738} width={24} height={20} role="presentation" />,
         types: ["all"],
         command: "write"
       },
@@ -1167,7 +1308,7 @@ export const TAB_BUTTONS = [
         handler: "\\rightleftharpoons",
         label: "⇋",
         types: ["all", "chemistry"],
-        command: "write"
+        command: "cmd"
       },
       {
         handler: "\\lceil",
@@ -1224,6 +1365,7 @@ export const TAB_BUTTONS = [
   },
   {
     label: <CustomImage src={Grupo6137} {...tabIconSize} role="presentation" />,
+    name: "Greek",
     key: "GREEK",
     buttons: [
       {
@@ -1551,6 +1693,7 @@ export const TAB_BUTTONS = [
   },
   {
     label: <CustomImage src={Grupo6138} {...tabIconSize} role="presentation" />,
+    name: "Matrices",
     key: "MATRIX",
     buttons: [
       {
@@ -1582,6 +1725,12 @@ export const TAB_BUTTONS = [
         name: "tripleMatrix"
       },
       {
+        handler: "\\begin{vmatrix}{}&{}\\\\{}&{}\\end{vmatrix}",
+        label: <CustomImage src={Group1015} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
         handler: "Shift-Spacebar",
         label: <CustomImage src={Group1006} role="presentation" />,
         types: ["all"],
@@ -1599,6 +1748,7 @@ export const TAB_BUTTONS = [
   },
   {
     label: <CustomImage src={Grupo6140} {...tabIconSize} role="presentation" />,
+    name: "Decorations",
     key: "DECORATIONS",
     buttons: [
       {
@@ -1679,6 +1829,7 @@ export const TAB_BUTTONS = [
   },
   {
     label: <CustomImage src={Grupo6141} {...tabIconSize} role="presentation" />,
+    name: "Big Operators",
     key: "BIG_OPERATOR",
     buttons: [
       {
@@ -1730,10 +1881,10 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
-        handler: "\\not\\subset",
+        handler: "\\nsubset",
         label: "⊄",
         types: ["all", "sets"],
-        command: "write"
+        command: "cmd"
       },
       {
         handler: "\\union",
@@ -1775,6 +1926,7 @@ export const TAB_BUTTONS = [
   },
   {
     label: <CustomImage src={Grupo6142} {...tabIconSize} role="presentation" />,
+    name: "Calculus",
     key: "CALCULUS",
     buttons: [
       {
@@ -1814,16 +1966,32 @@ export const TAB_BUTTONS = [
         command: "write"
       },
       {
-        handler: "\\overset{}^{H}",
+        handler: "\\overset{H}{}",
         label: <CustomImage src={Group1014} role="presentation" />,
         types: ["all", "chemistry"],
         command: "write"
       },
       {
-        handler: "\\log", // handler: "\\iota"
+        handler: "\\log\\left({}\\right)", // handler: "\\iota"
         label: "log",
         types: ["all"],
-        command: "cmd"
+        command: "write"
+      },
+      {
+        handler: "\\log_{}\\left({}\\right)", // handler: "\\iota"
+        label: (
+          <span role="presentation">
+            log<sub>x</sub>
+          </span>
+        ),
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\ln\\left({}\\right)",
+        label: "In",
+        types: ["all"],
+        command: "write"
       },
       {
         handler: "\\sin",
@@ -1882,18 +2050,6 @@ export const TAB_BUTTONS = [
       {
         handler: "\\csc",
         label: "csc",
-        types: ["all"],
-        command: "cmd"
-      },
-      {
-        handler: "\\pi",
-        label: "π",
-        types: ["all"],
-        command: "cmd"
-      },
-      {
-        handler: "e",
-        label: "e",
         types: ["all"],
         command: "cmd"
       }

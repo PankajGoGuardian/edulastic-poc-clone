@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import chunk from "lodash/chunk";
 import cloneDeep from "lodash/cloneDeep";
-import { white, darkGrey } from "@edulastic/colors";
+import { white, darkGrey, themeColor } from "@edulastic/colors";
 
 const limitRow = 3;
 const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
@@ -54,27 +54,29 @@ const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
   return (
     <Wrapper>
       <PrevButton onClick={onClickPrev} hidden={current <= 0} />
-      {currentBoard.map((row, rowIndex) => (
-        <Row key={rowIndex} data-cy={`button-row-${rowIndex}`}>
-          {row.map(({ label, handler, command = "cmd" }, i) => {
-            let fontRate = 1;
-            if (typeof label === "string" && label.length > 4) {
-              fontRate = 4.5 / label.length;
-            }
+      <div data-cy="virtual-keyboard-buttons">
+        {currentBoard.map((row, rowIndex) => (
+          <Row key={rowIndex} data-cy={`button-row-${rowIndex}`}>
+            {row.map(({ label, handler, command = "cmd" }, i) => {
+              let fontRate = 1;
+              if (typeof label === "string" && label.length > 4) {
+                fontRate = 4.5 / label.length;
+              }
 
-            return (
-              <Button
-                key={i}
-                fontSizeRate={fontRate}
-                onClick={handleClick(handler, command)}
-                data-cy={`virtual-keyboard-${handler}`}
-              >
-                <Label>{label}</Label>
-              </Button>
-            );
-          })}
-        </Row>
-      ))}
+              return (
+                <Button
+                  key={i}
+                  fontSizeRate={fontRate}
+                  onClick={handleClick(handler, command)}
+                  data-cy={`virtual-keyboard-${handler}`}
+                >
+                  <Label>{label}</Label>
+                </Button>
+              );
+            })}
+          </Row>
+        ))}
+      </div>
       <NextButton onClick={onClickNext} hidden={boards.length <= 0 || current >= boards.length - 1} />
     </Wrapper>
   );
@@ -93,7 +95,7 @@ MainKeyboard.defaultProps = {
 export default MainKeyboard;
 
 const Wrapper = styled.div`
-  padding: 10px;
+  padding: 16px 24px;
   display: flex;
   flex-wrap: wrap;
   position: relative;
@@ -102,7 +104,7 @@ const Wrapper = styled.div`
 
 const PrevNext = styled.div`
   top: 0px;
-  width: 10px;
+  width: 22px;
   height: 100%;
   background: transparent;
   position: absolute;
@@ -111,8 +113,9 @@ const PrevNext = styled.div`
   &::after {
     content: "";
     position: absolute;
-    border: 6px solid;
-    top: calc(50% - 6px);
+    border: 12px solid;
+    top: 50%;
+    transform: translateY(-50%);
     border-color: transparent;
   }
 `;
@@ -120,16 +123,26 @@ const PrevNext = styled.div`
 const PrevButton = styled(PrevNext)`
   left: 0px;
   &::after {
-    left: -4px;
-    border-right-color: #a3a0a0;
+    left: -7px;
+    border-right-color: ${darkGrey};
+  }
+  &:hover {
+    &::after {
+      border-right-color: ${themeColor};
+    }
   }
 `;
 
 const NextButton = styled(PrevNext)`
   right: 0px;
   &::after {
-    right: -4px;
+    right: -7px;
     border-left-color: ${darkGrey};
+  }
+  &:hover {
+    &::after {
+      border-left-color: ${themeColor};
+    }
   }
 `;
 

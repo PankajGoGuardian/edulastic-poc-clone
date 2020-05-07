@@ -1027,8 +1027,8 @@ export const KEYBOARD_BUTTONS = [
 ];
 
 const tabIconSize = {
-  width: 25,
-  height: 25
+  width: 28,
+  height: 28
 };
 export const TAB_BUTTONS = [
   {

@@ -138,6 +138,6 @@ const MathKeyboardContainer = styled.div`
   background: ${props => props.theme.mathKeyboard.keyboardBgColor};
   /* padding: 10px; */
   min-width: 180px;
-  max-width: 370px;
+  max-width: 400px;
   width: max-content;
 `;

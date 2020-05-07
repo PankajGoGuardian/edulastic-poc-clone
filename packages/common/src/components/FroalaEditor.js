@@ -71,7 +71,7 @@ FroalaEditor.DefineIconTemplate("mathinput", `<span class="custom-toolbar-btn">M
 FroalaEditor.DefineIconTemplate("mathunit", `<span class="custom-toolbar-btn">Math w/ units</span>`);
 FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-btn">PN</span>`);
 
-const symbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
+const symbols = ["all"];
 const { defaultNumberPad } = math;
 
 FroalaEditor.VIDEO_PROVIDERS.push({
@@ -880,7 +880,7 @@ const CustomEditor = ({
         show={showMathModal}
         symbols={symbols}
         numberPad={defaultNumberPad}
-        showDropdown
+        showDropdown={false}
         showResposnse={false}
         value={currentLatex}
         onSave={saveMathModal}

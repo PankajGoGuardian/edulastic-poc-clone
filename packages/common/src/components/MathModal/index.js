@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Modal } from "antd";
+import { Modal as AntModal } from "antd";
+import styled from "styled-components";
 import { math } from "@edulastic/constants";
 import MathInput from "../MathInput";
 import KatexInput from "../KatexInput";
@@ -52,7 +53,7 @@ const MathModal = ({
       className="math-modal"
       maskClosable={false}
       onCancel={() => onClose()}
-      width={width || "785px"}
+      width={width || "405px"}
       wrapProps={{
         style: { overflow: "auto", display: show ? "block" : "none" }
       }}
@@ -113,3 +114,18 @@ MathModal.defaultProps = {
 };
 
 export default MathModal;
+
+const Modal = styled(AntModal)`
+  & .ant-modal-body {
+    min-height: 315px;
+    padding: 16px 4px 0px 4px;
+  }
+  & .ant-modal-footer {
+    padding: 12px 16px;
+  }
+
+  & .input__math {
+    margin: 0px 15px;
+    width: calc(100% - 30px);
+  }
+`;

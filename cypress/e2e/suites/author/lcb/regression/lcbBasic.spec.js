@@ -604,8 +604,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       queList.forEach(queNum => {
         it(` > update the score for :: ${queNum}`, () => {
           // below will update the score for 1 student all question and then revert back to original score
-          const { attempt } = statsMap[submittedStudentList[0]];
-          expressg.verifyUpdateScore(submittedStudentList[0], queNum, "0.5", attempt[queNum]);
+          const { attempt } = statsMap[submittedStudentList[2]];
+          expressg.verifyUpdateScore(submittedStudentList[2], queNum, "0.5", attempt[queNum]);
         });
       });
     });

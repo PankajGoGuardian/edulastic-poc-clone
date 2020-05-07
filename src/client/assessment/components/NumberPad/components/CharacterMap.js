@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import PropTypes from "prop-types";
-
+import { uniqBy } from "lodash";
 import { NumberPadContext } from "..";
 import { ButtonWrapper } from "../styled/ButtonWrapper";
 import NumberPadButton from "./NumberPadButton";
@@ -8,12 +8,11 @@ import { EmptyWrapper } from "../styled/EmptyWrapper";
 
 const CharacterMap = ({ onClick, buttonStyle }) => {
   const items = useContext(NumberPadContext);
-
   const isEmpty = label => label === "empty";
-
+  const filteredButtons = useMemo(() => uniqBy(items, "value"), [items]);
   return (
     <ButtonWrapper style={{ flexWrap: "wrap" }}>
-      {items.map((item, index) => (
+      {filteredButtons.map((item, index) => (
         <NumberPadButton
           buttonStyle={{ ...buttonStyle, position: "initial" }}
           onClick={() => onClick(item.value)}

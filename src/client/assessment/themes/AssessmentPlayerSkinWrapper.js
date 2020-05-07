@@ -37,14 +37,15 @@ const AssessmentPlayerSkinWrapper = ({
     tool,
     toolsOpenStatus
   } = restProps;
+
   useEffect(() => {
-    if (qType === questionType.HIGHLIGHT_IMAGE) {
-      const toolsStatusArray = toolsOpenStatus || tool;
-      const toolToggleFunc = toggleToolsOpenStatus || changeTool;
-      // 5 is Scratchpad mode
-      if (toolToggleFunc && !toolsStatusArray?.includes(5)) {
-        toolToggleFunc(5);
-      }
+    const toolsStatusArray = toolsOpenStatus || tool;
+    const toolToggleFunc = toggleToolsOpenStatus || changeTool;
+    // 5 is Scratchpad mode
+    if (qType === questionType.HIGHLIGHT_IMAGE && toolToggleFunc && !toolsStatusArray?.includes(5)) {
+      toolToggleFunc(5);
+    } else if (qType !== questionType.HIGHLIGHT_IMAGE && toolToggleFunc && toolsStatusArray?.includes(5)) {
+      toolToggleFunc(5);
     }
   }, [qType, qId]);
 

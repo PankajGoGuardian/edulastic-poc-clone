@@ -762,7 +762,8 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           itemGroups: [
             {
-              ...NewGroup
+              ...NewGroup,
+              _id: nanoid()
             }
           ],
           grades: [],

@@ -30,7 +30,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
-import { toggleScoreModeAction, enableScoreModeAction } from "../../ducks";
+import { toggleScoreModeAction, disableScoreModeAction } from "../../ducks";
 import ExpressGraderScoreColors from "../ExpressGraderScoreColors";
 
 /**
@@ -70,12 +70,12 @@ class ExpressGrader extends Component {
   }
 
   componentWillUnmount() {
-    const { clearEgAnswers, enableScoreMode } = this.props;
+    const { clearEgAnswers, disableScoreMode } = this.props;
     clearEgAnswers();
     /**
-     * by default, score mode should be enabled
+     * by default, score mode should be disabled
      */
-    enableScoreMode();
+    disableScoreMode();
   }
 
   static getDerivedStateFromProps(props) {
@@ -213,7 +213,7 @@ const enhance = compose(
       clearFeedbackResponse: clearFeedbackResponseAction,
       clearEgAnswers: clearAnswersAction,
       toggleScoreMode: toggleScoreModeAction,
-      enableScoreMode: enableScoreModeAction
+      disableScoreMode: disableScoreModeAction
     }
   )
 );

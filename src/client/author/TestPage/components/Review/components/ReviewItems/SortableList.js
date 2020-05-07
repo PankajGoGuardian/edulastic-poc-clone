@@ -7,12 +7,18 @@ import { InfoDiv, Text, Count, GroupCollapse } from "./styled";
 const { Panel } = Collapse;
 
 const rightContent = group => {
-  const totalItems = group.items.length;
+  const { deliverItemsCount, items } = group;
   return (
-    <InfoDiv>
-      <Text>TOTAL ITEMS</Text>
-      <Count>{totalItems}</Count>
-    </InfoDiv>
+    <>
+      <InfoDiv>
+        <Text>TOTAL ITEMS</Text>
+        <Count>{items.length}</Count>
+      </InfoDiv>
+      <InfoDiv>
+        <Text>Item to Deliver</Text>
+        <Count>{deliverItemsCount || items.length}</Count>
+      </InfoDiv>
+    </>
   );
 };
 
@@ -22,7 +28,7 @@ export default SortableContainer(({ items, isEditable, itemGroups, isPublishers,
       {isPublishers ? (
         <GroupCollapse defaultActiveKey={["0"]} expandIconPosition="right">
           {itemGroups.map((group, count) => (
-            <Panel header={`Group ${count + 1}: ${group.groupName}`} key={count} extra={rightContent(group)}>
+            <Panel header={group.groupName} key={count} extra={rightContent(group)}>
               {items.map(
                 (item, index) =>
                   item.main.groupId == group._id && (

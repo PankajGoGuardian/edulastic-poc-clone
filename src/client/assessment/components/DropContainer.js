@@ -54,7 +54,7 @@ const DropContainer = ({
         zIndex: 50,
         ...style,
         border: borderNone ? "none" : border,
-        background: "#f8f8f8",
+        background: isPlaylist ? "unset" : "#f8f8f8",
         borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border
       }}
     >

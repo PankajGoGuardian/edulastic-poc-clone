@@ -67,6 +67,19 @@ import { withNamespaces } from "react-i18next";
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 
+function getUrlFilter(filter) {
+  if (filter === "AUTHORED_BY_ME") {
+    return "by-me";
+  } else if (filter === "SHARED_WITH_ME") {
+    return "shared";
+  } else if (filter === "CO_AUTHOR") {
+    return "co-author";
+  } else if (filter === "ENTIRE_LIBRARY") {
+    return "all";
+  } else {
+    return "";
+  }
+}
 class TestList extends Component {
   static propTypes = {
     playlists: PropTypes.array.isRequired,
@@ -95,6 +108,21 @@ class TestList extends Component {
     blockStyle: "tile",
     isShowFilter: false
   };
+
+  getUrlToPush(page = undefined) {
+    const {
+      playListFilters,
+      match: { params = {} }
+    } = this.props;
+    const filterUrlFragment = getUrlFilter(playListFilters?.filter);
+    const pageFinal = parseInt(page || params?.page, 10) || 1;
+    let urlToPush = `/author/playlists`;
+    if (filterUrlFragment) {
+      urlToPush += `/filter/${filterUrlFragment}`;
+    }
+    urlToPush += `/page/${pageFinal}`;
+    return urlToPush;
+  }
 
   componentDidMount() {
     const {
@@ -129,10 +157,13 @@ class TestList extends Component {
     const pageNumber = params.page || page;
     const limitCount = params.limit || limit;
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
-    history.push(`/author/playlists?${queryParams}`);
+
+    const pageFinal = parseInt(params?.page, 10) || 1;
+    const urlToPush = this.getUrlToPush(pageFinal);
+    history.push(urlToPush);
 
     receivePublishers();
-    receivePlaylists({ page: 1, limit, search: searchFilters });
+    receivePlaylists({ page: pageFinal, limit, search: searchFilters });
     getAllTags({ type: "playlist" });
     receiveRecentPlayLists();
   }
@@ -209,10 +240,11 @@ class TestList extends Component {
   };
 
   handlePaginationChange = page => {
-    const { receivePlaylists, limit, history, TestListFilters } = this.props;
+    const { receivePlaylists, limit, history, playListFilters } = this.props;
 
-    receivePlaylists({ page, limit, search: TestListFilters });
-    history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
+    receivePlaylists({ page, limit, search: playListFilters });
+    const urlToPush = this.getUrlToPush(page);
+    history.push(urlToPush);
   };
 
   handleStyleChange = blockStyle => {

@@ -102,7 +102,9 @@ const Author = ({
   const themeToPass = themes.default;
 
   const isPrintPreview =
-    history.location.pathname.includes("printpreview") || history.location.pathname.includes("printAssessment") || history.location.pathname.includes("students-report-card");
+    history.location.pathname.includes("printpreview") ||
+    history.location.pathname.includes("printAssessment") ||
+    history.location.pathname.includes("students-report-card");
   const assessmentTabs = ["description", "addItems", "review", "settings", "worksheet", "groupItems"];
 
   return (
@@ -160,7 +162,7 @@ const Author = ({
                     />
                     <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
                     <Route path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
-                    
+
                     <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
                     <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                     <Route exact path={`${match.url}/printpreview/:assignmentId/:classId`} component={PrintPreview} />
@@ -199,6 +201,24 @@ const Author = ({
                     <Route
                       exact
                       path={`${match.url}/playlists/filter/:filterType`}
+                      render={props => (
+                        <Suspense fallback={<Progress />}>
+                          <PlayList {...props} />
+                        </Suspense>
+                      )}
+                    />
+                    <Route
+                      exact
+                      path={`${match.url}/playlists/filter/:filterType/page/:page`}
+                      render={props => (
+                        <Suspense fallback={<Progress />}>
+                          <PlayList {...props} />
+                        </Suspense>
+                      )}
+                    />
+                    <Route
+                      exact
+                      path={`${match.url}/playlists/page/:page`}
                       render={props => (
                         <Suspense fallback={<Progress />}>
                           <PlayList {...props} />
@@ -496,7 +516,11 @@ const Author = ({
                     <Route exact path="/author/content/tools" component={ExternalTools} />
                     <Route exact path="/author/import-test" component={ImportTest} />
                     <Route exact path="/author/import-content" component={ImportTest} />
-                    <Route exact path={`${match.url}/students-report-card/:assignmentId/:classId`} component={StudentsReportCard} />
+                    <Route
+                      exact
+                      path={`${match.url}/students-report-card/:assignmentId/:classId`}
+                      component={StudentsReportCard}
+                    />
                     <Route component={NotFound} />
                   </Switch>
                 </Suspense>

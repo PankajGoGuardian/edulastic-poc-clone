@@ -410,8 +410,9 @@ export const createStandardTextStyle = props => {
 };
 
 export const normalizeTouchEvent = e => {
+  e.preventDefault();
+  e.stopPropagation();
   if (e?.nativeEvent?.changedTouches?.length) {
-    e.preventDefault();
     e.clientX = e.nativeEvent.changedTouches[0].clientX;
     e.clientY = e.nativeEvent.changedTouches[0].clientY;
   }

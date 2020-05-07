@@ -112,7 +112,11 @@ const DrawingTools = ({ onChange, isTestMode, containerHeight }) => {
   const collapseMoreButtons = () => setExpandMore(false);
 
   return (
-    <>
+    /**
+     * wrapper div required
+     * @see https://snapwiz.atlassian.net/browse/EV-13648
+     */
+    <div>
       {btnsToShow.map((button, i) => (
         <Tooltip placement="right" title={button.label} key={button.mode}>
           <StyledButton
@@ -146,7 +150,7 @@ const DrawingTools = ({ onChange, isTestMode, containerHeight }) => {
             ))}
         </ExpandWrapper>
       )}
-    </>
+    </div>
   );
 };
 

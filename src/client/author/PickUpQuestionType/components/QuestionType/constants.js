@@ -2384,7 +2384,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         numberPad: defaultNumberPad,
         metadata: {},
         isMath: true,
-        symbols: ["basic", "qwerty"],
+        symbols: ["intermediate"],
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType

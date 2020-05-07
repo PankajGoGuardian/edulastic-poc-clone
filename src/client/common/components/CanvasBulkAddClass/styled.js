@@ -34,19 +34,22 @@ export const HeadingWrapper = styled.div`
 
 export const ButtonContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
 `;
 
 export const Button = styled.span`
   display: inline-block;
-  padding: 6px 15px;
-  color: ${white};
-  background: ${themeColor};
+  padding: 6px 45px;
+  color: ${props => (props.back ? themeColor : white)};
+  background: ${props => (props.back ? white : themeColor)};
+  border: 1px solid ${themeColor};
   border-radius: 5px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
+  align-items: center;
+  display: flex;
 `;
 
 export const StyledModal = styled(Modal)`

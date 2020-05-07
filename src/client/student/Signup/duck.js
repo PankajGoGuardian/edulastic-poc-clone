@@ -113,6 +113,7 @@ export const setPreviousAutoSuggestSchools = createAction(SET_PREVIOUS_AUTO_SUGG
 
 export const bulkSyncCanvasClassAction = createAction(BULK_SYNC_CANVAS_CLASS);
 export const setBulkSyncCanvasStateAction = createAction(SET_BULK_SYNC_CANVAS_STATUS);
+export const joinSchoolFailedAction = createAction(JOIN_SCHOOL_FAILED);
 
 // Reducers
 const initialState = {

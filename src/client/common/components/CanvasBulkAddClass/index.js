@@ -19,8 +19,8 @@ import { getDictCurriculumsAction } from "../../../author/src/actions/dictionari
 import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
 import { receiveSearchCourseAction } from "../../../author/Courses/ducks";
 import { getThumbnail } from "../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade";
-import { bulkSyncCanvasClassAction } from "../../../student/Signup/duck";
-import { signupSuccessAction } from "../../../student/Login/ducks";
+import { bulkSyncCanvasClassAction, joinSchoolFailedAction } from "../../../student/Signup/duck";
+import { signupSuccessAction, setSignUpStatusAction } from "../../../student/Login/ducks";
 
 const CanvasBulkAddClass = ({
   receiveSearchCourse,
@@ -36,7 +36,9 @@ const CanvasBulkAddClass = ({
   courseList,
   isFetchingCanvasData,
   signupSuccess,
-  institutionId
+  institutionId,
+  setSignUpStatus,
+  joinSchoolFailed
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -149,6 +151,11 @@ const CanvasBulkAddClass = ({
     const { currentSignUpState, ...rest } = user;
     setShowModal(false);
     signupSuccess(rest);
+  };
+
+  const handleGoBack = () => {
+    setSignUpStatus(1);
+    joinSchoolFailed({});
   };
 
   const activeCourseList = useMemo(() => courseList.filter(c => +c.active === 1), [courseList]);
@@ -301,6 +308,9 @@ const CanvasBulkAddClass = ({
         loading={isFetchingCanvasData || isLoading}
       />
       <ButtonContainer>
+        <Button onClick={handleGoBack} back>
+          Back
+        </Button>
         <Button onClick={handleFinish}>Finish</Button>
       </ButtonContainer>
       {showModal && (
@@ -333,6 +343,8 @@ export default connect(
     getDictCurriculums: getDictCurriculumsAction,
     receiveSearchCourse: receiveSearchCourseAction,
     bulkSyncCanvasClass: bulkSyncCanvasClassAction,
-    signupSuccess: signupSuccessAction
+    signupSuccess: signupSuccessAction,
+    setSignUpStatus: setSignUpStatusAction,
+    joinSchoolFailed: joinSchoolFailedAction
   }
 )(CanvasBulkAddClass);

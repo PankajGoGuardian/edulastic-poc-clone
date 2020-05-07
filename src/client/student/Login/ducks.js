@@ -84,6 +84,7 @@ export const UPDATE_DEFAULT_SETTINGS_SUCCESS = "[user] update default settings s
 export const UPDATE_DEFAULT_SETTINGS_FAILED = "[user] update default settings failed";
 
 export const SET_SETTINGS_SA_SCHOOL = "[user] set sa settings school";
+export const SET_SIGNUP_STATUS = "[user] set signup status";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -124,6 +125,7 @@ export const getCurrentDistrictUsersAction = createAction(GET_CURRENT_DISTRICT_U
 export const getCurrentDistrictUsersSuccessAction = createAction(GET_CURRENT_DISTRICT_USERS_SUCCESS);
 export const changeChildAction = createAction(CHANGE_CHILD);
 export const updateDefaultSettingsAction = createAction(UPDATE_DEFAULT_SETTINGS_REQUEST);
+export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
 
 const initialState = {
   isAuthenticated: false,
@@ -328,6 +330,9 @@ export default createReducer(initialState, {
   },
   [UPDATE_DEFAULT_SETTINGS_FAILED]: state => {
     state.updatingDefaultSettings = false;
+  },
+  [SET_SIGNUP_STATUS]: (state, { payload }) => {
+    state.signupStatus = payload;
   }
 });
 

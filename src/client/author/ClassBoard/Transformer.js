@@ -310,7 +310,7 @@ export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId
     testItem.itemLevelScoring
   ) {
     //MULTIPART
-    return userResponse ? "TEI" : "";
+    return "TEI";
   } else if (extractFunctions[qType]) {
     return extractFunctions[qType](question, userResponse);
   } else {

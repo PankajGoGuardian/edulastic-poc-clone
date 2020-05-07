@@ -1093,19 +1093,28 @@ function* receiveTestByIdSaga({ payload }) {
 
     const isAdmin = userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN;
     const testTypeDefault = testType || (isAdmin ? COMMON : ASSESSMENT);
-
+    let updateForTimedAssignment = { timedAssignment: entity?.timedAssignment };
+    if (entity?.timedAssignment) {
+      updateForTimedAssignment = {
+        ...updateForTimedAssignment,
+        allowedTime: entity?.allowedTime || 10 * 60 * 1000,
+        pauseAllowed: entity?.pauseAllowed || false
+      };
+    }
     yield put(
       updateAssingnmentSettingsAction({
         startDate: moment(),
         class: [],
         testType: testTypeDefault,
         endDate: setTime(userRole),
+
         openPolicy:
           userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
             ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
             : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
         passwordPolicy: entity.passwordPolicy,
         passwordExpireIn: entity.passwordExpireIn,
+        ...updateForTimedAssignment,
         assignmentPassword: entity.assignmentPassword
       })
     );

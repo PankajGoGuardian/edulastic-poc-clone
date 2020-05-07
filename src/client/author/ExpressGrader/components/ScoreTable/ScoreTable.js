@@ -108,7 +108,7 @@ class ScoreTable extends Component {
               const percent = maxScore === 0 ? "-" : `${((100 * score) / maxScore).toFixed(0)}%`;
               return (
                 <StyledDivMid style={{ color: "#000", textAlign: "left" }}>
-                  <StyledText color={greenThird}>{percent}</StyledText> ({round(score, 1)}/{maxScore})
+                  <StyledText color={greenThird}>{percent}</StyledText>&nbsp; ({round(score, 1)}/{maxScore})
                 </StyledDivMid>
               );
             },

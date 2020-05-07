@@ -38,7 +38,7 @@ class QuestionScore extends Component {
               <StyledText>{graded || skipped ? round(studentScore, 2) : "-"}</StyledText>
             ) : (
               <StyledText
-                title={stripHtml(responseToDisplay) || "-"}
+                title={stripHtml(responseToDisplay || "-")}
                 dangerouslySetInnerHTML={{ __html: responseToDisplay || "-" }}
               />
             )}

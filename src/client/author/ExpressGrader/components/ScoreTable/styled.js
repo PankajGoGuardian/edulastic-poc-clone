@@ -55,12 +55,16 @@ export const TableData = styled(Table)`
     min-width: 105px;
   }
   .ant-table-tbody > tr > td {
+    height: 40px;
     background-color: ${white};
   }
   .ant-table-tbody > tr > td > div {
     min-height: 35px;
     padding-top: 7px;
     padding-bottom: 7px;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
   .ant-table-tbody > tr {
     &:last-child {

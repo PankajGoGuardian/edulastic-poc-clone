@@ -190,7 +190,7 @@ const AssessmentContainer = ({
         case questionType.CLOZE_TEXT:
         case questionType.CLASSIFICATION:
         case questionType.CLOZE_IMAGE_TEXT: {
-          return answers.every((d, i) => {
+          return (answers || []).every((d, i) => {
             if (typeof d === "string") {
               return isEmpty(d);
             } else if (Array.isArray(d)) {

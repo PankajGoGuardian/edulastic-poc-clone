@@ -26,6 +26,7 @@ const UnansweredPopup = props => {
       footer={footer}
       closable={false}
       maskClosable={false}
+      zIndex={1050}
     >
       <div className="container">
         <p>

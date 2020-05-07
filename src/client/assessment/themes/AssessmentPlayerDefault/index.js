@@ -277,7 +277,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   componentDidUpdate(previousProps) {
     const { currentItem } = this.props;
-    if (currentItem !== previousProps.currentItem) {
+    if (currentItem !== previousProps.currentItem && this.scrollContainer.current) {
       this.scrollContainer.current.scrollTop = 0;
     }
   }
@@ -557,6 +557,7 @@ class AssessmentPlayerDefault extends React.Component {
                 responsiveWidth={responsiveWidth}
                 zoomLevel={zoomLevel}
                 hasCollapseButtons={hasCollapseButtons}
+                className="scrollable-main-wrapper"
               >
                 {testItemState === "" && (
                   <TestItemPreview

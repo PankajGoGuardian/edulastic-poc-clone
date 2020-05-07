@@ -58,7 +58,13 @@ const PlayerContentArea = ({
         {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
             Also, will use ScrollContext for auto-scroll on mobile */}
         <ScrollContext.Provider value={{ getScrollElement: () => scrollContainerRef.current }}>
-          <MainContent skin zoomed={isZoomApplied} zoomLevel={zoomLevel} responsiveWidth={responsiveWidth}>
+          <MainContent
+            skin
+            zoomed={isZoomApplied}
+            zoomLevel={zoomLevel}
+            responsiveWidth={responsiveWidth}
+            className="scrollable-main-wrapper"
+          >
             {testItemState === "" && (
               <TestItemPreview
                 crossAction={crossAction}

@@ -52,7 +52,7 @@ const Magnifier = ({
         target: document.getElementsByClassName("scrollbar-container")[0]
       });
       handleScroll({
-        target: document.getElementsByClassName("test-item-preview")[0]
+        target: document.getElementsByClassName("scrollable-main-wrapper")[0]
       });
       handleDragElements();
       handleHints();
@@ -73,7 +73,7 @@ const Magnifier = ({
   });
 
   useEffect(() => {
-    const container = document.getElementsByClassName("test-item-preview")[0];
+    const container = document.getElementsByClassName("scrollable-main-wrapper")[0];
     container?.addEventListener("scroll", handleScroll);
     const sideBar = document.getElementsByClassName("scrollbar-container")[0];
     sideBar?.addEventListener("scroll", handleSidebarScroll);
@@ -258,7 +258,7 @@ const Magnifier = ({
   };
 
   const handleScroll = e =>
-    document.getElementsByClassName("test-item-preview")[1]?.scrollTo(0, scale * e.target.scrollTop);
+    document.getElementsByClassName("scrollable-main-wrapper")[1]?.scrollTo(0, scale * e.target.scrollTop);
   const handleSidebarScroll = e =>
     document.getElementsByClassName("scrollbar-container")[1]?.scrollTo(0, e.target.scrollTop);
   const scrollQuestionLIst = e =>

@@ -18,7 +18,7 @@ export const REQUEST_SCRATCH_PAD_REQUEST = "[scratchpad] load request";
 export const REQUEST_SCRATCH_PAD_SUCCESS = "[scratchpad] load success";
 export const REQUEST_SCRATCH_PAD_ERROR = "[scratchpad] load error";
 export const TOGGLE_SCORE_MODE = "[expressgrader] toggle score/response";
-export const ENABLE_SCORE_MODE = "[expressgrader] enable score mode";
+export const DISABLE_SCORE_MODE = "[expressgrader] enable score mode";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -29,7 +29,7 @@ export const requestScratchPadAction = createAction(REQUEST_SCRATCH_PAD_REQUEST)
 export const scratchPadLoadSuccessAction = createAction(REQUEST_SCRATCH_PAD_SUCCESS);
 export const scratchPadLoadErrorAction = createAction(REQUEST_SCRATCH_PAD_ERROR);
 export const toggleScoreModeAction = createAction(TOGGLE_SCORE_MODE);
-export const enableScoreModeAction = createAction(ENABLE_SCORE_MODE);
+export const disableScoreModeAction = createAction(DISABLE_SCORE_MODE);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -57,7 +57,7 @@ export const getScratchpadLoadingSelector = createSelector(
 const initialState = {
   teacherEditedScore: {},
   scratchPadLoading: false,
-  scoreMode: true
+  scoreMode: false
 };
 
 export const expressGraderReducer = createReducer(initialState, {
@@ -79,8 +79,8 @@ export const expressGraderReducer = createReducer(initialState, {
   [TOGGLE_SCORE_MODE]: state => {
     state.scoreMode = !state.scoreMode;
   },
-  [ENABLE_SCORE_MODE]: state => {
-    state.scoreMode = true;
+  [DISABLE_SCORE_MODE]: state => {
+    state.scoreMode = false;
   }
 });
 

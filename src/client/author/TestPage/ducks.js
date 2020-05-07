@@ -1105,7 +1105,8 @@ function* receiveTestByIdSaga({ payload }) {
             ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
             : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
         passwordPolicy: entity.passwordPolicy,
-        passwordExpireIn: entity.passwordExpireIn
+        passwordExpireIn: entity.passwordExpireIn,
+        assignmentPassword: entity.assignmentPassword
       })
     );
   } catch (err) {

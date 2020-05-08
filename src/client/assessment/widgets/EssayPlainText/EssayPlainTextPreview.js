@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get, isString } from "lodash";
@@ -18,7 +17,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
 
 import { Toolbar } from "../../styled/Toolbar";
-import { Item } from "../../styled/Item";
+import { Item, TextAreaAnswer } from "../../styled/Item";
 
 import { ToolbarItem } from "./styled/ToolbarItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -176,7 +175,7 @@ const EssayPlainTextPreview = ({
               </FlexContainer>
             </Toolbar>
           )}
-          <Input.TextArea
+          <TextAreaAnswer
             ref={ref => {
               node = ref;
             }}
@@ -202,6 +201,7 @@ const EssayPlainTextPreview = ({
             placeholder={item.placeholder || ""}
             disabled={reviewTab}
             {...getSpellCheckAttributes(item.spellcheck)}
+           
           />
 
           {!reviewTab && item.showWordCount && (

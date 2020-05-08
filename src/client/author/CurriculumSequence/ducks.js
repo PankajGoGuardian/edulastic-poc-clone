@@ -307,7 +307,7 @@ function* putCurriculumSequence({ payload }) {
       "collectionName"
     ]);
     dataToSend.modules = dataToSend.modules.map(mod => {
-      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
+      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments", "testType", "status"]));
       return mod;
     });
     const response = yield curriculumSequencesApi.updateCurriculumSequence(id, dataToSend);

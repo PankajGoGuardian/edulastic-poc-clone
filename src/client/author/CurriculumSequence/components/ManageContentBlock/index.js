@@ -247,6 +247,8 @@ const ManageContentBlock = props => {
               summary={test?.summary}
               isAdded={testsInPlaylist.includes(test?._id)}
               previewTest={() => showPreviewModal(test._id)}
+              status={test?.status}
+              testType={test?.testType}
             />
           );
         });

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Dropdown, Icon, Button, Avatar } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
+import { get } from "lodash";
 import { lightBlue, white, themeColor, testTypeColor } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
 import { IconVisualization, IconTrash, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
@@ -71,7 +72,8 @@ class AssignmentDragItem extends Component {
       userRole,
       urlHasUseThis
     } = this.props;
-
+    const assignmentTestType = get(moduleData, "assignments.[0].testType", "");
+    const _testType = get(moduleData, "testType", "");
     return connectDragSource(
       <div className="item" style={{ width: "100%" }}>
         <Assignment
@@ -113,7 +115,7 @@ class AssignmentDragItem extends Component {
                     </ModuleDataName>
 
                     <CustomIcon marginLeft={10} marginRight={5}>
-                      {urlHasUseThis && (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
+                      {urlHasUseThis && (!isAssigned || assignmentTestType === "practice") ? (
                         <Avatar size={18} style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}>
                           {" P "}
                         </Avatar>
@@ -121,14 +123,12 @@ class AssignmentDragItem extends Component {
                         <Avatar
                           size={18}
                           style={{
-                            backgroundColor:
-                              testTypeColor[(moduleData.assignments?.[0]?.testType)] ||
-                              testTypeColor[moduleData.testType],
+                            backgroundColor: testTypeColor[assignmentTestType] || testTypeColor[_testType],
                             fontSize: "13px"
                           }}
                         >
-                          {moduleData.assignments?.[0]?.testType[0].toUpperCase() ||
-                            moduleData.testType[0].toUpperCase() ||
+                          {get(assignmentTestType, "[0]", "").toUpperCase() ||
+                            get(_testType, "[0]", "").toUpperCase() ||
                             null}
                         </Avatar>
                       )}

@@ -179,6 +179,7 @@ const Settings = ({
     overRideSettings(attr, value);
   };
 
+  const scoringType = assignmentSettings.scoringType || tempTestSettings.scoringType || evalTypes.ITEM_LEVEL_EVALUATION;
   const {
     markAsDone = tempTestSettings.markAsDone,
     releaseScore = tempTestSettings.releaseScore,
@@ -189,7 +190,6 @@ const Settings = ({
     calcType = tempTestSettings.calcType,
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
-    scoringType = assignmentSettings.scoringType || evalTypes.ITEM_LEVEL_EVALUATION,
     passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
     maxAttempts = tempTestSettings.maxAttempts,
@@ -204,7 +204,6 @@ const Settings = ({
     enableScratchpad = tempTestSettings.enableScratchpad
   } = assignmentSettings;
   const playerSkinType = assignmentSettings.playerSkinType || testSettings.playerSkinType;
-
   const accessiblilityData = {
     showMagnifier,
     enableScratchpad

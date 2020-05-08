@@ -7,33 +7,45 @@ class MathFillInTheBlanksPage extends MathFractionPage {
   }
 
   // template
-  getKeyboard = () => cy.get(".keyboard");
+  getKeyboard = () => cy.get('[class^="MathKeyboard"]').first();
 
   gettemplate = () => cy.get("[answer-math-input-field] [mathquill-block-id]");
+
+  getMathDropDownKeyBoard = () => cy.get('[data-cy="math-keyboard-dropdown"]').first();
+
+  getInterMediateKeyBoardInDropDown = () => cy.get('[data-cy="math-keyboard-dropdown-list-1"]');
+
+  getBasicKeyBoardInDropDown = () => cy.get('[data-cy="math-keyboard-dropdown-list-0"]');
 
   getDeleteAnswerMethod = () =>
     this.getMathFormulaAnswers()
       .last()
       .find('[data-cy="delete-answer-method"]');
 
-  getMathquillBlockId = () => this.getAnswerMathInputField().find("[mathquill-block-id]");
+  getMathquillBlockId = () =>
+    cy
+      .get('[data-cy="answer-math-input-field"]')
+      .first()
+      .find(".mq-root-block");
 
   checkCorrectAnswerWithResponse = (expectedValues, preview, inputLength, isCorrect, clearedResponse = false) => {
     preview.header.preview();
     preview.getClear().click();
-    this.getAnswerMathTextArea().then(inputElements => {
-      if (Array.isArray(expectedValues)) {
-        expectedValues.forEach((expectedValue, index) => {
-          if (!clearedResponse) {
-            cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
-          } else {
-            this.getAnswerMathTextArea().typeWithDelay(expectedValue);
-          }
-        });
-      } else {
-        cy.wrap(inputElements).typeWithDelay(expectedValues);
-      }
-    });
+
+    if (Array.isArray(expectedValues)) {
+      expectedValues.forEach((expectedValue, index) => {
+        if (!clearedResponse) {
+          this.getAnswerMathTextArea()
+            .eq(index)
+            .typeWithDelay(expectedValue);
+        } else {
+          this.getAnswerMathTextArea().typeWithDelay(expectedValue);
+        }
+      });
+    } else {
+      this.getAnswerMathTextArea().typeWithDelay(expectedValues);
+    }
+
     this.checkNoticeMessageScore(preview, isCorrect, this.checkAttr(isCorrect));
     preview.header.edit();
     //this.clearTemplateInput();
@@ -62,13 +74,13 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
 
-  getMathKeyboardResponse = () => cy.get('[data-cy="math-keyboard-response"]');
+  getMathKeyboardResponse = () => cy.get('[class^="KeyboardHeader__ResponseBtn"]');
 
   clearTemplateInput = () =>
     this.getMathquillBlockId().then(inputElements => {
       const { length } = inputElements[0].children;
       if (length > 0) {
-        this.getTemplateInput()
+        this.getAnswerInputMathTextarea()
           .movesCursorToEnd(length)
           .type("{backspace}".repeat(length || 1), { force: true });
       }
@@ -80,13 +92,22 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       .then(ele => {
         temp.forEach(val => {
           if (val == "r") {
+            this.getMathDropDownKeyBoard().click();
+            this.getBasicKeyBoardInDropDown();
             this.getMathKeyboardResponse().click({ force: true });
-          } else {
+          } else if (["/"].indexOf(val) >= 0) {
+            this.getMathDropDownKeyBoard().click();
+            this.getBasicKeyBoardInDropDown().click();
             this.getVirtualKeyBoardItem(val).click();
+          } else {
+            this.getAnswerInputMathTextarea()
+              .first()
+              .type(val, { force: true });
           }
         });
       });
   };
+
   setTemplateValue = (keyName, valueAfterEqualSign) => {
     this.clearTemplateInput();
     this.setResponseInput();
@@ -94,18 +115,18 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     this.setResponseInput();
     this.getVirtualKeyBoardItem(keyName).click();
   };
+
   setValueFill = (input, order = 1) => {
     const inputOrder = this.getOrder(order);
     this.clearAnswerValueInput(5);
     /* this.getMathFormulaAnswers()
       [inputOrder]().get('[data-cy="math-formula-answer"]') */
-    this.getAnswerValueMathInput().then(ele => {
-      input.forEach((val, key) => {
-        cy.wait(1000);
-        cy.wrap(ele)
-          .eq(key)
-          .type(val, { force: true });
-      });
+
+    input.forEach((val, key) => {
+      cy.wait(1000);
+      this.getAnswerValueMathInput()
+        .eq(key)
+        .type(val, { force: true });
     });
     // .find('textarea')
     // // .type("{rightarrow}".repeat(10), { force: true })
@@ -121,6 +142,7 @@ class MathFillInTheBlanksPage extends MathFractionPage {
     //   });
     // });
   };
+
   checkUncheckChecboxFill = (preview, input, expected, checkboxValues, isCorrectAnswer, temp) => {
     checkboxValues.forEach((checkboxValue, index) => {
       this.clearTemplateInput();
@@ -130,11 +152,12 @@ class MathFillInTheBlanksPage extends MathFractionPage {
       this.checkCorrectAnswerWithResponse(expected, preview, input.length, isCorrectAnswer[index]);
     });
   };
+
   clearAnswerValueInput = length => {
     this.getAnswerValueMathInput().then(elements => {
       var len = elements.length;
       for (let i = 0; i < len; i++)
-        cy.wrap(elements)
+        this.getAnswerValueMathInput()
           .eq(i) /* .type('',{force:true}) */
           .type("{leftarrow}{backspace}{del}".repeat(length || 1), { force: true });
     });

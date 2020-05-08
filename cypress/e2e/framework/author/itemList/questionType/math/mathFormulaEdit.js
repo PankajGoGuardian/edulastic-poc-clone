@@ -151,9 +151,10 @@ class MathFormulaEdit {
 
   getTemplateInput = () =>
     cy
-      .get('[data-cy="template-container"]')
+      .get('[data-cy="answer-math-input-field"]')
+      .first()
+      .click()
       .wait(500)
-      .next()
       .find("textarea");
 
   getTemplateOutput = () =>
@@ -162,12 +163,7 @@ class MathFormulaEdit {
       .next()
       .get(".mq-root-block > [mathquill-command-id]");
 
-  getVirtualKeyBoard = () =>
-    cy
-      .get('[data-cy="template-container"]')
-      .next()
-      .get(".input__absolute__keyboard")
-      .get(".keyboard");
+  getVirtualKeyBoard = () => cy.get('[class^="MathKeyboard"]').first();
 
   removeLastValue = () =>
     cy
@@ -222,7 +218,7 @@ class MathFormulaEdit {
 
   getAnswerMathInputStyleasd = () => cy.get('[data-cy="answer-math-input-style"]');
 
-  getAnswerMathTextArea = () => this.getAnswerMathInputField().find("textarea");
+  getAnswerMathTextArea = () => this.getAnswerMathInputStyleasd().find("textarea");
 
   checkCorrectAnswer = (expectedValue, preview, inputLength, isCorrect, score = false, scoreValuse = "1/1") => {
     preview.header.preview();
@@ -272,6 +268,8 @@ class MathFormulaEdit {
   getAnswerAriaLabel = () => cy.get('[data-cy="answer-aria-label"]');
 
   getAnswerSignificantDecimalPlaces = () => cy.get('[data-cy="answer-allow-significant-decimal-places"]');
+
+  getAnswerSignificantDecimalPlacesTextBox = () => cy.get('[data-cy="answer-significant-decimal-places"]');
 
   getAnswerIgnoreTextCheckox = () => cy.get('[data-cy="answer-ignore-text-checkbox"]');
 
@@ -357,10 +355,12 @@ class MathFormulaEdit {
   getAnswerIgnoreCoefficientOfOne = () => cy.get('[data-cy="answer-ignore-coefficient-of-one"]');
 
   getAnswerInverseResult = () => cy.get('[data-cy="answer-inverse-result"]');
+
   getAnswerTolerancecheckbox = () => cy.get('[data-cy="answer-allow-tolerance"]');
+
   getAnswerTolerance = () => cy.get('[data-cy="answer-tolerance"]');
 
-  getAnswerFieldDropdown = () => cy.get('[data-cy="answer-field-dropdown"]');
+  getEulerNumber = () => (getAnswerFieldDropdown = () => cy.get('[data-cy="answer-field-dropdown"]'));
 
   getAnswerAllowedUnits = () => cy.get('[data-cy="answer-allowed-units"]');
 
@@ -424,7 +424,7 @@ class MathFormulaEdit {
     const inputOrder = this.getOrder(order);
     this.getMathFormulaAnswers()
       [inputOrder]()
-      .find(`[data-cy="answer-input-math-textarea"]`)
+      .find(`[data-cy="answer-math-input-field"]`)
       .type("a", { force: true })
       .type("{backspace}", { force: true })
       .then(element => {
@@ -552,7 +552,7 @@ class MathFormulaEdit {
         return this.getComposeQuestionTextBox().first();
       });
 
-  getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`button[data-cy="virtual-keyboard-${value}"]`);
+  getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`[data-cy="virtual-keyboard-${value}"]`);
 
   getVirtualKeyBoardResponse = () => this.getVirtualKeyBoard().find("span.response-embed");
 

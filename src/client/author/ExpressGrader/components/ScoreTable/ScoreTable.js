@@ -192,8 +192,8 @@ class ScoreTable extends Component {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength, showColumnsCount);
     }
     const scrollX = columnsLength * 100 + 300;
-    const scrollY = window.innerHeight - 210;
-    const showY = columnData.length * 41 > scrollY;
+    const scrollY = window.innerHeight - 250;
+    const showY = columnData.length * 43 > scrollY; // 40 sice of each cell in table + 3 overlapped padding
 
     return (
       <StyledCard bordered={false} marginBottom="0px">

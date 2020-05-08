@@ -9,5 +9,6 @@ export const Color = styled.div`
 export const Label = styled.div`
   font-size: 11px;
   text-transform: uppercase;
-  margin: 0 12px 0 8px;
+  margin: 0 10px 0 6px;
+  white-space: nowrap;
 `;

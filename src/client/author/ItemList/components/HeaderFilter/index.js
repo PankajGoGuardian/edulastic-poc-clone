@@ -183,6 +183,7 @@ export const FiltersWrapper = styled.div`
   flex-wrap: wrap;
   .ant-tag {
     ${TagsStyle};
+    margin-top: 7px;
   }
 `;
 

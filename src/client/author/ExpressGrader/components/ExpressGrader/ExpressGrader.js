@@ -146,7 +146,7 @@ class ExpressGrader extends Component {
             testActivityId={testActivityId}
             testActivity={testActivity}
           />
-          <MainContentWrapper>
+          <MainContentWrapper padding="20px 30px 0px 30px">
             <WithResources
               resources={[`${AppConfig.katexPath}/katex.min.css`, `${AppConfig.katexPath}/katex.min.js`]}
               fallBack={<span />}

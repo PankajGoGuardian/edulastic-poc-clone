@@ -3,7 +3,7 @@ import { mediumDesktopExactWidth, extraDesktopWidthMax, desktopWidth, mainBgColo
 
 const MainContentWrapper = styled.div`
   background: ${mainBgColor};
-  padding: ${props => props.padding || "20px 30px 0 30px"};
+  padding: ${props => props.padding || "20px 30px"};
   width: ${props => props.width || "100%"};
   min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
@@ -14,7 +14,7 @@ const MainContentWrapper = styled.div`
     min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
   @media (max-width: ${desktopWidth}) {
-    padding: 20px 20px 0 20px;
+    padding: 20px;
   }
 `;
 

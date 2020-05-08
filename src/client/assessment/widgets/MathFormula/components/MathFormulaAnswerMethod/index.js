@@ -400,19 +400,18 @@ const MathFormulaAnswerMethod = ({
   const onClickRadioHandler = opt => () => {
     const newOptions = produce(options, draft => {
       const radioLabelOptions = methodOptionsGrouped.equivSymbolic["INTERPRET THE VALUES AS: "];
+      if (!draft[opt] && opt !== "automatic") {
+        draft[opt] = true;
+      } else {
+        delete draft[opt];
+      }
+
       Object.keys(draft).forEach(key => {
-        console.log(opt, key);
         if (radioLabelOptions.includes(key)) {
-          if (opt === "automatic" || key !== opt) {
+          if (key !== opt) {
             // remove all other radio options which were selected previously
-            // remove all radio options when option is automatic
             delete draft[key];
           }
-        } else if (!draft[opt] && opt !== "automatic") {
-          draft[opt] = true;
-        } else {
-          // remove option if it was selected previously
-          delete draft[opt];
         }
       });
     });

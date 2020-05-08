@@ -58,7 +58,7 @@ class mathEssayPage extends MathFractionPage {
     };
   }
 
-  getAddedAlternateAnswer = () => cy.get('[data-cy="styled-wrapped-component"] p');
+  getAddedAlternateAnswer = () => cy.get('[data-cy="styled-wrapped-component"]');
 
   getDeleteBtnByIndex = index => cy.get(`[data-cy="deleteprefix${index}"]`);
 
@@ -66,7 +66,13 @@ class mathEssayPage extends MathFractionPage {
 
   getAnswerToolbarTextEditor = () => cy.get('[data-cy="answer-toolbar-text-editor"]');
 
-  getDeleteButton = () => cy.get('[data-cypress="deleteButton"]');
+  //getDeleteButton = () => cy.get('[data-cypress="deleteButton"]');
+
+  getDeleteButton = () =>
+    cy
+      .get('[data-cy="answer-typed-list-item"]')
+      .first()
+      .find('[data-cypress="deleteButton"]');
 
   getAnswerMathTextBtn = () => cy.get('[data-cy="answer-math-text-btn"]');
 
@@ -86,9 +92,9 @@ class mathEssayPage extends MathFractionPage {
 
   getQuestionContainer = () => cy.get('[data-cy="question-container"]');
 
-  getAddButton = () => cy.get('[data-cy="addButton"]');
+  getAddButton = () => cy.get('[data-cy="addButton"]').first();
 
-  getTextFormattingOptionsSelect = () => cy.get('[data-cy="text-formatting-options-select"]');
+  getTextFormattingOptionsSelect = () => cy.get('[data-cy="text-formatting-options-select"]').eq(0);
 
   getTextFormattingEditorOptions = option => cy.get(`[data-cy="text-formatting-options-${option}"]`);
 
@@ -129,7 +135,7 @@ class mathEssayPage extends MathFractionPage {
 
   checkAnswerTextEditorValue = (tag, testText) =>
     this.getAnswerTextEditorValue()
-      .clear({ force: true })
+      //.clear({ force: true })
       .type(testText, { force: true })
       .contains(tag, testText);
 

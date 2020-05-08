@@ -10,7 +10,7 @@ import {
   IconClose,
   IconProtactor,
   IconScratchPad,
-  IconSearch
+  IconMagnify
 } from "@edulastic/icons";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { Tooltip } from "../../../common/utils/helpers";
@@ -89,7 +89,7 @@ const ToolBar = ({
       )}
 
       {showMagnifier && (
-        <ActionButton title="Magnify" icon={<IconSearch />} active={enableMagnifier} onClick={handleMagnifier} />
+        <ActionButton title="Magnify" icon={<IconMagnify />} active={enableMagnifier} onClick={handleMagnifier} />
       )}
 
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}

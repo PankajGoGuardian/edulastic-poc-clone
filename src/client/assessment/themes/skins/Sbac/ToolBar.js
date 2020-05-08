@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Tooltip } from "../../../../common/utils/helpers";
 import { test, questionType } from "@edulastic/constants";
-import { IconCalculator, IconClose, IconScratchPad, IconSearch } from "@edulastic/icons";
+import { IconCalculator, IconClose, IconScratchPad, IconMagnify } from "@edulastic/icons";
 import { Container, StyledButton, StyledIcon } from "./styled";
 import TimedTestTimer from "../../common/TimedTestTimer";
 
@@ -97,7 +97,7 @@ const ToolBar = ({
       {showMagnifier && (
         <Tooltip placement="top" title="Magnify">
           <StyledButton onClick={handleMagnifier} active={enableMagnifier}>
-            <IconSearch />
+            <IconMagnify />
           </StyledButton>
         </Tooltip>
       )}

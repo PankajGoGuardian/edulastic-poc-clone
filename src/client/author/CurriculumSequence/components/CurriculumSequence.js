@@ -30,7 +30,15 @@ import {
   white,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
-import { IconBook, IconGraduationCap, IconPencilEdit, IconPlaylist, IconShare, IconTile } from "@edulastic/icons";
+import {
+  IconBook,
+  IconGraduationCap,
+  IconPencilEdit,
+  IconPlaylist,
+  IconShare,
+  IconTile,
+  IconClose
+} from "@edulastic/icons";
 import { roleuser } from "@edulastic/constants";
 import { Button, Cascader, Input, Modal, Tooltip, message } from "antd";
 import Header from "../../../student/sharedComponents/Header";
@@ -818,36 +826,43 @@ class CurriculumSequence extends Component {
                             )}
                             {enableCustomize && subHeaderIcon1}
                             {enableCustomize && subHeaderIcon2}
-                            {enableCustomize &&
-                              (isManageContentActive && cloneId ? (
-                                <DraftModeActionsWrapper>
+                            <ButtonWrapper>
+                              {enableCustomize &&
+                                (isManageContentActive && cloneId ? (
+                                  <DraftModeActionsWrapper>
+                                    <StyledButton
+                                      width="100px"
+                                      data-cy="cancel-customize"
+                                      onClick={() => cancelPlaylistCustomize({ parentId })}
+                                    >
+                                      Cancel
+                                    </StyledButton>
+                                    <StyledButton
+                                      width="100px"
+                                      data-cy="publish-customized-playlist"
+                                      onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
+                                      isManageContentActive={isManageContentActive}
+                                    >
+                                      Update
+                                    </StyledButton>
+                                  </DraftModeActionsWrapper>
+                                ) : (
                                   <StyledButton
-                                    width="100px"
-                                    data-cy="cancel-customize"
-                                    onClick={() => cancelPlaylistCustomize({ parentId })}
-                                  >
-                                    Cancel
-                                  </StyledButton>
-                                  <StyledButton
-                                    width="100px"
-                                    data-cy="publish-customized-playlist"
-                                    onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
+                                    width="135px"
+                                    style={{ marginLeft: "30px" }}
+                                    data-cy="manage-content"
+                                    onClick={toggleManageContentClick}
                                     isManageContentActive={isManageContentActive}
                                   >
-                                    Update
+                                    Manage Content
                                   </StyledButton>
-                                </DraftModeActionsWrapper>
-                              ) : (
-                                <StyledButton
-                                  width="135px"
-                                  style={{ marginLeft: "30px" }}
-                                  data-cy="manage-content"
-                                  onClick={toggleManageContentClick}
-                                  isManageContentActive={isManageContentActive}
-                                >
-                                  Manage Content
-                                </StyledButton>
-                              ))}
+                                ))}
+                              {urlHasUseThis && (
+                                <ToggleSummaryButton onClick={() => this.setState({ showSummary: !showSummary })}>
+                                  Summary
+                                </ToggleSummaryButton>
+                              )}
+                            </ButtonWrapper>
                           </RightColumn>
                         </CurriculumSubHeaderRow>
                       </SubTopBarContainer>
@@ -904,10 +919,10 @@ class CurriculumSequence extends Component {
                       />
                     ) : (
                       <>
-                        <ToggleSummaryButton onClick={() => this.setState({ showSummary: !showSummary })}>
-                          {showSummary ? "Hide" : "Show"} summary
-                        </ToggleSummaryButton>
                         <SummaryBlock showSummary={showSummary}>
+                          <CloseSummaryBtn onClick={() => this.setState({ showSummary: !showSummary })}>
+                            <IconClose />
+                          </CloseSummaryBtn>
                           <SummaryBlockTitle>Summary</SummaryBlockTitle>
                           <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
                           <SummaryPieChart
@@ -1047,25 +1062,34 @@ const Hr = styled.div`
   margin: 15px auto 30px auto;
 `;
 
-const ToggleSummaryButton = styled.div`
+const ButtonWrapper = styled.div`
+  @media (max-width: ${smallDesktopWidth}) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+`;
+
+const ToggleSummaryButton = styled(EduButton)`
   display: none;
-  min-width: 40px;
-  height: 32px;
-  padding: 0px 10px;
-  background: white;
-  border: 1px solid ${themeColor};
-  border-right: none;
-  border-radius: 10px 0px 0px 10px;
-  position: fixed;
-  right: 0;
-  top: 65px;
-  justify-content: center;
-  align-items: center;
+  width: 135px;
+  margin: 10px 0px 10px 20px !important;
   cursor: pointer;
-  z-index: 1;
 
   @media (max-width: ${smallDesktopWidth}) {
     display: flex;
+  }
+`;
+
+const CloseSummaryBtn = styled.div`
+  display: none;
+  position: fixed;
+  right: 15px;
+  margin-top: -15px;
+  cursor: pointer;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    display: block;
   }
 `;
 

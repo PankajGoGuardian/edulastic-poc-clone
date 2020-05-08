@@ -324,10 +324,18 @@ class PreviewModal extends React.Component {
             </ButtonsWrapper>
           )}
           <ModalTopAction>
-            <EduButton IconBtn isGhost width="32px" height="32px" onClick={this.toggleFullModal}>
-              {fullModal ? <IconCollapse /> : <IconExpand />}
+            <EduButton IconBtn type="primary" width="140px" height="32px" onClick={this.toggleFullModal}>
+              {fullModal ? <IconCollapse /> : <IconExpand />} EXPAND
             </EduButton>
-            <EduButton data-cy="close-preview" IconBtn isGhost width="32px" height="32px" onClick={this.closeModal}>
+            <EduButton
+              data-cy="close-preview"
+              IconBtn
+              isGhost
+              width="32px"
+              height="32px"
+              onClick={this.closeModal}
+              title="Close"
+            >
               <IconClose />
             </EduButton>
           </ModalTopAction>

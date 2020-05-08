@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import { omit, get, keyBy } from "lodash";
+import { omit, get } from "lodash";
 import { message } from "antd";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
@@ -161,6 +161,7 @@ export const getHasDuplicateAssignmentsSelector = createSelector(
   stateSelector,
   state => state.hasDuplicateAssignments
 );
+
 // saga
 
 function* saveAssignment({ payload }) {
@@ -229,6 +230,15 @@ function* saveAssignment({ payload }) {
     // on teacher assigning common assessments convert it to class assessment.
     const testTypeUpdated =
       userRole === roleuser.TEACHER && testType === testContants.type.COMMON ? testContants.type.ASSESSMENT : testType;
+    let { class: classes } = payload;
+    let containsCanvasClass = false;
+    classes = classes.map(c => {
+      const { canvasData, ...rest } = c;
+      if (canvasData) {
+        containsCanvasClass = true;
+      }
+      return rest;
+    });
     const data = testIds.map(testId =>
       omit(
         {
@@ -238,7 +248,8 @@ function* saveAssignment({ payload }) {
           dueDate,
           testType: testTypeUpdated,
           ...visibility,
-          testId
+          testId,
+          class: classes
         },
         [
           "_id",
@@ -262,7 +273,6 @@ function* saveAssignment({ payload }) {
       allowDuplicates: !!payload.allowDuplicates
     });
     const assignment = result?.[0] ? formatAssignment(result[0]) : {};
-    const isCanvasClass = assignment?.class?.some(c => !!c.cnvId);
     yield put({ type: SET_ASSIGNMENT, payload: assignment });
     yield put(setAssignmentSavingAction(false));
     yield put(toggleHasCommonAssignmentsPopupAction(false));
@@ -273,8 +283,11 @@ function* saveAssignment({ payload }) {
     }
     const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
     yield call(message.success, successMessage);
-    if (isCanvasClass) {
-      yield call(message.success, "This assignment is shared to your Canvas class also.");
+    const isAdminRole = [roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(userRole);
+    if (containsCanvasClass) {
+      if (isAdminRole) {
+        yield call(message.success, "The assignments will be shared to the Canvas in some time.");
+      } else yield call(message.success, "The assignment is shared to your Canvas class also.");
     }
     if (!assignmentId && !payload.playlistModuleId) return;
 

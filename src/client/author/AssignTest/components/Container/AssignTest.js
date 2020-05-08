@@ -190,13 +190,21 @@ class AssignTest extends React.Component {
       if (previousGroupData[_id]) {
         return previousGroupData[_id];
       }
+      let canvasData = null;
+      if (get(groupById, `${_id}.canvasCode`, "")) {
+        canvasData = {
+          canvasCode: get(groupById, `${_id}.canvasCode`, ""),
+          canvasCourseSectionCode: get(groupById, `${_id}.canvasCourseSectionCode`, "")
+        };
+      }
       return {
         _id,
         name: get(groupById, `${_id}.name`, ""),
         assignedCount: get(groupById, `${_id}.studentCount`, 0),
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
-        specificStudents: specificStudents
+        specificStudents,
+        ...(canvasData ? { canvasData } : {})
       };
     });
 

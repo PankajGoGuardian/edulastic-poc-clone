@@ -154,8 +154,6 @@ class ExpressGrader extends Component {
               <StyledFlexContainer justifyContent="space-between">
                 <ClassBreadBrumb />
 
-                <ExpressGraderScoreColors />
-
                 <FlexContainer justifyContent="space-between">
                   <SwitchBox>
                     RESPONSE <Switch checked={scoreMode} onChange={() => toggleScoreMode()} /> SCORE
@@ -164,13 +162,16 @@ class ExpressGrader extends Component {
                 </FlexContainer>
               </StyledFlexContainer>
               {!isMobile && (
-                <ScoreTable
-                  scoreMode={scoreMode}
-                  testActivity={testActivity}
-                  showQuestionModal={this.showQuestionModal}
-                  isPresentationMode={isPresentationMode}
-                  windowWidth={windowWidth}
-                />
+                <>
+                  <ScoreTable
+                    scoreMode={scoreMode}
+                    testActivity={testActivity}
+                    showQuestionModal={this.showQuestionModal}
+                    isPresentationMode={isPresentationMode}
+                    windowWidth={windowWidth}
+                  />
+                  <ExpressGraderScoreColors />
+                </>
               )}
 
               {isMobile && <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />}

@@ -33,7 +33,7 @@ const ColorLabel = ({ item }) => (
 );
 
 const ExpressGraderScoreColors = () => (
-  <FlexContainer>
+  <FlexContainer padding="10px 0" width="600px" justifyContent="space-between">
     {colorLabelsMap.map(item => (
       <ColorLabel item={item} />
     ))}

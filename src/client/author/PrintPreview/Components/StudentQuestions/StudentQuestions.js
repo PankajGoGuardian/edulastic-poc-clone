@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { keyBy as _keyBy, get } from "lodash";
+import { keyBy as _keyBy, get, groupBy } from "lodash";
 import queryString from "query-string";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
@@ -128,6 +128,40 @@ class StudentQuestions extends Component {
         return [...acc];
       }, []);
     }
+
+    //merge items belongs to same passage
+    testItems = testItems.reduce((acc, item) => {
+      let isItemMatched = false;
+
+      if (item.passageId && acc.length) {
+        let modifiedItems = acc.map(i => {
+          const cloneItem = { ...i };
+          if (cloneItem.passageId === item.passageId) {
+            //merge questions and resources
+            cloneItem.data.questions = get(cloneItem, "data.questions", []).concat(get(item, "data.questions", []));
+            cloneItem.data.resources = get(cloneItem, "data.resources", []).concat(get(item, "data.resources", []));
+
+            //merge widgets of type 'question'
+            cloneItem.rows = cloneItem.rows.map(row => {
+              const cloneRow = { ...row };
+              const isWidgetTypeRow = get(cloneRow, "widgets.[0].widgetType", "") === "question";
+              if (isWidgetTypeRow) {
+                const mergableItemRow = item.rows.filter(it => get(it, "widgets.[0].widgetType", "") === "question");
+                cloneRow.widgets = [...cloneRow.widgets, ...get(mergableItemRow, "[0].widgets", [])];
+              }
+              return cloneRow;
+            });
+            isItemMatched = true;
+          }
+          return cloneItem;
+        });
+        if (!isItemMatched) {
+          modifiedItems = [...modifiedItems, item];
+        }
+        return [...modifiedItems];
+      }
+      return [...acc, item];
+    }, []);
     return [...testItems];
   }
 
@@ -143,6 +177,7 @@ class StudentQuestions extends Component {
 
       return acc;
     }, {});
+
     let testItemsRender = testItems.map(item => (
       <Preview item={item} passages={passages} evaluation={evaluationStatus} />
     ));

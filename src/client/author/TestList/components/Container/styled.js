@@ -188,6 +188,7 @@ export const StyledCountText = styled.div`
   padding-right: 10px;
   font-size: 12px;
   font-weight: 600;
+  white-space: nowrap;
 `;
 
 export const ItemsMenu = styled(FlexContainer)`

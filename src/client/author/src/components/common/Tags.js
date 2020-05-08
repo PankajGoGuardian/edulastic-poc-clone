@@ -9,7 +9,8 @@ import {
   white,
   grey,
   lightGreen6,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  themeColor
 } from "@edulastic/colors";
 import { Dropdown, Tag } from "antd";
 
@@ -22,17 +23,20 @@ const Tags = ({
   isPlaylist = false,
   completed = false,
   margin,
-  showTitle = false
+  showTitle = false,
+  isGrayTags,
+  isCustomTags
 }) => {
   if (!tags.length) return null;
 
   const visibleTags = tags.slice(0, show);
   const hiddenTags = tags.slice(show);
+  const className = isGrayTags ? "gray-tags" : isCustomTags ? "custom-tags" : "";
 
   const popup = (
     <PopupContainer>
       {hiddenTags.map((tag, i) => (
-        <Label popupContainer style={labelStyle} key={i} type={type}>
+        <Label className={className} popupContainer style={labelStyle} key={i} type={type}>
           {isStandards || typeof tag === "string" ? tag : tag.tagName}
         </Label>
       ))}
@@ -42,13 +46,19 @@ const Tags = ({
   return (
     <Labels completed={completed} isPlaylist={isPlaylist} margin={margin}>
       {visibleTags.map((tag, i) => (
-        <Label style={labelStyle} key={i} type={type} {...(showTitle ? { title: tag?.tagName || tag } : {})}>
+        <Label
+          className={className}
+          style={labelStyle}
+          key={i}
+          type={type}
+          {...(showTitle ? { title: tag?.tagName || tag } : {})}
+        >
           {isStandards || typeof tag === "string" ? tag : tag.tagName}
         </Label>
       ))}
       {hiddenTags && !!hiddenTags.length && (
-        <Dropdown overlay={popup}>
-          <Label style={labelStyle} type={type}>
+        <Dropdown getPopupContainer={triggerNode => triggerNode.parentNode} overlay={popup}>
+          <Label className={className} style={labelStyle} type={type}>
             <span>{hiddenTags.length} +</span>
           </Label>
         </Dropdown>
@@ -125,6 +135,25 @@ const Label = styled(Tag)`
   border: none;
   line-height: 16px;
   margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : "3px")} 0;
+
+  &.gray-tags {
+    padding: 4px 15px;
+    display: inline-block;
+    background: #b3bcc4;
+    color: #676e74;
+    font-size: 10px;
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &.custom-tags {
+    font-size: 10px;
+    max-width: 40%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     font-size: 8px;

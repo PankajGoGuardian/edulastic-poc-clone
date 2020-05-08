@@ -12,7 +12,7 @@ import {
   IconPencilEdit,
   IconAssignment
 } from "@edulastic/icons";
-import { Icon, Select, Tooltip } from "antd";
+import { Icon, Select, Tooltip, Col, Row } from "antd";
 import { find } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
@@ -52,7 +52,6 @@ import {
   ModalContainer,
   ModalTitle,
   SammaryMark,
-  Subject,
   SubjectLabel,
   SummaryCard,
   SummaryCardContainer,
@@ -61,7 +60,6 @@ import {
   SummaryContainer,
   SummaryList,
   SummaryTitle,
-  TagGrade,
   TagsConatiner,
   TagsLabel,
   TestStatus,
@@ -156,6 +154,25 @@ class ViewModal extends React.Component {
         borderRadius: "5px"
       }
     };
+
+    const gradesMap = {
+      K: "Kindergarten",
+      1: "Grade 1",
+      2: "Grade 2",
+      3: "Grade 3",
+      4: "Grade 4",
+      5: "Grade 5",
+      6: "Grade 6",
+      7: "Grade 7",
+      8: "Grade 8",
+      9: "Grade 9",
+      10: "Grade 10",
+      11: "Grade 11",
+      12: "Grade 12",
+      O: "Other"
+    };
+
+    const selectedGrades = grades.map(grade => gradesMap[grade]);
 
     const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
 
@@ -327,18 +344,21 @@ class ViewModal extends React.Component {
             <DescriptionLabel>Description</DescriptionLabel>
             <Description>{description}</Description>
 
+            <Row gutter={10}>
+              <Col span={12}>
+                <GradeLabel>Grade</GradeLabel>
+                <GradeConatiner>
+                  {grades && <Tags isGrayTags tags={selectedGrades} show={2} key="grades" />}
+                </GradeConatiner>
+              </Col>
+              <Col span={12}>
+                <SubjectLabel>Subject</SubjectLabel>
+                {subjects && <Tags isGrayTags tags={subjects} show={1} key="subjects" />}
+              </Col>
+            </Row>
+
             <TagsLabel>Tags</TagsLabel>
-            <TagsConatiner>
-              {tags && tags.map(({ tagName }, index) => <TagGrade key={index}>{tagName}</TagGrade>)}
-            </TagsConatiner>
-
-            <GradeLabel>Grade</GradeLabel>
-            <GradeConatiner>
-              {grades && grades.map((grade, index) => <TagGrade key={index}>{grade}</TagGrade>)}
-            </GradeConatiner>
-
-            <SubjectLabel>Subject</SubjectLabel>
-            {subjects && subjects.map((subject, index) => <Subject key={index}>{subject}</Subject>)}
+            <TagsConatiner>{tags && <Tags isCustomTags tags={tags} show={2} key="tags" />}</TagsConatiner>
 
             <Footer>
               <FooterIcon>

@@ -17,7 +17,7 @@ export const ICONS_BY_TYPE = {
 
 export const ResouceIcon = ({ type, isAdded }) => <IconWrapper isAdded={isAdded}>{ICONS_BY_TYPE[type]}</IconWrapper>;
 
-const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded, previewTest }) => {
+const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded, previewTest, status, testType }) => {
   const standardIdentifiers = (summary?.standards || []).map(x => x.identifier);
   const [{ opacity }, drag] = useDrag({
     item: {
@@ -27,7 +27,9 @@ const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded, pre
       fromPlaylistTestsBox: true,
       contentTitle: title,
       standardIdentifiers,
-      data
+      data,
+      status,
+      testType
     },
     collect: monitor => ({
       opacity: monitor.isDragging() ? 0.4 : 1

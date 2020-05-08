@@ -235,8 +235,8 @@ headings(FroalaEditor);
 
 const getFixedPostion = el => {
   return {
-    top: $(el).offset().top - $(window).scrollTop(),
-    left: $(el).offset().left - $(window).scrollLeft(),
+    top: $(el).offset()?.top - $(window).scrollTop(),
+    left: $(el).offset()?.left - $(window).scrollLeft(),
     width: $(el).width(),
     height: $(el).height()
   };
@@ -829,7 +829,7 @@ const CustomEditor = ({
     if (toolbarId) {
       const onScroll = debounce(e => {
         const toolbarPosInfo = getFixedPostion(toolbarContainerRef.current);
-        const editorPosInfo = getFixedPostion(EditorRef.current.$el);
+        const editorPosInfo = getFixedPostion(EditorRef.current?.$el);
 
         if (editorPosInfo.top > 150) {
           if ($(toolbarContainerRef.current).css("position") === "fixed") {

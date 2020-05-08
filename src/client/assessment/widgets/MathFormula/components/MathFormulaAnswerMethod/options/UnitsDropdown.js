@@ -171,6 +171,5 @@ const DropdownWrapper = styled.div`
 `;
 
 const SubLabel = styled.span`
-  color: ${red};
   text-transform: initial;
 `;

@@ -49,11 +49,7 @@ class MathMatricesPage extends MathFillInTheBlanksPage {
   }
 
   // template
-  getTemplateOutputCY = () =>
-    cy
-      .get('[data-cy="template-container"]')
-      .next()
-      .get("[data-cy=answer-math-input-field]");
+  getTemplateOutputCY = () => cy.get("[data-cy=answer-math-input-field]").first();
 
   getAnswerMathInputTemplate = () => this.getAnswerMathInputField().find("[mathquill-block-id]");
 

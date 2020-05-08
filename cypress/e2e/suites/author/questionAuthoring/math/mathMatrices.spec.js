@@ -14,7 +14,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
     testText: "testtext",
     formula: "s=ar^2",
     answer: {
-      value: "1234",
+      value: ["1234"],
       ariaLabel: "test"
     },
 
@@ -55,45 +55,39 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
       });
 
       it(" > give external link", () => {
-        const { testText } = queData;
+        question.checkIfTextExist(queData.testText).type("{selectall}");
+        // editToolBar.clickOnMore();
+        editToolBar.linkButton().click({ force: true });
+        editToolBar.linkURL().type(queData.testText, { force: true });
+        //editToolBar.linkText().type(queData.testtext ,{force: true});
+        editToolBar.insertLinkButton().click();
         question
           .getComposeQuestionTextBox()
-          .clear()
-          .type(testText)
-          .then($input => {
-            expect($input[0].innerText).to.contain(testText);
-          })
-          .type("{selectall}");
-
-        editToolBar.link().click();
-        question.getSaveLink().click();
-
-        question
-          .getComposeQuestionTextBoxLink()
           .find("a")
           .should("have.attr", "href")
-          .and("equal", testText)
+          .and("equal", `http://${queData.testText}`)
           .then(href => {
-            expect(href).to.equal(testText);
+            expect(href).to.equal(`http://${queData.testText}`);
           });
       });
 
-      it(" > insert formula", () => {
+      /* it(" > insert formula", () => {
         const { testText } = queData;
-
         question.checkIfTextExist(testText).clear();
-      });
+      }); */
+
       it(" > Upload image to server", () => {
-        question.getComposeQuestionTextBox().focus();
-
-        question.getUploadImageIcon().click();
-        cy.uploadFile("testImages/sample.jpg", "input.ql-image[type=file]").then(() =>
-          question
-            .getEditorData()
+        question
+          .getComposeQuestionTextBox()
+          .first()
+          .click({ force: true });
+        cy.get("[data-cmd='insertImage']").click();
+        cy.uploadFile("testImages/sample.jpg", ".fr-form > input").then(() => {
+          cy.wait(5000);
+          cy.get('[contenteditable="true"]')
             .find("img")
-            .should("be.visible")
-        );
-
+            .should("be.visible");
+        });
         question.getComposeQuestionTextBox().clear();
       });
     });
@@ -112,7 +106,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         });
 
       question
-        .getVirtualKeyBoard()
+        .getMathDropDownKeyBoard()
+        .first()
+        .click();
+      cy.get('[class="ant-select-dropdown-menu-item"]')
         .contains(label)
         .should("be.visible");
     });
@@ -127,6 +124,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
 
       question.getTemplateInput().type(mockString, { force: true });
       question.getTemplateOutput().should("have.length", mockString.length);
+
       question.getTemplateInput().type("{backspace}".repeat(mockString.length), { force: true });
       question.getTemplateOutput().should("have.length", 0);
     });
@@ -141,7 +139,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         .click();
 
       question.getVirtualKeyBoardResponse().click();
-
       question
         .getTemplateOutput()
         .last()
@@ -198,9 +195,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
       question
         .getPointsInput()
         .click({ force: true })
-        .verifyNumInput(1);
+        .verifyNumInput(0.5)
+        .verifyNumInput(0.5);
     });
-    it(" > Add and remove new method", () => {
+    /* it(" > Add and remove new method", () => {
       question
         .getAddNewMethod()
         .click()
@@ -210,9 +208,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
       question.deleteLastMethod().then(() => {
         question.getMathFormulaAnswers().should("have.length", 1);
       });
-    });
+    }); */
     it(" > Add and remove alternate answer", () => {
       question.addAlternateAnswer();
+      question.returnToCorrectTab();
       question
         .getAddedAlternateAnswer()
         .then(element => {
@@ -221,22 +220,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
             .click();
         })
         .should("not.exist");
-      question.returnToCorrectTab();
     });
     it(" > Change answer methods", () => {
-      Object.values(methods).forEach(item => {
+      cy.get("body")
+        .contains("Additional Options")
+        .click({ force: true });
+      Object.keys(methods).forEach(item => {
         question.setMethod(item);
-        question.getMethodSelectionDropdow().contains("div", item);
+        // question.getMethodSelectionDropdow().contains("div", methods[item]);
       });
     });
     it(" > Testing equivSymbolic method", () => {
-      question.setMethod(methods.EQUIV_SYMBOLIC);
-      question.setValue(queData.answer.value);
+      question.setMethod("EQUIV_SYMBOLIC");
+      question.setValueFill(queData.answer.value);
       question
         .getAnswerValueMathOutput()
         .last()
         .should("have.length", 1);
-      question
+      /*  question
         .getAnswerAriaLabel()
         .click({ force: true })
         .type(queData.answer.ariaLabel)
@@ -247,14 +248,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         .check({ force: true })
         .should("be.checked")
         .uncheck({ force: true });
-
+ */
+      question.getAnswerSignificantDecimalPlaces().check({ force: true } /*  */);
       question
-        .getAnswerSignificantDecimalPlaces()
+        .getAnswerSignificantDecimalPlacesTextBox()
         .focus()
         .clear()
         .type("{selectall}10")
         .should("have.value", "10")
         .blur();
+      question.getAnswerSignificantDecimalPlaces().uncheck({ force: true });
       question
         .getAnswerCompareSides()
         .check({ force: true })
@@ -271,21 +274,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         .should("be.checked");
       queData.decimalSeparators.forEach(item => {
         question.setAnswerSetDecimalSeparatorDropdown(item);
-        question.getAnswerSetDecimalSeparatorDropdown().contains("div", item);
+        question.getAnswerSetDecimalSeparatorDropdownListTab().contains("div", item);
       });
-      question
-        .getAddNewThousandsSeparator()
-        .click()
-        .then(() => {
-          question.getThousandsSeparatorDropdown().should("have.length", 2);
-        });
-      question
-        .getRemoveThousandsSeparator()
-        .last()
-        .click()
-        .then(() => {
-          question.getThousandsSeparatorDropdown().should("have.length", 1);
-        });
+      // question
+      //   .getAddNewThousandsSeparator()
+      //   .click()
+      //   .then(() => {
+      //     question.getThousandsSeparatorDropdown().should("have.length", 2);
+      //   });
+      // question
+      //   .getRemoveThousandsSeparator()
+      //   .last()
+      //   .click()
+      //   .then(() => {
+      //     question.getThousandsSeparatorDropdown().should("have.length", 1);
+      //   });
       queData.thousandsSeparators.forEach(item => {
         question
           .getThousandsSeparatorDropdown()
@@ -304,9 +307,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
   context(" > TC_413 => Preview Items", () => {
     it(" > Click on preview", () => {
       preview = editItem.header.preview();
-      question.getBody().contains("span", "Check Answer");
+      preview.getCheckAnswer();
 
-      question.getAnswerMathTextArea().typeWithDelay(queData.answer.value);
+      question.getAnswerMathTextArea().typeWithDelay(queData.answer.value[0]);
     });
 
     it(" > Click on Check answer", () => {
@@ -317,7 +320,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
           question
             .getBody()
             .children()
-            .should("contain", "score: 1/1")
+            .should("contain", "Score 1/1")
         );
     });
 
@@ -343,6 +346,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
 
   context(" > TC_415 => Save question", () => {
     it(" > Click on save button", () => {
+      const { testText } = queData;
+
+      question.checkIfTextExist(testText);
       question.header.save();
       cy.url().should("contain", "item-detail");
     });

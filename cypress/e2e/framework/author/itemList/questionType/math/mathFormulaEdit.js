@@ -159,9 +159,10 @@ class MathFormulaEdit {
 
   getTemplateOutput = () =>
     cy
-      .get('[data-cy="template-container"]')
-      .next()
-      .get(".mq-root-block > [mathquill-command-id]");
+      .get('[data-cy="answer-math-input-field"]')
+      .first()
+      .find(".mq-root-block")
+      .children();
 
   getVirtualKeyBoard = () => cy.get('[class^="MathKeyboard"]').first();
 
@@ -192,7 +193,7 @@ class MathFormulaEdit {
   getMathFormulaAnswers = () => cy.get('[data-cy="math-formula-answer"]');
 
   addAlternateAnswer = () => {
-    cy.get("body")
+    cy.get('[data-cy="alternate"]')
       .contains("+ Alternative Answer")
       //.should("be.visible")
       .click({ force: true });
@@ -203,6 +204,7 @@ class MathFormulaEdit {
 
   returnToCorrectTab = () => {
     cy.get('[data-cy="correct"]')
+      .scrollIntoView()
       .should("be.visible")
       .click({ force: true });
     return this;
@@ -554,7 +556,7 @@ class MathFormulaEdit {
 
   getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`[data-cy="virtual-keyboard-${value}"]`);
 
-  getVirtualKeyBoardResponse = () => this.getVirtualKeyBoard().find("span.response-embed");
+  getVirtualKeyBoardResponse = () => this.getVirtualKeyBoard().find('[class^="KeyboardHeader__ResponseBtn"]');
 
   checkUncheckChecbox = (preview, input, expected, checkboxValues, isCorrectAnswer) => {
     checkboxValues.forEach((checkboxValue, index) => {

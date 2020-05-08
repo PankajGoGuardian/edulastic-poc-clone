@@ -148,35 +148,10 @@ export const replaceMathHtmlWithLatexes = val => {
   return Helpers.sanitizeSelfClosingTags(jqueryEl.html());
 };
 
-/**
- *
- * @param {string} template
- *
- * as latex does not consider white spaces for space, we should remove it
- * However, latex uses \ \ to render space, so those spaces should be preserved
- * the function removes all the spaces which are preceded/followed by alphanumric character
- * eg, \frac{7  }{  8} gets converted to \frac{7}{8}
- */
-const removeWhiteSpacesInLatex = (template = "") => {
-  if (typeof template !== "string") {
-    return template;
-  }
-  return template.replace(/(?<=\w)\s+|\s+(?=\w)/g, "");
-};
-
-/**
- *
- * @param {string} template
- * function creates a escaped regex template by appending \ for all the escape characters
- */
-const createEscapedRegExp = latexTemplate => {
-  const escapedTemplate = latexTemplate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
-  return removeWhiteSpacesInLatex(escapedTemplate);
-};
-
 export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
+  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
   const regexTemplate = new RegExp(
-    createEscapedRegExp(studentTemplate || "").replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
+    escapeRegExp(studentTemplate || "").replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
     "g"
   );
 

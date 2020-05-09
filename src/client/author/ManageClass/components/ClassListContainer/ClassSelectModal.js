@@ -229,7 +229,7 @@ const ClassSelectModal = ({
             filterOption={(input, option) =>
               option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
-            value={data && { key: data }}
+            value={(data && { key: data }) || {}}
             placeholder="Select Course"
             disabled={row.disabled}
             onChange={course => {
@@ -266,8 +266,8 @@ const ClassSelectModal = ({
         }
         placeholder="Select Institution"
         getPopupContainer={triggerNode => triggerNode.parentNode}
-        value={selectedInstitution}
-        onChange={value => setInstitution(value)}
+        value={institutionId}
+        onChange={value => setInstitutionId(value)}
       >
         {allowedInstitutions.map(i => (
           <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
@@ -295,7 +295,7 @@ const ClassSelectModal = ({
             Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
             successful, Students accounts will be automatically created in Edulastic.
           </p>
-          {type === "googleClassRoom" && allowedInstitutions.length > 1 && <InstitutionSelection />}
+          {type === "googleClassroom" && allowedInstitutions.length > 1 && <InstitutionSelection />}
         </>
       }
       footer={[

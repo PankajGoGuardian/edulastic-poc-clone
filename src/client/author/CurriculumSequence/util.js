@@ -1,4 +1,4 @@
-import { round, compact } from "lodash";
+import { round } from "lodash";
 import moment from "moment";
 
 export const getSummaryData = (modules, playlistMetrics, isStudent) => {
@@ -21,7 +21,7 @@ export const getSummaryData = (modules, playlistMetrics, isStudent) => {
     } else {
       tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
     }
-    const assignments = compact(data?.flatMap(x => x?.assignments)) || [];
+    const assignments = data?.flatMap(x => x?.assignments) || [];
     const classes = assignments?.reduce((a, c) => a + (c?.class?.length || 0), 0) || "-";
     const classAssignmentData = assignments.flatMap(a => a.class) || [];
     let submitted = "-";

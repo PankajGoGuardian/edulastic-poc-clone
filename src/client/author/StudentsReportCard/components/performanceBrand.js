@@ -30,7 +30,8 @@ const PerformanceBrand = (props, ref) => {
   const selectedBandsData = performanceBandsData.find(o => o._id === performanceBand._id) ||
     performanceBandsData[0] || { performanceBand: [] };
   const selectedPerformanceBand =
-    selectedBandsData.performanceBand.find(pb => perfomancePercentage > pb.to && pb.from >= perfomancePercentage) || {};
+    selectedBandsData.performanceBand.find(pb => perfomancePercentage >= pb.to && pb.from >= perfomancePercentage) ||
+    {};
 
   //finding the mestry
   let mastery = null;

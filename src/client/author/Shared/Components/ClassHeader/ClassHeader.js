@@ -243,7 +243,9 @@ class ClassHeader extends Component {
       googleSyncAssignment,
       syncWithGoogleClassroomInProgress,
       isShowStudentReportCardSettingPopup,
-      toggleStudentReportCardPopUp
+      toggleStudentReportCardPopUp,
+      userId,
+      assignedById
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -303,7 +305,15 @@ class ClassHeader extends Component {
             Mark as Done
           </MenuItems>
         </FeaturesSwitch>
-        <MenuItems data-cy="releaseScore" key="key2" onClick={() => toggleReleaseGradePopUp(true)}>
+        <MenuItems
+          data-cy="releaseScore"
+          key="key2"
+          onClick={() =>
+            assignedById !== userId
+              ? message.error("You are not authorized to update the Release Score policy")
+              : toggleReleaseGradePopUp(true)
+          }
+        >
           Release Score
         </MenuItems>
         {window.innerWidth <= desktopWidth && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
@@ -568,7 +578,9 @@ const enhance = compose(
       orgClasses: getGroupList(state),
       orgData: getOrgDataSelector(state),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
-      isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(state)
+      isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(state),
+      assignedById: state?.author_classboard_testActivity?.additionalData?.assignedBy?._id,
+      userId: state?.user?.user?._id
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

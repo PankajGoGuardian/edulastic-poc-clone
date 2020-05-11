@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Select, message } from "antd";
+import { Row, Col, Select } from "antd";
 import { uniqBy } from "lodash";
+import { notification } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Container } from "./styled/Container";
@@ -39,7 +40,7 @@ const SecondBlock = ({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "testitem" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ message: "savingTagErr" });
       }
     } else {
       newTag = newAllTagsData.find(tag => tag._id === id);

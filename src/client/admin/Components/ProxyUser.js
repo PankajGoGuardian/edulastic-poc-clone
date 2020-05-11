@@ -1,6 +1,7 @@
 //@ts-check
 import React from "react";
 import { Card, Input, Button, Layout, message } from "antd";
+import { notification } from "@edulastic/common";
 import styled from "styled-components";
 import { proxyUser } from "../../author/authUtils";
 
@@ -16,7 +17,7 @@ const ProxyUser = () => {
       } else if (email) {
         data.email = email;
       } else {
-        message.error("Either email or userId is needed to proxy");
+        notification({ message: "imageSizeError" });
         return;
       }
 

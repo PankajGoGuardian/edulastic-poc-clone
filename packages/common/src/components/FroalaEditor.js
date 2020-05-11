@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
@@ -518,7 +519,7 @@ const CustomEditor = ({
             .catch(e => {
               console.error(e);
               this.popups.hideAll();
-              message.error("image upload failed");
+              notification({ message: "imageUploadErr" });
             });
 
           return false;
@@ -533,7 +534,7 @@ const CustomEditor = ({
               });
             }
           } catch (e) {
-            message.error("image loading failed");
+            notification({ message: "imageLoadErr" });
           }
         },
         "edit.on": function(e, editor) {

@@ -18,7 +18,7 @@ i18n
     interpolation: {
       escapeValue: false // not needed for react!!
     },
-    ns: ["default", "author", "student", "assessment", "common"],
+    ns: ["default", "author", "student", "assessment", "common", "notifications"],
     defaultNS: "default",
     react: {
       wait: false,
@@ -45,7 +45,8 @@ i18n
         manageDistrict: require("./locales/manageDistrict/en"),
         subscription: require("./locales/subscription/en"),
         customReports: require("./locales/customReport/en"),
-        qtiimport: require("./locales/qtiImport/en")
+        qtiimport: require("./locales/qtiImport/en"),
+        notifications: require("./locales/notifications/en")
       }
     }
   });

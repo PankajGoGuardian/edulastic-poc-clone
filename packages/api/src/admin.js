@@ -1,6 +1,7 @@
-import API from "./utils/API";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import qs from "qs";
+import API from "./utils/API";
 
 const api = new API();
 const prefix = "/clever/";
@@ -143,7 +144,7 @@ const manageSubscription = data =>
       data
     })
     .then(({ data: response }) => response)
-    .catch(({ data: errorData }) => message.error(errorData.message));
+    .catch(({ data: errorData }) => notification({ msg: errorData.message }));
 
 const searchUsersByEmailIds = data =>
   api

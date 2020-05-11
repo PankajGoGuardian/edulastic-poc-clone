@@ -1,0 +1,134 @@
+{
+  "itemSavedSuccess": {
+    "message": "Item is saved as draft",
+    "description": ""
+  },
+  "imageTypeError": {
+    "message": "Image type not supported",
+    "description": ""
+  },
+  "imageSizeError": {
+    "message": "Image size should be less than 2MB",
+    "description": ""
+  },
+  "imageUploadErr": {
+    "message": "image upload failed",
+    "description": ""
+  },
+  "imageLoadErr": {
+    "message": "image upload failed",
+    "description": ""
+  },
+  "selectionError": {
+    "message": "Selection Error",
+    "description": "You can not select text with a table. Please select a text inside the table."
+  },
+  "highlightError": {
+    "message": "Selection Error",
+    "description": "You are highlighting already selected text. Please select a distinct text and try again."
+  },
+  "textSelectErr": {
+    "message": "Selection Error",
+    "description": "Something went wrong. Please select a text and try again."
+  },
+  "proxyUserErr": {
+    "message": "Either email or userId is needed to proxy",
+    "description": ""
+  },
+  "getCustomReportErr": {
+    "message": "Getting custom report failed!",
+    "description": "Failed to fetch custom report for district Please try again..."
+  },
+  "permissionUpdateSucc": {
+    "message": "Permission updated successfully",
+    "description": ""
+  },
+  "permissionUpdateErr": {
+    "message": "Updating permission failed!",
+    "description": "Failed to update custom report permission status Please try again..."
+  },
+  "customReportUpdated": {
+    "message": "Custom Report updated successfully",
+    "description": ""
+  },
+  "customReportUpdateErr": {
+    "message": "Operation failed!",
+    "description": "Failed to update custom report Please try again..."
+  },
+  "customReportCreated": {
+    "message": "Custom Report created successfully",
+    "description": ""
+  },
+  "customReportCreateErr": {
+    "message": "Operation failed!",
+    "description": "Failed to create custom report Please try again..."
+  },
+  "apiFormSucc": {
+    "message": "Success",
+    "description": ""
+  },
+  "apiFormErr": {
+    "message": "Failed",
+    "description": ""
+  },
+  "deltaSyncSucc": {
+    "message": "Your data is synced",
+    "description": ""
+  },
+  "classSyncSucc": {
+    "message": "Your data is synced",
+    "description": ""
+  },
+  "uploadCsvErr": {
+    "message": "Uploading failed",
+    "description": ""
+  },
+  "subjectStandardMapping": {
+    "message": "Completed!",
+    "description": "Subject Standard Mapping Successfully completed!"
+  },
+  "inValiedCleverId": {
+    "message": "Uploading failed",
+    "description": "Please enter valid Clever ID"
+  },
+  "userNotFound": {
+    "message": "No Records Found",
+    "description": ""
+  },
+  "savOrgPermissionSucc": {
+    "message": "Permissions saved successfully.",
+    "description": ""
+  },
+  "savOrgPermissionErr": {
+    "message": "Failed to save permissions.",
+    "description": ""
+  },
+  "selectGradeAndSubject": {
+    "message": "Please select grade and subject for subscription",
+    "description": ""
+  },
+  "assignmentRequiredPass": {
+    "message": "This assignment requies password",
+    "description": ""
+  },
+  "scoreShouldNumber": {
+    "message": "Score should be a valid numerical",
+    "description": ""
+  },
+  "scoreShouldLess": {
+    "message": "Score given should be less than or equal to maximum score",
+    "description": ""
+  },
+  "equationErr": {
+    "message": "Something went wrong in the entered equation. Please try again",
+    "description": ""
+  },
+  "breakLine": {
+    "message": "Please double click to stop drawing",
+    "description": ""
+  },
+  "savingTagErr": {
+    "message": "Saving tag failed",
+    "description": ""
+  }
+}

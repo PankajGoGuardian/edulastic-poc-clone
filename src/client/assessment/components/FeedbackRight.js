@@ -1,7 +1,7 @@
 import { desktopWidth, mobileWidthMax, tabGrey, themeColor, themeColorTagsBg, white } from "@edulastic/colors";
-import { AnswerContext, withWindowSizes } from "@edulastic/common";
+import { AnswerContext, withWindowSizes, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { Avatar, Card, Input, message } from "antd";
+import { Avatar, Card, Input } from "antd";
 import { get, isEqual, isUndefined, maxBy, round, sumBy, toNumber } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
@@ -91,12 +91,12 @@ class FeedbackRight extends Component {
     } = this.props;
 
     if ((!score || isNaN(score)) && score != 0) {
-      message.warn("Score should be a valid numerical");
+      notification({ type: "warn", message: "scoreShouldNumber" });
       return;
     }
     const _score = toNumber(score);
     if (_score > maxScore) {
-      message.warn("Score given should be less than or equal to maximum score");
+      notification({ type: "warn", message: "scoreShouldLess" });
       return;
     }
 

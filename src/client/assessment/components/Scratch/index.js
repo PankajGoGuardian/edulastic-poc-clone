@@ -1,8 +1,7 @@
 import React, { useState, useEffect, Fragment, useContext } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
-import { ScrollContext, hexToRGB } from "@edulastic/common";
-import { message } from "antd";
+import { ScrollContext, hexToRGB, notification } from "@edulastic/common";
 import Tools from "../../themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../themes/AssessmentPlayerDefault/SvgDraw";
 
@@ -39,7 +38,7 @@ const ScratchPad = ({ clearClicked, viewComponent, fullModal }) => {
       setActiveMode("");
     } else {
       if (value === "drawBreakingLine") {
-        message.info("Please double click to stop drawing");
+        notification({ type: "info", message: "breakLine" });
       }
       setActiveMode(value);
       setDeletMode(false);

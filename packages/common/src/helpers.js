@@ -1,7 +1,7 @@
 /* eslint-disable */
 import uuid from "uuid/v4";
 import { get, round, isNaN } from "lodash";
-import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { fileApi } from "@edulastic/api";
 import { aws, question } from "@edulastic/constants";
 import { replaceLatexesWithMathHtml } from "./utils/mathUtils";
@@ -330,11 +330,11 @@ export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png"];
 export const beforeUpload = file => {
   const isAllowedType = allowedFileTypes.includes(file.type);
   if (!isAllowedType) {
-    message.error("Image type not supported");
+    notification({ message: "imageTypeError" });
   }
   const withinSizeLimit = file.size / 1024 / 1024 < 2;
   if (!withinSizeLimit) {
-    message.error("Image size should be less than 2MB");
+    notification({ message: "imageSizeError" });
   }
   return isAllowedType && withinSizeLimit;
 };
@@ -427,7 +427,7 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
   }
 
   if (get(commonAncestorContainer, "offsetParent.tagName", null) === "TABLE") {
-    message.error("You can not select text with a table. Please select a text inside the table.");
+    notification({ message: "selectionError" });
     clearSelection();
     return;
   }
@@ -436,7 +436,7 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
     (endContainer && endContainer.parentNode.className === className) ||
     (startContainer && startContainer.parentNode.className === className)
   ) {
-    message.error("You are highlighting already selected text. Please select a distinct text and try again.");
+    notification({ message: "selectionError" });
     clearSelection();
     return;
   }
@@ -456,7 +456,7 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
     clearSelection();
     return node;
   } catch (err) {
-    message.error("Something went wrong. Please select a text and try again.");
+    notification({ message: "selectionError" });
     clearSelection();
   }
 };

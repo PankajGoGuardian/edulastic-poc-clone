@@ -10,11 +10,11 @@ import { DndProvider } from "react-dnd";
 import TouchBackend from "react-dnd-touch-backend";
 import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
-import { Spin, message } from "antd";
+import { Spin } from "antd";
 import Joyride from "react-joyride";
 import * as firebase from "firebase/app";
 import { test, signUpState } from "@edulastic/constants";
-import { isMobileDevice, OfflineNotifier } from "@edulastic/common";
+import { isMobileDevice, OfflineNotifier, notification } from "@edulastic/common";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import SebQuitConfirm from "./student/SebQuitConfirm";
@@ -241,7 +241,7 @@ class App extends Component {
      * and remove it from the session storage.
      */
     if (sessionStorage.getItem("errorMessage")) {
-      message.error(sessionStorage.getItem("errorMessage"));
+      notification({ msg: sessionStorage.getItem("errorMessage") });
       sessionStorage.removeItem("errorMessage");
     }
 

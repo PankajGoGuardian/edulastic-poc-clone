@@ -1,0 +1,21 @@
+.customized-notifiction {
+  padding: 16px;
+  &.ant-notification-notice {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+  }
+
+  & .ant-notification-notice-content {
+    margin-right: 12px;
+  }
+
+  & .ant-notification-notice-icon {
+    margin-top: 2px;
+    margin-left: 0px;
+  }
+
+  & .ant-notification-notice-message,
+  & .ant-notification-notice-description {
+    margin-bottom: 0px;
+    margin-left: 32px;
+  }
+}

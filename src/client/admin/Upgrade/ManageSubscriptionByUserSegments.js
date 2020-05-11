@@ -1,7 +1,8 @@
 import React from "react";
-import { Form, Button as AntdButton, Select, Input, message } from "antd";
+import { Form, Button as AntdButton, Select, Input } from "antd";
 import moment from "moment";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
+import { notification } from "@edulastic/common";
 import { grades } from "@edulastic/constants";
 import { HeadingSpan, OrSeparator } from "../Common/StyledComponents/upgradePlan";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
@@ -81,7 +82,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
               }
               upgradePartialPremiumUserAction(subscriptionData);
             } else {
-              message.error("Please select grade and subject for subscription");
+              notification({ message: "selectGradeAndSubject" });
             }
           }
         }

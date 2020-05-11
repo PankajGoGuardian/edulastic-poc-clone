@@ -1,15 +1,14 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { Select, message } from "antd";
-import { Checkbox } from "@edulastic/common";
+import { Select } from "antd";
+import { notification, getFormattedAttrId } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { fractionStringToNumber } from "../../../../utils/helpers";
 import { FRACTION_FORMATS } from "../../../../constants/constantsForQuestions";
 import { RENDERING_BASE } from "../../Builder/config/constants";
 import Extras from "../../../../containers/Extras";
-import { MoreOptionsInput } from "../../common/styled_components";
 
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -18,7 +17,6 @@ import { Subtitle } from "../../../../styled/Subtitle";
 
 import { ScoreSettings } from "..";
 import Question from "../../../Question";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { TextInputStyled, SelectInputStyled } from "../../../../styled/InputStyles";
 import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
 
@@ -83,9 +81,10 @@ class AxisLabelsMoreOptions extends Component {
 
     if (Math.abs(xMax - xMin) / parsedValue > 20) {
       const ticksDistance = +(Math.abs(xMax - xMin) / 20).toFixed(1);
-      message.warn(
-        `For the range from "${xMin}" to "${xMax}" the minimum tick distance "${ticksDistance}" is recommended`
-      );
+      notification({
+        type: "warn",
+        msg: `For the range from "${xMin}" to "${xMax}" the minimum tick distance "${ticksDistance}" is recommended`
+      });
       this.setState({ ticksDistance });
       setNumberline({ ...numberlineAxis, ticksDistance });
       return;

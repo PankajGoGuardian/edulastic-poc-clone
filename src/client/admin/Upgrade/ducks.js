@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 import { combineReducers } from "redux";
 import { put, takeEvery, call, all } from "redux-saga/effects";
 import { adminApi } from "@edulastic/api";
-import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { keyBy } from "lodash";
 
 // ACTIONS
@@ -203,7 +203,7 @@ function* upgradeDistrict({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      message.success(result.message);
+      notification({ type: "success", msg: result.messag });
       yield put(manageSubscriptionsBydistrict.actions.subscribeSuccess(result.subscriptionResult[0]));
     }
   } catch (err) {
@@ -215,10 +215,10 @@ function* upgradeUserData({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      message.success(result.message);
+      notification({ type: "success", msg: result.messag });
       yield put(manageSubscriptionsByUsers.actions.success(result.subscriptionResult));
     } else {
-      message.error(result.message);
+      notification({ msg: result.messag });
     }
   } catch (err) {
     console.error(err);
@@ -230,7 +230,7 @@ function* searchUsersByEmailIds({ payload }) {
     const item = yield call(searchUsersByEmailIdsApi, payload);
     if (item.result) {
       if (!item.result.data.length) {
-        message.error("No Records Found");
+        notification({ message: "userNotFound" });
       }
       yield put(manageSubscriptionsByUsers.actions.searchEmailIdsSuccess(item.result));
     }
@@ -255,11 +255,11 @@ function* bulkSchoolsSubscribe({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      message.success(result.message);
+      notification({ type: "success", msg: result.messag });
       yield put(manageSubscriptionsBySchool.actions.bulkSubscriptionSuccess(result.subscriptionResult));
       yield put(manageSubscriptionsBySchool.actions.updateCurrentEditableRow());
     } else {
-      message.error(result.message);
+      notification({ msg: result.messag });
     }
   } catch (err) {
     console.error(err);
@@ -270,9 +270,9 @@ function* upgradePartialPremiumUser({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      message.success(result.message);
+      notification({ type: "success", msg: result.messag });
     } else {
-      message.error(result.message);
+      notification({ msg: result.messag });
     }
   } catch (err) {
     console.error(err);
@@ -282,10 +282,10 @@ function* upgradePartialPremiumUser({ payload }) {
 function* saveOrgPermissionsSaga({ payload }) {
   try {
     yield call(saveOrgPermissionsApi, payload);
-    yield call(message.success, "Permissions saved successfully.");
+    yield call(notification, { type: "success", message: "savOrgPermissionSucc" });
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Failed to save permissions.");
+    yield call(notification, { message: "savOrgPermissionErr" });
   }
 }
 

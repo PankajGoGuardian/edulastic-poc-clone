@@ -1,6 +1,7 @@
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { put, takeEvery, call, all } from "redux-saga/effects";
+import { notification } from "@edulastic/common";
 import { adminApi } from "@edulastic/api";
 import { message } from "antd";
 
@@ -76,7 +77,7 @@ function* updateCleverRequest({ payload }) {
     if (item.data.success) {
       yield put(cleverIdUpdateAction(item.data));
     } else {
-      message.error(item.data.message, 5);
+      notification({ msg: item.data.message });
     }
   } catch (err) {
     console.error(err);
@@ -95,7 +96,7 @@ function* fetchDeleteDistrictIdRequest({ payload }) {
   try {
     const item = yield call(deleteDistrictApi, payload);
     if (item.data.success) {
-      message.success(`${item.data.districtId} successfully deleted`);
+      notification({ msg: `${item.data.districtId} successfully deleted`, type: "success" });
       yield put(deleteDistrictIdSuccess(item.data));
     }
   } catch (err) {

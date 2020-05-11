@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input, Popconfirm, Spin, message } from "antd";
+import { notification } from "@edulastic/common";
 import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
 import { Table, Button, FlexColumn } from "../Common/StyledComponents";
 import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS, mapCountAsType, CLEVER_DISTRICT_ID_REGEX } from "../Data";
@@ -110,7 +111,7 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
         cleverId: editValue
       });
     } else {
-      message.error("Please enter valid Clever ID");
+      notification({ message: "inValiedCleverId" });
     }
   }
 

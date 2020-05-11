@@ -2,9 +2,10 @@ import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { put, takeEvery, call, all } from "redux-saga/effects";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { adminApi } from "@edulastic/api";
 import _get from "lodash.get";
-import {omit} from "lodash";
+import { omit } from "lodash";
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = "[admin] SEARCH_EXISTING_DATA_API";
@@ -177,13 +178,13 @@ function* fetchExistingData({ payload }) {
   try {
     const item = yield call(fetchExistingDataApi, payload);
     if (item.message) {
-      message.error(item.message);
+      notification({ msg: item.message });
     } else {
       yield put(fetchExistingDataSuccess(item));
     }
   } catch (err) {
     console.error(err);
-    message.error(err.message);
+    notification({ msg: err.message });
   }
 }
 
@@ -191,7 +192,7 @@ function* fetchApplyDeltaSync({ payload }) {
   try {
     const item = yield call(applyDeltaSyncApi, payload);
     if (item.data) {
-      message.success("Your data is synced");
+      notification({ type: "success", message: "" });
     }
   } catch (err) {
     console.error(err);
@@ -212,14 +213,14 @@ function* fetchSchoolsSync({ payload }) {
     const messageKey = success ? "success" : "error";
     message[messageKey](infoMessage);
   } catch ({ data: { message: errMsg } }) {
-    message.error(errMsg);
+    notification({ msg: errMsg });
   }
 }
 
 function* fetchClassNamesSync({ payload }) {
   try {
-    const item = yield call(fetchClassNamesSyncApi, payload);
-    message.success("Your data is synced");
+    yield call(fetchClassNamesSyncApi, payload);
+    notification({ type: "success", message: "classSyncSucc" });
   } catch (err) {
     console.error(err);
   }
@@ -227,17 +228,17 @@ function* fetchClassNamesSync({ payload }) {
 
 function* fetchEnableDisableSync({ payload }) {
   try {
-    const { syncEnabled, districtName="" } = payload;
-    const newPayload = omit(payload, ["districtName"])
+    const { syncEnabled, districtName = "" } = payload;
+    const newPayload = omit(payload, ["districtName"]);
     const item = yield call(enableDisableSyncApi, newPayload);
     if (item.success) {
-      if(syncEnabled){
-        message.success(`Enabled clever sync for ${districtName}`);
-      }else{
-        message.success(`Disabled clever sync for ${districtName}`);
+      if (syncEnabled) {
+        notification({ type: "success", msg: `Enabled clever sync for ${districtName}` });
+      } else {
+        notification({ type: "success", msg: `Disabled clever sync for ${districtName}` });
       }
     } else {
-      message.error(item.message);
+      notification({ msg: item.message });
     }
   } catch (err) {
     console.error(err);
@@ -258,9 +259,9 @@ function* uploadCSVtoCleverSaga({ payload }) {
     const response = yield call(uploadCSVtoClever, payload);
     const { status = "", message: responseMsg = "", data = [] } = response || {};
     if (status !== "success") {
-      return message.error(responseMsg);
+      return notification({ msg: responseMsg });
     }
-    message.success(responseMsg);
+    notification({ type: "success", msg: responseMsg });
     const { cleverId, districtId: cleverDistrict, mergeType } = payload;
     yield put(receiveMergeCleverIdsAction({ data, mergeType }));
     yield put(
@@ -270,7 +271,7 @@ function* uploadCSVtoCleverSaga({ payload }) {
       })
     );
   } catch (err) {
-    message.error("Uploading failed");
+    notification({ message: "uploadCsvErr" });
   }
 }
 
@@ -278,7 +279,7 @@ function* updateSubjectStandardSaga({ payload }) {
   try {
     const item = yield call(updateSubjectStandardApi, payload);
     if (item.data) {
-      message.success("Subject Standard Mapping Successfully completed!");
+      notification({ type: "success", msg: "subjectStandardMapping" });
     }
   } catch (err) {
     console.error(err);

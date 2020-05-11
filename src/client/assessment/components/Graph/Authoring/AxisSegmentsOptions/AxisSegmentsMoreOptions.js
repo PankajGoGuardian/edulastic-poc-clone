@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { message, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox } from "@edulastic/common";
+import { Checkbox, notification } from "@edulastic/common";
 
 import { fractionStringToNumber } from "../../../../utils/helpers";
 import { FRACTION_FORMATS } from "../../../../constants/constantsForQuestions";
@@ -87,9 +87,10 @@ class AxisSegmentsMoreOptions extends Component {
 
     if (Math.abs(xMax - xMin) / parsedValue > 20) {
       const ticksDistance = +(Math.abs(xMax - xMin) / 20).toFixed(1);
-      message.warn(
-        `For the range from "${xMin}" to "${xMax}" the minimum tick distance "${ticksDistance}" is recommended`
-      );
+      notification({
+        type: "warn",
+        msg: `For the range from "${xMin}" to "${xMax}" the minimum tick distance "${ticksDistance}" is recommended`
+      });
       this.setState({ ticksDistance });
       setNumberline({ ...numberlineAxis, ticksDistance });
       return;

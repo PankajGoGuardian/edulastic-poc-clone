@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Select, message } from "antd";
+import { notification } from "@edulastic/common";
+import { Select } from "antd";
 import { apiForms } from "../Data/apiForm";
 import ApiFormsMain from "../Components/ApiForm";
 
 import { submit } from "../Components/ApiForm/apis";
 
-const ApiForm = props => {
+const ApiForm = () => {
   const [id, setId] = useState();
   const handleOnChange = _id => setId(_id);
   const onClose = () => setId();
@@ -14,10 +15,10 @@ const ApiForm = props => {
     submit(data, option.endPoint, option.method).then(res => {
       if (res?.result) {
         if (res.result.success || res.status === 200) {
-          message.success(res?.result?.message || "Success");
+          notification({ type: "success", msg: res?.result?.message, message: "" });
           onClose();
         } else {
-          message.error(res?.result?.message || "Failed");
+          notification({ msg: res?.result?.message, message: "" });
         }
       }
     });

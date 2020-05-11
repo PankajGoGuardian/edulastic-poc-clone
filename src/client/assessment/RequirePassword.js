@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Input, Button, message } from "antd";
+import { EduButton, notification } from "@edulastic/common";
+import { Input } from "antd";
 import styled from "styled-components";
 import { red, green } from "@edulastic/colors";
 
 import { getAssigmentPasswordAction, setPasswordStatusAction } from "./actions/test";
 import { ConfirmationModal } from "../author/src/components/common/ConfirmationModal";
-import { EduButton } from "@edulastic/common";
 
 const RequirePassword = ({
   isPasswordValidated,
@@ -24,7 +24,9 @@ const RequirePassword = ({
   }, []);
   const [assignmentPassword, setAssignmentPassword] = useState("");
   const validatePassword = () => {
-    if (!assignmentPassword) return message.error("This assignment requies password");
+    if (!assignmentPassword) {
+      return notification({ message: "assignmentRequiredPass" });
+    }
     getAssignmentPassword(assignmentPassword);
   };
 

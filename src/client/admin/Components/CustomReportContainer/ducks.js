@@ -1,20 +1,16 @@
+import { notification } from "@edulastic/common";
 import { createSelector } from "reselect";
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { adminApi, customReportApi, schoolApi } from "@edulastic/api";
-import { message } from "antd";
 
 const GET_CUSTOM_REPORT_REQUEST = "[custom-reports] get custom reports for district request";
-const GET_CUSTOM_REPORT_REQUEST_SUCCESS =
-  "[custom-reports] get custom reports for district success";
+const GET_CUSTOM_REPORT_REQUEST_SUCCESS = "[custom-reports] get custom reports for district success";
 const GET_CUSTOM_REPORT_REQUEST_ERROR = "[custom-reports] get custom reports for district error";
 
-const UPDATE_PERMISSION_STATUS_REQUEST =
-  "[custom-reports] get custom reports permission status request";
-const UPDATE_PERMISSION_STATUS_REQUEST_SUCCESS =
-  "[custom-reports] get custom reports permission status success";
-const UPDATE_PERMISSION_STATUS_REQUEST_ERROR =
-  "[custom-reports] get custom reports permission status error";
+const UPDATE_PERMISSION_STATUS_REQUEST = "[custom-reports] get custom reports permission status request";
+const UPDATE_PERMISSION_STATUS_REQUEST_SUCCESS = "[custom-reports] get custom reports permission status success";
+const UPDATE_PERMISSION_STATUS_REQUEST_ERROR = "[custom-reports] get custom reports permission status error";
 
 const UPDATE_CUSTOM_REPORT_REQUEST = "[custom-reports] update custom report request";
 const UPDATE_CUSTOM_REPORT_REQUEST_SUCCESS = "[custom-reports] update custom report success";
@@ -216,11 +212,10 @@ function* getCustomReportRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    const msg = "Failed to fetch custom report for district Please try again...";
-    yield call(message.error, msg);
+    yield call(notification, { message: "getCustomReportErr" });
     yield put({
       type: GET_CUSTOM_REPORT_REQUEST_ERROR,
-      payload: { error: msg }
+      payload: { error: "getCustomReportErr" }
     });
   }
 }
@@ -239,14 +234,13 @@ function* updatePermissionStatusRequest({ payload }) {
       type: GET_CUSTOM_REPORT_REQUEST_SUCCESS,
       payload: customReportList
     });
-    yield call(message.success, "Permission updated successfully");
+    yield call(notification, { type: "success", message: "permissionUpdateSucc" });
   } catch (error) {
     console.log("err", error.stack);
-    const msg = "Failed to update custom report permission status Please try again...";
-    yield call(message.error, msg);
+    yield call(notification, { message: "permissionUpdateErr" });
     yield put({
       type: UPDATE_PERMISSION_STATUS_REQUEST_ERROR,
-      payload: { error: msg }
+      payload: { error: "permissionUpdateErr" }
     });
   }
 }
@@ -265,14 +259,13 @@ function* updateCustomReportRequest({ payload }) {
       type: GET_CUSTOM_REPORT_REQUEST_SUCCESS,
       payload: customReportList
     });
-    yield call(message.success, "Custom Report updated successfully");
+    yield call(notification, { message: "customReportUpdated" });
   } catch (error) {
     console.log("err", error.stack);
-    const msg = "Failed to update custom report Please try again...";
-    yield call(message.error, msg);
+    yield call(notification, { message: "customReportUpdateErr" });
     yield put({
       type: UPDATE_CUSTOM_REPORT_REQUEST_ERROR,
-      payload: { error: msg }
+      payload: { error: "customReportUpdateErr" }
     });
   }
 }
@@ -291,14 +284,13 @@ function* createCustomReportRequest({ payload }) {
       type: GET_CUSTOM_REPORT_REQUEST_SUCCESS,
       payload: customReportList
     });
-    yield call(message.success, "Custom Report created successfully");
+    yield call(notification, { type: "success", message: "customReportCreated" });
   } catch (error) {
     console.log("err", error.stack);
-    const msg = "Failed to create custom report Please try again...";
-    yield call(message.error, msg);
+    yield call(notification, { message: "customReportCreateErr" });
     yield put({
       type: CREATE_CUSTOM_REPORT_REQUEST_ERROR,
-      payload: { error: msg }
+      payload: { error: "customReportCreateErr" }
     });
   }
 }

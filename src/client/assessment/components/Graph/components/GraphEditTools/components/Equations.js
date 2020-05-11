@@ -2,12 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
-import { message } from "antd";
 import { isEqual } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { graphEvaluateApi } from "@edulastic/api";
-import { MathModal, MathInput, EduButton } from "@edulastic/common";
+import { MathModal, MathInput, EduButton, notification } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { math } from "@edulastic/constants";
 import { backgrounds, greyThemeDark2 } from "@edulastic/colors";
@@ -87,7 +86,7 @@ class Equations extends Component {
         );
       })
       .catch(() => {
-        message.error("Something went wrong in the entered equation. Please try again");
+        notification({ message: "equationErr" });
       });
   };
 

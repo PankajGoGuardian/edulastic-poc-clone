@@ -5,11 +5,11 @@ import styled from "styled-components";
 import { white, lightGreen5, greenDark1, darkGrey2 } from "@edulastic/colors";
 
 const UnansweredPopup = props => {
-  const { className, visible, title, onSkip, onClose, data } = props;
+  const { className, visible, title, onSkip, onClose } = props;
 
   const footer = (
     <StyledFooter>
-      <EduButton btnType="secondary" data-cy="proceed-skip" height="40px" onClick={onSkip}>
+      <EduButton isGhost data-cy="proceed-skip" height="40px" onClick={onSkip}>
         SKIP
       </EduButton>
       <EduButton height="40px" data-cy="cancel-skip" onClick={onClose}>
@@ -19,20 +19,19 @@ const UnansweredPopup = props => {
   );
   return (
     <Modal
-      title={title}
+      title={title || "Attention"}
       visible={visible}
       onOk={onSkip}
       className={className}
       footer={footer}
       closable={false}
       maskClosable={false}
+      zIndex={1050}
+      centered
     >
       <div className="container">
-        <p>
-          You must answer all questions on this page before moving to the next page. (You may have to scroll down to see
-          all the questions.) Question(s) that still require an answer:
-          <b> {data.join(", ")}</b>
-        </p>
+        <p>All the questions on this page have not been answered.</p>
+        <p>(You might need to scroll down to see all the questions)</p>
       </div>
     </Modal>
   );
@@ -41,13 +40,14 @@ const UnansweredPopup = props => {
 const StyledUnansweredPopup = styled(UnansweredPopup)`
   .container {
     background: ${white};
+    font-weight: 600;
   }
   .model-footer {
     display: flex;
     flex-direction: row-reverse;
   }
   .ant-modal-body {
-    padding: 29px 29px 0 29px;
+    padding: 0 29px 0 29px;
   }
   .ant-modal-footer {
     padding: 29px;
@@ -62,18 +62,24 @@ const StyledUnansweredPopup = styled(UnansweredPopup)`
         }
       }
     }
+    button + button {
+      margin-left: 40px;
+    }
   }
   p {
     color: ${darkGrey2};
-    margin-bottom: 20px;
     font-size: 14px;
-  }
-  p + p {
-    margin-bottom: 0;
   }
   .ant-card-body {
     display: flex;
     flex-direction: column;
+  }
+  .ant-modal-header {
+    border: none;
+    .ant-modal-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
   }
 `;
 

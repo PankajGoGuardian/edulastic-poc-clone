@@ -352,6 +352,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       lcb.header.clickOnExpressGraderTab();
     });
     context(" > verify scores", () => {
+      before("Change toggle button to score view", () => {
+        expressg.getScoreToggleButton().click({ force: true });
+      });
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
         it(` > verify scores and color for student :: ${studentName}`, () => {

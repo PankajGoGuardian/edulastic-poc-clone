@@ -77,6 +77,7 @@ const ContentBuckets = lazy(() => import("../ContentBuckets"));
 const Collections = lazy(() => import("../ContentCollections"));
 const ExternalTools = lazy(() => import("../ExternalTools"));
 const StudentsReportCard = lazy(() => import("../StudentsReportCard"));
+const Gradebook = lazy(() => import("../Gradebook"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({
@@ -309,13 +310,21 @@ const Author = ({
                         </Suspense>
                       )}
                     />
-
                     <Route
                       exact
                       path="/author/playlists/limit/:limit/page/:page/:filter?"
                       render={props => (
                         <Suspense fallback={<Progress />}>
                           <PlayList {...props} />
+                        </Suspense>
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/author/gradebook"
+                      render={props => (
+                        <Suspense fallback={<Progress />}>
+                          <Gradebook {...props} />
                         </Suspense>
                       )}
                     />

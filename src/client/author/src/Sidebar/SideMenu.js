@@ -33,7 +33,8 @@ import {
   IconSettings,
   IconSubscriptionHighlight,
   IconProfileHighlight,
-  IconSignoutHighlight
+  IconSignoutHighlight,
+  IconInterface
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
@@ -64,12 +65,17 @@ const menuItems = [
     condtition: "showCancelButton"
   },
   {
+    label: "Gradebook",
+    icon: IconInterface,
+    allowedPathPattern: [/author\/gradebook/],
+    path: "author/gradebook"
+  },
+  {
     label: "Reports",
     icon: IconBarChart,
     allowedPathPattern: [/author\/reports/],
     path: "author/reports"
   },
-
   {
     label: "Item Bank",
     icon: IconItemLibrary,
@@ -126,16 +132,16 @@ class SideMenu extends Component {
 
     let _menuItems = cloneDeep(menuItems);
     if (isOrganizationDistrict) {
-      _menuItems[7].label = "Organization";
+      _menuItems = _menuItems.map(i => (i.label === "Manage District" ? { ...i, label: "Organization" } : i));
     }
-    if (features.isCurator || features.isPublisherAuthor) {
-      _menuItems[0].path = "publisher/dashboard";
-      const [item1, item2, item3, item4, item5, item6] = _menuItems;
-      _menuItems = [item1, item4, item5, item6];
+    if (features.isCurator) {
+      _menuItems = _menuItems.map(i => (i.label === "Dashboard" ? { ...i, path: "publisher/dashboard" } : i));
+      _menuItems = _menuItems.filter(i =>
+        ["Dashboard", "Item Bank", "Test Library", "Playlist Library"].includes(i.label)
+      );
     }
     if (features.isPublisherAuthor) {
-      const [item1, ...rest] = _menuItems;
-      _menuItems = [...rest];
+      _menuItems = _menuItems.filter(i => ["Item Bank", "Test Library", "Playlist Library"].includes(i.label));
     }
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter(i => ["Item Bank", "Test Library", "PlayList Library"].includes(i.label));
@@ -371,12 +377,16 @@ class SideMenu extends Component {
                   }
                   // to hide Dashboard from side menu if a user is DA or SA.
                   if (
-                    ["district-admin", "school-admin"].includes(userRole) &&
                     menu.label === "Dashboard" &&
+                    ["district-admin", "school-admin"].includes(userRole) &&
                     !features.isCurator
-                  )
+                  ) {
                     return null;
-
+                  }
+                  // hide Gradebook from side menu based on features list
+                  if (menu.label === "Gradebook" && !features.gradebook) {
+                    return null;
+                  }
                   const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
                   const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
                   return (

@@ -23,6 +23,7 @@ const MergeUsersModal = ({
   mergeUsers
 }) => {
   // state
+  const [tooltipRow, setTooltipRow] = useState(-1);
   const [primaryUserId, setPrimaryUserId] = useState([]);
 
   useEffect(() => {
@@ -48,16 +49,15 @@ const MergeUsersModal = ({
       title: "Name",
       key: "name",
       dataIndex: "name",
-      render: (data, { _id }) =>
-        _id === primaryUserId ? (
-          <Tooltip title="The selected user will remain active">
-            <Radio onClick={() => setPrimaryUserId(_id)} checked>
-              {data}
-            </Radio>
-          </Tooltip>
-        ) : (
-          <Radio onClick={() => setPrimaryUserId(_id)}>{data}</Radio>
-        ),
+      render: (data, { _id }, index) => (
+        <Tooltip
+          placement="topLeft"
+          title="The selected user will remain active"
+          visible={_id === primaryUserId && index === tooltipRow}
+        >
+          <Radio checked={_id === primaryUserId}>{data}</Radio>
+        </Tooltip>
+      ),
       sorter: (a, b) => a.name.localeCompare(b.name)
     },
     {
@@ -99,11 +99,12 @@ const MergeUsersModal = ({
   ];
 
   const curatedDetails = userDetails.map(u => ({
+    _id: u._id,
     name: [u.firstName || "", u.middleName || "", u.lastName || ""].join(" ") || "-",
     username: u.username || "-",
     email: u.email || "-",
     lms: u.lms || "-",
-    openId: u.openId,
+    openId: u.openId || "-",
     assignments: parseInt(u.assignments || 0),
     createdAt: moment(u.createdAt).format("MMM D, YYYY")
   }));
@@ -134,7 +135,20 @@ const MergeUsersModal = ({
       ]}
       centered
     >
-      <StyledTable loading={loading} columns={columns} dataSource={curatedDetails} pagination={false} />
+      <StyledTable
+        loading={loading}
+        columns={columns}
+        dataSource={curatedDetails}
+        pagination={false}
+        onRow={({ _id }, index) => ({
+          onClick: e => {
+            e.stopPropagation();
+            setPrimaryUserId(_id);
+          },
+          onMouseEnter: () => setTooltipRow(index),
+          onMouseLeave: () => setTooltipRow(-1)
+        })}
+      />
     </StyledModal>
   );
 };

@@ -297,7 +297,7 @@ class Item extends Component {
             {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
 
             <TagsWrapper isPlaylist={isPlaylist}>
-              <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards />
+              <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
               {isPlaylist && <Tags show={2} tags={_source.tags || tags} key="tags" />}
             </TagsWrapper>
           </TestInfo>

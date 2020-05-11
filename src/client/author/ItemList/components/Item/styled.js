@@ -365,8 +365,8 @@ export const CategoryContent = styled.div`
 `;
 
 export const Label = styled(Tag)`
-  padding: 4px 10px;
-  margin-right: 3px;
+  padding: 2px 10px;
+  margin: 0px 3px 3px 0px;
   border: none;
   font-weight: 700;
   background: ${themeLightGrayBgColor};

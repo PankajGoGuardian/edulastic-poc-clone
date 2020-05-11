@@ -51,7 +51,8 @@ export const TagsWrapper = styled(Col)`
 
 export const TestStatus = styled.span`
   background: ${({ status }) => backgroundColor[status]};
-  padding: 4px 10px;
+  padding: 2px 10px;
+  margin-bottom: 3px;
   border-radius: 5px;
   font-size: 9px;
   color: ${({ status }) => textColor[status]};

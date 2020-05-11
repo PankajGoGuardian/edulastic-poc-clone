@@ -1,8 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getStatus } from "../../../src/utils/getStatus";
 import { showItemStatusSelector } from "../../../src/selectors/user";
-import PropTypes from "prop-types";
+import { getStatus } from "../../../src/utils/getStatus";
 
 const TestStatusWrapper = ({ children: TestStatus, status, isPublisherUser, checkUser }) => {
   if (checkUser && !isPublisherUser) {

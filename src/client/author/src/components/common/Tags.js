@@ -9,8 +9,7 @@ import {
   white,
   grey,
   lightGreen6,
-  mediumDesktopExactWidth,
-  themeColor
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Dropdown, Tag } from "antd";
 
@@ -135,6 +134,7 @@ const Label = styled(Tag)`
   border: none;
   line-height: 16px;
   margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : "3px")} 0;
+  height: 24px;
 
   &.gray-tags {
     padding: 4px 15px;

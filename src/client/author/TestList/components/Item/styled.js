@@ -71,10 +71,6 @@ export const TagsWrapper = styled.div`
   height: ${props => (props.isPlaylist ? "70px" : "55px")};
   overflow: hidden;
   text-align: left;
-
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    height: ${props => (props.isPlaylist ? "70px" : "48px")};
-  }
 `;
 
 export const Footer = styled.div`

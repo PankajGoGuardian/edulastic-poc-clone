@@ -89,7 +89,7 @@ class KeyPadOptions extends Component {
       data[0] = {
         label: "label",
         title: "",
-        value: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        value: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
       };
     } else {
       data[0] = value;

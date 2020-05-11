@@ -48,19 +48,7 @@ export default class KeyPad extends React.Component {
 
   render() {
     const { symbol, buttonStyle, item } = this.props;
-    let btns = this.keyboardButtons(symbol);
 
-    let cols = btns.length / 4;
-    cols = cols % 1 !== 0 ? Math.floor(cols) + 1 : cols;
-    if (symbol === "all") {
-      cols = 4;
-    }
-
-    const numOfBtns = cols * 4;
-
-    if (btns.length < numOfBtns) {
-      btns = btns.concat(new Array(numOfBtns - btns.length).fill({ types: [symbol], label: "" }));
-    }
     if (isObject(symbol)) {
       const customKeys = get(item, "customKeys", []);
 

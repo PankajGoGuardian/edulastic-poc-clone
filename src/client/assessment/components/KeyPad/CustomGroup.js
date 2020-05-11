@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, uniqBy } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -19,8 +19,14 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
     const customBtns = [{ value: "", label: t("component.options.empty") }].concat(
       customKeys.map(key => ({ value: key, label: key }))
     );
+
+    const { TAB_BUTTONS, KEYBOARD_BUTTONS } = MathKeyboard;
+
+    const tabBtns = TAB_BUTTONS.reduce((acc, curr) => [...acc, ...curr.buttons], []);
+    const allKeyButtons = uniqBy(KEYBOARD_BUTTONS.concat(tabBtns), btn => btn.handler);
+
     return customBtns.concat(
-      MathKeyboard.KEYBOARD_BUTTONS.map(button => ({
+      allKeyButtons.map(button => ({
         value: button.handler,
         label: button.label
       }))

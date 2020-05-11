@@ -152,7 +152,7 @@ class MathInput extends React.PureComponent {
     const { mathField } = this.state;
 
     // keys for which actions need to be ignored
-    const blacklistKeys = ["}", "]"];
+    const blacklistKeys = ["}"];
 
     if (!mathField) return;
     if (key === "in") {
@@ -177,8 +177,6 @@ class MathInput extends React.PureComponent {
       mathField.write(key);
     } else if (key === "{") {
       mathField.write("\\left\\{\\right\\}");
-    } else if (key === "[") {
-      mathField.write("\\left[\\right]");
     } else if (!blacklistKeys.includes(key)) {
       mathField[command](key);
     }

@@ -4,6 +4,11 @@ import styled from "styled-components";
 import chunk from "lodash/chunk";
 import cloneDeep from "lodash/cloneDeep";
 import { white, darkGrey } from "@edulastic/colors";
+import { math } from "@edulastic/constants";
+
+const {
+  KeyboardSize: { width: keyWidth, height: keyHeight }
+} = math;
 
 const limitRow = 3;
 const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
@@ -142,8 +147,8 @@ const Row = styled.div`
 `;
 
 const Button = styled.div`
-  width: 50px;
-  height: 50px;
+  width: ${keyWidth}px;
+  height: ${keyHeight}px;
   display: flex;
   justify-content: center;
   align-items: center;

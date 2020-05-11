@@ -8,6 +8,6 @@ const {
 export const NumberPadWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: ${({ width }) => (width ? `${width}px` : `calc(${keyWidth}px * 4)`)};
+  width: ${({ width }) => (width ? `${width}px` : `calc(${keyWidth}px * 6)`)};
   margin-right: 0px;
 `;

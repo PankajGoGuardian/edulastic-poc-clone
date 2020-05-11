@@ -234,6 +234,30 @@ const INTERMEDIATE = [
     command: "cmd"
   },
   {
+    handler: "(",
+    label: "(",
+    types: ["intermediate"],
+    command: "write"
+  },
+  {
+    handler: ")",
+    label: ")",
+    types: ["intermediate"],
+    command: "write"
+  },
+  {
+    handler: "[",
+    label: "[",
+    types: ["intermediate"],
+    command: "write"
+  },
+  {
+    handler: "]",
+    label: "]",
+    types: ["intermediate"],
+    command: "write"
+  },
+  {
     handler: "/",
     labelcy: "divide",
     value: "divide",
@@ -887,6 +911,7 @@ const tabIconSize = {
   width: 25,
   height: 25
 };
+
 export const TAB_BUTTONS = [
   {
     label: <CustomImage src={Grupo6134} {...tabIconSize} role="presentation" />,

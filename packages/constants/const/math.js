@@ -270,7 +270,7 @@ const characterMapButtons = [
   "ü"
 ];
 
-const KeyboardSize = { width: 47, height: 47 };
+const KeyboardSize = { width: 50, height: 50 };
 
 const defaultNumberPad = [
   "1",

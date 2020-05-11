@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { isObject, compact } from "lodash";
 import { math } from "@edulastic/constants";
-import { KEYBOARD_BUTTONS } from "./constants/keyboardButtons";
+import { KEYBOARD_BUTTONS, TAB_BUTTONS } from "./constants/keyboardButtons";
 import { NUMBER_PAD_ITEMS } from "./constants/numberPadItems";
 
 import KeyboardHeader from "./components/KeyboardHeader";
@@ -33,6 +33,8 @@ class MathKeyboard extends React.PureComponent {
   };
 
   static KEYBOARD_BUTTONS = KEYBOARD_BUTTONS;
+
+  static TAB_BUTTONS = TAB_BUTTONS;
 
   static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS;
 

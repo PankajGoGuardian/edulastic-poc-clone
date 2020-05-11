@@ -12,7 +12,7 @@ import {
 } from "@edulastic/colors";
 
 // left 70 as the side menu space need to be considered.
-const FixedHeaderStyle = css`
+export const FixedHeaderStyle = css`
   position: fixed;
   background: ${white};
   top: 0;

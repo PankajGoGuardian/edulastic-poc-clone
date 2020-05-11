@@ -56,7 +56,7 @@ const DistrictRoutes = lazy(() => import("./districtRoutes/index"));
 const ResetPassword = lazy(() => import("./resetPassword/index"));
 const SetParentPassword = lazy(() => import("./SetParentPassword"));
 const CLIAccessBanner = lazy(() => import("./author/Dashboard/components/CLIAccessBanner"));
-
+const PublicTest = lazy(() => import("./publicTest/container"));
 const Loading = () => (
   <div>
     <Spin />
@@ -352,7 +352,7 @@ class App extends Component {
               {testRedirectRoutes.map(route => (
                 <Route path={route} component={RedirectToTest} key={route} />
               ))}
-
+              <Route path="/public/view-test/:testId" render={props => <PublicTest {...props} />} />
               <Redirect exact to={defaultRoute} />
             </Switch>
           </DndProvider>

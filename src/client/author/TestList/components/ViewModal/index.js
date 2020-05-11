@@ -116,13 +116,14 @@ class ViewModal extends React.Component {
       onReject,
       onApprove,
       status,
-      interestedCurriculums,
       windowWidth,
       userId,
       collections,
       allowDuplicate,
       userRole,
-      previewLink
+      previewLink,
+      modalView = true,
+      publicAccess = false
     } = this.props;
     const {
       title = "",
@@ -181,8 +182,8 @@ class ViewModal extends React.Component {
       (sharedWith?.find(x => x._id === userId) && permission === "EDIT") ||
       isEdulasticCurator;
 
-    return (
-      <Modal open={isShow} onClose={close} styles={modalStyles}>
+    const contanier = (
+      <>
         <ModalTitle>
           <Tooltip title={title}>
             <TestTitleWrapper>{title}</TestTitleWrapper>
@@ -200,85 +201,89 @@ class ViewModal extends React.Component {
             <Image src={thumbnail} />
           </ModalColumn>
           <ModalColumn justify="center" ref={this.modalRef}>
-            <ButtonContainer>
-              <EduButton
-                isGhost
-                height="40px"
-                width="100%"
-                style={{ justifyContent: "center" }}
-                data-cy="details-button"
-                onClick={() => {
-                  onEdit();
-                }}
-              >
-                <IconDescription />
-                <span>DETAILS</span>
-              </EduButton>
-              {allowDuplicate && !isEdulasticCurator && (
+            {!publicAccess && (
+              <ButtonContainer>
                 <EduButton
                   isGhost
                   height="40px"
                   width="100%"
                   style={{ justifyContent: "center" }}
-                  data-cy="duplicate-button"
+                  data-cy="details-button"
                   onClick={() => {
-                    onDuplicate();
+                    onEdit();
                   }}
                 >
-                  <IconCopy />
-                  <span>CLONE</span>
+                  <IconDescription />
+                  <span>DETAILS</span>
                 </EduButton>
-              )}
-
-              {status === "inreview" ? (
-                <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                {allowDuplicate && !isEdulasticCurator && (
                   <EduButton
                     isGhost
                     height="40px"
                     width="100%"
                     style={{ justifyContent: "center" }}
-                    data-cy="reject-button"
+                    data-cy="duplicate-button"
                     onClick={() => {
-                      onReject();
+                      onDuplicate();
                     }}
                   >
-                    <Icon type="stop" />
-                    <span>REJECT</span>
+                    <IconCopy />
+                    <span>CLONE</span>
                   </EduButton>
-                </FeaturesSwitch>
-              ) : null}
-              {isDeleteAllowed ? (
-                <EduButton
-                  isGhost
-                  height="40px"
-                  width="100%"
-                  style={{ justifyContent: "center" }}
-                  data-cy="delete-button"
-                  onClick={() => onDelete()}
-                >
-                  <IconTrashAlt />
-                  <span>DELETE</span>
-                </EduButton>
-              ) : null}
-            </ButtonContainer>
-            <ButtonContainer>
-              {status === "inreview" || status === "rejected" ? (
-                <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                )}
+
+                {status === "inreview" ? (
+                  <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                    <EduButton
+                      isGhost
+                      height="40px"
+                      width="100%"
+                      style={{ justifyContent: "center" }}
+                      data-cy="reject-button"
+                      onClick={() => {
+                        onReject();
+                      }}
+                    >
+                      <Icon type="stop" />
+                      <span>REJECT</span>
+                    </EduButton>
+                  </FeaturesSwitch>
+                ) : null}
+                {isDeleteAllowed ? (
                   <EduButton
                     isGhost
                     height="40px"
-                    data-cy="approve-button"
-                    onClick={() => {
-                      onApprove(editedCollections !== null ? editedCollections : _collections);
-                    }}
+                    width="100%"
+                    style={{ justifyContent: "center" }}
+                    data-cy="delete-button"
+                    onClick={() => onDelete()}
                   >
-                    <Icon type="check" />
-                    <span>Approve</span>
+                    <IconTrashAlt />
+                    <span>DELETE</span>
                   </EduButton>
-                </FeaturesSwitch>
-              ) : null}
-            </ButtonContainer>
-            <ButtonContainer>
+                ) : null}
+              </ButtonContainer>
+            )}
+            {!publicAccess && (
+              <ButtonContainer>
+                {status === "inreview" || status === "rejected" ? (
+                  <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                    <EduButton
+                      isGhost
+                      height="40px"
+                      data-cy="approve-button"
+                      onClick={() => {
+                        onApprove(editedCollections !== null ? editedCollections : _collections);
+                      }}
+                    >
+                      <Icon type="check" />
+                      <span>Approve</span>
+                    </EduButton>
+                  </FeaturesSwitch>
+                ) : null}
+              </ButtonContainer>
+            )}
+            <ButtonContainer className={publicAccess ? "public-access-btn-wrapper" : ""}>
               <EduButton
                 height="40px"
                 width="100%"
@@ -288,10 +293,15 @@ class ViewModal extends React.Component {
                 data-cy="preview-button"
                 onClick={previewLink}
               >
-                <IconEye />
+                {!publicAccess && <IconEye />}
                 Preview
               </EduButton>
-              {(permission !== "VIEW" || status === "published") && !isEdulasticCurator && (
+              {publicAccess && (
+                <EduButton height="40px" width="100%" justifyContent="center" data-cy="assign-button" onClick={assign}>
+                  <span>ASSIGN</span>
+                </EduButton>
+              )}
+              {(permission !== "VIEW" || status === "published") && !isEdulasticCurator && !publicAccess && (
                 <EduButton
                   height="40px"
                   width="100%"
@@ -452,14 +462,22 @@ class ViewModal extends React.Component {
             </PerfectScrollbar>
           </ModalColumn>
         </ModalContainer>
-      </Modal>
+      </>
     );
+
+    if (modalView) {
+      return (
+        <Modal open={isShow} onClose={close} styles={modalStyles}>
+          {contanier}
+        </Modal>
+      );
+    }
+    return contanier;
   }
 }
 
 export default connect(
   state => ({
-    interestedCurriculums: getInterestedCurriculumsSelector(state),
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state)

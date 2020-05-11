@@ -85,11 +85,12 @@ const updateBulkTestsStatus = data =>
     })
     .then(result => result.data.result);
 
-const getPublicTest = testId =>
+const getPublicTest = (testId, params = {}) =>
   api
     .callApi({
       url: `public/test/${testId}`,
-      method: "get"
+      method: "get",
+      params
     })
     .then(result => result.data.result);
 

@@ -21,7 +21,7 @@ const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, dis
     options: {
       removedQuestion: "DISCARD",
       addedQuestion: "SKIP",
-      testSettings: "ALL",
+      testSettings: "EXCLUDE",
       editedQuestion: "SKIP"
     }
   };

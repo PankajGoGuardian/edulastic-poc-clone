@@ -154,7 +154,8 @@ const TestPageHeader = ({
   playlistStatus,
   testItems,
   isTestLoading,
-  validateTest
+  validateTest,
+  setDisableAlert
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -217,6 +218,7 @@ const TestPageHeader = ({
       message.warn("Teacher can not regrade author's test");
       return onPublish();
     }
+    setDisableAlert(true);
     setCurrentAction("publish");
     onRegradeConfirm();
     return true;

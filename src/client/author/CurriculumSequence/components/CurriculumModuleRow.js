@@ -1190,13 +1190,13 @@ const ModuleHeader = styled.div`
 const ModuleID = styled.div`
   margin-right: ${props => props.marginRight || "10px"};
   width: 100%;
-  max-width: 64px;
+  max-width: 60px;
   span {
     display: block;
     width: fit-content;
     margin: auto;
     min-width: 38px;
-    max-width: 64px;
+    max-width: 60px;
     min-height: 30px;
     color: ${white};
     background: ${greenDark6};

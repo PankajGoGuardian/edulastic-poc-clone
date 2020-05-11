@@ -1233,15 +1233,13 @@ const ModalFooter = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 0px;
   box-sizing: border-box;
   width: 100%;
   align-self: ${props => (props.active ? "flex-start" : "center")};
   margin-left: ${props => (props.active ? "0px" : "auto")};
   margin-right: ${props => (props.active ? "0px" : "auto")};
   @media only screen and (max-width: ${largeDesktopWidth}) {
-    padding: 0px 20px;
     width: 100%;
   }
 `;

@@ -101,6 +101,7 @@ export const StyledTable = styled(Table)`
           .ant-table-tbody {
             border-collapse: collapse;
             tr {
+              cursor: pointer;
               td {
                 height: 40px;
                 padding: 5px 10px;

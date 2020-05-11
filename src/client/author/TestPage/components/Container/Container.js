@@ -157,7 +157,8 @@ class Container extends PureComponent {
     showShareModal: false,
     isShowFilter: true,
     showCancelButton: false,
-    testLoaded: false
+    testLoaded: false,
+    disableAlert: false
   };
 
   gotoTab = tab => {
@@ -295,19 +296,17 @@ class Container extends PureComponent {
       userId,
       testStatus,
       questionsUpdated,
-      updated,
-      history
+      updated
     } = this.props;
     const { authors, itemGroups, isDocBased } = test;
-    const { editEnable } = this.state;
+    const { editEnable, disableAlert } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
-
     if (
       isEditable &&
       itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 &&
       (updated || (questionsUpdated && isDocBased)) &&
-      !history.location.state?.editAssigned
+      !disableAlert
     ) {
       return true;
     }
@@ -773,6 +772,10 @@ class Container extends PureComponent {
     approveOrRejectSingleTestRequest(payload);
   };
 
+  setDisableAlert = payload => {
+    this.setState({ disableAlert: payload });
+  };
+
   render() {
     const {
       creating,
@@ -859,6 +862,7 @@ class Container extends PureComponent {
           showCancelButton={showCancelButton}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           validateTest={this.validateTest}
+          setDisableAlert={this.setDisableAlert}
         />
         {this.renderContent()}
       </>

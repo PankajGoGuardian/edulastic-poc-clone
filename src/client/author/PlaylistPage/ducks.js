@@ -652,7 +652,7 @@ function* createPlaylistSaga({ payload }) {
     if (title !== undefined && !title.trim().length) {
       return yield call(message.error(" Name field cannot be empty "));
     }
-    const dataToSend = omit(payload.data, ["sharedWith", "createdDate", "updatedDate"]);
+    const dataToSend = omit(payload.data, ["sharedWith", "createdDate", "updatedDate", "testItems"]);
 
     const entity = yield call(curriculumSequencesApi.create, { data: dataToSend });
     const hash = payload.toReview ? "#review" : "";
@@ -678,7 +678,8 @@ function* updatePlaylistSaga({ payload }) {
       "authors",
       "sharedType",
       "_id",
-      "__v"
+      "__v",
+      "testItems"
     ]);
 
     dataToSend.modules = dataToSend.modules.map(mod => {
@@ -723,7 +724,16 @@ function* publishPlaylistSaga({ payload }) {
       yield call(message.error, "Playlist is not associated with any collection.");
       return;
     }
-    const dataToSend = omit(data, ["updatedDate", "createdDate", "sharedWith", "authors", "sharedType", "_id", "__v"]);
+    const dataToSend = omit(data, [
+      "updatedDate",
+      "createdDate",
+      "sharedWith",
+      "authors",
+      "sharedType",
+      "_id",
+      "__v",
+      "testItems"
+    ]);
     dataToSend.modules = dataToSend.modules.map(mod => {
       mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
       return mod;

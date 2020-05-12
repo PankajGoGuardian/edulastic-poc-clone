@@ -648,6 +648,9 @@ export function* fetchUser() {
     }
     const firebaseUser = yield call(getCurrentFirebaseUser);
     const user = yield call(userApi.getUser, firebaseUser ? undefined : true);
+    if ((!firebaseUser && user.firebaseAuthToken) || (firebaseUser && firebaseUser !== user._id)) {
+      yield firebase.auth().signInWithCustomToken(user.firebaseAuthToken);
+    }
     yield call(segmentApi.analyticsIdentify, { user });
     const key = `${localStorage.getItem("defaultTokenKey")}`;
 
@@ -931,6 +934,11 @@ function* cleverSSOLogin({ payload }) {
 
 function* getUserData({ payload: res }) {
   try {
+    const { firebaseAuthToken } = res;
+    const firebaseUser = yield call(getCurrentFirebaseUser);
+    if ((!firebaseUser && firebaseAuthToken) || (firebaseUser && firebaseUser !== res._id)) {
+      yield firebase.auth().signInWithCustomToken(firebaseAuthToken);
+    }
     const user = pick(res, userPickFields);
     TokenStorage.storeAccessToken(res.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);

@@ -230,7 +230,7 @@ function* searchUsersByEmailIds({ payload }) {
     const item = yield call(searchUsersByEmailIdsApi, payload);
     if (item.result) {
       if (!item.result.data.length) {
-        notification({ message: "userNotFound" });
+        notification({ messageKey: "userNotFound" });
       }
       yield put(manageSubscriptionsByUsers.actions.searchEmailIdsSuccess(item.result));
     }

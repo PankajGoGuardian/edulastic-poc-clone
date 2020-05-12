@@ -26,15 +26,15 @@ const defaultConf = {
 /**
  * @see https://ant.design/components/notification/
  * type is notification type.
- * message is notification's message and description, we can get it from locales.
+ * messageKey is notification's message and description, we can get it from locales.
  * msg is custom message, if msg is passed, then will not use locales.
- * @param {{type?:String, message: String, showButton?:boolean, msg?:String }} options
+ * @param {{type?:String, messageKey: String, showButton?:boolean, msg?:String }} options
  */
 const notification = options => {
-  const { message, msg, ...restOptions } = options;
+  const { messageKey, msg, ...restOptions } = options;
   // get messages from localization
-  const translatedMessage = msg || i18n.t(`notifications:${message}.message`);
-  const translatedDescription = msg ? "" : i18n.t(`notifications:${message}.description`);
+  const translatedMessage = msg || i18n.t(`notifications:${messageKey}.message`);
+  const translatedDescription = msg ? "" : i18n.t(`notifications:${messageKey}.description`);
 
   const config = {
     ...defaultConf,

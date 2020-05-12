@@ -330,11 +330,11 @@ export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png"];
 export const beforeUpload = file => {
   const isAllowedType = allowedFileTypes.includes(file.type);
   if (!isAllowedType) {
-    notification({ message: "imageTypeError" });
+    notification({ messageKey: "imageTypeError" });
   }
   const withinSizeLimit = file.size / 1024 / 1024 < 2;
   if (!withinSizeLimit) {
-    notification({ message: "imageSizeError" });
+    notification({ messageKey: "imageSizeError" });
   }
   return isAllowedType && withinSizeLimit;
 };
@@ -427,7 +427,7 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
   }
 
   if (get(commonAncestorContainer, "offsetParent.tagName", null) === "TABLE") {
-    notification({ message: "selectionError" });
+    notification({ messageKey: "selectionError" });
     clearSelection();
     return;
   }
@@ -436,7 +436,7 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
     (endContainer && endContainer.parentNode.className === className) ||
     (startContainer && startContainer.parentNode.className === className)
   ) {
-    notification({ message: "selectionError" });
+    notification({ messageKey: "selectionError" });
     clearSelection();
     return;
   }
@@ -456,7 +456,7 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
     clearSelection();
     return node;
   } catch (err) {
-    notification({ message: "selectionError" });
+    notification({ messageKey: "selectionError" });
     clearSelection();
   }
 };

@@ -40,7 +40,7 @@ const SecondBlock = ({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "testitem" });
       } catch (e) {
-        notification({ message: "savingTagErr" });
+        notification({ messageKey: "savingTagErr" });
       }
     } else {
       newTag = newAllTagsData.find(tag => tag._id === id);

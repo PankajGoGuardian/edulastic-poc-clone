@@ -17,7 +17,7 @@ const ProxyUser = () => {
       } else if (email) {
         data.email = email;
       } else {
-        notification({ message: "imageSizeError" });
+        notification({ messageKey: "imageSizeError" });
         return;
       }
 

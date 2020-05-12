@@ -91,12 +91,12 @@ class FeedbackRight extends Component {
     } = this.props;
 
     if ((!score || isNaN(score)) && score != 0) {
-      notification({ type: "warn", message: "scoreShouldNumber" });
+      notification({ type: "warn", messageKey: "scoreShouldNumber" });
       return;
     }
     const _score = toNumber(score);
     if (_score > maxScore) {
-      notification({ type: "warn", message: "scoreShouldLess" });
+      notification({ type: "warn", messageKey: "scoreShouldLess" });
       return;
     }
 

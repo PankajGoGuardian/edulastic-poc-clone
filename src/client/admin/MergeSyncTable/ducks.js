@@ -192,7 +192,7 @@ function* fetchApplyDeltaSync({ payload }) {
   try {
     const item = yield call(applyDeltaSyncApi, payload);
     if (item.data) {
-      notification({ type: "success", message: "" });
+      notification({ type: "success", messageKey: "deltaSyncSucc" });
     }
   } catch (err) {
     console.error(err);
@@ -220,7 +220,7 @@ function* fetchSchoolsSync({ payload }) {
 function* fetchClassNamesSync({ payload }) {
   try {
     yield call(fetchClassNamesSyncApi, payload);
-    notification({ type: "success", message: "classSyncSucc" });
+    notification({ type: "success", messageKey: "classSyncSucc" });
   } catch (err) {
     console.error(err);
   }
@@ -271,7 +271,7 @@ function* uploadCSVtoCleverSaga({ payload }) {
       })
     );
   } catch (err) {
-    notification({ message: "uploadCsvErr" });
+    notification({ messageKey: "uploadCsvErr" });
   }
 }
 
@@ -279,7 +279,7 @@ function* updateSubjectStandardSaga({ payload }) {
   try {
     const item = yield call(updateSubjectStandardApi, payload);
     if (item.data) {
-      notification({ type: "success", msg: "subjectStandardMapping" });
+      notification({ type: "success", messageKey: "subjectStandardMapping" });
     }
   } catch (err) {
     console.error(err);

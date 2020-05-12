@@ -25,7 +25,7 @@ const RequirePassword = ({
   const [assignmentPassword, setAssignmentPassword] = useState("");
   const validatePassword = () => {
     if (!assignmentPassword) {
-      return notification({ message: "assignmentRequiredPass" });
+      return notification({ messageKey: "assignmentRequiredPass" });
     }
     getAssignmentPassword(assignmentPassword);
   };

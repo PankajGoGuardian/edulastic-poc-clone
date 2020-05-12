@@ -111,7 +111,7 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
         cleverId: editValue
       });
     } else {
-      notification({ message: "inValiedCleverId" });
+      notification({ messageKey: "inValiedCleverId" });
     }
   }
 

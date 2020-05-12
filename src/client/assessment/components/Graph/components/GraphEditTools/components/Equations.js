@@ -86,7 +86,7 @@ class Equations extends Component {
         );
       })
       .catch(() => {
-        notification({ message: "equationErr" });
+        notification({ messageKey: "equationErr" });
       });
   };
 

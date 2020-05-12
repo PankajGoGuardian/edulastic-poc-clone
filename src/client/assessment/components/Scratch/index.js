@@ -38,7 +38,7 @@ const ScratchPad = ({ clearClicked, viewComponent, fullModal }) => {
       setActiveMode("");
     } else {
       if (value === "drawBreakingLine") {
-        notification({ type: "info", message: "breakLine" });
+        notification({ type: "info", messageKey: "breakLine" });
       }
       setActiveMode(value);
       setDeletMode(false);

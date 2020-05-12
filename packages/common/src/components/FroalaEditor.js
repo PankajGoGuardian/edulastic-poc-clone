@@ -519,7 +519,7 @@ const CustomEditor = ({
             .catch(e => {
               console.error(e);
               this.popups.hideAll();
-              notification({ message: "imageUploadErr" });
+              notification({ messageKey: "imageUploadErr" });
             });
 
           return false;
@@ -534,7 +534,7 @@ const CustomEditor = ({
               });
             }
           } catch (e) {
-            notification({ message: "imageLoadErr" });
+            notification({ messageKey: "imageLoadErr" });
           }
         },
         "edit.on": function(e, editor) {

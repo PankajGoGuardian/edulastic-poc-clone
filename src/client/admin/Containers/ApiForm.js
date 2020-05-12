@@ -15,10 +15,10 @@ const ApiForm = () => {
     submit(data, option.endPoint, option.method).then(res => {
       if (res?.result) {
         if (res.result.success || res.status === 200) {
-          notification({ type: "success", msg: res?.result?.message, message: "" });
+          notification({ type: "success", msg: res?.result?.message, message: "apiFormSucc" });
           onClose();
         } else {
-          notification({ msg: res?.result?.message, message: "" });
+          notification({ msg: res?.result?.message, message: "apiFormErr" });
         }
       }
     });

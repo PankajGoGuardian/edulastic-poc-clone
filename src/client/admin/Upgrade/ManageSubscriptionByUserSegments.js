@@ -82,7 +82,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
               }
               upgradePartialPremiumUserAction(subscriptionData);
             } else {
-              notification({ message: "selectGradeAndSubject" });
+              notification({ messageKey: "selectGradeAndSubject" });
             }
           }
         }

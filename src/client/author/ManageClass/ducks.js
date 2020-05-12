@@ -10,6 +10,7 @@ import { receiveTeacherDashboardAction } from "../Dashboard/duck";
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
 import { setUserGoogleLoggedInAction } from "../../student/Login/ducks";
 import { requestEnrolExistingUserToClassAction } from "../ClassEnrollment/ducks";
+import { RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR } from "../src/constants/actions";
 
 // selectors
 const manageClassSelector = state => state.manageClass;
@@ -35,6 +36,11 @@ export const getCleverClassListSelector = createSelector(
 export const getSelectedClass = createSelector(
   manageClassSelector,
   state => state.entity
+);
+
+export const getClassNotFoundError = createSelector(
+  manageClassSelector,
+  state => state.classNotFoundError
 );
 // action types
 
@@ -100,6 +106,7 @@ export const FETCH_CLEVER_CLASS_LIST_REQUEST = "[manageclass] get class list fro
 export const FETCH_CLEVER_CLASS_LIST_SUCCESS = "[manageClass] get class list from clever success";
 export const FETCH_CLEVER_CLASS_LIST_FAILED = "[manageClass] get class list from clever failed";
 export const SYNC_CLASS_LIST_WITH_CLEVER = "[manageClass] sync class list with clever";
+export const GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR = "[manageClass] Class Not Found";
 
 // action creators
 
@@ -165,6 +172,8 @@ export const fetchCleverClassListSuccessAction = createAction(FETCH_CLEVER_CLASS
 export const fetchCleverClassListFailedAction = createAction(FETCH_CLEVER_CLASS_LIST_FAILED);
 export const syncClassesWithCleverAction = createAction(SYNC_CLASS_LIST_WITH_CLEVER);
 
+export const setClassNotFoundErrorAction = createAction(GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR);
+
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -185,7 +194,8 @@ const initialState = {
   canvasSectionList: [],
   isFetchingCanvasData: false,
   loadingCleverClassList: false,
-  cleverClassList: []
+  cleverClassList: [],
+  classNotFoundError: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -346,6 +356,10 @@ const setCleverClassList = (state, { payload }) => {
   state.loadingCleverClassList = false;
 };
 
+const setGoogleClassCodeNotFound = (state, { payload }) => {
+  state.classNotFoundError = payload;
+};
+
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -398,7 +412,8 @@ export default createReducer(initialState, {
   [FETCH_CLEVER_CLASS_LIST_FAILED]: state => {
     state.loadingCleverClassList = false;
     state.cleverClassList = [];
-  }
+  },
+  [GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR]: setGoogleClassCodeNotFound
 });
 
 function* fetchClassList({ payload }) {
@@ -586,8 +601,12 @@ function* syncClassUsingCode({ payload }) {
     yield put(fetchStudentsByIdAction({ classId }));
     yield call(message.success, "Google Class import is Complete");
   } catch (e) {
+    if (e?.data?.message === "No class found") {
+      yield put(setClassNotFoundErrorAction(true));
+    } else {
+      yield call(message.error, "class sync failed");
+    }
     yield put(setSyncClassLoadingAction(false));
-    yield call(message.error, "class sync failed");
     console.log(e);
   }
 }

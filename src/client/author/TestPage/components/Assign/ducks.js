@@ -261,6 +261,11 @@ function* saveAssignment({ payload }) {
       removeDuplicates: !!payload.removeDuplicates,
       allowDuplicates: !!payload.allowDuplicates
     });
+    const gSyncStatus = [];
+    result.map(data => {
+      if (data.gSyncStatus) gSyncStatus.push(data.gSyncStatus);
+      delete data.gSyncStatus;
+    });
     const assignment = result?.[0] ? formatAssignment(result[0]) : {};
     const isCanvasClass = assignment?.class?.some(c => !!c.cnvId);
     yield put({ type: SET_ASSIGNMENT, payload: assignment });
@@ -273,6 +278,13 @@ function* saveAssignment({ payload }) {
     }
     const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
     yield call(message.success, successMessage);
+    if (gSyncStatus.length) {
+      yield call(
+        message.warn,
+        `Share with google classroom failed for few class. 
+      Please try sharing manually from Live Class Board.`
+      );
+    }
     if (isCanvasClass) {
       yield call(message.success, "This assignment is shared to your Canvas class also.");
     }

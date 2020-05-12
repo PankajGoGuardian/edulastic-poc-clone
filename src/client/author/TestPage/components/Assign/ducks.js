@@ -272,6 +272,11 @@ function* saveAssignment({ payload }) {
       removeDuplicates: !!payload.removeDuplicates,
       allowDuplicates: !!payload.allowDuplicates
     });
+    const gSyncStatus = [];
+    result.map(data => {
+      if (data.gSyncStatus) gSyncStatus.push(data.gSyncStatus);
+      delete data.gSyncStatus;
+    });
     const assignment = result?.[0] ? formatAssignment(result[0]) : {};
     yield put({ type: SET_ASSIGNMENT, payload: assignment });
     yield put(setAssignmentSavingAction(false));
@@ -283,6 +288,13 @@ function* saveAssignment({ payload }) {
     }
     const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
     yield call(message.success, successMessage);
+    if (gSyncStatus.length) {
+      yield call(
+        message.warn,
+        `Share with google classroom failed for few class. 
+      Please try sharing manually from Live Class Board.`
+      );
+    }
     const isAdminRole = [roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(userRole);
     if (containsCanvasClass) {
       if (isAdminRole) {

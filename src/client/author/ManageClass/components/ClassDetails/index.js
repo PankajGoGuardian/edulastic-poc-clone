@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
+import { red } from "@edulastic/colors";
 
 // components
 import { Input, message, Spin } from "antd";
@@ -26,7 +27,9 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
   syncClassWithCanvasAction,
-  syncClassesWithCleverAction
+  syncClassesWithCleverAction,
+  getClassNotFoundError,
+  setClassNotFoundErrorAction
 } from "../../ducks";
 import { getCleverSyncEnabledInstitutionPoliciesSelector } from "../../../src/selectors/user";
 
@@ -49,7 +52,9 @@ const ClassDetails = ({
   syncClassWithCanvas,
   syncClassesWithClever,
   user,
-  cleverSyncEnabledInstitutions
+  cleverSyncEnabledInstitutions,
+  classCodeError = false,
+  setClassNotFoundError
 }) => {
   const { _id, name, type, cleverId, institutionId } = selectedClass;
 
@@ -74,7 +79,7 @@ const ClassDetails = ({
   }, [fetchClassListLoading]);
 
   useEffect(() => {
-    if (!syncClassLoading) {
+    if (!syncClassLoading && !classCodeError) {
       if (openGCModal) setOpenGCModal(false);
       if (showCanvasSyncModal) setCanvasSyncModalVisibility(false);
     }
@@ -106,7 +111,7 @@ const ClassDetails = ({
   const closeGoogleSyncModal = () => {
     setOpenGCModal(false);
     setDisabled(true);
-    googleCode.current.state.value = "";
+    setClassNotFoundError(false);
   };
 
   const breadCrumbData = [
@@ -156,7 +161,7 @@ const ClassDetails = ({
                   <EduButton height="32px" isGhost onClick={closeGoogleSyncModal}>
                     CANCEL
                   </EduButton>
-                  <EduButton height="32px" loading={syncClassLoading} onClick={handleSyncGC}>
+                  <EduButton height="32px" loading={syncClassLoading && !classCodeError} onClick={handleSyncGC}>
                     SYNC
                   </EduButton>
                 </div>
@@ -164,6 +169,9 @@ const ClassDetails = ({
             }
           >
             <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
+            {classCodeError && (
+              <div style={{ "margin-top": "10px", color: red }}>Enter a valid Google Classroom Code</div>
+            )}
           </GoogleClassSyncModal>
           {showCanvasSyncModal && (
             <CanvasSyncModal
@@ -247,7 +255,8 @@ const enhance = compose(
       canvasCourseList: get(state, "manageClass.canvasCourseList", []),
       canvasSectionList: get(state, "manageClass.canvasSectionList", []),
       user: get(state, "user.user", {}),
-      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state)
+      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
+      classCodeError: getClassNotFoundError(state)
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
@@ -258,7 +267,8 @@ const enhance = compose(
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       syncClassWithCanvas: syncClassWithCanvasAction,
-      syncClassesWithClever: syncClassesWithCleverAction
+      syncClassesWithClever: syncClassesWithCleverAction,
+      setClassNotFoundError: setClassNotFoundErrorAction
     }
   )
 );

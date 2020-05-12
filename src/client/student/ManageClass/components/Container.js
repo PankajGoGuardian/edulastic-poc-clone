@@ -18,7 +18,7 @@ import ManageClassSubHeader from "./SubHeader";
 import NoDataIcon from "../../assets/nodata.svg";
 
 // api
-import { userApi } from "@edulastic/api";
+import { TokenStorage } from "@edulastic/api";
 
 // constants
 import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
@@ -55,6 +55,9 @@ const ManageClassContainer = ({
     setJoinClassModal(false);
     setClassCode(null);
   };
+
+  const isTeacherProxy = TokenStorage.getProxyParent(["teacher"]);
+
   if (loading) return <Spin />;
   return (
     <>
@@ -62,7 +65,7 @@ const ManageClassContainer = ({
         {userRole === "parent" ? (
           <StudentSlectCommon />
         ) : (
-          !userApi.isProxyUser() && (
+          !isTeacherProxy && (
             <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
               <IconPlus width={12} height={12} color="white" stroke="white" />
               <span>{t("common.joinClass")}</span>

@@ -84,3 +84,18 @@ export function removeFromLocalStorage(key) {
     return window.localStorage.removeItem(key);
   }
 }
+
+// get proxy parent
+// proxy parent is the user who initiated the proxy of another user
+export function getProxyParent(roles = []) {
+  try {
+    const proxyParent = JSON.parse(getFromLocalStorage("proxyParent"));
+    if ((!roles.length || roles.includes(proxyParent.role)) && proxyParent.role) {
+      return proxyParent;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    return null;
+  }
+}

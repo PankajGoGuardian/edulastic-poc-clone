@@ -14,12 +14,14 @@ import { isFeatureAccessible } from "../../../../features/components/FeaturesSwi
 import { proxyUser } from "../../../authUtils";
 import { selectStudentAction } from "../../ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-import { getGroupList } from "../../../src/selectors/user";
+import { getUserId, getUserRole, getGroupList } from "../../../src/selectors/user";
 
 // constants
 import { lightBlue3 } from "@edulastic/colors";
 
 const StudentsList = ({
+  cuId,
+  cuRole,
   loaded,
   students,
   selectStudents,
@@ -129,7 +131,9 @@ const StudentsList = ({
       render: (_, { _id, enrollmentStatus }) =>
         enrollmentStatus == 1 && (
           <Tooltip placement="topRight" title="View as Student">
-            <GiDominoMask onClick={() => proxyUser({ userId: _id, groupId })} />
+            <GiDominoMask
+              onClick={() => proxyUser({ userId: _id, groupId, currentUser: { _id: cuId, role: cuRole } })}
+            />
           </Tooltip>
         )
     }
@@ -191,6 +195,8 @@ StudentsList.propTypes = {
 
 export default connect(
   state => ({
+    cuId: getUserId(state),
+    cuRole: getUserRole(state),
     loaded: get(state, "manageClass.loaded"),
     students: get(state, "manageClass.studentsList", []),
     selectedStudent: get(state, "manageClass.selectedStudent", []),

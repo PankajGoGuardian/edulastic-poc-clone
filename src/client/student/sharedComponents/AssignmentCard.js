@@ -19,7 +19,7 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
 import { Row, Col, message, Icon, Modal } from "antd";
-import { userApi, TokenStorage } from "@edulastic/api";
+import { TokenStorage } from "@edulastic/api";
 import { maxDueDateFromClassess } from "../utils";
 
 //  components
@@ -232,11 +232,13 @@ const AssignmentCard = memo(
       releaseScore = data.releaseScore;
     }
 
+    const isTeacherProxy = TokenStorage.getProxyParent(["teacher"]);
+
     const showReviewButton =
       releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
     const StartButtonContainer =
       type === "assignment"
-        ? !(userRole === "parent" || userApi.isProxyUser()) &&
+        ? !(userRole === "parent" || isTeacherProxy) &&
           (safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
             <SafeBrowserButton
               data-cy="start"

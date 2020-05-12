@@ -713,7 +713,7 @@ export function* fetchV1Redirect({ payload: id }) {
 
 function* logout() {
   try {
-    if (userApi.isProxyUser()) {
+    if (TokenStorage.getProxyParent()) {
       window.close();
     } else {
       const user = yield select(getUser);

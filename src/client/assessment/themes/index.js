@@ -154,7 +154,7 @@ const AssessmentContainer = ({
       const answers = answersById[q.id];
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
-          return answersById[q.id].filter(token => token?.selected).length === 0;
+          return (answersById[q.id] || []).filter(token => token?.selected).length === 0;
         case questionType.LINE_CHART:
         case questionType.BAR_CHART:
         case questionType.HISTOGRAM:
@@ -165,10 +165,10 @@ const AssessmentContainer = ({
         }
         case questionType.SORT_LIST:
         case questionType.MATCH_LIST:
-          return answers.every(d => isNull(d));
+          return (answers || []).every(d => isNull(d));
         case questionType.ORDER_LIST:
           const prevOrder = [...Array(q.list.length).keys()];
-          return isEqual(prevOrder, answers);
+          return answers ? isEqual(prevOrder, answers) : true;
         case questionType.MATH:
           if (q.title === "Complete the Equation") {
             const ans = (answers || "").replace(/\\ /g, "");

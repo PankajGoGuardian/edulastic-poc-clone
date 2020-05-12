@@ -15,7 +15,7 @@ import SubHeader from "./SubHeader";
 import HangoutsModal from "./HangoutsModal";
 
 // api
-import { userApi } from "@edulastic/api";
+import { TokenStorage } from "@edulastic/api";
 
 // ducks
 import { getEnrollClassAction, setFilterClassAction } from "../../ManageClass/ducks";
@@ -29,6 +29,8 @@ const Wrapper = styled(Layout)`
 `;
 
 const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, currentChild, t }) => {
+  const isTeacherProxy = TokenStorage.getProxyParent(["teacher"]);
+
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   const classListWithHangouts = activeEnrolledClasses.filter(c => c.hangoutLink);
@@ -60,7 +62,7 @@ const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, current
       />
       <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
         <Row type="flex" align="middle">
-          {!!classListWithHangouts.length && !(userRole === "parent" || userApi.isProxyUser()) && (
+          {!!classListWithHangouts.length && !(userRole === "parent" || isTeacherProxy) && (
             <StyledEduButton
               height="40px"
               style={{ "margin-right": "20px" }}

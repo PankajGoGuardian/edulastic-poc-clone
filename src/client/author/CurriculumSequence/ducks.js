@@ -304,7 +304,8 @@ function* putCurriculumSequence({ payload }) {
       "sharedWith",
       "sharedType",
       "isAuthor",
-      "collectionName"
+      "collectionName",
+      "testItems"
     ]);
     dataToSend.modules = dataToSend.modules.map(mod => {
       mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments", "testType", "status"]));

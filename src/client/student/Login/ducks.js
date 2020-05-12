@@ -713,10 +713,11 @@ export function* fetchV1Redirect({ payload: id }) {
 
 function* logout() {
   try {
-    if (TokenStorage.getProxyParent()) {
+    const user = yield select(getUser);
+    const proxyParent = TokenStorage.getProxyParent();
+    if (proxyParent && proxyParent._id !== user._id) {
       window.close();
     } else {
-      const user = yield select(getUser);
       yield call(segmentApi.unloadIntercom, { user });
       localStorage.clear();
       sessionStorage.removeItem("cliBannerShown");

@@ -247,11 +247,11 @@ function* receiveStudentQuestionSaga({ payload }) {
           });
         }
       }
-      yield put({
-        type: RECEIVE_STUDENT_QUESTION_SUCCESS,
-        payload: feedbackResponse
-      });
     }
+    yield put({
+      type: RECEIVE_STUDENT_QUESTION_SUCCESS,
+      payload: feedbackResponse
+    });
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive answer is failing";

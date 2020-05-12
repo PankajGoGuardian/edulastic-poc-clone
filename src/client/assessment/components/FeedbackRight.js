@@ -293,7 +293,7 @@ class FeedbackRight extends Component {
               onChange={this.onChangeScore}
               onBlur={this.submitScore}
               value={_score}
-              disabled={isPresentationMode || isPracticeQuestion}
+              disabled={isPresentationMode || isPracticeQuestion || this.context.studentResponseLoading}
               ref={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"

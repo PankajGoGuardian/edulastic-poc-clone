@@ -7,7 +7,7 @@ import { Typography } from "antd";
 import styled from "styled-components";
 import moment from "moment";
 import { test } from "@edulastic/constants";
-import { themeColor, themeColorSecondaryLighter } from "@edulastic/colors";
+import { themeColor, themeColorSecondaryLighter, white } from "@edulastic/colors";
 import {
   getViewPasswordSelector,
   getAssignmentPasswordDetailsSelector,
@@ -62,7 +62,7 @@ const ViewPasswordModal = ({
   if (!isViewPassword) return null;
 
   return (
-    <ModalWrapper
+    <PasswordModalWrapper
       centered
       title="View Password"
       visible={isViewPassword}
@@ -103,7 +103,7 @@ const ViewPasswordModal = ({
           </>
         )}
       </InitOptions>
-    </ModalWrapper>
+    </PasswordModalWrapper>
   );
 };
 
@@ -123,6 +123,18 @@ const enhance = compose(
 );
 
 export default enhance(ViewPasswordModal);
+
+const PasswordModalWrapper = styled(ModalWrapper)`
+  background: ${white};
+  padding: 15px 30px;
+  .ant-modal-body {
+    & > div {
+      background: none;
+      box-shadow: none;
+      padding: 20px 50px;
+    }
+  }
+`;
 
 const Heading = styled.h3`
   font-weight: 600;

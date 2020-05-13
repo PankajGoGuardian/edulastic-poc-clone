@@ -27,7 +27,8 @@ const ItemFilter = ({
   curriculumStandards,
   t,
   items,
-  toggleFilter
+  toggleFilter,
+  itemCount
 }) => {
   const renderFullTextSearch = () => (
     <SearchWrapper>
@@ -65,6 +66,7 @@ const ItemFilter = ({
                   curriculums={curriculums}
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}
+                  itemCount={itemCount}
                 />
               </div>
             </MainFilter>

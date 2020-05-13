@@ -40,7 +40,8 @@ const Search = ({
   districtId,
   currentDistrictUsers,
   getCurrentDistrictUsers,
-  userRole
+  userRole,
+  itemCount
 }) => {
   const [showModal, setShowModalValue] = useState(false);
 
@@ -54,10 +55,7 @@ const Search = ({
     }
     setShowModalValue(value);
   };
-  const handleApply = standardIds => {
-    onSearchFieldChange("standardIds")(standardIds);
-    setShowModalValue(false);
-  };
+  const handleApply = standardIds => onSearchFieldChange("standardIds")(standardIds);
 
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
 
@@ -129,6 +127,7 @@ const Search = ({
           showModal={showModal}
           standardIds={standardIds}
           handleApply={handleApply}
+          itemCount={itemCount}
         />
       ) : (
         ""

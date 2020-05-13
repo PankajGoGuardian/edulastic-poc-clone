@@ -395,6 +395,7 @@ class Contaier extends Component {
               items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
               toggleFilter={this.toggleFilter}
               t={t}
+              itemCount={count}
             />
           )}
           <ListItems isShowFilter={isShowFilter}>

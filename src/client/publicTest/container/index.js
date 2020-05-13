@@ -35,8 +35,13 @@ const PublicTestPage = ({
   // if not authenticating or no authenticated token exist, then fetch test detail to show summary
   useEffect(() => {
     if (user) {
-      if (user.role === "student") {
+      const { role } = user;
+      if (role === "student") {
         fetchAssignments({ testId });
+      } else if (role === "parent") {
+        redirectToDashbord();
+      } else {
+        redirectToTestPreview();
       }
     } else if (!authenticating || !TokenStorage.getAccessToken()) {
       fetchTest({ testId, sharedType: "PUBLIC" });
@@ -82,6 +87,8 @@ const PublicTestPage = ({
     message.warn(msg);
     history.push("/home/assignments");
   };
+
+  const redirectToTestPreview = () => history.push(`/author/tests/tab/review/id/${testId}`);
 
   //case: check to where to navigate
   const redirectToAssessmentPlayer = assignment => {

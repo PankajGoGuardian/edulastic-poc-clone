@@ -4,13 +4,13 @@ import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Select } from "antd";
+import { SelectInputStyled } from "@edulastic/common";
 import { get, curry, isEmpty, remove, lowerCase, find } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getClassListSelector } from "../../duck";
 import { getUserOrgId, getSchoolsByUserRoleSelector } from "../../../src/selectors/user";
 import { receiveSchoolsAction } from "../../../Schools/ducks";
 import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
-
 import { ClassListFilter, StyledRowLabel, StyledTable, ClassListContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getTestSelector } from "../../../TestPage/ducks";
@@ -207,7 +207,7 @@ class ClassList extends React.Component {
         <ClassListFilter>
           <StyledRowLabel>
             School
-            <Select
+            <SelectInputStyled
               mode="multiple"
               placeholder="All School"
               showSearch
@@ -220,12 +220,12 @@ class ClassList extends React.Component {
                   {name}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </StyledRowLabel>
 
           <StyledRowLabel>
             Grades
-            <Select
+            <SelectInputStyled
               mode="multiple"
               value={searchTerms.grades}
               placeholder="All grades"
@@ -241,12 +241,12 @@ class ClassList extends React.Component {
                     </Select.Option>
                   )
               )}
-            </Select>
+            </SelectInputStyled>
           </StyledRowLabel>
 
           <StyledRowLabel>
             Subject
-            <Select
+            <SelectInputStyled
               mode="multiple"
               value={searchTerms.subjects}
               placeholder="All subjects"
@@ -259,12 +259,12 @@ class ClassList extends React.Component {
                   {text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </StyledRowLabel>
 
           <StyledRowLabel>
             Course
-            <Select
+            <SelectInputStyled
               mode="multiple"
               placeholder="All Course"
               onChange={changeField("courseIds")}
@@ -276,12 +276,12 @@ class ClassList extends React.Component {
                   {name}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </StyledRowLabel>
 
           <StyledRowLabel>
             Show Class/Groups
-            <Select
+            <SelectInputStyled
               placeholder="All"
               onChange={this.handleClassTypeFilter}
               showSearch
@@ -296,7 +296,7 @@ class ClassList extends React.Component {
                   {name}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </StyledRowLabel>
         </ClassListFilter>
 

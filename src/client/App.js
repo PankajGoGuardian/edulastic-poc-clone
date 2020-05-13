@@ -133,6 +133,8 @@ class App extends Component {
     const kidPath = location.pathname.includes("/kid");
     if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect && !kidPath) {
       fetchUser();
+    } else if (publicPath && location.pathname.split("/").includes("view-test") && TokenStorage.getAccessToken()) {
+      fetchUser();
     }
     window.addEventListener("request-client-update", () => {
       this.setState({

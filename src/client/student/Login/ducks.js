@@ -35,6 +35,7 @@ export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const SINGUP_SUCCESS = "[auth] signup success";
 export const FETCH_USER = "[auth] fetch user";
+export const FETCH_USER_FAILURE = "[auth] fetch user failure";
 export const FETCH_V1_REDIRECT = "[v1 redirect] fetch";
 export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
@@ -126,6 +127,7 @@ export const getCurrentDistrictUsersSuccessAction = createAction(GET_CURRENT_DIS
 export const changeChildAction = createAction(CHANGE_CHILD);
 export const updateDefaultSettingsAction = createAction(UPDATE_DEFAULT_SETTINGS_REQUEST);
 export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
+export const fetchUserFailureAction = createAction(FETCH_USER_FAILURE);
 
 const initialState = {
   isAuthenticated: false,
@@ -203,6 +205,9 @@ export default createReducer(initialState, {
       state.authenticating = true;
       state.isAuthenticated = false;
     }
+  },
+  [FETCH_USER_FAILURE]: state => {
+    state.isAuthenticated = false;
   },
   [FETCH_V1_REDIRECT]: state => {
     state.isAuthenticated = false;
@@ -680,7 +685,11 @@ export function* fetchUser() {
       if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
         localStorage.setItem("loginRedirectUrl", getCurrentPath());
       }
-      yield put(push(getLoggedOutUrl()));
+      const pathname = window.location.pathname.toLocaleLowerCase().split("/");
+      yield put(fetchUserFailureAction());
+      if (!(pathname.includes("public") && pathname.includes("view-test"))) {
+        yield put(push(getLoggedOutUrl()));
+      }
     }
   }
 }

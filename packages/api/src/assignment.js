@@ -47,10 +47,10 @@ const fetchRegradeAssignments = testId =>
     })
     .then(result => result.data.result);
 
-const fetchAssigned = groupId =>
+const fetchAssigned = (groupId = "", testId = "") =>
   api
     .callApi({
-      url: `${prefix}${groupId ? `?groupId=${groupId}` : ""}`,
+      url: `${prefix}?groupId=${groupId}&testId=${testId}`,
       method: "get"
     })
     .then(result => result.data.result);

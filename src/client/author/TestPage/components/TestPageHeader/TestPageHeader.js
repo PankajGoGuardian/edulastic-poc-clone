@@ -351,7 +351,7 @@ const TestPageHeader = ({
           />
 
           <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
-            {showShareButton && (
+            {showShareButton && !isPlaylist && (
               <EduButton
                 title="Print"
                 isGhost

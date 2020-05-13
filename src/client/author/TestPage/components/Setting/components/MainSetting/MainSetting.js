@@ -877,15 +877,18 @@ class MainSetting extends Component {
                 >
                   {Object.keys(accessibilities).map(key => {
                     return (
-                      <Row key={accessibilities[key]} style={{ width: "100%" }}>
+                      <Row key={accessibilities[key]} style={{ width: "100%" }} align="middle">
                         <Col span={12}>
-                          <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
+                          <span style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase" }}>
+                            {accessibilities[key]}
+                          </span>
                         </Col>
                         <Col span={12}>
                           <StyledRadioGroup
                             disabled={!owner || !isEditable}
                             onChange={e => this.updateTestData(key)(e.target.value)}
                             defaultValue={accessibilityData[key]}
+                            style={{ flexDirection: "row", height: "18px" }}
                           >
                             <RadioBtn value>ENABLE</RadioBtn>
                             <RadioBtn value={false}>DISABLE</RadioBtn>

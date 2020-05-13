@@ -7,7 +7,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { roleuser } from "@edulastic/constants";
+import { roleuser, test as testConstants } from "@edulastic/constants";
 import { IconFilter, IconAssignment } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 
@@ -92,6 +92,12 @@ class Assignments extends Component {
       ...storedFilters,
       showFilter
     };
+    if (
+      (userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN) &&
+      !storedFilters.hasOwnProperty("testType")
+    ) {
+      filters.testType = testConstants.type.COMMON;
+    }
     if (defaultTermId && !storedFilters.hasOwnProperty("termId")) {
       const isTermExists = terms.some(({ _id }) => _id === defaultTermId);
       filters.termId = isTermExists ? defaultTermId : "";
@@ -130,13 +136,17 @@ class Assignments extends Component {
     this.setState({ currentTestId });
   };
 
-  togglePrintModal = (currentTestId = "") => this.setState({ openPrintModal: !this.state.openPrintModal, currentTestId});
+  togglePrintModal = (currentTestId = "") =>
+    this.setState({ openPrintModal: !this.state.openPrintModal, currentTestId });
 
   gotoPrintView = data => {
     const { type, customValue } = data;
-    window.open(`/author/printAssessment/${this.state.currentTestId}?type=${type}&qs=${type === "custom" ? customValue : ""}`, "_blank");
+    window.open(
+      `/author/printAssessment/${this.state.currentTestId}?type=${type}&qs=${type === "custom" ? customValue : ""}`,
+      "_blank"
+    );
     this.togglePrintModal();
-  }
+  };
 
   handleCreate = () => {
     const { history } = this.props;
@@ -246,7 +256,7 @@ class Assignments extends Component {
           currentAssignmentId={currentAssignmentId}
           currentAssignmentClass={currentAssignmentClass}
         />
-        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal}/>}
+        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal} />}
         <ListHeader
           onCreate={this.handleCreate}
           createAssignment

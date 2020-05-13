@@ -78,7 +78,6 @@ const ActionMenu = ({
   const isAssignmentOwner = (userId && userId === assignmentOwnerId) || false;
 
   const isDistrictAdmin = roleuser.DISTRICT_ADMIN === userRole;
-  const isSchoolAdmin = roleuser.SCHOOL_ADMIN === userRole;
 
   return (
     <Container>
@@ -145,20 +144,13 @@ const ActionMenu = ({
             View Summary Report
           </Link>
         </Menu.Item>
-        {((assignmentTest?.testType === test.type.COMMON && (isDistrictAdmin || isSchoolAdmin)) ||
-          assignmentTest?.testType !== test.type.COMMON) && (
-          <Menu.Item
-            data-cy="edit-Assignment"
-            key="edit-Assignment"
-            onClick={() => toggleEditModal(true, currentTestId)}
-          >
-            <StyledLink target="_blank" rel="noopener noreferrer">
-              <img alt="icon" src={classIcon} />
-              <SpaceElement />
-              Edit and Regrade
-            </StyledLink>
-          </Menu.Item>
-        )}
+        <Menu.Item data-cy="edit-Assignment" key="edit-Assignment" onClick={() => toggleEditModal(true, currentTestId)}>
+          <StyledLink target="_blank" rel="noopener noreferrer">
+            <img alt="icon" src={classIcon} />
+            <SpaceElement />
+            Edit and Regrade
+          </StyledLink>
+        </Menu.Item>
         {isAssignmentOwner || isDistrictAdmin ? (
           <Menu.Item
             data-cy="delete-Assignment"

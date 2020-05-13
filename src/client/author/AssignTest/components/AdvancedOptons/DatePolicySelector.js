@@ -120,7 +120,6 @@ const DatePolicySelector = ({
             userRole={userRole}
             testType={testType}
             onAssignmentTypeChange={changeField("testType")}
-            disabled={isAdmin}
           />
         </Col>
         <Col xs={24} md={12} lg={6}>

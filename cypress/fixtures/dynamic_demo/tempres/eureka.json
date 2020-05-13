@@ -1,0 +1,274 @@
+{
+  "module1": {
+    "Topic A Quiz: Proportional Relationships": {
+      "standards": {
+        "7.RP.A.2.a": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "Topic B Quiz: Unit Rate and the Constant of Proportionality": {
+      "standards": {
+        "7.RP.A.2.b": "Edulastic Certified",
+        "7.RP.A.2.c": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "Mid-Module 1 Assessment (Topics A through B)": {
+      "standards": {
+        "7.RP.A.2.a": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "Topic C Quiz: Ratios and Rates Involving Fractions": {
+      "standards": {
+        "7.RP.A.1": "Edulastic Certified",
+        "7.RP.A.3": "Edulastic Certified",
+        "7.EE.B.4.a": "Spark Math"
+      },
+      "id": "5ebb08e6cd2bcd0007dd9f0d"
+    },
+    "Topic D Quiz: Ratios of Scale Drawings": {
+      "standards": {
+        "7.RP.A.2.b": "Edulastic Certified",
+        "7.G.A.1": "Spark Math"
+      },
+      "id": "5ebb092d7b277d00089f330e"
+    },
+    "End-of-Module 1 Assessment (Topics A through D)": {
+      "standards": {
+        "7.RP.A.2.a": "failed for both"
+      },
+      "id": "not_created"
+    }
+  },
+  "module2": {
+    "\"Topic A Quiz: Addition and Subtraction of Integers and Rational Numbers\r\"": {
+      "standards": {
+        "7.NS.A.1": "Edulastic Certified"
+      },
+      "id": "5ebb0993cd2bcd0007dd9f10"
+    },
+    "\"Topic B Quiz: Multiplication and Division of Integers and Rational Numbers\r\"": {
+      "standards": {
+        "7.NS.A.2": "Edulastic Certified"
+      },
+      "id": "5ebb09ce7b277d00089f3310"
+    },
+    "Mid-Module 2 Assessment  (Topics A through B)": {
+      "standards": {
+        "7.NS.A.1": "Edulastic Certified",
+        "7.NS.A.2": "Edulastic Certified"
+      },
+      "id": "5ebb0a217b277d00089f3312"
+    },
+    "Topic C Quiz: Applying Operations with Rational Numbers to Expressions and Equations": {
+      "standards": {
+        "7.NS.A.3": "Spark Math",
+        "": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "7.EE.A.2": {
+      "standards": {
+        "7.EE.B.4.a": "Spark Math"
+      },
+      "id": "5ebb0aa57b277d00089f3315"
+    },
+    "End-of-Module 2 Assessment  (Topics A through C)": {
+      "standards": {
+        "7.NS.A.1": "failed for both",
+        "7.NS.A.2": "Edulastic Certified"
+      },
+      "id": "not_created"
+    }
+  },
+  "module3": {
+    "\"Topic A Quiz: Use Properties of Operations to Generate Equivalent Expressions\r\"": {
+      "standards": {
+        "7.EE.A.1": "Spark Math",
+        "7.EE.A.2": "Spark Math"
+      },
+      "id": "5ebb0b7dcd2bcd0007dd9f13"
+    },
+    "Topic B Quiz: Solve Problems Using Expressions Equations and Inequalities": {
+      "standards": {
+        "7.EE.B.3": "Spark Math",
+        "7.EE.B.4": "Edulastic Certified",
+        "7.G.B.5": "Spark Math"
+      },
+      "id": "5ebb0c0052056e0008bde82a"
+    },
+    "Mid-Module 3 Assessment (Topics A through B)": {
+      "standards": {
+        "7.EE.A.1": "Spark Math",
+        "7.EE.A.2": "Spark Math",
+        "7.EE.B.3": "Spark Math",
+        "7.EE.B.4": "Edulastic Certified",
+        "7.G.B.5": "Spark Math"
+      },
+      "id": "5ebb0cc5cd2bcd0007dd9f16"
+    },
+    "Topic C Quiz: Use Equations and Inequalities to Solve Geometry Problems": {
+      "standards": {
+        "7.G.B.4": "Spark Math",
+        "7.G.B.6": "Spark Math"
+      },
+      "id": "5ebb0d2752056e0008bde82c"
+    },
+    "End-of-Module 3 Assessment (Topics A through C)": {
+      "standards": {
+        "7.EE.A.1": "failed for both",
+        "7.EE.A.2": "Spark Math",
+        "7.EE.B.3": "Spark Math",
+        "7.EE.B.4": "Edulastic Certified",
+        "7.G.B.5": "Spark Math"
+      },
+      "id": "not_created"
+    }
+  },
+  "module4": {
+    "Topic A Quiz: Finding the Whole": {
+      "standards": {
+        "7.RP.A.1": "Edulastic Certified",
+        "7.RP.A.2.c": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "Topic B Quiz: Percent Problems Including More Than One Whole": {
+      "standards": {
+        "7.RP.A.1": "Edulastic Certified",
+        "7.RP.A.2": "Edulastic Certified",
+        "7.RP.A.3": "Edulastic Certified",
+        "7.EE.B.3": "Spark Math"
+      },
+      "id": "5ebb0f8e52056e0008bde82e"
+    },
+    "Mid-Module 4 Assessment (Topics A through B)": {
+      "standards": {
+        "7.RP.A.1": "Edulastic Certified",
+        "7.RP.A.2.c": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "Topic C Quiz: Scale Drawings": {
+      "standards": {
+        "7.RP.A.2.b": "Edulastic Certified",
+        "7.G.A.1": "Spark Math"
+      },
+      "id": "5ebb10abcd2bcd0007dd9f19"
+    },
+    "Topic D Quiz: Population Mixture and Counting Problems Involving Percents": {
+      "standards": {
+        "7.RP.A.2.c": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "End-of-Module 4 Assessment (Topics A through D)": {
+      "standards": {
+        "7.RP.A.1": "Edulastic Certified",
+        "7.RP.A.2.c": "failed for both"
+      },
+      "id": "not_created"
+    }
+  },
+  "module5": {
+    "\"Topic A Quiz: Calculating and Interpreting Probabilities\r\"": {
+      "standards": {
+        "7.SP.C.5": "Spark Math",
+        "7.SP.C.6": "Spark Math",
+        "7.SP.C.7": "Edulastic Certified",
+        "7.SP.C.8.a": "Spark Math",
+        "7.SP.C.8.b": "Spark Math"
+      },
+      "id": "5ebb12decd2bcd0007dd9f1c"
+    },
+    "Topic B Quiz: Estimating Probabilities": {
+      "standards": {
+        "7.SP.C.6": "Spark Math",
+        "7.SP.C.7": "Edulastic Certified",
+        "7.SP.C.8.c": "failed for both"
+      },
+      "id": "not_created"
+    },
+    "Mid-Module 5 Assessment (Topics A through B)": {
+      "standards": {
+        "7.SP.C.5": "Spark Math",
+        "7.SP.C.6": "failed for both",
+        "7.SP.C.7": "Edulastic Certified",
+        "7.SP.C.8.a": "Spark Math",
+        "7.SP.C.8.b": "Spark Math"
+      },
+      "id": "not_created"
+    },
+    "Topic C Quiz: Random Sampling and Estimating Population Characteristics": {
+      "standards": {
+        "7.SP.A.1": "Spark Math",
+        "7.SP.A.2": "Spark Math"
+      },
+      "id": "5ebb1634cd2bcd0007dd9f1f"
+    },
+    "Topic D Quiz: Comparing Populations": {
+      "standards": {
+        "7.SP.B.3": "Spark Math",
+        "7.SP.B.4": "Spark Math"
+      },
+      "id": "5ebb16f5cd2bcd0007dd9f22"
+    },
+    "End-of-Module 5 Assessment (Topics A through D)": {
+      "standards": {
+        "7.SP.C.5": "Spark Math",
+        "7.SP.C.6": "failed for both",
+        "7.SP.C.7": "Edulastic Certified",
+        "7.SP.C.8.a": "Spark Math",
+        "7.SP.C.8.b": "Spark Math"
+      },
+      "id": "not_created"
+    }
+  },
+  "module6": {
+    "Topic A Quiz: Unknown Angles": {
+      "standards": {
+        "7.G.B.5": "Spark Math"
+      },
+      "id": "5ebb197bcd2bcd0007dd9f24"
+    },
+    "Topic B Quiz: Constructing Triangles": {
+      "standards": {
+        "7.G.A.2": "Spark Math"
+      },
+      "id": "5ebb1a0dcd2bcd0007dd9f27"
+    },
+    "\"Mid-Module 6 Assessment (Topics A through B)\r\"": {
+      "standards": {
+        "7.G.A.2": "Spark Math",
+        "7.G.B.5": "Spark Math"
+      },
+      "id": "5ebb1ae8cd2bcd0007dd9f29"
+    },
+    "\"Topic C Quiz: Slicing Solids\r\"": {
+      "standards": {
+        "7.G.A.3": "Spark Math"
+      },
+      "id": "5ebb1b7ccd2bcd0007dd9f2c"
+    },
+    "Topic D Quiz: Problems Involving Area and Surface Area": {
+      "standards": {
+        "7.G.B.6": "Spark Math"
+      },
+      "id": "5ebb1c1ccd2bcd0007dd9f2e"
+    },
+    "Topic E Quiz: Problems Involving Volume": {
+      "standards": {
+        "7.G.B.6": "Spark Math"
+      },
+      "id": "5ebb1cb1cd2bcd0007dd9f31"
+    },
+    "End-of-Module 6 Assessment (Topics C through E)": {
+      "standards": {
+        "7.G.B.5": "Spark Math",
+        "7.G.A.2": "failed for both"
+      },
+      "id": "not_created"
+    }
+  }
+}

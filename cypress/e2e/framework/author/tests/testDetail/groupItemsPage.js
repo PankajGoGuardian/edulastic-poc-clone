@@ -69,15 +69,23 @@ export default class GroupItemsPage {
       .click({ force: true });
 
   clickOnSaveByGroup = (group, dynamicGroup = false, deliveryCount = 1) => {
+    let flag = true;
     cy.server();
     cy.route("POST", "**/testitem/auto-select/search").as("waitForItems");
     cy.get(`[data-cy="save-Group ${group}"]`).click();
     if (dynamicGroup)
-      return cy.wait("@waitForItems").then(xhr => {
+      cy.wait("@waitForItems").then(xhr => {
         expect(xhr.status).to.eq(200);
-        expect(xhr.response.body.result.items.length).to.be.at.least(deliveryCount);
-        return xhr.response.body.result.items;
+        if (xhr.response.body.result.items.length < deliveryCount) {
+          flag = false;
+          this.selectCollectionByGroupAndCollection(group, "Edulastic Certified");
+          cy.get(`[data-cy="save-Group ${group}"]`).click();
+          cy.wait("@waitForItems").then(xhr => {
+            expect(xhr.response.body.result.items.length).to.be.at.least(deliveryCount);
+          });
+        }
       });
+    return cy.wait(1).then(() => flag);
     // waiting for search to retrieve items
   };
 

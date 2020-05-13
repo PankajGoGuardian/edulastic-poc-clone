@@ -1,0 +1,1958 @@
+{
+  "module1": {
+    "test1": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic A Quiz: Proportional Relationships",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.a"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test2": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Unit Rate and the Constant of Proportionality",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.b"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Unit Rate and the Constant of Proportionality",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Unit Rate and the Constant of Proportionality",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.d"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Unit Rate and the Constant of Proportionality",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4.a"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test3": [
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 1 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.a"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 1 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.b"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 1 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 1 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.d"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 1 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4.a"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test4": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Ratios and Rates Involving Fractions",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Ratios and Rates Involving Fractions",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Ratios and Rates Involving Fractions",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4.a"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test5": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Ratios of Scale Drawings",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.b"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Ratios of Scale Drawings",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.1"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test6": [
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.a"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.b"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.d"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4.a"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4.a"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.b"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 1 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.1"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ]
+  },
+  "module2": {
+    "test1": [
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Addition and Subtraction of Integers and Rational Numbers\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.1"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test2": [
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic B Quiz: Multiplication and Division of Integers and Rational Numbers\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.2"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test3": [
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 2 Assessment  (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.1"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 2 Assessment  (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.2"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test4": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Applying Operations with Rational Numbers to Expressions and Equations",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.3"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Applying Operations with Rational Numbers to Expressions and Equations",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": [""],
+          "standardsGroup": ".undefined",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test5": [
+      {
+        "collection": "Spark Math",
+        "name": "7.EE.A.2",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4.a"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test6": [
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.1"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.2"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.1"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.2"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.NS.A.3"],
+          "standardsGroup": "7.NS",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": [""],
+          "standardsGroup": ".undefined",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.2"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 2 Assessment  (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4.a"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ]
+  },
+  "module3": {
+    "test1": [
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Use Properties of Operations to Generate Equivalent Expressions\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.1"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Use Properties of Operations to Generate Equivalent Expressions\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.2"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test2": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Solve Problems Using Expressions Equations and Inequalities",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Solve Problems Using Expressions Equations and Inequalities",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Solve Problems Using Expressions Equations and Inequalities",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test3": [
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 3 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.1"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 3 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.2"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 3 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 3 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 3 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test4": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Use Equations and Inequalities to Solve Geometry Problems",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.4"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Use Equations and Inequalities to Solve Geometry Problems",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.6"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test5": [
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.1"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.2"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.1"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.A.2"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.4"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.4"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 3 Assessment (Topics A through C)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.6"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ]
+  },
+  "module4": {
+    "test1": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic A Quiz: Finding the Whole",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic A Quiz: Finding the Whole",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic A Quiz: Finding the Whole",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test2": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Percent Problems Including More Than One Whole",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Percent Problems Including More Than One Whole",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Percent Problems Including More Than One Whole",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Percent Problems Including More Than One Whole",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test3": [
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 4 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 4 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 4 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 4 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 4 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 4 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 4 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test4": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Scale Drawings",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.b"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Scale Drawings",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.1"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test5": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Population Mixture and Counting Problems Involving Percents",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Population Mixture and Counting Problems Involving Percents",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Population Mixture and Counting Problems Involving Percents",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test6": [
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.1"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.b"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.1"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.2.c"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.RP.A.3"],
+          "standardsGroup": "7.RP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 4 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.EE.B.3"],
+          "standardsGroup": "7.EE",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ]
+  },
+  "module5": {
+    "test1": [
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Calculating and Interpreting Probabilities\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.5"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Calculating and Interpreting Probabilities\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Calculating and Interpreting Probabilities\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Calculating and Interpreting Probabilities\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.a"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic A Quiz: Calculating and Interpreting Probabilities\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.b"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test2": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Estimating Probabilities",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Estimating Probabilities",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Estimating Probabilities",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.c"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test3": [
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.5"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.a"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.b"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Mid-Module 5 Assessment (Topics A through B)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.c"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test4": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Random Sampling and Estimating Population Characteristics",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.A.1"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic C Quiz: Random Sampling and Estimating Population Characteristics",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.A.2"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test5": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Comparing Populations",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.B.3"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Comparing Populations",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.B.4"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test6": [
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.5"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.a"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.b"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.c"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.5"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.a"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.b"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.6"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.7"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.C.8.c"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.A.1"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.A.2"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.B.3"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 5 Assessment (Topics A through D)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.SP.B.4"],
+          "standardsGroup": "7.SP",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ]
+  },
+  "module6": {
+    "test1": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic A Quiz: Unknown Angles",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test2": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic B Quiz: Constructing Triangles",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.2"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test3": [
+      {
+        "collection": "Spark Math",
+        "name": "\"Mid-Module 6 Assessment (Topics A through B)\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.2"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "\"Mid-Module 6 Assessment (Topics A through B)\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test4": [
+      {
+        "collection": "Spark Math",
+        "name": "\"Topic C Quiz: Slicing Solids\r\"",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.3"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test5": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic D Quiz: Problems Involving Area and Surface Area",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.6"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test6": [
+      {
+        "collection": "Spark Math",
+        "name": "Topic E Quiz: Problems Involving Volume",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.6"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ],
+    "test7": [
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 6 Assessment (Topics C through E)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 6 Assessment (Topics C through E)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.2"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 6 Assessment (Topics C through E)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.2"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 6 Assessment (Topics C through E)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.5"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 6 Assessment (Topics C through E)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.A.3"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 6 Assessment (Topics C through E)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.6"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      },
+      {
+        "collection": "Spark Math",
+        "name": "End-of-Module 6 Assessment (Topics C through E)",
+        "deliveryCount": 2,
+        "standard": {
+          "standardsToSelect": ["7.G.B.6"],
+          "standardsGroup": "7.G",
+          "grade": ["Grade 7"],
+          "subject": "Mathematics",
+          "standardSet": "Math - Common Core"
+        }
+      }
+    ]
+  }
+}

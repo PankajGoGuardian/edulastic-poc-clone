@@ -1,4 +1,4 @@
-import { test as testConst } from "@edulastic/constants";
+import { test as testConst, roleuser } from "@edulastic/constants";
 import { Col, Select } from "antd";
 import * as moment from "moment";
 import React from "react";
@@ -37,7 +37,8 @@ const DatePolicySelector = ({
 
   let openPolicy = selectsData.openPolicy;
   let closePolicy = selectsData.closePolicy;
-  if (userRole !== "teacher") {
+  const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
+  if (isAdmin) {
     openPolicy = selectsData.openPolicyForAdmin;
     closePolicy = selectsData.closePolicyForAdmin;
   }
@@ -119,6 +120,7 @@ const DatePolicySelector = ({
             userRole={userRole}
             testType={testType}
             onAssignmentTypeChange={changeField("testType")}
+            disabled={isAdmin}
           />
         </Col>
         <Col xs={24} md={12} lg={6}>

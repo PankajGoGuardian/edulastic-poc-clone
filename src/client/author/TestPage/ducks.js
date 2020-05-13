@@ -1093,7 +1093,7 @@ function* receiveTestByIdSaga({ payload }) {
     const { ASSESSMENT, COMMON } = testConst.type;
 
     const isAdmin = userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN;
-    const testTypeDefault = testType || (isAdmin ? COMMON : ASSESSMENT);
+    const testTypeDefault = isAdmin ? COMMON : testType || ASSESSMENT;
     let updateForTimedAssignment = { timedAssignment: entity?.timedAssignment };
     if (entity?.timedAssignment) {
       updateForTimedAssignment = {

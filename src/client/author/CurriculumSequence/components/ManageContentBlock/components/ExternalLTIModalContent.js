@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Input, Select, Row, Col, Form } from "antd";
-import { CheckboxLabel, EduButton } from "@edulastic/common";
 import styled from "styled-components";
 import { themeColor } from "@edulastic/colors";
 import { ButtonsContainer, StyledModal, ModalFormItem, CancelButton, OkButton } from "../../../../../common/styled";

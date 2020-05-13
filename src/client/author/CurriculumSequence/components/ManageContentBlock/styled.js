@@ -105,7 +105,7 @@ export const SearchByNavigationBar = styled.div`
 
 export const SearchByTab = styled.div`
   padding: 0px 6px 10px 6px;
-  margin: 0px 10px 2px 0px;
+  margin: 0px 20px 2px 0px;
   color: ${({ isTabActive }) => (isTabActive ? themeColor : playlistTabLink)};
   border-bottom: ${({ isTabActive }) => isTabActive && "1px solid " + themeColor};
   text-transform: uppercase;

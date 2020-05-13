@@ -1,9 +1,10 @@
 import { createSlice } from "redux-starter-kit";
 import { delay } from "redux-saga";
 import { takeEvery, takeLatest, put, call, all, select } from "redux-saga/effects";
-import { testsApi, settingsApi } from "@edulastic/api";
+import { testsApi, settingsApi, resourcesApi } from "@edulastic/api";
 import { set } from "lodash";
 import nanoid from "nanoid";
+import { message } from "antd";
 
 export const sliceName = "playlistTestBox";
 const LIMIT = 20;
@@ -20,6 +21,7 @@ const slice = createSlice({
   slice: sliceName,
   initialState: {
     tests: [],
+    resources: [],
     externalLTIResources: [],
     status: "",
     authoredBy: "",
@@ -34,7 +36,8 @@ const slice = createSlice({
     externalLTIModal: {},
     testPreviewModalVisible: false,
     selectedTestForPreview: "",
-    externalToolsProviders: []
+    externalToolsProviders: [],
+    searchResourceBy: "tests"
   },
   reducers: {
     setDefaults: (state, { payload }) => {
@@ -108,9 +111,25 @@ const slice = createSlice({
     fetchExternalToolProvidersAction: (state, { payload }) => {
       state.externalToolsProviders = [];
     },
-
     fetchExternalToolProvidersSuccess: (state, { payload }) => {
       state.externalToolsProviders = payload;
+    },
+    setSearchByTab: (state, { payload }) => {
+      state.searchResourceBy = payload;
+    },
+    addResource: (state, { payload }) => {
+      state.searchResourceBy = "resource";
+    },
+    fetchResource: (state, { payload }) => {
+      state.isLoading = true;
+    },
+    fetchResourceResult: (state, { payload }) => {
+      state.isLoading = false;
+      state.resources = payload;
+    },
+    resetAndFetchResources: state => {
+      state.isLoading = true;
+      state.resources = [];
     }
   }
 });
@@ -172,11 +191,50 @@ function* fetchExternalToolsSaga({ payload }) {
   }
 }
 
+function* fetchDataSaga({ payload }) {
+  try {
+    if (payload === "tests") {
+      yield put(slice.actions.resetAndFetchTests());
+    } else {
+      yield put(slice.actions.resetAndFetchResources());
+    }
+  } catch (e) {
+    console.error("Error Occured: fetchDataSaga ", e);
+  }
+}
+
+function* addResourceSaga({ payload }) {
+  try {
+    yield call(resourcesApi.addResource, payload);
+    yield put(slice.actions.fetchResource());
+  } catch (e) {
+    console.error("Error Occured: addResourceSaga ", e);
+  }
+}
+
+function* fetchResourceSaga({ payload }) {
+  try {
+    const result = yield call(resourcesApi.fetchResources);
+    if (result.error) {
+      message.error(result.error);
+      yield put(slice.actions.fetchResourceResult([]));
+    } else {
+      yield put(slice.actions.fetchResourceResult(result.data));
+    }
+  } catch (e) {
+    console.error("Error Occured: fetchResourceSaga ", e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
     yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga),
     yield takeLatest(slice.actions.setTestSearchAction, fetchTestsBySearchString),
-    yield takeEvery(slice.actions.fetchExternalToolProvidersAction, fetchExternalToolsSaga)
+    yield takeEvery(slice.actions.fetchExternalToolProvidersAction, fetchExternalToolsSaga),
+    yield takeEvery(slice.actions.setSearchByTab, fetchDataSaga),
+    yield takeEvery(slice.actions.addResource, addResourceSaga),
+    yield takeEvery(slice.actions.fetchResource, fetchResourceSaga),
+    yield takeEvery(slice.actions.resetAndFetchResources, fetchResourceSaga)
   ]);
 }

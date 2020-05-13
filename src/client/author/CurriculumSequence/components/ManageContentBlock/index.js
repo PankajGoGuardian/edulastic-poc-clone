@@ -14,6 +14,8 @@ import { submitLTIForm } from "../CurriculumModuleRow";
 import ManageModulesModal from "../ManageModulesModal";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ResourceItem from "../ResourceItem";
+import WebsiteResourceModal from "./components/WebsiteResourceModal";
+import ExternalVideoLink from "./components/ExternalVideoLink";
 import ExternalLTIModalForm from "./components/ExternalLTIModalContent";
 import slice from "./ducks";
 import {
@@ -26,38 +28,12 @@ import {
   ModalWrapper,
   ResourceDataList,
   SearchBar,
-  ToggleManageContent
+  ToggleManageContent,
+  SearchByNavigationBar,
+  SearchByTab
 } from "./styled";
 
-// Static resources data
-const resourceData = [
-  {
-    type: "video",
-    title: "Recognize Transformations with Parall"
-  },
-  {
-    type: "tests",
-    title: "Identifying Exponential …"
-  },
-  {
-    type: "lessons",
-    title: "Triangles and Angle Properties"
-  },
-  {
-    type: "video",
-    title: "Operations with Scientific Notation"
-  },
-  {
-    type: "tests",
-    title: "Triangles and Angle Properties"
-  },
-  {
-    type: "lessons",
-    title: "QUIZ - Identifying Exponential Expressions"
-  }
-];
-
-const resourceTabs = ["all", "tests", "resources"];
+const resourceTabs = ["tests", "resources"];
 
 const sourceList = ["everything", "learnzillion", "khan academy", "ck12", "grade"];
 
@@ -95,7 +71,7 @@ const ManageContentBlock = props => {
     sources,
     setDefaults,
     fetchTests,
-    tests,
+    tests = [],
     externalLTIModal,
     externalLTIResources,
     setFilterAction,
@@ -120,23 +96,28 @@ const ManageContentBlock = props => {
     subjectsFromCurriculumSequence,
     gradesFromCurriculumSequence,
     collectionFromCurriculumSequence = "",
-    collections,
+    collections = [],
     currentDistrictUsers,
     districtId,
     getCurrentDistrictUsers,
     userFeatures,
     fetchExternalToolProvidersAction,
     externalToolsProviders,
-    toggleManageContent
+    toggleManageContent,
+    searchResourceBy,
+    setSearchByTab,
+    addResource,
+    resources = []
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
 
   const [searchBy, setSearchBy] = useState("keywords");
   const [isAddNew, setAddNew] = useState(false);
-  const [searchResourceBy, setSearchResourceBy] = useState("all");
   const [isShowFilter, setShowFilter] = useState(false);
-  const [isShowExternalLTITool, setIsShowExternalLTITool] = useState(false);
+  const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(false);
+  const [isExternalVideoResourceModal, setExternalVideoResourceModal] = useState(false);
+  const [isShowExternalLTITool, setShowExternalLTITool] = useState(false);
 
   useEffect(() => {
     setDefaults({
@@ -151,13 +132,23 @@ const ManageContentBlock = props => {
   }, []);
 
   const onChange = ({ key }) => {
-    if (key === "3") {
-      setIsShowExternalLTITool(!isShowExternalLTITool);
+    switch (key) {
+      case "1":
+        setWebsiteUrlResourceModal(true);
+        break;
+      case "2":
+        setExternalVideoResourceModal(true);
+        break;
+      case "3":
+        setShowExternalLTITool(true);
+        break;
+      default:
+        break;
     }
   };
 
   const onModalClose = () => {
-    setIsShowExternalLTITool(false);
+    setShowExternalLTITool(false);
     setAddNew(false);
   };
 
@@ -174,7 +165,7 @@ const ManageContentBlock = props => {
 
   const addLTIResource = () => {
     addExternalLTIResouce();
-    setIsShowExternalLTITool(false);
+    setShowExternalLTITool(false);
   };
 
   const menu = (
@@ -184,9 +175,6 @@ const ManageContentBlock = props => {
       <Menu.Item key="3">External LTI Resource</Menu.Item>
     </Menu>
   );
-
-  const filteredData =
-    searchResourceBy === "all" ? resourceData : resourceData.filter(x => x?.type === searchResourceBy) || [];
 
   const onFilterChange = prop => setFilterAction(prop);
   const onStatusChange = prop => setStatusAction(prop);
@@ -214,7 +202,7 @@ const ManageContentBlock = props => {
 
   const renderList = () => {
     const listToRender = [];
-    if (searchResourceBy === "resources" || searchResourceBy === "all") {
+    if (searchResourceBy === "resources") {
       // map resources to an element
       if (externalLTIResources.length) {
         externalLTIResources.forEach((resource, idx) => {
@@ -230,8 +218,21 @@ const ManageContentBlock = props => {
           );
         });
       }
+
+      resources.forEach((resource, idx) => {
+        listToRender.push(
+          <ResourceItem
+            type={resource.contentType}
+            id={resource.resourceId}
+            title={resource.contentTitle}
+            key={`resource-${idx}`}
+            data={resource?.data}
+            previewTest={() => showResource(resource?.data)}
+          />
+        );
+      });
     }
-    if (searchResourceBy === "tests" || searchResourceBy === "all") {
+    if (searchResourceBy === "tests") {
       // map tests to an element.
       if (tests.length) {
         tests.forEach((test, idx) => {
@@ -254,9 +255,8 @@ const ManageContentBlock = props => {
         });
       }
     }
-    if (listToRender.length) {
-      return listToRender;
-    }
+    if (listToRender.length) return listToRender;
+
     return <Empty style={{ margin: "auto" }} image={Empty.PRESENTED_IMAGE_SIMPLE} />;
   };
 
@@ -297,13 +297,13 @@ const ManageContentBlock = props => {
 
         <ManageContentContainer data-cy="play-list-search-container">
           {/* <SearchByNavigationBar>
-        <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
-          keywords
+            <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
+              keywords
         </SearchByTab>
-        <SearchByTab onClick={() => setSearchBy("standards")} isTabActive={searchBy === "standards"}>
-          standards
+            <SearchByTab onClick={() => setSearchBy("standards")} isTabActive={searchBy === "standards"}>
+              standards
         </SearchByTab>
-      </SearchByNavigationBar> */}
+          </SearchByNavigationBar> */}
           <FlexContainer>
             <SearchBar
               type="search"
@@ -344,15 +344,15 @@ const ManageContentBlock = props => {
             />
           ) : (
             <>
-              {/* <SearchByNavigationBar justify="space-evenly">
+              <SearchByNavigationBar justify="flex-start">
                 {resourceTabs.map(tab => (
-                  <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
+                  <SearchByTab onClick={() => setSearchByTab(tab)} isTabActive={tab.includes(searchResourceBy)}>
                     {tab}
                   </SearchByTab>
                 ))}
               </SearchByNavigationBar>
 
-              <br /> */}
+              <br />
               <ResourceDataList>
                 {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
                 {isLoading && loadedPage !== 0 && (
@@ -367,16 +367,6 @@ const ManageContentBlock = props => {
           {isManageModulesVisible && (
             <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />
           )}
-
-          <ExternalLTIModalForm
-            onModalClose={onModalClose}
-            isShowExternalLTITool={isShowExternalLTITool}
-            externalToolsProviders={externalToolsProviders}
-            onChange={(key, value) => changeExternalLTIModal({ key, value })}
-            isAddNew={isAddNew}
-            setAddNew={setAddNew}
-            addLTIResource={addLTIResource}
-          />
         </ManageContentContainer>
         <ModalWrapper
           footer={null}
@@ -389,6 +379,34 @@ const ManageContentBlock = props => {
           <AssessmentPlayer testId={selectedTestForPreview} preview closeTestPreviewModal={closePreviewModal} />
         </ModalWrapper>
       </div>
+
+      {isWebsiteUrlResourceModal && (
+        <WebsiteResourceModal
+          closeCallback={() => setWebsiteUrlResourceModal(false)}
+          isVisible={isWebsiteUrlResourceModal}
+          addResource={addResource}
+        />
+      )}
+
+      {isExternalVideoResourceModal && (
+        <ExternalVideoLink
+          closeCallback={() => setExternalVideoResourceModal(false)}
+          isVisible={isExternalVideoResourceModal}
+          addResource={addResource}
+        />
+      )}
+
+      {isShowExternalLTITool && (
+        <ExternalLTIModalForm
+          onModalClose={onModalClose}
+          isShowExternalLTITool={isShowExternalLTITool}
+          externalToolsProviders={externalToolsProviders}
+          onChange={(key, value) => changeExternalLTIModal({ key, value })}
+          isAddNew={isAddNew}
+          setAddNew={setAddNew}
+          addLTIResource={addLTIResource}
+        />
+      )}
     </ManageContentOuterWrapper>
   );
 };
@@ -403,7 +421,7 @@ export default connect(
     authoredBy: state.playlistTestBox?.authoredBy,
     subject: state.playlistTestBox?.subject,
     grades: state.playlistTestBox?.grades,
-    tests: state.playlistTestBox?.tests || [],
+    tests: state.playlistTestBox?.tests,
     collection: state.playlistTestBox?.collection,
     sources: state.playlistTestBox?.sources,
     searchString: state.playlistTestBox?.searchString,
@@ -412,10 +430,12 @@ export default connect(
     testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
     selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
     externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
-    collections: state.user?.user?.orgData?.itemBanks || [],
+    collections: state.user?.user?.orgData?.itemBanks,
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
     districtId: state?.user?.user?.orgData?.districtId,
-    userFeatures: state?.user?.user?.features
+    userFeatures: state?.user?.user?.features,
+    searchResourceBy: state.playlistTestBox?.searchResourceBy,
+    resources: state.playlistTestBox?.resources
   }),
   {
     setFilterAction: slice.actions?.setFilterAction,
@@ -435,6 +455,8 @@ export default connect(
     showPreviewModal: slice.actions?.showTestPreviewModal,
     closePreviewModal: slice.actions?.closeTestPreviewModal,
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,
-    fetchExternalToolProvidersAction: slice.actions?.fetchExternalToolProvidersAction
+    fetchExternalToolProvidersAction: slice.actions?.fetchExternalToolProvidersAction,
+    setSearchByTab: slice.actions?.setSearchByTab,
+    addResource: slice.actions?.addResource
   }
 )(ManageContentBlock);

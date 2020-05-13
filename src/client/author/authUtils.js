@@ -31,5 +31,19 @@ export async function switchRole(role) {
   }
 }
 
+export async function switchUser(switchToId, personId) {
+  const result = await userApi.getSwitchUser(switchToId, personId);
+  if (result.result) {
+    TokenStorage.storeAccessToken(result.result.token, result.result._id, result.result.role);
+    window.open(
+      `${location.protocol}//${location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      "_blank"
+    );
+  } else {
+    message.error("Error occured while switching user");
+  }
+}
+
 window["proxyUser"] = proxyUser;
 window["switchRole"] = switchRole;
+window["switchUser"] = switchUser;

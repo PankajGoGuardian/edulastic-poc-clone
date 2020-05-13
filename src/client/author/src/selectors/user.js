@@ -1,4 +1,4 @@
-import { get as _get } from "lodash";
+import { get as _get, pick } from "lodash";
 import { createSelector } from "reselect";
 import { getSchoolsSelector as getDistrictSchoolsSelector } from "../../Schools/ducks";
 import { roleuser } from "@edulastic/constants";
@@ -249,4 +249,9 @@ export const getCleverSyncEnabledInstitutionPoliciesSelector = createSelector(
   getInstitutionPoliciesSelector,
   (user, policies) =>
     user ? policies.filter(p => !(p.allowGoogleClassroom || p.allowCanvas || p.allowSchoology || p.allowClassLink)) : []
+);
+
+export const getAccountSwitchDetails = createSelector(
+  getUser,
+  state => pick(state, ["personId", "otherAccounts"])
 );

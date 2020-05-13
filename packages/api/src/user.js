@@ -35,6 +35,18 @@ const getSwitchedToken = role =>
     })
     .then(result => result.data);
 
+const getSwitchUser = (switchToId, personId) =>
+  api
+    .callApi({
+      url: `${prefix}/switch`,
+      method: "get",
+      params: {
+        switchToId,
+        personId
+      }
+    })
+    .then(result => result.data);
+
 const fetchUsers = data =>
   api
     .callApi({
@@ -303,5 +315,6 @@ export default {
   fetchUsersFromDistrict,
   sendParentCode,
   fetchUsersForMerge,
+  getSwitchUser,
   mergeUsers
 };

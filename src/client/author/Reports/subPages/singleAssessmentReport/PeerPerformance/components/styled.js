@@ -26,25 +26,26 @@ export const StyledTable = styled(Table)`
         tr {
           th {
             white-space: nowrap;
-            color: ${fadedBlack};
-          }
-          th:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
-            text-align: right;
+            &:nth-child(1) {
+              text-align: left;
+            }
           }
         }
       }
 
       tbody {
         tr {
-          td:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
-            text-align: right;
-          }
-          td:nth-last-child(-n + ${props => props.colouredCellsNo}) {
-            padding: 0px;
-            div {
-              height: 100%;
-              width: 100%;
-              padding: 10px;
+          td {
+            &:nth-child(1) {
+              text-align: left;
+            }
+            &:nth-last-child(-n + ${props => props.colouredCellsNo}) {
+              padding: 0px;
+              div {
+                height: 100%;
+                width: 100%;
+                padding: 10px;
+              }
             }
           }
         }

@@ -61,6 +61,7 @@ const AnswerOptions = ({ t, setQuestionData, item }) => {
         key="shuffleOptions"
         onChange={optionsChangeHandler("shuffleOptions", !shuffleOptions)}
         checked={shuffleOptions}
+        style={{ alignSelf: "center" }}
       >
         <Label style={{ display: "inline" }}>{t("component.cloze.dropDown.shuffleoptions")}</Label>
       </CheckboxLabel>

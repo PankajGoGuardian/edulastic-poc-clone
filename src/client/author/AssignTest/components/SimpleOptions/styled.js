@@ -181,7 +181,7 @@ export const SettingsBtn = styled.span`
 `;
 
 export const StyledSelect = styled(Select)`
-  min-width: 95%;
+  min-width: 100%;
   .ant-select-selection {
     background: ${({ isBackgroundWhite }) => (isBackgroundWhite ? white : greyThemeLighter)};
     min-height: 40px;
@@ -191,6 +191,7 @@ export const StyledSelect = styled(Select)`
     .ant-select-selection__rendered {
       height: 100%;
       > ul {
+        width: 100%;
       }
     }
 

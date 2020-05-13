@@ -122,3 +122,9 @@ export const ExpandWrapper = styled.div`
     flex-direction: row;
   }
 `;
+
+export const DrawingToolsContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+`;

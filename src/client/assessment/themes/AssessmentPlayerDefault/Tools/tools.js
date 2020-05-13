@@ -23,7 +23,7 @@ import {
 import { drawTools } from "@edulastic/constants";
 import { white, greenDark5 } from "@edulastic/colors";
 import { Tooltip } from "../../../../common/utils/helpers";
-import { customizeIcon, StyledButton, Separate, ExpandWrapper } from "./styled";
+import { customizeIcon, StyledButton, Separate, ExpandWrapper, DrawingToolsContainer } from "./styled";
 
 export const Trash = customizeIcon(IconTrash);
 
@@ -116,7 +116,7 @@ const DrawingTools = ({ onChange, isTestMode, containerHeight }) => {
      * wrapper div required
      * @see https://snapwiz.atlassian.net/browse/EV-13648
      */
-    <div>
+    <DrawingToolsContainer>
       {btnsToShow.map((button, i) => (
         <Tooltip placement="right" title={button.label} key={button.mode}>
           <StyledButton
@@ -136,7 +136,7 @@ const DrawingTools = ({ onChange, isTestMode, containerHeight }) => {
           </StyledButton>
           {expandMore &&
             btnsToExpand.map((button, i) => (
-              <Tooltip placement="right" title={button.label} key={button.mode}>
+              <Tooltip placement="top" title={button.label} key={button.mode}>
                 <StyledButton
                   key={i}
                   onClick={onChange(button.mode)}
@@ -150,7 +150,7 @@ const DrawingTools = ({ onChange, isTestMode, containerHeight }) => {
             ))}
         </ExpandWrapper>
       )}
-    </div>
+    </DrawingToolsContainer>
   );
 };
 

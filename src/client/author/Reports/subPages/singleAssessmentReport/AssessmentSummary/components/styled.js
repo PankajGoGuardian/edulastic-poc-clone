@@ -11,7 +11,7 @@ export const UpperContainer = styled(Row)`
 
   .sub-container {
     .ant-card-body {
-      min-height: 350px;
+      min-height: 270px;
       display: flex;
       flex-direction: column;
 
@@ -61,25 +61,17 @@ export const StyledTable = styled(Table)`
       thead {
         tr {
           th {
-            color: ${fadedBlack};
-          }
-          th:nth-child(n + 2) {
-            text-align: right;
-          }
-
-          @media only screen and (min-width: 1200px) {
-            th {
-              font-size: 11px;
+            font-size: 10px;
+            &:nth-child(1) {
+              text-align: left;
             }
           }
         }
       }
 
       tbody {
-        tr {
-          td:nth-child(n + 2) {
-            text-align: right;
-          }
+        td:nth-child(1) {
+          text-align: left;
         }
         td .assessmentDate {
           white-space: nowrap;

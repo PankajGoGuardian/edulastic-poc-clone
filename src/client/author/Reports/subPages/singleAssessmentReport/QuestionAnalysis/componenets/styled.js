@@ -8,20 +8,13 @@ export const StyledTable = styled(Table)`
   .ant-table-body {
     table {
       thead {
-        tr {
+        tr th {
           white-space: nowrap;
-          th:nth-child(n + 3) {
-            text-align: right;
-          }
         }
       }
 
       tbody {
         tr {
-          td:nth-child(n + 3) {
-            text-align: right;
-            padding: 10px;
-          }
           td:nth-child(n + ${props => props.colorCellStart}) {
             padding: 0px;
             div {

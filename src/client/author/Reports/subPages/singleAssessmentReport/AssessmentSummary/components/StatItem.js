@@ -3,13 +3,15 @@ import styled from "styled-components";
 import { Col } from "antd";
 import { greyish, title, themeColorLighter } from "@edulastic/colors";
 
-const StatItem = ({ heading, value }) => {
+const StatItem = ({ heading, value, fontSize }) => {
   return (
-    <StyledCol>
-      <p className="stats-title">{heading}</p>
-      <p className="stats-value">
-        <span className="stats-value-big">{value}</span>
-      </p>
+    <StyledCol fontSize={fontSize}>
+      <div>
+        <p className="stats-title">{heading}</p>
+        <p className="stats-value">
+          <span className="stats-value-big">{value}</span>
+        </p>
+      </div>
     </StyledCol>
   );
 };
@@ -17,17 +19,25 @@ const StatItem = ({ heading, value }) => {
 export default StatItem;
 
 const StyledCol = styled(Col)`
-  padding: 10px 25px;
   flex: 1 1 50%;
-  background-color: ${greyish};
   display: flex;
   flex-direction: row;
   align-items: center;
   border-radius: 5px;
   white-space: pre-wrap;
 
+  & > div {
+    background-color: ${greyish};
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+  }
+
   .stats-title {
-    font-size: 17px;
+    font-size: ${props => props.fontSize || "16px"};
     font-weight: 600;
     display: block;
     flex: 1 1 auto;
@@ -40,7 +50,7 @@ const StyledCol = styled(Col)`
     justify-content: flex-end;
 
     .stats-value-big {
-      font-size: 17px;
+      font-size: 25px;
       font-weight: 900;
       color: ${themeColorLighter};
     }

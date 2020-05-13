@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from "react";
-import { ResponsiveContainer, PieChart, Pie, Legend, Tooltip } from "recharts";
-import PropTypes from "prop-types";
 import { fadedBlack } from "@edulastic/colors";
-import { Row, Col } from "antd";
+import { Col, Row } from "antd";
 import { sumBy } from "lodash";
+import PropTypes from "prop-types";
+import React, { useMemo, useState } from "react";
+import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import styled from "styled-components";
 import { StyledCustomChartTooltip } from "../styled";
 
 export const SimplePieChart = ({ data }) => {
@@ -66,7 +67,7 @@ export const SimplePieChart = ({ data }) => {
 
   return (
     <ResponsiveContainer width={"100%"}>
-      <PieChart>
+      <PieChartWrapper>
         <Legend
           onMouseEnter={onLegendMouseEnter}
           onMouseLeave={onLegendMouseLeave}
@@ -84,7 +85,7 @@ export const SimplePieChart = ({ data }) => {
           dataKey="bandPerf"
           label={renderCustomizedLabel}
         />
-      </PieChart>
+      </PieChartWrapper>
     </ResponsiveContainer>
   );
 };
@@ -99,3 +100,7 @@ const performanceByBand = PropTypes.shape({
 SimplePieChart.propTypes = {
   data: PropTypes.arrayOf(performanceByBand).isRequired
 };
+
+const PieChartWrapper = styled(PieChart)`
+  margin-top: 0px;
+`;

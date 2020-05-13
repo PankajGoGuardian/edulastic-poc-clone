@@ -1,8 +1,8 @@
-import styled from "styled-components";
 import { fadedBlack } from "@edulastic/colors";
-import { ResponsiveContainer } from "recharts";
-import { StyledTable as Table } from "../../../../common/styled";
 import { EduButton } from "@edulastic/common";
+import { ResponsiveContainer } from "recharts";
+import styled from "styled-components";
+import { StyledTable as Table } from "../../../../common/styled";
 
 export const NonSelectableResponsiveContainer = styled(ResponsiveContainer)`
   align-self: center;
@@ -37,30 +37,26 @@ export const StyledTable = styled(Table)`
       thead {
         tr {
           th {
-            color: ${fadedBlack};
-          }
-          th:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
-            text-align: right;
-          }
-
-          th:nth-last-child(-n + ${props => props.rightAligned || 0}) {
-            text-align: right;
+            &:nth-child(-n + 4) {
+              text-align: left;
+              white-space: nowrap;
+            }
           }
         }
       }
 
       tbody {
         tr {
-          td:nth-last-child(-n + ${props => props.colouredCellsNo + 2}) {
-            text-align: right;
-          }
-          td:nth-last-child(-n + ${props => props.rightAligned || 0}) {
-            text-align: right;
+          td {
+            &:nth-child(-n + 4) {
+              text-align: left;
+            }
           }
           td:nth-last-child(-n + ${props => props.colouredCellsNo}) {
+            padding: 0px;
             div {
               display: flex;
-              justify-content: flex-end;
+              justify-content: center;
               align-items: center;
               height: 100%;
               width: 100%;

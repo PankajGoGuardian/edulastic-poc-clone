@@ -80,6 +80,10 @@ export const StyledTable = styled(Table)`
     .ant-table-column-sorter {
       display: none !important;
     }
+
+    .ant-row-flex {
+      justify-content: flex-end;
+    }
   }
   .ant-table-body {
     table {
@@ -87,10 +91,6 @@ export const StyledTable = styled(Table)`
         tr {
           th {
             white-space: nowrap;
-            color: ${fadedBlack};
-          }
-          th:nth-child(n + 4) {
-            text-align: right;
           }
         }
       }
@@ -98,30 +98,18 @@ export const StyledTable = styled(Table)`
       tbody {
         tr {
           td:nth-child(5) {
-            padding: 0;
-
             .response-frequency-table-correct-td {
               padding: 0;
               height: 100%;
               width: 100%;
               display: flex;
-              justify-content: flex-end;
+              justify-content: center;
               align-items: center;
-              padding: 10px;
+              padding: 10px 8px;
               -webkit-print-color-adjust: exact;
             }
           }
-
-          td:nth-child(n + 4) {
-            text-align: right;
-          }
         }
-      }
-    }
-
-    @media print {
-      .ant-row-flex {
-        justify-content: flex-end;
       }
     }
   }

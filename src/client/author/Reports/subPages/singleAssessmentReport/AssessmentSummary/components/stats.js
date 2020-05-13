@@ -72,41 +72,32 @@ export const Stats = props => {
       <StyledH3>
         <Capitalized>{rolesMap[props.role]}</Capitalized> Statistics of {props.name}
       </StyledH3>
-      <StyledInnerRow type="flex" justify="start" className="average-stats">
+      <StyledInnerRow gutter={15} type="flex" justify="start" className="average-stats">
         <StatItem heading="Average Score" value={`${state.avgScore}/${Math.round(state.total)}`} />
         <StatItem heading="Average Student Score" value={`${state.avgStudentScore}%`} />
       </StyledInnerRow>
-      <StyledInnerRow type="flex" justify="start" className="average-stats">
-        <StatItem heading="Students Assigned" value={state.studentsAssigned} />
-        <StatItem heading="Students Graded" value={state.studentsGraded} />
+      <StyledInnerRow gutter={15} type="flex" justify="start" className="average-stats">
+        <StatItem fontSize="14px" heading="Students Assigned" value={state.studentsAssigned} />
+        <StatItem fontSize="14px" heading="Students Graded" value={state.studentsGraded} />
         {/* added extra white space for responsiveness */}
-        <StatItem heading="Students  Absent" value={state.studentsAbsent} />
+        <StatItem fontSize="14px" heading="Students  Absent" value={state.studentsAbsent} />
       </StyledInnerRow>
     </StyledRow>
   );
 };
 
 const StyledRow = styled(Row)`
-  flex: 1;
   display: flex;
   flex-direction: column;
 
   .average-stats {
     flex-wrap: nowrap;
-    min-height: 110px;
-
-    .ant-col:first-child {
-      margin-left: 0px;
-    }
+    min-height: 115px;
+    margin-bottom: 15px;
   }
 `;
 
 const StyledInnerRow = styled(Row)`
   flex: 1;
   color: ${greyishDarker1};
-
-  > div {
-    display: flex;
-    margin: 5px;
-  }
 `;

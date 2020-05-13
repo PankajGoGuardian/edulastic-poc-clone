@@ -135,17 +135,28 @@ const PerformanceAnalysisTable = ({
       sorter: (a, b) => getAverage(a) - getAverage(b),
       render: (recordId, record) => {
         const path = {
-          pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-          state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-            breadCrumb: [{
-            to: "/author/reports",
-            title: "REPORTS"
-          }, {
-            to: `${location.pathname}${location.search}`,
-            title: pageTitle
-          }]}
+          pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
+            record.testActivityId
+          }`,
+          state: {
+            // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+            breadCrumb: [
+              {
+                to: "/author/reports",
+                title: "REPORTS"
+              },
+              {
+                to: `${location.pathname}${location.search}`,
+                title: pageTitle
+              }
+            ]
+          }
         };
-        return <Link to={path} style={{ color: reportLinkColor }}>{getOverallValue(record.standardMetrics, analyzeBy)}</Link>
+        return (
+          <Link to={path} style={{ color: reportLinkColor }}>
+            {getOverallValue(record.standardMetrics, analyzeBy)}
+          </Link>
+        );
       }
     };
   };
@@ -356,12 +367,8 @@ export default PerformanceAnalysisTable;
 const AnalysisTable = styled(StyledTable)`
   .ant-table-thead {
     th {
-      font-size: 12px;
-      font-weight: bold;
-      padding-right: 16px !important;
-
-      &:nth-child(n + 3) {
-        text-align: right;
+      &:nth-child(1) {
+        text-align: left;
       }
     }
   }
@@ -369,16 +376,16 @@ const AnalysisTable = styled(StyledTable)`
   .ant-table-tbody {
     td {
       min-width: 100px;
-    }
-    td:nth-child(n + 3) {
-      padding: 0 !important;
-      text-align: right;
+      padding: 0;
+      &:nth-child(1) {
+        text-align: left;
+        padding: 0px 8px;
+      }
     }
   }
 `;
 
 const ScoreCell = styled.div`
   background: ${props => props.color};
-  height: 51px;
-  padding: 16px;
+  padding: 10px 8px;
 `;

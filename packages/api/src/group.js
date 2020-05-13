@@ -124,6 +124,15 @@ const updateHangoutEvent = data =>
     })
     .then(result => result.data.result);
 
+const unarchiveClass = data =>
+  api
+    .callApi({
+      url: `${prefix}/unarchive`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   fetchMyGroups,
   fetchMyArchiveGroups,
@@ -138,5 +147,6 @@ export default {
   dropPlaylist,
   fetchPlaylistAccess,
   saveHangoutEvent,
-  updateHangoutEvent
+  updateHangoutEvent,
+  unarchiveClass
 };

@@ -14,6 +14,7 @@ import { scopes } from "../ClassListContainer/ClassCreatePage";
 import { ContainerHeader, RightContent, ClassCode, IconArchiveClass, ClassLink } from "./styled";
 import { Tooltip } from "../../../../common/utils/helpers";
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
+import { SimpleConfirmModal } from "@edulastic/common";
 
 const SubHeader = ({
   name,
@@ -33,9 +34,11 @@ const SubHeader = ({
   allowCanvasLogin,
   syncCanvasModal,
   user,
-  institutionId
+  institutionId,
+  unarchiveClass
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
   const handleLoginSuccess = data => {
     fetchClassList({ data, showModal: false });
   };
@@ -51,6 +54,14 @@ const SubHeader = ({
   };
   const handleArchiveClassCancel = () => {
     setShowModal(false);
+  };
+
+  const handleUnarchiveClass = () => {
+    unarchiveClass({ groupId: _id });
+    setShowUnarchiveModal(false);
+  };
+  const handleUnarchiveClassCancel = () => {
+    setShowUnarchiveModal(false);
   };
 
   // get assignments related to class
@@ -139,6 +150,7 @@ const SubHeader = ({
             )}
             {/* hiding icons as of now, after functinality is added these icons will be displayed */}
             {/* <StyledIcon type="user" fill={greenDark} /> */}
+            {active !== 1 && <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>}
             {active === 1 && !cleverId && (
               <Tooltip placement="top" title="Archive Class">
                 <span onClick={() => setShowModal(true)}>
@@ -161,6 +173,20 @@ const SubHeader = ({
                 }
                 closeModal={handleArchiveClassCancel}
                 okButtonText="Archive"
+              />
+            )}
+            {showUnarchiveModal && (
+              <SimpleConfirmModal
+                visible={showUnarchiveModal}
+                title="Unarchive Class"
+                description={
+                  <p style={{ margin: "5px 0" }}>
+                    Are you sure want to Unarchive <LightGreenSpan>{name}</LightGreenSpan>?
+                  </p>
+                }
+                buttonText="Unarchive"
+                onProceed={handleUnarchiveClass}
+                onCancel={handleUnarchiveClassCancel}
               />
             )}
           </>

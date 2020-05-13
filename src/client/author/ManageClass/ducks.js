@@ -11,6 +11,7 @@ import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
 import { setUserGoogleLoggedInAction } from "../../student/Login/ducks";
 import { requestEnrolExistingUserToClassAction } from "../ClassEnrollment/ducks";
 import { RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR } from "../src/constants/actions";
+import { push } from "connected-react-router";
 
 // selectors
 const manageClassSelector = state => state.manageClass;
@@ -108,6 +109,9 @@ export const FETCH_CLEVER_CLASS_LIST_FAILED = "[manageClass] get class list from
 export const SYNC_CLASS_LIST_WITH_CLEVER = "[manageClass] sync class list with clever";
 export const GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR = "[manageClass] Class Not Found";
 
+export const UNARCHIVE_CLASS_REQUEST = "[manageClass] unarchive class";
+export const UNARCHIVE_CLASS_REQUEST_SUCCESS = "[manageClass] unarchive class success";
+export const UNARCHIVE_CLASS_REQUEST_FAILED = "[manageClass] unarchive class failed";
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
@@ -171,6 +175,9 @@ export const fetchCleverClassListRequestAction = createAction(FETCH_CLEVER_CLASS
 export const fetchCleverClassListSuccessAction = createAction(FETCH_CLEVER_CLASS_LIST_SUCCESS);
 export const fetchCleverClassListFailedAction = createAction(FETCH_CLEVER_CLASS_LIST_FAILED);
 export const syncClassesWithCleverAction = createAction(SYNC_CLASS_LIST_WITH_CLEVER);
+export const unarchiveClassAction = createAction(UNARCHIVE_CLASS_REQUEST);
+export const unarchiveClassSuccessAction = createAction(UNARCHIVE_CLASS_REQUEST_SUCCESS);
+export const unarchiveClassFailedAction = createAction(UNARCHIVE_CLASS_REQUEST_FAILED);
 
 export const setClassNotFoundErrorAction = createAction(GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR);
 
@@ -195,7 +202,8 @@ const initialState = {
   isFetchingCanvasData: false,
   loadingCleverClassList: false,
   cleverClassList: [],
-  classNotFoundError: false
+  classNotFoundError: false,
+  unarchivingClass: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -413,7 +421,16 @@ export default createReducer(initialState, {
     state.loadingCleverClassList = false;
     state.cleverClassList = [];
   },
-  [GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR]: setGoogleClassCodeNotFound
+  [GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR]: setGoogleClassCodeNotFound,
+  [UNARCHIVE_CLASS_REQUEST]: state => {
+    state.unarchivingClass = true;
+  },
+  [UNARCHIVE_CLASS_REQUEST_SUCCESS]: state => {
+    state.unarchivingClass = false;
+  },
+  [UNARCHIVE_CLASS_REQUEST_FAILED]: state => {
+    state.unarchivingClass = false;
+  }
 });
 
 function* fetchClassList({ payload }) {
@@ -697,6 +714,19 @@ function* syncClassListWithCleverSaga({ payload }) {
   }
 }
 
+function* unarchiveClass({ payload }) {
+  try {
+    yield call(groupApi.unarchiveClass, payload);
+    yield put(unarchiveClassSuccessAction());
+    yield call(message.success, "Class successfully unarchived.");
+    yield put(push("/author/manageClass"));
+  } catch (err) {
+    console.error(err);
+    yield put(unarchiveClassFailedAction());
+    yield call(message.error, "Unarchiving class failed.");
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -715,6 +745,7 @@ export function* watcherSaga() {
     yield takeLatest(GET_CANVAS_SECTION_LIST_REQUEST, getCanvasSectionListRequestSaga),
     yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga),
     yield takeLatest(FETCH_CLEVER_CLASS_LIST_REQUEST, fetchCleverClassListRequestSaga),
-    yield takeLatest(SYNC_CLASS_LIST_WITH_CLEVER, syncClassListWithCleverSaga)
+    yield takeLatest(SYNC_CLASS_LIST_WITH_CLEVER, syncClassListWithCleverSaga),
+    yield takeLatest(UNARCHIVE_CLASS_REQUEST, unarchiveClass)
   ]);
 }

@@ -332,12 +332,12 @@ const ActionContainer = ({
 
       <AddStudentDivider>
         <ButtonsWrapper>
-          {active && !cleverId && type === "class" && (
+          {active && !cleverId && type === "class" ? (
             <EduButton height="30px" isGhost data-cy="addStudent" onClick={() => toggleModal("add")}>
               <IconPlusCircle />
               ADD STUDENT
             </EduButton>
-          )}
+          ) : null}
           <EduButton
             height="30px"
             isGhost
@@ -407,11 +407,11 @@ const ActionContainer = ({
             </EduButton>
           </Dropdown>
 
-          {active && !cleverId && type === "class" && (
+          {active && !cleverId && type === "class" ? (
             <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
               ADD MULTIPLE STUDENTS
             </EduButton>
-          )}
+          ) : null}
 
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal

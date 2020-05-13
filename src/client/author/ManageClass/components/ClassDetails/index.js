@@ -29,7 +29,8 @@ import {
   syncClassWithCanvasAction,
   syncClassesWithCleverAction,
   getClassNotFoundError,
-  setClassNotFoundErrorAction
+  setClassNotFoundErrorAction,
+  unarchiveClassAction
 } from "../../ducks";
 import { getCleverSyncEnabledInstitutionPoliciesSelector } from "../../../src/selectors/user";
 
@@ -54,7 +55,8 @@ const ClassDetails = ({
   user,
   cleverSyncEnabledInstitutions,
   classCodeError = false,
-  setClassNotFoundError
+  setClassNotFoundError,
+  unarchiveClass
 }) => {
   const { _id, name, type, cleverId, institutionId } = selectedClass;
 
@@ -214,6 +216,7 @@ const ClassDetails = ({
               archiveClass={archiveClass}
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
+              unarchiveClass={unarchiveClass}
             />
 
             <ActionContainer
@@ -268,7 +271,8 @@ const enhance = compose(
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       syncClassWithCanvas: syncClassWithCanvasAction,
       syncClassesWithClever: syncClassesWithCleverAction,
-      setClassNotFoundError: setClassNotFoundErrorAction
+      setClassNotFoundError: setClassNotFoundErrorAction,
+      unarchiveClass: unarchiveClassAction
     }
   )
 );

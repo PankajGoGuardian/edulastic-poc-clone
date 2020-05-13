@@ -29,7 +29,8 @@ const MainInfo = ({
   syncGCModal,
   archiveClass,
   allowCanvasLogin,
-  syncCanvasModal
+  syncCanvasModal,
+  unarchiveClass
 }) => {
   // eslint-disable-next-line max-len
   const {
@@ -75,6 +76,7 @@ const MainInfo = ({
             archiveClass={archiveClass}
             allowCanvasLogin={allowCanvasLogin}
             syncCanvasModal={syncCanvasModal}
+            unarchiveClass={unarchiveClass}
           />
         </FlexDiv>
         <StyledDivider orientation="left" />

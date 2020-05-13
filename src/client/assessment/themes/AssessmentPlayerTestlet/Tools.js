@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { IconClose, IconCalculator, IconSearch } from "@edulastic/icons";
+import { IconClose, IconCalculator, IconMagnify } from "@edulastic/icons";
 import { Button } from "antd";
 import { Tooltip } from "../../../common/utils/helpers";
 
@@ -21,7 +21,7 @@ const Tools = ({ changeTool, currentTool, calculateMode, handleMagnifier, enable
     </Tooltip>
     <Tooltip>
       <ToolButton active={enableMagnifier} onClick={handleMagnifier} id="magnifier-icon">
-        <IconSearch />
+        <IconMagnify />
       </ToolButton>
     </Tooltip>
   </ToolBox>

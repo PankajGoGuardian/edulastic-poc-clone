@@ -44,7 +44,7 @@ import {
 import ImageCard from "./ImageCard";
 import { getAssignmentsSelector, fetchAssignmentsAction } from "../Assign/ducks";
 
-const { statusConstants, passwordPolicy } = test;
+const { statusConstants, passwordPolicy, type: _testTypes } = test;
 
 const sharedWithPriorityOrder = ["Public", "District", "School"];
 
@@ -228,7 +228,9 @@ class SuccessPage extends React.Component {
                 <>
                   <FlexTitle>Success!</FlexTitle>
                   <FlexTextWrapper>
-                    {title}&nbsp; has been assigned in&nbsp;{assignmentStatus}&nbsp;status.
+                    {assignment.testType === _testTypes.COMMON
+                      ? `Test ${title} has been assigned to students in ${assignment.class.length} classes/groups.`
+                      : `${title} has been assigned in ${assignmentStatus} status.`}
                   </FlexTextWrapper>
                   {assignment.passwordPolicy === passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
                     <FlexText style={{ textAlign: "justify" }}>
@@ -238,12 +240,19 @@ class SuccessPage extends React.Component {
                       ready, click on the > Open button to view the password, announce to students and make the
                       assignment available for the student to work on.
                     </FlexText>
+                  ) : assignment.testType === _testTypes.COMMON ? (
+                    <FlexText>
+                      You can monitor student progress and responses by clicking on the &nbsp;
+                      <span onClick={this.handleAssign} style={{ color: themeColor, cursor: "pointer" }}>
+                        Go to Live Class Board
+                      </span>
+                    </FlexText>
                   ) : (
                     <FlexText>
                       <FlexText>Your students can begin work on this assessment right away.</FlexText>
                       You can monitor student progress and responses by clicking on the &nbsp;
                       <span onClick={this.handleAssign} style={{ color: themeColor, cursor: "pointer" }}>
-                        View Response
+                        Go to Live Class Board
                       </span>
                       &nbsp; button.
                     </FlexText>

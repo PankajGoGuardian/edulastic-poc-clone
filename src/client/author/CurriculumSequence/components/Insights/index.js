@@ -1,4 +1,4 @@
-import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { withWindowSizes } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { Col, Row, Spin } from "antd";
@@ -110,7 +110,7 @@ const Insights = ({
     setHighlighted({});
   };
 
-  const [showFilter, setShowFilter] = useState(false);
+  const [showFilter, setShowFilter] = useState(true);
 
   const toggleFilter = () => {
     setShowFilter(!showFilter);
@@ -120,20 +120,22 @@ const Insights = ({
     <Spin style={{ marginTop: "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={10} justify="center">
-      <FilterColumn xs={24} sm={24} md={4} showFilter={showFilter}>
-        <InsightsFilters
-          data={filterData}
-          prevFilters={filters}
-          updateFilters={updateFilters}
-          overallProgressCheck={overallProgressCheck}
-          setOverallProgressCheck={setOverallProgressCheck}
-          clearFilter={clearFilter}
-        />
-      </FilterColumn>
-      <GraphContainer xs={24} sm={24} md={windowWidth <= 1024 && !showFilter ? 18 : 14}>
-        <FilterIcom showFilter={showFilter} variant="filter" onClick={toggleFilter}>
+      {showFilter && (
+        <FilterColumn>
+          <InsightsFilters
+            data={filterData}
+            prevFilters={filters}
+            updateFilters={updateFilters}
+            overallProgressCheck={overallProgressCheck}
+            setOverallProgressCheck={setOverallProgressCheck}
+            clearFilter={clearFilter}
+          />
+        </FilterColumn>
+      )}
+      <GraphContainer showFilter={showFilter}>
+        <FilterIcon showFilter={showFilter} variant="filter" onClick={toggleFilter}>
           <IconFilter data-cy="smart-filter" color={showFilter ? white : themeColor} width={20} height={20} />
-        </FilterIcom>
+        </FilterIcon>
         <StyledCol>
           {loadingProgress ? (
             <Spin />
@@ -142,12 +144,12 @@ const Insights = ({
           )}
         </StyledCol>
       </GraphContainer>
-      <StyledCol xs={24} sm={24} md={6}>
+      <RightContainer xs={24} sm={24} md={6}>
         <Row style={{ width: "100%" }}>
           {/* <BoxedInsightsSummary data={getBoxedSummaryData(trendCount)} /> */}
           <AddToGroupTable studData={curatedMetrics} groupsData={filterData?.groupsData} highlighted={highlighted} />
         </Row>
-      </StyledCol>
+      </RightContainer>
     </InsightsContainer>
   );
 };
@@ -175,22 +177,22 @@ const InsightsContainer = styled(Row)`
   width: 100%;
 `;
 
-const FilterIcom = styled(FilterButton)`
-  display: none;
+const FilterIcon = styled(FilterButton)`
   background: ${props => (props.showFilter ? themeColor : white)};
-  @media (max-width: ${smallDesktopWidth}) {
-    display: block;
-    margin: 0px;
-  }
+  margin: 0px !important;
 `;
 
 const FilterColumn = styled(Col)`
-  @media (max-width: ${smallDesktopWidth}) {
-    display: ${props => (props.showFilter ? "block" : "none")};
-  }
+  width: 220px;
 `;
 
-const GraphContainer = styled(Col)``;
+const GraphContainer = styled(Col)`
+  width: ${props => `calc(100% - ${props.showFilter ? "470px" : "250px"})`};
+`;
+
+const RightContainer = styled(Col)`
+  width: 250px;
+`;
 
 const StyledCol = styled(Col)`
   display: flex;

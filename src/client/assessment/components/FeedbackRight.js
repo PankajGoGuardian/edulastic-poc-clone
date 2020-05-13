@@ -20,9 +20,9 @@ const { TextArea } = Input;
 
 const adaptiveRound = x => (x && x.endsWith ? (x.endsWith(".") ? x : round(x, 2)) : round(x, 2));
 
-function ScoreInputFocusEffectComponent({ scoreInputRef, responseLoading, responseMode }) {
+function ScoreInputFocusEffectComponent({ scoreInputRef, responseLoading }) {
   useEffect(() => {
-    if (scoreInputRef.current && !responseLoading && !responseMode) {
+    if (scoreInputRef.current && !responseLoading) {
       scoreInputRef.current.focus();
     }
   }, [responseLoading]);
@@ -298,11 +298,7 @@ class FeedbackRight extends Component {
         title={title}
       >
         {expressGrader && (
-          <ScoreInputFocusEffectComponent
-            scoreInputRef={this.scoreInput}
-            responseLoading={studentResponseLoading}
-            responseMode={isAnswerModifiable}
-          />
+          <ScoreInputFocusEffectComponent scoreInputRef={this.scoreInput} responseLoading={studentResponseLoading} />
         )}
         <StyledDivSec>
           <ScoreInputWrapper>

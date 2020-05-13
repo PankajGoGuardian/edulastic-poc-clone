@@ -17,7 +17,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
 
 import { Toolbar } from "../../styled/Toolbar";
-import { Item, TextAreaAnswer } from "../../styled/Item";
+import { Item, TextAnswer } from "../../styled/Item";
 
 import { ToolbarItem } from "./styled/ToolbarItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -175,7 +175,7 @@ const EssayPlainTextPreview = ({
               </FlexContainer>
             </Toolbar>
           )}
-          <TextAreaAnswer
+          <TextAnswer
             ref={ref => {
               node = ref;
             }}

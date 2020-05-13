@@ -38,7 +38,7 @@ export default class FormEssay extends React.Component {
     } = this.props;
     return (
       <Input.TextArea
-        style={{ padding: "2px 11px" }}
+        style={{ padding: "2px 11px", resize: "none" }}
         value={answer}
         onChange={this.handleChange}
         disabled={mode === "report"}

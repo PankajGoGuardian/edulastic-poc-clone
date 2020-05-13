@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { FlexContainer } from "@edulastic/common";
 import { Input } from "antd";
+import { FlexContainer } from "@edulastic/common";
+
 
 export const Item = styled(FlexContainer)`
   line-height: 100%;
@@ -10,6 +11,6 @@ export const Item = styled(FlexContainer)`
   padding-bottom: 10px;
 `;
 
-export const TextAreaAnswer = styled(Input.TextArea)`
+export const TextAnswer = styled(Input.TextArea)`
   resize: none;
 `;

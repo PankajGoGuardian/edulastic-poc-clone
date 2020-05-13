@@ -125,6 +125,26 @@ export const createGroupSummary = test => {
   return summary;
 };
 
+//Kidergarten should out put as the first grade and other should be the last grade.
+// Eg: grades = ["1","2","K","O"]
+export const sortGrades = grades => {
+  if (!grades || !grades.length) {
+    return [];
+  }
+  let sortedGrades = grades.filter(item => item !== "K" && item !== "O").sort((a, b) => a - b);
+  if (grades.includes("K")) {
+    sortedGrades = ["K", ...sortedGrades];
+  } else if (grades.includes("k")) {
+    sortedGrades = ["k", ...sortedGrades];
+  }
+  if (grades.includes("O")) {
+    sortedGrades = [...sortedGrades, "O"];
+  } else if (grades.includes("o")) {
+    sortedGrades = [...sortedGrades, "o"];
+  }
+  return sortedGrades;
+};
+
 export default {
   createGroupSummary
 };

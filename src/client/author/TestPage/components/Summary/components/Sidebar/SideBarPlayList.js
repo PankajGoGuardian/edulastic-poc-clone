@@ -14,6 +14,7 @@ import { selectsData } from "../../../common";
 import { ColorBox, SummaryButton, SummaryDiv } from "../../common/SummaryForm";
 import SummaryHeader from "../SummaryHeader/SummaryHeader";
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from "./styled";
+import { sortGrades } from "../../../../utils";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -154,7 +155,7 @@ const Sidebar = ({
             mode="multiple"
             size="large"
             placeholder="Please select"
-            defaultValue={grades}
+            value={sortGrades(grades)}
             onChange={onChangeGrade}
             optionFilterProp="children"
             margin="0px 0px 15px"

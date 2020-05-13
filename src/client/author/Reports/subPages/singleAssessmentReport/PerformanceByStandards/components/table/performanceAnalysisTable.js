@@ -365,20 +365,11 @@ PerformanceAnalysisTable.defaultProps = {
 export default PerformanceAnalysisTable;
 
 const AnalysisTable = styled(StyledTable)`
-  .ant-table-thead {
-    th {
-      &:nth-child(1) {
-        text-align: left;
-      }
-    }
-  }
-
   .ant-table-tbody {
     td {
       min-width: 100px;
       padding: 0;
       &:nth-child(1) {
-        text-align: left;
         padding: 0px 8px;
       }
     }

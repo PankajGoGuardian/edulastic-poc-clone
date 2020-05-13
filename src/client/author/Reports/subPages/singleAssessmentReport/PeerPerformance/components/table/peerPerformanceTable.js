@@ -1,14 +1,14 @@
-import React, { useMemo } from "react";
-import { Row, Col } from "antd";
-import { sumBy } from "lodash";
+import { Col, Row } from "antd";
 import next from "immer";
-import { StyledTable } from "../styled";
-import { StyledH3 } from "../../../../../common/styled";
-import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import { idToName } from "../../util/transformers";
+import { sumBy } from "lodash";
+import React, { useMemo } from "react";
 import styled from "styled-components";
-import { downloadCSV } from "../../../../../common/util";
+import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
+import { StyledH3 } from "../../../../../common/styled";
+import { downloadCSV } from "../../../../../common/util";
+import { idToName } from "../../util/transformers";
+import { StyledTable } from "../styled";
 
 const getDisplayValue = (data, record, analyseBy, columnKey) => {
   let printData = data;

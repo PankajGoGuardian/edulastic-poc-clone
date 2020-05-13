@@ -5,7 +5,8 @@
         "title": "School",
         "dataIndex": "schoolName",
         "key": "schoolName",
-        "width": 210
+        "width": 210,
+        "align": "left"
       },
       {
         "title": "Avg. Student Score (%)",
@@ -76,13 +77,15 @@
         "title": "School",
         "dataIndex": "schoolName",
         "key": "schoolName",
-        "width": 250
+        "width": 250,
+        "align": "left"
       },
       {
         "title": "Teacher",
         "dataIndex": "teacherName",
         "key": "teacherName",
-        "width": 200
+        "width": 200,
+        "align": "left"
       },
       {
         "title": "Avg. Student Score (%)",
@@ -153,13 +156,15 @@
         "title": "School",
         "dataIndex": "schoolName",
         "key": "schoolName",
-        "width": 250
+        "width": 250,
+        "align": "left"
       },
       {
         "title": "Class Name",
         "dataIndex": "groupName",
         "key": "groupName",
-        "width": 250
+        "width": 250,
+        "align": "left"
       },
       {
         "title": "Avg. Student Score (%)",

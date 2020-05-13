@@ -1,44 +1,37 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Row } from "antd";
 import next from "immer";
+import { filter, get, includes } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import { get, includes, filter } from "lodash";
-import { Row, Col } from "antd";
-import { StyledCard, DropDownContainer } from "../../../common/styled";
-
+import { getUserRole } from "../../../../src/selectors/user";
+import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
+import { DropDownContainer, StyledCard } from "../../../common/styled";
+import { getCsvDownloadingState } from "../../../ducks";
+import {
+  getFiltersSelector,
+  getReportsStandardsBrowseStandards,
+  getReportsStandardsFilters,
+  getSelectedStandardProficiency,
+  getStandardsFiltersRequestAction
+} from "../common/filterDataDucks";
+import StandardsPerformanceChart from "./components/charts/StandardsPerformanceChart";
+import { StyledInnerRow, StyledRow } from "./components/styled";
+import StandardsPerformanceTable from "./components/table/StandardsPerformanceTable";
 import {
   getReportsStandardsPerformanceSummary,
   getReportsStandardsPerformanceSummaryLoader,
   getStandardsPerformanceSummaryRequestAction
 } from "./ducks";
-
-import {
-  getReportsStandardsBrowseStandards,
-  getStandardsFiltersRequestAction,
-  getReportsStandardsFilters,
-  getSelectedStandardProficiency,
-  getFiltersSelector
-} from "../common/filterDataDucks";
-
-import { getCsvDownloadingState } from "../../../ducks";
-
-import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import dropDownData from "./static/json/dropDownData.json";
-
 import {
-  getMaxMasteryScore,
-  getColumns,
-  getMasteryLevelOptions,
+  getDropDownData,
   getMasteryLevel,
-  getParsedData,
-  getOverallMasteryScore
+  getMasteryLevelOptions,
+  getMaxMasteryScore,
+  getOverallMasteryScore,
+  getParsedData
 } from "./utils/transformers";
-
-import { StyledInnerRow, StyledRow } from "./components/styled";
-import { Placeholder } from "../../../common/components/loader";
-import { getDropDownData } from "./utils/transformers";
-import { getUserRole } from "../../../../src/selectors/user";
-import StandardsPerformanceTable from "./components/table/StandardsPerformanceTable";
-import StandardsPerformanceChart from "./components/charts/StandardsPerformanceChart";
 
 const { compareByData, analyseByData } = dropDownData;
 
@@ -117,16 +110,7 @@ const StandardsPerformance = ({
   }, [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]);
 
   if (loading) {
-    return (
-      <div>
-        <Row type="flex">
-          <Placeholder />
-        </Row>
-        <Row type="flex">
-          <Placeholder />
-        </Row>
-      </div>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   const tableFiltersOptions = {

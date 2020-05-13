@@ -17,6 +17,7 @@ export { default as AutoExpandInput } from "./src/components/AutoExpandInput";
 export { default as Button } from "./src/components/Button";
 export { default as EduButton } from "./src/components/EduButton";
 export { default as Checkbox } from "./src/components/Checkbox";
+export { default as SpinLoader } from "./src/components/Spinner";
 export { default as CheckboxLabel, CheckBoxGrp } from "./src/components/CheckboxLabel";
 export { default as Legends, LegendContainer } from "./src/components/Legends";
 export {

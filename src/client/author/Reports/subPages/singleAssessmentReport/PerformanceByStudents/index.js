@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import { Row, Col } from "antd";
-import { EduButton } from "@edulastic/common";
+import { EduButton, SpinLoader } from "@edulastic/common";
 import { IconPlusCircle } from "@edulastic/icons";
 import {
   getPerformanceByStudentsRequestAction,
@@ -19,7 +19,6 @@ import { downloadCSV } from "../../../common/util";
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { StyledH3, StyledCard } from "../../../common/styled";
 import { UpperContainer, StyledDropDownContainer, StyledTable } from "./components/styled";
-import { Placeholder } from "../../../common/components/loader";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
@@ -153,10 +152,7 @@ const PerformanceByStudents = ({
   return (
     <>
       {loading ? (
-        <>
-          <Placeholder />
-          <Placeholder />
-        </>
+        <SpinLoader position="fixed" />
       ) : (
         <UpperContainer>
           <AddToGroupModal

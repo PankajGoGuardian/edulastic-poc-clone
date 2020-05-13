@@ -1,26 +1,21 @@
-import React, { useState } from "react";
+import { SpinLoader } from "@edulastic/common";
 import { get, head } from "lodash";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
-import { getReportsMARFilterData, getFiltersSelector } from "../common/filterDataDucks";
 import { getUserRole } from "../../../../src/selectors/user";
+import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
+import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
+import { downloadCSV, filterAccordingToRole, getFormattedName } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
-
+import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
-import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
-import { Placeholder } from "../../../common/components/loader";
-
+import { getFiltersSelector, getReportsMARFilterData } from "../common/filterDataDucks";
+import { usefetchProgressHook } from "../common/hooks";
+import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
+import { useGetBandData } from "./hooks";
 import dropDownData from "./static/json/dropDownData.json";
 import tableColumns from "./static/json/tableColumns.json";
-
-import { usefetchProgressHook } from "../common/hooks";
-import { useGetBandData } from "./hooks";
-import { filterAccordingToRole } from "../../../common/util";
-import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
-import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
-
-import { getFormattedName, downloadCSV } from "../../../common/util";
 
 const DefaultBandInfo = [
   {
@@ -76,12 +71,7 @@ const StudentProgress = ({
   const [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
 
   if (loading) {
-    return (
-      <>
-        <Placeholder />
-        <Placeholder />
-      </>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   const customTableColumns = filterAccordingToRole(tableColumns, role);

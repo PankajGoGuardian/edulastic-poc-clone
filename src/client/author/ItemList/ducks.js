@@ -100,6 +100,10 @@ export function* createTestFromCart({ payload: { testName } }) {
     .flatMap(question => question.subjects || []);
   const grades = testItems.flatMap(item => item.grades);
   const subjects = testItems.flatMap(item => item.subjects);
+  const userRole = yield select(getUserRole);
+  if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
+    test.testType = testConstant.type.COMMON;
+  }
   const updatedTest = {
     ...test,
     title: testName,

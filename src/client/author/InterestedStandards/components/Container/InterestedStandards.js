@@ -79,7 +79,7 @@ class InterestedStandards extends Component {
 
   saveInterestedStandards = () => {
     const { updateInterestedStandards, interestedStaData, userOrgId, schoolId, role } = this.props;
-    const { showAllStandards = true, includeOtherStandards = false } = interestedStaData;
+    const { showAllStandards = false, includeOtherStandards = false } = interestedStaData;
 
     const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
     const orgId = isSchoolLevel ? schoolId : userOrgId;
@@ -159,7 +159,7 @@ class InterestedStandards extends Component {
     const readOnly = role === roleuser.SCHOOL_ADMIN;
     const showSpin = loading || updating || saving;
     const { standardSetsModalVisible } = this.state;
-    const { showAllStandards = true, includeOtherStandards = false } = interestedStaData;
+    const { showAllStandards, includeOtherStandards = false } = interestedStaData;
     let isDisableSaveBtn = true;
     const subjectArray = ["Mathematics", "ELA", "Science", "Social Studies", "Other Subjects"];
     let selectedStandards = [],

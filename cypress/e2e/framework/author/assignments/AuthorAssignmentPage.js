@@ -18,11 +18,11 @@ class AuthorAssignmentPage {
 
   getClass = () => cy.get('[data-cy="class"]');
 
-  getTestRowByTestId = id => cy.get(`[data-test=${id}]`);
+  getTestRowByTestId = id => cy.get(`[data-test=${id}]`).closest("tr");
 
   getAssignmentRowsTestById = id =>
     cy
-      .get(`[data-cy=${id}]`)
+      .get(`[data-cy="${id}"]`)
       .find(".ant-table-row-level-0")
       .as("assignmentRow");
 
@@ -82,6 +82,14 @@ class AuthorAssignmentPage {
 
   clickOnActions = () => cy.contains("span", "ACTIONS").click({ force: true });
 
+  clickActionsBytestid = id =>
+    cy
+      .get(`[data-cy=${id}]`)
+      .closest("tr")
+      .prev()
+      .contains("span", "ACTIONS")
+      .click({ force: true });
+
   clickOnDuplicateAndWait = () => {
     cy.server();
 
@@ -119,12 +127,13 @@ class AuthorAssignmentPage {
       .should("be.eq", item);
   };
 
-  clickOnEditTest = (isUsed = false) => {
+  clickOnEditTest = (isUsed = false, testid) => {
     cy.server();
     cy.route("PUT", "**/test/**").as("new-version");
     cy.route("GET", "**/default-test-settings/*").as("testdrafted");
 
-    this.clickOnActions();
+    if (testid) this.clickActionsBytestid(testid);
+    else this.clickOnActions();
     cy.get('[data-cy="edit-Assignment"]')
       .click({ force: true })
       .then(() => {
@@ -190,13 +199,19 @@ class AuthorAssignmentPage {
   clickOnLCBbyTestId = testId => {
     cy.server();
     cy.route("GET", "**/assignments/**").as("assignment");
+    this.getTestRowByTestId(testId).click({ force: true });
+    cy.wait(500);
+    this.getTestRowByTestId(testId)
+      .next()
+      .then($ele => {
+        if ($ele.css("display") === "none") this.getTestRowByTestId(testId).click({ force: true });
+      });
     this.getAssignmentRowsTestById(testId)
       .find('[data-cy="lcb"]')
-      .click();
+      .click({ force: true });
     cy.wait("@assignment");
     cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
   };
-
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

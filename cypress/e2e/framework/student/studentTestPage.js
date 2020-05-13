@@ -185,7 +185,7 @@ class StudentTestPage {
     cy
       .contains("label", ch)
       .should("be.visible")
-      .click({ force: true });
+      .click();
 
   clickOnCalcuator = () => this.getCalculatorButton().click();
 
@@ -811,14 +811,26 @@ class StudentTestPage {
     this.getQuestionText().should("contain", text);
   };
 
-  getQuestionByIndex = index => {
+  getQuestionByIndex = (index, isSkipped = false) => {
+    cy.server();
+    cy.route("POST", "**/test-activity/**").as("saved");
     this.getQueDropDown()
-      .click({ force: true })
-      .parent()
-      .next()
-      .find("li")
-      .eq(index)
-      .click({ force: true });
+      .invoke("text")
+      .then(txt => {
+        if (!txt.includes(`Question ${index + 1}/`)) {
+          this.getQueDropDown()
+            .click({ force: true })
+            .parent()
+            .next()
+            .find("li")
+            .eq(index)
+            .click({ force: true });
+          if (isSkipped) this.clickOnSkipOnPopUp();
+          cy.wait("@saved");
+        }
+      });
+
+    return this.getQueDropDown().should("contain", `Question ${index + 1}/`);
   };
 
   attemptQuestionsByQueType = (queType, attempt) => {

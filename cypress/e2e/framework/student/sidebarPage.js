@@ -14,12 +14,14 @@ class SidebarPage {
 
   clickOnAssignment = () => {
     cy.get('[data-cy="Assignments"]').dblclick({ force: true });
+    return cy.get('[data-cy="title"]').contains("Assignments");
   };
 
   clickOnGrades = () => {
     cy.get('[data-cy="Grades"]')
       .click({ force: true })
       .click({ force: true });
+    return cy.get('[data-cy="title"]').contains("Grades");
   };
 
   clickOnSkillMastery = () => {

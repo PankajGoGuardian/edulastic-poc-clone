@@ -118,7 +118,7 @@ const TableList = ({
         dataIndex: "checkbox",
         width: "10%",
         className: "select-row",
-        render: () => <GreyFont style={{ display: "block" }} />
+        render: () => <GreyFont daya-cy={parentData.testId} style={{ display: "block" }} />
       },
       {
         dataIndex: "class",
@@ -277,7 +277,7 @@ const TableList = ({
             <div>
               <TestThumbnail src={row.thumbnail} />
             </div>
-            <AssignmentTD data-cy="assignmentName" showFilter={showFilter}>
+            <AssignmentTD data-cy="assignmentName" data-test={row.testId} showFilter={showFilter}>
               {text}
             </AssignmentTD>
           </FlexContainer>

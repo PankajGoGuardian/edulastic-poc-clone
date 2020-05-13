@@ -41,6 +41,8 @@ export default class TestLibrary {
 
   getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
 
+  getProceedButton = () => cy.get('[data-cy="PROCEED"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -244,7 +246,7 @@ export default class TestLibrary {
           cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
         } else {
           // pop up that comes up when we try to edit a published test
-          cy.get('[data-cy="PROCEED"]').click();
+          this.getProceedButton().click();
           cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
         }
       });
@@ -375,14 +377,20 @@ export default class TestLibrary {
       .click()
       .then(() => {
         // pop up that comes up when we try to edit a published test
-        cy.get('[data-cy="PROCEED"]').click();
-        cy.wait("@newVersion").then(xhr => cy.saveTestDetailToDelete(xhr.response.body.result._id));
-        cy.wait("@testdrafted").then(xhr => {
-          assert(xhr.status === 200, "Test versioned");
+        this.getProceedButton().click();
+        cy.wait("@newVersion").then(() => {
+          cy.wait("@testdrafted").then(xhr => {
+            assert(xhr.status === 200, "Test versioned");
+          });
         });
       });
-    cy.wait(5000);
-    // return cy.url().then(url => url.split("/").reverse()[2]);
+    return cy
+      .url()
+      .should("contain", "/old/")
+      .then(() => cy.get('[data-cy-item-index="0"]'))
+      .then(() => {
+        this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id));
+      });
   };
 
   createNewTestAndFillDetails = testData => {
@@ -396,11 +404,15 @@ export default class TestLibrary {
   };
 
   seachTestAndGotoReviewById = id => {
+    this.searchAndClickTestCardById(id);
+    this.clickOnDetailsOfCard();
+  };
+
+  searchAndClickTestCardById = id => {
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
     this.searchFilters.getAuthoredByMe();
     this.clickOnTestCardById(id);
-    this.clickOnDetailsOfCard();
   };
 
   visitTestById = id => {

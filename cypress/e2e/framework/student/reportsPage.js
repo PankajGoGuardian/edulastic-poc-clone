@@ -31,6 +31,8 @@ class ReportsPage {
 
   getMaxScore = () => cy.get('[data-cy="maxscore"]');
 
+  getTestCardByTesyId = id => cy.get(`[data-cy="test-${id}"]`);
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -53,9 +55,21 @@ class ReportsPage {
 
   clickOnQuestionNo = () => cy.get('[data-cy="questionNumber"]').click({ force: true });
 
+  clickOnReviewButtonButtonByTestId = id => {
+    this.getTestCardByTesyId(id)
+      .find('[data-cy="reviewButton"]')
+      .click({ force: true });
+    cy.get('[data-cy="questionNumber"]');
+  };
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
+
+  verifyPercentageOnTestCardByTestId = (id, percent) =>
+    this.getTestCardByTesyId(id)
+      .find('[data-cy="percent"]')
+      .should("have.text", `${Math.round(percent)}%`);
 
   validateAssignment(name, status, reviewButton) {
     cy.contains("div", name).should("be.visible");

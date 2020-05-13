@@ -5,11 +5,13 @@ import {
   mobileWidthLarge,
   mobileWidthMax,
   themeColor,
-  white
+  white,
+  tabletWidth,
+  greyThemeLight
 } from "@edulastic/colors";
-import { Button, MainHeader, EduButton } from "@edulastic/common";
+import { Button, MainHeader, EduButton, withWindowSizes } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { IconPlusCircle } from "@edulastic/icons";
+import { IconPlusCircle, IconMoreVertical } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +26,7 @@ import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction } from 
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import { getUserOrgId, getUserRole } from "../../selectors/user";
+import { Dropdown } from "antd";
 
 const ListHeader = ({
   onCreate,
@@ -43,6 +46,7 @@ const ListHeader = ({
   setTeachersDetailsModalVisible,
   teacherDetailsModalVisible,
   userRole = "",
+  windowWidth,
   titleIcon
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
@@ -73,7 +77,22 @@ const ListHeader = ({
         {hasButton &&
           !createAssignment &&
           (renderButton ? (
-            renderButton()
+            <>
+              {windowWidth > 768 ? (
+                renderButton()
+              ) : (
+                <Dropdown
+                  overlay={renderButton()}
+                  trigger={["click"]}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  overlayClassName="mobile-buttons-dropdown"
+                >
+                  <EduButton IconBtn isGhost onClick={e => e.preventDefault()}>
+                    <IconMoreVertical />
+                  </EduButton>
+                </Dropdown>
+              )}
+            </>
           ) : userRole === roleuser.EDULASTIC_CURATOR ? null : (
             <EduButton data-cy="createNew" onClick={onCreate}>
               <IconPlusStyled />
@@ -150,6 +169,7 @@ ListHeader.defaultProps = {
 
 const enhance = compose(
   withNamespaces("manageDistrict"),
+  withWindowSizes,
   connect(
     state => {
       const { user } = state;
@@ -235,6 +255,18 @@ export const Title = styled.h1`
 const RightButtonWrapper = styled.div`
   display: flex;
   align-items: center;
+
+  .mobile-buttons-dropdown {
+    &.ant-dropdown {
+      background: ${white};
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+      padding: 10px;
+      & > button {
+        margin: 0px 0px 5px;
+        width: 100%;
+      }
+    }
+  }
 `;
 
 const MidTitleWrapper = styled.div`

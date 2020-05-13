@@ -16,7 +16,8 @@ import {
   secondaryTextColor,
   darkGrey2,
   mediumDesktopExactWidth,
-  titleColor
+  titleColor,
+  mobileWidthLarge
 } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 import { Rate } from "antd/lib/index";
@@ -71,43 +72,57 @@ export const FlexContainerWrapper = styled(FlexContainer)`
   @media (max-width: ${largeDesktopWidth}) {
     width: 100%;
   }
+  @media (max-width: ${tabletWidth}) {
+    padding: 0px;
+  }
 `;
 
 export const FlexContainerWrapperLeft = styled(FlexContainer)`
   flex-direction: column;
   justify-content: flex-start;
-  margin-right: 5%;
-  width: 31%;
+  width: 320px;
+  padding-right: 15px;
   .anticon-star {
     svg {
       width: 11px;
       height: 11px;
     }
   }
-  .ant-card-bordered {
-    width: 100%;
-  }
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 25%;
+  .ant-card {
+    &.ant-card-bordered {
+      width: 264px;
+    }
+    .ant-card-head-wrapper {
+      .ant-card-head-title {
+        & > div {
+          height: 97px;
+        }
+      }
+    }
   }
   @media (max-width: ${tabletWidth}) {
-    width: 50%;
-    margin-right: 0;
+    width: 300px;
+    padding-right: 35px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
+    padding-right: 0px;
+    padding-bottom: 20px;
   }
 `;
 export const FlexContainerWrapperRight = styled(FlexContainer)`
-  width: 69%;
+  width: calc(100% - 320px);
   justify-content: ${props => (props.isAssignSuccess ? "flex-start" : "center")};
   align-items: flex-start;
   flex-direction: column;
-  margin-left: 5%;
+  padding-left: 15px;
 
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 75%;
-  }
   @media (max-width: ${tabletWidth}) {
+    width: calc(100% - 300px);
+    padding: 0px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
-    margin-left: 0;
   }
 `;
 

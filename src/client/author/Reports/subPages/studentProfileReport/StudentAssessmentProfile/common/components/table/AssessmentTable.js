@@ -9,37 +9,48 @@ import { getHSLFromRange1 } from "../../../../../../common/util";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
 import { reportLinkColor } from "../../../../../multipleAssessmentReport/common/utils/constants";
 
-const getFormattedLink = (record, location, pageTitle, value) => <Link style={{ color: reportLinkColor }} to={{
-  pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-  state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-    breadCrumb: [
-      {
-        title: "REPORTS",
-        to: "/author/reports"
-      },
-      {
-        title: pageTitle,
-        to: `${location.pathname}${location.search}`
+const getFormattedLink = (record, location, pageTitle, value) => (
+  <Link
+    style={{ color: reportLinkColor }}
+    to={{
+      pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+      state: {
+        // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+        breadCrumb: [
+          {
+            title: "REPORTS",
+            to: "/author/reports"
+          },
+          {
+            title: pageTitle,
+            to: `${location.pathname}${location.search}`
+          }
+        ]
       }
-    ]
-  }
-}}>
-  {value}
-</Link>;
+    }}
+  >
+    {value}
+  </Link>
+);
 
 const getCol = (text, backgroundColor, columnKey, location, pageTitle, record) => {
   let value = text === undefined || text === null ? "N/A" : `${text}%`;
-  if (columnKey === "score" ) {
+  if (columnKey === "score") {
     value = getFormattedLink(record, location, pageTitle, value);
-  };
-  return <StyledCell style={{ backgroundColor }}>{value}</StyledCell>;
+  }
+  return (
+    <StyledCell justify="center" style={{ backgroundColor }}>
+      {value}
+    </StyledCell>
+  );
 };
 
-const tableColumns = (location, pageTitle) => ([
+const tableColumns = (location, pageTitle) => [
   {
     title: "Assessment Name",
     dataIndex: "testName",
     key: "testName",
+    align: "left",
     render: (data, record) => (
       <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
         {data}
@@ -55,7 +66,6 @@ const tableColumns = (location, pageTitle) => ([
     title: "Day of Assessment Start",
     dataIndex: "assignmentDateFormatted",
     key: "assignmentDateFormatted",
-    align: "right",
     className: "assessmentDate",
     sorter: (a, b) => {
       return a.assignmentDate - b.assignmentDate;
@@ -64,36 +74,31 @@ const tableColumns = (location, pageTitle) => ([
   {
     title: "Total Questions",
     dataIndex: "totalQuestions",
-    align: "right",
     key: "totalQuestions"
   },
   {
     title: "Score",
     dataIndex: "rawScore",
     className: "rawscore",
-    align: "right",
     key: "rawScore",
     render: (data, record) => getFormattedLink(record, location, pageTitle, data)
   },
   {
     title: "District (Avg. Score%)",
     dataIndex: "districtAvg",
-    align: "right",
     key: "districtAvg"
   },
   {
     title: "School (Avg Score%)",
     dataIndex: "schoolAvg",
-    align: "right",
     key: "schoolAvg"
   },
   {
     title: "Class (Avg Score%)",
     dataIndex: "groupAvg",
-    align: "right",
     key: "groupAvg"
   }
-]);
+];
 
 const getColumns = (studentName = "", location, pageTitle) => {
   return [

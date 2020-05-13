@@ -59,6 +59,7 @@ export const compareByColumns = {
     title: "School",
     dataIndex: "schoolId",
     key: "schoolId",
+    align: "left",
     sorter: lexicSort("schoolName"),
     render: (schoolId, school) => school.schoolName
   },
@@ -66,6 +67,7 @@ export const compareByColumns = {
     title: "Teacher",
     dataIndex: "teacherId",
     key: "teacherId",
+    align: "left",
     sorter: lexicSort("teacherName"),
     render: (teacherId, teacher) => teacher.teacherName
   },
@@ -73,6 +75,7 @@ export const compareByColumns = {
     title: "Class",
     dataIndex: "groupId",
     key: "groupId",
+    align: "left",
     sorter: lexicSort("groupName"),
     render: (groupId, studentClass) => studentClass.groupName
   },
@@ -80,6 +83,7 @@ export const compareByColumns = {
     title: "Student",
     dataIndex: "studentName",
     key: "studentId",
+    align: "left",
     sorter: (a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
   },
   [compareByMode.RACE]: {

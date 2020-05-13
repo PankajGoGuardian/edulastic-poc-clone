@@ -5,9 +5,18 @@
     "type": "name",
     "dataIndex": "proficiencyBand",
     "key": "proficiencyBand",
-    "width": 250
+    "width": 250,
+    "align": "left"
   },
-  { "title": "Student", "sortable": true, "type": "name", "dataIndex": "student", "key": "student", "width": 250 },
+  {
+    "title": "Student",
+    "sortable": true,
+    "type": "name",
+    "dataIndex": "student",
+    "key": "student",
+    "width": 250,
+    "align": "left"
+  },
   {
     "title": "School",
     "sortable": true,
@@ -15,6 +24,7 @@
     "dataIndex": "school",
     "key": "school",
     "width": 250,
+    "align": "left",
     "hiddenFromRole": ["teacher"]
   },
   {
@@ -24,6 +34,7 @@
     "dataIndex": "teacher",
     "key": "teacher",
     "width": 250,
+    "align": "left",
     "hiddenFromRole": ["teacher"]
   },
   {
@@ -32,7 +43,8 @@
     "type": "name",
     "dataIndex": "groupName",
     "key": "groupName",
-    "width": 250
+    "width": 250,
+    "align": "left"
   },
   {
     "title": "Due Date",

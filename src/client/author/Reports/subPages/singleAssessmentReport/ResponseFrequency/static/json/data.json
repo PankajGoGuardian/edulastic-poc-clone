@@ -10,7 +10,8 @@
       "title": "Question Type",
       "dataIndex": "qType",
       "key": "qType",
-      "width": 150
+      "width": 150,
+      "align": "left"
     },
     {
       "title": "Standards",

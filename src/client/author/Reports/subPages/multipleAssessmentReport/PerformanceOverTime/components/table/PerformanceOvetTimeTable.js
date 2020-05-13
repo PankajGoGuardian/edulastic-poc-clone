@@ -11,6 +11,7 @@ const staticFields = [
   {
     title: "Assessment Name",
     dataIndex: "testName",
+    align: "left",
     sorter: (a, b) => {
       return stringCompare(a.testName, b.testName);
     }
@@ -20,7 +21,6 @@ const staticFields = [
     dataIndex: "testType"
   },
   {
-    align: "right",
     title: "Assessment Date",
     dataIndex: "assessmentDateFormatted",
     className: "assessmentDate",
@@ -29,27 +29,22 @@ const staticFields = [
     }
   },
   {
-    align: "right",
     title: "Max Possible Score",
     dataIndex: "maxPossibleScore"
   },
   {
-    align: "right",
     title: "Questions",
     dataIndex: "totalTestItems"
   },
   {
-    align: "right",
     title: "Assigned",
     dataIndex: "totalAssigned"
   },
   {
-    align: "right",
     title: "Graded",
     dataIndex: "totalGraded"
   },
   {
-    align: "right",
     title: "Absent",
     dataIndex: "totalAbsent"
   }
@@ -57,24 +52,25 @@ const staticFields = [
 
 const customFields = [
   {
-    align: "right",
     title: "Min. Score",
     dataIndex: "minScore"
   },
   {
-    align: "right",
     title: "Max. Score",
     dataIndex: "maxScore"
   },
   {
-    align: "right",
     title: "Avg. Student (Score%)",
     dataIndex: "score"
   }
 ];
 
 const getCol = (text, backgroundColor) => {
-  return <StyledCell style={{ backgroundColor }}>{text || "N/A"}</StyledCell>;
+  return (
+    <StyledCell justify="center" style={{ backgroundColor }}>
+      {text || "N/A"}
+    </StyledCell>
+  );
 };
 
 const getColumns = () => {

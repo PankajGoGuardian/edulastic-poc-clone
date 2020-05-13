@@ -7,7 +7,11 @@ import { StyledTable, StyledCell, StyledH3 } from "../../../../../../common/styl
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
-  return <StyledCell style={{ backgroundColor }}>{text}</StyledCell>;
+  return (
+    <StyledCell justify="center" style={{ backgroundColor }}>
+      {text}
+    </StyledCell>
+  );
 };
 
 const renderToolTipColumn = (value, record) => {

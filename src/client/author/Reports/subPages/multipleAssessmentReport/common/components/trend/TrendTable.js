@@ -1,21 +1,18 @@
+import { Col, Row } from "antd";
+import { capitalize, groupBy, map, values } from "lodash";
+import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Row, Col } from "antd";
-import { groupBy, map, capitalize, values } from "lodash";
-
-import { StyledTable, StyledCard, StyledH3 } from "../../../../../common/styled";
-
-import { getHSLFromRange1, stringCompare } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import { StyledCell } from "../../../../../common/styled";
-import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
-import TrendColumn from "./TrendColumn";
-import dropDownData from "../../static/json/dropDownData.json";
-import { compareByMap } from "../../utils/trend";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
+import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
+import { StyledCard, StyledCell, StyledH3, StyledTable } from "../../../../../common/styled";
+import { getHSLFromRange1 } from "../../../../../common/util";
+import dropDownData from "../../static/json/dropDownData.json";
 import { reportLinkColor } from "../../utils/constants";
+import { compareByMap } from "../../utils/trend";
+import TrendColumn from "./TrendColumn";
 
 const formatText = (test, type) => {
   if (test[type] === null || typeof test[type] === "undefined") return "N/A";
@@ -34,7 +31,7 @@ const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, tes
     const { assignmentId, groupId, testActivityId } = test.records[0];
 
     return (
-      <StyledCell style={{ backgroundColor }}>
+      <StyledCell justify="center" style={{ backgroundColor }}>
         <Link
           style={{ color: reportLinkColor }}
           to={{
@@ -59,7 +56,11 @@ const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, tes
       </StyledCell>
     );
   }
-  return <StyledCell style={{ backgroundColor }}>{text || "N/A"}</StyledCell>;
+  return (
+    <StyledCell justify="center" style={{ backgroundColor }}>
+      {text || "N/A"}
+    </StyledCell>
+  );
 };
 
 const getCellAttributes = (test = {}, analyseBy = {}) => {
@@ -115,7 +116,7 @@ const getColumns = (
       key: testId,
       title: assessmentName,
       startDate: test.startDate,
-      align: "right",
+      align: "center",
       className: "normal-text",
       dataIndex: "tests",
       render: (tests = {}, record) => {
@@ -154,6 +155,8 @@ const getColumns = (
     {
       key: compareBy.key,
       title: capitalize(compareBy.title),
+      align: "left",
+      className: "class-name-column",
       dataIndex: compareByMap[compareBy.key],
       render: (data, record) => {
         return compareBy.key === "student" ? (
@@ -304,5 +307,9 @@ export default TrendTable;
 const TableContainer = styled.div`
   .ant-table-body {
     padding-bottom: 30px;
+  }
+  th.class-name-column {
+    white-space: nowrap;
+    min-width: 150px;
   }
 `;

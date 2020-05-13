@@ -38,7 +38,6 @@ export const StyledTable = styled(Table)`
         tr {
           th {
             &:nth-child(-n + 4) {
-              text-align: left;
               white-space: nowrap;
             }
           }
@@ -47,11 +46,6 @@ export const StyledTable = styled(Table)`
 
       tbody {
         tr {
-          td {
-            &:nth-child(-n + 4) {
-              text-align: left;
-            }
-          }
           td:nth-last-child(-n + ${props => props.colouredCellsNo}) {
             padding: 0px;
             div {

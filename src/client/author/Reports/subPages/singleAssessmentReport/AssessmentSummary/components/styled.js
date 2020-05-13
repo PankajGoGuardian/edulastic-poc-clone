@@ -58,21 +58,7 @@ export const StyledAssessmentStatisticTable = styled(AssessmentStatisticTable)`
 export const StyledTable = styled(Table)`
   .ant-table-body {
     table {
-      thead {
-        tr {
-          th {
-            font-size: 10px;
-            &:nth-child(1) {
-              text-align: left;
-            }
-          }
-        }
-      }
-
       tbody {
-        td:nth-child(1) {
-          text-align: left;
-        }
         td .assessmentDate {
           white-space: nowrap;
         }

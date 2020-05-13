@@ -4,7 +4,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Avatar, Card, Input } from "antd";
 import { get, isEqual, isUndefined, maxBy, round, sumBy, toNumber } from "lodash";
 import PropTypes from "prop-types";
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -19,6 +19,16 @@ import { getUserSelector } from "../../author/src/selectors/user";
 const { TextArea } = Input;
 
 const adaptiveRound = x => (x && x.endsWith ? (x.endsWith(".") ? x : round(x, 2)) : round(x, 2));
+
+function ScoreInputFocusEffectComponent({ scoreInputRef, responseLoading, responseMode }) {
+  useEffect(() => {
+    if (scoreInputRef.current && !responseLoading && !responseMode) {
+      scoreInputRef.current.focus();
+    }
+  }, [responseLoading]);
+
+  return null;
+}
 
 class FeedbackRight extends Component {
   constructor(props) {
@@ -278,6 +288,7 @@ class FeedbackRight extends Component {
       _maxScore = "";
     }
 
+    const { isAnswerModifiable, studentResponseLoading, expressGrader } = this.context;
     return (
       <StyledCardTwo
         twoColLayout={twoColLayout}
@@ -286,6 +297,13 @@ class FeedbackRight extends Component {
         showCollapseBtn={showCollapseBtn}
         title={title}
       >
+        {expressGrader && (
+          <ScoreInputFocusEffectComponent
+            scoreInputRef={this.scoreInput}
+            responseLoading={studentResponseLoading}
+            responseMode={isAnswerModifiable}
+          />
+        )}
         <StyledDivSec>
           <ScoreInputWrapper>
             <ScoreInput

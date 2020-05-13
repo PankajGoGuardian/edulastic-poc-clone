@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Row, Col } from "antd";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Row } from "antd";
 import { get, isEmpty } from "lodash";
-
-import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
-import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
-import { StyledContainer, StyledCard } from "./components/styled";
-import { StyledSlider, StyledH3 } from "../../../common/styled";
-import { Placeholder } from "../../../common/components/loader";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
 import { EmptyData } from "../../../common/components/emptyData";
-import jsonData from "./static/json/data.json";
-
+import { StyledH3, StyledSlider } from "../../../common/styled";
+import { getCsvDownloadingState, getPrintingState } from "../../../ducks";
+import { StackedBarChartContainer } from "./components/charts/stackedBarChartContainer";
+import { StyledCard, StyledContainer } from "./components/styled";
+import { ResponseFrequencyTable } from "./components/table/responseFrequencyTable";
 import {
-  getResponseFrequencyRequestAction,
   getReportsResponseFrequency,
-  getReportsResponseFrequencyLoader
+  getReportsResponseFrequencyLoader,
+  getResponseFrequencyRequestAction
 } from "./ducks";
-import { getPrintingState, getCsvDownloadingState } from "../../../ducks";
+import jsonData from "./static/json/data.json";
 
 const filterData = (data, filter) => (Object.keys(filter).length > 0 ? data.filter(item => filter[item.qType]) : data);
 
@@ -100,14 +98,7 @@ const ResponseFrequency = ({
   return (
     <div>
       {loading ? (
-        <div>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-        </div>
+        <SpinLoader position="fixed" />
       ) : (
         <StyledContainer type="flex">
           <StyledCard>

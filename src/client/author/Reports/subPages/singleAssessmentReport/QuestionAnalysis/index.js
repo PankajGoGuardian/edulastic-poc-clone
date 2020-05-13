@@ -1,26 +1,24 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { connect } from "react-redux";
-import { Row, Col } from "antd";
-import PropTypes from "prop-types";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Row } from "antd";
 import { get, isEmpty } from "lodash";
-
-import { SimpleStackedBarWithLineChartContainer } from "./componenets/charts/simpleStackedBarWithLineChartContainer";
-import { QuestionAnalysisTable } from "./componenets/table/questionAnalysisTable";
-import { Placeholder } from "../../../common/components/loader";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { getUserRole } from "../../../../../student/Login/ducks";
 import { EmptyData } from "../../../common/components/emptyData";
-import { StyledH3 } from "../../../common/styled";
-import { StyledCard, UpperContainer, TableContainer, StyledP } from "./componenets/styled";
-import { getChartData, getTableData } from "./utils/transformers";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import dropDownData from "./static/json/dropDownData.json";
+import { StyledH3 } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
-
+import { SimpleStackedBarWithLineChartContainer } from "./componenets/charts/simpleStackedBarWithLineChartContainer";
+import { StyledCard, StyledP, TableContainer, UpperContainer } from "./componenets/styled";
+import { QuestionAnalysisTable } from "./componenets/table/questionAnalysisTable";
 import {
   getQuestionAnalysisRequestAction,
-  getReportsQuestionAnalysisLoader,
-  getReportsQuestionAnalysis
+  getReportsQuestionAnalysis,
+  getReportsQuestionAnalysisLoader
 } from "./ducks";
-import { getUserRole } from "../../../../../student/Login/ducks";
+import dropDownData from "./static/json/dropDownData.json";
+import { getChartData, getTableData } from "./utils/transformers";
 
 const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, getQuestionAnalysis, settings }) => {
   const [compareBy, setCompareBy] = useState(role === "teacher" ? "groupId" : "schoolId");
@@ -76,14 +74,7 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
   return (
     <div>
       {loading ? (
-        <div>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-        </div>
+        <SpinLoader position="fixed" />
       ) : (
         <>
           <UpperContainer>

@@ -1,20 +1,20 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { connect } from "react-redux";
+import { SpinLoader } from "@edulastic/common";
 import { get, isEmpty } from "lodash";
-import { StyledCard, StyledH3, NoDataContainer } from "../../../common/styled";
-import AssessmentTable from "./common/components/table/AssessmentTable";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { NoDataContainer, StyledCard, StyledH3 } from "../../../common/styled";
+import { downloadCSV, toggleItem } from "../../../common/util";
+import { getCsvDownloadingState } from "../../../ducks";
 import AssessmentChart from "../common/components/charts/AssessmentChart";
-import { getReportsSPRFilterData, getBandInfoSelected } from "../common/filterDataDucks";
+import { getBandInfoSelected, getReportsSPRFilterData } from "../common/filterDataDucks";
+import { augementAssessmentChartData, getStudentName } from "../common/utils/transformers";
+import AssessmentTable from "./common/components/table/AssessmentTable";
+import { getData } from "./common/utils/transformers";
 import {
   getReportsStudentAssessmentProfile,
   getReportsStudentAssessmentProfileLoader,
   getStudentAssessmentProfileRequestAction
 } from "./ducks";
-import { getCsvDownloadingState } from "../../../ducks";
-import { getData } from "./common/utils/transformers";
-import { augementAssessmentChartData, getStudentName } from "../common/utils/transformers";
-import { toggleItem, downloadCSV } from "../../../common/util";
-import { Placeholder } from "../../../common/components/loader";
 
 const StudentAssessmentProfile = ({
   match,
@@ -61,12 +61,7 @@ const StudentAssessmentProfile = ({
   const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${studentName}.csv`, data);
 
   if (loading) {
-    return (
-      <>
-        <Placeholder />
-        <Placeholder />
-      </>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   if (

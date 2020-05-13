@@ -1,33 +1,32 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { indexOf, filter as filterArr, capitalize, find, intersectionBy } from "lodash";
-import { Row, Col } from "antd";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Row } from "antd";
 import next from "immer";
-
+import { capitalize, filter as filterArr, find, indexOf, intersectionBy } from "lodash";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { getInterestedCurriculumsSelector, getUserRole } from "../../../../src/selectors/user";
+import { EmptyData } from "../../../common/components/emptyData";
+import { AutocompleteDropDown } from "../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
-import SimpleStackedBarChartContainer from "./components/charts/SimpleStackedBarChartContainer";
-import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
-import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
-import CardHeader, { CardTitle, CardDropdownWrapper } from "./common/CardHeader/CardHeader";
-import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
-import { Placeholder } from "../../../common/components/loader";
-import { EmptyData } from "../../../common/components/emptyData";
-import {
-  getPerformanceByStandardsAction,
-  getPerformanceByStandardsLoadingSelector,
-  getPerformanceByStandardsReportSelector
-} from "./ducks";
-import { AutocompleteDropDown } from "../../../common/components/widgets/autocompleteDropDown";
-import dropDownFormat from "./static/json/dropDownFormat.json";
-import { getUserRole, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
-import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
+import { StyledCard, StyledDropDownContainer, StyledH3, StyledSignedBarContainer } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
   getSAFFilterSelectedStandardsProficiencyProfile,
   getSAFFilterStandardsProficiencyProfiles
 } from "../common/filterDataDucks";
+import CardHeader, { CardDropdownWrapper, CardTitle } from "./common/CardHeader/CardHeader";
+import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
+import SimpleStackedBarChartContainer from "./components/charts/SimpleStackedBarChartContainer";
+import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
+import {
+  getPerformanceByStandardsAction,
+  getPerformanceByStandardsLoadingSelector,
+  getPerformanceByStandardsReportSelector
+} from "./ducks";
+import dropDownFormat from "./static/json/dropDownFormat.json";
+import { analysisParseData, analyzeByMode, compareByMode, viewByMode } from "./util/transformers";
 
 const PAGE_SIZE = 15;
 
@@ -169,12 +168,7 @@ const PerformanceByStandards = ({
   }, [report]);
 
   if (loading) {
-    return (
-      <>
-        <Placeholder />
-        <Placeholder />
-      </>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter);

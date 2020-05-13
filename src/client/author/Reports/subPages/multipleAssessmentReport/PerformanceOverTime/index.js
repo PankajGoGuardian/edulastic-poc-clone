@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { get, filter, includes } from "lodash";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Row } from "antd";
+import { filter, get, includes } from "lodash";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Row, Col } from "antd";
-
-import { Placeholder } from "../../../common/components/loader";
-import { StyledCard, StyledH3 } from "../../../common/styled";
-import { parseData, augmentTestData } from "./utils/transformers";
-import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
-
-import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
-import { getCsvDownloadingState } from "../../../ducks";
-import {
-  getReportsPerformanceOverTime,
-  getReportsPerformanceOverTimeLoader,
-  getPerformanceOverTimeRequestAction
-} from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
-import PerformanceOverTimeTable from "./components/table/PerformanceOvetTimeTable";
-import ProgressChart from "./components/charts/ProgressChart";
-
-import analyseByData from "../common/static/json/analyseByDropDown.json";
+import { StyledCard, StyledH3 } from "../../../common/styled";
+import { getCsvDownloadingState } from "../../../ducks";
+import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
+import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { usefetchProgressHook } from "../common/hooks";
+import analyseByData from "../common/static/json/analyseByDropDown.json";
+import ProgressChart from "./components/charts/ProgressChart";
+import PerformanceOverTimeTable from "./components/table/PerformanceOvetTimeTable";
+import {
+  getPerformanceOverTimeRequestAction,
+  getReportsPerformanceOverTime,
+  getReportsPerformanceOverTimeLoader
+} from "./ducks";
+import { augmentTestData, parseData } from "./utils/transformers";
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequestAction,
@@ -43,12 +40,7 @@ const PerformanceOverTime = ({
   });
 
   if (loading) {
-    return (
-      <>
-        <Placeholder />
-        <Placeholder />
-      </>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   return (

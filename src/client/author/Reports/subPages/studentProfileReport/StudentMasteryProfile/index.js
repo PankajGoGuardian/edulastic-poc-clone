@@ -1,11 +1,11 @@
 import { secondaryTextColor, themeColor, themeColorLighter } from "@edulastic/colors";
+import { SpinLoader } from "@edulastic/common";
 import { IconCollapse2 } from "@edulastic/icons";
 import { Avatar, Button, Col, Row } from "antd";
 import { filter, get } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Placeholder } from "../../../common/components/loader";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
 import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
@@ -108,13 +108,7 @@ const StudentMasteryProfile = ({
   const onSectionClick = item => setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel));
 
   if (loading) {
-    return (
-      <>
-        <Placeholder />
-        <Placeholder />
-        <Placeholder />
-      </>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   const studentInformation = studInfo[0] || {};

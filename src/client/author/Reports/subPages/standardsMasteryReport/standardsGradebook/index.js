@@ -1,47 +1,40 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { Row, Col } from "antd";
-import { get, isEmpty } from "lodash";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Row } from "antd";
 import next from "immer";
-
-import { StyledH3, StyledCard } from "../../../common/styled";
-import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
+import { get, isEmpty } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { getInterestedCurriculumsSelector, getUserRole } from "../../../../src/selectors/user";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
-import { Placeholder } from "../../../common/components/loader";
-
-import { UpperContainer, TableContainer } from "./components/styled";
-import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
+import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
+import { StyledCard, StyledH3 } from "../../../common/styled";
+import { getStudentAssignments } from "../../../common/util";
+import { getCsvDownloadingState } from "../../../ducks";
 import {
-  getStandardsFiltersRequestAction,
+  getFiltersSelector,
   getSelectedStandardProficiency,
-  getFiltersSelector
+  getStandardsFiltersRequestAction
 } from "../common/filterDataDucks";
-
+import { getMaxMasteryScore } from "../standardsPerformance/utils/transformers";
+import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
+import { TableContainer, UpperContainer } from "./components/styled";
+import { StandardsGradebookTable } from "./components/table/standardsGradebookTable";
 import {
-  getStandardsGradebookRequestAction,
   getReportsStandardsGradebook,
   getReportsStandardsGradebookLoader,
-  getStudentStandardsAction,
+  getStandardsGradebookRequestAction,
   getStudentStandardData,
-  getStudentStandardLoader
+  getStudentStandardLoader,
+  getStudentStandardsAction
 } from "./ducks";
-
-import { getCsvDownloadingState } from "../../../ducks";
-
+import dropDownFormat from "./static/json/dropDownFormat.json";
 import {
-  getFilterDropDownData,
   getDenormalizedData,
+  getFilterDropDownData,
   getFilteredDenormalizedData,
   groupedByStandard
 } from "./utils/transformers";
-
-import { getMaxMasteryScore } from "../standardsPerformance/utils/transformers";
-
-import dropDownFormat from "./static/json/dropDownFormat.json";
-import { getUserRole, getUser, getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
-import { StandardsGradebookTable } from "./components/table/standardsGradebookTable";
-import { getStudentAssignments } from "../../../common/util";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -156,14 +149,7 @@ const StandardsGradebook = ({
   return (
     <div>
       {loading ? (
-        <div>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-        </div>
+        <SpinLoader position="fixed" />
       ) : (
         <>
           <UpperContainer>

@@ -1,32 +1,28 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Row, Col } from "antd";
-import { get, keyBy, isEmpty } from "lodash";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Row } from "antd";
 import next from "immer";
-
-import { parseData, idToName } from "./util/transformers";
-
-import { StyledH3, StyledSignedBarContainer, StyledCard } from "../../../common/styled";
+import { get, isEmpty, keyBy } from "lodash";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { getUserRole } from "../../../../src/selectors/user";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
-import { Placeholder } from "../../../common/components/loader";
-
-import { SimpleStackedBarChartContainer } from "./components/charts/simpleStackedBarChartContainer";
-import { SignedStackedBarChartContainer } from "./components/charts/signedStackedBarChartContainer";
-import { UpperContainer, TableContainer } from "./components/styled";
-import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
-import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsPeerPerformanceLoader } from "./ducks";
+import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
+import { StyledCard, StyledH3, StyledSignedBarContainer } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
-  getSAFFilterSelectedPerformanceBandProfile,
-  getSAFFilterPerformanceBandProfiles
+  getSAFFilterPerformanceBandProfiles,
+  getSAFFilterSelectedPerformanceBandProfile
 } from "../common/filterDataDucks";
-
-import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
-import { getUserRole } from "../../../../src/selectors/user";
+import { SignedStackedBarChartContainer } from "./components/charts/signedStackedBarChartContainer";
+import { SimpleStackedBarChartContainer } from "./components/charts/simpleStackedBarChartContainer";
+import { TableContainer, UpperContainer } from "./components/styled";
+import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
+import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsPeerPerformanceLoader } from "./ducks";
 import columns from "./static/json/tableColumns.json";
+import { idToName, parseData } from "./util/transformers";
 
 const denormalizeData = res => {
   const hMap = keyBy(res.metaInfo, "groupId");
@@ -152,14 +148,7 @@ const PeerPerformance = ({
   return (
     <div>
       {loading ? (
-        <div>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-        </div>
+        <SpinLoader position="fixed" />
       ) : (
         <>
           <UpperContainer>

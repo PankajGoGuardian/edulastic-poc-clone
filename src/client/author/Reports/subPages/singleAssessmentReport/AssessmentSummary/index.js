@@ -1,23 +1,21 @@
-import React, { useEffect } from "react";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Row, Col } from "antd";
+import { SpinLoader } from "@edulastic/common";
+import { Col } from "antd";
 import { get } from "lodash";
-
-import { SimplePieChart } from "./components/charts/pieChart";
+import PropTypes from "prop-types";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { getUserRole } from "../../../../src/selectors/user";
 import { StyledCard, StyledH3 } from "../../../common/styled";
-import { UpperContainer, TableContainer, StyledAssessmentStatisticTable } from "./components/styled";
+import { getCsvDownloadingState, getPrintingState } from "../../../ducks";
+import { SimplePieChart } from "./components/charts/pieChart";
 import { Stats } from "./components/stats";
-import { Placeholder } from "../../../common/components/loader";
-
+import { StyledAssessmentStatisticTable, TableContainer, UpperContainer } from "./components/styled";
 import {
   getAssessmentSummaryRequestAction,
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader
 } from "./ducks";
-import { getPrintingState, getCsvDownloadingState } from "../../../ducks";
-import { getUserRole } from "../../../../src/selectors/user";
 
 const AssessmentSummary = ({
   loading,
@@ -46,15 +44,7 @@ const AssessmentSummary = ({
   return (
     <div>
       {loading ? (
-        <div>
-          <Row type="flex">
-            <Placeholder />
-            <Placeholder />
-          </Row>
-          <Row type="flex">
-            <Placeholder />
-          </Row>
-        </div>
+        <SpinLoader position="fixed" />
       ) : (
         <>
           <UpperContainer type="flex">

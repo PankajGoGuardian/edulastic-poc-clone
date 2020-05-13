@@ -1,31 +1,30 @@
-import React, { useEffect, useMemo } from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
+import { backgrounds, labelGrey, secondaryTextColor, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
+import { SpinLoader } from "@edulastic/common";
+import { Col, Icon, Row } from "antd";
 import { get, isEmpty } from "lodash";
-import { StyledCard, StyledH3, NoDataContainer } from "../../../common/styled";
-import { Row, Col, Icon } from "antd";
+import React, { useEffect, useMemo } from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
+import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
+import { NoDataContainer, StyledCard, StyledH3 } from "../../../common/styled";
+import { downloadCSV } from "../../../common/util";
+import { getCsvDownloadingState } from "../../../ducks";
+import AssessmentChart from "../common/components/charts/AssessmentChart";
+import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
 import {
-  getReportsSPRFilterData,
   getBandInfoSelected,
+  getReportsSPRFilterData,
   getSelectedStandardProficiency
 } from "../common/filterDataDucks";
+import { useGetStudentMasteryData } from "../common/hooks";
+import { augementAssessmentChartData, getGrades, getStudentName } from "../common/utils/transformers";
+import StandardMasteryDetailsTable from "./common/components/table/StandardMasteryDetailsTable";
+import { augmentDomainStandardMasteryData } from "./common/utils/transformers";
 import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
   getStudentProfileSummaryRequestAction
 } from "./ducks";
-import { getCsvDownloadingState } from "../../../ducks";
-import { Placeholder } from "../../../common/components/loader";
-import { augementAssessmentChartData, getStudentName } from "../common/utils/transformers";
-import { augmentDomainStandardMasteryData } from "./common/utils/transformers";
-import { downloadCSV } from "../../../common/util";
-import { useGetStudentMasteryData } from "../common/hooks";
-import AssessmentChart from "../common/components/charts/AssessmentChart";
-import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
-import StandardMasteryDetailsTable from "./common/components/table/StandardMasteryDetailsTable";
-import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
-import { getGrades } from "../common/utils/transformers";
-import { backgrounds, labelGrey, secondaryTextColor, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
 
 const getTooltip = payload => {
   if (payload && payload.length) {
@@ -91,7 +90,8 @@ const StudentProfileSummary = ({
   const _onBarClickCB = (key, args) => {
     history.push({
       pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
-      state: { // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+      state: {
+        // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
         breadCrumb: [
           {
             title: "REPORTS",
@@ -103,16 +103,11 @@ const StudentProfileSummary = ({
           }
         ]
       }
-    })
+    });
   };
 
   if (loading) {
-    return (
-      <>
-        <Placeholder />
-        <Placeholder />
-      </>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   if (
@@ -152,7 +147,13 @@ const StudentProfileSummary = ({
             </StudentDetailsContainer>
           </StyledCol>
           <Col xs={24} sm={24} md={18} lg={18} xl={19}>
-            <AssessmentChart data={data} studentInformation={studentClassInfo} xTickTooltipPosition={400} onBarClickCB={_onBarClickCB} isBarClickable />
+            <AssessmentChart
+              data={data}
+              studentInformation={studentClassInfo}
+              xTickTooltipPosition={400}
+              onBarClickCB={_onBarClickCB}
+              isBarClickable
+            />
           </Col>
         </Row>
       </StyledCard>

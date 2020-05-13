@@ -1,23 +1,22 @@
+import { SpinLoader } from "@edulastic/common";
+import { capitalize, get, head } from "lodash";
 import React, { useEffect, useState } from "react";
-import { get, head, capitalize } from "lodash";
 import { connect } from "react-redux";
-import {
-  getReportsPeerProgressAnalysis,
-  getReportsPeerProgressAnalysisLoader,
-  getPeerProgressAnalysisRequestAction
-} from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
-import { getCsvDownloadingState } from "../../../ducks";
-import { Placeholder } from "../../../common/components/loader";
-import { getReportsMARFilterData } from "../common/filterDataDucks";
-import { parseTrendData, getCompareByOptions, compareByMap } from "../common/utils/trend";
-
-import dropDownData from "./static/json/dropDownData.json";
-import TrendStats from "../common/components/trend/TrendStats";
-import TrendTable from "../common/components/trend/TrendTable";
-import Filters from "./components/table/Filters";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
 import { downloadCSV } from "../../../common/util";
+import { getCsvDownloadingState } from "../../../ducks";
+import TrendStats from "../common/components/trend/TrendStats";
+import TrendTable from "../common/components/trend/TrendTable";
+import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { compareByMap, getCompareByOptions, parseTrendData } from "../common/utils/trend";
+import Filters from "./components/table/Filters";
+import {
+  getPeerProgressAnalysisRequestAction,
+  getReportsPeerProgressAnalysis,
+  getReportsPeerProgressAnalysisLoader
+} from "./ducks";
+import dropDownData from "./static/json/dropDownData.json";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -73,12 +72,7 @@ const PeerProgressAnalysis = ({
   const onCsvConvert = data => downloadCSV(`Peer Progress.csv`, data);
 
   if (loading) {
-    return (
-      <>
-        <Placeholder />
-        <Placeholder />
-      </>
-    );
+    return <SpinLoader position="fixed" />;
   }
 
   const studentColumn = {

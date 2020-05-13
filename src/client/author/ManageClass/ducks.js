@@ -723,7 +723,7 @@ function* unarchiveClass({ payload }) {
   } catch (err) {
     console.error(err);
     yield put(unarchiveClassFailedAction());
-    yield call(message.error, "Unarchiving class failed.");
+    yield call(message.error, err?.data?.message || "Unarchiving class failed.");
   }
 }
 

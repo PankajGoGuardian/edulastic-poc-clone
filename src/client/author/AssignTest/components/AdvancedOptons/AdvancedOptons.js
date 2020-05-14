@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { curry } from "lodash";
 import * as moment from "moment";
-import { Col, Icon } from "antd";
+import { Col, Icon, message } from "antd";
 import { test as testConst, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
 import ClassList from "./ClassList";
 import DatePolicySelector from "./DatePolicySelector";
@@ -13,7 +13,11 @@ import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelect
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { releaseGradeKeys, nonPremiumReleaseGradeKeys } from "../SimpleOptions/SimpleOptions";
-import { getReleaseScorePremiumSelector, defaultTestTypeProfilesSelector } from "../../../TestPage/ducks";
+import {
+  getReleaseScorePremiumSelector,
+  defaultTestTypeProfilesSelector,
+  getIsOverrideFreezeSelector
+} from "../../../TestPage/ducks";
 import { getDefaultSettings } from "../../../../common/utils/helpers";
 
 const { releaseGradeLabels } = testConst;
@@ -57,7 +61,11 @@ class AdvancedOptons extends React.Component {
   }
 
   toggleSettings = () => {
+    const { freezeSettings } = this.props;
     const { showSettings } = this.state;
+    if (freezeSettings && !showSettings) {
+      message.warn("Override settings is restricted by the Admin.");
+    }
     this.setState({ showSettings: !showSettings });
   };
 
@@ -192,5 +200,6 @@ class AdvancedOptons extends React.Component {
 export default connect(state => ({
   features: getUserFeatures(state),
   isReleaseScorePremium: getReleaseScorePremiumSelector(state),
-  defaultTestProfiles: defaultTestTypeProfilesSelector(state)
+  defaultTestProfiles: defaultTestTypeProfilesSelector(state),
+  freezeSettings: getIsOverrideFreezeSelector(state)
 }))(AdvancedOptons);

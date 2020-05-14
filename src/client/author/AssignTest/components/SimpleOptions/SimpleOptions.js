@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Col, Icon, Row, Select } from "antd";
+import { Col, Icon, Row, Select, message } from "antd";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
 import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
@@ -27,7 +27,7 @@ import TestTypeSelector from "./TestTypeSelector";
 import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
 import { getUserFeatures } from "../../../../student/Login/ducks";
-import { getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
+import { getReleaseScorePremiumSelector, getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 
@@ -78,7 +78,11 @@ class SimpleOptions extends React.Component {
   }
 
   toggleSettings = () => {
+    const { freezeSettings } = this.props;
     const { showSettings } = this.state;
+    if (freezeSettings && !showSettings) {
+      message.warn("Override settings is restricted by the Admin.");
+    }
     this.setState({ showSettings: !showSettings });
   };
 
@@ -230,7 +234,8 @@ class SimpleOptions extends React.Component {
       userRole,
       specificStudents,
       changeDateSelection,
-      selectedDateOption
+      selectedDateOption,
+      freezeSettings
     } = this.props;
     const changeField = curry(this.onChange);
     let { openPolicy } = selectsData;
@@ -327,6 +332,7 @@ class SimpleOptions extends React.Component {
               userRole={userRole}
               testType={assignment.testType || testSettings.testType}
               onAssignmentTypeChange={changeField("testType")}
+              disabled={freezeSettings}
             />
           </FeaturesSwitch>
           <StyledRowButton gutter={32}>
@@ -358,5 +364,6 @@ class SimpleOptions extends React.Component {
 export default connect(state => ({
   userRole: getUserRole(state),
   features: getUserFeatures(state),
-  isReleaseScorePremium: getReleaseScorePremiumSelector(state)
+  isReleaseScorePremium: getReleaseScorePremiumSelector(state),
+  freezeSettings: getIsOverrideFreezeSelector(state)
 }))(SimpleOptions);

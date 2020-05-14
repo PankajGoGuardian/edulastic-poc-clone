@@ -8,6 +8,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
 import PlayerSkinSelector from "../SimpleOptions/PlayerSkinSelector";
 import { Label, StyledDatePicker, StyledRow, StyledRowLabel, StyledSelect } from "./styled";
+import { getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
 
 const DatePolicySelector = ({
   startDate,
@@ -19,7 +20,8 @@ const DatePolicySelector = ({
   testType,
   passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
   playerSkinType,
-  showMagnifier = true
+  showMagnifier = true,
+  freezeSettings
 }) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
@@ -120,6 +122,7 @@ const DatePolicySelector = ({
             userRole={userRole}
             testType={testType}
             onAssignmentTypeChange={changeField("testType")}
+            disabled={freezeSettings}
           />
         </Col>
         <Col xs={24} md={12} lg={6}>
@@ -130,6 +133,7 @@ const DatePolicySelector = ({
             userRole={userRole}
             playerSkinType={playerSkinType}
             onAssignmentTypeChange={changeField("playerSkinType")}
+            disabled={freezeSettings}
           />
         </Col>
       </StyledRow>
@@ -138,5 +142,6 @@ const DatePolicySelector = ({
 };
 
 export default connect(state => ({
-  userRole: getUserRole(state)
+  userRole: getUserRole(state),
+  freezeSettings: getIsOverrideFreezeSelector(state)
 }))(DatePolicySelector);

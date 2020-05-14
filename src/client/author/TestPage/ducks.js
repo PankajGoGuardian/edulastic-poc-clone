@@ -1001,6 +1001,20 @@ export const getReleaseScorePremiumSelector = createSelector(
   }
 );
 
+export const getIsOverrideFreezeSelector = createSelector(
+  getTestSelector,
+  getUserIdSelector,
+  (test, userId) => {
+    if (!test.freezeSettings) {
+      return false;
+    }
+    if (test.authors.some(author => author._id === userId)) {
+      return false;
+    }
+    return true;
+  }
+);
+
 export const getAllTagsSelector = (state, tagType) => {
   const stat = stateSelector(state);
   return get(stat, ["tagsList", tagType], []);

@@ -34,7 +34,7 @@ import PeformanceBand from "../../../TestPage/components/Setting/components/Main
 import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
-import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
+import { getDisableAnswerOnPaperSelector, getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 import { withRouter } from "react-router-dom";
@@ -72,7 +72,7 @@ const Settings = ({
   premium,
   totalItems,
   match,
-  location
+  freezeSettings = false
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -217,7 +217,7 @@ const Settings = ({
             <TestTypeSelector
               userRole={userRole}
               testType={assignmentSettings?.testType}
-              disabled
+              disabled={freezeSettings}
               onAssignmentTypeChange={changeField("testType")}
               fullwidth
               showTestTypeOption
@@ -226,7 +226,7 @@ const Settings = ({
               testType={assignmentSettings?.testType}
               userRole={userRole}
               playerSkinType={assignmentSettings?.playerSkinType}
-              disabled
+              disabled={freezeSettings}
               onAssignmentTypeChange={changeField("playerSkinType")}
               fullwidth
             />
@@ -246,7 +246,7 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignRight
-                disabled={forClassLevel}
+                disabled={forClassLevel || freezeSettings}
                 onChange={e => overRideSettings("markAsDone", e.target.value)}
                 value={markAsDone}
               >
@@ -301,7 +301,7 @@ const Settings = ({
               <MaxAttemptIInput
                 type="number"
                 size="large"
-                disabled={forClassLevel}
+                disabled={forClassLevel || freezeSettings}
                 value={maxAttempts}
                 onChange={e => overRideSettings("maxAttempts", e.target.value)}
                 min={1}
@@ -325,14 +325,14 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignSwitchRight
-                disabled={forClassLevel}
+                disabled={forClassLevel || freezeSettings}
                 defaultChecked={safeBrowser}
                 size="small"
                 onChange={value => overRideSettings("safeBrowser", value)}
               />
               {safeBrowser && (
                 <Password
-                  disabled={forClassLevel}
+                  disabled={forClassLevel || freezeSettings}
                   suffix={
                     <Icon
                       type={showPassword ? "eye-invisible" : "eye"}
@@ -366,7 +366,7 @@ const Settings = ({
               </Col>
               <Col span={12}>
                 <AlignSwitchRight
-                  disabled={forClassLevel}
+                  disabled={forClassLevel || freezeSettings}
                   size="small"
                   defaultChecked={shuffleQuestions}
                   onChange={value => overRideSettings("shuffleQuestions", value)}
@@ -392,7 +392,7 @@ const Settings = ({
               </Col>
               <Col span={12}>
                 <AlignSwitchRight
-                  disabled={forClassLevel}
+                  disabled={forClassLevel || freezeSettings}
                   size="small"
                   defaultChecked={shuffleAnswers}
                   onChange={value => overRideSettings("shuffleAnswers", value)}
@@ -416,7 +416,11 @@ const Settings = ({
               <Label>SHOW CALCULATOR</Label>
             </Col>
             <Col span={12}>
-              <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
+              <AlignRight
+                disabled={freezeSettings}
+                value={calcType}
+                onChange={e => overRideSettings("calcType", e.target.value)}
+              >
                 {calculatorKeys.map(item => (
                   <RadioBtn data-cy={item} value={item} key={item}>
                     <Label>{calculators[item]}</Label>
@@ -441,7 +445,7 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignSwitchRight
-                disabled={forClassLevel || disableAnswerOnPaper}
+                disabled={forClassLevel || disableAnswerOnPaper || freezeSettings}
                 size="small"
                 defaultChecked={answerOnPaper}
                 onChange={value => overRideSettings("answerOnPaper", value)}
@@ -464,7 +468,7 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <StyledSelect
-                disabled={forClassLevel}
+                disabled={forClassLevel || freezeSettings}
                 placeholder="Please select"
                 cache="false"
                 value={passwordPolicy}
@@ -479,7 +483,7 @@ const Settings = ({
               {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
                 <>
                   <Password
-                    disabled={forClassLevel}
+                    disabled={forClassLevel || freezeSettings}
                     onChange={e => overRideSettings("assignmentPassword", e.target.value)}
                     size="large"
                     value={assignmentPassword}
@@ -493,7 +497,7 @@ const Settings = ({
               {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
                 <>
                   <Input
-                    disabled={forClassLevel}
+                    disabled={forClassLevel || freezeSettings}
                     required
                     type="number"
                     onChange={handleUpdatePasswordExpireIn}
@@ -540,7 +544,7 @@ const Settings = ({
               </Col>
               <Col span={12}>
                 <Input
-                  disabled={forClassLevel}
+                  disabled={forClassLevel || freezeSettings}
                   onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
                   size="large"
                   value={maxAnswerChecks}
@@ -568,10 +572,10 @@ const Settings = ({
             </Col>
             <Col span={18}>
               <AlignRight
-                forClassLevel={forClassLevel}
+                forClassLevel={forClassLevel || freezeSettings}
                 // disabled={forClassLevel}
                 onChange={e => {
-                  if (!forClassLevel) {
+                  if (!forClassLevel && !freezeSettings) {
                     overRideSettings("scoringType", e.target.value);
                   }
                 }}
@@ -616,7 +620,7 @@ const Settings = ({
                   data-cy="assignment-time-switch"
                   size="small"
                   defaultChecked={false}
-                  disabled={forClassLevel}
+                  disabled={forClassLevel || freezeSettings}
                   checked={timedAssignment}
                   onChange={value => updateTimedTestAttrs("timedAssignment", value)}
                 />
@@ -644,6 +648,7 @@ const Settings = ({
                 {timedAssignment && (
                   <CheckBoxWrapper>
                     <CheckboxLabel
+                      disabled={freezeSettings}
                       data-cy="exit-allowed"
                       checked={pauseAllowed}
                       onChange={e => updateTimedTestAttrs("pauseAllowed", e.target.checked)}
@@ -671,7 +676,7 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignRight
-                disabled={forClassLevel}
+                disabled={forClassLevel || freezeSettings}
                 onChange={e => overRideSettings("testContentVisibility", e.target.value)}
                 value={testContentVisibility}
               >
@@ -693,7 +698,7 @@ const Settings = ({
         >
           <DivBlock>
             <PeformanceBand
-              disabled={forClassLevel}
+              disabled={forClassLevel || freezeSettings}
               setSettingsData={val => overRideSettings("performanceBand", val)}
               performanceBand={performanceBand}
             />
@@ -702,7 +707,7 @@ const Settings = ({
         {!premium && <SubscriptionsBlock />}
         <DivBlock>
           <StandardProficiencyTable
-            disabled={forClassLevel}
+            disabled={forClassLevel || freezeSettings}
             standardGradingScale={standardGradingScale}
             setSettingsData={val => overRideSettings("standardGradingScale", val)}
           />
@@ -716,7 +721,7 @@ const Settings = ({
             <Block id="accessibility">
               <Title>Accessibility</Title>
               {!isDocBased && (
-                <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
+                <RadioWrapper disabled={forClassLevel || freezeSettings} style={{ marginTop: "29px", marginBottom: 0 }}>
                   {Object.keys(accessibilities).map(key => {
                     const value = accessiblilityData[key];
                     return (
@@ -726,7 +731,7 @@ const Settings = ({
                         </Col>
                         <Col span={12}>
                           <StyledRadioGroup
-                            disabled={forClassLevel}
+                            disabled={forClassLevel || freezeSettings}
                             onChange={e => overRideSettings(key, e.target.value)}
                             defaultValue={isUndefined(value) ? true : value}
                           >
@@ -752,6 +757,7 @@ const Settings = ({
                     onAssignmentTypeChange={changeField("playerSkinType")}
                     testType={assignmentSettings?.testType || testSettings.testType}
                     selectBackgroundWhite
+                    disabled={freezeSettings}
                   />
                 </FeaturesSwitch>
               )}
@@ -771,7 +777,7 @@ export default connect(
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions
       : state?.tests?.entity?.summary?.totalItems,
-    location: state?.router?.location
+    freezeSettings: getIsOverrideFreezeSelector(state)
   }),
   null
 )(withRouter(Settings));

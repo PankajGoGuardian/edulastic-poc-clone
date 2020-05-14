@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, greyThemeLighter, themeColor, greyThemeLight } from "@edulastic/colors";
+import { mediumDesktopExactWidth, greyThemeLighter, themeColor, greyThemeLight, white } from "@edulastic/colors";
 import { Checkbox } from "antd";
 
 export const CheckBoxGrp = Checkbox.Group;
@@ -55,6 +55,15 @@ export const CheckboxStyle = styled(Checkbox)`
         .ant-checkbox-inner {
           border-color: ${greyThemeLight};
           background: ${greyThemeLight};
+        }
+      }
+      &.ant-checkbox-checked {
+        &.ant-checkbox-disabled {
+          .ant-checkbox-inner {
+            &:after {
+              border-color: ${white};
+            }
+          }
         }
       }
     }

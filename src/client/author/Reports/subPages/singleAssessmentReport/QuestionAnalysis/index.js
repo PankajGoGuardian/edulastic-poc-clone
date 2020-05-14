@@ -86,7 +86,7 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
                 onResetClickCB={onResetClickCB}
                 filter={chartFilter}
               />
-              <StyledP>ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)</StyledP>
+              <StyledP style={{ marginTop: "-30px" }}>ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)</StyledP>
             </StyledCard>
           </UpperContainer>
           <TableContainer>

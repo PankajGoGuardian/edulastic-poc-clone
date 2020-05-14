@@ -130,16 +130,20 @@ export default class API {
         const serverAppVersion = response.headers["server-version"] || "";
 
         // if the server version is higher than the client version, then try to resync
-        if (serverAppVersion && SemverCompare(serverAppVersion, appVersion) === 1) {
+        if (appVersion && serverAppVersion && SemverCompare(serverAppVersion, appVersion) === 1) {
           const lastAssetRefresh = new Date(parseInt(getFromLocalStorage(ASSETS_REFRESH_STAMP), 10));
           const currentDate = new Date();
           const lastRefreshDate = isValidDate(lastAssetRefresh) ? lastAssetRefresh : currentDate;
           const diffInSec = diffInSeconds(currentDate, lastRefreshDate);
 
           // retry only if 15 minutes are passed or there was no time stamp stored.
-          if (diffInSec > 0 && diffInSec < 15 * 60) return response;
+          if (diffInSec > 0 && diffInSec < 45 * 60) return response;
 
           storeInLocalStorage(ASSETS_REFRESH_STAMP, new Date().getTime());
+
+          console.warn("++++ App Version Mismatch +++");
+          console.warn(`++++ Server: ${serverAppVersion}  Client: ${serverAppVersion}  +++`);
+
           const event = new Event("request-client-update");
           window.dispatchEvent(event);
         }

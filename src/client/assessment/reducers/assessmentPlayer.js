@@ -4,14 +4,12 @@ import { STORE_OPTIONS, CLEAR_OPTIONS } from "../constants/actions";
 const initialState = {};
 
 const reducer = createReducer(initialState, {
-  [STORE_OPTIONS](state, { payload }) {
+  [STORE_OPTIONS]: (state, { payload }) => {
     const { itemId, options } = payload;
     state[itemId] = options;
+    return state;
   },
-  // eslint-disable-next-line no-unused-vars
-  [CLEAR_OPTIONS](state) {
-    state = initialState;
-  }
+  [CLEAR_OPTIONS]: () => initialState
 });
 
 export default reducer;

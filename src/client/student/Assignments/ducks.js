@@ -20,6 +20,7 @@ import {
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
+import { clearOrderOfOptionsInStore } from "../../assessment/actions/assessmentPlayer";
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
@@ -306,6 +307,15 @@ function* startAssignment({ payload }) {
       if (!assignmentId || !testId) throw new Error("insufficient data");
     } else if (!testId) throw new Error("insufficient data");
 
+    /**
+     * need to clear the preserved order of options because,
+     * if we are taking up a new assignement having same questions
+     * it will fetch the same order from store
+     *
+     * nothing breaking, just clean up
+     */
+    yield put(clearOrderOfOptionsInStore());
+
     if (assignmentId) yield put(setActiveAssignmentAction(assignmentId));
 
     // const groupId = yield select(getCurrentGroup);
@@ -406,6 +416,15 @@ function* resumeAssignment({ payload }) {
     if (!isPlaylist && !studentRecommendation) {
       if (!assignmentId || !testId || !testActivityId) throw new Error("insufficient data");
     } else if (!testId || !testActivityId) throw new Error("insufficient data");
+
+    /**
+     * need to clear the preserved order of options because,
+     * if we are resuming a different assignement but having same questions
+     * it will fetch the same order from store
+     *
+     * nothing breaking, but just cleanup
+     */
+    yield put(clearOrderOfOptionsInStore());
 
     if (assignmentId) {
       yield put(setActiveAssignmentAction(assignmentId));

@@ -5,8 +5,10 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Spin, message } from "antd";
 import { isUndefined, get, isEmpty, isNull, isEqual } from "lodash";
-import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
 import useInterval from "@use-it/interval";
+
+import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
+import { AssessmentPlayerContext } from "@edulastic/common";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
 import { finishTestAcitivityAction } from "../actions/test";
@@ -412,7 +414,7 @@ const AssessmentContainer = ({
   }
 
   return (
-    <>
+    <AssessmentPlayerContext.Provider value={{ isStudentAttempt: true }}>
       {unansweredPopupSetting.show && (
         <UnansweredPopup
           visible
@@ -422,8 +424,9 @@ const AssessmentContainer = ({
           data={unansweredPopupSetting.qLabels}
         />
       )}
+
       {playerComponent}
-    </>
+    </AssessmentPlayerContext.Provider>
   );
 };
 

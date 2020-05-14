@@ -16,7 +16,8 @@ import {
   AnswerContext,
   QuestionLabelWrapper,
   QuestionSubLabel,
-  QuestionContentWrapper
+  QuestionContentWrapper,
+  AssessmentPlayerContext
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
@@ -37,6 +38,8 @@ import { getFontSize, getDirection, getStemNumeration } from "../../utils/helper
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import DragItems from "./components/DragItems";
+import { storeOrderInRedux } from "../../actions/assessmentPlayer";
 
 const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
 
@@ -54,6 +57,11 @@ const styles = {
   listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 }
 };
 
+/**
+ * TODO
+ * refactor the matchListPreview component
+ * segregate components in separate files instead of accumulating everything in one mammoth file
+ */
 const MatchListPreview = ({
   view,
   saveAnswer,
@@ -71,7 +79,9 @@ const MatchListPreview = ({
   changePreview,
   evaluation,
   isReviewTab,
-  isPrintPreview
+  isPrintPreview,
+  updateOptionsToStore,
+  optionsFromStore
 }) => {
   const {
     possibleResponses: posResponses,
@@ -84,6 +94,8 @@ const MatchListPreview = ({
     duplicatedResponses = false
   } = item;
   const answerContextConfig = useContext(AnswerContext);
+  const assessmentPlayerContext = useContext(AssessmentPlayerContext);
+  const { isStudentAttempt } = assessmentPlayerContext;
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
 
   const validArray = get(item, "validation.validResponse.value", []);
@@ -94,12 +106,14 @@ const MatchListPreview = ({
 
   const getPossibleResponses = () => {
     if (!groupPossibleResponses) {
-      return [...posResponses];
+      return shuffleOptions ? [...shuffle(posResponses)] : [...posResponses];
     }
 
     let groupArrays = [];
-    possibleResponseGroups.forEach(o => {
-      groupArrays = [...groupArrays, ...o.responses];
+    possibleResponseGroups.forEach((group, groupIndex) => {
+      let responses = shuffleOptions ? shuffle(group.responses) : group.responses;
+      responses = responses.map(response => ({ ...response, groupIndex }));
+      groupArrays = [...groupArrays, ...responses];
     });
     return groupArrays;
   };
@@ -110,11 +124,66 @@ const MatchListPreview = ({
       : Array.from({ length: list.length }).fill(null)
   );
 
-  const [dragItems, setDragItems] = useState(
-    duplicatedResponses
-      ? getPossibleResponses()
-      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value))
-  );
+  function getInitialDragItems() {
+    if (optionsFromStore) {
+      return optionsFromStore;
+    }
+    if (duplicatedResponses) {
+      return getPossibleResponses();
+    }
+    return getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value));
+  }
+
+  const [dragItems, setDragItems] = useState(getInitialDragItems());
+
+  /**
+   * drag items has flattned structure of all the responses
+   * we need to group back, based on group index
+   * required to segregate into different groups in the responses section
+   */
+  const possibleResponsesGrouped = () => {
+    const groupArrays = [];
+    dragItems.forEach(response => {
+      const { groupIndex } = response;
+      groupArrays[groupIndex] = groupArrays[groupIndex] || [];
+      groupArrays[groupIndex].push(response);
+    });
+    return groupArrays;
+  };
+
+  const groupedPossibleResponses = possibleResponsesGrouped();
+
+  /**
+   * need ref to store the dragItems order
+   * we need the order at which the user clicked on next button
+   * this ref will be used to store the order in the redux, when component unmounts
+   * relying on state values, does not work as state gets updated due to re-renders from other actions
+   * values change in state due to useEffect
+   * and during component unmount it has a different order, than what user last saw in the screen
+   */
+  const dragItemsRef = useRef(dragItems);
+
+  /**
+   * this ref is required to keep track if the user started to attempt
+   * in that case we will not stop using the preserved order from the redux store
+   */
+  const userAttemptRef = useRef(false);
+
+  useEffect(() => {
+    /**
+     * simulate component will unmount
+     * during student attempt, only if shuffle is on
+     * save the order of drag items in the redux store
+     * so when user comes back to this question, show the responses in the preserved order
+     * order is preserved until user attempts again, shuffle is done for every attempt
+     * @see https://snapwiz.atlassian.net/browse/EV-14104
+     */
+    return () => {
+      if (isStudentAttempt && shuffleOptions) {
+        updateOptionsToStore({ itemId: item.id, options: dragItemsRef.current });
+      }
+    };
+  }, []);
 
   useEffect(() => {
     setAns(
@@ -122,13 +191,24 @@ const MatchListPreview = ({
         ? userAnswer
         : Array.from({ length: list.length }).fill(null)
     );
-    setDragItems(
-      duplicatedResponses
-        ? getPossibleResponses()
-        : getPossibleResponses().filter(
-            answer => Array.isArray(userAnswer) && !userAnswer.some(i => i === answer.value)
-          )
-    );
+    let newDragItems = duplicatedResponses
+      ? getPossibleResponses()
+      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.some(i => i === answer.value));
+
+    /**
+     * at student side, if shuffle is on and if user comes back to this question
+     * for subsequent renders, show the preserved order maintained in redux store
+     * unless, user attempts the question again
+     * store the order in a ref, which will be used to update in redux store, when component unmounts
+     * @see https://snapwiz.atlassian.net/browse/EV-14104
+     */
+    if (isStudentAttempt && shuffleOptions) {
+      if (!userAttemptRef.current && optionsFromStore) {
+        newDragItems = optionsFromStore;
+      }
+      dragItemsRef.current = newDragItems;
+    }
+    setDragItems(newDragItems);
   }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses]);
 
   const preview = previewTab === CHECK || previewTab === SHOW;
@@ -140,6 +220,11 @@ const MatchListPreview = ({
     const answerIds = answers.map(i => i).filter(identity);
     const dItems = cloneDeep(dragItems);
     const { item: _item, sourceFlag, sourceIndex } = itemCurrent;
+
+    if (isStudentAttempt && shuffleOptions) {
+      userAttemptRef.current = true;
+    }
+
     if (itemTo.flag === "ans") {
       if (dItems.includes(_item)) {
         dItems.splice(dItems.indexOf(_item), 1);
@@ -400,35 +485,19 @@ const MatchListPreview = ({
                               display={horizontallyAligned ? "inline-flex" : "flex"}
                               flexDirection={horizontallyAligned ? "column" : "row"}
                             >
-                              {!shuffleOptions
-                                ? i.responses.map(
-                                    (ite, ind) =>
-                                      dragItems.includes(ite) && ( // Here we should shuffle in place
-                                        <DragItem
-                                          flag="dragItems"
-                                          onDrop={onDrop}
-                                          key={ind}
-                                          item={ite}
-                                          getStyles={getStyles}
-                                          disableResponse={disableResponse || !isAnswerModifiable}
-                                        />
-                                      )
+                              {groupedPossibleResponses[index]?.map(
+                                (ite, ind) =>
+                                  dragItems.find(_item => _item.value === ite.value) && ( // Here we should shuffle in place
+                                    <DragItem
+                                      flag="dragItems"
+                                      onDrop={onDrop}
+                                      key={ind}
+                                      item={ite}
+                                      getStyles={getStyles}
+                                      disableResponse={disableResponse || !isAnswerModifiable}
+                                    />
                                   )
-                                : shuffle(
-                                    i.responses.map(
-                                      (ite, ind) =>
-                                        dragItems.includes(ite) && ( // Here we should shuffle in place
-                                          <DragItem
-                                            flag="dragItems"
-                                            onDrop={onDrop}
-                                            key={ind}
-                                            item={ite}
-                                            getStyles={getStyles}
-                                            disableResponse={disableResponse || !isAnswerModifiable}
-                                          />
-                                        )
-                                    )
-                                  )}
+                              )}
                             </FlexContainer>
                           </FlexContainer>
                           {index !== possibleResponseGroups.length - 1 && (
@@ -452,41 +521,15 @@ const MatchListPreview = ({
                             flexDirection={horizontallyAligned ? "column" : "row"}
                             alignItems={horizontallyAligned ? "baseline" : "center"}
                           >
-                            {!shuffleOptions
-                              ? dragItems.map(
-                                  // Here we should shuffle in place
-                                  (ite, ind) =>
-                                    dragItems.includes(ite) && (
-                                      <DragItem
-                                        flag="dragItems"
-                                        onDrop={onDrop}
-                                        key={ind}
-                                        renderIndex={ind}
-                                        item={ite}
-                                        getStyles={getStyles}
-                                        disableResponse={disableResponse || !isAnswerModifiable}
-                                        changePreviewTab={changePreviewTab}
-                                      />
-                                    )
-                                )
-                              : shuffle(
-                                  dragItems.map(
-                                    // Here we should shuffle in place
-                                    (ite, ind) =>
-                                      dragItems.includes(ite) && (
-                                        <DragItem
-                                          flag="dragItems"
-                                          onDrop={onDrop}
-                                          key={ind}
-                                          renderIndex={ind}
-                                          item={ite}
-                                          getStyles={getStyles}
-                                          disableResponse={disableResponse || !isAnswerModifiable}
-                                          changePreviewTab={changePreviewTab}
-                                        />
-                                      )
-                                  )
-                                )}
+                            <DragItems
+                              dragItems={dragItems}
+                              onDropHandler={onDrop}
+                              getStyles={getStyles}
+                              disableResponse={disableResponse || !isAnswerModifiable}
+                              changePreviewTab={changePreviewTab}
+                              shuffleOptions={shuffleOptions}
+                              previewTab={previewTab}
+                            />
                           </FlexContainer>
                         </FlexContainer>
                       </Fragment>
@@ -610,8 +653,13 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    null,
-    { setQuestionData: setQuestionDataAction }
+    (state, ownProps) => ({
+      optionsFromStore: state.assessmentPlayer?.[ownProps?.item.id || ""] || null
+    }),
+    {
+      setQuestionData: setQuestionDataAction,
+      updateOptionsToStore: storeOrderInRedux
+    }
   )
 );
 

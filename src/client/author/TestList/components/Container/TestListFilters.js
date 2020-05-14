@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { IconExpandBox } from "@edulastic/icons";
 import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer, FieldLabel, SelectInputStyled } from "@edulastic/common";
@@ -224,10 +225,12 @@ const TestListFilters = ({
           <>
             <FilterItemWrapper key={index}>
               {filterItem.isStandardSelect && (
-                <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
+                <IconExpandBoxWrapper>
+                  <IconExpandBox onClick={handleSetShowModal} />
+                </IconExpandBoxWrapper>
               )}
               <FieldLabel>{filterItem.title}</FieldLabel>
-              <SelectInputStyled
+              <SelectStyled
                 data-cy={filterItem.title}
                 showSearch={filterItem.showSearch}
                 onSearch={filterItem.onSearch && filterItem.onSearch}
@@ -257,7 +260,7 @@ const TestListFilters = ({
                       {text}
                     </Select.Option>
                   ))}
-              </SelectInputStyled>
+              </SelectStyled>
             </FilterItemWrapper>
           </>
         );
@@ -329,10 +332,16 @@ const ClearAll = styled.span`
   }
 `;
 
-const IconExpandStandards = styled.span`
+const IconExpandBoxWrapper = styled.div`
   right: 10px;
   position: absolute;
-  bottom: 14px;
+  bottom: 21px;
   z-index: 1;
   cursor: pointer;
+`;
+
+const SelectStyled = styled(SelectInputStyled)`
+  .ant-select-selection__placeholder {
+    padding-right: 18px;
+  }
 `;

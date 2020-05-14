@@ -108,3 +108,7 @@ export const SAVE_TESTLET_LOG_FAILURE = "[testlet] save testlet failure";
 // hints
 export const SHOW_HINTS = "[hints] show hints";
 export const Hide_HINTS = "[hints] hide hints";
+
+// assessmentPlayer
+export const STORE_OPTIONS = "[assessmentPlayer] store order of options";
+export const CLEAR_OPTIONS = "[assessmentPlayer] clear order of options stored";

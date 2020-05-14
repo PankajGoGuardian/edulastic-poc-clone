@@ -102,6 +102,7 @@ export { default as ScrollContext } from "./src/contexts/ScrollContext";
 export { default as HorizontalScrollContext } from "./src/contexts/HorizontalScrollContext";
 export { default as RefContext } from "./src/contexts/RefContext";
 export { default as ItemLevelContext } from "./src/contexts/ItemLevelContext";
+export { default as AssessmentPlayerContext } from "./src/contexts/AssessmentPlayerContext";
 
 // custom hook
 export { default as useRealtimeV2 } from "./src/customHooks/useRealtimeV2";

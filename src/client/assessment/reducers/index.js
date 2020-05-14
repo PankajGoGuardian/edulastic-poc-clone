@@ -11,6 +11,7 @@ import graphTools from "./graphTools";
 import bookmarks from "../sharedDucks/bookmark";
 import testUserWork from "./testUserWork";
 import userInteractions from "./userInteractions";
+import assessmentPlayer from "./assessmentPlayer";
 
 const assessmentReducers = {
   userWork, // Item/Question level userWork
@@ -25,7 +26,8 @@ const assessmentReducers = {
   assessmentplayerQuestions: questions,
   shuffledOptions,
   graphTools,
-  assessmentBookmarks: bookmarks
+  assessmentBookmarks: bookmarks,
+  assessmentPlayer
 };
 
 export default assessmentReducers;

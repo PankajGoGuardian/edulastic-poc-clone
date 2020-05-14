@@ -1,7 +1,8 @@
+import styled from "styled-components";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { questionType as questionTypes, test as testsConstants, roleuser } from "@edulastic/constants";
-import { faExpandAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconExpandBox } from "@edulastic/icons";
 import { Select } from "antd";
 import PropTypes from "prop-types";
 import React, { useEffect, useState, useMemo } from "react";
@@ -223,10 +224,10 @@ const Search = ({
         </Item>
         <ItemRelative>
           <IconWrapper>
-            <FontAwesomeIcon icon={faExpandAlt} aria-hidden="true" onClick={() => setShowModal(true)} />
+            <IconExpandBox onClick={() => setShowModal(true)} />
           </IconWrapper>
           <FieldLabel>Standards</FieldLabel>
-          <SelectInputStyled
+          <StandardSelectStyled
             data-cy="selectStd"
             mode="multiple"
             size="large"
@@ -243,7 +244,7 @@ const Search = ({
                 {`${el.identifier}`}
               </Select.Option>
             ))}
-          </SelectInputStyled>
+          </StandardSelectStyled>
         </ItemRelative>
         <Item>
           <FieldLabel>Question Type</FieldLabel>
@@ -376,3 +377,9 @@ export default connect(
   }),
   { getCurrentDistrictUsers: getCurrentDistrictUsersAction }
 )(Search);
+
+const StandardSelectStyled = styled(SelectInputStyled)`
+  .ant-select-selection__placeholder {
+    padding-right: 18px;
+  }
+`;

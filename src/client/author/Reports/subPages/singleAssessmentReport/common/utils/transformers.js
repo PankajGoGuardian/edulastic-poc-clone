@@ -138,7 +138,6 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
         (item.schoolId === currentFilter.schoolId || currentFilter.schoolId === "All") &&
         (item.teacherId === currentFilter.teacherId || currentFilter.teacherId === "All") &&
-        (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All") &&
         checkForGrades &&
         checkForClassAndGroup
       ) {
@@ -148,7 +147,6 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
       item.termId === currentFilter.termId &&
       (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
       (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
-      (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All") &&
       checkForGrades &&
       checkForClassAndGroup
     ) {
@@ -165,7 +163,11 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
   _dropDownData.testDataArr.sort((a, b) => {
     return b.assessmentDate - a.assessmentDate;
   });
-  let arr = _dropDownData.testDataArr.filter(item => groupIdMap[item.groupId]);
+  let arr = _dropDownData.testDataArr.filter(
+    item =>
+      (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All") &&
+      groupIdMap[item.groupId]
+  );
   let finalTestIds = [];
   let makeUniqueMap = {};
   for (let item of arr) {

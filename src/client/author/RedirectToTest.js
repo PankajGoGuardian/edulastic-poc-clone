@@ -3,8 +3,11 @@ import { message, Spin } from "antd";
 import { withRouter } from "react-router";
 import qs from "query-string";
 import { testsApi } from "@edulastic/api";
+import { TokenStorage } from "@edulastic/api";
+import { compose } from "redux";
+import { connect } from "react-redux";
 
-const RedirectToTest = ({ location: { search }, history }) => {
+const RedirectToTest = ({ location: { search }, history, user }) => {
   useEffect(() => {
     let { eAId: v1Id } = qs.parse(search);
     if (v1Id) {
@@ -18,8 +21,12 @@ const RedirectToTest = ({ location: { search }, history }) => {
             if (!id) {
               handleFailed("no test found");
             }
-
-            history.push(`/author/tests/${id}`);
+            if (!user?.authenticating || !TokenStorage.getAccessToken()) {
+              //not authenticated user flow
+              history.push(`/public/view-test/${id}`);
+            } else {
+              history.push(`/author/tests/${id}`);
+            }
           })
           .catch(handleFailed);
       } catch (e) {
@@ -41,4 +48,7 @@ const RedirectToTest = ({ location: { search }, history }) => {
   );
 };
 
-export default withRouter(RedirectToTest);
+export default compose(
+  withRouter,
+  connect(({ user }) => ({ user: user?.user }))
+)(RedirectToTest);

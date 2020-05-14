@@ -107,6 +107,10 @@ const getCurrentPath = () => {
 
 const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
 
+function isLocationInTestRedirectRoutes(location) {
+  return testRedirectRoutes.find(x => location.pathname.includes(x));
+}
+
 class App extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
@@ -129,11 +133,15 @@ class App extends Component {
     const publicPath = location.pathname.split("/").includes("public");
     const ssoPath = location.pathname.split("/").includes("auth");
     const partnerPath = location.pathname.split("/").includes("partnerLogin");
-    const isV1Redirect = location.pathname.includes("/fwd");
+    const isV1Redirect = location.pathname.includes("/fwd") || isLocationInTestRedirectRoutes(location);
     const kidPath = location.pathname.includes("/kid");
     if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect && !kidPath) {
       fetchUser();
-    } else if (publicPath && location.pathname.split("/").includes("view-test") && TokenStorage.getAccessToken()) {
+    } else if (
+      publicPath &&
+      (location.pathname.split("/").includes("view-test") || isLocationInTestRedirectRoutes(location)) &&
+      TokenStorage.getAccessToken()
+    ) {
       fetchUser();
     }
     window.addEventListener("request-client-update", () => {
@@ -172,6 +180,7 @@ class App extends Component {
     const publicPath =
       location.pathname.split("/").includes("public") ||
       location.pathname.includes("/fwd") ||
+      isLocationInTestRedirectRoutes(location) ||
       location.pathname.includes("/kid");
 
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {

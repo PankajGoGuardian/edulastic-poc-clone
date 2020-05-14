@@ -65,6 +65,16 @@ const StyledRadioBtn = styled(Radio)`
           }
         }
       }
+      &.ant-radio-checked {
+        &.ant-radio-disabled {
+          .ant-radio-inner {
+            background: ${greyThemeLight};
+            &:after {
+              background-color: ${white};
+            }
+          }
+        }
+      }
     }
   }
 

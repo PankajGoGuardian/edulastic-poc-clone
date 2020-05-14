@@ -36,7 +36,8 @@ const slice = createSlice({
       termId: "",
       testType: "",
       groupId: ""
-    }
+    },
+    countFlag: true
   },
   reducers: {
     fetchStudentPerformanceRequest: state => {
@@ -55,6 +56,9 @@ const slice = createSlice({
     },
     setSelectedFilters: (state, { payload }) => {
       state.selectedFilters = payload;
+    },
+    setCountFlag: (state, { payload }) => {
+      state.countFlag = payload;
     }
   }
 });
@@ -65,11 +69,11 @@ export const { actions, reducer } = slice;
 // sagas
 function* fetchStudentPerformanceSaga({ payload }) {
   try {
-    const { filters, studentPage, studentPageSize } = payload;
+    const { filters, studentPage, studentPageSize, countFlag } = payload;
     const { assessmentIds, status, classIds, grades, subjects, termId, testType, groupId } = filters;
     const response = yield call(reportsApi.fetchStudentPerformance, {
       assignmentIds: assessmentIds,
-      // status, // TODO: fix thid after confirmation on PRD
+      // status, // TODO: fix this after confirmation on PRD
       classIds,
       grades,
       subjects,
@@ -77,7 +81,8 @@ function* fetchStudentPerformanceSaga({ payload }) {
       testType,
       groupId,
       studentPage,
-      studentPageSize
+      studentPageSize,
+      countFlag
     });
     yield put(actions.fetchStudentPerformanceCompleted(response));
   } catch (e) {
@@ -133,5 +138,6 @@ export const selectors = {
   loadingFilters: state => state?.gradebookReducer?.loadingFilters,
   filtersData: state => state?.gradebookReducer?.filtersData,
   gradebookData: state => state?.gradebookReducer?.performanceData,
-  selectedFilters: state => state?.gradebookReducer?.selectedFilters
+  selectedFilters: state => state?.gradebookReducer?.selectedFilters,
+  countFlag: state => state?.gradebookReducer?.countFlag
 };

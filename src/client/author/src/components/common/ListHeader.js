@@ -1,3 +1,23 @@
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { get } from "lodash";
+
+// components
+import { Link } from "react-router-dom";
+import { Dropdown } from "antd";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, MainHeader, EduButton, withWindowSizes } from "@edulastic/common";
+import { IconPlusCircle, IconMoreVertical } from "@edulastic/icons";
+import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
+import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
+
+// constants
+import { roleuser } from "@edulastic/constants";
 import {
   desktopWidth,
   mediumDesktopWidth,
@@ -5,28 +25,12 @@ import {
   mobileWidthLarge,
   mobileWidthMax,
   themeColor,
-  white,
-  tabletWidth,
-  greyThemeLight
+  white
 } from "@edulastic/colors";
-import { Button, MainHeader, EduButton, withWindowSizes } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { IconPlusCircle, IconMoreVertical } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { faUsers } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { get } from "lodash";
-import PropTypes from "prop-types";
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { compose } from "redux";
-import styled from "styled-components";
+
+// ducks
 import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction } from "../../../SchoolAdmin/ducks";
-import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
-import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-import { getUserOrgId, getUserRole } from "../../selectors/user";
-import { Dropdown } from "antd";
+import { getUserOrgId, getUserRole, getUserFeatures } from "../../selectors/user";
 
 const ListHeader = ({
   onCreate,
@@ -47,7 +51,8 @@ const ListHeader = ({
   teacherDetailsModalVisible,
   userRole = "",
   windowWidth,
-  titleIcon
+  titleIcon,
+  userFeatures
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
 
@@ -107,6 +112,11 @@ const ListHeader = ({
                 <FontAwesomeIcon icon={faUsers} aria-hidden="true" />
                 INVITE TEACHERS
               </EduButton>
+            )}
+            {userFeatures.gradebook && (
+              <Link to="/author/gradebook">
+                <EduButton>VIEW GRADEBOOK</EduButton>
+              </Link>
             )}
             <Link to="/author/assignments/select">
               <EduButton>
@@ -171,15 +181,13 @@ const enhance = compose(
   withNamespaces("manageDistrict"),
   withWindowSizes,
   connect(
-    state => {
-      const { user } = state;
-      return {
-        userOrgId: getUserOrgId(state),
-        userRole: getUserRole(state),
-        firstName: user.firstName || "",
-        teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
-      };
-    },
+    state => ({
+      userOrgId: getUserOrgId(state),
+      userRole: getUserRole(state),
+      userFeatures: getUserFeatures(state),
+      firstName: state?.user?.firstName || "",
+      teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
+    }),
     {
       addBulkTeacher: addBulkTeacherAdminAction,
       setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction

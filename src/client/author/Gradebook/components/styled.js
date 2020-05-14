@@ -36,6 +36,7 @@ export const TableContainer = styled.div`
 
 export const TableFooter = styled.div`
   display: flex;
+  flex-wrap: wrap-reverse;
   justify-content: space-between;
   margin-top: 20px;
   justify-content: "space-between";

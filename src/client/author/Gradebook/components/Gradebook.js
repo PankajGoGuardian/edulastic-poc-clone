@@ -3,8 +3,9 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 
 // components
+import { Link } from "react-router-dom";
 import { Spin, Pagination } from "antd";
-import { MainHeader, MainContentWrapper, withWindowSizes } from "@edulastic/common";
+import { MainHeader, MainContentWrapper, EduButton, withWindowSizes } from "@edulastic/common";
 import { IconInterface, IconFilter } from "@edulastic/icons";
 import GradebookFilters from "./GradebookFilters";
 import GradebookTable from "./GradebookTable";
@@ -26,7 +27,9 @@ const Gradebook = ({
   loading,
   gradebookData,
   filters,
-  setFilters
+  setFilters,
+  countFlag,
+  setCountFlag
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -34,11 +37,13 @@ const Gradebook = ({
 
   useEffect(() => {
     fetchFiltersData();
+    return () => setCountFlag(true);
   }, []);
 
   useEffect(() => {
     const [studentPage, studentPageSize] = pageDetail;
-    fetchGradebookData({ filters, studentPage, studentPageSize });
+    fetchGradebookData({ filters, studentPage, studentPageSize, countFlag });
+    countFlag && setCountFlag(false); // set countFlag to false after first load
   }, [filters, pageDetail]);
 
   const curatedFiltersData = curateFiltersData(filtersData, filters);
@@ -47,7 +52,11 @@ const Gradebook = ({
 
   return (
     <div>
-      <MainHeader Icon={IconInterface} headingText="Gradebook" justify="space-between" />
+      <MainHeader Icon={IconInterface} headingText="Gradebook" justify="space-between">
+        <Link to="/author/assignments">
+          <EduButton>VIEW ASSIGNMENTS</EduButton>
+        </Link>
+      </MainHeader>
       {loading || loadingFilters ? (
         <MainContentWrapper>
           <Spin />
@@ -97,12 +106,14 @@ const enhance = compose(
       filtersData: selectors.filtersData(state),
       loading: selectors.loading(state),
       gradebookData: selectors.gradebookData(state),
-      filters: selectors.selectedFilters(state)
+      filters: selectors.selectedFilters(state),
+      countFlag: selectors.countFlag(state)
     }),
     {
       fetchFiltersData: actions.fetchGradebookFiltersRequest,
       fetchGradebookData: actions.fetchStudentPerformanceRequest,
-      setFilters: actions.setSelectedFilters
+      setFilters: actions.setSelectedFilters,
+      setCountFlag: actions.setCountFlag
     }
   )
 );

@@ -55,7 +55,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
         onChange: setSelectedRows
       }}
       pagination={false}
-      scroll={{ x: "100%", y: windowHeight - 210 }}
+      scroll={{ x: "100%", y: windowHeight - 220 }}
     />
   );
 };

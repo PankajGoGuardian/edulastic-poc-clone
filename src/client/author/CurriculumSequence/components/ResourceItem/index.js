@@ -5,14 +5,16 @@ import { themeColor } from "@edulastic/colors";
 import { ResourceItemWrapper, IconWrapper, ResourceTitle, TitleText } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import TestIcon from "./static/TestIcon";
-import LessonIcon from "./static/writing.svg";
+import WebsiteIcon from "./static/WebsiteIcon";
+import LTIResourceIcon from "./static/LTIResourceIcon";
 import VideoIcon from "./static/graduation-cap.svg";
 import { Tooltip } from "../../../../common/utils/helpers";
 
 export const ICONS_BY_TYPE = {
   test: <TestIcon />,
-  video: <img src={VideoIcon} />,
-  lti_resource: <img src={LessonIcon} />
+  video_resource: <img src={VideoIcon} />,
+  lti_resource: <LTIResourceIcon />,
+  website_resource: <WebsiteIcon />
 };
 
 export const ResouceIcon = ({ type, isAdded }) => <IconWrapper isAdded={isAdded}>{ICONS_BY_TYPE[type]}</IconWrapper>;

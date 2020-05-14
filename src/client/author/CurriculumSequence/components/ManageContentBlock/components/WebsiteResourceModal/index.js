@@ -31,7 +31,12 @@ const WebsiteResourceModal = props => {
   const submitCallback = () => {
     const validationStatus = validateFields();
     if (!validationStatus) {
-      addResource({ title, description, url, contentType: "website_resource" });
+      addResource({
+        contentTitle: title,
+        contentDescription: description,
+        contentUrl: url,
+        contentType: "website_resource"
+      });
       closeCallback();
     } else message.warn(validationStatus);
   };
@@ -49,7 +54,7 @@ const WebsiteResourceModal = props => {
       />
       <br />
       <Title>URL</Title>
-      <StyledInput placeholder="Enter a url" value={url} onChange={e => setUrl(e.target.value)} />
+      <StyledInput placeholder="Enter a URL" value={url} onChange={e => setUrl(e.target.value)} />
     </EdulasticResourceModal>
   );
 };

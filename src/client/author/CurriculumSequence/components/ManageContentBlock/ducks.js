@@ -22,7 +22,6 @@ const slice = createSlice({
   initialState: {
     tests: [],
     resources: [],
-    externalLTIResources: [],
     status: "",
     authoredBy: "",
     subject: "",
@@ -33,7 +32,6 @@ const slice = createSlice({
     loadedPage: 0,
     filter: "ENTIRE_LIBRARY",
     searchString: null,
-    externalLTIModal: {},
     testPreviewModalVisible: false,
     selectedTestForPreview: "",
     externalToolsProviders: [],
@@ -90,16 +88,6 @@ const slice = createSlice({
     setTestSearchAction: (state, { payload }) => {
       state.searchString = payload;
     },
-    changeExternalLTIModalAction: (state, { payload }) => {
-      const { key, value } = payload;
-      set(state.externalLTIModal, key, value);
-    },
-    addExternalLTIResourceAction: state => {
-      const data = state.externalLTIModal;
-      data.resourceId = nanoid();
-      state.externalLTIResources.unshift(data);
-      state.externalLTIModal = {};
-    },
     showTestPreviewModal: (state, { payload }) => {
       state.selectedTestForPreview = payload;
       state.testPreviewModalVisible = true;
@@ -118,7 +106,7 @@ const slice = createSlice({
       state.searchResourceBy = payload;
     },
     addResource: (state, { payload }) => {
-      state.searchResourceBy = "resource";
+      state.searchResourceBy = "resources";
     },
     fetchResource: (state, { payload }) => {
       state.isLoading = true;
@@ -129,6 +117,7 @@ const slice = createSlice({
     },
     resetAndFetchResources: state => {
       state.isLoading = true;
+      state.loadedPage = 0;
       state.resources = [];
     }
   }
@@ -206,7 +195,7 @@ function* fetchDataSaga({ payload }) {
 function* addResourceSaga({ payload }) {
   try {
     yield call(resourcesApi.addResource, payload);
-    yield put(slice.actions.fetchResource());
+    yield put(slice.actions.resetAndFetchResources());
   } catch (e) {
     console.error("Error Occured: addResourceSaga ", e);
   }
@@ -215,11 +204,11 @@ function* addResourceSaga({ payload }) {
 function* fetchResourceSaga({ payload }) {
   try {
     const result = yield call(resourcesApi.fetchResources);
-    if (result.error) {
+    if (!result) {
       message.error(result.error);
       yield put(slice.actions.fetchResourceResult([]));
     } else {
-      yield put(slice.actions.fetchResourceResult(result.data));
+      yield put(slice.actions.fetchResourceResult(result));
     }
   } catch (e) {
     console.error("Error Occured: fetchResourceSaga ", e);

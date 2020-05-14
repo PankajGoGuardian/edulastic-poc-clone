@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Input } from "antd";
-import { desktopWidth, white, title, lightGreySecondary } from "@edulastic/colors";
+import { Input, Select } from "antd";
+import { desktopWidth, white, title, lightGreySecondary, themeColor } from "@edulastic/colors";
 
 export const ModalHeader = styled.h3`
   font-size: 22px;
@@ -43,7 +43,7 @@ export const Title = styled.div`
   margin: 4px 2px;
   text-transform: uppercase;
   color: ${title};
-  font-weight: 500;
+  font-weight: 600;
   font-size: 11px;
 `;
 
@@ -54,9 +54,35 @@ export const StyledInput = styled(Input)`
   background: #f8f8f8 0% 0% no-repeat padding-box;
   border: 1px solid #b9b9b9;
   border-radius: 2px;
-  opacity: 1;
 
   &::placeholder {
     color: #6a737f;
+  }
+`;
+
+export const StyledSelect = styled(Select)`
+  width: 100%;
+  height: 40px;
+
+  .ant-select-selection {
+    background: #f8f8f8 0% 0% no-repeat padding-box;
+    border: 1px solid #b9b9b9;
+    border-radius: 2px;
+
+    &__rendered {
+      height: 40px;
+    }
+
+    &__placeholder {
+      color: #6a737f;
+    }
+  }
+
+  .ant-select-selection-selected-value {
+    line-height: 40px;
+  }
+
+  .ant-select-arrow {
+    color: ${themeColor};
   }
 `;

@@ -16,7 +16,7 @@ import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ResourceItem from "../ResourceItem";
 import WebsiteResourceModal from "./components/WebsiteResourceModal";
 import ExternalVideoLink from "./components/ExternalVideoLink";
-import ExternalLTIModalForm from "./components/ExternalLTIModalContent";
+import LTIResourceModal from "./components/LTIResourceModal";
 import slice from "./ducks";
 import {
   ActionsContainer,
@@ -72,8 +72,6 @@ const ManageContentBlock = props => {
     setDefaults,
     fetchTests,
     tests = [],
-    externalLTIModal,
-    externalLTIResources,
     setFilterAction,
     setStatusAction,
     setAuthoredAction,
@@ -87,8 +85,6 @@ const ManageContentBlock = props => {
     isManageModulesVisible,
     toggleManageModulesVisibility,
     testsInPlaylist = [],
-    changeExternalLTIModal,
-    addExternalLTIResouce,
     selectedTestForPreview = "",
     testPreviewModalVisible = false,
     showPreviewModal,
@@ -113,11 +109,10 @@ const ManageContentBlock = props => {
   const lastResourceItemRef = observeElement(fetchTests, tests);
 
   const [searchBy, setSearchBy] = useState("keywords");
-  const [isAddNew, setAddNew] = useState(false);
   const [isShowFilter, setShowFilter] = useState(false);
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(false);
   const [isExternalVideoResourceModal, setExternalVideoResourceModal] = useState(false);
-  const [isShowExternalLTITool, setShowExternalLTITool] = useState(false);
+  const [isLTIResourceModal, setLTIResourceModal] = useState(false);
 
   useEffect(() => {
     setDefaults({
@@ -140,16 +135,11 @@ const ManageContentBlock = props => {
         setExternalVideoResourceModal(true);
         break;
       case "3":
-        setShowExternalLTITool(true);
+        setLTIResourceModal(true);
         break;
       default:
         break;
     }
-  };
-
-  const onModalClose = () => {
-    setShowExternalLTITool(false);
-    setAddNew(false);
   };
 
   const toggleTestFilter = () => {
@@ -163,16 +153,13 @@ const ManageContentBlock = props => {
   const openManageModules = () => toggleManageModulesVisibility(true);
   const closeManageModules = () => toggleManageModulesVisibility(false);
 
-  const addLTIResource = () => {
-    addExternalLTIResouce();
-    setShowExternalLTITool(false);
-  };
+  const enhanceTextWeight = text => <span style={{ fontWeight: 600 }}>{text}</span>;
 
   const menu = (
     <Menu onClick={onChange}>
-      <Menu.Item key="1">Website URL</Menu.Item>
-      <Menu.Item key="2">Youtube</Menu.Item>
-      <Menu.Item key="3">External LTI Resource</Menu.Item>
+      <Menu.Item key="1">{enhanceTextWeight("Website URL")}</Menu.Item>
+      <Menu.Item key="2">{enhanceTextWeight("Youtube")}</Menu.Item>
+      <Menu.Item key="3">{enhanceTextWeight("External LTI Resource")}</Menu.Item>
     </Menu>
   );
 
@@ -200,40 +187,30 @@ const ManageContentBlock = props => {
     }
   };
 
+  const previewTest = (type, data) => {
+    if (type === "lti_resource") showResource(data);
+    /**
+     * TODO: Add website and video preview code here
+     */
+  };
+
   const renderList = () => {
     const listToRender = [];
     if (searchResourceBy === "resources") {
-      // map resources to an element
-      if (externalLTIResources.length) {
-        externalLTIResources.forEach((resource, idx) => {
-          listToRender.push(
-            <ResourceItem
-              type="lti_resource"
-              id={resource.resourceId}
-              title={resource.contentTitle}
-              key={idx}
-              data={resource?.data}
-              previewTest={() => showResource(resource?.data)}
-            />
-          );
-        });
-      }
-
-      resources.forEach((resource, idx) => {
+      resources.forEach(({ _id, contentType, contentTitle, data, contentUrl }, idx) => {
         listToRender.push(
           <ResourceItem
-            type={resource.contentType}
-            id={resource.resourceId}
-            title={resource.contentTitle}
+            type={contentType}
+            id={_id}
+            title={contentTitle}
             key={`resource-${idx}`}
-            data={resource?.data}
-            previewTest={() => showResource(resource?.data)}
+            data={data}
+            previewTest={() => previewTest(contentType, { url: contentUrl, ...data })}
           />
         );
       });
     }
     if (searchResourceBy === "tests") {
-      // map tests to an element.
       if (tests.length) {
         tests.forEach((test, idx) => {
           if (idx === fetchCall) {
@@ -396,15 +373,12 @@ const ManageContentBlock = props => {
         />
       )}
 
-      {isShowExternalLTITool && (
-        <ExternalLTIModalForm
-          onModalClose={onModalClose}
-          isShowExternalLTITool={isShowExternalLTITool}
+      {isLTIResourceModal && (
+        <LTIResourceModal
+          closeCallback={() => setLTIResourceModal(false)}
+          isVisible={isLTIResourceModal}
+          addResource={addResource}
           externalToolsProviders={externalToolsProviders}
-          onChange={(key, value) => changeExternalLTIModal({ key, value })}
-          isAddNew={isAddNew}
-          setAddNew={setAddNew}
-          addLTIResource={addLTIResource}
         />
       )}
     </ManageContentOuterWrapper>
@@ -425,8 +399,6 @@ export default connect(
     collection: state.playlistTestBox?.collection,
     sources: state.playlistTestBox?.sources,
     searchString: state.playlistTestBox?.searchString,
-    externalLTIModal: state.playlistTestBox?.externalLTIModal,
-    externalLTIResources: state.playlistTestBox?.externalLTIResources,
     testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
     selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
     externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
@@ -450,8 +422,6 @@ export default connect(
     resetAndFetchTests: slice.actions?.resetAndFetchTests,
     setTestSearchAction: slice.actions?.setTestSearchAction,
     toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
-    changeExternalLTIModal: slice.actions?.changeExternalLTIModalAction,
-    addExternalLTIResouce: slice.actions?.addExternalLTIResourceAction,
     showPreviewModal: slice.actions?.showTestPreviewModal,
     closePreviewModal: slice.actions?.closeTestPreviewModal,
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,

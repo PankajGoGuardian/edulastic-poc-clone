@@ -125,9 +125,8 @@ const getRowInfo = (dataSource, compareByKey, value) => {
     case "schoolId":
       return find(dataSource.orgData, org => org[compareByKey] === value);
     case "classId":
-      return find(dataSource.orgData, org => org[compareByKey] === value && org.groupType === "class");
     case "groupId":
-      return find(dataSource.orgData, org => org[compareByKey] === value && org.groupType === "custom");
+      return find(dataSource.orgData, org => org[compareByKey] === value);
   }
 };
 

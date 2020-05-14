@@ -178,7 +178,8 @@ class MainSetting extends Component {
             standardGradingScale: {
               name: standardGradingScale.name,
               _id: standardGradingScale._id
-            }
+            },
+            freezeSettings: false
           });
         } else {
           setMaxAttempts(3);
@@ -192,7 +193,8 @@ class MainSetting extends Component {
             standardGradingScale: {
               name: standardGradingScale.name,
               _id: standardGradingScale._id
-            }
+            },
+            freezeSettings: false
           });
         }
         break;
@@ -314,7 +316,8 @@ class MainSetting extends Component {
       allowedTime,
       pauseAllowed,
       enableScratchpad = true,
-      districtPermissions = []
+      districtPermissions = [],
+      freezeSettings = false
     } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
@@ -410,27 +413,48 @@ class MainSetting extends Component {
                 <Row>
                   <Title>Test Type</Title>
                   <Body smallSize={isSmallSize}>
-                    <SelectInputStyled
-                      width="70%"
-                      value={testType}
-                      disabled={!owner || !isEditable}
-                      onChange={this.updateTestData("testType")}
-                      getPopupContainer={trigger => trigger.parentNode}
-                    >
-                      {(userRole === roleuser.DISTRICT_ADMIN ||
-                        userRole === roleuser.SCHOOL_ADMIN ||
-                        testType === COMMON) &&
-                        !districtPermissions.includes("publisher") && (
-                          <Option key={COMMON} value={COMMON}>
-                            Common Assessment
+                    <Row>
+                      <SelectInputStyled
+                        width="70%"
+                        value={testType}
+                        disabled={!owner || !isEditable}
+                        onChange={this.updateTestData("testType")}
+                        getPopupContainer={trigger => trigger.parentNode}
+                      >
+                        {(userRole === roleuser.DISTRICT_ADMIN ||
+                          userRole === roleuser.SCHOOL_ADMIN ||
+                          testType === COMMON) &&
+                          !districtPermissions.includes("publisher") && (
+                            <Option key={COMMON} value={COMMON}>
+                              Common Assessment
+                            </Option>
+                          )}
+                        {Object.keys(testTypes).map(key => (
+                          <Option key={key} value={key}>
+                            {testTypes[key]}
                           </Option>
-                        )}
-                      {Object.keys(testTypes).map(key => (
-                        <Option key={key} value={key}>
-                          {testTypes[key]}
-                        </Option>
-                      ))}
-                    </SelectInputStyled>
+                        ))}
+                      </SelectInputStyled>
+                    </Row>
+                    {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) &&
+                      testType === COMMON && (
+                        <>
+                          <br />
+                          <Row>
+                            <CheckboxLabel
+                              disabled={!owner || !isEditable}
+                              data-cy="freeze-settings"
+                              checked={freezeSettings}
+                              onChange={e => this.updateTestData("freezeSettings")(e.target.checked)}
+                            >
+                              Freeze Settings
+                            </CheckboxLabel>
+                            <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
+                              <IconInfo color={lightGrey9} style={{ cursor: "pointer" }} />
+                            </Tooltip>
+                          </Row>
+                        </>
+                      )}
                   </Body>
                 </Row>
               </Block>

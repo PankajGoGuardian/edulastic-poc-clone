@@ -573,7 +573,8 @@ export const createBlankTest = () => ({
     usage: "0",
     likes: "0"
   },
-  passages: []
+  passages: [],
+  freezeSettings: false
 });
 
 const initialState = {
@@ -1145,8 +1146,7 @@ function* createTest(data) {
   if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
     delete data.passwordExpireIn;
   }
-
-  const dataToSend = omit(data, [
+  const omitedItems = [
     "assignments",
     "createdDate",
     "updatedDate",
@@ -1154,7 +1154,11 @@ function* createTest(data) {
     "isUsed",
     "currentTab", // not accepted by backend validator (testSchema) EV-10685,
     "summary"
-  ]);
+  ];
+  if (data.testType !== test.type.COMMON) {
+    omitedItems.push("freezeSettings");
+  }
+  const dataToSend = omit(data, omitedItems);
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups);
   const entity = yield call(testsApi.create, dataToSend);
@@ -1202,6 +1206,9 @@ function* updateTestSaga({ payload }) {
     delete payload.data.sharedType;
     delete payload.data.currentTab;
     delete payload.data.summary;
+    if (payload.data.testType !== test.type.COMMON) {
+      delete payload.data.freezeSettings;
+    }
 
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
     // Penalty true/false is set to determine the case
@@ -1590,7 +1597,11 @@ function* setTestDataAndUpdateSaga({ payload }) {
       });
       // summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
       // passages doesnt accepted by BE
-      testObj = omit(testObj, ["passages", "summary"]);
+      const omitedItems = ["passages", "summary"];
+      if (testObj.testType !== test.type.COMMON) {
+        omitedItems.push("freezeSettings");
+      }
+      testObj = omit(testObj, omitedItems);
       const entity = yield call(testsApi.create, testObj);
       const { itemGroups: _itemGroups } = yield select(getTestSelector);
       yield put({

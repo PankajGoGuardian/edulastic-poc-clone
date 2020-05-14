@@ -193,6 +193,9 @@ function* createAssessmentSaga({ payload }) {
             : {}
         }));
       });
+      if (updatedAssessment.testType !== testConstant.type.COMMON) {
+        delete updatedAssessment.freezeSettings;
+      }
 
       const updatePayload = {
         id: assessment._id,
@@ -247,7 +250,11 @@ function* createAssessmentSaga({ payload }) {
         delete newAssessment.passwordExpireIn;
       }
       // Omit passages in doc basedtest creation flow as backend is not expecting it
-      const assesmentPayload = omit(newAssessment, ["passages"]);
+      const omitedItems = ["passages"];
+      if (newAssessment.testType !== testConstant.type.COMMON) {
+        omitedItems.push("freezeSettings");
+      }
+      const assesmentPayload = omit(newAssessment, omitedItems);
 
       const assessment = yield call(testsApi.create, assesmentPayload);
       yield put(createAssessmentSuccessAction());

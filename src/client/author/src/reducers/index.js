@@ -60,6 +60,7 @@ import { externalToolsReducer } from "../../ExternalTools";
 import testPlayer from "../../sharedDucks/testPlayer";
 import { feedback } from "./feedback";
 import { mergeUsersReducer } from "../../MergeUsers";
+import { gradebookReducer } from "../../Gradebook";
 
 const authorReducers = {
   authorUi,
@@ -123,7 +124,8 @@ const authorReducers = {
   externalToolsReducer,
   testPlayer,
   feedback,
-  mergeUsersReducer
+  mergeUsersReducer,
+  gradebookReducer
 };
 
 export default authorReducers;

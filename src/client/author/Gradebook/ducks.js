@@ -1,0 +1,137 @@
+import { message } from "antd";
+import { createSlice } from "redux-starter-kit";
+import { takeLatest, call, put, select } from "redux-saga/effects";
+import { reportsApi, assignmentApi } from "@edulastic/api";
+
+// imported selectors
+import { getUserOrgData } from "../src/selectors/user";
+import selectsData from "../TestPage/components/common/selectsData";
+
+// transformers & constants
+import { getUniqAssessments, STATUS_LIST } from "./transformers";
+
+// slice
+const slice = createSlice({
+  name: "gradebook",
+  initialState: {
+    filtersData: {
+      assessments: [],
+      statusList: [],
+      classes: [],
+      grades: [],
+      subjects: [],
+      terms: [],
+      testTypes: [],
+      groups: []
+    },
+    loadingFilters: false,
+    performanceData: {},
+    loadingPerformanceData: false,
+    selectedFilters: {
+      assessmentIds: [],
+      status: "",
+      classIds: [],
+      grades: [],
+      subjects: [],
+      termId: "",
+      testType: "",
+      groupId: ""
+    }
+  },
+  reducers: {
+    fetchStudentPerformanceRequest: state => {
+      state.loading = true;
+    },
+    fetchStudentPerformanceCompleted: (state, { payload }) => {
+      state.performanceData = payload;
+      state.loadingPerformanceData = false;
+    },
+    fetchGradebookFiltersRequest: state => {
+      state.loadingFilters = true;
+    },
+    fetchGradebookFiltersCompleted: (state, { payload }) => {
+      state.filtersData = payload;
+      state.loadingFilters = false;
+    },
+    setSelectedFilters: (state, { payload }) => {
+      state.selectedFilters = payload;
+    }
+  }
+});
+
+// actions & reducer
+export const { actions, reducer } = slice;
+
+// sagas
+function* fetchStudentPerformanceSaga({ payload }) {
+  try {
+    const { filters, studentPage, studentPageSize } = payload;
+    const { assessmentIds, status, classIds, grades, subjects, termId, testType, groupId } = filters;
+    const response = yield call(reportsApi.fetchStudentPerformance, {
+      assignmentIds: assessmentIds,
+      // status, // TODO: fix thid after confirmation on PRD
+      classIds,
+      grades,
+      subjects,
+      termId,
+      testType,
+      groupId,
+      studentPage,
+      studentPageSize
+    });
+    yield put(actions.fetchStudentPerformanceCompleted(response));
+  } catch (e) {
+    yield put(actions.fetchStudentPerformanceCompleted({}));
+    yield call(message.error, "Failed to fetch student performance for gradebook");
+  }
+}
+
+function* fetchGradebookFiltersSaga() {
+  try {
+    const { classList = [], terms = [] } = yield select(getUserOrgData);
+    const { allGrades, allSubjects, testTypes: tTypes } = selectsData;
+    // assessments
+    const { assignments } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
+    const assessments = getUniqAssessments(assignments);
+    // classes & groups
+    const classes = [],
+      groups = [];
+    classList
+      .filter(c => c.active === 1)
+      .forEach(c => {
+        c.id = c._id;
+        c.type === "class" ? classes.push(c) : groups.push(c);
+      });
+    // terms
+    terms.forEach(t => (t.id = t._id));
+    terms.unshift({ id: "", name: "All" });
+    // grades
+    const grades = allGrades.map(({ value, text }) => ({ id: value, name: text }));
+    // subjects
+    const subjects = allSubjects.filter(s => s.value).map(({ value, text }) => ({ id: value, name: text }));
+    // testTypes
+    const testTypes = tTypes.map(({ value, text }) => ({ id: value, name: text }));
+    // status
+    const statusList = [{ id: "", name: "All" }, ...STATUS_LIST];
+    // set filters data
+    const filtersData = { assessments, classes, groups, terms, grades, subjects, testTypes, statusList };
+    yield put(actions.fetchGradebookFiltersCompleted(filtersData));
+  } catch (e) {
+    yield put(actions.fetchGradebookFiltersCompleted({}));
+    yield call(message.error, "Failed to fetch filters data for gradebook");
+  }
+}
+
+export function* watcherSaga() {
+  yield takeLatest(actions.fetchStudentPerformanceRequest, fetchStudentPerformanceSaga);
+  yield takeLatest(actions.fetchGradebookFiltersRequest, fetchGradebookFiltersSaga);
+}
+
+// selectors
+export const selectors = {
+  loading: state => state?.gradebookReducer?.loadingPerformanceData,
+  loadingFilters: state => state?.gradebookReducer?.loadingFilters,
+  filtersData: state => state?.gradebookReducer?.filtersData,
+  gradebookData: state => state?.gradebookReducer?.performanceData,
+  selectedFilters: state => state?.gradebookReducer?.selectedFilters
+};

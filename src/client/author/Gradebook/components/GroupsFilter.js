@@ -28,13 +28,13 @@ const GroupsFilter = ({ current, options, onClick }) => {
         </StyledSpan>
         <IconFolderNew style={{ marginLeft: "15px", height: "25px", width: "25px" }} onClick={() => {}} />
       </Col>
-      <GroupContainer Icon={props => <IconFolderAll {...props} />} name="All Students" onClick={() => onClick([])} />
+      <GroupContainer Icon={props => <IconFolderAll {...props} />} name="All Students" onClick={() => onClick("")} />
       {options.map(item => (
         <GroupContainer
           {...item}
           Icon={props => <IconFolderDeactive {...props} />}
-          isActive={current[0] && current[0].id === item.id}
-          onClick={() => onClick([item])}
+          isActive={current === item.id}
+          onClick={() => onClick(item.id)}
         />
       ))}
     </Row>

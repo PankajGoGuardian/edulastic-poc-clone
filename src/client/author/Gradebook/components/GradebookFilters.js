@@ -9,23 +9,22 @@ import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 // constants
 import { themeColor, titleColor } from "@edulastic/colors";
 
-const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
+const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
   <Col span={24}>
     <FieldLabel>{label}</FieldLabel>
     <SelectInputStyled
       showArrow
       data-cy={dataCy}
-      placeholder={`Select ${label}`}
-      mode="tags"
+      placeholder={`All ${label}`}
+      mode={mode}
       onChange={onChange}
       value={value}
-      labelInValue
       maxTagCount={4}
       maxTagTextLength={10}
     >
       {options.map(data => (
         <Select.Option key={data.id} value={data.id}>
-          {data.name}
+          {data.name === "All" ? `All ${label}` : data.name}
         </Select.Option>
       ))}
     </SelectInputStyled>
@@ -41,49 +40,53 @@ const GradebookFilters = ({ data, filters, updateFilters, clearFilters }) => (
         </Col> */}
       <FilterDropdown
         label="Assessment"
-        onChange={selected => updateFilters({ ...filters, assessments: selected })}
-        value={filters.assessments}
+        mode="tags"
+        onChange={selected => updateFilters({ ...filters, assessmentIds: selected })}
+        value={filters.assessmentIds}
         options={data.assessments}
       />
       <FilterDropdown
         label="Status"
-        onChange={selected => updateFilters({ ...filters, statuses: selected })}
-        value={filters.statuses}
-        options={data.statuses}
+        onChange={selected => updateFilters({ ...filters, status: selected })}
+        value={filters.status}
+        options={data.statusList}
       />
       <FilterDropdown
         label="Class"
-        onChange={selected => updateFilters({ ...filters, classes: selected })}
-        value={filters.classes}
+        mode="tags"
+        onChange={selected => updateFilters({ ...filters, classIds: selected })}
+        value={filters.classIds}
         options={data.classes}
       />
       <FilterDropdown
         label="Grade"
+        mode="tags"
         onChange={selected => updateFilters({ ...filters, grades: selected })}
         value={filters.grades}
         options={data.grades}
       />
       <FilterDropdown
         label="Subject"
+        mode="tags"
         onChange={selected => updateFilters({ ...filters, subjects: selected })}
         value={filters.subjects}
         options={data.subjects}
       />
       <FilterDropdown
         label="Year"
-        onChange={selected => updateFilters({ ...filters, years: selected })}
-        value={filters.years}
-        options={data.years}
+        onChange={selected => updateFilters({ ...filters, termId: selected })}
+        value={filters.termId}
+        options={data.terms}
       />
       <FilterDropdown
         label="Test Type"
-        onChange={selected => updateFilters({ ...filters, testTypes: selected })}
-        value={filters.testTypes}
+        onChange={selected => updateFilters({ ...filters, testType: selected })}
+        value={filters.testType}
         options={data.testTypes}
       />
       <GroupsFilter
-        onClick={selected => updateFilters({ ...filters, groups: selected })}
-        current={filters.groups}
+        onClick={selected => updateFilters({ ...filters, groupId: selected })}
+        current={filters.groupId}
         options={data.groups}
       />
     </StyledRow>

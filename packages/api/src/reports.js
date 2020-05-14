@@ -1,4 +1,5 @@
 import API from "@edulastic/api/src/utils/API";
+import qs from "qs";
 
 const api = new API();
 const prefix = "/test-activity/summary";
@@ -196,6 +197,16 @@ const fetchStudentStandards = params => {
   });
 };
 
+const fetchStudentPerformance = params => {
+  const queryString = qs.stringify(params);
+  return api
+    .callApi({
+      method: "get",
+      url: `/report/student-performance?${queryString}`
+    })
+    .then(({ data }) => data.result);
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -222,5 +233,6 @@ export default {
   fetchStudentAssessmentProfileReport,
   fetchStudentProfileSummaryReport,
   fetchStudentList,
-  fetchStudentStandards
+  fetchStudentStandards,
+  fetchStudentPerformance
 };

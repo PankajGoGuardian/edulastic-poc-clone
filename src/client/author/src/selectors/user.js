@@ -105,7 +105,7 @@ export const getUserFeatures = createSelector(
 
 export const getUserOrgData = createSelector(
   stateSelector,
-  state => _get(state, "user.orgData")
+  state => _get(state, "user.orgData", {})
 );
 
 export const getCollectionsSelector = createSelector(

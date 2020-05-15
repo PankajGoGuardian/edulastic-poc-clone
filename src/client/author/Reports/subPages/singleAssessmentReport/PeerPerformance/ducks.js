@@ -8,9 +8,9 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 import { getOrgDataFromSARFilter } from "../common/filterDataDucks";
 
-const GET_REPORTS_PEER_PERFORMANCE_REQUEST = "[reports] get reports peer performance request";
-const GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS = "[reports] get reports peer performance success";
-const GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR = "[reports] get reports peer performance error";
+const GET_REPORTS_PEER_PERFORMANCE_REQUEST = "[reports] get reports sub-groups performance request";
+const GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS = "[reports] get reports sub-groups performance success";
+const GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR = "[reports] get reports sub-groups performance error";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -95,7 +95,7 @@ function* getReportsPeerPerformanceRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch peer performance Please try again...";
+    let msg = "Failed to fetch sub-group performance. Please try again...";
     yield call(message.error, msg);
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR,

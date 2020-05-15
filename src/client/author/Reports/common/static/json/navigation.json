@@ -14,14 +14,14 @@
       "group": "singleAssessmentReport"
     },
     "peer-performance": {
-      "title": "Peer Performance",
+      "title": "Sub-group Performance",
       "breadcrumb": [
         {
           "title": "REPORTS",
           "to": "/author/reports"
         },
         {
-          "title": "PEER PERFORMANCE"
+          "title": "SUB-GROUP PERFORMANCE"
         }
       ],
       "group": "singleAssessmentReport"

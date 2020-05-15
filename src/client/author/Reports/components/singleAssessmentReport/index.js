@@ -13,7 +13,7 @@ const links = [
   },
   {
     key: "peerPerformance",
-    title: "Peer Performance",
+    title: "Sub-group Performance",
     location: "/author/reports/peer-performance/test/"
   },
   {
@@ -42,8 +42,8 @@ export const SingleAssessmentReport = () => (
   <div>
     <BoxHeading heading="Single Assessment Report" iconType="bar-chart" />
     <StyledP>
-      View deep analysis of a single assessment. Compare class level performance, view item
-      analysis, diagnose difficult items and areas of misunderstanding.
+      View deep analysis of a single assessment. Compare class level performance, view item analysis, diagnose difficult
+      items and areas of misunderstanding.
     </StyledP>
     <LinksWrapper>
       {links.map(data => (

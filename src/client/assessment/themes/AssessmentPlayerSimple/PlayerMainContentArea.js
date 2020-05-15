@@ -30,7 +30,7 @@ const PlayerContentArea = ({
   setCrossAction,
   crossAction,
   previousQuestionActivities,
-  playerSkinType = test.playerSkinTypes.edulastic,
+  playerSkinType = test.playerSkinValues.edulastic,
   isSidebarVisible = true,
   zoomLevel,
   windowWidth,
@@ -105,7 +105,7 @@ const PlayerContentArea = ({
             )}
           </MainContent>
         </ScrollContext.Provider>
-        {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && (
+        {playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase() && (
           <PlayerFooter
             isLast={isLast}
             isFirst={isFirst}

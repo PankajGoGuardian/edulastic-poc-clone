@@ -1,4 +1,4 @@
-import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import { greyThemeLight, greyThemeLighter, mediumDesktopExactWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const SortableItemContainer = styled.div.attrs({
@@ -65,5 +65,12 @@ export const DragLine = styled.div`
 
   &:not(:last-child) {
     margin-bottom: 4px;
+  }
+`;
+
+export const SortableListContainer = styled.div`
+  font-size: 13px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 14px;
   }
 `;

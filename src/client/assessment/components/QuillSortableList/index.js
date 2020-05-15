@@ -3,6 +3,7 @@ import { SortableContainer } from "react-sortable-hoc";
 import { withNamespaces } from "@edulastic/localization";
 
 import QuillSortableItem from "./components/QuillSortableItem";
+import { SortableListContainer } from "./styled/SortableItemContainer";
 
 // todo: union with SortableList
 const QuillSortableList = SortableContainer(
@@ -26,7 +27,7 @@ const QuillSortableList = SortableContainer(
     defaultLabel,
     className
   }) => (
-    <div data-cy="sortable-list-container" className={className} style={{ fontSize }}>
+    <SortableListContainer data-cy="sortable-list-container" className={className}>
       {items.map((value, index) => (
         <QuillSortableItem
           fontSize={fontSize}
@@ -48,7 +49,7 @@ const QuillSortableList = SortableContainer(
           imageDefaultWidth={imageDefaultWidth}
         />
       ))}
-    </div>
+    </SortableListContainer>
   )
 );
 

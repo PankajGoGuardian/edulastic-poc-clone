@@ -77,8 +77,8 @@ const Search = ({
     // engage ny (name same as Edulastic Certified) for publishers
     isPublishers ? !["Public Library", "Edulastic Certified"].includes(cd.text) : 1
   );
-  const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0);
-  const standardsPlaceholder = isStandardsDisabled ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
+  const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0) || !curriculumId;
+  const standardsPlaceholder = isStandardsDisabled ? "All Standards" : 'Type to Search, for example "k.cc"';
 
   const questionsType = [
     { value: "", text: "All Types" },

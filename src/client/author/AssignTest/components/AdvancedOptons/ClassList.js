@@ -13,7 +13,7 @@ import { receiveSchoolsAction } from "../../../Schools/ducks";
 import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
 import { ClassListFilter, StyledRowLabel, StyledTable, ClassListContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { getTestSelector } from "../../../TestPage/ducks";
+import { getTestSelector, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { lightGrey10 } from "@edulastic/colors";
 
@@ -61,13 +61,14 @@ class ClassList extends React.Component {
         institutionIds: [],
         subjects: [],
         grades: [],
-        active: [1]
+        active: [1],
+        tags: []
       }
     };
   }
 
   componentDidMount() {
-    const { schools, test, loadSchoolsData, courseList, loadCourseListData, userOrgId } = this.props;
+    const { schools, test, loadSchoolsData, courseList, loadCourseListData, userOrgId, getAllTags } = this.props;
 
     if (isEmpty(schools)) {
       loadSchoolsData({ districtId: userOrgId });
@@ -75,6 +76,9 @@ class ClassList extends React.Component {
     if (isEmpty(courseList)) {
       loadCourseListData({ districtId: userOrgId });
     }
+
+    getAllTags({ type: "group" });
+
     const { subjects = [], grades = [] } = test;
     this.setState(prevState => {
       return {
@@ -138,7 +142,7 @@ class ClassList extends React.Component {
   };
 
   render() {
-    const { classList, schools, courseList, selectClass, selectedClasses } = this.props;
+    const { classList, schools, courseList, selectClass, selectedClasses, tagList } = this.props;
     const { searchTerms, classType } = this.state;
 
     const tableData = classList
@@ -298,6 +302,24 @@ class ClassList extends React.Component {
               ))}
             </SelectInputStyled>
           </StyledRowLabel>
+
+          <StyledRowLabel>
+            Tags
+            <SelectInputStyled
+              mode="multiple"
+              value={searchTerms.tags}
+              placeholder="All Tags"
+              onChange={changeField("tags")}
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {tagList.map(({ _id, tagName }) => (
+                <Select.Option key={_id} value={_id}>
+                  {tagName}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+          </StyledRowLabel>
         </ClassListFilter>
 
         <StyledTable
@@ -320,12 +342,14 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       schools: getSchoolsByUserRoleSelector(state),
       courseList: getCourseListSelector(state),
-      test: getTestSelector(state)
+      test: getTestSelector(state),
+      tagList: getAllTagsSelector(state, "group")
     }),
     {
       loadClassListData: receiveClassListAction,
       loadSchoolsData: receiveSchoolsAction,
-      loadCourseListData: receiveCourseListAction
+      loadCourseListData: receiveCourseListAction,
+      getAllTags: getAllTagsAction
     }
   )
 );

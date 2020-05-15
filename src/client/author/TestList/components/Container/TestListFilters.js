@@ -116,7 +116,6 @@ const TestListFilters = ({
     }));
 
     const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0) || !curriculumId;
-    const standardsPlaceholder = isStandardsDisabled ? "All Standards" : 'Type to Search, for example "k.cc"';
     filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     const showStatusFilter =
       (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
@@ -141,7 +140,7 @@ const TestListFilters = ({
         {
           size: "large",
           mode: "multiple",
-          placeholder: standardsPlaceholder,
+          placeholder: "All Standards",
           title: "Standards",
           disabled: isStandardsDisabled,
           onChange: "standardIds",

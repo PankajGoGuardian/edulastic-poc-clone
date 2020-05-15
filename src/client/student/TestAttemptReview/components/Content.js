@@ -57,10 +57,16 @@ class SummaryTest extends Component {
   goToQuestion = (testId, testActivityId, q) => () => {
     const { history, items, match, test } = this.props;
     const { assessmentType, groupId } = match.params;
-    const targetItemIndex = items.reduce((acc, item, index) => {
+    let targetItemIndex = items.reduce((acc, item, index) => {
       if (item.data.questions.some(({ id }) => id === q)) acc = index;
       return acc;
     }, null);
+
+    // src/client/student/TestAttemptReview/ducks.js:26
+    if (targetItemIndex === null && q.includes("no_question_")) {
+      targetItemIndex = q.split("no_question_")[1];
+    }
+
     if (test.testType !== TESTLET) {
       history.push(
         `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`,

@@ -1,5 +1,6 @@
 import { get, keyBy, values, groupBy, isEmpty, uniqBy } from "lodash";
 import next from "immer";
+import { roleuser } from "@edulastic/constants";
 
 export const getQuestions = author_classboard_testActivity => {
   const testItemsData = get(author_classboard_testActivity, "data.testItemsData", []);
@@ -55,45 +56,61 @@ export const getChartAndStandardTableData = (studentResponse, author_classboard_
   }));
   let assignmentMasteryMap = keyBy(assignmentMasteryCopy, "masteryLevel");
 
-  const standardsTableData = uniqBy(testItems.reduce((acc, item) => {
-    const questions = item.data.questions;
-    const allDomains = questions.map(q => {
-      const domains = (q.alignment || []).map(ali => ali.domains || []).flat();
-      const qActivity = questionActivities.filter(qa => qa.qid === q.id)[0] || {};
-      let { score = 0, maxScore } = qActivity;
-      if (!maxScore) {
-        maxScore = q.validation?.validResponse?.score;
-      }
-      let performance = Number(((score / maxScore) * 100).toFixed(2));
-      performance = !isNaN(performance) ? performance : 0;
-      let mastery = assignmentMastery.find((_item, index) => {
-        if (performance >= _item.threshold) {
-          return true;
-        }
-      });
-      if (mastery) {
-        assignmentMasteryMap[mastery.masteryLevel].count++;
-      }
+  const standardsTableData = uniqBy(
+    testItems.reduce((acc, item) => {
+      const questions = item.data.questions;
+      const allDomains = questions
+        .map(q => {
+          const domains = (q.alignment || []).map(ali => ali.domains || []).flat();
+          const qActivity = questionActivities.filter(qa => qa.qid === q.id)[0] || {};
+          let { score = 0, maxScore } = qActivity;
+          if (!maxScore) {
+            maxScore = q.validation?.validResponse?.score;
+          }
+          let performance = Number(((score / maxScore) * 100).toFixed(2));
+          performance = !isNaN(performance) ? performance : 0;
+          let mastery = assignmentMastery.find((_item, index) => {
+            if (performance >= _item.threshold) {
+              return true;
+            }
+          });
+          if (mastery) {
+            assignmentMasteryMap[mastery.masteryLevel].count++;
+          }
 
-      return domains.map(d => {
-        return (d.standards || []).map(std => (
-          {
-            ...std,
-            domain: d.name,
-            question: q.qLabel,
-            masterySummary: mastery ? mastery.masteryLevel : "",
-            performance: performance,
-            score,
-            maxScore
-          }));
-      }).flat();
-    }).flat();
-    
-    return [...acc, ...allDomains];
-  }, []), "id");
+          return domains
+            .map(d => {
+              return (d.standards || []).map(std => ({
+                ...std,
+                domain: d.name,
+                question: q.qLabel,
+                masterySummary: mastery ? mastery.masteryLevel : "",
+                performance: performance,
+                score,
+                maxScore
+              }));
+            })
+            .flat();
+        })
+        .flat();
+
+      return [...acc, ...allDomains];
+    }, []),
+    "id"
+  );
   console.log("standardsTableData", standardsTableData);
 
   const chartData = values(assignmentMasteryMap);
 
   return { standardsTableData, chartData, assignmentMasteryMap };
+};
+
+//hiding seeting tab if assignment assigned by either DA/SA
+export const allowedSettingPageToDisplay = (assignedBy = {}, userId) => {
+  let showSettingTab = true;
+  const { role, _id } = assignedBy;
+  if (assignedBy && [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) && _id !== userId) {
+    showSettingTab = false;
+  }
+  return showSettingTab;
 };

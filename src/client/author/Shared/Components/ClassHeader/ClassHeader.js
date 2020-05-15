@@ -74,6 +74,7 @@ import {
   StyledPopconfirm
 } from "./styled";
 import ViewPasswordModal from "./ViewPasswordModal";
+import { allowedSettingPageToDisplay } from "./utils/transformers";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 const desktopWidth = 992;
@@ -245,11 +246,22 @@ class ClassHeader extends Component {
       isShowStudentReportCardSettingPopup,
       toggleStudentReportCardPopUp,
       userId,
-      assignedById
+      assignedById,
+      history
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
-    const { endDate, startDate, releaseScore, isPaused = false, open, closed, canCloseClass, dueDate } = additionalData;
+    const {
+      endDate,
+      startDate,
+      releaseScore,
+      isPaused = false,
+      open,
+      closed,
+      canCloseClass,
+      dueDate,
+      assignedBy = {}
+    } = additionalData;
     const dueOn = dueDate || endDate;
     const dueOnDate = Number.isNaN(dueOn) ? new Date(dueOn) : new Date(parseInt(dueOn, 10));
     const { assignmentId, classId } = match.params;
@@ -264,6 +276,10 @@ class ClassHeader extends Component {
     const { canvasCode, canvasCourseSectionCode, googleId: groupGoogleId } =
       orgClasses.find(({ _id }) => _id === classId) || {};
     const showSyncGradesWithCanvasOption = canvasCode && canvasCourseSectionCode && orgData.allowCanvas;
+
+    //hiding seeting tab if assignment assigned by either DA/SA
+    const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
+
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
@@ -438,13 +454,15 @@ class ClassHeader extends Component {
                 />
               </WithDisableMessage>
             </FeaturesSwitch>
-            <HeaderTabs
-              to={`/author/lcb/settings/${assignmentId}/${classId}`}
-              dataCy="LCBAssignmentSettings"
-              isActive={active === "settings"}
-              icon={<IconSettings left={0} />}
-              linkLabel={t("common.settings")}
-            />
+            {showSettingTab && (
+              <HeaderTabs
+                to={`/author/lcb/settings/${assignmentId}/${classId}`}
+                dataCy="LCBAssignmentSettings"
+                isActive={active === "settings"}
+                icon={<IconSettings left={0} />}
+                linkLabel={t("common.settings")}
+              />
+            )}
           </StyledTabs>
         </HeaderMidContainer>
         <RightSideButtonWrapper>

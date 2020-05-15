@@ -31,6 +31,7 @@ import { getDefaultTestSettingsAction } from "../TestPage/ducks";
 import { getTestEntitySelector } from "../AssignTest/duck";
 import { InputLabel, InputLabelContainer, ClassHeading, ActionButton } from "./styled";
 import { QuestionIcon } from "../../assessment/styled/Subtitle";
+import { allowedSettingPageToDisplay } from "../Shared/Components/ClassHeader/utils/transformers";
 
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
@@ -38,7 +39,7 @@ export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 const { releaseGradeTypes } = testConst;
 
 function LCBAssignmentSettings({
-  additionalData,
+  additionalData = {},
   loadTestActivity,
   match,
   history,
@@ -48,7 +49,8 @@ function LCBAssignmentSettings({
   loadTestSettings,
   changeAttrs,
   updateAssignmentSettings,
-  testActivity
+  testActivity,
+  userId
 }) {
   const { openPolicy, closePolicy } = selectsData;
   const { assignmentId, classId } = match.params || {};
@@ -57,6 +59,15 @@ function LCBAssignmentSettings({
     loadAssignment({ assignmentId, classId });
     loadTestSettings();
   }, []);
+
+  useEffect(() => {
+    const { assignedBy } = additionalData;
+    const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
+    if (!showSettingTab) {
+      message.error("Permission denied");
+      history.push(`/author/classboard/${assignmentId}/${classId}`);
+    }
+  }, [additionalData]);
 
   const [showSettings, setShowSettings] = useState(false);
 
@@ -242,7 +253,8 @@ export default connect(
     assignment: state?.LCBAssignmentSettings?.assignment,
     loading: state?.LCBAssignmentSettings?.loading,
     testSettings: getTestEntitySelector(state),
-    testActivity: getTestActivitySelector(state)
+    testActivity: getTestActivitySelector(state),
+    userId: state?.user?.user?._id
   }),
   {
     loadTestActivity: receiveTestActivitydAction,

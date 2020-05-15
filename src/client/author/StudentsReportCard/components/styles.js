@@ -9,7 +9,8 @@ import {
   borderGrey4,
   secondaryTextColor,
   white,
-  greenThird
+  greenThird,
+  backgroundGrey
 } from "@edulastic/colors";
 
 import { StyledCard } from "../../Reports/common/styled";
@@ -275,5 +276,20 @@ export const StyledPageHeader = styled.div`
   margin-bottom: 30px;
   span {
     font-weight: bold;
+  }
+`;
+
+export const StyledLegendContainer = styled.div`
+  display: flex;
+  margin: 0 0 5px 33px;
+  div {
+    margin: 0 3px;
+    padding: 8px 12px;
+    background: ${backgroundGrey};
+    font-size: 12px;
+    font-weight: bold;
+    span {
+      margin-right: 10px;
+    }
   }
 `;

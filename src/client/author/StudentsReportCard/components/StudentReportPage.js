@@ -11,7 +11,7 @@ import { receiveStudentResponseAction } from "../../src/actions/classBoard";
 import { stateStudentResponseSelector } from "../../ClassBoard/ducks";
 import { getQuestionTableData, getChartAndStandardTableData } from "../utils/transformers";
 
-import { StyledTableWrapper, StyledPage } from "./styles";
+import { StyledTableWrapper, StyledPage, StyledLegendContainer } from "./styles";
 const A4_HEIGHT = 1200;
 const QUESTION_TABLE_MARGIN = 30;
 const STANDARD_TABLE_MARGIN = 30;
@@ -19,6 +19,18 @@ const USER_INFO_HEIGHT = 37;
 const USER_INFO_MARGIN = 30;
 const PAGE_SIZE_HEIGHT = 30;
 const TABLE_HEADER_HEIGHT = 55;
+const INSTRUCTION_LEGEND_HEIGHT = 34;
+
+const LegendContainer = () => (
+  <StyledLegendContainer>
+    <div>
+      <span>*</span>CONSTRUCTED RESPONSE
+    </div>
+    <div>
+      <span>#</span>TECH ENHANCED ITEM
+    </div>
+  </StyledLegendContainer>
+);
 
 const StudentReportPage = ({
   studentResponse,
@@ -113,6 +125,8 @@ const StudentReportPage = ({
     const standardValues = Object.values(standardTableDims);
 
     if (showQuestionsTable && questionValues.length) {
+      totalHeight += INSTRUCTION_LEGEND_HEIGHT;
+
       questionValues.forEach((value, i) => {
         if (totalHeight + value > A4_HEIGHT) {
           printData[counter] = {
@@ -120,7 +134,7 @@ const StudentReportPage = ({
             questionStart: counter === 0 ? 0 : printData[counter - 1].questionEnd,
             footerMargin: A4_HEIGHT - totalHeight
           };
-          totalHeight = extraHeight + USER_INFO_HEIGHT + USER_INFO_MARGIN;
+          totalHeight = extraHeight + USER_INFO_HEIGHT + USER_INFO_MARGIN + INSTRUCTION_LEGEND_HEIGHT;
           counter++;
         }
         if (i === questionValues.length - 1) {
@@ -195,6 +209,7 @@ const StudentReportPage = ({
         {showQuestionsTable && !!data.questionTableData?.length && (
           <StyledTableWrapper className="student-report-card-question-table-container hide-on-print">
             <QuestionTableContainer dataSource={data.questionTableData} columnsFlags={sections} />
+            <LegendContainer />
           </StyledTableWrapper>
         )}
         {showStandardTable && !!data.standardsTableData?.length && (
@@ -237,6 +252,7 @@ const StudentReportPage = ({
                   dataSource={data.questionTableData.slice(questionStart, questionEnd)}
                   columnsFlags={sections}
                 />
+                <LegendContainer />
               </StyledTableWrapper>
             )}
             {showStandardTable && !!standardEnd && (

@@ -46,20 +46,36 @@ export const QuestionTableContainer = props => {
       return <StyledCheck record={record}>{data}</StyledCheck>;
     };
     arr[1].render = (data, record, index) => {
-      return data.map(yAnswer => (
-        <MathFormulaDisplay
-          style={{ marginBottom: "10px", minHeight: "22px" }}
-          dangerouslySetInnerHTML={{ __html: yAnswer }}
-        />
-      ));
+      return data.map(yAnswer => {
+        let content = yAnswer;
+        if (yAnswer === "TEI") {
+          content = "<span style='font-size:16px;font-weight: 500;'>#</span>";
+        } else if (yAnswer === "Constructed Response") {
+          content = "<span style='font-size:16px;font-weight: 500;'>*</span>";
+        }
+        return (
+          <MathFormulaDisplay
+            style={{ marginBottom: "10px", minHeight: "22px" }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        );
+      });
     };
     arr[2].render = (data, record, index) => {
-      return data.map(cAnswer => (
-        <MathFormulaDisplay
-          style={{ marginBottom: "10px", minHeight: "22px" }}
-          dangerouslySetInnerHTML={{ __html: cAnswer }}
-        />
-      ));
+      return data.map(cAnswer => {
+        let content = cAnswer;
+        if (cAnswer === "TEI") {
+          content = "<span style='font-size:16px;font-weight: 500;'>#</span>";
+        } else if (cAnswer === "Constructed Response") {
+          content = "<span style='font-size:16px;font-weight: 500;'>*</span>";
+        }
+        return (
+          <MathFormulaDisplay
+            style={{ marginBottom: "10px", minHeight: "22px" }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        );
+      });
     };
   });
 

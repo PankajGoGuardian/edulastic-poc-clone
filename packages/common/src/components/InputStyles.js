@@ -108,6 +108,7 @@ export const SelectInputStyled = styled(Select)`
       font-weight: 600;
       line-height: 1.38;
       outline: 0;
+
       &:focus,
       &:hover {
         border: 1px solid ${greyThemeLight};
@@ -133,6 +134,9 @@ export const SelectInputStyled = styled(Select)`
           width: 100%;
           height: auto;
           margin: 0px;
+          .ant-select-search--inline {
+            margin-left: 10px;
+          }
           .ant-select-selection__placeholder {
             color: ${greyThemeDark2};
             margin-left: 15px;

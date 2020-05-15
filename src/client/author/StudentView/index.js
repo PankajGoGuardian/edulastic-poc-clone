@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 import { findIndex, isUndefined, get } from "lodash";
 import { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
-import { Modal, Button, Input, Tooltip } from "antd";
+import { Input, Tooltip } from "antd";
 import { ThemeProvider } from "styled-components";
-import { AnswerContext, scrollTo } from "@edulastic/common";
+import { AnswerContext, scrollTo, EduButton } from "@edulastic/common";
 import { IconFeedback } from "@edulastic/icons";
 import { test } from "@edulastic/constants";
 import { white } from "@edulastic/colors";
@@ -21,7 +21,9 @@ import {
   GiveOverallFeedBackButton,
   StudentButtonWrapper,
   StudentButtonDiv,
-  ScrollToTopButton
+  ScrollToTopButton,
+  StyledModal,
+  StyledFooter
 } from "./styled";
 
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
@@ -175,20 +177,22 @@ class StudentViewContainer extends Component {
     return (
       <React.Fragment>
         {showFeedbackPopup && (
-          <Modal
+          <StyledModal
             centered
             maskClosable={false}
             visible={showFeedbackPopup}
             title="Give Overall Feedback"
             onCancel={() => this.handleShowFeedbackPopup(false)}
-            footer={[
-              <Button data-cy="cancel" key="back" onClick={() => this.handleShowFeedbackPopup(false)}>
-                Cancel
-              </Button>,
-              <Button data-cy="submit" key="submit" type="primary" onClick={this.handleApply}>
-                Apply
-              </Button>
-            ]}
+            footer={
+              <StyledFooter>
+                <EduButton data-cy="cancel" key="back" isGhost onClick={() => this.handleShowFeedbackPopup(false)}>
+                  Cancel
+                </EduButton>
+                <EduButton data-cy="submit" key="submit" type="primary" onClick={this.handleApply}>
+                  Save
+                </EduButton>
+              </StyledFooter>
+            }
           >
             <p>Leave a feedback!</p>
             <Input.TextArea
@@ -199,7 +203,7 @@ class StudentViewContainer extends Component {
               maxlength="250"
               autoFocus
             />
-          </Modal>
+          </StyledModal>
         )}
 
         <StyledFlexContainer

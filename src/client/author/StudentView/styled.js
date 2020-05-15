@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import {
@@ -161,4 +161,42 @@ export const ScrollToTopButton = styled(Button)`
   margin-right: 20px;
   margin-bottom: 20px;
   display: ${props => (props.hasStickyHeader ? "block" : "none")};
+`;
+export const StyledModal = styled(Modal)`
+  .ant-modal-body {
+    padding: 0 50px 0 50px;
+  }
+  .ant-modal-header {
+    padding: 24px 46px;
+    border: 0;
+    .ant-modal-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -1.1px;
+    }
+  }
+  .ant-modal-footer {
+    border: 0;
+    padding-bottom: 30px;
+  }
+  .ant-modal-close {
+    top: 6px;
+    color: black;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  .ant-alert-error {
+    width: 100%;
+    margin-top: 10px;
+  }
+`;
+export const StyledFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  button {
+    min-width: 150px;
+    margin-top: 5px;
+  }
 `;

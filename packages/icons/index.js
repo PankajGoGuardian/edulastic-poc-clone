@@ -229,3 +229,4 @@ export { default as IconClass } from "./src/IconClass";
 export { default as IconClever } from "./src/IconClever";
 export { default as IconMagnify } from "./src/IconMagnify";
 export { default as IconInterface } from "./src/IconInterface";
+export { default as IconSwitchUser } from "./src/IconSwitchUser";

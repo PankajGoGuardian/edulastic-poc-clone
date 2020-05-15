@@ -7,7 +7,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import { get, pick } from "lodash";
 import styled, { withTheme } from "styled-components";
 import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown } from "antd";
 import {
@@ -20,7 +20,8 @@ import {
   IconQuestion,
   IconProfileHighlight,
   IconSignoutHighlight,
-  IconPlaylist
+  IconPlaylist,
+  IconSwitchUser
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import {
@@ -35,6 +36,8 @@ import {
   greyThemeLighter
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
+import SwitchUserModal from "../../common/components/SwtichUserModal/SwitchUserModal";
+import { switchUser } from "../../author/authUtils";
 import { logoutAction, isProxyUser as isProxyUserSelector } from "../Login/ducks";
 
 const menuItems = [
@@ -86,6 +89,7 @@ class SideMenu extends Component {
     super(props);
 
     this.state = {
+      showModal: false,
       isVisible: false
     };
 
@@ -142,6 +146,9 @@ class SideMenu extends Component {
       this.toggleDropdown();
       this.toggleMenu();
     }
+    if (key === "2") {
+      this.setState({ showModal: true });
+    }
   };
 
   onOutsideEvent = event => {
@@ -163,6 +170,7 @@ class SideMenu extends Component {
   render() {
     const { broken, isVisible } = this.state;
     const {
+      switchDetails,
       windowWidth,
       currentPath,
       firstName,
@@ -194,6 +202,18 @@ class SideMenu extends Component {
               <span>{isSidebarCollapsed ? "" : t("common.myProfileText")}</span>
             </Link>
           </Menu.Item>
+          <Menu.Item key="2" className="removeSelectedBorder">
+            {get(switchDetails, "otherAccounts", []).length ? (
+              <a>
+                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Switch Accounts"}
+              </a>
+            ) : (
+              //TODO
+              <Link to="/add-login-location">
+                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Add Accounts"}
+              </Link>
+            )}
+          </Menu.Item>
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight />
@@ -206,6 +226,13 @@ class SideMenu extends Component {
 
     return (
       <>
+        <SwitchUserModal
+          switchUser={switchUser}
+          showModal={this.state.showModal}
+          closeModal={() => this.setState({ showModal: false })}
+          otherAccounts={get(switchDetails, "otherAccounts", [])}
+          personId={get(switchDetails, "personId")}
+        />
         <FixedSidebar
           className={`${!isSidebarCollapsed ? "full" : ""}`}
           onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
@@ -363,6 +390,7 @@ const enhance = compose(
       zoomLevel: ui.zoomLevel,
       profileThumbnail: get(user, "user.thumbnail"),
       role: user?.user?.role,
+      switchDetails: pick(user?.user, ["personId", "otherAccounts"]),
       features: user?.user?.features,
       isProxyUser: isProxyUserSelector({ user })
     }),

@@ -34,7 +34,8 @@ import {
   IconSubscriptionHighlight,
   IconProfileHighlight,
   IconSignoutHighlight,
-  IconInterface
+  IconInterface,
+  IconSwitchUser
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
@@ -42,7 +43,9 @@ import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
 import { getUserFeatures } from "../../../student/Login/ducks";
-import { isOrganizationDistrictSelector } from "../selectors/user";
+import { isOrganizationDistrictSelector, getAccountSwitchDetails } from "../selectors/user";
+import SwitchUserModal from "../../../common/components/SwtichUserModal/SwitchUserModal";
+import { switchUser } from "../../authUtils";
 
 const menuItems = [
   {
@@ -121,6 +124,7 @@ class SideMenu extends Component {
     super(props);
 
     this.state = {
+      showModal: false,
       isVisible: false
     };
 
@@ -223,6 +227,10 @@ class SideMenu extends Component {
       this.toggleDropdown();
       this.toggleMenu();
     }
+
+    if (key === "2") {
+      this.setState({ showModal: true });
+    }
   };
 
   onOutsideEvent = event => {
@@ -252,6 +260,7 @@ class SideMenu extends Component {
   render() {
     const { broken, isVisible } = this.state;
     const {
+      switchDetails,
       windowWidth,
       history,
       isSidebarCollapsed,
@@ -313,6 +322,18 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
+          <Menu.Item key="2" className="removeSelectedBorder">
+            {get(switchDetails, "otherAccounts", []).length ? (
+              <a>
+                <IconSwitchUser /> {isCollapsed ? "" : "Switch Account"}
+              </a>
+            ) : (
+              //TODO
+              <Link to="/add-login-location">
+                <IconSwitchUser /> {isCollapsed ? "" : "Add Account"}
+              </Link>
+            )}
+          </Menu.Item>
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight /> {isCollapsed ? "" : "Sign Out"}
@@ -329,6 +350,13 @@ class SideMenu extends Component {
         isCollapsed={isCollapsed}
         ref={this.sideMenuRef}
       >
+        <SwitchUserModal
+          switchUser={switchUser}
+          showModal={this.state.showModal}
+          closeModal={() => this.setState({ showModal: false })}
+          otherAccounts={get(switchDetails, "otherAccounts", [])}
+          personId={get(switchDetails, "personId")}
+        />
         <SideBar
           collapsed={isCollapsed}
           collapsible
@@ -493,6 +521,7 @@ const enhance = compose(
       lastPlayList: getLastPlayListSelector(state),
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, "user.thumbnail"),
+      switchDetails: getAccountSwitchDetails(state),
       locationState: get(state, "router.location.state")
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }

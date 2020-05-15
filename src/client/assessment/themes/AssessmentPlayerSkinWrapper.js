@@ -19,7 +19,7 @@ const AssessmentPlayerSkinWrapper = ({
   children,
   defaultAP,
   docUrl,
-  playerSkinType = test.playerSkinTypes.edulastic,
+  playerSkinType = test.playerSkinValues.edulastic,
   showMagnifier = true,
   handleMagnifier,
   qId,
@@ -52,7 +52,6 @@ const AssessmentPlayerSkinWrapper = ({
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
-
   const header = () => {
     if (playerSkinType === "parcc") {
       return (
@@ -114,7 +113,7 @@ const AssessmentPlayerSkinWrapper = ({
   };
 
   const getMainContainerStyle = () => {
-    if (playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase()) {
+    if (playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase()) {
       if (!isUndefined(docUrl) || defaultAP) {
         return { width: "100%" };
       } else {
@@ -123,24 +122,24 @@ const AssessmentPlayerSkinWrapper = ({
           width: "100%"
         };
       }
-    } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase()) {
+    } else if (playerSkinType.toLowerCase() === test.playerSkinValues.parcc.toLowerCase()) {
       return {
         paddingLeft: 0,
         paddingRight: 0,
         marginTop: defaultAP ? "82px" : "47px"
       };
-    } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
+    } else if (playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()) {
       return {
         paddingLeft: 0,
         paddingRight: 0,
         marginTop: defaultAP ? "78px" : "38px"
       };
     }
-    return {};
+    return { width: "100%" };
   };
 
   const getStyle = () => {
-    if (playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase()) {
+    if (playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase()) {
       if (!isUndefined(docUrl) || defaultAP) {
         return { width: "100%" };
       } else {
@@ -150,8 +149,8 @@ const AssessmentPlayerSkinWrapper = ({
         };
       }
     } else if (
-      playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ||
-      playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()
+      playerSkinType.toLowerCase() === test.playerSkinValues.parcc.toLowerCase() ||
+      playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
     ) {
       return {
         width: "100%"
@@ -176,7 +175,7 @@ const AssessmentPlayerSkinWrapper = ({
   };
 
   const getTopOffset = () => {
-    if (playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
+    if (playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()) {
       return { top: 120, left: 0 };
     } else {
       return { top: 63, left: 0 };
@@ -187,7 +186,7 @@ const AssessmentPlayerSkinWrapper = ({
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
       {header()}
       <FlexContainer>
-        {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && leftSideBar()}
+        {playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase() && leftSideBar()}
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
           style={getStyle()}
@@ -196,7 +195,7 @@ const AssessmentPlayerSkinWrapper = ({
         >
           {children}
         </StyledMainContainer>
-        {playerSkinType === test.playerSkinTypes.edulastic.toLowerCase() && defaultAP && navigationBtns()}
+        {playerSkinType === test.playerSkinValues.edulastic.toLowerCase() && defaultAP && navigationBtns()}
       </FlexContainer>
     </Magnifier>
   );
@@ -232,8 +231,8 @@ const StyledMainContainer = styled.div`
     }
   }
   ${({ playerSkin }) =>
-    playerSkin.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ||
-    playerSkin.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()
+    playerSkin.toLowerCase() === test.playerSkinValues.parcc.toLowerCase() ||
+    playerSkin.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
       ? `
     .question-tab-container {
       padding-top: 0!important;
@@ -243,7 +242,7 @@ const StyledMainContainer = styled.div`
       top: 130px;
     }
     .question-audio-controller {
-      display: ${playerSkin.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ? "block" : "none!important"};
+      display: ${playerSkin.toLowerCase() === test.playerSkinValues.parcc.toLowerCase() ? "block" : "none!important"};
       z-index: 1;
       position: fixed;
       top: 50%;

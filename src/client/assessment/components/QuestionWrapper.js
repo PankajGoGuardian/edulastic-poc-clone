@@ -329,7 +329,7 @@ class QuestionWrapper extends Component {
       isLCBView,
       isGrade,
       enableMagnifier,
-      playerSkinType = test.playerSkinTypes.edulastic,
+      playerSkinType = test.playerSkinValues.edulastic,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -377,7 +377,6 @@ class QuestionWrapper extends Component {
     const rubricFeedback = data?.activity?.rubricFeedback;
 
     const { calculatedHeight, fullHeight } = restProps;
-
     return (
       <ThemeProvider
         theme={{
@@ -389,7 +388,7 @@ class QuestionWrapper extends Component {
         <>
           {canShowPlayer ? (
             <AudioControls
-              btnWithText={playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase()}
+              btnWithText={playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase()}
               showAudioControls={showAudioControls}
               key={data.id}
               item={data}

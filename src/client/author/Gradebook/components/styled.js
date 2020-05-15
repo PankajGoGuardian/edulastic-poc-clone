@@ -41,12 +41,7 @@ export const TableFooter = styled.div`
   margin-top: 20px;
   justify-content: "space-between";
   li {
-    .ant-pagination-item {
-      border: none;
-    }
-    .ant-pagination-options {
-      border: none;
-    }
+    border: none !important;
   }
 `;
 
@@ -55,7 +50,7 @@ export const StyledTableCell = styled.div`
   justify-content: center;
   align-items: center;
   padding: 5px 10px;
-  background-color: ${props => props.color || white};
+  background-color: ${props => props.color};
   height: 40px;
   width: 100%;
 `;

@@ -89,7 +89,9 @@ const curateTestActivities = tas => {
 const getAssignmentClassStudentIds = assignment => {
   const classIds = [],
     studentIds = [];
-  assignment?.class?.forEach(c => (c.students.length ? studentIds.push(...students) : classIds.push(c._id)));
+  assignment?.class?.forEach(c =>
+    c.students?.length ? c.students && studentIds.push(...c.students) : c._id && classIds.push(c._id)
+  );
   return [classIds, studentIds];
 };
 

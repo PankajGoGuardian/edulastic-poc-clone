@@ -17,10 +17,20 @@ export const attemptSummarySelector = createSelector(
     const allQids = [];
     const itemWiseQids = {};
     const nonQuestionTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.SECTION_LABEL, questionType.TEXT];
-    for (const item of items) {
+    for (const [index, item] of items.entries()) {
       const questions = get(item, "data.questions", [])
         .filter(x => !nonQuestionTypes.includes(x.type))
         .map(x => ({ id: x.id, type: x.type }));
+
+      if (!questions.length) {
+        // dummy data to skip question (instruction)
+        const noQuestion = `no_question_${index}`;
+        allQids.push(noQuestion);
+        itemWiseQids[item._id] = [noQuestion];
+        blocks[noQuestion] = 0;
+        continue;
+      }
+
       const firstQid = questions[0].id;
       const bookmarked = bookmarks[item._id];
       /**

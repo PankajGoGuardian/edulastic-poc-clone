@@ -11,7 +11,7 @@ const singleAssessmentReport = [
   },
   {
     key: "peerPerformance",
-    title: "Peer Performance"
+    title: "Sub-group Performance"
   },
   {
     key: "questionAnalysis",

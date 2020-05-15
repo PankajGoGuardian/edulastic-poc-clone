@@ -28,12 +28,13 @@ const Gradebook = ({
   gradebookData,
   filters,
   setFilters,
+  pageDetail,
+  setPageDetail,
   countFlag,
   setCountFlag
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [pageDetail, setPageDetail] = useState([1, 50]);
 
   useEffect(() => {
     fetchFiltersData();
@@ -41,10 +42,13 @@ const Gradebook = ({
   }, []);
 
   useEffect(() => {
-    const [studentPage, studentPageSize] = pageDetail;
-    fetchGradebookData({ filters, studentPage, studentPageSize, countFlag });
+    setPageDetail({ ...pageDetail, studentPage: 1, assignmentPage: 1 });
+  }, [filters]);
+
+  useEffect(() => {
+    fetchGradebookData({ filters, pageDetail, countFlag });
     countFlag && setCountFlag(false); // set countFlag to false after first load
-  }, [filters, pageDetail]);
+  }, [pageDetail]);
 
   const curatedFiltersData = curateFiltersData(filtersData, filters);
   const [curatedData, assessmentsData] = curateGradebookData(gradebookData, filtersData);
@@ -85,11 +89,14 @@ const Gradebook = ({
             <TableFooter>
               <GradebookStatusColors />
               <Pagination
-                showSizeChanger={false}
-                pageSize={pageDetail[1]}
-                onChange={(pgNo, pgSize) => setPageDetail([pgNo, pgSize])}
-                onShowSizeChange={(_, pgSize) => setPageDetail([1, pgSize])}
+                current={pageDetail.studentPage}
+                pageSize={pageDetail.studentPageSize}
+                onChange={studentPage => setPageDetail({ ...pageDetail, studentPage })}
+                onShowSizeChange={(_, studentPageSize) =>
+                  setPageDetail({ ...pageDetail, studentPage: 1, studentPageSize })
+                }
                 total={studentsCount}
+                showSizeChanger={false}
               />
             </TableFooter>
           </TableContainer>
@@ -108,12 +115,14 @@ const enhance = compose(
       loading: selectors.loading(state),
       gradebookData: selectors.gradebookData(state),
       filters: selectors.selectedFilters(state),
+      pageDetail: selectors.pageDetail(state),
       countFlag: selectors.countFlag(state)
     }),
     {
       fetchFiltersData: actions.fetchGradebookFiltersRequest,
       fetchGradebookData: actions.fetchStudentPerformanceRequest,
       setFilters: actions.setSelectedFilters,
+      setPageDetail: actions.setPageDetail,
       setCountFlag: actions.setCountFlag
     }
   )

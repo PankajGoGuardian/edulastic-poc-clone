@@ -27,11 +27,11 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
     },
     {
       title: "Last Activity Date",
-      key: "lastActivityDate",
-      dataIndex: "lastActivityDate",
+      key: "laDate",
+      dataIndex: "laDate",
       width: 190,
-      render: data => (data ? moment(data).format("MMMM Do, YYYY h:mm A") : ""),
-      sorter: (a, b) => (a.lastActivityDate || 0) - (b.lastActivityDate || 0)
+      render: data => (data ? moment(data).format("MMM Do, YYYY h:mm A") : "-"),
+      sorter: (a, b) => (a.laDate || 0) - (b.laDate || 0)
     },
     ...assessments.map(ass => ({
       title: ass.name,
@@ -56,7 +56,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
         onChange: setSelectedRows
       }}
       pagination={false}
-      scroll={{ x: "100%", y: windowHeight - 220 }}
+      scroll={{ x: "100%", y: windowHeight - 250 }}
     />
   );
 };

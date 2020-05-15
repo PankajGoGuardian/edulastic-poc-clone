@@ -119,7 +119,7 @@ const MergeUsersModal = ({
           </div>
           <p>
             All {type} accounts will get merged to a single account but assignment and other details will not be merged
-            into one.
+            into one. The selected user will remain active.
           </p>
         </>
       }

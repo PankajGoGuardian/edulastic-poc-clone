@@ -86,13 +86,23 @@ const curateTestActivities = tas => {
   }
 };
 
-const getAssignmentClassStudentIds = assignment => {
-  const classIds = [],
-    studentIds = [];
-  assignment?.class?.forEach(c =>
-    c.students?.length ? c.students && studentIds.push(...c.students) : c._id && classIds.push(c._id)
-  );
-  return [classIds, studentIds];
+const getStudentsMap = (students = []) => {
+  const studentsMap = groupBy(students, "_id");
+  Object.keys(studentsMap).forEach(_id => {
+    // get formatted student name
+    const { firstName, middleName, lastName } = studentsMap[_id][0];
+    const studentName = getFormattedName(firstName, middleName, lastName);
+    // club all groupIds
+    const groupIds = [];
+    studentsMap[_id].forEach(s => groupIds.push(s.group._id));
+    // update studentsMap
+    studentsMap[_id] = {
+      _id,
+      studentName,
+      groupIds: uniq(groupIds)
+    };
+  });
+  return studentsMap;
 };
 
 export const curateGradebookData = (gradebookData, filtersData) => {
@@ -100,7 +110,7 @@ export const curateGradebookData = (gradebookData, filtersData) => {
   const { classes = [] } = filtersData;
 
   const taGroups = groupBy(testActivities, "assignmentId");
-  const studentsMap = keyBy(students, "_id");
+  const studentsMap = getStudentsMap(students);
 
   const curatedDataMap = {};
   // aggregate student data for all assignments based on studentId & classId
@@ -109,10 +119,10 @@ export const curateGradebookData = (gradebookData, filtersData) => {
       const taGroup = taGroups[(a?._id)]?.filter(ta => ta.userId === s._id);
       if (taGroup) {
         const taClassGroups = groupBy(taGroup, "groupId");
-        Object.keys(taClassGroups).forEach(gId => {
-          const key = JSON.stringify([s._id, gId]);
+        Object.keys(taClassGroups).forEach(cId => {
+          const key = JSON.stringify([s._id, cId]);
           // calculate percent score and status for assignment
-          const taCurated = curateTestActivities(taClassGroups[gId]);
+          const taCurated = curateTestActivities(taClassGroups[cId]);
           // store aggregated data uniquely for student & class combination
           if (curatedDataMap[key]) {
             curatedDataMap[key][a._id] = taCurated;
@@ -122,28 +132,26 @@ export const curateGradebookData = (gradebookData, filtersData) => {
         });
       } else {
         // check for not started
-        // TODO: send groupId along with the user or figure out a way to do it
-        const [cIds, sIds] = getAssignmentClassStudentIds(a);
-        if (cIds.includes(s.groupId) || sIds.includes(s._id)) {
-          const key = JSON.stringify([s._id, s.groupId]);
-          curatedDataMap[key] = { [a._id]: { status: "NOT STARTED", laDate: 0 } };
-        }
+        a.class?.forEach(({ _id: cId, students: sIds }) => {
+          const key = JSON.stringify([s._id, cId]);
+          if (s.groupIds.includes(cId) || sIds.includes(s._id)) {
+            curatedDataMap[key] = { [a._id]: { status: "NOT STARTED", laDate: 0, percentScore: " " } };
+          }
+        });
       }
     })
   );
 
   const curatedData = Object.keys(curatedDataMap).map(key => {
-    const [sId, gId] = JSON.parse(key);
-    const { firstName, middleName, lastName, ...student } = studentsMap[sId];
+    const [sId, cId] = JSON.parse(key);
     // get laDate in curatedDataMap
     let laDate = 0;
     Object.keys(curatedDataMap[key]).forEach(aId => (laDate = Math.max(curatedDataMap[key][aId].laDate, laDate)));
     // return curated data
     return {
-      ...student,
-      studentName: getFormattedName(firstName, middleName, lastName),
+      ...studentsMap[sId],
       lastActivityDate: laDate,
-      className: classes.find(c => c.id === gId)?.name,
+      className: classes.find(c => c.id === cId)?.name,
       assessments: curatedDataMap[key]
     };
   });

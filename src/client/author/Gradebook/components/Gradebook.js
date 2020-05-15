@@ -33,7 +33,7 @@ const Gradebook = ({
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [pageDetail, setPageDetail] = useState([]);
+  const [pageDetail, setPageDetail] = useState([1, 50]);
 
   useEffect(() => {
     fetchFiltersData();
@@ -85,7 +85,8 @@ const Gradebook = ({
             <TableFooter>
               <GradebookStatusColors />
               <Pagination
-                showSizeChanger
+                showSizeChanger={false}
+                pageSize={pageDetail[1]}
                 onChange={(pgNo, pgSize) => setPageDetail([pgNo, pgSize])}
                 onShowSizeChange={(_, pgSize) => setPageDetail([1, pgSize])}
                 total={studentsCount}

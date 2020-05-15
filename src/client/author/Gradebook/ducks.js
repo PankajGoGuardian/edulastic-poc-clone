@@ -108,8 +108,7 @@ function* fetchGradebookFiltersSaga() {
         c.type === "class" ? classes.push(c) : groups.push(c);
       });
     // terms
-    terms.forEach(t => (t.id = t._id));
-    terms.unshift({ id: "", name: "All" });
+    const termList = [{ id: "", name: "All" }, ...terms.map(t => ({ ...t, id: t._id }))];
     // grades
     const grades = allGrades.map(({ value, text }) => ({ id: value, name: text }));
     // subjects
@@ -119,7 +118,7 @@ function* fetchGradebookFiltersSaga() {
     // status
     const statusList = [{ id: "", name: "All" }, ...STATUS_LIST];
     // set filters data
-    const filtersData = { assessments, classes, groups, terms, grades, subjects, testTypes, statusList };
+    const filtersData = { assessments, classes, groups, terms: termList, grades, subjects, testTypes, statusList };
     yield put(actions.fetchGradebookFiltersCompleted(filtersData));
   } catch (e) {
     yield put(actions.fetchGradebookFiltersCompleted({}));

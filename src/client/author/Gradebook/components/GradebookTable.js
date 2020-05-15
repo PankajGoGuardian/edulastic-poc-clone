@@ -15,7 +15,8 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       dataIndex: "studentName",
       fixed: "left",
       width: 170,
-      sorter: (a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
+      sorter: (a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()),
+      defaultSortOrder: "descend"
     },
     {
       title: "Class Name",
@@ -28,22 +29,22 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       title: "Last Activity Date",
       key: "lastActivityDate",
       dataIndex: "lastActivityDate",
-      width: 180,
-      render: data => (data ? moment(data).format("MMMM Do, YYYY h:mm a") : ""),
-      sorter: (a, b) => a.lastActivityDate > b.lastActivityDate
+      width: 190,
+      render: data => (data ? moment(data).format("MMMM Do, YYYY h:mm A") : ""),
+      sorter: (a, b) => (a.lastActivityDate || 0) - (b.lastActivityDate || 0)
     },
-    ...assessments.map(a => ({
-      title: a.name,
-      key: a.id,
+    ...assessments.map(ass => ({
+      title: ass.name,
+      key: ass.id,
       align: "center",
       width: 170,
       render: (_, row) => {
-        const { status, percentScore } = row.assessments[a.id] || {};
+        const { status, percentScore } = row.assessments[ass.id] || {};
         const color = STATUS_LIST.find(s => s.name === status)?.color;
-        return <StyledTableCell color={color}>{percentScore != null ? percentScore : "-"}</StyledTableCell>;
+        return <StyledTableCell color={color}>{percentScore || "-"}</StyledTableCell>;
       },
       sorter: (a, b) =>
-        a.assessments.find(d => d.name === ass.name).score > b.assessments.find(d => d.name === ass.name).score
+        (a.assessments[ass.id]?.percentScore || "-").localeCompare(b.assessments[ass.id]?.percentScore || "-")
     }))
   ];
   return (

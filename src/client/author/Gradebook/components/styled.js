@@ -42,6 +42,7 @@ export const TableFooter = styled.div`
   justify-content: "space-between";
   li {
     border: none !important;
+    box-shadow: 0px 2px 7px #c9d0db80;
   }
 `;
 
@@ -69,7 +70,6 @@ export const StyledTable = styled(Table)`
                 background: white;
                 padding: 5px 10px 20px 10px;
                 .ant-table-column-title {
-                  white-space: nowrap;
                   font-size: 12px;
                   line-height: 17px;
                   font-weight: 700;
@@ -85,6 +85,9 @@ export const StyledTable = styled(Table)`
               cursor: pointer;
               height: 45px;
               td {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 height: 40px;
                 padding: 5px 10px;
                 font-size: 14px;
@@ -111,7 +114,6 @@ export const StyledTable = styled(Table)`
               background: white;
               padding: 5px 10px 20px 10px;
               .ant-table-column-title {
-                white-space: nowrap;
                 font-size: 12px;
                 line-height: 17px;
                 font-weight: 700;
@@ -127,6 +129,10 @@ export const StyledTable = styled(Table)`
             cursor: pointer;
             height: 45px;
             td {
+              max-width: 170px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
               height: 40px;
               padding: 5px 10px;
               font-size: 14px;

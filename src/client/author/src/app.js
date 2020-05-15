@@ -14,6 +14,7 @@ import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 import { MainContainer } from "./MainStyle";
 import { getUserOrgId, getUserRole } from "./selectors/user";
+import { isProxyUser as isProxyUserSelector } from "../../student/Login/ducks";
 import { receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../DistrictPolicy/ducks";
 import ImportTest from "../ImportTest";
 import NotFound from "../../NotFound";
@@ -89,7 +90,8 @@ const Author = ({
   districtProfileLoading,
   loadDistrictPolicy,
   loadSchoolPolicy,
-  schoolId
+  schoolId,
+  isProxyUser
 }) => {
   useEffect(() => {
     if (role === roleuser.SCHOOL_ADMIN && schoolId) {
@@ -111,10 +113,10 @@ const Author = ({
   return (
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
-        <StyledLayout>
+        <StyledLayout isProxyUser={isProxyUser}>
           <MainContainer isPrintPreview={isPrintPreview}>
             <Spin spinning={districtProfileLoading} />
-            <SidebarCompnent isPrintPreview={isPrintPreview} />
+            <SidebarCompnent isPrintPreview={isPrintPreview} isProxyUser={isProxyUser} />
             <Wrapper>
               <ErrorHandler>
                 <Suspense fallback={<Progress />}>
@@ -548,7 +550,8 @@ export default connect(
     role: getUserRole(state),
     districtProfile: get(state, ["districtProfileReducer", "data"], {}),
     districtProfileLoading: get(state, ["districtProfileReducer", "loading"], false),
-    schoolId: get(state, "user.saSettingsSchool")
+    schoolId: get(state, "user.saSettingsSchool"),
+    isProxyUser: isProxyUserSelector(state)
   }),
   {
     loadDistrictPolicy: receiveDistrictPolicyAction,
@@ -565,6 +568,7 @@ const SidebarCompnent = styled(Sidebar)`
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
+  top: ${props => (props.isProxyUser ? "35px" : "0px")};
 `;
 const Wrapper = styled.div`
   position: relative;
@@ -572,4 +576,8 @@ const Wrapper = styled.div`
 
 const StyledLayout = styled(Layout)`
   background: ${mainBgColor};
+  .fixed-header {
+    top: ${props => (props.isProxyUser ? "35px" : "0px")} !important;
+  }
+  margin-top: ${props => (props.isProxyUser ? "35px" : "0px")};
 `;

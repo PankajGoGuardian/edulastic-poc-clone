@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import { Row, Col, Dropdown, Menu, Icon as AntIcon } from "antd";
 import { IconHeader } from "@edulastic/icons";
 import { lightGrey4, white, eastBaycolor, mainTextColor } from "@edulastic/colors";
+import { isProxyUser as isProxyUserSelector } from "../../../Login/ducks";
 import Profile from "../../../assets/Profile.png";
 
-const Header = ({ userInfo, logout }) => {
+const Header = ({ userInfo, logout, isProxyUser }) => {
   const [isVisible, setVisible] = useState(false);
   const { firstName, middleName, lastName, role } = userInfo;
   const userName = firstName + " " + (middleName ? middleName + " " : "") + (lastName ? lastName : "");
@@ -20,8 +22,9 @@ const Header = ({ userInfo, logout }) => {
   const toggleDropdown = () => {
     setVisible(!isVisible);
   };
+
   return (
-    <HeaderWrapper type="flex" align="middle">
+    <HeaderWrapper type="flex" align="middle" isProxyUser={isProxyUser}>
       <Col span={12}>
         <Logo />
       </Col>
@@ -58,7 +61,9 @@ Header.propTypes = {
   logout: PropTypes.func.isRequired
 };
 
-export default Header;
+export default connect(state => ({
+  isProxyUser: isProxyUserSelector(state)
+}))(Header);
 
 const HeaderWrapper = styled(Row)`
   padding: 16px 24px;
@@ -68,6 +73,7 @@ const HeaderWrapper = styled(Row)`
     font-size: 12px;
     margin-right: 20px;
   }
+  margin-top: ${props => (props.isProxyUser ? 35 : 0)}px;
 `;
 const Logo = styled(IconHeader)`
   width: 119px;

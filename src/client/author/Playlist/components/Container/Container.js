@@ -13,7 +13,11 @@ import { connect } from "react-redux";
 import Modal from "react-responsive-modal";
 import { compose } from "redux";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import {
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction,
+  isProxyUser as isProxyUserSelector
+} from "../../../../student/Login/ducks";
 import ListHeader from "../../../src/components/common/ListHeader";
 import {
   getDefaultGradesSelector,
@@ -387,7 +391,7 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating, playListFilters, t } = this.props;
+    const { page, limit, count, creating, playListFilters, t, isProxyUser } = this.props;
 
     const { blockStyle, isShowFilter } = this.state;
     const { searchString } = playListFilters;
@@ -450,12 +454,12 @@ class TestList extends Component {
           </Modal>
           <FlexContainer>
             <Filter>
-              <AffixWrapper>
+              <AffixWrapper isProxyUser={isProxyUser}>
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
                       <SearchInput
-                        placeholder="Search by skills and keywords"
+                        placeholder="Search by skill and keywords"
                         onChange={this.handleSearchInputChange}
                         size="large"
                         value={searchString}
@@ -523,7 +527,8 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       playListFilters: getPlalistFilterSelector(state),
-      selectedPlayLists: getSelectedPlaylistSelector(state)
+      selectedPlayLists: getSelectedPlaylistSelector(state),
+      isProxyUser: isProxyUserSelector(state)
     }),
     {
       receivePlaylists: receivePlaylistsAction,

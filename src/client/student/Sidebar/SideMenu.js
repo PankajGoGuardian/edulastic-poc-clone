@@ -35,7 +35,7 @@ import {
   greyThemeLighter
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
-import { logoutAction } from "../Login/ducks";
+import { logoutAction, isProxyUser as isProxyUserSelector } from "../Login/ducks";
 
 const menuItems = [
   {
@@ -172,7 +172,8 @@ class SideMenu extends Component {
       t,
       profileThumbnail,
       role,
-      features
+      features,
+      isProxyUser
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
@@ -210,6 +211,7 @@ class SideMenu extends Component {
           onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
           isSidebarCollapsed={isSidebarCollapsed}
           ref={this.sideMenuRef}
+          isProxyUser={isProxyUser}
         >
           <SideBar
             collapsed={isSidebarCollapsed}
@@ -361,7 +363,8 @@ const enhance = compose(
       zoomLevel: ui.zoomLevel,
       profileThumbnail: get(user, "user.thumbnail"),
       role: user?.user?.role,
-      features: user?.user?.features
+      features: user?.user?.features,
+      isProxyUser: isProxyUserSelector({ user })
     }),
     {
       logout: logoutAction,
@@ -375,7 +378,7 @@ export default enhance(withTheme(ReactOutsideEvent(SideMenu, ["mousedown"])));
 const FixedSidebar = styled.div`
   position: fixed;
   left: 0px;
-  top: 0px;
+  top: ${props => (props.isProxyUser ? "35px" : "0px")};
   bottom: 0px;
   z-index: 1000;
   cursor: ${props => (props.isSidebarCollapsed ? "pointer" : "initial")};

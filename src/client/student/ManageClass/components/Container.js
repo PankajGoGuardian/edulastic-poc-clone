@@ -39,7 +39,8 @@ const ManageClassContainer = ({
   allClassList,
   setClassList,
   setShowClass,
-  userRole
+  userRole,
+  proxyUserRole
 }) => {
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false);
   const [classCode, setClassCode] = useState(null);
@@ -55,9 +56,7 @@ const ManageClassContainer = ({
     setJoinClassModal(false);
     setClassCode(null);
   };
-
-  const isTeacherProxy = TokenStorage.getProxyParent(["teacher"]);
-
+  const isParentRoleProxy = proxyUserRole === "parent";
   if (loading) return <Spin />;
   return (
     <>
@@ -65,7 +64,7 @@ const ManageClassContainer = ({
         {userRole === "parent" ? (
           <StudentSlectCommon />
         ) : (
-          !isTeacherProxy && (
+          !isParentRoleProxy && (
             <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
               <IconPlus width={12} height={12} color="white" stroke="white" />
               <span>{t("common.joinClass")}</span>

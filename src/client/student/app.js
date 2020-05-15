@@ -6,6 +6,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
 import { tabletWidth } from "@edulastic/colors";
+import { userApi } from "@edulastic/api";
 // import { getZoomedTheme } from "./zoomTheme";
 import Sidebar from "./Sidebar/SideMenu";
 import { Assignment } from "./Assignments";
@@ -23,17 +24,18 @@ import StartAssignment from "./StartAssignment";
 import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 import NotFound from "../NotFound";
+import { isProxyUser as isProxyUserSelector } from "./Login/ducks";
 
-const StudentApp = ({ match, selectedTheme }) => {
+const StudentApp = ({ match, selectedTheme, isProxyUser }) => {
   const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
   return (
     <ThemeProvider theme={themeToPass}>
-      <Layout>
+      <StyledLayout isProxyUser={isProxyUser}>
         <MainContainer>
-          <Sidebar />
+          <Sidebar isProxyUser={isProxyUser} />
           <Wrapper>
             <ErrorHandler>
               <Switch>
@@ -65,14 +67,15 @@ const StudentApp = ({ match, selectedTheme }) => {
             </ErrorHandler>
           </Wrapper>
         </MainContainer>
-      </Layout>
+      </StyledLayout>
     </ThemeProvider>
   );
 };
 
-export default connect(({ ui }) => ({
+export default connect(({ ui, user }) => ({
   selectedTheme: ui.selectedTheme,
-  zoomLevel: ui.zoomLevel
+  zoomLevel: ui.zoomLevel,
+  isProxyUser: isProxyUserSelector({ user })
 }))(StudentApp);
 
 StudentApp.propTypes = {
@@ -115,4 +118,11 @@ const MainContainer = addThemeBackgroundColor(styled.div`
 
 const Wrapper = styled.div`
   position: relative;
+`;
+
+const StyledLayout = styled(Layout)`
+  .fixed-header {
+    top: ${props => (props.isProxyUser ? "35px" : "0px")} !important;
+  }
+  margin-top: ${props => (props.isProxyUser ? "35px" : "0px")};
 `;

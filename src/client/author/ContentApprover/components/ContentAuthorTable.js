@@ -1,6 +1,7 @@
 import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Icon, message, Select } from "antd";
+import { GiDominoMask } from "react-icons/gi";
 import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -22,7 +23,8 @@ import {
   StyledPagination,
   StyledSchoolSearch,
   SubHeaderWrapper,
-  TableContainer
+  TableContainer,
+  StyledTableButton
 } from "../../../common/styled";
 import { StyledContentAuthorTable } from "../../ContentAuthor/components/styled";
 import {
@@ -48,6 +50,7 @@ import {
 import Breadcrumb from "../../src/components/Breadcrumb";
 import AdminSubHeader from "../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId } from "../../src/selectors/user";
+import { proxyUser } from "../../authUtils";
 import CreateContentAuthorModal from "./CreateContentAuthorModal";
 import EditContentAuthorModal from "./EditContentAuthorModal";
 
@@ -127,6 +130,25 @@ class ContentAuthorTable extends Component {
         dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 200
+      },
+      {
+        dataIndex: "_id",
+        render: (id, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          const fullName =
+            firstName === "Anonymous" || (isEmpty(firstName) && isEmpty(lastName))
+              ? "Content Approver"
+              : `${firstName} ${lastName}`;
+          return (
+            <div style={{ whiteSpace: "nowrap" }}>
+              <StyledTableButton onClick={() => this.onProxyContentApprover(id)} title={`Act as ${fullName}`}>
+                <GiDominoMask />
+              </StyledTableButton>
+            </div>
+          );
+        },
+        width: 80
       }
     ];
 
@@ -145,6 +167,10 @@ class ContentAuthorTable extends Component {
   }
 
   componentDidUpdate(prevProps) {}
+
+  onProxyContentApprover = id => {
+    proxyUser({ userId: id });
+  };
 
   onEditDistrictAdmin = key => {
     this.setState({

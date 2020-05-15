@@ -3,6 +3,7 @@ import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Icon, Menu, message, Select } from "antd";
+import { GiDominoMask } from "react-icons/gi";
 import { get, identity, isEmpty, pickBy, unset } from "lodash";
 import * as moment from "moment";
 import React, { Component } from "react";
@@ -56,6 +57,7 @@ import {
   setShowActiveUsersAction,
   updateAdminUserAction
 } from "../../../SchoolAdmin/ducks";
+import { proxyUser } from "../../../authUtils";
 import { receiveSchoolsAction } from "../../../Schools/ducks";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
@@ -184,18 +186,27 @@ class StudentTable extends Component {
       },
       {
         dataIndex: "_id",
-        render: id => (
-          <div style={{ whiteSpace: "nowrap" }}>
-            <>
+        render: (id, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          const fullName =
+            firstName === "Anonymous" || (isEmpty(firstName) && isEmpty(lastName))
+              ? "Student"
+              : `${firstName} ${lastName}`;
+          return (
+            <div style={{ whiteSpace: "nowrap" }}>
+              <StyledTableButton onClick={() => this.onProxyStudent(id)} title={`Act as ${fullName}`}>
+                <GiDominoMask />
+              </StyledTableButton>
               <StyledTableButton onClick={() => this.onEditStudent(id)} title="Edit">
                 <IconPencilEdit color={themeColor} />
               </StyledTableButton>
               <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
                 <IconTrash color={themeColor} />
               </StyledTableButton>
-            </>
-          </div>
-        )
+            </div>
+          );
+        }
       }
     ];
 
@@ -224,6 +235,10 @@ class StudentTable extends Component {
   }
 
   componentDidUpdate(prevProps) {}
+
+  onProxyStudent = id => {
+    proxyUser({ userId: id });
+  };
 
   onEditStudent = key => {
     this.setState({

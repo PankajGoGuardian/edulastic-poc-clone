@@ -2,6 +2,7 @@ import { themeColor } from "@edulastic/colors";
 import { CheckboxLabel, StyledComponents, TypeToConfirmModal } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { GiDominoMask } from "react-icons/gi";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Icon, Menu, message, Select } from "antd";
 import { get } from "lodash";
@@ -35,6 +36,7 @@ import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { proxyUser } from "../../../authUtils";
 import {
   addFilterAction,
   changeFilterColumnAction,
@@ -138,6 +140,10 @@ class SchoolAdminTable extends Component {
     this.setState({
       createSchoolAdminModalVisible: true
     });
+  };
+
+  onProxySchoolAdmin = id => {
+    proxyUser({ userId: id });
   };
 
   changeActionMode = e => {
@@ -478,22 +484,27 @@ class SchoolAdminTable extends Component {
       },
       {
         dataIndex: "_id",
-        render: id => (
-          <div style={{ whiteSpace: "nowrap" }}>
-            {role === roleuser.DISTRICT_ADMIN && (
-              <>
-                <StyledTableButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
-                  <IconPencilEdit color={themeColor} />
-                </StyledTableButton>
-                {role === roleuser.DISTRICT_ADMIN && (
+        render: (id, { _source }) => {
+          const name = getFullNameFromAsString(_source);
+          const fullName = name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
+          return (
+            <div style={{ whiteSpace: "nowrap" }}>
+              {role === roleuser.DISTRICT_ADMIN && (
+                <>
+                  <StyledTableButton onClick={() => this.onProxySchoolAdmin(id)} title={`Act as ${fullName}`}>
+                    <GiDominoMask />
+                  </StyledTableButton>
+                  <StyledTableButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
+                    <IconPencilEdit color={themeColor} />
+                  </StyledTableButton>
                   <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
                     <IconTrash color={themeColor} />
                   </StyledTableButton>
-                )}
-              </>
-            )}
-          </div>
-        ),
+                </>
+              )}
+            </div>
+          );
+        },
         width: 100
       }
     ];

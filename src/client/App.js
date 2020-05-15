@@ -16,10 +16,11 @@ import * as firebase from "firebase/app";
 import { test, signUpState } from "@edulastic/constants";
 import { isMobileDevice, OfflineNotifier, notification } from "@edulastic/common";
 import { TokenStorage } from "@edulastic/api";
+import { Banner } from "./common/components/Banner";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import SebQuitConfirm from "./student/SebQuitConfirm";
-
-import { fetchUserAction } from "./student/Login/ducks";
+import { getUserNameSelector } from "./author/src/selectors/user";
+import { fetchUserAction, isProxyUser as isProxyUserSelector } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
 import { getWordsInURLPathName, isLoggedIn } from "./common/utils/helpers";
@@ -29,6 +30,7 @@ import V1Redirect from "./author/V1Redirect";
 import Kid from "./kid/app";
 import NotificationListener from "./HangoutVideoCallNotification";
 import AppUpdateModal from "./common/components/AppUpdateModal";
+import { logoutAction } from "./author/src/actions/auth";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type;
 // route wise splitting
@@ -171,7 +173,7 @@ class App extends Component {
     /**
      * NOTE:  this logic would be called multiple times, even after redirect
      */
-    const { user, tutorial, location, history } = this.props;
+    const { user, tutorial, location, history, fullName, logout, isProxyUser } = this.props;
     if (location.hash.includes("#renderResource/close/")) {
       const v1Id = location.hash.split("/")[2];
       history.push(`/d/ap?eAId=${v1Id}`);
@@ -270,6 +272,14 @@ class App extends Component {
               enableMouseEvents: true
             }}
           >
+            {isProxyUser && (
+              <Banner
+                text={`You are currently acting as ${fullName} (${get(user, ["user", "role"])})`}
+                showButton
+                buttonText="Stop Acting as User"
+                onButtonClick={logout}
+              />
+            )}
             <Switch>
               {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
               redirectRoute !== "" ? (
@@ -386,8 +396,13 @@ class App extends Component {
 const enhance = compose(
   withRouter,
   connect(
-    ({ user, tutorial }) => ({ user, tutorial: tutorial.currentTutorial }),
-    { fetchUser: fetchUserAction }
+    ({ user, tutorial }) => ({
+      user,
+      tutorial: tutorial.currentTutorial,
+      fullName: getUserNameSelector({ user }),
+      isProxyUser: isProxyUserSelector({ user })
+    }),
+    { fetchUser: fetchUserAction, logout: logoutAction }
   )
 );
 

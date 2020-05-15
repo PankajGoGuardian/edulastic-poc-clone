@@ -1,12 +1,7 @@
 import { Col, Divider, Icon, Button } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
-import {
-  white,
-  themeColor,
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
+import { white, themeColor, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const SliderButton = styled(Button)`
   width: 40px;
@@ -27,14 +22,14 @@ export const SideContentContainer = styled.div`
   transform: ${props => (props.show ? `translate(0%)` : `translate(88%)`)};
   transition: all 0.5s ease-in-out;
   z-index: 300;
-  top: ${props => props.theme.HeaderHeight.xs}px;
+  top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? 35 : 0)}px;
   right: ${props => (props.show ? "0px" : "-8px")};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    top: ${props => props.theme.HeaderHeight.md}px;
+    top: ${props => props.theme.HeaderHeight.md + (props.isProxyUser ? 35 : 0)}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    top: ${props => props.theme.HeaderHeight.xl}px;
+    top: ${props => props.theme.HeaderHeight.xl + (props.isProxyUser ? 35 : 0)}px;
   }
 `;
 

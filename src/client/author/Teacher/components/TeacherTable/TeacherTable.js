@@ -3,6 +3,7 @@ import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Icon, Menu, message, Select } from "antd";
+import { GiDominoMask } from "react-icons/gi";
 import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -54,6 +55,7 @@ import {
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId } from "../../../src/selectors/user";
+import { proxyUser } from "../../../authUtils";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import { getTeachersListSelector } from "../../ducks";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
@@ -130,8 +132,7 @@ class TeacherTable extends Component {
           const prev = get(a, "_source.email", "");
           const next = get(b, "_source.email", "");
           return next.localeCompare(prev);
-        },
-        width: 200
+        }
       },
       {
         title: t("users.teacher.sso"),
@@ -169,18 +170,29 @@ class TeacherTable extends Component {
       },
       {
         dataIndex: "_id",
-        render: id => (
-          <div style={{ whiteSpace: "nowrap" }}>
-            <>
-              <StyledTableButton onClick={() => this.onEditTeacher(id)} title="Edit">
-                <IconPencilEdit color={themeColor} />
-              </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
-                <IconTrash color={themeColor} />
-              </StyledTableButton>
-            </>
-          </div>
-        )
+        render: (id, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          const fullName =
+            firstName === "Anonymous" || (isEmpty(firstName) && isEmpty(lastName))
+              ? "Teacher"
+              : `${firstName} ${lastName}`;
+          return (
+            <div style={{ whiteSpace: "nowrap" }}>
+              <>
+                <StyledTableButton onClick={() => this.onProxyTeacher(id)} title={`Act as ${fullName}`}>
+                  <GiDominoMask />
+                </StyledTableButton>
+                <StyledTableButton onClick={() => this.onEditTeacher(id)} title="Edit">
+                  <IconPencilEdit color={themeColor} />
+                </StyledTableButton>
+                <StyledTableButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
+                  <IconTrash color={themeColor} />
+                </StyledTableButton>
+              </>
+            </div>
+          );
+        }
       }
     ];
 
@@ -204,6 +216,10 @@ class TeacherTable extends Component {
   }
 
   componentDidUpdate(prevProps) {}
+
+  onProxyTeacher = id => {
+    proxyUser({ userId: id });
+  };
 
   onEditTeacher = key => {
     this.setState({

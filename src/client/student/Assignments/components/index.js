@@ -22,14 +22,15 @@ import { getEnrollClassAction, setFilterClassAction } from "../../ManageClass/du
 
 // constants
 import { white, themeColor } from "@edulastic/colors";
+import { proxyRole } from "../../Login/ducks";
 
 const Wrapper = styled(Layout)`
   width: 100%;
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 
-const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, currentChild, t }) => {
-  const isTeacherProxy = TokenStorage.getProxyParent(["teacher"]);
+const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, currentChild, proxyUserRole, t }) => {
+  const isParentRoleProxy = proxyUserRole === "parent";
 
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
@@ -62,7 +63,7 @@ const Assignments = ({ userRole, activeClasses, loadAllClasses, loading, current
       />
       <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
         <Row type="flex" align="middle">
-          {!!classListWithHangouts.length && !(userRole === "parent" || isTeacherProxy) && (
+          {!!classListWithHangouts.length && !(userRole === "parent" || isParentRoleProxy) && (
             <StyledEduButton
               height="40px"
               style={{ "margin-right": "20px" }}
@@ -92,7 +93,8 @@ export default withNamespaces("header")(
       allClasses: state.studentEnrollClassList.allClasses,
       activeClasses: state.studentEnrollClassList.filteredClasses,
       loading: state.studentEnrollClassList.loading,
-      currentChild: state?.user?.currentChild
+      currentChild: state?.user?.currentChild,
+      proxyUserRole: proxyRole(state)
     }),
     {
       loadAllClasses: getEnrollClassAction,

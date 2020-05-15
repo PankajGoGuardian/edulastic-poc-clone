@@ -412,6 +412,16 @@ export const getUserFeatures = createSelector(
   features => features
 );
 
+export const isProxyUser = createSelector(
+  ["user.user.isProxy"],
+  isProxy => isProxy
+);
+
+export const proxyRole = createSelector(
+  ["user.user.proxyRole"],
+  proxyRole => proxyRole
+);
+
 const routeSelector = state => state.router.location.pathname;
 
 function getCurrentFirebaseUser() {
@@ -726,8 +736,8 @@ export function* fetchV1Redirect({ payload: id }) {
 function* logout() {
   try {
     const user = yield select(getUser);
-    const proxyParent = TokenStorage.getProxyParent();
-    if (proxyParent && proxyParent._id !== user._id) {
+    if (user.isProxy) {
+      TokenStorage.removeAccessToken(user._id, user.role);
       window.close();
     } else {
       yield call(segmentApi.unloadIntercom, { user });

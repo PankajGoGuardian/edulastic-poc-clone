@@ -154,14 +154,14 @@ export const SearchModalContainer = styled.div`
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 250px;
-  top: ${props => props.theme.HeaderHeight.xs}px;
+  top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? 35 : 0)}px;
   padding: 20px 0px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    top: ${props => props.theme.HeaderHeight.md}px;
+    top: ${props => props.theme.HeaderHeight.md + (props.isProxyUser ? 35 : 0)}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    top: ${props => props.theme.HeaderHeight.xl}px;
+    top: ${props => props.theme.HeaderHeight.xl + (props.isProxyUser ? 35 : 0)}px;
   }
 `;
 

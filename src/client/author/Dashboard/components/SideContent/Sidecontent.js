@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Row, Col, Icon } from "antd";
 import { IconPlayFilled } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
+import { connect } from "react-redux";
+import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
 import { TextWrapper, LinkWrapper } from "../styledComponents";
 import {
   SideContentContainer,
@@ -57,8 +59,9 @@ const QuestionBanks = () => {
 
 const SideContent = props => {
   const [showSideContent, toggleSideContent] = useState(false);
+  const { isProxyUser } = props;
   return (
-    <SideContentContainer show={showSideContent}>
+    <SideContentContainer show={showSideContent} isProxyUser={isProxyUser}>
       <SliderButton
         onClick={() => {
           toggleSideContent(!showSideContent);
@@ -107,4 +110,6 @@ const SideContent = props => {
     </SideContentContainer>
   );
 };
-export default SideContent;
+export default connect(state => ({
+  isProxyUser: isProxyUserSelector(state)
+}))(SideContent);

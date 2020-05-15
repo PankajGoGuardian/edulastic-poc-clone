@@ -6,6 +6,7 @@ import { getUser } from "../../../author/src/selectors/user";
 import { getEnrollClassAction, joinClassAction, setFilterClassAction } from "../ducks";
 // components
 import ManageClassContainer from "./Container";
+import { proxyRole } from "../../Login/ducks";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -21,7 +22,8 @@ const ManageClass = ({
   joinClass,
   studentData,
   userRole,
-  currentChild
+  currentChild,
+  proxyUserRole
 }) => {
   useEffect(() => {
     loadAllClasses();
@@ -43,6 +45,7 @@ const ManageClass = ({
         setShowClass={setShowClass}
         userRole={userRole}
         currentChild={currentChild}
+        proxyUserRole={proxyUserRole}
       />
     </Wrapper>
   );
@@ -55,7 +58,8 @@ export default connect(
     loading: state.studentEnrollClassList.loading,
     studentData: getUser(state),
     userRole: state?.user?.user?.role,
-    currentChild: state?.user?.currentChild
+    currentChild: state?.user?.currentChild,
+    proxyUserRole: proxyRole(state)
   }),
   {
     loadAllClasses: getEnrollClassAction,

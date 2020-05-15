@@ -32,6 +32,7 @@ import { ConfirmationModal } from "../../author/src/components/common/Confirmati
 
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
+import { proxyRole } from "../Login/ducks";
 
 const isSEB = () => window.navigator.userAgent.includes("SEB");
 
@@ -77,7 +78,17 @@ const SafeBrowserButton = ({
 };
 
 const AssignmentCard = memo(
-  ({ startAssignment, resumeAssignment, data, theme, t, type, classId, user: { role: userRole, _id: userId } }) => {
+  ({
+    startAssignment,
+    resumeAssignment,
+    data,
+    theme,
+    t,
+    type,
+    classId,
+    user: { role: userRole, _id: userId },
+    proxyUserRole
+  }) => {
     const [showAttempts, setShowAttempts] = useState(false);
     const toggleAttemptsView = () => setShowAttempts(prev => !prev);
     const { releaseGradeLabels } = testConstants;
@@ -231,14 +242,12 @@ const AssignmentCard = memo(
     if (!releaseScore) {
       releaseScore = data.releaseScore;
     }
-
-    const isTeacherProxy = TokenStorage.getProxyParent(["teacher"]);
-
+    const isParentRoleProxy = proxyUserRole === "parent";
     const showReviewButton =
       releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
     const StartButtonContainer =
       type === "assignment"
-        ? !(userRole === "parent" || isTeacherProxy) &&
+        ? !(userRole === "parent" || isParentRoleProxy) &&
           (safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
             <SafeBrowserButton
               data-cy="start"
@@ -433,7 +442,8 @@ const enhance = compose(
   withNamespaces("assignmentCard"),
   connect(
     state => ({
-      user: state?.user?.user
+      user: state?.user?.user,
+      proxyUserRole: proxyRole(state)
     }),
     {
       startAssignment: startAssignmentAction,

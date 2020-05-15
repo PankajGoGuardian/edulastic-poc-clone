@@ -92,7 +92,11 @@ import {
   getUserFeatures
 } from "../../../src/selectors/user";
 import { getInterestedStandards, getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import {
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction,
+  isProxyUser as isProxyUserSelector
+} from "../../../../student/Login/ducks";
 import CartButton from "../CartButton/cartButton";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
@@ -871,6 +875,7 @@ class TestList extends Component {
       resequenceModules,
       testFilters,
       handleSave,
+      isProxyUser,
       t
     } = this.props;
 
@@ -1037,7 +1042,7 @@ class TestList extends Component {
 
           <FlexContainer>
             <Filter>
-              <AffixWrapper>
+              <AffixWrapper isProxyUser={isProxyUser}>
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
@@ -1133,7 +1138,8 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, "user.user._id", false),
       testFilters: getTestsFilterSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      isProxyUser: isProxyUserSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

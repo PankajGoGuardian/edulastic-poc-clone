@@ -1,10 +1,22 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Input, Select } from "antd";
 import { desktopWidth, white, title, lightGreySecondary, themeColor } from "@edulastic/colors";
 
+const smallFontCss = css`
+  width: 520px;
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
 export const ModalHeader = styled.h3`
+  width: 680px;
   font-size: 22px;
   font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  ${({ smallFont }) => smallFont && smallFontCss};
 `;
 
 export const ModalContent = styled.div`
@@ -15,7 +27,7 @@ export const ModalContent = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   padding: 15px 0px 20px 0px;
-  margin-bottom: 20px;
+  margin-bottom: ${({ hideFooter }) => !hideFooter && "20px"}
   display: flex;
   flex-direction: column;
 `;

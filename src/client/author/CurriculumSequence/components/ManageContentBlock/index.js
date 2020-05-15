@@ -17,6 +17,7 @@ import ResourceItem from "../ResourceItem";
 import WebsiteResourceModal from "./components/WebsiteResourceModal";
 import ExternalVideoLink from "./components/ExternalVideoLink";
 import LTIResourceModal from "./components/LTIResourceModal";
+import EmbeddedVideoPreviewModal from "./components/EmbeddedVideoPreviewModal";
 import slice from "./ducks";
 import {
   ActionsContainer,
@@ -113,6 +114,7 @@ const ManageContentBlock = props => {
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(false);
   const [isExternalVideoResourceModal, setExternalVideoResourceModal] = useState(false);
   const [isLTIResourceModal, setLTIResourceModal] = useState(false);
+  const [isEmbeddedVideoPreviewModal, setEmbeddedVideoPreviewModal] = useState(false);
 
   useEffect(() => {
     setDefaults({
@@ -124,6 +126,7 @@ const ManageContentBlock = props => {
     fetchExternalToolProvidersAction({ districtId });
     // remove this condition once BE is fixed
     if (userFeatures.isCurator && !currentDistrictUsers) getCurrentDistrictUsers(districtId);
+    return () => setSearchByTab("tests");
   }, []);
 
   const onChange = ({ key }) => {
@@ -163,12 +166,6 @@ const ManageContentBlock = props => {
     </Menu>
   );
 
-  const onFilterChange = prop => setFilterAction(prop);
-  const onStatusChange = prop => setStatusAction(prop);
-  const onAuthoredChange = prop => setAuthoredAction(prop);
-  const onSubjectChange = prop => setSubjectAction(prop);
-  const onGradesChange = prop => setGradesAction(prop);
-  const onCollectionChange = prop => setCollectionAction(prop);
   const onSourceChange = ({ checked, value }) =>
     setSourcesAction(checked ? sources?.concat(value) : sources?.filter(x => x !== value) || []);
   let fetchCall;
@@ -189,9 +186,8 @@ const ManageContentBlock = props => {
 
   const previewTest = (type, data) => {
     if (type === "lti_resource") showResource(data);
-    /**
-     * TODO: Add website and video preview code here
-     */
+    if (type === "website_resource") window.open(data.url, "_blank");
+    if (type === "video_resource") setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.url });
   };
 
   const renderList = () => {
@@ -205,7 +201,8 @@ const ManageContentBlock = props => {
             title={contentTitle}
             key={`resource-${idx}`}
             data={data}
-            previewTest={() => previewTest(contentType, { url: contentUrl, ...data })}
+            isAdded={testsInPlaylist.includes(_id)}
+            previewTest={() => previewTest(contentType, { url: contentUrl, contentTitle, ...data })}
           />
         );
       });
@@ -311,12 +308,12 @@ const ManageContentBlock = props => {
               subject={subject}
               collection={collection}
               sources={sources}
-              onFilterChange={onFilterChange}
-              onStatusChange={onStatusChange}
-              onAuthoredChange={onAuthoredChange}
-              onGradesChange={onGradesChange}
-              onSubjectChange={onSubjectChange}
-              onCollectionChange={onCollectionChange}
+              onFilterChange={prop => setFilterAction(prop)}
+              onStatusChange={prop => setStatusAction(prop)}
+              onAuthoredChange={prop => setAuthoredAction(prop)}
+              onGradesChange={prop => setGradesAction(prop)}
+              onSubjectChange={prop => setSubjectAction(prop)}
+              onCollectionChange={prop => setCollectionAction(prop)}
               onSourceChange={onSourceChange}
             />
           ) : (
@@ -379,6 +376,13 @@ const ManageContentBlock = props => {
           isVisible={isLTIResourceModal}
           addResource={addResource}
           externalToolsProviders={externalToolsProviders}
+        />
+      )}
+
+      {isEmbeddedVideoPreviewModal && (
+        <EmbeddedVideoPreviewModal
+          closeCallback={() => setEmbeddedVideoPreviewModal(false)}
+          isVisible={isEmbeddedVideoPreviewModal}
         />
       )}
     </ManageContentOuterWrapper>

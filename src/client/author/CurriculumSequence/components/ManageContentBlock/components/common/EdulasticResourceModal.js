@@ -14,7 +14,10 @@ const EdulasticResourceModal = ({
   headerText = "",
   okText = "SUBMIT",
   canceltext = "CANCEL",
-  children
+  hideFooter = false,
+  smallFont = false,
+  children,
+  maxWidth = null
 }) => (
   <Modal
     open={isVisible}
@@ -23,6 +26,7 @@ const EdulasticResourceModal = ({
     styles={{
       modal: {
         minWidth: "630px",
+        maxWidth: maxWidth || "630px",
         padding: "20px 40px",
         background: white
       },
@@ -35,16 +39,18 @@ const EdulasticResourceModal = ({
       }
     }}
   >
-    <ModalHeader>{headerText}</ModalHeader>
-    <ModalContent>{children}</ModalContent>
-    <ModalFooter>
-      <EduButton isGhost width="180px" key="cancel" onClick={closeCallback}>
-        {canceltext}
-      </EduButton>
-      <EduButton width="180px" key="submit" onClick={submitCallback}>
-        {okText}
-      </EduButton>
-    </ModalFooter>
+    <ModalHeader smallFont={smallFont}>{headerText}</ModalHeader>
+    <ModalContent hideFooter={hideFooter}>{children}</ModalContent>
+    {!hideFooter && (
+      <ModalFooter>
+        <EduButton isGhost width="180px" key="cancel" onClick={closeCallback}>
+          {canceltext}
+        </EduButton>
+        <EduButton width="180px" key="submit" onClick={submitCallback}>
+          {okText}
+        </EduButton>
+      </ModalFooter>
+    )}
   </Modal>
 );
 
@@ -54,7 +60,10 @@ EdulasticResourceModal.propTypes = {
   submitCallback: PropTypes.func.isRequired,
   headerText: PropTypes.string.isRequired,
   okText: PropTypes.string,
-  canceltext: PropTypes.string
+  canceltext: PropTypes.string,
+  hideFooter: PropTypes.bool,
+  smallFont: PropTypes.bool,
+  maxWidth: PropTypes.string
 };
 
 export default EdulasticResourceModal;

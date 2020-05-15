@@ -83,7 +83,7 @@ class AssignmentDragItem extends Component {
           boxShadow="unset"
           isDragging={isDragging}
         >
-          {moduleData.contentType === "lti_resource" ? (
+          {moduleData.contentType !== "test" ? (
             <LTIResourceRow
               data={moduleData}
               mode={mode}

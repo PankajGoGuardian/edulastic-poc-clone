@@ -683,7 +683,7 @@ class ModuleRow extends Component {
                             color={lightGrey5}
                             style={{ margin: urlHasUseThis ? "4px 15px" : "4px 15px 0px 43px" }}
                           />
-                          {contentType === "lti_resource" ? (
+                          {contentType !== "test" ? (
                             <LTIResourceRow
                               data={moduleData}
                               urlHasUseThis={urlHasUseThis}
@@ -1190,13 +1190,13 @@ const ModuleHeader = styled.div`
 const ModuleID = styled.div`
   margin-right: ${props => props.marginRight || "10px"};
   width: 100%;
-  max-width: 60px;
+  max-width: 64px;
   span {
     display: block;
     width: fit-content;
     margin: auto;
     min-width: 38px;
-    max-width: 60px;
+    max-width: 64px;
     min-height: 30px;
     color: ${white};
     background: ${greenDark6};

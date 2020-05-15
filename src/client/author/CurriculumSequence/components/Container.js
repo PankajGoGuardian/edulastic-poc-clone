@@ -149,41 +149,26 @@ class CurriculumContainer extends Component {
   };
 
   onDrop = (toModuleIndex, item) => {
-    const { destinationCurriculumSequence } = this.props;
+    const { destinationCurriculumSequence, moveContentInPlaylist, addIntoModule } = this.props;
     this.expandModule(toModuleIndex);
     if (item.fromPlaylistTestsBox) {
       let flag = false;
-      if (item.contentType === "lti_resource") {
-        destinationCurriculumSequence.modules.every((module, i) => {
-          if (!module.data.find(x => x.resourceId === item.id)) {
-            flag = true;
-            return true;
-          }
-        });
-        if (flag) {
-          set(item, "resourceId", item.id);
+      destinationCurriculumSequence.modules.every((module, i) => {
+        if (!module.data.find(x => x.contentId === item.id)) {
+          flag = true;
         }
-      } else if (item.contentType === "test") {
-        destinationCurriculumSequence.modules.every((module, i) => {
-          if (!module.data.find(x => x.contentId === item.id)) {
-            flag = true;
-            return true;
-          }
-        });
-        if (flag) {
-          set(item, "contentId", item.id);
-        }
-      }
+      });
+
       if (flag) {
+        set(item, "contentId", item.id);
         const newItem = omit(item, ["id", "type", "fromPlaylistTestsBox"]);
-        this.props.addIntoModule({ item: newItem, moduleIndex: toModuleIndex });
+        addIntoModule({ item: newItem, moduleIndex: toModuleIndex });
       } else {
         message.error("Content already exists");
       }
       return;
     }
     const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
-    const { moveContentInPlaylist } = this.props;
     moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
   };
 

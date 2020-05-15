@@ -7,12 +7,11 @@ import Tags from "../../../src/components/common/Tags";
 import TestIcon from "./static/TestIcon";
 import WebsiteIcon from "./static/WebsiteIcon";
 import LTIResourceIcon from "./static/LTIResourceIcon";
-import VideoIcon from "./static/graduation-cap.svg";
 import { Tooltip } from "../../../../common/utils/helpers";
 
 export const ICONS_BY_TYPE = {
   test: <TestIcon />,
-  video_resource: <img src={VideoIcon} />,
+  video_resource: <i style={{ fontSize: "20px", color: "rgb(190, 190, 190)" }} class="fa fa-play-circle-o" />, // Update once standard svg is available
   lti_resource: <LTIResourceIcon />,
   website_resource: <WebsiteIcon />
 };

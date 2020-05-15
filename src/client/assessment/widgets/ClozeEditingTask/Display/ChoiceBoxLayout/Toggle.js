@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import fineIndex from "lodash/findIndex";
 import { MathFormulaDisplay } from "@edulastic/common";
-import { green } from "@edulastic/colors";
+import { green, greyThemeDark2, greyThemeLighter, greyThemeLight, greyThemeDark1 } from "@edulastic/colors";
 import { RadioLabel, RadioLabelGroup } from "../../../../styled/RadioWithLabel";
 import { subOptions } from "../../constants";
 
@@ -42,16 +42,32 @@ const RadioGroup = styled(RadioLabelGroup)`
   position: absolute;
   font-size: 8px;
   bottom: ${({ isDashedline }) => (isDashedline ? "-14px" : "-4px")};
-  & .ant-radio-inner {
-    width: 10px;
-    height: 10px;
-
-    &::after {
-      width: 6px;
-      height: 6px;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
+  &.ant-radio-group {
+    .ant-radio-wrapper {
+      .ant-radio {
+        .ant-radio-inner {
+          width: 10px;
+          height: 10px;
+          background: ${greyThemeLight};
+          border-color: ${greyThemeLight};
+          &::after {
+            width: 6px;
+            height: 6px;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+          }
+        }
+        &.ant-radio-checked {
+          .ant-radio-inner {
+            background: ${greyThemeDark1};
+            border-color: ${greyThemeDark1};
+            &::after {
+              background: ${greyThemeDark1};
+            }
+          }
+        }
+      }
     }
   }
 

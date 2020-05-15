@@ -54,6 +54,8 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [] 
   const itemId = _id.substr(_id.length - 5);
   const collectionById = keyBy(allCollections, "_id");
   const filterCollections = collections.map(col => collectionById[col._id]).filter(c => c);
+  const { totalItems, totalQuestions, standards = [] } = summary;
+  const standardsIdentifiers = isPlaylist ? flattenPlaylistStandards(modules) : standards.map(item => item.identifier);
 
   return (
     <Container
@@ -69,9 +71,9 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [] 
     >
       <TestInfo style={{ textAlign: "left" }}>
         <StyledLink title={title}>{title}</StyledLink>
-        <TagsWrapper>
-          {isPlaylist && <Tags show={2} tags={flattenPlaylistStandards(modules)} key="standards" isStandards />}
-          <Tags show={2} tags={tags} key="tags" />
+        <TagsWrapper isPlaylist={isPlaylist}>
+          <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
+          {isPlaylist && <Tags show={2} tags={tags} key="tags" />}
         </TagsWrapper>
       </TestInfo>
 
@@ -89,7 +91,7 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [] 
              * For doc based wee need to consider
              *  total number questions and toal number of items
              *  */}
-            <div>{isDocBased ? summary.totalQuestions : summary.totalItems}</div>
+            <div>{isDocBased ? totalQuestions : totalItems}</div>
           </Qcount>
         </MidRow>
       )}

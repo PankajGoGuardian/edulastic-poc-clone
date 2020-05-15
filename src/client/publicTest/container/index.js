@@ -69,7 +69,7 @@ const PublicTestPage = ({
         redirectToAssessmentPlayer(assignment);
       } else {
         //redirect to student dashboard
-        redirectToDashbord("NOT OPEN");
+        redirectToDashbord();
       }
     }
   }, [loadingAssignments]);
@@ -77,12 +77,10 @@ const PublicTestPage = ({
   const redirectToDashbord = (type = "") => {
     let msg;
     switch (type) {
-      case "NOT_OPEN":
-        msg = "Assignment is not available for the attempt.";
       case "EXPIRED":
         msg = "Test is expired";
       default:
-        msg = "Redirect to student dashboard";
+        msg = "Assignment is not available for the attempt.";
     }
     message.warn(msg);
     history.push("/home/assignments");

@@ -177,7 +177,16 @@ module.exports = {
   },
   playerSkinTypes: {
     edulastic: "Edulastic",
-    parcc: "PARCC",
-    sbac: "SBAC"
+    parcc: "TestNav",
+    sbac: "SBAC",
+    cmas: "Colorado - CMAS",
+    casspp: "California - CASSPP"
+  },
+  playerSkinValues: {
+    edulastic: "edulastic",
+    parcc: "parcc",
+    sbac: "sbac",
+    cmas: "cmas",
+    casspp: "casspp"
   }
 };

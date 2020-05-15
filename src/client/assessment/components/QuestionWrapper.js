@@ -63,6 +63,7 @@ import Hints from "./Hints";
 import Explanation from "./Common/Explanation";
 import { EDIT } from "../constants/constantsForQuestions";
 import ShowUserWork from "./Common/ShowUserWork";
+import { playerSkinTypeSelector } from "../selectors/test";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -579,7 +580,7 @@ const enhance = compose(
       zoomLevel: state.ui.zoomLevel,
       userRole: getUserRole(state),
       enableMagnifier: state.testPlayer.enableMagnifier,
-      playerSkinType: state.test.playerSkinType
+      playerSkinType: playerSkinTypeSelector(state)
     }),
     {
       setQuestionData: setQuestionDataAction,

@@ -15,7 +15,7 @@ import { finishTestAcitivityAction } from "../actions/test";
 import { evaluateAnswer } from "../actions/evaluation";
 import { changePreview as changePreviewAction } from "../actions/view";
 import { getQuestionsByIdSelector } from "../selectors/questions";
-import { testLoadingSelector } from "../selectors/test";
+import { testLoadingSelector, playerSkinTypeSelector } from "../selectors/test";
 import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/answers";
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
@@ -463,7 +463,7 @@ const enhance = compose(
       title: state.test.title,
       docUrl: state.test.docUrl,
       testType: state.test.testType,
-      playerSkinType: state.test.playerSkinType,
+      playerSkinType: playerSkinTypeSelector(state),
       testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),

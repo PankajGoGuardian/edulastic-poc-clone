@@ -80,7 +80,6 @@ const Search = ({
     isPublishers ? !["Public Library", "Edulastic Certified"].includes(cd.text) : 1
   );
   const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0) || !curriculumId;
-  const standardsPlaceholder = isStandardsDisabled ? "All Standards" : 'Type to Search, for example "k.cc"';
 
   const questionsType = [
     { value: "", text: "All Types" },
@@ -234,7 +233,7 @@ const Search = ({
             size="large"
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            placeholder={standardsPlaceholder}
+            placeholder={"All Standards"}
             onChange={onSearchFieldChange("standardIds")}
             value={standardIds}
             disabled={isStandardsDisabled}

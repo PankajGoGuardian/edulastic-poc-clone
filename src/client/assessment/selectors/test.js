@@ -1,6 +1,9 @@
 import { createSelector } from "reselect";
 import { cloneDeep } from "lodash";
+import { test as testConstants } from "@edulastic/constants";
 import { getAnswersListSelector } from "./answers";
+
+const { playerSkinValues } = testConstants;
 
 const stateSelector = state => state.test;
 
@@ -88,4 +91,18 @@ export const currentItemAnswerChecksSelector = createSelector(
 export const curentPlayerDetailsSelector = createSelector(
   stateSelector,
   state => state.currentPlayingDetails
+);
+
+export const playerSkinTypeSelector = createSelector(
+  stateSelector,
+  state => {
+    const { playerSkinType } = state;
+    if (playerSkinType === playerSkinValues.cmas) {
+      return playerSkinValues.parcc;
+    }
+    if (playerSkinType === playerSkinValues.casspp) {
+      return playerSkinValues.sbac;
+    }
+    return playerSkinType || playerSkinValues.edulastic;
+  }
 );

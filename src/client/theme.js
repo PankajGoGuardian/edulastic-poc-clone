@@ -84,6 +84,7 @@ const disableButtonBgGreen = "#26B96A";
 const descriptionColor = "#878282";
 const breadcrumbColor = "#69727E";
 const titleColor = "#304050";
+const sidebarLabelColor = "#80A1BE";
 
 const sidebarBgColorPlayer = "#F8F8F8";
 const sidebarFontColorPlayer = title;
@@ -418,18 +419,19 @@ export const defaultTheme = {
   sideMenu: {
     sidebarBgColor: sideBarColor,
     sidebarTextColor: textColor,
+    sidebarDividerColor: "#DFEDFA",
     helpButtonBgColor: buttonBackgroundColor,
     helpButtonBgHoverColor: themeColor,
     helpButtonFontSize: standardFont,
-    helpButtonTextColor: textColor,
+    helpButtonTextColor: sidebarLabelColor,
     helpButtonTextHoverColor: buttonBackgroundColor,
     helpIconColor: themeColor,
     helpIconHoverColor: actionIconActiveColor,
-    dropdownIconColor: textColor,
-    userInfoButtonBgColor: buttonBackgroundColor,
-    userInfoNameTextColor: textColor,
+    dropdownIconColor: buttonBackgroundColor,
+    userInfoButtonBgColor: "#354A5C",
+    userInfoNameTextColor: textColorActiveColor,
     userInfoNameFontSize: standardFont,
-    userInfoRoleTextColor: textColor,
+    userInfoRoleTextColor: sidebarLabelColor,
     userInfoRoleFontSize: smallFontSize,
     userInfoDropdownBgColor: buttonBackgroundColor,
     userInfoDropdownItemBgColor: themeColor,

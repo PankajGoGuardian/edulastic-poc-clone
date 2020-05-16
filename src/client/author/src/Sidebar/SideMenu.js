@@ -6,7 +6,6 @@ import {
   white,
   tabletWidth,
   themeColor,
-  mainTextColor,
   extraDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
@@ -17,7 +16,7 @@ import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, message } from "antd";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   IconHeader,
   IconLogoCompact,
@@ -74,10 +73,14 @@ const menuItems = [
     path: "author/gradebook"
   },
   {
-    label: "Reports",
+    label: "Skill Report",
     icon: IconBarChart,
     allowedPathPattern: [/author\/reports/],
     path: "author/reports"
+  },
+  {
+    label: "library",
+    divider: true
   },
   {
     label: "Item Bank",
@@ -96,6 +99,10 @@ const menuItems = [
     icon: IconPlaylist2,
     allowedPathPattern: [/author\/playlists/],
     path: "author/playlists"
+  },
+  {
+    label: "user management",
+    divider: true
   },
   {
     label: "Manage Class",
@@ -144,8 +151,15 @@ class SideMenu extends Component {
         ["Dashboard", "Item Bank", "Test Library", "Playlist Library"].includes(i.label)
       );
     }
+
+    if (features.isCurator || features.isPublisherAuthor) {
+      _menuItems[0].path = "publisher/dashboard";
+      const [item1, , , item4, item5, item6] = _menuItems;
+      _menuItems = [item1, item4, item5, item6];
+    }
     if (features.isPublisherAuthor) {
-      _menuItems = _menuItems.filter(i => ["Item Bank", "Test Library", "Playlist Library"].includes(i.label));
+      const [, ...rest] = _menuItems;
+      _menuItems = [...rest];
     }
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter(i => ["Item Bank", "Test Library", "PlayList Library"].includes(i.label));
@@ -188,13 +202,15 @@ class SideMenu extends Component {
   `;
 
   handleMenu = item => {
-    const { history } = this.props;
-    const { path } = this.MenuItems[item.key];
-    if (path !== undefined) {
-      if (path.match(/playlists\/.{24}\/use-this/)) {
-        history.push({ pathname: `/${path}`, state: { from: "myPlaylist" } });
-      } else {
-        history.push(`/${path}`);
+    if (item.key) {
+      const { history } = this.props;
+      const { path } = this.MenuItems[item.key];
+      if (path !== undefined) {
+        if (path.match(/playlists\/.{24}\/use-this/)) {
+          history.push({ pathname: `/${path}`, state: { from: "myPlaylist" } });
+        } else {
+          history.push(`/${path}`);
+        }
       }
     }
   };
@@ -281,7 +297,7 @@ class SideMenu extends Component {
       if (menuItem.customSelection && menuItem.condtition && locationState?.[menuItem.condtition]) {
         return true;
       }
-      return menuItem.allowedPathPattern.some(path => !!history.location.pathname.match(path));
+      return !menuItem.divider && menuItem.allowedPathPattern.some(path => !!history.location.pathname.match(path));
     });
 
     const isPublisher = features.isCurator || features.isPublisherAuthor;
@@ -328,7 +344,7 @@ class SideMenu extends Component {
                 <IconSwitchUser /> {isCollapsed ? "" : "Switch Account"}
               </a>
             ) : (
-              //TODO
+              // TODO
               <Link to="/add-login-location">
                 <IconSwitchUser /> {isCollapsed ? "" : "Add Account"}
               </Link>
@@ -397,6 +413,9 @@ class SideMenu extends Component {
                 onClick={item => this.handleMenu(item)}
               >
                 {this.MenuItems.map((menu, index) => {
+                  if (menu.divider) {
+                    return <Divider isCollapsed={isCollapsed}>{!isCollapsed && <span>{menu.label}</span>}</Divider>;
+                  }
                   /**
                    * show playlist based on `features` list
                    */
@@ -460,11 +479,11 @@ class SideMenu extends Component {
                   >
                     <div>
                       {profileThumbnail ? (
-                        <UserImg src={profileThumbnail} />
+                        <UserImg src={profileThumbnail} isCollapsed={isCollapsed} />
                       ) : (
-                        <PseudoDiv>{this.getInitials()}</PseudoDiv>
+                        <PseudoDiv isCollapsed={isCollapsed}>{this.getInitials()}</PseudoDiv>
                       )}
-                      <div style={{ paddingLeft: 11, width: "100px" }}>
+                      <div style={{ width: "100px" }}>
                         {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
                         {!isCollapsed && !isMobile && <UserType>{_userRole}</UserType>}
                       </div>
@@ -573,16 +592,10 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .questionBtn {
     width: 50px;
     height: 50px;
-    border-radius: 65px;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background: ${white};
     padding: 0px;
     margin: 0 auto;
     justify-content: center;
     margin-bottom: 15px;
-    &:hover {
-      background: ${themeColor};
-    }
   }
   &.ant-layout-sider-collapsed .userinfoBtn .ant-select-arrow {
     right: 15px;
@@ -687,9 +700,10 @@ const MenuWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: column;
-  padding: 8px 0px;
+  padding: 8px 0px 0px;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   position: relative;
+  overflow-x: hidden;
 `;
 
 const Menu = styled(AntMenu)`
@@ -702,17 +716,17 @@ const Menu = styled(AntMenu)`
       svg {
         fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
       }
-      
+
       &:before {
         opacity: 1;
       }
-      
+
       &.removeSelectedBorder {
         border: none;
         background-color: ${themeColor};
-        &:hover{
+        &:hover {
           background-color: #fff;
-          svg{
+          svg {
             fill: ${themeColor};
           }
         }
@@ -732,8 +746,9 @@ const Menu = styled(AntMenu)`
     border-right: 0px;
   }
   &.ant-menu-inline {
-    overflow: auto;
-    
+    overflow-x: hidden;
+    overflow-y: auto;
+
     @media (max-width: ${tabletWidth}) {
       height: auto;
     }
@@ -753,7 +768,6 @@ const Menu = styled(AntMenu)`
     height: 38px;
     padding: 5px 25px !important;
     max-width: 100%;
-    
   }
   &.ant-menu-inline-collapsed {
     width: 70px;
@@ -776,9 +790,9 @@ const Menu = styled(AntMenu)`
   .ant-menu-item {
     position: relative;
     background: transparent;
-    
+
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       bottom: 0;
@@ -789,7 +803,7 @@ const Menu = styled(AntMenu)`
       z-index: -1;
       opacity: 0;
       pointer-events: none;
-      transition: all .3s ease;
+      transition: all 0.3s ease;
     }
   }
   .ant-menu-item:not(.ant-menu-item-selected) {
@@ -805,7 +819,6 @@ const Menu = styled(AntMenu)`
       color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
     }
   }
-}
 `;
 
 const MenuItem = styled(AntMenu.Item)`
@@ -840,7 +853,6 @@ const UserType = styled.div`
 
 const FooterDropDown = styled.div`
   position: relative;
-  bottom: -4px;
   opacity: ${props => (props.isVisible ? "1" : "0")};
   transition: 0.2s;
   -webkit-transition: 0.2s;
@@ -849,8 +861,6 @@ const FooterDropDown = styled.div`
     border-radius: 30px 30px 0px 0px;
     overflow: hidden;
     max-width: 100%;
-    padding-bottom: 10px;
-    background: #fff;
     .ant-menu-item:not(.ant-menu-item-selected) svg {
       fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
       &:hover,
@@ -942,15 +952,13 @@ const MenuFooter = styled.div`
 `;
 
 const QuestionButton = styled.div`
-  border-radius: 65px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  height: 24px;
   font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
-  background-color: ${props => props.theme.sideMenu.helpButtonBgColor};
   color: ${props => props.theme.sideMenu.helpButtonTextColor};
-  height: 50px;
-  margin: 0 21px 23px;
+  margin: ${({ isCollapsed }) => (isCollapsed ? "0px 0px 26px 0px" : "0px 16px 26px 26px")};
   display: flex;
   align-items: center;
+  justify-content: ${({ isCollapsed }) => (isCollapsed ? "center" : "")};
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -961,7 +969,6 @@ const QuestionButton = styled.div`
     font-weight: 600;
   }
   &:hover {
-    background: ${props => props.theme.sideMenu.helpButtonBgHoverColor};
     color: ${props => props.theme.sideMenu.helpButtonTextHoverColor};
     svg {
       fill: ${props => props.theme.sideMenu.helpIconHoverColor};
@@ -978,18 +985,21 @@ const QuestionButton = styled.div`
   }
 `;
 
+const collapsedUserImagStyle = css`
+  position: absolute;
+  left: 0px;
+  margin: 0;
+`;
+
 const UserImg = styled.div`
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
   background: url(${props => props.src});
   background-position: center center;
   background-size: cover;
   border-radius: 50%;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  position: absolute;
-  left: 0;
-  margin-bottom: -1px;
-  margin-left: -1px;
+  margin: 10px 10px 15px 20px;
+  ${({ isCollapsed }) => isCollapsed && collapsedUserImagStyle}
 `;
 
 const UserInfoButton = styled.div`
@@ -1010,29 +1020,21 @@ const UserInfoButton = styled.div`
   }
 
   .ant-dropdown {
-    left: 21px !important;
+    left: 0px !important;
+    top: unset !important;
+    bottom: 80px !important;
   }
 
   .footerDropdown {
-    width: auto;
-    height: 50px;
-    border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-    background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
+    width: 100%;
+    height: 80px;
+    background-color: ${({ theme, isCollapsed }) => (isCollapsed ? "" : theme.sideMenu.userInfoButtonBgColor)};
     display: flex;
     align-items: center;
-    padding: ${props => (props.isCollapsed ? 0 : "0px 25px 0px 50px")};
-    margin: ${props => (props.isCollapsed ? 0 : "0 21px")};
     position: relative;
     font-weight: 600;
     transition: 0.2s;
     -webkit-transition: 0.2s;
-    .drop-caret {
-      position: absolute;
-      right: 10px;
-      top: 18px;
-      color: ${props => props.theme.sideMenu.dropdownIconColor};
-    }
   }
   .ant-select-selection {
     background: transparent;
@@ -1066,8 +1068,7 @@ const UserInfoButton = styled.div`
 const PseudoDiv = styled.div`
   width: 50px;
   height: 50px;
-  position: absolute;
-  left: 0;
+  margin: 10px 10px 15px 20px;
   border-radius: 50%;
   background: #dddddd;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
@@ -1099,11 +1100,8 @@ const IconContainer = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 50px;
-  width: 50px;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  border-radius: 50%;
-  margin-right: 11px;
+  margin-right: 28px;
+  position: ${({ isCollapsed }) => (isCollapsed ? "absolute" : "relative")};
 
   &.active {
     margin-right: 0;
@@ -1122,13 +1120,31 @@ const HelpIcon = styled(IconQuestion)`
 `;
 
 const IconDropdown = styled(AntIcon)`
-  color: ${mainTextColor};
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   position: absolute;
-  top: -10px;
+  color: ${props => props.theme.sideMenu.dropdownIconColor};
 `;
 
 const LabelMenuItem = styled.span`
   max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const Divider = styled.div`
+  text-transform: uppercase;
+  max-width: 100%;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  margin: ${({ isCollapsed }) => (isCollapsed ? "30px 14px" : "32px 0px 16px 24px")};
+  color: ${({ theme }) => theme.sideMenu.sidebarDividerColor};
+  font-size: ${({ theme }) => theme.sideMenu.userInfoNameFontSize};
+  ${({ isCollapsed, theme }) =>
+    isCollapsed &&
+    `
+    border: 1px solid ${theme.sideMenu.sidebarDividerColor}; 
+    opacity: 0.2; 
+  `}
 `;

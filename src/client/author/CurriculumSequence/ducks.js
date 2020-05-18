@@ -120,6 +120,7 @@ export const RESET_DESTINATION_FLAGS = "[playlist] reset destination flags";
 export const DUPLICATE_MANAGE_CONTENT = "[playlist] duplicate mange content";
 export const CANCEL_PLAYLIST_CUSTOMIZE = "[playlist] cancel manage content";
 export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized playlist";
+export const SET_VIDEO_PREVIEW_RESOURCE_MODAL = "[playlist] set video resource modal content";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -174,6 +175,7 @@ export const updateSinedRequestAction = createAction(UPDATE_SIGNED_REQUEST_FOR_R
 export const duplicateManageContentAction = createAction(DUPLICATE_MANAGE_CONTENT);
 export const cancelPlaylistCustomizeAction = createAction(CANCEL_PLAYLIST_CUSTOMIZE);
 export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST);
+export const setEmbeddedVideoPreviewModal = createAction(SET_VIDEO_PREVIEW_RESOURCE_MODAL);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -1163,7 +1165,8 @@ const initialState = {
   playlistTestDetailsModal: {
     isVisible: false,
     currentTestId: null
-  }
+  },
+  isVideoResourcePreviewModal: false
 };
 
 /**
@@ -1795,5 +1798,8 @@ export default createReducer(initialState, {
   [RESET_DESTINATION_FLAGS]: state => {
     state.isManageContentActive = false;
     state.destinationDirty = false;
+  },
+  [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {
+    state.isVideoResourcePreviewModal = payload;
   }
 });

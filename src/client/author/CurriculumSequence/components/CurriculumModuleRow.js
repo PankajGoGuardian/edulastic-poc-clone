@@ -59,7 +59,7 @@ import {
 } from "../ducks";
 import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
-import { LTIResourceRow } from "./LTIResourceRow";
+import { PlaylistResourceRow } from "./PlaylistResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
 
@@ -367,7 +367,8 @@ class ModuleRow extends Component {
       playlistTestDetailsModalData,
       togglePlaylistTestDetails,
       customize,
-      hasEditAccess
+      hasEditAccess,
+      setEmbeddedVideoPreviewModal
     } = this.props;
     const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
     const { assignModule, assignTest } = this;
@@ -661,6 +662,7 @@ class ModuleRow extends Component {
                         onClick={e => e.stopPropagation()}
                         showResource={this.showResource}
                         urlHasUseThis={urlHasUseThis}
+                        setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                         {...this.props}
                       />
                     );
@@ -684,10 +686,11 @@ class ModuleRow extends Component {
                             style={{ margin: urlHasUseThis ? "4px 15px" : "4px 15px 0px 43px" }}
                           />
                           {contentType !== "test" ? (
-                            <LTIResourceRow
+                            <PlaylistResourceRow
                               data={moduleData}
                               urlHasUseThis={urlHasUseThis}
                               showResource={this.showResource}
+                              setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                             />
                           ) : (
                             <AntRow type="flex" gutter={10} align="top" style={{ width: "calc(100% - 25px)" }}>

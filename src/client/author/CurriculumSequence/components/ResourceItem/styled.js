@@ -34,6 +34,9 @@ export const IconWrapper = styled.div`
   svg {
     fill: ${({ isAdded }) => (isAdded ? themeColor : playlistTabLink)};
   }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ResourceTitle = styled.div`

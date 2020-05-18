@@ -17,7 +17,7 @@ import ResourceItem from "../ResourceItem";
 import WebsiteResourceModal from "./components/WebsiteResourceModal";
 import ExternalVideoLink from "./components/ExternalVideoLink";
 import LTIResourceModal from "./components/LTIResourceModal";
-import EmbeddedVideoPreviewModal from "./components/EmbeddedVideoPreviewModal";
+import { setEmbeddedVideoPreviewModal } from "../../ducks";
 import slice from "./ducks";
 import {
   ActionsContainer,
@@ -104,7 +104,8 @@ const ManageContentBlock = props => {
     searchResourceBy,
     setSearchByTab,
     addResource,
-    resources = []
+    resources = [],
+    setEmbeddedVideoPreviewModal
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -114,7 +115,6 @@ const ManageContentBlock = props => {
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(false);
   const [isExternalVideoResourceModal, setExternalVideoResourceModal] = useState(false);
   const [isLTIResourceModal, setLTIResourceModal] = useState(false);
-  const [isEmbeddedVideoPreviewModal, setEmbeddedVideoPreviewModal] = useState(false);
 
   useEffect(() => {
     setDefaults({
@@ -184,7 +184,7 @@ const ManageContentBlock = props => {
     }
   };
 
-  const previewTest = (type, data) => {
+  const previewResource = (type, data) => {
     if (type === "lti_resource") showResource(data);
     if (type === "website_resource") window.open(data.url, "_blank");
     if (type === "video_resource") setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.url });
@@ -193,16 +193,18 @@ const ManageContentBlock = props => {
   const renderList = () => {
     const listToRender = [];
     if (searchResourceBy === "resources") {
-      resources.forEach(({ _id, contentType, contentTitle, data, contentUrl }, idx) => {
+      resources.forEach(({ _id, contentType, contentTitle, contentDescription, data, contentUrl }, idx) => {
         listToRender.push(
           <ResourceItem
             type={contentType}
             id={_id}
-            title={contentTitle}
+            contentTitle={contentTitle}
+            contentDescription={contentDescription}
+            contentUrl={contentUrl}
             key={`resource-${idx}`}
             data={data}
             isAdded={testsInPlaylist.includes(_id)}
-            previewTest={() => previewTest(contentType, { url: contentUrl, contentTitle, ...data })}
+            previewTest={() => previewResource(contentType, { url: contentUrl, contentTitle, ...data })}
           />
         );
       });
@@ -217,7 +219,7 @@ const ManageContentBlock = props => {
             <ResourceItem
               type="test"
               id={test._id}
-              title={test.title}
+              contentTitle={test.title}
               key={test._id}
               summary={test?.summary}
               isAdded={testsInPlaylist.includes(test?._id)}
@@ -378,13 +380,6 @@ const ManageContentBlock = props => {
           externalToolsProviders={externalToolsProviders}
         />
       )}
-
-      {isEmbeddedVideoPreviewModal && (
-        <EmbeddedVideoPreviewModal
-          closeCallback={() => setEmbeddedVideoPreviewModal(false)}
-          isVisible={isEmbeddedVideoPreviewModal}
-        />
-      )}
     </ManageContentOuterWrapper>
   );
 };
@@ -431,6 +426,7 @@ export default connect(
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,
     fetchExternalToolProvidersAction: slice.actions?.fetchExternalToolProvidersAction,
     setSearchByTab: slice.actions?.setSearchByTab,
-    addResource: slice.actions?.addResource
+    addResource: slice.actions?.addResource,
+    setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModal
   }
 )(ManageContentBlock);

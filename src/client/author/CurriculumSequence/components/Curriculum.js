@@ -50,7 +50,8 @@ const SortableItem = sortableElement(props => {
     playlistMetrics,
     playlistClassList,
     isManageContentActive,
-    hasEditAccess
+    hasEditAccess,
+    setEmbeddedVideoPreviewModal
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -89,6 +90,7 @@ const SortableItem = sortableElement(props => {
           playlistMetrics={playlistMetrics}
           playlistClassList={playlistClassList}
           hasEditAccess={hasEditAccess}
+          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
       </DropContainer>
     </AssignmentItemContainer>

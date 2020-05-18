@@ -41,7 +41,7 @@ import {
 } from "@edulastic/icons";
 import { roleuser } from "@edulastic/constants";
 import { Button, Cascader, Input, Modal, Tooltip, message } from "antd";
-import Header from "../../../student/sharedComponents/Header";
+import EmbeddedVideoPreviewModal from "./ManageContentBlock/components/EmbeddedVideoPreviewModal";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
@@ -66,7 +66,8 @@ import {
   resetDestinationAction,
   duplicateManageContentAction,
   cancelPlaylistCustomizeAction,
-  publishCustomizedPlaylistAction
+  publishCustomizedPlaylistAction,
+  setEmbeddedVideoPreviewModal
 } from "../ducks";
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
@@ -481,7 +482,9 @@ class CurriculumSequence extends Component {
       resetDestination,
       currentUserId,
       cancelPlaylistCustomize,
-      publishCustomizedPlaylist
+      publishCustomizedPlaylist,
+      setEmbeddedVideoPreviewModal,
+      isVideoResourcePreviewModal
     } = this.props;
 
     // check Current user's edit permission
@@ -895,6 +898,7 @@ class CurriculumSequence extends Component {
                           playlistClassList={playlistClassList}
                           manageContentDirty={manageContentDirty}
                           hasEditAccess={hasEditAccess}
+                          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                         />
                       )}
                     </Wrapper>
@@ -967,6 +971,12 @@ class CurriculumSequence extends Component {
         {dropPlaylistModalVisible && (
           <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
         )}
+        {isVideoResourcePreviewModal && (
+          <EmbeddedVideoPreviewModal
+            closeCallback={() => setEmbeddedVideoPreviewModal(false)}
+            isVisible={isVideoResourcePreviewModal}
+          />
+        )}
       </>
     );
   }
@@ -996,7 +1006,8 @@ const enhance = compose(
       classId: getCurrentGroup(state),
       activeClasses: getFilteredClassesSelector(state),
       dateKeys: getDateKeysSelector(state),
-      currentUserId: state?.user?.user?._id
+      currentUserId: state?.user?.user?._id,
+      isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal
     }),
     {
       onGuideChange: changeGuideAction,
@@ -1015,7 +1026,8 @@ const enhance = compose(
       resetDestination: resetDestinationAction,
       duplicateManageContent: duplicateManageContentAction,
       cancelPlaylistCustomize: cancelPlaylistCustomizeAction,
-      publishCustomizedPlaylist: publishCustomizedPlaylistAction
+      publishCustomizedPlaylist: publishCustomizedPlaylistAction,
+      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModal
     }
   )
 );

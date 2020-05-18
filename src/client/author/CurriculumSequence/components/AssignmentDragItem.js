@@ -17,7 +17,7 @@ import {
   AssignmentIcon,
   AssignmentButton
 } from "./CurriculumModuleRow";
-import { LTIResourceRow } from "./LTIResourceRow";
+import { PlaylistResourceRow } from "./PlaylistResourceRow";
 import { FlexContainer } from "@edulastic/common";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
 
@@ -70,7 +70,8 @@ class AssignmentDragItem extends Component {
       togglePlaylistTestDetails,
       showResource,
       userRole,
-      urlHasUseThis
+      urlHasUseThis,
+      setEmbeddedVideoPreviewModal
     } = this.props;
     const assignmentTestType = get(moduleData, "assignments.[0].testType", "");
     const _testType = get(moduleData, "testType", "");
@@ -84,13 +85,14 @@ class AssignmentDragItem extends Component {
           isDragging={isDragging}
         >
           {moduleData.contentType !== "test" ? (
-            <LTIResourceRow
+            <PlaylistResourceRow
               data={moduleData}
               mode={mode}
               urlHasUseThis
               deleteTest={deleteTest}
               moduleIndex={moduleIndex}
               showResource={showResource}
+              setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />
           ) : (
             <>

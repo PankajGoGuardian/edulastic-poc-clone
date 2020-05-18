@@ -161,7 +161,13 @@ class CurriculumContainer extends Component {
 
       if (flag) {
         set(item, "contentId", item.id);
-        const newItem = omit(item, ["id", "type", "fromPlaylistTestsBox"]);
+        const attrsToOmit = ["id", "type", "fromPlaylistTestsBox"];
+        if (item.contentType === "test") {
+          attrsToOmit.push(...["contentDescription", "contentUrl"]);
+        } else {
+          attrsToOmit.push("standardIdentifiers");
+        }
+        const newItem = omit(item, attrsToOmit);
         addIntoModule({ item: newItem, moduleIndex: toModuleIndex });
       } else {
         message.error("Content already exists");

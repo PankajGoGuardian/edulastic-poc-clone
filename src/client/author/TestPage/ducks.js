@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { test, roleuser, questionType, test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
-import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } from "redux-saga/effects";
+import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import {
@@ -48,8 +48,8 @@ import { isFeatureAccessible } from "../../features/components/FeaturesSwitch";
 import { getDefaultSettings } from "../../common/utils/helpers";
 import { updateAssingnmentSettingsAction } from "../AssignTest/duck";
 import { SET_ITEM_SCORE } from "../src/ItemScore/ducks";
-import { UPLOAD_STATUS, uploadTestStatusAction, setJobIdsAction } from "../ImportTest/ducks";
 import { getIsloadingAssignmentSelector } from "./components/Assign/ducks";
+import { sortTestItemQuestions } from "../dataUtils";
 
 // constants
 
@@ -118,7 +118,7 @@ export const getTestGradeAndSubject = (group, testGrades, testSubjects, testTags
   }
   return { testGrades, testSubjects };
 };
-//user is created ? then he is author not authored and in authors list he is co-author
+// user is created ? then he is author not authored and in authors list he is co-author
 const authorType = (userId, { createdBy, authors }) => {
   if (userId === createdBy._id) {
     return "author";
@@ -394,15 +394,19 @@ export const getItemGroupsSelector = createSelector(
 
 export const getTestItemsSelector = createSelector(
   getItemGroupsSelector,
-  itemGroups =>
-    itemGroups.flatMap(
-      itemGroup =>
-        itemGroup.items.map(item => ({
-          ...item,
-          groupId: itemGroup._id,
-          isLimitedDeliveryType: itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-        })) || []
-    ) || []
+  itemGroups => {
+    let testItems =
+      itemGroups.flatMap(
+        itemGroup =>
+          itemGroup.items.map(item => ({
+            ...item,
+            groupId: itemGroup._id,
+            isLimitedDeliveryType: itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+          })) || []
+      ) || [];
+    testItems = sortTestItemQuestions(testItems);
+    return testItems;
+  }
 );
 
 export const getDisableAnswerOnPaperSelector = createSelector(
@@ -1040,7 +1044,7 @@ function* receiveTestByIdSaga({ payload }) {
   try {
     const tests = yield select(state => state.tests);
     const createdItems = yield select(getTestCreatedItemsSelector);
-    let entity = yield call(testsApi.getById, payload.id, {
+    const entity = yield call(testsApi.getById, payload.id, {
       data: true,
       requestLatest: payload.requestLatest,
       editAndRegrade: payload.editAssigned

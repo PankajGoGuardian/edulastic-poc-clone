@@ -1,4 +1,5 @@
 // @ts-check
+import { sortTestItemQuestions } from "../author/dataUtils";
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -7,7 +8,8 @@ const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
  * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}_testItemsData
  */
 export const markQuestionLabel = _testItemsData => {
-  for (const [i, item] of _testItemsData.entries()) {
+  const sortedTestItems = sortTestItemQuestions(_testItemsData);
+  for (const [i, item] of sortedTestItems.entries()) {
     if (!(item.data && item.data.questions)) {
       continue;
     }

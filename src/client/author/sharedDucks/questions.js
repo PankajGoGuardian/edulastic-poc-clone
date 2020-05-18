@@ -217,7 +217,7 @@ export default createReducer(initialState, {
   [CHANGE_UPDATE_FLAG]: (state, { payload }) => {
     state.updated = payload;
   },
-  [UPDATE_TEST_DOC_BASED_REQUEST]: (state, { payload }) => {
+  [UPDATE_TEST_DOC_BASED_REQUEST]: state => {
     state.updated = false;
   },
   [SET_QUESTION_SCORE]: (state, { payload }) => {
@@ -246,8 +246,8 @@ export default createReducer(initialState, {
     const id = qids[oldIndex];
     qids.splice(qids.indexOf(id), 1);
     qids.splice(newIndex, 0, id);
-    qids.forEach((id, i) => {
-      state.byId[id].qIndex = i + 1;
+    qids.forEach((idx, i) => {
+      state.byId[idx].qIndex = i + 1;
     });
   },
   [SET_RUBRIC_ID]: (state, { payload }) => {

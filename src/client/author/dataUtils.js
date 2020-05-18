@@ -167,3 +167,16 @@ export const setDefaultInterests = newInterest => {
 export const getDefaultInterests = () => {
   return JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
 };
+
+export const sortTestItemQuestions = testItems => {
+  for (const [, item] of testItems.entries()) {
+    if (!(item.data && item.data.questions)) {
+      continue;
+    }
+    // sort questions based on widegets
+    const questions = keyBy(get(item, "data.questions", []), "id");
+    const widgets = (item.rows || []).reduce((acc, curr) => [...acc, ...curr.widgets], []);
+    item.data.questions = widgets.map(widget => questions[widget.reference]).filter(q => !!q);
+  }
+  return testItems;
+};

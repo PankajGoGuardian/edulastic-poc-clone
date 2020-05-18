@@ -361,6 +361,15 @@ class LiveClassboardPage {
             ).to.eq(queColor.SKIP);
             break;
 
+          case attemptTypes.MANUAL_GRADE:
+            expect(
+              ele
+                .find("div")
+                .eq(qindex)
+                .css("background-color")
+            ).to.eq(queColor.MANUAL_GRADE);
+            break;
+
           default:
             expect(
               ele

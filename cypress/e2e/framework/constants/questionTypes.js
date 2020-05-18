@@ -43,7 +43,8 @@ export const attemptTypes = {
   WRONG: "wrong",
   SKIP: "skip",
   PARTIAL_CORRECT: "partialCorrect",
-  NO_ATTEMPT: "noattempt"
+  NO_ATTEMPT: "noattempt",
+  MANUAL_GRADE: "manualGrade"
 };
 
 export const deliverType = {
@@ -57,6 +58,7 @@ export const queColor = {
   WRONG: "rgb(243, 95, 95)",
   SKIP: "rgb(106, 115, 127)",
   NO_ATTEMPT: "rgb(229, 229, 229)",
+  MANUAL_GRADE: "rgb(56, 150, 190)",
   YELLOW: "rgb(253, 204, 59)",
   CLEAR_DAY: "rgb(225, 251, 242)",
   PLAIN_RED: "rgb(255, 0, 0)",

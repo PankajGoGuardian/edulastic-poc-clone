@@ -115,7 +115,7 @@ export default class PreviewItemPopup {
     this.getCopyOnPreview().should("be.visible");
   };
 
-  verifyQuestionResponseCard = (queTypeKey, attemptData, attemptType, isShowAnswer = false) => {
+  verifyQuestionResponseCard = (queTypeKey, attemptData, attemptType, isShowAnswer = false, queIndex = 0) => {
     const { right, wrong, partialCorrect, item } = attemptData;
     const attempt =
       attemptType === attemptTypes.RIGHT
@@ -126,7 +126,10 @@ export default class PreviewItemPopup {
         ? partialCorrect
         : undefined;
     const quest = queTypeKey.split(".")[0];
-    if (!item) cy.get('[data-cy="question-container"]').as("quecard");
+    if (!item)
+      cy.get('[data-cy="question-container"]')
+        .eq(queIndex)
+        .as("quecard");
     else {
       this.getQueContainerById(item).as("quecard");
     }

@@ -50,11 +50,7 @@ class MCQMultiplePage extends MCQStandardPage {
           .clear({ force: true })
           .type(`{selectAll}${points}`);
 
-        correct.forEach(choice => {
-          this.getAllAnsChoicesLabel()
-            .contains(choice)
-            .click();
-        });
+        this.setCorrectAns(correct);
 
         this.clickOnAdvancedOptions();
         // set evaluation type
@@ -72,5 +68,12 @@ class MCQMultiplePage extends MCQStandardPage {
       }
     });
   }
+
+  setCorrectAns = correct =>
+    correct.forEach(choice => {
+      this.getAllAnsChoicesLabel()
+        .contains(choice)
+        .click();
+    });
 }
 export default MCQMultiplePage;

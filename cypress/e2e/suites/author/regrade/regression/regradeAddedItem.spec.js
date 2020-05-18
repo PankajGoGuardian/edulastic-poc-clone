@@ -1,7 +1,7 @@
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
 import ExpressGraderPage from "../../../../framework/author/assignments/expressGraderPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
-import Regrade from "../../../../framework/author/tests/testDetail/regrade";
+import Regrade from "../../../../framework/author/tests/regrade/regrade";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
@@ -346,10 +346,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} test editing with applyin
                         )
                       );
 
-                      cy.get(".ant-table-thead > tr")
-                        .eq(0)
-                        .find(".ant-table-column-has-actions")
-                        .should("have.length", 2);
+                      expressGrader.verifyNumberOfQuestions(2);
                     });
 
                     if (option === regradeOptions.added.MANUAL_POINTS && status === studentSide.SUBMITTED) {

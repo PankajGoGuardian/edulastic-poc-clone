@@ -178,6 +178,24 @@
           "grade": "Grade 2"
         }
       ]
+    },
+    "6": {
+      "quetext": "This is MCQ_MULTI.6 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "setAns": { "correct": ["wrong-1", "wrong-2"], "points": 2, "evaluation": "Partial match" },
+      "attemptData": {
+        "right": ["wrong-1", "wrong-2"],
+        "wrong": "right-1",
+        "partialCorrect": ["right-2", "wrong-1"]
+      },
+      "standards": [
+        {
+          "subject": "ELA",
+          "standard": ["CCRA.L.1", "CCRA.L.2"],
+          "standardSet": "ELA - Common Core",
+          "grade": "Grade 2"
+        }
+      ]
     }
   },
   "MCQ_TF": {

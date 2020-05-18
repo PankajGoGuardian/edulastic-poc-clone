@@ -1,4 +1,4 @@
-import { attemptTypes } from "../../constants/questionTypes";
+import { attemptTypes, queColor } from "../../constants/questionTypes";
 
 export default class BarGraph {
   constructor() {
@@ -47,6 +47,12 @@ export default class BarGraph {
   };
 
   getBars = () => cy.get(".recharts-bar.correctAttemps").find("path");
+
+  getBarByIndexByAttemptClass = (index, attemptClass) =>
+    cy
+      .get(`.recharts-bar.${attemptClass}`)
+      .find("path")
+      .eq(index);
 
   getScalingLineByValue = value =>
     cy
@@ -136,5 +142,78 @@ export default class BarGraph {
       });
   };
 
+  verifyQueToolTipBasedOnAttempt = (index, attempt, questionCentric = false) => {
+    let rightClass, wrongClass, partialClass, manualClass, skipClass;
+
+    if (!questionCentric)
+      [rightClass, wrongClass, partialClass, manualClass, skipClass] = [
+        "correctAttemps",
+        "incorrectAttemps",
+        "partialAttempts",
+        "manualGradedNum",
+        "skippedNum"
+      ];
+    else
+      [rightClass, wrongClass, partialClass, manualClass, skipClass] = [
+        "correct",
+        "wrong",
+        "pCorrect",
+        "manuallyGraded",
+        "skipped"
+      ];
+
+    let [right, wrong, partial] = [0, 0, 0];
+    let color;
+    // TODO: Make the method generic as to use with all attempt types and all places
+    switch (attempt) {
+      case attemptTypes.RIGHT:
+        this.getBarByIndexByAttemptClass(index, rightClass).as("question-bar");
+        color = queColor.RIGHT;
+        right = 1;
+        break;
+      case attemptTypes.PARTIAL_CORRECT:
+        this.getBarByIndexByAttemptClass(index, partialClass).as("question-bar");
+        color = queColor.YELLOW;
+        partial = 1;
+        break;
+      case attemptTypes.WRONG:
+        this.getBarByIndexByAttemptClass(index, wrongClass).as("question-bar");
+        color = queColor.WRONG;
+        wrong = 1;
+        break;
+      case attemptTypes.SKIP:
+        this.getBarByIndexByAttemptClass(index, skipClass).as("question-bar");
+        color = queColor.SKIP;
+        break;
+      case attemptTypes.MANUAL_GRADE:
+        this.getBarByIndexByAttemptClass(index, manualClass).as("question-bar");
+        color = queColor.MANUAL_GRADE;
+        break;
+      default:
+        break;
+    }
+
+    cy.get("@question-bar")
+      .trigger("mouseover", { force: true })
+      .then(() => {
+        if (!questionCentric) {
+          this.getToolTip().then(ele => {
+            cy.wrap(ele)
+              .contains("Correct Attemps")
+              .next()
+              .should("have.text", right.toString());
+            cy.wrap(ele)
+              .contains("Incorrect Attemps")
+              .next()
+              .should("have.text", wrong.toString());
+            cy.wrap(ele)
+              .contains("Partial Attemps")
+              .next()
+              .should("have.text", partial.toString());
+          });
+        }
+        cy.get("@question-bar").should("have.css", "fill", color); // FDCC3B
+      });
+  };
   // *** APPHELPERS END ***
 }

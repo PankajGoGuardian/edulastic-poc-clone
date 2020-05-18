@@ -225,7 +225,7 @@ class MCQStandardPage {
     return this;
   }
 
-  getPanalty = () => cy.get('[data-cy="penalty"]').should("be.visible");
+  getPanalty = () => cy.get('[data-cy="penalty"]');
 
   getCheckAnsAttempt = () => cy.get('[data-cy="checkAttempts"]').should("be.visible");
 

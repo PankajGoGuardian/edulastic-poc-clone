@@ -200,5 +200,11 @@
       "CLOZE_DROPDOWN.default",
       "ESSAY_RICH.1"
     ]
+  },
+  "REGRADE_EDITED_ITEM": {
+    "name": "Test Assessment",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_MULTI.5"]
   }
 }

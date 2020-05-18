@@ -2,8 +2,7 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import ExpressGraderPage from "../../../../framework/author/assignments/expressGraderPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
-import Regrade from "../../../../framework/author/tests/testDetail/regrade";
-import TestAddItemTab from "../../../../framework/author/tests/testDetail/testAddItemTab";
+import Regrade from "../../../../framework/author/tests/regrade/regrade";
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
 import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
@@ -13,7 +12,7 @@ import StudentTestPage from "../../../../framework/student/studentTestPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
-import { regradeOptions } from "../../../../framework/constants/assignmentStatus";
+import { releaseGradeTypes } from "../../../../framework/constants/assignmentStatus";
 
 const students = {
   Student1: {
@@ -25,11 +24,6 @@ const students = {
     name: "Student2",
     email: "student2.for.regrade@snapwiz.com",
     pass: "snapwiz"
-  },
-  Student3: {
-    name: "Student3",
-    email: "student3.for.regrade@snapwiz.com",
-    pass: "snapwiz"
   }
 };
 
@@ -38,7 +32,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   const assignmentsPage = new AssignmentsPage();
   const studentTestPage = new StudentTestPage();
   const testReviewTab = new TestReviewTab();
-  const testAddItemTab = new TestAddItemTab();
   const testAssignPage = new TestAssignPage();
   const sidebarPage = new SidebarPage();
   const regrade = new Regrade();
@@ -47,8 +40,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   const authorAssignmentPage = new AuthorAssignmentPage();
   const expressGrader = new ExpressGraderPage();
   const reportsPage = new ReportsPage();
-  const updatedPoints = "6";
-  const isAssigned = true;
   const Teacher = {
     email: "teacher.for.regrade@snapwiz.com",
     pass: "snapwiz"
@@ -56,7 +47,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   const { Student1, Student2 } = students;
 
   let OriginalTestId, newTestId;
-  let assignedTest, qType, num, quesData, testName, itemsInTest;
+  let assignedTest, qType, num, itemsInTest;
   let questText = [];
   let points = [];
   let questionType = [];
@@ -65,7 +56,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   before("Get Data Of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
-      testName = testData.EDIT_ASSIGNED_TEST_REGRADE.name;
       itemsInTest = testData.EDIT_ASSIGNED_TEST_REGRADE.itemKeys;
     });
     cy.fixture("questionAuthoring").then(quesData => {
@@ -80,7 +70,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   });
   before("login and create new items and test", () => {
     cy.login("teacher", Teacher.email, Teacher.pass);
-    testLibraryPage.createTest("EDIT_ASSIGNED_TEST_REGRADE").then(id => {
+    testLibraryPage.createTest("EDIT_ASSIGNED_TEST_REGRADE", false).then(id => {
+      testLibraryPage.header.clickOnSettings();
+      testLibraryPage.testSettings.setRealeasePolicy(releaseGradeTypes.WITH_ANSWERS);
+      testLibraryPage.header.clickOnPublishButton();
       OriginalTestId = id;
       assignedTest = id;
     });
@@ -108,7 +101,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
 
   context(">remove one question from review tab and verify test", () => {
     it(">remove one question from review tab", () => {
-      const [item1, item2, item3] = testLibraryPage.items;
+      const [, , item3] = testLibraryPage.items;
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get and Convert To Draft
       testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
@@ -126,20 +119,29 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         testReviewTab.testheader.clickRegradePublish();
         // Apply Regrade And Verify At Student1 Side
         regrade.applyRegrade();
-        OriginalTestId = newTestId;
       });
     });
 
-    it(">verifying at student side- removed question", () => {
-      cy.login("student", Student1.email, Student1.pass);
-      assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
-      assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
-      studentTestPage.verifyNoOfQuestions(itemsInTest.length);
-      studentTestPage.clickOnExitTest();
-      cy.login("student", Student2.email, Student2.pass);
-      assignmentsPage.sidebar.clickOnGrades();
-      assignmentsPage.reviewSubmittedTestById(OriginalTestId);
-      reportsPage.verifyNoOfQuesInReview(itemsInTest.length);
+    context("> verify student side-'removed item'", () => {
+      it(">verifying at student side- 'IN PROGRESS'", () => {
+        cy.login("student", Student1.email, Student1.pass);
+        assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
+        assignmentsPage.clickOnAssigmentByTestId(newTestId);
+        studentTestPage.verifyNoOfQuestions(itemsInTest.length);
+        studentTestPage.attemptQuestionsByQueType(questionType, attempt);
+        studentTestPage.submitTest();
+        reportsPage.validateStats(1, "1/1", "4/4", 100);
+        assignmentsPage.reviewSubmittedTestById(newTestId);
+        reportsPage.verifyNoOfQuesInReview(itemsInTest.length);
+      });
+
+      it(">verifying at student side- 'SUBMITTED'", () => {
+        cy.login("student", Student2.email, Student2.pass);
+        assignmentsPage.sidebar.clickOnGrades();
+        reportsPage.validateStats(1, "1/1", "4/4", 100);
+        assignmentsPage.reviewSubmittedTestById(newTestId);
+        reportsPage.verifyNoOfQuesInReview(itemsInTest.length);
+      });
     });
 
     context(">verify teacher side lcb", () => {
@@ -151,7 +153,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       it(">verif lcb card view", () => {
         Object.keys(students).forEach((student, i) => {
           // verify total score of all students ;
-          lcb.getStudentScoreByIndex(i).should("contain.text", "/ 4");
+          lcb.getStudentScoreByIndex(i).should("contain.text", "4 / 4");
           // verify question cards shows 2 questions
           lcb
             .getQuestionsByIndex(i)
@@ -165,7 +167,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         // verify total scoresc
         // student1
         lcb.questionResponsePage.selectStudent(Student1.name);
-        lcb.questionResponsePage.getTotalScore().should("have.text", "0");
+        lcb.questionResponsePage.getTotalScore().should("have.text", "4");
         lcb.questionResponsePage.getMaxScore().should("have.text", "4");
 
         //  student2
@@ -186,113 +188,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         lcb.header.clickOnExpressGraderTab();
         // verify total scores
         // student1
+        expressGrader.getGridRowByStudent(Student1.name);
+        expressGrader.verifyScoreAndPerformance("4/4", "100");
+
+        // student2
         expressGrader.getGridRowByStudent(Student2.name);
         expressGrader.verifyScoreAndPerformance("4/4", "100");
 
         // verify que count
-        cy.get(".ant-table-thead > tr")
-          .eq(0)
-          .find(".ant-table-column-has-actions")
-          .should("have.length", itemsInTest.length);
-      });
-    });
-  });
-
-  context(">update points of an item and verify test", () => {
-    it(">update points of an item", () => {
-      const [item1, item2] = testLibraryPage.items;
-      cy.login("teacher", Teacher.email, Teacher.pass);
-      // Get Test Card and Draft It
-      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
-      testLibraryPage.publishedToDraftAssigned();
-      testLibraryPage.getVersionedTestID().then(newTest => {
-        newTestId = newTest;
-        //Update Points
-        testReviewTab.updatePointsByID(item1, updatedPoints);
-        // Publish
-        testAddItemTab.header.clickRegradePublish();
-        regrade.applyRegrade();
-        OriginalTestId = newTestId;
-      });
-    });
-    it(">verifying at student side- update points", () => {
-      cy.login("student", Student1.email, Student1.pass);
-      assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
-      assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
-      studentTestPage.getQuestionByIndex(0);
-
-      studentTestPage.attemptQuestionsByQueType(questionType, attempt);
-      studentTestPage.submitTest();
-      assignmentsPage.reviewSubmittedTestById(OriginalTestId);
-      reportsPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
-      cy.login("student", Student2.email, Student2.pass);
-      assignmentsPage.sidebar.clickOnGrades();
-      assignmentsPage.reviewSubmittedTestById(OriginalTestId);
-      reportsPage.verifyAchievedScoreOfQueByIndex(0, 0);
-      reportsPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
-    });
-
-    context(">verify teacher side LCB", () => {
-      before("login as teacher", () => {
-        cy.login("teacher", Teacher.email, Teacher.pass);
-        teacherSidebar.clickOnAssignment();
-        authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
-      });
-      it(">verif lcb card view", () => {
-        Object.keys(students).forEach((student, i) => {
-          // verify total score of all students ;
-          lcb.getStudentScoreByIndex(i).should("contain.text", "/ 8");
-          // verify question cards shows 2 questions
-          lcb
-            .getQuestionsByIndex(i)
-            .find("div")
-            .should("have.length", itemsInTest.length);
-        });
-      });
-
-      it(">verify student centric view", () => {
-        lcb.clickOnStudentsTab();
-        // verify total scores
-        // student1
-        lcb.questionResponsePage.selectStudent(Student1.name);
-        lcb.questionResponsePage.getTotalScore().should("have.text", "2");
-        lcb.questionResponsePage.getMaxScore().should("have.text", "8");
-
-        //  student2
-        lcb.questionResponsePage.selectStudent(Student2.name);
-        lcb.questionResponsePage.getTotalScore().should("have.text", "2");
-        lcb.questionResponsePage.getMaxScore().should("have.text", "8");
-      });
-
-      it(">verify Question centric view", () => {
-        // verify updated points
-        lcb.clickonQuestionsTab();
-
-        lcb.questionResponsePage.selectQuestion(`Q1`);
-        Object.keys(students).forEach((student, index) => {
-          if (!(index === 2)) {
-            lcb.questionResponsePage.getQuestionContainerByStudent(students[student].name).as("studentCont");
-            lcb.questionResponsePage.getQuestionMaxScore(cy.get("@studentCont")).should("have.text", updatedPoints);
-          }
-        });
-      });
-
-      it(">verify express grader view", () => {
-        lcb.header.clickOnExpressGraderTab();
-        // verify total scores
-        // student1
-        expressGrader.getGridRowByStudent(Student1.name);
-        expressGrader.verifyScoreAndPerformance("2/8", "25");
-
-        // student2
-        expressGrader.getGridRowByStudent(Student2.name);
-        expressGrader.verifyScoreAndPerformance("2/8", "25");
-
-        // verify que count
-        cy.get(".ant-table-thead > tr")
-          .eq(0)
-          .find(".ant-table-column-has-actions")
-          .should("have.length", itemsInTest.length);
+        expressGrader.verifyNumberOfQuestions(itemsInTest.length);
       });
     });
   });

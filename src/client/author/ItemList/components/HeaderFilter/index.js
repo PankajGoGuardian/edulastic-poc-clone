@@ -84,7 +84,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
     if (type === "standardIds" && selectedStandards.length) {
       selectedStandards.forEach(s => {
         const tagTitle = s.identifier;
-        getTag(type, s, tagTitle, bodyArr, popOverArray, containerWidthObj);
+        getTag(type, s.id, tagTitle, bodyArr, popOverArray, containerWidthObj);
       });
     }
     if (type === "collections" && selectedCollection.length) {

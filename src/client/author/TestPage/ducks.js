@@ -1899,11 +1899,12 @@ function* updateTestAndNavigate({ payload }) {
     const data = yield select(getTestSelector);
     const hasUnsavedChanges = yield select(state => state?.tests?.updated);
     if (hasUnsavedChanges) {
-      const _test = !testId || testId == "undefined" ? yield createTest(data) : {};
-      if (isEditing || isDuplicating) {
+      const isTestCreated = testId && testId !== "undefined";
+      const _test = !isTestCreated ? yield createTest(data) : {};
+      if ((isEditing || isDuplicating) && isTestCreated) {
         yield updateTestSaga({ payload: { data, id: testId } });
       }
-      if (!testId || testId == "undefined") {
+      if (!isTestCreated) {
         pathname = pathname.replace("undefined", _test._id);
       }
     }

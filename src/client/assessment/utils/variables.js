@@ -76,7 +76,7 @@ export const updateVariables = (item, latexKeys = []) => {
   item.variable.variables = newVariables;
 };
 
-const getMathTemplate = exampleValue => `<span class="input__math" data-latex="${exampleValue}"></span>`;
+export const getMathTemplate = exampleValue => `<span class="input__math" data-latex="${exampleValue}"></span>`;
 
 const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   if (!variables) return str;

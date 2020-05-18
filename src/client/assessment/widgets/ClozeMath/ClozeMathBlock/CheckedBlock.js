@@ -8,6 +8,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
+import { getMathTemplate } from "../../../utils/variables";
 
 const CheckBoxedMathBox = ({ value, style }) => {
   const filedRef = useRef();
@@ -54,7 +55,13 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
         : userAnswer.value
       : "";
 
-  const { width: textWidth } = measureText(showValue);
+  /**
+   * if its math or math with units, need to convert the latex string to actual math template
+   * passing latex string to the function would give incorrect dimensions
+   * as latex might have extra special characters for rendering math
+   */
+  const answer = isMath ? getMathTemplate(showValue) : showValue;
+  const { width: textWidth } = measureText(answer, { padding: "0 0 0 11px" });
   const avilableWidth = width - (showIndex ? 58 : 26);
   const showPopover = textWidth > avilableWidth;
 

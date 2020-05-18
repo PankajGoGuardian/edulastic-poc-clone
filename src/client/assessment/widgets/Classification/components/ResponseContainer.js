@@ -5,6 +5,7 @@ export const ResponseContainer = styled.div`
   padding: 10px;
   position: relative;
   display: block;
+  overflow: auto; /* https://snapwiz.atlassian.net/browse/EV-13715 */
 
   ${({ theme, imageUrl, direction, imageOptions = { width: 0, height: 0 }, disableResponse }) => {
     let css = ``;

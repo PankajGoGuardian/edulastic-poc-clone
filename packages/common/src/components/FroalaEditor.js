@@ -349,7 +349,6 @@ const CustomEditor = ({
       tableResizerOffset: 10,
       tableResizingLimit: 50,
       toolbarInline: true,
-      tooltips: false,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `#froalaToolbarContainer-${toolbarId}` : undefined,
       placeholderText: placeholder,
@@ -544,7 +543,15 @@ const CustomEditor = ({
             this.$el.find("img").css("pointer-events", "none");
           }
         },
-
+        "toolbar.show": function() {
+          /**
+           * there are no option to change tooltip of toolbar buttons
+           * And 'tooltips:flase' option does not work properly on windows and linux
+           * So just used this way for now.
+           * @see https://snapwiz.atlassian.net/browse/EV-12857
+           */
+          $('[data-cmd="moreText"]')?.prop("title", "More Tools");
+        },
         "toolbar.hide": function() {
           if (this.hasFocus) {
             return false;

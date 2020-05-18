@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default FroalaEditor => {
   const isActive = function(cmd) {
     var blocks = this.selection.blocks();

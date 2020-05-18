@@ -1,9 +1,9 @@
-import { FieldLabel, SelectInputStyled } from "@edulastic/common";
-import { connect } from "react-redux";
+import { FieldLabel } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import { Col, Select } from "antd";
 import React from "react";
-import { ColLabel, StyledRow, StyledRowSelect } from "./styled";
+import { connect } from "react-redux";
+import { StyledRow, StyledRowSelect, StyledSelect } from "./styled";
 
 const { type } = test;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
@@ -24,7 +24,7 @@ const TestTypeSelector = ({
   };
 
   const SelectOption = (
-    <SelectInputStyled data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
+    <StyledSelect data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
       {isAdmin && !districtPermissions.includes("publisher") && (
         <Select.Option key={COMMON} value={COMMON}>
           Common Assessment
@@ -35,15 +35,15 @@ const TestTypeSelector = ({
           {testTypes[key]}
         </Select.Option>
       ))}
-    </SelectInputStyled>
+    </StyledSelect>
   );
 
   return fullwidth ? (
-    <StyledRowSelect gutter={48}>
-      <Col span={24}>
+    <StyledRowSelect gutter={16}>
+      <Col span={12}>
         <FieldLabel>TEST TYPE</FieldLabel>
-        {SelectOption}
       </Col>
+      <Col span={12}>{SelectOption}</Col>
     </StyledRowSelect>
   ) : (
     <React.Fragment>

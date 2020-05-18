@@ -1,8 +1,7 @@
+import { test } from "@edulastic/constants";
+import { Col, Select } from "antd";
 import React from "react";
-import { Select, Col, Row } from "antd";
-
-import { test, roleuser } from "@edulastic/constants";
-import { ColLabel, Label, StyledSelect, StyledRow, StyledRowSelect } from "./styled";
+import { ColLabel, Label, StyledRow, StyledRowSelect, StyledSelect } from "./styled";
 
 const { playerSkinTypes } = test;
 
@@ -38,11 +37,11 @@ const PlayerSkinSelector = ({
   );
 
   return fullwidth ? (
-    <StyledRowSelect gutter={48}>
-      <Col span={24}>
+    <StyledRowSelect gutter={16}>
+      <Col span={12}>
         <Label>STUDENT PLAYER SKIN</Label>
       </Col>
-      <Col span={24}>{SelectOption}</Col>
+      <Col span={12}>{SelectOption}</Col>
     </StyledRowSelect>
   ) : (
     <React.Fragment>

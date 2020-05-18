@@ -210,7 +210,6 @@ class StudentViewContainer extends Component {
           justifyContent="space-between"
           hasStickyHeader={hasStickyHeader}
           className="lcb-student-sticky-bar"
-          padding={"10px 30px"}
         >
           <StudentButtonWrapper>
             <StudentButtonDiv>

@@ -227,9 +227,6 @@ function* saveAssignment({ payload }) {
     // teacher can not update test content visibility.
     const visibility = payload.testContentVisibility &&
       userRole !== roleuser.TEACHER && { testContentVisibility: payload.testContentVisibility };
-    // on teacher assigning common assessments convert it to class assessment.
-    const testTypeUpdated =
-      userRole === roleuser.TEACHER && testType === testContants.type.COMMON ? testContants.type.ASSESSMENT : testType;
     let { class: classes } = payload;
     let containsCanvasClass = false;
     classes = classes.map(c => {
@@ -246,7 +243,7 @@ function* saveAssignment({ payload }) {
           startDate,
           endDate,
           dueDate,
-          testType: testTypeUpdated,
+          testType,
           ...visibility,
           testId,
           class: classes

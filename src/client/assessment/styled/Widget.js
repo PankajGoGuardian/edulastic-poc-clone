@@ -191,7 +191,6 @@ export const WidgetFRInput = styled.div`
     &-box {
       background-color: ${greyThemeLighter};
       border: 1px solid ${greyThemeLight};
-      color: #6a737f;
       font-size: ${props => props.fontSize || "13px"};
       width: 100%;
       min-height: 40px;

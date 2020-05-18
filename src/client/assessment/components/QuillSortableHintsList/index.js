@@ -11,8 +11,8 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/
 import QuillSortableList from "../QuillSortableList";
 
 import { CustomStyleBtn } from "../../styled/ButtonStyles";
-import { ALPHABET } from "../../widgets/MultipleChoice/constants/alphabet";
 import { updateVariables } from "../../utils/variables";
+import { getFontSize } from "../../utils/helpers";
 import { Label } from "../../styled/WidgetOptions/Label";
 
 class QuillSortableHintsList extends Component {
@@ -46,7 +46,7 @@ class QuillSortableHintsList extends Component {
   };
 
   addNewChoiceBtn = () => {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
         draft.hints.push({
@@ -74,6 +74,7 @@ class QuillSortableHintsList extends Component {
     const { t, item } = this.props;
 
     if (!item.hints) return "";
+    const fontSize = getFontSize(item.uiStyle);
 
     return (
       <Fragment>
@@ -81,12 +82,13 @@ class QuillSortableHintsList extends Component {
         <QuillSortableList
           items={item.hints.map(o => o.label)}
           onSortEnd={this.onSortEnd}
-          prefix={"hints"}
+          prefix="hints"
           useDragHandle
           placeholder={t("component.enterHintForTheProblem")}
           defaultLabel={false}
           firstFocus={item.firstMount}
           onRemove={this.remove}
+          fontSize={fontSize}
           onChange={this.editOptions}
         />
 

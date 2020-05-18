@@ -1,5 +1,4 @@
 import { groupBy, difference, isEmpty } from "lodash";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
 import { FRACTION_FORMATS } from "../constants/constantsForQuestions";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -402,10 +401,6 @@ export const createStandardTextStyle = props => {
 
   return `
       font-size: ${fontSize};
-
-      @media screen and (max-width: ${mediumDesktopExactWidth}) {
-          font-size: ${props?.theme?.common?.smallFontSize || "12px"};
-      }
   `;
 };
 

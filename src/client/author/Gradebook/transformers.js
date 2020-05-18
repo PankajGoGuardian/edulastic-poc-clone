@@ -80,7 +80,7 @@ const getCuratedTestActivity = taGroup => {
     return {
       laDate,
       status: graded === "GRADED" ? "GRADED" : "SUBMITTED",
-      percentScore: `${Math.round(score / maxScore)}%`
+      percentScore: `${Math.round((100 * score) / maxScore)}%`
     };
   } else if (status === 2) {
     return { laDate, status: "ABSENT", percentScore: "0%" };

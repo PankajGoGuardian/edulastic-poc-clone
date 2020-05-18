@@ -122,8 +122,8 @@ const TableRow = ({
                   display: "flex",
                   alignItems: "baseline",
                   wordWrap: "break-word",
-                  width: get(item, "uiStyle.row_titles_width", "max-content"),
-                  height: get(item, "uiStyle.row_min_height", "auto")
+                  width: get(item, "uiStyle.rowTitlesWidth", "100px"),
+                  height: get(item, "uiStyle.rowMinHeight", "auto")
                 }}
                 dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
               />

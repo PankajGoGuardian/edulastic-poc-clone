@@ -71,14 +71,14 @@ class LayoutWrapper extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <RowTitlesWidthOption
-                onChange={val => changeUIStyle("row_titles_width", val)}
-                value={get(item, "uiStyle.row_titles_width", "100px")}
+                onChange={val => changeUIStyle("rowTitlesWidth", val)}
+                value={get(item, "uiStyle.rowTitlesWidth", "100px")}
               />
             </Col>
             <Col md={12}>
               <RowMinHeightOption
-                onChange={val => changeUIStyle("row_min_height", val)}
-                value={get(item, "uiStyle.row_min_height", "100px")}
+                onChange={val => changeUIStyle("rowMinHeight", val)}
+                value={get(item, "uiStyle.rowMinHeight", "100px")}
               />
             </Col>
           </Row>

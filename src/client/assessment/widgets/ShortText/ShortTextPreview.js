@@ -81,17 +81,26 @@ const ShortTextPreview = ({
   };
 
   const preview = previewTab === CHECK || previewTab === SHOW;
+  let background; // no background highlights initially
+
+  if (text.length && preview) {
+    /**
+     * if user has attempted attempted and in check/show answer mode
+     * only then add background highlights
+     */
+    if (evaluation === true) {
+      background = theme.widgets.shortText.correctInputBgColor;
+    } else {
+      background = theme.widgets.shortText.incorrectInputBgColor;
+    }
+  }
 
   const style = {
     paddingRight: 35,
     minHeight: 40,
     height: "auto",
     fontSize: theme.fontSize || getFontSize(get(item, "uiStyle.fontsize")),
-    ...(preview
-      ? evaluation
-        ? { background: theme.widgets.shortText.correctInputBgColor }
-        : { background: theme.widgets.shortText.incorrectInputBgColor }
-      : {})
+    background
   };
 
   const isCharacterMap = Array.isArray(item.characterMap) && !!item.characterMap.length;

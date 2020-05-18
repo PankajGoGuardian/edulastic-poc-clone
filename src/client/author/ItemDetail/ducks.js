@@ -987,10 +987,20 @@ export function* updateItemSaga({ payload }) {
       }
     }
     // return;
-    const [{ testId, ...item }] = yield all([
+    const [{ testId, ...item }, updatedPassage] = yield all([
       call(testItemsApi.updateById, payload.id, data, payload.testId),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null
     ]);
+    if (isPassageWithQuestions && !updatedPassage) {
+      throw new Error("Error while updating passage");
+    }
+    /**
+     * need to update the version and data of passage returned from API into the redux store
+     * for subsequent updates,
+     * to keep the version sync with the latest in the database
+     * @see https://snapwiz.atlassian.net/browse/EV-10507
+     */
+    yield put(updatePassageStructureAction(updatedPassage));
 
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,

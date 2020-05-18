@@ -184,7 +184,7 @@ class SideMenu extends Component {
         path: `author/playlists/playlist/${_id}/use-this`
       },
       ...rest
-    ];
+    ].filter(a => a); // the above logic results in undefined. TODO: Refactor
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`

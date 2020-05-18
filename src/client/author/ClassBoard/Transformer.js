@@ -538,6 +538,11 @@ export const transformGradeBookResponse = (
           displayStatus = "absent";
         }
 
+        // testItem containing only intstruction. qid="", !qids
+        // Redirect and submit. qid="...xyz", !qids
+        // on attempt qids=[...]
+        const isValidQuestionActivity = (x = {}) => (x.qids && x.qids.length && x.testActivityId) || x.qid;
+
         return {
           studentId,
           studentName: fullName,
@@ -554,7 +559,7 @@ export const transformGradeBookResponse = (
           score,
           testActivityId,
           redirected,
-          questionActivities,
+          questionActivities: questionActivities.filter(x => isValidQuestionActivity(x)),
           endDate: testActivity.endDate
         };
       }

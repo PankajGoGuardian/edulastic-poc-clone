@@ -86,11 +86,13 @@ function* loadTestActivityReport({ payload }) {
       testItemsIdArray: scratchpadUsedItems
     });
 
+    const _testItems = testItems.filter(({ data = {} }) => data.questions.length);
+
     yield put(loadQuestionsAction(_keyBy(questionsWithActivities, "id")));
     yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));
-    yield put(setTestItemsAction(testItems));
+    yield put(setTestItemsAction(_testItems));
     yield put(setPassagesDataAction(test.passages || []));
 
     const userWork = {};

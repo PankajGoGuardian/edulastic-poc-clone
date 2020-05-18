@@ -1,4 +1,4 @@
-import { backgroundGrey2, fadedGrey, greenDark, themeColor, whiteSmoke } from "@edulastic/colors";
+import { backgroundGrey2, fadedGrey, greenDark, themeColor, whiteSmoke, mobileWidthMax } from "@edulastic/colors";
 import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconClose, IconShare } from "@edulastic/icons";
@@ -325,7 +325,7 @@ class ShareModal extends React.Component {
             </RadioBtnWrapper>
             <FlexContainer style={{ marginTop: 5 }} justifyContent="flex-start">
               {sharedType === sharedKeysObj.INDIVIDUAL ? (
-                <SelectInputStyled
+                <IndividualSelectInputStyled
                   showSearch
                   placeholder="Enter names or email addresses"
                   data-cy="name-button-pop"
@@ -348,12 +348,12 @@ class ShareModal extends React.Component {
                       {`(${item._source.email})`}
                     </Select.Option>
                   ))}
-                </SelectInputStyled>
+                </IndividualSelectInputStyled>
               ) : (
                 <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
               )}
-              <SelectInputStyled
-                style={sharedType === sharedKeysObj.INDIVIDUAL ? { marginLeft: "10px" } : { display: "none" }}
+              <IndividualSelectInputStyled
+                style={sharedType === sharedKeysObj.INDIVIDUAL ? { marginLeft: "0px" } : { display: "none" }}
                 onChange={this.permissionHandler}
                 data-cy="permission-button-pop"
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
@@ -365,7 +365,7 @@ class ShareModal extends React.Component {
                     {permissions[item]}
                   </Select.Option>
                 ))}
-              </SelectInputStyled>
+              </IndividualSelectInputStyled>
             </FlexContainer>
           </PeopleBlock>
           <DoneButtonContainer>
@@ -504,6 +504,19 @@ const DoneButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
+const IndividualSelectInputStyled = styled(SelectInputStyled)`
+  &.ant-select {
+    &:nth-child(1) {
+      margin-right: 10px;
+    }
+    @media (max-width: ${mobileWidthMax}) {
+      width: 100%;
+      margin-top: 5px;
+      margin-right: 0px !important;
+    }
+  }
+`;
+
 const RadioBtnWrapper = styled(RadioInputWrapper)`
   font-weight: 600;
   margin: 10px 0px;
@@ -529,12 +542,15 @@ export const ShareUrlDiv = styled.div`
 export const TitleCopy = styled(Paragraph)`
   div:first-child {
     background-color: ${whiteSmoke};
-    display: flex;
+    display: block;
     width: 90%;
     border-radius: 4px;
     padding: 10px;
     border: 1px solid ${fadedGrey};
     color: #5d616f;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   &.ant-typography {
     color: ${themeColor};

@@ -59,7 +59,7 @@
     "@vx/text": "^0.0.183",
     "ace-builds": "^1.4.7",
     "antd": "^3.16.3",
-    "axios": "^0.18.0",
+    "axios": "^0.19.1",
     "babel-plugin-styled-components": "^1.10.6",
     "brace": "^0.11.1",
     "canvas": "^2.4.1",

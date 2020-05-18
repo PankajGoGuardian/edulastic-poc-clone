@@ -4,6 +4,8 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import MetadataPage from "../../../../framework/author/itemList/itemDetail/metadataPage";
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
+import { STEM, FONT_SIZE } from "../../../../framework/constants/questionAuthoring";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Drag & Drop" type question`, () => {
   const queData = {
@@ -65,7 +67,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .each(($el, index, $list) => {
             const cusIndex = $list.length - (index + 1);
             cy.wrap($list[cusIndex])
-              //.should("be.visible")
               .find(".main")
               .next()
               .click();
@@ -79,18 +80,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .as("group-check")
           .check({ force: true });
 
-        //.should("be.checked");
-
         cy.get("@group-check").should("be.checked");
 
         question
           .getAddedGroupTitle()
-          //.should("be.visible")
           .next()
           .click()
           .should("not.exist");
         cy.get("@group-check").uncheck({ force: true });
-        //.should("not.checked");
       });
 
       it(" > Add new choices", () => {
@@ -170,34 +167,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .getShuffleOptionCheck()
           .find("input")
           .should("be.checked");
-
-        question
-          .getResponseItemByIndex(0)
-          .parent()
-          .contains("div", queData.choices[1]);
-
-        question
-          .getResponseItemByIndex(0)
-          .parent()
-          .contains("div", queData.choices[2]);
+        question.header.preview();
+        question.verifyShuffledChoices(queData.choices);
+        question.header.edit();
 
         question.getShuffleOptionCheck().click();
         question
           .getShuffleOptionCheck()
           .find("input")
           .should("not.checked");
-
-        // question.setAnswerToResponseBox();
-
-        question
-          .getResponseItemByIndex(1)
-          .parent()
-          .contains("div", queData.choices[1]);
-
-        question
-          .getResponseItemByIndex(0)
-          .parent()
-          .contains("div", queData.choices[2]);
+        question.header.preview();
+        question.verifyShuffledChoices(queData.choices, false);
+        question.header.edit();
       });
 
       it(" > Click on + symbol", () => {
@@ -271,9 +252,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
       question.typeQuestionText(queData.testtext);
+      question.templateMarkupBar
+        .response()
+        .click({ force: true })
+        .then(() => {
+          question
+            .getTemplateEditor()
+            .find("response")
+            .should("be.visible");
+        });
       queData.choices.forEach((ch, index) => {
         question.getChoiceInputByIndex(index).type(`{selectall}${ch}`);
       });
+
+      question.setAnswerToResponseBox(queData.choices[0], 0, 0);
       editItem.header.saveAndgetId().then(id => {
         item_id = id;
         cy.saveItemDetailToDelete(id);
@@ -290,6 +282,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
         cy.visit(`author/items/${item_id}/item-detail`);
       });
       it(" > change text in textbox", () => {
+        cy.wait(5000);
         question.typeQuestionText(queData.editedtext);
         question.getTemplateEditor().should("contain", queData.editedtext);
 
@@ -312,7 +305,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .each(($el, index, $list) => {
             const cusIndex = $list.length - (index + 1);
             cy.wrap($list[cusIndex])
-              //.should("be.visible")
               .find(".main")
               .next()
               .click();
@@ -327,7 +319,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
             cy.get("@group-check").should("be.checked");
             question
               .getAddedGroupTitle()
-              //.should("be.visible")
               .next()
               .click()
               .should("not.exist");
@@ -409,18 +400,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .getShuffleOptionCheck()
           .find("input")
           .should("be.checked");
-
-        question.getResponseItemByIndex(0).contains(queData.choices[2]);
-        question.getResponseItemByIndex(1).contains(queData.choices[0]);
+        question.header.preview();
+        question.verifyShuffledChoices(queData.choices);
+        question.header.edit();
 
         question.getShuffleOptionCheck().click();
         question
           .getShuffleOptionCheck()
           .find("input")
           .should("not.checked");
-
-        question.getResponseItemByIndex(0).contains(queData.choices[0]);
-        question.getResponseItemByIndex(1).contains(queData.choices[2]);
+        question.header.preview();
+        question.verifyShuffledChoices(queData.choices);
+        question.header.edit();
       });
 
       it(" > Click on + symbol", () => {
@@ -463,35 +454,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       editItem.chooseQuestion(queData.group, queData.queType);
       question.getTemplateEditor().click();
       question.templateMarkupBar.response().click();
-      // question.templateMarkupBar.response().click();
     });
 
     afterEach(() => {
       preview = question.header.preview();
       preview.getClear().click();
       preview.header.edit();
-
-      // question.clickOnAdvancedOptions();
     });
 
-    // it(" > Test scoring with max score", () => {
-    //   // question.clickOnAdvancedOptions();
-
-    //   question.updatePoints(1);
-
-    //   preview = question.header.preview();
-
-    //   preview
-    //     .getCheckAnswer()
-    //     .click()
-    //     .then(() => {
-    //       question.checkExpectedScore("0/1");
-    //     });
-    // });
-
     it(" > Test scoring with alternate answer", () => {
-      // question.getMaxScore().clear();
-
       question.updatePoints(2);
       question.setAnswerToResponseBox(queData.forScoring[0], 0, 0);
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
@@ -508,61 +479,45 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[0], 0, 0);
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          question.checkExpectedScore("2/6");
-        });
+      preview.checkScore("2/6");
 
       preview.getClear().click();
 
       question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          question.checkExpectedScore("6/6");
-        });
+      preview.checkScore("6/6");
     });
 
-    // it(" > Test scoring with partial match, min score if attempted and penalty", () => {
-    //   question.clickOnAdvancedOptions();
+    it(" > Test scoring with partial match, Round down and penalty", () => {
+      question.clickOnAdvancedOptions();
 
-    //   question.getEnableAutoScoring().check({ force: true });
-    //   // question.getMinScore().type(1);
+      question.getEnableAutoScoring().check({ force: true });
 
-    //   question.selectScoringType("Partial match");
-    //   question.updatePenalty(4);
+      question.selectScoringType("Partial match");
+      question.selectRoundingType("Round down");
+      question.updatePenalty(3.5);
 
-    //   preview = question.header.preview();
+      preview = question.header.preview();
 
-    //   question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
-    //   question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
+      question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
+      question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
 
-    //   preview
-    //     .getCheckAnswer()
-    //     .click()
-    //     .then(() => {
-    //       question.checkExpectedScore("1/6");
-    //     });
+      preview.checkScore("1/6");
 
-    //   preview.header.edit();
-    //   question.clickOnAdvancedOptions();
-    //   question.updatePenalty(2);
-    //   editItem.header.preview();
+      preview.header.edit();
+      question.clickOnAdvancedOptions();
+      question.updatePenalty(2);
+      editItem.header.preview();
 
-    //   question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
-    //   question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
+      question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
+      question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
 
-    //   preview
-    //     .getCheckAnswer()
-    //     .click()
-    //     .then(() => {
-    //       question.checkExpectedScore("2/6");
-    //     });
-    // });
+      preview.checkScore("2/6");
+    });
   });
+
+  validateSolutionBlockTests(queData.group, queData.queType);
+
+  //TODO - Display Block Testing
 });

@@ -99,10 +99,10 @@ const Hints = ({
           validHints.map(
             ({ value, label }, index) =>
               index + 1 <= showCount && (
-                <HintItem key={value}>
+                <HintItem data-cy="hint-subcontainer" key={value}>
                   <LabelWrapper>
                     <HintLabel>
-                      <Label marginBottom="0px">{`${index + 1}/${hintCount}`}</Label>
+                      <Label data-cy="hint-count" marginBottom="0px">{`${index + 1}/${hintCount}`}</Label>
                     </HintLabel>
                   </LabelWrapper>
 
@@ -113,7 +113,9 @@ const Hints = ({
                       <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: label }} />
                     </HintContent>
                     {index + 1 === showCount && showCount < hintCount && (
-                      <ShowMoreHint onClick={showMoreHints}>+ Get Another Hint {`1/${hintCount}`}</ShowMoreHint>
+                      <ShowMoreHint data-cy="more-hint" onClick={showMoreHints}>
+                        + Get Another Hint {`1/${hintCount}`}
+                      </ShowMoreHint>
                     )}
                   </div>
                 </HintItem>

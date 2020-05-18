@@ -2,6 +2,7 @@ import EditToolBar from "../common/editToolBar";
 import TemplateMarkupBar from "../common/templateMarkUpBar";
 import Header from "../../itemDetail/header";
 import PreviewItemPage from "../../itemDetail/previewPage";
+import CypressHelper from "../../../../util/cypressHelpers";
 PreviewItemPage;
 class ClozeDragDropPage {
   constructor() {
@@ -10,6 +11,7 @@ class ClozeDragDropPage {
     this.templateMarkupBar = new TemplateMarkupBar();
     this.previewItemPage = new PreviewItemPage();
     this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
+    this.roundingType = { "Round down": "roundDown", None: "none" };
   }
 
   // template content
@@ -49,7 +51,6 @@ class ClozeDragDropPage {
       .contains("Enable auto scoring")
       .parent()
       .find("input");
-  // .should("be.visible");
 
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
@@ -62,6 +63,23 @@ class ClozeDragDropPage {
       .click({ force: true });
 
     cy.get('[data-cy="scoringType"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  selectRoundingType(option) {
+    const selectOp = `[data-cy="${this.roundingType[option]}"]`;
+    cy.get('[data-cy="rounding"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="rounding"]')
       .find(".ant-select-selection-selected-value")
       .should("contain", option);
 
@@ -89,6 +107,22 @@ class ClozeDragDropPage {
   getPanalty = () => cy.get('[data-cy="penalty"]'); //.should("be.visible");
 
   getResponseItemByIndex = index => cy.get(`#response-item-${index}`);
+
+  verifyShuffledChoices = (choices, shuffled = true) => {
+    const arrayOfchoices = [];
+    for (let i = 0; i < choices.length; i++) {
+      this.getResponseItemByIndex(i)
+        .invoke("text")
+        .then(txt => {
+          arrayOfchoices.push(txt);
+        });
+    }
+    cy.wait(1).then(() => {
+      console.log(arrayOfchoices, choices);
+      if (shuffled) CypressHelper.checkObjectInEquality(choices, arrayOfchoices, "choices are shuffled");
+      else CypressHelper.checkObjectEquality(choices, arrayOfchoices, "choices are not shuffled");
+    });
+  };
 
   getResponseContainerByIndex = itemIndex => cy.get(`#drop-container-${itemIndex}`);
 

@@ -3,10 +3,15 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { isEmpty, get, keyBy, omit } from "lodash";
 import * as moment from "moment";
-import { message } from "antd";
+import { message, Spin } from "antd";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
 
-import { receiveTestByIdAction, getTestSelector, getDefaultTestSettingsAction } from "../../../TestPage/ducks";
+import {
+  receiveTestByIdAction,
+  getTestSelector,
+  getDefaultTestSettingsAction,
+  getTestsLoadingSelector
+} from "../../../TestPage/ducks";
 
 import {
   fetchAssignmentsAction,
@@ -262,7 +267,7 @@ class AssignTest extends React.Component {
 
   render() {
     const { isAdvancedView, specificStudents, selectedDateOption } = this.state;
-    const { assignmentSettings: assignment } = this.props;
+    const { assignmentSettings: assignment, isTestLoading } = this.props;
     const {
       classList,
       fetchStudents,
@@ -280,7 +285,6 @@ class AssignTest extends React.Component {
     if (exactMenu?.to === "myPlaylist") {
       exactMenu.to = `playlists/playlist/${_id}/use-this`;
     }
-
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
@@ -296,15 +300,22 @@ class AssignTest extends React.Component {
           <FullFlexContainer justifyContent="space-between">
             <PaginationInfo>
               &lt; <AnchorLink to={`/author/${exactMenu?.to}`}>{exactMenu?.title}</AnchorLink>
-              &nbsp;/&nbsp;
-              <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}/${_id}#review`}>{title}</AnchorLink>
+              {!isTestLoading && (
+                <>
+                  &nbsp;/&nbsp;
+                  <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}/${_id}#review`}>{title}</AnchorLink>
+                </>
+              )}
               &nbsp;/&nbsp;
               <Anchor>Assign</Anchor>
             </PaginationInfo>
             {/* TODO there are some scenarios we have both simple and advance view which is yet be decided */}
           </FullFlexContainer>
-
-          {isAdvancedView ? (
+          {isTestLoading ? (
+            <div style={{ height: "70vh" }}>
+              <Spin />
+            </div>
+          ) : isAdvancedView ? (
             <AdvancedOptons
               assignment={assignment}
               updateOptions={this.updateAssignmentNew}
@@ -346,7 +357,8 @@ export default connect(
     testItem: getTestSelector(state),
     userRole: getUserRole(state),
     isAssigning: state.authorTestAssignments.isAssigning,
-    assignmentSettings: state.assignmentSettings
+    assignmentSettings: state.assignmentSettings,
+    isTestLoading: getTestsLoadingSelector(state)
   }),
   {
     loadClassList: receiveClassListAction,

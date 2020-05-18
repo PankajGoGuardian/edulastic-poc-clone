@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { getUserRole } from "../../src/selectors/user";
 import { ResouceIcon } from "./ResourceItem";
 import { FlexContainer } from "@edulastic/common";
+import { removeSubResourceAction } from "../ducks";
 
 const ResourceRow = ({
   isStudent,
@@ -63,9 +64,56 @@ const ResourceRow = ({
   );
 };
 
+function SubResourceView({
+  data: itemData = {},
+  mode,
+  urlHasUseThis,
+  deleteTest,
+  moduleIndex,
+  showResource,
+  itemIndex,
+  setEmbeddedVideoPreviewModal,
+  removeSubResource
+}) {
+  const viewResource = data => {
+    if (data.contentType === "lti_resource") showResource(data.contentId);
+    if (data.contentType === "website_resource") window.open(data.contentUrl, "_blank");
+    if (data.contentType === "video_resource")
+      setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.contentUrl });
+  };
+
+  return (
+    <FlexContainer width="100%" justifyContent="flex-start">
+      {itemData.resources.map(data => (
+        <ResourceWrapper style={{ marginRight: 5 }} onClick={() => viewResource(data)}>
+          <ResouceIcon type={data.contentType} isAdded />
+          <Title>{data.contentTitle}</Title>
+          {mode === "embedded" && (
+            <InlineDelete
+              onClick={e => {
+                e.stopPropagation();
+                removeSubResource({ moduleIndex, itemIndex, contentId: data.contentId });
+              }}
+            >
+              ✖
+            </InlineDelete>
+          )}
+        </ResourceWrapper>
+      ))}
+    </FlexContainer>
+  );
+}
+
 export const PlaylistResourceRow = connect(({ user }) => ({
   isStudent: getUserRole({ user }) === "student"
 }))(ResourceRow);
+
+export const SubResource = connect(
+  null,
+  {
+    removeSubResource: removeSubResourceAction
+  }
+)(SubResourceView);
 
 const ResourceWrapper = styled.div`
   display: flex;
@@ -75,6 +123,15 @@ const ResourceWrapper = styled.div`
   border-radius: 8px;
   padding: 6px;
   max-width: 90%;
+`;
+
+const InlineDelete = styled.span`
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 15px;
+  color: ${themeColor};
+  cursor: pointer;
 `;
 
 const Title = styled.div`

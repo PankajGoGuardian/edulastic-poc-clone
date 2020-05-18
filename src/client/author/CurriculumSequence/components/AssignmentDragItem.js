@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Dropdown, Icon, Button, Avatar } from "antd";
 import styled from "styled-components";
-import { DragSource } from "react-dnd";
+import { DragSource, useDrop } from "react-dnd";
 import { get } from "lodash";
 import { lightBlue, white, themeColor, testTypeColor } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
@@ -17,7 +17,7 @@ import {
   AssignmentIcon,
   AssignmentButton
 } from "./CurriculumModuleRow";
-import { PlaylistResourceRow } from "./PlaylistResourceRow";
+import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
 import { FlexContainer } from "@edulastic/common";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
 
@@ -47,6 +47,28 @@ function collect(connect, monitor) {
   };
 }
 
+function SubResourceDropContainer({ children, ...props }) {
+  const [{ isOver, contentType }, dropRef] = useDrop({
+    accept: "item",
+    collect: monitor => {
+      return {
+        isOver: !!monitor.isOver(),
+        contentType: monitor.getItem()?.contentType
+      };
+    },
+    drop: (item, monitor) => {
+      const { moduleIndex, itemIndex, addSubresource } = props;
+      addSubresource({ moduleIndex, itemIndex, item });
+    }
+  });
+
+  return (
+    <SupportResourceDropTarget {...props} ref={dropRef} active={isOver}>
+      {children}
+    </SupportResourceDropTarget>
+  );
+}
+
 /** @extends Component<Props> */
 class AssignmentDragItem extends Component {
   render() {
@@ -71,7 +93,10 @@ class AssignmentDragItem extends Component {
       showResource,
       userRole,
       urlHasUseThis,
-      setEmbeddedVideoPreviewModal
+      setEmbeddedVideoPreviewModal,
+      showSupportingResource,
+      addSubresource,
+      id
     } = this.props;
     const assignmentTestType = get(moduleData, "assignments.[0].testType", "");
     const _testType = get(moduleData, "testType", "");
@@ -92,6 +117,7 @@ class AssignmentDragItem extends Component {
               deleteTest={deleteTest}
               moduleIndex={moduleIndex}
               showResource={showResource}
+              itemIndex={id}
               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />
           ) : (
@@ -156,7 +182,25 @@ class AssignmentDragItem extends Component {
                   <TestStatus status={moduleData.status} view="tile" noMargin={!standardTags}>
                     {moduleData.status}
                   </TestStatus>
+
+                  {moduleData.contentType === "test" && showSupportingResource && (
+                    <SubResourceDropContainer moduleIndex={moduleIndex} addSubresource={addSubresource} itemIndex={id}>
+                      Supporting Resource
+                    </SubResourceDropContainer>
+                  )}
                 </FlexContainer>
+                {moduleData?.resources?.length > 0 && (
+                  <SubResource
+                    data={moduleData}
+                    mode={mode}
+                    urlHasUseThis
+                    deleteTest={deleteTest}
+                    moduleIndex={moduleIndex}
+                    itemIndex={id}
+                    showResource={showResource}
+                    setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                  />
+                )}
               </WrapperContainer>
               <AssignmentIconsHolder>
                 <AssignmentIcon marginRight="10px">
@@ -227,6 +271,33 @@ const Visualize = styled.span`
   min-width: 19px;
   cursor: pointer;
 `;
+
+export const SupportResourceDropTarget = styled.span`
+  display:inline-block;
+  height:22px;
+  margin-left:12px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  line-height: 22px;
+
+  background-image: linear-gradient(90deg, ${themeColor} 40%, transparent 60%), linear-gradient(90deg, ${themeColor} 40%, transparent 60%), linear-gradient(0deg, ${themeColor} 40%, transparent 60%), linear-gradient(0deg, ${themeColor} 40%, transparent 60%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+    background-position: left top, right bottom, left bottom, right   top;
+    ${props => (props?.active ? ` animation: border-dance 1s infinite linear;` : "")}
+  }
+  @keyframes border-dance {
+    0% {
+      background-position: left top, right bottom, left bottom, right   top;
+    }
+    100% {
+      background-position: left 15px top, right 15px bottom , left bottom 15px , right   top 15px;
+    }
+  }
+`;
+
 Visualize.displayName = "Visualize";
 
 const UnitIcon = styled.span`

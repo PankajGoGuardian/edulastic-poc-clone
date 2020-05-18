@@ -107,6 +107,8 @@ export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE = "[differentiation
 export const UPDATE_WORK_STATUS_DATA = "[differentiation] update work status data";
 
 export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
+export const PLAYLIST_ADD_SUBRESOURCE = "[playlist] add sub resource";
+export const PLAYLIST_REMOVE_SUBRESOURCE = "[playlist] remove sub resource";
 export const UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST =
   "[playlist] update destination curriculum sequence request";
 
@@ -157,7 +159,8 @@ export const dropPlaylistAction = createAction(DROP_PLAYLIST_ACTION);
 export const fetchPlaylistDroppedAccessList = createAction(FETCH_PLAYLIST_ACCESS_LIST);
 export const updateDroppedAccessList = createAction(UPDATE_DROPPED_ACCESS_LIST);
 export const addItemIntoPlaylistModuleAction = createAction(PLAYLIST_ADD_ITEM_INTO_MODULE);
-
+export const addSubresourceToPlaylistAction = createAction(PLAYLIST_ADD_SUBRESOURCE);
+export const removeSubResourceAction = createAction(PLAYLIST_REMOVE_SUBRESOURCE);
 export const fetchDifferentiationStudentListAction = createAction(FETCH_DIFFERENTIATION_STUDENT_LIST);
 export const updateDifferentiationStudentListAction = createAction(UPDATE_DIFFERENTIATION_STUDENT_LIST);
 export const fetchDifferentiationWorkAction = createAction(FETCH_DIFFERENTIATION_WORK);
@@ -1742,14 +1745,39 @@ export default createReducer(initialState, {
   [UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE]: (state, { payload }) => {
     state.isFetchingDifferentiationWork = payload;
   },
+  [PLAYLIST_REMOVE_SUBRESOURCE]: (state, { payload }) => {
+    const { moduleIndex, contentId, itemIndex } = payload;
+    if (state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex].resources) {
+      state.destinationCurriculumSequence.modules[moduleIndex].data[
+        itemIndex
+      ].resources = state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex].resources.filter(
+        x => x.contentId !== contentId
+      );
+    }
+  },
+  [PLAYLIST_ADD_SUBRESOURCE]: (state, { payload }) => {
+    const { moduleIndex, item, itemIndex } = payload;
+    const { id: contentId, contentType, type, fromPlaylistTestsBox, standardIdentifiers, status, ...itemObj } = item;
+    if (!state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex].resources) {
+      state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex].resources = [];
+    }
+    const resources = state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex].resources;
+    if (!resources.find(x => x.contentId === contentId)) {
+      resources.push({ contentId, contentType, ...itemObj });
+    }
+  },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
-    const { moduleIndex, item } = payload;
+    const { moduleIndex, item, afterIndex } = payload;
     const content = {
       ...item,
       standards: [],
       assignments: []
     };
-    state.destinationCurriculumSequence.modules[moduleIndex].data.push(content);
+    if (afterIndex || afterIndex === 0) {
+      state.destinationCurriculumSequence.modules[moduleIndex].data.splice(afterIndex + 1, 0, content);
+    } else {
+      state.destinationCurriculumSequence.modules[moduleIndex].data.push(content);
+    }
     state.destinationDirty = true;
   },
   [PLAYLIST_REORDER_TESTS]: (state, { payload }) => {

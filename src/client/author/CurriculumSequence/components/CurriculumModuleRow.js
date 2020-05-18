@@ -29,6 +29,7 @@ import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row as AntRow, messag
 import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import { useDrop } from "react-dnd";
 import { FaBars, FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -55,11 +56,12 @@ import {
   removeUnitAction,
   setSelectedItemsForAssignAction,
   toggleCheckedUnitItemAction,
-  togglePlaylistTestDetailsModalWithId
+  togglePlaylistTestDetailsModalWithId,
+  addSubresourceToPlaylistAction
 } from "../ducks";
 import { getProgressColor, getProgressData } from "../util";
-import AssignmentDragItem from "./AssignmentDragItem";
-import { PlaylistResourceRow } from "./PlaylistResourceRow";
+import AssignmentDragItem, { SupportResourceDropTarget } from "./AssignmentDragItem";
+import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
 
@@ -68,6 +70,50 @@ const SortableHOC = sortableContainer(({ children }) => (
     {children}
   </div>
 ));
+
+function OuterDropContainer({ index, children }) {
+  const [{ isOver, contentType }, dropRef] = useDrop({
+    accept: "item",
+    collect: monitor => {
+      return {
+        isOver: !!monitor.isOver(),
+        contentType: monitor.getItem()?.contentType
+      };
+    }
+  });
+  const showSupportingResource = contentType != "test" && isOver;
+  return (
+    <div ref={dropRef}>
+      {React.Children.map(children, child =>
+        React.cloneElement(child, { showNewActivity: isOver, showSupportingResource })
+      )}
+    </div>
+  );
+}
+
+function NewActivityTargetContainer({ children, ...props }) {
+  const [{ isOver, contentType }, dropRef] = useDrop({
+    accept: "item",
+    collect: monitor => {
+      return {
+        isOver: !!monitor.isOver(),
+        contentType: monitor.getItem()?.contentType
+      };
+    },
+    drop: (item, monitor) => {
+      const { moduleIndex, afterIndex, onDrop } = props;
+      if (onDrop) {
+        onDrop(moduleIndex, item, afterIndex);
+      }
+    }
+  });
+
+  return (
+    <NewActivityTarget {...props} ref={dropRef} active={isOver}>
+      {children}
+    </NewActivityTarget>
+  );
+}
 
 const SortableContainer = props => {
   const { mode, children } = props;
@@ -93,6 +139,7 @@ const SortableElement = sortableElement(props => {
       <AssignmentDragItem
         key={`${id}-${moduleData.id}`}
         contentIndex={id}
+        showSupportingResource={props.showSupportingResource}
         handleDrop={dropContent}
         onClick={e => e.stopPropagation()}
         {...props}
@@ -368,7 +415,8 @@ class ModuleRow extends Component {
       togglePlaylistTestDetails,
       customize,
       hasEditAccess,
-      setEmbeddedVideoPreviewModal
+      setEmbeddedVideoPreviewModal,
+      addSubresource
     } = this.props;
     const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
     const { assignModule, assignTest } = this;
@@ -647,24 +695,33 @@ class ModuleRow extends Component {
 
                   if (mode === "embedded") {
                     return (
-                      <SortableElement
-                        moduleData={moduleData}
-                        index={index}
-                        id={index}
-                        menu={menu}
-                        dropContent={dropContent}
-                        moreMenu={moreMenu}
-                        isAssigned={isAssigned}
-                        standardTags={moduleData.standardIdentifiers}
-                        assignTest={this.assignTest}
-                        viewTest={this.viewTest}
-                        deleteTest={this.deleteTest}
-                        onClick={e => e.stopPropagation()}
-                        showResource={this.showResource}
-                        urlHasUseThis={urlHasUseThis}
-                        setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                        {...this.props}
-                      />
+                      <OuterDropContainer>
+                        <SortableElement
+                          moduleData={moduleData}
+                          index={index}
+                          id={index}
+                          menu={menu}
+                          dropContent={dropContent}
+                          moreMenu={moreMenu}
+                          isAssigned={isAssigned}
+                          standardTags={moduleData.standardIdentifiers}
+                          assignTest={this.assignTest}
+                          viewTest={this.viewTest}
+                          deleteTest={this.deleteTest}
+                          onClick={e => e.stopPropagation()}
+                          showResource={this.showResource}
+                          urlHasUseThis={urlHasUseThis}
+                          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                          {...this.props}
+                        />
+                        <NewActivityTargetContainer
+                          moduleIndex={this.props.moduleIndex}
+                          afterIndex={index}
+                          onDrop={this.props.onDrop}
+                        >
+                          New activity
+                        </NewActivityTargetContainer>
+                      </OuterDropContainer>
                     );
                   }
                   return (
@@ -765,6 +822,14 @@ class ModuleRow extends Component {
                                       </TestStatus>
                                     )}
                                   </FlexContainer>
+                                  {moduleData?.resources?.length > 0 && (
+                                    <SubResource
+                                      data={moduleData}
+                                      urlHasUseThis={urlHasUseThis}
+                                      showResource={this.showResource}
+                                      setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                                    />
+                                  )}
                                 </ModuleDataWrapper>
                               </FirstColumn>
                               {urlHasUseThis ? (
@@ -1431,6 +1496,17 @@ const AssignmentInnerWrapper = styled.div`
 `;
 AssignmentInnerWrapper.displayName = "AssignmentInnerWrapper";
 
+const NewActivityTarget = styled(SupportResourceDropTarget)`
+  width: 300px;
+  text-align: center;
+  display: ${({ showNewActivity }) => (showNewActivity ? "block" : "none")};
+  height: 50px;
+  line-height: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 70px;
+`;
+
 const ModuleWrapper = styled.div`
   cursor: pointer;
   & {
@@ -1478,7 +1554,8 @@ const enhance = compose(
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction,
       updateCurriculumSequence: putCurriculumSequenceAction,
-      togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId
+      togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId,
+      addSubresource: addSubresourceToPlaylistAction
     }
   )
 );

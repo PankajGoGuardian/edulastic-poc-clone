@@ -148,7 +148,11 @@ class CurriculumContainer extends Component {
     searchCurriculumSequences(publisher);
   };
 
-  onDrop = (toModuleIndex, item) => {
+  onDrop = (toModuleIndex, item, afterIndex) => {
+    if (!item) {
+      //to avoid executing this on nested drop
+      return;
+    }
     const { destinationCurriculumSequence, moveContentInPlaylist, addIntoModule } = this.props;
     this.expandModule(toModuleIndex);
     if (item.fromPlaylistTestsBox) {
@@ -168,7 +172,7 @@ class CurriculumContainer extends Component {
           attrsToOmit.push("standardIdentifiers");
         }
         const newItem = omit(item, attrsToOmit);
-        addIntoModule({ item: newItem, moduleIndex: toModuleIndex });
+        addIntoModule({ item: newItem, moduleIndex: toModuleIndex, afterIndex });
       } else {
         message.error("Content already exists");
       }

@@ -51,7 +51,8 @@ const SortableItem = sortableElement(props => {
     playlistClassList,
     isManageContentActive,
     hasEditAccess,
-    setEmbeddedVideoPreviewModal
+    setEmbeddedVideoPreviewModal,
+    onDropOriginal
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -91,6 +92,7 @@ const SortableItem = sortableElement(props => {
           playlistClassList={playlistClassList}
           hasEditAccess={hasEditAccess}
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+          onDrop={onDropOriginal}
         />
       </DropContainer>
     </AssignmentItemContainer>
@@ -115,7 +117,14 @@ const Curriculum = props => {
       <Prompt when={manageContentDirty} message={loc => "Changes done here are not saved. Do you want to leave?"} />
       {modules &&
         modules.map((moduleItem, index) => (
-          <SortableItem moduleItem={moduleItem} index={index} id={index} onDrop={onDrop} {...props} />
+          <SortableItem
+            moduleItem={moduleItem}
+            index={index}
+            id={index}
+            onDrop={onDrop}
+            onDropOriginal={props.onDrop}
+            {...props}
+          />
         ))}
     </SortableContainer>
   );

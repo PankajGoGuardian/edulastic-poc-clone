@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
+
 import { withNamespaces } from "@edulastic/localization";
+
 import { getStemNumeration } from "../../../../utils/helpers";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
 import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
-import { MathSpan } from "@edulastic/common";
+import Response from "./Response";
 
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseIds = [], t, stemNumeration }) => {
   const getLabel = id => {
@@ -31,10 +33,10 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseI
       </CorrectAnswerTitle>
       <div>
         {responseIds.map(response => (
-          <div key={response.index} className="response-btn check-answer showanswer">
+          <div key={response.index} className="response-btn check-answer showanswer" style={{ "max-width": "100%" }}>
             <span className="index">{getStemNumeration(stemNumeration, response.index)}</span>
-            <span className="text">
-              <MathSpan dangerouslySetInnerHTML={{ __html: getLabel(response.id) }} />
+            <span className="text" style={{ "max-width": "100%" }}>
+              <Response key={response.id} id={response.id} answer={getLabel(response.id)} />
             </span>
           </div>
         ))}

@@ -298,7 +298,11 @@ class SideMenu extends Component {
       if (menuItem.customSelection && menuItem.condtition && locationState?.[menuItem.condtition]) {
         return true;
       }
-      return !menuItem.divider && menuItem.allowedPathPattern.some(path => !!history.location.pathname.match(path));
+      return (
+        menuItem &&
+        !menuItem.divider &&
+        menuItem.allowedPathPattern.some(path => !!history.location.pathname.match(path))
+      );
     });
 
     const isPublisher = features.isCurator || features.isPublisherAuthor;

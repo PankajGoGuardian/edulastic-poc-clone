@@ -9,13 +9,13 @@ import { Row, Col, Button } from "antd";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import { test as testTypes } from "@edulastic/constants";
+import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge } from "@edulastic/colors";
 import { themes } from "../../../theme";
 
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
 import { loadTestAction } from "../../../assessment/actions/test";
-import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge } from "@edulastic/colors";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type;
 class SummaryTest extends Component {
@@ -156,25 +156,32 @@ class SummaryTest extends Component {
                 </Row>
                 <QuestionBlock>
                   {itemIds.map((item, index) => {
-                    let returnObj = itemWiseQids[item].map((q, qIndex) => {
-                      const qInd = isDocBased
-                        ? qIndex + 1
-                        : `${index + 1}${
-                            itemWiseQids[item].length > 1
-                              ? `.${itemWiseQids[item].length <= 26 ? String.fromCharCode(97 + qIndex) : qIndex + 1}`
-                              : ""
-                          }`;
-                      return (
-                        <QuestionColorBlock
-                          data-cy={`Q${qInd}`}
-                          key={index * 100 + qIndex}
-                          type={questionList[q]}
-                          isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                          onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
-                        >
-                          <span> {qInd} </span>
-                        </QuestionColorBlock>
-                      );
+                    const returnObj = [];
+
+                    itemWiseQids[item].forEach((q, qIndex) => {
+                      const qInd = isDocBased ? qIndex + 1 : index + 1;
+
+                      const type = questionList[q];
+
+                      /**
+                       * to show only one question block per item, irrespective of item level scoring on/off.
+                       * comparing  if returnObj[0].prop.type is less than current type (by type 2,1,0).
+                       * so we can take the first question block (with the largest value of type) to show on UI.
+                       * issue: https://snapwiz.atlassian.net/browse/EV-13029
+                       */
+                      if (!returnObj[0] || returnObj[0].props.type < type) {
+                        returnObj[0] = (
+                          <QuestionColorBlock
+                            data-cy={`Q${qInd}`}
+                            key={index * 100 + qIndex}
+                            type={type}
+                            isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                            onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
+                          >
+                            <span> {qInd} </span>
+                          </QuestionColorBlock>
+                        );
+                      }
                     });
                     return returnObj;
                   })}

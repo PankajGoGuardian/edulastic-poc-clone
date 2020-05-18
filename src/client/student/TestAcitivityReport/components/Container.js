@@ -85,6 +85,7 @@ const ReportListContent = ({
               previouscratchPadDimensions={previouscratchPadDimensions}
               showScratchpadByDefault={showScratchpadByDefault}
               history={history}
+              itemLevelScoring={item?.itemLevelScoring}
             />
             {/* we may need to bring hint button back */}
             {/* <PaddingDiv>

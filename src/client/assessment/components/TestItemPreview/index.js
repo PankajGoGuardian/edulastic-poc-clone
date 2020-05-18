@@ -100,7 +100,7 @@ class TestItemPreview extends Component {
   };
 
   getFeedBackVisibility = ({ widgetIndex, colIndex, stackedView }) => {
-    const { isDocBased, isPassageWithQuestions } = this.props;
+    const { isDocBased, isPassageWithQuestions, isStudentReport } = this.props;
     let shouldShowFeedback;
     let shoudlTakeDimensionsFromStore;
 
@@ -120,6 +120,11 @@ class TestItemPreview extends Component {
          * will be fixed with EV-12830
          */
         shouldShowFeedback = widgetIndex === 0;
+        shoudlTakeDimensionsFromStore = false;
+        break;
+
+      case isStudentReport:
+        shouldShowFeedback = true;
         shoudlTakeDimensionsFromStore = false;
         break;
 
@@ -279,6 +284,7 @@ class TestItemPreview extends Component {
       dataSource = dataSource.filter(col => (col.widgets || []).length > 0);
     }
     const isSingleQuestionView = dataSource.flatMap(col => col.widgets).length === 1;
+    const { isStudentReport } = this.props;
     return (
       <ThemeProvider theme={{ ...themes.default, twoColLayout: theme?.twoColLayout }}>
         <div
@@ -356,6 +362,9 @@ class TestItemPreview extends Component {
                           testReviewStyle={{ height: fullHeight ? "100%" : "auto", paddingTop: 0 }}
                           showStackedView={showStackedView}
                           isPassageWithQuestions={isPassageWithQuestions}
+                          teachCherFeedBack={this.renderFeedback}
+                          isStudentReport={isStudentReport}
+                          itemLevelScoring={itemLevelScoring}
                         />
                         {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                       </>
@@ -396,7 +405,8 @@ class TestItemPreview extends Component {
             </FlexContainer>
           )}
         </div>
-        {!isReviewTab && (
+        {/* on the student side, show single feedback only when item level scoring is on */}
+        {((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
           <div style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}>
             {this.renderFeedbacks(showStackedView)}
           </div>

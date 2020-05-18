@@ -53,7 +53,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout, itemIndex, showStackedView, totalWidgets) => {
+  renderTabContent = (widget, flowLayout, itemIndex, showStackedView) => {
     const {
       preview,
       LCBPreviewModal,
@@ -67,12 +67,15 @@ class TestItemCol extends Component {
       col,
       isDocBased,
       testReviewStyle = {},
+      teachCherFeedBack,
+      itemLevelScoring,
+      isStudentReport,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const question = questions[widget.reference];
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
-    const { fullHeight, isPrintPreview } = restProps;
+    const { fullHeight } = restProps;
     if (!question) {
       return <div />;
     }
@@ -114,6 +117,8 @@ class TestItemCol extends Component {
           {...restProps}
           style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
         />
+        {/*  on the student side, show feedback for each question only when item level scoring is off */}
+        {isStudentReport && !itemLevelScoring && teachCherFeedBack(widget, null, null, showStackedView)}
       </TabContainer>
     );
   };

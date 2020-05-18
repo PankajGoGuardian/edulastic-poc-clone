@@ -1083,6 +1083,7 @@ const PseudoDiv = styled.div`
   line-height: 50px;
   text-align: center;
   text-transform: uppercase;
+  ${({ isCollapsed }) => isCollapsed && collapsedUserImagStyle}
 `;
 
 const Logo = styled(IconHeader)`

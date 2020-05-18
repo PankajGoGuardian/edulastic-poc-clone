@@ -1,23 +1,21 @@
-import styled from "styled-components";
-import { Table, Button, Tag } from "antd";
-import { testActivity } from "@edulastic/constants";
-import { IconDownEmptyArrow } from "@edulastic/icons";
 import {
-  mobileWidth,
-  mediumDesktopWidth,
-  cardTitleColor,
-  lightGreySecondary,
-  white,
   authorAssignment,
+  cardTitleColor,
+  desktopWidth,
+  extraDesktopWidthMax,
+  largeDesktopWidth,
+  lightGreySecondary,
+  mediumDesktopExactWidth,
+  mobileWidth,
+  testTypeColor,
   themeColor,
   title,
-  testTypeColor,
-  smallDesktopWidth,
-  extraDesktopWidthMax,
-  mediumDesktopExactWidth,
-  desktopWidth,
-  extraDesktopWidth
+  white
 } from "@edulastic/colors";
+import { testActivity } from "@edulastic/constants";
+import { IconDownEmptyArrow } from "@edulastic/icons";
+import { Button, Table, Tag } from "antd";
+import styled from "styled-components";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
 const {
@@ -73,13 +71,12 @@ export const Container = styled.div`
 `;
 
 export const Icon = styled.img`
-  @media (max-width: 1300px) {
+  width: 15px;
+  height: 15px;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
     width: 18px;
     height: 18px;
-  }
-  @media (max-width: 920px) {
-    width: 15px;
-    height: 15px;
   }
 `;
 
@@ -175,7 +172,13 @@ export const TableData = styled(Table)`
 
   .ant-table-tbody > tr > td {
     border-bottom: 1px solid #f2f3f2;
+    font-size: ${props => props.theme.linkFontSize};
   }
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.smallFontSize};
+  }
+
   .ant-table-tbody > tr.ant-table-expanded-row td {
     border-bottom: none;
   }
@@ -187,10 +190,10 @@ export const TableData = styled(Table)`
     bottom: 15px;
     top: auto;
   }
-
   .ant-table-row-expand-icon {
     display: none;
   }
+
   @media (max-width: ${mediumDesktopExactWidth}) and (min-width: ${desktopWidth}) {
     .ant-table-thead > tr > th,
     .ant-table-tbody > tr > td {
@@ -201,24 +204,16 @@ export const TableData = styled(Table)`
       padding-right: 0px;
     }
   }
-  @media (max-width: ${mediumDesktopWidth}) {
-    .ant-table-thead > tr > th {
-      font-size: ${props => props.theme.headerFilterFontSize};
-    }
-    .ant-table-tbody > tr > td {
-      font-size: ${props => props.theme.linkFontSize};
-    }
-  }
 `;
 
 export const TestThumbnail = styled.img`
   border-radius: 4px;
-  width: 50px;
+  width: 32px;
   height: 24px;
   margin-right: 5px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    width: 32px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    width: 50px;
   }
 `;
 
@@ -284,24 +279,24 @@ export const TypeIcon = styled.span`
 `;
 
 export const TypeWrapper = styled.span`
-  width: 125px;
+  width: 90px;
   display: flex;
   float: right;
   align-items: center;
   justify-content: flex-start;
 
-  @media (max-width: ${extraDesktopWidthMax}) {
+  @media (min-width: ${mediumDesktopExactWidth}) {
     width: 110px;
   }
-  @media (max-width: ${mediumDesktopWidth}) {
-    width: 90px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 125px;
   }
 `;
 
 export const TimedTestIndicator = styled.span`
   height: 18px;
-  max-width: 80px;
-  min-width: 80px;
+  max-width: 65px;
+  min-width: 65px;
   text-align: left;
   font-weight: 600;
   margin-left: 8px;
@@ -310,9 +305,9 @@ export const TimedTestIndicator = styled.span`
   svg {
     margin-right: 6px;
   }
-  @media (max-width: ${mediumDesktopWidth}) {
-    max-width: 65px;
-    min-width: 65px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    max-width: 80px;
+    min-width: 80px;
   }
 `;
 
@@ -348,7 +343,7 @@ export const ActionsWrapper = styled.div`
 export const GreyFont = styled.div`
   max-width: ${props => (props.showEllipsis ? "100px" : "auto")};
   color: ${title};
-  font-size: ${props => props.theme.bodyFontSize};
+  font-size: ${props => props.theme.linkFontSize};
   position: relative;
   left: ${({ left }) => left || 0}px;
   white-space: nowrap;
@@ -358,15 +353,15 @@ export const GreyFont = styled.div`
   &.class-column {
     white-space: initial;
     text-align: right;
-    padding-right: 50px;
+    padding-right: 20px;
     word-break: break-word;
-    @media (max-width: ${smallDesktopWidth}) {
-      padding-right: 20px;
+    @media (min-width: ${largeDesktopWidth}) {
+      padding-right: 50px;
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: ${props => props.theme.linkFontSize};
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.bodyFontSize};
   }
 `;
 
@@ -375,16 +370,17 @@ export const StatusLabel = styled(Tag)`
   background-color: ${({ status }) => defineStatusBg(status)};
   border-color: ${({ status }) => defineStatusBg(status)};
   color: ${white};
-  font-size: 0.7em;
+  font-size: 9px;
   min-width: 90px;
   border-radius: 5px;
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 9px;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 0.7em;
   }
 `;
 
 export const ExpandedTable = styled(Table)`
-  @media (max-width: 980px) {
+  @media (max-width: ${desktopWidth}) {
     margin-left: 13px;
     width: 97%;
     float: right;

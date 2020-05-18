@@ -3,6 +3,7 @@ import styled from "styled-components";
 // components
 import { Table } from "antd";
 import { Button } from "@edulastic/common";
+import { IconGraphRightArrow as Arrow } from "@edulastic/icons";
 
 // constants
 import { white, themeColor, lightGrey11, greyThemeDark1 } from "@edulastic/colors";
@@ -26,6 +27,27 @@ export const FilterButton = styled(Button)`
   svg:hover {
     fill: ${props => (props.showFilter ? white : themeColor)};
   }
+`;
+
+export const TableHeader = styled.div`
+  display: flex;
+  margin-left: -22px;
+`;
+
+export const LeftArrow = styled(Arrow)`
+  display: ${props => (props.disabled ? "none" : "block")};
+  transform: rotate(180deg);
+  position: fixed;
+  top: 50%;
+  cursor: pointer;
+`;
+
+export const RightArrow = styled(Arrow)`
+  display: ${props => (props.disabled ? "none" : "block")};
+  position: fixed;
+  right: 8px;
+  top: 50%;
+  cursor: pointer;
 `;
 
 export const TableContainer = styled.div`

@@ -10,7 +10,7 @@ import { IconInterface, IconFilter } from "@edulastic/icons";
 import GradebookFilters from "./GradebookFilters";
 import GradebookTable from "./GradebookTable";
 import GradebookStatusColors from "./GradebookStatusColors";
-import { FilterButton, TableContainer, TableFooter } from "./styled";
+import { FilterButton, TableHeader, TableContainer, TableFooter, LeftArrow, RightArrow } from "./styled";
 
 // ducks
 import { actions, selectors } from "../ducks";
@@ -29,16 +29,13 @@ const Gradebook = ({
   filters,
   setFilters,
   pageDetail,
-  setPageDetail,
-  countFlag,
-  setCountFlag
+  setPageDetail
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
     fetchFiltersData();
-    return () => setCountFlag(true);
   }, []);
 
   useEffect(() => {
@@ -46,13 +43,12 @@ const Gradebook = ({
   }, [filters]);
 
   useEffect(() => {
-    fetchGradebookData({ filters, pageDetail, countFlag });
-    countFlag && setCountFlag(false); // set countFlag to false after first load
+    fetchGradebookData({ filters, pageDetail });
   }, [pageDetail]);
 
   const curatedFiltersData = curateFiltersData(filtersData, filters);
   const [curatedData, assessmentsData] = curateGradebookData(gradebookData, filtersData);
-  const { studentsCount } = gradebookData;
+  const { studentsCount, assignmentsCount } = gradebookData;
 
   return (
     <div>
@@ -79,6 +75,19 @@ const Gradebook = ({
             <IconFilter width={20} height={20} />
           </FilterButton>
           <TableContainer showFilter={showFilter}>
+            <TableHeader>
+              <LeftArrow
+                onClick={() => setPageDetail({ ...pageDetail, assignmentPage: pageDetail.assignmentPage - 1 })}
+                disabled={pageDetail.assignmentPage === 1}
+              />
+              <RightArrow
+                onClick={() => setPageDetail({ ...pageDetail, assignmentPage: pageDetail.assignmentPage + 1 })}
+                disabled={
+                  assignmentsCount &&
+                  pageDetail.assignmentPage === Math.ceil(assignmentsCount / pageDetail.assignmentPageSize)
+                }
+              />
+            </TableHeader>
             <GradebookTable
               data={curatedData}
               assessments={assessmentsData}
@@ -115,15 +124,13 @@ const enhance = compose(
       loading: selectors.loading(state),
       gradebookData: selectors.gradebookData(state),
       filters: selectors.selectedFilters(state),
-      pageDetail: selectors.pageDetail(state),
-      countFlag: selectors.countFlag(state)
+      pageDetail: selectors.pageDetail(state)
     }),
     {
       fetchFiltersData: actions.fetchGradebookFiltersRequest,
       fetchGradebookData: actions.fetchStudentPerformanceRequest,
       setFilters: actions.setSelectedFilters,
-      setPageDetail: actions.setPageDetail,
-      setCountFlag: actions.setCountFlag
+      setPageDetail: actions.setPageDetail
     }
   )
 );

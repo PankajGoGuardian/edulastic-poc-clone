@@ -42,8 +42,7 @@ const slice = createSlice({
       studentPageSize: 50,
       assignmentPage: 1,
       assignmentPageSize: 10
-    },
-    countFlag: true
+    }
   },
   reducers: {
     fetchStudentPerformanceRequest: state => {
@@ -65,9 +64,6 @@ const slice = createSlice({
     },
     setPageDetail: (state, { payload }) => {
       state.pageDetail = payload;
-    },
-    setCountFlag: (state, { payload }) => {
-      state.countFlag = payload;
     }
   }
 });
@@ -78,7 +74,7 @@ export const { actions, reducer } = slice;
 // sagas
 function* fetchStudentPerformanceSaga({ payload }) {
   try {
-    const { filters, pageDetail, countFlag } = payload;
+    const { filters, pageDetail } = payload;
     const { assessmentIds, status, classIds, grades, subjects, termId, testType, groupId } = filters;
     const response = yield call(reportsApi.fetchStudentPerformance, {
       assessmentIds: assessmentIds.join(","),
@@ -89,8 +85,7 @@ function* fetchStudentPerformanceSaga({ payload }) {
       termId,
       testType,
       groupId,
-      ...pageDetail,
-      countFlag
+      ...pageDetail
     });
     yield put(actions.fetchStudentPerformanceCompleted(response));
   } catch (e) {
@@ -146,6 +141,5 @@ export const selectors = {
   filtersData: state => state?.gradebookReducer?.filtersData,
   gradebookData: state => state?.gradebookReducer?.performanceData,
   selectedFilters: state => state?.gradebookReducer?.selectedFilters,
-  pageDetail: state => state?.gradebookReducer?.pageDetail,
-  countFlag: state => state?.gradebookReducer?.countFlag
+  pageDetail: state => state?.gradebookReducer?.pageDetail
 };

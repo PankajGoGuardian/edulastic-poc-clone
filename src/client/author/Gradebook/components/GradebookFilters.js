@@ -21,6 +21,8 @@ const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
       value={value}
       maxTagCount={4}
       maxTagTextLength={10}
+      optionFilterProp="children"
+      getPopupContainer={triggerNode => triggerNode.parentNode}
     >
       {options.map(data => (
         <Select.Option key={data.id} value={data.id}>
@@ -40,7 +42,7 @@ const GradebookFilters = ({ data, filters, updateFilters, clearFilters }) => (
         </Col> */}
       <FilterDropdown
         label="Assessment"
-        mode="tags"
+        mode="multiple"
         onChange={selected => updateFilters({ ...filters, assessmentIds: selected })}
         value={filters.assessmentIds}
         options={data.assessments}
@@ -53,21 +55,21 @@ const GradebookFilters = ({ data, filters, updateFilters, clearFilters }) => (
       />
       <FilterDropdown
         label="Class"
-        mode="tags"
+        mode="multiple"
         onChange={selected => updateFilters({ ...filters, classIds: selected })}
         value={filters.classIds}
         options={data.classes}
       />
       <FilterDropdown
         label="Grade"
-        mode="tags"
+        mode="multiple"
         onChange={selected => updateFilters({ ...filters, grades: selected })}
         value={filters.grades}
         options={data.grades}
       />
       <FilterDropdown
         label="Subject"
-        mode="tags"
+        mode="multiple"
         onChange={selected => updateFilters({ ...filters, subjects: selected })}
         value={filters.subjects}
         options={data.subjects}

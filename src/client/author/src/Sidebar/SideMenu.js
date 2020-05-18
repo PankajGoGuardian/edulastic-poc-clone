@@ -165,7 +165,7 @@ class SideMenu extends Component {
       _menuItems = _menuItems.filter(i => ["Item Bank", "Test Library", "PlayList Library"].includes(i.label));
     }
 
-    if (!lastPlayList || !lastPlayList.value) return _menuItems;
+    if (!lastPlayList || !lastPlayList.value) return _menuItems.filter(a => a); // the above logic results in undefined. TODO: Refactor
 
     const [item1, ...rest] = _menuItems;
     const { _id = "" } = lastPlayList.value || {};

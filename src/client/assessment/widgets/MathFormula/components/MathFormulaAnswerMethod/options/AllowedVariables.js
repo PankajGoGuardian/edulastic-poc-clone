@@ -38,24 +38,26 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
             {t("component.math.allowedVariables")}
           </CheckboxLabel>
         </Col>
-        <Col span={24} marginBottom="0px">
-          <TextInputStyled
-            data-cy="allowed-variables"
-            size="large"
-            value={allowedVariables}
-            readOnly={!allowAllowedVariables}
-            onChange={onChangeHandler}
-            onBlur={e => {
-              onChange(
-                "allowedVariables",
-                (e.target.value || "")
-                  .split(",")
-                  .filter(el => !!el)
-                  .join()
-              );
-            }}
-          />
-        </Col>
+        {allowAllowedVariables && (
+          <Col span={24} marginBottom="0px">
+            <TextInputStyled
+              data-cy="allowed-variables"
+              size="large"
+              value={allowedVariables}
+              readOnly={!allowAllowedVariables}
+              onChange={onChangeHandler}
+              onBlur={e => {
+                onChange(
+                  "allowedVariables",
+                  (e.target.value || "")
+                    .split(",")
+                    .filter(el => !!el)
+                    .join()
+                );
+              }}
+            />
+          </Col>
+        )}
       </Row>
     </Col>
   );

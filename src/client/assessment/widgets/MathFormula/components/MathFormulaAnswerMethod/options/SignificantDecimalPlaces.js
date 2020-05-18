@@ -33,17 +33,19 @@ const SignificantDecimalPlacesPure = ({ options, onChange, t }) => {
             {t("component.math.significantDecimalPlaces")}
           </CheckboxLabel>
         </Col>
-        <Col span={24} marginBottom="0px">
-          <TextInputStyled
-            data-cy="answer-significant-decimal-places"
-            size="large"
-            type="number"
-            value={options.significantDecimalPlaces}
-            readOnly={!allowSignificantDecimalPlaces}
-            onChange={e => onChange("significantDecimalPlaces", e.target.value)}
-            min={0}
-          />
-        </Col>
+        {allowSignificantDecimalPlaces && (
+          <Col span={24} marginBottom="0px">
+            <TextInputStyled
+              data-cy="answer-significant-decimal-places"
+              size="large"
+              type="number"
+              value={options.significantDecimalPlaces}
+              readOnly={!allowSignificantDecimalPlaces}
+              onChange={e => onChange("significantDecimalPlaces", e.target.value)}
+              min={0}
+            />
+          </Col>
+        )}
       </Row>
     </Col>
   );

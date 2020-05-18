@@ -33,15 +33,17 @@ const TolerancePure = ({ options, onChange, t }) => {
             {t("component.math.tolerance")}
           </CheckboxLabel>
         </Col>
-        <Col span={24} marginBottom="0px">
-          <TextInputStyled
-            data-cy="answer-tolerance"
-            size="large"
-            value={options.tolerance}
-            readOnly={!allowTolerance}
-            onChange={e => onChange("tolerance", e.target.value)}
-          />
-        </Col>
+        {allowTolerance && (
+          <Col span={24} marginBottom="0px">
+            <TextInputStyled
+              data-cy="answer-tolerance"
+              size="large"
+              value={options.tolerance}
+              readOnly={!allowTolerance}
+              onChange={e => onChange("tolerance", e.target.value)}
+            />
+          </Col>
+        )}
       </Row>
     </Col>
   );

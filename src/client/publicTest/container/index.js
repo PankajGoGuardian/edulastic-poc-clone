@@ -12,6 +12,8 @@ import { startAssignmentAction, resumeAssignmentAction } from "../../student/Ass
 import { getUser } from "../../author/src/selectors/user";
 import { TokenStorage } from "@edulastic/api";
 import { formatAssignment } from "../utils";
+import { test as testConstants } from "@edulastic/constants";
+const releaseGradeLabels = testConstants.releaseGradeLabels;
 
 const PublicTestPage = ({
   match,
@@ -104,11 +106,14 @@ const PublicTestPage = ({
       attemptCount,
       lastAttempt,
       graded,
-      title
+      title,
+      releaseScore
     } = assignment;
-
     // if assignment is graded, then redirected to assignment review page
     if (graded) {
+      if (releaseScore === releaseGradeLabels.DONT_RELEASE) {
+        return history.push({ pathname: "/home/grades", state: { highlightAssignment: assignmentId } });
+      }
       return history.push({
         pathname: `/home/class/${classId}/test/${testId}/testActivityReport/${lastAttempt._id}`,
         testActivityId: lastAttempt._id,

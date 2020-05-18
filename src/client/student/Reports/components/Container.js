@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { Layout, Spin } from "antd";
 import { get } from "lodash";
 import { getCurrentGroup } from "../../Login/ducks";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
 
 // actions
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../ducks";
@@ -14,7 +16,15 @@ import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import NoDataNotification from "../../../common/components/NoDataNotification";
 import { smallDesktopWidth } from "@edulastic/colors";
 
-const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading, currentChild }) => {
+const Content = ({
+  flag,
+  assignments,
+  fetchAssignments,
+  currentGroup,
+  isLoading,
+  currentChild,
+  location: { state = {} }
+}) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
   }, [currentChild, currentGroup]);
@@ -22,6 +32,7 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading,
   if (isLoading) {
     return <Spin size="large" />;
   }
+  const { highlightAssignment } = state;
   return (
     <LayoutContent flag={flag}>
       <Wrapper>
@@ -29,7 +40,13 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading,
           <NoDataNotification heading="No Grades" description="You don't have any completed assignment." />
         ) : (
           assignments.map(item => (
-            <AssignmentCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} type="reports" />
+            <AssignmentCard
+              key={`${item._id}_${item.classId}`}
+              data={item}
+              classId={item.classId}
+              type="reports"
+              highlightMode={item._id === highlightAssignment}
+            />
           ))
         )}
       </Wrapper>
@@ -37,18 +54,23 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading,
   );
 };
 
-export default connect(
-  state => ({
-    flag: state.ui.flag,
-    currentGroup: getCurrentGroup(state),
-    isLoading: get(state, "studentAssignment.isLoading"),
-    assignments: getAssignmentsSelector(state),
-    currentChild: state?.user?.currentChild
-  }),
-  {
-    fetchAssignments: fetchAssignmentsAction
-  }
-)(Content);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      flag: state.ui.flag,
+      currentGroup: getCurrentGroup(state),
+      isLoading: get(state, "studentAssignment.isLoading"),
+      assignments: getAssignmentsSelector(state),
+      currentChild: state?.user?.currentChild
+    }),
+    {
+      fetchAssignments: fetchAssignmentsAction
+    }
+  )
+);
+
+export default enhance(Content);
 
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,

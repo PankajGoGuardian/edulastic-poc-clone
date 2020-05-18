@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect, useRef } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -87,13 +87,28 @@ const AssignmentCard = memo(
     type,
     classId,
     user: { role: userRole, _id: userId },
-    proxyUserRole
+    proxyUserRole,
+    highlightMode
   }) => {
     const [showAttempts, setShowAttempts] = useState(false);
     const toggleAttemptsView = () => setShowAttempts(prev => !prev);
     const { releaseGradeLabels } = testConstants;
     const [retakeConfirmation, setRetakeConfirmation] = useState(false);
     const [showRetakeModal, setShowRetakeModal] = useState(false);
+    const assignmentCardRef = useRef();
+
+    //case: when highlightMode is true i.e if want to highlight and assignment
+    //scoll to specific assignment view
+    useEffect(() => {
+      if (highlightMode) {
+        if (assignmentCardRef.current) {
+          scrollTo({
+            top: assignmentCardRef.current.parentNode.offsetTop,
+            behavior: "smooth"
+          });
+        }
+      }
+    }, [highlightMode]);
 
     let {
       test = {},
@@ -345,92 +360,94 @@ const AssignmentCard = memo(
     );
 
     return (
-      <CardWrapper data-cy={`test-${data.testId}`}>
-        {showRetakeModal && (
-          <ConfirmationModal
-            title="Retake Assignment"
-            visible={showRetakeModal}
-            destroyOnClose
-            onCancel={() => setShowRetakeModal(false)}
-            footer={[
-              <EduButton isGhost onClick={() => setShowRetakeModal(false)}>
-                Cancel
-              </EduButton>,
-              <EduButton data-cy="launch-retake" onClick={onRetakeModalConfirm}>
-                Launch
-              </EduButton>
-            ]}
-          >
-            <p>You are going to attempt the assignment again. Are you sure you want to Start?</p>
-          </ConfirmationModal>
-        )}
-        <AssessmentDetails
-          data-cy={`test-${data.testId}`}
-          title={title}
-          thumbnail={thumbnail}
-          theme={theme}
-          testType={testType}
-          t={t}
-          type={type}
-          started={attempted}
-          resume={resume}
-          dueDate={dueDate || endDate}
-          startDate={startDate}
-          safeBrowser={safeBrowser}
-          graded={graded}
-          absent={absent}
-          isPaused={isPaused}
-          lastAttempt={lastAttempt}
-          isDueDate={!!dueDate}
-        />
-        {timedAssignment && (
-          <TimeIndicator>
-            <Icon className="timerIcon" color={black} type={theme.assignment.cardTimeIconType} />
-            <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
-          </TimeIndicator>
-        )}
+      <CardWrapper data-cy={`test-${data.testId}`} highlightMode={highlightMode} id={`assignment_${data._id}`}>
+        <div ref={assignmentCardRef}>
+          {showRetakeModal && (
+            <ConfirmationModal
+              title="Retake Assignment"
+              visible={showRetakeModal}
+              destroyOnClose
+              onCancel={() => setShowRetakeModal(false)}
+              footer={[
+                <EduButton isGhost onClick={() => setShowRetakeModal(false)}>
+                  Cancel
+                </EduButton>,
+                <EduButton data-cy="launch-retake" onClick={onRetakeModalConfirm}>
+                  Launch
+                </EduButton>
+              ]}
+            >
+              <p>You are going to attempt the assignment again. Are you sure you want to Start?</p>
+            </ConfirmationModal>
+          )}
+          <AssessmentDetails
+            data-cy={`test-${data.testId}`}
+            title={title}
+            thumbnail={thumbnail}
+            theme={theme}
+            testType={testType}
+            t={t}
+            type={type}
+            started={attempted}
+            resume={resume}
+            dueDate={dueDate || endDate}
+            startDate={startDate}
+            safeBrowser={safeBrowser}
+            graded={graded}
+            absent={absent}
+            isPaused={isPaused}
+            lastAttempt={lastAttempt}
+            isDueDate={!!dueDate}
+          />
+          {timedAssignment && (
+            <TimeIndicator>
+              <Icon className="timerIcon" color={black} type={theme.assignment.cardTimeIconType} />
+              <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
+            </TimeIndicator>
+          )}
 
-        <ButtonAndDetail>
-          <DetailContainer>
-            <AttemptDetails isValidAttempt={isValidAttempt}>
-              {isValidAttempt && (
-                <React.Fragment>
-                  <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
-                    <span data-cy="attemptsCount">
-                      {attemptCount}/{maxAttempts || attemptCount}
-                    </span>
-                    <AttemptsTitle data-cy="attemptClick">
-                      {arrow} &nbsp;&nbsp;{t("common.attemps")}
-                    </AttemptsTitle>
-                  </Attempts>
-                  {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
-                </React.Fragment>
-              )}
-              {StartButtonContainer && (
-                <StyledActionButton
-                  isAssignment={type == "assignment"}
-                  isValidAttempt={isValidAttempt}
-                  sm={btnWrapperSize}
-                >
-                  {StartButtonContainer}
-                </StyledActionButton>
-              )}
-            </AttemptDetails>
-          </DetailContainer>
-          {showAttempts &&
-            newReports.map(attempt => (
-              <Attempt
-                key={attempt._id}
-                data={attempt}
-                activityReview={activityReview}
-                type={type}
-                releaseScore={releaseScore}
-                showReviewButton={showReviewButton}
-                releaseGradeLabels={releaseGradeLabels}
-                classId={attempt.groupId}
-              />
-            ))}
-        </ButtonAndDetail>
+          <ButtonAndDetail>
+            <DetailContainer>
+              <AttemptDetails isValidAttempt={isValidAttempt}>
+                {isValidAttempt && (
+                  <React.Fragment>
+                    <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
+                      <span data-cy="attemptsCount">
+                        {attemptCount}/{maxAttempts || attemptCount}
+                      </span>
+                      <AttemptsTitle data-cy="attemptClick">
+                        {arrow} &nbsp;&nbsp;{t("common.attemps")}
+                      </AttemptsTitle>
+                    </Attempts>
+                    {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
+                  </React.Fragment>
+                )}
+                {StartButtonContainer && (
+                  <StyledActionButton
+                    isAssignment={type == "assignment"}
+                    isValidAttempt={isValidAttempt}
+                    sm={btnWrapperSize}
+                  >
+                    {StartButtonContainer}
+                  </StyledActionButton>
+                )}
+              </AttemptDetails>
+            </DetailContainer>
+            {showAttempts &&
+              newReports.map(attempt => (
+                <Attempt
+                  key={attempt._id}
+                  data={attempt}
+                  activityReview={activityReview}
+                  type={type}
+                  releaseScore={releaseScore}
+                  showReviewButton={showReviewButton}
+                  releaseGradeLabels={releaseGradeLabels}
+                  classId={attempt.groupId}
+                />
+              ))}
+          </ButtonAndDetail>
+        </div>
       </CardWrapper>
     );
   }
@@ -461,18 +478,29 @@ AssignmentCard.propTypes = {
   theme: PropTypes.object.isRequired,
   startAssignment: PropTypes.func.isRequired,
   resumeAssignment: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  highlightMode: PropTypes.bool
 };
 
 const CardWrapper = styled(Row)`
   display: flex;
   padding: 25px 0px;
   border-bottom: 1px solid #f2f2f2;
-
+  ${({ highlightMode }) => highlightMode && `animation: inHighlight 5s;`};
   &:last-child {
     border-bottom: 0px;
   }
-
+  @keyframes inHighlight {
+    0% {
+      background-color: white;
+    }
+    50% {
+      background-color: #c9edda;
+    }
+    100% {
+      background-color: white;
+    }
+  }
   @media (max-width: ${extraDesktopWidth}) {
     padding: 20px 0px;
   }

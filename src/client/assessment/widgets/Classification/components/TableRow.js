@@ -115,14 +115,7 @@ const TableRow = ({
     if (hasRowTitle && rowTitles[index / colCount]) {
       cols.push(
         <Rnd position={{ x: rndX, y: rndY }} disableDragging={view !== EDIT} onDragStop={handleRowTitleDragStop}>
-          <RowTitleCol
-            key={index + startIndex + colCount}
-            colCount={colCount}
-            justifyContent="center"
-            width="100%"
-            padding="0"
-            marginTop="0"
-          >
+          <RowTitleCol key={index + startIndex + colCount} colCount={colCount} justifyContent="center" width="100%">
             {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
               <MathFormulaDisplay
                 style={{

@@ -115,7 +115,7 @@ const ListHeader = ({
             )}
             {userFeatures.gradebook && (
               <Link to="/author/gradebook">
-                <EduButton>VIEW GRADEBOOK</EduButton>
+                <EduButton isGhost>VIEW GRADEBOOK</EduButton>
               </Link>
             )}
             <Link to="/author/assignments/select">

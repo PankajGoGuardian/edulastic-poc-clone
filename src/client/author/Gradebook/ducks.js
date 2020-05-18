@@ -1,7 +1,7 @@
 import { message } from "antd";
 import { createSlice } from "redux-starter-kit";
 import { takeLatest, call, put, select } from "redux-saga/effects";
-import { reportsApi, assignmentApi } from "@edulastic/api";
+import { reportsApi, assignmentApi, groupApi } from "@edulastic/api";
 
 // imported selectors
 import { getUserOrgData } from "../src/selectors/user";
@@ -96,28 +96,27 @@ function* fetchStudentPerformanceSaga({ payload }) {
 
 function* fetchGradebookFiltersSaga() {
   try {
-    const { classList = [], terms = [] } = yield select(getUserOrgData);
     const { allGrades, allSubjects, testTypes: tTypes } = selectsData;
-    // assessments
-    const { assignments } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
-    const assessments = getUniqAssessments(assignments);
-    // classes & groups
-    const classes = [],
-      groups = [];
-    classList
-      .filter(c => c.active === 1)
-      .forEach(c => {
-        c.id = c._id;
-        c.type === "class" ? classes.push(c) : groups.push(c);
-      });
-    // terms
-    const termList = [{ id: "", name: "All" }, ...terms.map(t => ({ ...t, id: t._id }))];
     // grades
     const grades = allGrades.map(({ value, text }) => ({ id: value, name: text }));
     // subjects
     const subjects = allSubjects.filter(s => s.value).map(({ value, text }) => ({ id: value, name: text }));
     // testTypes
     const testTypes = tTypes.map(({ value, text }) => ({ id: value, name: text }));
+    // assessments
+    const { assignments } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
+    const assessments = getUniqAssessments(assignments);
+    // classes & groups
+    const classList = yield call(groupApi.fetchMyGroups);
+    const classes = [],
+      groups = [];
+    classList.forEach(c => {
+      c.id = c._id;
+      c.type === "class" ? classes.push(c) : groups.push(c);
+    });
+    // terms
+    const { terms = [] } = yield select(getUserOrgData);
+    const termList = [{ id: "", name: "All" }, ...terms.map(t => ({ ...t, id: t._id }))];
     // status
     const statusList = [{ id: "", name: "All" }, ...STATUS_LIST];
     // set filters data

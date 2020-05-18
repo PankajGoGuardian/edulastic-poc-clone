@@ -8,7 +8,7 @@ import { FlexContainer } from "@edulastic/common";
 import { STATUS_LIST } from "../transformers";
 
 const GradebookStatusColors = () => (
-  <FlexContainer padding="10px" width="600px" justifyContent="space-between">
+  <FlexContainer padding="10px 0" width="600px" justifyContent="space-between">
     {STATUS_LIST.map(item => (
       <FlexContainer key={`status_color_${item.id}`}>
         <Color color={item.color} />

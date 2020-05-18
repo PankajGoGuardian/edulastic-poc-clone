@@ -1,12 +1,13 @@
 import styled from "styled-components";
 
 // components
-import { Table } from "antd";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { Table, Col } from "antd";
 import { Button } from "@edulastic/common";
 import { IconGraphRightArrow as Arrow } from "@edulastic/icons";
 
 // constants
-import { white, themeColor, lightGrey11, greyThemeDark1 } from "@edulastic/colors";
+import { white, themeColor, fadedGrey, lightGrey11, greyThemeDark1 } from "@edulastic/colors";
 
 export const FilterButton = styled(Button)`
   min-width: 35px;
@@ -27,6 +28,12 @@ export const FilterButton = styled(Button)`
   svg:hover {
     fill: ${props => (props.showFilter ? white : themeColor)};
   }
+`;
+
+export const ScrollbarContainer = styled(PerfectScrollbar)`
+  padding: 0 20px 0 0;
+  width: auto;
+  height: ${props => props.height}px;
 `;
 
 export const TableHeader = styled.div`
@@ -52,8 +59,8 @@ export const RightArrow = styled(Arrow)`
 
 export const TableContainer = styled.div`
   max-height: 100%;
-  max-width: ${props => (props.showFilter ? "calc(100% - 220px)" : "100%")};
-  padding-left: ${props => (props.showFilter ? "50px" : "0px")};
+  max-width: ${props => (props.showFilter ? "calc(100% - 240px)" : "100%")};
+  padding-left: ${props => (props.showFilter ? "30px" : "0px")};
 `;
 
 export const TableFooter = styled.div`
@@ -167,4 +174,33 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+`;
+
+export const GroupItem = styled(Col)`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: ${props => props.padding};
+  svg {
+    path {
+      fill: ${props => props.isActive && themeColor};
+    }
+  }
+  &:hover,
+  &:focus {
+    background: ${fadedGrey};
+  }
+`;
+
+export const GroupItemLabel = styled.span`
+  font: ${props => props.fontStyle} Open Sans;
+  font-weight: ${props => props.weight || 600};
+  padding: ${props => props.padding};
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 80%;
+  text-transform: uppercase;
+  color: ${greyThemeDark1};
 `;

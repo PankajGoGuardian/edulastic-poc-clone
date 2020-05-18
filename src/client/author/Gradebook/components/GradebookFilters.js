@@ -33,7 +33,7 @@ const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
   </Col>
 );
 
-const GradebookFilters = ({ data, filters, updateFilters, clearFilters }) => (
+const GradebookFilters = ({ data, filters, updateFilters, clearFilters, onNewGroupClick }) => (
   <div style={{ minWidth: "220px", maxWidth: "220px" }}>
     <StyledRow type="flex">
       {/* <Col span={24} style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
@@ -87,6 +87,7 @@ const GradebookFilters = ({ data, filters, updateFilters, clearFilters }) => (
         options={data.testTypes}
       />
       <GroupsFilter
+        onNewGroupClick={onNewGroupClick}
         onClick={selected => updateFilters({ ...filters, groupId: selected })}
         current={filters.groupId}
         options={data.groups}

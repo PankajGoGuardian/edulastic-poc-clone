@@ -158,6 +158,14 @@ class ClassCreate extends React.Component {
 
     // pathList[2] determines the origin of the ClassCreate component
     switch (pathList[2]) {
+      case "gradebook":
+        breadCrumbData = [
+          {
+            title: "Gradebook",
+            to: "/author/gradebook"
+          }
+        ];
+        return [...breadCrumbData, createClassBreadCrumb];
       case "reports":
         breadCrumbData = [
           {

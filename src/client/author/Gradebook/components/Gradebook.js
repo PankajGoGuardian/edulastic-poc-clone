@@ -4,13 +4,22 @@ import { compose } from "redux";
 
 // components
 import { Link } from "react-router-dom";
-import { Spin, Pagination } from "antd";
+import { Spin, Pagination, Row } from "antd";
 import { MainHeader, MainContentWrapper, EduButton, withWindowSizes } from "@edulastic/common";
-import { IconInterface, IconFilter } from "@edulastic/icons";
+import { IconInterface, IconFilter, IconPlusCircle } from "@edulastic/icons";
 import GradebookFilters from "./GradebookFilters";
 import GradebookTable from "./GradebookTable";
 import GradebookStatusColors from "./GradebookStatusColors";
-import { FilterButton, TableHeader, TableContainer, TableFooter, LeftArrow, RightArrow } from "./styled";
+import {
+  FilterButton,
+  TableHeader,
+  TableContainer,
+  TableFooter,
+  ScrollbarContainer,
+  LeftArrow,
+  RightArrow
+} from "./styled";
+import AddToGroupModal from "../../Reports/common/components/Popups/AddToGroupModal";
 
 // ducks
 import { actions, selectors } from "../ducks";
@@ -33,6 +42,7 @@ const Gradebook = ({
 }) => {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
 
   useEffect(() => {
     fetchFiltersData();
@@ -48,14 +58,28 @@ const Gradebook = ({
 
   const curatedFiltersData = curateFiltersData(filtersData, filters);
   const [curatedData, assessmentsData] = curateGradebookData(gradebookData, filtersData);
-  const { studentsCount, assignmentsCount } = gradebookData;
+  const { students = [], studentsCount, assignmentsCount } = gradebookData;
+
+  const selectedStudents = students.filter(s => selectedRows.includes(s._id));
 
   return (
     <div>
+      <AddToGroupModal
+        groupType="custom"
+        visible={showAddToGroupModal}
+        onCancel={() => setShowAddToGroupModal(false)}
+        checkedStudents={selectedStudents}
+      />
       <MainHeader Icon={IconInterface} headingText="Gradebook" justify="space-between">
-        <Link to="/author/assignments">
-          <EduButton>VIEW ASSIGNMENTS</EduButton>
-        </Link>
+        <Row type="flex">
+          <Link to="/author/assignments">
+            <EduButton isGhost>VIEW ASSIGNMENTS</EduButton>
+          </Link>
+          <EduButton onClick={() => setShowAddToGroupModal(true)}>
+            <IconPlusCircle />
+            Add to Student Group
+          </EduButton>
+        </Row>
       </MainHeader>
       {loading || loadingFilters ? (
         <MainContentWrapper>
@@ -64,12 +88,15 @@ const Gradebook = ({
       ) : (
         <MainContentWrapper style={{ display: "inline-flex" }}>
           {showFilter && (
-            <GradebookFilters
-              data={curatedFiltersData}
-              filters={filters}
-              updateFilters={setFilters}
-              clearFilters={() => setFilters(INITIAL_FILTERS)}
-            />
+            <ScrollbarContainer height={windowHeight - 120}>
+              <GradebookFilters
+                data={curatedFiltersData}
+                filters={filters}
+                updateFilters={setFilters}
+                clearFilters={() => setFilters(INITIAL_FILTERS)}
+                onNewGroupClick={() => setShowAddToGroupModal(true)}
+              />
+            </ScrollbarContainer>
           )}
           <FilterButton showFilter={showFilter} onClick={() => setShowFilter(!showFilter)}>
             <IconFilter width={20} height={20} />

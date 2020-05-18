@@ -27,6 +27,8 @@ import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollme
 const getParentUrl = urlList => {
   // urlList[2] decides the origin of the createClass route
   switch (urlList[2]) {
+    case "gradebook":
+      return "/author/gradebook";
     case "reports":
       // equivalent to /author/reports/<report-type>
       return urlList.slice(0, 4).join("/");

@@ -90,13 +90,13 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
     if (type === "collections" && selectedCollection.length) {
       selectedCollection.forEach(c => {
         const tagTitle = c.text;
-        getTag(type, c, tagTitle, bodyArr, popOverArray, containerWidthObj);
+        getTag(type, c.value, tagTitle, bodyArr, popOverArray, containerWidthObj);
       });
     }
     if (type === "tags" && selectedTags.length) {
       selectedTags.forEach(t => {
         const tagTitle = t.tagName;
-        getTag(type, t, tagTitle, bodyArr, popOverArray, containerWidthObj);
+        getTag(type, t._id, tagTitle, bodyArr, popOverArray, containerWidthObj);
       });
     }
     if (type === "curriculumId") {

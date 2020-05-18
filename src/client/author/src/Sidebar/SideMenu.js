@@ -276,6 +276,7 @@ class SideMenu extends Component {
   render() {
     const { broken, isVisible } = this.state;
     const {
+      userId,
       switchDetails,
       windowWidth,
       history,
@@ -344,8 +345,7 @@ class SideMenu extends Component {
                 <IconSwitchUser /> {isCollapsed ? "" : "Switch Account"}
               </a>
             ) : (
-              // TODO
-              <Link to="/add-login-location">
+              <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser /> {isCollapsed ? "" : "Add Account"}
               </Link>
             )}
@@ -367,6 +367,7 @@ class SideMenu extends Component {
         ref={this.sideMenuRef}
       >
         <SwitchUserModal
+          userId={userId}
           switchUser={switchUser}
           showModal={this.state.showModal}
           closeModal={() => this.setState({ showModal: false })}
@@ -536,6 +537,7 @@ const enhance = compose(
       middleName: get(state.user, "user.middleName", ""),
       lastName: get(state.user, "user.lastName", ""),
       userRole: get(state.user, "user.role", ""),
+      userId: get(state.user, "user._id", ""),
       isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
       features: getUserFeatures(state),

@@ -138,7 +138,7 @@ class App extends Component {
     const isV1Redirect = location.pathname.includes("/fwd") || isLocationInTestRedirectRoutes(location);
     const kidPath = location.pathname.includes("/kid");
     if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect && !kidPath) {
-      fetchUser();
+      fetchUser({ addAccount: query.addAccount, userId: query.userId });
     } else if (
       publicPath &&
       (location.pathname.split("/").includes("view-test") || isLocationInTestRedirectRoutes(location)) &&

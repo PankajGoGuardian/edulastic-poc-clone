@@ -170,6 +170,7 @@ class SideMenu extends Component {
   render() {
     const { broken, isVisible } = this.state;
     const {
+      userId,
       switchDetails,
       windowWidth,
       currentPath,
@@ -208,8 +209,7 @@ class SideMenu extends Component {
                 <IconSwitchUser /> {isSidebarCollapsed ? "" : "Switch Accounts"}
               </a>
             ) : (
-              //TODO
-              <Link to="/add-login-location">
+              <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser /> {isSidebarCollapsed ? "" : "Add Accounts"}
               </Link>
             )}
@@ -227,6 +227,7 @@ class SideMenu extends Component {
     return (
       <>
         <SwitchUserModal
+          userId={userId}
           switchUser={switchUser}
           showModal={this.state.showModal}
           closeModal={() => this.setState({ showModal: false })}
@@ -386,6 +387,7 @@ const enhance = compose(
       firstName: user?.user?.firstName || "",
       middleName: get(user, "user.middleName", ""),
       lastName: get(user, "user.lastName", ""),
+      userId: get(user, "user._id", ""),
       isSidebarCollapsed: ui.isSidebarCollapsed,
       zoomLevel: ui.zoomLevel,
       profileThumbnail: get(user, "user.thumbnail"),

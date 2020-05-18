@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Modal } from "antd";
 import styled from "styled-components";
 import { EduButton } from "@edulastic/common";
@@ -42,7 +43,7 @@ const StyledDiv = styled.div`
     color: #fff;
   }
 `;
-const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, switchUser }) => {
+const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userId, switchUser }) => {
   return (
     <Modal title="Switch User" visible={showModal} onCancel={closeModal} footer={null}>
       <div>
@@ -66,9 +67,11 @@ const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, switc
         </div>
       </div>
       <ButtonsContainer>
-        <Button isGhost onClick={() => console.log("TODO")}>
-          <IconPlusCircle /> Add another account
-        </Button>
+        <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
+          <Button isGhost>
+            <IconPlusCircle /> Add another account
+          </Button>
+        </Link>
       </ButtonsContainer>
     </Modal>
   );

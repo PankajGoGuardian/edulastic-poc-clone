@@ -130,6 +130,8 @@ export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
 export const fetchUserFailureAction = createAction(FETCH_USER_FAILURE);
 
 const initialState = {
+  addAccount: false,
+  userId: null,
   isAuthenticated: false,
   authenticating: true,
   signupStatus: 0,
@@ -202,8 +204,12 @@ export default createReducer(initialState, {
   },
   [FETCH_USER]: (state, { payload }) => {
     if (!payload?.background) {
-      state.authenticating = true;
+      state.authenticating = state.authenticating = payload?.addAccount === "true" ? false : true;
       state.isAuthenticated = false;
+    }
+    if (payload?.addAccount === "true") {
+      state.addAccount = true;
+      state.userId = payload.userId;
     }
   },
   [FETCH_USER_FAILURE]: state => {
@@ -422,6 +428,16 @@ export const proxyRole = createSelector(
   proxyRole => proxyRole
 );
 
+export const getAddAccount = createSelector(
+  ["user.addAccount"],
+  addAccount => addAccount
+);
+
+export const getAddAccountUserId = createSelector(
+  ["user.userId"],
+  userId => userId
+);
+
 const routeSelector = state => state.router.location.pathname;
 
 function getCurrentFirebaseUser() {
@@ -442,11 +458,20 @@ function* login({ payload }) {
   }
 
   try {
+    const addAccount = yield select(getAddAccount);
+    const addAccountTo = yield select(getAddAccountUserId);
+    if (addAccount === true) {
+      _payload.addAccountTo = addAccountTo;
+    }
     const result = yield call(authApi.login, _payload);
     const user = pick(result, userPickFields);
     const firebaseUser = yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
     //console.log(firebaseUser); // remove it while merging in dev
-    TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
+    if (addAccount === true) {
+      TokenStorage.storeAccessToken(result.token, user._id, user.role, false);
+    } else {
+      TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
+    }
     TokenStorage.selectAccessToken(user._id, user.role);
     TokenStorage.updateKID(user.kid);
     yield put(setUserAction(user));
@@ -651,7 +676,7 @@ const getLoggedOutUrl = () => {
   return "/login";
 };
 
-export function* fetchUser() {
+export function* fetchUser({ payload }) {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
@@ -659,6 +684,10 @@ export function* fetchUser() {
         localStorage.setItem("loginRedirectUrl", getCurrentPath());
       }
       yield put(push(getLoggedOutUrl()));
+      return;
+    }
+    if (payload && payload.addAccount === "true") {
+      yield put(push("/login"));
       return;
     }
     const firebaseUser = yield call(getCurrentFirebaseUser);

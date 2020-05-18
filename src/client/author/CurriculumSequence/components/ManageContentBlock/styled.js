@@ -7,9 +7,13 @@ import {
   mediumDesktopExactWidth,
   playlistTabLink,
   smallDesktopWidth,
+  desktopWidth,
   themeColor,
-  white
+  white,
+  secondaryTextColor,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
+import { IconSearch } from "@edulastic/icons";
 import { Modal } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
@@ -18,22 +22,24 @@ export const ManageContentOuterWrapper = styled.div`
   width: 400px;
   border-radius: 4px;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     width: 340px;
   }
   @media (max-width: ${smallDesktopWidth}) {
     position: fixed;
     right: 0px;
-    top: 62px;
+    top: ${props => props.theme.HeaderHeight.md}px;
     min-height: calc(100vh - 62px);
     max-height: calc(100vh - 62px);
     background: white;
-    padding: 15px;
-    border: 1px solid ${greyThemeLight};
 
     .inner-wrapper {
       overflow: auto;
     }
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    top: ${props => props.theme.HeaderHeight.xs}px;
   }
 `;
 
@@ -63,9 +69,8 @@ export const ToggleManageContent = styled.div`
 
 export const ManageContentContainer = styled.div`
   width: 100%;
-  margin: 20px 0px;
   background: ${white};
-  padding: 10px 20px;
+  padding: 20px;
   border-radius: 10px;
   border: 1px solid ${borderGrey4};
 
@@ -95,6 +100,10 @@ export const ManageContentContainer = styled.div`
   @media (max-width: ${mediumDesktopExactWidth}) {
     padding: 10px 15px;
   }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    border-radius: 0px;
+  }
 `;
 
 export const SearchByNavigationBar = styled.div`
@@ -107,7 +116,7 @@ export const SearchByTab = styled.div`
   padding: 0px 6px 10px 6px;
   margin: 0px 20px 2px 0px;
   color: ${({ isTabActive }) => (isTabActive ? themeColor : playlistTabLink)};
-  border-bottom: ${({ isTabActive }) => isTabActive && "1px solid " + themeColor};
+  border-bottom: ${({ isTabActive }) => isTabActive && `1px solid ${themeColor}`};
   text-transform: uppercase;
   font-size: 11px;
   font-weight: 600;
@@ -115,17 +124,49 @@ export const SearchByTab = styled.div`
   user-select: none;
 `;
 
-export const SearchBar = styled.input`
-  border: 1px solid ${greyThemeLight};
-  width: 305px;
-  height: 40px;
-  margin: 10px 6px 2px 0px;
-  padding: 10px;
-  background: ${backgrounds?.default};
-  outline: none;
+export const ManageContentLabel = styled.div`
+  color: ${secondaryTextColor};
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-weight: 600;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 11px;
+  }
 `;
 
-export const FilterBtn = styled.div`
+export const SearchBoxContainer = styled.div`
+  position: relative;
+  margin-right: 5px;
+  flex: 1;
+`;
+
+export const SearchIcon = styled(IconSearch)`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+`;
+
+export const SearchBar = styled.input`
+  height: 40px;
+  padding: 10px;
+  padding-right: 25px;
+  border-radius: 2px;
+  border: 1px solid ${greyThemeLight};
+  background: ${backgrounds?.default};
+  outline: none;
+  width: 100%;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    height: 38px;
+    font-size: 11px;
+  }
+`;
+
+export const ActionButton = styled.div`
   width: 40px;
   height: 40px;
   border: 1px solid ${themeColor};
@@ -134,9 +175,18 @@ export const FilterBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
   cursor: pointer;
   user-select: none;
+  margin-right: 5px;
+
+  &:last-child {
+    margin-right: 0px;
+  }
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    height: 38px;
+    width: 38px;
+  }
 `;
 
 export const ActionsContainer = styled.div`
@@ -175,7 +225,7 @@ export const ManageModuleBtn = styled.div`
 `;
 
 export const ResourceDataList = styled.div`
-  height: calc(100vh - 295px);
+  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 325px)" : "calc(100vh - 380px)")};
   margin-bottom: 20px;
   overflow: auto;
   display: flex;
@@ -196,6 +246,13 @@ export const ResourceDataList = styled.div`
 
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 142}px)`};
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 142}px)`};
   }
 `;
 

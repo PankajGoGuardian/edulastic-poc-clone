@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import moment from "moment";
-import { themeColorLighter, greyThemeDark1, titleColor } from "@edulastic/colors";
+import styled from "styled-components";
+import { extraDesktopWidthMax, themeColorLighter, greyThemeDark1, titleColor } from "@edulastic/colors";
 import { PieChart, Pie, Sector, Cell } from "recharts";
 import { StyledProgressDiv, StyledProgress, GraphDescription } from "../../ClassBoard/components/ProgressGraph/styled";
 
@@ -34,10 +35,19 @@ const renderActiveShape = props => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={5} font-size="30" font-weight="bold" textAnchor="middle" color={titleColor}>
+      <text
+        x={cx}
+        y={cy}
+        dy={5}
+        className="hour-text"
+        fontSize="30"
+        fontWeight="bold"
+        textAnchor="middle"
+        color={titleColor}
+      >
         {formattedTime[0]}
       </text>
-      <text x={cx} y={cy} dy={22} font-size="13" textAnchor="middle" color={greyThemeDark1}>
+      <text x={cx} y={cy} dy={22} fontSize="13" textAnchor="middle" color={greyThemeDark1} className="min-text">
         {formattedTime[1]}
       </text>
       <Sector
@@ -57,13 +67,13 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showTotalTime, setDefaultTimeSpent] = useState(true);
 
-  const onPieEnter = (data, index) => {
+  const onPieEnter = (_data, index) => {
     setDefaultTimeSpent(false);
     setActiveIndex(index);
   };
 
-  let maxSliceIndex = 0,
-    chartData = data?.filter(ele => ele?.tSpent !== 0 && !(ele?.hidden && isStudent));
+  let maxSliceIndex = 0;
+  let chartData = data?.filter(ele => ele?.tSpent !== 0 && !(ele?.hidden && isStudent));
 
   // find maxSliceIndex and set value = tSpent
   chartData = chartData?.map((ele, idx) => {
@@ -74,7 +84,7 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
   });
 
   return chartData.length ? (
-    <StyledProgressDiv>
+    <ChartContainer>
       <PieChart width={315} height={250}>
         <Pie
           activeIndex={activeIndex}
@@ -95,9 +105,9 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
           ))}
         </Pie>
       </PieChart>
-    </StyledProgressDiv>
+    </ChartContainer>
   ) : (
-    <StyledProgressDiv>
+    <ChartContainer>
       <StyledProgress
         className="noProgress"
         strokeLinecap="square"
@@ -115,7 +125,24 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
       <GraphDescription size="13px" color={greyThemeDark1}>
         0 MINS
       </GraphDescription>
-    </StyledProgressDiv>
+    </ChartContainer>
   );
 };
+
 export default SummaryPieChart;
+
+const ChartContainer = styled(StyledProgressDiv)`
+  @media (max-width: ${extraDesktopWidthMax}) {
+    & .recharts-layer tspan {
+      font-size: 10px;
+    }
+
+    & .hour-text {
+      font-size: 29px;
+    }
+
+    & .min-text {
+      font-size: 10px;
+    }
+  }
+`;

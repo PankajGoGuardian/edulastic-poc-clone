@@ -9,7 +9,7 @@ import {
   white,
   grey,
   lightGreen6,
-  mediumDesktopExactWidth
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { Dropdown, Tag } from "antd";
 
@@ -24,7 +24,8 @@ const Tags = ({
   margin,
   showTitle = false,
   isGrayTags,
-  isCustomTags
+  isCustomTags,
+  flexWrap
 }) => {
   if (!tags.length) return null;
 
@@ -43,7 +44,7 @@ const Tags = ({
   );
 
   return (
-    <Labels completed={completed} isPlaylist={isPlaylist} margin={margin}>
+    <Labels completed={completed} isPlaylist={isPlaylist} margin={margin} flexWrap={flexWrap}>
       {visibleTags.map((tag, i) => (
         <Label
           className={className}
@@ -103,7 +104,7 @@ const getLabelStyle = type => {
 
 const Labels = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
   align-items: ${({ isPlaylist }) => isPlaylist && "flex-start"};
   justify-content: ${({ isPlaylist }) => isPlaylist && "flex-start"};
   width: ${({ isPlaylist }) => isPlaylist && "auto"};
@@ -155,8 +156,9 @@ const Label = styled(Tag)`
     overflow: hidden;
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 8px;
+    height: 20px;
     padding: 2px 10px;
   }
 `;

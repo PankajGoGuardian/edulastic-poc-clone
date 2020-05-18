@@ -20,9 +20,10 @@ import {
   themeColorLighter,
   titleColor,
   white,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
-import { EduButton, ProgressBar, FlexContainer } from "@edulastic/common";
+import { EduButton, ProgressBar, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVerified, IconVisualization } from "@edulastic/icons";
 import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row as AntRow, message } from "antd";
@@ -46,7 +47,7 @@ import additemsIcon from "../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
-import { StyledLabel, StyledTag, HideLinkLabel } from "../../Reports/common/styled";
+import { StyledLabel, StyledTag, HideLinkLabel, InfoColumnLabel } from "../../Reports/common/styled";
 import { StatusLabel } from "../../Assignments/components/TableList/styled";
 import Tags from "../../src/components/common/Tags";
 import { getUserRole } from "../../src/selectors/user";
@@ -65,21 +66,15 @@ import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
 
-const SortableHOC = sortableContainer(({ children }) => (
-  <div style={{ marginLeft: "30px" }} onClick={e => e.stopPropagation()}>
-    {children}
-  </div>
-));
+const SortableHOC = sortableContainer(({ children }) => <div onClick={e => e.stopPropagation()}>{children}</div>);
 
-function OuterDropContainer({ index, children }) {
+function OuterDropContainer({ children }) {
   const [{ isOver, contentType }, dropRef] = useDrop({
     accept: "item",
-    collect: monitor => {
-      return {
-        isOver: !!monitor.isOver(),
-        contentType: monitor.getItem()?.contentType
-      };
-    }
+    collect: monitor => ({
+      isOver: !!monitor.isOver(),
+      contentType: monitor.getItem()?.contentType
+    })
   });
   const showSupportingResource = contentType != "test" && isOver;
   return (
@@ -92,15 +87,13 @@ function OuterDropContainer({ index, children }) {
 }
 
 function NewActivityTargetContainer({ children, ...props }) {
-  const [{ isOver, contentType }, dropRef] = useDrop({
+  const [{ isOver }, dropRef] = useDrop({
     accept: "item",
-    collect: monitor => {
-      return {
-        isOver: !!monitor.isOver(),
-        contentType: monitor.getItem()?.contentType
-      };
-    },
-    drop: (item, monitor) => {
+    collect: monitor => ({
+      isOver: !!monitor.isOver(),
+      contentType: monitor.getItem()?.contentType
+    }),
+    drop: item => {
       const { moduleIndex, afterIndex, onDrop } = props;
       if (onDrop) {
         onDrop(moduleIndex, item, afterIndex);
@@ -117,11 +110,7 @@ function NewActivityTargetContainer({ children, ...props }) {
 
 const SortableContainer = props => {
   const { mode, children } = props;
-  return mode === "embedded" ? (
-    <SortableHOC {...props}>{children}</SortableHOC>
-  ) : (
-    <div style={{ marginLeft: "30px" }}>{children}</div>
-  );
+  return mode === "embedded" ? <SortableHOC {...props}>{children}</SortableHOC> : <div>{children}</div>;
 };
 
 const SortableHandle = sortableHandle(() => (
@@ -171,8 +160,7 @@ class ModuleRow extends Component {
   state = {
     showModal: false,
     selectedTest: "",
-    currentAssignmentId: [],
-    showResourceModal: false
+    currentAssignmentId: []
   };
 
   /**
@@ -195,7 +183,7 @@ class ModuleRow extends Component {
   };
 
   assignTest = (moduleId, testId) => {
-    const { history, playlistId, location } = this.props;
+    const { history, playlistId } = this.props;
     history.push({
       pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
       state: { from: "myPlaylist", fromText: "My Playlist", toUrl: `/author/playlists/playlist/${playlistId}/use-this` }
@@ -210,13 +198,7 @@ class ModuleRow extends Component {
   };
 
   deleteTest = (moduleIndex, itemId) => {
-    const {
-      removeItemFromUnit,
-      removeItemFromDestinationPlaylist,
-      urlHasUseThis,
-      mode,
-      isManageContentActive
-    } = this.props;
+    const { removeItemFromUnit, removeItemFromDestinationPlaylist, urlHasUseThis, isManageContentActive } = this.props;
 
     if (urlHasUseThis || isManageContentActive) {
       removeItemFromDestinationPlaylist({ moduleIndex, itemId });
@@ -227,8 +209,7 @@ class ModuleRow extends Component {
 
   closeModal = () => {
     this.setState({
-      showModal: false,
-      showResourceModal: false
+      showModal: false
     });
   };
 
@@ -413,10 +394,11 @@ class ModuleRow extends Component {
       playlistId,
       playlistTestDetailsModalData,
       togglePlaylistTestDetails,
-      customize,
       hasEditAccess,
+      isDesktop,
+      showRightPanel,
       setEmbeddedVideoPreviewModal,
-      addSubresource
+      onDrop
     } = this.props;
     const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
     const { assignModule, assignTest } = this;
@@ -425,7 +407,7 @@ class ModuleRow extends Component {
     // const numberOfAssigned = data.filter(
     //   content => content.assignments && content.assignments.length > 0
     // ).length;
-    const { showModal, selectedTest, currentAssignmentId, showResourceModal } = this.state;
+    const { showModal, selectedTest, currentAssignmentId } = this.state;
 
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -442,8 +424,56 @@ class ModuleRow extends Component {
     const moduleInlineStyle = {
       "white-space": "nowrap",
       opacity: module.hidden ? `.5` : `1`,
-      pointerEvents: module.hidden ? "none" : "all"
+      pointerEvents: module.hidden ? "none" : "all",
+      overflow: "hidden"
     };
+
+    // eslint-disable-next-line no-use-before-define
+    const ResolvedInfoColumsWrapper = isDesktop ? InfoColumnsDesktop : InfoColumnsMobile;
+
+    const lastColumOfModuleRow =
+      !hideEditOptions &&
+      (completed ? (
+        <LastColumn justify="flex-end" style={moduleInlineStyle}>
+          <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
+            MODULE COMPLETED
+            <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
+          </StyledLabel>
+        </LastColumn>
+      ) : isStudent ? (
+        <LastColumn />
+      ) : totalAssigned ? (
+        <>
+          {hasEditAccess && (
+            <HideLinkLabel
+              textColor={themeColor}
+              fontWeight="Bold"
+              data-cy={module.hidden ? "show-module" : "hide-module"}
+              onClick={event => {
+                event.preventDefault();
+                event.stopPropagation();
+                this.toggleModule(module, moduleIndex);
+              }}
+            >
+              {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
+            </HideLinkLabel>
+          )}
+          <LastColumn justify="flex-end">
+            <StyledTag
+              data-cy="AssignWholeModule"
+              bgColor={themeColor}
+              onClick={() => (!module.hidden ? assignModule(module) : {})}
+              style={moduleInlineStyle}
+            >
+              ASSIGN MODULE
+            </StyledTag>
+          </LastColumn>
+        </>
+      ) : (
+        <LastColumn justify="flex-end" style={moduleInlineStyle}>
+          <StyledTag onClick={event => event.stopPropagation()}>NO ASSIGNMENTS</StyledTag>
+        </LastColumn>
+      ));
 
     return (
       (isStudent && module.hidden) || (
@@ -477,13 +507,13 @@ class ModuleRow extends Component {
               <ModuleID>
                 <span>{moduleId || moduleIndex + 1}</span>
               </ModuleID>
-              <AntRow type="flex" gutter={10} justify={urlHasUseThis && "end"} style={{ width: "calc(100% - 25px)" }}>
+              <ModuleHeaderData>
                 <FirstColumn
                   urlHasUseThis={urlHasUseThis}
-                  reviewWidth="100%"
                   style={{
                     ...moduleInlineStyle,
-                    marginRight: urlHasUseThis && "auto"
+                    marginRight: urlHasUseThis && "auto",
+                    width: isDesktop ? "" : "100%"
                   }}
                 >
                   <StyledLabel fontWeight="normal" textColor={lightGrey5}>
@@ -505,114 +535,85 @@ class ModuleRow extends Component {
                     </ModuleTitlePrefix>
                   </ModuleTitleWrapper>
                   <Tooltip placement="bottom" title={description}>
-                    <EllipsisContainer>{description}</EllipsisContainer>
+                    <EllipsisContainer dangerouslySetInnerHTML={{ __html: description }} />
                   </Tooltip>
                 </FirstColumn>
                 {urlHasUseThis && (
                   <>
-                    <Col style={{ ...moduleInlineStyle, width: "130px" }}>
-                      <StyledLabel textColor={lightGrey5}>PROFICIENCY</StyledLabel>
-                      {/* TODO: Method to find Progress Percentage */}
-                      <ProgressBar
-                        strokeColor={getProgressColor(summaryData[moduleIndex]?.value)}
-                        strokeWidth={13}
-                        percent={summaryData[moduleIndex]?.value}
-                        format={percent => (percent ? `${percent}%` : "")}
-                      />
-                    </Col>
-                    {!isStudent ? (
-                      <SubmittedColumn style={{ ...moduleInlineStyle }}>
-                        <StyledLabel justify="center" textColor={lightGrey5}>
-                          SUBMITTED
-                        </StyledLabel>
-                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                          {/* TODO: Method to find submissions */}
-                          {summaryData[moduleIndex]?.submitted === "-"
-                            ? summaryData[moduleIndex]?.submitted
-                            : `${summaryData[moduleIndex].submitted}%`}
-                        </StyledLabel>
-                      </SubmittedColumn>
-                    ) : (
-                      <ScoreColumn>
-                        <StyledLabel justify="center" textColor={lightGrey5}>
-                          SCORE
-                        </StyledLabel>
-                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                          {/* TODO: Method to find sum of scores */}
-                          {summaryData[moduleIndex]?.scores >= 0 && summaryData[moduleIndex]?.maxScore
-                            ? `${summaryData[moduleIndex]?.scores}/${summaryData[moduleIndex]?.maxScore}`
-                            : "-"}
-                        </StyledLabel>
-                      </ScoreColumn>
-                    )}
-                    {!isStudent ? (
-                      <ClassesColumn style={{ ...moduleInlineStyle }}>
-                        <StyledLabel justify="center" textColor={lightGrey5}>
-                          CLASSES
-                        </StyledLabel>
-                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                          {/* TODO: Method to find classes */}
-                          {summaryData[moduleIndex]?.classes}
-                        </StyledLabel>
-                      </ClassesColumn>
-                    ) : (
-                      <TimeColumn>
-                        <StyledLabel justify="center" textColor={lightGrey5}>
-                          TIME SPENT
-                        </StyledLabel>
-                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                          {/* TODO: Method to find Total Time Spent */}
-                          {summaryData[moduleIndex]?.timeSpent}
-                        </StyledLabel>
-                      </TimeColumn>
-                    )}
+                    <ResolvedInfoColumsWrapper>
+                      <ProficiencyColumn style={moduleInlineStyle}>
+                        <InfoColumnLabel textColor={lightGrey5}>PROFICIENCY</InfoColumnLabel>
+                        {/* TODO: Method to find Progress Percentage */}
+                        <StyledProgressBar
+                          strokeColor={getProgressColor(summaryData[moduleIndex]?.value)}
+                          strokeWidth={13}
+                          percent={summaryData[moduleIndex]?.value}
+                          format={percent => (percent ? `${percent}%` : "")}
+                        />
+                      </ProficiencyColumn>
+                      {!isStudent ? (
+                        <SubmittedColumn style={{ ...moduleInlineStyle }}>
+                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                            SUBMITTED
+                          </InfoColumnLabel>
+                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                            {/* TODO: Method to find submissions */}
+                            {summaryData[moduleIndex]?.submitted === "-"
+                              ? summaryData[moduleIndex]?.submitted
+                              : `${summaryData[moduleIndex].submitted}%`}
+                          </InfoColumnLabel>
+                        </SubmittedColumn>
+                      ) : (
+                        <ScoreColumn>
+                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                            SCORE
+                          </InfoColumnLabel>
+                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                            {/* TODO: Method to find sum of scores */}
+                            {summaryData[moduleIndex]?.scores >= 0 && summaryData[moduleIndex]?.maxScore
+                              ? `${summaryData[moduleIndex]?.scores}/${summaryData[moduleIndex]?.maxScore}`
+                              : "-"}
+                          </InfoColumnLabel>
+                        </ScoreColumn>
+                      )}
+                      {!isStudent ? (
+                        <ClassesColumn style={{ ...moduleInlineStyle }}>
+                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                            CLASSES
+                          </InfoColumnLabel>
+                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                            {/* TODO: Method to find classes */}
+                            {summaryData[moduleIndex]?.classes}
+                          </InfoColumnLabel>
+                        </ClassesColumn>
+                      ) : (
+                        <TimeColumn>
+                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                            TIME SPENT
+                          </InfoColumnLabel>
+                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                            {/* TODO: Method to find Total Time Spent */}
+                            {summaryData[moduleIndex]?.timeSpent}
+                          </InfoColumnLabel>
+                        </TimeColumn>
+                      )}
+                      {!isDesktop && (
+                        <Dropdown overlay={lastColumOfModuleRow} trigger={["click"]}>
+                          <MobileModuleActionButton
+                            onClick={e => {
+                              // To prevent collapse/expand row
+                              e.stopPropagation();
+                            }}
+                          >
+                            <IconMoreVertical width={5} height={14} color={themeColor} />
+                          </MobileModuleActionButton>
+                        </Dropdown>
+                      )}
+                    </ResolvedInfoColumsWrapper>
+                    {isDesktop && lastColumOfModuleRow}
                   </>
                 )}
-                {!hideEditOptions &&
-                  (completed ? (
-                    <LastColumn width={isStudent ? "160px" : null} justify="flex-end" style={moduleInlineStyle}>
-                      <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
-                        MODULE COMPLETED
-                        <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
-                      </StyledLabel>
-                    </LastColumn>
-                  ) : isStudent ? (
-                    <LastColumn width="160px" />
-                  ) : totalAssigned ? (
-                    <LastColumn justify="flex-end">
-                      {hasEditAccess && (
-                        <StyledLabel
-                          textColor={themeColor}
-                          fontWeight="Bold"
-                          padding="10px 20px 10px 0px"
-                          data-cy={module.hidden ? "show-module" : "hide-module"}
-                          onClick={event => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            this.toggleModule(module, moduleIndex);
-                          }}
-                        >
-                          {module.hidden ? "SHOW" : "HIDE"}
-                        </StyledLabel>
-                      )}
-                      <StyledTag
-                        data-cy="AssignWholeModule"
-                        bgColor={themeColor}
-                        onClick={() => (!module.hidden ? assignModule(module) : {})}
-                        style={moduleInlineStyle}
-                        width="154px"
-                        height="32px"
-                        bgColor={themeColor}
-                      >
-                        ASSIGN MODULE
-                      </StyledTag>
-                    </LastColumn>
-                  ) : (
-                    <LastColumn justify="flex-end" style={moduleInlineStyle}>
-                      <StyledTag onClick={event => event.stopPropagation()}>NO ASSIGNMENTS</StyledTag>
-                    </LastColumn>
-                  ))}
-              </AntRow>
+              </ModuleHeaderData>
             </ModuleHeader>
 
             {!collapsed && (
@@ -693,6 +694,201 @@ class ModuleRow extends Component {
                     </Menu>
                   );
 
+                  const assessmentsLastColumn = urlHasUseThis ? (
+                    !isStudent ? (
+                      <>
+                        {hasEditAccess && (!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                          <HideLinkLabel
+                            textColor={themeColor}
+                            fontWeight="Bold"
+                            data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
+                            onClick={() => this.hideTest(module._id, moduleData)}
+                          >
+                            {moduleData.hidden ? "SHOW" : "HIDE"}
+                          </HideLinkLabel>
+                        )}
+                        <LastColumn align="flex-start" justify="flex-end" paddingRight="0">
+                          {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
+                            (isAssigned ? (
+                              <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
+                                <Button
+                                  data-cy={
+                                    currentAssignmentId.includes(moduleData.contentId)
+                                      ? "hide-assignment"
+                                      : "show-assignment"
+                                  }
+                                  onClick={() => this.setAssignmentDropdown(moduleData.contentId)}
+                                  style={{ padding: "0 6px" }}
+                                >
+                                  <IconCheckSmall color={white} />
+                                  &nbsp;&nbsp;
+                                  {currentAssignmentId.includes(moduleData.contentId)
+                                    ? "HIDE ASSIGNMENTS"
+                                    : "SHOW ASSIGNMENTS"}
+                                </Button>
+                              </AssignmentButton>
+                            ) : (
+                              <AssignmentButton data-cy="assignButton" assigned={isAssigned} style={rowInlineStyle}>
+                                <Button onClick={() => assignTest(_id, moduleData.contentId)} style={{ width: 124 }}>
+                                  <IconLeftArrow width={13.3} height={9.35} />
+                                  ASSIGN
+                                </Button>
+                              </AssignmentButton>
+                            ))}
+                          {mode === "embedded" ||
+                            (urlHasUseThis && (
+                              <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle}>
+                                <CustomIcon
+                                  data-cy="assignmentMoreOptionsIcon"
+                                  marginLeft={15}
+                                  marginRight={15}
+                                  align="auto"
+                                  style={rowInlineStyle}
+                                >
+                                  <IconMoreVertical width={5} height={14} color={themeColor} />
+                                </CustomIcon>
+                              </Dropdown>
+                            ))}
+                        </LastColumn>
+                      </>
+                    ) : (
+                      !moduleData.hidden && (
+                        <>
+                          <LastColumn>
+                            <AssignmentButton assigned={false}>
+                              <Button data-cy={uta.text} onClick={uta.action}>
+                                {uta.text}
+                              </Button>
+                            </AssignmentButton>
+                          </LastColumn>
+                          {uta.retake && (
+                            <LastColumn>
+                              <AssignmentButton assigned={false}>
+                                <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
+                                  {uta.retake.text}
+                                </Button>
+                              </AssignmentButton>
+                            </LastColumn>
+                          )}
+                        </>
+                      )
+                    )
+                  ) : (
+                    <LastColumn>
+                      <EduButton
+                        isGhost
+                        height="22px"
+                        width="124px"
+                        style={{ padding: "0px 15px" }}
+                        onClick={() => this.viewTest(moduleData?.contentId)}
+                      >
+                        <IconVisualization width="14px" height="14px" />
+                        Preview
+                      </EduButton>
+                    </LastColumn>
+                  );
+
+                  const assessmentInfoProgress = (
+                    <ResolvedInfoColumsWrapper>
+                      <ProficiencyColumn style={rowInlineStyle}>
+                        {/* TODO: Method to display progress for assignments */}
+                        <StyledProgressBar
+                          strokeColor={getProgressColor(progressData?.progress)}
+                          strokeWidth={13}
+                          percent={progressData?.progress}
+                          format={percent => (percent ? `${percent}%` : "")}
+                        />
+                      </ProficiencyColumn>
+                      {!isStudent ? (
+                        <SubmittedColumn style={rowInlineStyle}>
+                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
+                            {/* TODO: Method to find submissions for each assignment */}
+                            {progressData?.submitted ? `${progressData?.submitted}%` : "-"}
+                          </StyledLabel>
+                        </SubmittedColumn>
+                      ) : (
+                        <ScoreColumn style={rowInlineStyle}>
+                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
+                            {/* TODO: Method to find sum of scores for each assignment */}
+                            {progressData?.scores >= 0 && progressData?.maxScore
+                              ? `${progressData?.scores}/${progressData?.maxScore}`
+                              : "-"}
+                          </StyledLabel>
+                        </ScoreColumn>
+                      )}
+                      {!isStudent ? (
+                        <ClassesColumn style={rowInlineStyle}>
+                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
+                            {/* TODO: Method to find classes for each assignment */}
+                            {progressData?.classes || "-"}
+                          </StyledLabel>
+                        </ClassesColumn>
+                      ) : (
+                        <TimeColumn style={rowInlineStyle}>
+                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
+                            {/* TODO: Method to find Total Time Spent for each assignment */}
+                            {progressData?.timeSpent}
+                          </StyledLabel>
+                        </TimeColumn>
+                      )}
+                      {!isDesktop && (
+                        <Dropdown overlay={assessmentsLastColumn} trigger={["click"]}>
+                          <MobileModuleActionButton>
+                            <IconMoreVertical color={themeColor} />
+                          </MobileModuleActionButton>
+                        </Dropdown>
+                      )}
+                    </ResolvedInfoColumsWrapper>
+                  );
+
+                  const testType = (
+                    <CustomIcon marginLeft={10} marginRight={5}>
+                      {urlHasUseThis && (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
+                        <Avatar size={18} style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}>
+                          {" P "}
+                        </Avatar>
+                      ) : (
+                        <Avatar
+                          size={18}
+                          style={{
+                            backgroundColor:
+                              testTypeColor[(moduleData.assignments?.[0]?.testType)] ||
+                              testTypeColor[moduleData.testType],
+                            fontSize: "13px"
+                          }}
+                        >
+                          {moduleData.assignments?.[0]?.testType[0].toUpperCase() ||
+                            moduleData.testType[0].toUpperCase() ||
+                            null}
+                        </Avatar>
+                      )}
+                    </CustomIcon>
+                  );
+
+                  const testTypeAndTags = (
+                    <FlexContainer
+                      height="25px"
+                      marginLeft={!showRightPanel ? "16px" : ""}
+                      alignItems="center"
+                      justifyContent="flex-start"
+                    >
+                      <Tags
+                        margin="5px 0px 0px 0px"
+                        flexWrap="nowrap"
+                        tags={moduleData.standardIdentifiers}
+                        completed={!hideEditOptions && contentCompleted}
+                        show={2}
+                        isPlaylist
+                      />
+                      {!urlHasUseThis && (
+                        <TestStatus status={moduleData.status} view="tile" noMargin={!moduleData.standardIdentifiers}>
+                          {moduleData.status}
+                        </TestStatus>
+                      )}
+                      {testType}
+                    </FlexContainer>
+                  );
+
                   if (mode === "embedded") {
                     return (
                       <OuterDropContainer>
@@ -712,18 +908,20 @@ class ModuleRow extends Component {
                           showResource={this.showResource}
                           urlHasUseThis={urlHasUseThis}
                           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                          infoColumn={assessmentInfoProgress}
+                          testTypeAndTags={testTypeAndTags}
+                          isDesktop={isDesktop}
+                          showRightPanel={showRightPanel}
+                          toggleTest={() => this.hideTest(module._id, moduleData)}
                           {...this.props}
                         />
-                        <NewActivityTargetContainer
-                          moduleIndex={this.props.moduleIndex}
-                          afterIndex={index}
-                          onDrop={this.props.onDrop}
-                        >
+                        <NewActivityTargetContainer moduleIndex={moduleIndex} afterIndex={index} onDrop={onDrop}>
                           New activity
                         </NewActivityTargetContainer>
                       </OuterDropContainer>
                     );
                   }
+
                   return (
                     !(isStudent && moduleData.hidden) && (
                       <>
@@ -738,10 +936,9 @@ class ModuleRow extends Component {
                           }}
                         >
                           <ModuleFocused />
-                          <FaChevronRight
-                            color={lightGrey5}
-                            style={{ margin: urlHasUseThis ? "4px 15px" : "4px 15px 0px 43px" }}
-                          />
+                          <DragHandle>
+                            <FaChevronRight color={lightGrey5} />
+                          </DragHandle>
                           {contentType !== "test" ? (
                             <PlaylistResourceRow
                               data={moduleData}
@@ -750,16 +947,17 @@ class ModuleRow extends Component {
                               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                             />
                           ) : (
-                            <AntRow type="flex" gutter={10} align="top" style={{ width: "calc(100% - 25px)" }}>
+                            <AntRow type="flex" gutter={10} align="middle" style={{ width: "calc(100% - 35px)" }}>
                               <FirstColumn
+                                data-cy="assigment-row-first"
                                 urlHasUseThis={urlHasUseThis}
-                                reviewWidth="calc(100% - 160px)"
                                 style={{
                                   ...rowInlineStyle,
-                                  marginRight: urlHasUseThis && "auto"
+                                  marginRight: urlHasUseThis && "auto",
+                                  width: isDesktop ? "" : "100%"
                                 }}
                               >
-                                <ModuleDataWrapper>
+                                <ModuleDataWrapper display={showRightPanel || !isDesktop ? "block" : "flex"}>
                                   <ModuleDataName
                                     onClick={() =>
                                       !isStudent && togglePlaylistTestDetails({ id: moduleData?.contentId })
@@ -770,58 +968,9 @@ class ModuleRow extends Component {
                                         {moduleData.contentTitle}
                                       </EllipticSpan>
                                     </Tooltip>
-                                    {
-                                      <CustomIcon marginLeft={10} marginRight={5}>
-                                        {urlHasUseThis &&
-                                        (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
-                                          <Avatar
-                                            size={18}
-                                            style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}
-                                          >
-                                            {" P "}
-                                          </Avatar>
-                                        ) : (
-                                          <Avatar
-                                            size={18}
-                                            style={{
-                                              backgroundColor:
-                                                testTypeColor[(moduleData.assignments?.[0]?.testType)] ||
-                                                testTypeColor[moduleData.testType],
-                                              fontSize: "13px"
-                                            }}
-                                          >
-                                            {moduleData.assignments?.[0]?.testType[0].toUpperCase() ||
-                                              moduleData.testType[0].toUpperCase() ||
-                                              null}
-                                          </Avatar>
-                                        )}
-                                      </CustomIcon>
-                                    }
+                                    {!isDesktop && testTypeAndTags}
                                   </ModuleDataName>
-
-                                  <FlexContainer
-                                    width="100%"
-                                    height="40px"
-                                    alignItems="center"
-                                    justifyContent="flex-start"
-                                  >
-                                    <Tags
-                                      margin="5px 0px 0px 0px"
-                                      tags={moduleData.standardIdentifiers}
-                                      completed={!hideEditOptions && contentCompleted}
-                                      show={2}
-                                      isPlaylist
-                                    />
-                                    {!urlHasUseThis && (
-                                      <TestStatus
-                                        status={moduleData.status}
-                                        view="tile"
-                                        noMargin={!moduleData.standardIdentifiers}
-                                      >
-                                        {moduleData.status}
-                                      </TestStatus>
-                                    )}
-                                  </FlexContainer>
+                                  {isDesktop && testTypeAndTags}
                                   {moduleData?.resources?.length > 0 && (
                                     <SubResource
                                       data={moduleData}
@@ -832,149 +981,9 @@ class ModuleRow extends Component {
                                   )}
                                 </ModuleDataWrapper>
                               </FirstColumn>
-                              {urlHasUseThis ? (
-                                <>
-                                  <StyledCol width="130px" style={rowInlineStyle}>
-                                    {/* TODO: Method to display progress for assignments */}
-                                    <ProgressBar
-                                      strokeColor={getProgressColor(progressData?.progress)}
-                                      strokeWidth={13}
-                                      percent={progressData?.progress}
-                                      format={percent => (percent ? `${percent}%` : "")}
-                                    />
-                                  </StyledCol>
-                                  {!isStudent ? (
-                                    <SubmittedColumn style={rowInlineStyle}>
-                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                                        {/* TODO: Method to find submissions for each assignment */}
-                                        {progressData?.submitted ? `${progressData?.submitted}%` : "-"}
-                                      </StyledLabel>
-                                    </SubmittedColumn>
-                                  ) : (
-                                    <ScoreColumn style={rowInlineStyle}>
-                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                                        {/* TODO: Method to find sum of scores for each assignment */}
-                                        {progressData?.scores >= 0 && progressData?.maxScore
-                                          ? `${progressData?.scores}/${progressData?.maxScore}`
-                                          : "-"}
-                                      </StyledLabel>
-                                    </ScoreColumn>
-                                  )}
-                                  {!isStudent ? (
-                                    <ClassesColumn style={rowInlineStyle}>
-                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                                        {/* TODO: Method to find classes for each assignment */}
-                                        {progressData?.classes || "-"}
-                                      </StyledLabel>
-                                    </ClassesColumn>
-                                  ) : (
-                                    <TimeColumn style={rowInlineStyle}>
-                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                                        {/* TODO: Method to find Total Time Spent for each assignment */}
-                                        {progressData?.timeSpent}
-                                      </StyledLabel>
-                                    </TimeColumn>
-                                  )}
 
-                                  {!isStudent ? (
-                                    <LastColumn align="flex-start" justify="flex-end" paddingRight="0">
-                                      {hasEditAccess &&
-                                        (!hideEditOptions || (status === "published" && mode === "embedded")) && (
-                                          <HideLinkLabel
-                                            textColor={themeColor}
-                                            fontWeight="Bold"
-                                            data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
-                                            onClick={() => this.hideTest(module._id, moduleData)}
-                                          >
-                                            {moduleData.hidden ? "SHOW" : "HIDE"}
-                                          </HideLinkLabel>
-                                        )}
-                                      {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
-                                        (isAssigned ? (
-                                          <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
-                                            <Button
-                                              data-cy={
-                                                currentAssignmentId.includes(moduleData.contentId)
-                                                  ? "hide-assignment"
-                                                  : "show-assignment"
-                                              }
-                                              onClick={() => this.setAssignmentDropdown(moduleData.contentId)}
-                                              style={{ padding: "0 6px" }}
-                                            >
-                                              <IconCheckSmall color={white} />
-                                              &nbsp;&nbsp;
-                                              {currentAssignmentId.includes(moduleData.contentId)
-                                                ? "HIDE ASSIGNMENTS"
-                                                : "SHOW ASSIGNMENTS"}
-                                            </Button>
-                                          </AssignmentButton>
-                                        ) : (
-                                          <AssignmentButton
-                                            data-cy="assignButton"
-                                            assigned={isAssigned}
-                                            style={rowInlineStyle}
-                                          >
-                                            <Button
-                                              onClick={() => assignTest(_id, moduleData.contentId)}
-                                              style={{ width: 124 }}
-                                            >
-                                              <IconLeftArrow width={13.3} height={9.35} />
-                                              ASSIGN
-                                            </Button>
-                                          </AssignmentButton>
-                                        ))}
-                                      {mode === "embedded" ||
-                                        (urlHasUseThis && (
-                                          <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle}>
-                                            <CustomIcon
-                                              data-cy="assignmentMoreOptionsIcon"
-                                              marginLeft={15}
-                                              marginRight={15}
-                                              align="auto"
-                                              style={rowInlineStyle}
-                                            >
-                                              <IconMoreVertical width={5} height={14} color={themeColor} />
-                                            </CustomIcon>
-                                          </Dropdown>
-                                        ))}
-                                    </LastColumn>
-                                  ) : (
-                                    !moduleData.hidden && (
-                                      <>
-                                        <LastColumn width="160px">
-                                          <AssignmentButton assigned={false}>
-                                            <Button data-cy={uta.text} onClick={uta.action}>
-                                              {uta.text}
-                                            </Button>
-                                          </AssignmentButton>
-                                        </LastColumn>
-                                        {uta.retake && (
-                                          <LastColumn width="160px">
-                                            <AssignmentButton assigned={false}>
-                                              <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
-                                                {uta.retake.text}
-                                              </Button>
-                                            </AssignmentButton>
-                                          </LastColumn>
-                                        )}
-                                      </>
-                                    )
-                                  )}
-                                </>
-                              ) : (
-                                <LastColumn width="160px">
-                                  <EduButton
-                                    isGhost
-                                    height="22px"
-                                    width="124px"
-                                    style={{ padding: "0px 15px" }}
-                                    onClick={() => this.viewTest(moduleData?.contentId)}
-                                  >
-                                    <IconVisualization width="14px" height="14px" />
-                                    Preview
-                                  </EduButton>
-                                </LastColumn>
-                              )}
+                              {urlHasUseThis && assessmentInfoProgress}
+                              {isDesktop && assessmentsLastColumn}
                             </AntRow>
                           )}
                         </Assignment>
@@ -1101,8 +1110,7 @@ ModuleRow.propTypes = {
   onCollapseExpand: PropTypes.func.isRequired,
   collapsed: PropTypes.bool.isRequired,
   padding: PropTypes.bool.isRequired,
-  isContentExpanded: PropTypes.bool.isRequired,
-  assigned: PropTypes.array.isRequired,
+
   moduleStatus: PropTypes.bool,
   mode: PropTypes.string,
   status: PropTypes.string,
@@ -1154,20 +1162,19 @@ const AssignmentsClassesContainer = styled.div`
 
 const AssignmentDragItemContainer = styled.div`
   display: flex;
-  width: 100;
+  width: 100%;
   justify-content: stretch;
 `;
 
 const DragHandle = styled.div`
   color: ${themeColor};
   background: ${white};
-  width: 40px;
+  width: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   cursor: grab;
-  margin-left: 35px;
 
   &:active {
     cursor: grabbing;
@@ -1202,50 +1209,94 @@ const StyledCol = styled(Col)`
   display: flex;
   align-items: ${props => props.align || "center"};
   justify-content: ${props => props.justify || "flex-start"};
-  padding-right: ${({ paddingRight }) => paddingRight} !important;
+  padding-right: ${({ paddingRight }) => (paddingRight ? `${paddingRight} !important` : "")};
   width: ${({ width }) => width};
   margin-left: ${({ marginLeft }) => marginLeft};
 `;
 
 const FirstColumn = styled(Col)`
-  width: ${props => (props.urlHasUseThis ? "calc(100% - 640px)" : props.reviewWidth)};
+  /* width: ${props => (props.urlHasUseThis ? "calc(100% - 550px)" : props.reviewWidth)};
   @media (max-width: ${mediumDesktopExactWidth}) {
     width: ${props => (props.urlHasUseThis ? "calc(100% - 500px)" : props.reviewWidth)};
+  } */
+`;
+
+const InfoColumnsMobile = styled(StyledCol)`
+  width: 100%;
+  position: relative;
+  padding-right: 35px;
+`;
+
+const InfoColumnsDesktop = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+`;
+
+const StyledProgressBar = styled(ProgressBar)`
+  & .ant-progress-text {
+    @media (max-width: ${extraDesktopWidthMax}) {
+      font-size: 10px;
+    }
   }
 `;
 
-const LastColumn = styled(StyledCol)`
-  width: ${props => props.width || "250px"};
-  justify-content: flex-end;
+const MobileModuleActionButton = styled.div`
+  width: 30px;
+  height: 100%;
+  right: 0px;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+`;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    width: ${props => props.width || "220px"};
+export const LastColumn = styled(StyledCol)`
+  justify-content: flex-start;
+  width: 165px;
+  margin-left: 15px;
+  flex-shrink: 0;
+`;
+
+const ProficiencyColumn = styled(Col)`
+  width: 130px;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: 100px;
   }
 `;
 
 const SubmittedColumn = styled(Col)`
   width: 100px;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     width: 80px;
   }
 `;
 
 const TimeColumn = styled(SubmittedColumn)`
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    width: 85px;
+  width: 85px;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: 70px;
   }
 `;
 
 const ClassesColumn = styled(Col)`
   width: 90px;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     width: 65px;
   }
 `;
 
-const ScoreColumn = styled(ClassesColumn)``;
+const ScoreColumn = styled(ClassesColumn)`
+  width: 90px;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: 65px;
+  }
+`;
 
 const ModuleHeader = styled.div`
   display: flex;
@@ -1253,27 +1304,38 @@ const ModuleHeader = styled.div`
   background: ${white};
   align-items: center;
   padding: 20px 0px;
+
+  @media (max-width: ${desktopWidth}) {
+    align-items: flex-start;
+  }
+`;
+
+const ModuleHeaderData = styled.div`
+  display: flex;
+  align-items: center;
+  width: calc(100% - 35px);
+  /* justify={urlHasUseThis && "end"} style={{  }} */
 `;
 
 const ModuleID = styled.div`
   margin-right: ${props => props.marginRight || "10px"};
-  width: 100%;
-  max-width: 64px;
-  span {
-    display: block;
-    width: fit-content;
-    margin: auto;
-    min-width: 38px;
-    max-width: 64px;
-    min-height: 30px;
-    color: ${white};
-    background: ${greenDark6};
-    text-align: center;
-    font-size: 16px;
-    padding: 4px 6px;
-    border-radius: 2px;
-    font-weight: 600;
-    user-select: none;
+  max-width: 60px;
+  color: ${white};
+  background: ${greenDark6};
+  font-size: 16px;
+  border-radius: 2px;
+  font-weight: 600;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: 25px;
+    height: 25px;
   }
 `;
 
@@ -1286,12 +1348,12 @@ const ModuleTitle = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 14px;
   }
 `;
 
-export const EllipsisContainer = styled.div`
+export const EllipsisContainer = styled(MathFormulaDisplay)`
   white-space: nowrap;
   color: ${lightGrey6};
   font-size: ${props => props.fontSize || "12px"};
@@ -1302,7 +1364,7 @@ export const EllipsisContainer = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 12px;
   }
 `;
@@ -1318,15 +1380,12 @@ export const CustomIcon = styled.span`
 export const AssignmentIconsHolder = styled.div`
   display: flex;
   justify-items: flex-end;
-  margin-left: auto;
   @media only screen and (max-width: ${desktopWidth}) {
     margin-left: 0;
     justify-items: flex-start;
-    /* margin-right: 100%;  */
   }
 `;
 
-/* NOTE: margin-right: 100%; - hack but works */
 const ModuleFocused = styled.div`
   border-left: 3px solid ${greenDark};
   width: 3px;
@@ -1359,12 +1418,12 @@ const ModuleTitleWrapper = styled.div`
 `;
 
 export const AssignmentButton = styled.div`
-  min-width: 121px;
+  min-width: 118px;
   .ant-btn {
     color: ${({ assigned }) => (assigned ? white : themeColor)};
     border: 1px solid ${themeColor};
     background-color: ${({ assigned }) => (assigned ? themeColor : white)};
-    min-width: 121px;
+    min-width: 128px;
     max-height: 22px;
     display: flex;
     align-items: center;
@@ -1414,8 +1473,7 @@ const ModuleTitlePrefix = styled.div`
 `;
 
 const ModuleDataWrapper = styled.div`
-  width: 100%;
-  display: inline-block;
+  display: ${({ display }) => `inline-${display}`};
 `;
 
 export const ModuleDataName = styled.div`
@@ -1427,6 +1485,9 @@ export const ModuleDataName = styled.div`
   cursor: ${({ isReview }) => isReview && "pointer"};
   span {
     font-weight: 600;
+  }
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 11px;
   }
 `;
 
@@ -1440,7 +1501,7 @@ export const EllipticSpan = styled.span`
     min-width: ${props => props.md || props.width};
     max-width: ${props => props.md || props.width};
   }
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
   @media only screen and (max-width: ${extraDesktopWidth}) {
@@ -1457,20 +1518,22 @@ export const AssignmentIcon = styled.span`
   cursor: pointer;
   margin-left: 12px;
   margin-right: ${props => props.marginRight || "0px"};
-  width: 20px;
+  width: 15px;
 `;
 
 const Assignment = styled.div`
   padding: 10px 0px;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   position: relative;
   background: white !important;
   &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {
     opacity: 1;
   }
+
   @media only screen and (max-width: ${desktopWidth}) {
     flex-direction: column;
+    padding-left: 8px;
   }
 `;
 Assignment.displayName = "Assignment";

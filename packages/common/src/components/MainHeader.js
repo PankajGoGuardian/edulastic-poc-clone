@@ -21,7 +21,7 @@ const MainHeader = ({ children, headingText, Icon, toggleSideBar, ...restProps }
   <HeaderWrapper {...restProps}>
     <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
       <Container {...restProps}>
-        <HeaderLeftContainer headingText={headingText} {...restProps}>
+        <HeaderLeftContainer headingText={headingText} {...restProps} data-cy="header-left-container">
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           {Icon && (
             <TitleIcon>
@@ -59,7 +59,7 @@ const enhance = compose(
 export default enhance(MainHeader);
 
 const HeaderWrapper = styled.div`
-  padding-top: ${props => props.height || props.theme.HeaderHeight.xs}px;
+  padding-top: ${props => props.height || props.theme.HeaderHeight.md}px;
 
   .fixed-header {
     position: fixed;
@@ -80,8 +80,8 @@ const HeaderWrapper = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     padding-top: ${props => props.height || props.theme.HeaderHeight.xl}px;
   }
-  @media (max-width: ${desktopWidth}) {
-    padding-top: ${props => props.mobileHeaderHeight || ""}px;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding-top: ${props => props.mobileHeaderHeight || props.theme.HeaderHeight.xs}px;
   }
   @media print {
     padding-top: 0px;
@@ -95,7 +95,7 @@ const Container = styled.div`
   justify-content: ${props => props.justify || "space-between"};
   align-items: ${props => props.align || "center"};
   border-bottom: 1px solid #2f4151;
-  height: ${props => props.height || props.theme.HeaderHeight.xs}px;
+  height: ${props => props.height || props.theme.HeaderHeight.md}px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => props.height || props.theme.HeaderHeight.md}px;
@@ -103,9 +103,10 @@ const Container = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props => props.height || props.theme.HeaderHeight.xl}px;
   }
-  @media (max-width: ${desktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     padding: 10px 20px;
-    height: ${props => props.mobileHeaderHeight || ""}px;
+    padding-bottom: 4px;
+    height: ${props => props.mobileHeaderHeight || props.theme.HeaderHeight.xs}px;
     flex-wrap: wrap;
   }
 `;

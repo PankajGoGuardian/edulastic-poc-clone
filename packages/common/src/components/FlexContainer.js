@@ -16,6 +16,7 @@ const FlexContainer = styled.div`
   width: ${({ width }) => width || "auto"};
   max-width: ${({ maxWidth }) => maxWidth || null};
   height: ${({ height }) => height || null};
+  flex: ${({ flex }) => flex || null};
   ${({ flexProps }) => flexProps};
   div:not(.fr-element.fr-view) p {
     padding: 6px 0px;

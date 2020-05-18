@@ -201,7 +201,6 @@ const EssayPlainTextPreview = ({
             placeholder={item.placeholder || ""}
             disabled={reviewTab}
             {...getSpellCheckAttributes(item.spellcheck)}
-           
           />
 
           {!reviewTab && item.showWordCount && (

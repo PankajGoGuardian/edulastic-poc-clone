@@ -99,7 +99,7 @@ class CurriculumContainer extends Component {
       this.props?.destinationCurriculumSequence?.modules &&
       this.props?.destinationCurriculumSequence?.status === "published"
     ) {
-      this.setState({ expandedModules: this.props.destinationCurriculumSequence.modules.map((x, index) => index) });
+      this.setState({ expandedModules: this.props?.destinationCurriculumSequence?.modules.map((x, index) => index) });
     }
   };
 

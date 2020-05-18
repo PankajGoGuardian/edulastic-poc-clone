@@ -1,14 +1,12 @@
 import styled from "styled-components";
-import { borderGrey4, playlistTabLink, backgrounds, themeColor } from "@edulastic/colors";
-import Tags from "../../../src/components/common/Tags";
+import { borderGrey4, playlistTabLink, backgrounds, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const ResourceItemWrapper = styled.div`
   width: 95%;
   display: flex;
   align-items: center;
-  padding: 10px 10px;
+  padding: 10px;
   border-bottom: 1px solid ${borderGrey4};
-  margin: 4px;
   cursor: grab;
 
   .preview-btn {
@@ -56,14 +54,11 @@ export const ResourceTitle = styled.div`
   font-weight: 600;
 
   .ant-tag {
-    max-width: 55px;
     overflow: hidden;
-    word-wrap: nowrap;
     text-overflow: ellipsis;
     &:first-child {
       margin-left: 15px;
     }
-    padding: 0px 1px;
   }
 `;
 
@@ -73,4 +68,8 @@ export const TitleText = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 10px;
+  }
 `;

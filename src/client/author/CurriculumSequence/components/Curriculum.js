@@ -5,6 +5,7 @@ import { Prompt } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import styled from "styled-components";
+import { IconPlusCircle } from "@edulastic/icons";
 import DropContainer from "../../../assessment/components/DropContainer";
 import { themes } from "../../../theme";
 import CurriculumModuleRow from "./CurriculumModuleRow";
@@ -51,13 +52,15 @@ const SortableItem = sortableElement(props => {
     playlistClassList,
     isManageContentActive,
     hasEditAccess,
+    isDesktop,
+    showRightPanel,
     setEmbeddedVideoPreviewModal,
     onDropOriginal
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
   return (
-    <AssignmentItemContainer>
+    <AssignmentItemContainer data-cy="curriculum-modules">
       {isReview && <SortableTestsHandle hasDescription={moduleItem.description} />}
       <DropContainer
         theme={themes.default}
@@ -91,6 +94,8 @@ const SortableItem = sortableElement(props => {
           playlistMetrics={playlistMetrics}
           playlistClassList={playlistClassList}
           hasEditAccess={hasEditAccess}
+          isDesktop={isDesktop}
+          showRightPanel={showRightPanel}
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
           onDrop={onDropOriginal}
         />
@@ -104,17 +109,23 @@ const SortableContainer = sortableContainer(({ children }) => <ModuleWrapper>{ch
 /** @extends Component<CurriculumProps> */
 const Curriculum = props => {
   const onDrop = toModuleIndex => {
-    const { onDrop } = props;
-    onDrop(toModuleIndex);
+    const { onDrop: dropHandler } = props;
+    dropHandler(toModuleIndex);
   };
 
-  const { curriculum: { modules } = {}, onSortEnd, manageContentDirty, resetDestination } = props;
+  const {
+    curriculum: { modules } = {},
+    onSortEnd,
+    manageContentDirty,
+    resetDestination,
+    toggleManageModulesVisibility
+  } = props;
 
   useEffect(() => () => resetDestination(), []);
 
   return (
     <SortableContainer onSortEnd={onSortEnd} lockAxis="y" lockOffset={["0%", "0%"]} lockToContainerEdges useDragHandle>
-      <Prompt when={manageContentDirty} message={loc => "Changes done here are not saved. Do you want to leave?"} />
+      <Prompt when={manageContentDirty} message={() => "Changes done here are not saved. Do you want to leave?"} />
       {modules &&
         modules.map((moduleItem, index) => (
           <SortableItem
@@ -126,6 +137,10 @@ const Curriculum = props => {
             {...props}
           />
         ))}
+      <AddNewOrManageModules onClick={() => toggleManageModulesVisibility(true)}>
+        <IconPlusCircle />
+        <span>Manage Modules</span>
+      </AddNewOrManageModules>
     </SortableContainer>
   );
 };
@@ -135,13 +150,13 @@ Curriculum.propTypes = {
   curriculum: PropTypes.object.isRequired,
   expandedModules: PropTypes.array.isRequired,
   padding: PropTypes.bool.isRequired,
-  mode: PropTypes.string,
-  status: PropTypes.string,
-  history: PropTypes.object,
-  customize: PropTypes.bool,
-  onBeginDrag: PropTypes.func,
-  handleRemove: PropTypes.func,
-  modulesStatus: PropTypes.array,
+  mode: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
+  customize: PropTypes.bool.isRequired,
+  onBeginDrag: PropTypes.func.isRequired,
+  handleRemove: PropTypes.func.isRequired,
+  modulesStatus: PropTypes.array.isRequired,
   onCollapseExpand: PropTypes.func.isRequired
 };
 
@@ -177,6 +192,30 @@ const DragHandle = styled.div`
 const IconHandle = styled.span`
   font-size: 16px;
   margin-top: ${props => (props.hasDescription ? "34px" : "25px")};
+`;
+
+const AddNewOrManageModules = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f8f8fb;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 18px 15px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  margin-top: 16px;
+  align-items: center;
+  z-index: 50;
+
+  svg {
+    margin-right: 20px;
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 ModuleWrapper.displayName = "ModuleWrapper";

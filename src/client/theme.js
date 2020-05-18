@@ -173,7 +173,7 @@ const pastDueTagBackground = "#F6C7D5";
 const pastDueTagColor = "#CE5A7C";
 
 const HeaderHeight = {
-  xs: 62,
+  xs: 110,
   md: 62,
   xl: 62
 };

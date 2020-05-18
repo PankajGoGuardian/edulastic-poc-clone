@@ -1,45 +1,46 @@
+/* eslint-disable no-use-before-define */
 import { curriculumSequencesApi } from "@edulastic/api";
 import { themeColor, white } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { test as testsConstants } from "@edulastic/constants";
-import { IconClose, IconFilter } from "@edulastic/icons";
+import { IconFilter, IconPlus, IconLayers } from "@edulastic/icons";
 import { Dropdown, Empty, Menu, message, Spin } from "antd";
 import { pick, uniq } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import AssessmentPlayer from "../../../../assessment";
 import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
-import { toggleManageModulesVisibilityCSAction } from "../../ducks";
+import {
+  toggleManageModulesVisibilityCSAction,
+  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction
+} from "../../ducks";
 import { submitLTIForm } from "../CurriculumModuleRow";
-import ManageModulesModal from "../ManageModulesModal";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ResourceItem from "../ResourceItem";
 import WebsiteResourceModal from "./components/WebsiteResourceModal";
 import ExternalVideoLink from "./components/ExternalVideoLink";
 import LTIResourceModal from "./components/LTIResourceModal";
-import { setEmbeddedVideoPreviewModal } from "../../ducks";
 import slice from "./ducks";
 import {
-  ActionsContainer,
-  FilterBtn,
+  ActionButton,
   LoaderWrapper,
   ManageContentContainer,
   ManageContentOuterWrapper,
-  ManageModuleBtn,
   ModalWrapper,
   ResourceDataList,
   SearchBar,
-  ToggleManageContent,
+  ManageContentLabel,
+  SearchBoxContainer,
+  SearchIcon,
   SearchByNavigationBar,
   SearchByTab
 } from "./styled";
 
 const resourceTabs = ["tests", "resources"];
-
 const sourceList = ["everything", "learnzillion", "khan academy", "ck12", "grade"];
 
-const observeElement = (fetchTests, tests) => {
-  return useCallback(
+const observeElement = (fetchTests, tests) =>
+  useCallback(
     node => {
       if (observer) {
         observer.disconnect();
@@ -55,7 +56,6 @@ const observeElement = (fetchTests, tests) => {
     },
     [tests]
   );
-};
 
 const ManageContentBlock = props => {
   const {
@@ -83,7 +83,6 @@ const ManageContentBlock = props => {
     resetAndFetchTests,
     searchString,
     setTestSearchAction,
-    isManageModulesVisible,
     toggleManageModulesVisibility,
     testsInPlaylist = [],
     selectedTestForPreview = "",
@@ -100,7 +99,7 @@ const ManageContentBlock = props => {
     userFeatures,
     fetchExternalToolProvidersAction,
     externalToolsProviders,
-    toggleManageContent,
+    urlHasUseThis,
     searchResourceBy,
     setSearchByTab,
     addResource,
@@ -110,7 +109,8 @@ const ManageContentBlock = props => {
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
 
-  const [searchBy, setSearchBy] = useState("keywords");
+  const [searchBy] = useState("keywords");
+  // const [searchResourceBy] = useState("all");
   const [isShowFilter, setShowFilter] = useState(false);
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(false);
   const [isExternalVideoResourceModal, setExternalVideoResourceModal] = useState(false);
@@ -154,7 +154,6 @@ const ManageContentBlock = props => {
 
   const onSearchChange = e => setTestSearchAction(e.target.value);
   const openManageModules = () => toggleManageModulesVisibility(true);
-  const closeManageModules = () => toggleManageModulesVisibility(false);
 
   const enhanceTextWeight = text => <span style={{ fontWeight: 600 }}>{text}</span>;
 
@@ -238,40 +237,9 @@ const ManageContentBlock = props => {
 
   return (
     <ManageContentOuterWrapper>
-      <ToggleManageContent onClick={toggleManageContent}>
-        <IconClose />
-      </ToggleManageContent>
       <div className="inner-wrapper">
-        <ActionsContainer>
-          {isDifferentiationTab ? (
-            <>
-              <ManageModuleBtn active justify="center" onClick={onShowManageContent}>
-                manage content
-              </ManageModuleBtn>
-              <Dropdown overlay={menu} placement="topCenter">
-                <ManageModuleBtn justify="space-between">
-                  add resource
-                  <i class="fa fa-chevron-down" aria-hidden="true" />
-                </ManageModuleBtn>
-              </Dropdown>
-            </>
-          ) : (
-            <>
-              <Dropdown data-cy="add-resource" overlay={menu} placement="topCenter">
-                <ManageModuleBtn justify="space-between">
-                  add resource
-                  <i class="fa fa-chevron-down" aria-hidden="true" />
-                </ManageModuleBtn>
-              </Dropdown>
-
-              <ManageModuleBtn data-cy="ManageModules" justify="center" onClick={openManageModules}>
-                manage modules
-              </ManageModuleBtn>
-            </>
-          )}
-        </ActionsContainer>
-
         <ManageContentContainer data-cy="play-list-search-container">
+          <ManageContentLabel>Select Content to Add</ManageContentLabel>
           {/* <SearchByNavigationBar>
             <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
               keywords
@@ -281,20 +249,35 @@ const ManageContentBlock = props => {
         </SearchByTab>
           </SearchByNavigationBar> */}
           <FlexContainer>
-            <SearchBar
-              type="search"
-              placeholder={`Search by ${searchBy}`}
-              onChange={onSearchChange}
-              value={searchString}
-            />
-            <FilterBtn data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
+            <SearchBoxContainer>
+              <SearchBar
+                type="search"
+                placeholder={`Search by ${searchBy}`}
+                onChange={onSearchChange}
+                value={searchString}
+              />
+              <SearchIcon color={themeColor} />
+            </SearchBoxContainer>
+            <ActionButton data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
               <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-            </FilterBtn>
+            </ActionButton>
+            <Dropdown overlay={menu} placement="bottomRight">
+              <ActionButton>
+                <IconPlus color={themeColor} width={15} height={15} />
+              </ActionButton>
+            </Dropdown>
+            <ActionButton
+              active
+              justify="center"
+              onClick={isDifferentiationTab ? onShowManageContent : openManageModules}
+            >
+              <IconLayers color={themeColor} width={15} height={15} />
+            </ActionButton>
           </FlexContainer>
           <br />
           {isShowFilter ? (
             <PlaylistTestBoxFilter
-              authoredList={[]} /// Send authors data
+              authoredList={[]} // Send authors data
               collectionsList={uniq(
                 [
                   ...testsConstants.collectionDefaultFilter?.filter(c => c?.value),
@@ -329,7 +312,7 @@ const ManageContentBlock = props => {
               </SearchByNavigationBar>
 
               <br />
-              <ResourceDataList>
+              <ResourceDataList urlHasUseThis={urlHasUseThis}>
                 {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
                 {isLoading && loadedPage !== 0 && (
                   <LoaderWrapper>
@@ -340,9 +323,15 @@ const ManageContentBlock = props => {
             </>
           )}
 
-          {isManageModulesVisible && (
-            <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />
-          )}
+          {/* <ExternalLTIModalForm
+            onModalClose={onModalClose}
+            isShowExternalLTITool={isShowExternalLTITool}
+            externalToolsProviders={externalToolsProviders}
+            onChange={(key, value) => changeExternalLTIModal({ key, value })}
+            isAddNew={isAddNew}
+            setAddNew={setAddNew}
+            addLTIResource={addLTIResource}
+          /> */}
         </ManageContentContainer>
         <ModalWrapper
           footer={null}
@@ -386,7 +375,6 @@ const ManageContentBlock = props => {
 
 export default connect(
   state => ({
-    isManageModulesVisible: state.curriculumSequence?.isManageModulesVisible,
     isLoading: state.playlistTestBox?.isLoading,
     loadedPage: state.playlistTestBox?.loadedPage,
     filter: state.playlistTestBox?.filter,
@@ -427,6 +415,6 @@ export default connect(
     fetchExternalToolProvidersAction: slice.actions?.fetchExternalToolProvidersAction,
     setSearchByTab: slice.actions?.setSearchByTab,
     addResource: slice.actions?.addResource,
-    setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModal
+    setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction
   }
 )(ManageContentBlock);

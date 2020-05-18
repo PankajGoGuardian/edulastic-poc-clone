@@ -8,8 +8,8 @@ import {
   deleteModuleCSAction,
   resequenceModulesCSAction,
   saveCurriculumSequenceAction
-} from "../../../CurriculumSequence/ducks";
-import ManageModulesModalBody from "../../components/modals/ManageModulesModalBody";
+} from "../../ducks";
+import ManageModulesModalBody from "../modals/ManageModulesModalBody";
 
 const ManageModulesModal = ({
   visible,

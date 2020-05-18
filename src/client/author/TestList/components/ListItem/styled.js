@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { themeColor, fadedGrey, lightGrey, darkGrey, red } from "@edulastic/colors";
+import { themeColor, fadedGrey, lightGrey, darkGrey, red, extraDesktopWidth } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
 import IconELogo from "@edulastic/icons/src/IconELogo";
@@ -42,6 +42,9 @@ export const Outer = styled.div`
 export const Description = styled.div`
   font-size: 13px;
   color: #444444;
+  @media (max-width: ${extraDesktopWidth}) {
+    font-size: 12px;
+  }
 `;
 
 export const TagsWrapper = styled(Col)`
@@ -158,6 +161,10 @@ export const StyledLink = styled.a`
 
   :hover {
     color: ${themeColor};
+  }
+
+  @media (max-width: ${extraDesktopWidth}) {
+    font-size: 14px;
   }
 `;
 

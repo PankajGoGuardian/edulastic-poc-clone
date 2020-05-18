@@ -33,7 +33,7 @@ const ResourceItem = ({
   testType
 }) => {
   const standardIdentifiers = (summary?.standards || []).map(x => x.identifier);
-  const [{ opacity }, drag] = useDrag({
+  const [, drag] = useDrag({
     item: {
       type: "item",
       contentType: type,
@@ -59,7 +59,7 @@ const ResourceItem = ({
         <TitleText noStandards={standardIdentifiers.length === 0} title={contentTitle}>
           {contentTitle}
         </TitleText>
-        <Tags tags={standardIdentifiers} show={1} showTitle />
+        <Tags tags={standardIdentifiers} show={1} showTitle flexWrap="nowrap" />
       </ResourceTitle>
       <Tooltip title="preview">
         <IconEye className="preview-btn" color={themeColor} width={18} height={16} onClick={previewTest} />

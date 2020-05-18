@@ -130,5 +130,197 @@
   "savingTagErr": {
     "message": "Saving tag failed",
     "description": ""
+  },
+  "empyPlaylistName": {
+    "message": "Please enter playlist name.",
+    "description": ""
+  },
+  "addedTestToPlaylist": {
+    "message": "Test removed from playlist",
+    "description": ""
+  },
+  "removedTestFromPlaylist": {
+    "message": "Test removed from playlist",
+    "description": ""
+  },
+  "invalidModuleSelect": {
+    "message": "Invalid module selected",
+    "description": ""
+  },
+  "moduleAddedPlaylist": {
+    "message": "Module Added to playlist",
+    "description": ""
+  },
+  "moduleUpdated": {
+    "message": "Module updated successfully",
+    "description": ""
+  },
+  "moduleShouldNotEmpty": {
+    "message": "Module name cannot be empty",
+    "description": ""
+  },
+  "updatingMoudleErr": {
+    "message": "Error updating module in playlist",
+    "description": ""
+  },
+  "moduleRemovedFromPlaylist": {
+    "message": "Module Removed from playlist",
+    "description": ""
+  },
+  "moduleRemovedFromPlaylistErr": {
+    "message": "Error removing module from playlist",
+    "description": ""
+  },
+  "getPlaylistErr": {
+    "message": "Receive playlist by id is failing",
+    "description": ""
+  },
+  "nameShouldNotEmpty": {
+    "message": "Name field cannot be empty ",
+    "description": ""
+  },
+  "playlistCreated": {
+    "message": "Playlist created",
+    "description": ""
+  },
+  "playlistCreateErr": {
+    "message": "Failed to create playlist!",
+    "description": ""
+  },
+  "playlistVersioned": {
+    "message": "Playlist versioned",
+    "description": ""
+  },
+  "updatePlaylist": {
+    "message": "Update Successful",
+    "description": ""
+  },
+  "updatePlaylistErr": {
+    "message": "Update playlist is failing",
+    "description": ""
+  },
+  "sharedPlaylist": {
+    "message": "Successfully shared",
+    "description": ""
+  },
+  "sharePlaylistErr": {
+    "message": "Sharing failed",
+    "description": ""
+  },
+  "publishPlaylistErrWithAssociated": {
+    "message": "Playlist is not associated with any collection.",
+    "description": ""
+  },
+  "reviewPlaylist": {
+    "message": "Review request is submitted successfully.",
+    "description": ""
+  },
+  "publishedPlaylist": {
+    "message": "Successfully published",
+    "description": ""
+  },
+  "publishPlaylistErr": {
+    "message": "publish failed",
+    "description": ""
+  },
+  "getSharedUsersErr": {
+    "message": "receive share with users list is failing",
+    "description": ""
+  },
+  "deleteSharedUserErr": {
+    "message": "delete shared user is failing",
+    "description": ""
+  },
+  "curriculumMakeApiErr": {
+    "message": "Operation failed!",
+    "description": "You can no longer use this as sharing access has been revoked by author."
+  },
+  "curriculumMakeApiWarn": {
+    "message": "Operation failed!",
+    "description": "We're sorry, seems to be a problem contacting the server, try again in a few minutes"
+  },
+  "putCurriculumErr": {
+    "message": "There was an error updating the curriculum sequence",
+    "description": ""
+  },
+  "commonErr": {
+    "message": "Something went wrong, please try again",
+    "description": ""
+  },
+  "createMiscErr": {
+    "message": "Sorry, something went wrong and assign now failed.",
+    "description": ""
+  },
+  "updatingCurriculumErr": {
+    "message": "There was an error updating the curriculum sequence",
+    "description": ""
+  },
+  "loadingResourceErr": {
+    "message": "There was an error loading resource",
+    "description": ""
+  },
+  "assignmentExists": {
+    "message": "Assignment already exists.",
+    "description": ""
+  },
+  "playlistNotAssociated": {
+    "message": "Playlist is not associated with any collection.",
+    "description": ""
+  },
+  "playlistUpdated": {
+    "message": "Playlist Updated Successfully.",
+    "description": ""
+  },
+  "playlistUpdateFailed": {
+    "message": "Playlist Update Failed.",
+    "description": ""
+  },
+  "dropPlaylistErr": {
+    "message": "DropPlaylist is failing.",
+    "description": ""
+  },
+  "fetchClassErr": {
+    "message": "Fetching Class/Student List is Failing...",
+    "description": ""
+  },
+  "fetchPlaylistErr": {
+    "message": "Fetching playlist metrics is failing...",
+    "description": ""
+  },
+  "fetchPlaylistInsightsErr": {
+    "message": "Fetching playlist insights is failing...",
+    "description": ""
+  },
+  "cancelPlaylistCustomizationErr": {
+    "message": "Something went wrong while trying to cancel customization...",
+    "description": ""
+  },
+  "publishDraftPlaylistErr": {
+    "message": "Something went wrong while trying to publish customized draft playlist...",
+    "description": ""
+  },
+  "noTestId": {
+    "message": "Fetching playlist insights is failing...",
+    "description": ""
+  },
+  "movingTestErr": {
+    "message": "Moving test failed",
+    "description": ""
+  },
+  "invalidModuleSelected": {
+    "message": "Invalid module selected",
+    "description": ""
+  },
+  "manageModalGroupNameEmpty": {
+    "message": "Module Group Name cannot be empty",
+    "description": ""
+  },
+  "manageModalModuleIDEmpty": {
+    "message": "Module ID cannot be empty",
+    "description": ""
+  },
+  "manageModalModuleNameEmpty": {
+    "message": "Module name cannot be empty",
+    "description": ""
   }
 }

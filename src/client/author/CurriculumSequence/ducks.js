@@ -6,6 +6,7 @@ import { flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
+import { notification } from "@edulastic/common";
 import { curriculumSequencesApi, assignmentApi, userContextApi, groupApi, recommendationsApi } from "@edulastic/api";
 import produce from "immer";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
@@ -17,18 +18,12 @@ import {
   UPDATE_TEST_STATUS,
   RECEIVE_TEST_BY_ID_SUCCESS
 } from "../TestPage/ducks";
-import {
-  fetchGroupMembersAction,
-  SET_GROUP_MEMBERS,
-  getStudentsSelector,
-  getGroupsSelector
-} from "../sharedDucks/groups";
+import { fetchGroupMembersAction, SET_GROUP_MEMBERS, getStudentsSelector } from "../sharedDucks/groups";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../Playlist/ducks";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
 export const CURRICULUM_TYPE_CONTENT = "content";
-const PUBLISHED = "published";
 const DRAFT = "draft";
 
 // Types
@@ -229,16 +224,6 @@ const getPublisher = state => {
   return state.curriculumSequence.selectedPublisher;
 };
 
-const getSelectedItemsForAssign = state => {
-  if (
-    !state.curriculumSequence.selectedItemsForAssign ||
-    state.curriculumSequence.selectedItemsForAssign.length === 0
-  ) {
-    return [];
-  }
-  return state.curriculumSequence.selectedItemsForAssign;
-};
-
 const getDestinationCurriculumSequence = state => state.curriculumSequence.destinationCurriculumSequence;
 
 function* makeApiRequest(idsForFetch = []) {
@@ -277,9 +262,9 @@ function* makeApiRequest(idsForFetch = []) {
   } catch (error) {
     if (error.data.message === "permission denied") {
       yield put(push("/author/playlists"));
-      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+      yield call(notification, { messageKey: "curriculumMakeApiErr" });
     } else {
-      message.warning(`We're sorry, seems to be a problem contacting the server, try again in a few minutes`);
+      notification({ type: "warning", messageKey: "curriculumMakeApiWarn" });
     }
   }
 }
@@ -326,13 +311,13 @@ function* putCurriculumSequence({ payload }) {
     }
     oldData._id = _id;
     oldData.version = version;
-    message.success(`Successfully saved ${response.title || ""}`);
+    notification({ type: "success", msg: `Successfully saved ${response.title || ""}` });
     yield put(updateCurriculumSequenceAction(oldData));
     if (isPlaylist) {
       yield put(toggleManageModulesVisibilityCSAction(false));
     }
   } catch (error) {
-    message.error("There was an error updating the curriculum sequence");
+    notification({ messageKey: "putCurriculumErr" });
   }
 }
 
@@ -346,7 +331,7 @@ function* postSearchCurriculumSequence({ payload }) {
     const ids = response.map(curriculum => curriculum._id);
     yield call(makeApiRequest, ids);
   } catch (error) {
-    message.error("Something went wrong, please try again");
+    notification({ messageKey: "commonErr" });
   }
 }
 
@@ -359,7 +344,7 @@ function* searchGuides({ payload }) {
     });
     yield put(searchGuideResultAction(response));
   } catch (error) {
-    message.error("Something went wrong, please try again");
+    notification({ messageKey: "commonErr" });
   }
 }
 
@@ -373,7 +358,7 @@ function* searchContent() {
     });
     yield put(searchContentResultAction(response));
   } catch (error) {
-    message.error("Something went wrong, please try again");
+    notification({ messageKey: "commonErr" });
   }
 }
 
@@ -381,7 +366,7 @@ function* changeGuide({ ids }) {
   try {
     yield call(makeApiRequest, ids);
   } catch (error) {
-    message.error("Something went wrong, please try again");
+    notification({ messageKey: "commonErr" });
   }
 }
 
@@ -393,7 +378,7 @@ function* setPublisher({ payload }) {
     });
     yield put(searchGuideResultAction(response));
   } catch (error) {
-    message.error("Something went wrong, please try again");
+    notification({ messageKey: "commonErr" });
     yield searchGuideResultAction([]);
   }
 }
@@ -425,7 +410,7 @@ function* assign({ payload }) {
       assignments: [assignData]
     });
   } catch (error) {
-    message.warning(error.message);
+    notification({ type: "warning", msg: error.message });
     return error;
   }
 
@@ -435,9 +420,7 @@ function* assign({ payload }) {
     type: UPDATE_ASSIGNMENT,
     payload: assignment
   });
-
-  message.info(`${assignment.id} successfully assigned`);
-
+  notification({ type: "info", msg: `${assignment.id} successfully assigned` });
   return assignment;
 }
 
@@ -518,7 +501,7 @@ function* createAssignmentNow({ payload }) {
         });
         yield assign({ payload: { assignment: currentAssignment, assignData } });
       } catch (error) {
-        message.error("Sorry, something went wrong and assign now failed.");
+        notification({ messageKey: "createMiscErr" });
         console.warn("Error create misc unit.", error);
         return;
       }
@@ -542,7 +525,7 @@ function* createAssignmentNow({ payload }) {
       /* eslint-enable */
     } catch (error) {
       console.warn("Add content to misc unit failed.");
-      message.error("Sorry, something went wrong and assign now failed.");
+      notification({ messageKey: "createMiscErr" });
       return;
     }
 
@@ -569,7 +552,7 @@ function* createAssignmentNow({ payload }) {
       /* eslint-disable-next-line */
       yield saveCurriculumSequence();
     } catch (error) {
-      message.error("There was an error updating the curriculum sequence");
+      notification({ messageKey: "updatingCurriculumErr" });
       console.warn("There was an error updating the curriculum sequence", error);
     }
   }
@@ -586,7 +569,7 @@ export function* updateDestinationCurriculumSequencesaga({ payload }) {
     }
     yield put(putCurriculumSequenceAction({ id: curriculumSequence._id, curriculumSequence }));
   } catch (err) {
-    message.error("There was an error updating the curriculum sequence");
+    notification({ messageKey: "updatingCurriculumErr" });
     console.error("update curriculum sequence Error", err);
   }
 }
@@ -597,7 +580,7 @@ export function* getSignedRequestSaga({ payload }) {
     const request = yield call(curriculumSequencesApi.getSignedRequest, payload);
     yield put(updateSinedRequestAction(request));
   } catch (err) {
-    message.error("There was an error loading resource");
+    notification({ messageKey: "loadingResourceErr" });
   }
 }
 
@@ -609,7 +592,7 @@ function* addContentToCurriculumSequence({ payload }) {
 
   // Prevent duplicated items to be added
   if (toUnit.data.map(item => item.id).indexOf(contentToAdd.id) !== -1) {
-    message.warning("Assignment already exists.");
+    notification({ type: "warning", messageKey: "assignmentExists" });
     return new Error("Assignment already exists.");
   }
 
@@ -720,7 +703,7 @@ function* duplicateManageContentSaga({ payload }) {
     yield put(push(`/author/playlists/customize/${originalId}/${duplicatedDraftPlaylist._id}`));
   } catch (error) {
     console.error(error);
-    message.error("something went wrong");
+    notification({ messageKey: "commonErr" });
   }
 }
 
@@ -752,7 +735,7 @@ function* useThisPlayListSaga({ payload }) {
     }
   } catch (error) {
     console.error(error);
-    message.error("something went wrong");
+    notification({ messageKey: "commonErr" });
   }
 }
 
@@ -762,19 +745,19 @@ function* approveOrRejectSinglePlaylistSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      message.error("Playlist is not associated with any collection.");
+      notification({ messageKey: "playlistNotAssociated" });
       return;
     }
     yield call(curriculumSequencesApi.updatePlaylistStatus, payload);
     yield put(approveOrRejectSinglePlaylistSuccessAction(payload));
-    message.success("Playlist Updated Successfully.");
+    notification({ type: "success", messageKey: "playlistUpdated" });
   } catch (error) {
     console.error(error);
-    message.error(error?.data?.message || "Playlist Update Failed.");
+    notification({ messageKey: "playlistUpdateFailed" });
   }
 }
 
-function* fetchClassListByDistrictId({ payload }) {
+function* fetchClassListByDistrictId() {
   try {
     const data = yield call(groupApi.fetchMyGroups);
     const classList = data.map(x => ({ classId: x._id, className: x.name }));
@@ -782,7 +765,7 @@ function* fetchClassListByDistrictId({ payload }) {
       fetchClassListSuccess({ classList: classList.map(x => ({ id: x.classId, name: x.className, type: "class" })) })
     );
   } catch (error) {
-    message.error(error?.data?.message);
+    notification({ msg: error?.data?.message });
     console.error(error);
   }
 }
@@ -805,7 +788,7 @@ function* fetchStudentListByGroupId({ payload }) {
       })
     );
   } catch (error) {
-    message.error(error?.data?.message);
+    notification({ msg: error?.data?.message });
     console.error(error);
   }
 }
@@ -815,7 +798,7 @@ function* dropPlaylist({ payload }) {
     const result = yield call(groupApi.dropPlaylist, payload);
     return result;
   } catch (error) {
-    message.error("DropPlaylist is failing");
+    notification({ messageKey: "dropPlaylistErr" });
     console.error(error);
   }
 }
@@ -834,14 +817,14 @@ function* fetchPlaylistAccessList({ payload }) {
       }
     }
   } catch (error) {
-    message.error("Fetching Class/Student List is Failing...");
+    notification({ messageKey: "fetchClassErr" });
     console.error(error);
   }
 }
 
 function* fetchPlaylistMetricsSaga({ payload }) {
   try {
-    const { groupId, playlistId } = payload || {};
+    const { playlistId } = payload || {};
     if (!playlistId) {
       throw new Error("Insufficient Data for fetching playlist metrics: PlaylistId is required");
     }
@@ -850,7 +833,7 @@ function* fetchPlaylistMetricsSaga({ payload }) {
       yield put(updatePlaylistMetrics(result));
     }
   } catch (error) {
-    // message.error("Fetching playlist metrics is failing...");
+    notification({ messageKey: "fetchPlaylistErr" });
     console.error(error);
   }
 }
@@ -867,7 +850,7 @@ function* fetchPlaylistInsightsSaga({ payload }) {
     }
   } catch (error) {
     yield put(onErrorPlaylistInsightsAction(error));
-    message.error("Fetching playlist insights is failing...");
+    notification({ messageKey: "fetchPlaylistInsightsErr" });
     console.error(error);
   }
 }
@@ -878,7 +861,7 @@ function* fetchDifferentiationStudentListSaga({ payload }) {
     yield put(updateDifferentiationStudentListAction(studentList));
   } catch (err) {
     console.error(err);
-    yield call(message.error, err.data.message);
+    yield call(notification, { msg: err.data.message });
   }
 }
 
@@ -947,7 +930,7 @@ function* fetchDifferentiationWorkSaga({ payload }) {
     console.error(err);
     yield put(setDifferentiationWorkAction({}));
     yield put(updateFetchWorkLoadingStateAction(false));
-    yield call(message.error, err.data.message);
+    yield call(notification, { msg: err.data.message });
   }
 }
 
@@ -971,11 +954,11 @@ function* addRecommendationsSaga({ payload }) {
     const workData = yield select(getDifferentiationWorkSelector);
     const structuredData = structureWorkData(workData, statusData);
     yield put(setDifferentiationWorkAction(structuredData));
-    yield call(message.success, response.message);
+    yield call(notification, { msg: response.message });
     yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {
     console.error(err);
-    yield call(message.error, err.data.message);
+    yield call(notification, { msg: err.data.message });
   }
 }
 
@@ -992,7 +975,7 @@ function* cancelPlaylistCustomize({ payload }) {
     yield put(push(`/author/playlists/playlist/${parentId}/use-this`));
   } catch (e) {
     console.error("Cancel customize playlist error - ", e);
-    message.error("Something went wrong while trying to cancel customization...");
+    notification({ messageKey: "cancelPlaylistCustomizationErr" });
   }
 }
 
@@ -1004,7 +987,7 @@ function* publishDraftCustomizedPlaylist({ payload }) {
     yield put(push(`/author/playlists/playlist/${payload.id}/use-this`));
   } catch (e) {
     console.error("Customized draft playlist publish failed - ", e);
-    message.error("Something went wrong while trying to publish customized draft playlist...");
+    notification({ messageKey: "publishDraftPlaylistErr" });
   }
 }
 
@@ -1102,7 +1085,7 @@ const getDefaultAssignData = () => ({
 
 // Reducers
 const initialState = {
-  isManageContentActive: false,
+  activeRightPanel: "manageContent",
   allCurriculumSequences: [],
   destinationDirty: false,
   originalData: null,
@@ -1157,10 +1140,8 @@ const initialState = {
   studentListFetching: false,
   playlistInsights: {},
   loadingInsights: true,
-  isManageModulesVisible: false,
   differentiationStudentList: [],
   differentiationWork: {},
-  destinationDirty: false,
   isFetchingDifferentiationWork: false,
   workStatusData: {},
 
@@ -1361,7 +1342,7 @@ const createAssignmentReducer = (state, { payload }) => {
 const setSelectedItemsForAssignReducer = (state, { payload }) => {
   // we pass null when we deliberatly cancel the selected item without any user feedback
   if (!payload && payload !== null) {
-    message.info("No testId for this item");
+    notification({ type: "info", messageKey: "noTestId" });
     state.selectedItemsForAssign.pop();
   } else if (payload === null) {
     state.selectedItemsForAssign = [];
@@ -1402,7 +1383,7 @@ function* moveContentToPlaylistSaga(payload) {
       })
     );
   } catch (e) {
-    message.error("Moving test failed");
+    notification({ messageKey: "movingTestErr" });
   }
 }
 
@@ -1412,7 +1393,7 @@ const moveContentInPlaylist = (state, { payload }) => {
   if (!toContentIndex) {
     newPlaylist = produce(state.destinationCurriculumSequence, draft => {
       if (toModuleIndex != 0 && !toModuleIndex) {
-        return message.error("Invalid module selected");
+        return notification({ messageKey: "invalidModuleSelected" });
       }
       draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
       draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
@@ -1420,7 +1401,7 @@ const moveContentInPlaylist = (state, { payload }) => {
   } else {
     newPlaylist = produce(stable.destinationCurriculumSequence, draft => {
       if (toModuleIndex != 0 && !toModuleIndex) {
-        return message.error("Invalid module selected");
+        return notification({ messageKey: "invalidModuleSelected" });
       }
       draft.modules[toModuleIndex].data.splice(
         toContentIndex,
@@ -1619,7 +1600,7 @@ function onSuccessPlaylistInsights(state, { payload }) {
   };
 }
 
-function onErrorPlaylistInsights(state, { payload }) {
+function onErrorPlaylistInsights(state) {
   return {
     ...state,
     playlistInsights: {},
@@ -1691,6 +1672,9 @@ export default createReducer(initialState, {
       payload.moduleId,
       payload.moduleGroupName
     );
+    if (!state.destinationCurriculumSequence.modules) {
+      state.destinationCurriculumSequence.modules = [];
+    }
     if (payload?.afterModuleIndex !== undefined) {
       state.destinationCurriculumSequence?.modules?.splice(payload.afterModuleIndex, 0, newModule);
     } else {
@@ -1781,7 +1765,7 @@ export default createReducer(initialState, {
     state.destinationDirty = true;
   },
   [PLAYLIST_REORDER_TESTS]: (state, { payload }) => {
-    const { oldIndex, newIndex, collection, mIndex } = payload;
+    const { oldIndex, newIndex, mIndex } = payload;
     const [takenOutTest] = state.destinationCurriculumSequence.modules[mIndex].data.splice(oldIndex, 1);
     state.destinationCurriculumSequence.modules[mIndex].data.splice(newIndex, 0, takenOutTest);
     state.destinationDirty = true;
@@ -1796,7 +1780,7 @@ export default createReducer(initialState, {
     }
   },
   [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
-    state.isManageContentActive = !state.isManageContentActive;
+    state.activeRightPanel = payload;
   },
   [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
     state.signedRequest = payload;
@@ -1816,7 +1800,7 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {};
     }
-    state.isManageContentActive = false;
+    state.activeRightPanel = "manageContent";
 
     state.destinationDirty = false;
   },
@@ -1824,7 +1808,7 @@ export default createReducer(initialState, {
     state.originalData = payload;
   },
   [RESET_DESTINATION_FLAGS]: state => {
-    state.isManageContentActive = false;
+    state.activeRightPanel = "manageContent";
     state.destinationDirty = false;
   },
   [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {

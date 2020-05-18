@@ -82,7 +82,7 @@ export const playlistNavButtons = [
   {
     icon: <IconReview color={white} width={24} height={24} />,
     value: "review",
-    text: "Review"
+    text: "Manage Content"
   },
   {
     icon: <IconSettings color={white} width={16} height={16} />,

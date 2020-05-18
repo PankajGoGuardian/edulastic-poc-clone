@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { withRouter, Prompt } from "react-router-dom";
+import React, { Component, Fragment } from "react";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { groupBy, isEqual, uniqueId } from "lodash";
@@ -16,10 +16,10 @@ import {
 } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
+  mobileWidthLarge,
   desktopWidth,
   greyThemeDark1,
   largeDesktopWidth,
-  lightGreen5,
   lightGrey2,
   lightGrey5,
   lightGrey6,
@@ -28,7 +28,9 @@ import {
   themeColor,
   titleColor,
   white,
-  mediumDesktopExactWidth
+  secondaryTextColor,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import {
   IconBook,
@@ -37,10 +39,13 @@ import {
   IconPlaylist,
   IconShare,
   IconTile,
-  IconClose
+  IconClose,
+  IconSave,
+  IconAirdrop,
+  IconUseThis
 } from "@edulastic/icons";
 import { roleuser } from "@edulastic/constants";
-import { Button, Cascader, Input, Modal, Tooltip, message } from "antd";
+import { Button, Cascader, Input, Modal, Tooltip } from "antd";
 import EmbeddedVideoPreviewModal from "./ManageContentBlock/components/EmbeddedVideoPreviewModal";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
@@ -67,7 +72,8 @@ import {
   duplicateManageContentAction,
   cancelPlaylistCustomizeAction,
   publishCustomizedPlaylistAction,
-  setEmbeddedVideoPreviewModal
+  toggleManageModulesVisibilityCSAction,
+  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction
 } from "../ducks";
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
@@ -82,6 +88,7 @@ import ManageContentBlock from "./ManageContentBlock";
 import StudentPlayListHeader from "../../../student/sharedComponents/Header/PlayListHeader";
 import Differentiation from "./Differentiation";
 import { getDateKeysSelector } from "../../../student/StudentPlaylist/ducks";
+import ManageModulesModal from "./ManageModulesModal";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -171,6 +178,12 @@ const EUREKA_PUBLISHER = "Eureka Math";
 // const TENMARKS_PUBLISHER = "TenMarks";
 // const GOMATH_PUBLISHER = "Go Math!";
 
+const MobleHeaderWrapper = styled.div`
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 100%;
+  }
+`;
+
 /** @extends Component<CurriculumSequenceProps> */
 class CurriculumSequence extends Component {
   state = {
@@ -193,7 +206,8 @@ class CurriculumSequence extends Component {
     isPlayListEdited: false,
     dropPlaylistModalVisible: false,
     curatedStudentPlaylists: [],
-    showSummary: false
+    showSummary: false,
+    showRightPanel: true
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -380,18 +394,13 @@ class CurriculumSequence extends Component {
     history.push(url);
   };
 
-  toggleManageContentClick = () => {
-    const {
-      toggleManageContent,
-      manageContentDirty,
-      isManageContentActive,
-      destinationCurriculumSequence,
-      currentUserId,
-      duplicateManageContent,
-      role
-    } = this.props;
+  toggleManageContentClick = contentName => () => {
+    const { destinationCurriculumSequence, currentUserId, activeRightPanel, duplicateManageContent, role } = this.props;
     const { authors } = destinationCurriculumSequence;
-    const canEdit = authors.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
+    const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
+
+    const isManageContentActive = activeRightPanel === "manageContent";
+    this.setState({ showRightPanel: true });
 
     // if (isManageContentActive && manageContentDirty) {
     //   message.warn("Changes left unsaved. Please save it first");
@@ -414,9 +423,8 @@ class CurriculumSequence extends Component {
           style: { background: themeColor, outline: "none" }
         }
       });
-      return;
     } else {
-      this.props.toggleManageContent();
+      this.props?.toggleManageContent(contentName);
     }
   };
 
@@ -426,28 +434,28 @@ class CurriculumSequence extends Component {
     return history.push(`/home/playlist/${playlistId}/recommendations`);
   };
 
-  render() {
-    const desktopWidthValue = Number(desktopWidth.split("px")[0]);
+  hideRightpanel = () => this.setState({ showRightPanel: false }, this.closeManageModules);
 
-    const {
-      onGuideChange,
-      handleRemoveTest,
-      removeTestFromPlaylist,
-      onCloseConfirmRemoveModal,
-      toggleManageContentClick
-    } = this;
+  closeManageModules = () => {
+    const { toggleManageModulesVisibility, toggleManageContent } = this.props;
+    toggleManageModulesVisibility(false);
+    toggleManageContent(null);
+  };
+
+  render() {
+    const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
 
     const {
       addUnit,
       addCustomContent,
       curriculumGuide,
       newUnit,
-      isPlayListEdited,
       showConfirmRemoveModal,
       dropPlaylistModalVisible,
       curatedStudentPlaylists,
-      showSummary
+      showRightPanel
     } = this.state;
+
     const {
       expandedModules,
       onCollapseExpand,
@@ -472,9 +480,7 @@ class CurriculumSequence extends Component {
       role,
       playlistMetricsList,
       studentPlaylists,
-      activeClasses,
       match,
-      isManageContentActive,
       manageContentDirty,
       updateDestinationPlaylist,
       collections,
@@ -483,10 +489,14 @@ class CurriculumSequence extends Component {
       currentUserId,
       cancelPlaylistCustomize,
       publishCustomizedPlaylist,
+      activeRightPanel,
+      toggleManageModulesVisibility,
+      isManageModulesVisible,
       setEmbeddedVideoPreviewModal,
       isVideoResourcePreviewModal
     } = this.props;
 
+    const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
     const hasEditAccess = destinationCurriculumSequence?.authors?.find(x => x?._id === currentUserId);
 
@@ -505,7 +515,7 @@ class CurriculumSequence extends Component {
 
     const isPlaylistDetailsPage = window.location?.hash === "#review";
 
-    const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
+    const { handleUseThisClick, handleEditClick } = this;
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
@@ -616,14 +626,14 @@ class CurriculumSequence extends Component {
 
     const subHeaderIcon1 = !!grades.length && (
       <SubHeaderInfoCard data-cy="playlist-grade">
-        <IconGraduationCap color="grey" />
+        <GraduationCapIcon color="grey" />
         <SubHeaderInfoCardText>Grade {grades.join(", ")}</SubHeaderInfoCardText>
       </SubHeaderInfoCard>
     );
 
     const subHeaderIcon2 = !!subjects.length && (
       <SubHeaderInfoCard data-cy="playlist-sub">
-        <IconBook color="grey" />
+        <BookIcon color="grey" />
         <SubHeaderInfoCardText>{subjects.filter(item => !!item).join(", ")}</SubHeaderInfoCardText>
       </SubHeaderInfoCard>
     );
@@ -635,12 +645,17 @@ class CurriculumSequence extends Component {
         ((customize || hasEditAccess) && isNotStudentOrParent)) &&
         destinationCurriculumSequence &&
         !isAuthoringFlowReview) ||
-      role === roleuser.EDULASTIC_CURATOR;
+      role === roleuser.EDULASTIC_CURATOR ||
+      mode === "embedded";
 
     const { id: parentId = null, cloneId = null } = match.params;
 
     const GridCountInARow = windowWidth >= 1600 ? 5 : 4;
     const countModular = new Array(GridCountInARow - (slicedRecentPlaylists.length % GridCountInARow)).fill(1);
+
+    const isDesktop = windowWidth > parseInt(smallDesktopWidth, 10);
+
+    const ResolvedMobileHeaderWrapper = isDesktop ? Fragment : MobleHeaderWrapper;
 
     return (
       <>
@@ -656,6 +671,11 @@ class CurriculumSequence extends Component {
             </SecondHeader>
           </BreadCrumbWrapper>
         )}
+
+        {isManageModulesVisible && (
+          <ManageModulesModal visible={isManageModulesVisible} onClose={this.closeManageModules} />
+        )}
+
         <CurriculumSequenceWrapper>
           <Modal
             visible={addUnit}
@@ -663,7 +683,7 @@ class CurriculumSequence extends Component {
             onOk={this.handleAddUnit}
             onCancel={this.handleAddUnit}
             footer={null}
-            style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
+            style={isDesktop ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
           >
             <AddUnitModalBody
               destinationCurriculumSequence={destinationCurriculumSequence}
@@ -679,7 +699,7 @@ class CurriculumSequence extends Component {
             onOk={this.handleAddCustomContent}
             onCancel={this.handleAddCustomContent}
             footer={null}
-            style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
+            style={isDesktop ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
           >
             <ModalBody>
               <ModalLabelWrapper>
@@ -726,7 +746,7 @@ class CurriculumSequence extends Component {
           ) : (
             mode !== "embedded" && (
               <MainHeader
-                Icon={IconPlaylist}
+                Icon={isDesktop ? IconPlaylist : null}
                 headingText={title}
                 headingSubContent={
                   urlHasUseThis && !isPublisherUser && slicedRecentPlaylists?.length > 1 && changePlaylistIcon
@@ -734,7 +754,7 @@ class CurriculumSequence extends Component {
                 titleMinWidth="unset"
                 justify={urlHasUseThis ? "space-between" : "flex-start"}
               >
-                {urlHasUseThis && (
+                {urlHasUseThis && isDesktop && (
                   <PlaylistPageNav
                     onChange={this.handleNavChange}
                     current={currentTab}
@@ -742,47 +762,60 @@ class CurriculumSequence extends Component {
                   />
                 )}
 
-                <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
-                  {(showUseThisButton || urlHasUseThis || features.isCurator) && role !== roleuser.EDULASTIC_CURATOR && (
-                    <EduButton isGhost data-cy="share" onClick={onShareClick}>
-                      <IconShare />
-                    </EduButton>
-                  )}
-                  {urlHasUseThis && isTeacher && !isPublisherUser && (
-                    <EduButton data-cy="drop-playlist" onClick={this.openDropPlaylistModal}>
-                      AIRDROP PLAYLIST
-                    </EduButton>
-                  )}
+                <ResolvedMobileHeaderWrapper>
+                  <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
+                    {(showUseThisButton || urlHasUseThis || features.isCurator) && role !== roleuser.EDULASTIC_CURATOR && (
+                      <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
+                        <IconShare />
+                      </HeaderButton>
+                    )}
+                    {urlHasUseThis && isTeacher && !isPublisherUser && (
+                      <HeaderButton data-cy="drop-playlist" onClick={this.openDropPlaylistModal} IconBtn={!isDesktop}>
+                        <IconAirdrop />
+                        {isDesktop && "AIRDROP PLAYLIST"}
+                      </HeaderButton>
+                    )}
 
-                  {isManageContentActive && !cloneId && (
-                    <EduButton data-cy="save" onClick={updateDestinationPlaylist}>
-                      SAVE
-                    </EduButton>
+                    {isManageContentActive && !cloneId && !showUseThisButton && (
+                      <HeaderButton data-cy="save" onClick={updateDestinationPlaylist} IconBtn={!isDesktop}>
+                        <IconSave />
+                        {isDesktop && "SAVE"}
+                      </HeaderButton>
+                    )}
+                    {(isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
+                      <Tooltip placement="bottom" title="EDIT">
+                        <HeaderButton isGhost data-cy="edit-playlist" onClick={handleEditClick} IconBtn>
+                          <IconPencilEdit />
+                        </HeaderButton>
+                      </Tooltip>
+                    )}
+                    {showUseThisButton && role !== roleuser.EDULASTIC_CURATOR && (
+                      <HeaderButton data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
+                        <IconUseThis />
+                        {isDesktop && "USE THIS"}
+                      </HeaderButton>
+                    )}
+                    {features.isCurator && (status === "inreview" || status === "rejected") && (
+                      <HeaderButton onClick={this.onApproveClick}>APPROVE</HeaderButton>
+                    )}
+                    {features.isCurator && status === "inreview" && (
+                      <HeaderButton onClick={this.onRejectClick}>REJECT</HeaderButton>
+                    )}
+                  </CurriculumHeaderButtons>
+
+                  {urlHasUseThis && !isDesktop && (
+                    <PlaylistPageNav
+                      onChange={this.handleNavChange}
+                      current={currentTab}
+                      showDifferentiationTab={isSparkMathPlaylist}
+                    />
                   )}
-                  {(isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
-                    <Tooltip placement="bottom" title="EDIT">
-                      <EduButton isGhost data-cy="edit-playlist" onClick={handleEditClick}>
-                        <IconPencilEdit />
-                      </EduButton>
-                    </Tooltip>
-                  )}
-                  {showUseThisButton && role !== roleuser.EDULASTIC_CURATOR && (
-                    <EduButton data-cy="use-this" onClick={handleUseThisClick}>
-                      USE THIS
-                    </EduButton>
-                  )}
-                  {features.isCurator && (status === "inreview" || status === "rejected") && (
-                    <EduButton onClick={this.onApproveClick}>APPROVE</EduButton>
-                  )}
-                  {features.isCurator && status === "inreview" && (
-                    <EduButton onClick={this.onRejectClick}>REJECT</EduButton>
-                  )}
-                </CurriculumHeaderButtons>
+                </ResolvedMobileHeaderWrapper>
               </MainHeader>
             )
           )}
 
-          <MainContentWrapper padding="30px">
+          <MainContentWrapper padding="30px" mode={mode}>
             {currentTab === "playlist" && (
               <>
                 {isPlaylistDetailsPage && (
@@ -794,7 +827,7 @@ class CurriculumSequence extends Component {
                 )}
 
                 <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-                  <ContentContainer urlHasUseThis={urlHasUseThis}>
+                  <ContentContainer urlHasUseThis={urlHasUseThis} showRightPanel={showRightPanel}>
                     {isStudent && !!dateKeys.length && destinationCurriculumSequence?.isSparkMath && (
                       <SubTopBar>
                         <SubTopBarContainer
@@ -809,7 +842,7 @@ class CurriculumSequence extends Component {
                         >
                           <div>NEW RECOMMENDATIONS SINCE LAST LOGIN.</div>
                           <div style={{ cursor: "pointer" }} onClick={this.handleCheckout}>
-                            CHECK IT OUT >>
+                            CHECK IT OUT &gt;&gt;
                           </div>
                         </SubTopBarContainer>
                       </SubTopBar>
@@ -821,14 +854,10 @@ class CurriculumSequence extends Component {
                             <SubHeaderDescription>{description}</SubHeaderDescription>
                           </SubHeaderTitleContainer>
                           <RightColumn>
-                            {!enableCustomize && (
-                              <SubHeaderInfoCardWrapper>
-                                {subHeaderIcon1}
-                                {subHeaderIcon2}
-                              </SubHeaderInfoCardWrapper>
-                            )}
-                            {enableCustomize && subHeaderIcon1}
-                            {enableCustomize && subHeaderIcon2}
+                            <SubHeaderInfoCardWrapper>
+                              {subHeaderIcon1}
+                              {subHeaderIcon2}
+                            </SubHeaderInfoCardWrapper>
                             <ButtonWrapper>
                               {enableCustomize &&
                                 (isManageContentActive && cloneId ? (
@@ -850,27 +879,25 @@ class CurriculumSequence extends Component {
                                     </StyledButton>
                                   </DraftModeActionsWrapper>
                                 ) : (
-                                  <StyledButton
-                                    width="135px"
-                                    style={{ marginLeft: "30px" }}
-                                    data-cy="manage-content"
-                                    onClick={toggleManageContentClick}
-                                    isManageContentActive={isManageContentActive}
-                                  >
-                                    Manage Content
-                                  </StyledButton>
+                                  <>
+                                    {(!isManageContentActive || !showRightPanel) && (
+                                      <StyledButton onClick={this.toggleManageContentClick("manageContent")}>
+                                        Customize Content
+                                      </StyledButton>
+                                    )}
+                                    {(isManageContentActive || !showRightPanel) && urlHasUseThis && (
+                                      <StyledButton onClick={this.toggleManageContentClick("sammary")}>
+                                        View Summary
+                                      </StyledButton>
+                                    )}
+                                  </>
                                 ))}
-                              {urlHasUseThis && (
-                                <ToggleSummaryButton onClick={() => this.setState({ showSummary: !showSummary })}>
-                                  Summary
-                                </ToggleSummaryButton>
-                              )}
                             </ButtonWrapper>
                           </RightColumn>
                         </CurriculumSubHeaderRow>
                       </SubTopBarContainer>
                     </SubTopBar>
-                    <Wrapper active={isContentExpanded}>
+                    <Wrapper active={isContentExpanded} urlHasUseThis={urlHasUseThis}>
                       {destinationCurriculumSequence && (
                         <Curriculum
                           mode={isManageContentActive ? "embedded" : mode}
@@ -898,69 +925,77 @@ class CurriculumSequence extends Component {
                           playlistClassList={playlistClassList}
                           manageContentDirty={manageContentDirty}
                           hasEditAccess={hasEditAccess}
+                          toggleManageModulesVisibility={toggleManageModulesVisibility}
+                          isDesktop={isDesktop}
+                          showRightPanel={showRightPanel}
                           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                         />
                       )}
                     </Wrapper>
                   </ContentContainer>
-                  {isNotStudentOrParent && isManageContentActive && !urlHasUseThis ? (
-                    <ManageContentBlock
-                      testsInPlaylist={testsInPlaylist}
-                      subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
-                      gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
-                      collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
-                      toggleManageContent={toggleManageContentClick}
-                    />
-                  ) : null}
-                  {urlHasUseThis &&
-                    (isManageContentActive ? (
-                      <ManageContentBlock
-                        testsInPlaylist={testsInPlaylist}
-                        subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
-                        gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
-                        collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
-                        toggleManageContent={toggleManageContentClick}
-                      />
-                    ) : (
-                      <>
-                        <SummaryBlock showSummary={showSummary}>
-                          <CloseSummaryBtn onClick={() => this.setState({ showSummary: !showSummary })}>
-                            <IconClose />
-                          </CloseSummaryBtn>
-                          <SummaryBlockTitle>Summary</SummaryBlockTitle>
-                          <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
-                          <SummaryPieChart
-                            isStudent={isStudent}
-                            data={summaryData}
-                            totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
-                            colors={COLORS}
+
+                  {showRightPanel && (
+                    <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative" }}>
+                      {showRightPanel && (
+                        <HideRightPanel onClick={this.hideRightpanel}>
+                          <IconClose />
+                        </HideRightPanel>
+                      )}
+                      {isNotStudentOrParent && isManageContentActive && !urlHasUseThis ? (
+                        <ManageContentBlock
+                          testsInPlaylist={testsInPlaylist}
+                          urlHasUseThis={urlHasUseThis}
+                          subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
+                          gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
+                          collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
+                        />
+                      ) : null}
+                      {urlHasUseThis &&
+                        (isManageContentActive ? (
+                          <ManageContentBlock
+                            testsInPlaylist={testsInPlaylist}
+                            urlHasUseThis={urlHasUseThis}
+                            subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
+                            gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
+                            collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
                           />
-                          <Hr />
-                          <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
-                          <div style={{ width: "80%", margin: "20px auto" }}>
-                            {summaryData?.map(
-                              item =>
-                                ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
-                                  <div style={{ opacity: item.hidden ? `.5` : `1` }}>
-                                    <Tooltip placement="topLeft" title={item.title || item.name}>
-                                      <ModuleTitle>{item.title || item.name}</ModuleTitle>
-                                    </Tooltip>
-                                    <ProgressBar
-                                      strokeColor={getProgressColor(item?.value)}
-                                      strokeWidth={13}
-                                      percent={item.value}
-                                      size="small"
-                                      color={item.value ? greyThemeDark1 : lightGrey2}
-                                      format={percent => (percent ? `${percent}%` : "NO DATA")}
-                                      padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
-                                    />
-                                  </div>
-                                )
-                            )}
-                          </div>
-                        </SummaryBlock>
-                      </>
-                    ))}
+                        ) : (
+                          <SummaryBlock>
+                            <SummaryBlockTitle>Summary</SummaryBlockTitle>
+                            <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
+                            <SummaryPieChart
+                              isStudent={isStudent}
+                              data={summaryData}
+                              totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
+                              colors={COLORS}
+                            />
+                            <Hr />
+                            <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
+                            <div style={{ width: "80%", margin: "20px auto" }}>
+                              {summaryData?.map(
+                                item =>
+                                  ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
+                                    <div style={{ opacity: item.hidden ? `.5` : `1` }}>
+                                      <Tooltip placement="topLeft" title={item.title || item.name}>
+                                        <ModuleTitle>{item.title || item.name}</ModuleTitle>
+                                      </Tooltip>
+                                      <StyledProgressBar
+                                        strokeColor={getProgressColor(item?.value)}
+                                        strokeWidth={13}
+                                        percent={item.value}
+                                        size="small"
+                                        color={item.value ? greyThemeDark1 : lightGrey2}
+                                        format={percent => (percent ? `${percent}%` : "NO DATA")}
+                                        padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
+                                      />
+                                    </div>
+                                  )
+                              )}
+                            </div>
+                          </SummaryBlock>
+                        ))}
+                    </div>
+                  )}
                 </StyledFlexContainer>
               </>
             )}
@@ -988,9 +1023,10 @@ const enhance = compose(
   connect(
     state => ({
       curriculumGuides: state.curriculumSequence.guides,
+      isManageModulesVisible: state.curriculumSequence?.isManageModulesVisible,
       guide: state.curriculumSequence.selectedGuide,
       isContentExpanded: state.curriculumSequence.isContentExpanded,
-      isManageContentActive: state.curriculumSequence.isManageContentActive,
+      activeRightPanel: state.curriculumSequence.activeRightPanel,
       manageContentDirty: state.curriculumSequence.destinationDirty,
       selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
       dataForAssign: state.curriculumSequence.dataForAssign,
@@ -1027,7 +1063,8 @@ const enhance = compose(
       duplicateManageContent: duplicateManageContentAction,
       cancelPlaylistCustomize: cancelPlaylistCustomizeAction,
       publishCustomizedPlaylist: publishCustomizedPlaylistAction,
-      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModal
+      toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
+      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction
     }
   )
 );
@@ -1065,6 +1102,18 @@ const ModuleTitle = styled.p`
   text-overflow: ellipsis;
   letter-spacing: 0.2px;
   margin-top: 8px;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 9px;
+  }
+`;
+
+const StyledProgressBar = styled(ProgressBar)`
+  & .ant-progress-text {
+    @media (max-width: ${extraDesktopWidthMax}) {
+      font-size: 9px;
+    }
+  }
 `;
 
 const Hr = styled.div`
@@ -1082,32 +1131,16 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-const ToggleSummaryButton = styled(EduButton)`
-  display: none;
-  width: 135px;
-  margin: 10px 0px 10px 20px !important;
-  cursor: pointer;
-
-  @media (max-width: ${smallDesktopWidth}) {
-    display: flex;
-  }
-`;
-
-const CloseSummaryBtn = styled.div`
-  display: none;
-  position: fixed;
-  right: 15px;
-  margin-top: -15px;
-  cursor: pointer;
-
-  @media (max-width: ${smallDesktopWidth}) {
-    display: block;
+const HeaderButton = styled(EduButton)`
+  @media (max-width: ${extraDesktopWidthMax}) {
+    height: 38px;
+    ${({ IconBtn }) => IconBtn && "width: 38px;"};
   }
 `;
 
 const SummaryBlock = styled.div`
   width: 400px;
-  min-height: 760px;
+  min-height: 740px;
   background: ${white};
   padding-top: 30px;
   border-radius: 4px;
@@ -1122,17 +1155,19 @@ const SummaryBlock = styled.div`
     }
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     width: 340px;
   }
   @media (max-width: ${smallDesktopWidth}) {
     position: fixed;
     right: 0px;
-    top: 62px;
+    top: ${props => props.theme.HeaderHeight.md}px;
     max-height: calc(100vh - 62px);
     min-height: calc(100vh - 62px);
     overflow: auto;
-    display: ${props => (props.showSummary ? "block" : "none")};
+  }
+  @media (max-width: ${desktopWidth}) {
+    top: ${props => props.theme.HeaderHeight.xs}px;
   }
 `;
 
@@ -1142,6 +1177,10 @@ const SummaryBlockTitle = styled.div`
   font-weight: 700;
   font-size: 22px;
   text-align: center;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 18px;
+  }
 `;
 
 const SummaryBlockSubTitle = styled.div`
@@ -1152,19 +1191,24 @@ const SummaryBlockSubTitle = styled.div`
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 10px;
+  }
 `;
 
 const StyledButton = styled.div`
   margin: ${props => props.margin || "0px"};
-  height: ${props => props.height || "45px"};
+  margin-left: 30px;
+  margin-right: 8px;
+  height: ${props => props.height || "40px"};
   min-width: ${props => props.width || "auto"};
-  color: ${({ isManageContentActive }) => (isManageContentActive ? white : themeColor)};
+  color: ${themeColor};
   display: flex;
   font: 11px/15px Open Sans;
   font-weight: 600;
   align-items: center;
   justify-content: center;
-  background: ${({ isManageContentActive }) => (isManageContentActive ? themeColor : white)};
   border-radius: 4px;
   border: 1px solid ${themeColor};
   cursor: pointer;
@@ -1185,9 +1229,28 @@ const StyledButton = styled.div`
     }
   }
 
+  &:last-child {
+    margin-top: 10px;
+  }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 150px;
+    height: 40px;
+  }
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 9px;
+    width: 128px;
+    height: 32px;
+    font-weight: 600;
+  }
+
   @media (max-width: ${mediumDesktopExactWidth}) {
     font-size: 9px;
     height: ${props => props.height || "32px"};
+  }
+  @media (max-width: ${desktopWidth}) {
+    margin-left: 15px;
   }
 `;
 
@@ -1251,13 +1314,39 @@ const Wrapper = styled.div`
   align-self: ${props => (props.active ? "flex-start" : "center")};
   margin-left: ${props => (props.active ? "0px" : "auto")};
   margin-right: ${props => (props.active ? "0px" : "auto")};
+
+  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 280px)" : "calc(100vh - 330px)")};
+  overflow: auto;
+  position: relative;
+
   @media only screen and (max-width: ${largeDesktopWidth}) {
     width: 100%;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 `;
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+  }
 `;
 
 const SubTopBar = styled.div`
@@ -1285,6 +1374,7 @@ const SubTopBarContainer = styled.div`
   margin-right: ${props => (props.active ? "" : "auto")};
   border-radius: 5px;
   border: 1px solid #DADAE4;
+  height: 145px;
 
   @media only screen and (max-width: 1366px) {
     flex-direction: column;
@@ -1298,6 +1388,10 @@ const SubTopBarContainer = styled.div`
   }
   @media only screen and (max-width: 480px) {
     padding-left: 20px;
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    padding: 15px;
   }
 `;
 
@@ -1316,6 +1410,10 @@ const CurriculumSubHeaderRow = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${props => props.marginBottom || "0px"};
+
+  @media (max-width: ${mobileWidthLarge}) {
+    flex-direction: column-reverse;
+  }
 `;
 
 const RightColumn = styled.div`
@@ -1323,14 +1421,27 @@ const RightColumn = styled.div`
   width: 55%;
   justify-content: flex-end;
   align-items: center;
+
+  @media (max-width: ${tabletWidth}) {
+    width: 45%;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
+    margin-bottom: 5px;
+    justify-content: space-evenly;
+  }
 `;
 
 const SubHeaderTitleContainer = styled.div`
   min-width: 200px;
   width: 45%;
   word-break: break-word;
-  @media only screen and (max-width: ${tabletWidth}) {
-    max-width: 100%;
+
+  @media (max-width: ${tabletWidth}) {
+    width: 55%;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
   }
 `;
 
@@ -1339,7 +1450,7 @@ const SubHeaderDescription = styled.p`
   font-size: 14px;
   text-align: justify;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 13px;
   }
 `;
@@ -1347,16 +1458,26 @@ const SubHeaderDescription = styled.p`
 const SubHeaderInfoCardWrapper = styled.div`
   display: flex;
   align-items: center;
+
+  @media (max-width: ${tabletWidth}) {
+    flex-direction: column;
+  }
 `;
 
 const SubHeaderInfoCard = styled.div`
   display: flex;
   align-items: center;
   margin-left: 20px;
-  @media only screen and (max-width: ${tabletWidth}) {
-    margin-top: 10px;
+
+  @media (max-width: ${desktopWidth}) {
+    margin-left: 10px;
+  }
+
+  @media (max-width: ${tabletWidth}) {
+    margin-bottom: 10px;
     margin-left: 0px;
   }
+
   @media (max-width: ${mediumDesktopExactWidth}) {
     svg {
       width: 12px;
@@ -1371,8 +1492,8 @@ const SubHeaderInfoCardText = styled.div`
   color: ${titleColor};
   text-transform: uppercase;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: 9px;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font: Bold 9px/13px Open Sans;
   }
 `;
 
@@ -1383,12 +1504,13 @@ const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 const ContentContainer = styled.div`
-  width: calc(100% - 400px);
+  width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 400px)" : "100%")};
   padding-right: 15px;
   margin: 0px auto;
+  position: relative;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    width: calc(100% - 340px);
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 340px)" : "100%")};
   }
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;
@@ -1412,4 +1534,41 @@ const DraftModeActionsWrapper = styled.div`
   justify-content: space-between;
   flex-wrap: wrap-reverse;
   margin-left: 15px;
+`;
+
+export const HideRightPanel = styled.div`
+  position: absolute;
+  right: 16px;
+  top: 10px;
+  z-index: 50;
+  cursor: pointer;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    fill: ${secondaryTextColor};
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    position: fixed;
+    right: 16px;
+    top: ${props => props.theme.HeaderHeight.md + 12}px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    top: ${props => props.theme.HeaderHeight.xs + 12}px;
+  }
+`;
+
+const GraduationCapIcon = styled(IconGraduationCap)`
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: 18px;
+    height: 13px;
+  }
+`;
+
+const BookIcon = styled(IconBook)`
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: 12px;
+    height: 15px;
+  }
 `;

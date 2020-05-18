@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { white, themeColor, grey, black, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { white, themeColor, grey, black, extraDesktopWidthMax } from "@edulastic/colors";
 import PropTypes from "prop-types";
 
 const EduButton = ({ children, ...restProps }) => (
@@ -22,14 +22,14 @@ EduButton.defaultProps = {
 
 export default EduButton;
 
-const getStyle = ({ height, width, justifyContent, fontSize, IconBtn, style = {} }) => {
+const getStyle = ({ height, width, justifyContent, fontSize, IconBtn, ml, style = {} }) => {
   const defaultStyle = {
     display: "flex",
     "align-items": "center",
     "justify-content": justifyContent || "space-evenly",
     fontSize: fontSize || "11px",
     fontWeight: "600",
-    marginLeft: "5px",
+    marginLeft: ml || "5px",
     borderRadius: "4px",
     height: height || "36px",
     padding: IconBtn ? "5px" : "5px 15px",
@@ -119,8 +119,8 @@ const StyledButton = styled(Button)`
 
   @media (min-width: ${extraDesktopWidthMax}) {
     &.ant-btn {
-      margin-left: 10px;
-      height: ${props => props.height || "45px"};
+      margin-left: ${props => props.ml || "5px"};
+      height: ${props => props.height || "36px"};
     }
   }
 `;

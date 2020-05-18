@@ -6,7 +6,6 @@ import {
   grey,
   lightGrey3,
   lightGreySecondary,
-  mediumDesktopExactWidth,
   themeColor,
   white
 } from "@edulastic/colors";
@@ -140,7 +139,7 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-  ,
+
   .ant-table-scroll {
     .ant-table-header {
       // mozilla
@@ -445,8 +444,9 @@ export const StyledTag = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     height: 28px;
+    width: 128px;
     font-size: 9px;
   }
 `;
@@ -462,13 +462,26 @@ export const StyledLabel = styled.div`
   letter-spacing: ${props => props.spacing || "0.2px"};
   color: ${props => props.textColor || "grey"};
   text-align: ${props => props.textAlign || "left"};
-  font-size: 14px;
+  font-size: 12px;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 10px;
+  }
+`;
+
+export const InfoColumnLabel = styled(StyledLabel)`
+  @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
   }
 `;
 
 export const HideLinkLabel = styled(StyledLabel)`
-  padding: 4px 20px 10px 0px;
+  width: 80px;
+  white-space: nowrap;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 9px;
+  }
 `;

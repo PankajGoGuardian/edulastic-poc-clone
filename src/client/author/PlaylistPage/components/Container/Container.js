@@ -4,15 +4,14 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
-import { identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
-import { withWindowSizes } from "@edulastic/common";
+import { isObject as _isObject, uniq as _uniq, get, omit } from "lodash";
+import { withWindowSizes, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { themeColor, white } from "@edulastic/colors";
+import { testsApi } from "@edulastic/api";
 import { Content } from "../../../TestPage/components/Container/styled";
-import { get, omit } from "lodash";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
-  defaultImage,
   createPlaylistAction,
   receivePlaylistByIdAction,
   setTestDataAction,
@@ -50,10 +49,10 @@ import ShareModal from "../../../src/components/common/ShareModal";
 import CurriculumSequence from "../../../CurriculumSequence/components/CurriculumSequence";
 import Summary from "../../../TestPage/components/Summary";
 import Setting from "../Settings";
-import TestList from "../../../TestList";
 import { CollectionsSelectModal } from "../CollectionsSelectModal/collectionsSelectModal";
 import { setDefaultInterests } from "../../../dataUtils";
-import { testsApi } from "@edulastic/api";
+
+import TestList from "../../../TestList";
 
 // TODO: replace with playlistApi once api is updated
 const { getDefaultImage } = testsApi;
@@ -68,26 +67,19 @@ class Container extends PureComponent {
   propTypes = {
     createPlayList: PropTypes.func.isRequired,
     updatePlaylist: PropTypes.func.isRequired,
-    receivePlaylistByIdAction: PropTypes.func.isRequired,
     setData: PropTypes.func.isRequired,
     setDefaultData: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
-    rows: PropTypes.array.isRequired,
     creating: PropTypes.bool.isRequired,
     windowWidth: PropTypes.number.isRequired,
-    selectedRows: PropTypes.object,
     test: PropTypes.object,
-    user: PropTypes.object,
     isTestLoading: PropTypes.bool.isRequired,
     clearSelectedItems: PropTypes.func.isRequired,
-    saveCurrentEditingTestId: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired
   };
 
   static defaultProps = {
-    test: null,
-    selectedRows: {},
-    user: {}
+    test: null
   };
 
   state = {
@@ -108,7 +100,9 @@ class Container extends PureComponent {
       setDefaultData,
       history: { location },
       clearSelectedItems,
-      clearTestAssignments
+      clearTestAssignments,
+      editAssigned,
+      setRegradeOldId
     } = this.props;
 
     if (location.hash === "#review") {
@@ -123,20 +117,22 @@ class Container extends PureComponent {
       setDefaultData();
     }
 
-    if (this.props.editAssigned) {
-      this.props.setRegradeOldId(match.params.id);
+    if (editAssigned) {
+      setRegradeOldId(match.params.id);
     }
   }
 
   componentDidUpdate() {
-    if (this.props.editAssigned) {
-      this.props.setRegradeOldId(this.props.match.params.id);
+    const { editAssigned, setRegradeOldId, match } = this.props;
+    if (editAssigned) {
+      setRegradeOldId(match.params.id);
     }
   }
 
   handleNavChange = value => () => {
-    if (!this.props.playlist?.title?.trim()?.length) {
-      return message.warn("Please enter playlist name.");
+    const { playlist } = this.props;
+    if (!playlist?.title?.trim()?.length) {
+      return notification({ type: "warn", messageKey: "empyPlaylistName" });
     }
     if (value === "source") {
       return this.setState({
@@ -167,7 +163,7 @@ class Container extends PureComponent {
 
   handleChangeCollection = (value, options) => {
     const { setData, orgCollections, playlist } = this.props;
-    let data = {};
+    const data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
         data[o.props._id].push(o.props.value);
@@ -177,10 +173,10 @@ class Container extends PureComponent {
     });
 
     const collectionArray = [];
-    for (const [key, value] of Object.entries(data)) {
+    for (const [key, _value] of Object.entries(data)) {
       collectionArray.push({
         _id: key,
-        bucketIds: value
+        bucketIds: _value
       });
     }
 
@@ -189,10 +185,6 @@ class Container extends PureComponent {
     setData({ ...playlist, collections: [...collectionArray, ...extraCollections] });
   };
 
-  handleSaveTestId = () => {
-    const { test, saveCurrentEditingTestId } = this.props;
-    saveCurrentEditingTestId(test._id);
-  };
   handleChangeColor = (type, value) => {
     this.setState({
       [type]: value
@@ -249,8 +241,13 @@ class Container extends PureComponent {
     resequenceTests(prop);
   };
 
+  handleSaveTestId = () => {
+    const { test, saveCurrentEditingTestId } = this.props;
+    saveCurrentEditingTestId(test._id);
+  };
+
   renderContent = () => {
-    const { playlist, setData, rows, isTestLoading, match, history, userId } = this.props;
+    const { playlist, setData, isTestLoading, match, history, userId } = this.props;
     const modules = playlist.modules.map(m => {
       const data = m.data.map(d => omit(d, ["hidden"]));
       m.data = data;
@@ -265,7 +262,7 @@ class Container extends PureComponent {
     const { current, expandedModules, isTextColorPickerVisible, isBackgroundColorPickerVisible } = this.state;
     const { handleChangeColor } = this;
     // TODO: fix this shit!!
-    let selectedTests = [];
+    const selectedTests = [];
     playlist &&
       playlist.modules &&
       playlist.modules.forEach(module => {
@@ -282,7 +279,7 @@ class Container extends PureComponent {
             history={history}
             location={history.location}
             match={match}
-            mode={"embedded"}
+            mode="embedded"
             selectedItems={selectedTests}
             current={current}
             onSaveTestId={this.handleSaveTestId}
@@ -313,7 +310,7 @@ class Container extends PureComponent {
       case "review":
         return (
           <CurriculumSequence
-            mode={"embedded"}
+            mode="embedded"
             destinationCurriculumSequence={playlist}
             expandedModules={expandedModules}
             onCollapseExpand={this.collapseExpandModule}
@@ -351,8 +348,9 @@ class Container extends PureComponent {
   };
 
   onShareModalChange = () => {
+    const { showShareModal } = this.state;
     this.setState({
-      showShareModal: !this.state.showShareModal
+      showShareModal: !showShareModal
     });
   };
 
@@ -449,16 +447,16 @@ class Container extends PureComponent {
           isVisible={showSelectCollectionsModal}
           onOk={this.onOkCollectionsSelectModal}
           onCancel={this.onCancelCollectionsSelectModal}
-          title={"Collections"}
+          title="Collections"
           onChange={this.onCollectionsSelectChange}
           selectedCollections={collections}
           okText="PUBLISH"
         />
         <ShareModal
-          shareLabel={"PLAYLIST URL"}
+          shareLabel="PLAYLIST URL"
           isVisible={showShareModal}
           testId={testId}
-          isPlaylist={true}
+          isPlaylist
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}

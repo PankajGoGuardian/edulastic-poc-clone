@@ -53,3 +53,4 @@ export { default as canvasApi } from "./src/canvas";
 export { default as cleverApi } from "./src/clever";
 export { default as recommendationsApi } from "./src/recommendation";
 export { default as resourcesApi } from "./src/resources";
+export { default as realtimeApi } from "./src/realtime";

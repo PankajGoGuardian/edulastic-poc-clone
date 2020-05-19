@@ -1,10 +1,11 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { get, pick } from "lodash";
 import { message } from "antd";
+import mqtt from "mqtt";
 import produce from "immer";
 import { push } from "connected-react-router";
 import { takeLatest, call, put, select } from "redux-saga/effects";
-import { schoolApi, userApi, settingsApi, TokenStorage, canvasApi } from "@edulastic/api";
+import { schoolApi, userApi, settingsApi, TokenStorage, canvasApi, realtimeApi } from "@edulastic/api";
 import { signupSuccessAction } from "../Login/ducks";
 import { getUser } from "../../author/src/selectors/user";
 
@@ -505,11 +506,50 @@ function* fetchSchoolTeachersSaga({ payload }) {
   }
 }
 
+function getCanvasBulkSyncUpdate({ _id, districtId, signedUrl }) {
+  const subscriptionTopic = `canvas:${districtId}_${_id}`;
+  const promise = new Promise((resolve, reject) => {
+    const client = mqtt.connect(signedUrl);
+    client.on("connect", () => {
+      client.subscribe(subscriptionTopic, err => {
+        if (err) {
+          console.error("Error subscribing to topic: ", subscriptionTopic);
+          reject(err);
+        } else {
+          console.log("Successfully subscribed to topic", subscriptionTopic);
+        }
+      });
+    });
+
+    client.on("message", (topic, _message) => {
+      let msg = _message.toString();
+      msg = JSON.parse(msg);
+      console.log(`response from mqtt client with topic ${topic}`, msg);
+      resolve(msg);
+      client.end();
+    });
+
+    client.on("error", err => {
+      console.error("error in mqtt client", err);
+      reject(err);
+      client.end();
+    });
+  });
+  return promise.then(res => res).catch(err => err);
+}
+
 function* bulkSyncCanvasClassSaga({ payload }) {
   try {
     yield put(setBulkSyncCanvasStateAction("INPROGRESS"));
-    const result = yield call(canvasApi.bulkSync, payload);
-    if (result.failedCourseSections.length === payload.length) {
+    yield call(canvasApi.bulkSync, payload);
+    const { url: signedUrl } = yield call(realtimeApi.getSignedUrl);
+    const payloadData = {
+      districtId: payload.bulkSyncData[0].districtId,
+      _id: payload.bulkSyncData[0].parent.id,
+      signedUrl
+    };
+    const { data } = yield call(getCanvasBulkSyncUpdate, payloadData);
+    if (data.failedCourseSections.length === payload.bulkSyncData.length) {
       yield call(message.error, "Bulk sync failed.");
       yield put(setBulkSyncCanvasStateAction("FAILED"));
     } else {

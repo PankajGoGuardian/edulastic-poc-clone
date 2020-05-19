@@ -1,7 +1,7 @@
 import { Table, Row, Modal } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
-import { themeColor, white, backgroundGrey } from "@edulastic/colors";
+import { themeColor, white, backgroundGrey2 } from "@edulastic/colors";
 
 export const CanvasClassTable = styled(Table)`
   width: 100%;
@@ -39,7 +39,6 @@ export const ButtonContainer = styled.div`
 `;
 
 export const Button = styled.span`
-  display: inline-block;
   padding: 6px 45px;
   color: ${props => (props.back ? themeColor : white)};
   background: ${props => (props.back ? white : themeColor)};
@@ -50,23 +49,34 @@ export const Button = styled.span`
   text-transform: uppercase;
   align-items: center;
   display: flex;
+  width: fit-content;
 `;
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content {
-    background: ${backgroundGrey};
+    background: ${backgroundGrey2};
     padding: 10px 20px;
     .ant-modal-header {
       background: transparent;
       padding: 0px;
+      border-bottom: 0px;
     }
     .ant-modal-body {
       height: 200px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: ${white};
-      box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+      padding-bottom: ${({ footer }) => (footer ? "0px" : "inherit")};
+      & > h4 {
+        font-size: 15px;
+        font-weight: 500;
+      }
+    }
+    .ant-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: none;
     }
   }
 `;

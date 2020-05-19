@@ -119,7 +119,8 @@ export const DUPLICATE_MANAGE_CONTENT = "[playlist] duplicate mange content";
 export const CANCEL_PLAYLIST_CUSTOMIZE = "[playlist] cancel manage content";
 export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized playlist";
 export const SET_VIDEO_PREVIEW_RESOURCE_MODAL = "[playlist] set video resource modal content";
-export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub resource to test";
+export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub-resource to test";
+export const REMOVE_SUB_RESOURCE_FROM_TEST = "[playlist] remove sub-resource from test";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -171,6 +172,7 @@ export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA);
 export const addTestToDifferentationAction = createAction(ADD_TEST_TO_DIFFERENTIATION);
 export const addResourceToDifferentiationAction = createAction(ADD_RESOURCE_TO_DIFFERENTIATION);
 export const addSubResourceToTestInDiffAction = createAction(ADD_SUB_RESOURCE_IN_DIFFERENTIATION);
+export const removeSubResourceInDiffAction = createAction(REMOVE_SUB_RESOURCE_FROM_TEST);
 
 export const getSignedRequestAction = createAction(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST);
 export const updateSinedRequestAction = createAction(UPDATE_SIGNED_REQUEST_FOR_RESOURCE);
@@ -1835,7 +1837,33 @@ export default createReducer(initialState, {
     state.isVideoResourcePreviewModal = payload;
   },
   [ADD_SUB_RESOURCE_IN_DIFFERENTIATION]: (state, { payload }) => {
-    // TODO: Add Sub-resource structure here
-    console.log("Payload", payload);
+    const { type, parentTestId, contentId, contentTitle, contentUrl, contentType } = payload;
+    state.differentiationWork[type].forEach((x, i) => {
+      if (x.testId === parentTestId) {
+        const subResource = {
+          contentId,
+          contentTitle,
+          contentUrl,
+          contentType
+        };
+        if (!state.differentiationWork[type][i].resources) {
+          state.differentiationWork[type][i].resources = [subResource];
+        } else {
+          if (!state.differentiationWork[type][i].resources.find(y => y.contentId === contentId)) {
+            state.differentiationWork[type][i].resources.push(subResource);
+          }
+        }
+      }
+    });
+  },
+  [REMOVE_SUB_RESOURCE_FROM_TEST]: (state, { payload }) => {
+    const { type, parentTestId, contentId } = payload;
+    state.differentiationWork[type].forEach((x, i) => {
+      if (x.testId === parentTestId) {
+        state.differentiationWork[type][i].resources = state.differentiationWork[type][i].resources.filter(
+          y => y.contentId !== contentId
+        );
+      }
+    });
   }
 });

@@ -45,7 +45,7 @@ import {
   IconUseThis
 } from "@edulastic/icons";
 import { roleuser } from "@edulastic/constants";
-import { Button, Cascader, Input, Modal, Tooltip } from "antd";
+import { Button, Cascader, Input, Modal, Tooltip, message } from "antd";
 import EmbeddedVideoPreviewModal from "./ManageContentBlock/components/EmbeddedVideoPreviewModal";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
@@ -90,7 +90,6 @@ import Differentiation from "./Differentiation";
 import { getDateKeysSelector } from "../../../student/StudentPlaylist/ducks";
 import { submitLTIForm } from "./CurriculumModuleRow"; // Fix ME : Needs refactor
 import ManageModulesModal from "./ManageModulesModal";
-
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -436,7 +435,6 @@ class CurriculumSequence extends Component {
     return history.push(`/home/playlist/${playlistId}/recommendations`);
   };
 
-
   showLtiResource = async (contentId, resource) => {
     resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
     const { playlistId, module } = this.props;
@@ -460,7 +458,7 @@ class CurriculumSequence extends Component {
     toggleManageModulesVisibility(false);
     toggleManageContent(null);
   };
-        
+
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
 

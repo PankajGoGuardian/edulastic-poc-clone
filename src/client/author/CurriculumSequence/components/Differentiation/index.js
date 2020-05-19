@@ -25,7 +25,8 @@ import {
   getWorkStatusDataSelector,
   addTestToDifferentationAction,
   addResourceToDifferentiationAction,
-  addSubResourceToTestInDiffAction
+  addSubResourceToTestInDiffAction,
+  removeSubResourceInDiffAction
 } from "../../ducks";
 import ManageContentBlock from "../ManageContentBlock";
 
@@ -44,7 +45,8 @@ const Differentiation = ({
   addResourceToDifferentiation,
   addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
-  showResource
+  showResource,
+  removeSubResource
 }) => {
   const [selectedClass, setSelectedClass] = useState();
   const [classList, setClassList] = useState([]);
@@ -148,7 +150,8 @@ const Differentiation = ({
     addResourceToDifferentiation,
     addSubResourceToTestInDiff,
     setEmbeddedVideoPreviewModal,
-    showResource
+    showResource,
+    removeSubResource
   };
 
   return (
@@ -277,6 +280,7 @@ export default connect(
     addRecommendations: addRecommendationsAction,
     addTestToDifferentiation: addTestToDifferentationAction,
     addResourceToDifferentiation: addResourceToDifferentiationAction,
-    addSubResourceToTestInDiff: addSubResourceToTestInDiffAction
+    addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
+    removeSubResource: removeSubResourceInDiffAction
   }
 )(Differentiation);

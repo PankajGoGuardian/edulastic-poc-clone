@@ -17,6 +17,7 @@ import {
 } from "./style";
 import { ResouceIcon } from "../ResourceItem/index";
 import Tags from "../../../src/components/common/Tags";
+import { SubResourceView } from "..//PlaylistResourceRow";
 
 function ContentDropContainer({ children, ...props }) {
   const [{ isOver, contentType }, dropRef] = useDrop({
@@ -111,10 +112,12 @@ const InnerWorkTable = ({
   showNewActivity,
   addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
-  showResource
+  showResource,
+  removeSubResource
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [masteryRange, setMasteryRange] = useState([0, 10]);
+  const [activeHoverIndex, setActiveHoverIndex] = useState(null);
 
   const isDisabledMasterySlider = useMemo(() => !!data.find(s => s.status === "ADDED"), [data]);
   const filteredStudentList = useMemo(
@@ -295,7 +298,16 @@ const InnerWorkTable = ({
             <StyledDescription clickable={record.contentId} onClick={() => record.contentId && viewResource(record)}>
               {record.description}
             </StyledDescription>
-            {showNewActivity && itemContentType !== "test" && record.testId && (
+            <SubResourceView
+              data={record}
+              mode="embedded"
+              showResource={showResource}
+              setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+              removeSubResource={removeSubResource}
+              type={type.toLowerCase()}
+              inDiffrentiation
+            />
+            {showNewActivity && activeHoverIndex === index && itemContentType !== "test" && record.testId && (
               <ContentDropContainer
                 dropType="subResource"
                 {...containerProps}
@@ -306,7 +318,7 @@ const InnerWorkTable = ({
               </ContentDropContainer>
             )}
 
-            {showNewActivity && (
+            {showNewActivity && activeHoverIndex === index && (
               <ContentDropContainer dropType="activity" {...containerProps}>
                 New Activity
               </ContentDropContainer>
@@ -431,19 +443,20 @@ const InnerWorkTable = ({
         </span>
       </TableHeader>
       {!showNewActivity || data.length ? (
-        <OuterDropContainer>
-          <StyledTable
-            columns={columns}
-            rowSelection={rowSelection}
-            dataSource={data}
-            pagination={false}
-            loading={isFetchingWork}
-          />
-        </OuterDropContainer>
+        <StyledTable
+          columns={columns}
+          rowSelection={rowSelection}
+          dataSource={data}
+          pagination={false}
+          loading={isFetchingWork}
+          onRow={(record, rowIndex) => ({
+            onDragOver: e => setActiveHoverIndex(rowIndex)
+          })}
+        />
       ) : null}
       {showNewActivity && !data.length && (
         <ActivityDropConainer height="195px" active={isOver} ref={drop}>
-          Add New Activity
+          New Activity
         </ActivityDropConainer>
       )}
     </TableContainer>

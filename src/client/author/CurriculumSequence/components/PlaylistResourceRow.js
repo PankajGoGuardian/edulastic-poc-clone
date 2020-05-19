@@ -64,7 +64,7 @@ const ResourceRow = ({
   );
 };
 
-function SubResourceView({
+export function SubResourceView({
   data: itemData = {},
   mode,
   urlHasUseThis,
@@ -73,7 +73,9 @@ function SubResourceView({
   showResource,
   itemIndex,
   setEmbeddedVideoPreviewModal,
-  removeSubResource
+  removeSubResource,
+  type,
+  inDiffrentiation
 }) {
   const viewResource = data => {
     if (data.contentType === "lti_resource") showResource(data.contentId);
@@ -83,16 +85,21 @@ function SubResourceView({
   };
 
   return (
-    <FlexContainer width="100%" justifyContent="flex-start">
-      {itemData.resources.map(data => (
-        <ResourceWrapper style={{ marginRight: 5 }} onClick={() => viewResource(data)}>
+    <FlexContainer width="100%" justifyContent="flex-start" flexWrap="wrap">
+      {itemData.resources?.map(data => (
+        <ResourceWrapper style={{ margin: "8px 8px 8px 0" }} onClick={() => viewResource(data)}>
           <ResouceIcon type={data.contentType} isAdded />
           <Title>{data.contentTitle}</Title>
           {mode === "embedded" && (
             <InlineDelete
+              title="Delete"
               onClick={e => {
                 e.stopPropagation();
-                removeSubResource({ moduleIndex, itemIndex, contentId: data.contentId });
+                if (inDiffrentiation) {
+                  removeSubResource({ type, parentTestId: itemData.testId, contentId: data.contentId });
+                } else {
+                  removeSubResource({ moduleIndex, itemIndex, contentId: data.contentId });
+                }
               }}
             >
               ✖
@@ -118,11 +125,12 @@ export const SubResource = connect(
 const ResourceWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   border: 2px dashed #d2d2d2;
   border-radius: 8px;
   padding: 6px;
-  max-width: 90%;
+  width: auto;
+  cursor: pointer;
 `;
 
 const InlineDelete = styled.span`
@@ -132,6 +140,7 @@ const InlineDelete = styled.span`
   font-size: 15px;
   color: ${themeColor};
   cursor: pointer;
+  margin: 0 4px;
 `;
 
 const Title = styled.div`
@@ -140,4 +149,5 @@ const Title = styled.div`
   font: 11px/15px Open Sans;
   font-weight: 600;
   text-transform: uppercase;
+  user-select: none;
 `;

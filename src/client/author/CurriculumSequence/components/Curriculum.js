@@ -118,7 +118,8 @@ const Curriculum = props => {
     onSortEnd,
     manageContentDirty,
     resetDestination,
-    toggleManageModulesVisibility
+    toggleManageModulesVisibility,
+    isStudent
   } = props;
 
   useEffect(() => () => resetDestination(), []);
@@ -137,10 +138,12 @@ const Curriculum = props => {
             {...props}
           />
         ))}
-      <AddNewOrManageModules onClick={() => toggleManageModulesVisibility(true)}>
-        <IconPlusCircle />
-        <span>Manage Modules</span>
-      </AddNewOrManageModules>
+      {!isStudent && (
+        <AddNewOrManageModules onClick={() => toggleManageModulesVisibility(true)}>
+          <IconPlusCircle />
+          <span>Manage Modules</span>
+        </AddNewOrManageModules>
+      )}
     </SortableContainer>
   );
 };

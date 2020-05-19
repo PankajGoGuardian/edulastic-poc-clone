@@ -844,7 +844,7 @@ class CurriculumSequence extends Component {
                 )}
 
                 <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-                  <ContentContainer urlHasUseThis={urlHasUseThis} showRightPanel={showRightPanel}>
+                  <ContentContainer urlHasUseThis={urlHasUseThis} showRightPanel={showRightPanel && !isStudent}>
                     {isStudent && !!dateKeys.length && destinationCurriculumSequence?.isSparkMath && (
                       <SubTopBar>
                         <SubTopBarContainer
@@ -944,6 +944,7 @@ class CurriculumSequence extends Component {
                           hasEditAccess={hasEditAccess}
                           toggleManageModulesVisibility={toggleManageModulesVisibility}
                           isDesktop={isDesktop}
+                          isStudent={isStudent}
                           showRightPanel={showRightPanel}
                           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                         />
@@ -951,7 +952,7 @@ class CurriculumSequence extends Component {
                     </Wrapper>
                   </ContentContainer>
 
-                  {showRightPanel && (
+                  {showRightPanel && !isStudent && (
                     <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative" }}>
                       {showRightPanel && (
                         <HideRightPanel onClick={this.hideRightpanel}>

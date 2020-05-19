@@ -29,7 +29,7 @@ import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVerified, IconVisu
 import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row, message } from "antd";
 import produce from "immer";
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { useDrop } from "react-dnd";
 import { FaBars, FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
@@ -408,7 +408,7 @@ class ModuleRow extends Component {
     const totalAssigned = data.length;
 
     const isParentRoleProxy = proxyUserRole === "parent";
-
+    console.log(isStudent);
     const menu = (
       <Menu data-cy="addContentMenu">
         {curriculum.modules.map(moduleItem => (
@@ -441,7 +441,7 @@ class ModuleRow extends Component {
           </StyledLabel>
         </LastColumn>
       ) : isStudent ? (
-        <LastColumn />
+        <Fragment />
       ) : totalAssigned ? (
         <>
           {hasEditAccess && (
@@ -915,6 +915,7 @@ class ModuleRow extends Component {
                           infoColumn={assessmentInfoProgress}
                           testTypeAndTags={testTypeAndTags}
                           isDesktop={isDesktop}
+                          isStudent={isStudent}
                           showRightPanel={showRightPanel}
                           toggleTest={() => this.hideTest(module._id, moduleData)}
                           {...this.props}

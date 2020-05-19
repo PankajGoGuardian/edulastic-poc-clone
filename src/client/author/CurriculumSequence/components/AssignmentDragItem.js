@@ -87,6 +87,7 @@ class AssignmentDragItem extends Component {
       infoColumn,
       testTypeAndTags,
       isDesktop,
+      isStudent,
       showRightPanel,
       toggleTest,
       isManageContentActive,
@@ -95,7 +96,7 @@ class AssignmentDragItem extends Component {
       addSubresource,
       id
     } = this.props;
-    const assessmentActions = (
+    const assessmentActions = !isStudent && (
       <>
         <HideLinkLabel onClick={toggleTest} textColor={themeColor} fontWeight="Bold">
           {moduleData.hidden ? "SHOW" : "HIDE"}

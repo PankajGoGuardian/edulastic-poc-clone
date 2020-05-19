@@ -3,7 +3,7 @@ import { testItemsApi, evaluateApi, questionsApi } from "@edulastic/api";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { cloneDeep, values, get, omit, set, uniqBy, intersection } from "lodash";
 import produce from "immer";
-import { message } from "antd";
+import { message, notification } from "antd";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { push } from "connected-react-router";
@@ -582,7 +582,13 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false));
     }
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put({
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage }

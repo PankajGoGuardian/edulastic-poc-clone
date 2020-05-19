@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin, message } from "antd";
+import { Spin, message, notification } from "antd";
 import { withRouter } from "react-router-dom";
 import { isObject as _isObject, uniq as _uniq, get, omit } from "lodash";
 import { withWindowSizes, notification } from "@edulastic/common";
@@ -380,13 +380,25 @@ class Container extends PureComponent {
       return message.error("Save Playlist before publishing");
     }
     if (!grades.length) {
-      return message.error("Grade field cannot be empty");
+      notification.error({
+        message: `Grade field cannot be empty`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     if (!subjects.length) {
-      return message.error("Subject field cannot be empty");
+      notification.error({
+        message: `Subject field cannot be empty`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     if (!modules.length) {
-      return message.error("Add atleast 1 module");
+      notification.error({
+        message: `Add atleast 1 module"`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     publishPlaylist({ _id, oldId: match.params.oldId });
     this.setState({ editEnable: false });

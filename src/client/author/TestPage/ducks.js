@@ -3,7 +3,7 @@ import { createAction } from "redux-starter-kit";
 import { test, roleuser, questionType, test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
-import { message } from "antd";
+import { message, notification } from "antd";
 import {
   keyBy as _keyBy,
   omit,
@@ -1143,9 +1143,21 @@ function* receiveTestByIdSaga({ payload }) {
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
       yield put(push("/author/tests"));
-      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+      yield call(
+        notification.error({
+          message: `You can no longer use this as sharing access has been revoked by author.`,
+          placement: "bottomLeft",
+          duration: 1.5
+        })
+      );
     } else {
-      yield call(message.error, errorMessage);
+      yield call(
+        notification.error({
+          message: errorMessage,
+          placement: "bottomLeft",
+          duration: 1.5
+        })
+      );
     }
     yield put(receiveTestByIdError(errorMessage));
   }
@@ -1155,7 +1167,13 @@ function* createTest(data) {
   const { title, passwordPolicy } = data;
 
   if (title !== undefined && !title.trim().length) {
-    return yield call(message.error(" Name field cannot be empty "));
+    yield call(
+      notification.error({
+        message: `Name field cannot be empty`,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   }
   if (passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
     delete data.assignmentPassword;
@@ -1196,12 +1214,24 @@ function* createTestSaga({ payload }) {
     yield put(createTestSuccessAction(entity));
     const currentTab = payload.isCartTest ? "description" : "addItems";
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`));
-    yield call(message.success, "Test created");
+    yield call(
+      notification.success({
+        message: `Test created`,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   } catch (err) {
     console.log({ err });
 
     const errorMessage = err?.data?.message || "Failed to create test!";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put(createTestErrorAction(errorMessage));
   }
 }
@@ -1251,7 +1281,13 @@ function* updateTestSaga({ payload }) {
         payload.data.assignmentPassword.length < 6 ||
         payload.data.assignmentPassword.length > 25)
     ) {
-      yield call(message.error, "Please add a valid password.");
+      yield call(
+        notification.error({
+          message: `Please add a valid password.`,
+          placement: "bottomLeft",
+          duration: 1.5
+        })
+      );
       return yield put(setTestsLoadingAction(false));
     }
 
@@ -1269,7 +1305,13 @@ function* updateTestSaga({ payload }) {
     const userRole = yield select(getUserRole);
     if (oldId !== newId && newId) {
       if (!payload.assignFlow) {
-        yield call(message.success, "Test versioned");
+        yield call(
+          notification.success({
+            message: `Test versioned`,
+            placement: "bottomLeft",
+            duration: 1.5
+          })
+        );
         let url = `/author/tests/${newId}/versioned/old/${oldId}`;
         if (currentTab) {
           url = `/author/tests/tab/${currentTab}/id/${newId}/old/${oldId}`;
@@ -1283,14 +1325,34 @@ function* updateTestSaga({ payload }) {
         );
       }
     } else if (!payload.assignFlow) {
-      if (userRole === roleuser.EDULASTIC_CURATOR) yield call(message.success, "Test saved");
-      else yield call(message.success, "Test saved as Draft");
+      if (userRole === roleuser.EDULASTIC_CURATOR)
+        yield call(
+          notification.success({
+            message: `Test saved`,
+            placement: "bottomLeft",
+            duration: 1.5
+          })
+        );
+      else
+        yield call(
+          notification.success({
+            message: `Test saved as Draft"`,
+            placement: "bottomLeft",
+            duration: 1.5
+          })
+        );
     }
     yield put(setTestsLoadingAction(false));
   } catch (err) {
     console.log({ err });
     const errorMessage = err?.data?.message || "Update test is failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put(updateTestErrorAction(errorMessage));
     yield put(setTestsLoadingAction(false));
   }
@@ -1338,7 +1400,13 @@ function* updateTestDocBasedSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = err?.data?.message || "Update test is failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put(updateTestErrorAction(errorMessage));
   }
 }
@@ -1352,7 +1420,13 @@ function* updateRegradeDataSaga({ payload }) {
     yield put(push(`/author/regrade/${payload.newTestId}/success`));
   } catch (e) {
     const errorMessage = e?.data?.message || "Update test is failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   } finally {
     yield put(setRegradingStateAction(false));
   }
@@ -1373,9 +1447,19 @@ function* shareTestSaga({ payload }) {
     const errorMessage = "Sharing failed";
     const hasInvalidMails = e?.data?.invalidEmails?.length > 0;
     if (hasInvalidMails) {
-      return message.error(`Invalid mails found (${e?.data?.invalidEmails.join(", ")})`);
+      notification.error({
+        message: `Invalid mails found (${e?.data?.invalidEmails.join(", ")})`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
-    yield call(message.error, e?.data?.message || errorMessage);
+    yield call(
+      notification.error({
+        message: e?.data?.message || errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   }
 }
 
@@ -1419,17 +1503,33 @@ function* publishTestSaga({ payload }) {
         status: testItemStatusConstants.INREVIEW
       });
       yield put(updateTestStatusAction(testItemStatusConstants.INREVIEW));
-      yield call(message.success, "Review request is submitted successfully.");
+      yield call(
+        notification.success({
+          message: `Review request is submitted successfully.`,
+          placement: "bottomLeft",
+          duration: 1.5
+        })
+      );
     } else {
       yield call(testsApi.publishTest, id);
       yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     }
     if (features.isCurator || features.isPublisherAuthor) {
       yield put(push(`/author/tests?filter=AUTHORED_BY_ME`));
-      return message.success("Test saved successfully. Test not visible? Clear the applied filters.");
+      notification.success({
+        message: `Test saved successfully. Test not visible? Clear the applied filters."`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     if (!assignFlow) {
-      yield call(message.success, "Successfully published");
+      yield call(
+        notification.success({
+          message: `Successfully published`,
+          placement: "bottomLeft",
+          duration: 1.5
+        })
+      );
     }
     if (assignFlow) {
       let update = { timedAssignment: _test?.timedAssignment };
@@ -1463,7 +1563,11 @@ function* publishTestSaga({ payload }) {
     }
   } catch (error) {
     console.error(error);
-    message.error(error?.data?.message || "publish failed.");
+    notification.error({
+      message: error?.data?.message || "publish failed.",
+      placement: "bottomLeft",
+      duration: 1.5
+    });
   }
 }
 
@@ -1490,7 +1594,11 @@ function* publishForRegrade({ payload }) {
     );
   } catch (error) {
     console.error(error);
-    message.error(error?.data?.message || "publish failed.");
+    notification.error({
+      message: error?.data?.message || "publish failed.",
+      placement: "bottomLeft",
+      duration: 1.5
+    });
   }
 }
 
@@ -1506,7 +1614,13 @@ function* receiveSharedWithListSaga({ payload }) {
     yield put(updateSharedWithListAction(coAuthors));
   } catch (e) {
     const errorMessage = "receive share with users list is failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   }
 }
 
@@ -1521,7 +1635,14 @@ function* deleteSharedUserSaga({ payload }) {
     );
   } catch (e) {
     const errorMessage = "delete shared user is failing";
-    yield call(message.error, errorMessage);
+
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   }
 }
 
@@ -1640,7 +1761,13 @@ function* setTestDataAndUpdateSaga({ payload }) {
           })
         );
       }
-      yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
+      yield call(
+        notification.success({
+          message: `Your work is automatically saved as a draft assessment named ${entity.title}`,
+          placement: "bottomLeft",
+          duration: 1.5
+        })
+      );
     }
 
     // if item has passage, add the passage to test as well. (review tab requires it)
@@ -1657,7 +1784,13 @@ function* setTestDataAndUpdateSaga({ payload }) {
   } catch (e) {
     console.error(e);
     const errorMessage = e?.data?.message || "Auto Save of Test is failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   }
 }
 
@@ -1712,7 +1845,11 @@ function* checkAnswerSaga({ payload }) {
 
     // message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
   } catch (e) {
-    message.error("failed to check answer");
+    notification.error({
+      message: `failed to check answer`,
+      placement: "bottomLeft",
+      duration: 1.5
+    });
     console.log("error checking answer", e);
   }
 }
@@ -1749,7 +1886,11 @@ function* showAnswerSaga({ payload }) {
       }
     });
   } catch (e) {
-    message.error("failed loading answer");
+    notification.error({
+      message: `failed loading answer`,
+      placement: "bottomLeft",
+      duration: 1.5
+    });
     console.log("error showing answer", e);
   }
 }
@@ -1762,7 +1903,13 @@ function* getAllTagsSaga({ payload }) {
       payload: { tags, tagType: payload.type }
     });
   } catch (e) {
-    yield call(message.error("Get All Tags failed"));
+    yield call(
+      notification.error({
+        message: `Get All Tags failed`,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   }
 }
 
@@ -1835,7 +1982,13 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     }
     yield put(setDefaultSettingsLoadingAction(false));
   } catch (e) {
-    yield call(message.error("Get default settings failed"));
+    yield call(
+      notification.error({
+        message: `Get default settings failed`,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put(setDefaultSettingsLoadingAction(false));
   }
 }
@@ -1886,7 +2039,13 @@ function* setAndSavePassageItems({ payload: { passageItems, page } }) {
     // update the test data wth testItems, and passage if needed.
     yield put(setTestDataAction(newPayload));
   } catch (e) {
-    yield call(message.error("error adding passage items"));
+    yield call(
+      notification.error({
+        message: `error adding passage items`,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     console.error("error", e, e.stack);
   }
 }
@@ -1915,7 +2074,13 @@ function* updateTestAndNavigate({ payload }) {
 
     yield put(push(pathname, { isTestFlow: true, fadeSidebar, regradeFlow, previousTestId }));
   } catch (e) {
-    yield call(message.error("error updating test"));
+    yield call(
+      notification.error({
+        message: `error updating test`,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     console.error("err", e);
   }
 }
@@ -1926,16 +2091,28 @@ function* approveOrRejectSingleTestSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      message.error("Test is not associated with any collection.");
+      notification.error({
+        message: `Test is not associated with any collection."`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
       return;
     }
     yield call(testsApi.updateTestStatus, payload);
     yield put(approveOrRejectSingleTestSuccessAction(payload));
-    message.success(`Test ${payload.status === "published" ? "Approved" : "Rejected"} Successfully.`);
+    notification.success({
+      message: `Test ${payload.status === "published" ? "Approved" : "Rejected"} Successfully.`,
+      placement: "bottomLeft",
+      duration: 1.5
+    });
     yield put(push("/author/tests"));
   } catch (error) {
     console.error(error);
-    message.error(error?.data?.message || `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`);
+    notification.error({
+      message: error?.data?.message || `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`,
+      placement: "bottomLeft",
+      duration: 1.5
+    });
   }
 }
 
@@ -1976,7 +2153,13 @@ function* fetchAutoselectGroupItemsSaga(payload) {
     return response.items.map(i => ({ ...i, autoselectedItem: true }));
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Failed to fetch autoselect items.");
+    yield call(
+      notification.error({
+        message: `Failed to fetch autoselect items.`,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     return null;
   }
 }

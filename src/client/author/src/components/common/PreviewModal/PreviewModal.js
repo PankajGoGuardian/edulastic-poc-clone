@@ -4,7 +4,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Button, Modal, message } from "antd";
+import { Spin, Button, Modal, message, notification } from "antd";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -173,7 +173,11 @@ class PreviewModal extends React.Component {
       this.closeModal();
       gotoSummary();
       console.log("Reaching here");
-      return message.error("Name field cannot be empty");
+      notification.error({
+        message: `Name field cannot be empty`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     let keys = [...(selectedRows || [])];
     if (test.safeBrowser && !test.sebPassword) {
@@ -182,11 +186,19 @@ class PreviewModal extends React.Component {
     if (!keys.includes(item._id)) {
       keys[keys.length] = item._id;
       setDataAndSave({ addToTest: true, item });
-      message.success("Item added to cart");
+      notification.success({
+        message: `Item added to cart`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else {
       keys = keys.filter(key => key !== item._id);
       setDataAndSave({ addToTest: false, item: { _id: item._id } });
-      message.success("Item removed from cart");
+      notification.success({
+        message: `Item removed from cart`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     setTestItems(keys);
   };

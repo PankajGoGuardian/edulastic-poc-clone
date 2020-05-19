@@ -1,5 +1,5 @@
 import { takeEvery, takeLatest, call, put, select, take, race } from "redux-saga/effects";
-import { message } from "antd";
+import { message, notification } from "antd";
 import { uniq, get } from "lodash";
 import produce from "immer";
 import { test as testConstant, roleuser } from "@edulastic/constants";
@@ -58,13 +58,21 @@ export function* addItemToCartSaga({ payload }) {
   if (testItems.some(o => o._id === item._id)) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.filter(x => x._id !== item._id);
-      message.success("Item removed from cart");
+      notification.success({
+        message: `Item removed from cart`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
       return draft;
     });
   } else {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.push(item);
-      message.success("Item added to cart");
+      notification.success({
+        message: `Item added to cart`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     });
   }
   const userRole = yield select(getUserRole);
@@ -110,7 +118,13 @@ export function* createTestFromCart({ payload: { testName } }) {
     grades: uniq([...grades, ...questionGrades]),
     subjects: uniq([...subjects, ...questionSubjects])
   };
-  yield call(message.info, "Creating a test with selected items");
+  yield call(
+    notification.info({
+      message: `Creating a test with selected items`,
+      placement: "bottomLeft",
+      duration: 1.5
+    })
+  );
   yield put(createTestAction(updatedTest, false, true));
 }
 

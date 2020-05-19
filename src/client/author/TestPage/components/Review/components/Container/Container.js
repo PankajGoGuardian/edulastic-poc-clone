@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Row, Col, message } from "antd";
+import { Row, Col, message, notification } from "antd";
 import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq, keyBy, set, findIndex } from "lodash";
 import { connect } from "react-redux";
@@ -178,7 +178,11 @@ class Review extends PureComponent {
     setTestItems(testItems.map(item => item._id));
     this.setSelected([]);
     setData(newData);
-    message.success("Selected item(s) removed successfully");
+    notification.success({
+      message: `Selected item(s) removed successfully`,
+      placement: "bottomLeft",
+      duration: 1.5
+    });
   };
 
   handleRemoveOne = indx => {
@@ -272,7 +276,11 @@ class Review extends PureComponent {
       history
     } = this.props;
     if (!title) {
-      return message.error("Name field cannot be empty");
+      notification.error({
+        message: `Name field cannot be empty`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     clearDictAlignment();
     onSaveTestId();

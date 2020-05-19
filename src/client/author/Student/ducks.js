@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { all, call, put, takeEvery } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
-import { message } from "antd";
+import { message, notification } from "antd";
 
 import { receiveAdminDataAction } from "../SchoolAdmin/ducks";
 
@@ -25,8 +25,7 @@ const ADD_MULTI_STUDENTS_ERROR = "[student] add multip students error";
 const SET_STUDENTDETAIL_MODAL_VISIBLE = "[student] set student detail modal visible";
 const SET_STUDENT_SEARCHNAME = "[student] set search name";
 const SET_STUDENT_SETFILTERS = "[student] set filters";
-const SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY =
-  "[student] set visibility of add students to other class modal";
+const SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY = "[student] set visibility of add students to other class modal";
 const ADD_STUDENTS_TO_OTHER_CLASS = "[student] ADD_STUDENTS_TO_OTHER_CLASS";
 const ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS = "[student] ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS";
 const FETCH_CLASS_DETAILS_USING_CODE = "[student] FETCH_CLASS_DETAILS_USING_CODE";
@@ -34,8 +33,7 @@ const FETCH_CLASS_DETAILS_SUCCESS = "[student] FETCH_CLASS_DETAILS_SUCCESS";
 const FETCH_CLASS_DETAILS_FAIL = "[student] FETCH_CLASS_DETAILS_FAIL";
 
 const SET_MULTI_STUDENTS_PROVIDER = "[student] SET_MULTI_STUDENTS_PROVIDER";
-const RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE =
-  "[student] RESET_FETCHED _CLASS_DETAILS_USING_CLASSCODE";
+const RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE = "[student] RESET_FETCHED _CLASS_DETAILS_USING_CLASSCODE";
 
 const MOVE_USERS_TO_OTHER_CLASS = "[student] move users to another class";
 const MOVE_USERS_TO_OTHER_CLASS_SUCCESS = "[student] move users to another class success";
@@ -60,9 +58,7 @@ export const addMultiStudentsErrorAction = createAction(ADD_MULTI_STUDENTS_ERROR
 export const setStudentsDetailsModalVisibleAction = createAction(SET_STUDENTDETAIL_MODAL_VISIBLE);
 export const setSearchNameAction = createAction(SET_STUDENT_SEARCHNAME);
 export const setFiltersAction = createAction(SET_STUDENT_SETFILTERS);
-export const setAddStudentsToOtherClassVisiblityAction = createAction(
-  SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY
-);
+export const setAddStudentsToOtherClassVisiblityAction = createAction(SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY);
 export const addStudentsToOtherClassAction = createAction(ADD_STUDENTS_TO_OTHER_CLASS);
 export const addStudentsToOtherClassSuccess = createAction(ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS);
 export const fetchClassDetailsUsingCodeAction = createAction(FETCH_CLASS_DETAILS_USING_CODE);
@@ -70,9 +66,7 @@ export const fetchClassDetailsSuccess = createAction(FETCH_CLASS_DETAILS_SUCCESS
 export const fetchClassDetailsFail = createAction(FETCH_CLASS_DETAILS_FAIL);
 
 export const setMultiStudentsProviderAction = createAction(SET_MULTI_STUDENTS_PROVIDER);
-export const resetFetchedClassDetailsAction = createAction(
-  RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE
-);
+export const resetFetchedClassDetailsAction = createAction(RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE);
 
 export const moveUsersToOtherClassAction = createAction(MOVE_USERS_TO_OTHER_CLASS);
 export const moveUsersToOtherClassSuccessAction = createAction(MOVE_USERS_TO_OTHER_CLASS_SUCCESS);
@@ -83,30 +77,15 @@ const stateStudentSelector = state => state.studentReducer;
 export const getStudentsListSelector = createSelector(
   stateStudentSelector,
   state => {
-    const {
-      data = [],
-      searchName = "",
-      filtersColumn = "",
-      filtersText = "",
-      filtersValue = ""
-    } = state;
+    const { data = [], searchName = "", filtersColumn = "", filtersText = "", filtersValue = "" } = state;
     if (data.length > 0) {
-      const searchByNameData = searchName
-        ? data.filter(o => `${o.firstName} ${o.lastName}` === searchName)
-        : data;
-      const possibleFilterKey = filtersColumn
-        ? [filtersColumn]
-        : ["firstName", "lastName", "email"];
+      const searchByNameData = searchName ? data.filter(o => `${o.firstName} ${o.lastName}` === searchName) : data;
+      const possibleFilterKey = filtersColumn ? [filtersColumn] : ["firstName", "lastName", "email"];
       if (filtersText) {
         return filtersValue === "eq"
-          ? searchByNameData.filter(
-              o => possibleFilterKey.filter(key => o[key] === filtersText).length > 0
-            )
+          ? searchByNameData.filter(o => possibleFilterKey.filter(key => o[key] === filtersText).length > 0)
           : searchByNameData.filter(
-              o =>
-                possibleFilterKey.filter(
-                  key => o[key] && o[key].toString().indexOf(filtersText) !== -1
-                ).length > 0
+              o => possibleFilterKey.filter(key => o[key] && o[key].toString().indexOf(filtersText) !== -1).length > 0
             );
       }
       return searchByNameData;
@@ -355,7 +334,11 @@ function* deleteStudentSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
-    message.success("Student removed successfully");
+    notification.success({
+      message: `Student removed successfully`,
+      placement: "bottomLeft",
+      duration: 1.5
+    });
     yield put(deleteStudentSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Student is failing";

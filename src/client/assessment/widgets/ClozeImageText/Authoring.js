@@ -5,7 +5,7 @@ import { beforeUpload, PaddingDiv } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { aws, clozeImage } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { Dropdown, message, Select, Upload } from "antd";
+import { Dropdown, message, Select, Upload, notification } from "antd";
 import produce from "immer";
 import { get, isUndefined, maxBy } from "lodash";
 import PropTypes from "prop-types";
@@ -350,7 +350,11 @@ class Authoring extends Component {
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       this.getImageDimensions(imageUrl, true);
-      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+      notification.success({
+        message: `${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef

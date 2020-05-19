@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { get } from "lodash";
-import { message, Row, Icon } from "antd";
+import { message, Row, Icon, notification } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants, roleuser } from "@edulastic/constants";
 import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton, CheckboxLabel } from "@edulastic/common";
@@ -214,7 +214,11 @@ class Item extends Component {
     } = this.props;
     if (!test.title?.trim().length && page !== "itemList") {
       gotoSummary();
-      return message.error("Name field cannot be empty");
+      notification.error({
+        message: `Name field cannot be empty`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
 
     let keys = [];
@@ -239,11 +243,19 @@ class Item extends Component {
       }
 
       setDataAndSave({ addToTest: true, item, current });
-      message.success("Item added to cart");
+      notification.success({
+        message: `Item added to cart`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else {
       keys = keys.filter(_item => _item !== row._id);
       setDataAndSave({ addToTest: false, item: { _id: row._id }, current });
-      message.success("Item removed from cart");
+      notification.success({
+        message: `Item removed from cart`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     setTestItems(keys);
     this.setState({ selectedId: "" });
@@ -318,7 +330,11 @@ class Item extends Component {
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
-      message.success("Item added to cart");
+      notification.success({
+        message: `Item added to cart`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
       return setAndSavePassageItems({ passageItems, page });
     }
 

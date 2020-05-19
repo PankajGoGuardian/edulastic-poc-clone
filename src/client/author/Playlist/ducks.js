@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, takeLatest } from "redux-saga/effects";
-import { message } from "antd";
+import { message, notification } from "antd";
 import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -78,7 +78,13 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     );
   } catch (err) {
     const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put(receivePlaylistErrorAction({ error: errorMessage }));
   }
 }

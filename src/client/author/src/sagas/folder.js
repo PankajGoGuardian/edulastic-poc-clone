@@ -1,7 +1,7 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { folderApi } from "@edulastic/api";
 import { get, omit } from "lodash";
-import { message } from "antd";
+import { message, notification } from "antd";
 import {
   RECEIVE_FOLDER_REQUEST,
   RECEIVE_FOLDER_SUCCESS,
@@ -71,10 +71,22 @@ function* receiveAddMoveFolderRequest({ payload }) {
       payload: { ...result.data, params }
     });
     const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
-    yield call(message.success, successMsg);
+    yield call(
+      notification.success({
+        message: successMsg,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
   } catch (error) {
     const errorMessage = "Add or Move content to folder failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put({
       type: ADD_MOVE_FOLDER_ERROR,
       payload: { error: errorMessage }
@@ -87,7 +99,13 @@ function* receiveDeleteFolderRequest({ payload }) {
     const { folderId, delFolderName } = payload;
     yield call(folderApi.deleteFolder, folderId);
     const successMsg = `${delFolderName} deleted successfully`;
-    yield call(message.success, successMsg);
+    yield call(
+      notification.success({
+        message: successMsg,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
 
     yield put({
       type: DELETE_FOLDER_SUCCESS,
@@ -107,14 +125,26 @@ function* receiveRenameFolderRequest({ payload }) {
     const { folderId, folderName } = payload;
     const success = yield call(folderApi.renameFolder, { folderId, data: { folderName } });
     const successMsg = `Folder name successfully updated to "${folderName}"`;
-    yield call(message.success, successMsg);
+    yield call(
+      notification.success({
+        message: successMsg,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put({
       type: RENAME_FOLDER_SUCCESS,
       payload: get(success, "data.result", null)
     });
   } catch (error) {
     const errorMessage = "Rename folder failing";
-    yield call(message.error, errorMessage);
+    yield call(
+      notification.error({
+        message: errorMessage,
+        placement: "bottomLeft",
+        duration: 1.5
+      })
+    );
     yield put({
       type: RENAME_FOLDER_ERROR,
       payload: { error }

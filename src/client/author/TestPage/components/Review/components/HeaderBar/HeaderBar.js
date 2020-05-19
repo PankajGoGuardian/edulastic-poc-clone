@@ -2,7 +2,7 @@ import { themeColor, white } from "@edulastic/colors";
 import { CheckboxLabel } from "@edulastic/common";
 import { test as testContatns } from "@edulastic/constants";
 import { IconClose, IconCollapse, IconDescription, IconEye, IconMoveTo } from "@edulastic/icons";
-import { message } from "antd";
+import { message, notification } from "antd";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { ButtonLink } from "../../../../../src/components/common";
@@ -33,9 +33,17 @@ const HeaderBar = ({
   const handleSuccess = position => {
     const post = position - 1;
     if (post > itemTotal - 1) {
-      message.info("Value cannot be more than total questions count");
+      notification.info({
+        message: `Value cannot be more than total questions count`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else if (post < 0) {
-      message.info("Value cannot be less than total questions count");
+      notification.info({
+        message: `Value cannot be less than total questions count`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else {
       onMoveTo(post);
       setShowPrompt(false);
@@ -47,7 +55,12 @@ const HeaderBar = ({
     if (selectedItems.length === 1) {
       setShowPrompt(!showPrompt);
     } else {
-      message.info("select one question at a time");
+      notification.info({
+        message: `select one question at a time`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
+
       setShowPrompt(false);
     }
   };

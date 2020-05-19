@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { isEmpty, get, keyBy, omit } from "lodash";
 import * as moment from "moment";
-import { message, Spin } from "antd";
+import { message, spin, notification } from "antd";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
 
 import {
@@ -150,16 +150,36 @@ class AssignTest extends React.Component {
       assignment.assignmentPassword &&
       (assignment?.assignmentPassword?.length < 6 || assignment?.assignmentPassword?.length > 25)
     ) {
-      return message.error("Please add a valid password.");
+      notification.error({
+        message: `Please add a valid password.`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     }
     if (isEmpty(assignment.class)) {
-      message.error("Please select at least one class to assign.");
+      notification.error({
+        message: `Please select at least one class to assign.`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else if (assignment.endDate < Date.now()) {
-      message.error("Please Enter a future end date. ");
+      notification.error({
+        message: `Please Enter a future end date.`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else if (this.state.changeDateSelection && assignment.dueDate > assignment.endDate) {
-      message.error("Entered due date should not be greater than end date.");
+      notification.error({
+        message: `Entered due date should not be greater than end date.`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else if (assignment?.class[0]?.specificStudents && assignment.class.every(_class => !_class?.students?.length)) {
-      message.error("Please select the student");
+      notification.error({
+        message: `Please select the student`,
+        placement: "bottomLeft",
+        duration: 1.5
+      });
     } else {
       let updatedAssignment = { ...assignment };
       if (!this.state.selectedDateOption) {
@@ -169,7 +189,11 @@ class AssignTest extends React.Component {
         assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
         !((assignment?.assignmentPassword?.trim()?.length || 0) > 5)
       ) {
-        message.error("Please add a valid password");
+        notification.error({
+          message: `Please add a valid password`,
+          placement: "bottomLeft",
+          duration: 1.5
+        });
         return;
       }
       saveAssignment(updatedAssignment);

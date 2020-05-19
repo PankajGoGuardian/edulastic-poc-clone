@@ -1014,7 +1014,7 @@ class ModuleRow extends Component {
               </SortableContainer>
             )}
           </ModuleWrapper>
-          {playlistTestDetailsModalData?.isVisible && moduleIndex === 0 && (
+          {playlistTestDetailsModalData?.isVisible && (
             <PlaylistTestDetailsModal
               onClose={togglePlaylistTestDetails}
               modalInitData={playlistTestDetailsModalData}

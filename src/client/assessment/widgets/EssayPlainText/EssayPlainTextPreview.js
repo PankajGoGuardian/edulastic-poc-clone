@@ -43,7 +43,7 @@ const EssayPlainTextPreview = ({
 
   const [wordCount, setWordCount] = useState(text.split(" ").filter(i => !!i).length);
 
-  const [selection, setSelection] = useState(null);
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   const [buffer, setBuffer] = useState("");
 

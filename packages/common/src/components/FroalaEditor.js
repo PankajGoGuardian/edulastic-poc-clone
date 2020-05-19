@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { cloneDeep, debounce } from "lodash";
+import { cloneDeep, debounce, isEmpty } from "lodash";
 import { message } from "antd";
 import { notification } from "@edulastic/common";
 import Editor from "react-froala-wysiwyg";
@@ -132,6 +132,79 @@ const DEFAULT_TOOLBAR_BUTTONS = {
     }
   }
 };
+
+const defaultCharacterSets = [
+  {
+    title: "spanish",
+    char: "s",
+    list: [
+      {
+        char: "&aacute;",
+        desc: "LATIN SMALL LETTER A WITH ACUTE"
+      },
+      {
+        char: "&Aacute;",
+        desc: "LATIN CAPITAL LETTER A WITH ACUTE"
+      },
+      {
+        char: "&eacute;",
+        desc: "LATIN SMALL LETTER E WITH ACUTE"
+      },
+      {
+        char: "&Eacute;",
+        desc: "LATIN CAPITAL LETTER E WITH ACUTE"
+      },
+      {
+        char: "&iacute;",
+        desc: "LATIN SMALL LETTER i WITH ACUTE"
+      },
+      {
+        char: "&Iacute;",
+        desc: "LATIN CAPITAL LETTER I WITH ACUTE"
+      },
+      {
+        char: "&ntilde;",
+        desc: "LATIN SMALL LETTER N WITH TILDE"
+      },
+      {
+        char: "&Ntilde;",
+        desc: "LATIN CAPITAL LETTER N WITH TILDE"
+      },
+      {
+        char: "&oacute;",
+        desc: "LATIN SMALL LETTER 0 WITH ACUTE"
+      },
+      {
+        char: "&Oacute;",
+        desc: "LATIN CAPITAL LETTER O WITH ACUTE"
+      },
+      {
+        char: "&uacute;",
+        desc: "LATIN SMALL LETTER u WITH ACUTE"
+      },
+      {
+        char: "&Uacute;",
+        desc: "LATIN CAPITAL LETTER U WITH ACUTE"
+      },
+      {
+        char: "&uuml;",
+        desc: "LATIN SMALL LETTER U WITH DIAERESIS"
+      },
+      {
+        char: "&Uuml;",
+        desc: "LATIN CAPITAL LETTER U WITH DIAERESIS"
+      },
+      {
+        char: "&iexcl;",
+        desc: "INVERTED EXCLAMATION MARK"
+      },
+      {
+        char: "&iquest;",
+        desc: "INVERTED QUESTION MARK"
+      }
+    ]
+  }
+];
 
 const NoneDiv = styled.div`
   position: absolute;
@@ -275,6 +348,20 @@ function loadImage(src) {
   });
 }
 
+const getSpecialCharacterSets = customCharacters => {
+  const customCharacterSet = isEmpty(customCharacters)
+    ? []
+    : [
+        {
+          title: "Custom",
+          char: "á",
+          list: customCharacters.map(char => ({ char, desc: "" }))
+        }
+      ];
+
+  return [...defaultCharacterSets, ...customCharacterSet];
+};
+
 /**
  * These are the extra buttons width taken on the toolbar. If rendered extra buttons we need these widths
  * to get the remaining width of the toolbar to render default buttons.
@@ -307,6 +394,7 @@ const CustomEditor = ({
   className,
   buttons,
   advancedAreOpen,
+  customCharacters,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -327,6 +415,7 @@ const CustomEditor = ({
   const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions, buttons);
   const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions, buttons);
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions, buttons);
+  const specialCharactersSets = getSpecialCharacterSets(customCharacters);
   const initialConfig = Object.assign(
     {
       key: process.env.POI_APP_FROALA_KEY,
@@ -372,78 +461,7 @@ const CustomEditor = ({
         "response",
         "specialCharacters"
       ],
-      specialCharactersSets: [
-        {
-          title: "spanish",
-          char: "s",
-          list: [
-            {
-              char: "&aacute;",
-              desc: "LATIN SMALL LETTER A WITH ACUTE"
-            },
-            {
-              char: "&Aacute;",
-              desc: "LATIN CAPITAL LETTER A WITH ACUTE"
-            },
-            {
-              char: "&eacute;",
-              desc: "LATIN SMALL LETTER E WITH ACUTE"
-            },
-            {
-              char: "&Eacute;",
-              desc: "LATIN CAPITAL LETTER E WITH ACUTE"
-            },
-            {
-              char: "&iacute;",
-              desc: "LATIN SMALL LETTER i WITH ACUTE"
-            },
-            {
-              char: "&Iacute;",
-              desc: "LATIN CAPITAL LETTER I WITH ACUTE"
-            },
-            {
-              char: "&ntilde;",
-              desc: "LATIN SMALL LETTER N WITH TILDE"
-            },
-            {
-              char: "&Ntilde;",
-              desc: "LATIN CAPITAL LETTER N WITH TILDE"
-            },
-            {
-              char: "&oacute;",
-              desc: "LATIN SMALL LETTER 0 WITH ACUTE"
-            },
-            {
-              char: "&Oacute;",
-              desc: "LATIN CAPITAL LETTER O WITH ACUTE"
-            },
-            {
-              char: "&uacute;",
-              desc: "LATIN SMALL LETTER u WITH ACUTE"
-            },
-            {
-              char: "&Uacute;",
-              desc: "LATIN CAPITAL LETTER U WITH ACUTE"
-            },
-            {
-              char: "&uuml;",
-              desc: "LATIN SMALL LETTER U WITH DIAERESIS"
-            },
-            {
-              char: "&Uuml;",
-              desc: "LATIN CAPITAL LETTER U WITH DIAERESIS"
-            },
-            {
-              char: "&iexcl;",
-              desc: "INVERTED EXCLAMATION MARK"
-            },
-            {
-              char: "&iquest;",
-              desc: "INVERTED QUESTION MARK"
-            }
-          ]
-        }
-      ],
+      specialCharactersSets,
       fontSize: ["12", "14", "16", "20"],
       fontSizeDefaultSelection: "14",
       htmlAllowedTags: [".*"],
@@ -938,6 +956,7 @@ CustomEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
+  customCharacters: PropTypes.array,
   readOnly: PropTypes.bool,
   imageDefaultWidth: PropTypes.number,
   initOnClick: PropTypes.bool,
@@ -950,6 +969,7 @@ CustomEditor.defaultProps = {
   toolbarId: null,
   initOnClick: true,
   toolbarSize: "STD",
+  customCharacters: [],
   additionalToolbarOptions: [],
   readOnly: false,
   imageDefaultWidth: 300,

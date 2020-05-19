@@ -24,8 +24,6 @@ import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions
 
 import { ValidList, qlToFroalaMapping } from "./constants/validList";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { Addon } from "../ShortText/styled/Addon";
-import CharacterMap from "../../components/CharacterMap";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const getToolBarButtons = item =>
@@ -56,9 +54,6 @@ const EssayRichTextPreview = ({
   userAnswer = typeof userAnswer === "object" ? "" : userAnswer;
   const toolbarButtons = getToolBarButtons(item);
   const answerContextConfig = useContext(AnswerContext);
-  const [showCharacters, setShowCharacters] = useState(false);
-  const [text, setText] = useState("");
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   let minHeight = get(item, "uiStyle.minHeight", 200);
   const maxHeight = get(item, "uiStyle.maxHeight", 300);
@@ -68,12 +63,11 @@ const EssayRichTextPreview = ({
   // hence parent div  height is shrinked by 1px, hence scroll bar appears
   // border 1px is coming from froala editor default css which is necessary
 
-  const characterMap = get(item, "characterMap", []);
+  const characters = get(item, "characterMap", []);
   const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     if (Array.isArray(userAnswer) || typeof userAnswer !== "string") {
-      setText("");
       saveAnswer("");
       setWordCount(0);
     } else if (typeof userAnswer === "string" && disableResponse) {
@@ -87,21 +81,8 @@ const EssayRichTextPreview = ({
       const wordsCount = typeof val === "string" ? calculateWordsCount(val) : 0;
       const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
       setWordCount(wordsCount + mathInputCount);
-      setText(val);
       saveAnswer(val);
     }
-  };
-
-  const handleCharacterSelect = char => {
-    const newText = text.slice(0, selection.start) + char + text.slice(selection.end);
-
-    setText(newText);
-    saveAnswer(newText);
-
-    setSelection({
-      start: selection.start + char.length,
-      end: selection.start + char.length
-    });
   };
 
   const showLimitAlways = item.showWordLimit === ALWAYS;
@@ -123,15 +104,10 @@ const EssayRichTextPreview = ({
   /**
    * if answerContextConfig comes from LCB/EG pages
    */
-  const isReadOnly =
-    (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
+  const isReadOnly = (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
 
   return item.id ? (
-    <StyledPaperWrapper
-      isV1Multipart={isV1Multipart}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-    >
+    <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
         <QuestionLabelWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -140,23 +116,9 @@ const EssayRichTextPreview = ({
 
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
-            {view === PREVIEW && !smallSize && (
-              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-            )}
+            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
           <div style={{ position: "relative", width: "100%" }}>
-            <div style={{ position: "relative" }}>
-              {!!characterMap.length && (
-                <Addon onClick={() => setShowCharacters(!showCharacters)}>a</Addon>
-              )}
-              {showCharacters && (
-                <CharacterMap
-                  style={{ position: "absolute", right: 0, top: 38, zIndex: 1000 }}
-                  characters={characterMap}
-                  onSelect={handleCharacterSelect}
-                />
-              )}
-            </div>
             {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
               <FroalaEditorContainer>
                 <FroalaEditor
@@ -176,12 +138,12 @@ const EssayRichTextPreview = ({
                   readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
                   quickInsertTags={[]}
                   buttons={toolbarButtons}
+                  customCharacters={characters}
                   placeholder={item?.placeholder}
                 />
               </FroalaEditorContainer>
             )}
-            {((!Array.isArray(userAnswer) && isReadOnly) ||
-              (!Array.isArray(userAnswer) && isPrintPreview)) && (
+            {((!Array.isArray(userAnswer) && isReadOnly) || (!Array.isArray(userAnswer) && isPrintPreview)) && (
               <FlexContainer
                 alignItems="flex-start"
                 justifyContent="flex-start"

@@ -80,7 +80,12 @@ class LayoutComponent extends Component {
             <Row gutter={24}>
               <Col md={12}>
                 <CharactersToDisplayOption
-                  onChange={val => _change("characterMap", val.split(""))}
+                  onChange={val =>
+                    _change(
+                      "characterMap",
+                      val.split("").reduce((acc, cur) => (acc.includes(cur) ? acc : [...acc, cur]), [])
+                    )
+                  }
                   value={item.characterMap.join("")}
                 />
               </Col>

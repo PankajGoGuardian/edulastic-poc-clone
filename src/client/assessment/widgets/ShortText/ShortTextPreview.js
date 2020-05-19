@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Input } from "antd";
+import { Input, Popover } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get, isEmpty } from "lodash";
@@ -42,8 +42,7 @@ const ShortTextPreview = ({
   evaluation
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
-  const [showCharacterMap, setShowCharacterMap] = useState(false);
-  const [selection, setSelection] = useState(null);
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   useEffect(() => {
     if (Array.isArray(userAnswer)) {
@@ -136,19 +135,25 @@ const ShortTextPreview = ({
               size="large"
               {...getSpellCheckAttributes(item.spellcheck)}
             />
-            {isCharacterMap && <Addon onClick={() => setShowCharacterMap(!showCharacterMap)}>á</Addon>}
-            {isCharacterMap && showCharacterMap && (
-              <CharacterMap
-                characters={item.characterMap}
-                onSelect={char => {
-                  setSelection({
-                    start: selection.start + char.length,
-                    end: selection.start + char.length
-                  });
-                  setText(text.slice(0, selection.start) + char + text.slice(selection.end));
-                }}
-                style={{ position: "absolute", right: 0 }}
-              />
+            {isCharacterMap && (
+              <Popover
+                placement="bottomLeft"
+                trigger="click"
+                content={
+                  <CharacterMap
+                    characters={item.characterMap}
+                    onSelect={char => {
+                      setSelection({
+                        start: selection.start + char.length,
+                        end: selection.start + char.length
+                      });
+                      setText(text.slice(0, selection.start) + char + text.slice(selection.end));
+                    }}
+                  />
+                }
+              >
+                <Addon>á</Addon>
+              </Popover>
             )}
           </InputWrapper>
           {view !== EDIT && <Instructions item={item} />}

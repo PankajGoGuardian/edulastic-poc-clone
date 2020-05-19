@@ -1,26 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import { Popover } from "antd";
 
 import { ToolbarItem } from "../styled/ToolbarItem";
 import CharacterMap from "../../../components/CharacterMap";
 
-const Character = ({ characters, onSelect }) => {
-  const [show, setShow] = useState(false);
-
-  return (
-    <Wrapper>
-      <ToolbarItem onClick={() => setShow(!show)}>á</ToolbarItem>
-      {show && (
-        <CharacterMap
-          characters={characters}
-          onSelect={onSelect}
-          style={{ position: "absolute", border: "1px solid #e6e6e6", right: 0, zIndex: 1000 }}
-        />
-      )}
-    </Wrapper>
-  );
-};
+const Character = ({ characters, onSelect }) => (
+  <Popover
+    placement="bottomLeft"
+    trigger="click"
+    content={<CharacterMap characters={characters} onSelect={onSelect} style={{ zIndex: 1000 }} />}
+  >
+    <ToolbarItem>á</ToolbarItem>
+  </Popover>
+);
 
 Character.propTypes = {
   onSelect: PropTypes.func.isRequired,
@@ -28,7 +21,3 @@ Character.propTypes = {
 };
 
 export default Character;
-
-const Wrapper = styled.div`
-  position: relative;
-`;

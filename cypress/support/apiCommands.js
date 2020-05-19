@@ -418,22 +418,23 @@ Cypress.Commands.add("saveClassDetailToDelete", classJson => {
   }
 });
 
-Cypress.Commands.add("getAllTestsAndDelete", (publisher, password = "snapwiz") => {
+Cypress.Commands.add("getAllTestsAndDelete", (publisher, password = "snapwiz", testsToExclude = []) => {
   cy.setToken(publisher, password).then(() => {
     cy.getAllOwnTests().then(testIds => {
-      console.log("All Assignments = ", testIds);
+      // console.log("all tests - authored by me : ", testIds);
       testIds.forEach(testObj => {
-        cy.deleteTest(testObj);
+        if (!testsToExclude.includes(testObj._id)) cy.deleteTest(testObj);
       });
     });
   });
 });
 
-Cypress.Commands.add("getAllItemsAndDelete", (publisher, password = "snapwiz") => {
+Cypress.Commands.add("getAllItemsAndDelete", (publisher, password = "snapwiz", itemsToExclude = []) => {
   cy.setToken(publisher, password).then(() => {
     cy.getAllOwnItems().then(itemIds => {
+      // console.log("all items - authored by me : ", itemIds);
       itemIds.forEach(itemObj => {
-        cy.deleteItem(itemObj);
+        if (!itemsToExclude.includes(itemObj._id)) cy.deleteItem(itemObj);
       });
     });
   });

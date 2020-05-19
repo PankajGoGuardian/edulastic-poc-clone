@@ -10,11 +10,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
   const teacher = "teacher.1.testcreate@snapwiz.com";
   const password = "snapwiz";
   const itemListPage = new ItemListPage();
+  const existingItems = ["5ec3a0854a5ec60007fbc7fa", "5ec3a0a94a5ec60007fbc7ff"];
 
-  before(() => cy.login("teacher", teacher, password));
+  before(() => {
+    cy.getAllTestsAndDelete(teacher, password);
+    cy.getAllItemsAndDelete(teacher, password, existingItems);
+    cy.login("teacher", teacher, password);
+  });
 
   it("create new test with existing questions", () => {
     const testData = SMOKE_2;
+    const itemsInTest = [...existingItems];
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
     testLibrary.clickOnAuthorTest();
@@ -35,18 +41,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     testLibrary.header.clickOnAddItems();
     testLibrary.searchFilters.clearAll();
     cy.route("POST", "**api/test").as("createTest");
-    testLibrary.testAddItem.authoredByMe().then(() => {
-      testData.itemKeys.forEach((itemKey, index) => {
-        testLibrary.testAddItem.addItemByQuestionContent(itemKey);
-        if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
-        cy.wait(500);
-      });
+    testLibrary.testAddItem.authoredByMe();
+
+    itemsInTest.forEach((itemId, index) => {
+      testLibrary.testAddItem.addItemById(itemId);
+      if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+      cy.wait(500);
     });
 
     // verify items on review tab
     testLibrary.header.clickOnReview();
-    testData.itemKeys.forEach(itemKey => {
-      testLibrary.review.verifyItemByContent(itemKey);
+
+    itemsInTest.forEach(itemId => {
+      testLibrary.review.verifyQustionById(itemId);
     });
 
     // save
@@ -137,7 +144,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
         /*  if (index !== testData.itemKeys.length - 1) {
           cy.contains("View as Student").should("be.visible");
           testLibrary.header.clickOnAddItems();
-        } */ testLibrary.searchFilters.waitForSearchResponse();
+        } */
+        testLibrary.searchFilters.waitForSearchResponse();
       }
       cy.wait(500);
     });

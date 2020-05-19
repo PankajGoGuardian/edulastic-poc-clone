@@ -69,7 +69,8 @@ export default class TestHeader {
       // TODO: revisit here and refactor
 
       if (Cypress.$('[data-cy="Assignments"]').length === 1) {
-        return cy.contains("Share With Others").then(() => {
+        // there is significant delay in gettting the success page in app, hence increasing the timeout.
+        return cy.contains("Share With Others", { timeout: 20000 }).then(() => {
           return JSON.stringify(xhr.url)
             .split("/")
             .reverse()[1];

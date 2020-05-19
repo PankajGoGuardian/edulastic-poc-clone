@@ -17,9 +17,6 @@ import ClassCard from "./CardContainer";
 import ManageClassSubHeader from "./SubHeader";
 import NoDataIcon from "../../assets/nodata.svg";
 
-// api
-import { TokenStorage } from "@edulastic/api";
-
 // constants
 import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
 

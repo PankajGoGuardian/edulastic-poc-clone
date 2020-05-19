@@ -26,7 +26,7 @@ import {
 import { EduButton, ProgressBar, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVerified, IconVisualization } from "@edulastic/icons";
-import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row as AntRow, message } from "antd";
+import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row, message } from "antd";
 import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -42,7 +42,7 @@ import { curriculumSequencesApi } from "@edulastic/api";
 import AssessmentPlayer from "../../../assessment";
 import { Tooltip } from "../../../common/utils/helpers";
 import { resumeAssignmentAction, startAssignmentAction } from "../../../student/Assignments/ducks";
-import { getCurrentGroup } from "../../../student/Login/ducks";
+import { getCurrentGroup, proxyRole } from "../../../student/Login/ducks";
 import additemsIcon from "../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
@@ -398,16 +398,16 @@ class ModuleRow extends Component {
       isDesktop,
       showRightPanel,
       setEmbeddedVideoPreviewModal,
-      onDrop
+      onDrop,
+      proxyUserRole
     } = this.props;
-    const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
+    const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignModule, assignTest } = this;
 
+    const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
     const totalAssigned = data.length;
-    // const numberOfAssigned = data.filter(
-    //   content => content.assignments && content.assignments.length > 0
-    // ).length;
-    const { showModal, selectedTest, currentAssignmentId } = this.state;
+
+    const isParentRoleProxy = proxyUserRole === "parent";
 
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -755,19 +755,23 @@ class ModuleRow extends Component {
                       !moduleData.hidden && (
                         <>
                           <LastColumn>
-                            <AssignmentButton assigned={false}>
-                              <Button data-cy={uta.text} onClick={uta.action}>
-                                {uta.text}
-                              </Button>
-                            </AssignmentButton>
+                            {!isParentRoleProxy && (
+                              <AssignmentButton assigned={false}>
+                                <Button data-cy={uta.text} onClick={uta.action}>
+                                  {uta.text}
+                                </Button>
+                              </AssignmentButton>
+                            )}
                           </LastColumn>
                           {uta.retake && (
                             <LastColumn>
-                              <AssignmentButton assigned={false}>
-                                <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
-                                  {uta.retake.text}
-                                </Button>
-                              </AssignmentButton>
+                              {!isParentRoleProxy && (
+                                <AssignmentButton assigned={false}>
+                                  <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
+                                    {uta.retake.text}
+                                  </Button>
+                                </AssignmentButton>
+                              )}
                             </LastColumn>
                           )}
                         </>
@@ -947,7 +951,7 @@ class ModuleRow extends Component {
                               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                             />
                           ) : (
-                            <AntRow type="flex" gutter={10} align="middle" style={{ width: "calc(100% - 35px)" }}>
+                            <Row type="flex" gutter={10} align="middle" style={{ width: "calc(100% - 35px)" }}>
                               <FirstColumn
                                 data-cy="assigment-row-first"
                                 urlHasUseThis={urlHasUseThis}
@@ -984,7 +988,7 @@ class ModuleRow extends Component {
 
                               {urlHasUseThis && assessmentInfoProgress}
                               {isDesktop && assessmentsLastColumn}
-                            </AntRow>
+                            </Row>
                           )}
                         </Assignment>
 
@@ -1606,7 +1610,8 @@ const enhance = compose(
       userRole: getUserRole({ user }),
       isStudent: getUserRole({ user }) === "student",
       classId: getCurrentGroup({ user }),
-      playlistTestDetailsModalData: curriculumSequence?.playlistTestDetailsModal
+      playlistTestDetailsModalData: curriculumSequence?.playlistTestDetailsModal,
+      proxyUserRole: proxyRole({ user })
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,

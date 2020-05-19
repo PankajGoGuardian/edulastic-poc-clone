@@ -14,9 +14,6 @@ import AssignmentContainer from "./Container";
 import SubHeader from "./SubHeader";
 import HangoutsModal from "./HangoutsModal";
 
-// api
-import { TokenStorage } from "@edulastic/api";
-
 // ducks
 import { getEnrollClassAction, setFilterClassAction } from "../../ManageClass/ducks";
 

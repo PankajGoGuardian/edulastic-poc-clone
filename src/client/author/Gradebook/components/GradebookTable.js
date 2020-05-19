@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 
 // components
+import { Tooltip } from "antd";
 import { StyledTable, StyledTableCell } from "./styled";
 
 // constants
@@ -14,7 +15,8 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       key: "_id",
       dataIndex: "studentName",
       fixed: "left",
-      width: 170,
+      width: 210,
+      render: data => <Tooltip title={data}>{data}</Tooltip>,
       sorter: (a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()),
       defaultSortOrder: "descend"
     },
@@ -22,7 +24,8 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       title: "Class Name",
       key: "className",
       dataIndex: "className",
-      width: 170,
+      width: 250,
+      render: data => <Tooltip title={data}>{data}</Tooltip>,
       sorter: (a, b) => a.className.toLowerCase().localeCompare(b.className.toLowerCase())
     },
     {
@@ -57,7 +60,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
         onChange: setSelectedRows
       }}
       pagination={false}
-      scroll={{ x: "100%", y: windowHeight - 220 }}
+      scroll={{ x: "100%", y: windowHeight - 250 }}
     />
   );
 };

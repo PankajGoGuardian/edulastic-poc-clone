@@ -7,7 +7,7 @@ import { Button } from "@edulastic/common";
 import { IconGraphRightArrow as Arrow } from "@edulastic/icons";
 
 // constants
-import { white, themeColor, fadedGrey, lightGrey11, greyThemeDark1 } from "@edulastic/colors";
+import { white, themeColor, fadedGrey, backgroundGrey, lightGrey11, greyThemeDark1 } from "@edulastic/colors";
 
 export const FilterButton = styled(Button)`
   min-width: 35px;
@@ -92,12 +92,15 @@ export const StyledTable = styled(Table)`
         table {
           border: none;
           .ant-table-thead {
+            & .ant-table-header-column .ant-table-column-sorters:hover::before {
+              background: white;
+            }
             tr {
               background: white;
               th {
                 border: none;
                 background: white;
-                padding: 5px 10px 20px 10px;
+                padding: 8px;
                 .ant-table-column-title {
                   font-size: 12px;
                   line-height: 17px;
@@ -112,20 +115,25 @@ export const StyledTable = styled(Table)`
             border-collapse: collapse;
             tr {
               cursor: pointer;
-              height: 45px;
+              padding-top: 5px;
               td {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                height: 40px;
-                padding: 5px 10px;
+                padding: 10px 10px 5px 10px;
                 font-size: 14px;
                 line-height: 19px;
                 font-weight: 600;
                 color: ${greyThemeDark1};
               }
               td:nth-child(n + 5) {
-                padding: 0px;
+                padding: 5px 0 0 0;
+              }
+              &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+              &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+              &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+              &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+                background-color: ${backgroundGrey};
               }
             }
           }
@@ -136,12 +144,15 @@ export const StyledTable = styled(Table)`
       }
       .ant-table-fixed {
         .ant-table-thead {
+          & .ant-table-header-column .ant-table-column-sorters:hover::before {
+            background: white;
+          }
           tr {
             background: white;
             th {
               border: none;
               background: white;
-              padding: 5px 10px 20px 10px;
+              padding: 8px;
               .ant-table-column-title {
                 font-size: 12px;
                 line-height: 17px;
@@ -156,18 +167,25 @@ export const StyledTable = styled(Table)`
           border-collapse: collapse;
           tr {
             cursor: pointer;
-            height: 45px;
             td {
-              max-width: 170px;
+              max-width: 200px;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
-              height: 40px;
-              padding: 5px 10px;
+              padding: 10px 10px 5px 10px;
               font-size: 14px;
               line-height: 19px;
               font-weight: 600;
               color: ${greyThemeDark1};
+            }
+            td:nth-child(n + 5) {
+              padding: 5px 0 0 0;
+            }
+            &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+            &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+            &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+            &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+              background-color: ${backgroundGrey};
             }
           }
         }

@@ -598,7 +598,7 @@ function* signup({ payload }) {
     }
 
     const response = yield call(authApi.signup, obj);
-    const { message: _responseMsg, result } = response;
+    const { message: _responseMsg, result, ...rest } = response;
 
     if (_responseMsg && !result) {
       const { errorCallback } = payload;
@@ -608,6 +608,9 @@ function* signup({ payload }) {
         yield call(message.error, _responseMsg);
       }
     } else {
+      if (result.existingUser && result.existingUser.passwordMatch) {
+        yield call(message.info, "We already have an account for you. The new role will be linked to existing account");
+      }
       const user = pick(result, userPickFields);
 
       TokenStorage.storeAccessToken(result.token, user._id, user.role, true);

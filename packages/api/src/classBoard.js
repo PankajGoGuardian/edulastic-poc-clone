@@ -123,6 +123,46 @@ const regeneratePassword = ({ assignmentId, classId, passwordExpireIn }) =>
     })
     .then(response => response.data);
 
+const bulkOpenAssignment = ({ testId, data, testType }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/test/${testId}/bulk-open`,
+      data,
+      params: Object.keys(data).length === 0 ? { testType } : {}
+    })
+    .then(response => response.data);
+
+const bulkCloseAssignment = ({ testId, data, testType }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/test/${testId}/bulk-close`,
+      data,
+      params: Object.keys(data).length === 0 ? { testType } : {}
+    })
+    .then(response => response.data);
+
+const bulkPauseAssignment = ({ testId, data, testType }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/test/${testId}/bulk-pause`,
+      data,
+      params: Object.keys(data).length === 0 ? { testType } : {}
+    })
+    .then(response => response.data);
+
+const bulkMarkAsDoneAssignment = ({ testId, data, testType }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/test/${testId}/bulk-pause`,
+      data,
+      params: Object.keys(data).length === 0 ? { testType } : {}
+    })
+    .then(response => response.data);
+
 export default {
   gradebook,
   testActivity,
@@ -137,5 +177,9 @@ export default {
   removeStudents,
   addStudents,
   downloadGrades,
-  regeneratePassword
+  regeneratePassword,
+  bulkOpenAssignment,
+  bulkCloseAssignment,
+  bulkPauseAssignment,
+  bulkMarkAsDoneAssignment
 };

@@ -50,6 +50,7 @@ import { watcherSaga as playlistTestBoxSaga } from "../../CurriculumSequence/com
 import { externalToolsSaga } from "../../ExternalTools";
 import { mergeUsersSaga } from "../../MergeUsers";
 import { gradebookSaga } from "../../Gradebook";
+import { advancedAssignmentsSaga } from "../../AssignmentAdvanced";
 
 const authorSagas = [
   itemsSaga(),
@@ -103,7 +104,8 @@ const authorSagas = [
   playlistTestBoxSaga(),
   externalToolsSaga(),
   mergeUsersSaga(),
-  gradebookSaga()
+  gradebookSaga(),
+  advancedAssignmentsSaga()
 ];
 
 export default authorSagas;

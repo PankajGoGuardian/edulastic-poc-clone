@@ -1,15 +1,30 @@
-import React, { Component } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { Tooltip } from "antd";
+import { groupBy } from "lodash";
+import { Tooltip, Dropdown } from "antd";
 import { Link, withRouter } from "react-router-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
+import { EduButton } from "@edulastic/common";
+import { IconMoreHorizontal } from "@edulastic/icons";
 import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 
-import { Container, Icon, TableData, TypeIcon, BtnStatus, ActionsWrapper } from "./styled";
+import {
+  Container,
+  Icon,
+  TableData,
+  TypeIcon,
+  BtnStatus,
+  ActionsWrapper,
+  BulkActionsWrapper,
+  BulkActionsButtonContainer,
+  MoreOption
+} from "./styled";
+
+import { Container as MoreOptionsContainer } from "../../../Assignments/components/ActionMenu/styled";
 
 export const testTypeToolTip = {
   assessment: "Class Assessment",
@@ -95,10 +110,17 @@ const columns = [
     )
   }
 ];
-class TableList extends Component {
-  static propTypes = {};
-
-  convertRowData = (data, index) => ({
+const TableList = ({
+  classList,
+  filterStatus,
+  bulkOpenAssignmentRequest,
+  bulkCloseAssignmentRequest,
+  bulkPauseAssignmentRequest,
+  bulkMarkAsDoneAssignmentRequest,
+  testType
+}) => {
+  const [selectedRows, setSelectedRows] = useState([]);
+  const convertRowData = (data, index) => ({
     class: data.name,
     type: data.testType,
     status: data.isPaused && data.status !== "DONE" ? `${data.status} (PAUSED)` : data.status,
@@ -111,20 +133,101 @@ class TableList extends Component {
     key: index
   });
 
-  render() {
-    const { classList, filterStatus } = this.props;
-    const rowData = classList
-      .filter(o => (filterStatus ? o.status === filterStatus : true))
-      .map((data, index) => this.convertRowData(data, index));
-    const showPagination = rowData.length > 10;
+  const rowData = useMemo(
+    () =>
+      classList
+        .filter(o => (filterStatus ? o.status === filterStatus : true))
+        .map((data, index) => convertRowData(data, index)),
+    [classList, filterStatus]
+  );
 
-    return (
-      <Container>
-        <TableData columns={columns} dataSource={rowData} pagination={showPagination} />
-      </Container>
-    );
-  }
-}
+  /**
+   * Here we are resetting the selected rows to unselect whenever thre is a change in rows.
+   * Change in row can occur when we filter the rows based on status of the row.
+   */
+  useEffect(() => {
+    setSelectedRows([]);
+  }, [rowData]);
+
+  const showPagination = rowData.length > 10;
+
+  const rowSelection = {
+    selectedRowKeys: selectedRows.map(key => key),
+    onChange: rowKeys => {
+      setSelectedRows(rowKeys);
+    }
+  };
+
+  const moreOptions = () => (
+    <MoreOptionsContainer>
+      <MoreOption>Release Score</MoreOption>
+      <MoreOption>Download Grades</MoreOption>
+      <MoreOption>Download Responses</MoreOption>
+      <MoreOption>Unassign</MoreOption>
+    </MoreOptionsContainer>
+  );
+
+  const handleBulkAction = type => {
+    let selectedRowsGroupByAssignment = {};
+    if (classList.length > selectedRows.length) {
+      const selectedRowsData = rowData.filter((_, i) => selectedRows.includes(i));
+      selectedRowsGroupByAssignment = groupBy(selectedRowsData, "assignmentId");
+      for (const [key, value] of Object.entries(selectedRowsGroupByAssignment)) {
+        const classIds = value.map(d => d.classId);
+        selectedRowsGroupByAssignment[key] = classIds;
+      }
+    }
+    const payload = {
+      data: selectedRowsGroupByAssignment,
+      testId: classList[0].testId,
+      testType
+    };
+    if (type === "open") bulkOpenAssignmentRequest(payload);
+    if (type === "close") bulkCloseAssignmentRequest(payload);
+    // if (type === "pause") bulkPauseAssignmentRequest(payload);
+    // if (type === "markAsDone") bulkMarkAsDoneAssignmentRequest(payload);
+  };
+
+  const renderBulkActions = () => (
+    <BulkActionsWrapper>
+      <div>
+        <span>{selectedRows.length}</span>
+        <span>Class(es) Selected</span>
+      </div>
+      <BulkActionsButtonContainer>
+        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("open")}>
+          Open
+        </EduButton>
+        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("pause")}>
+          Pause
+        </EduButton>
+        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("close")}>
+          Close
+        </EduButton>
+        <EduButton height="30px" isGhost btnType="primary" onClick={() => handleBulkAction("markAsDone")}>
+          Mark as Done
+        </EduButton>
+        <Dropdown
+          overlay={moreOptions()}
+          placement="bottomLeft"
+          trigger={["hover"]}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+        >
+          <EduButton height="30px" isGhost btnType="primary">
+            <IconMoreHorizontal /> More
+          </EduButton>
+        </Dropdown>
+      </BulkActionsButtonContainer>
+    </BulkActionsWrapper>
+  );
+
+  return (
+    <Container>
+      {selectedRows.length > 0 && renderBulkActions()}
+      <TableData columns={columns} dataSource={rowData} pagination={showPagination} rowSelection={rowSelection} />
+    </Container>
+  );
+};
 
 TableList.propTypes = {
   classList: PropTypes.array.isRequired

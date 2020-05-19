@@ -13,7 +13,7 @@ import { compose } from "redux";
 import { Spin } from "antd";
 import Joyride from "react-joyride";
 import * as firebase from "firebase/app";
-import { test, signUpState } from "@edulastic/constants";
+import { test, signUpState, roleuser } from "@edulastic/constants";
 import { isMobileDevice, OfflineNotifier, notification } from "@edulastic/common";
 import { TokenStorage } from "@edulastic/api";
 import { Banner } from "./common/components/Banner";
@@ -29,6 +29,7 @@ import PrivateRoute from "./common/components/privateRoute";
 import V1Redirect from "./author/V1Redirect";
 import Kid from "./kid/app";
 import NotificationListener from "./HangoutVideoCallNotification";
+import BulkActionNotificationListener from "./author/AssignmentAdvanced/components/BulkAssignmentActionNotification";
 import AppUpdateModal from "./common/components/AppUpdateModal";
 import { logoutAction } from "./author/src/actions/auth";
 
@@ -258,6 +259,7 @@ class App extends Component {
       sessionStorage.removeItem("errorMessage");
     }
 
+    const userRole = user?.user?.role || "";
     // signup routes hidden till org reference is not done
     return (
       <div>
@@ -285,7 +287,12 @@ class App extends Component {
               redirectRoute !== "" ? (
                 <Redirect exact to={redirectRoute} />
               ) : null}
-              <PrivateRoute path="/author" component={Author} redirectPath={redirectRoute} />
+              <PrivateRoute
+                path="/author"
+                component={Author}
+                redirectPath={redirectRoute}
+                notification={roleuser.DA_SA_ROLE_ARRAY.includes(userRole) ? BulkActionNotificationListener : null}
+              />
               <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
               <PrivateRoute
                 path="/home"

@@ -7,7 +7,9 @@ import {
   secondaryTextColor,
   authorAssignment,
   tabletWidth,
-  testTypeColor
+  testTypeColor,
+  lightGrey4,
+  themeColor
 } from "@edulastic/colors";
 
 const { assignmentStatusBg } = authorAssignment;
@@ -107,7 +109,6 @@ export const TableData = styled(Table)`
     > tr > td {
       padding: 8px 16px;
       font-weight: 600;
-      border-bottom: none;
       text-align: center;
 
       &:first-child {
@@ -172,4 +173,42 @@ export const ActionsWrapper = styled.div`
 export const GreyFont = styled.span`
   color: grey;
   font-size: 14px;
+`;
+
+export const BulkActionsWrapper = styled.div`
+  display: flex;
+  & > div:first-child {
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    & > span:first-child {
+      display: inline-block;
+      padding: 3px 4px;
+      min-width: 70px;
+      text-align: center;
+      border-radius: 10px;
+      margin-right: 10px;
+      background: ${lightGrey4};
+    }
+  }
+`;
+
+export const BulkActionsButtonContainer = styled.div`
+  display: flex;
+`;
+
+export const MoreOption = styled.div`
+  padding: 0px 12px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  & :hover {
+    color: ${white};
+    background: ${themeColor};
+  }
 `;

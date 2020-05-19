@@ -72,7 +72,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_ASSIGNMENTS_SUMMARY_ERROR:
       return { ...state, loading: false, error: payload.error };
     case RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST:
-      return { ...state, loading: true, assignmentClassList: [] };
+      return { ...state, loading: true };
     case RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS:
       return {
         ...state,
@@ -80,7 +80,7 @@ const reducer = (state = initialState, { type, payload }) => {
         assignmentClassList: payload.entities
       };
     case RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR:
-      return { ...state, loading: false, error: payload.error };
+      return { ...state, loading: false, error: payload.error, assignmentClassList: [] };
     case UPDATE_CURRENT_EDITING_ASSIGNMENT:
       return {
         ...state,
@@ -146,7 +146,7 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         toggleStudentReportCardSettings: payload
-      }
+      };
     default:
       return state;
   }

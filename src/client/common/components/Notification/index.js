@@ -1,3 +1,4 @@
+import React from "react";
 import { notification } from "antd";
 import { EduButton } from "@edulastic/common";
 
@@ -9,8 +10,9 @@ export const notificationMessage = ({
   buttonText = "",
   notificationPosition = "bottomRight",
   notificationKey = "",
-  onCloseNotification,
-  onButtonClick
+  onCloseNotification = () => {},
+  onButtonClick = () => {},
+  duration
 }) => {
   notification.open({
     key: notificationKey,
@@ -37,7 +39,7 @@ export const notificationMessage = ({
     ),
     placement: notificationPosition,
     top: 70,
-    duration: 0,
+    duration: duration || 0,
     onClose: () => onCloseNotification(),
     onClick: () => onButtonClick()
   });

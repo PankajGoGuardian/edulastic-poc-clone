@@ -51,7 +51,7 @@ export function useFirestoreRealtimeDocuments(queryFn, args) {
   const [docs, setDocs] = useState([]);
   useEffect(() => {
     const unsubscribeCallback = queryFn(db).onSnapshot(snapshot => {
-      var initial = [];
+      const initial = [];
 
       snapshot.forEach(_doc => {
         initial.push({ ..._doc.data(), __id: _doc.id });

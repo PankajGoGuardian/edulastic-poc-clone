@@ -6,6 +6,8 @@ const SCHOOL_ADMIN = "school-admin";
 const EDULASTIC_ADMIN = "edulastic-admin";
 const EDULASTIC_CURATOR = "edulastic-curator";
 
+const DA_SA_ROLE_ARRAY = [DISTRICT_ADMIN, SCHOOL_ADMIN];
+
 module.exports = {
   STUDENT,
   ADMIN,
@@ -13,5 +15,6 @@ module.exports = {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,
   EDULASTIC_ADMIN,
-  EDULASTIC_CURATOR
+  EDULASTIC_CURATOR,
+  DA_SA_ROLE_ARRAY
 };

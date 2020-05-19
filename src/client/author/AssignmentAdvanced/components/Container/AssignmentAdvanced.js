@@ -4,11 +4,12 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { find, isEmpty, get } from "lodash";
-import { Dropdown, Button } from "antd";
+import { Dropdown } from "antd";
 import * as qs from "query-string";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { authorAssignment } from "@edulastic/colors";
+import { IconMoreVertical } from "@edulastic/icons";
 import {
   receiveAssignmentClassList,
   receiveAssignmentsSummaryAction,
@@ -28,7 +29,6 @@ import {
   AnchorLink,
   Anchor,
   Breadcrumbs,
-  ActionDiv,
   BtnAction,
   StyledCard,
   TableWrapper,
@@ -42,6 +42,12 @@ import TestPreviewModal from "../../../Assignments/components/Container/TestPrev
 import EditTestModal from "../../../src/components/common/EditTestModal";
 import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import { releaseScoreAction } from "../../../src/actions/classBoard";
+import {
+  bulkOpenAssignmentAction,
+  bulkCloseAssignmentAction,
+  bulkPauseAssignmentAction,
+  bulkMarkAsDoneAssignmentAction
+} from "../../ducks";
 
 const { assignmentStatusBg } = authorAssignment;
 
@@ -76,7 +82,7 @@ class AssignmentAdvanced extends Component {
 
     return (
       <FlexContainer>
-        <div style={{ marginRight: "20px" }}>
+        <div>
           <StyledSpan>Filter By</StyledSpan>
           <StyledButton type="primary" onClick={() => this.setState({ filterStatus: "" })}>
             All
@@ -113,21 +119,6 @@ class AssignmentAdvanced extends Component {
             <span>{assingment.graded || 0}</span>Done
           </Breadcrumb>
         </Breadcrumbs>
-        <ActionDiv>
-          <Dropdown
-            overlay={ActionMenu({
-              onOpenReleaseScoreSettings: this.onOpenReleaseScoreSettings,
-              row: assingment,
-              history,
-              showPreviewModal: this.toggleTestPreviewModal,
-              toggleEditModal: this.toggleEditModal
-            })}
-            placement="bottomCenter"
-            trigger={["click"]}
-          >
-            <BtnAction>Actions</BtnAction>
-          </Dropdown>
-        </ActionDiv>
       </FlexContainer>
     );
   };
@@ -164,17 +155,22 @@ class AssignmentAdvanced extends Component {
       history,
       error,
       toggleReleaseGradePopUp,
-      isShowReleaseSettingsPopup
+      isShowReleaseSettingsPopup,
+      bulkOpenAssignmentRequest,
+      bulkCloseAssignmentRequest,
+      bulkPauseAssignmentRequest,
+      bulkMarkAsDoneAssignmentRequest,
+      location
     } = this.props;
     const { testId } = match.params;
     const { filterStatus, openEditPopup, isPreviewModalVisible } = this.state;
     const assingment = find(assignmentsSummary, item => item.testId === testId) || {};
-
+    const { testType = "" } = qs.parse(location.search);
     return (
       <div>
         <EditTestModal
           visible={openEditPopup}
-          isUsed={true}
+          isUsed
           onCancel={() => this.toggleEditModal(false)}
           onOk={this.onEnableEdit}
         />
@@ -186,7 +182,28 @@ class AssignmentAdvanced extends Component {
           closeTestPreviewModal={() => this.toggleTestPreviewModal(false)}
         />
 
-        <ListHeader title={assingment.title || "Loading..."} hasButton={false} />
+        <ListHeader
+          title={assingment.title || "Loading..."}
+          hasButton={false}
+          renderExtra={() => (
+            <Dropdown
+              overlay={ActionMenu({
+                onOpenReleaseScoreSettings: this.onOpenReleaseScoreSettings,
+                row: assingment,
+                history,
+                showPreviewModal: this.toggleTestPreviewModal,
+                toggleEditModal: this.toggleEditModal
+              })}
+              placement="bottomLeft"
+              trigger={["hover"]}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              <BtnAction>
+                <IconMoreVertical />
+              </BtnAction>
+            </Dropdown>
+          )}
+        />
         <Container>
           <StyledFlexContainer justifyContent="space-between">
             <PaginationInfo>
@@ -196,7 +213,16 @@ class AssignmentAdvanced extends Component {
           </StyledFlexContainer>
           <TableWrapper>
             <StyledCard>
-              <TableList classList={classList} filterStatus={filterStatus} rowKey={recode => recode.assignmentId} />
+              <TableList
+                classList={classList}
+                filterStatus={filterStatus}
+                rowKey={recode => recode.assignmentId}
+                bulkOpenAssignmentRequest={bulkOpenAssignmentRequest}
+                bulkCloseAssignmentRequest={bulkCloseAssignmentRequest}
+                bulkPauseAssignmentRequest={bulkPauseAssignmentRequest}
+                bulkMarkAsDoneAssignmentRequest={bulkMarkAsDoneAssignmentRequest}
+                testType={testType}
+              />
             </StyledCard>
           </TableWrapper>
         </Container>
@@ -234,7 +260,11 @@ const enhance = compose(
       setReleaseScore: releaseScoreAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       loadAssignmentsClassList: receiveAssignmentClassList,
-      loadAssignmentsSummary: receiveAssignmentsSummaryAction
+      loadAssignmentsSummary: receiveAssignmentsSummaryAction,
+      bulkOpenAssignmentRequest: bulkOpenAssignmentAction,
+      bulkCloseAssignmentRequest: bulkCloseAssignmentAction,
+      bulkPauseAssignmentRequest: bulkPauseAssignmentAction,
+      bulkMarkAsDoneAssignmentRequest: bulkMarkAsDoneAssignmentAction
     }
   )
 );

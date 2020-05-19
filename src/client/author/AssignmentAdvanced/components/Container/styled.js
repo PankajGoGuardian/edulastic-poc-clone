@@ -67,7 +67,7 @@ export const TableWrapper = styled.div`
 export const StyledCard = styled(Card)`
   border-radius: 5;
   overflow-x: auto;
-
+  box-shadow: none;
   .ant-card-body {
     padding: 24px;
   }
@@ -106,24 +106,31 @@ export const Anchor = styled.a`
 `;
 
 export const BtnAction = styled(Button)`
-  color: ${themeColor};
-  border: none;
-  box-shadow: 0px 2px 4px 0 rgba(201, 208, 219, 0.5);
+  color: ${white};
+  background-color: ${themeColor};
+  border: 1px solid ${themeColor};
   max-width: 140px;
   height: 28px;
   font-size: 0.7em;
   font-weight: 600;
-  width: 100%;
-  padding: 0px 20px;
-  text-align: center;
-  width: 90px;
-  text-transform: uppercase;
   margin-left: 20px;
-  margin-right: 20px !important;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  svg {
+    fill: ${white};
+    height: 16px;
+    width: 16px;
+  }
   &:hover,
   &:focus {
-    background-color: ${themeColor};
-    color: ${white};
+    color: ${themeColor};
+    background-color: ${white};
+    svg {
+      fill: ${themeColor};
+    }
   }
 `;
 
@@ -141,6 +148,7 @@ export const StyledButton = styled(Button)`
   height: 36px;
   text-transform: uppercase;
   font-size: 13px;
+  border-radius: 4px 0px 0px 4px;
   @media (max-width: 1365px) {
     width: 50px;
   }
@@ -149,7 +157,7 @@ export const StyledButton = styled(Button)`
 export const StyledSpan = styled.span`
   text-transform: uppercase;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 600;
   margin-right: 20px;
 `;
 

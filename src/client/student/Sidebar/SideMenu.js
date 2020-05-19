@@ -168,7 +168,7 @@ class SideMenu extends Component {
   };
 
   render() {
-    const { broken, isVisible } = this.state;
+    const { broken, isVisible, showModal } = this.state;
     const {
       userId,
       switchDetails,
@@ -229,7 +229,7 @@ class SideMenu extends Component {
         <SwitchUserModal
           userId={userId}
           switchUser={switchUser}
-          showModal={this.state.showModal}
+          showModal={showModal}
           closeModal={() => this.setState({ showModal: false })}
           otherAccounts={get(switchDetails, "otherAccounts", [])}
           personId={get(switchDetails, "personId")}
@@ -559,7 +559,7 @@ const MenuWrapper = styled.div`
 
 const Menu = styled(AntMenu)`
   background: transparent;
-  
+
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
       color: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
@@ -568,22 +568,21 @@ const Menu = styled(AntMenu)`
       svg {
         fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
       }
-      
+
       &:before {
         opacity: 1;
       }
-      
+
       &.removeSelectedBorder {
         border: none;
         background-color: ${themeColor};
-        &:hover{
+        &:hover {
           background-color: #fff;
-          svg{
+          svg {
             fill: ${themeColor};
           }
         }
       }
-      
     }
   }
 
@@ -600,7 +599,7 @@ const Menu = styled(AntMenu)`
   }
   &.ant-menu-inline {
     overflow: auto;
-    
+
     @media (max-width: ${tabletWidth}) {
       height: auto;
       margin-top: 30px;
@@ -622,10 +621,9 @@ const Menu = styled(AntMenu)`
     padding: 5px 25px !important;
     max-width: 100%;
 
-    @media(max-width: ${tabletWidth}) {
+    @media (max-width: ${tabletWidth}) {
       height: 50px;
     }
-    
   }
   &.ant-menu-inline-collapsed {
     width: 70px;
@@ -648,9 +646,9 @@ const Menu = styled(AntMenu)`
   .ant-menu-item {
     position: relative;
     background: transparent;
-    
+
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       bottom: 0;
@@ -661,7 +659,7 @@ const Menu = styled(AntMenu)`
       z-index: -1;
       opacity: 0;
       pointer-events: none;
-      transition: all .3s ease;
+      transition: all 0.3s ease;
     }
   }
   .ant-menu-item:not(.ant-menu-item-selected) {
@@ -677,7 +675,6 @@ const Menu = styled(AntMenu)`
       color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
     }
   }
-}
 `;
 
 const MenuItem = styled(AntMenu.Item)`

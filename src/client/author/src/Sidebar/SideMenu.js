@@ -279,7 +279,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible } = this.state;
+    const { broken, isVisible, showModal } = this.state;
     const {
       userId,
       switchDetails,
@@ -378,7 +378,7 @@ class SideMenu extends Component {
         <SwitchUserModal
           userId={userId}
           switchUser={switchUser}
-          showModal={this.state.showModal}
+          showModal={showModal}
           closeModal={() => this.setState({ showModal: false })}
           otherAccounts={get(switchDetails, "otherAccounts", [])}
           personId={get(switchDetails, "personId")}
@@ -495,7 +495,7 @@ class SideMenu extends Component {
                       )}
                       <div style={{ width: "100px" }}>
                         {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
-                        {!isCollapsed && !isMobile && <UserType>{_userRole}</UserType>}
+                        {!isCollapsed && !isMobile && <UserType isVisible={isVisible}>{_userRole}</UserType>}
                       </div>
 
                       {!isCollapsed && !isMobile && (
@@ -864,7 +864,7 @@ const UserName = styled.div`
 
 const UserType = styled.div`
   font-size: 12px;
-  color: ${props => props.theme.sideMenu.userInfoRoleTextColor};
+  color: ${props => (props.isVisible ? white : props.theme.sideMenu.userInfoRoleTextColor)};
   width: 96%;
 `;
 
@@ -874,8 +874,6 @@ const FooterDropDown = styled.div`
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
-    border-bottom: 1px solid #fff;
-    border-radius: 30px 30px 0px 0px;
     overflow: hidden;
     max-width: 100%;
     .ant-menu-item:not(.ant-menu-item-selected) svg {
@@ -906,10 +904,10 @@ const FooterDropDown = styled.div`
         padding: 5px 16px;
         height: 50px;
         background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
-        &:hover,
+        /* &:hover,
         &:focus {
           background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
-        }
+        } */
         a {
           color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
           font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
@@ -1045,7 +1043,8 @@ const UserInfoButton = styled.div`
   .footerDropdown {
     width: 100%;
     height: 80px;
-    background-color: ${({ theme, isCollapsed }) => (isCollapsed ? "" : theme.sideMenu.userInfoButtonBgColor)};
+    background-color: ${({ theme, isCollapsed, isVisible }) =>
+      isCollapsed ? "" : isVisible ? theme.sideMenu.userInfoButtonBgHoverColor : theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
     position: relative;

@@ -100,6 +100,7 @@ export const ADD_TEST_TO_DIFFERENTIATION = "[differentiation] add test";
 export const ADD_RECOMMENDATIONS_ACTIONS = "[differentiation] add recommendations";
 export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE = "[differentiation] update fetch work loading state";
 export const UPDATE_WORK_STATUS_DATA = "[differentiation] update work status data";
+export const ADD_RESOURCE_TO_DIFFERENTIATION = "[differentiation] add resource";
 
 export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
 export const PLAYLIST_ADD_SUBRESOURCE = "[playlist] add sub resource";
@@ -118,6 +119,7 @@ export const DUPLICATE_MANAGE_CONTENT = "[playlist] duplicate mange content";
 export const CANCEL_PLAYLIST_CUSTOMIZE = "[playlist] cancel manage content";
 export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized playlist";
 export const SET_VIDEO_PREVIEW_RESOURCE_MODAL = "[playlist] set video resource modal content";
+export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub resource to test";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -167,6 +169,8 @@ export const updateDestinationCurriculumSequenceRequestAction = createAction(
 );
 export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA);
 export const addTestToDifferentationAction = createAction(ADD_TEST_TO_DIFFERENTIATION);
+export const addResourceToDifferentiationAction = createAction(ADD_RESOURCE_TO_DIFFERENTIATION);
+export const addSubResourceToTestInDiffAction = createAction(ADD_SUB_RESOURCE_IN_DIFFERENTIATION);
 
 export const getSignedRequestAction = createAction(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST);
 export const updateSinedRequestAction = createAction(UPDATE_SIGNED_REQUEST_FOR_RESOURCE);
@@ -1723,6 +1727,22 @@ export default createReducer(initialState, {
       });
     }
   },
+  [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
+    const { type, contentId, masteryRange, contentTitle, contentType, contentUrl } = payload;
+    const alreadyPresent = Object.keys(state.differentiationWork)
+      .flatMap(x => state.differentiationWork?.[x] || [])
+      .find(x => x.contentId === contentId);
+    if (!alreadyPresent) {
+      state.differentiationWork[type].push({
+        contentId,
+        description: contentTitle,
+        status: "RECOMMENDED",
+        masteryRange,
+        contentType,
+        contentUrl
+      });
+    }
+  },
   [UPDATE_WORK_STATUS_DATA]: (state, { payload }) => {
     state.workStatusData = payload;
   },
@@ -1813,5 +1833,9 @@ export default createReducer(initialState, {
   },
   [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {
     state.isVideoResourcePreviewModal = payload;
+  },
+  [ADD_SUB_RESOURCE_IN_DIFFERENTIATION]: (state, { payload }) => {
+    // TODO: Add Sub-resource structure here
+    console.log("Payload", payload);
   }
 });

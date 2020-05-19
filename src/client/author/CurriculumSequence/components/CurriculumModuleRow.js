@@ -120,7 +120,7 @@ const SortableHandle = sortableHandle(() => (
 ));
 
 const SortableElement = sortableElement(props => {
-  const { moduleData, id, dropContent } = props;
+  const { moduleData, id, dropContent, showSupportingResource } = props;
 
   return (
     <AssignmentDragItemContainer>
@@ -128,7 +128,7 @@ const SortableElement = sortableElement(props => {
       <AssignmentDragItem
         key={`${id}-${moduleData.id}`}
         contentIndex={id}
-        showSupportingResource={props.showSupportingResource}
+        showSupportingResource={showSupportingResource}
         handleDrop={dropContent}
         onClick={e => e.stopPropagation()}
         {...props}

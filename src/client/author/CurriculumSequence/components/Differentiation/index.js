@@ -23,7 +23,9 @@ import {
   getDifferentiationWorkSelector,
   getDifferentiationWorkLoadingStateSelector,
   getWorkStatusDataSelector,
-  addTestToDifferentationAction
+  addTestToDifferentationAction,
+  addResourceToDifferentiationAction,
+  addSubResourceToTestInDiffAction
 } from "../../ducks";
 import ManageContentBlock from "../ManageContentBlock";
 
@@ -38,7 +40,11 @@ const Differentiation = ({
   fetchDifferentiationStudentList,
   fetchDifferentiationWork,
   addRecommendations,
-  addTestToDifferentiation
+  addTestToDifferentiation,
+  addResourceToDifferentiation,
+  addSubResourceToTestInDiff,
+  setEmbeddedVideoPreviewModal,
+  showResource
 }) => {
   const [selectedClass, setSelectedClass] = useState();
   const [classList, setClassList] = useState([]);
@@ -133,6 +139,18 @@ const Differentiation = ({
     });
   };
 
+  const workTableCommonProps = {
+    differentiationStudentList,
+    addRecommendations,
+    selectedData: selectedClass,
+    isFetchingWork,
+    addTestToDifferentiation,
+    addResourceToDifferentiation,
+    addSubResourceToTestInDiff,
+    setEmbeddedVideoPreviewModal,
+    showResource
+  };
+
   return (
     <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start" flexDirection="row">
       <StyledPerfectScrollbar width={showManageContent ? "calc(100% - 410px)" : "100%"}>
@@ -199,35 +217,23 @@ const Differentiation = ({
             <WorkTable
               type="REVIEW"
               data-cy="review"
-              differentiationStudentList={differentiationStudentList}
               data={differentiationWork.review}
-              addRecommendations={addRecommendations}
-              selectedData={selectedClass}
-              isFetchingWork={isFetchingWork}
-              addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.REVIEW || []}
+              {...workTableCommonProps}
             />
             <WorkTable
               type="PRACTICE"
               data-cy="practice"
-              differentiationStudentList={differentiationStudentList}
               data={differentiationWork.practice}
-              addRecommendations={addRecommendations}
-              selectedData={selectedClass}
-              isFetchingWork={isFetchingWork}
-              addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.PRACTICE || []}
+              {...workTableCommonProps}
             />
             <WorkTable
               type="CHALLENGE"
               data-cy="challenge"
-              differentiationStudentList={differentiationStudentList}
               data={differentiationWork.challenge}
-              addRecommendations={addRecommendations}
-              selectedData={selectedClass}
-              isFetchingWork={isFetchingWork}
-              addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.CHALLENGE || []}
+              {...workTableCommonProps}
             />
           </div>
         </BodyContainer>
@@ -269,6 +275,8 @@ export default connect(
     fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
     fetchDifferentiationWork: fetchDifferentiationWorkAction,
     addRecommendations: addRecommendationsAction,
-    addTestToDifferentiation: addTestToDifferentationAction
+    addTestToDifferentiation: addTestToDifferentationAction,
+    addResourceToDifferentiation: addResourceToDifferentiationAction,
+    addSubResourceToTestInDiff: addSubResourceToTestInDiffAction
   }
 )(Differentiation);

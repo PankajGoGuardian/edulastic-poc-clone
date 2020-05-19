@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { groupBy, isEqual, uniqueId } from "lodash";
+import { groupBy, isEqual, uniqueId, pick } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
@@ -88,7 +88,9 @@ import ManageContentBlock from "./ManageContentBlock";
 import StudentPlayListHeader from "../../../student/sharedComponents/Header/PlayListHeader";
 import Differentiation from "./Differentiation";
 import { getDateKeysSelector } from "../../../student/StudentPlaylist/ducks";
+import { submitLTIForm } from "./CurriculumModuleRow"; // Fix ME : Needs refactor
 import ManageModulesModal from "./ManageModulesModal";
+
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -434,6 +436,23 @@ class CurriculumSequence extends Component {
     return history.push(`/home/playlist/${playlistId}/recommendations`);
   };
 
+
+  showLtiResource = async (contentId, resource) => {
+    resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
+    const { playlistId, module } = this.props;
+    try {
+      const signedRequest = await curriculumSequencesApi.getSignedRequest({
+        playlistId,
+        moduleId: module?._id,
+        contentId,
+        resource
+      });
+      submitLTIForm(signedRequest);
+    } catch (e) {
+      message.error("Failed to load the resource");
+    }
+  };
+
   hideRightpanel = () => this.setState({ showRightPanel: false }, this.closeManageModules);
 
   closeManageModules = () => {
@@ -441,7 +460,7 @@ class CurriculumSequence extends Component {
     toggleManageModulesVisibility(false);
     toggleManageContent(null);
   };
-
+        
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
 
@@ -1000,7 +1019,12 @@ class CurriculumSequence extends Component {
               </>
             )}
             {currentTab === "insights" && <Insights currentPlaylist={destinationCurriculumSequence} />}
-            {currentTab === "differentiation" && isSparkMathPlaylist && <Differentiation />}
+            {currentTab === "differentiation" && isSparkMathPlaylist && (
+              <Differentiation
+                setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                showResource={this.showLtiResource}
+              />
+            )}
           </MainContentWrapper>
         </CurriculumSequenceWrapper>
         {dropPlaylistModalVisible && (

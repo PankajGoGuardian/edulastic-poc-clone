@@ -24,7 +24,7 @@ const sideCardStyle = {
 const filteredJoin = listOfLists => listOfLists.map(list => (list || []).filter(item => !!item).join(", "));
 
 // logic for title to initials
-const titleToInitials = title =>
+const titleToInitials = (title = "") =>
   title
     .split(" ")
     .map(item => {

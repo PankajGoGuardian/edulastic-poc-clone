@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Table, Slider, Select } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { FlexContainer } from "@edulastic/common";
@@ -51,11 +51,45 @@ export const BodyContainer = styled.div`
   }
 `;
 
+const borderLoopEffect = css`
+  background-image: linear-gradient(90deg, ${themeColor} 40%, transparent 60%),
+    linear-gradient(90deg, ${themeColor} 40%, transparent 60%),
+    linear-gradient(0deg, ${themeColor} 40%, transparent 60%), linear-gradient(0deg, ${themeColor} 40%, transparent 60%);
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
+  background-position: left top, right bottom, left bottom, right top;
+  @keyframes border-dance {
+    0% {
+      background-position: left top, right bottom, left bottom, right top;
+    }
+    100% {
+      background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
+    }
+  }
+`;
+
 export const TableContainer = styled.div`
   padding: 20px 0px;
   border-radius: 4px;
   margin-bottom: 20px;
-  border: ${props => (props.highlighted ? `2px dashed ${themeColor}` : `2px solid ${borderGrey}`)};
+  border: ${({ highlighted }) => !highlighted && `2px solid ${borderGrey}`};
+  animation: ${({ highlighted }) => highlighted && `border-dance 1s infinite linear;`};
+  ${({ highlighted }) => highlighted && borderLoopEffect};
+`;
+
+export const ActivityDropConainer = styled.div`
+  display: inline-block;
+  width: 100%;
+  min-height: ${({ height }) => height || "50px"};
+  margin: 10px 0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  line-height: ${({ height }) => height || "50px"};
+  text-align: center;
+  animation: ${({ active }) => active && `border-dance 1s infinite linear;`};
+  ${borderLoopEffect};
 `;
 
 export const TableHeader = styled.div`
@@ -199,4 +233,9 @@ export const StyledSelect = styled(Select)`
 
 export const StyledPerfectScrollbar = styled.div`
   width: ${({ width }) => width};
+`;
+
+export const StyledDescription = styled.div`
+  width: 100%;
+  cursor: ${({ clickable }) => clickable && "pointer"};
 `;

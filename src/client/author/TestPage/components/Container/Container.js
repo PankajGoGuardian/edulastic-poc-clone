@@ -813,17 +813,14 @@ class Container extends PureComponent {
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
-    const owner =
-      (authors && authors.some(x => x._id === userId)) ||
-      !testId ||
-      userFeatures.isCurator ||
-      userRole === roleuser.EDULASTIC_CURATOR;
-    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
+    const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
+    const owner = authors?.some(x => x._id === userId);
+    const showPublishButton =
+      (testStatus !== statusConstants.PUBLISHED && testId && (owner || isCurator)) || editEnable;
     const showShareButton = !!testId;
     const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test");
-    const showDuplicateButton =
-      testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner && allowDuplicate;
-    const showEditButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner;
+    const showDuplicateButton = testStatus === statusConstants.PUBLISHED && !editEnable && allowDuplicate && !isCurator;
+    const showEditButton = testStatus === statusConstants.PUBLISHED && !editEnable && (owner || isCurator);
     const showCancelButton = test.isUsed && !!testAssignments.length && !showEditButton && !showDuplicateButton;
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));

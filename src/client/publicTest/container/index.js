@@ -13,7 +13,10 @@ import { getUser } from "../../author/src/selectors/user";
 import { TokenStorage } from "@edulastic/api";
 import { formatAssignment } from "../utils";
 import { test as testConstants } from "@edulastic/constants";
+import { testsApi } from "@edulastic/api";
+
 const releaseGradeLabels = testConstants.releaseGradeLabels;
+const ARCHIVED_TEST_MSG = "You can no longer use this as sharing access has been revoked by author";
 
 const PublicTestPage = ({
   match,
@@ -38,17 +41,43 @@ const PublicTestPage = ({
   useEffect(() => {
     if (user) {
       const { role } = user;
-      if (role === "student") {
-        fetchAssignments({ testId });
-      } else if (role === "parent") {
-        redirectToDashbord();
-      } else {
-        redirectToTestPreview();
-      }
+      //fetch test to check if test archieved or not
+      testsApi
+        .getPublicTest(testId, { sharedType: "PUBLIC" })
+        .then(test => {
+          const isTestArchieved = test.status === testConstants.statusConstants.ARCHIVED;
+
+          if (role === "student") {
+            //if archieved, then redirect to student dashbord
+            if (isTestArchieved) {
+              return redirectToDashbord(isTestArchieved ? "ARCHIVED" : "");
+            } else {
+              fetchAssignments({ testId });
+            }
+          } else if (role === "parent") {
+            redirectToDashbord(isTestArchieved ? "ARCHIVED" : "");
+          } else {
+            redirectToTestPreview(isTestArchieved);
+          }
+        })
+        .catch(() => {
+          message.warn("Trying to access private test");
+          if (role !== "student" || role !== "parent") {
+            redirectToTestPreview();
+          } else {
+            //if got error redirect to login page
+            history.push("/login");
+          }
+        });
     } else if (!authenticating || !TokenStorage.getAccessToken()) {
-      fetchTest({ testId, sharedType: "PUBLIC" });
+      if (!test) {
+        fetchTest({ testId, sharedType: "PUBLIC" });
+      } else if (test?.status === testConstants.statusConstants.ARCHIVED) {
+        message.warn(ARCHIVED_TEST_MSG);
+        history.push("/login");
+      }
     }
-  }, [user]);
+  }, [user, test]);
 
   //check for ungraded assignments, if exists consider that assignment for to redirect to assessment player
   //if no assignments found, then redirect to student dashbord
@@ -81,6 +110,10 @@ const PublicTestPage = ({
     switch (type) {
       case "EXPIRED":
         msg = "Test is expired";
+        break;
+      case "ARCHIVED":
+        msg = ARCHIVED_TEST_MSG;
+        break;
       default:
         msg = "Assignment is not available for the attempt.";
     }
@@ -88,7 +121,14 @@ const PublicTestPage = ({
     history.push("/home/assignments");
   };
 
-  const redirectToTestPreview = () => history.push(`/author/tests/tab/review/id/${testId}`);
+  const redirectToTestPreview = isTestArchieved => {
+    if (isTestArchieved) {
+      message.warn(ARCHIVED_TEST_MSG);
+      history.push(`/author/tests`);
+    } else {
+      history.push(`/author/tests/tab/review/id/${testId}`);
+    }
+  };
 
   //case: check to where to navigate
   const redirectToAssessmentPlayer = assignment => {

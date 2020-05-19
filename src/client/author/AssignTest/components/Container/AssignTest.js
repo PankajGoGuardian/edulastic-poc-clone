@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { isEmpty, get, keyBy, omit } from "lodash";
 import * as moment from "moment";
-import { message, spin, notification } from "antd";
+import { message, Spin, notification } from "antd";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
 
 import {

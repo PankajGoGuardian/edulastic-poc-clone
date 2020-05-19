@@ -856,7 +856,7 @@ class Container extends PureComponent {
           title={test?.title || ""}
           creating={creating}
           showEditButton={showEditButton}
-          owner={owner}
+          owner={owner || isCurator || !testId}
           isUsed={test.isUsed}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}

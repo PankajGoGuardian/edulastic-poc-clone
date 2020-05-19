@@ -75,10 +75,9 @@ export const { actions, reducer } = slice;
 function* fetchStudentPerformanceSaga({ payload }) {
   try {
     const { filters, pageDetail } = payload;
-    const { assessmentIds, status, classIds, grades, subjects, termId, testType, groupId } = filters;
+    const { assessmentIds, classIds, grades, subjects, termId, testType, groupId } = filters;
     const response = yield call(reportsApi.fetchStudentPerformance, {
       assessmentIds: assessmentIds.join(","),
-      // status, // TODO: fix this after confirmation on PRD
       classIds: classIds.join(","),
       grades: grades.join(","),
       subjects: subjects.join(","),

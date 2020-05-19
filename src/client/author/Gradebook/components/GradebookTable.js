@@ -40,7 +40,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       width: 170,
       render: (_, row) => {
         const { status, percentScore } = row.assessments[ass.id] || {};
-        const color = STATUS_LIST.find(s => s.name === status)?.color;
+        const color = STATUS_LIST.find(s => s.id === status)?.color;
         return <StyledTableCell color={color}>{percentScore || "-"}</StyledTableCell>;
       },
       sorter: (a, b) =>

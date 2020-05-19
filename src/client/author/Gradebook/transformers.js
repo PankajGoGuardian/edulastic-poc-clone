@@ -1,5 +1,8 @@
 import { capitalize, keyBy, groupBy, uniq } from "lodash";
 
+// constants
+import { testActivityStatus } from "@edulastic/constants";
+
 // id for STATUS_LIST items (if present)
 // correspond to testActivityStatus from @edulastic/constants
 export const STATUS_LIST = [
@@ -73,23 +76,24 @@ const getCuratedTestActivity = taGroup => {
   const ta = taGroup[taGroup.length - 1];
   const { status, graded, startDate, endDate, score = 0, maxScore = 1 } = ta;
   const laDate = endDate || startDate;
-  if (status === 0) {
+  if (status === testActivityStatus.START) {
     // TODO: check if partial score, can be returned, else query in PRD
-    return { laDate, status: "IN PROGRESS" };
-  } else if (status === 1) {
+    return { laDate, status: "START" };
+  } else if (status === testActivityStatus.SUBMITTED) {
     return {
       laDate,
       status: graded === "GRADED" ? "GRADED" : "SUBMITTED",
       percentScore: `${Math.round((100 * score) / maxScore)}%`
     };
-  } else if (status === 2) {
+  } else if (status === testActivityStatus.ABSENT) {
     return { laDate, status: "ABSENT", percentScore: "0%" };
   }
 };
 
 // function to get curated gradebook data
-export const curateGradebookData = gradebookData => {
+export const curateGradebookData = (gradebookData, filters) => {
   const { students = [], assignments = [], testActivities = [] } = gradebookData;
+  const { status } = filters;
 
   // group test-activity by assignmentId
   const taGroups = groupBy(testActivities, "assignmentId");
@@ -108,9 +112,11 @@ export const curateGradebookData = gradebookData => {
       const taCurated = taGroup?.length && getCuratedTestActivity(taGroup);
       if (taCurated) {
         // update test-activity & last-activity date for the assignment-student-class combo
-        assessments[a._id] = taCurated;
+        if (!status || status === taCurated.status) {
+          assessments[a._id] = taCurated;
+        }
         laDate = Math.max(laDate, taCurated.laDate);
-      } else {
+      } else if (!status || status === "NOT STARTED") {
         // check for not started
         a.class?.forEach(c => {
           if (c._id === classId && (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))) {

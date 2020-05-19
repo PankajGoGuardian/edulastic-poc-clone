@@ -57,7 +57,7 @@ const Gradebook = ({
   }, [pageDetail]);
 
   const curatedFiltersData = curateFiltersData(filtersData, filters);
-  const [curatedData, assessmentsData] = curateGradebookData(gradebookData);
+  const [curatedData, assessmentsData] = curateGradebookData(gradebookData, filters);
   const { students = [], studentsCount, assignmentsCount } = gradebookData;
 
   const selectedStudents = students.filter(s => selectedRows.includes(s._id));

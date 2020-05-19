@@ -106,7 +106,9 @@ class MCQStandardPage {
   deleteAlternate() {
     return this;
   }
-
+  selectAlternatetab = () => {
+    cy.contains("span", "Alternate 1").click();
+  };
   getMultipleResponse = () => cy.get('[data-cy="multi"]').closest("label");
 
   // advance options
@@ -224,6 +226,10 @@ class MCQStandardPage {
 
     return this;
   }
+
+  selectAnswerChoice = options => {
+    cy.contains(options).click();
+  };
 
   getPanalty = () => cy.get('[data-cy="penalty"]');
 

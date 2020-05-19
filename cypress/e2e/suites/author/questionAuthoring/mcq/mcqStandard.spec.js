@@ -17,7 +17,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     queText: "Indian state known as garden spice is:",
     choices: ["Karnataka", "West Bengal", "Kerala", "Delhi", "KL"],
     correct: ["Kerala"],
-    alterate: ["KL"],
+    alterate: ["KL", "Delhi"],
     extlink: "www.testdomain.com",
     formattext: "formattedtext",
     formula: "s=ar^2"
@@ -194,23 +194,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     it(" > [Tc_253]:test => Advanced Options", () => {
       question.clickOnAdvancedOptions();
 
-      // scoring
-      // question.getMaxScore().verifyNumInput(1);
-
       /*
-      question
-        .getEnableAutoScoring()
-        // .click({ force: true })
-        .then($el => {
-          cy.wrap($el).should("have.class", "ant-checkbox-checked");
+ question
+   .getEnableAutoScoring()
+   // .click({ force: true })
+   .then($el => {
+     cy.wrap($el).should("have.class", "ant-checkbox-checked");
 
-           question
-            .getCheckAnswerCheckbox()
-            .click()
-            .should("have.class", "ant-checkbox-checked")
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
- */
+      question
+       .getCheckAnswerCheckbox()
+       .click()
+       .should("have.class", "ant-checkbox-checked")
+       .click()
+       .should("not.have.class", "ant-checkbox-checked");
+*/
       question.selectScoringType(SCORING_TYPE.EXACT);
       question.selectScoringType(SCORING_TYPE.PARTIAL);
       question.getPanalty().verifyNumInput(1);
@@ -288,12 +285,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     it(" > [Tc_256]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
@@ -573,12 +565,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     it(" > [Tc_263]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
@@ -661,20 +648,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
+      preview.checkScore("1/1");
 
-          cy.get("label.wrong").should("have.length", 0);
+      cy.get("label.wrong").should("have.length", 0);
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.correct[0]);
 
       preview
         .getClear()
@@ -684,20 +666,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give wrong ans and check
-      cy.contains(queData.choices[0]).click();
+      question.selectAnswerChoice(queData.choices[0]);
+      preview.checkScore("0/1");
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[0]);
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[0]);
-
-          cy.get("label.right").should("have.length", 0);
-        });
+      cy.get("label.right").should("have.length", 0);
 
       preview
         .getClear()
@@ -707,14 +683,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give no ans and check
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
-
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
+      preview.checkScore("0/1");
     });
 
     it(" > [mcq_std_test]:test => Enable multiple responses exact and validate", () => {
@@ -765,23 +734,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
 
-      cy.contains(queData.alterate[0]).click();
+      preview.checkScore("1/1");
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
+      cy.get("label.wrong").should("have.length", 0);
 
-          cy.get("label.wrong").should("have.length", 0);
-
-          cy.get("label.right")
-            .should("have.length", 2)
-            .and("contain", queData.correct[0])
-            .and("contain", queData.alterate[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 2)
+        .and("contain", queData.correct[0])
+        .and("contain", queData.alterate[0]);
 
       preview
         .getClear()
@@ -791,23 +754,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give exact wrong ans and check
-      cy.contains(queData.choices[0]).click();
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.choices[0]);
+      question.selectAnswerChoice(queData.correct[0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      preview.checkScore("0/1");
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[0]);
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[0]);
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.correct[0]);
 
       preview
         .getClear()
@@ -817,14 +775,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give no ans and check
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      preview.checkScore("0/1");
 
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
+      cy.get("label.right,label.wrong").should("have.length", 0);
     });
 
     it(" > [mcq_std_test]:test => Enable partial match with multiple responses and validate", () => {
@@ -865,23 +818,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1/1");
 
-      cy.contains(queData.alterate[0]).click();
+      cy.get("label.wrong").should("have.length", 0);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
-
-          cy.get("label.wrong").should("have.length", 0);
-
-          cy.get("label.right")
-            .should("have.length", 2)
-            .and("contain", queData.correct[0])
-            .and("contain", queData.alterate[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 2)
+        .and("contain", queData.correct[0])
+        .and("contain", queData.alterate[0]);
 
       preview
         .getClear()
@@ -891,23 +837,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give partial wrong ans and check
-      cy.contains(queData.choices[0]).click();
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.choices[0]);
+      question.selectAnswerChoice(queData.correct[0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0.5/1");
+      preview.checkScore("0.5/1");
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[0]);
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[0]);
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.correct[0]);
 
       preview
         .getClear()
@@ -917,14 +858,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give no ans and check
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      preview.checkScore("0/1");
 
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
+      cy.get("label.right,label.wrong").should("have.length", 0);
     });
   });
 
@@ -997,16 +933,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       const preview = question.header.preview();
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
-
-      cy.contains(queData.alterate[0]).click();
-
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
-        });
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1/1");
 
       preview
         .getClear()
@@ -1016,18 +945,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
 
       // give incorrect ans and validate
-      cy.contains(queData.choices[1]).click();
+      question.selectAnswerChoice(queData.choices[1]);
+      preview.checkScore("0/1");
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      cy.get("label.wrong").should("have.length", 1);
 
-          cy.get("label.wrong").should("have.length", 1);
-
-          cy.get("label.right").should("have.length", 0);
-        });
+      cy.get("label.right").should("have.length", 0);
 
       preview
         .getClear()
@@ -1036,91 +959,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
     });
-
-    /*  it(" > [mcq_std_scoring]:test => Testing min score if attempted and with alternate answer", () => {
-      const preview = question.header.preview();
-
-      preview.header
-        .edit()
-        .getEditButton()
-        .click();
-
-      // advanced
-      // // question.clickOnAdvancedOptions(); // UI toggel has been removed
-
-      question.getMinScore().type(2);
-
-      // save
-      question.header.save();
-
-      question.header.preview();
-
-      cy.contains(queData.choices[1]).click();
-
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 2/2");
-
-          cy.get("label.wrong").should("have.length", 1);
-
-          cy.get("label.right").should("have.length", 0);
-        });
-
-      preview
-        .getClear()
-        .click()
-        .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
-
-      preview.header
-        .edit()
-        .getEditButton()
-        .click();
-
-      // advanced
-      // question.clickOnAdvancedOptions();
-
-      question
-        .getPoints()
-        .clear()
-        .type(3);
-
-      question.getAlternates().click();
-
-      question
-        .getPoints()
-        .clear()
-        .type(4);
-
-      // save
-      question.header.save();
-
-      question.header.preview();
-
-      cy.contains(queData.choices[1]).click();
-
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 2/4");
-
-          cy.get("label.wrong").should("have.length", 1);
-
-          cy.get("label.right").should("have.length", 0);
-        });
-
-      preview
-        .getClear()
-        .click()
-        .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
-    }); */
-
     it(" > [mcq_std_scoring]:test => Testing partial match and multiple responses with penalty", () => {
       const preview = question.header.preview();
 
@@ -1133,10 +971,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
       question.getMultipleResponse().click();
 
-      question
-        .getPoints()
-        // .clear()
-        .type("{selectall}8");
+      question.getPoints().type("{selectall}8");
 
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
@@ -1178,19 +1013,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
       question.header.preview();
 
-      cy.contains(queData.choices[1]).click();
-      cy.contains(queData.choices[0]).click();
+      question.selectAnswerChoice(queData.choices[1]);
+      question.selectAnswerChoice(queData.choices[0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("2/8");
+      preview.checkScore("2/8");
 
-          cy.get("label.wrong").should("have.length", 1);
+      cy.get("label.wrong").should("have.length", 1);
 
-          cy.get("label.right").should("have.length", 1);
-        });
+      cy.get("label.right").should("have.length", 1);
 
       preview
         .getClear()
@@ -1199,52 +1029,182 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
     });
-
-    /*  it(" > [mcq_std_scoring]:test => Testing max score without Auto Scoring option", () => {
+    it(" > [mcq_std_scoring]:test => Testing of partial match with rounding", () => {
       const preview = question.header.preview();
 
-      preview.header
-        .edit()
-        .getEditButton()
-        .click();
-
-      // question.clickOnAdvancedOptions();
-
-      question
-        .getEnableAutoScoring()
-        .click()
-        .should("not.have.class", "ant-checkbox-checked");
-
-      question
-        .getMaxScore()
-        .clear()
-        .type(1);
-
-      // save
-      question.header.save();
-
+      question.header.edit();
+      question.getPoints().type("{selectall}2.6");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.selectRoundingType("Round down");
       question.header.preview();
+      question.selectAnswerChoice(queData.choices[0]);
+      preview.checkScore("1/2.6");
+    });
+    it(" > [mcq_std_scoring]:test => Testing of partial match without rounding", () => {
+      const preview = question.header.preview();
 
-      cy.contains(queData.choices[1]).click();
-      cy.contains(queData.choices[0]).click();
+      question.header.edit();
+      question.getPoints().type("{selectall}2.6");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.selectRoundingType("None");
+      question.header.preview();
+      question.selectAnswerChoice(queData.choices[0]);
+      preview.checkScore("1.3/2.6");
+    });
+    it(" > [mcq_std_scoring]:test => Testing of partial match with rounding and penality", () => {
+      const preview = question.header.preview();
+      const view = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
+      question.header.edit();
+      question.getPoints().type("{selectall}3.6");
+      question.getPanalty().type("{selectall}1");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.selectRoundingType("Round down");
+      question.header.preview();
+      question.selectAnswerChoice(queData.choices[0]);
+      question.selectAnswerChoice(queData.choices[1]);
+      preview.checkScore("1/3.6");
+    });
+    it(" > [mcq_std_scoring]:test => Testing of partial match without rounding and penality", () => {
+      const preview = question.header.preview();
+      question.header.edit();
+      question.getPoints().type("{selectall}3.6");
+      question.getPanalty().type("{selectall}1");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.selectRoundingType("None");
+      question.header.preview();
+      question.selectAnswerChoice(queData.choices[0]);
+      question.selectAnswerChoice(queData.choices[1]);
+      preview.checkScore("1.3/3.6");
+    });
+    it(" > [mcq_std_scoring]:test => default alternate answer check with exact scoring type", () => {
+      const preview = question.header.preview();
+      question.header.edit();
+
+      //disable multi response
+      question.getMultipleResponse().click();
+
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.choices[0])
+        .closest("label")
+        .find("input")
+        .should("be.checked");
+
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.alterate[0])
+        .closest("label")
+        .find("input")
+        .should("not.checked");
+      //set correct answer point as "2"
+      question.getPoints().type("{selectall}2");
+      //add a alternate answer - score by default 1
+      question.selectAlternatetab();
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.alterate[0])
+        .closest("label")
+        .find("input")
+        .should("be.checked");
+      question.selectScoringType(SCORING_TYPE.EXACT);
+      question.header.preview();
+      question.selectAnswerChoice(queData.choices[0]);
+      preview.checkScore("2/2");
+      preview.getClear().click();
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1/2");
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.alterate[0]);
+    });
+    it(" > [mcq_std_scoring]:test => default alternate answer check with partial scoring type", () => {
+      const preview = question.header.preview();
+      question.header.edit();
+
+      //enable multi response
+      question.getMultipleResponse().click();
+
+      //add a alternate answer - score by default 1
+      question.selectAlternatetab();
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.alterate[0])
+        .closest("label")
+        .find("input")
+        .should("be.checked");
+
+      question.selectAlternatetab();
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.alterate[1])
         .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/10");
+        .closest("label")
+        .find("input")
+        .should("be.checked");
 
-          cy.get("label.wrong").should("have.length", 1);
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.header.preview();
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("0.5/2");
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.alterate[0]);
+      preview.getClear().click();
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.alterate[1]);
+      preview.checkScore("1/2");
+      cy.get("label.right")
+        .should("have.length", 2)
+        .and("contain", queData.alterate[0])
+        .and("contain", queData.alterate[1]);
+    });
+    it(" > [mcq_std_scoring]:test => check priority of correct answer during evaluation", () => {
+      //in case both alternate and correct asnwer is chosen evaluation will be done with respect to correct answer
+      const preview = question.header.preview();
+      question.header.edit();
 
-          cy.get("label.right").should("have.length", 1);
-        });
-
-      preview
-        .getClear()
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.choices[0])
+        .closest("label")
+        .find("input")
+        .should("be.checked");
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.choices[1])
         .click()
-        .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
-    }); */
+        .closest("label")
+        .find("input")
+        .should("be.checked");
+
+      //add a alternate answer - score by default 1
+      question.selectAlternatetab();
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.alterate[0])
+        .closest("label")
+        .find("input")
+        .should("be.checked");
+
+      question
+        .getAllAnsChoicesLabel()
+        .contains(queData.alterate[1])
+        .closest("label")
+        .find("input")
+        .should("be.checked");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.getPanalty().type("{selectall}0");
+      question.header.preview();
+      question.selectAnswerChoice(queData.choices[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1/2");
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.alterate[0]);
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.choices[0]);
+    });
   });
 });

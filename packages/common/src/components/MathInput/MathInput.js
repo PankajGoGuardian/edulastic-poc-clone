@@ -151,35 +151,47 @@ class MathInput extends React.PureComponent {
   onInput = (key, command = "cmd") => {
     const { mathField } = this.state;
 
-    // keys for which actions need to be ignored
-    const blacklistKeys = ["}"];
-
     if (!mathField) return;
-    if (key === "in") {
-      mathField.write("in");
-    } else if (key === "left_move") {
-      mathField.keystroke("Left");
-    } else if (key === "right_move") {
-      mathField.keystroke("Right");
-    } else if (key === "ln--") {
-      mathField.write("ln\\left(\\right)");
-    } else if (key === "leftright3") {
-      mathField.write("\\sqrt[3]{}");
-    } else if (key === "Backspace") {
-      mathField.keystroke("Backspace");
-    } else if (key === "leftright2") {
-      mathField.write("^2");
-    } else if (key === "down_move") {
-      mathField.keystroke("Down");
-    } else if (key === "up_move") {
-      mathField.keystroke("Up");
-    } else if (key === "\\embed{response}") {
-      mathField.write(key);
-    } else if (key === "{") {
-      mathField.write("\\left\\{\\right\\}");
-    } else if (!blacklistKeys.includes(key)) {
-      mathField[command](key);
+
+    switch (key) {
+      case "in":
+        mathField.write("in");
+        break;
+      case "left_move":
+        mathField.keystroke("Left");
+        break;
+      case "right_move":
+        mathField.keystroke("Right");
+        break;
+      case "ln--":
+        mathField.write("ln\\left(\\right)");
+        break;
+      case "leftright3":
+        mathField.write("\\sqrt[3]{}");
+        break;
+      case "Backspace":
+        mathField.keystroke("Backspace");
+        break;
+      case "leftright2":
+        mathField.write("^2");
+        break;
+      case "down_move":
+        mathField.keystroke("Down");
+        break;
+      case "up_move":
+        mathField.keystroke("Up");
+        break;
+      case "{":
+      case "}":
+        mathField.write("\\left\\{\\right\\}");
+        break;
+      case "\\embed{response}":
+        mathField.write(key);
+        break;
+      default:
+        mathField[command](key);
     }
+
     mathField.focus();
     this.handleChangeField();
   };

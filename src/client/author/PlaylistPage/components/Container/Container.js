@@ -225,10 +225,10 @@ class Container extends PureComponent {
     });
   };
 
-  onDrop = toModuleIndex => {
+  onDrop = (toModuleIndex, item) => {
     const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
     const { moveContentInPlaylist } = this.props;
-    moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
+    moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex, testItem: item });
   };
 
   onSortEnd = prop => {

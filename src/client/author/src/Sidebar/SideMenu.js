@@ -126,6 +126,9 @@ const menuItems = [
     role: ["school-admin"]
   }
 ];
+
+const libraryItems = ["library", "Item Bank", "Test Library", "PlayList Library"];
+
 class SideMenu extends Component {
   constructor(props) {
     super(props);
@@ -147,44 +150,46 @@ class SideMenu extends Component {
     }
     if (features.isCurator) {
       _menuItems = _menuItems.map(i => (i.label === "Dashboard" ? { ...i, path: "publisher/dashboard" } : i));
-      _menuItems = _menuItems.filter(i =>
-        ["Dashboard", "Item Bank", "Test Library", "Playlist Library"].includes(i.label)
-      );
-    }
-
-    if (features.isCurator || features.isPublisherAuthor) {
-      _menuItems[0].path = "publisher/dashboard";
-      const [item1, , , item4, item5, item6] = _menuItems;
-      _menuItems = [item1, item4, item5, item6];
+      _menuItems = _menuItems.filter(i => ["Dashboard", ...libraryItems].includes(i.label));
     }
     if (features.isPublisherAuthor) {
-      const [, ...rest] = _menuItems;
-      _menuItems = [...rest];
-    }
-    if (userRole === roleuser.EDULASTIC_CURATOR) {
-      _menuItems = _menuItems.filter(i => ["Item Bank", "Test Library", "PlayList Library"].includes(i.label));
+      _menuItems = _menuItems.filter(i => libraryItems.includes(i.label));
     }
 
-    if (!lastPlayList || !lastPlayList.value) return _menuItems.filter(a => a); // the above logic results in undefined. TODO: Refactor
+    // if (features.isCurator || features.isPublisherAuthor) {
+    //   _menuItems[0].path = "publisher/dashboard";
+    //   const [item1, , , item4, item5, item6] = _menuItems;
+    //   _menuItems = [item1, item4, item5, item6];
+    // }
+    // if (features.isPublisherAuthor) {
+    //   const [, ...rest] = _menuItems;
+    //   _menuItems = [...rest];
+    // }
+
+    if (userRole === roleuser.EDULASTIC_CURATOR) {
+      _menuItems = _menuItems.filter(i => libraryItems.includes(i.label));
+    }
+
+    if (!lastPlayList || !lastPlayList.value) return _menuItems;
 
     const [item1, ...rest] = _menuItems;
     const { _id = "" } = lastPlayList.value || {};
-    return [
-      item1,
-      {
-        label: "My Playlist",
-        icon: IconPlaylist,
-        allowedPathPattern: [
-          /playlists\/playlist\/.{24}\/use-this/,
-          /playlists\/insights\/.{24}\/use-this/,
-          /playlists\/differentiation\/.{24}\/use-this/,
-          /playlists\/assignments\/.{24}\/.{24}/,
-          /playlists\/assignments\/.{24}\/.{24}\/.{24}/
-        ],
-        path: `author/playlists/playlist/${_id}/use-this`
-      },
-      ...rest
-    ].filter(a => a); // the above logic results in undefined. TODO: Refactor
+    const myPlayListItem = {
+      label: "My Playlist",
+      icon: IconPlaylist,
+      allowedPathPattern: [
+        /playlists\/playlist\/.{24}\/use-this/,
+        /playlists\/insights\/.{24}\/use-this/,
+        /playlists\/differentiation\/.{24}\/use-this/,
+        /playlists\/assignments\/.{24}\/.{24}/,
+        /playlists\/assignments\/.{24}\/.{24}\/.{24}/
+      ],
+      path: `author/playlists/playlist/${_id}/use-this`
+    };
+    if (item1.divider) {
+      return [myPlayListItem, ..._menuItems];
+    }
+    return [item1, myPlayListItem, ...rest];
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
@@ -471,7 +476,7 @@ class SideMenu extends Component {
                     onClick={this.toggleDropdown}
                     overlayStyle={{
                       position: "fixed",
-                      minWidth: isCollapsed ? "50px" : "178px",
+                      minWidth: isCollapsed ? "50px" : "220px",
                       maxWidth: isCollapsed ? "50px" : "0px"
                     }}
                     className="footerDropdown"
@@ -710,6 +715,12 @@ const MenuWrapper = styled.div`
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   position: relative;
   overflow-x: hidden;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.md}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xl}px)`};
+  }
 `;
 
 const Menu = styled(AntMenu)`

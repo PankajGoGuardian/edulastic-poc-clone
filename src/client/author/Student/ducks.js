@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { all, call, put, takeEvery } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
-import { message, notification } from "antd";
+import { message } from "antd";
 
 import { receiveAdminDataAction } from "../SchoolAdmin/ducks";
 
@@ -334,11 +334,7 @@ function* deleteStudentSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
-    notification.success({
-      message: `Student removed successfully`,
-      placement: "bottomLeft",
-      duration: 1.5
-    });
+    message.success("Student removed successfully");
     yield put(deleteStudentSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Student is failing";

@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { message, notification } from "antd";
+import { message } from "antd";
 import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effects";
 import { testItemsApi, contentErrorApi } from "@edulastic/api";
 import { keyBy } from "lodash";
@@ -262,13 +262,7 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     yield put(receiveTestItemsSuccess(items, count, page, limit));
   } catch (err) {
     const errorMessage = "Receive items is failing";
-    yield call(
-      notification.error({
-        message: errorMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.error, errorMessage);
     yield put(receiveTestItemsError(errorMessage));
   }
 }

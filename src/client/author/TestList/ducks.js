@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
-import { message, notification } from "antd";
+import { message } from "antd";
 import produce from "immer";
 import { testsApi } from "@edulastic/api";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
@@ -72,13 +72,7 @@ function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
     );
   } catch (err) {
     const errorMessage = "Receive tests is failing";
-    yield call(
-      notification.error({
-        message: errorMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.error, errorMessage);
     yield put(receiveTestErrorAction({ error: errorMessage }));
   }
 }

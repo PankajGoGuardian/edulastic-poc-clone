@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { debounce, uniq, get } from "lodash";
-import { Pagination, Spin, message, notification } from "antd";
+import { Pagination, Spin, message } from "antd";
 import { roleuser } from "@edulastic/constants";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -184,11 +184,7 @@ class AddItems extends PureComponent {
       updated
     } = this.props;
     if (!title) {
-      notification.error({
-        message: `Name field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      return message.error("Name field cannot be empty");
     }
 
     if (updated && testId) {
@@ -218,11 +214,7 @@ class AddItems extends PureComponent {
       history
     } = this.props;
     if (!title) {
-      notification.error({
-        message: `Name field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      return message.error("Name field cannot be empty");
     }
     clearDictAlignment();
     onSaveTestId();

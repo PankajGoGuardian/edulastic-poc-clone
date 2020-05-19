@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Modal, Button, Radio, message, notification } from "antd";
+import { Modal, Button, Radio, message } from "antd";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { isEmpty, uniqBy } from "lodash";
@@ -188,11 +188,7 @@ const DropPlaylistModal = props => {
       }
     };
     if (dropPlaylistAction(payload)) {
-      notification.success({
-        message: `Playlist dropped successfully`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.success("Playlist dropped successfully");
       closeModal();
     }
   };

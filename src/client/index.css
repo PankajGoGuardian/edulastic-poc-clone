@@ -2203,36 +2203,3 @@ div[class*="_pendo"] button {
 .pdfContextMenuDocBased {
   z-index: 1001;
 }
-
-.ant-notification {
-  width: auto;
-  left: 50px !important;
-  bottom: 0px !important;
-}
-
-.ant-notification-notice {
-  padding: 5px 0px;
-}
-
-.ant-notification-notice-closable {
-  width: auto;
-  background-color: #2f4151;
-}
-
-.ant-notification-close-icon {
-  display: none;
-}
-
-.ant-notification-notice-with-icon .ant-notification-notice-message {
-  font-size: 12px;
-  margin-top: 3px;
-  color: white;
-  font-weight: 600;
-}
-
-.ant-notification-notice-icon {
-  font-size: 15px;
-  margin-top: 7px;
-  line-height: 12px;
-  margin-left: 15px;
-}

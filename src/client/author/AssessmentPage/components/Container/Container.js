@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin, message, notification } from "antd";
+import { Spin, message } from "antd";
 import { isEmpty, get } from "lodash";
 
 import { white } from "@edulastic/colors";
@@ -148,11 +148,7 @@ class Container extends React.Component {
       changeView(tab);
       changePreviewAction("clear");
     } else {
-      notification.error({
-        message: `Please enter test name.`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.error("Please enter test name.");
     }
   };
 
@@ -175,27 +171,15 @@ class Container extends React.Component {
       sebPassword
     } = _test;
     if (!title) {
-      notification.error({
-        message: `Name field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.error("Name field cannot be empty");
       return false;
     }
     if (isEmpty(grades)) {
-      notification.error({
-        message: `Grade field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.error("Grade field cannot be empty");
       return false;
     }
     if (isEmpty(subjects)) {
-      notification.error({
-        message: `Subject field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.error("Subject field cannot be empty");
       return false;
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {

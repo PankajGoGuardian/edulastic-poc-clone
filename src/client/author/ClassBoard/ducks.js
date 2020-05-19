@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi, canvasApi } from "@edulastic/api";
-import { message, notification } from "antd";
+import { message } from "antd";
 import { createSelector } from "reselect";
 import { push } from "connected-react-router";
 
@@ -78,13 +78,7 @@ function* receiveGradeBookSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive tests is failing";
-    yield call(
-      notification.error({
-        message: errorMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_GRADEBOOK_ERROR,
       payload: { error: errorMessage }
@@ -172,13 +166,7 @@ export function* receiveTestActivitySaga({ payload }) {
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
-    yield call(
-      notification.error({
-        message: errorMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_TESTACTIVITY_ERROR,
       payload: { error: errorMessage }

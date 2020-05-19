@@ -13,7 +13,7 @@ import {
 } from "@edulastic/icons";
 import { faArchive } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, Icon, Input, message, notification, Select } from "antd";
+import { Dropdown, Icon, Input, message, Select } from "antd";
 import { find, get, identity, lowerCase, orderBy, pickBy } from "lodash";
 import PropTypes from "prop-types";
 import React, { useLayoutEffect, useRef } from "react";
@@ -143,11 +143,7 @@ class LeftFilter extends React.Component {
     } = this.props;
     const { moveFolderId } = this.state;
     if (!moveFolderId) {
-      notification.info({
-        message: `Please select a folder`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.info(`Please select a folder`);
       return;
     }
     const { folderName, content } = folders.find(folder => folder._id === moveFolderId) || {};
@@ -169,11 +165,7 @@ class LeftFilter extends React.Component {
     if (itemsExistInFolder && itemsExistInFolder.length > 0) {
       const showAlreadyExistMsg =
         itemsExistInFolder.length > 1 ? `${itemsExistInFolder.length} assignments` : itemsExistInFolder;
-      notification.info({
-        message: `${showAlreadyExistMsg} already exist in ${folderName} folder`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.info(`${showAlreadyExistMsg} already exist in ${folderName} folder`);
     }
     if (itemsNotExistInFolder.length === 0) {
       return;
@@ -200,11 +192,7 @@ class LeftFilter extends React.Component {
     const { folders } = this.props;
     const folderContent = folders.filter(folder => folderId === folder._id);
     if (folderContent[0] && folderContent[0].content && folderContent[0].content.length > 0) {
-      notification.info({
-        message: `Only empty folders can be deleted"`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      return message.info("Only empty folders can be deleted");
     }
     this.setState({ selectedFolder: folderId }, () => this.showModal("delFolder"));
   };

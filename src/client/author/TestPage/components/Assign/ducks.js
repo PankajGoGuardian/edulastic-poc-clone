@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import { omit, get } from "lodash";
-import { message, notification } from "antd";
+import { message } from "antd";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { test as testContants, roleuser } from "@edulastic/constants";
@@ -284,14 +284,7 @@ function* saveAssignment({ payload }) {
       yield put(push("/author/assignments"));
     }
     const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
-
-    yield call(
-      notification.success({
-        message: successMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.success, successMessage);
     if (gSyncStatus.length) {
       yield call(
         message.warn,
@@ -373,11 +366,7 @@ function* deleteAssignment({ payload }) {
   try {
     yield assignmentApi.remove(payload);
     yield put(push("/author/assignments"));
-    notification.success({
-      message: `Assignment(s) deleted successfully.`,
-      placement: "bottomLeft",
-      duration: 1.5
-    });
+    message.success("Assignment(s) deleted successfully.");
   } catch (error) {
     console.log(error);
     message.error("failed to delete");

@@ -2,7 +2,7 @@ import { delay } from "redux-saga";
 import { takeEvery, call, put, all, takeLatest, select, fork } from "redux-saga/effects";
 import { classResponseApi, testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
-import { message, notification } from "antd";
+import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -150,13 +150,7 @@ function* receiveStudentResponseSaga({ payload }) {
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
-    yield call(
-      notification.error({
-        message: errorMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_ERROR,
       payload: { error: errorMessage }
@@ -181,13 +175,7 @@ function* receiveClassStudentResponseSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive tests is failing";
-    yield call(
-      notification.error({
-        message: errorMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_CLASSSTUDENT_RESPONSE_ERROR,
       payload: { error: errorMessage }
@@ -226,13 +214,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive tests is failing";
-    yield call(
-      notification.error({
-        message: errorMessage,
-        placement: "bottomLeft",
-        duration: 1.5
-      })
-    );
+    yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_ERROR,
       payload: { error: errorMessage }

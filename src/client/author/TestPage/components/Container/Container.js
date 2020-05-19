@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin, message, notification } from "antd";
+import { Spin, message } from "antd";
 import { withRouter, Prompt } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
@@ -324,11 +324,7 @@ class Container extends PureComponent {
     const { authors, itemGroups = [] } = test;
     const { editEnable } = this.state;
     if (!test?.title?.trim()?.length) {
-      notification.warn({
-        message: `Please enter test name.`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.warn("Please enter test name.");
       return;
     }
     if (value === "source") {
@@ -627,27 +623,15 @@ class Container extends PureComponent {
     } = test;
     const { userFeatures } = this.props;
     if (!title) {
-      notification.error({
-        message: `Name field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.error("Name field cannot be empty");
       return false;
     }
     if (isEmpty(grades)) {
-      notification.error({
-        message: `Grade field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.error("Grade field cannot be empty");
       return false;
     }
     if (isEmpty(subjects)) {
-      notification.error({
-        message: `Subject field cannot be empty`,
-        placement: "bottomLeft",
-        duration: 1.5
-      });
+      message.error("Subject field cannot be empty");
       return false;
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {

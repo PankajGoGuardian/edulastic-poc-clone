@@ -130,7 +130,7 @@ class SuccessPage extends React.Component {
         break;
       }
     }
-    return `${sharedWith} Library`;
+    return sharedWith;
   }
 
   render() {
@@ -147,7 +147,12 @@ class SuccessPage extends React.Component {
     } = this.props;
     const { isShareModalVisible } = this.state;
     const { title, _id, status, grades, subjects, authors = [] } = isPlaylist ? playlist : test;
-    const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
+    let shareUrl = "";
+    if (this.getHighPriorityShared === "Public" && !isPlaylist) {
+      shareUrl = `${window.location.origin}/public/view-test/${_id}`;
+    } else {
+      shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
+    }
     const currentClass = (assignment.class && assignment.class[0]) || {};
     const assignmentStatus = currentClass.startDate < Date.now() || currentClass.open ? "In-Progress" : "Not-Open";
     const isOwner = authors.some(o => o._id === userId);
@@ -292,7 +297,7 @@ class SuccessPage extends React.Component {
                 <>
                   <FlexTitle>Share With Others</FlexTitle>
                   <FlexTextWrapper>
-                    {title}&nbsp;has been added to your&nbsp;{this.getHighPriorityShared}.
+                    {title}&nbsp;has been added to your&nbsp;{this.getHighPriorityShared} Library.
                   </FlexTextWrapper>
                 </>
               )}
@@ -306,7 +311,7 @@ class SuccessPage extends React.Component {
                           <IconLock />
                         </IconWrapper>
                         <FlexText style={{ margin: "0 0 0 17px", fontWeight: "500" }}>
-                          {this.getHighPriorityShared}
+                          {this.getHighPriorityShared} Library
                         </FlexText>
                       </FlexContainer>
                       <IconWrapper onClick={this.onShareModalChange}>

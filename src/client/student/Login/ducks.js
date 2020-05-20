@@ -558,7 +558,7 @@ function* signup({ payload }) {
   }
 
   try {
-    const { name, email, password, role, classCode } = payload;
+    const { name, email, password, role, classCode, passwordForExistingUser } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => !!(item && item.trim()));
     if (!nameList.length) {
@@ -597,13 +597,20 @@ function* signup({ payload }) {
       obj.code = classCode;
     }
 
-    const response = yield call(authApi.signup, obj);
-    const { message: _responseMsg, result, ...rest } = response;
+    if (passwordForExistingUser) {
+      obj.passwordForExistingUser = passwordForExistingUser;
+    }
 
+    const response = yield call(authApi.signup, obj);
+    const { message: _responseMsg, result, askPassword, passwordMatch } = response;
     if (_responseMsg && !result) {
       const { errorCallback } = payload;
       if (errorCallback) {
-        errorCallback(_responseMsg);
+        if (askPassword === true) {
+          errorCallback({ ...response.existingUser, currentSelectedRole: role, askPassword, passwordMatch });
+        } else {
+          errorCallback(_responseMsg);
+        }
       } else {
         yield call(message.error, _responseMsg);
       }

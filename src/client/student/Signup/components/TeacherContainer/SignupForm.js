@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { trim } from "lodash";
+import { trim, isEmpty } from "lodash";
 import { Col, Form, Input, message } from "antd";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
@@ -28,6 +28,7 @@ import {
   DesktopViewCopyright
 } from "../../styled";
 import {
+  loginAction,
   signupAction,
   googleLoginAction,
   cleverLoginAction,
@@ -55,6 +56,7 @@ import { withWindowSizes } from "@edulastic/common";
 import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../../author/src/constants/others";
 import { IconLock, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor, white } from "@edulastic/colors";
+import PasswordPopup from "../PasswordPopup";
 
 const FormItem = Form.Item;
 
@@ -67,18 +69,26 @@ class Signup extends React.Component {
 
   state = {
     confirmDirty: false,
-    signupError: {}
+    signupError: {},
+    showModal: false,
+    proceedBtnDisabled: true
   };
 
+  closeModal = () => {
+    this.setState({
+      showModal: false
+    });
+  };
   regExp = new RegExp("^[A-Za-z0-9 ]+$");
 
   handleSubmit = e => {
     const { form, signup, t, invitedUser, invitedUserDetails, setInviteDetailsAction } = this.props;
-    e.preventDefault();
+    e && e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email, name }) => {
       if (!err) {
         if (!invitedUser) {
           signup({
+            passwordForExistingUser: this.state.password,
             password,
             email: trim(email),
             name: trim(name),
@@ -144,9 +154,28 @@ class Signup extends React.Component {
           email: "error"
         }
       }));
+    } else if (error.askPassword) {
+      if (error.passwordMatch === false) {
+        message.error("Password is incorrect. Please enter the correct password.");
+      }
+      this.setState({
+        showModal: true,
+        existingUser: error
+      });
     } else {
       message.error(error);
     }
+  };
+
+  onPasswordChange = password => {
+    this.setState({
+      proceedBtnDisabled: isEmpty(password),
+      password
+    });
+  };
+
+  onClickProceed = () => {
+    this.handleSubmit();
   };
 
   render() {
@@ -191,6 +220,14 @@ class Signup extends React.Component {
 
     return (
       <div>
+        <PasswordPopup
+          showModal={this.state.showModal}
+          existingUser={this.state.existingUser}
+          disabled={this.state.proceedBtnDisabled}
+          closeModal={() => this.setState({ showModal: false })}
+          onChange={this.onPasswordChange}
+          onClickProceed={this.onClickProceed}
+        />
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
         <RegistrationWrapper image={image}>
           <RegistrationHeader type="flex" align="middle">

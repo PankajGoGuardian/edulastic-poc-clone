@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Col, Form, Input, message } from "antd";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { trim } from "lodash";
+import { trim, isEmpty } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
 import { withWindowSizes } from "@edulastic/common";
@@ -49,6 +49,7 @@ import studentBg from "../../assets/bg-student.png";
 import googleIcon from "../../assets/google-btn.svg";
 import icon365 from "../../assets/icons8-office-365.svg";
 import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../author/src/constants/others";
+import PasswordPopup from "./PasswordPopup";
 
 const FormItem = Form.Item;
 const GOOGLE = "google";
@@ -71,13 +72,21 @@ class StudentSignup extends React.Component {
   state = {
     confirmDirty: false,
     method: "",
-    signupError: {}
+    signupError: {},
+    showModal: false,
+    proceedBtnDisabled: true
+  };
+
+  closeModal = () => {
+    this.setState({
+      showModal: false
+    });
   };
 
   handleSubmit = e => {
     const { form, signup, t, districtPolicy } = this.props;
-    const { method } = this.state;
-    e.preventDefault();
+    const { method, password: passwordForExistingUser } = this.state;
+    e && e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email, name, classCode }) => {
       if (!err) {
         if (method === GOOGLE) {
@@ -88,6 +97,7 @@ class StudentSignup extends React.Component {
           msoLoginAction({ role: "student", classCode });
         } else {
           signup({
+            passwordForExistingUser,
             password,
             email,
             name,
@@ -166,11 +176,29 @@ class StudentSignup extends React.Component {
           classCode: "Please provide a valid class code."
         }
       }));
+    } else if (error.askPassword) {
+      if (error.passwordMatch === false) {
+        message.error("Password is incorrect. Please enter the correct password.");
+      }
+      this.setState({
+        showModal: true,
+        existingUser: error
+      });
     } else {
       message.error(error);
     }
   };
 
+  onPasswordChange = password => {
+    this.setState({
+      proceedBtnDisabled: isEmpty(password),
+      password
+    });
+  };
+
+  onClickProceed = () => {
+    this.handleSubmit();
+  };
   renderGeneralFormFields = () => {
     const {
       form: { getFieldDecorator, getFieldError },
@@ -354,6 +382,14 @@ class StudentSignup extends React.Component {
       method !== OFFICE;
     return (
       <div>
+        <PasswordPopup
+          showModal={this.state.showModal}
+          existingUser={this.state.existingUser}
+          disabled={this.state.proceedBtnDisabled}
+          closeModal={() => this.setState({ showModal: false })}
+          onChange={this.onPasswordChange}
+          onClickProceed={this.onClickProceed}
+        />
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
         <RegistrationWrapper
           image={

@@ -3,13 +3,13 @@ import {
   extraDesktopWidthMax,
   greyThemeDark1,
   greyThemeLight,
+  greyThemeLighter,
   mediumDesktopExactWidth,
   textColor,
-  themeColor,
-  greyThemeLighter
+  themeColor
 } from "@edulastic/colors";
 import { Card, FlexContainer } from "@edulastic/common";
-import { Affix, Pagination, Input } from "antd";
+import { Affix, Input, Pagination } from "antd";
 import styled from "styled-components";
 
 export const ScrollBox = styled.div`
@@ -25,10 +25,10 @@ export const SearchInput = styled(Input.Search)`
     border: 1px solid ${greyThemeLight};
     border-radius: 2px;
     height: 40px;
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${props => props.theme.smallLinkFontSize};
 
-    @media (max-width: ${mediumDesktopExactWidth}) {
-      font-size: ${props => props.theme.smallLinkFontSize};
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: ${props => props.theme.smallFontSize};
     }
   }
   svg {

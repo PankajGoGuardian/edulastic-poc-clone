@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { themeColor, fadedGrey, lightGrey, darkGrey, red, extraDesktopWidth } from "@edulastic/colors";
+import { darkGrey, extraDesktopWidthMax, fadedGrey, lightGrey, red, themeColor } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
-import { Col, Rate, Row } from "antd";
 import IconELogo from "@edulastic/icons/src/IconELogo";
+import { Col, Rate, Row } from "antd";
+import styled from "styled-components";
 import {
   testStatusBackgroundColor as backgroundColor,
   testStatusTextColor as textColor
@@ -40,10 +40,10 @@ export const Outer = styled.div`
 `;
 
 export const Description = styled.div`
-  font-size: 13px;
+  font-size: 12px;
   color: #444444;
-  @media (max-width: ${extraDesktopWidth}) {
-    font-size: 12px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 13px;
   }
 `;
 
@@ -152,7 +152,7 @@ export const Stars = styled(Rate)`
 
 export const StyledLink = styled.a`
   width: 100%;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   text-decoration: none;
   color: ${themeColor};
@@ -163,8 +163,8 @@ export const StyledLink = styled.a`
     color: ${themeColor};
   }
 
-  @media (max-width: ${extraDesktopWidth}) {
-    font-size: 14px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 16px;
   }
 `;
 

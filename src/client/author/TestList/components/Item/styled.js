@@ -1,15 +1,15 @@
-import styled from "styled-components";
-import { Rate } from "antd/lib/index";
 import {
-  darkGrey,
-  lightGrey,
-  themeColor,
-  red,
   cardTitleColor,
-  titleColor,
-  mediumDesktopExactWidth
+  darkGrey,
+  extraDesktopWidthMax,
+  lightGrey,
+  red,
+  themeColor,
+  titleColor
 } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
+import { Rate } from "antd/lib/index";
+import styled from "styled-components";
 
 export const Container = styled(Card)`
   border: ${props => (props.isPlaylist ? "none" : "1px solid #dfdfdf")};
@@ -84,7 +84,7 @@ export const Footer = styled.div`
 `;
 
 export const Author = styled.div`
-  font-size: ${props => (props.isPlaylist ? "11px" : "12px")};
+  font-size: 10px;
   font-weight: 600;
   color: ${darkGrey};
   display: ${props => (props.isPlaylist ? "inline-flex" : "block")};
@@ -92,8 +92,8 @@ export const Author = styled.div`
   flex-basis: 50%;
   max-width: ${props => (props.isPlaylist ? "110px" : "50%")};
   svg {
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
     fill: ${darkGrey};
     vertical-align: bottom;
     margin-left: 0px;
@@ -103,11 +103,11 @@ export const Author = styled.div`
     }
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: 10px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => (props.isPlaylist ? "11px" : "12px")};
     svg {
-      width: 13px;
-      height: 13px;
+      width: 15px;
+      height: 15px;
     }
   }
 `;
@@ -187,11 +187,11 @@ export const EllipsisWrapper = styled.div`
 `;
 
 export const IconText = styled.span`
-  font-size: 12px;
+  font-size: 10px;
   color: ${cardTitleColor};
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: 10px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 12px;
   }
 `;
 export const CardIdWrapper = styled.div`
@@ -204,17 +204,17 @@ export const CardIdWrapper = styled.div`
   margin-left: 15px;
   svg {
     fill: ${darkGrey};
-    width: 13px;
-    height: 13px;
+    width: 11px;
+    height: 11px;
     &:hover {
       fill: ${darkGrey};
     }
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${extraDesktopWidthMax}) {
     svg {
-      width: 11px;
-      height: 11px;
+      width: 13px;
+      height: 13px;
     }
   }
 `;
@@ -269,7 +269,7 @@ export const PremiumLabel = styled.div`
 `;
 
 export const Header = styled.div`
-  height: 100px;
+  height: 83px;
   padding: 10px 15px;
   position: relative;
   background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
@@ -283,8 +283,8 @@ export const Header = styled.div`
     }
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    height: 83px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: 100px;
   }
 `;
 Header.displayName = "CardHeader";
@@ -300,7 +300,7 @@ export const Stars = styled(Rate)`
 `;
 
 export const StyledLink = styled.a`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   display: inline-block;
   width: 100%;
@@ -315,8 +315,8 @@ export const StyledLink = styled.a`
     color: ${themeColor};
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: 14px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 16px;
   }
 `;
 
@@ -340,19 +340,19 @@ export const MidRow = styled.div`
   padding: 10px 0px;
   margin: 10px -16px 3px;
   color: ${titleColor};
-  font-size: 13px;
+  font-size: 11px;
   display: flex;
   text-align: center;
   font-weight: 600;
   label {
     color: #a5acb4;
-    font-size: 10px;
+    font-size: 9px;
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: 11px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 13px;
     label {
-      font-size: 9px;
+      font-size: 10px;
     }
   }
 `;

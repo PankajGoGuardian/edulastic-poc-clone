@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter, Prompt } from "react-router-dom";
-import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
+import { cloneDeep, uniq as _uniq, isEmpty, get, without, partial } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { test as testContants, roleuser } from "@edulastic/constants";
 import { testsApi, assignmentApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
+import { getAllAssignmentsSelector, fetchAssignmentsByTestAction } from "../../../../publicTest/ducks";
 
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
@@ -72,6 +73,9 @@ import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { hasUserGotAccessToPremiumItem, setDefaultInterests } from "../../../dataUtils";
+import { getCurrentGroup, getClassIds } from "../../../../student/Reports/ducks";
+import { redirectToStudentPage } from "../../../../publicTest/utils";
+import { startAssignmentAction, resumeAssignmentAction } from "../../../../student/Assignments/ducks";
 
 const { getDefaultImage } = testsApi;
 const {
@@ -196,55 +200,60 @@ class Container extends PureComponent {
       setData,
       userRole,
       isReleaseScorePremium,
-      location: _location
+      location: _location,
+      fetchAssignmentsByTest
     } = this.props;
-    const self = this;
-    const { showCancelButton = false, editAssigned = false } = history.location.state || this.state;
-    if (location.hash === "#review") {
-      this.handleNavChange("review", true)();
-    }
-    if (createdItems.length > 0) {
-      this.setState({ editEnable: true });
-      if (_location?.state?.showItemAddedMessage) {
-        message.success(
-          <span>
-            New item has been created and added to the current test. Click{" "}
-            <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
-              here
-            </span>{" "}
-            to see it.
-          </span>,
-          3
-        );
+    if (userRole !== roleuser.STUDENT) {
+      const self = this;
+      const { showCancelButton = false, editAssigned = false } = history.location.state || this.state;
+      if (location.hash === "#review") {
+        this.handleNavChange("review", true)();
       }
-    }
+      if (createdItems.length > 0) {
+        this.setState({ editEnable: true });
+        if (_location?.state?.showItemAddedMessage) {
+          message.success(
+            <span>
+              New item has been created and added to the current test. Click{" "}
+              <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
+                here
+              </span>{" "}
+              to see it.
+            </span>,
+            3
+          );
+        }
+      }
 
-    if (match.params.id && match.params.id != "undefined") {
-      this.setState({ testLoaded: false });
-      receiveTestById(match.params.id, true, editAssigned);
-    } else if (!_location?.state?.persistStore) {
-      // currently creating test do nothing
-      this.gotoTab("description");
-      clearTestAssignments([]);
-      clearSelectedItems();
-      setDefaultData();
-      if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
-        setData({ testType: testContants.type.COMMON });
+      if (match.params.id && match.params.id != "undefined") {
+        this.setState({ testLoaded: false });
+        receiveTestById(match.params.id, true, editAssigned);
+      } else if (!_location?.state?.persistStore) {
+        // currently creating test do nothing
+        this.gotoTab("description");
+        clearTestAssignments([]);
+        clearSelectedItems();
+        setDefaultData();
+        if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
+          setData({ testType: testContants.type.COMMON });
+        }
+        if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
+          setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE });
+        }
       }
-      if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
-        setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE });
+      if (showCancelButton) {
+        this.setState({ editEnable: true, showCancelButton });
       }
-    }
-    if (showCancelButton) {
-      this.setState({ editEnable: true, showCancelButton });
-    }
 
-    if (editAssigned) {
-      setRegradeOldId(match.params.id);
+      if (editAssigned) {
+        setRegradeOldId(match.params.id);
+      } else {
+        setRegradeOldId("");
+      }
+      if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings();
     } else {
-      setRegradeOldId("");
+      fetchAssignmentsByTest({ testId: match.params.id });
     }
-    if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings();
   }
 
   componentWillUnmount() {
@@ -261,30 +270,46 @@ class Container extends PureComponent {
       userId,
       isTestLoading,
       userRole,
-      getDefaultTestSettings
+      getDefaultTestSettings,
+      studentAssignments,
+      loadingAssignments,
+      startAssignment,
+      resumeAssignment
     } = this.props;
 
-    if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
-      const testItem = test.itemGroups?.[0].items?.[0] || {};
-      const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-      receiveItemDetailById(testItemId);
-    }
-    const { editAssigned = false } = history.location.state || {};
-
-    if (editAssigned && test?._id && !this.state.testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
-      this.onEnableEdit();
-    }
-    if (editAssigned && test?._id && !this.state.editEnable && test.isInEditAndRegrade && !isTestLoading) {
-      const canEdit = test.authors?.some(x => x._id === userId);
-      if (canEdit) {
-        this.setState({ editEnable: true });
+    if (userRole !== roleuser.STUDENT) {
+      if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
+        const testItem = test.itemGroups?.[0].items?.[0] || {};
+        const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+        receiveItemDetailById(testItemId);
       }
-    }
-    if (test._id && !this.state.testLoaded && !isTestLoading) {
-      this.setState({ testLoaded: true });
-    }
-    if (userRole === roleuser.EDULASTIC_CURATOR && prevProps?.test?._id !== test?._id) {
-      getDefaultTestSettings(test);
+      const { editAssigned = false } = history.location.state || {};
+
+      if (editAssigned && test?._id && !this.state.testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
+        this.onEnableEdit();
+      }
+      if (editAssigned && test?._id && !this.state.editEnable && test.isInEditAndRegrade && !isTestLoading) {
+        const canEdit = test.authors?.some(x => x._id === userId);
+        if (canEdit) {
+          this.setState({ editEnable: true });
+        }
+      }
+      if (test._id && !this.state.testLoaded && !isTestLoading) {
+        this.setState({ testLoaded: true });
+      }
+      if (userRole === roleuser.EDULASTIC_CURATOR && prevProps?.test?._id !== test?._id) {
+        getDefaultTestSettings(test);
+      }
+    } else {
+      if (userRole === roleuser.STUDENT) {
+        if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
+          // this is to call redirectToStudentPage once, even if multiple props update happend
+          if (!this.state.studentRedirected) {
+            redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment);
+            this.setState({ studentRedirected: true });
+          }
+        }
+      }
     }
   }
 
@@ -792,8 +817,15 @@ class Container extends PureComponent {
       userFeatures,
       currentTab,
       testAssignments,
-      userRole
+      userRole,
+      studentAssignments,
+      startAssignment,
+      resumeAssignment,
+      loadingAssignments
     } = this.props;
+    if (userRole === roleuser.STUDENT) {
+      return null;
+    }
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
@@ -893,7 +925,11 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       userFeatures: getUserFeatures(state),
       testAssignments: getAssignmentsSelector(state),
-      orgCollections: getItemBucketsSelector(state)
+      orgCollections: getItemBucketsSelector(state),
+      groupId: getCurrentGroup(state),
+      classIds: getClassIds(state),
+      studentAssignments: getAllAssignmentsSelector(state),
+      loadingAssignments: get(state, "publicTest.loadingAssignments")
     }),
     {
       createTest: createTestAction,
@@ -916,7 +952,10 @@ const enhance = compose(
       duplicateTest: duplicateTestRequestAction,
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       updateLastUsedCollectionList: updateLastUsedCollectionListAction,
-      removeTestEntity: removeTestEntityAction
+      removeTestEntity: removeTestEntityAction,
+      fetchAssignmentsByTest: fetchAssignmentsByTestAction,
+      startAssignment: startAssignmentAction,
+      resumeAssignment: resumeAssignmentAction
     }
   )
 );

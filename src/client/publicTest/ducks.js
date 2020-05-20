@@ -10,6 +10,8 @@ import { transformAssignmentForRedirect } from "../student/Assignments/ducks";
 import { assignmentSchema } from "../student/sharedDucks/AssignmentModule/ducks";
 
 import { reportSchema } from "../student/sharedDucks/ReportsModule/ducks";
+import { message } from "antd";
+import { push } from "connected-react-router";
 
 const FETCH_PUBLIC_TEST = "[test] fetch publicly shared test";
 const FETCH_PUBLIC_TEST_SUCCESS = "[test] success fetch publicly shared test";
@@ -78,6 +80,9 @@ export const publicTestReducer = createReducer(initialState, {
     state.loading = false;
     state.error = true;
   },
+  [FETCH_ASSIGNMENTS_DATA_BY_TEST]: state => {
+    state.loadingAssignments = true;
+  },
   [FETCH_ASSIGNMENTS_DATA_BY_TEST_SUCCESS]: (state, { payload }) => {
     state.assignments = payload;
     state.loadingAssignments = false;
@@ -125,7 +130,8 @@ function* fetchAssignmentsByTest({ payload }) {
 
     yield put({ type: FETCH_ASSIGNMENTS_DATA_BY_TEST_SUCCESS, payload: { allAssignments, assignmentObj, reportsObj } });
   } catch (e) {
-    console.log(e);
+    message.warn("Redirecting to the student dashboard");
+    yield put(push("/home/assignments"));
   }
 }
 

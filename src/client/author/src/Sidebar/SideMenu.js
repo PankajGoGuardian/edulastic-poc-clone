@@ -269,14 +269,6 @@ class SideMenu extends Component {
     if (lastName) return `${lastName.substr(0, 2)}`;
   };
 
-  componentDidMount() {
-    const { userRole, history } = this.props;
-    if (userRole === roleuser.STUDENT) {
-      message.warn("Redirecting to the student dashboard");
-      history.push("/");
-    }
-  }
-
   render() {
     const { broken, isVisible, showModal } = this.state;
     const {
@@ -294,6 +286,9 @@ class SideMenu extends Component {
       locationState,
       features
     } = this.props;
+    if (userRole === roleuser.STUDENT) {
+      return null;
+    }
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
     const isCollapsed = isSidebarCollapsed;

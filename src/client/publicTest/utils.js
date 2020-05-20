@@ -1,4 +1,9 @@
 import { maxBy } from "lodash";
+import { message, Modal } from "antd";
+import { themeColor } from "@edulastic/colors";
+import { test as testConstants } from "@edulastic/constants";
+const releaseGradeLabels = testConstants.releaseGradeLabels;
+const ARCHIVED_TEST_MSG = "You can no longer use this as sharing access has been revoked by author";
 
 // this is to format assignment, to included different state like, resume/absent/startDate/endDate etc
 export const formatAssignment = assignment => {
@@ -69,4 +74,142 @@ export const formatAssignment = assignment => {
     lastAttempt,
     resume
   };
+};
+
+export const redirectToStudentPage = (assignments, history, startAssignment, resumeAssignment) => {
+  const formatedAssignments = assignments.map(assignment => formatAssignment(assignment));
+  //filter assignments open to start/resume
+  const filteredAssignments = formatedAssignments.filter(
+    a => !(new Date(a.startDate) > new Date() || !a.startDate || a.isPaused)
+  );
+
+  if (filteredAssignments.length > 0) {
+    //filter ungraded assignments
+    const ungradedAssignments = filteredAssignments.filter(a => !a.graded);
+    let assignment = maxBy(filteredAssignments, "createdAt");
+    if (ungradedAssignments.length) {
+      assignment = maxBy(ungradedAssignments, "createdAt");
+    }
+    redirectToAssessmentPlayer(assignment, history, startAssignment, resumeAssignment);
+  } else {
+    //redirect to student dashboard
+    redirectToDashbord("", history);
+  }
+};
+
+const redirectToDashbord = (type = "", history) => {
+  let msg;
+  switch (type) {
+    case "EXPIRED":
+      msg = "Test is expired";
+      break;
+    case "ARCHIVED":
+      msg = ARCHIVED_TEST_MSG;
+      break;
+    case "HOME":
+      msg = "Redirecting to the student dashboard";
+      break;
+    default:
+      msg = "Assignment is not available for the attempt.";
+  }
+  message.warn(msg);
+  history.push("/home/assignments");
+};
+
+//case: check to where to navigate
+const redirectToAssessmentPlayer = (assignment, history, startAssignment, resumeAssignment) => {
+  const {
+    endDate,
+    testId,
+    _id: assignmentId,
+    testType,
+    maxAttempts = 1,
+    timedAssignment,
+    pauseAllowed,
+    allowedTime,
+    classId,
+    resume,
+    attemptCount,
+    lastAttempt,
+    graded,
+    title,
+    releaseScore
+  } = assignment;
+  // if assignment is graded, then redirected to assignment review page
+  if (graded) {
+    if (releaseScore === releaseGradeLabels.DONT_RELEASE) {
+      return history.push({ pathname: "/home/grades", state: { highlightAssignment: assignmentId } });
+    }
+    return history.push({
+      pathname: `/home/class/${classId}/test/${testId}/testActivityReport/${lastAttempt._id}`,
+      testActivityId: lastAttempt._id,
+      title
+    });
+  }
+  //if end date is crossed, then redirect to student dashboard
+  if (endDate < Date.now()) {
+    return redirectToDashbord("EXPIRED", history);
+  }
+
+  // show confirmation modal popup
+  // case assignment is not started yet and is timed assignment, then modal popup with appropriate content
+  // on proceed, redirect to assessment player
+  // on cancel redirect to student dashboard
+  if (!resume && timedAssignment) {
+    const content = pauseAllowed ? (
+      <p>
+        {" "}
+        This is a timed assignment which should be finished within the time limit set for this assignment. The time
+        limit for this assignment is{" "}
+        <span data-cy="test-time" style={{ fontWeight: 700 }}>
+          {" "}
+          {allowedTime / (60 * 1000)} minutes
+        </span>
+        . Do you want to continue?
+      </p>
+    ) : (
+      <p>
+        {" "}
+        This is a timed assignment which should be finished within the time limit set for this assignment. The time
+        limit for this assignment is{" "}
+        <span data-cy="test-time" style={{ fontWeight: 700 }}>
+          {" "}
+          {allowedTime / (60 * 1000)} minutes
+        </span>{" "}
+        and you can’t quit in between. Do you want to continue?
+      </p>
+    );
+
+    Modal.confirm({
+      title: "Do you want to Continue ?",
+      content,
+      onOk: () => {
+        if (attemptCount < maxAttempts) startAssignment({ testId, assignmentId, testType, classId });
+        Modal.destroyAll();
+      },
+      onCancel: () => redirectToDashbord("HOME", history),
+      okText: "Continue",
+      // okType: "danger",
+      centered: true,
+      width: 500,
+      okButtonProps: {
+        style: { background: themeColor }
+      }
+    });
+    return;
+  }
+
+  // case assigment is resumed, then redirect to assessment player with resumed state
+  //case assignment is not resumed, then start assignment from fresh
+  if (resume) {
+    resumeAssignment({
+      testId,
+      testType,
+      assignmentId,
+      testActivityId: lastAttempt._id,
+      classId
+    });
+  } else if (attemptCount < maxAttempts) {
+    startAssignment({ testId, assignmentId, testType, classId });
+  }
 };

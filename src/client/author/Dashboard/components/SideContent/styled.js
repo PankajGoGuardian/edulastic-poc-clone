@@ -22,14 +22,14 @@ export const SideContentContainer = styled.div`
   transform: ${props => (props.show ? `translate(0%)` : `translate(88%)`)};
   transition: all 0.5s ease-in-out;
   z-index: 300;
-  top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? 35 : 0)}px;
+  top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
   right: ${props => (props.show ? "0px" : "-8px")};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    top: ${props => props.theme.HeaderHeight.md + (props.isProxyUser ? 35 : 0)}px;
+    top: ${props => props.theme.HeaderHeight.md + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    top: ${props => props.theme.HeaderHeight.xl + (props.isProxyUser ? 35 : 0)}px;
+    top: ${props => props.theme.HeaderHeight.xl + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
   }
 `;
 

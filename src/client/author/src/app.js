@@ -569,7 +569,7 @@ const SidebarCompnent = styled(Sidebar)`
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
-  top: ${props => (props.isProxyUser ? "35px" : "0px")};
+  top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
 `;
 const Wrapper = styled.div`
   position: relative;
@@ -578,7 +578,7 @@ const Wrapper = styled.div`
 const StyledLayout = styled(Layout)`
   background: ${mainBgColor};
   .fixed-header {
-    top: ${props => (props.isProxyUser ? "35px" : "0px")} !important;
+    top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px !important;
   }
-  margin-top: ${props => (props.isProxyUser ? "35px" : "0px")};
+  margin-top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
 `;

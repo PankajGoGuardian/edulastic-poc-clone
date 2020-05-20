@@ -186,6 +186,8 @@ const ThemeZoomMap = {
   xl: 1
 };
 
+const BannerHeight = 35;
+
 export const themeColorsMap = {
   MGLG: {
     themeColor: "#f1f1f1",
@@ -345,7 +347,8 @@ export const allThemeVars = {
   tagTextColor,
   tagUnactiveBgColor,
   tagUnactiveTextColor,
-  HeaderHeight
+  HeaderHeight,
+  BannerHeight
 };
 
 export const defaultTheme = {

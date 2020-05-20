@@ -408,7 +408,7 @@ export default enhance(withTheme(ReactOutsideEvent(SideMenu, ["mousedown"])));
 const FixedSidebar = styled.div`
   position: fixed;
   left: 0px;
-  top: ${props => (props.isProxyUser ? "35px" : "0px")};
+  top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
   bottom: 0px;
   z-index: 1000;
   cursor: ${props => (props.isSidebarCollapsed ? "pointer" : "initial")};

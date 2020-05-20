@@ -6,20 +6,21 @@ import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 import { getUserOrgId, getUserRole } from "../author/src/selectors/user";
+import { isProxyUser as isProxyUserSelector } from "../student/Login/ducks";
 import SideMenu from "../author/src/Sidebar/SideMenu";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 import { themes as globalThemes } from "../theme";
 import { Dashboard } from "./pages/Dashboard/dashboard";
 
 const Publisher = props => {
-  const { match, selectedTheme } = props;
+  const { match, selectedTheme, isProxyUser } = props;
   const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
 
   return (
     <ThemeProvider theme={themeToPass}>
-      <Layout>
+      <StyledLayout isProxyUser={isProxyUser}>
         <MainContainer>
-          <SideMenu />
+          <StyledSideMenu isProxyUser={isProxyUser} />
           <Wrapper>
             <ErrorHandler>
               <Switch>
@@ -28,7 +29,7 @@ const Publisher = props => {
             </ErrorHandler>
           </Wrapper>
         </MainContainer>
-      </Layout>
+      </StyledLayout>
     </ThemeProvider>
   );
 };
@@ -36,10 +37,22 @@ const Publisher = props => {
 export default connect(
   state => ({
     orgId: getUserOrgId(state),
-    role: getUserRole(state)
+    role: getUserRole(state),
+    isProxyUser: isProxyUserSelector(state)
   }),
   null
 )(Publisher);
+
+const StyledSideMenu = styled(SideMenu)`
+  top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+`;
+
+const StyledLayout = styled(Layout)`
+  margin-top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+  .fixed-header {
+    top: ${props => (props.isProxyUser ? props.theme.BannerHeight : 0)}px !important;
+  }
+`;
 
 const MainContainer = addThemeBackgroundColor(styled.div`
   padding-left: 70px;

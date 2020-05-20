@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component, Suspense, lazy } from "react";
-import { get, isUndefined, isEmpty } from "lodash";
+import { capitalize, get, isUndefined, isEmpty } from "lodash";
 import qs from "qs";
 import queryString from "query-string";
 import PropTypes from "prop-types";
@@ -260,6 +260,27 @@ class App extends Component {
     }
 
     const userRole = user?.user?.role || "";
+
+    let _userRole = null;
+    if (userRole === roleuser.TEACHER) {
+      _userRole = "Teacher";
+    } else if (userRole === roleuser.SCHOOL_ADMIN) {
+      _userRole = "School-Admin";
+    } else if (userRole === roleuser.DISTRICT_ADMIN) {
+      _userRole = "District-Admin";
+    } else if (userRole === roleuser.STUDENT) {
+      _userRole = "Student";
+    } else if (userRole === roleuser.EDULASTIC_CURATOR) {
+      _userRole = "Edulastic Curator";
+    } else {
+      _userRole = capitalize(userRole);
+    }
+
+    if (features.isCurator) {
+      _userRole = "Content Approver";
+    } else if (features.isPublisherAuthor) {
+      _userRole = "Content Author";
+    }
     // signup routes hidden till org reference is not done
     return (
       <div>
@@ -276,7 +297,7 @@ class App extends Component {
           >
             {isProxyUser && (
               <Banner
-                text={`You are currently acting as ${fullName} (${get(user, ["user", "role"])})`}
+                text={`You are currently acting as ${fullName} (${_userRole})`}
                 showButton
                 buttonText="Stop Acting as User"
                 onButtonClick={logout}

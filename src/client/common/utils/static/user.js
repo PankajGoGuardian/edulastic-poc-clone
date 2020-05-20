@@ -24,5 +24,7 @@ export const userPickFields = [
   "title",
   "thumbnail",
   "children",
-  "username"
+  "username",
+  "personId",
+  "otherAccounts"
 ];

@@ -221,8 +221,8 @@ export default class StudentsReportCard {
 
   getQuestionTableData = ({ attempt, questionTypeMap }) => {
     const questinoWiseData = {};
-    const TEI = "TEI";
-    const CR_Questions = "Constructed Response";
+    const TEI = "#";
+    const CR_Questions = "*";
     const skippedResponse = "-";
 
     Object.keys(attempt).forEach((queNo, quesIndex) => {

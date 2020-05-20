@@ -511,7 +511,11 @@ class StudentTestPage {
 
   // Essay Type
 
-  typeEssayRichText = content => cy.get(".fr-element").type(content);
+  typeEssayRichText = content =>
+    cy
+      .get(".fr-element")
+      .type(content)
+      .then(() => cy.get("body").click());
 
   // Sort List
 

@@ -184,8 +184,8 @@ const TableList = ({
     };
     if (type === "open") bulkOpenAssignmentRequest(payload);
     if (type === "close") bulkCloseAssignmentRequest(payload);
-    // if (type === "pause") bulkPauseAssignmentRequest(payload);
-    // if (type === "markAsDone") bulkMarkAsDoneAssignmentRequest(payload);
+    if (type === "pause") bulkPauseAssignmentRequest(payload);
+    if (type === "markAsDone") bulkMarkAsDoneAssignmentRequest(payload);
   };
 
   const renderBulkActions = () => (

@@ -157,7 +157,7 @@ const bulkMarkAsDoneAssignment = ({ testId, data, testType }) =>
   api
     .callApi({
       method: "post",
-      url: `${prefix}/test/${testId}/bulk-pause`,
+      url: `${prefix}/test/${testId}/bulk-mark-as-done`,
       data,
       params: Object.keys(data).length === 0 ? { testType } : {}
     })

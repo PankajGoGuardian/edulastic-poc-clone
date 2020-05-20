@@ -50,10 +50,11 @@ const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userI
         <p>Select the role you want to switch</p>
         <div style={{ "margin-top": "16px" }}>
           {Object.keys(roles).map(role => {
-            const user = otherAccounts.find(acc => acc.role === role);
+            const users = otherAccounts.filter(acc => acc.role === role);
             return (
-              user && (
-                <StyledDiv role={role} onClick={() => switchUser(user._id, personId)}>
+              users.length &&
+              users.map(user => (
+                <StyledDiv key={`${user._id}_${user.role}`} role={role} onClick={() => switchUser(user._id, personId)}>
                   <div style={{ "font-size": "16px", "font-weight": "600" }}>
                     <p>{roles[user.role]}</p>
                   </div>
@@ -61,7 +62,7 @@ const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userI
                     <p>{user.username}</p>
                   </div>
                 </StyledDiv>
-              )
+              ))
             );
           })}
         </div>

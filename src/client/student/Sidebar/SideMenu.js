@@ -206,13 +206,13 @@ class SideMenu extends Component {
           {get(switchDetails, "otherAccounts", []).length ? (
             <Menu.Item key="2" className="removeSelectedBorder">
               <a>
-                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Switch Accounts"}
+                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Switch Account"}
               </a>
             </Menu.Item>
           ) : (
             <Menu.Item key="3" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
-                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Add Accounts"}
+                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Add Account"}
               </Link>
             </Menu.Item>
           )}

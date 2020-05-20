@@ -9,6 +9,7 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, info) {
+    window.Raven && window.Raven.captureException(error);
     // log the error to an error reporting service
     console.error(error, info);
   }

@@ -8,8 +8,13 @@ class ErrorHandler extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    console.error("error:", error);
     return { hasError: true, path: window.location.pathname };
+  }
+
+  componentDidCatch(error, info) {
+    window.Raven && window.Raven.captureException(error);
+    // log the error to an error reporting service
+    console.error(error, info);
   }
 
   static getDerivedStateFromProps(prop, prevState) {

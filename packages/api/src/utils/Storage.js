@@ -33,6 +33,10 @@ export const initKID = () => {
   if (window.sessionStorage != null && window.sessionStorage.kid !== "" && !window.sessionStorage.kid) {
     window.sessionStorage.kid = uuid.v4();
   }
+
+  // set into raven's context
+  // @ts-ignore
+  window.Raven && window.Raven.setTagsContext({ kid: window.sessionStorage.kid });
 };
 
 // Update kid after user authentication
@@ -40,6 +44,9 @@ export const updateKID = kid => {
   if (window.sessionStorage) {
     window.sessionStorage.kid = kid;
   }
+  // set into raven's context on update
+  // @ts-ignore
+  window.Raven && window.Raven.setTagsContext({ kid: window.sessionStorage.kid });
 };
 
 // Remove kid after user logout

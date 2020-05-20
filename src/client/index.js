@@ -16,10 +16,13 @@ import configureStore, { history } from "./configureStore";
 import AppConfig from "../../app-config";
 import { isMobileDevice, isIOS } from "./platform";
 
-if (process.env.POI_APP_SENTRY_URI) {
+if (process.env.POI_APP_SENTRY_URI && window.Raven) {
   window.Raven.config(process.env.POI_APP_SENTRY_URI, {
     whitelistUrls: [AppConfig.sentryWhiteListURLRegex]
   }).install();
+
+  // if we have a kid set, pass that onto Raven
+  if (window.sessionStorage.kid) window.Raven.setTagsContext({ kid: window.sessionStorage.kid });
 }
 
 if (window.location?.search?.includes("showCLIBanner=1") && !sessionStorage?.cliBannerShown) {

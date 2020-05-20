@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Row, Col, Modal } from "antd";
 import styled from "styled-components";
-import { Paper, FlexContainer, MathFormulaDisplay, CheckboxLabel } from "@edulastic/common";
+import { Paper, FlexContainer, MathFormulaDisplay, CheckboxLabel, EduButton } from "@edulastic/common";
 
 import { getStandardsListSelector } from "../../../src/selectors/dictionaries";
-import { ELOList } from "../../../../assessment/containers/QuestionMetadata/styled/ELOList";
+import { ELOList, EloText } from "../../../../assessment/containers/QuestionMetadata/styled/ELOList";
 import { TLOList, TLOListItem } from "../../../../assessment/containers/QuestionMetadata/styled/TLOList";
 
 const StandardsSearchModal = ({ standardsList, showModal, setShowModal, standardIds = [], handleApply, itemCount }) => {
@@ -42,12 +42,14 @@ const StandardsSearchModal = ({ standardsList, showModal, setShowModal, standard
       <StyledCounterWrapper>
         <span>{itemCount}</span>&nbsp;Items found matching your criteria
       </StyledCounterWrapper>
-      <div>
-        <Button onClick={handleCancel}>Cancel</Button>
-        <Button type="primary" onClick={() => setShowModal(false)}>
+      <FlexContainer>
+        <EduButton isGhost onClick={handleCancel}>
+          Cancel
+        </EduButton>
+        <EduButton type="primary" onClick={() => setShowModal(false)}>
           Apply
-        </Button>
-      </div>
+        </EduButton>
+      </FlexContainer>
     </>
   );
   return (
@@ -81,10 +83,10 @@ const StandardsSearchModal = ({ standardsList, showModal, setShowModal, standard
                     onChange={() => handleCheckELO(c)}
                     checked={standardIds.some(item => item === c._id)}
                   />
-                  <div>
+                  <EloText>
                     <b>{c.identifier}</b>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: c.description }} />
-                  </div>
+                  </EloText>
                 </FlexContainer>
               ))}
             </Container>
@@ -104,6 +106,12 @@ const StyledModal = styled(Modal)`
   .ant-modal-footer {
     display: flex;
     justify-content: space-between;
+    padding: 15px 25px;
+    border: none;
+  }
+  .ant-modal-header {
+    border: none;
+    padding: 25px;
   }
 `;
 

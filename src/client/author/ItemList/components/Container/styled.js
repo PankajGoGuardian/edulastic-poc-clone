@@ -38,7 +38,7 @@ export const ContentWrapper = styled(Paper)`
   position: relative;
   height: 100%;
   overflow: hidden;
-  padding-bottom: 60px;
+  padding-bottom: 80px;
 
   @media (max-width: ${mobileWidth}) {
     height: initial;

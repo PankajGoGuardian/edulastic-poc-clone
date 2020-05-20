@@ -68,10 +68,6 @@ export const CheckboxStyle = styled(Checkbox)`
       }
     }
   }
-
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
-  }
 `;
 
 const CheckboxLabel = ({ children, ...props }) => <CheckboxStyle {...props}>{children}</CheckboxStyle>;

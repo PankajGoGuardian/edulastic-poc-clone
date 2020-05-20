@@ -128,17 +128,16 @@ const Label = styled(Tag)`
   position: relative;
   text-transform: uppercase;
   border-radius: 5px;
-  padding: 4px 10px;
-  font-size: 10px;
+  padding: 2px 12px;
+  font-size: 8px;
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
   border: none;
   line-height: 16px;
   margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : "3px")} 0;
-  height: 24px;
+  height: 20px;
 
   &.gray-tags {
-    padding: 4px 15px;
     display: inline-block;
     background: #b3bcc4;
     color: #676e74;
@@ -156,9 +155,9 @@ const Label = styled(Tag)`
     overflow: hidden;
   }
 
-  @media (max-width: ${extraDesktopWidthMax}) {
-    font-size: 8px;
-    height: 20px;
-    padding: 2px 10px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 10px;
+    height: 24px;
+    padding: 4px 12px;
   }
 `;

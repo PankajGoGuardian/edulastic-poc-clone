@@ -4,7 +4,11 @@ import { lightGreySecondary } from "@edulastic/colors";
 export const ELOList = styled.div`
   max-height: 40vh;
   overflow-y: scroll;
-  padding: 10px 15px 10px 10px;
+  padding: 15px;
   width: 100%;
-  background: ${lightGreySecondary};
+  border: 1px solid ${lightGreySecondary};
+`;
+
+export const EloText = styled.div`
+  padding-left: 15px;
 `;

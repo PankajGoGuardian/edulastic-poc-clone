@@ -486,14 +486,17 @@ class SchoolAdminTable extends Component {
         dataIndex: "_id",
         render: (id, { _source }) => {
           const name = getFullNameFromAsString(_source);
+          const status = get(_source, "status", "");
           const fullName = name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
           return (
             <div style={{ whiteSpace: "nowrap" }}>
               {role === roleuser.DISTRICT_ADMIN && (
                 <>
-                  <StyledTableButton onClick={() => this.onProxySchoolAdmin(id)} title={`Act as ${fullName}`}>
-                    <GiDominoMask />
-                  </StyledTableButton>
+                  {status === 1 ? (
+                    <StyledTableButton onClick={() => this.onProxySchoolAdmin(id)} title={`Act as ${fullName}`}>
+                      <GiDominoMask />
+                    </StyledTableButton>
+                  ) : null}
                   <StyledTableButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
                     <IconPencilEdit color={themeColor} />
                   </StyledTableButton>

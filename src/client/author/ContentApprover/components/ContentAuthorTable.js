@@ -136,15 +136,18 @@ class ContentAuthorTable extends Component {
         render: (id, { _source }) => {
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
+          const status = get(_source, "status", "");
           const fullName =
             firstName === "Anonymous" || (isEmpty(firstName) && isEmpty(lastName))
               ? "Content Approver"
               : `${firstName} ${lastName}`;
           return (
             <div style={{ whiteSpace: "nowrap" }}>
-              <StyledTableButton onClick={() => this.onProxyContentApprover(id)} title={`Act as ${fullName}`}>
-                <GiDominoMask />
-              </StyledTableButton>
+              {status === 1 ? (
+                <StyledTableButton onClick={() => this.onProxyContentApprover(id)} title={`Act as ${fullName}`}>
+                  <GiDominoMask />
+                </StyledTableButton>
+              ) : null}
             </div>
           );
         },

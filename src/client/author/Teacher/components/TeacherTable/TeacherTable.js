@@ -173,6 +173,7 @@ class TeacherTable extends Component {
         render: (id, { _source }) => {
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
+          const status = get(_source, "status", "");
           const fullName =
             firstName === "Anonymous" || (isEmpty(firstName) && isEmpty(lastName))
               ? "Teacher"
@@ -180,9 +181,11 @@ class TeacherTable extends Component {
           return (
             <div style={{ whiteSpace: "nowrap" }}>
               <>
-                <StyledTableButton onClick={() => this.onProxyTeacher(id)} title={`Act as ${fullName}`}>
-                  <GiDominoMask />
-                </StyledTableButton>
+                {status === 1 ? (
+                  <StyledTableButton onClick={() => this.onProxyTeacher(id)} title={`Act as ${fullName}`}>
+                    <GiDominoMask />
+                  </StyledTableButton>
+                ) : null}
                 <StyledTableButton onClick={() => this.onEditTeacher(id)} title="Edit">
                   <IconPencilEdit color={themeColor} />
                 </StyledTableButton>

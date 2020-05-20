@@ -34,7 +34,7 @@ const Tags = ({
   const className = isGrayTags ? "gray-tags" : isCustomTags ? "custom-tags" : "";
 
   const popup = (
-    <PopupContainer>
+    <PopupContainer className="tag-wrapper">
       {hiddenTags.map((tag, i) => (
         <Label className={className} popupContainer style={labelStyle} key={i} type={type}>
           {isStandards || typeof tag === "string" ? tag : tag.tagName}
@@ -122,6 +122,12 @@ const PopupContainer = styled.div`
   max-width: 350px;
   max-height: 200px;
   overflow: auto;
+
+  &.tag-wrapper {
+    .custom-tags {
+      max-width: 100%;
+    }
+  }
 `;
 
 const Label = styled(Tag)`

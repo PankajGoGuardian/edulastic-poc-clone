@@ -70,6 +70,7 @@ class TestItemCol extends Component {
       teachCherFeedBack,
       itemLevelScoring,
       isStudentReport,
+      isPassageWithQuestions,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
@@ -87,11 +88,15 @@ class TestItemCol extends Component {
     const displayFeedback = true;
     return (
       <TabContainer
-        updatePositionToStore={(showStackedView || isDocBased) && widget.widgetType === "question"}
+        updatePositionToStore={
+          (showStackedView || isDocBased || (isPassageWithQuestions && !itemLevelScoring)) &&
+          widget.widgetType === "question"
+        }
         questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
         minHeight={(showStackedView || isDocBased) && widget.widgetType === "question" && "458px"}
+        itemIndex={itemIndex}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== "resource"}

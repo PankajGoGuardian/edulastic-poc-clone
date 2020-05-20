@@ -330,7 +330,7 @@ class FeedbackRight extends Component {
               onChange={this.onChangeFeedback}
               onBlur={this.preCheckSubmit}
               value={feedback}
-              style={{ height: 240, flexGrow: 2 }}
+              style={{ flexGrow: 2 }}
               disabled={!activity || isPresentationMode}
               onKeyDown={this.onKeyDownFeedback}
             />

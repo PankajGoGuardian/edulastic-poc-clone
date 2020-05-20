@@ -116,11 +116,11 @@ class TestItemPreview extends Component {
 
       case isPassageWithQuestions:
         /**
-         * Feedback not supported for passages with item level scoring off
-         * will be fixed with EV-12830
+         * for passages with item level scoring off show seperate feedback block
+         * and get dimensions from store
          */
-        shouldShowFeedback = widgetIndex === 0;
-        shoudlTakeDimensionsFromStore = false;
+        shouldShowFeedback = true;
+        shoudlTakeDimensionsFromStore = true;
         break;
 
       case isStudentReport:

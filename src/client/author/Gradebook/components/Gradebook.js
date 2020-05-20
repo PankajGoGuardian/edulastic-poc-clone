@@ -28,6 +28,7 @@ import { actions, selectors } from "../ducks";
 import { curateFiltersData, curateGradebookData } from "../transformers";
 
 const Gradebook = ({
+  windowWidth,
   windowHeight,
   fetchFiltersData,
   loadingFilters,
@@ -120,6 +121,7 @@ const Gradebook = ({
               assessments={assessmentsData}
               selectedRows={selectedRows}
               setSelectedRows={setSelectedRows}
+              windowWidth={windowWidth}
               windowHeight={windowHeight}
             />
             <TableFooter>

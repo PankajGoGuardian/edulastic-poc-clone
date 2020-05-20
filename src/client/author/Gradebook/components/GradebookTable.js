@@ -7,15 +7,17 @@ import { StyledTable, StyledTableCell } from "./styled";
 
 // constants
 import { STATUS_LIST } from "../transformers";
+import { extraDesktopWidthMax } from "@edulastic/colors";
 
-const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, windowHeight }) => {
+const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, windowWidth, windowHeight }) => {
+  const colWidth = windowWidth >= parseInt(extraDesktopWidthMax) ? 170 : 150;
   const columns = [
     {
       title: "Student",
       key: "_id",
       dataIndex: "studentName",
       fixed: "left",
-      width: 210,
+      width: colWidth + 40,
       render: data => <Tooltip title={data}>{data}</Tooltip>,
       sorter: (a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()),
       defaultSortOrder: "descend"
@@ -24,7 +26,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       title: "Class Name",
       key: "className",
       dataIndex: "className",
-      width: 250,
+      width: colWidth + 80,
       render: data => <Tooltip title={data}>{data}</Tooltip>,
       sorter: (a, b) => a.className.toLowerCase().localeCompare(b.className.toLowerCase())
     },
@@ -32,7 +34,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       title: "Last Activity Date",
       key: "laDate",
       dataIndex: "laDate",
-      width: 190,
+      width: colWidth + 20,
       render: data => (data ? moment(data).format("MMM Do, YYYY h:mm A") : "-"),
       sorter: (a, b) => (a.laDate || 0) - (b.laDate || 0)
     },
@@ -40,7 +42,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       title: ass.name,
       key: ass.id,
       align: "center",
-      width: 170,
+      width: colWidth,
       render: (_, row) => {
         const { status, percentScore } = row.assessments[ass.id] || {};
         const color = STATUS_LIST.find(s => s.id === status)?.color;

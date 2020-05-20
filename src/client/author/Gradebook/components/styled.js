@@ -7,7 +7,15 @@ import { Button } from "@edulastic/common";
 import { IconGraphRightArrow as Arrow } from "@edulastic/icons";
 
 // constants
-import { white, themeColor, fadedGrey, backgroundGrey, lightGrey11, greyThemeDark1 } from "@edulastic/colors";
+import {
+  white,
+  themeColor,
+  fadedGrey,
+  backgroundGrey,
+  lightGrey11,
+  greyThemeDark1,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 
 export const FilterButton = styled(Button)`
   min-width: 35px;
@@ -101,12 +109,17 @@ export const StyledTable = styled(Table)`
                 border: none;
                 background: white;
                 padding: 8px;
+                .ant-table-column-sorters {
+                  display: inline;
+                }
                 .ant-table-column-title {
-                  font-size: 12px;
-                  line-height: 17px;
+                  font-size: 10px;
                   font-weight: 700;
                   color: ${lightGrey11};
                   text-transform: uppercase;
+                  @media (min-width: ${extraDesktopWidthMax}) {
+                    font-size: 12px;
+                  }
                 }
               }
             }
@@ -121,10 +134,12 @@ export const StyledTable = styled(Table)`
                 overflow: hidden;
                 text-overflow: ellipsis;
                 padding: 10px 10px 5px 10px;
-                font-size: 14px;
-                line-height: 19px;
+                font-size: 12px;
                 font-weight: 600;
                 color: ${greyThemeDark1};
+                @media (min-width: ${extraDesktopWidthMax}) {
+                  font-size: 14px;
+                }
               }
               td:nth-child(n + 5) {
                 padding: 5px 0 0 0;
@@ -153,12 +168,17 @@ export const StyledTable = styled(Table)`
               border: none;
               background: white;
               padding: 8px;
+              .ant-table-column-sorters {
+                display: inline;
+              }
               .ant-table-column-title {
-                font-size: 12px;
-                line-height: 17px;
+                font-size: 10px;
                 font-weight: 700;
                 color: ${lightGrey11};
                 text-transform: uppercase;
+                @media (min-width: ${extraDesktopWidthMax}) {
+                  font-size: 12px;
+                }
               }
             }
           }
@@ -173,10 +193,12 @@ export const StyledTable = styled(Table)`
               overflow: hidden;
               text-overflow: ellipsis;
               padding: 10px 10px 5px 10px;
-              font-size: 14px;
-              line-height: 19px;
+              font-size: 12px;
               font-weight: 600;
               color: ${greyThemeDark1};
+              @media (min-width: ${extraDesktopWidthMax}) {
+                font-size: 14px;
+              }
             }
             td:nth-child(n + 5) {
               padding: 5px 0 0 0;

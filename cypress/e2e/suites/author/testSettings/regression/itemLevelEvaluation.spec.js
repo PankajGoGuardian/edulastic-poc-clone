@@ -39,7 +39,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
   let num;
   let OriginalTestId;
   let testVersionId;
-  let points = [1, 1, 0.5];
+  const points = [1, 1, 0.5];
+
   before("login and create new items and test", () => {
     cy.deleteAllAssignments(Student.email, Teacher.email, Teacher.pass);
     cy.login("teacher", Teacher.email, Teacher.pass);
@@ -57,20 +58,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
   });
 
   context(`>Over riding test settings - Set evaluation Method and assign`, () => {
-    it(">Set Evaluation Method", () => {
+    before(">Set Evaluation Method", () => {
       testLibraryPage.clickOnAssign();
       testAssignPage.showOverRideSetting();
       testAssignPage.clickOnEvalByType(evalMethod);
-    });
-    it(">assign the test", () => {
+
       testAssignPage.selectClass("Item Level Evaluation Class");
       testAssignPage.selectTestType("Class Assessment");
       testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
-  });
 
-  context(">verifying at student side for Test-Evaluation Method set at Override Settings", () => {
     it(">verify student attempt", () => {
       cy.login("student", Student.email, Student.pass);
       assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
@@ -92,7 +90,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
   });
 
   context(`>Test settings -set evaluation Method and assign`, () => {
-    before(() => {
+    before(">Set Evaluation Method", () => {
       cy.deleteAllAssignments(Student.email, Teacher.email, Teacher.pass);
       cy.login("teacher", Teacher.email, Teacher.pass);
       testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
@@ -101,20 +99,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
         testVersionId = newTestId;
       });
       testLibraryPage.header.clickOnSettings();
-    });
-    it(">Set Evaluation Method", () => {
+
       testSettings.clickOnEvalByType(evalMethod);
       testLibraryPage.header.clickOnAssign();
-    });
-    it(">assign the test", () => {
+
       testAssignPage.selectClass("Item Level Evaluation Class");
       testAssignPage.selectTestType("Class Assessment");
       testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
-  });
 
-  context(">verifying at student side for Test-Evaluation Method set at Test Settings", () => {
     it(">verify student attempt", () => {
       cy.login("student", Student.email, Student.pass);
       assignmentsPage.clickOnAssigmentByTestId(testVersionId);

@@ -33,6 +33,12 @@ class ReportsPage {
 
   getTestCardByTesyId = id => cy.get(`[data-cy="test-${id}"]`);
 
+  getScoreOnCardById = id => this.getTestCardByTesyId(id).find('[data-cy="score"]');
+
+  getPercentByTestId = id => this.getTestCardByTesyId(id).find('[data-cy="percent"]');
+
+  getAttemptsByTestId = id => this.getTestCardByTesyId(id).find('[data-cy="attemptClick"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***

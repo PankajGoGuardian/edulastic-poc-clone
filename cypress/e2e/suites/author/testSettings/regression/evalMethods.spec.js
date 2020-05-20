@@ -7,6 +7,7 @@ import TestSettings from "../../../../framework/author/tests/testDetail/testSett
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ReportsPage from "../../../../framework/student/reportsPage";
+import { releaseGradeTypes } from "../../../../framework/constants/assignmentStatus";
 
 const testData = require("../../../../../fixtures/testAuthoring");
 
@@ -35,6 +36,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
   const attempt = [];
   const evalMethods = ["ALL_OR_NOTHING", "PARTIAL_CREDIT_IGNORE_INCORRECT", "PARTIAL_CREDIT"];
   const points = [[0, 0], [1, 1], [0, 0]];
+  const totalPoints = [];
 
   let qType;
   let num;
@@ -43,14 +45,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
   before("login and create new items and test", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.login("teacher", Teacher.email, Teacher.pass);
-    testLibraryPage.createTest(TestName).then(id => {
+    testLibraryPage.createTest(TestName, false).then(id => {
       OriginalTestId = id;
+      testLibraryPage.header.clickOnSettings();
+      testLibraryPage.testSettings.setRealeasePolicy(releaseGradeTypes.WITH_ANSWERS);
+      testLibraryPage.header.clickOnPublishButton();
     });
 
     cy.fixture("questionAuthoring").then(quesData => {
       itemsInTest.forEach(element => {
         [qType, num] = element.split(".");
         questionType.push(qType);
+        totalPoints.push(quesData[qType][num].setAns.points);
         attempt.push(quesData[qType][num].attemptData);
       });
     });
@@ -90,6 +96,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
           studentTestPage.clickOnNext();
         });
         studentTestPage.submitTest();
+        reportsPage
+          .getScoreOnCardById(OriginalTestId)
+          .should("have.text", `${points[index].reduce((a, b) => b + a, 0)}/${totalPoints.reduce((a, b) => b + a, 0)}`);
         assignmentsPage.reviewSubmittedTestById(OriginalTestId);
       });
       itemsInTest.forEach((item, ind) => {

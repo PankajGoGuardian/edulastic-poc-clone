@@ -300,8 +300,8 @@ class Container extends PureComponent {
     } = this.props;
     const { authors, itemGroups, isDocBased } = test;
     const { editEnable, disableAlert } = this.state;
-    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+    const isOwner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
     if (
       isEditable &&
       itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 &&
@@ -335,8 +335,8 @@ class Container extends PureComponent {
     }
 
     this.gotoTab(value);
-    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+    const isOwner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
     if (isEditable && itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 && updated && !firstFlow) {
       this.handleSave(test);
     }
@@ -433,9 +433,9 @@ class Container extends PureComponent {
     const { editEnable, isShowFilter } = this.state;
     const current = currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
-    const owner =
+    const isOwner =
       (authors && authors.some(x => x._id === userId)) || !params.id || userRole === roleuser.EDULASTIC_CURATOR;
-    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+    const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
 
     const props = {
       docUrl,
@@ -472,7 +472,7 @@ class Container extends PureComponent {
               onShowSource={this.handleNavChange("source")}
               setData={setData}
               test={test}
-              owner={owner}
+              owner={isOwner}
               current={current}
               isEditable={isEditable}
               onChangeGrade={this.handleChangeGrade}
@@ -495,7 +495,7 @@ class Container extends PureComponent {
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             onChangeCollection={this.handleChangeCollection}
-            owner={owner}
+            owner={isOwner}
             isEditable={isEditable}
             current={current}
             showCancelButton={showCancelButton}
@@ -509,7 +509,7 @@ class Container extends PureComponent {
               isEditable={isEditable}
               onShowSource={this.handleNavChange("source")}
               sebPasswordRef={this.sebPasswordRef}
-              owner={owner}
+              owner={isOwner}
               showCancelButton={showCancelButton}
             />
           </Content>
@@ -798,13 +798,13 @@ class Container extends PureComponent {
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
     const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
-    const owner = authors?.some(x => x._id === userId);
+    const isOwner = authors?.some(x => x._id === userId);
     const showPublishButton =
-      (testStatus !== statusConstants.PUBLISHED && testId && (owner || isCurator)) || editEnable;
+      (testStatus !== statusConstants.PUBLISHED && testId && (isOwner || isCurator)) || editEnable;
     const showShareButton = !!testId;
-    const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test");
+    const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test") || isOwner;
     const showDuplicateButton = testStatus === statusConstants.PUBLISHED && !editEnable && allowDuplicate && !isCurator;
-    const showEditButton = testStatus === statusConstants.PUBLISHED && !editEnable && (owner || isCurator);
+    const showEditButton = testStatus === statusConstants.PUBLISHED && !editEnable && (isOwner || isCurator);
     const showCancelButton = test.isUsed && !!testAssignments.length && !showEditButton && !showDuplicateButton;
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
@@ -840,7 +840,7 @@ class Container extends PureComponent {
           title={test?.title || ""}
           creating={creating}
           showEditButton={showEditButton}
-          owner={owner || isCurator || !testId}
+          owner={isOwner || isCurator || !testId}
           isUsed={test.isUsed}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}

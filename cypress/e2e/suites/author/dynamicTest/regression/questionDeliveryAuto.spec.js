@@ -52,8 +52,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const deliveredArray = [[], []];
   const redirected = [[], []];
   const message = [
-    "-Expected to items be delivered same for  both students-",
-    "-Expected to items be delivered different for  both students-"
+    "-Expected items to be delivered in same order for  both students-",
+    "-Expected items to be delivered in different order for  both students-"
   ];
   const queText = " - This is MCQ_TF";
   const quesType = "MCQ_TF";
@@ -101,9 +101,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     });
   });
 
-  context(">autoselect", () => {
-    context(">deliver by count", () => {
-      before("login", () => {
+  context("> dynamic tests having,", () => {
+    context("> having two dynamic groups", () => {
+      before("> login as CE", () => {
         groups = { 1: {}, 2: {} };
         groups[1].items = itemIds.slice(0, 4);
         groups[1].deliveryCount = filterForAutoselect1.deliveryCount;
@@ -114,15 +114,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
-      before("create test", () => {
+      before("> create test fill details and associate collection", () => {
         testLibraryPage.createNewTestAndFillDetails(testData);
       });
-      it(">create dynamic group-1", () => {
+      it("> create dynamic group-1", () => {
         testLibraryPage.testSummary.header.clickOnAddItems();
         testLibraryPage.testAddItem.clickOnGroupItem();
         groupItemsPage.createDynamicTest(1, filterForAutoselect1);
       });
-      it(">create dynamic group-2", () => {
+      it("> create dynamic group-2", () => {
         groupItemsPage.clickOnAddGroup();
         groupItemsPage.createDynamicTest(2, filterForAutoselect2);
         cy.server();
@@ -134,7 +134,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         testLibraryPage.review.testheader.clickOnPublishButton();
       });
-      it(">login as teacher and find test", () => {
+      it(`> login as teacher find test using ${testData.collections}`, () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.searchFilters.clearAll();
@@ -142,9 +142,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         testLibraryPage.clickOnTestCardById(testID);
         testLibraryPage.clickOnDetailsOfCard();
       });
-      it(">verify review", () => {
-        // TODO: Add count by group verification
-        // TODO: Need to clarify this
+      it("> verify test review at teacher side", () => {
         testLibraryPage.review.verifyItemCoutInPreview(4);
         testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
           testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
@@ -152,12 +150,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           });
         });
       });
-      it(">assign test", () => {
+      it("> assign the test", () => {
         testLibraryPage.review.testheader.clickOnAssign();
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });
-      it(">login as student and verify", () => {
+      it("> login as each student attempt and verify item delivered sequence", () => {
         students.forEach((student, index) => {
           cy.login("student", student.email, student.pass);
           // Response Verification
@@ -175,7 +173,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         cy.wait(1).then(() => CypressHelper.checkObjectInEquality(deliveredArray[0], deliveredArray[1], message[1]));
       });
-      it(">login as teacher verify in LCB", () => {
+      it("> login as teacher verify item sequence for each student in lcb", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignPage.clcikOnPresenatationIconByIndex(0);
@@ -203,7 +201,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           lcb.clickOnRedirect();
           lcb.clickOnRedirectSubmit();
         });
-        it(">login as student and verify", () => {
+        it("> login as each student attempt and verify item delivered sequence for redirected test", () => {
           students.forEach((student, index) => {
             if (index === 0) {
               cy.login("student", student.email, student.pass);
@@ -226,7 +224,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
             //  CypressHelper.checkObjectEquality(redirected[1], deliveredArray[1], students[1].name);
           });
         });
-        it(">login as teacher verify in LCB", () => {
+        it("> login as teacher verify item sequence for each student in lcb for redirected test", () => {
           cy.login("teacher", Teacher.email, Teacher.pass);
           testLibraryPage.sidebar.clickOnAssignment();
           authorAssignPage.clcikOnPresenatationIconByIndex(0);
@@ -253,8 +251,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
       });
     });
-    context(">auto select + static", () => {
-      before("login", () => {
+    context("> having one static and one dynamic group", () => {
+      before("> login as CE", () => {
         groups = { 1: {}, 2: {} };
         groups[2].items = itemIds.slice(0, 4);
         groups[2].deliveryCount = groups[2].items.length;
@@ -265,11 +263,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
-      before("create test", () => {
+      before("> create test fill details and associate collection", () => {
         testLibraryPage.createNewTestAndFillDetails(testData);
       });
 
-      it(">create dynamic group", () => {
+      it("> create one dynamic group", () => {
         testLibraryPage.header.clickOnAddItems();
         testLibraryPage.testAddItem.clickOnGroupItem();
         groupItemsPage.createDynamicTest(1, filterForAutoselect2);
@@ -281,7 +279,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           testID = xhr.response.body.result._id;
         });
       });
-      it(">create static group", () => {
+      it("> create one static group with 'deliver by count'", () => {
         testLibraryPage.testAddItem.clickOnGroupItem();
         groupItemsPage.clickOnAddGroup();
         groupItemsPage.addItemsToGroup(groups[2].items, false);
@@ -292,7 +290,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         testLibraryPage.testAddItem.header.clickOnReview();
         testLibraryPage.review.testheader.clickOnPublishButton();
       });
-      it(">login as teacher and find test", () => {
+      it(`> login as teacher find test using ${testData.collections}`, () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.searchFilters.clearAll();
@@ -300,7 +298,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         testLibraryPage.clickOnTestCardById(testID);
         testLibraryPage.clickOnDetailsOfCard();
       });
-      it(">verify review", () => {
+      it("> verify test review at teacher side", () => {
         testLibraryPage.review.verifyItemCoutInPreview(6);
         testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
           testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
@@ -308,12 +306,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           });
         });
       });
-      it(">assign test", () => {
+      it("> assign the test", () => {
         testLibraryPage.review.testheader.clickOnAssign();
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });
-      it(">login as student and verify", () => {
+      it("> login as each student attempt and verify item delivered sequence", () => {
         students.forEach((student, index) => {
           cy.login("student", student.email, student.pass);
           // Response Verification
@@ -338,7 +336,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           );
         });
       });
-      it(">login as teacher verify in LCB", () => {
+      it("> login as teacher verify item sequence for each student in lcb", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignPage.clcikOnPresenatationIconByIndex(0);

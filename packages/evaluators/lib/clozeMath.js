@@ -187,8 +187,8 @@ var mathEval = /*#__PURE__*/ (function() {
                           } // removing pattern `<space> after \\`
 
                           var data = {
-                            input: value.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$"),
-                            expected: ans ? ans.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$") : "",
+                            input: value.replace(/(\\\s|\s)+/g, "").replace(/(\\)?\$]/g, "\\$"),
+                            expected: ans ? ans.replace(/(\\\s|\s)+/g, "").replace(/(\\)?\$]/g, "\\$") : "",
                             checks: checks
                           };
                           return (0, _math.evaluate)(data);
@@ -564,8 +564,8 @@ var mixAndMatchMathEvaluator = /*#__PURE__*/ (function() {
 
                           return (0, _math.evaluate)({
                             checks: checks,
-                            input: input.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$"),
-                            expected: expected.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$")
+                            input: input.replace(/(\\\s|\s)+/g, "").replace(/(\\)?\$]/g, "\\$"),
+                            expected: expected.replace(/(\\\s|\s)+/g, "").replace(/(\\)?\$]/g, "\\$")
                           });
                         });
                         _context4.next = 5;

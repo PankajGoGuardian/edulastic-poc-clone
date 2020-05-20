@@ -203,17 +203,19 @@ class SideMenu extends Component {
               <span>{isSidebarCollapsed ? "" : t("common.myProfileText")}</span>
             </Link>
           </Menu.Item>
-          <Menu.Item key="2" className="removeSelectedBorder">
-            {get(switchDetails, "otherAccounts", []).length ? (
+          {get(switchDetails, "otherAccounts", []).length ? (
+            <Menu.Item key="2" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser /> {isSidebarCollapsed ? "" : "Switch Accounts"}
               </a>
-            ) : (
+            </Menu.Item>
+          ) : (
+            <Menu.Item key="3" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser /> {isSidebarCollapsed ? "" : "Add Accounts"}
               </Link>
-            )}
-          </Menu.Item>
+            </Menu.Item>
+          )}
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight />

@@ -248,7 +248,6 @@ class SideMenu extends Component {
       this.toggleDropdown();
       this.toggleMenu();
     }
-
     if (key === "2") {
       this.setState({ showModal: true });
     }
@@ -348,17 +347,19 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          <Menu.Item key="2" className="removeSelectedBorder">
-            {get(switchDetails, "otherAccounts", []).length ? (
+          {get(switchDetails, "otherAccounts", []).length ? (
+            <Menu.Item key="2" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser /> {isCollapsed ? "" : "Switch Account"}
               </a>
-            ) : (
+            </Menu.Item>
+          ) : (
+            <Menu.Item key="3" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser /> {isCollapsed ? "" : "Add Account"}
               </Link>
-            )}
-          </Menu.Item>
+            </Menu.Item>
+          )}
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight /> {isCollapsed ? "" : "Sign Out"}

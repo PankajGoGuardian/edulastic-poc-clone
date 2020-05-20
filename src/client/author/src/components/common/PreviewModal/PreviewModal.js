@@ -248,7 +248,7 @@ class PreviewModal extends React.Component {
       collections,
       loading,
       item = { rows: [], data: {}, authors: [] },
-      currentAuthorId,
+      userId,
       isEditable = false,
       checkAnswer,
       showAnswer,
@@ -274,11 +274,9 @@ class PreviewModal extends React.Component {
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
+    const isOwner = authors.some(author => author._id === userId);
 
-    const getAuthorsId = authors.map(author => author._id);
-    const authorHasPermission = getAuthorsId.includes(currentAuthorId);
-
-    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item");
+    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner;
 
     const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
@@ -357,9 +355,7 @@ class PreviewModal extends React.Component {
                   allowDuplicate={allowDuplicate}
                   /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
                   isEditable={
-                    (isEditable && authorHasPermission) ||
-                    userFeatures.isCurator ||
-                    userRole === roleuser.EDULASTIC_CURATOR
+                    (isEditable && isOwner) || userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR
                   }
                   isPassage={isPassage}
                   passageTestItems={passageTestItems}
@@ -398,7 +394,7 @@ PreviewModal.propTypes = {
   isEditable: PropTypes.bool,
   item: PropTypes.object.isRequired,
   preview: PropTypes.any.isRequired,
-  currentAuthorId: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
   collections: PropTypes.any.isRequired,
   loading: PropTypes.bool,
   gotoSummary: PropTypes.func,
@@ -434,7 +430,7 @@ const enhance = compose(
         collections: getCollectionsSelector(state),
         passage: getPassageSelector(state),
         preview: get(state, ["view", "preview"]),
-        currentAuthorId: get(state, ["user", "user", "_id"]),
+        userId: get(state, ["user", "user", "_id"]),
         testItemPreviewData: get(state, ["testItemPreview", "item"], {}),
         selectedRows: getSelectedItemSelector(state),
         test: getTestSelector(state),

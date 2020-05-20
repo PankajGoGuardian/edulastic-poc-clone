@@ -146,7 +146,7 @@ class ListItem extends Component {
       },
       item,
       authorName,
-      owner = false,
+      owner: isOwner = false,
       testItemId,
       windowWidth,
       isPlaylist,
@@ -174,7 +174,8 @@ class ListItem extends Component {
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;
     const isInCart = !!selectedTests.find(o => o._id === item._id);
-    const allowDuplicate = allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test");
+    const allowDuplicate =
+      allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
 
     return (
       <>

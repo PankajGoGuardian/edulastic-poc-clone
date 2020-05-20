@@ -192,7 +192,7 @@ class Item extends Component {
       orgCollections,
       item,
       authorName,
-      owner,
+      owner: isOwner,
       isPlaylist,
       testItemId,
       windowWidth,
@@ -229,7 +229,8 @@ class Item extends Component {
       padding: "5px 10px"
     };
 
-    const allowDuplicate = allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test");
+    const allowDuplicate =
+      allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
     return (
       <>
         <ViewModal
@@ -242,7 +243,7 @@ class Item extends Component {
           onApprove={this.onApprove}
           item={item}
           status={status}
-          owner={owner}
+          owner={isOwner}
           assign={this.assignTest}
           isPlaylist={isPlaylist}
           windowWidth={windowWidth}
@@ -265,7 +266,7 @@ class Item extends Component {
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
               <Stars isPlaylist={isPlaylist} />
               <ButtonWrapper className="showHover">
-                {owner && status === "draft" && (
+                {isOwner && status === "draft" && (
                   <EduButton style={btnStyle} height="32px" onClick={this.moveToItem}>
                     Edit
                   </EduButton>

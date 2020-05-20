@@ -74,9 +74,9 @@ export { default as withWindowScroll } from "./src/HOC/withWindowScroll";
 export { WithResources, useResources } from "./src/HOC/withResources";
 export { withMathFormula as WithMathFormula } from "./src/HOC/withMathFormula";
 export { scrollTo, offset } from "./src/utils/DomUtils";
-export { isMobileDevice } from "./src/helpers";
 export {
   default as helpers,
+  isMobileDevice,
   beforeUpload,
   uploadToS3,
   getSelection,
@@ -92,7 +92,8 @@ export {
   getImageDimensions,
   getImageUrl,
   getSelectionRect,
-  getFormattedAttrId
+  getFormattedAttrId,
+  toggleIntercomDisplay
 } from "./src/helpers";
 
 // contexts

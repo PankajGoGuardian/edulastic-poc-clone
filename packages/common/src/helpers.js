@@ -734,6 +734,18 @@ export const getImageDimensions = url =>
     image.src = url;
   });
 
+export const toggleIntercomDisplay = () => {
+  // when the intercom loads it has className => ".intercom-lightweight-app"
+  // once the intercom is launched it changes to => ".intercom-app"
+  const style =
+    document.querySelector(".intercom-lightweight-app")?.style || document.querySelector(".intercom-app")?.style || {};
+  if (style.display === "none") {
+    style.display = "";
+  } else {
+    style.display = "none";
+  }
+};
+
 /** A small utiltiy to help Resolve promises sequentially */
 const executePromisesInSequence = promises =>
   promises.reduce(
@@ -761,5 +773,6 @@ export default {
   measureText,
   getFormattedAttrId,
   getSelectionRect,
+  toggleIntercomDisplay,
   executePromisesInSequence
 };

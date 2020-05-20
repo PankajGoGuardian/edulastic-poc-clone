@@ -4,34 +4,40 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
 import memoizeOne from "memoize-one";
-import { Switch } from "antd";
 import styled, { ThemeProvider } from "styled-components";
+
+// contants
 import { mobileWidthLarge } from "@edulastic/colors";
 import AppConfig from "../../../../../../app-config";
-import { withWindowSizes, MainContentWrapper, WithResources, FlexContainer } from "@edulastic/common";
-// actions
-import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
-import { clearAnswersAction } from "../../../src/actions/answers";
-// ducks
-import {
-  getSortedTestActivitySelector,
-  getAdditionalDataSelector,
-  getClassResponseSelector
-} from "../../../ClassBoard/ducks";
-import HooksContainer from "../../../ClassBoard/components/HooksContainer/HooksContainer";
-import { getFeedbackResponseSelector } from "../../../src/selectors/feedback";
+
 // components
+import { Switch } from "antd";
+import {
+  withWindowSizes,
+  MainContentWrapper,
+  WithResources,
+  FlexContainer,
+  toggleIntercomDisplay
+} from "@edulastic/common";
 import ScoreTable from "../ScoreTable/ScoreTable";
 import ScoreCard from "../ScoreCard/ScoreCard";
 import QuestionModal from "../QuestionModal/QuestionModal";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-// styled wrappers
+import HooksContainer from "../../../ClassBoard/components/HooksContainer/HooksContainer";
 import { StyledFlexContainer } from "./styled";
 import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
-import { toggleScoreModeAction, disableScoreModeAction } from "../../ducks";
 import ExpressGraderScoreColors from "../ExpressGraderScoreColors";
+
+// actions
+import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
+import { clearAnswersAction } from "../../../src/actions/answers";
+
+// ducks
+import { getSortedTestActivitySelector, getAdditionalDataSelector } from "../../../ClassBoard/ducks";
+import { toggleScoreModeAction, disableScoreModeAction } from "../../ducks";
+import { getFeedbackResponseSelector } from "../../../src/selectors/feedback";
 
 /**
  *
@@ -90,6 +96,7 @@ class ExpressGrader extends Component {
   };
 
   showQuestionModal = (record, tableData) => {
+    toggleIntercomDisplay();
     this.setState({
       record,
       tableData,
@@ -98,6 +105,7 @@ class ExpressGrader extends Component {
   };
 
   hideQuestionModal = () => {
+    toggleIntercomDisplay();
     const { changedFeedback } = this.state;
     if (changedFeedback) {
       const {

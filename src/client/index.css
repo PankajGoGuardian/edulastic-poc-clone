@@ -2203,3 +2203,8 @@ div[class*="_pendo"] button {
 .pdfContextMenuDocBased {
   z-index: 1001;
 }
+
+/* override width: calc(100% - 17px) added by react-responsive-modal  */
+.js-focus-visible {
+  width: 100% !important;
+}

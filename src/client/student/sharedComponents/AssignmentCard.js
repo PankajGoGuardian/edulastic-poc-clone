@@ -129,7 +129,8 @@ const AssignmentCard = memo(
       timedAssignment,
       pauseAllowed,
       allowedTime,
-      dueDate
+      dueDate,
+      assignedBy
     } = data;
 
     const currentClassList = clazz.filter(cl => cl._id === classId);
@@ -361,7 +362,7 @@ const AssignmentCard = memo(
 
     return (
       <CardWrapper data-cy={`test-${data.testId}`} highlightMode={highlightMode} id={`assignment_${data._id}`}>
-        <div ref={assignmentCardRef}>
+        <div ref={assignmentCardRef} style={{ display: "flex", width: "100%" }}>
           {showRetakeModal && (
             <ConfirmationModal
               title="Retake Assignment"
@@ -444,6 +445,8 @@ const AssignmentCard = memo(
                   showReviewButton={showReviewButton}
                   releaseGradeLabels={releaseGradeLabels}
                   classId={attempt.groupId}
+                  testTitle={title}
+                  assignedBy={assignedBy}
                 />
               ))}
           </ButtonAndDetail>

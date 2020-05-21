@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -6,51 +6,83 @@ import {
   themeColor,
   mobileWidthMax,
   lightGreySecondary,
-  extraDesktopWidth,
   smallDesktopWidth,
   largeDesktopWidth
 } from "@edulastic/colors";
 import { Row, Col } from "antd";
-
 import { formatDateAndTime } from "../utils";
+import { Tooltip } from "../../common/utils/helpers";
+import { ReactComponent as FeedbackIcon } from "../assets/writing.svg";
+import OverallFeedbackModal from "./OverallFeedbackModal";
 
-const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, releaseGradeLabels, classId }) => {
-  const { maxScore = 0, score = 0 } = data;
+const Attempt = ({
+  data = {},
+  type,
+  activityReview,
+  releaseScore,
+  showReviewButton,
+  releaseGradeLabels,
+  classId,
+  testTitle,
+  assignedBy = {}
+}) => {
+  const [isOverallFeedback, setOverallFeedback] = useState(false);
+
+  const { maxScore = 0, score = 0, feedback } = data;
   const percentage = (score / maxScore) * 100 || 0;
 
   const btnWrapperSize =
     releaseScore === releaseGradeLabels.DONT_RELEASE ? 18 : releaseScore === releaseGradeLabels.WITH_ANSWERS ? 6 : 12;
   return (
-    <AttemptsData>
-      <RowData pagetype={type === "reports"}>
-        <AnswerAndScore sm={type === "assignment" ? 12 : 6} date>
-          <span data-cy="date">{formatDateAndTime(data.createdAt)}</span>
-        </AnswerAndScore>
-        {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && (
-          <React.Fragment>
-            {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
+    <>
+      <AttemptsData>
+        <RowData pagetype={type === "reports"}>
+          <AnswerAndScore sm={type === "assignment" ? 12 : 6} date>
+            <span data-cy="date">{formatDateAndTime(data.createdAt)}</span>
+          </AnswerAndScore>
+          {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && (
+            <React.Fragment>
+              {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
+                <AnswerAndScore sm={6}>
+                  <span data-cy="score">
+                    {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
+                  </span>
+                </AnswerAndScore>
+              )}
               <AnswerAndScore sm={6}>
-                <span data-cy="score">
-                  {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
-                </span>
+                <span data-cy="percentage">{Math.round(percentage)}%</span>
               </AnswerAndScore>
-            )}
-            <AnswerAndScore sm={6}>
-              <span data-cy="percentage">{Math.round(percentage)}%</span>
-            </AnswerAndScore>
-          </React.Fragment>
-        )}
-        {type === "reports" && activityReview && showReviewButton ? (
-          <AnswerAndScoreReview sm={btnWrapperSize}>
-            <ReviewBtn to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}>
-              <span data-cy="review">REVIEW</span>
-            </ReviewBtn>
-          </AnswerAndScoreReview>
-        ) : (
-          (showReviewButton || type !== "reports") && <EmptyScoreBox />
-        )}
-      </RowData>
-    </AttemptsData>
+            </React.Fragment>
+          )}
+          {feedback && (
+            <FeedbackWrapper onClick={() => setOverallFeedback(true)}>
+              <Tooltip title="Assignment Feedback">
+                <FeedbackIcon />
+              </Tooltip>
+            </FeedbackWrapper>
+          )}
+          {type === "reports" && activityReview && showReviewButton ? (
+            <AnswerAndScoreReview sm={btnWrapperSize}>
+              <ReviewBtn to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}>
+                <span data-cy="review">REVIEW</span>
+              </ReviewBtn>
+            </AnswerAndScoreReview>
+          ) : (
+            (showReviewButton || type !== "reports") && <EmptyScoreBox />
+          )}
+        </RowData>
+        {
+          <OverallFeedbackModal
+            isVisible={isOverallFeedback}
+            closeCallback={() => setOverallFeedback(false)}
+            testTitle={testTitle}
+            feedbackText={feedback?.text}
+            authorName={assignedBy.name}
+            url={assignedBy.url}
+          />
+        }
+      </AttemptsData>
+    </>
   );
 };
 
@@ -64,6 +96,7 @@ const AttemptsData = styled.div`
   margin-top: 7px;
   display: flex;
   justify-content: flex-end;
+  user-select: none;
   @media (max-width: ${mobileWidthMax}) {
     margin: 7px 7px 0px 7px;
   }
@@ -145,7 +178,11 @@ const RowData = styled(Row)`
 `;
 
 const ReviewBtn = styled(Link)`
-  width: 150px;
+  width: 180px;
   margin-left: auto;
   text-align: center;
+`;
+
+const FeedbackWrapper = styled.div`
+  cursor: pointer;
 `;

@@ -150,7 +150,9 @@ class TestItemPreview extends Component {
       isPresentationMode,
       questions,
       isPrintPreview,
-      showCollapseBtn
+      showCollapseBtn,
+      studentId,
+      itemId
     } = this.props;
 
     const [displayFeedback, shoudlTakeDimensionsFromStore] = this.getFeedBackVisibility({
@@ -172,6 +174,8 @@ class TestItemPreview extends Component {
         isStudentReport={isStudentReport}
         isPresentationMode={isPresentationMode}
         shoudlTakeDimensionsFromStore={shoudlTakeDimensionsFromStore}
+        studentId={studentId}
+        itemId={itemId}
       />
     ) : null;
   };

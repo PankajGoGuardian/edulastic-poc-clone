@@ -90,6 +90,12 @@ class FeedbackRight extends Component {
     return newState;
   }
 
+  getTestActivityId() {
+    const { studentId, classBoardData } = this.props;
+    const testActivity = classBoardData?.testActivities?.find(x => x?.userId === studentId) || {};
+    return testActivity._id;
+  }
+
   onScoreSubmit(rubricResponse) {
     const { score, maxScore } = this.state;
     const { currentScreen } = this.context;
@@ -97,7 +103,8 @@ class FeedbackRight extends Component {
       user,
       updateQuestionActivityScore,
       widget: { id, activity = {} },
-      studentId
+      studentId,
+      itemId
     } = this.props;
 
     if ((!score || isNaN(score)) && score != 0) {
@@ -111,7 +118,8 @@ class FeedbackRight extends Component {
     }
 
     const { testActivityId, groupId = this.props?.match?.params?.classId, testItemId } = activity;
-    if (!id || !user || !user.user || !testActivityId) {
+
+    if (!id || !user || !user.user) {
       return;
     }
 
@@ -119,9 +127,9 @@ class FeedbackRight extends Component {
 
     const payload = {
       score: rubricResponse || { score: _score },
-      testActivityId,
+      testActivityId: testActivityId || this.getTestActivityId(),
       questionId: id,
-      itemId: testItemId,
+      itemId: testItemId || itemId,
       groupId,
       studentId
     };
@@ -130,7 +138,9 @@ class FeedbackRight extends Component {
       payload.shouldReceiveStudentResponse = true;
     }
 
-    updateQuestionActivityScore(payload);
+    if (payload.testActivityId && payload.itemId) {
+      updateQuestionActivityScore(payload);
+    }
   }
 
   onFeedbackSubmit() {
@@ -379,7 +389,8 @@ const enhance = compose(
     state => ({
       user: getUserSelector(state),
       waitingResponse: getStatus(state),
-      errorMessage: getErrorResponse(state)
+      errorMessage: getErrorResponse(state),
+      classBoardData: state.author_classboard_testActivity?.data
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

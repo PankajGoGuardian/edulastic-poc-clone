@@ -89,6 +89,8 @@ function Preview({
         history={history}
         saveHistory={() => {}}
         {...scoringProps}
+        studentId={studentId}
+        itemId={item._id}
       />
     </StyledFlexContainer>
   );

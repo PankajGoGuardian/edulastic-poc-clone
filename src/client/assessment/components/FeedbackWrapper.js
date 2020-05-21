@@ -21,7 +21,9 @@ const FeedbackWrapper = ({
   isStudentReport,
   isPresentationMode,
   dimensions,
-  shoudlTakeDimensionsFromStore
+  shoudlTakeDimensionsFromStore,
+  studentId,
+  itemId
 }) => {
   const { rubrics: rubricDetails } = data;
   const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
@@ -76,10 +78,11 @@ const FeedbackWrapper = ({
           showCollapseBtn={showCollapseBtn}
           disabled={disabled}
           widget={data}
-          studentId={userId}
+          studentId={userId || studentId}
           studentName={studentName}
           rubricDetails={rubricDetails}
           isPracticeQuestion={isPracticeQuestion}
+          itemId={itemId}
           {...presentationModeProps}
         />
       )}

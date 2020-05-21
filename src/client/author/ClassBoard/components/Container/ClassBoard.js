@@ -627,7 +627,8 @@ class ClassBoard extends Component {
       isLoading,
       t,
       history,
-      location
+      location,
+      loadTestActivity
     } = this.props;
 
     const {
@@ -818,6 +819,7 @@ class ClassBoard extends Component {
                       itemId: firstQuestion.testItemId,
                       selectedTab: "questionView"
                     });
+                    loadTestActivity(assignmentId, classId);
                     history.push(
                       `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
                     );

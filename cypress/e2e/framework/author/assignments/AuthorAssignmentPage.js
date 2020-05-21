@@ -30,6 +30,10 @@ class AuthorAssignmentPage {
 
   getClassByAssignmentRow = () => cy.get("@assignmentRow").find('[data-cy="class"]');
 
+  getAllOptionsInDropDown = () => cy.get(".ant-dropdown-placement-bottomRight").find("li");
+
+  getOptionInDropDownByAttribute = option => cy.get(`[data-cy="${option}"]`);
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -84,9 +88,8 @@ class AuthorAssignmentPage {
 
   clickActionsBytestid = id =>
     cy
-      .get(`[data-cy=${id}]`)
+      .get(`[data-test="${id}"]`)
       .closest("tr")
-      .prev()
       .contains("span", "ACTIONS")
       .click({ force: true });
 
@@ -97,7 +100,7 @@ class AuthorAssignmentPage {
 
     this.clickOnActions();
 
-    cy.get('[data-cy="duplicate"]').click({ force: true });
+    this.getOptionInDropDownByAttribute("duplicate").click({ force: true });
 
     return cy.wait("@duplicate").then(xhr => {
       expect(xhr.status).to.eq(200);
@@ -110,7 +113,7 @@ class AuthorAssignmentPage {
     cy.route("GET", "**/api/test/**").as("viewAsStudent");
 
     this.clickOnActions();
-    cy.get('[data-cy="preview"]').click({ force: true });
+    this.getOptionInDropDownByAttribute("preview").click({ force: true });
     cy.wait("@viewAsStudent").then(xhr => expect(xhr.response.body.result._id).to.equal(TestID));
   };
 
@@ -119,7 +122,7 @@ class AuthorAssignmentPage {
     cy.route("GET", "**/api/test/**").as("testLoad");
 
     this.clickOnActions();
-    cy.get('[data-cy="view-details"]').click();
+    this.getOptionInDropDownByAttribute("view-details").click();
     cy.wait("@testLoad");
 
     cy.url()
@@ -134,7 +137,7 @@ class AuthorAssignmentPage {
 
     if (testid) this.clickActionsBytestid(testid);
     else this.clickOnActions();
-    cy.get('[data-cy="edit-Assignment"]')
+    this.getOptionInDropDownByAttribute("edit-Assignment")
       .click({ force: true })
       .then(() => {
         // pop up that comes up when we try to edit a assigned test
@@ -158,8 +161,7 @@ class AuthorAssignmentPage {
     cy.server();
     cy.route("DELETE", "**/delete-assignments").as("deleteAssignments");
     this.clickOnActions();
-
-    cy.get('[data-cy="delete-Assignment"]').click({ force: true });
+    this.getOptionInDropDownByAttribute("delete-Assignment").click({ force: true });
     cy.get(".ant-modal-content")
       .find("input")
       .type("UNASSIGN", { force: true });
@@ -177,6 +179,7 @@ class AuthorAssignmentPage {
     cy.server();
     cy.route("POST", "**/api/group/search").as("classes");
     this.clickOnActions();
+
     cy.get('[data-cy="assign"]').click();
     cy.wait("@classes");
   };
@@ -211,6 +214,14 @@ class AuthorAssignmentPage {
       .click({ force: true });
     cy.wait("@assignment");
     cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+  };
+
+  clickAssignmentSummary = () => {
+    cy.server();
+    cy.route("GET", "group/mygroups").as("load-summary");
+    this.clickOnActions();
+    this.getOptionInDropDownByAttribute("summary-grades").click();
+    // cy.wait("@load-summary");
   };
   // *** ACTIONS END ***
 

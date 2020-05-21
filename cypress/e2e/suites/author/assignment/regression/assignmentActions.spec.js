@@ -4,7 +4,7 @@ import TestAddItemTab from "../../../../framework/author/tests/testDetail/testAd
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
-import Regrade from "../../../../framework/author/tests/testDetail/regrade";
+import Regrade from "../../../../framework/author/tests/regrade/regrade";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
 import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
@@ -54,18 +54,29 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
     email: "student2.for.assign.actions@snapwiz.com",
     pass: "snapwiz"
   };
+  const questText = [];
+  const points = [];
+  const questionType = [];
+  const attempt = [];
+  const dropdownOptions = [
+    "assign",
+    "duplicate",
+    "preview",
+    "view-details",
+    "print-assignment",
+    "release-grades",
+    "summary-grades",
+    "edit-Assignment",
+    "delete-Assignment"
+  ];
 
   let OriginalTestId;
   let newTestId;
   let qType;
   let num;
   let itemIds;
-  const questText = [];
-  const points = [];
-  const questionType = [];
-  const attempt = [];
 
-  before("Get Data Of test and its itemns", () => {
+  before("> get data of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("questionAuthoring").then(quesData => {
       ITEMS.forEach(element => {
@@ -77,44 +88,52 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
       });
     });
   });
-  before("Login and create new items and test", () => {
+  before("> login and create new items and test", () => {
     cy.login("teacher", Teacher.email, Teacher.pass);
     testLibraryPage.createTest(TEST).then(id => {
       OriginalTestId = id;
       itemIds = testLibraryPage.items;
     });
   });
-  before("Assign the test", () => {
+  before("> assign the test", () => {
     testLibraryPage.clickOnAssign();
     testAssignPage.selectClass("Class");
     testAssignPage.selectTestType("Class Assessment");
     testAssignPage.clickOnEntireClass();
     testAssignPage.clickOnAssign();
-    cy.wait(5000);
   });
 
-  context("Verify Actions Button In Author Side Assignments Page", () => {
-    context("Duplicate", () => {
-      before("Duplicate Test", () => {
+  context("> verify actions button in author side assignments page", () => {
+    it("> verify all options presence in action dropdown", () => {
+      testLibraryPage.sidebar.clickOnAssignment();
+      authorAssignmentPage.clickActionsBytestid(OriginalTestId);
+      authorAssignmentPage.getAllOptionsInDropDown().should("have.length", dropdownOptions.length);
+      dropdownOptions.forEach(option =>
+        authorAssignmentPage.getOptionInDropDownByAttribute(option).should("exist", `${option} in dropdown`)
+      );
+    });
+    context("> duplicate", () => {
+      before("> duplicate test", () => {
+        testLibraryPage.sidebar.clickOnDashboard();
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnDuplicateAndWait().then(id => {
           newTestId = id;
         });
       });
-      it("Verify Duplicate Test", () => {
-        testLibraryPage.verifyNewTestIdInUrl(OriginalTestId);
+      it("> verify duplicate test", () => {
+        testLibraryPage.verifyAbsenceOfIdInUrl(OriginalTestId);
         testSummayTab.header.clickOnReview();
         itemIds.forEach(item => testReviewTab.verifyQustionById(item));
         testReviewTab.verifySummary(itemKeysInTest.length, points.reduce((a, b) => a + b, 0));
       });
     });
-    context("Preview", () => {
-      before("click on preview", () => {
+    context("> preview", () => {
+      before("> click on preview", () => {
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnPreviewTestAndVerifyId(OriginalTestId);
       });
-      it("Verify Preview", () => {
+      it("> verify preview", () => {
         studentTestPage.verifyNoOfQuestions(itemKeysInTest.length);
         itemKeysInTest.forEach((item, index) => {
           studentTestPage.attemptQuestion(questionType[index], attemptTypes.RIGHT, attempt[index]);
@@ -123,24 +142,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         // studentTestPage.clickOnExitTest(true); // preview assessment player automatically gets closed by last next button click
       });
     });
-    context("View Details", () => {
-      before("Click On View Details", () => {
+    context("> view details", () => {
+      before("> click on view details", () => {
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnViewDetailsAndverifyId(OriginalTestId);
       });
-      it("Verify View Details ", () => {
+      it("> verify view details ", () => {
         testReviewTab.verifySummary(itemKeysInTest.length, points.reduce((a, b) => a + b, 0));
         itemIds.forEach(item => testReviewTab.verifyQustionById(item));
         subjects.forEach((subject, index) => testReviewTab.verifyGradeSubject(grades[index], subject));
       });
       itemKeysInTest.forEach((item, index) => {
-        it(`Verify In The Review Tabs-Collapsed Mode-${item}`, () => {
+        it(`> verify in the review tabs-collapsed mode-${item}`, () => {
           // Verify All questions' presence
           testReviewTab.verifyQustionById(itemIds[index]);
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
         });
-        it(`Verify In The Review Tabs-Expanded Mode-${item}`, () => {
+        it(`> verify in the review tabs-expanded mode-${item}`, () => {
           testReviewTab.clickOnExpandRow();
           // Verify All questions' presence along with thier correct answers and points
           testReviewTab.verifyQustionById(itemIds[index]);
@@ -151,8 +170,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         });
       });
     });
-    context("Edit Test", () => {
-      before("Create An Item", () => {
+    context("> edit test", () => {
+      before("> create an item", () => {
         item.createItem(newItemKey).then(id => {
           // New Item Details
           newItemId = id;
@@ -161,7 +180,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
           authorAssignmentPage.verifyEditTestURLUnAttempted(OriginalTestId);
         });
       });
-      before("Add Created Item To test", () => {
+      before("> add created item to test", () => {
         // Add created Item using add item tab
         testReviewTab.testheader.clickOnAddItems();
         testReviewTab.searchFilters.clearAll();
@@ -176,18 +195,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         testReviewTab.testheader.clickOnPublishButton();
       });
 
-      beforeEach("close assignment player if failed in between", () => {
+      beforeEach("> close assignment player if failed in between", () => {
         studentTestPage.clickOnExitTest();
       });
 
-      it("Verify and attempt assignment", () => {
+      it("> verify and attempt assignment", () => {
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.verifyPresenceOfTest(OriginalTestId);
         assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
         studentTestPage.verifyNoOfQuestions(itemKeysInTest.length);
         studentTestPage.clickOnExitTest();
       });
-      it("Edit Test after attempt-Regrade", () => {
+      it("> edit test after attempt-regrade", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnEditTest(true);
@@ -195,10 +214,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         testReviewTab.clickOnCheckBoxByItemId(itemIds[itemIds.length - 1]);
         itemIds.pop();
         testReviewTab.clickOnRemoveSelected();
+        testLibraryPage.getVersionedTestID().then(id => {
+          newTestId = id;
+        });
         testLibraryPage.header.clickRegradePublish();
         regrade.applyRegrade();
       });
-      it("Verify After Edit-Regrade", () => {
+      it("> verify after edit-regrade", () => {
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.clickOnAssignmentButton();
         studentTestPage.verifyNoOfQuestions(itemIds.length);
@@ -228,13 +250,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         reportsPage.verifyMaxScoreOfQueByIndex(itemIds.length - 1, points[itemIds.length - 1]);
       }); */
     });
-    context("Unassign", () => {
+    context("> assignment summary", () => {
+      before("> click reports summary button", () => {
+        cy.login("teacher", Teacher.email, Teacher.pass);
+        testLibraryPage.sidebar.clickOnAssignment();
+        authorAssignmentPage.clickAssignmentSummary();
+      });
+      it("> verify navigation", () => {
+        cy.url().should("contain", `author/reports/performance-by-students/test/${newTestId}`);
+        cy.get('[title="Reports"]').should("exist");
+      });
+    });
+    context("> unassign", () => {
       before("login as teacher and unassign", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnUnassign();
       });
-      it("Verify UnAssign", () => {
+      it("> verify unassign", () => {
         cy.login("student", Student2.email, Student2.pass);
         assignmentsPage.sidebar.clickOnAssignment();
         assignmentsPage.verifyAbsenceOfTest(OriginalTestId);

@@ -137,7 +137,7 @@ const ActionMenu = ({
             Release Scores
           </StyledLink>
         </Menu.Item>
-        <Menu.Item key="summary-report">
+        <Menu.Item data-cy="summary-grades" key="summary-report">
           <Link to={`/author/reports/performance-by-students/test/${currentTestId}`}>
             <IconBarChart />
             <SpaceElement />

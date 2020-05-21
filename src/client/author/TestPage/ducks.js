@@ -1529,6 +1529,13 @@ function* deleteSharedUserSaga({ payload }) {
 function* setTestDataAndUpdateSaga({ payload }) {
   try {
     let newTest = yield select(getTestSelector);
+    // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
+    // Penalty true/false is set to determine the case
+    if (newTest.scoringType === test.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) {
+      newTest = produce(newTest, draft => {
+        draft.scoringType = test.evalTypeLabels.PARTIAL_CREDIT;
+      });
+    }
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
     const { addToTest, item } = payload;
     if (addToTest) {
@@ -1577,6 +1584,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
         grades: _uniq([...grades, ...questionGrades])
       })
     );
+
     yield put(setTestDataAction(newTest));
     const creating = yield select(getTestsCreatingSelector);
     if (newTest._id || creating) {

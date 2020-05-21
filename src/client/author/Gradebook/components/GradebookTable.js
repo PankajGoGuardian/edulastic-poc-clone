@@ -54,7 +54,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
   ];
   return (
     <StyledTable
-      rowKey={row => row._id}
+      rowKey={row => `${row._id}_${row.classId}`}
       columns={columns}
       dataSource={data}
       rowSelection={{

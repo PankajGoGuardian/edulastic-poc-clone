@@ -36,10 +36,10 @@ const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
 const GradebookFilters = ({ data, filters, updateFilters, clearFilters, onNewGroupClick }) => (
   <div style={{ minWidth: "220px", maxWidth: "220px" }}>
     <StyledRow type="flex">
-      {/* <Col span={24} style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
-          <StyledSpan> FILTERS </StyledSpan>
-          <StyledSpan onClick={clearFilters}> CLEAR ALL </StyledSpan>
-        </Col> */}
+      <Col span={24} style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+        <StyledSpan> FILTERS </StyledSpan>
+        <StyledSpan onClick={clearFilters}> CLEAR ALL </StyledSpan>
+      </Col>
       <FilterDropdown
         label="Assessment"
         mode="multiple"
@@ -110,4 +110,5 @@ const StyledSpan = styled.span`
   color: ${props => (props.onClick ? themeColor : titleColor)};
   font-size: ${props => (props.onClick ? "12px" : "13px")};
   font-weight: 600;
+  cursor: ${props => (props.onClick ? "pointer" : "default")};
 `;

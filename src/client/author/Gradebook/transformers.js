@@ -3,8 +3,19 @@ import { capitalize, keyBy, groupBy, uniq } from "lodash";
 // constants
 import { testActivityStatus } from "@edulastic/constants";
 
-// id for STATUS_LIST items (if present)
-// correspond to testActivityStatus from @edulastic/constants
+export const INITIAL_FILTERS = {
+  assessmentIds: [],
+  status: "",
+  classIds: [],
+  grades: [],
+  subjects: [],
+  termId: "",
+  testType: "",
+  groupId: ""
+};
+
+// id for STATUS_LIST items correspond to
+// testActivityStatus from @edulastic/constants
 export const STATUS_LIST = [
   {
     id: "NOT STARTED",

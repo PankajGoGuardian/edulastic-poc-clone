@@ -27,16 +27,8 @@ const slice = createSlice({
     loadingFilters: false,
     performanceData: {},
     loadingPerformanceData: false,
-    selectedFilters: {
-      assessmentIds: [],
-      status: "",
-      classIds: [],
-      grades: [],
-      subjects: [],
-      termId: "",
-      testType: "",
-      groupId: ""
-    },
+    showFilter: false,
+    selectedFilters: {},
     pageDetail: {
       studentPage: 1,
       studentPageSize: 50,
@@ -58,6 +50,9 @@ const slice = createSlice({
     fetchGradebookFiltersCompleted: (state, { payload }) => {
       state.filtersData = payload;
       state.loadingFilters = false;
+    },
+    toggleShowFilter: state => {
+      state.showFilter = !state.showFilter;
     },
     setSelectedFilters: (state, { payload }) => {
       state.selectedFilters = payload;
@@ -138,6 +133,7 @@ export const selectors = {
   loadingFilters: state => state?.gradebookReducer?.loadingFilters,
   filtersData: state => state?.gradebookReducer?.filtersData,
   gradebookData: state => state?.gradebookReducer?.performanceData,
+  showFilter: state => state?.gradebookReducer?.showFilter,
   selectedFilters: state => state?.gradebookReducer?.selectedFilters,
   pageDetail: state => state?.gradebookReducer?.pageDetail
 };

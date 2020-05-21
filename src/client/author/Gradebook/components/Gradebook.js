@@ -23,9 +23,10 @@ import AddToGroupModal from "../../Reports/common/components/Popups/AddToGroupMo
 
 // ducks
 import { actions, selectors } from "../ducks";
+import { getCurrentTerm } from "../../src/selectors/user";
 
-// transformers
-import { curateFiltersData, curateGradebookData } from "../transformers";
+// transformers & constants
+import { curateFiltersData, curateGradebookData, INITIAL_FILTERS } from "../transformers";
 
 const Gradebook = ({
   windowWidth,
@@ -36,25 +37,35 @@ const Gradebook = ({
   fetchGradebookData,
   loading,
   gradebookData,
+  showFilter,
+  toggleShowFilter,
   filters,
   setFilters,
   pageDetail,
-  setPageDetail
+  setPageDetail,
+  termId
 }) => {
-  const [showFilter, setShowFilter] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
+
+  const setInitialFilters = () => setFilters({ ...INITIAL_FILTERS, termId });
 
   useEffect(() => {
     fetchFiltersData();
   }, []);
 
   useEffect(() => {
-    setPageDetail({ ...pageDetail, studentPage: 1, assignmentPage: 1 });
+    if (Object.keys(filters).length) {
+      setPageDetail({ ...pageDetail, studentPage: 1, assignmentPage: 1 });
+    } else {
+      setInitialFilters();
+    }
   }, [filters]);
 
   useEffect(() => {
-    fetchGradebookData({ filters, pageDetail });
+    if (Object.keys(filters).length) {
+      fetchGradebookData({ filters, pageDetail });
+    }
   }, [pageDetail]);
 
   const curatedFiltersData = curateFiltersData(filtersData, filters);
@@ -95,12 +106,12 @@ const Gradebook = ({
                 data={curatedFiltersData}
                 filters={filters}
                 updateFilters={setFilters}
-                clearFilters={() => setFilters(INITIAL_FILTERS)}
+                clearFilters={setInitialFilters}
                 onNewGroupClick={() => setShowAddToGroupModal(true)}
               />
             </ScrollbarContainer>
           )}
-          <FilterButton showFilter={showFilter} onClick={() => setShowFilter(!showFilter)}>
+          <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
             <IconFilter width={20} height={20} />
           </FilterButton>
           <TableContainer showFilter={showFilter}>
@@ -153,12 +164,15 @@ const enhance = compose(
       filtersData: selectors.filtersData(state),
       loading: selectors.loading(state),
       gradebookData: selectors.gradebookData(state),
+      showFilter: selectors.showFilter(state),
       filters: selectors.selectedFilters(state),
-      pageDetail: selectors.pageDetail(state)
+      pageDetail: selectors.pageDetail(state),
+      termId: getCurrentTerm(state)
     }),
     {
       fetchFiltersData: actions.fetchGradebookFiltersRequest,
       fetchGradebookData: actions.fetchStudentPerformanceRequest,
+      toggleShowFilter: actions.toggleShowFilter,
       setFilters: actions.setSelectedFilters,
       setPageDetail: actions.setPageDetail
     }

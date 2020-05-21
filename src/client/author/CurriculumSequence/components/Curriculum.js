@@ -140,7 +140,7 @@ const Curriculum = props => {
         ))}
       <AddNewOrManageModules onClick={openAddModuleModal}>
         <IconPlusCircle />
-        <span>Manage Modules</span>
+        <span>Add Module</span>
       </AddNewOrManageModules>
     </SortableContainer>
   );

@@ -227,22 +227,25 @@ class App extends Component {
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (
-        this.props.location.pathname.toLocaleLowerCase().includes("/getstarted") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/signup") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
-        (path[0] && ["district", "school"].includes(path[0].toLocaleLowerCase())) ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/fwd") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/resetpassword") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/inviteteacher")
+        !(
+          this.props.location.pathname.toLocaleLowerCase().includes("/getstarted") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/signup") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
+          (path[0] && ["district", "school"].includes(path[0].toLocaleLowerCase())) ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/fwd") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/resetpassword") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/inviteteacher") ||
+          // third-party auth
+          this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
+          this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
+        )
       ) {
-      } else if (
-        this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
-      ) {
-      } else {
+        if (this.props.location.pathname.toLocaleLowerCase().includes("/home")) {
+          localStorage.setItem("thirdPartySignOnRole", roleuser.STUDENT);
+        }
         if (!getCurrentPath().includes("/login")) {
           localStorage.setItem("loginRedirectUrl", getCurrentPath());
         }

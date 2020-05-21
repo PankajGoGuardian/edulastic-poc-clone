@@ -322,5 +322,9 @@
   "manageModalModuleNameEmpty": {
     "message": "Module name cannot be empty",
     "description": ""
+  },
+  "playlistBeingUsed": {
+    "message": "This playlist is already being used and is available in 'My Playlists'",
+    "description": ""
   }
 }

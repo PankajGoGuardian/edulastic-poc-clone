@@ -21,11 +21,19 @@ import {
   titleColor,
   white,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { EduButton, ProgressBar, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
-import { testActivityStatus } from "@edulastic/constants";
-import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVerified, IconVisualization } from "@edulastic/icons";
+import { testActivityStatus, roleuser } from "@edulastic/constants";
+import {
+  IconCheckSmall,
+  IconLeftArrow,
+  IconMoreVertical,
+  IconVerified,
+  IconVisualization,
+  IconTrash
+} from "@edulastic/icons";
 import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row, message } from "antd";
 import produce from "immer";
 import PropTypes from "prop-types";
@@ -65,6 +73,9 @@ import AssignmentDragItem, { SupportResourceDropTarget } from "./AssignmentDragI
 import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
+
+const IS_ASSIGNED = "ASSIGNED";
+const NOT_ASSIGNED = "ASSIGN";
 
 const SortableHOC = sortableContainer(({ children }) => <div onClick={e => e.stopPropagation()}>{children}</div>);
 
@@ -372,6 +383,35 @@ class ModuleRow extends Component {
     }
   };
 
+  addModuleMenuClick = e => {
+    const { domEvent } = e;
+    domEvent.stopPropagation();
+
+    const { addModule } = this.props;
+    if (addModule) {
+      addModule();
+    }
+  };
+
+  editModuleMenuClick = e => {
+    const { domEvent } = e;
+    domEvent.stopPropagation();
+    const { editModule, module, moduleIndex } = this.props;
+    if (editModule) {
+      editModule(moduleIndex, module);
+    }
+  };
+
+  deleteModuleMenuClick = e => {
+    const { domEvent } = e;
+    domEvent.stopPropagation();
+
+    const { deleteModule, moduleIndex } = this.props;
+    if (deleteModule) {
+      deleteModule(moduleIndex);
+    }
+  };
+
   render() {
     const {
       onCollapseExpand,
@@ -399,7 +439,9 @@ class ModuleRow extends Component {
       showRightPanel,
       setEmbeddedVideoPreviewModal,
       onDrop,
-      proxyUserRole
+      proxyUserRole,
+      isManageContentActive,
+      userRole
     } = this.props;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignModule, assignTest } = this;
@@ -408,7 +450,7 @@ class ModuleRow extends Component {
     const totalAssigned = data.length;
 
     const isParentRoleProxy = proxyUserRole === "parent";
-    console.log(isStudent);
+
     const menu = (
       <Menu data-cy="addContentMenu">
         {curriculum.modules.map(moduleItem => (
@@ -431,49 +473,81 @@ class ModuleRow extends Component {
     // eslint-disable-next-line no-use-before-define
     const ResolvedInfoColumsWrapper = isDesktop ? InfoColumnsDesktop : InfoColumnsMobile;
 
-    const lastColumOfModuleRow =
-      !hideEditOptions &&
-      (completed ? (
-        <LastColumn justify="flex-end" style={moduleInlineStyle}>
-          <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
-            MODULE COMPLETED
-            <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
-          </StyledLabel>
-        </LastColumn>
-      ) : isStudent ? (
-        <Fragment />
-      ) : totalAssigned ? (
-        <>
-          {hasEditAccess && (
-            <HideLinkLabel
-              textColor={themeColor}
-              fontWeight="Bold"
-              data-cy={module.hidden ? "show-module" : "hide-module"}
-              onClick={event => {
-                event.preventDefault();
-                event.stopPropagation();
-                this.toggleModule(module, moduleIndex);
-              }}
-            >
-              {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
-            </HideLinkLabel>
+    const moduleManagementMenu = (
+      <Menu data-cy="moduleItemMoreMenu">
+        <Menu.Item onClick={this.addModuleMenuClick}>Add Module</Menu.Item>
+        <Menu.Item onClick={this.editModuleMenuClick}>Edit Module</Menu.Item>
+        <Menu.Item onClick={this.deleteModuleMenuClick}>Delete Module</Menu.Item>
+      </Menu>
+    );
+
+    const moduleActionsMenu = (
+      <Fragment>
+        {!hideEditOptions && hasEditAccess && totalAssigned && !isStudent && !completed ? (
+          <HideLinkLabel
+            textColor={themeColor}
+            fontWeight="Bold"
+            data-cy={module.hidden ? "show-module" : "hide-module"}
+            onClick={event => {
+              event.preventDefault();
+              event.stopPropagation();
+              this.toggleModule(module, moduleIndex);
+            }}
+          >
+            {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
+          </HideLinkLabel>
+        ) : null}
+        <LastColumn style={moduleInlineStyle} hideEditOptions={hideEditOptions}>
+          {completed ? (
+            !hideEditOptions && (
+              <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
+                MODULE COMPLETED
+                <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
+              </StyledLabel>
+            )
+          ) : isStudent ? (
+            <Fragment />
+          ) : (
+            !hideEditOptions && (
+              <StyledTag
+                data-cy="AssignWholeModule"
+                bgColor={themeColor}
+                onClick={() => {
+                  !module.hidden && totalAssigned ? assignModule(module) : {};
+                }}
+                style={moduleInlineStyle}
+              >
+                {totalAssigned ? "ASSIGN MODULE" : "NO ASSIGNMENTS"}
+              </StyledTag>
+            )
           )}
-          <LastColumn justify="flex-end">
-            <StyledTag
-              data-cy="AssignWholeModule"
-              bgColor={themeColor}
-              onClick={() => (!module.hidden ? assignModule(module) : {})}
-              style={moduleInlineStyle}
-            >
-              ASSIGN MODULE
-            </StyledTag>
-          </LastColumn>
-        </>
-      ) : (
-        <LastColumn justify="flex-end" style={moduleInlineStyle}>
-          <StyledTag onClick={event => event.stopPropagation()}>NO ASSIGNMENTS</StyledTag>
+          {isDesktop && !isStudent && (
+            <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
+              <IconActionButton onClick={e => e.stopPropagation()}>
+                <IconMoreVertical width={5} height={14} color={themeColor} />
+              </IconActionButton>
+            </Dropdown>
+          )}
         </LastColumn>
-      ));
+      </Fragment>
+    );
+    const lastColumOfModuleRow = isDesktop ? (
+      moduleActionsMenu
+    ) : (
+      <Dropdown
+        overlay={
+          <Fragment>
+            {moduleActionsMenu}
+            {moduleManagementMenu}
+          </Fragment>
+        }
+        trigger={["click"]}
+      >
+        <IconActionButton onClick={e => e.stopPropagation()}>
+          <IconMoreVertical width={5} height={14} color={themeColor} />
+        </IconActionButton>
+      </Dropdown>
+    );
 
     return (
       (isStudent && module.hidden) || (
@@ -535,84 +609,70 @@ class ModuleRow extends Component {
                     </ModuleTitlePrefix>
                   </ModuleTitleWrapper>
                   <Tooltip placement="bottom" title={description}>
-                    <EllipsisContainer dangerouslySetInnerHTML={{ __html: description }} />
+                    <ModuleDescription dangerouslySetInnerHTML={{ __html: description }} />
                   </Tooltip>
                 </FirstColumn>
                 {urlHasUseThis && (
-                  <>
-                    <ResolvedInfoColumsWrapper>
-                      <ProficiencyColumn style={moduleInlineStyle}>
-                        <InfoColumnLabel textColor={lightGrey5}>PROFICIENCY</InfoColumnLabel>
-                        {/* TODO: Method to find Progress Percentage */}
-                        <StyledProgressBar
-                          strokeColor={getProgressColor(summaryData[moduleIndex]?.value)}
-                          strokeWidth={13}
-                          percent={summaryData[moduleIndex]?.value}
-                          format={percent => (percent ? `${percent}%` : "")}
-                        />
-                      </ProficiencyColumn>
-                      {!isStudent ? (
-                        <SubmittedColumn style={{ ...moduleInlineStyle }}>
-                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
-                            SUBMITTED
-                          </InfoColumnLabel>
-                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                            {/* TODO: Method to find submissions */}
-                            {summaryData[moduleIndex]?.submitted === "-"
-                              ? summaryData[moduleIndex]?.submitted
-                              : `${summaryData[moduleIndex].submitted}%`}
-                          </InfoColumnLabel>
-                        </SubmittedColumn>
-                      ) : (
-                        <ScoreColumn>
-                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
-                            SCORE
-                          </InfoColumnLabel>
-                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                            {/* TODO: Method to find sum of scores */}
-                            {summaryData[moduleIndex]?.scores >= 0 && summaryData[moduleIndex]?.maxScore
-                              ? `${summaryData[moduleIndex]?.scores}/${summaryData[moduleIndex]?.maxScore}`
-                              : "-"}
-                          </InfoColumnLabel>
-                        </ScoreColumn>
-                      )}
-                      {!isStudent ? (
-                        <ClassesColumn style={{ ...moduleInlineStyle }}>
-                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
-                            CLASSES
-                          </InfoColumnLabel>
-                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                            {/* TODO: Method to find classes */}
-                            {summaryData[moduleIndex]?.classes}
-                          </InfoColumnLabel>
-                        </ClassesColumn>
-                      ) : (
-                        <TimeColumn>
-                          <InfoColumnLabel justify="center" textColor={lightGrey5}>
-                            TIME SPENT
-                          </InfoColumnLabel>
-                          <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
-                            {/* TODO: Method to find Total Time Spent */}
-                            {summaryData[moduleIndex]?.timeSpent}
-                          </InfoColumnLabel>
-                        </TimeColumn>
-                      )}
-                      {!isDesktop && (
-                        <Dropdown overlay={lastColumOfModuleRow} trigger={["click"]}>
-                          <MobileModuleActionButton
-                            onClick={e => {
-                              // To prevent collapse/expand row
-                              e.stopPropagation();
-                            }}
-                          >
-                            <IconMoreVertical width={5} height={14} color={themeColor} />
-                          </MobileModuleActionButton>
-                        </Dropdown>
-                      )}
-                    </ResolvedInfoColumsWrapper>
-                    {isDesktop && lastColumOfModuleRow}
-                  </>
+                  <ResolvedInfoColumsWrapper>
+                    <ProficiencyColumn style={moduleInlineStyle}>
+                      <InfoColumnLabel textColor={lightGrey5}>PROFICIENCY</InfoColumnLabel>
+                      {/* TODO: Method to find Progress Percentage */}
+                      <StyledProgressBar
+                        strokeColor={getProgressColor(summaryData[moduleIndex]?.value)}
+                        strokeWidth={13}
+                        percent={summaryData[moduleIndex]?.value}
+                        format={percent => (percent ? `${percent}%` : "")}
+                      />
+                    </ProficiencyColumn>
+                    {!isStudent ? (
+                      <SubmittedColumn style={{ ...moduleInlineStyle }}>
+                        <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                          SUBMITTED
+                        </InfoColumnLabel>
+                        <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                          {/* TODO: Method to find submissions */}
+                          {summaryData[moduleIndex]?.submitted === "-"
+                            ? summaryData[moduleIndex]?.submitted
+                            : `${summaryData[moduleIndex].submitted}%`}
+                        </InfoColumnLabel>
+                      </SubmittedColumn>
+                    ) : (
+                      <ScoreColumn>
+                        <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                          SCORE
+                        </InfoColumnLabel>
+                        <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                          {/* TODO: Method to find sum of scores */}
+                          {summaryData[moduleIndex]?.scores >= 0 && summaryData[moduleIndex]?.maxScore
+                            ? `${summaryData[moduleIndex]?.scores}/${summaryData[moduleIndex]?.maxScore}`
+                            : "-"}
+                        </InfoColumnLabel>
+                      </ScoreColumn>
+                    )}
+                    {!isStudent ? (
+                      <ClassesColumn style={{ ...moduleInlineStyle }}>
+                        <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                          CLASSES
+                        </InfoColumnLabel>
+                        <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                          {/* TODO: Method to find classes */}
+                          {summaryData[moduleIndex]?.classes}
+                        </InfoColumnLabel>
+                      </ClassesColumn>
+                    ) : (
+                      <TimeColumn>
+                        <InfoColumnLabel justify="center" textColor={lightGrey5}>
+                          TIME SPENT
+                        </InfoColumnLabel>
+                        <InfoColumnLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
+                          {/* TODO: Method to find Total Time Spent */}
+                          {summaryData[moduleIndex]?.timeSpent}
+                        </InfoColumnLabel>
+                      </TimeColumn>
+                    )}
+                  </ResolvedInfoColumsWrapper>
                 )}
+                {lastColumOfModuleRow}
               </ModuleHeaderData>
             </ModuleHeader>
 
@@ -675,7 +735,7 @@ class ModuleRow extends Component {
                     : {};
 
                   const moreMenu = (
-                    <Menu data-cy="moduleItemMoreMenu">
+                    <Menu data-cy="assessmentItemMoreMenu">
                       <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
                       {isAssigned && (
                         <Menu.Item>
@@ -694,105 +754,7 @@ class ModuleRow extends Component {
                     </Menu>
                   );
 
-                  const assessmentsLastColumn = urlHasUseThis ? (
-                    !isStudent ? (
-                      <>
-                        {hasEditAccess && (!hideEditOptions || (status === "published" && mode === "embedded")) && (
-                          <HideLinkLabel
-                            textColor={themeColor}
-                            fontWeight="Bold"
-                            data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
-                            onClick={() => this.hideTest(module._id, moduleData)}
-                          >
-                            {moduleData.hidden ? "SHOW" : "HIDE"}
-                          </HideLinkLabel>
-                        )}
-                        <LastColumn align="flex-start" justify="flex-end" paddingRight="0">
-                          {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
-                            (isAssigned ? (
-                              <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
-                                <Button
-                                  data-cy={
-                                    currentAssignmentId.includes(moduleData.contentId)
-                                      ? "hide-assignment"
-                                      : "show-assignment"
-                                  }
-                                  onClick={() => this.setAssignmentDropdown(moduleData.contentId)}
-                                  style={{ padding: "0 6px" }}
-                                >
-                                  <IconCheckSmall color={white} />
-                                  &nbsp;&nbsp;
-                                  {currentAssignmentId.includes(moduleData.contentId)
-                                    ? "HIDE ASSIGNMENTS"
-                                    : "SHOW ASSIGNMENTS"}
-                                </Button>
-                              </AssignmentButton>
-                            ) : (
-                              <AssignmentButton data-cy="assignButton" assigned={isAssigned} style={rowInlineStyle}>
-                                <Button onClick={() => assignTest(_id, moduleData.contentId)} style={{ width: 124 }}>
-                                  <IconLeftArrow width={13.3} height={9.35} />
-                                  ASSIGN
-                                </Button>
-                              </AssignmentButton>
-                            ))}
-                          {mode === "embedded" ||
-                            (urlHasUseThis && (
-                              <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle}>
-                                <CustomIcon
-                                  data-cy="assignmentMoreOptionsIcon"
-                                  marginLeft={15}
-                                  marginRight={15}
-                                  align="auto"
-                                  style={rowInlineStyle}
-                                >
-                                  <IconMoreVertical width={5} height={14} color={themeColor} />
-                                </CustomIcon>
-                              </Dropdown>
-                            ))}
-                        </LastColumn>
-                      </>
-                    ) : (
-                      !moduleData.hidden && (
-                        <>
-                          <LastColumn>
-                            {!isParentRoleProxy && (
-                              <AssignmentButton assigned={false}>
-                                <Button data-cy={uta.text} onClick={uta.action}>
-                                  {uta.text}
-                                </Button>
-                              </AssignmentButton>
-                            )}
-                          </LastColumn>
-                          {uta.retake && (
-                            <LastColumn>
-                              {!isParentRoleProxy && (
-                                <AssignmentButton assigned={false}>
-                                  <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
-                                    {uta.retake.text}
-                                  </Button>
-                                </AssignmentButton>
-                              )}
-                            </LastColumn>
-                          )}
-                        </>
-                      )
-                    )
-                  ) : (
-                    <LastColumn>
-                      <EduButton
-                        isGhost
-                        height="22px"
-                        width="124px"
-                        style={{ padding: "0px 15px" }}
-                        onClick={() => this.viewTest(moduleData?.contentId)}
-                      >
-                        <IconVisualization width="14px" height="14px" />
-                        Preview
-                      </EduButton>
-                    </LastColumn>
-                  );
-
-                  const assessmentInfoProgress = (
+                  const assessmentInfoProgress = urlHasUseThis ? (
                     <ResolvedInfoColumsWrapper>
                       <ProficiencyColumn style={rowInlineStyle}>
                         {/* TODO: Method to display progress for assignments */}
@@ -835,17 +797,146 @@ class ModuleRow extends Component {
                           </StyledLabel>
                         </TimeColumn>
                       )}
-                      {!isDesktop && (
-                        <Dropdown overlay={assessmentsLastColumn} trigger={["click"]}>
-                          <MobileModuleActionButton>
-                            <IconMoreVertical color={themeColor} />
-                          </MobileModuleActionButton>
-                        </Dropdown>
-                      )}
                     </ResolvedInfoColumsWrapper>
+                  ) : (
+                    <ResolvedInfoColumsWrapper />
                   );
 
-                  const testType = (
+                  const assessmentActions = urlHasUseThis ? (
+                    !isStudent ? (
+                      <Fragment>
+                        {hasEditAccess && (!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                          <HideLinkLabel
+                            textColor={themeColor}
+                            fontWeight="Bold"
+                            data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
+                            onClick={() => this.hideTest(module._id, moduleData)}
+                          >
+                            {moduleData.hidden ? "SHOW" : "HIDE"}
+                          </HideLinkLabel>
+                        )}
+
+                        <LastColumn align="flex-start" justify="flex-end" paddingRight="0">
+                          {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
+                            (isAssigned ? (
+                              <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
+                                <Button
+                                  data-cy={
+                                    currentAssignmentId.includes(moduleData.contentId)
+                                      ? "hide-assignment"
+                                      : "show-assignment"
+                                  }
+                                  onClick={() => this.setAssignmentDropdown(moduleData.contentId)}
+                                  style={{ padding: "0 6px" }}
+                                >
+                                  <IconCheckSmall color={white} />
+                                  &nbsp;&nbsp;
+                                  {currentAssignmentId.includes(moduleData.contentId)
+                                    ? "HIDE ASSIGNMENTS"
+                                    : "SHOW ASSIGNMENTS"}
+                                </Button>
+                              </AssignmentButton>
+                            ) : (
+                              (!hideEditOptions || (status === "published" && mode === "embedded")) &&
+                              userRole !== roleuser.EDULASTIC_CURATOR && (
+                                <AssignmentButton assigned={isAssigned}>
+                                  <Button
+                                    data-cy="assignButton"
+                                    onClick={() => assignTest(moduleIndex, moduleData.contentId)}
+                                  >
+                                    {isAssigned ? (
+                                      <IconCheckSmall color={white} />
+                                    ) : (
+                                      <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
+                                    )}
+                                    {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                                  </Button>
+                                </AssignmentButton>
+                              )
+                            ))}
+
+                          {isDesktop && (mode === "embedded" || urlHasUseThis) && (
+                            <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle}>
+                              <IconActionButton>
+                                <IconMoreVertical width={5} height={14} color={themeColor} />
+                              </IconActionButton>
+                            </Dropdown>
+                          )}
+                          {(!hideEditOptions || mode === "embedded") && isManageContentActive && (
+                            <IconActionButton
+                              data-cy="assignmentDeleteOptionsIcon"
+                              onClick={e => {
+                                e.stopPropagation();
+                                this.deleteTest(moduleIndex, moduleData.contentId);
+                              }}
+                            >
+                              <IconTrash color={themeColor} />
+                            </IconActionButton>
+                          )}
+                        </LastColumn>
+                      </Fragment>
+                    ) : (
+                      !moduleData.hidden && (
+                        <Fragment>
+                          <LastColumn>
+                            {!isParentRoleProxy && (
+                              <AssignmentButton assigned={false}>
+                                <Button data-cy={uta.text} onClick={uta.action}>
+                                  {uta.text}
+                                </Button>
+                              </AssignmentButton>
+                            )}
+                            {uta.retake && !isParentRoleProxy && (
+                              <AssignmentButton assigned={false}>
+                                <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
+                                  {uta.retake.text}
+                                </Button>
+                              </AssignmentButton>
+                            )}
+                          </LastColumn>
+                        </Fragment>
+                      )
+                    )
+                  ) : (
+                    <LastColumn>
+                      <EduButton
+                        isGhost
+                        height="22px"
+                        width="124px"
+                        style={{ padding: "0px 15px" }}
+                        onClick={() => this.viewTest(moduleData?.contentId)}
+                      >
+                        <IconVisualization width="14px" height="14px" />
+                        Preview
+                      </EduButton>
+                    </LastColumn>
+                  );
+
+                  const assessmentColums = isDesktop ? (
+                    <Fragment>
+                      {assessmentInfoProgress}
+                      {assessmentActions}
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      {assessmentInfoProgress}
+                      <Dropdown
+                        overlay={
+                          <Fragment>
+                            {assessmentActions}
+                            {moreMenu}
+                          </Fragment>
+                        }
+                        trigger={["click"]}
+                      >
+                        <IconActionButton onClick={e => e.stopPropagation()}>
+                          <IconMoreVertical width={5} height={14} color={themeColor} />
+                        </IconActionButton>
+                      </Dropdown>
+                    </Fragment>
+                  );
+
+                  const testType = moduleData.contentType === "test" && (
                     <CustomIcon marginLeft={10} marginRight={5}>
                       {urlHasUseThis && (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
                         <Avatar size={18} style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}>
@@ -869,13 +960,8 @@ class ModuleRow extends Component {
                     </CustomIcon>
                   );
 
-                  const testTypeAndTags = (
-                    <FlexContainer
-                      height="25px"
-                      marginLeft={!showRightPanel ? "16px" : ""}
-                      alignItems="center"
-                      justifyContent="flex-start"
-                    >
+                  const testTypeAndTags = moduleData.contentType === "test" && (
+                    <FlexContainer height="25px" alignItems="center" justifyContent="flex-start">
                       <Tags
                         margin="5px 0px 0px 0px"
                         flexWrap="nowrap"
@@ -912,7 +998,7 @@ class ModuleRow extends Component {
                           showResource={this.showResource}
                           urlHasUseThis={urlHasUseThis}
                           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                          infoColumn={assessmentInfoProgress}
+                          assessmentColums={assessmentColums}
                           testTypeAndTags={testTypeAndTags}
                           isDesktop={isDesktop}
                           isStudent={isStudent}
@@ -986,9 +1072,7 @@ class ModuleRow extends Component {
                                   )}
                                 </ModuleDataWrapper>
                               </FirstColumn>
-
-                              {urlHasUseThis && assessmentInfoProgress}
-                              {isDesktop && assessmentsLastColumn}
+                              {assessmentColums}
                             </Row>
                           )}
                         </Assignment>
@@ -1117,7 +1201,6 @@ ModuleRow.propTypes = {
   padding: PropTypes.bool.isRequired,
 
   moduleStatus: PropTypes.bool,
-  mode: PropTypes.string,
   status: PropTypes.string,
   removeUnit: PropTypes.func.isRequired
 };
@@ -1229,7 +1312,11 @@ const FirstColumn = styled(Col)`
 const InfoColumnsMobile = styled(StyledCol)`
   width: 100%;
   position: relative;
-  padding-right: 35px;
+  padding-right: 25px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: auto;
+  }
 `;
 
 const InfoColumnsDesktop = styled.div`
@@ -1246,22 +1333,28 @@ const StyledProgressBar = styled(ProgressBar)`
   }
 `;
 
-const MobileModuleActionButton = styled.div`
-  width: 30px;
-  height: 100%;
-  right: 0px;
+const IconActionButton = styled.div`
+  width: 22px;
+  height: 22px;
+  right: 4px;
   z-index: 50;
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
+
+  @media (min-width: ${smallDesktopWidth}) {
+    position: relative;
+  }
 `;
 
 export const LastColumn = styled(StyledCol)`
-  justify-content: flex-start;
-  width: 165px;
+  width: 180px;
   margin-left: 15px;
   flex-shrink: 0;
+  padding-right: 10px;
+  justify-content: ${({ hideEditOptions }) => (hideEditOptions ? "flex-end" : "flex-start")};
+  ${({ hideEditOptions }) => hideEditOptions && "margin-left: auto;"}
 `;
 
 const ProficiencyColumn = styled(Col)`
@@ -1319,6 +1412,7 @@ const ModuleHeaderData = styled.div`
   display: flex;
   align-items: center;
   width: calc(100% - 35px);
+  position: relative;
   /* justify={urlHasUseThis && "end"} style={{  }} */
 `;
 
@@ -1358,7 +1452,23 @@ const ModuleTitle = styled.div`
   }
 `;
 
-export const EllipsisContainer = styled(MathFormulaDisplay)`
+export const ModuleDescription = styled(MathFormulaDisplay)`
+  white-space: nowrap;
+  color: ${lightGrey6};
+  font-size: ${props => props.fontSize || "12px"};
+  line-height: ${props => props.lineHeight || "17px"};
+  font-weight: ${props => props.fontWeight || "normal"};
+  letter-spacing: 0.2px;
+  max-width: 95%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 12px;
+  }
+`;
+
+export const EllipsisContainer = styled.div`
   white-space: nowrap;
   color: ${lightGrey6};
   font-size: ${props => props.fontSize || "12px"};

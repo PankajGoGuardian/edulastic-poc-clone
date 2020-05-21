@@ -530,7 +530,9 @@ class TestList extends Component {
     if (!modules.length) {
       this.setState({ showManageModuleModal: true, moduleModalAdd: true, testAdded: item });
       message.warning("Create atleast 1 module");
-    } else this.setState({ showAddTestInModules: true, testAdded: item });
+    } else {
+      this.setState({ showAddTestInModules: true, testAdded: item });
+    }
   };
 
   handleBulkAddTests = () => {

@@ -112,9 +112,7 @@ const ChangePlaylistModal = ({
         <>
           <StyledCol xs={24} onClick={modalStyles.onCancel} justify="space-between">
             {playlists.map(playlist => (
-              <>
-                <PlaylistCard {...playlist} select={onChange} activePlaylistId={activePlaylistId} />
-              </>
+              <PlaylistCard {...playlist} select={onChange} activePlaylistId={activePlaylistId} />
             ))}
             {countModular.map(index => (
               <EmptyCardsForAlignment key={index} />

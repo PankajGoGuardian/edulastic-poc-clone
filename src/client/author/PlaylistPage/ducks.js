@@ -99,9 +99,9 @@ export const createPlaylistErrorAction = error => ({
   payload: { error }
 });
 
-export const updatePlaylistAction = (id, data, updateLocal) => ({
+export const updatePlaylistAction = (id, data, hideNotification) => ({
   type: UPDATE_PLAYLIST_REQUEST,
-  payload: { id, data, updateLocal }
+  payload: { id, data, hideNotification }
 });
 
 export const updatePlaylistSuccessAction = entity => ({
@@ -670,7 +670,7 @@ function* createPlaylistSaga({ payload }) {
     yield put(createPlaylistSuccessAction(entity));
     yield put(replace(`/author/playlists/${entity._id}/edit${hash}`));
 
-    yield call(notification, { type: "", messageKey: "playlistCreated" });
+    yield call(notification, { type: "success", messageKey: "playlistCreated" });
   } catch (err) {
     yield call(notification, { messageKey: "playlistCreateErr" });
     yield put(createPlaylistErrorAction("playlistCreateErr"));
@@ -700,9 +700,11 @@ function* updatePlaylistSaga({ payload }) {
     const entity = yield call(curriculumSequencesApi.update, { id: oldId, data: dataToSend });
 
     yield put(updatePlaylistSuccessAction(entity));
+    if (!payload.hideNotification) {
+      yield call(notification, { type: "success", messageKey: "playlistVersioned" });
+    }
     const newId = entity._id;
     if (oldId !== newId && newId) {
-      yield call(notification, { type: "success", messageKey: "playlistVersioned" });
       yield put(push(`/author/playlists/${newId}/versioned/old/${oldId}`));
     }
   } catch (err) {
@@ -747,8 +749,6 @@ function* publishPlaylistSaga({ payload }) {
 
     const updatedEntityData = yield call(curriculumSequencesApi.update, { id, data: dataToSend });
     yield put(updatePlaylistSuccessAction(updatedEntityData));
-
-    yield call(notification, { type: "success", messageKey: "updatePlaylist" });
 
     if (features.isPublisherAuthor) {
       yield call(curriculumSequencesApi.updatePlaylistStatus, {

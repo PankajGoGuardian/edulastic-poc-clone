@@ -52,8 +52,6 @@ import Setting from "../Settings";
 import { CollectionsSelectModal } from "../CollectionsSelectModal/collectionsSelectModal";
 import { setDefaultInterests } from "../../../dataUtils";
 
-import TestList from "../../../TestList";
-
 // TODO: replace with playlistApi once api is updated
 const { getDefaultImage } = testsApi;
 
@@ -139,7 +137,7 @@ class Container extends PureComponent {
         showModal: true
       });
     }
-    this.handleSave();
+    this.handleSave(null, true);
     this.setState({
       current: value
     });
@@ -247,7 +245,7 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { playlist, setData, isTestLoading, match, history, userId } = this.props;
+    const { playlist, setData, isTestLoading, history, userId } = this.props;
     const modules = playlist.modules.map(m => {
       const data = m.data.map(d => omit(d, ["hidden"]));
       m.data = data;
@@ -273,21 +271,6 @@ class Container extends PureComponent {
       });
     _uniq(selectedTests);
     switch (current) {
-      case "addTests":
-        return (
-          <TestList
-            history={history}
-            location={history.location}
-            match={match}
-            mode="embedded"
-            selectedItems={selectedTests}
-            current={current}
-            onSaveTestId={this.handleSaveTestId}
-            playlist={playlist}
-            handleSave={this.handleSave}
-            playlistPage
-          />
-        );
       case "summary":
         return (
           <Summary
@@ -311,6 +294,7 @@ class Container extends PureComponent {
         return (
           <CurriculumSequence
             mode="embedded"
+            handleSavePlaylist={this.handleSave}
             destinationCurriculumSequence={playlist}
             expandedModules={expandedModules}
             onCollapseExpand={this.collapseExpandModule}
@@ -331,7 +315,7 @@ class Container extends PureComponent {
     }
   };
 
-  handleSave = async () => {
+  handleSave = (_, hideNotification) => {
     const { playlist, updatePlaylist, createPlayList } = this.props;
     if (!playlist?.modules?.length) {
       /**
@@ -341,7 +325,7 @@ class Container extends PureComponent {
     }
 
     if (playlist._id) {
-      updatePlaylist(playlist._id, playlist);
+      updatePlaylist(playlist._id, playlist, hideNotification);
     } else {
       createPlayList(playlist);
     }

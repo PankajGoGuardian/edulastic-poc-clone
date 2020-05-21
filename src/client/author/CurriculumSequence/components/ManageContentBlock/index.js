@@ -3,17 +3,14 @@ import { curriculumSequencesApi } from "@edulastic/api";
 import { themeColor, white } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { test as testsConstants } from "@edulastic/constants";
-import { IconFilter, IconPlus, IconLayers } from "@edulastic/icons";
+import { IconFilter, IconPlus } from "@edulastic/icons";
 import { Dropdown, Empty, Menu, message, Spin } from "antd";
 import { pick, uniq } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import AssessmentPlayer from "../../../../assessment";
 import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
-import {
-  toggleManageModulesVisibilityCSAction,
-  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction
-} from "../../ducks";
+import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from "../../ducks";
 import { submitLTIForm } from "../CurriculumModuleRow";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ResourceItem from "../ResourceItem";
@@ -59,8 +56,6 @@ const observeElement = (fetchTests, tests) =>
 
 const ManageContentBlock = props => {
   const {
-    isDifferentiationTab = false,
-    onShowManageContent,
     isLoading,
     loadedPage,
     filter,
@@ -83,7 +78,6 @@ const ManageContentBlock = props => {
     resetAndFetchTests,
     searchString,
     setTestSearchAction,
-    toggleManageModulesVisibility,
     testsInPlaylist = [],
     selectedTestForPreview = "",
     testPreviewModalVisible = false,
@@ -153,7 +147,6 @@ const ManageContentBlock = props => {
   };
 
   const onSearchChange = e => setTestSearchAction(e.target.value);
-  const openManageModules = () => toggleManageModulesVisibility(true);
 
   const enhanceTextWeight = text => <span style={{ fontWeight: 600 }}>{text}</span>;
 
@@ -266,13 +259,6 @@ const ManageContentBlock = props => {
                 <IconPlus color={themeColor} width={15} height={15} />
               </ActionButton>
             </Dropdown>
-            <ActionButton
-              active
-              justify="center"
-              onClick={isDifferentiationTab ? onShowManageContent : openManageModules}
-            >
-              <IconLayers color={themeColor} width={15} height={15} />
-            </ActionButton>
           </FlexContainer>
           <br />
           {isShowFilter ? (
@@ -408,7 +394,6 @@ export default connect(
     setSourcesAction: slice.actions?.setSourcesAction,
     resetAndFetchTests: slice.actions?.resetAndFetchTests,
     setTestSearchAction: slice.actions?.setTestSearchAction,
-    toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
     showPreviewModal: slice.actions?.showTestPreviewModal,
     closePreviewModal: slice.actions?.closeTestPreviewModal,
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,

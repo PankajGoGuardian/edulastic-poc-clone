@@ -142,14 +142,16 @@ export const Title = styled.div`
 
 export const AddNewModuleContainer = styled.div`
   background: ${white};
-  width: 100%;
-  min-height: 60px;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
-  padding: 20px 20px 20px 40px;
-  margin-bottom: 20px;
+`;
+
+export const AddNewModuleForm = styled.div`
+  padding: 20px;
+  width: 100%;
+  min-height: 60px;
   border: 1px solid #dadae4;
 `;
 
@@ -159,8 +161,9 @@ export const StyledModuleList = styled.div`
 
 export const AddBtnsWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  width: 100%;
 `;
 
 export const StyledButton = styled(EduButton)`
@@ -194,11 +197,11 @@ export const ModalContainer = styled.div`
 export const ModalHeader = styled.h3`
   font-size: 20px;
   font-weight: 600;
-  padding-bottom: 20px;
+  padding-bottom: 8px;
 `;
 
 export const ModalContent = styled.div`
-  height: calc(100vh - 320px);
+  max-height: calc(100vh - 320px);
   overflow: auto;
   &::-webkit-scrollbar {
     width: 6px;

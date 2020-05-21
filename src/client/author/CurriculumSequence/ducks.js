@@ -1,8 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
-import { message } from "antd";
 import { takeLatest, takeEvery, put, call, all, select, take } from "redux-saga/effects";
-import { flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy } from "lodash";
+import { get, flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy, compact } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
@@ -181,7 +180,7 @@ export const cancelPlaylistCustomizeAction = createAction(CANCEL_PLAYLIST_CUSTOM
 export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST);
 export const setEmbeddedVideoPreviewModal = createAction(SET_VIDEO_PREVIEW_RESOURCE_MODAL);
 
-export const getAllCurriculumSequencesAction = ids => {
+export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
     return {
       type: FETCH_CURRICULUM_SEQUENCES_ERROR
@@ -189,7 +188,7 @@ export const getAllCurriculumSequencesAction = ids => {
   }
   return {
     type: FETCH_CURRICULUM_SEQUENCES,
-    payload: ids
+    payload: { ids, showNotification }
   };
 };
 export const approveOrRejectSinglePlaylistRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST);
@@ -232,13 +231,27 @@ const getPublisher = state => {
 
 const getDestinationCurriculumSequence = state => state.curriculumSequence.destinationCurriculumSequence;
 
-function* makeApiRequest(idsForFetch = []) {
+function* makeApiRequest(idsForFetch = [], showNotification = false) {
   try {
     const unflattenedItems = yield all(idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id)));
 
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
     const items = flatten(unflattenedItems);
+
+    // show notification if when user comes to playlist page and playlist has assigned assignments
+    // show only notification for teacher
+    if (showNotification) {
+      const modules = items?.reduce((acc, curr) => [...acc, ...(curr?.modules || [])], []);
+      const sumOfclasse = modules
+        .reduce((acc, curr) => [...acc, ...(curr.data || [])], [])
+        .flatMap(x => x?.assignments || {})
+        .reduce((acc, curr) => acc + get(curr, "class.length", 0), 0);
+      if (sumOfclasse > 0) {
+        notification({ type: "info", messageKey: "playlistBeingUsed" });
+      }
+    }
+
     const { authors } = items[0];
     const userId = yield select(getUserId);
     if (authors && authors.map(author => author._id).includes(userId)) {
@@ -275,8 +288,8 @@ function* makeApiRequest(idsForFetch = []) {
   }
 }
 
-function* fetchItemsFromApi({ payload: ids }) {
-  yield call(makeApiRequest, ids);
+function* fetchItemsFromApi({ payload: { ids, showNotification } }) {
+  yield call(makeApiRequest, ids, showNotification);
 }
 
 /**

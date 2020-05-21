@@ -1,8 +1,8 @@
 import { round, compact } from "lodash";
 import moment from "moment";
 
-export const getSummaryData = (modules, playlistMetrics, isStudent) => {
-  return modules?.map((mod, index) => {
+export const getSummaryData = (modules, playlistMetrics, isStudent) =>
+  modules?.map((mod, index) => {
     const { _id = "", title, data = [], hidden = false } = mod;
     const metricModule = playlistMetrics[_id] || [];
     const name = `Module ${index + 1}`;
@@ -17,9 +17,9 @@ export const getSummaryData = (modules, playlistMetrics, isStudent) => {
       const unHiddenTestIds = data?.filter(x => !x?.hidden).flatMap(x => x.contentId);
       tSpent = metricModule
         ?.filter(mm => unHiddenTestIds.includes(mm.testId))
-        .reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
+        .reduce((a, c) => a + (parseInt(c?.timeSpent, 10) || 0), 0);
     } else {
-      tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
+      tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent, 10) || 0), 0);
     }
     const assignments = compact(data?.flatMap(x => x?.assignments)) || [];
     const classes = assignments?.reduce((a, c) => a + (c?.class?.length || 0), 0) || "-";
@@ -42,7 +42,7 @@ export const getSummaryData = (modules, playlistMetrics, isStudent) => {
     let m = duration.minutes();
     const s = duration.seconds();
     if (s > 50) {
-      m = m + 1;
+      m += 1;
     }
 
     const timeSpent = h > 0 ? `${h} H ${m} mins` : `${m} min`;
@@ -60,18 +60,17 @@ export const getSummaryData = (modules, playlistMetrics, isStudent) => {
       maxScore
     };
   });
-};
 
 export const getProgressData = (playlistMetrics, _id, contentId, assignments) => {
   const classAssignmentData = assignments.flatMap(a => a.class) || [];
   const data = playlistMetrics?.[_id]?.filter(x => x.testId === contentId) || [];
-  const totalScore = data.reduce((a, c) => a + parseInt(c.totalScore || 0), 0);
-  const maxScore = data.reduce((a, c) => a + parseInt(c.maxScore || 0), 0);
+  const totalScore = data.reduce((a, c) => a + parseInt(c.totalScore || 0, 10), 0);
+  const maxScore = data.reduce((a, c) => a + parseInt(c.maxScore || 0, 10), 0);
   const progress = maxScore ? round((totalScore / maxScore) * 100, 0) : 0;
   const classes = assignments.reduce((a, c) => a + (c?.["class"]?.length || 0), 0);
-  const tSpent = data.reduce((a, c) => a + parseInt(c.timeSpent || 0), 0);
-  const totalAssigned = classAssignmentData.reduce((a, c) => a + parseInt(c.assignedCount || 0), 0);
-  const totalGraded = classAssignmentData.reduce((a, c) => a + parseInt(c.gradedNumber || 0), 0);
+  const tSpent = data.reduce((a, c) => a + parseInt(c.timeSpent || 0, 10), 0);
+  const totalAssigned = classAssignmentData.reduce((a, c) => a + parseInt(c.assignedCount || 0, 10), 0);
+  const totalGraded = classAssignmentData.reduce((a, c) => a + parseInt(c.gradedNumber || 0, 10), 0);
   const submitted = (totalAssigned && totalGraded && round((totalGraded / totalAssigned) * 100, 0)) || 0;
   const duration = moment.duration(parseInt(tSpent || 0, 10));
   const h = Math.floor(duration.asHours());
@@ -94,11 +93,11 @@ export const getProgressData = (playlistMetrics, _id, contentId, assignments) =>
 export const getProgressColor = percentage => {
   if (percentage <= 30) {
     return "#EC0149";
-  } else if (percentage <= 70) {
-    return "#FFD500";
-  } else {
-    return "#5eB500";
   }
+  if (percentage <= 70) {
+    return "#FFD500";
+  }
+  return "#5eB500";
 };
 
 /**
@@ -108,9 +107,8 @@ export const getProgressColor = percentage => {
  *
  * @returns {any[]}
  */
-export const matchAssigned = (assignedList, testId) => {
-  return assignedList.filter(assigned => assigned.testId && testId && assigned.testId === testId);
-};
+export const matchAssigned = (assignedList, testId) =>
+  assignedList.filter(assigned => assigned.testId && testId && assigned.testId === testId);
 
 /**
  *

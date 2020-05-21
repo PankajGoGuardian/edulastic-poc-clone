@@ -35,18 +35,18 @@ const ManageModulesModalBody = props => {
 
   const handleModuleSave = moduleData => {
     const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
-      x => x.title.trim().toLowerCase() === moduleData.moduleName.trim().toLowerCase()
+      x => x.title.trim().toLowerCase() === moduleData.title.trim().toLowerCase()
     );
 
     if (titleAlreadyExists) {
       return notification({
-        msg: `Module with title '${moduleData.moduleName}' already exists. Please use another title`
+        msg: `Module with title '${moduleData.title}' already exists. Please use another title`
       });
     }
 
     addModuleToPlaylist({
-      title: moduleData.moduleName,
-      description: moduleData.moduleDescription,
+      title: moduleData.title,
+      description: moduleData.description,
       moduleId: moduleData.moduleId,
       moduleGroupName: moduleData.moduleGroupName
     });
@@ -54,7 +54,7 @@ const ManageModulesModalBody = props => {
       handleTestAdded(0);
       notification({
         type: "info",
-        msg: `${moduleData.moduleName} module is created and added ${props.testAddedTitle} test to it`
+        msg: `${moduleData.title} module is created and added ${props.testAddedTitle} test to it`
       });
     }
 
@@ -64,16 +64,16 @@ const ManageModulesModalBody = props => {
   const handleModuleCancel = () => toggleAddState(false);
 
   const handleModuleUpdate = (id, moduleData) => {
-    const { moduleId, moduleName, moduleDescription, moduleGroupName } = moduleData;
+    const { moduleId, title, description, moduleGroupName } = moduleData;
 
     const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
-      (x, ind) => x.title.trim().toLowerCase() === moduleName.trim().toLowerCase() && ind !== id
+      (x, ind) => x.title.trim().toLowerCase() === title.trim().toLowerCase() && ind !== id
     );
 
     if (titleAlreadyExists) {
       notification({
         type: "warning",
-        msg: `Module with title '${moduleName}' already exists. Please use another title`
+        msg: `Module with title '${title}' already exists. Please use another title`
       });
       return false;
     }
@@ -82,8 +82,8 @@ const ManageModulesModalBody = props => {
       id,
       moduleId,
       moduleGroupName,
-      title: moduleName,
-      description: moduleDescription
+      title,
+      description
     });
 
     return true;

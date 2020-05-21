@@ -1,33 +1,11 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import { Dropdown, Button } from "antd";
 import styled from "styled-components";
 import { desktopWidth, lightBlue, white, themeColor } from "@edulastic/colors";
 import { DragSource, useDrop } from "react-dnd";
-import { roleuser } from "@edulastic/constants";
-import { IconTrash, IconCheckSmall, IconLeftArrow, IconMoreVertical } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
-import {
-  AssignmentContent,
-  CustomIcon,
-  ModuleDataName,
-  ModuleAssignedUnit,
-  AssignmentIcon,
-  AssignmentButton,
-  LastColumn
-} from "./CurriculumModuleRow";
-import { HideLinkLabel } from "../../Reports/common/styled";
+import { AssignmentContent, CustomIcon, ModuleDataName, ModuleAssignedUnit } from "./CurriculumModuleRow";
 import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
-
-/**
- * @typedef Props
- * @property {Object} moduleData
- * @property {boolean} checked
- * @property {Component} menu
- */
-
-const IS_ASSIGNED = "ASSIGNED";
-const NOT_ASSIGNED = "ASSIGN";
 
 const itemSource = {
   beginDrag(props) {
@@ -74,73 +52,20 @@ class AssignmentDragItem extends Component {
       mode,
       isContentExpanded,
       hideEditOptions,
-      assignTest,
-      status,
       moduleIndex,
       deleteTest,
-      isAssigned,
       isDragging,
       togglePlaylistTestDetails,
       showResource,
-      userRole,
       urlHasUseThis,
-      infoColumn,
+      assessmentColums,
       testTypeAndTags,
       isDesktop,
-      isStudent,
-      showRightPanel,
-      toggleTest,
-      isManageContentActive,
       setEmbeddedVideoPreviewModal,
       showSupportingResource,
       addSubresource,
       id
     } = this.props;
-    const assessmentActions = !isStudent && (
-      <>
-        <HideLinkLabel onClick={toggleTest} textColor={themeColor} fontWeight="Bold">
-          {moduleData.hidden ? "SHOW" : "HIDE"}
-        </HideLinkLabel>
-        <LastColumn>
-          {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
-            userRole !== roleuser.EDULASTIC_CURATOR && (
-              <AssignmentButton assigned={isAssigned}>
-                <Button data-cy="assignButton" onClick={() => assignTest(moduleIndex, moduleData.contentId)}>
-                  {isAssigned ? (
-                    <IconCheckSmall color={white} />
-                  ) : (
-                    <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
-                  )}
-                  {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
-                </Button>
-              </AssignmentButton>
-            )}
-          {/* {(!hideEditOptions || mode === "embedded") && (
-          <AssignmentIcon>
-            <Dropdown overlay={moreMenu} trigger={["click"]}>
-              <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                <IconMoreVertical color={themeColor} />
-              </CustomIcon>
-            </Dropdown>
-          </AssignmentIcon>
-        )} */}
-          {(!hideEditOptions || mode === "embedded") && isManageContentActive && (
-            <AssignmentIcon>
-              <CustomIcon
-                data-cy="assignmentDeleteOptionsIcon"
-                onClick={e => {
-                  e.stopPropagation();
-                  deleteTest(moduleIndex, moduleData.contentId);
-                }}
-              >
-                <IconTrash color={themeColor} />
-              </CustomIcon>
-            </AssignmentIcon>
-          )}
-        </LastColumn>
-      </>
-    );
-
     return connectDragSource(
       <div className="item" style={{ width: "calc(100% - 35px)" }}>
         <Assignment
@@ -189,14 +114,14 @@ class AssignmentDragItem extends Component {
                     )}
                   </ModuleAssignedUnit>
                 )}
-                {(showRightPanel || !isDesktop) && testTypeAndTags}
-                <FlexContainer width="100%" height="35px" alignItems="center" justifyContent="flex-start">
-                  {moduleData.contentType === "test" && showSupportingResource && (
+                {testTypeAndTags}
+                {moduleData.contentType === "test" && showSupportingResource && (
+                  <FlexContainer width="100%" height="35px" alignItems="center" justifyContent="flex-start">
                     <SubResourceDropContainer moduleIndex={moduleIndex} addSubresource={addSubresource} itemIndex={id}>
                       Supporting Resource
                     </SubResourceDropContainer>
-                  )}
-                </FlexContainer>
+                  </FlexContainer>
+                )}
                 {moduleData?.resources?.length > 0 && (
                   <SubResource
                     data={moduleData}
@@ -210,16 +135,7 @@ class AssignmentDragItem extends Component {
                   />
                 )}
               </WrapperContainer>
-              {!showRightPanel && isDesktop && testTypeAndTags}
-              {infoColumn}
-              {isDesktop && assessmentActions}
-              {!isDesktop && (
-                <Dropdown overlay={assessmentActions} trigger={["click"]}>
-                  <MobileActionButton>
-                    <IconMoreVertical color={themeColor} />
-                  </MobileActionButton>
-                </Dropdown>
-              )}
+              {assessmentColums}
             </Fragment>
           )}
         </Assignment>
@@ -319,15 +235,4 @@ const Assignment = styled(Row)`
 const WrapperContainer = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const MobileActionButton = styled.div`
-  width: 30px;
-  height: 30px;
-  right: 0px;
-  z-index: 50;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
 `;

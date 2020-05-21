@@ -25,7 +25,6 @@ import {
 } from "../ducks";
 import ShareModal from "../../src/components/common/ShareModal";
 import { CollectionsSelectModal } from "../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal";
-import { resequenceTestsAction } from "../../PlaylistPage/ducks";
 
 /**
  * @typedef {object} ModuleData
@@ -114,12 +113,13 @@ class CurriculumContainer extends Component {
       getAllCurriculumSequences,
       getCurrentPlaylistMetrics,
       isStudent = false,
-      history: { location } = {}
+      history: { location } = {},
+      urlHasUseThis
     } = this.props;
 
     const playlistId = match.params.id || match.params.playlistId;
     if (playlistId) {
-      getAllCurriculumSequences([playlistId]);
+      getAllCurriculumSequences([playlistId], !isStudent && !urlHasUseThis);
       if (isStudent) {
         getCurrentPlaylistMetrics({ groupId: location?.state?.currentGroupId, playlistId });
       } else {
@@ -150,14 +150,14 @@ class CurriculumContainer extends Component {
 
   onDrop = (toModuleIndex, item, afterIndex) => {
     if (!item) {
-      //to avoid executing this on nested drop
+      // to avoid executing this on nested drop
       return;
     }
     const { destinationCurriculumSequence, moveContentInPlaylist, addIntoModule } = this.props;
     this.expandModule(toModuleIndex);
     if (item.fromPlaylistTestsBox) {
       let flag = false;
-      destinationCurriculumSequence.modules.every((module, i) => {
+      destinationCurriculumSequence.modules.every(module => {
         if (!module.data.find(x => x.contentId === item.id)) {
           flag = true;
         }
@@ -285,7 +285,7 @@ class CurriculumContainer extends Component {
   };
 
   render() {
-    const { windowWidth, curriculumSequences, isContentExpanded, match } = this.props;
+    const { windowWidth, curriculumSequences, isContentExpanded, match, mode, resequenceTests } = this.props;
     const { expandedModules, showShareModal, showSelectCollectionsModal } = this.state;
     const {
       handleSelectContent,
@@ -313,7 +313,7 @@ class CurriculumContainer extends Component {
     return (
       <>
         <ShareModal
-          shareLabel={"PLAYLIST URL"}
+          shareLabel="PLAYLIST URL"
           isVisible={showShareModal}
           isPublished={destinationCurriculumSequence.status === statusConstants.PUBLISHED}
           testId={destinationCurriculumSequence._id}
@@ -345,8 +345,8 @@ class CurriculumContainer extends Component {
           windowWidth={windowWidth}
           onDrop={onDrop}
           match={match}
-          mode={this.props.mode}
-          handleTestsSort={this.props.resequenceTests}
+          mode={mode}
+          handleTestsSort={resequenceTests}
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           urlHasUseThis={urlHasUseThis}
@@ -385,8 +385,8 @@ CurriculumContainer.defaultProps = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  getAllCurriculumSequences(ids) {
-    dispatch(getAllCurriculumSequencesAction(ids));
+  getAllCurriculumSequences(ids, showNotification) {
+    dispatch(getAllCurriculumSequencesAction(ids, showNotification));
   },
   putCurriculumSequence(id, curriculumSequence) {
     dispatch(putCurriculumSequenceAction(id, curriculumSequence));

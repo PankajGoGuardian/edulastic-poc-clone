@@ -55,7 +55,10 @@ const SortableItem = sortableElement(props => {
     isDesktop,
     showRightPanel,
     setEmbeddedVideoPreviewModal,
-    onDropOriginal
+    onDropOriginal,
+    addModule,
+    editModule,
+    deleteModule
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -98,6 +101,9 @@ const SortableItem = sortableElement(props => {
           showRightPanel={showRightPanel}
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
           onDrop={onDropOriginal}
+          addModule={addModule}
+          editModule={editModule}
+          deleteModule={deleteModule}
         />
       </DropContainer>
     </AssignmentItemContainer>
@@ -113,14 +119,7 @@ const Curriculum = props => {
     dropHandler(toModuleIndex);
   };
 
-  const {
-    curriculum: { modules } = {},
-    onSortEnd,
-    manageContentDirty,
-    resetDestination,
-    toggleManageModulesVisibility,
-    isStudent
-  } = props;
+  const { curriculum: { modules } = {}, onSortEnd, manageContentDirty, resetDestination, openAddModuleModal } = props;
 
   useEffect(() => () => resetDestination(), []);
 
@@ -135,15 +134,14 @@ const Curriculum = props => {
             id={index}
             onDrop={onDrop}
             onDropOriginal={props.onDrop}
+            addModule={openAddModuleModal}
             {...props}
           />
         ))}
-      {!isStudent && (
-        <AddNewOrManageModules onClick={() => toggleManageModulesVisibility(true)}>
-          <IconPlusCircle />
-          <span>Manage Modules</span>
-        </AddNewOrManageModules>
-      )}
+      <AddNewOrManageModules onClick={openAddModuleModal}>
+        <IconPlusCircle />
+        <span>Manage Modules</span>
+      </AddNewOrManageModules>
     </SortableContainer>
   );
 };
@@ -153,7 +151,6 @@ Curriculum.propTypes = {
   curriculum: PropTypes.object.isRequired,
   expandedModules: PropTypes.array.isRequired,
   padding: PropTypes.bool.isRequired,
-  mode: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   customize: PropTypes.bool.isRequired,

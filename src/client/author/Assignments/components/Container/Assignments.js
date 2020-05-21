@@ -289,6 +289,7 @@ class Assignments extends Component {
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
                       <IconFilter
                         data-cy="smart-filter"
+                        data-test={showFilter ? "expanded" : "collapsed"}
                         color={showFilter ? white : themeColor}
                         width={20}
                         height={20}

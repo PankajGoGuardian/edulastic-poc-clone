@@ -67,11 +67,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
     });
   });
 
-  context(`assignment filters`, () => {
-    before(() => {
+  context(`expand-collapse filter`, () => {
+    before("collapse", () => {
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnAssignment();
-      authorAssignmentPage.smartFilter.clickOnFilter();
+      authorAssignmentPage.smartFilter.collapseFilter();
+    });
+
+    it(`expand filter and verify`, () => {
+      authorAssignmentPage.smartFilter.expandFilter();
+    });
+
+    it(`collapse filter and verify`, () => {
+      authorAssignmentPage.smartFilter.collapseFilter();
+    });
+  });
+
+  context(`assignment filters`, () => {
+    before("expand filter", () => {
+      authorAssignmentPage.smartFilter.expandFilter();
     });
 
     beforeEach("reset all filters", () => {
@@ -159,7 +173,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnDashboard();
       teacherSidebar.clickOnAssignment();
-      authorAssignmentPage.smartFilter.clickOnFilter();
+      authorAssignmentPage.smartFilter.expandFilter();
       cy.contains("ALL ASSIGNMENTS").then(() => {
         // delete residue folders
         if (Cypress.$(`[data-cy="${folders[1]}"]`).length > 0)
@@ -186,7 +200,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
     it(`rename to existing folder`, () => {
       authorAssignmentPage.smartFilter.createNewFolder(folders[3]);
       authorAssignmentPage.smartFilter.renameFolder(folders[2], folders[3], false);
-      authorAssignmentPage.smartFilter.deleteFolder(folders[3]);
     });
 
     it(`move assignment to folder`, () => {

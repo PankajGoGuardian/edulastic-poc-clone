@@ -5,11 +5,27 @@ export default class SmartFilters {
 
   getGrades = () => cy.get('[data-cy="grades"]');
 
+  getFilter = () => cy.get('[data-cy="smart-filter"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickOnFilter = () => cy.get('[data-cy="smart-filter"]').click();
+  expandFilter = () =>
+    this.getFilter().then($ele => {
+      if ($ele.attr("data-test") !== "expanded")
+        cy.wrap($ele)
+          .click()
+          .should("have.attr", "data-test", "expanded");
+    });
+
+  collapseFilter = () =>
+    this.getFilter().then($ele => {
+      if ($ele.attr("data-test") === "expanded")
+        cy.wrap($ele)
+          .click()
+          .should("have.attr", "data-test", "collapsed");
+    });
 
   routeAPI = () => {
     cy.server();

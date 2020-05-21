@@ -15,7 +15,7 @@ import {
 } from "@edulastic/colors";
 import { FieldLabel, MainContentWrapper, SelectInputStyled } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Form, Icon, Input, Select, Tag } from "antd";
+import { Button, Form, Icon, Input, Select, Tag, Modal } from "antd";
 import produce from "immer";
 import { isEqual, map, omit, get } from "lodash";
 import PropTypes from "prop-types";
@@ -30,7 +30,9 @@ import {
   resetMyPasswordAction,
   updateDefaultSettingsAction,
   updateInterestedCurriculumsAction,
-  updateUserDetailsAction
+  updateUserDetailsAction,
+  showJoinSchoolAction,
+  hideJoinSchoolAction
 } from "../../../../student/Login/ducks";
 import { Wrapper } from "../../../../student/styled/index";
 import StandardSetModal from "../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal";
@@ -42,6 +44,7 @@ import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
 import Photo from "./Photo";
 import { selectsData } from "../../../TestPage/components/common";
 import Switch from "antd/lib/switch";
+import JoinSchool from "../../../../student/Signup/components/TeacherContainer/JoinSchool";
 
 const FormItem = Form.Item;
 class ProfileBody extends React.Component {
@@ -304,6 +307,11 @@ class ProfileBody extends React.Component {
     this.setState({ showStandardSetsModal: true });
   };
 
+  handleAddSchool = () => {
+    const { showJoinSchool } = this.props;
+    showJoinSchool();
+  };
+
   checkUser = async (rule, value, callback) => {
     const { user, t } = this.props;
 
@@ -402,7 +410,7 @@ class ProfileBody extends React.Component {
       form: { getFieldDecorator }
     } = this.props;
 
-    const { flag, t, user, curriculums } = this.props;
+    const { flag, t, user, curriculums, userInfo, joinSchoolVisible, showJoinSchool, hideJoinSchool } = this.props;
     const {
       showChangePassword,
       isEditProfile,
@@ -545,6 +553,11 @@ class ProfileBody extends React.Component {
                 <SchoolWrapper>
                   <SchoolLabel>My Schools</SchoolLabel>
                   <SchoolListWrapper>{this.getSchoolList()}</SchoolListWrapper>
+                  <AddSchoolSection>
+                    <AddSchoolBtn onClick={this.handleAddSchool} type="primary">
+                      Add School
+                    </AddSchoolBtn>
+                  </AddSchoolSection>
                 </SchoolWrapper>
                 <SchoolWrapper>
                   <StandardSetsLabel>Standard Sets</StandardSetsLabel>
@@ -649,6 +662,19 @@ class ProfileBody extends React.Component {
             changeEmail={this.handleChangeEmail}
           />
         )}
+        {joinSchoolVisible && (
+          <StyledModal
+            visible={joinSchoolVisible}
+            title={null}
+            centered
+            footer={null}
+            onCancel={hideJoinSchool}
+            width="90%"
+            style={{ maxWidth: 1100 }}
+          >
+            <JoinSchool userInfo={userInfo} fromUserProfile />
+          </StyledModal>
+        )}
       </MainContentWrapper>
     );
   }
@@ -662,6 +688,8 @@ const enhance = compose(
     state => ({
       flag: state.ui.flag,
       user: state.user.user,
+      joinSchoolVisible: state.user.joinSchoolVisible,
+      userInfo: get(state.user, "user", {}),
       curriculums: getCurriculumsListSelector(state)
     }),
     {
@@ -672,7 +700,9 @@ const enhance = compose(
       getDictCurriculums: getDictCurriculumsAction,
       removeSchool: removeSchoolAction,
       removeInterestedCurriculum: removeInterestedCurriculumsAction,
-      updateDefaultSettings: updateDefaultSettingsAction
+      updateDefaultSettings: updateDefaultSettingsAction,
+      showJoinSchool: showJoinSchoolAction,
+      hideJoinSchool: hideJoinSchoolAction
     }
   )
 );
@@ -684,6 +714,16 @@ ProfileBody.propTypes = {
   t: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 };
+
+const StyledModal = styled(Modal)`
+  .ant-modal-body > .ant-row {
+    min-height: 400px;
+  }
+  .ant-modal-body > .ant-row > .ant-col {
+    width: 90%;
+    margin-left: 5%;
+  }
+`;
 
 const StyledDiv = styled.div`
   padding-bottom: 15px;
@@ -745,6 +785,7 @@ const SchoolLabel = styled.span`
 const StandardSetsLabel = styled(SchoolLabel)``;
 
 const SchoolListWrapper = styled.span`
+  width: 100%;
   display: flex;
   display: inline-block;
 `;
@@ -989,4 +1030,15 @@ const SaveDefaultSettingsBtn = styled(SelectSetsButton)`
   :hover{
     color ${themeColor};
   }
+`;
+
+const AddSchoolBtn = styled(EditProfileButton)`
+  background: ${themeColor};
+  border-color: ${themeColor};
+  color: ${white};
+  padding: 0px 20px;
+`;
+
+const AddSchoolSection = styled.div`
+  float: right;
 `;

@@ -3,7 +3,7 @@ import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { push } from "connected-react-router";
-import { authApi, userApi, TokenStorage, settingsApi, segmentApi } from "@edulastic/api";
+import { authApi, userApi, TokenStorage, settingsApi, segmentApi, schoolApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
@@ -76,6 +76,14 @@ export const UPDATE_INTERESTED_CURRICULUMS_FAILED = "[user] update interested cu
 export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
 export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
 export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
+export const ADD_SCHOOL_REQUEST = "[user] add school request";
+export const ADD_SCHOOL_SUCCESS = "[user] add school success";
+export const ADD_SCHOOL_FAILED = "[user] add school failed";
+export const CREATE_AND_ADD_SCHOOL_REQUEST = "[user] create and add school request";
+export const CREATE_AND_ADD_SCHOOL_SUCCESS = "[user] create and add school success";
+export const CREATE_AND_ADD_SCHOOL_FAILED = "[user] create and add school failed";
+export const SHOW_JOIN_SCHOOL = "[user] show join school";
+export const HIDE_JOIN_SCHOOL = "[user] hide join school";
 export const REMOVE_INTERESTED_CURRICULUMS_REQUEST = "[user] remove interested curriculums request";
 export const GET_CURRENT_DISTRICT_USERS_REQUEST = "[user] get current district users request";
 export const GET_CURRENT_DISTRICT_USERS_SUCCESS = "[user] get current district users success";
@@ -121,6 +129,10 @@ export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST)
 export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
 export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
 export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
+export const addSchoolAction = createAction(ADD_SCHOOL_REQUEST);
+export const createAndAddSchoolAction = createAction(CREATE_AND_ADD_SCHOOL_REQUEST);
+export const showJoinSchoolAction = createAction(SHOW_JOIN_SCHOOL);
+export const hideJoinSchoolAction = createAction(HIDE_JOIN_SCHOOL);
 export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_CURRICULUMS_REQUEST);
 export const getCurrentDistrictUsersAction = createAction(GET_CURRENT_DISTRICT_USERS_REQUEST);
 export const getCurrentDistrictUsersSuccessAction = createAction(GET_CURRENT_DISTRICT_USERS_SUCCESS);
@@ -310,6 +322,36 @@ export default createReducer(initialState, {
   },
   [REMOVE_SCHOOL_FAILED]: state => {
     state.removingSchool = undefined;
+  },
+  [ADD_SCHOOL_REQUEST]: state => {
+    state.addingSchool = true;
+  },
+  [ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
+    state.addingSchool = false;
+    state.user.institutionIds = payload.institutionIds;
+    state.user.orgData.institutionIds = payload.orgData.institutionIds;
+    state.user.orgData.schools = payload.orgData.schools;
+  },
+  [ADD_SCHOOL_FAILED]: state => {
+    state.addingSchool = undefined;
+  },
+  [CREATE_AND_ADD_SCHOOL_REQUEST]: state => {
+    state.creatingAddingSchool = true;
+  },
+  [CREATE_AND_ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
+    state.creatingAddingSchool = false;
+    state.user.institutionIds = payload.institutionIds;
+    state.user.orgData.institutionIds = payload.orgData.institutionIds;
+    state.user.orgData.schools = payload.orgData.schools;
+  },
+  [CREATE_AND_ADD_SCHOOL_FAILED]: state => {
+    state.addingSchool = undefined;
+  },
+  [SHOW_JOIN_SCHOOL]: state => {
+    state.joinSchoolVisible = true;
+  },
+  [HIDE_JOIN_SCHOOL]: state => {
+    state.joinSchoolVisible = undefined;
   },
   [REMOVE_INTERESTED_CURRICULUMS_REQUEST]: (state, { payload }) => {
     const updatedCurriculums = state.user.orgData.interestedCurriculums.filter(
@@ -1170,6 +1212,56 @@ function* removeSchoolSaga({ payload }) {
   }
 }
 
+function* addSchoolSaga({ payload = {} }) {
+  try {
+    const result = yield call(userApi.updateUser, payload);
+    const user = pick(result, userPickFields);
+    yield put({ type: ADD_SCHOOL_SUCCESS, payload: user });
+    yield put({ type: HIDE_JOIN_SCHOOL });
+  } catch (err) {
+    yield put({ type: ADD_SCHOOL_FAILED });
+    yield call(message.error, "Failed to add requested school");
+  }
+}
+
+function* createAndAddSchoolSaga({ payload = {} }) {
+  const createSchoolPayload = payload.createSchool;
+  const joinSchoolPayload = payload.joinSchool;
+  const institutionIds = payload.institutionIds;
+  let isCreateSchoolSuccessful = false;
+  let result;
+  try {
+    result = yield call(schoolApi.createSchool, createSchoolPayload);
+    isCreateSchoolSuccessful = true;
+  } catch (err) {
+    yield put({
+      type: CREATE_AND_ADD_SCHOOL_FAILED
+    });
+    console.log("err", err);
+    yield call(message.error, "Failed to create school");
+  }
+
+  try {
+    if (isCreateSchoolSuccessful) {
+      joinSchoolPayload.data = {
+        ...joinSchoolPayload.data,
+        institutionIds: [...institutionIds, result._id],
+        districtId: result.districtId
+      };
+      const _result = yield call(userApi.updateUser, joinSchoolPayload);
+      const user = pick(_result, userPickFields);
+      yield put({ type: CREATE_AND_ADD_SCHOOL_SUCCESS, payload: user });
+      yield put({ type: HIDE_JOIN_SCHOOL });
+    }
+  } catch (err) {
+    console.log("_err", err);
+    yield put({
+      type: CREATE_AND_ADD_SCHOOL_FAILED
+    });
+    yield call(message.error, "Failed to join school");
+  }
+}
+
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
     const result = yield call(authApi.validateClassCode, payload.reqData);
@@ -1261,6 +1353,8 @@ export function* watcherSaga() {
   yield takeLatest(DELETE_ACCOUNT_REQUEST, deleteAccountSaga);
   yield takeLatest(UPDATE_INTERESTED_CURRICULUMS_REQUEST, updateInterestedCurriculumsSaga);
   yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
+  yield takeLatest(ADD_SCHOOL_REQUEST, addSchoolSaga);
+  yield takeLatest(CREATE_AND_ADD_SCHOOL_REQUEST, createAndAddSchoolSaga);
   yield takeLatest(GET_CURRENT_DISTRICT_USERS_REQUEST, getCurrentDistrictUsersSaga);
   yield takeLatest(CHANGE_CHILD, changeChildSaga);
   yield takeLatest(UPDATE_DEFAULT_SETTINGS_REQUEST, updateDefaultSettingsSaga);

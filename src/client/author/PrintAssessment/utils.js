@@ -49,11 +49,11 @@ export const getOrderedQuestionsAndAnswers = (testItems, passages, type, filterQ
 
   let answers = questions.map(q => {
     const { options, validResponse, altResponse } = formatOptions(q);
-    const answer = formatAnswers(validResponse, options, q);
-    const formatedAltResponse = altResponse.map(res => formatAnswers(res, options, q));
+    const answer = formatAnswers(validResponse, options, q, null, "", "printAssessment");
+    const formatedAltResponse = altResponse.map(res => formatAnswers(res, options, q, null, "", "printAssessment"));
     return {
       qLabel: `${q.qLabel || q.barLabel?.substr(1) || ""}${q.qSubLabel || ""}`,
-      answers: [answer, ...formatedAltResponse]
+      answers: Array.isArray(answer) ? [...answer, ...formatedAltResponse] : [answer, ...formatedAltResponse]
     };
   });
 

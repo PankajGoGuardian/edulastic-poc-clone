@@ -11,7 +11,7 @@ const formatAnswerForDocBased = (value, q, options = {}) => {
 };
 
 //to format correct/user answer
-export const formatAnswers = (data, options, q, qActivity = null, context = "") => {
+export const formatAnswers = (data, options, q, qActivity = null, context = "", viewMode = "") => {
   if ((!qActivity || qActivity.skipped) && context === "userResponse") {
     return "-";
   }
@@ -48,12 +48,12 @@ export const formatAnswers = (data, options, q, qActivity = null, context = "") 
         return `${value}${unit || ""}`;
       }
       return value;
+    } else if (item?.value) {
+      return item?.value;
     } else if (options && item?.id && !isUndefined(item?.index)) {
       return options[(item?.id)][(item?.index)];
     } else if (options && options[item]) {
       return options[item].label;
-    } else if (item?.value) {
-      return item?.value;
     } else if (typeof item === "string") {
       return item;
     }
@@ -66,7 +66,23 @@ export const formatAnswers = (data, options, q, qActivity = null, context = "") 
   if (type === "math" && result !== "TEI") {
     result = Array.isArray(result) ? result.map(ans => formatToMathAnswer(ans)) : formatToMathAnswer(result);
   }
-  return Array.isArray(result) ? result.join(", ") : result;
+
+  if (!viewMode) {
+    return Array.isArray(result) ? result.join(", ") : result;
+  } else if (Array.isArray(result)) {
+    switch (q.type) {
+      case questionType.EDITING_TASK:
+      case questionType.CLOZE_DROP_DOWN:
+        return result.map((r, i) => `${String.fromCharCode(97 + i)}. ${r}`);
+      case questionType.CLOZE_IMAGE_TEXT:
+      case questionType.CLOZE_DRAG_DROP:
+      case questionType.CLOZE_TEXT:
+        return result.map((r, i) => `${i + 1}. ${r}`);
+      default:
+        return result.join(", ");
+    }
+  }
+  return result;
 };
 
 //use `replaceVariables` util function to replace variables from answers

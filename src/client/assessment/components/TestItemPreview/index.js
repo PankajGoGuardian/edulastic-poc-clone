@@ -152,6 +152,7 @@ class TestItemPreview extends Component {
       isPrintPreview,
       showCollapseBtn,
       studentId,
+      studentName,
       itemId
     } = this.props;
 
@@ -175,6 +176,7 @@ class TestItemPreview extends Component {
         isPresentationMode={isPresentationMode}
         shoudlTakeDimensionsFromStore={shoudlTakeDimensionsFromStore}
         studentId={studentId}
+        studentName={studentName}
         itemId={itemId}
       />
     ) : null;

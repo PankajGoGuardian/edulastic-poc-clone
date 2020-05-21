@@ -23,7 +23,8 @@ const FeedbackWrapper = ({
   dimensions,
   shoudlTakeDimensionsFromStore,
   studentId,
-  itemId
+  itemId,
+  studentName
 }) => {
   const { rubrics: rubricDetails } = data;
   const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
@@ -33,7 +34,7 @@ const FeedbackWrapper = ({
   const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
   const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
   const userId = get(data, "activity.userId");
-  const studentName = data.activity && data.activity.studentName;
+  const userName = get(data, "activity.studentName");
   const presentationModeProps = {
     isPresentationMode,
     color: data.activity && data.activity.color,
@@ -79,7 +80,7 @@ const FeedbackWrapper = ({
           disabled={disabled}
           widget={data}
           studentId={userId || studentId}
-          studentName={studentName}
+          studentName={userName || studentName}
           rubricDetails={rubricDetails}
           isPracticeQuestion={isPracticeQuestion}
           itemId={itemId}

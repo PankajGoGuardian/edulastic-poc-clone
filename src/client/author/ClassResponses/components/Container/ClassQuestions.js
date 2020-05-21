@@ -23,6 +23,7 @@ function Preview({
   item,
   qIndex,
   studentId,
+  studentName,
   evaluation,
   showStudentWork,
   passages,
@@ -90,6 +91,7 @@ function Preview({
         saveHistory={() => {}}
         {...scoringProps}
         studentId={studentId}
+        studentName={studentName}
         itemId={item._id}
       />
     </StyledFlexContainer>
@@ -343,7 +345,8 @@ class ClassQuestions extends Component {
       testData,
       qIndex,
       scratchpadProps,
-      testActivityId
+      testActivityId,
+      isPresentationMode
     } = this.props;
     const testItems = this.getTestItems();
     const { expressGrader: isExpressGrader = false } = this.context;
@@ -373,6 +376,7 @@ class ClassQuestions extends Component {
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
+          studentName={(currentStudent || {})[isPresentationMode ? "fakeName" : "studentName"]}
           key={index}
           item={item}
           passages={passages}

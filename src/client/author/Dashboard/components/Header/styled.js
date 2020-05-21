@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import { linkColor1, themeColor, white } from "@edulastic/colors";
+import { IconLock as LockIcon, IconPlusCircle } from "@edulastic/icons";
 import { Button, Typography } from "antd";
-import { IconPlusCircle, IconLock as LockIcon } from "@edulastic/icons";
-import { green, mediumDesktopWidth, mobileWidthLarge, themeColor, linkColor1, white } from "@edulastic/colors";
+import styled from "styled-components";
 
 const { Text } = Typography;
 
@@ -11,35 +11,6 @@ export const TitleWrapper = styled.h1`
   font-weight: bold;
   line-height: normal;
   margin: 0px;
-`;
-
-export const ManageClassButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  height: 45px;
-  color: ${props => props.theme.header.headerBgColor};
-  border-radius: 3px;
-  margin-left: 15px;
-  padding: 5px 20px;
-  border-radius: 6px;
-
-  i {
-    font-size: 22px;
-    color: ${themeColor};
-  }
-
-  &:hover {
-    color: ${props => props.theme.header.headerBgColor};
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
-  }
-  @media (max-width: ${mobileWidthLarge}) {
-    svg {
-      display: none;
-    }
-  }
 `;
 
 export const IconPlus = styled(IconPlusCircle)`

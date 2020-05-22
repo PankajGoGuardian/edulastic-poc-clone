@@ -9,19 +9,22 @@ import { get } from "lodash";
 class SsoLogin extends React.Component {
   componentDidMount() {
     const { location, googleSSOLogin, cleverSSOLogin, msoSSOLogin } = this.props;
+    const { addAccount, addAccountTo } = JSON.parse(sessionStorage.getItem("addAccountDetails") || "{}");
 
     const path = location.pathname.split("/");
-    let role = localStorage.getItem("thirdPartySignOnRole") || undefined;
+
+    const payload = {
+      code: qs.parse(location.search)["?code"],
+      edulasticRole: localStorage.getItem("thirdPartySignOnRole") || undefined,
+      addAccountTo: addAccount ? addAccountTo : undefined
+    };
+
     if (path.includes("mso")) {
-      msoSSOLogin({ code: qs.parse(location.search)["?code"], edulasticRole: role });
+      msoSSOLogin(payload);
     } else if (path.includes("google")) {
-      googleSSOLogin({ code: qs.parse(location.search)["?code"], edulasticRole: role });
+      googleSSOLogin(payload);
     } else if (path.includes("clever")) {
-      cleverSSOLogin({
-        code: qs.parse(location.search)["?code"],
-        state: qs.parse(location.search)["state"],
-        edulasticRole: role
-      });
+      cleverSSOLogin({ ...payload, state: qs.parse(location.search)["state"] });
     }
   }
 

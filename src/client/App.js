@@ -186,7 +186,12 @@ class App extends Component {
       isLocationInTestRedirectRoutes(location) ||
       location.pathname.includes("/kid");
 
-    if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
+    if (
+      !publicPath &&
+      user.authenticating &&
+      TokenStorage.getAccessToken() &&
+      !sessionStorage.getItem("addAccountDetails")
+    ) {
       return <Loading />;
     }
 

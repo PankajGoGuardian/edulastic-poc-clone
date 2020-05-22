@@ -216,7 +216,7 @@ export default createReducer(initialState, {
   },
   [FETCH_USER]: (state, { payload }) => {
     if (!payload?.background) {
-      state.authenticating = state.authenticating = payload?.addAccount === "true" ? false : true;
+      state.authenticating = true;
       state.isAuthenticated = false;
     }
     if (payload?.addAccount === "true") {
@@ -648,6 +648,12 @@ function* signup({ payload }) {
       obj.passwordForExistingUser = passwordForExistingUser;
     }
 
+    const addAccount = yield select(getAddAccount);
+    const addAccountTo = yield select(getAddAccountUserId);
+    if (addAccount === true) {
+      obj.addAccountTo = addAccountTo;
+    }
+
     const response = yield call(authApi.signup, obj);
     const { message: _responseMsg, result, askPassword, passwordMatch } = response;
     if (_responseMsg && !result) {
@@ -744,6 +750,13 @@ export function* fetchUser({ payload }) {
       return;
     }
     if (payload && payload.addAccount === "true") {
+      sessionStorage.setItem(
+        "addAccountDetails",
+        JSON.stringify({
+          addAccount: payload.addAccount,
+          addAccountTo: payload.userId
+        })
+      );
       yield put(push("/login"));
       return;
     }
@@ -830,6 +843,7 @@ function* logout() {
       localStorage.clear();
       sessionStorage.removeItem("cliBannerShown");
       sessionStorage.removeItem("cliBannerVisible");
+      sessionStorage.removeItem("addAccountDetails");
       TokenStorage.removeKID();
       TokenStorage.initKID();
       yield put({ type: "RESET" });

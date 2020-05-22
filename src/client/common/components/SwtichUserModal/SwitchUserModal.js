@@ -52,7 +52,7 @@ const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userI
           {Object.keys(roles).map(role => {
             const users = otherAccounts.filter(acc => acc.role === role);
             return (
-              users.length &&
+              !!users.length &&
               users.map(user => (
                 <StyledDiv key={`${user._id}_${user.role}`} role={role} onClick={() => switchUser(user._id, personId)}>
                   <div style={{ "font-size": "16px", "font-weight": "600" }}>

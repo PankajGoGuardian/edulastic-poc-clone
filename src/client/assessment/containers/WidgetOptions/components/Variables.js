@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { variableTypes, math } from "@edulastic/constants";
 import { MathInput, MathFormulaDisplay } from "@edulastic/common";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import {
   getQuestionDataSelector,
@@ -45,10 +45,10 @@ const CombinationInput = styled(Input)`
 `;
 
 const DynamicText = styled.div`
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+  font-size: ${props => props.theme.smallFontSize};
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
   }
 `;
 

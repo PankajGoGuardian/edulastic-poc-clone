@@ -11,7 +11,7 @@ import { Checkbox } from "antd";
 
 export const CheckboxStyle = styled(Checkbox)`
   width: ${({ width }) => width || "unset"};
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+  font-size: ${props => props.theme.smallFontSize};
   font-weight: ${props => props.theme.widgetOptions.labelFontWeight};
   letter-spacing: -0.4px;
   text-align: left;
@@ -53,8 +53,8 @@ export const CheckboxStyle = styled(Checkbox)`
     }
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
   }
 `;
 

@@ -1,12 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  mediumDesktopExactWidth,
-  smallDesktopWidth,
-  white,
-  themeColor,
-  greyThemeDark1
-} from "@edulastic/colors";
+import { mediumDesktopExactWidth, white, themeColor, greyThemeDark1, extraDesktopWidthMax } from "@edulastic/colors";
 import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
@@ -23,7 +17,7 @@ const WidgetTitle = styled.h2`
 `;
 
 export const SubtitleText = styled.div`
-  font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
+  font-size: ${({ theme }) => theme?.common?.titleSectionFontSize || "16px"};
   font-weight: ${props => props.theme.common.subtitleFontWeight};
   font-style: ${props => props.theme.common.subtitleFontStyle};
   font-stretch: ${props => props.theme.common.subtitleFontStretch};
@@ -34,11 +28,11 @@ export const SubtitleText = styled.div`
   padding: 0;
   ${({ styles }) => styles};
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: ${({ theme }) => theme?.common?.titleSecondarySectionFontSize || "18px"};
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    font-size: ${({ theme }) => theme?.common?.titleSectionFontSize || "16px"};
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
   }
 `;
 

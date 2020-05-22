@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { themeColor, mediumDesktopExactWidth } from "@edulastic/colors";
+import { themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const ItemBody = styled.div`
   margin-top: 11px;
@@ -51,13 +51,13 @@ export const ItemBody = styled.div`
   }
 
   .ant-select-selection-selected-value {
-    font-size: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontSize};
+    font-size: ${props => props.theme.smallFontSize};
     font-weight: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontWeight};
     letter-spacing: 0.2px;
     color: ${props => props.theme.questionMetadata.antSelectSelectionChoiceContentColor};
 
-    @media (max-width: ${mediumDesktopExactWidth}) {
-      font-size: ${props => props.theme.smallFontSize};
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: ${props => props.theme.questionMetadata.antSelectSelectionSelectedValueFontSize};
     }
   }
 

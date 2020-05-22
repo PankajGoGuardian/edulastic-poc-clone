@@ -122,13 +122,16 @@ export const Widget = styled.div`
     color: ${selectColor};
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    .ql-container,
-    .ant-input,
-    .ant-input-selection-selected-value {
-      font-size: ${props => props.theme.smallFontSize};
+  .ql-container,
+  .ant-input,
+  .ant-input-selection-selected-value {
+    font-size: ${props => props.theme.smallFontSize};
+
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      font-size: ${props => props.theme.bodyFontSize};
     }
   }
+
   @media (max-width: ${desktopWidth}) {
     padding: 20px;
     min-height: 0;
@@ -143,18 +146,19 @@ export const Widget = styled.div`
 export const WidgetSubHeading = styled.div`
   color: ${fadedBlack};
   margin-bottom: 10px;
-  font-size: ${props => props.theme.standardFont};
+  font-size: ${props => props.theme.smallFontSize};
   line-height: 1.333;
   list-style: none;
   display: block;
   font-weight: 600;
 
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.standardFont};
+  }
+
   @media (min-width: ${extraDesktopWidthMax}) {
     line-height: 1.5;
     margin-bottom: 15px;
-  }
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
   }
 `;
 

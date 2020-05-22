@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mediumDesktopExactWidth } from "@edulastic/colors";
 
 export const Label = styled.label`
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+  font-size: ${props => props.theme.smallFontSize};
   font-weight: ${props => props.theme.widgetOptions.labelFontWeight};
   font-style: ${props => props.theme.widgetOptions.labelFontStyle};
   font-stretch: ${props => props.theme.widgetOptions.labelFontStretch};
@@ -21,7 +21,7 @@ export const Label = styled.label`
   padding-left: ${props => (props.left ? `${props.left}px` : 0)};
   padding-right: ${props => (props.right ? `${props.right}px` : 0)};
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
   }
 `;

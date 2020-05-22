@@ -6,7 +6,7 @@ import { get } from "lodash";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { mediumDesktopWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth } from "@edulastic/colors";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -137,10 +137,10 @@ const QuestionContainer = styled.div`
   }
 
   &:not(:first-child) {
-    margin-top: 30px;
+    margin-top: 10px;
 
-    @media (max-width: ${mediumDesktopWidth}) {
-      margin-top: 10px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      margin-top: 30px;
     }
   }
 `;

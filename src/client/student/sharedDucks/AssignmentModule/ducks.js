@@ -20,6 +20,7 @@ export const CHECK_ANSWER = "check answer";
 export const ADD_EVALUATION = "add evaluation";
 export const RERENDER_ASSIGNMENTS = "[studentAssignments] rerender assignments";
 export const REMOVE_ASSIGNMENT = "[studentAssignments] remove assignment";
+export const REGRADE_ASSIGNMENT_REALTIME = "[studentAssessmentPlayer] regrade assessment realtime";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -29,6 +30,7 @@ export const setFilterAction = createAction(SET_FILTER);
 export const addRealtimeAssignmentAction = createAction(ADD_ASSIGNMENT_REALTIME);
 export const rerenderAssignmentsAction = createAction(RERENDER_ASSIGNMENTS);
 export const removeAssignmentAction = createAction(REMOVE_ASSIGNMENT);
+export const regradedRealtimeAssignmentAction = createAction(REGRADE_ASSIGNMENT_REALTIME);
 
 // initial State
 const initialState = {
@@ -88,6 +90,9 @@ export default createReducer(initialState, {
      * to rerun and cause rerender
      */
     state.byId = cloneDeep(state.byId);
+  },
+  [REGRADE_ASSIGNMENT_REALTIME]: (state, { payload }) => {
+    state.regradedAssignment = payload;
   }
 });
 

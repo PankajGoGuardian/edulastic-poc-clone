@@ -37,8 +37,8 @@ const AssessmentPlayer = ({
   sharedType,
   ...restProps
 }) => {
+  testId = preview ? testId : match.params.id;
   useEffect(() => {
-    testId = preview ? testId : match.params.id;
     const { utaId: testActivityId, groupId } = match.params;
     // if its from a modal that maybe showing the answer, then dont reset the answer.
     if (!LCBPreviewModal) startAssessment();
@@ -109,7 +109,14 @@ const AssessmentPlayer = ({
       <Route
         path={`${match.url}/qid/:qid`}
         render={() => (
-          <ThemeContainer passages={passages} utaId={utaId} defaultAP={defaultAP} url={match.url} groupId={groupId} />
+          <ThemeContainer
+            passages={passages}
+            utaId={utaId}
+            defaultAP={defaultAP}
+            url={match.url}
+            groupId={groupId}
+            testId={match.params.id}
+          />
         )}
       />
       <Route
@@ -122,6 +129,7 @@ const AssessmentPlayer = ({
             url={match.url}
             testletType
             groupId={groupId}
+            testId={match.params.id}
           />
         )}
       />

@@ -3,12 +3,13 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Spin, message } from "antd";
+import { Spin, message, Modal, Button } from "antd";
 import { isUndefined, get, isEmpty, isNull, isEqual } from "lodash";
 import useInterval from "@use-it/interval";
 
 import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
-import { AssessmentPlayerContext } from "@edulastic/common";
+import { AssessmentPlayerContext, useRealtimeV2 } from "@edulastic/common";
+import { themeColor } from "@edulastic/colors";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
 import { finishTestAcitivityAction } from "../actions/test";
@@ -25,6 +26,7 @@ import { CHECK, CLEAR } from "../constants/constantsForQuestions";
 import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
 import { hideHintsAction } from "../actions/userInteractions";
 import UnansweredPopup from "./common/UnansweredPopup";
+import { regradedRealtimeAssignmentAction } from "../../student/sharedDucks/AssignmentModule/ducks";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -88,11 +90,16 @@ const AssessmentContainer = ({
   studentReportModal,
   hideHints,
   demo,
+  regradedRealtimeAssignment,
+  testId,
+  userId,
+  regradedAssignment,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
   const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({ qLabels: [], show: false });
+  const [showRegradedModal, setShowRegradedModal] = useState(false);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
@@ -116,6 +123,24 @@ const AssessmentContainer = ({
     gotoItem(currentItem);
   }, [currentItem]);
 
+  useEffect(() => {
+    if (regradedAssignment && regradedAssignment?.newTestId !== testId) {
+      setShowRegradedModal(true);
+    }
+  }, [regradedAssignment?.newTestId]);
+
+  let topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
+  if (regradedAssignment?.newTestId) {
+    topics = [...topics, `student_assessment:test:${regradedAssignment?.newTestId}`];
+  }
+  useRealtimeV2(topics, {
+    regradedAssignment: payload => regradedRealtimeAssignment(payload)
+  });
+
+  const onRegradedModalOk = () => {
+    history.push(`/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`);
+    setShowRegradedModal(false);
+  };
   const saveCurrentAnswer = payload => {
     const timeSpent = Date.now() - lastTime.current;
     saveUserAnswer(currentItem, timeSpent, false, groupId, payload);
@@ -415,6 +440,24 @@ const AssessmentContainer = ({
 
   return (
     <AssessmentPlayerContext.Provider value={{ isStudentAttempt: true }}>
+      {showRegradedModal && (
+        <Modal
+          visible
+          centered
+          width={500}
+          okButtonProps={{
+            style: { background: themeColor }
+          }}
+          closable={false}
+          footer={[
+            <Button style={{ background: themeColor, color: "white" }} loading={loading} onClick={onRegradedModalOk}>
+              Ok
+            </Button>
+          ]}
+        >
+          The assignment has been modified by Instructor. Please restart the assignment.
+        </Modal>
+      )}
       {unansweredPopupSetting.show && (
         <UnansweredPopup
           visible
@@ -477,7 +520,9 @@ const enhance = compose(
       userPrevAnswer: state.previousAnswers,
       testSettings: state.test?.settings,
       showMagnifier: state.test.showMagnifier,
-      enableMagnifier: state.testPlayer.enableMagnifier
+      enableMagnifier: state.testPlayer.enableMagnifier,
+      regradedAssignment: get(state, "studentAssignment.regradedAssignment"),
+      userId: get(state, "user.user._id")
     }),
     {
       saveUserResponse,
@@ -486,7 +531,8 @@ const enhance = compose(
       finishTest: finishTestAcitivityAction,
       gotoItem: gotoItemAction,
       updateTestPlayer: updateTestPlayerAction,
-      hideHints: hideHintsAction
+      hideHints: hideHintsAction,
+      regradedRealtimeAssignment: regradedRealtimeAssignmentAction
     }
   )
 );

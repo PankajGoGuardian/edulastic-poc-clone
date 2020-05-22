@@ -383,10 +383,12 @@ const InnerWorkTable = ({
     const recommendations = [];
     if (groups.standards) {
       const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);
+      const skillIdentifiers = groups.standards.map(x => x.skillIdentifier);
       const obj = {
         assignmentId: selectedData.assignmentId,
         groupId: selectedData.classId,
         standardIdentifiers,
+        skillIdentifiers,
         type,
         masteryRange: {
           min: masteryRange[0],

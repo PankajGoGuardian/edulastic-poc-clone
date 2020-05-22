@@ -20,6 +20,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   getExitButton = () => cy.get('[data-cy="exitbutton"]');
 
+  getResponseScoreToggleSwitch = () => cy.get('[data-cy="response-toggle"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -99,9 +101,29 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     });
   };
 
+  setToggleToResponse = () =>
+    this.getResponseScoreToggleSwitch().then($ele => {
+      if ($ele.attr("aria-checked") === "true")
+        cy.wrap($ele)
+          .click()
+          .should("not.have.class", "ant-switch-checked");
+    });
+
+  setToggleToScore = () =>
+    this.getResponseScoreToggleSwitch().then($ele => {
+      if ($ele.attr("aria-checked") === "false")
+        cy.wrap($ele)
+          .click()
+          .should("have.class", "ant-switch-checked");
+    });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
+
+  verifyToggleSetToResponse = () => {
+    this.getResponseScoreToggleSwitch().should("not.have.class", "ant-switch-checked");
+  };
 
   verifyScoreAndPerformance = (score, perf) => {
     cy.get(`@${this.rowAlias}`)
@@ -121,9 +143,6 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   indexToOption = ind => String.fromCharCode(ind + 65);
 
-  getScoreToggleButton = () => {
-    return cy.get(".ant-switch").first();
-  };
   getScoreforQueNum = queNum => this.getCellforQueNum(queNum).find("span");
 
   getCellforQueNum = queNum => {

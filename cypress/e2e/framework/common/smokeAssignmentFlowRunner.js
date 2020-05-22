@@ -194,7 +194,7 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
         it(`> verify bar tool tip`, () => {
           queList.forEach((que, index) => {
-            bargraph.verifyQueToolTip(que, index, queBarData[que]);
+            bargraph.verifyQueToolTip(index, queBarData[que]);
           });
         });
       });

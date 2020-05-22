@@ -15,38 +15,38 @@ import SidebarPage from "../../../../framework/student/sidebarPage";
 
 const students = {
   1: {
-    email: "auto.lcb.student01@yopmail.com",
+    email: "lcb.student01@automation.com",
     stuName: "1st, Student01"
   },
   2: {
-    email: "auto.lcb.student02@yopmail.com",
+    email: "lcb.student02@automation.com",
     stuName: "2nd, Student02"
   },
   3: {
-    email: "auto.lcb.student03@yopmail.com",
+    email: "lcb.student03@automation.com",
     stuName: "3rd, Student03"
   },
   4: {
-    email: "auto.lcb.student04@yopmail.com",
+    email: "lcb.student04@automation.com",
     stuName: "4th, Student04"
   },
   5: {
-    email: "auto.lcb.student05@yopmail.com",
+    email: "lcb.student05@automation.com",
     stuName: "5th, Student05"
   },
   6: {
-    email: "auto.lcb.student06@yopmail.com",
+    email: "lcb.student06@automation.com",
     stuName: "6th, Student06"
   },
   7: {
-    email: "auto.lcb.student07@yopmail.com",
+    email: "lcb.student07@automation.com",
     stuName: "7th, Student07"
   }
 };
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
-    className: "Test LCB 01",
-    teacher: "auto.lcb.teacher01@yopmail.com",
+    className: "LCB Class",
+    teacher: "lcb.teacher01@automation.com",
     student: students[1].email,
     assignmentName: "New Assessment LCB",
     testId: "5cee418721be0e18675cd00c",
@@ -238,10 +238,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     cy.login("teacher", teacher);
     // TODO: to be enable test creation later
     // testLibrary.createTest("LCB_1").then(() => {
-    //   testLibrary.clickOnAssign();
-    //   // cy.visit("/author/assignments/5e43b7147861bb000702b9c7");
-    //   // cy.wait(10000);
-    cy.visit("/author/assignments/5eb1659d459501000777a9a7");
+    // testLibrary.clickOnAssign();
+    cy.visit("/author/assignments/5ebbbca7e320b10007ec76c2");
     cy.wait(10000);
     testLibrary.assignPage.selectClass(className);
     testLibrary.assignPage.clickOnAssign();
@@ -298,7 +296,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       queList.forEach((que, index) => {
         it(`verify bar tool tip for question ${que}`, () => {
           console.log("queBarData", queBarData);
-          bargraph.verifyQueToolTip(que, index, queBarData[que]);
+          bargraph.verifyQueToolTip(index, queBarData[que]);
         });
       });
     });
@@ -351,14 +349,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     before(() => {
       lcb.header.clickOnExpressGraderTab();
     });
+
+    context("default view", () => {
+      it("verify response view is enabled", () => {
+        expressg.verifyToggleSetToResponse();
+      });
+    });
+
     context(" > verify scores", () => {
       before("Change toggle button to score view", () => {
-        expressg.getScoreToggleButton().click({ force: true });
+        expressg.setToggleToScore();
       });
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
         it(` > verify scores and color for student :: ${studentName}`, () => {
-          expressg.verifyScoreToggleButtonEnabled(true);
           const { attempt, score, perfValue } = statsMap[studentName];
           expressg.verifyScoreGrid(studentName, attempt, score, perfValue, questionTypeMap);
           expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap); // assert color
@@ -378,12 +382,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
     context(" > verify Responses", () => {
       before("Change toggle button to Response view", () => {
-        expressg.getScoreToggleButton().click({ force: true });
+        expressg.setToggleToResponse();
       });
+
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
         it(` > verify response and color for student :: ${studentName}`, () => {
-          expressg.verifyScoreToggleButtonEnabled(false);
+          // expressg.verifyScoreToggleButtonEnabled(false);
           const { attempt } = statsMap[studentName];
           expressg.verifyResponseGrid(attempt, questionTypeMap, studentName);
           expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap); // assert color
@@ -430,6 +435,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
+  // diabling redirect in lcb as redirect is being covered under redirectPolicy.spec.js
+  /*   
   describe(" > verify redirect", () => {
     before("calculate redirected stats", () => {
       redirectedData.forEach(attempts => {
@@ -544,7 +551,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         });
       });
     });
-  });
+  }); 
+  */
 
   describe(" > update response and score from express grader", () => {
     before(() => {

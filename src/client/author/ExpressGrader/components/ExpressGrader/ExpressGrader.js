@@ -164,7 +164,8 @@ class ExpressGrader extends Component {
 
                 <FlexContainer justifyContent="space-between">
                   <SwitchBox>
-                    RESPONSE <Switch checked={scoreMode} onChange={() => toggleScoreMode()} /> SCORE
+                    RESPONSE <Switch data-cy="response-toggle" checked={scoreMode} onChange={() => toggleScoreMode()} />{" "}
+                    SCORE
                   </SwitchBox>
                   <PresentationToggleSwitch groupId={classId} />
                 </FlexContainer>

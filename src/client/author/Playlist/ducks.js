@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { call, put, all, takeEvery, takeLatest } from "redux-saga/effects";
+import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
 import { message } from "antd";
 import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
@@ -62,8 +62,19 @@ function* receivePublishersSaga() {
 
 function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
+    const _search = { ...search };
+    // If user is CE then fetch playlists created by only this CE
+    const { _id: userId, permissions: userPermissions = [] } = yield select(state => state.user.user) || {};
+    if (userPermissions.includes("curator")) {
+      if (_search.authoredByIds) {
+        _search.authoredByIds.push(userId);
+      } else {
+        _search.authoredByIds = [userId];
+      }
+    }
+
     const result = yield call(curriculumSequencesApi.searchCurriculumSequences, {
-      search,
+      search: _search,
       page,
       limit
     });
@@ -77,9 +88,10 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
       })
     );
   } catch (err) {
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Receive playlists is failing";
     yield call(message.error, errorMessage);
     yield put(receivePlaylistErrorAction({ error: errorMessage }));
+    console.warn(err);
   }
 }
 

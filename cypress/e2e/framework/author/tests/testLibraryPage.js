@@ -43,6 +43,8 @@ export default class TestLibrary {
 
   getProceedButton = () => cy.get('[data-cy="PROCEED"]');
 
+  getDuplicateButtonInReview = () => cy.get('[data-cy="duplicate"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -234,7 +236,7 @@ export default class TestLibrary {
     cy.wait(2000);
   };
 
-  publishedToDraft = (duplicate = false) => {
+  publishedToDraft = () => {
     cy.server();
     cy.route("POST", "**/test/**").as("duplicateTest");
     cy.route("PUT", "**/test/**").as("testdrafted");
@@ -242,15 +244,20 @@ export default class TestLibrary {
       .should("exist")
       .click()
       .then(() => {
-        if (duplicate) {
-          cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
-        } else {
-          // pop up that comes up when we try to edit a published test
-          this.getProceedButton().click();
-          cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
-        }
+        // pop up that comes up when we try to edit a published test
+        this.getProceedButton().click();
+        cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
       });
     cy.wait(5000);
+  };
+
+  duplicateTestInReview = () => {
+    cy.server();
+    cy.route("POST", "**/test/**").as("duplicateTest");
+    this.getDuplicateButtonInReview()
+      .should("be.visible")
+      .click();
+    cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
   };
 
   // *** ACTIONS END ***
@@ -276,12 +283,13 @@ export default class TestLibrary {
     // Test_id should change after editing test
     this.getAssignEdit().should("contain", "ASSIGN");
     this.clickOnDetailsOfCard();
-    this.publishedToDraft(true);
+    this.getEditButton().should("not.exist");
+    this.duplicateTestInReview();
     cy.wait(3000);
-    this.verifyNewTestIdInUrl(oldTestId);
+    this.verifyAbsenceOfIdInUrl(oldTestId);
   };
 
-  verifyNewTestIdInUrl = id => {
+  verifyAbsenceOfIdInUrl = id => {
     cy.url()
       .then(url => url.split("/").reverse()[0])
       .should("not.eq", id);
@@ -349,11 +357,7 @@ export default class TestLibrary {
   sharingEnabledPublic = () => this.getPublicRadio().should("be.enabled");
 
   closeSharing = () => {
-    cy.contains("Share with others")
-      .parent()
-      .next()
-      .find("path")
-      .click({ force: true });
+    cy.get(".ant-modal-close-x").click({ force: true });
   };
 
   getSchoolRadio = () => cy.get('[value="SCHOOL"]');

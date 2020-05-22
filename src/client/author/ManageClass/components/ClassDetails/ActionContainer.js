@@ -377,7 +377,7 @@ const ActionContainer = ({
                 {!cleverId && (
                   <MenuItems key="editStudent">
                     <IconPencilEdit />
-                    <span>Edit Stduent</span>
+                    <span>Edit Student</span>
                   </MenuItems>
                 )}
                 {!!addCoTeacher && (

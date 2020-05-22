@@ -1,16 +1,16 @@
-import styled from "styled-components";
-import { Row, Radio, Switch, Input, Select, DatePicker, Table, Col, Button } from "antd";
 import {
-  white,
+  greyThemeLighter,
+  largeDesktopWidth,
+  linkColor1,
+  mobileWidth,
+  red,
   secondaryTextColor,
   themeColor,
   themeColorLight,
-  red,
-  largeDesktopWidth,
-  linkColor1,
-  greyThemeLighter,
-  mobileWidth
+  white
 } from "@edulastic/colors";
+import { Button, Col, DatePicker, Input, Radio, Row, Select, Switch, Table } from "antd";
+import styled from "styled-components";
 
 const RadioGroup = Radio.Group;
 
@@ -27,10 +27,10 @@ export const InitOptions = styled.div`
   border: 1px solid #dadae4;
   border-radius: 10px;
   padding: 40px;
-  width: 1000px;
+  width: 100%;
 
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 100%;
+  @media (min-width: ${largeDesktopWidth}) {
+    width: 1000px;
   }
 `;
 

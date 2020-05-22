@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import { Row, Select, DatePicker, Table } from "antd";
 import {
-  white,
+  largeDesktopWidth,
+  lightGreySecondary,
   secondaryTextColor,
   themeColor,
   themeColorLight,
-  lightGreySecondary,
-  smallDesktopWidth
+  white
 } from "@edulastic/colors";
+import { DatePicker, Row, Select, Table } from "antd";
+import styled from "styled-components";
 
 export const OptionConationer = styled.div`
   margin-top: 20px;
@@ -203,13 +203,13 @@ export const ClassListFilter = styled.div`
     .ant-select-selection--multiple {
       .ant-select-selection__rendered {
         li.ant-select-selection__choice {
-          height: 24px;
-          line-height: 24px;
+          height: 20px;
+          line-height: 20px;
           margin-top: 7px;
 
-          @media (max-width: ${smallDesktopWidth}) {
-            height: 20px;
-            line-height: 20px;
+          @media (min-width: ${largeDesktopWidth}) {
+            height: 24px;
+            line-height: 24px;
           }
         }
       }

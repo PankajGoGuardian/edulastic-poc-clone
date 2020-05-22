@@ -1,49 +1,37 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { isEmpty, get, keyBy, omit } from "lodash";
-import * as moment from "moment";
+import { EduButton } from "@edulastic/common";
+import { assignmentPolicyOptions, roleuser, test as testConst } from "@edulastic/constants";
 import { message, Spin } from "antd";
+import produce from "immer";
+import { get, isEmpty, keyBy, omit } from "lodash";
+import * as moment from "moment";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { receiveClassListAction } from "../../../Classes/ducks";
+import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
-
+import ListHeader from "../../../src/components/common/ListHeader";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { saveAssignmentAction } from "../../../TestPage/components/Assign/ducks";
 import {
-  receiveTestByIdAction,
-  getTestSelector,
   getDefaultTestSettingsAction,
-  getTestsLoadingSelector
+  getTestSelector,
+  getTestsLoadingSelector,
+  receiveTestByIdAction
 } from "../../../TestPage/ducks";
-
 import {
+  clearAssignmentSettingsAction,
   fetchAssignmentsAction,
   getAssignmentsSelector,
-  getTestEntitySelector,
   getClassListSelector,
-  updateAssingnmentSettingsAction,
-  clearAssignmentSettingsAction
+  getTestEntitySelector,
+  updateAssingnmentSettingsAction
 } from "../../duck";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
-import ListHeader from "../../../src/components/common/ListHeader";
-import SimpleOptions from "../SimpleOptions/SimpleOptions";
 import AdvancedOptons from "../AdvancedOptons/AdvancedOptons";
-import {
-  Container,
-  FullFlexContainer,
-  PaginationInfo,
-  AnchorLink,
-  Anchor,
-  SwitchWrapper,
-  ViewSwitch,
-  SwitchLabel,
-  AssignButton
-} from "./styled";
-import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
-import { receiveClassListAction } from "../../../Classes/ducks";
-import produce from "immer";
-import { saveAssignmentAction } from "../../../TestPage/components/Assign/ducks";
+import SimpleOptions from "../SimpleOptions/SimpleOptions";
 import CommonStudentConfirmation from "./ConfirmationModal";
 import MultipleAssignConfirmation from "./MultipleAssignConfirmation";
-import { EduButton } from "@edulastic/common";
+import { Anchor, AnchorLink, Container, FullFlexContainer, PaginationInfo } from "./styled";
 
 const { ASSESSMENT, COMMON } = testConst.type;
 

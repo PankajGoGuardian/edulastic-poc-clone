@@ -1,14 +1,5 @@
-import {
-  greyDarken,
-  lightGreen1,
-  linkColor,
-  mediumDesktopWidth,
-  mobileWidth,
-  tabletWidth,
-  themeColor,
-  white
-} from "@edulastic/colors";
-import { Button, Card, FlexContainer } from "@edulastic/common";
+import { greyDarken, lightGreen1, linkColor, mobileWidth, tabletWidth } from "@edulastic/colors";
+import { Card, FlexContainer } from "@edulastic/common";
 import { Radio, Switch } from "antd";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -27,34 +18,6 @@ export const Main = styled.div`
 `;
 
 export const DRadio = styled(Radio)``;
-
-export const AssignButton = styled(Button)`
-  position: relative;
-  min-width: 130px;
-  height: 45px;
-  color: ${themeColor};
-  border-color: ${themeColor};
-  border-radius: 3px;
-  background: ${white};
-  justify-content: space-around;
-  margin-left: 20px;
-  &:hover,
-  &:focus {
-    background: ${themeColor};
-    color: ${white};
-    border-color: ${themeColor};
-  }
-  [disabled] {
-    pointer-events: none;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
-    min-height: 36px;
-    margin-left: 10px;
-  }
-`;
 
 export const StyledCard = styled(Card)`
   border-radius: 5;
@@ -98,7 +61,7 @@ export const Anchor = styled.a`
 `;
 
 export const FullFlexContainer = styled(FlexContainer)`
-  @media (max-width: 770px) {
+  @media (max-width: ${tabletWidth}) {
     width: 100%;
   }
   justify-content: ${({ justifyContent }) => justifyContent || "flex-start"};
@@ -117,7 +80,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
     justify-content: space-around;
   }
 
-  @media (max-width: 770px) {
+  @media (max-width: ${tabletWidth}) {
     display: flex;
     justify-content: space-between;
     flex-direction: row-reverse;

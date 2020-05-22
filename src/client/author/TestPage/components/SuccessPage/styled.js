@@ -1,26 +1,22 @@
-import { Typography } from "antd";
-import styled from "styled-components";
 import {
+  backgroundGrey,
+  darkGrey2,
+  greyThemeLight,
+  greyThemeLighter,
+  largeDesktopWidth,
+  lightGrey4,
+  lightGrey9,
   mobileWidth,
+  mobileWidthLarge,
+  secondaryTextColor,
   tabletWidth,
   themeColor,
-  white,
-  darkGrey,
-  lightGrey,
-  lightGrey4,
-  largeDesktopWidth,
-  greyThemeLighter,
-  greyThemeLight,
-  backgroundGrey,
-  lightGrey9,
-  secondaryTextColor,
-  darkGrey2,
-  mediumDesktopExactWidth,
-  titleColor,
-  mobileWidthLarge
+  white
 } from "@edulastic/colors";
-import { FlexContainer, Card, Button } from "@edulastic/common";
-import { Rate } from "antd/lib/index";
+import { Button, Card, FlexContainer } from "@edulastic/common";
+import { Typography } from "antd";
+import styled from "styled-components";
+
 const { Paragraph } = Typography;
 
 export const Container = styled.div`
@@ -141,7 +137,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
     justify-content: space-around;
   }
 
-  @media (max-width: 770px) {
+  @media (max-width: ${tabletWidth}) {
     background-color: ${white};
     display: flex;
     justify-content: space-between;

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { message } from "antd";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import { set, omit } from "lodash";
@@ -156,14 +156,11 @@ class CurriculumContainer extends Component {
     const { destinationCurriculumSequence, moveContentInPlaylist, addIntoModule } = this.props;
     this.expandModule(toModuleIndex);
     if (item.fromPlaylistTestsBox) {
-      let flag = false;
-      destinationCurriculumSequence.modules.every(module => {
-        if (!module.data.find(x => x.contentId === item.id)) {
-          flag = true;
-        }
-      });
+      const itemExistsInModule = destinationCurriculumSequence.modules?.[toModuleIndex]?.data?.find(
+        x => x?.contentId === item.id
+      );
 
-      if (flag) {
+      if (!itemExistsInModule) {
         set(item, "contentId", item.id);
         const attrsToOmit = ["id", "type", "fromPlaylistTestsBox"];
         if (item.contentType === "test") {
@@ -174,12 +171,15 @@ class CurriculumContainer extends Component {
         const newItem = omit(item, attrsToOmit);
         addIntoModule({ item: newItem, moduleIndex: toModuleIndex, afterIndex });
       } else {
-        message.error("Content already exists");
+        notification({
+          msg: `Dropped ${item.contentType === "test" ? "Test" : "Resource"} already exists in this module`
+        });
       }
       return;
+    } else {
+      const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
+      moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
     }
-    const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
-    moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
   };
 
   onBeginDrag = ({ fromModuleIndex, fromContentId, contentIndex }) => {

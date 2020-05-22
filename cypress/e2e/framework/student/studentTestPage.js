@@ -871,12 +871,21 @@ class StudentTestPage {
     switch (type) {
       case CALCULATOR.SCIENTIFIC:
         this.getScientificCalc().should("exist");
+        this.getScientificCalc()
+          .prev()
+          .click({ force: true });
         break;
       case CALCULATOR.BASIC:
         this.getBasicCalc().should("exist");
+        this.getBasicCalc()
+          .prev()
+          .click({ force: true });
         break;
       case CALCULATOR.GRAPH:
         this.getGraphCalc().should("exist");
+        this.getGraphCalc()
+          .prev()
+          .click({ force: true });
         break;
       default:
         this.getCalculatorButton().should("not.exist");

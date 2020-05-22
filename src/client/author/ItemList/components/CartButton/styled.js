@@ -1,19 +1,16 @@
+import { mediumDesktopExactWidth, mobileWidthLarge, themeColor, white } from "@edulastic/colors";
 import styled from "styled-components";
-import { white, mobileWidth, themeColor, mediumDesktopWidth, mobileWidthLarge } from "@edulastic/colors";
 
 export const Container = styled.div`
   position: relative;
-  margin-left: 10px;
+  margin-left: 5px;
   opacity: ${props => (props.disabled ? 0.5 : 1)};
   pointer-events: ${props => (props.disabled ? "none" : "all")};
   cursor: ${props => (props.disabled ? "default" : "pointer")};
   transition: opacity 300ms ease-in-out;
 
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (min-width: ${mediumDesktopExactWidth}) {
     margin-left: 10px;
-  }
-  @media (max-width: ${mobileWidth}) {
-    margin-left: 5px;
   }
 `;
 

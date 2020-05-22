@@ -1,21 +1,20 @@
-import { Anchor, Radio, Select, Input, Button, Col } from "antd";
-import styled from "styled-components";
-import { titleColor } from "@edulastic/colors";
-
 import {
-  mobileWidth,
-  mediumDesktopWidth,
-  secondaryTextColor,
-  white,
-  linkColor1,
   cardTitleColor,
   lightGreySecondary,
-  themeColor,
+  linkColor1,
+  mediumDesktopWidth,
+  mobileWidth,
   red,
-  blueBorder,
-  smallDesktopWidth
+  secondaryTextColor,
+  smallDesktopWidth,
+  themeColor,
+  titleColor,
+  white,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Paper } from "@edulastic/common";
+import { Anchor, Button, Col, Input, Radio, Select } from "antd";
+import styled from "styled-components";
 
 export const Container = styled(Paper)`
   margin-top: ${props => (props.marginTop ? props.marginTop : "27px")};
@@ -82,9 +81,10 @@ export const StyledAnchor = styled(Anchor)`
     letter-spacing: 0.2px;
     color: ${linkColor1};
     text-transform: uppercase;
+    white-space: normal;
 
-    @media (max-width: ${mediumDesktopWidth}) {
-      white-space: normal;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      white-space: nowrap;
     }
   }
 

@@ -463,7 +463,7 @@ class MainSetting extends Component {
             )}
             {availableFeatures.includes("maxAttemptAllowed") ? (
               <Block id="maximum-attempts-allowed">
-                <Title>Maximum Attempts Allowed </Title>
+                <Title>Maximum Attempts Allowed</Title>
                 <Body>
                   <TextInputStyled
                     type="number"

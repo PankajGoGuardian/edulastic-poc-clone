@@ -1,15 +1,15 @@
-import styled from "styled-components";
-import { Col, Row } from "antd";
-import { Paper } from "@edulastic/common";
 import {
+  dropZoneTitleColor,
+  extraDesktopWidth,
+  extraDesktopWidthMax,
+  greenDark,
   lightGreySecondary,
   secondaryTextColor,
-  dropZoneTitleColor,
-  greenDark,
-  smallDesktopWidth,
-  extraDesktopWidth,
-  mediumDesktopExactWidth
+  smallDesktopWidth
 } from "@edulastic/colors";
+import { Paper } from "@edulastic/common";
+import { Col, Row } from "antd";
+import styled from "styled-components";
 import { SummarySelect } from "../../../Summary/common/SummaryForm";
 import { MainTitle } from "../../../Summary/components/Sidebar/styled";
 
@@ -99,12 +99,12 @@ export const SummaryInfoNumber = styled.span`
 
 export const SummaryInfoTitle = styled.span`
   display: inline-block;
-  font-size: ${props => props.theme.smallFontSize};
+  font-size: ${props => props.theme.smallLinkFontSize};
   font-weight: 600;
   color: ${secondaryTextColor};
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallLinkFontSize};
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.smallFontSize};
   }
 `;
 

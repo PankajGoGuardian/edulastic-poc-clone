@@ -1,99 +1,94 @@
-import { Icon, Row, Affix, Input } from "antd";
 import {
   boxShadowDefault,
   desktopWidth,
+  dropZoneTitleColor,
+  extraDesktopWidthMax,
+  greenDark,
+  greyThemeLight,
+  greyThemeLighter,
+  lightGreySecondary,
   secondaryTextColor,
   textColor,
-  greenDark,
-  dropZoneTitleColor,
-  lightGreySecondary,
-  mobileWidthLarge,
-  themeColor,
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  greyThemeLighter,
-  greyThemeLight
+  themeColor
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
-import styled from "styled-components";
+import { Affix, Icon, Input, Row } from "antd";
 import Modal from "react-responsive-modal";
+import styled from "styled-components";
 
 export const Container = styled.div`
-  width: 240px;
-  height: 100%;
-  overflow: auto;
+  background: ${lightGreySecondary};
+  width: 300px;
+  height: calc(100vh - 110px);
+  position: fixed;
+  left: 50%;
+  top: 110px;
+  z-index: 1;
+  transform: translateX(-50%);
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${desktopWidth}) {
     width: 260px;
+    height: 100%;
+    overflow: auto;
+    position: unset;
+    transform: unset;
+    background: unset;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 370px;
-  }
-  @media (max-width: ${desktopWidth}) {
-    background: ${lightGreySecondary};
-    width: 450px;
-    height: calc(100vh - 80px);
-    position: fixed;
-    left: 50%;
-    top: 70px;
-    z-index: 1;
-    transform: translateX(-50%);
-  }
-  @media (max-width: ${mobileWidthLarge}) {
-    width: 300px;
   }
 `;
 
 export const AffixContainer = styled(Affix)``;
 
 export const CloseIcon = styled(Icon)`
-  display: none;
+  font-size: 24px;
+  width: 100%;
+  padding: 15px 25px 0px;
+  text-align: right;
+  display: block;
+  cursor: pointer;
 
-  @media (max-width: ${desktopWidth}) {
-    font-size: 24px;
-    width: 100%;
-    padding: 15px 25px 0px;
-    text-align: right;
-    display: block;
-    cursor: pointer;
+  @media (min-width: ${desktopWidth}) {
+    display: none;
   }
 `;
 
 export const Backdrop = styled.div`
-  display: none;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.6);
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  display: block;
+  z-index: 1;
 
-  @media (max-width: ${desktopWidth}) {
-    position: fixed;
-    background: rgba(0, 0, 0, 0.6);
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    display: block;
-    z-index: 1;
+  @media (min-width: ${desktopWidth}) {
+    display: none;
   }
 `;
 
 export const FixedFilters = styled.div`
-  padding: 20px 30px 0px;
+  width: 100%;
+  position: relative;
+  top: auto;
+  padding: 0px;
 
+  @media (min-width: ${desktopWidth}) {
+    padding: 20px 30px 0px;
+  }
   @media (min-width: ${extraDesktopWidthMax}) {
     padding: 20px 50px 0px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 100%;
-    position: relative;
-    top: auto;
-    padding: 0px;
   }
 `;
 
 export const SearchWrapper = styled.div`
   display: flex;
+  padding: 25px 25px 0px 19px;
 
-  @media (max-width: ${desktopWidth}) {
-    padding: 25px 25px 0px 19px;
+  @media (min-width: ${desktopWidth}) {
+    padding: 0px;
   }
 `;
 
@@ -107,10 +102,10 @@ export const SearchInput = styled(Input.Search)`
     border: 1px solid ${greyThemeLight};
     border-radius: 2px;
     height: 40px;
-    font-size: ${props => props.theme.smallFontSize};
+    font-size: ${props => props.theme.smallLinkFontSize};
 
-    @media (max-width: ${mediumDesktopExactWidth}) {
-      font-size: ${props => props.theme.smallLinkFontSize};
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: ${props => props.theme.smallFontSize};
     }
   }
   svg {
@@ -151,10 +146,6 @@ export const TextFieldSearch = styled(TextField)`
       color: ${themeColor};
     }
   }
-
-  @media (max-width: ${desktopWidth}) {
-    height: 40px;
-  }
 `;
 
 export const SearchIcon = styled(Icon)`
@@ -163,11 +154,12 @@ export const SearchIcon = styled(Icon)`
 `;
 
 export const FilterButton = styled.div`
-  display: none;
+  display: block;
   flex: 1;
   height: 40px;
   box-shadow: ${boxShadowDefault};
   border-radius: 10px;
+  margin-left: 10px;
 
   .ant-btn {
     height: 40px;
@@ -181,15 +173,17 @@ export const FilterButton = styled.div`
     }
   }
 
-  @media (max-width: ${desktopWidth}) {
-    display: block;
-    margin-left: 10px;
+  @media (min-width: ${desktopWidth}) {
+    display: none;
   }
 `;
 
 export const MainFilter = styled.div`
   margin-top: 19px;
   z-index: 0;
+  position: relative;
+  display: block;
+  padding: 0px 25px 0px 19px;
 
   .scrollbar-container {
     ::-webkit-scrollbar {
@@ -216,10 +210,8 @@ export const MainFilter = styled.div`
     }
   }
 
-  @media (max-width: ${desktopWidth}) {
-    position: relative;
-    display: block;
-    padding: 0px 25px 0px 19px;
+  @media (min-width: ${desktopWidth}) {
+    padding: 0px;
   }
 `;
 

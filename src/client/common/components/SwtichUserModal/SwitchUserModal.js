@@ -50,7 +50,7 @@ const SwitchUserModal = ({ showModal, closeModal, otherAccounts, personId, userI
         <p>Select the role you want to switch</p>
         <div style={{ "margin-top": "16px" }}>
           {Object.keys(roles).map(role => {
-            const users = otherAccounts.filter(acc => acc.role === role);
+            const users = otherAccounts.filter(acc => acc.role === role && acc._id !== userId);
             return (
               !!users.length &&
               users.map(user => (

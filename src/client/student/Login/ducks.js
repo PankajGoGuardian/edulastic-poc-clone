@@ -1227,7 +1227,11 @@ function* removeSchoolSaga({ payload }) {
   } catch (e) {
     yield put({ type: REMOVE_SCHOOL_FAILED });
     console.error(e);
-    yield call(message.error, "Failed to remove requested school");
+    if (e.status === 403) {
+      yield call(message.error, e.data);
+    } else {
+      yield call(message.error, "Failed to remove requested school");
+    }
   }
 }
 

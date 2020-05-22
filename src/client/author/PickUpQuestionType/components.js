@@ -1,5 +1,4 @@
 import styled from "styled-components";
-
 import { themeColor, cardBg, cardBorder, mediumDesktopExactWidth } from "@edulastic/colors";
 
 export const RoundDiv = styled.div`

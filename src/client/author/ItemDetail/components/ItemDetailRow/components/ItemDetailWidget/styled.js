@@ -1,4 +1,4 @@
-import { white, mobileWidth, mediumDesktopWidth, greyThemeDark2 } from "@edulastic/colors";
+import { white, mobileWidth, greyThemeDark2, mediumDesktopExactWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -45,8 +45,8 @@ export const Buttons = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border: 1px solid ${greyThemeDark2};
       border-radius: 3px;
       margin-bottom: 10px;
@@ -54,15 +54,14 @@ export const Buttons = styled.div`
       svg {
         fill: ${greyThemeDark2};
       }
+
+      @media (min-width: ${mediumDesktopExactWidth}) {
+        width: 32px;
+        height: 32px;
+      }
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    .ant-btn-circle {
-      width: 30px;
-      height: 30px;
-    }
-  }
   @media (max-width: ${mobileWidth}) {
     right: 0px;
   }

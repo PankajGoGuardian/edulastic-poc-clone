@@ -1,5 +1,4 @@
 import {
-  mediumDesktopWidth,
   smallDesktopWidth,
   white,
   tabletWidth,
@@ -15,7 +14,8 @@ import {
   lightGreySecondary,
   backgroundGrey,
   labelGrey2,
-  title
+  title,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import styled, { css } from "styled-components";
 import { Button, Tag } from "antd";
@@ -132,7 +132,7 @@ export const ViewButton = styled.div`
 `;
 
 const ButtonStyle = styled(Button)`
-  height: 40px;
+  height: 30px;
   border-radius: 4px;
   box-shadow: 0px 1px 1px 1px ${themeColor}05;
   font-size: 11px;
@@ -149,11 +149,11 @@ const ButtonStyle = styled(Button)`
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (min-width: ${smallDesktopWidth}) {
     height: 36px;
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    height: 30px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
   }
   @media (max-width: ${tabletWidth}) {
     &.ant-btn {

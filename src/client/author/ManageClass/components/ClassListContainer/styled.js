@@ -1,9 +1,7 @@
 import styled, { css } from "styled-components";
-
 import {
   white,
   themeColor,
-  mediumDesktopWidth,
   mobileWidthMax,
   lightGreySecondary,
   secondaryTextColor,
@@ -101,11 +99,11 @@ const ShareButtonStyle = css`
   font-weight: 600;
   font-size: 11px;
   border-radius: 4px;
-  height: 40px;
+  height: 36px;
   display: flex;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
   }
 `;
 export const CreateClassButton = styled(Button)`

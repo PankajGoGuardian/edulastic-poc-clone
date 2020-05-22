@@ -2,7 +2,6 @@ import {
   desktopWidth,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
-  mediumDesktopWidth,
   mobileWidthLarge,
   smallDesktopWidth,
   greenDark7,
@@ -118,7 +117,7 @@ export const HeaderTitle = styled.div`
 export const Title = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
   line-height: 1.36;
   text-align: left;
@@ -128,8 +127,8 @@ export const Title = styled.div`
     font-weight: 300;
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 22px;
   }
 `;
 

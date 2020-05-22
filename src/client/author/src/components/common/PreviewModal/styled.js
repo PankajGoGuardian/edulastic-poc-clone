@@ -6,8 +6,8 @@ import {
   themeColor,
   linkColor,
   red,
-  mediumDesktopWidth,
-  smallDesktopWidth
+  smallDesktopWidth,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Button, Icon, Typography, Input } from "antd";
 
@@ -266,13 +266,13 @@ export const StyledFlex = styled.div`
 `;
 
 export const StyledText = styled(Text)`
-  display: block;
   color: ${({ danger }) => (danger ? red : themeColor)};
   font-size: 11px;
   font-weight: normal;
   padding-right: 15px;
-  @media (max-width: ${mediumDesktopWidth}) {
-    display: none;
+  display: none;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    display: block;
   }
 `;
 

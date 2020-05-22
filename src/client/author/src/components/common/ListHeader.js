@@ -1,36 +1,33 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { get } from "lodash";
-
-// components
-import { Link } from "react-router-dom";
-import { Dropdown } from "antd";
-import { faUsers } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { withNamespaces } from "@edulastic/localization";
-import { Button, MainHeader, EduButton, withWindowSizes } from "@edulastic/common";
-import { IconPlusCircle, IconMoreVertical } from "@edulastic/icons";
-import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
-import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-
-// constants
-import { roleuser } from "@edulastic/constants";
 import {
   desktopWidth,
-  mediumDesktopWidth,
+  mediumDesktopExactWidth,
   mobileWidth,
   mobileWidthLarge,
   mobileWidthMax,
   themeColor,
   white
 } from "@edulastic/colors";
-
+import { Button, EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
+// constants
+import { roleuser } from "@edulastic/constants";
+import { IconMoreVertical, IconPlusCircle } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+// components
+import { Link } from "react-router-dom";
+import { compose } from "redux";
+import styled from "styled-components";
 // ducks
 import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction } from "../../../SchoolAdmin/ducks";
-import { getUserOrgId, getUserRole, getUserFeatures } from "../../selectors/user";
+import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
+import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
+import { getUserFeatures, getUserOrgId, getUserRole } from "../../selectors/user";
 
 const ListHeader = ({
   onCreate,
@@ -197,12 +194,12 @@ const enhance = compose(
 export default enhance(ListHeader);
 
 export const TestButton = styled(Button)`
-  height: 45px;
+  height: 36px;
   color: ${themeColor};
   border-radius: 3px;
   margin-left: 25px;
   background: ${white};
-  padding: 5px 30px;
+  padding: 5px 15px;
   border-color: ${props => props.theme.themeColor};
   &:hover,
   &:focus,
@@ -213,6 +210,11 @@ export const TestButton = styled(Button)`
   }
   span {
     margin-left: 15px;
+  }
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 45px;
+    padding: 5px 30px;
   }
 
   @media (max-width: ${desktopWidth}) {
@@ -231,12 +233,6 @@ export const TestButton = styled(Button)`
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    min-height: 36px;
-    height: 36px;
-    padding: 5px 15px;
-  }
-
   @media (max-width: ${mobileWidth}) {
     width: 45px;
     height: 40px;
@@ -250,13 +246,13 @@ const IconPlusStyled = styled(IconPlusCircle)`
 `;
 
 export const Title = styled.h1`
-  font-size: ${props => props.theme.header.headerTitleFontSize};
+  font-size: 18px;
   color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   margin: 0;
   padding: 0;
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.header.headerTitleFontSize};
   }
 `;
 

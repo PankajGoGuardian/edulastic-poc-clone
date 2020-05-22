@@ -3,12 +3,12 @@ import {
   fadedGrey,
   lightGreySecondary,
   mainBgColor,
-  mediumDesktopWidth,
   tabGrey,
   textColor,
   themeColor,
   title,
-  white
+  white,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 import { Menu, Modal } from "antd";
@@ -210,12 +210,12 @@ export const MoveFolderActionModal = styled(FolderActionModal)`
 `;
 
 export const ModalTitle = styled.div`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: ${title};
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 16px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 18px;
   }
 `;
 

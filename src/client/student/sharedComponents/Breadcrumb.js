@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Breadcrumb, Icon } from "antd";
 import styled from "styled-components";
-import { extraDesktopWidthMax, mediumDesktopWidth, smallDesktopWidth } from "@edulastic/colors";
 
 const BreadCrumb = props => {
   const { data, style } = props;
@@ -40,32 +39,11 @@ const Container = styled.div`
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator {
     font-weight: bold !important;
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
+    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
     color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
 
     a {
       color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
-    }
-  }
-
-  @media (max-width: ${extraDesktopWidthMax}) {
-    .ant-breadcrumb-link,
-    .ant-breadcrumb-separator {
-      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
-    }
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    .ant-breadcrumb-link,
-    .ant-breadcrumb-separator {
-      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
-    }
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    .ant-breadcrumb-link,
-    .ant-breadcrumb-separator {
-      font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
     }
   }
 

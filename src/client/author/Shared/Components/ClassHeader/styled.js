@@ -2,7 +2,6 @@ import {
   extraDesktopWidthMax,
   fadedBlue,
   mediumDesktopExactWidth,
-  mediumDesktopWidth,
   mobileWidth,
   mobileWidthMax,
   tabletWidth,
@@ -52,14 +51,14 @@ export const Container = styled.div`
 
 export const StyledTitle = styled.h1`
   color: ${white};
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
-  margin: 20px 0;
+  margin: 0;
   padding: 0;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
-    margin: 0px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 22px;
+    margin: 20px 0;
   }
   @media (max-width: ${tabletWidth}) {
     display: flex;
@@ -94,17 +93,19 @@ export const DownArrow = styled(Icon)`
 `;
 
 export const StyledParaSecond = styled.p`
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 600;
+  white-space: nowrap;
   div {
     white-space: nowrap;
+    display: inline-block;
+    margin-left: 3px;
   }
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 10px;
-    white-space: nowrap;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 13px;
     div {
-      display: inline-block;
-      margin-left: 3px;
+      margin-left: 0px;
     }
   }
 `;
@@ -238,13 +239,13 @@ export const OpenCloseWrapper = styled.div`
 
 export const OpenCloseButton = styled(Button)`
   ${commonButtonsCSS}
-  margin-right: 5px;
-  padding: 10px 30px;
-  font-size: 12px;
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 10px 15px;
-    font-size: 10px;
-    margin-right: 2px;
+  padding: 10px 15px;
+  font-size: 10px;
+  margin-right: 2px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding: 10px 30px;
+    font-size: 12px;
+    margin-right: 5px;
   }
 `;
 

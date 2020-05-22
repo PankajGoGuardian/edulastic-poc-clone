@@ -16,10 +16,7 @@ import {
   cardBg,
   mobileWidthMax,
   mobileWidthLarge,
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  mediumDesktopWidth,
-  smallDesktopWidth
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
@@ -359,7 +356,7 @@ const JoinSchool = ({
                     {!allowCanvas && !fromUserProfile ? (
                       <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>
                     ) : null}
-                    {(!isSignupUsingDaURL && !districtId) ? (
+                    {!isSignupUsingDaURL && !districtId ? (
                       // {(!isSignupUsingDaURL && !districtId) || fromUserProfile ? (
                       // <AnchorBtn onClick={fromUserProfile ? showRequestForm : toggleModal}>
                       <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
@@ -459,20 +456,9 @@ const BreadcrumbWrapper = styled(Breadcrumb)`
 const BreadcrumbLink = styled.span`
   cursor: pointer;
   font-weight: bold;
-  font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
+  font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
   color: ${props => props.theme.themeColor};
   text-transform: uppercase;
-  @media (max-width: ${extraDesktopWidthMax}) {
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize} !important;
-  }
 `;
 
 const JoinSchoolBody = styled(Row)`

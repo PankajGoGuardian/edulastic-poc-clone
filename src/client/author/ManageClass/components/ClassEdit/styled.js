@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { white, themeColor, mediumDesktopWidth, title } from "@edulastic/colors";
+import { white, themeColor, title, mediumDesktopExactWidth } from "@edulastic/colors";
 import { Button, Col, Row } from "antd";
 import { MainContentWrapper } from "@edulastic/common";
 
@@ -9,11 +9,11 @@ const ShareButtonStyle = css`
   font-weight: 600;
   font-size: 14px;
   border-radius: 25px;
-  height: 40px;
+  height: 36px;
   display: flex;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
   }
 `;
 

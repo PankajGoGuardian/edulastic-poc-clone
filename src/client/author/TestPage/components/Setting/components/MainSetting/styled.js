@@ -2,7 +2,6 @@ import {
   cardTitleColor,
   lightGreySecondary,
   linkColor1,
-  mediumDesktopWidth,
   mobileWidth,
   red,
   secondaryTextColor,

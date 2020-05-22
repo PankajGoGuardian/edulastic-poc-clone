@@ -4,14 +4,15 @@ import { FlexContainer } from "@edulastic/common";
 import {
   mobileWidth,
   largeDesktopWidth,
-  mediumDesktopWidth,
   tabletWidth,
   red,
   themeColor,
   lightGreen4,
   extraDesktopWidth,
   extraDesktopWidthMax,
-  yellow1
+  yellow1,
+  mediumDesktopExactWidth,
+  title
 } from "@edulastic/colors";
 import { IconExclamationMark, IconScratchPad } from "@edulastic/icons";
 
@@ -111,15 +112,15 @@ export const Space = styled.div`
 
 export const PagInfo = styled.span`
   font-weight: 600;
-  font-size: 11px;
+  font-size: 10px;
   color: ${themeColor};
   text-overflow: ellipsis;
   /* width: 50%; */
   cursor: ${props => (props.disabled ? "default" : "pointer")};
   user-select: none;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 10px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 11px;
   }
   @media (max-width: ${mobileWidth}) {
     width: 100%;
@@ -221,16 +222,16 @@ export const SquareColorDivYellow = styled(SquareColorDiv)`
 `;
 
 export const StyledParaF = styled.p`
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 12px;
+  line-height: 12px;
   font-weight: 600;
   margin-bottom: 5px;
   cursor: ${props => (props.isLink && !props.disabled ? "pointer" : "default")};
-  color: #434b5d;
+  color: ${title};
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 12px;
-    line-height: 12px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 16px;
+    line-height: 16px;
   }
 `;
 
@@ -244,7 +245,7 @@ export const StyledParaS = styled.p`
   display: flex;
   align-items: center;
 
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 11px;
   }
 `;

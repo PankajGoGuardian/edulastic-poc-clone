@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Layout, Spin, Row, Button, Radio } from "antd";
-import { mediumDesktopWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth } from "@edulastic/colors";
 
 const { Content } = Layout;
 
@@ -11,10 +11,10 @@ export const TestSettingDiv = styled.div`
 
 export const StyledContent = styled(Content)`
   width: 100%;
-  padding: 126px 30px 30px;
+  padding: 90px 30px 30px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 90px 30px 30px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding: 126px 30px 30px;
   }
 `;
 

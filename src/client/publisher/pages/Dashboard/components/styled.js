@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { black, fadedBlack, mediumDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
+import { black, fadedBlack, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const StyledH4 = styled.h4`
   font-weight: 700;
@@ -24,14 +24,10 @@ export const StyledH2 = styled.h2`
 `;
 
 export const ItemContent = styled.div`
-  padding: 10px 20px;
+  padding: 10px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 10px;
-  }
-
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    padding: 10px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 10px 20px;
   }
 
   p {

@@ -1,9 +1,6 @@
 import styled from "styled-components";
-import { Layout, Spin, Row, Button, Radio } from "antd";
-import { mediumDesktopWidth } from "@edulastic/colors";
-
-const RadioGroup = Radio.Group;
-const { Content } = Layout;
+import { Spin, Row, Button } from "antd";
+import { mediumDesktopExactWidth } from "@edulastic/colors";
 
 export const DistrictPolicyDiv = styled.div`
   display: flex;
@@ -12,10 +9,10 @@ export const DistrictPolicyDiv = styled.div`
 
 export const StyledContent = styled.div`
   width: 100%;
-  padding: 126px 30px 30px;
+  padding: 90px 30px 30px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 90px 30px 30px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding: 126px 30px 30px;
   }
 `;
 

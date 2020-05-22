@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidthMax, mediumDesktopWidth } from "@edulastic/colors";
+import { mobileWidthMax } from "@edulastic/colors";
 
 // Only add generic styles in this component. It is being used many places adding styles to its child component may have very bad impact.
 
@@ -20,12 +20,6 @@ const FlexContainer = styled.div`
   ${({ flexProps }) => flexProps};
   div:not(.fr-element.fr-view) p {
     padding: 6px 0px;
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    button svg {
-      display: inline-block;
-    }
   }
 
   @media (max-width: ${mobileWidthMax}) {

@@ -1,12 +1,6 @@
 import styled from "styled-components";
 import { Card } from "antd";
-import {
-  white,
-  mobileWidth,
-  extraDesktopWidthMax,
-  mediumDesktopWidth,
-  mediumDesktopExactWidth
-} from "@edulastic/colors";
+import { white, mobileWidth, extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 
 import { CustomTooltip } from "./CustomTooltip";
 

@@ -5,7 +5,6 @@ import {
   mobileWidth,
   mobileWidthLarge,
   mobileWidthMax,
-  mediumDesktopWidth,
   themeColor,
   white,
   mainTextColor,
@@ -14,7 +13,9 @@ import {
   red,
   black,
   cardTitleColor,
-  desktopWidth
+  largeDesktopWidth,
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { themes } from "../../../../theme";
 import { FixedHeaderStyle } from "../../../StudentView/styled";
@@ -110,7 +111,7 @@ export const StudentButtonDiv = styled(Col)`
 
 const StyledTabButton = styled.a`
   height: 28px;
-  padding: 6px 35px;
+  padding: 6px 15px;
   font-size: 11px;
   font-weight: 600;
   background-color: ${({ active }) => (active ? themeColor : white)};
@@ -124,12 +125,13 @@ const StyledTabButton = styled.a`
     color: ${white};
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (min-width: ${largeDesktopWidth}) {
     padding: 6px 30px;
   }
-  @media (max-width: ${desktopWidth}) {
-    padding: 6px 15px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 6px 35px;
   }
+
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
     text-align: center;
@@ -154,7 +156,7 @@ export const QuestionButton = styled(StyledTabButton)`
 
 export const RedirectButton = styled(StyledTabButton)`
   border-radius: 0;
-  width: 150px;
+  width: 130px;
   color: ${themeColor};
   position: relative;
   border-left: none;
@@ -183,8 +185,8 @@ export const RedirectButton = styled(StyledTabButton)`
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    width: 130px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    width: 150px;
   }
   @media (max-width: ${mobileWidthLarge}) {
     width: auto;

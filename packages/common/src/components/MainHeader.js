@@ -1,9 +1,7 @@
 import {
-  desktopWidth,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   title,
-  mediumDesktopWidth,
   tabletWidth,
   smallDesktopWidth,
   mobileWidthMax
@@ -125,25 +123,21 @@ export const HeaderLeftContainer = styled.div`
 `;
 
 export const TitleWrapper = styled.h1`
-  font-size: ${props => props.theme.header.headerTitleFontSize};
+  font-size: 18px;
   color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   line-height: normal;
-  min-width: ${props => props.titleMinWidth || "200px"};
+  min-width: auto;
   margin: 0px;
   white-space: nowrap;
-  max-width: ${props => (props.noEllipsis ? "unset" : "300px")};
+  max-width: ${props => (props.noEllipsis ? "unset" : "200px")};
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.header.headerTitleFontSize};
     max-width: ${props => (props.noEllipsis ? "unset" : "300px")};
-    font-size: 18px;
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    max-width: ${props => (props.noEllipsis ? "unset" : "200px")};
-    min-width: auto;
+    min-width: ${props => props.titleMinWidth || "200px"};
   }
 `;
 

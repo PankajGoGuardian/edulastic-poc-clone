@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Layout, Spin, Input, List, Col, Row } from "antd";
-import { mediumDesktopWidth, themeColor, white, lightGreySecondary, sectionBorder } from "@edulastic/colors";
+import { themeColor, white, lightGreySecondary, sectionBorder, mediumDesktopExactWidth } from "@edulastic/colors";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 const { Content } = Layout;
@@ -21,10 +21,10 @@ export const StandardsProficiencyDiv = styled.div`
 
 export const StyledContent = styled(Content)`
   width: 100%;
-  padding: 126px 30px 30px;
+  padding: 90px 30px 30px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 90px 30px 30px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding: 126px 30px 30px;
   }
 `;
 

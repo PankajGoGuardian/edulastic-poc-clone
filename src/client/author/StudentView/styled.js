@@ -4,11 +4,11 @@ import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import {
   mobileWidthMax,
-  mediumDesktopWidth,
   white,
   themeColor,
   desktopWidth,
-  mobileWidthLarge
+  mobileWidthLarge,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 
 // left 70 as the side menu space need to be considered.
@@ -62,7 +62,7 @@ export const StudentButtonDiv = styled.div`
 
 const StyledTabButton = styled.a`
   height: 28px;
-  padding: 6px 20px;
+  padding: 6px 15px;
   font-size: 11px;
   font-weight: 600;
   background-color: ${({ active }) => (active ? themeColor : white)};
@@ -79,15 +79,12 @@ const StyledTabButton = styled.a`
   &:first-child {
     border-left: 1px solid ${themeColor};
   }
-  @media (max-width: ${mediumDesktopWidth}) {
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
     padding: 6px 30px;
-  }
-  @media (max-width: ${desktopWidth}) {
-    padding: 6px 15px;
   }
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
-    text-align: center;
     margin: 0 !important;
   }
 `;
@@ -109,8 +106,8 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   border: 1px solid ${themeColor};
   color: ${themeColor};
   border-radius: 4px;
-  padding: 20px 10px;
-  min-width: 300px;
+  padding: 15px 10px;
+  min-width: 250px;
   position: relative;
   svg {
     position: absolute;
@@ -127,9 +124,9 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    min-width: 250px;
-    padding: 15px 10px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    min-width: 300px;
+    padding: 20px 10px;
   }
   @media (max-width: ${desktopWidth}) {
     min-width: auto;

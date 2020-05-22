@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { IconCheck, IconClose } from "@edulastic/icons";
-import { mediumDesktopWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth } from "@edulastic/colors";
 
 const Wrapper = styled.div`
   display: flex;
   align-self: stretch;
   align-items: center;
-  height: 32px;
+  height: 28px;
   padding: 0px 24px 0px 10px;
   position: absolute;
   left: 0%;
@@ -41,8 +41,8 @@ const Wrapper = styled.div`
     `;
   }}
 
-  @media (max-width: ${mediumDesktopWidth}) {
-      height: 28px;
+  @media(min-width: ${mediumDesktopExactWidth}) {
+      height: 32px;
     }
 `;
 

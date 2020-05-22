@@ -180,7 +180,6 @@ export const tabletWidth = "768px";
 export const desktopWidth = "992px";
 export const smallDesktopWidth = "1024px";
 export const largeDesktopWidth = "1200px";
-export const mediumDesktopWidth = "1365px";
 export const mediumDesktopExactWidth = "1366px";
 export const extraDesktopWidth = "1440px";
 export const extraDesktopWidthMax = "1600px";

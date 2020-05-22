@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import {
   smallMobileWidth,
-  mediumDesktopWidth,
   white,
   themeColor,
   desktopWidth,
   secondaryTextColor,
-  greyThemeDark2
+  greyThemeDark2,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { Button, Menu, Dropdown } from "antd";
 
@@ -169,7 +169,7 @@ export const MenuItem = styled.li`
   cursor: pointer;
   width: initial;
   padding: 0 15px;
-  height: 45px;
+  height: 36px;
   border-radius: 4px;
   border: none;
   background-color: #f2f3f2;
@@ -190,6 +190,7 @@ export const MenuItem = styled.li`
 
   svg {
     fill: ${greyThemeDark2};
+    display: none;
   }
 
   &.active {
@@ -201,10 +202,10 @@ export const MenuItem = styled.li`
     }
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 45px;
     svg {
-      display: none;
+      display: block;
     }
   }
   @media (max-width: ${desktopWidth}) {

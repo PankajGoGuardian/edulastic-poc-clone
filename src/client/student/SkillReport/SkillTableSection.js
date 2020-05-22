@@ -4,7 +4,14 @@ import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Progress, Row, Col } from "antd";
 import styled from "styled-components";
-import { greenDark, title, extraDesktopWidth, mediumDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
+import {
+  greenDark,
+  title,
+  extraDesktopWidth,
+  largeDesktopWidth,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax
+} from "@edulastic/colors";
 import StyledTable from "../styled/Table";
 import * as S from "./styled";
 import { getBandWithColor } from "./utils";
@@ -191,14 +198,13 @@ export const StyledTableWrapper = styled.div`
 `;
 
 const WrapperContent = styled(Wrapper)`
-  padding: 39px 39px;
+  padding: 26px 22px;
   min-height: 0;
 
-  @media (max-width: ${extraDesktopWidth}) {
+  @media (min-width: ${mediumDesktopExactWidth}) {
     padding: 27px 23px;
   }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 26px 22px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 39px 39px;
   }
 `;

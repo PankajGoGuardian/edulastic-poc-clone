@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, desktopWidth, mediumDesktopWidth, greyThemeDark2 } from "@edulastic/colors";
+import { white, desktopWidth, greyThemeDark2, mediumDesktopExactWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -20,8 +20,6 @@ export const Container = styled.div`
 
 export const Link = styled.div`
   cursor: pointer;
-  color: ${white};
-  padding: 0 25px;
   text-transform: uppercase;
   font-size: 11px;
   font-weight: 600;
@@ -30,15 +28,13 @@ export const Link = styled.div`
   box-shadow: none;
   align-items: center;
   justify-content: center;
-  height: 40px;
-  border-radius: 0;
-  background: #0288d1;
   background: ${props => (props.active === "true" ? "#b3bcc4" : "#f2f3f2")};
   color: ${props => (props.active === "true" ? white : greyThemeDark2)};
-  border-bottom: none;
   white-space: nowrap;
   border-radius: 5px;
-  margin: 0 5px;
+  margin: 0 3px;
+  padding: 0 20px;
+  height: 36px;
 
   &:last-child {
     margin-right: 30px;
@@ -47,6 +43,7 @@ export const Link = styled.div`
   svg {
     fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
     margin-right: 15px;
+    display: none;
   }
   &:hover {
     border-bottom: none;
@@ -56,12 +53,12 @@ export const Link = styled.div`
     }
   }
 
-  @media screen and (max-width: ${mediumDesktopWidth}) {
-    margin: 0 3px;
-    padding: 0 20px;
-    height: 36px;
+  @media screen and (min-width: ${mediumDesktopExactWidth}) {
+    margin: 0 5px;
+    padding: 0 25px;
+    height: 40px;
     svg {
-      display: none;
+      display: block;
     }
   }
   @media screen and (max-width: ${desktopWidth}) {

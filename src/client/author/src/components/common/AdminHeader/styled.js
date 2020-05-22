@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { Tabs } from "antd";
 import {
   themeColor,
-  mediumDesktopWidth,
   white,
   tabletWidth,
   mediumDesktopExactWidth,
@@ -47,14 +46,14 @@ export const AdminHeaderContent = styled.div`
 `;
 export const Title = styled.span`
   display: inline-block;
-  font-size: 22px;
+  font-size: 18px;
   margin-right: 20px;
   color: ${white};
   font-weight: 600;
   white-space: nowrap;
 
-  @media screen and (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
+  @media screen and (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 22px;
   }
 `;
 export const StyledTitle = styled.h1`

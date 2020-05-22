@@ -251,7 +251,12 @@ class ShareModal extends React.Component {
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
     );
-    const sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${testId}`;
+    let sharableURL = "";
+    if (sharedType === "PUBLIC" && !isPlaylist) {
+      sharableURL = `${window.location.origin}/public/view-test/${testId}`;
+    } else {
+      sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${testId}`;
+    }
 
     const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
       currentUser.email ? currentUser.email : ""

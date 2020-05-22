@@ -30,6 +30,10 @@ export default class TestAssignPage {
 
   getAllowExit = () => cy.get('[data-cy="exit-allowed"]');
 
+  getNavigateTolcbButtonInSuccessPage = () => cy.get('[data-cy="assignButton"]').contains("Go to Live Classboard");
+
+  getNavigateToTestLibraryPage = () => cy.get('[data-cy="assignButton"]').contains("Return to TEST LIBRARY");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -288,6 +292,18 @@ export default class TestAssignPage {
           .click()
           .should("have.class", "ant-switch-checked");
     });
+
+  navigateTolcbAndVerify = assignmentId => {
+    this.getNavigateTolcbButtonInSuccessPage().click({ force: true });
+    cy.url().should("contain", `/author/classboard/${assignmentId}`);
+    return cy.get('[data-cy="studentName"]');
+  };
+
+  naviagateToTestlibraryAndVerify = () => {
+    this.getNavigateToTestLibraryPage().click({ force: true });
+    cy.url().should("contain", `author/tests?`);
+    cy.get(`[data-cy="createNew"]`).should("exist");
+  };
 
   // *** ACTIONS END ***
 

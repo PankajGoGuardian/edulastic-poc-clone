@@ -193,7 +193,7 @@ const TableList = ({
         dataIndex: "action",
         width: "10%",
         render: (_, row) => (
-          <ActionsWrapper data-cy="PresentationIcon">
+          <ActionsWrapper data-cy="PresentationIcon" data-test={row.assignmentId}>
             <Tooltip placement="bottom" title="Live Class Board">
               <Link data-cy="lcb" to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
                 <Icon src={presentationIcon} alt="Images" />

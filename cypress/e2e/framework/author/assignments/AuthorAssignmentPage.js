@@ -20,6 +20,9 @@ class AuthorAssignmentPage {
 
   getTestRowByTestId = id => cy.get(`[data-test=${id}]`).closest("tr");
 
+  getAllPresantationButtonsByAssignmentId = (testId, assignmentid) =>
+    this.getAssignmentRowsTestById(testId).find(`[data-test=${assignmentid}]`);
+
   getAssignmentRowsTestById = id =>
     cy
       .get(`[data-cy="${id}"]`)
@@ -199,9 +202,7 @@ class AuthorAssignmentPage {
     });
   };
 
-  clickOnLCBbyTestId = testId => {
-    cy.server();
-    cy.route("GET", "**/assignments/**").as("assignment");
+  expandTestRowsByTestId = testId => {
     this.getTestRowByTestId(testId).click({ force: true });
     cy.wait(500);
     this.getTestRowByTestId(testId)
@@ -209,11 +210,54 @@ class AuthorAssignmentPage {
       .then($ele => {
         if ($ele.css("display") === "none") this.getTestRowByTestId(testId).click({ force: true });
       });
-    this.getAssignmentRowsTestById(testId)
-      .find('[data-cy="lcb"]')
-      .click({ force: true });
+  };
+
+  clickOnLCBbyTestId = (testId, assignmentid) => {
+    this.expandTestRowsByTestId(testId);
+    cy.server();
+    cy.route("GET", "**/assignments/**").as("assignment");
+    if (assignmentid)
+      this.getAllPresantationButtonsByAssignmentId(testId, assignmentid)
+        .find('[data-cy="lcb"]')
+        .click({ force: true });
+    else
+      this.getAssignmentRowsTestById(testId, testId)
+        .find('[data-cy="lcb"]')
+        .click({ force: true });
+    if (assignmentid) cy.url().should("contain", `author/classboard/${assignmentid}`);
+    else cy.url().should("contain", "author/classboard/");
     cy.wait("@assignment");
-    cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+    return cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+  };
+
+  clickOnExpressGraderByTestId = (testId, assignmentid) => {
+    this.expandTestRowsByTestId(testId);
+    if (assignmentid)
+      this.getAllPresantationButtonsByAssignmentId(testId, assignmentid)
+        .find('[data-cy="eg"]')
+        .click({ force: true });
+    else
+      this.getAssignmentRowsTestById(testId)
+        .find('[data-cy="lcb"]')
+        .click({ force: true });
+    if (assignmentid) cy.url().should("contain", `author/expressgrader/${assignmentid}`);
+    else cy.url().should("contain", "author/expressgrader/");
+    return cy.get("th").contains("Score Grid");
+  };
+
+  clickOnStatndardBasedReportByTestId = (testId, assignmentid) => {
+    this.expandTestRowsByTestId(testId);
+    if (assignmentid)
+      this.getAllPresantationButtonsByAssignmentId(testId, assignmentid)
+        .find('[data-cy="sbr"]')
+        .click({ force: true });
+    else
+      this.getAssignmentRowsTestById(testId)
+        .find('[data-cy="sbr"]')
+        .click({ force: true });
+    if (assignmentid) cy.url().should("contain", `/author/standardsBasedReport/${assignmentid}`);
+    else cy.url().should("contain", "/author/standardsBasedReport/");
+    return cy.get('[class^="styled__ReportTitle"]').contains("Standard performance");
   };
 
   clickAssignmentSummary = () => {

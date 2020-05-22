@@ -75,6 +75,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
   let qType;
   let num;
   let itemIds;
+  let assignmentid_1;
+  let assignmentid_2;
 
   before("> get data of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
@@ -95,15 +97,74 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
       itemIds = testLibraryPage.items;
     });
   });
-  before("> assign the test", () => {
-    testLibraryPage.clickOnAssign();
-    testAssignPage.selectClass("Class");
-    testAssignPage.selectTestType("Class Assessment");
-    testAssignPage.clickOnEntireClass();
-    testAssignPage.clickOnAssign();
+
+  context("> verify navigation based on assignment ids(class)", () => {
+    it("> verify navigations into lcb, eg and sbr- one assignment", () => {
+      cy.deleteAllAssignments("", Teacher.email);
+      testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
+      testAssignPage.selectClass("Class");
+      testAssignPage.clickOnAssign().then(assignObj => {
+        assignmentid_1 = assignObj[OriginalTestId];
+
+        testLibraryPage.sidebar.clickOnDashboard();
+        testLibraryPage.sidebar.clickOnAssignment();
+
+        authorAssignmentPage.clickOnLCBbyTestId(OriginalTestId, assignmentid_1);
+        cy.go("back");
+        authorAssignmentPage.clickOnExpressGraderByTestId(OriginalTestId, assignmentid_1);
+        cy.go("back");
+        authorAssignmentPage.clickOnStatndardBasedReportByTestId(OriginalTestId, assignmentid_1);
+        cy.go("back");
+      });
+    });
+
+    it("> verify navigations into lcb, eg and sbr- two assignments", () => {
+      testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
+      testLibraryPage.assignPage.selectClass("Class2");
+      testAssignPage.clickOnAssign().then(assignObj => {
+        assignmentid_2 = assignObj[OriginalTestId];
+
+        testLibraryPage.sidebar.clickOnDashboard();
+        testLibraryPage.sidebar.clickOnAssignment();
+
+        [assignmentid_1, assignmentid_2].forEach(assignmentid => {
+          authorAssignmentPage.clickOnLCBbyTestId(OriginalTestId, assignmentid);
+          cy.go("back");
+          authorAssignmentPage.clickOnExpressGraderByTestId(OriginalTestId, assignmentid);
+          cy.go("back");
+          authorAssignmentPage.clickOnStatndardBasedReportByTestId(OriginalTestId, assignmentid);
+          cy.go("back");
+        });
+      });
+    });
+  });
+
+  context("> test libary page and lcb navigation in assign success page", () => {
+    before("> assign test", () => {
+      cy.deleteAllAssignments("", Teacher.email);
+      testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
+      testAssignPage.selectClass("Class");
+      testAssignPage.clickOnAssign().then(assignObj => {
+        assignmentid_1 = assignObj[OriginalTestId];
+      });
+    });
+    it("> navigations to lcb and assignments page from assign success page", () => {
+      cy.wait(3000);
+
+      testAssignPage.navigateTolcbAndVerify(assignmentid_1);
+      cy.go("back");
+      testAssignPage.naviagateToTestlibraryAndVerify();
+      cy.go("back");
+    });
   });
 
   context("> verify actions button in author side assignments page", () => {
+    before("> assign test", () => {
+      cy.deleteAllAssignments("", Teacher.email);
+      testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
+      testAssignPage.selectClass("Class");
+      testAssignPage.clickOnAssign();
+    });
     it("> verify all options presence in action dropdown", () => {
       testLibraryPage.sidebar.clickOnAssignment();
       authorAssignmentPage.clickActionsBytestid(OriginalTestId);
@@ -112,6 +173,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         authorAssignmentPage.getOptionInDropDownByAttribute(option).should("exist", `${option} in dropdown`)
       );
     });
+
     context("> duplicate", () => {
       before("> duplicate test", () => {
         testLibraryPage.sidebar.clickOnDashboard();

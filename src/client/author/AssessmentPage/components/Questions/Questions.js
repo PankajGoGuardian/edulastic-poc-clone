@@ -370,20 +370,38 @@ class Questions extends React.Component {
     }
   };
 
-  handleOpenEditModal = questionIndex => () => {
-    const { currentEditQuestionIndex } = this.state;
-    const nextQuestion = this.questionList[questionIndex];
-    let nextIndex = questionIndex;
-
-    const isNextQuestionSection = nextQuestion && nextQuestion.type === "sectionLabel";
-
-    if (isNextQuestionSection) {
-      const offset = questionIndex > currentEditQuestionIndex ? 1 : -1;
-      nextIndex += offset;
+  handleOpenEditModal = index => direction => {
+    let openIndex = index;
+    if (direction === "next") {
+      for (let i = index; i < this.questionList.length; i++) {
+        if (!this.questionList[i]) {
+          return this.handleCloseEditModal();
+        }
+        if (this.questionList[i].type === "sectionLabel" && i == this.questionList.length - 1) {
+          return this.handleCloseEditModal();
+        }
+        if (this.questionList[i].type !== "sectionLabel") {
+          openIndex = i;
+          break;
+        }
+      }
     }
-
+    if (direction === "back") {
+      for (let i = index; i >= 0; i--) {
+        if (!this.questionList[i]) {
+          return this.handleCloseEditModal();
+        }
+        if (this.questionList[i].type === "sectionLabel" && i == 0) {
+          return this.handleCloseEditModal();
+        }
+        if (this.questionList[i].type !== "sectionLabel") {
+          openIndex = i;
+          break;
+        }
+      }
+    }
     this.setState({
-      currentEditQuestionIndex: nextIndex
+      currentEditQuestionIndex: openIndex
     });
   };
 
@@ -527,7 +545,7 @@ class Questions extends React.Component {
             totalQuestions={list.length}
             visible={shouldModalBeVisibile}
             question={this.currentQuestion}
-            index={questionIndex[currentEditQuestionIndex]}
+            qNumber={questionIndex[currentEditQuestionIndex]}
             onClose={this.handleCloseEditModal}
             onUpdate={this.handleUpdateData}
             onCurrentChange={this.handleOpenEditModal}

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { SecondHeader } from "../../../TestPage/components/Summary/components/Container/styled";
 
-const CurriculumBreadCrumb = () => {
+const CurriculumBreadCrumb = ({ mode }) => {
   const playlistBreadcrumbData = [
     {
       title: "PLAYLIST",
@@ -17,7 +17,7 @@ const CurriculumBreadCrumb = () => {
 
   const isPlaylistDetailsPage = window.location?.hash === "#review";
 
-  if (isPlaylistDetailsPage) {
+  if (isPlaylistDetailsPage || mode === "embedded") {
     return (
       <ReviewBreadCrumbWrapper>
         <SecondHeader>
@@ -33,6 +33,6 @@ const CurriculumBreadCrumb = () => {
 export default CurriculumBreadCrumb;
 
 const ReviewBreadCrumbWrapper = styled.div`
-  padding: 0px 0px 15px;
+  padding: 15px 0px 15px;
   width: 100%;
 `;

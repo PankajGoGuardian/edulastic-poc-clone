@@ -28,7 +28,7 @@ export const ResourceItemWrapper = styled.div`
 
 export const IconWrapper = styled.div`
   width: 30px;
-  padding-right: 12px;
+  padding-right: 8px;
   svg {
     fill: ${({ isAdded }) => (isAdded ? themeColor : playlistTabLink)};
   }

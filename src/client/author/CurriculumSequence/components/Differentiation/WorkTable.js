@@ -17,7 +17,7 @@ import {
 } from "./style";
 import { ResouceIcon } from "../ResourceItem/index";
 import Tags from "../../../src/components/common/Tags";
-import { SubResourceView } from "..//PlaylistResourceRow";
+import { SubResourceView } from "../PlaylistResourceRow";
 
 function ContentDropContainer({ children, ...props }) {
   const [{ isOver, contentType }, dropRef] = useDrop({

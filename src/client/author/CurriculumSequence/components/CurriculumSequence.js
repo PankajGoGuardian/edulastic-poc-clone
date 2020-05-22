@@ -628,7 +628,7 @@ class CurriculumSequence extends Component {
           />
 
           <MainContentWrapper padding="30px" mode={mode}>
-            {currentTab === "playlist" && <CurriculumBreadCrumb />}
+            {currentTab === "playlist" && <CurriculumBreadCrumb mode={mode} />}
             {currentTab === "playlist" && (
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
                 <ContentContainer urlHasUseThis={urlHasUseThis} showRightPanel={showRightPanel && !isStudent}>

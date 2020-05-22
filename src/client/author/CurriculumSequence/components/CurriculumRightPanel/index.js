@@ -142,7 +142,7 @@ const HideRightPanel = styled.div`
 
 const SummaryBlock = styled.div`
   width: 400px;
-  min-height: 740px;
+  min-height: calc(100vh - 125px);
   background: ${white};
   padding-top: 30px;
   border-radius: 4px;

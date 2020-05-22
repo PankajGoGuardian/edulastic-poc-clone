@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { desktopWidth, lightBlue, white, themeColor } from "@edulastic/colors";
-import { DragSource, useDrop } from "react-dnd";
+import { DragSource } from "react-dnd";
 import { FlexContainer } from "@edulastic/common";
 import { AssignmentContent, CustomIcon, ModuleDataName, ModuleAssignedUnit } from "./CurriculumModuleRow";
 import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
@@ -21,26 +21,6 @@ function collect(connect, monitor) {
     connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging()
   };
-}
-
-function SubResourceDropContainer({ children, ...props }) {
-  const [{ isOver }, dropRef] = useDrop({
-    accept: "item",
-    collect: monitor => ({
-      isOver: !!monitor.isOver(),
-      contentType: monitor.getItem()?.contentType
-    }),
-    drop: item => {
-      const { moduleIndex, itemIndex, addSubresource } = props;
-      addSubresource({ moduleIndex, itemIndex, item });
-    }
-  });
-
-  return (
-    <SupportResourceDropTarget {...props} ref={dropRef} active={isOver}>
-      {children}
-    </SupportResourceDropTarget>
-  );
 }
 
 /** @extends Component<Props> */
@@ -66,6 +46,8 @@ class AssignmentDragItem extends Component {
       addSubresource,
       id
     } = this.props;
+    const isTestType = moduleData.contentType === "test";
+
     return connectDragSource(
       <div className="item" style={{ width: "calc(100% - 35px)" }}>
         <Assignment
@@ -75,7 +57,7 @@ class AssignmentDragItem extends Component {
           boxShadow="unset"
           isDragging={isDragging}
         >
-          {moduleData.contentType !== "test" ? (
+          {!isTestType && (
             <PlaylistResourceRow
               data={moduleData}
               mode={mode}
@@ -86,7 +68,8 @@ class AssignmentDragItem extends Component {
               itemIndex={id}
               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />
-          ) : (
+          )}
+          {isTestType && (
             <Fragment>
               <WrapperContainer urlHasUseThis={urlHasUseThis} style={{ width: isDesktop ? "" : "100%" }}>
                 <AssignmentContent expanded={isContentExpanded}>
@@ -115,30 +98,24 @@ class AssignmentDragItem extends Component {
                   </ModuleAssignedUnit>
                 )}
                 {testTypeAndTags}
-                {moduleData.contentType === "test" && showSupportingResource && (
-                  <FlexContainer width="100%" height="35px" alignItems="center" justifyContent="flex-start">
-                    <SubResourceDropContainer moduleIndex={moduleIndex} addSubresource={addSubresource} itemIndex={id}>
-                      Supporting Resource
-                    </SubResourceDropContainer>
-                  </FlexContainer>
-                )}
-                {moduleData?.resources?.length > 0 && (
-                  <SubResource
-                    data={moduleData}
-                    mode={mode}
-                    urlHasUseThis
-                    deleteTest={deleteTest}
-                    moduleIndex={moduleIndex}
-                    itemIndex={id}
-                    showResource={showResource}
-                    setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                  />
-                )}
               </WrapperContainer>
               {assessmentColums}
             </Fragment>
           )}
         </Assignment>
+        <SubResource
+          data={moduleData}
+          mode={mode}
+          urlHasUseThis
+          deleteTest={deleteTest}
+          moduleIndex={moduleIndex}
+          itemIndex={id}
+          isTestType={isTestType}
+          showResource={showResource}
+          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+          showSupportingResource={showSupportingResource}
+          addSubresource={addSubresource}
+        />
       </div>
     );
   }
@@ -156,34 +133,6 @@ const Visualize = styled.span`
   justify-self: flex-end;
   min-width: 19px;
   cursor: pointer;
-`;
-
-export const SupportResourceDropTarget = styled.span`
-  display: inline-block;
-  height: 22px;
-  margin-left: 12px;
-  box-sizing: border-box;
-  border-radius: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
-  line-height: 22px;
-
-  background-image: linear-gradient(90deg, ${themeColor} 40%, transparent 60%),
-    linear-gradient(90deg, ${themeColor} 40%, transparent 60%),
-    linear-gradient(0deg, ${themeColor} 40%, transparent 60%), linear-gradient(0deg, ${themeColor} 40%, transparent 60%);
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  background-size: 15px 2px, 15px 2px, 2px 15px, 2px 15px;
-  background-position: left top, right bottom, left bottom, right top;
-  ${props => (props?.active ? ` animation: border-dance 1s infinite linear;` : "")}
-
-  @keyframes border-dance {
-    0% {
-      background-position: left top, right bottom, left bottom, right top;
-    }
-    100% {
-      background-position: left 15px top, right 15px bottom, left bottom 15px, right top 15px;
-    }
-  }
 `;
 
 Visualize.displayName = "Visualize";

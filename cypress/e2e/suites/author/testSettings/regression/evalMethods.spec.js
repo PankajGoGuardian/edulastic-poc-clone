@@ -99,10 +99,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
         reportsPage
           .getScoreOnCardById(OriginalTestId)
           .should("have.text", `${points[index].reduce((a, b) => b + a, 0)}/${totalPoints.reduce((a, b) => b + a, 0)}`);
-        assignmentsPage.reviewSubmittedTestById(OriginalTestId);
       });
       itemsInTest.forEach((item, ind) => {
         it(`Verifying At Student Side-${method} for ${item} type`, () => {
+          if (ind === 0) assignmentsPage.reviewSubmittedTestById(OriginalTestId);
           reportsPage.selectQuestion(`Q${ind + 1}`);
           reportsPage.getScore().should("have.text", points[index][ind].toString());
         });

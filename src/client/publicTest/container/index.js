@@ -96,9 +96,20 @@ const PublicTestPage = ({
     }
   };
 
+  const getCurrentPath = () => {
+    const location = window.location || {};
+    return `${location.pathname}${location.search}${location.hash}`;
+  };
+
   //on click of assign button in test summary view
   const assignTest = e => {
     e && e.stopPropagation();
+
+    // if public shared url then save the url so that it can be used for student redirection after auth
+    if (!localStorage.getItem("defaultTokenKey")) {
+      localStorage.setItem("publicUrlAccess", getCurrentPath());
+    }
+
     history.push({
       pathname: `/author/assignments/${test._id}`,
       state: { from: "testLibrary", fromText: "Test Library", toUrl: "/author/tests" }
@@ -114,7 +125,10 @@ const PublicTestPage = ({
   } else if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
     return <Spin />;
   }
-  return (
+
+  const { isLoading = false } = history.location.state || {};
+
+  return !isLoading ? (
     <StyledMainWrapper>
       <ViewModal
         item={test}
@@ -134,6 +148,8 @@ const PublicTestPage = ({
         />
       )}
     </StyledMainWrapper>
+  ) : (
+    <Spin />
   );
 };
 

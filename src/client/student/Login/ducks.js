@@ -508,7 +508,6 @@ function* login({ payload }) {
     const result = yield call(authApi.login, _payload);
     const user = pick(result, userPickFields);
     const firebaseUser = yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
-    //console.log(firebaseUser); // remove it while merging in dev
     if (addAccount === true) {
       TokenStorage.storeAccessToken(result.token, user._id, user.role, false);
     } else {
@@ -534,8 +533,14 @@ function* login({ payload }) {
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl);
     if (redirectUrl && !isAuthUrl) {
-      localStorage.removeItem("loginRedirectUrl");
-      yield put(push(redirectUrl));
+      if (user.role === roleuser.STUDENT && localStorage.hasOwnProperty("publicUrlAccess")) {
+        const publicUrl = localStorage.getItem("publicUrlAccess");
+        localStorage.removeItem("publicUrlAccess");
+        yield put(push({ pathname: publicUrl, state: { isLoading: true } }));
+      } else {
+        localStorage.removeItem("loginRedirectUrl");
+        yield put(push(redirectUrl));
+      }
     }
 
     if (generalSettings) {

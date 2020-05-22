@@ -840,10 +840,7 @@ class ModuleRow extends Component {
                               (!hideEditOptions || (status === "published" && mode === "embedded")) &&
                               userRole !== roleuser.EDULASTIC_CURATOR && (
                                 <AssignmentButton assigned={isAssigned}>
-                                  <Button
-                                    data-cy="assignButton"
-                                    onClick={() => assignTest(moduleIndex, moduleData.contentId)}
-                                  >
+                                  <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
                                     {isAssigned ? (
                                       <IconCheckSmall color={white} />
                                     ) : (

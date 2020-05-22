@@ -47,7 +47,7 @@ export default class QuestionEditModal extends React.Component {
     visible: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     question: PropTypes.object,
-    index: PropTypes.number.isRequired,
+    qNumber: PropTypes.number.isRequired,
     onUpdate: PropTypes.func.isRequired,
     onCurrentChange: PropTypes.func.isRequired
   };
@@ -86,19 +86,20 @@ export default class QuestionEditModal extends React.Component {
   };
 
   render() {
-    const { visible, onClose, question, index, onCurrentChange, onUpdate, totalQuestions = 1 } = this.props;
+    const { visible, onClose, question, onCurrentChange, onUpdate, totalQuestions = 1, qNumber } = this.props;
 
     if (!question) {
       return null;
     }
 
     const { id, type, qIndex, title, authorDifficulty = "", depthOfKnowledge = "" } = question;
+    const index = qIndex - 1;
 
     return (
       <Modal open={visible} onClose={onClose} styles={modalStyles} overlayId="docBasedModalOverlay" center>
         <ModalWrapper>
           <ModalHeader>
-            <QuestionNumber>{index}</QuestionNumber>
+            <QuestionNumber>{qNumber}</QuestionNumber>
             <ModalTitle>{title === "True or false" ? title : questionTypeTitles[type]}</ModalTitle>
           </ModalHeader>
 
@@ -157,10 +158,10 @@ export default class QuestionEditModal extends React.Component {
             </PerfectScrollbar>
           </div>
           <ModalFooter marginTop="20px">
-            <Button onClick={onCurrentChange(index - 1)} disabled={index === 0}>
+            <Button onClick={() => onCurrentChange(index - 1)("back")} disabled={index === 0}>
               Previous
             </Button>
-            <Button onClick={index === totalQuestions - 1 ? onClose : onCurrentChange(index + 1)}>
+            <Button onClick={index === totalQuestions - 1 ? onClose : () => onCurrentChange(index + 1)("next")}>
               {index === totalQuestions - 1 ? "DONE" : "NEXT"}
             </Button>
           </ModalFooter>

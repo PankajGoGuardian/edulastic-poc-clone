@@ -340,7 +340,7 @@ class TestList extends Component {
       );
     }
 
-    const GridCountInARow = windowWidth >= 1600 ? 4 : 3;
+    const GridCountInARow = windowWidth >= 1366 ? 4 : 3;
     const countModular = new Array(GridCountInARow - (playlists.length % GridCountInARow)).fill(1);
     return (
       <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>

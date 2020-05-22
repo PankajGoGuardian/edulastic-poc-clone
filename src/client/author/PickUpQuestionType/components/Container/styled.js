@@ -28,14 +28,14 @@ export const Content = styled.div`
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 280px;
-  top: 96px;
+  top: ${props => props.theme.HeaderHeight.xs + 41}px; // 41 is value of extra offset e.g. padding, heading
   padding: 30px 0px 10px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    top: 110px;
+    top: ${props => props.theme.HeaderHeight.md + 41}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    top: 140px;
+    top: ${props => props.theme.HeaderHeight.xl + 41}px;
   }
 `;
 

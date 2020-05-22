@@ -1,8 +1,8 @@
-import { mediumDesktopWidth, white } from "@edulastic/colors";
+import { white, mediumDesktopExactWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 const Title = styled.h2`
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
@@ -13,8 +13,8 @@ const Title = styled.h2`
   margin: 0px;
   padding: 0px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: 22px;
   }
 `;
 

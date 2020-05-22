@@ -1,15 +1,15 @@
-import { tabletWidth, white, mobileWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { tabletWidth, white, mobileWidth, mediumDesktopExactWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import { IconMenuOpenClose } from "@edulastic/icons";
 
 export const Title = styled.div`
-  font-size: ${props => props.theme.header.headerTitleFontSize};
+  font-size: 18px;
   color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   line-height: 1.36;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    font-size: ${props => props.theme.header.headerTitleFontSize};
   }
   @media (max-width: ${mobileWidth}) {
     padding-left: 0;

@@ -742,7 +742,7 @@ class TestList extends Component {
         />
       );
     }
-    const GridCountInARow = windowWidth >= 1600 ? 4 : 3;
+    const GridCountInARow = windowWidth >= 1366 ? 4 : 3;
     const countModular = new Array(GridCountInARow - (tests.length % GridCountInARow)).fill(1);
 
     if (blockstyle === "tile") {

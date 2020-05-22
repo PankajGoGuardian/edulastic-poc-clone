@@ -7,7 +7,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
   const [moduleData, setModuleData] = useState(module || {});
 
   const handleChangeModuleData = prop => ({ target: { value } }) => {
-    value && setModuleData({ ...moduleData, [prop]: value });
+    setModuleData({ ...moduleData, [prop]: value });
   };
 
   const handleChangeDescription = desc => {
@@ -18,15 +18,15 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
 
   const handleModuleSave = () => {
     const { moduleGroupName, moduleId, title, description } = moduleData;
-    if (moduleGroupName && !moduleGroupName.trim()) {
+    if (!moduleGroupName?.trim()) {
       return notification({ type: "warning", messageKey: "manageModalGroupNameEmpty" });
     }
 
-    if (moduleId && !moduleId.trim()) {
+    if (!moduleId?.trim()) {
       return notification({ type: "warning", messageKey: "manageModalModuleIDEmpty" });
     }
 
-    if (title && !title.trim()) {
+    if (!title?.trim()) {
       return notification({ type: "warning", messageKey: "manageModalModuleNameEmpty" });
     }
 

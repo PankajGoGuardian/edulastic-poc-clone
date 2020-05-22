@@ -59,7 +59,7 @@ class RequestSchoolForm extends React.Component {
   };
 
   render() {
-    const { form, isSearching, autocompleteDistricts, t, handleSubmit } = this.props;
+    const { form, isSearching, autocompleteDistricts, t, userInfo, handleSubmit, fromUserProfile } = this.props;
     const { getFieldDecorator } = form;
     const { keyword, countryList, stateList } = this.state;
     const country = form.getFieldValue("country");
@@ -97,66 +97,73 @@ class RequestSchoolForm extends React.Component {
             ]
           })(<Input data-cy="school" placeholder="Enter your school name" />)}
         </Form.Item>
-        <Form.Item label="District">
-          {getFieldDecorator("districtId", {
-            initialValue: { key: "", title: "" },
-            rules: [
-              { required: true, message: "Please provide a valid district name." },
-              {
-                validator: async (rule, value, callback) => {
-                  if (value.title.length === 0 || value.key.length === 0) {
-                    callback("Please provide a valid district name.");
-                    return;
-                  }
+        {fromUserProfile ? (
+          <Form.Item label="District">
+            {getFieldDecorator("districtId", {
+              initialValue: userInfo.orgData.districtName
+            })(<Input data-cy="district" disabled />)}
+          </Form.Item>
+        ) : (
+          <Form.Item label="District">
+            {getFieldDecorator("districtId", {
+              initialValue: { key: "", title: "" },
+              rules: [
+                { required: true, message: "Please provide a valid district name." },
+                {
+                  validator: async (rule, value, callback) => {
+                    if (value.title.length === 0 || value.key.length === 0) {
+                      callback("Please provide a valid district name.");
+                      return;
+                    }
 
-                  if (value.key === "Add New") {
-                    callback();
-                    return;
-                  }
+                    if (value.key === "Add New") {
+                      callback();
+                      return;
+                    }
 
-                  if (value.cleverId) {
-                    callback(
-                      "The enrollment for this district is handled by district SIS, Please contact admin to create your Edulastic account."
-                    );
-                    return;
-                  }
+                    if (value.cleverId) {
+                      callback(
+                        "The enrollment for this district is handled by district SIS, Please contact admin to create your Edulastic account."
+                      );
+                      return;
+                    }
 
-                  const { userInfo } = this.props;
-                  try {
-                    let signOnMethod = "userNameAndPassword";
-                    signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
-                    signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
-                    signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
-                    const checkDistrictPolicyPayload = {
-                      districtId: value.key,
-                      email: userInfo.email,
-                      type: userInfo.role,
-                      signOnMethod
-                    };
-                    const policyCheckResult = await userApi.validateDistrictPolicy(checkDistrictPolicyPayload);
-                    callback();
-                    return;
-                  } catch (error) {
-                    console.error(error);
-                    callback(t("common.policyviolation"));
+                    try {
+                      let signOnMethod = "userNameAndPassword";
+                      signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
+                      signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
+                      signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
+                      const checkDistrictPolicyPayload = {
+                        districtId: value.key,
+                        email: userInfo.email,
+                        type: userInfo.role,
+                        signOnMethod
+                      };
+                      const policyCheckResult = await userApi.validateDistrictPolicy(checkDistrictPolicyPayload);
+                      callback();
+                      return;
+                    } catch (error) {
+                      console.error(error);
+                      callback(t("common.policyviolation"));
+                    }
                   }
                 }
-              }
-            ]
-          })(
-            <RemoteAutocompleteDropDown
-              by={keyword}
-              data={autocompleteDistricts}
-              onSearchTextChange={this.handleTyping}
-              iconType="down"
-              createNew
-              createNewLabel="Create New District"
-              existingLabel="Districts"
-              placeholder="Enter your district name"
-              isLoading={isSearching}
-            />
-          )}
-        </Form.Item>
+              ]
+            })(
+              <RemoteAutocompleteDropDown
+                by={keyword}
+                data={autocompleteDistricts}
+                onSearchTextChange={this.handleTyping}
+                iconType="down"
+                createNew
+                createNewLabel="Create New District"
+                existingLabel="Districts"
+                placeholder="Enter your district name"
+                isLoading={isSearching}
+              />
+            )}
+          </Form.Item>
+        )}
         <Form.Item label="Address">
           {getFieldDecorator("address", {
             rules: [{ required: false, message: "Please provide a valid school address." }]

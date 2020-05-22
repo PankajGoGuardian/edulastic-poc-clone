@@ -356,10 +356,10 @@ const JoinSchool = ({
                     {!allowCanvas && !fromUserProfile ? (
                       <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>
                     ) : null}
-                    {!isSignupUsingDaURL && !districtId ? (
-                      // {(!isSignupUsingDaURL && !districtId) || fromUserProfile ? (
-                      // <AnchorBtn onClick={fromUserProfile ? showRequestForm : toggleModal}>
-                      <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
+                    {(!isSignupUsingDaURL && !districtId) || fromUserProfile ? (
+                      <AnchorBtn onClick={fromUserProfile ? showRequestForm : toggleModal}>
+                        {t("component.signup.teacher.requestnewschool")}
+                      </AnchorBtn>
                     ) : null}
                     {selected && selected.districtName ? (
                       <DistrictName data-cy="districtName">

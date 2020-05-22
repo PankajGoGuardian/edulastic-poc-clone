@@ -345,7 +345,7 @@ export default createReducer(initialState, {
     state.user.orgData.schools = payload.orgData.schools;
   },
   [CREATE_AND_ADD_SCHOOL_FAILED]: state => {
-    state.addingSchool = undefined;
+    state.creatingAddingSchool = undefined;
   },
   [SHOW_JOIN_SCHOOL]: state => {
     state.joinSchoolVisible = true;

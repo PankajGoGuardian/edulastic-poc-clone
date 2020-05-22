@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, find } from "lodash";
+import { get } from "lodash";
 import styled from "styled-components";
 import { Form } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -17,24 +17,23 @@ import RequestSchoolForm from "./RequestSchoolForm";
 class RequestSchool extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
-    districts: PropTypes.array.isRequired,
     userInfo: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, districts, userInfo, createAndAddSchool } = this.props;
+    const { form, userInfo, createAndAddSchool } = this.props;
+    const {
+      orgData: { districtId, districtName }
+    } = userInfo;
     form.validateFields((err, values) => {
       if (!err) {
-        const { name, districtId, address, city, country, state, zip } = values;
-        const district = find(districts, ({ districtId: _id }) => _id === districtId.key) || {
-          districtName: districtId.title
-        };
-        const { districtName } = district;
+        const { name, address, city, country, state, zip } = values;
         const body = {
           name,
           districtName,
+          districtId,
           location: {
             city,
             state,
@@ -44,10 +43,6 @@ class RequestSchool extends React.Component {
           },
           requestNewSchool: true
         };
-
-        if (district.districtId) {
-          body.districtId = district.districtId;
-        }
 
         const { firstName, middleName, lastName, institutionIds } = userInfo;
         createAndAddSchool({
@@ -69,10 +64,9 @@ class RequestSchool extends React.Component {
 
   render() {
     const { form, t, creatingAddingSchool, userInfo } = this.props;
-
     return (
       <RequestFormWrapper>
-        <RequestSchoolForm form={form} t={t} handleSubmit={this.handleSubmit} userInfo={userInfo} />
+        <RequestSchoolForm form={form} t={t} handleSubmit={this.handleSubmit} userInfo={userInfo} fromUserProfile />
         <ButtonRow>
           <EduButton
             height="32px"
@@ -96,9 +90,6 @@ const enhance = compose(
   withRouter,
   connect(
     state => ({
-      isSearching: get(state, "signup.isSearching", false),
-      districts: get(state, "signup.districts", []),
-      autocompleteDistricts: get(state, "signup.autocompleteDistricts", []),
       creatingAddingSchool: get(state, "user.creatingAddingSchool")
     }),
     {

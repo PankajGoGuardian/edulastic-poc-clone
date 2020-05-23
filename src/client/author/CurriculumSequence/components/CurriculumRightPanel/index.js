@@ -27,7 +27,8 @@ const CurriculumRightPanel = ({
   summaryData,
   isManageContentActive,
   isNotStudentOrParent,
-  destinationCurriculumSequence
+  destinationCurriculumSequence,
+  shouldHidCustomizeButton
 }) => {
   if (!showRightPanel || isStudent) {
     return <Fragment />;
@@ -53,12 +54,12 @@ const CurriculumRightPanel = ({
 
   return (
     <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative" }}>
-      {showRightPanel && (
+      {showRightPanel && !shouldHidCustomizeButton && (
         <HideRightPanel onClick={hideRightpanel}>
           <IconClose />
         </HideRightPanel>
       )}
-      {isNotStudentOrParent && isManageContentActive && !urlHasUseThis ? (
+      {isNotStudentOrParent && isManageContentActive && !urlHasUseThis && !shouldHidCustomizeButton ? (
         <ManageContentBlock
           testsInPlaylist={testsInPlaylist}
           urlHasUseThis={urlHasUseThis}

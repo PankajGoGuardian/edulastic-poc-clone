@@ -19,7 +19,7 @@ const CurriculumBreadCrumb = ({ mode }) => {
 
   if (isPlaylistDetailsPage || mode === "embedded") {
     return (
-      <ReviewBreadCrumbWrapper>
+      <ReviewBreadCrumbWrapper isPlaylistDetailsPage={isPlaylistDetailsPage}>
         <SecondHeader>
           <BreadCrumb data={playlistBreadcrumbData} style={{ position: "unset" }} />
         </SecondHeader>
@@ -33,6 +33,6 @@ const CurriculumBreadCrumb = ({ mode }) => {
 export default CurriculumBreadCrumb;
 
 const ReviewBreadCrumbWrapper = styled.div`
-  padding: 15px 0px 15px;
+  padding: ${({ isPlaylistDetailsPage }) => (isPlaylistDetailsPage ? "0px 0px 15px" : "15px 0px 15px")};
   width: 100%;
 `;

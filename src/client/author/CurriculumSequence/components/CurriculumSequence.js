@@ -568,6 +568,9 @@ class CurriculumSequence extends Component {
 
     const isDesktop = windowWidth > parseInt(smallDesktopWidth, 10);
 
+    const isPlaylistDetailsPage = window.location?.hash === "#review";
+    const shouldHidCustomizeButton = status === "published" && isPlaylistDetailsPage;
+
     return (
       <>
         <CurriculumSequenceModals
@@ -632,7 +635,10 @@ class CurriculumSequence extends Component {
             {currentTab === "playlist" && <CurriculumBreadCrumb mode={mode} />}
             {currentTab === "playlist" && (
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-                <ContentContainer urlHasUseThis={urlHasUseThis} showRightPanel={showRightPanel && !isStudent}>
+                <ContentContainer
+                  urlHasUseThis={urlHasUseThis}
+                  showRightPanel={showRightPanel && !isStudent && !shouldHidCustomizeButton}
+                >
                   <CurriculumSubHeader
                     isStudent={isStudent}
                     dateKeys={dateKeys}
@@ -646,6 +652,7 @@ class CurriculumSequence extends Component {
                     cancelPlaylistCustomize={cancelPlaylistCustomize}
                     toggleManageContentClick={this.toggleManageContentClick}
                     publishCustomizedPlaylist={publishCustomizedPlaylist}
+                    shouldHidCustomizeButton={shouldHidCustomizeButton}
                   />
                   <Wrapper active={isContentExpanded} urlHasUseThis={urlHasUseThis}>
                     {destinationCurriculumSequence && (
@@ -694,6 +701,7 @@ class CurriculumSequence extends Component {
                   urlHasUseThis={urlHasUseThis}
                   hideRightpanel={this.hideRightpanel}
                   summaryData={summaryData}
+                  shouldHidCustomizeButton={shouldHidCustomizeButton}
                   isManageContentActive={isManageContentActive}
                   isNotStudentOrParent={isNotStudentOrParent}
                   destinationCurriculumSequence={destinationCurriculumSequence}

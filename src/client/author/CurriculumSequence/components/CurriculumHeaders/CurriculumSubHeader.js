@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import { isNumber, sortBy } from "lodash";
 import styled from "styled-components";
 import {
   mobileWidthLarge,
@@ -21,6 +22,7 @@ const CurriculumSubHeader = ({
   urlHasUseThis,
   enableCustomize,
   showRightPanel,
+  summaryData,
   destinationCurriculumSequence,
   handleCheckout,
   isManageContentActive,
@@ -68,11 +70,24 @@ const CurriculumSubHeader = ({
       </SubTopBar>
     );
   }
+  const assigned = summaryData?.filter(d => isNumber(d.classes))?.length || 0;
   return (
     <SubTopBar>
       <SubTopBarContainer active={isContentExpanded}>
         <CurriculumSubHeaderRow>
           <SubHeaderTitleContainer>
+            <SubHeaderTitle>Module progress</SubHeaderTitle>
+            <SubHeaderModuleProgressContainer>
+              <div>
+                <span className="assigned">{`${assigned}/${summaryData?.length}`}</span>
+                <span className="assigned-label">assigned</span>
+              </div>
+              <SubHeaderModuleProgressTagContainer>
+                {summaryData?.map(d =>
+                  !isNumber(d.classes) ? <SquareColorDivGray key={d.index} /> : <SquareColorDivGreen key={d.index} />
+                )}
+              </SubHeaderModuleProgressTagContainer>
+            </SubHeaderModuleProgressContainer>
             <SubHeaderDescription>{description}</SubHeaderDescription>
           </SubHeaderTitleContainer>
           <RightColumn>
@@ -166,6 +181,22 @@ const SubTopBarContainer = styled.div`
   }
 `;
 
+const SquareColorDiv = styled.div`
+  display: inline-block;
+  border: 2px;
+  width: 35px;
+  height: 8px;
+  margin: 1px 2px 0px 0px;
+`;
+
+export const SquareColorDivGreen = styled(SquareColorDiv)`
+  background-color: #5eb500;
+`;
+
+export const SquareColorDivGray = styled(SquareColorDiv)`
+  background-color: #c5c5c5;
+`;
+
 SubTopBarContainer.displayName = "SubTopBarContainer";
 
 const CurriculumSubHeaderRow = styled.div`
@@ -191,6 +222,53 @@ const SubHeaderTitleContainer = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
   }
+`;
+
+const SubHeaderTitle = styled.div`
+  color: #8e9aa4;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.19px;
+  margin-bottom: 2px;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    font-size: 10px;
+  }
+`;
+
+const SubHeaderModuleProgressContainer = styled.div`
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+
+  .assigned {
+    text-align: left;
+    letter-spacing: 0px;
+    color: #434b5d;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 1;
+
+    @media (max-width: ${extraDesktopWidthMax}) {
+      font-size: 18px;
+    }
+  }
+  .assigned-label {
+    text-align: left;
+    letter-spacing: 0.24px;
+    color: #434b5d;
+    font-weight: 600;
+    margin-left: 4px;
+
+    @media (max-width: ${extraDesktopWidthMax}) {
+      font-size: 13px;
+    }
+  }
+`;
+
+const SubHeaderModuleProgressTagContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 `;
 
 const SubHeaderDescription = styled.p`

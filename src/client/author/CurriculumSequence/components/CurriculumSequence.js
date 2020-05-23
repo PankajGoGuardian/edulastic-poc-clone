@@ -645,6 +645,7 @@ class CurriculumSequence extends Component {
                     urlHasUseThis={urlHasUseThis}
                     enableCustomize={enableCustomize}
                     showRightPanel={showRightPanel}
+                    summaryData={summaryData}
                     destinationCurriculumSequence={destinationCurriculumSequence}
                     handleCheckout={this.handleCheckout}
                     isManageContentActive={isManageContentActive}

@@ -9,7 +9,6 @@ import ChangePlaylistModal from "./ChangePlaylistModal";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
 
 const CurriculumSequenceModals = ({
-  mode,
   isDesktop,
   isStudent,
   destinationCurriculumSequence,
@@ -36,7 +35,8 @@ const CurriculumSequenceModals = ({
   handleGuideSave,
   handleGuideCancel,
   countModular,
-  GridCountInARow
+  GridCountInARow,
+  fromPlaylist
 }) => (
   <Fragment>
     <RemoveTestModal
@@ -46,7 +46,7 @@ const CurriculumSequenceModals = ({
     />
     {isVisibleAddModule && (
       <AddEditModuleModal
-        isPlaylist={mode === "embedded"}
+        isPlaylist={fromPlaylist}
         visible={isVisibleAddModule}
         onClose={closeAddModuleModal}
         handleSavePlaylist={handleSavePlaylist}

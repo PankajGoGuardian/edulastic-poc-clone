@@ -65,15 +65,14 @@ import {
   removeUnitAction,
   setSelectedItemsForAssignAction,
   toggleCheckedUnitItemAction,
-  togglePlaylistTestDetailsModalWithId,
-  addSubresourceToPlaylistAction
+  togglePlaylistTestDetailsModalWithId
 } from "../ducks";
 import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
-import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
+import { PlaylistResourceRow, SubResource, AddResourceToPlaylist } from "./PlaylistResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
-import { SupportResourceDropTarget } from "./PlaylistResourceRow/styled";
+// import { SupportResourceDropTarget } from "./PlaylistResourceRow/styled";
 
 const IS_ASSIGNED = "ASSIGNED";
 const NOT_ASSIGNED = "ASSIGN";
@@ -95,28 +94,6 @@ function OuterDropContainer({ children }) {
         React.cloneElement(child, { showNewActivity: isOver, showSupportingResource })
       )}
     </div>
-  );
-}
-
-function NewActivityTargetContainer({ children, ...props }) {
-  const [{ isOver }, dropRef] = useDrop({
-    accept: "item",
-    collect: monitor => ({
-      isOver: !!monitor.isOver(),
-      contentType: monitor.getItem()?.contentType
-    }),
-    drop: item => {
-      const { moduleIndex, afterIndex, onDrop } = props;
-      if (onDrop) {
-        onDrop(moduleIndex, item, afterIndex);
-      }
-    }
-  });
-
-  return (
-    <NewActivityTarget {...props} ref={dropRef} active={isOver}>
-      {children}
-    </NewActivityTarget>
   );
 }
 
@@ -442,7 +419,8 @@ class ModuleRow extends Component {
       onDrop,
       proxyUserRole,
       isManageContentActive,
-      userRole
+      userRole,
+      fromPlaylist
     } = this.props;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignModule, assignTest } = this;
@@ -503,7 +481,6 @@ class ModuleRow extends Component {
           justifyContent={hideEditOptions && "flex-end"}
           ml={hideEditOptions && "auto"}
         >
-          {console.log(hideEditOptions)}
           {completed ? (
             !hideEditOptions && (
               <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
@@ -693,15 +670,16 @@ class ModuleRow extends Component {
                 useDragHandle
               >
                 {data.map((moduleData, index) => {
-                  const { assignments = [], contentId, contentType } = moduleData;
+                  const { assignments = [], contentId, contentType, hidden } = moduleData;
+                  const isTestType = contentType === "test";
                   const statusList = assignments.flatMap(item => item.class || []).flatMap(item => item.status || []);
                   const contentCompleted =
                     statusList.filter(_status => _status === "DONE").length === statusList.length &&
                     statusList.length > 0;
                   const isAssigned = assignments.length > 0;
                   const rowInlineStyle = {
-                    opacity: moduleData.hidden ? `.5` : `1`,
-                    pointerEvents: moduleData.hidden ? "none" : "all"
+                    opacity: hidden ? `.5` : `1`,
+                    pointerEvents: hidden ? "none" : "all"
                   };
 
                   const progressData = getProgressData(playlistMetrics, _id, contentId, assignments);
@@ -939,7 +917,7 @@ class ModuleRow extends Component {
                     </Fragment>
                   );
 
-                  const testType = moduleData.contentType === "test" && (
+                  const testType = isTestType && (
                     <CustomIcon marginLeft={10} marginRight={5}>
                       {urlHasUseThis && (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
                         <Avatar size={18} style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}>
@@ -963,7 +941,7 @@ class ModuleRow extends Component {
                     </CustomIcon>
                   );
 
-                  const testTypeAndTags = moduleData.contentType === "test" && (
+                  const testTypeAndTags = isTestType && (
                     <FlexContainer height="25px" alignItems="center" justifyContent="flex-start">
                       <Tags
                         margin="5px 0px 0px 0px"
@@ -1006,12 +984,17 @@ class ModuleRow extends Component {
                           isDesktop={isDesktop}
                           isStudent={isStudent}
                           showRightPanel={showRightPanel}
+                          isManageContentActive={isManageContentActive}
                           toggleTest={() => this.hideTest(module._id, moduleData)}
                           {...this.props}
                         />
-                        <NewActivityTargetContainer moduleIndex={moduleIndex} afterIndex={index} onDrop={onDrop}>
-                          New activity
-                        </NewActivityTargetContainer>
+                        <AddResourceToPlaylist
+                          onDrop={onDrop}
+                          index={index}
+                          moduleIndex={moduleIndex}
+                          isTestType={isTestType}
+                          fromPlaylist={fromPlaylist}
+                        />
                       </OuterDropContainer>
                     );
                   }
@@ -1034,9 +1017,10 @@ class ModuleRow extends Component {
                               e.stopPropagation();
                             }}
                           >
-                            {contentType !== "test" && (
+                            {!isTestType && (
                               <PlaylistResourceRow
                                 data={moduleData}
+                                mode={mode}
                                 urlHasUseThis={urlHasUseThis}
                                 showResource={this.showResource}
                                 isManageContentActive={isManageContentActive}
@@ -1044,7 +1028,7 @@ class ModuleRow extends Component {
                                 setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                               />
                             )}
-                            {contentType === "test" && (
+                            {isTestType && (
                               <Fragment>
                                 <FirstColumn
                                   data-cy="assigment-row-first"
@@ -1078,6 +1062,7 @@ class ModuleRow extends Component {
                               data={moduleData}
                               urlHasUseThis={urlHasUseThis}
                               showResource={this.showResource}
+                              isManageContentActive={isManageContentActive}
                               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                             />
                           )}
@@ -1266,10 +1251,11 @@ const DragHandle = styled.div`
   background: ${white};
   width: 35px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   font-size: 14px;
   cursor: grab;
+  padding: 14px 0px 0px;
 
   &:active {
     cursor: grabbing;
@@ -1683,15 +1669,6 @@ const AssignmentInnerWrapper = styled.div`
 `;
 AssignmentInnerWrapper.displayName = "AssignmentInnerWrapper";
 
-const NewActivityTarget = styled(SupportResourceDropTarget)`
-  width: 350px;
-  margin-top: 8px;
-  margin-bottom: 16px;
-  margin-left: 35px;
-  display: ${({ showNewActivity }) => (showNewActivity ? "flex" : "none")};
-  height: 80px;
-`;
-
 const ModuleWrapper = styled.div`
   cursor: pointer;
   & {
@@ -1740,8 +1717,7 @@ const enhance = compose(
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction,
       updateCurriculumSequence: putCurriculumSequenceAction,
-      togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId,
-      addSubresource: addSubresourceToPlaylistAction
+      togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId
     }
   )
 );

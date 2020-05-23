@@ -479,9 +479,10 @@ class CurriculumSequence extends Component {
       publishCustomizedPlaylist,
       activeRightPanel,
       setEmbeddedVideoPreviewModal,
-      isVideoResourcePreviewModal
+      isVideoResourcePreviewModal,
+      fromPlaylist
     } = this.props;
-
+    console.log("PlaylistLibrary", fromPlaylist);
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
     const hasEditAccess = destinationCurriculumSequence?.authors?.find(x => x?._id === currentUserId);
@@ -570,7 +571,6 @@ class CurriculumSequence extends Component {
     return (
       <>
         <CurriculumSequenceModals
-          mode={mode}
           isDesktop={isDesktop}
           isStudent={isStudent}
           addUnit={addUnit}
@@ -587,6 +587,7 @@ class CurriculumSequence extends Component {
           slicedRecentPlaylists={slicedRecentPlaylists}
           destinationCurriculumSequence={destinationCurriculumSequence}
           showConfirmRemoveModal={showConfirmRemoveModal}
+          fromPlaylist={fromPlaylist}
           onCloseConfirmRemoveModal={onCloseConfirmRemoveModal}
           removeTestFromPlaylist={removeTestFromPlaylist}
           closeAddModuleModal={this.closeAddModuleModal}
@@ -680,6 +681,7 @@ class CurriculumSequence extends Component {
                         isDesktop={isDesktop}
                         isStudent={isStudent}
                         showRightPanel={showRightPanel}
+                        fromPlaylist={fromPlaylist}
                         setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                       />
                     )}

@@ -35,6 +35,13 @@ export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+  }
 `;
 
 export const ResourceTitle = styled.div`

@@ -41,9 +41,8 @@ class AssignmentDragItem extends Component {
       assessmentColums,
       testTypeAndTags,
       isDesktop,
+      isManageContentActive,
       setEmbeddedVideoPreviewModal,
-      showSupportingResource,
-      addSubresource,
       id
     } = this.props;
     const isTestType = moduleData.contentType === "test";
@@ -66,6 +65,7 @@ class AssignmentDragItem extends Component {
               moduleIndex={moduleIndex}
               showResource={showResource}
               itemIndex={id}
+              isManageContentActive={isManageContentActive}
               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />
           )}
@@ -112,9 +112,8 @@ class AssignmentDragItem extends Component {
           itemIndex={id}
           isTestType={isTestType}
           showResource={showResource}
+          isManageContentActive={isManageContentActive}
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-          showSupportingResource={showSupportingResource}
-          addSubresource={addSubresource}
         />
       </div>
     );

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
@@ -8,26 +9,6 @@ import { removeSubResourceAction } from "../../ducks";
 import { SupportResourceDropTarget, ResourceLabel, ResourceWrapper, Title, InlineDelete } from "./styled";
 import { ModuleDataName } from "../CurriculumModuleRow";
 
-function SubResourceDropContainer({ children, ...props }) {
-  const [{ isOver }, dropRef] = useDrop({
-    accept: "item",
-    collect: monitor => ({
-      isOver: !!monitor.isOver(),
-      contentType: monitor.getItem()?.contentType
-    }),
-    drop: item => {
-      const { moduleIndex, itemIndex, addSubresource } = props;
-      addSubresource({ moduleIndex, itemIndex, item });
-    }
-  });
-
-  return (
-    <SupportResourceDropTarget {...props} ref={dropRef} active={isOver}>
-      {children}
-    </SupportResourceDropTarget>
-  );
-}
-
 export const SubResourceView = ({
   data: itemData = {},
   mode,
@@ -36,11 +17,9 @@ export const SubResourceView = ({
   itemIndex,
   setEmbeddedVideoPreviewModal,
   removeSubResource,
+  isManageContentActive,
   type,
-  inDiffrentiation,
-  isTestType,
-  addSubresource,
-  showSupportingResource
+  inDiffrentiation
 }) => {
   const viewResource = data => () => {
     if (data.contentType === "lti_resource") showResource(data.contentId);
@@ -62,13 +41,13 @@ export const SubResourceView = ({
 
   return (
     <FlexContainer width="100%" justifyContent="flex-start" data-cy="subResourceView">
-      {(hasResources || showSupportingResource) && (
+      {hasResources && (
         <ModuleDataName isReview isResource>
           <ResourceLabel>resources</ResourceLabel>
         </ModuleDataName>
       )}
       {itemData?.resources?.map(data => (
-        <ResourceWrapper onClick={viewResource(data)}>
+        <ResourceWrapper onClick={viewResource(data)} showBorder={isManageContentActive}>
           <ResouceIcon type={data.contentType} isAdded />
           <Title>{data.contentTitle}</Title>
           {mode === "embedded" && (
@@ -78,11 +57,6 @@ export const SubResourceView = ({
           )}
         </ResourceWrapper>
       ))}
-      {isTestType && showSupportingResource && (
-        <SubResourceDropContainer moduleIndex={moduleIndex} addSubresource={addSubresource} itemIndex={itemIndex}>
-          Supporting Resource
-        </SubResourceDropContainer>
-      )}
     </FlexContainer>
   );
 };

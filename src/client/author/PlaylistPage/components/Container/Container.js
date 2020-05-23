@@ -306,6 +306,7 @@ class Container extends PureComponent {
             current={current}
             onSortEnd={this.onSortEnd}
             handleTestsSort={this.handleTestsSort}
+            fromPlaylist
           />
         );
       case "settings":

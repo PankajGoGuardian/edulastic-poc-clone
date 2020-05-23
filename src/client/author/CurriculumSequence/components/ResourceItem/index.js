@@ -59,7 +59,7 @@ const ResourceItem = ({
         <TitleText noStandards={standardIdentifiers.length === 0} title={contentTitle}>
           {contentTitle}
         </TitleText>
-        <Tags tags={standardIdentifiers} show={1} showTitle flexWrap="nowrap" />
+        <Tags margin="0px" tags={standardIdentifiers} show={1} showTitle flexWrap="nowrap" />
       </ResourceTitle>
       <Tooltip title="preview">
         <IconEye className="preview-btn" color={themeColor} width={18} height={16} onClick={previewTest} />

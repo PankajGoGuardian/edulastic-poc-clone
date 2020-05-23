@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
-import { isNumber, sortBy } from "lodash";
+import { isNumber } from "lodash";
 import styled from "styled-components";
 import {
   mobileWidthLarge,
@@ -79,7 +79,7 @@ const CurriculumSubHeader = ({
             <SubHeaderTitle>Module progress</SubHeaderTitle>
             <SubHeaderModuleProgressContainer>
               <div>
-                <span className="assigned">{`${assigned}/${summaryData?.length}`}</span>
+                <span className="assigned">{`${assigned}/${summaryData?.length || 0}`}</span>
                 <span className="assigned-label">assigned</span>
               </div>
               <SubHeaderModuleProgressTagContainer>

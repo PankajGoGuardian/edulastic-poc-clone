@@ -570,15 +570,25 @@ class AuthorTestItemPreview extends Component {
     const { cols, onlySratchpad } = this.props;
     const { collapseDirection } = this.state;
 
+    const collapseButtonShouldRernder = i => i > 0 || collapseDirection === "left";
     return (
       <>
         {cols.map((col, i) => {
           const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
           return (
-            <Container {...rest} {...this.getScrollContainerProps(true)}>
-              {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-              <ColumnContentArea hide={hideColumn} style={onlySratchpad ? { boxShadow: "none" } : {}}>
+            // width of divider 25px
+            <Container
+              width={!collapseDirection ? col.dimension : "100%"}
+              {...rest}
+              {...this.getScrollContainerProps(true)}
+            >
+              {collapseButtonShouldRernder(i) && this.renderCollapseButtons(i)}
+              <ColumnContentArea
+                hide={hideColumn}
+                width={collapseButtonShouldRernder(i) ? `calc(100% - 25px)` : null}
+                style={onlySratchpad ? { boxShadow: "none" } : {}}
+              >
                 {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
                 {this.renderColumns(col, i, sectionQue, resourceCount)}
               </ColumnContentArea>

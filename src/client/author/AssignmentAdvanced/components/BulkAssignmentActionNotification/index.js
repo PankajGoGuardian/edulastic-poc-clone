@@ -2,17 +2,16 @@ import { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { uniqBy } from "lodash";
 import * as qs from "query-string";
-import { FireBaseService as Fbs } from "@edulastic/common";
+import { FireBaseService as Fbs, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { getUser } from "../../../src/selectors/user";
-import { destroyNotificationMessage, notificationMessage } from "../../../../common/components/Notification/index";
-import { receiveAssignmentClassList } from "../../../src/actions/assignments";
+import { receiveAssignmentClassList, receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 
 const collectionName = "AssignmentBulkActionEvents";
 
-const NotificationListener = ({ user, location, fetchAssignmentClassList }) => {
+const NotificationListener = ({ user, location, fetchAssignmentClassList, fetchAssignmentsSummaryAction }) => {
   const [notificationIds, setNotificationIds] = useState([]);
   let districtId = "";
   let testId = "";
@@ -27,29 +26,30 @@ const NotificationListener = ({ user, location, fetchAssignmentClassList }) => {
     [user?._id]
   );
 
-  const updateNotificationStatus = (docId, status) => {
+  const deleteNotificationDocument = docId => {
     Fbs.db
       .collection(collectionName)
       .doc(docId)
-      .update({ status });
+      .delete();
   };
 
   const showUserNotifications = docs => {
     uniqBy(docs, "__id").forEach(doc => {
-      const { status, totalCount, successCount } = doc;
-      if (status === "initiated") {
+      const { processStatus, message, statusCode, isBulkAction, status } = doc;
+      if (isBulkAction && status === "initiated" && processStatus === "done" && !notificationIds.includes(doc.__id)) {
         setNotificationIds([...notificationIds, doc.__id]);
-        notificationMessage({
-          title: "Assignment Bulk Action Update",
-          message: `${successCount} out of ${totalCount} classes successfully updated.`,
-          notificationPosition: "bottomRight",
-          notificationKey: doc.__id,
-          duration: 10
-        });
+        if (statusCode === 200) {
+          notification({ type: "success", msg: message, key: doc.__id });
+        } else {
+          notification({ msg: message, key: doc.__id });
+        }
 
         // if status is initiated and we are displaying, convert status to viewed
-        updateNotificationStatus(doc.__id, "viewed");
-        if (districtId && testId && testType) fetchAssignmentClassList({ districtId, testId, testType });
+        deleteNotificationDocument(doc.__id);
+        if (districtId && testId && testType) {
+          fetchAssignmentsSummaryAction({ districtId });
+          fetchAssignmentClassList({ districtId, testId, testType });
+        }
       }
     });
   };
@@ -60,13 +60,6 @@ const NotificationListener = ({ user, location, fetchAssignmentClassList }) => {
     }
   }, [userNotifications]);
 
-  useEffect(
-    () => () => {
-      destroyNotificationMessage();
-    },
-    []
-  );
-
   return null;
 };
 
@@ -76,6 +69,9 @@ export default compose(
     state => ({
       user: getUser(state)
     }),
-    { fetchAssignmentClassList: receiveAssignmentClassList }
+    {
+      fetchAssignmentClassList: receiveAssignmentClassList,
+      fetchAssignmentsSummaryAction: receiveAssignmentsSummaryAction
+    }
   )
 )(NotificationListener);

@@ -1,11 +1,9 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi, canvasApi } from "@edulastic/api";
-import { message } from "antd";
 import { createSelector } from "reselect";
 import { push } from "connected-react-router";
-
 import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
-
+import { notification } from "@edulastic/common";
 import { test, testActivity, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
 import { isNullOrUndefined } from "util";
 import {
@@ -77,11 +75,11 @@ function* receiveGradeBookSaga({ payload }) {
       payload: { entities }
     });
   } catch (err) {
-    const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    const msg = "Receive tests is failing";
+    yield call(notification, { msg });
     yield put({
       type: RECEIVE_GRADEBOOK_ERROR,
-      payload: { error: errorMessage }
+      payload: { error: msg }
     });
   }
 }
@@ -165,11 +163,11 @@ export function* receiveTestActivitySaga({ payload }) {
     });
   } catch (err) {
     console.log("err is", err);
-    const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    const msg = "Receive tests is failing";
+    yield call(notification, { msg });
     yield put({
       type: RECEIVE_TESTACTIVITY_ERROR,
-      payload: { error: errorMessage }
+      payload: { error: msg }
     });
   }
 }
@@ -177,12 +175,13 @@ export function* receiveTestActivitySaga({ payload }) {
 function* releaseScoreSaga({ payload }) {
   try {
     yield call(classBoardApi.releaseScore, payload);
-    yield call(message.success, "Successfully updated the release score settings");
+    yield call(notification, { type: "success", msg: "Successfully updated the release score settings" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Update release score is failed");
+    const msg = err.data.message || "Update release score is failed";
+    yield call(notification, { msg });
   }
 }
 
@@ -190,15 +189,15 @@ function* markAsDoneSaga({ payload }) {
   try {
     yield call(classBoardApi.markAsDone, payload);
     yield put(updateAssignmentStatusAction("DONE"));
-    yield call(message.success, "Successfully marked as done");
+    yield call(notification, { type: "success", msg: "Successfully marked as done" });
   } catch (err) {
     if (err && err.status == 422 && err.data && err.data.message) {
-      yield call(message.warn, err.data.message);
+      yield call(notification, { msg: err.data.message });
     } else {
       if (err?.data?.message === "Assignment does not exist anymore") {
         yield put(redirectToAssignmentsAction(""));
       }
-      yield call(message.error, err.data.message || "Mark as done is failed");
+      yield call(notification, { msg: err.data?.message || "Mark as done is failed" });
     }
   }
 }
@@ -216,12 +215,12 @@ function* openAssignmentSaga({ payload }) {
         passwordExpireIn: assignment.passwordExpireIn
       })
     );
-    yield call(message.success, "Success");
+    yield call(notification, { type: "success", msg: "Success" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data?.message || "Failed to open");
+    yield call(notification, { msg: err.data?.message || "Failed to open" });
   }
 }
 
@@ -230,24 +229,24 @@ function* closeAssignmentSaga({ payload }) {
     yield call(classBoardApi.closeAssignment, payload);
     yield put(updateCloseAssignmentsAction(payload.classId));
     yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId));
-    yield call(message.success, "Success");
+    yield call(notification, { type: "success", msg: "Success" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Failed to close");
+    yield call(notification, { msg: err.data?.message || "Failed to close" });
   }
 }
 
 function* saveOverallFeedbackSaga({ payload }) {
   try {
     yield call(testActivityApi.saveOverallFeedback, payload);
-    yield call(message.success, "feedback saved");
+    yield call(notification, { type: "success", msg: "feedback saved" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Saving failed");
+    yield call(notification, { msg: err?.data?.message || "Saving failed" });
   }
 }
 
@@ -255,12 +254,12 @@ function* markAbsentSaga({ payload }) {
   try {
     yield call(classBoardApi.markAbsent, payload);
     yield put(updateStudentActivityAction(payload.students));
-    yield call(message.success, "Successfully marked as absent");
+    yield call(notification, { type: "success", msg: "Successfully marked as absent" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Mark absent students failed");
+    yield call(notification, { msg: err.data.message || "Mark absent students failed" });
   }
 }
 
@@ -268,12 +267,12 @@ function* markAsSubmittedSaga({ payload }) {
   try {
     const response = yield call(classBoardApi.markSubmitted, payload);
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
-    yield call(message.success, "Successfully marked as submitted");
+    yield call(notification, { type: "success", msg: "Successfully marked as submitted" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Mark as submit failed");
+    yield call(notification, { msg: err.data.message || "Mark as submit failed" });
   }
 }
 
@@ -281,15 +280,16 @@ function* togglePauseAssignment({ payload }) {
   try {
     yield call(classBoardApi.togglePause, payload);
     yield put(setIsPausedAction(payload.value));
-    yield call(
-      message.success,
-      `Assignment ${payload.name} is now ${payload.value ? "paused." : "open and available for students to work."}`
-    );
+    const msg = `Assignment ${payload.name} is now ${
+      payload.value ? "paused." : "open and available for students to work."
+    }`;
+    yield call(notification, { type: "success", msg });
   } catch (e) {
     if (e?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, e.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`);
+    const msg = e.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`;
+    yield call(notification, { msg });
   }
 }
 
@@ -306,12 +306,12 @@ function* removeStudentsSaga({ payload }) {
   try {
     const { students } = yield call(classBoardApi.removeStudents, payload);
     yield put(updateRemovedStudentsAction(students));
-    yield call(message.success, "Successfully removed");
+    yield call(notification, { type: "success", msg: "Successfully removed" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Remove students failed");
+    yield call(notification, { msg: err.data.message || "Remove students failed" });
   }
 }
 
@@ -319,12 +319,12 @@ function* addStudentsSaga({ payload }) {
   try {
     const { students = [] } = yield call(classBoardApi.addStudents, payload);
     yield put(setStudentsGradeBookAction(students));
-    yield call(message.success, "Successfully added");
+    yield call(notification, { type: "success", msg: "Successfully added" });
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "Add students failed");
+    yield call(notification, { msg: err.data.message || "Add students failed" });
   }
 }
 
@@ -338,7 +338,7 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || "fetching all test activities failed");
+    yield call(notification, { msg: err?.data?.message || "Fetching all test activities failed" });
   }
 }
 
@@ -350,7 +350,7 @@ function* downloadGradesAndResponseSaga({ payload }) {
     const fileName = `${testName}_${userName}.csv`;
     downloadCSV(fileName, data);
   } catch (e) {
-    yield call(message.error, e?.data?.message || "Download failed");
+    yield call(notification, { msg: e.data?.message || "Download failed" });
   }
 }
 
@@ -370,17 +370,17 @@ function* regeneratePasswordSaga({ payload }) {
     );
   } catch (e) {
     console.log(e);
-    yield call(message.error, "Regenerate password failed");
+    yield call(notification, { msg: "Regenerate password failed" });
   }
 }
 
 function* canvasSyncGradesSaga({ payload }) {
   try {
     yield call(canvasApi.canvasGradesSync, payload);
-    yield call(message.success, "Grades synced with canvas successfully.");
+    yield call(notification, { type: "success", msg: "Grades synced with canvas successfully." });
   } catch (err) {
     console.error(err);
-    yield call(message.error, err.data.message || "Failed to sync grades with canvas.");
+    yield call(notification, { msg: err.data.message || "Failed to sync grades with canvas." });
   }
 }
 

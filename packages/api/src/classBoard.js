@@ -163,6 +163,26 @@ const bulkMarkAsDoneAssignment = ({ testId, data, testType }) =>
     })
     .then(response => response.data);
 
+const bulkReleaseScoreAssignment = ({ testId, data, testType }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/test/${testId}/bulk-release-score`,
+      data,
+      params: Object.keys(data).length === 0 ? { testType } : {}
+    })
+    .then(response => response.data);
+
+const bulkUnassignAssignment = ({ testId, data, testType }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/test/${testId}/bulk-unassign`,
+      data,
+      params: Object.keys(data).length === 0 ? { testType } : {}
+    })
+    .then(response => response.data);
+
 export default {
   gradebook,
   testActivity,
@@ -181,5 +201,7 @@ export default {
   bulkOpenAssignment,
   bulkCloseAssignment,
   bulkPauseAssignment,
-  bulkMarkAsDoneAssignment
+  bulkMarkAsDoneAssignment,
+  bulkReleaseScoreAssignment,
+  bulkUnassignAssignment
 };

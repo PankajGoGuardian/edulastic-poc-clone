@@ -46,7 +46,9 @@ import {
   bulkOpenAssignmentAction,
   bulkCloseAssignmentAction,
   bulkPauseAssignmentAction,
-  bulkMarkAsDoneAssignmentAction
+  bulkMarkAsDoneAssignmentAction,
+  bulkReleaseScoreAssignmentAction,
+  bulkUnassignAssignmentAction
 } from "../../ducks";
 
 const { assignmentStatusBg } = authorAssignment;
@@ -160,6 +162,8 @@ class AssignmentAdvanced extends Component {
       bulkCloseAssignmentRequest,
       bulkPauseAssignmentRequest,
       bulkMarkAsDoneAssignmentRequest,
+      bulkReleaseScoreAssignmentRequest,
+      bulkUnassignAssignmentRequest,
       location
     } = this.props;
     const { testId } = match.params;
@@ -221,6 +225,8 @@ class AssignmentAdvanced extends Component {
                 bulkCloseAssignmentRequest={bulkCloseAssignmentRequest}
                 bulkPauseAssignmentRequest={bulkPauseAssignmentRequest}
                 bulkMarkAsDoneAssignmentRequest={bulkMarkAsDoneAssignmentRequest}
+                bulkReleaseScoreAssignmentRequest={bulkReleaseScoreAssignmentRequest}
+                bulkUnassignAssignmentRequest={bulkUnassignAssignmentRequest}
                 testType={testType}
               />
             </StyledCard>
@@ -264,7 +270,9 @@ const enhance = compose(
       bulkOpenAssignmentRequest: bulkOpenAssignmentAction,
       bulkCloseAssignmentRequest: bulkCloseAssignmentAction,
       bulkPauseAssignmentRequest: bulkPauseAssignmentAction,
-      bulkMarkAsDoneAssignmentRequest: bulkMarkAsDoneAssignmentAction
+      bulkMarkAsDoneAssignmentRequest: bulkMarkAsDoneAssignmentAction,
+      bulkReleaseScoreAssignmentRequest: bulkReleaseScoreAssignmentAction,
+      bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction
     }
   )
 );

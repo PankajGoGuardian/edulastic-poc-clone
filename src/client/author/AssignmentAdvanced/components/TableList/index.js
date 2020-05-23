@@ -117,6 +117,8 @@ const TableList = ({
   bulkCloseAssignmentRequest,
   bulkPauseAssignmentRequest,
   bulkMarkAsDoneAssignmentRequest,
+  bulkReleaseScoreAssignmentRequest,
+  bulkUnassignAssignmentRequest,
   testType
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -158,15 +160,6 @@ const TableList = ({
     }
   };
 
-  const moreOptions = () => (
-    <MoreOptionsContainer>
-      <MoreOption>Release Score</MoreOption>
-      <MoreOption>Download Grades</MoreOption>
-      <MoreOption>Download Responses</MoreOption>
-      <MoreOption>Unassign</MoreOption>
-    </MoreOptionsContainer>
-  );
-
   const handleBulkAction = type => {
     let selectedRowsGroupByAssignment = {};
     if (classList.length > selectedRows.length) {
@@ -186,7 +179,18 @@ const TableList = ({
     if (type === "close") bulkCloseAssignmentRequest(payload);
     if (type === "pause") bulkPauseAssignmentRequest(payload);
     if (type === "markAsDone") bulkMarkAsDoneAssignmentRequest(payload);
+    if (type === "releaseScore") bulkReleaseScoreAssignmentRequest(payload);
+    if (type === "unassign") bulkUnassignAssignmentRequest(payload);
   };
+
+  const moreOptions = () => (
+    <MoreOptionsContainer>
+      <MoreOption onClick={() => handleBulkAction("releaseScore")}>Release Score</MoreOption>
+      <MoreOption>Download Grades</MoreOption>
+      <MoreOption>Download Responses</MoreOption>
+      <MoreOption onClick={() => handleBulkAction("unassign")}>Unassign</MoreOption>
+    </MoreOptionsContainer>
+  );
 
   const renderBulkActions = () => (
     <BulkActionsWrapper>

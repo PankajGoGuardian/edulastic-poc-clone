@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { SupportResourceDropTarget, NewActivityTarget } from "./styled";
 import { addSubresourceToPlaylistAction } from "../../ducks";
 
+import { addSubresourceToPlaylistAction as addSubresourceInPlaylistAction } from "../../../PlaylistPage/ducks";
+
 function NewActivityTargetContainer({ children, ...props }) {
   const [{ isOver }, dropRef] = useDrop({
     accept: "item",
@@ -55,7 +57,6 @@ const AddResourceToPlaylist = ({
   addSubresource,
   onDrop,
   showNewActivity,
-  fromPlaylist,
   showSupportingResource
 }) => (
   <Fragment>
@@ -64,7 +65,6 @@ const AddResourceToPlaylist = ({
         <span>Supporting Resource</span>
       </SubResourceDropContainer>
     )}
-    {console.log(fromPlaylist)}
     {showNewActivity && (
       <NewActivityTargetContainer moduleIndex={moduleIndex} afterIndex={index} onDrop={onDrop}>
         <span> New activity</span>
@@ -75,7 +75,8 @@ const AddResourceToPlaylist = ({
 
 export default connect(
   null,
-  {
-    addSubresource: addSubresourceToPlaylistAction
-  }
+  (dispatch, { fromPlaylist }) => ({
+    addSubresource: payload =>
+      dispatch(fromPlaylist ? addSubresourceInPlaylistAction(payload) : addSubresourceToPlaylistAction(payload))
+  })
 )(AddResourceToPlaylist);

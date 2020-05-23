@@ -5,9 +5,10 @@ import { FlexContainer } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { useDrop } from "react-dnd";
 import { ResouceIcon } from "../ResourceItem";
-import { removeSubResourceAction } from "../../ducks";
 import { SupportResourceDropTarget, ResourceLabel, ResourceWrapper, Title, InlineDelete } from "./styled";
 import { ModuleDataName } from "../CurriculumModuleRow";
+import { removeSubResourceAction } from "../../ducks";
+import { removeSubResourceAction as removeSubresourceInPlaylistAction } from "../../../PlaylistPage/ducks";
 
 export const SubResourceView = ({
   data: itemData = {},
@@ -19,6 +20,7 @@ export const SubResourceView = ({
   removeSubResource,
   isManageContentActive,
   type,
+  fromPlaylist,
   inDiffrentiation
 }) => {
   const viewResource = data => () => {
@@ -63,7 +65,8 @@ export const SubResourceView = ({
 
 export const SubResource = connect(
   null,
-  {
-    removeSubResource: removeSubResourceAction
-  }
+  (dispatch, { fromPlaylist }) => ({
+    removeSubResource: payload =>
+      dispatch(fromPlaylist ? removeSubresourceInPlaylistAction(payload) : removeSubResourceAction(payload))
+  })
 )(SubResourceView);

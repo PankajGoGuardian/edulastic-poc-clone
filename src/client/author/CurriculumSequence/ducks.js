@@ -101,9 +101,9 @@ export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE = "[differentiation
 export const UPDATE_WORK_STATUS_DATA = "[differentiation] update work status data";
 export const ADD_RESOURCE_TO_DIFFERENTIATION = "[differentiation] add resource";
 
-export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
-export const PLAYLIST_ADD_SUBRESOURCE = "[playlist] add sub resource";
-export const PLAYLIST_REMOVE_SUBRESOURCE = "[playlist] remove sub resource";
+export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[curriculum-sequence] add item into module";
+export const PLAYLIST_ADD_SUBRESOURCE = "[curriculum-sequence] add sub resource";
+export const PLAYLIST_REMOVE_SUBRESOURCE = "[curriculum-sequence] remove sub resource";
 export const UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST =
   "[playlist] update destination curriculum sequence request";
 

@@ -62,7 +62,13 @@ export const REMOVE_TEST_FROM_PLAYLIST = "[playlists] remove test from playlist"
 export const MOVE_CONTENT = "[playlists] move content in playlist";
 export const CHANGE_PLAYLIST_THEME = "[playlists] change playlist theme";
 
+export const PLAYLIST_ADD_SUBRESOURCE = "[playlists] add sub resource";
+export const PLAYLIST_REMOVE_SUBRESOURCE = "[playlists] remove sub resource";
+
 // actions
+
+export const addSubresourceToPlaylistAction = createAction(PLAYLIST_ADD_SUBRESOURCE);
+export const removeSubResourceAction = createAction(PLAYLIST_REMOVE_SUBRESOURCE);
 
 export const updateDefaultPlaylistThumbnailAction = thumbnail => ({
   type: UPDATE_DEFAULT_PLAYLIST_THUMBNAIL,
@@ -374,8 +380,45 @@ function addTestToModuleInBulk(entity, payload) {
   return entity;
 }
 
+function addSubresource(entity, payload) {
+  const { moduleIndex, item, itemIndex } = payload;
+  const { id: contentId, contentType, type, fromPlaylistTestsBox, standardIdentifiers, status, ...itemObj } = item;
+  const newEntity = produce(entity, draft => {
+    if (!draft.modules[moduleIndex].data[itemIndex].resources) {
+      draft.modules[moduleIndex].data[itemIndex].resources = [];
+    }
+    const resources = draft.modules[moduleIndex].data[itemIndex].resources;
+
+    if (!resources.find(x => x.contentId === contentId)) {
+      resources.push({ contentId, contentType, ...itemObj });
+      draft.modules[moduleIndex].data[itemIndex].resources = resources;
+    }
+  });
+  return newEntity;
+}
+
+function removeSubResource(entity, payload) {
+  const { moduleIndex, contentId, itemIndex } = payload;
+  const newEntity = produce(entity, draft => {
+    if (draft.modules[moduleIndex].data[itemIndex].resources) {
+      draft.modules[moduleIndex].data[itemIndex].resources = draft.modules[moduleIndex].data[
+        itemIndex
+      ].resources.filter(x => x.contentId !== contentId);
+    }
+  });
+  return newEntity;
+}
+
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case PLAYLIST_ADD_SUBRESOURCE: {
+      const newEntity = addSubresource(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
+    case PLAYLIST_REMOVE_SUBRESOURCE: {
+      const newEntity = removeSubResource(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
     case ADD_MODULE: {
       const newEntity = addModuleToPlaylist(state.entity, payload);
       return { ...state, entity: newEntity };

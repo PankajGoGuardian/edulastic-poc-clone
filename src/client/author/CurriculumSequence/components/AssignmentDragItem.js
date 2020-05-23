@@ -43,6 +43,7 @@ class AssignmentDragItem extends Component {
       isDesktop,
       isManageContentActive,
       setEmbeddedVideoPreviewModal,
+      fromPlaylist,
       id
     } = this.props;
     const isTestType = moduleData.contentType === "test";
@@ -107,6 +108,7 @@ class AssignmentDragItem extends Component {
           data={moduleData}
           mode={mode}
           urlHasUseThis
+          fromPlaylist={fromPlaylist}
           deleteTest={deleteTest}
           moduleIndex={moduleIndex}
           itemIndex={id}

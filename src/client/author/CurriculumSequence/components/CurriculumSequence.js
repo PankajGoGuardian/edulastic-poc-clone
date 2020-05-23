@@ -482,7 +482,6 @@ class CurriculumSequence extends Component {
       isVideoResourcePreviewModal,
       fromPlaylist
     } = this.props;
-    console.log("PlaylistLibrary", fromPlaylist);
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
     const hasEditAccess = destinationCurriculumSequence?.authors?.find(x => x?._id === currentUserId);

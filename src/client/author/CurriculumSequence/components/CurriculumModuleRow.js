@@ -986,6 +986,7 @@ class ModuleRow extends Component {
                           showRightPanel={showRightPanel}
                           isManageContentActive={isManageContentActive}
                           toggleTest={() => this.hideTest(module._id, moduleData)}
+                          fromPlaylist={fromPlaylist}
                           {...this.props}
                         />
                         <AddResourceToPlaylist

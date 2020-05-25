@@ -13,9 +13,7 @@ export const scaleFactor = 1.8;
 const groupingDist = round(0.2 * domainRange);
 
 // (function) to get the normalized value, given the mean and the range
-const getNormalizedValue = (item, mean, range) => {
-  return item === mean ? 0 : round((domainRange * (item - mean)) / range);
-};
+const getNormalizedValue = (item, mean, range) => (item === mean ? 0 : round((domainRange * (item - mean)) / range));
 
 // (function) to check if the points p & q can be grouped based on distance
 // effort => x, performance => y
@@ -29,12 +27,11 @@ const canBeGrouped = (p, q) => {
 // (function) to curate the filters list (modules, standards, groups)
 export const getFilterData = (modules = [], selectedModules = []) => {
   const modulesData = modules.map(item => {
-    let standards = [],
-      groups = [],
-      studentIds = [];
+    const standards = [];
+    const groups = [];
     item.data.forEach(ele => {
-      standards.push(...ele.standards);
-      ele.assignments.forEach(assignment =>
+      standards.push(...(ele.standards || []));
+      (ele.assignments || []).forEach(assignment =>
         assignment.class?.forEach(cl => groups.push({ id: cl._id, name: cl.name }))
       );
     });
@@ -46,7 +43,7 @@ export const getFilterData = (modules = [], selectedModules = []) => {
     };
   });
   const filteredModules = selectedModules.length
-    ? modulesData.filter(module => selectedModules.map(module => module.key).includes(module.id))
+    ? modulesData.filter(module => selectedModules.map(_module => _module.key).includes(module.id))
     : modulesData;
 
   // filter standards dropdown data based on the filtered modules
@@ -63,13 +60,11 @@ export const getFilterData = (modules = [], selectedModules = []) => {
 };
 
 // (function) to get the trendAngle from the trendSlope
-const calcTrendAngle = trendSlope => {
-  return round((Math.atan(trendSlope || 0) * 360) / Math.PI);
-};
+const calcTrendAngle = trendSlope => round((Math.atan(trendSlope || 0) * 360) / Math.PI);
 
 // (function) to get a unique student map complete with trendAngle
-export const getMergedTrendMap = (studInfo = [], trendData = []) => {
-  return useMemo(() => {
+export const getMergedTrendMap = (studInfo = [], trendData = []) =>
+  useMemo(() => {
     const studentMap = groupBy(studInfo, "userId");
     // reduce multiple entries and club their groupIds
     Object.keys(studentMap).map(sId => {
@@ -90,6 +85,7 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
           hasTrend: false
         }
       );
+      return null;
     });
     // calculate and set flag for students with available trend data
     trendData.forEach(item => {
@@ -100,7 +96,6 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
     });
     return studentMap;
   }, [studInfo, trendData]);
-};
 
 // (function) to filter student data based on modules, standards &
 export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = {}) => {
@@ -132,7 +127,7 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
             res.standardIds.push(ele.standardId);
             res.totalTotalScore += ele.totalScore || 0;
             res.totalMaxScore += ele.maxScore || 0;
-            res.totalTimeSpent += parseInt(ele.timeSpent);
+            res.totalTimeSpent += parseInt(ele.timeSpent, 10);
             res.count += 1;
             return res;
           },
@@ -162,10 +157,10 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
   if (!filteredData.length) {
     return [];
   }
-  let minTimeSpent = filteredData[0].totalTimeSpent,
-    maxTimeSpent = filteredData[0].totalTimeSpent,
-    minPercentScore = 1,
-    maxPercentScore = 0;
+  let minTimeSpent = filteredData[0].totalTimeSpent;
+  let maxTimeSpent = filteredData[0].totalTimeSpent;
+  let minPercentScore = 1;
+  let maxPercentScore = 0;
 
   // calculate max & min for percentScore & timeSpent
   let curatedMetrics = filteredData.map(item => {
@@ -193,8 +188,8 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
   const masteryToShow = masteryList.map(item => item.key);
   const masteryRangeToShow = [];
   masteryData.forEach((item, index) => {
-    let max = 100,
-      min = 0;
+    let max = 100;
+    let min = 0;
     if (index == 0) {
       min = item.threshold;
     } else {
@@ -207,8 +202,8 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
   });
   if (masteryRangeToShow.length) {
     curatedMetrics = curatedMetrics.filter(item => {
-      let flag = false,
-        pScore = round(item.percentScore, 2) * 100;
+      let flag = false;
+      const pScore = round(item.percentScore, 2) * 100;
       masteryRangeToShow.forEach(({ min, max }) => {
         if (min <= pScore && pScore < max) {
           flag = true;
@@ -219,18 +214,18 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
   }
 
   // calculate the mean & range for percentScore & timeSpent
-  const timeRange = maxTimeSpent - minTimeSpent,
-    percentRange = maxPercentScore - minPercentScore;
-  const timeMean = (maxTimeSpent + minTimeSpent) / 2,
-    percentMean = (maxPercentScore + minPercentScore) / 2;
+  const timeRange = maxTimeSpent - minTimeSpent;
+  const percentRange = maxPercentScore - minPercentScore;
+  const timeMean = (maxTimeSpent + minTimeSpent) / 2;
+  const percentMean = (maxPercentScore + minPercentScore) / 2;
 
   // normalize values to get effort & performance
   return sortBy(
     curatedMetrics.map(item => {
       const fName = item.firstName && item.firstName.trim();
       const lName = item.lastName && item.lastName.trim();
-      const name = fName && lName ? lName + ", " + fName[0] : lName || fName || "-";
-      const fullName = fName && lName ? lName + ", " + fName : lName || fName || "-";
+      const name = fName && lName ? `${lName}, ${fName[0]}` : lName || fName || "-";
+      const fullName = fName && lName ? `${lName}, ${fName}` : lName || fName || "-";
       const effort = getNormalizedValue(item.totalTimeSpent, timeMean, timeRange);
       const performance = getNormalizedValue(item.percentScore, percentMean, percentRange);
       return { name, fullName, ...item, effort, performance, isActive: true };
@@ -305,17 +300,18 @@ export const getQuadsData = data => {
     } else {
       quads[3].push({ ...item, color: lightBlue8, quad: 4 });
     }
+    return null;
   });
 
   // logic to create groupings for nearby data using greedy approach
   return flatMap(quads, quad => {
-    let len = quad.length,
-      i,
-      j;
+    const len = quad.length;
+    let i;
+    let j;
     // grouped => maps the index of the grouped element to the index of the parent grouping element
     // groupings => stores the data of all possible groups with parent element index as the key
-    const grouped = {},
-      groupings = {};
+    const grouped = {};
+    const groupings = {};
     // create groupings
     for (i = 0; grouped[i] == null && i < len; i++) {
       grouped[i] = i;
@@ -329,8 +325,8 @@ export const getQuadsData = data => {
     }
     // curate groupings to object
     return Object.keys(groupings).map(key => {
-      const len = groupings[key].length;
-      return len === 1
+      const _len = groupings[key].length;
+      return _len === 1
         ? groupings[key][0]
         : reduce(
             groupings[key],
@@ -378,8 +374,8 @@ export const calcLabelPosition = ({ cx, cy, angle = 0 }) => {
 
 // (function) to calculate the arrow position for the AddGroupTable
 export const calcArrowPosition = angle => {
-  let cx = 0,
-    cy = 0;
+  let cx = 0;
+  let cy = 0;
   if (angle <= -150) {
     cx += 1;
     cy += 10;

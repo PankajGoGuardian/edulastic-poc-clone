@@ -17,7 +17,8 @@ const ResourceRow = ({
   showResource,
   setEmbeddedVideoPreviewModal,
   isManageContentActive,
-  hideEditOptions
+  hideEditOptions,
+  urlHasUseThis
 }) => {
   const viewResource = () => {
     if (data.contentType === "lti_resource") showResource(data.contentId);
@@ -39,7 +40,7 @@ const ResourceRow = ({
         </ModuleDataName>
         <ResouceIcon type={data.contentType} isAdded />
       </ResourceWrapper>
-      <LastColumn justifyContent="space-between">
+      <LastColumn justifyContent="space-between" width={urlHasUseThis ? "auto" : null}>
         <AssignmentButton>
           <Button onClick={viewResource}>VIEW</Button>
         </AssignmentButton>

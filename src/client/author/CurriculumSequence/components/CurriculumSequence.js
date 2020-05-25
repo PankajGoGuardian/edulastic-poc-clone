@@ -654,7 +654,7 @@ class CurriculumSequence extends Component {
                     publishCustomizedPlaylist={publishCustomizedPlaylist}
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
                   />
-                  <Wrapper active={isContentExpanded} urlHasUseThis={urlHasUseThis}>
+                  <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
                       <Curriculum
                         mode={isManageContentActive ? "embedded" : mode}
@@ -815,9 +815,6 @@ const Wrapper = styled.div`
   align-self: ${props => (props.active ? "flex-start" : "center")};
   margin-left: ${props => (props.active ? "0px" : "auto")};
   margin-right: ${props => (props.active ? "0px" : "auto")};
-
-  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 280px)" : "calc(100vh - 330px)")};
-  overflow: auto;
   position: relative;
 
   @media only screen and (max-width: ${largeDesktopWidth}) {

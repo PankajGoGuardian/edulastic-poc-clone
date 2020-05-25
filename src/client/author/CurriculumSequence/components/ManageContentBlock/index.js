@@ -279,6 +279,7 @@ const ManageContentBlock = props => {
               subject={subject}
               collection={collection}
               sources={sources}
+              urlHasUseThis={urlHasUseThis}
               onFilterChange={prop => setFilterAction(prop)}
               onStatusChange={prop => setStatusAction(prop)}
               onAuthoredChange={prop => setAuthoredAction(prop)}

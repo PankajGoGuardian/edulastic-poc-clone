@@ -80,7 +80,7 @@ const CurriculumSubHeader = ({
             <SubHeaderModuleProgressContainer>
               <div>
                 <span className="assigned">{`${assigned}/${summaryData?.length || 0}`}</span>
-                <span className="assigned-label">assigned</span>
+                <span className="assigned-label">Assigned</span>
               </div>
               <SubHeaderModuleProgressTagContainer>
                 {summaryData?.map(d =>
@@ -160,7 +160,6 @@ const SubTopBarContainer = styled.div`
   margin-right: ${props => (props.active ? "" : "auto")};
   border-radius: 5px;
   border: 1px solid #DADAE4;
-  height: 145px;
 
   @media only screen and (max-width: 1366px) {
     flex-direction: column;
@@ -213,7 +212,7 @@ const CurriculumSubHeaderRow = styled.div`
 
 const SubHeaderTitleContainer = styled.div`
   min-width: 200px;
-  width: 45%;
+  min-width: 45%;
   word-break: break-word;
 
   @media (max-width: ${tabletWidth}) {
@@ -258,6 +257,7 @@ const SubHeaderModuleProgressContainer = styled.div`
     color: #434b5d;
     font-weight: 600;
     margin-left: 4px;
+    text-transform: capitalize;
 
     @media (max-width: ${extraDesktopWidthMax}) {
       font-size: 13px;
@@ -283,7 +283,7 @@ const SubHeaderDescription = styled.p`
 
 const RightColumn = styled.div`
   display: flex;
-  width: 55%;
+  max-width: 50%;
   justify-content: flex-end;
   align-items: center;
 
@@ -359,6 +359,10 @@ const StyledButton = styled.div`
     margin-top: 10px;
   }
 
+  &:first-child {
+    margin-top: 0px;
+  }
+
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 150px;
     height: 40px;
@@ -414,6 +418,7 @@ const SubHeaderInfoCardText = styled.div`
   padding-left: 5px;
   color: ${titleColor};
   text-transform: uppercase;
+  white-space: nowrap;
 
   @media (max-width: ${extraDesktopWidthMax}) {
     font: Bold 9px/13px Open Sans;

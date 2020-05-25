@@ -4,7 +4,7 @@ import { title, themeColor } from "@edulastic/colors";
 
 export const FilterContainer = styled.div`
   margin-bottom: 20px;
-  height: calc(100vh - 295px);
+  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 245px)" : "calc(100vh - 295px)")};
   overflow: auto;
   &::-webkit-scrollbar {
     width: 6px;
@@ -46,10 +46,10 @@ export const Item = styled.div`
   height: 40px;
   line-height: 40px;
   padding-left: 15px;
-  margin: 20px 0px;
+  /* margin: 20px 0px; */
   font-size: 20px;
   color: ${({ active }) => (active ? themeColor : title)};
-  border-left: ${({ active }) => active && "4px solid " + themeColor};
+  border-left: ${({ active }) => active && `4px solid ${themeColor}`};
   cursor: pointer;
 `;
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import { Select, Icon } from "antd";
 import { FlexContainer } from "@edulastic/common";
@@ -23,14 +24,15 @@ const PlaylistTestBoxFilter = props => {
     collection = "",
     onCollectionChange,
     sources = [],
-    onSourceChange
+    onSourceChange,
+    urlHasUseThis
   } = props;
 
   const { allGrades, allSubjects, allStatus } = SELECT_DATA;
   const { Option } = Select;
 
   return (
-    <FilterContainer>
+    <FilterContainer urlHasUseThis={urlHasUseThis}>
       {FILTERS.map(item => (
         <Item key={item.path} active={item.filter === filter} onClick={() => onFilterChange(item?.filter)}>
           <Icon type={item.icon} />
@@ -42,7 +44,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-status"
         placeholder="Select Status"
-        style={{ width: 315, height: 40, lineHeight: 40 }}
+        style={{ width: "100%", height: 40, lineHeight: 40 }}
         value={status}
         onChange={onStatusChange}
       >
@@ -56,7 +58,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-authored"
         placeholder="Select Authored"
-        style={{ width: 315, height: 40, lineHeight: 40 }}
+        style={{ width: "100%", height: 40, lineHeight: 40 }}
         value={authoredBy || undefined}
         onChange={onAuthorChange}
       >
@@ -70,7 +72,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-grade"
         mode="multiple"
-        style={{ width: 315, minHeight: "40px", lineHeight: 40 }}
+        style={{ width: "100%", minHeight: "40px", lineHeight: 40 }}
         placeholder="Select Grades"
         value={grades}
         onChange={onGradesChange}
@@ -83,7 +85,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-subject"
         placeholder="Select Subject"
-        style={{ width: 315, height: 40, lineHeight: 40 }}
+        style={{ width: "100%", height: 40, lineHeight: 40 }}
         value={subject}
         onChange={onSubjectChange}
       >
@@ -97,7 +99,7 @@ const PlaylistTestBoxFilter = props => {
       <Select
         data-cy="test-collection"
         placeholder="Select Collection"
-        style={{ width: 315, height: 40, lineHeight: 40 }}
+        style={{ width: "100%", height: 40, lineHeight: 40 }}
         value={collection || undefined}
         onChange={onCollectionChange}
       >
@@ -108,7 +110,8 @@ const PlaylistTestBoxFilter = props => {
 
       <br />
       <br />
-      <Title>source</Title>
+      {/* we will enable this when we are ready. */}
+      {/* <Title>source</Title>
       <FlexContainer flexDirection="column" alignItems="start">
         {sourceList.map(sourceName => (
           <StyledCheckbox
@@ -118,7 +121,7 @@ const PlaylistTestBoxFilter = props => {
             {sourceName}
           </StyledCheckbox>
         ))}
-      </FlexContainer>
+      </FlexContainer> */}
     </FilterContainer>
   );
 };

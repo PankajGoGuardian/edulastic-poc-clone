@@ -251,7 +251,7 @@ const Author = ({
                       path="/author/playlists/:id"
                       render={props => (
                         <Suspense fallback={<Progress />}>
-                          <CurriculumSequence {...props} />
+                          <CurriculumSequence {...props} fromPlaylist />
                         </Suspense>
                       )}
                     />

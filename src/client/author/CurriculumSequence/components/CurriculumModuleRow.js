@@ -24,7 +24,7 @@ import {
   extraDesktopWidthMax,
   smallDesktopWidth
 } from "@edulastic/colors";
-import { EduButton, ProgressBar, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
+import { ProgressBar, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { testActivityStatus, roleuser } from "@edulastic/constants";
 import {
   IconCheckSmall,
@@ -44,7 +44,7 @@ import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import { compose } from "redux";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { pick } from "lodash";
 import { curriculumSequencesApi } from "@edulastic/api";
 import AssessmentPlayer from "../../../assessment";
@@ -187,9 +187,9 @@ class ModuleRow extends Component {
   };
 
   deleteTest = (moduleIndex, itemId) => {
-    const { removeItemFromUnit, removeItemFromDestinationPlaylist, urlHasUseThis, isManageContentActive } = this.props;
+    const { removeItemFromUnit, removeItemFromDestinationPlaylist, urlHasUseThis } = this.props;
 
-    if (urlHasUseThis || isManageContentActive) {
+    if (urlHasUseThis) {
       removeItemFromDestinationPlaylist({ moduleIndex, itemId });
     } else {
       removeItemFromUnit({ moduleIndex, itemId });
@@ -427,7 +427,7 @@ class ModuleRow extends Component {
 
     const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
     const totalAssigned = data.length;
-
+    const toPreviewDescription = (description || "").replace(/<p[^>]*>/g, "<span>").replace(/<\/p>/g, "</span>");
     const isParentRoleProxy = proxyUserRole === "parent";
 
     const menu = (
@@ -478,6 +478,7 @@ class ModuleRow extends Component {
         ) : null}
         <LastColumn
           style={moduleInlineStyle}
+          width={hideEditOptions ? "auto" : null}
           justifyContent={hideEditOptions && "flex-end"}
           ml={hideEditOptions && "auto"}
         >
@@ -591,9 +592,10 @@ class ModuleRow extends Component {
                       )}
                     </ModuleTitlePrefix>
                   </ModuleTitleWrapper>
-                  <Tooltip placement="bottom" title={description}>
-                    <ModuleDescription dangerouslySetInnerHTML={{ __html: description }} />
-                  </Tooltip>
+                  <ModuleDescription
+                    collapsed={collapsed}
+                    dangerouslySetInnerHTML={{ __html: collapsed ? toPreviewDescription : description }}
+                  />
                 </FirstColumn>
                 {urlHasUseThis && (
                   <ResolvedInfoColumsWrapper>
@@ -800,7 +802,12 @@ class ModuleRow extends Component {
                           </HideLinkLabel>
                         )}
 
-                        <LastColumn align="center" justify="flex-end" paddingRight="0">
+                        <LastColumn
+                          align="center"
+                          justify="flex-end"
+                          paddingRight="0"
+                          width={hideEditOptions ? "auto" : null}
+                        >
                           {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
                             (isAssigned ? (
                               <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
@@ -859,7 +866,7 @@ class ModuleRow extends Component {
                     ) : (
                       !moduleData.hidden && (
                         <Fragment>
-                          <LastColumn>
+                          <LastColumn width={hideEditOptions ? "auto" : null}>
                             {!isParentRoleProxy && (
                               <AssignmentButton assigned={false}>
                                 <Button data-cy={uta.text} onClick={uta.action}>
@@ -879,17 +886,22 @@ class ModuleRow extends Component {
                       )
                     )
                   ) : (
-                    <LastColumn>
-                      <EduButton
-                        isGhost
-                        height="22px"
-                        width="124px"
-                        style={{ padding: "0px 15px" }}
-                        onClick={() => this.viewTest(moduleData?.contentId)}
+                    <LastColumn width={hideEditOptions ? "auto" : null}>
+                      <AssignmentButton>
+                        <Button onClick={() => this.viewTest(moduleData?.contentId)}>
+                          <IconVisualization width="14px" height="14px" />
+                          Preview
+                        </Button>
+                      </AssignmentButton>
+                      <IconActionButton
+                        data-cy="assignmentDeleteOptionsIcon"
+                        onClick={e => {
+                          e.stopPropagation();
+                          this.deleteTest(moduleIndex, moduleData.contentId);
+                        }}
                       >
-                        <IconVisualization width="14px" height="14px" />
-                        Preview
-                      </EduButton>
+                        <IconTrash color={themeColor} />
+                      </IconActionButton>
                     </LastColumn>
                   );
 
@@ -1344,7 +1356,7 @@ export const IconActionButton = styled.div`
 `;
 
 export const LastColumn = styled(StyledCol)`
-  width: 180px;
+  width: ${({ width }) => width || "180px"};
   margin-left: 15px;
   flex-shrink: 0;
   padding-right: 10px;
@@ -1423,6 +1435,7 @@ const ModuleID = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  align-self: flex-start;
   width: 30px;
   height: 30px;
   flex-shrink: 0;
@@ -1433,14 +1446,18 @@ const ModuleID = styled.div`
   }
 `;
 
+const ellipsisCss = css`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const ModuleTitle = styled.div`
   align-items: left;
   color: ${darkGrey2};
   font-size: 18px;
   font-weight: 600;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  ${ellipsisCss}
 
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 14px;
@@ -1448,15 +1465,13 @@ const ModuleTitle = styled.div`
 `;
 
 export const ModuleDescription = styled(MathFormulaDisplay)`
-  white-space: nowrap;
   color: ${lightGrey6};
   font-size: ${props => props.fontSize || "12px"};
   line-height: ${props => props.lineHeight || "17px"};
   font-weight: ${props => props.fontWeight || "normal"};
   letter-spacing: 0.2px;
-  max-width: 95%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 100%;
+  ${({ collapsed }) => (collapsed ? ellipsisCss : "white-space: normal;")}
 
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 12px;
@@ -1464,15 +1479,13 @@ export const ModuleDescription = styled(MathFormulaDisplay)`
 `;
 
 export const EllipsisContainer = styled.div`
-  white-space: nowrap;
   color: ${lightGrey6};
   font-size: ${props => props.fontSize || "12px"};
   line-height: ${props => props.lineHeight || "17px"};
   font-weight: ${props => props.fontWeight || "normal"};
   letter-spacing: 0.2px;
   max-width: 95%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+ ${ellipsisCss}
 
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 12px;

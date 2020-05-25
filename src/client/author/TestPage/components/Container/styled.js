@@ -5,8 +5,7 @@ export const Content = styled.div`
   width: 100%;
   left: 0;
   right: 0;
-  height: ${props =>
-    `calc(100vh - ${props.theme.HeaderHeight.xs + 23}px)`}; // HeaderHeight(62)+23 is the top offset for container
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   overflow: ${({ hideOverflow }) => (hideOverflow ? "hidden" : "auto")};
 
   @media (max-width: ${desktopWidth}) {

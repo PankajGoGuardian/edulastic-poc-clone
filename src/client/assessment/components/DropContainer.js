@@ -24,6 +24,7 @@ function collectTarget(connector, monitor) {
 
 const DropContainer = ({
   connectDropTarget,
+  width,
   index,
   isOver,
   flag,
@@ -50,7 +51,7 @@ const DropContainer = ({
       data-cy={`drag-drop-board-${index}`}
       id={`drag-drop-board-${index}${flag === "selected" ? "-target" : ""}`}
       style={{
-        width: "100%",
+        width: width || "100%",
         zIndex: 50,
         ...style,
         border: borderNone ? "none" : border,

@@ -18,9 +18,9 @@ import CurriculumModuleRow from "./CurriculumModuleRow";
  * @property {boolean} hideEditOptions
  */
 
-export const SortableTestsHandle = sortableHandle(({ clickHandle, hasDescription }) => (
+export const SortableTestsHandle = sortableHandle(({ clickHandle }) => (
   <DragHandle onClick={e => clickHandle(e)}>
-    <IconHandle hasDescription={hasDescription}>
+    <IconHandle>
       <FaBars />
     </IconHandle>
   </DragHandle>
@@ -65,9 +65,10 @@ const SortableItem = sortableElement(props => {
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
   return (
     <AssignmentItemContainer data-cy="curriculum-modules">
-      {isReview && <SortableTestsHandle hasDescription={moduleItem.description} />}
+      {isReview && <SortableTestsHandle />}
       <DropContainer
         theme={themes.default}
+        width="calc(100% - 40px)"
         key={`drop-${id}-${moduleItem._id}`}
         drop={(arg1, item) => {
           onDrop(id, item);
@@ -193,7 +194,7 @@ const DragHandle = styled.div`
 
 const IconHandle = styled.span`
   font-size: 16px;
-  margin-top: ${props => (props.hasDescription ? "34px" : "25px")};
+  margin-top: 10px;
 `;
 
 const AddNewOrManageModules = styled.div`

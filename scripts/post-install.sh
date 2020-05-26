@@ -1,7 +1,7 @@
 set -e
 
 cd ~/edulastic-poc
-yarn install
+yarn install --frozen-lockfile --silent --non-interactive
 if [ $? -ne 0 ]
  then
   echo "Yarn install failed...exiting script"

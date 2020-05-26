@@ -33,24 +33,40 @@ e.g:
  #268 feat(config): allow user to configure webpack stats output
 ```
 
+NOTE: Issue numbers are automatically appended to commits when if the branch name contains it.
+
 #### Type
 
 Must be one of the following:
 
+- **build**: commit that triggers a build or related to build env
+- **chore**: Changes to the build process or auxiliary tools and libraries such as documentation generation 😵
 - **feat**: A new feature 👍
+- **perf**: Changes related to performance enhancement ⚡
 - **fix**: A bug fix 🔨
 - **docs**: Documentation only changes 📖
 - **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc) 💅
 - **refactor**: A code change that neither fixes a bug or adds a feature 🔧
-- **test**: Adding missing tests ✔️
-- **chore**: Changes to the build process or auxiliary tools and libraries such as documentation generation 😵
+- **revert**: Reverts a specific commit already done 🔧
+- **style**: Changes done for UI specifically 💅
+- **test**: Adding tests to cover our code path ✔️
 
 #### Scope
 
-The scope could be anything specifying place of the commit change. For example `webpack`,
-`babel`, `redux` etc...
+The scope is optional and could be among the following. Most are self explanatory & should fall under atleast one of these.
 
-#### Subjec
+- **build**
+- **arch**: Architecture
+- **ui**:
+- **design**:
+- **poc**: poc repo impacted, eg. A PR can have poc,api to convey it impacts both.
+- **api**: api repo impacted
+- **client**: client side impacted
+- **server**: server side impacted
+- **data**:
+- **patch**:
+
+#### Subject
 
 The subject contains succinct description of the change:
 

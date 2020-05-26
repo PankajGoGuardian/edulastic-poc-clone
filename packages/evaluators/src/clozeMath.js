@@ -6,7 +6,7 @@ import { filterEmptyAnswers } from "./helpers/filterEmptyUserAnswers";
 
 // combine unit and value for the clozeMath type Math w/Unit
 
-const combineUnitAndExpression = (expression, unit) => {
+const combineUnitAndExpression = (expression = "", unit) => {
   if (expression.search("=") === -1) {
     return expression + unit;
   }
@@ -31,7 +31,7 @@ const mathEval = async ({ userResponse, validation }) => {
     });
 
     const requests = answers.map(ans => {
-      let { value } = _userResponse[id];
+      let { value = "" } = _userResponse[id];
       const { unit } = _userResponse[id];
       if (unit) {
         value = combineUnitAndExpression(value, unit);
@@ -196,21 +196,23 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
   }
   const answersById = groupBy(flatten(answersArray), "id");
   const evaluations = {};
-
   // parallelize this at some point
   for (const id of Object.keys(_userResponse)) {
     const validAnswers = answersById[id];
     const calculations = validAnswers.map(validAnswer => {
       const checks = getChecks({ value: [validAnswer] });
       let expected = validAnswer.value || "";
-      let input = _userResponse[id].value;
+      let input = _userResponse[id].value || "";
       const { options = {} } = validAnswer;
       if (options.unit) {
-        expected = combineUnitAndExpression(validAnswer.value, options.unit);
+        const correctAnswerExpression = validAnswer.value || "";
+        const correctAnswerUnit = options.unit;
+        expected = combineUnitAndExpression(correctAnswerExpression, correctAnswerUnit );
       }
-
       if (_userResponse[id].unit) {
-        input = combineUnitAndExpression(_userResponse[id].value, _userResponse[id].unit);
+        const userAnswerExpression = _userResponse[id].value || "";
+        const userAnswerUnit = _userResponse[id].unit
+        input = combineUnitAndExpression(userAnswerExpression, userAnswerUnit);
       }
       // removing pattern `<space> after \\`
       return evaluate({

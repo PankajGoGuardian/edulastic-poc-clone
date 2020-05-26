@@ -65,6 +65,7 @@ The scope is optional and could be among the following. Most are self explanator
 - **server**: server side impacted
 - **data**:
 - **patch**:
+- **evaluator**: impacts the evaluator(edu-eval) package
 
 #### Subject
 

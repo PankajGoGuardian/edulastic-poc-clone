@@ -643,7 +643,7 @@ class CurriculumSequence extends Component {
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
                 <ContentContainer
                   urlHasUseThis={urlHasUseThis}
-                  showRightPanel={showRightPanel && !isStudent && !shouldHidCustomizeButton}
+                  showRightPanel={showRightPanel && !shouldHidCustomizeButton}
                 >
                   <CurriculumSubHeader
                     isStudent={isStudent}

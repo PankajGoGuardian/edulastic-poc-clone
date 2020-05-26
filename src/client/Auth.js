@@ -23,17 +23,19 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
     window.location.hash = "#login";
   }
 
-  if (
-    isLoggedInForPrivateRoute(user) &&
-    (user.user.role === roleuser.TEACHER ||
-      user.user.role === roleuser.SCHOOL_ADMIN ||
-      user.user.role === roleuser.DISTRICT_ADMIN)
-  ) {
-    return <Redirect exact to="/author/dashboard" />;
+  if (isLoggedInForPrivateRoute(user)) {
+    switch (user.user.role) {
+      case roleuser.EDULASTIC_ADMIN:
+        return <Redirect exact to="/admin/search" />;
+      case roleuser.DISTRICT_ADMIN:
+      case roleuser.SCHOOL_ADMIN:
+      case roleuser.TEACHER:
+        return <Redirect exact to="/author/dashboard" />;
+      case roleuser.STUDENT:
+        return <Redirect exact to="/home/assignments" />;
+    }
   }
-  if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
-    return <Redirect exact to="/home/assignments" />;
-  }
+
   if (location?.state?.showCleverUnauthorized) {
     return (
       <>

@@ -304,6 +304,7 @@ function* updateStudentScore({ payload }) {
       testActivityId,
       itemId,
       questionId,
+      userResponse,
       score,
       groupId,
       studentId,
@@ -314,6 +315,7 @@ function* updateStudentScore({ payload }) {
       testActivityId,
       itemId,
       groupId,
+      userResponse,
       scores: { [questionId]: score }
     });
 

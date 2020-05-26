@@ -104,7 +104,8 @@ class FeedbackRight extends Component {
       updateQuestionActivityScore,
       widget: { id, activity = {} },
       studentId,
-      itemId
+      itemId,
+      allAnswers = {}
     } = this.props;
 
     if ((!score || isNaN(score)) && score != 0) {
@@ -139,6 +140,9 @@ class FeedbackRight extends Component {
     }
 
     if (payload.testActivityId && payload.itemId) {
+      if (allAnswers[id]) {
+        payload.userResponse = { [id]: allAnswers[id] };
+      }
       updateQuestionActivityScore(payload);
     }
   }
@@ -390,7 +394,8 @@ const enhance = compose(
       user: getUserSelector(state),
       waitingResponse: getStatus(state),
       errorMessage: getErrorResponse(state),
-      classBoardData: state.author_classboard_testActivity?.data
+      classBoardData: state.author_classboard_testActivity?.data,
+      allAnswers: state?.answers
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

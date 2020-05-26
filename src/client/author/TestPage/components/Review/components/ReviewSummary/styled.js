@@ -84,13 +84,13 @@ export const SummaryInfoContainer = styled.div`
 `;
 
 export const SummaryInfoNumber = styled.span`
-  font-size: ${props => props.theme.subtitleFontSize};
+  font-size: ${props => props.theme.titleSecondarySectionFontSize};
   font-weight: 600;
   color: ${secondaryTextColor};
   float: left;
 
-  @media (max-width: ${extraDesktopWidth}) {
-    font-size: ${props => props.theme.titleSecondarySectionFontSize};
+  @media (min-width: ${extraDesktopWidth}) {
+    font-size: ${props => props.theme.subtitleFontSize};
   }
   @media (max-width: ${smallDesktopWidth}) {
     font-size: ${props => props.theme.standardFont};

@@ -395,10 +395,6 @@ export const TableData = styled(Table)`
             }
           }
         }
-
-        @media (max-width: ${extraDesktopWidth}) {
-          padding: 10px 8px;
-        }
       }
     }
   }

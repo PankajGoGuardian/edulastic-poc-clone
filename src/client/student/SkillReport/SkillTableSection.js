@@ -180,17 +180,16 @@ export const StyledTableWrapper = styled.div`
   .ant-table-tbody > tr {
     > td {
       &:not(:first-child) {
-        font-size: 14px;
+        font-size: 11px;
         font-weight: 400;
         text-align: left;
         color: ${title};
 
-        @media (max-width: ${extraDesktopWidth}) {
+        @media (min-width: ${largeDesktopWidth}) {
           font-size: 12px;
         }
-
-        @media (max-width: ${largeDesktopWidth}) {
-          font-size: 11px;
+        @media (min-width: ${extraDesktopWidth}) {
+          font-size: 14px;
         }
       }
     }

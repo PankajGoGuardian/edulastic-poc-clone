@@ -400,9 +400,6 @@ const ActionButton = styled(Button)`
     font-size: 14px;
   }
 
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 36px;
-  }
   @media (max-width: ${largeDesktopWidth}) {
     padding: 0px 15px;
   }

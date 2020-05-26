@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import styled from "styled-components";
 
-import { extraDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
+import { extraDesktopWidth, largeDesktopWidth, tabletWidth } from "@edulastic/colors";
 
 const StyledTable = styled(Table)`
   .ant-table table {
@@ -12,7 +12,7 @@ const StyledTable = styled(Table)`
       border-spacing: 0px 10px;
     }
 
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: ${tabletWidth}) {
       display: block;
       overflow-x: auto;
       margin-top: 10px;
@@ -27,12 +27,12 @@ const StyledTable = styled(Table)`
 
       > th {
         background: ${props => props.theme.skillReport.tableHeaderBgColor};
-        font-size: ${props => props.theme.skillReport.tableHeaderTextSize};
         font-weight: 700;
         color: ${props => props.theme.skillReport.tableHeaderTextColor};
         text-transform: uppercase;
-        padding: 0 26px 15px;
         border: 0;
+        font-size: 10px;
+        padding: 0 16px;
 
         &:not(:first-child) {
           text-align: center;
@@ -56,16 +56,14 @@ const StyledTable = styled(Table)`
           font-size: 8px;
         }
 
-        @media (max-width: ${extraDesktopWidth}) {
+        @media (min-width: ${largeDesktopWidth}) {
           font-size: 11px;
         }
-
-        @media (max-width: ${largeDesktopWidth}) {
-          font-size: 10px;
-          padding: 0 16px;
+        @media (min-width: ${extraDesktopWidth}) {
+          font-size: ${props => props.theme.skillReport.tableHeaderTextSize};
+          padding: 0 26px 15px;
         }
-
-        @media screen and (max-width: 767px) {
+        @media screen and (max-width: ${tabletWidth}) {
           word-break: unset;
         }
       }
@@ -86,17 +84,15 @@ const StyledTable = styled(Table)`
       color: ${props => props.theme.skillReport.tableDataTextColor};
       border: 0;
       padding: 13px 26px;
-      font-size: 14px;
+      font-size: 11px;
 
-      @media (max-width: ${extraDesktopWidth}) {
+      @media (min-width: ${largeDesktopWidth}) {
         font-size: 12px;
       }
-
-      @media (max-width: ${largeDesktopWidth}) {
-        font-size: 11px;
+      @media (min-width: ${extraDesktopWidth}) {
+        font-size: 14px;
       }
-
-      @media screen and (max-width: 767px) {
+      @media screen and (max-width: ${tabletWidth}) {
         word-break: unset;
       }
     }

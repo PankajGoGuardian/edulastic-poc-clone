@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { mediumDesktopExactWidth, textColor, themeColor, mobileWidth } from "@edulastic/colors";
+import { textColor, themeColor, mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const AdditionalToggle = styled.span`
   cursor: pointer;
   text-transform: uppercase;
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+  font-size: ${props => props.theme.smallFontSize};
   color: ${textColor};
   position: relative;
   margin-top: 2px;
@@ -23,8 +23,8 @@ export const AdditionalToggle = styled.span`
     transform: ${({ active }) => (active ? "rotate(180deg)" : "rotate(0deg)")};
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
   }
 `;
 
@@ -49,11 +49,11 @@ export const AdditionalCompareUsing = styled.div`
     max-width: 260px;
 
     &-selection-selected-value {
-      font-size: ${props => props.theme.widgetOptions.labelFontSize};
+      font-size: ${props => props.theme.smallFontSize};
       padding-left: 15px;
 
-      @media (max-width: ${mediumDesktopExactWidth}) {
-        font-size: ${props => props.theme.smallFontSize};
+      @media (min-width: ${extraDesktopWidthMax}) {
+        font-size: ${props => props.theme.widgetOptions.labelFontSize};
       }
     }
   }
@@ -86,10 +86,10 @@ export const AdditionalAddRule = styled.span`
   text-transform: uppercase;
   color: ${themeColor};
   display: inline-block;
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+  font-size: ${props => props.theme.smallFontSize};
   letter-spacing: 0.4px;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
   }
 `;

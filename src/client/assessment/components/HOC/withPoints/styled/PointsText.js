@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { extraDesktopWidthMax } from "@edulastic/colors";
 
 export const PointsText = styled.span`
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+  font-size: ${props => props.theme.smallFontSize};
   text-transform: uppercase;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
   }
 `;

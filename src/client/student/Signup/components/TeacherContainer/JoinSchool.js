@@ -16,7 +16,7 @@ import {
   cardBg,
   mobileWidthMax,
   mobileWidthLarge,
-  mediumDesktopExactWidth
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
@@ -477,7 +477,7 @@ const FlexWrapper = styled(Row)`
 const BannerText = styled(Col)`
   text-align: ${props => (props.fromUserProfile ? "left" : "center")};
   h3 {
-    font-size: 40px;
+    font-size: 36px;
     font-weight: 600;
     color: ${title};
     line-height: 1.3;
@@ -486,17 +486,17 @@ const BannerText = styled(Col)`
     margin-bottom: 15px;
   }
   h5 {
-    font-size: 24px;
+    font-size: 16px;
     margin-top: 10px;
     color: ${title};
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${extraDesktopWidthMax}) {
     h3 {
-      font-size: 36px;
+      font-size: 40px;
     }
     h5 {
-      font-size: 16px;
+      font-size: 24px;
     }
   }
   @media (max-width: ${mobileWidthMax}) {

@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { smallDesktopWidth, mediumDesktopExactWidth, themeColor } from "@edulastic/colors";
+import { themeColor, largeDesktopWidth, extraDesktopWidthMax, tabletWidth } from "@edulastic/colors";
 
 const Header = styled.div`
   width: 100%;
-  padding: 0 40px;
+  padding: 0 21px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -14,13 +14,14 @@ const Header = styled.div`
   right: 0;
   background: ${themeColor};
   z-index: 50;
-  @media (max-width: ${mediumDesktopExactWidth}) {
+
+  @media (min-width: ${largeDesktopWidth}) {
     padding: 0 30px;
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 0 21px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 0 40px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     flex-direction: column;
     height: auto;
   }

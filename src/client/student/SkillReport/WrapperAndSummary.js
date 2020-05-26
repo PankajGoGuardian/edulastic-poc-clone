@@ -79,12 +79,7 @@ const SkillReportMainContent = ({ skillReport, t }) => {
           <StyledTable columns={summaryColumns} dataSource={sumData} pagination={false} />
         </WrapperContent>
         {sumData.map((summary, index) => (
-          <TableSection
-            summary={summary}
-            dataSource={sumData}
-            skillReport={skillReport}
-            key={index}
-          />
+          <TableSection summary={summary} dataSource={sumData} skillReport={skillReport} key={index} />
         ))}
       </ContentWrapper>
     </React.Fragment>
@@ -111,11 +106,11 @@ const ContentWrapper = styled.div`
 `;
 
 const WrapperContent = styled(Wrapper)`
-  padding: 32px 39px;
+  padding: 25px 20px;
   min-height: 0;
 
-  @media (max-width: ${extraDesktopWidth}) {
-    padding: 25px 20px;
+  @media (min-width: ${extraDesktopWidth}) {
+    padding: 32px 39px;
   }
 `;
 

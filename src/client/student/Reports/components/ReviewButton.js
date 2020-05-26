@@ -41,14 +41,15 @@ export default ReviewButton;
 const ReviewButtonLink = styled(Link)`
   display: inline-block;
   margin-left: auto;
+  width: 80%;
   button {
     max-width: 100%;
   }
-  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
+
+  @media (min-width: ${mobileWidthMax}) {
     width: auto;
   }
-  @media screen and (max-width: ${mobileWidthMax}) {
-    width: 80%;
+  @media (max-width: ${mobileWidthMax}) {
     margin: 10px 0 0;
   }
 `;

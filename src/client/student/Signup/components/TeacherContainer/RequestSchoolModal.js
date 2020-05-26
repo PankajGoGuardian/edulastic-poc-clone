@@ -1,29 +1,24 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get, debounce, find } from "lodash";
-import styled from "styled-components";
-import { Form, Modal, Button, Input, Select, Row, Col } from "antd";
-import { userApi } from "@edulastic/api";
 import {
-  lightGrey3,
-  linkColor,
-  themeColor,
-  white,
-  mobileWidthLarge,
   boxShadowDefault,
   extraDesktopWidthMax,
+  lightGrey3,
+  linkColor,
   mediumDesktopExactWidth,
-  smallDesktopWidth
+  mobileWidthLarge,
+  smallDesktopWidth,
+  themeColor
 } from "@edulastic/colors";
-import { countryApi } from "@edulastic/api";
-import { withNamespaces } from "@edulastic/localization";
-import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
-import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
-import { states } from "./constants";
 import { EduButton } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { Form, Modal } from "antd";
+import { find, get } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import styled from "styled-components";
+import { createAndJoinSchoolRequestAction, searchDistrictsRequestAction } from "../../duck";
 import RequestSchoolForm from "./RequestSchoolForm";
 
 class RequestSchool extends React.Component {
@@ -135,18 +130,13 @@ export default enhance(RequestSchoolModal);
 const StyledModal = styled(Modal)`
   min-width: 60vw;
   .ant-modal-body {
-    padding: 24px 70px 0px 0px;
-    @media (max-width: ${extraDesktopWidthMax}) {
-      padding-right: 80px;
-    }
-    @media (max-width: ${mediumDesktopExactWidth}) {
-      padding-right: 70px;
-    }
-    @media (max-width: ${smallDesktopWidth}) {
+    padding: 20px;
+
+    @media (min-width: ${smallDesktopWidth}) {
       padding-right: 40px;
     }
-    @media (max-width: ${mobileWidthLarge}) {
-      padding-right: 10px;
+    @media (min-width: ${mediumDesktopExactWidth}) {
+      padding-right: 80px;
     }
   }
   .ant-modal-content,

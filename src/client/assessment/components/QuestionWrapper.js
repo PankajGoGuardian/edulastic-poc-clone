@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidthMax, smallDesktopWidth, borderGrey2, mediumDesktopExactWidth } from "@edulastic/colors";
+import { mobileWidthMax, smallDesktopWidth, borderGrey2 } from "@edulastic/colors";
 import { withWindowSizes, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../../theme";
@@ -593,10 +593,7 @@ export default enhance(QuestionWrapper);
 
 const StyledFlexContainer = styled(FlexContainer)`
   font-size: ${props => props.theme.fontSize};
-
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    overflow: ${({ showScroll }) => showScroll && "auto"};
-  }
+  overflow: ${({ showScroll }) => showScroll && "auto"};
 `;
 
 const QuestionMenuWrapper = styled.div`

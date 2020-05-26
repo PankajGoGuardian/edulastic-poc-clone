@@ -11,7 +11,8 @@ import {
   largeDesktopWidth,
   desktopWidth,
   black,
-  themeColor
+  themeColor,
+  tabletWidth
 } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
 import { EduButton } from "@edulastic/common";
@@ -487,7 +488,7 @@ AssignmentCard.propTypes = {
 
 const CardWrapper = styled(Row)`
   display: flex;
-  padding: 25px 0px;
+  padding: 24px 0;
   border-bottom: 1px solid #f2f2f2;
   ${({ highlightMode }) => highlightMode && `animation: inHighlight 5s;`};
   &:last-child {
@@ -504,13 +505,9 @@ const CardWrapper = styled(Row)`
       background-color: white;
     }
   }
-  @media (max-width: ${extraDesktopWidth}) {
-    padding: 20px 0px;
-  }
 
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
-    padding: 24px 0;
     border: 1px solid
       ${props => (props.theme.assignment && props.theme.assignment.attemptsReviewRowBgColor) || lightGreySecondary};
     border-radius: 10px;
@@ -533,7 +530,7 @@ const ButtonAndDetail = styled(Col)`
   @media (max-width: ${desktopWidth}) {
     width: 64%;
   }
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: ${tabletWidth}) {
     flex-direction: column;
     width: 100%;
   }

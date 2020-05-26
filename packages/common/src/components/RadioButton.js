@@ -1,13 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  mediumDesktopExactWidth,
-  greyThemeLighter,
-  greyThemeDark2,
-  themeColor,
-  greyThemeLight,
-  white
-} from "@edulastic/colors";
+import { greyThemeLighter, themeColor, greyThemeLight, white, extraDesktopWidthMax } from "@edulastic/colors";
 import { Radio } from "antd";
 
 export const RadioGrp = Radio.Group;
@@ -18,7 +11,7 @@ export const RadioBtn = ({ children, ...props }) => {
 
 const StyledRadioBtn = styled(Radio)`
   margin-bottom: ${({ mb }) => mb || "0px"};
-  font-size: ${props => props.theme.widgetOptions.labelFontSize};
+  font-size: ${props => props.theme.smallFontSize};
   text-align: left;
   &.ant-radio-wrapper {
     & + .ant-radio-wrapper {
@@ -78,7 +71,7 @@ const StyledRadioBtn = styled(Radio)`
     }
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${props => props.theme.smallFontSize};
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => props.theme.widgetOptions.labelFontSize};
   }
 `;

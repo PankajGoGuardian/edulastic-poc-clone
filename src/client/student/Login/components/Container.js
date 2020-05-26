@@ -328,7 +328,7 @@ const ThirdPartyLoginBtn = styled(Col)`
     width: 14px;
   }
 
-  @media (max-width: ${extraDesktopWidthMax}) {
+  @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
 `;

@@ -4,10 +4,10 @@ import {
   secondaryTextColor,
   white,
   linkColor1,
-  mediumDesktopExactWidth,
   largeDesktopWidth,
   smallDesktopWidth,
-  desktopWidth
+  desktopWidth,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 
 export const CurrentPlanContainer = styled.div`
@@ -78,11 +78,11 @@ export const PlanImage = styled.div`
 `;
 
 export const PlanDetails = styled.div`
-  width: calc(100% - 380px);
+  width: calc(100% - 200px);
   text-align: left;
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    width: calc(100% - 200px);
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: calc(100% - 380px);
   }
 `;
 

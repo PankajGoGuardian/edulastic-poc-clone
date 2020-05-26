@@ -9,24 +9,19 @@ import {
   mobileWidthMax,
   desktopWidth,
   themeColor,
-  mediumDesktopExactWidth,
-  smallDesktopWidth
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
 import { StyledPaperWrapper } from "../../../styled/Widget";
 
 const createStandardTextSet = element => styled(element)`
-  font-size: ${props => {
-    const fontSize = props?.fontSize || `${props?.theme?.common?.standardFont || "14px"}`;
-    return fontSize;
-  }};
+  font-size: ${({ theme }) => theme?.common?.smallFontSize || "12px"};
 
-  @media screen and (max-width: ${mediumDesktopExactWidth}) {
-    font-size: ${({ theme }) => theme?.common?.smallFontSize || "12px"};
-  }
-
-  @media screen and (max-width: ${smallDesktopWidth}) {
-    font-size: ${({ theme }) => theme?.common?.smallFontSize || "12px"};
+  @media screen and (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${props => {
+      const fontSize = props?.fontSize || `${props?.theme?.common?.standardFont || "14px"}`;
+      return fontSize;
+    }};
   }
 `;
 

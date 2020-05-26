@@ -430,13 +430,13 @@ export const CustomXAxisTickTooltipContainer = styled.div`
 `;
 
 export const StyledTag = styled.div`
-  width: ${props => props.width || "auto"};
   padding: ${props => props.padding || "0px 20px"};
   margin: ${props => props.margin || "0px"};
   background: ${props => props.bgColor || themeColor};
-  height: ${props => props.height || "24px"};
+  height: 28px;
+  width: 128px;
+  font-size: 9px;
   color: ${props => props.textColor || "#ffffff"};
-  font: ${props => props.fontStyle || "10px/14px Open Sans"};
   font-weight: ${props => props.fontWeight || "600"};
   letter-spacing: ${props => props.spacing || "0.2px"};
   border-radius: ${props => props.borderRadius || "5px"};
@@ -444,10 +444,10 @@ export const StyledTag = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: ${extraDesktopWidthMax}) {
-    height: 28px;
-    width: 128px;
-    font-size: 9px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: ${props => props.width || "auto"};
+    height: ${props => props.height || "24px"};
+    font: ${props => props.fontStyle || "10px/14px Open Sans"};
   }
 `;
 
@@ -462,18 +462,14 @@ export const StyledLabel = styled.div`
   letter-spacing: ${props => props.spacing || "0.2px"};
   color: ${props => props.textColor || "grey"};
   text-align: ${props => props.textAlign || "left"};
-  font-size: 12px;
+  font-size: 10px;
 
-  @media (max-width: ${extraDesktopWidthMax}) {
-    font-size: 10px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 12px;
   }
 `;
 
-export const InfoColumnLabel = styled(StyledLabel)`
-  @media (max-width: ${extraDesktopWidthMax}) {
-    font-size: 10px;
-  }
-`;
+export const InfoColumnLabel = styled(StyledLabel)``;
 
 export const HideLinkLabel = styled(StyledLabel)`
   width: 80px;
@@ -481,7 +477,5 @@ export const HideLinkLabel = styled(StyledLabel)`
   justify-content: center;
   flex-shrink: 0;
   cursor: pointer;
-  @media (max-width: ${extraDesktopWidthMax}) {
-    font-size: 9px;
-  }
+  font-size: 9px;
 `;

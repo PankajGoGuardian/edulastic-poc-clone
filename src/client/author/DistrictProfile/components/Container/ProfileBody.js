@@ -11,7 +11,8 @@ import {
   red,
   themeColor,
   title,
-  white
+  white,
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { FieldLabel, MainContentWrapper, SelectInputStyled } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -960,7 +961,6 @@ const FormButtonWrapper = styled.div`
 `;
 
 const EditProfileButton = styled(Button)`
-  height: 40px;
   margin-left: 15px;
   background: ${themeColor};
   border-color: ${themeColor};
@@ -969,17 +969,18 @@ const EditProfileButton = styled(Button)`
   text-transform: uppercase;
   float: right;
   font-weight: 600;
-  padding: 0px 30px;
+  height: 36px;
+  padding: 0px 15px;
   i {
     font-size: 14px;
   }
 
-  @media (max-width: ${extraDesktopWidth}) {
-    height: 36px;
+  @media (min-width: ${largeDesktopWidth}) {
     padding: 0px 20px;
   }
-  @media (max-width: ${largeDesktopWidth}) {
-    padding: 0px 15px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: 40px;
+    padding: 0px 30px;
   }
   @media (max-width: ${desktopWidth}) {
     width: 100%;

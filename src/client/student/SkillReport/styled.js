@@ -4,18 +4,17 @@ import { extraDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
 import { IconPlus } from "@edulastic/icons";
 
 export const SummaryTitle = styled.div`
-  font-size: ${props => props.theme.skillReport.skillReportTitleFontSize};
+  font-size: 16px;
   font-weight: 700;
   color: ${props => props.theme.skillReport.skillReportTitleColor};
-  margin-bottom: 8px;
+  margin-bottom: 0;
 
-  @media (max-width: ${extraDesktopWidth}) {
+  @media (min-width: ${largeDesktopWidth}) {
     font-size: 18px;
+    margin-bottom: 8px;
   }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    font-size: 16px;
-    margin-bottom: 0;
+  @media (min-width: ${extraDesktopWidth}) {
+    font-size: ${props => props.theme.skillReport.skillReportTitleFontSize};
   }
 `;
 

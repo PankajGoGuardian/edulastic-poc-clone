@@ -194,15 +194,9 @@ export const TableData = styled(Table)`
     display: none;
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) and (min-width: ${desktopWidth}) {
-    .ant-table-thead > tr > th,
-    .ant-table-tbody > tr > td {
-      max-width: 50px;
-    }
-    .ant-table-thead > tr > th .ant-table-column-sorters {
-      padding-left: 0px;
-      padding-right: 0px;
-    }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    max-width: 50px;
   }
 `;
 

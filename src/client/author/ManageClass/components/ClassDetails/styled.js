@@ -3,7 +3,6 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   mobileWidthLarge,
-  smallDesktopWidth,
   greenDark7,
   themeColor,
   themeColorLighter,
@@ -319,16 +318,7 @@ export const Image = styled.img`
   min-width: 200px;
   min-height: 100px;
   border-radius: 5px;
-  @media (min-width: ${extraDesktopWidthMax}) {
-    width: 200px;
-    height: 60%;
-  }
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    height: 100%;
-  }
-  @media (max-width: ${smallDesktopWidth}) {
-    height: 60%;
-  }
+  height: auto;
 `;
 
 export const MidWrapper = styled.div``;
@@ -346,6 +336,7 @@ export const FieldValue = styled.div`
   color: ${cardTitleColor};
   margin-top: 12px;
   display: flex;
+  font-size: 11px;
   div {
     min-width: 100px;
     text-transform: uppercase;
@@ -359,14 +350,12 @@ export const FieldValue = styled.div`
     margin-left: 5px;
     color: ${secondaryTextColor};
   }
-  @media (max-width: ${extraDesktopWidthMax}) {
-    font-size: 14px;
-  }
-  @media (max-width: ${mediumDesktopExactWidth}) {
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 13px;
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    font-size: 11px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 14px;
   }
 `;
 
@@ -544,18 +533,20 @@ export const CaretUp = styled.i`
 `;
 
 export const ImageContainer = styled.div`
-  width: 25%;
+  width: 250px;
+
   @media (min-width: ${extraDesktopWidthMax}) {
-    width: 200px;
+    width: 300px;
   }
 `;
 
 export const ClassInfoContainer = styled.div`
-  width: 74%;
+  width: calc(100% - 250px);
   padding: 0 1.2rem;
+
   @media (min-width: ${extraDesktopWidthMax}) {
-    padding: 0 120px 0 30px;
-    width: 100%;
+    padding: 0 30px;
+    width: calc(100% - 300px);
   }
 `;
 

@@ -40,6 +40,7 @@ class AssignmentDragItem extends Component {
       urlHasUseThis,
       assessmentColums,
       testTypeAndTags,
+      assignmentsRow,
       isDesktop,
       isManageContentActive,
       setEmbeddedVideoPreviewModal,
@@ -117,6 +118,7 @@ class AssignmentDragItem extends Component {
           isManageContentActive={isManageContentActive}
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
+        {assignmentsRow}
       </div>
     );
   }

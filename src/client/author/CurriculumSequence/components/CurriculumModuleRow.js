@@ -1,7 +1,6 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/prop-types */
 import {
-  borderGrey3,
   borderGrey4,
   darkGrey2,
   desktopWidth,
@@ -9,7 +8,6 @@ import {
   greenDark,
   greenDark6,
   greyThemeDark1,
-  greyThemeLighter,
   lightGrey5,
   lightGrey6,
   mainBgColor,
@@ -18,7 +16,6 @@ import {
   testTypeColor,
   themeColor,
   themeColorLighter,
-  titleColor,
   white,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
@@ -51,12 +48,8 @@ import AssessmentPlayer from "../../../assessment";
 import { Tooltip } from "../../../common/utils/helpers";
 import { resumeAssignmentAction, startAssignmentAction } from "../../../student/Assignments/ducks";
 import { getCurrentGroup, proxyRole } from "../../../student/Login/ducks";
-import additemsIcon from "../../Assignments/assets/add-items.svg";
-import piechartIcon from "../../Assignments/assets/pie-chart.svg";
-import presentationIcon from "../../Assignments/assets/presentation.svg";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import { StyledLabel, StyledTag, HideLinkLabel, InfoColumnLabel } from "../../Reports/common/styled";
-import { StatusLabel } from "../../Assignments/components/TableList/styled";
 import Tags from "../../src/components/common/Tags";
 import { getUserRole } from "../../src/selectors/user";
 import {
@@ -71,6 +64,7 @@ import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
 import { PlaylistResourceRow, SubResource, AddResourceToPlaylist } from "./PlaylistResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
+import AssignmentsClasses from "./AssignmentsClasses";
 import { TestStatus } from "../../TestList/components/ViewModal/styled";
 // import { SupportResourceDropTarget } from "./PlaylistResourceRow/styled";
 
@@ -972,6 +966,10 @@ class ModuleRow extends Component {
                     </FlexContainer>
                   );
 
+                  const assignmentsRow = currentAssignmentId.includes(moduleData.contentId) && !isStudent && (
+                    <AssignmentsClasses assignmentRows={assignmentRows} handleActionClick={this.handleActionClick} />
+                  );
+
                   if (mode === "embedded") {
                     return (
                       <OuterDropContainer>
@@ -993,6 +991,7 @@ class ModuleRow extends Component {
                           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                           assessmentColums={assessmentColums}
                           testTypeAndTags={testTypeAndTags}
+                          assignmentsRow={assignmentsRow}
                           isDesktop={isDesktop}
                           isStudent={isStudent}
                           showRightPanel={showRightPanel}
@@ -1079,104 +1078,7 @@ class ModuleRow extends Component {
                               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                             />
                           )}
-                          <AssignmentsClassesContainer
-                            onClick={e => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                            visible={currentAssignmentId.includes(moduleData.contentId) && !isStudent}
-                          >
-                            {assignmentRows?.map((assignment, assignmentIndex) => (
-                              <StyledRow key={assignmentIndex}>
-                                <StyledLabel textColor={titleColor}>
-                                  <Tooltip placement="bottomLeft" title={assignment?.name}>
-                                    <EllipticSpan md="100px" lg="260px" xl="300px" padding="0px 0px 0px 30px">
-                                      {assignment?.name}
-                                    </EllipticSpan>
-                                  </Tooltip>
-                                </StyledLabel>
-
-                                {/* TODO: Remove if not required, else uncomment and update the assignment name sizes accordingly */}
-                                {/* <CustomIcon marginRight={0} align="unset">
-                                <Avatar
-                                  size={18}
-                                  style={{
-                                    backgroundColor: testTypeColor[assignment?.testType || "practice"],
-                                    fontSize: "13px"
-                                  }}
-                                >
-                                  {assignment?.testType[0].toUpperCase() || "P"}
-                                </Avatar>
-                              </CustomIcon> */}
-
-                                {assignment?.status && (
-                                  <StyledStatusLabel status={assignment?.status}>
-                                    {assignment?.status}
-                                  </StyledStatusLabel>
-                                )}
-
-                                <StyledLabel textColor={titleColor} width="150px">
-                                  {`Submitted ${assignment?.submittedCount || 0} of ${assignment?.assignedCount || 0}`}
-                                </StyledLabel>
-
-                                {/* TODO: Display percentage completion for each assignment row */}
-                                {assignment?.percentage && (
-                                  <StyledLabel textColor={titleColor} width="70px">
-                                    {assignment.percentage}
-                                  </StyledLabel>
-                                )}
-
-                                <StyledLabel textColor={titleColor}>{assignment?.gradedNumber} Graded</StyledLabel>
-
-                                <ActionsWrapper data-cy="PresentationIcon">
-                                  <Tooltip placement="bottom" title="LCB">
-                                    <BtnContainer
-                                      onClick={e =>
-                                        this.handleActionClick(
-                                          e,
-                                          "classboard",
-                                          assignment?.assignmentId,
-                                          assignment?.classId
-                                        )
-                                      }
-                                    >
-                                      <img src={presentationIcon} alt="Images" />
-                                    </BtnContainer>
-                                  </Tooltip>
-
-                                  <Tooltip placement="bottom" title="Express Grader">
-                                    <BtnContainer
-                                      onClick={e =>
-                                        this.handleActionClick(
-                                          e,
-                                          "expressgrader",
-                                          assignment?.assignmentId,
-                                          assignment?.classId
-                                        )
-                                      }
-                                    >
-                                      <img src={additemsIcon} alt="Images" />
-                                    </BtnContainer>
-                                  </Tooltip>
-
-                                  <Tooltip placement="bottom" title="Reports">
-                                    <BtnContainer
-                                      onClick={e =>
-                                        this.handleActionClick(
-                                          e,
-                                          "standardsBasedReport",
-                                          assignment?.assignmentId,
-                                          assignment?.classId
-                                        )
-                                      }
-                                    >
-                                      <img src={piechartIcon} alt="Images" />
-                                    </BtnContainer>
-                                  </Tooltip>
-                                </ActionsWrapper>
-                              </StyledRow>
-                            ))}
-                          </AssignmentsClassesContainer>
+                          {assignmentsRow}
                         </div>
                       </AssignmentRowContainer>
                     )
@@ -1209,49 +1111,6 @@ ModuleRow.propTypes = {
   status: PropTypes.string,
   removeUnit: PropTypes.func.isRequired
 };
-
-const BtnContainer = styled.div`
-  background: transparent;
-  img {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-const ActionsWrapper = styled.div`
-  display: flex;
-  width: 120px;
-  align-items: center;
-  justify-content: space-evenly;
-  margin-right: 0px;
-`;
-
-const StyledRow = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  height: 48px;
-  border-bottom: 1px solid ${borderGrey3};
-  color: ${titleColor};
-  font-size: 12px;
-
-  &:hover {
-    background: ${greyThemeLighter};
-  }
-`;
-
-const StyledStatusLabel = styled(StatusLabel)`
-  display: flex;
-  justify-content: center;
-  font-size: 10px;
-`;
-
-const AssignmentsClassesContainer = styled.div`
-  background: ${white};
-  width: 100%;
-  display: ${({ visible }) => (visible ? "block" : "none")};
-`;
 
 const AssignmentRowContainer = styled.div`
   display: flex;

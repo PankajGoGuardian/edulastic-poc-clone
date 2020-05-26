@@ -55,7 +55,7 @@ const AssignmentsClasses = ({ assignmentRows, handleActionClick }) => (
         <StyledLabel textColor={titleColor}>{assignment?.gradedNumber} Graded</StyledLabel>
 
         <ActionsWrapper data-cy="PresentationIcon">
-          <Tooltip placement="bottom" title="LCB">
+          <Tooltip placement="bottom" title="Live Class Board">
             <BtnContainer
               onClick={e => handleActionClick(e, "classboard", assignment?.assignmentId, assignment?.classId)}
             >

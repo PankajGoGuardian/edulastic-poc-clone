@@ -456,7 +456,7 @@ class ModuleRow extends Component {
 
     const moduleActionsMenu = (
       <Fragment>
-        {!hideEditOptions && hasEditAccess && totalAssigned && !isStudent && !completed ? (
+        {!hideEditOptions && hasEditAccess && !isStudent && !completed ? (
           <HideLinkLabel
             textColor={themeColor}
             fontWeight="Bold"

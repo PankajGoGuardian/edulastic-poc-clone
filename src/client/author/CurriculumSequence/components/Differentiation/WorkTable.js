@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useDrop } from "react-dnd";
 import { message } from "antd";
-import { groupBy } from "lodash";
+import { groupBy, compact, isEmpty } from "lodash";
 import { ProgressBar, EduButton, FlexContainer } from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
 import { themeColorLighter, borderGrey } from "@edulastic/colors";
@@ -383,12 +383,11 @@ const InnerWorkTable = ({
     const recommendations = [];
     if (groups.standards) {
       const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);
-      const skillIdentifiers = groups.standards.map(x => x.skillIdentifier);
+      const skillIdentifiers = compact(groups.standards.map(x => x.skillIdentifier));
       const obj = {
         assignmentId: selectedData.assignmentId,
         groupId: selectedData.classId,
         standardIdentifiers,
-        skillIdentifiers,
         type,
         masteryRange: {
           min: masteryRange[0],
@@ -396,7 +395,9 @@ const InnerWorkTable = ({
         },
         resourceTitle: getResourceTitle()
       };
-
+      if(!isEmpty(skillIdentifiers)) {
+        obj.skillIdentifiers = skillIdentifiers;
+      }
       recommendations.push(obj);
     }
 

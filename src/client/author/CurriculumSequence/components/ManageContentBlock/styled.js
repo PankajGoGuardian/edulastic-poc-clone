@@ -225,7 +225,7 @@ export const ManageModuleBtn = styled.div`
 `;
 
 export const ResourceDataList = styled.div`
-  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 325px)" : "calc(100vh - 380px)")};
+  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 305px)" : "calc(100vh - 345px)")};
   margin-bottom: 20px;
   overflow: auto;
   display: flex;
@@ -253,6 +253,9 @@ export const ResourceDataList = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 142}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 332px)" : "calc(100vh - 370px)")};
   }
 `;
 

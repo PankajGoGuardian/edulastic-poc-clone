@@ -64,7 +64,7 @@ const SortableItem = sortableElement(props => {
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
   return (
-    <AssignmentItemContainer data-cy="curriculum-modules">
+    <AssignmentItemContainer data-cy="curriculum-module">
       {isReview && <SortableTestsHandle />}
       <DropContainer
         theme={themes.default}

@@ -575,6 +575,7 @@ class CurriculumSequence extends Component {
     const isDesktop = windowWidth > parseInt(smallDesktopWidth, 10);
 
     const isPlaylistDetailsPage = window.location?.hash === "#review";
+    const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
     const shouldHidCustomizeButton = status === "published" && isPlaylistDetailsPage;
 
     return (
@@ -637,13 +638,14 @@ class CurriculumSequence extends Component {
             onRejectClick={this.onRejectClick}
           />
 
-          <MainContentWrapper padding="30px" mode={mode}>
-            {currentTab === "playlist" && <CurriculumBreadCrumb mode={mode} />}
+          <MainContentWrapper padding="30px">
+            {showBreadCrumb && <CurriculumBreadCrumb mode={mode} />}
             {currentTab === "playlist" && (
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
                 <ContentContainer
                   urlHasUseThis={urlHasUseThis}
                   showRightPanel={showRightPanel && !shouldHidCustomizeButton}
+                  showBreadCrumb={showBreadCrumb}
                 >
                   <CurriculumSubHeader
                     isStudent={isStudent}
@@ -823,25 +825,6 @@ const Wrapper = styled.div`
   margin-left: ${props => (props.active ? "0px" : "auto")};
   margin-right: ${props => (props.active ? "0px" : "auto")};
   position: relative;
-
-  @media only screen and (max-width: ${largeDesktopWidth}) {
-    width: 100%;
-  }
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #888;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
 `;
 
 const CurriculumSequenceWrapper = styled.div`
@@ -862,12 +845,44 @@ const ContentContainer = styled.div`
   padding-right: 15px;
   margin: 0px auto;
   position: relative;
-
+  height: ${({ showBreadCrumb }) => (showBreadCrumb ? "calc(100vh - 160px)" : "calc(100vh - 124px)")};
+  overflow: auto;
+  overflow-x: hidden;
   @media (max-width: ${extraDesktopWidthMax}) {
     width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 340px)" : "100%")};
   }
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;
     padding-right: 0px;
+  }
+
+  @media only screen and (max-width: ${largeDesktopWidth}) {
+    width: 100%;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+    }
   }
 `;

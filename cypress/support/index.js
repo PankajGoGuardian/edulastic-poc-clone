@@ -30,7 +30,7 @@ before("create testData file", () => {
 const cleanupHook = executionEnv === "CI" ? after : before;
 
 cleanupHook("delete test data", () => {
-  cy.deleteTestData();
+  // cy.deleteTestData();
 });
 
 /*

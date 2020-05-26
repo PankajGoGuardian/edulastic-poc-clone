@@ -2,9 +2,9 @@ import ItemListPage from "../../framework/author/itemList/itemListPage";
 import TestLibrary from "../../framework/author/tests/testLibraryPage";
 import FileHelper from "../../framework/util/fileHelper";
 
-const rawTests = require("../../../fixtures/spark/spark_test_details.json");
+const { tests } = require("../../../fixtures/spark/spark_test_details.json");
 
-const testCreationLogs = "spark/spark_test_processed.json";
+const testCreationLogs = "cypress/fixtures/spark/spark_test_processed.json";
 
 const testLibrary = new TestLibrary();
 const itemListPage = new ItemListPage();
@@ -20,12 +20,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     cy.route("POST", "**api/test").as("createTest");
     cy.route("POST", "**/search/tests").as("searchTest");
   });
-  rawTests.forEach(testDetail => {
+  tests.forEach(testDetail => {
     Object.keys(testDetail).map(k => (testDetail[k] = testDetail[k].trim()));
-    const { authToken, userId, testName, description, grades, subject, collections, tags, itemsIds } = testDetail;
+    const { authToken, userId, testName, description, grades, subject, collections, tags, itemIds } = testDetail;
     const allGrades = grades.split(",").map(g => g.trim());
     const allTags = tags.split(",").map(t => t.trim());
-    const allItems = itemsIds.split(",").map(i => i.trim());
+    const allItems = itemIds.split(",").map(i => i.trim());
     let testId = undefined;
     let status = "failed";
     let itemToSearch = undefined;
@@ -63,11 +63,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         cy.get('[class*="AddRemoveBtn"]')
           .first()
           .click({ force: true });
-        if (i == 0) cy.wait("@createTest");
+        if (i == 0)
+          cy.wait("@createTest").then(xhr => {
+            testId = xhr.response.body.result._id;
+          });
       });
-      testLibrary.header.clickOnSaveButton(true).then(id => {
+      testLibrary.header.clickOnSaveButton(true);
+      /*  .then(id => {
         testId = id;
-      });
+      }); */
       cy.wait("@search");
       cy.wait(100).then(() => (status = "success"));
     });

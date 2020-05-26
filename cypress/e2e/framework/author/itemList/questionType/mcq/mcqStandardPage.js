@@ -175,6 +175,36 @@ class MCQStandardPage {
 
     return this;
   }
+  selectChoice = choice => {
+    this.getAllAnsChoicesLabel()
+      .contains(choice)
+      .click()
+      .closest("label")
+      .find("input")
+      .should("be.checked");
+  };
+  deselectChoice = choice => {
+    this.getAllAnsChoicesLabel()
+      .contains(choice)
+      .click()
+      .closest("label")
+      .find("input")
+      .should("not.be.checked");
+  };
+  checkChoiceSelected = choice => {
+    this.getAllAnsChoicesLabel()
+      .contains(choice)
+      .closest("label")
+      .find("input")
+      .should("be.checked");
+  };
+  checkChoiceNotSelected = choice => {
+    this.getAllAnsChoicesLabel()
+      .contains(choice)
+      .closest("label")
+      .find("input")
+      .should("not.be.checked");
+  };
 
   selectFontSize(option) {
     const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;

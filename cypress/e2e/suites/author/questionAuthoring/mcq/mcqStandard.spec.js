@@ -9,6 +9,7 @@ import {
   FONT_SIZE,
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choice - standard" type question`, () => {
   const queData = {
@@ -569,7 +570,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
       preview.getClear().click();
 
-      preview.getShowAnswer().click();
+      preview.getShowAnswer().click({ force: true });
 
       preview.getClear().click();
 
@@ -612,13 +613,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .should("contain", ch);
       });
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.correct[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.correct[0]);
 
       // save
       question.header.save();
@@ -694,13 +689,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       // select multiple correct ans
       question.getMultipleResponse().click();
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.alterate[0]);
 
       // advanced
       // question.clickOnAdvancedOptions();
@@ -864,7 +853,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
   });
 
-  context(" > Scoring Block testing", () => {
+  context(" > Scoring and solution block testing", () => {
     before("visit items list page and select question type", () => {
       editItem.createNewItem();
       // add new question
@@ -891,13 +880,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
           .should("contain", ch);
       });
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.correct[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.correct[0]);
 
       // save
       question.header.save();
@@ -908,14 +891,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       // .getEditButton()
       // .click();
 
-      question
-        .addAlternate()
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.addAlternate();
+
+      question.selectChoice(queData.alterate[0]);
 
       // advanced
       // question.clickOnAdvancedOptions();
@@ -975,29 +953,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.choices[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.choices[0]);
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.correct[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("not.checked");
+      question.deselectChoice(queData.correct[0]);
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.alterate[0]);
 
       /* question
         .getAlternates()
@@ -1078,40 +1038,41 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       preview.checkScore("1.3/3.6");
     });
     it(" > [mcq_std_scoring]:test => default alternate answer check with exact scoring type", () => {
-      const preview = question.header.preview();
       question.header.edit();
 
       //disable multi response
       question.getMultipleResponse().click();
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.choices[0])
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.checkChoiceSelected(queData.choices[0]);
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .closest("label")
-        .find("input")
-        .should("not.checked");
+      question.checkChoiceNotSelected(queData.alterate[0]);
       //set correct answer point as "2"
       question.getPoints().type("{selectall}2");
       //add a alternate answer - score by default 1
       question.selectAlternatetab();
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+
+      question.checkChoiceSelected(queData.alterate[0]);
       question.selectScoringType(SCORING_TYPE.EXACT);
-      question.header.preview();
+      const preview = question.header.preview();
+      preview
+        .getShowAnswer()
+        .click()
+        .then(() => {
+          cy.get("label.right")
+            .should("have.length", 2)
+            .and("contain", queData.choices[0])
+            .and("contain", queData.alterate[0]);
+        });
+      preview.getClear().click();
+
       question.selectAnswerChoice(queData.choices[0]);
       preview.checkScore("2/2");
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.choices[0]);
+
       preview.getClear().click();
+
       question.selectAnswerChoice(queData.alterate[0]);
       preview.checkScore("1/2");
       cy.get("label.right")
@@ -1119,7 +1080,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .and("contain", queData.alterate[0]);
     });
     it(" > [mcq_std_scoring]:test => default alternate answer check with partial scoring type", () => {
-      const preview = question.header.preview();
       question.header.edit();
 
       //enable multi response
@@ -1127,24 +1087,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
       //add a alternate answer - score by default 1
       question.selectAlternatetab();
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+
+      question.checkChoiceSelected(queData.alterate[0]);
 
       question.selectAlternatetab();
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[1])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
 
+      question.selectChoice(queData.alterate[1]);
       question.selectScoringType(SCORING_TYPE.PARTIAL);
-      question.header.preview();
+      const preview = question.header.preview();
+
       question.selectAnswerChoice(queData.alterate[0]);
       preview.checkScore("0.5/2");
       cy.get("label.right")
@@ -1164,35 +1115,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       const preview = question.header.preview();
       question.header.edit();
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.choices[0])
-        .closest("label")
-        .find("input")
-        .should("be.checked");
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.choices[1])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.checkChoiceSelected(queData.choices[0]);
 
+      question.selectChoice(queData.choices[1]);
       //add a alternate answer - score by default 1
       question.selectAlternatetab();
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .closest("label")
-        .find("input")
-        .should("be.checked");
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[1])
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.checkChoiceSelected(queData.alterate[0]);
+
+      question.checkChoiceSelected(queData.alterate[1]);
       question.selectScoringType(SCORING_TYPE.PARTIAL);
       question.getPanalty().type("{selectall}0");
       question.header.preview();
@@ -1206,5 +1137,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .should("have.length", 1)
         .and("contain", queData.choices[0]);
     });
+    validateSolutionBlockTests(queData.group, queData.queType);
   });
 });

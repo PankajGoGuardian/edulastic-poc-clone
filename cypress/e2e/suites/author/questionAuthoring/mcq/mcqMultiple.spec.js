@@ -10,6 +10,7 @@ import {
   FONT_SIZE,
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -18,9 +19,9 @@ describe(`${FileHelper.getSpecName(
     group: "Multiple Choice",
     queType: "Multiple choice - multiple response",
     queText: "Indian state known as garden spice is:",
-    choices: ["Karnataka", "West Bengal", "Kerala", "Delhi", "KL"],
-    correct: ["Kerala"],
-    alterate: ["KL"],
+    choices: ["choice a", "choice b", "choice c", "choice d", "choice e"],
+    correct: ["choice a", "choice b"],
+    alterate: ["choice c", "choice d"],
     extlink: "www.testdomain.com",
     formattext: "formattedtext",
     formula: "s=ar^2"
@@ -293,12 +294,7 @@ describe(`${FileHelper.getSpecName(
     it(" > [Tc_273]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
@@ -576,16 +572,11 @@ describe(`${FileHelper.getSpecName(
     it(" > [Tc_280]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
-      preview.getShowAnswer().click();
+      preview.getShowAnswer().click({ force: true });
 
       preview.getClear().click();
 
@@ -630,22 +621,9 @@ describe(`${FileHelper.getSpecName(
 
       // set correct multiple ans
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.correct[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.correct[0]);
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
-
+      question.selectChoice(queData.alterate[0]);
       /* question
         .getAllAnsChoicesLabel()
         .eq(1)
@@ -697,23 +675,17 @@ describe(`${FileHelper.getSpecName(
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
 
-      cy.contains(queData.alterate[0]).click();
+      preview.checkScore("1/1");
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
+      cy.get("label.wrong").should("have.length", 0);
 
-          cy.get("label.wrong").should("have.length", 0);
-
-          cy.get("label.right")
-            .should("have.length", 2)
-            .and("contain", queData.correct[0])
-            .and("contain", queData.alterate[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 2)
+        .and("contain", queData.correct[0])
+        .and("contain", queData.alterate[0]);
 
       preview
         .getClear()
@@ -723,23 +695,18 @@ describe(`${FileHelper.getSpecName(
         });
 
       // give partial wrong ans and check
-      cy.contains(queData.choices[0]).click();
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      preview.checkScore("0/1");
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[0]);
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[1]);
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.correct[0]);
 
       preview
         .getClear()
@@ -749,14 +716,9 @@ describe(`${FileHelper.getSpecName(
         });
 
       // give no ans and check
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      preview.checkScore("0/1");
 
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
+      cy.get("label.right,label.wrong").should("have.length", 0);
 
       // partial match
       preview.header.edit();
@@ -793,21 +755,163 @@ describe(`${FileHelper.getSpecName(
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
 
-      cy.contains(queData.alterate[0]).click();
+      preview.checkScore("1/1");
+      cy.get("label.wrong").should("have.length", 0);
+
+      cy.get("label.right")
+        .should("have.length", 2)
+        .and("contain", queData.correct[0])
+        .and("contain", queData.alterate[0]);
 
       preview
-        .getCheckAnswer()
+        .getClear()
         .click()
         .then(() => {
-          preview.verifyScore("1/1");
+          cy.get("label.right,label.wrong").should("have.length", 0);
+        });
 
-          cy.get("label.wrong").should("have.length", 0);
+      // give partial wrong ans and check
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
 
+      preview.checkScore("0.5/1");
+
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.correct[0]);
+
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.correct[1]);
+
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          cy.get("label.right,label.wrong").should("have.length", 0);
+        });
+
+      // give no ans and check
+      preview.checkScore("0/1");
+
+      cy.get("label.right,label.wrong").should("have.length", 0);
+    });
+  });
+
+  context("score block testing", () => {
+    before("visit items list page and select question type", () => {
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
+
+      question
+        .getQuestionEditor()
+        .clear()
+        .type(queData.queText);
+
+      question.getAllChoices().each(($el, index, $list) => {
+        const cusIndex = $list.length - (index + 1);
+        question.deleteChoiceByIndex(cusIndex);
+      });
+
+      // add choices
+      const { choices } = queData;
+      choices.forEach((ch, index) => {
+        question
+          .addNewChoice()
+          .getChoiceByIndex(index)
+          .clear()
+          .type(ch)
+          .should("contain", ch);
+      });
+
+      question.selectChoice(queData.correct[1]);
+
+      // save
+      question.header.save();
+    });
+
+    it("default test with exact score", () => {
+      const preview = editItem.header.preview();
+
+      preview
+        .getShowAnswer()
+        .click()
+        .then(() => {
           cy.get("label.right")
-            .should("have.length", 2)
+            .should("have.length", 1)
+            .and("contain", queData.correct[1]);
+        });
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          cy.get("label.right,label.wrong").should("have.length", 0);
+        });
+
+      // give correct ans and validate
+      question.selectAnswerChoice(queData.correct[1]);
+      preview.checkScore("1/1");
+      cy.get("label.wrong").should("have.length", 0);
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.correct[1]);
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          cy.get("label.right,label.wrong").should("have.length", 0);
+        });
+
+      // give wrong ans and check
+      question.selectAnswerChoice(queData.choices[0]);
+      preview.checkScore("0/1");
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[0]);
+      cy.get("label.right").should("have.length", 0);
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          cy.get("label.right,label.wrong").should("have.length", 0);
+        });
+
+      // give no ans and check
+      preview.checkScore("0/1");
+    });
+
+    it("Select multiple correct answer with exact score", () => {
+      question.header.edit();
+      //set score as 3
+      question.getPoints().type("{selectall}3");
+
+      //select multiple correct answer
+
+      question.selectChoice(queData.correct[0]);
+
+      question.selectChoice(queData.alterate[0]);
+
+      //set score as 3
+      question.getPoints().type("{selectall}3");
+
+      //check answer in preview
+      const preview = editItem.header.preview();
+      //select multiple correct answer
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+
+      preview
+        .getShowAnswer()
+        .click()
+        .then(() => {
+          cy.get("label.right")
+            .should("have.length", 3)
             .and("contain", queData.correct[0])
+            .and("contain", queData.correct[1])
             .and("contain", queData.alterate[0]);
         });
 
@@ -818,24 +922,20 @@ describe(`${FileHelper.getSpecName(
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
 
-      // give partial wrong ans and check
-      cy.contains(queData.choices[0]).click();
-      cy.contains(queData.correct[0]).click();
+      // give correct ans and validate
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+      question.selectAnswerChoice(queData.alterate[0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0.5/1");
+      preview.checkScore("3/3");
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[0]);
+      cy.get("label.wrong").should("have.length", 0);
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
-        });
+      cy.get("label.right")
+        .should("have.length", 3)
+        .and("contain", queData.correct[0])
+        .and("contain", queData.correct[1])
+        .and("contain", queData.alterate[0]);
 
       preview
         .getClear()
@@ -844,15 +944,214 @@ describe(`${FileHelper.getSpecName(
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
 
-      // give no ans and check
+      //give wrong answer and validate
+
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+      question.selectAnswerChoice(queData.choices[3]);
+
+      preview.checkScore("0/3");
+
+      cy.get("label.wrong").should("have.length", 1);
+
+      cy.get("label.right")
+        .should("have.length", 2)
+        .and("contain", queData.correct[0])
+        .and("contain", queData.correct[1]);
+    });
+
+    it("Select partial correct answer", () => {
+      //change the scoring tye to partial
+      question.header.edit();
+
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+
+      //verify with partial correct answer
+      const preview = editItem.header.preview();
+
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.choices[3]);
+      preview.checkScore("1/3");
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[3]);
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.correct[0]);
+
       preview
-        .getCheckAnswer()
+        .getClear()
         .click()
         .then(() => {
-          preview.verifyScore("0/1");
-
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
+      //give all correct answer and validate
+
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.choices[4]);
+
+      preview.checkScore("3/3");
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[4]);
+      cy.get("label.right")
+        .should("have.length", 3)
+        .and("contain", queData.correct[0])
+        .and("contain", queData.correct[1])
+        .and("contain", queData.alterate[0]);
     });
+
+    it("Verify alternate answer", () => {
+      question.header.edit();
+
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.checkChoiceSelected(queData.correct[1]);
+
+      question.deselectChoice(queData.alterate[0]);
+
+      //add a alternate answer - score by default 1
+      question.addAlternate();
+
+      question.selectChoice(queData.alterate[0]);
+
+      question.selectChoice(queData.alterate[1]);
+      //set scoring type exact
+      question.selectScoringType(SCORING_TYPE.EXACT);
+      const preview = question.header.preview();
+      preview
+        .getShowAnswer()
+        .click()
+        .then(() => {
+          cy.get("label.right")
+            .should("have.length", 4)
+            .and("contain", queData.correct[0])
+            .and("contain", queData.correct[1])
+            .and("contain", queData.alterate[0])
+            .and("contain", queData.alterate[1]);
+        });
+
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.alterate[1]);
+      preview.checkScore("1/3");
+
+      cy.get("label.right")
+        .should("have.length", 2)
+        .and("contain", queData.alterate[0])
+        .and("contain", queData.alterate[1]);
+
+      //set alternate answer point as 2
+      question.header.edit();
+      question.getPoints().type("{selectall}1");
+      question.selectAlternatetab();
+      question.getPoints().type("{selectall}2");
+
+      //set scoring type to partial
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+
+      //check partial score for alternate answer
+      question.header.preview();
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.choices[4]);
+      preview.checkScore("1/2");
+      cy.get("label.right")
+        .should("have.length", 1)
+        .and("contain", queData.alterate[0]);
+      cy.get("label.wrong")
+        .should("have.length", 1)
+        .and("contain", queData.choices[4]);
+    });
+
+    it("verify for penalty", () => {
+      const preview = question.header.preview();
+
+      question.header.edit();
+
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.checkChoiceSelected(queData.correct[1]);
+      //change the score to 2
+      question.getPoints().type("{selectall}2");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.getPanalty().type("{selectall}1");
+      question.header.preview();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("0.5/2");
+    });
+
+    it("Verify score with rounding and penalty", () => {
+      const preview = question.header.preview();
+
+      question.header.edit();
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.checkChoiceSelected(queData.correct[1]);
+      question.getPoints().type("{selectall}3.6");
+
+      //for no rounding
+      question.selectRoundingType("Round down");
+      question.header.preview();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1/3.6");
+    });
+
+    it("Verify score without rounding and penality", () => {
+      const preview = question.header.preview();
+
+      question.header.edit();
+      question.checkChoiceSelected(queData.correct[0]);
+      question.checkChoiceSelected(queData.correct[1]);
+      question.getPoints().type("{selectall}3.6");
+
+      //with score rounding
+      question.selectRoundingType("None");
+      question.header.preview();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1.3/3.6");
+    });
+
+    it("Verify score with rounding and penalty", () => {
+      const preview = question.header.preview();
+
+      question.header.edit();
+
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.checkChoiceSelected(queData.correct[1]);
+
+      question.getPoints().type("{selectall}3.6");
+
+      //for no rounding
+      question.selectRoundingType("Round down");
+      question.header.preview();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1/3.6");
+    });
+
+    it("Verify score without rounding and penality", () => {
+      const preview = question.header.preview();
+
+      question.header.edit();
+
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.checkChoiceSelected(queData.correct[1]);
+      question.getPoints().type("{selectall}3.6");
+
+      //with score rounding
+      question.selectRoundingType("None");
+      question.header.preview();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1.3/3.6");
+    });
+
+    validateSolutionBlockTests(queData.group, queData.queType);
   });
 });

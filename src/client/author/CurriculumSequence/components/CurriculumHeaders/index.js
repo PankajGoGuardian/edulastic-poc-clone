@@ -52,6 +52,7 @@ const CurriculumHeader = ({
   isManageContentActive,
   isPublisherUser,
   isDesktop,
+  loading,
   urlHasUseThis,
   recentPlaylists,
   curatedStudentPlaylists,
@@ -105,7 +106,7 @@ const CurriculumHeader = ({
     return (
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
-        headingText={title}
+        headingText={loading ? "Untitled Playlist" : title}
         headingSubContent={urlHasUseThis && !isPublisherUser && slicedRecentPlaylists?.length > 1 && changePlaylistIcon}
         titleMinWidth="unset"
         justify={urlHasUseThis ? "space-between" : "flex-start"}

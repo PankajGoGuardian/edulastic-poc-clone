@@ -175,7 +175,6 @@ class CurriculumContainer extends Component {
           msg: `Dropped ${item.contentType === "test" ? "Test" : "Resource"} already exists in this module`
         });
       }
-      return;
     } else {
       const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
       moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
@@ -244,18 +243,14 @@ class CurriculumContainer extends Component {
     return { sourceCurriculumSequence, destinationCurriculumSequence };
   };
 
-  /** @param {CurriculumSequence} curriculumSequence */
-  setSourceCurriculumSequence = curriculumSequence => {
-    this.setState({ sourceCurriculumSequence: curriculumSequence });
-  };
-
   handleShare = () => {
     this.setState({ showShareModal: true });
   };
 
   onShareModalChange = () => {
+    const { showShareModal } = this.state;
     this.setState({
-      showShareModal: !this.state.showShareModal
+      showShareModal: !showShareModal
     });
   };
 
@@ -285,11 +280,10 @@ class CurriculumContainer extends Component {
   };
 
   render() {
-    const { windowWidth, curriculumSequences, isContentExpanded, match, mode, resequenceTests } = this.props;
+    const { windowWidth, curriculumSequences, isContentExpanded, match, mode, resequenceTests, loading } = this.props;
     const { expandedModules, showShareModal, showSelectCollectionsModal } = this.state;
     const {
       handleSelectContent,
-      setSourceCurriculumSequence,
       onDrop,
       onBeginDrag,
       savePublisher,
@@ -341,11 +335,11 @@ class CurriculumContainer extends Component {
           onCollapseExpand={collapseExpandModule}
           curriculumList={curriculumList}
           onShareClick={handleShare}
-          onSourceCurriculumSequenceChange={setSourceCurriculumSequence}
           windowWidth={windowWidth}
           onDrop={onDrop}
           match={match}
           mode={mode}
+          loading={loading}
           handleTestsSort={resequenceTests}
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
@@ -424,6 +418,7 @@ const enhance = compose(
   withNamespaces("author"),
   connect(
     ({ curriculumSequence, user }) => ({
+      loading: curriculumSequence.loading,
       curriculumSequences: curriculumSequence,
       isContentExpanded: curriculumSequence?.isContentExpanded,
       destinationCurriculumSequence: curriculumSequence?.destinationCurriculumSequence,

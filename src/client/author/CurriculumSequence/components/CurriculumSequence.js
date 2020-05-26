@@ -10,7 +10,8 @@ import { FlexContainer, MainContentWrapper, withWindowSizes } from "@edulastic/c
 import { curriculumSequencesApi } from "@edulastic/api";
 import { largeDesktopWidth, smallDesktopWidth, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
-import { Modal, message } from "antd";
+import { Modal, message, Spin } from "antd";
+
 import EmbeddedVideoPreviewModal from "./ManageContentBlock/components/EmbeddedVideoPreviewModal";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
@@ -451,6 +452,7 @@ class CurriculumSequence extends Component {
     } = this.state;
 
     const {
+      loading,
       expandedModules,
       onCollapseExpand,
       destinationCurriculumSequence,
@@ -636,11 +638,13 @@ class CurriculumSequence extends Component {
             handleNavChange={this.handleNavChange}
             handleGuidePopup={this.handleGuidePopup}
             onRejectClick={this.onRejectClick}
+            loading={loading}
           />
 
           <MainContentWrapper padding="30px">
             {showBreadCrumb && <CurriculumBreadCrumb mode={mode} />}
-            {currentTab === "playlist" && (
+            {loading && <Spin />}
+            {currentTab === "playlist" && !loading && (
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
                 <ContentContainer
                   urlHasUseThis={urlHasUseThis}
@@ -717,8 +721,8 @@ class CurriculumSequence extends Component {
                 />
               </StyledFlexContainer>
             )}
-            {currentTab === "insights" && <Insights currentPlaylist={destinationCurriculumSequence} />}
-            {currentTab === "differentiation" && isSparkMathPlaylist && (
+            {currentTab === "insights" && !loading && <Insights currentPlaylist={destinationCurriculumSequence} />}
+            {currentTab === "differentiation" && !loading && isSparkMathPlaylist && (
               <Differentiation
                 setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                 showResource={this.showLtiResource}

@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 import { takeLatest, takeEvery, put, call, all, select, take } from "redux-saga/effects";
-import { get, flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy, compact } from "lodash";
+import { get, flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
@@ -210,6 +210,19 @@ export const updatePlaylistCSAction = createAction(UPDATE_CUSTOMIZED_PLAYLIST);
 export const resetDestinationAction = createAction(RESET_DESTINATION);
 export const setOriginalDestinationData = createAction(SET_DESTINATION_ORIGINAL);
 export const resetDestinationFlags = createAction(RESET_DESTINATION_FLAGS);
+
+export const PLAYLIST_REORDER_TESTS = "[playlist] destination reorder test";
+export const playlistDestinationReorderTestsAction = createAction(PLAYLIST_REORDER_TESTS);
+
+export const REMOVE_TEST_FROM_MODULE_PLAYLIST = "[playlist edit] test remove from module";
+export const playlistTestRemoveFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE_PLAYLIST);
+
+export const TOGGLE_MANAGE_CONTENT_ACTIVE = "[playlist] toggle manage content";
+export const toggleManageContentActiveAction = createAction(TOGGLE_MANAGE_CONTENT_ACTIVE);
+
+// Playlist Test Details Modal
+export const TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID = "[playlist] toggle test details modal";
+export const togglePlaylistTestDetailsModalWithId = createAction(TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID);
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
@@ -443,6 +456,38 @@ function* assign({ payload }) {
   return assignment;
 }
 
+/**
+ * @param {import('./components/CurriculumSequence').ModuleData} unitItem
+ * @param {import('./components/CurriculumSequence').CurriculumSequenceType} curriculumSequence
+ */
+function getCurriculumAsssignmentMatch(unitItem, curriculumSequence) {
+  let matchingUnitItem = {};
+
+  // here we should go with checking the testIds instead
+
+  curriculumSequence.modules.forEach(m => {
+    m.data.forEach(d => {
+      if (d.testId === unitItem.testId) {
+        matchingUnitItem = d;
+      }
+    });
+  });
+
+  return { ...matchingUnitItem };
+}
+
+function* saveCurriculumSequence({ payload }) {
+  // call api and update curriculum
+  const destinationCurriculumSequence = { ...(yield select(getDestinationCurriculumSequence)) };
+
+  const id = destinationCurriculumSequence._id;
+  delete destinationCurriculumSequence._id;
+
+  yield putCurriculumSequence({
+    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload?.isPlaylist }
+  });
+}
+
 function* createAssignmentNow({ payload }) {
   const currentAssignment = payload;
 
@@ -478,8 +523,8 @@ function* createAssignmentNow({ payload }) {
 
   // assignment already in curriculum
   if (!isEmpty(curriculumAssignment)) {
-    const assignData = curriculumSequenceState.dataForAssign;
-    yield assign({ payload: { assignment: currentAssignment, assignData } });
+    const _assignData = curriculumSequenceState.dataForAssign;
+    yield assign({ payload: { assignment: currentAssignment, assignData: _assignData } });
     yield saveCurriculumSequence();
     return;
   }
@@ -621,18 +666,6 @@ function* addContentToCurriculumSequence({ payload }) {
   yield put({
     type: ADD_CONTENT_TO_CURRICULUM_RESULT,
     payload: updatedUnit
-  });
-}
-
-function* saveCurriculumSequence({ payload }) {
-  // call api and update curriculum
-  const destinationCurriculumSequence = { ...(yield select(getDestinationCurriculumSequence)) };
-
-  const id = destinationCurriculumSequence._id;
-  delete destinationCurriculumSequence._id;
-
-  yield putCurriculumSequence({
-    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload?.isPlaylist }
   });
 }
 
@@ -1010,6 +1043,60 @@ function* publishDraftCustomizedPlaylist({ payload }) {
   }
 }
 
+const moveContentInPlaylist = (state, { payload }) => {
+  const { toModuleIndex, toContentIndex, fromModuleIndex, fromContentIndex } = payload;
+  let newPlaylist;
+  if (!toContentIndex) {
+    newPlaylist = produce(state.destinationCurriculumSequence, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return notification({ messageKey: "invalidModuleSelected" });
+      }
+      draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  } else {
+    newPlaylist = produce(state.destinationCurriculumSequence, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return notification({ messageKey: "invalidModuleSelected" });
+      }
+      draft.modules[toModuleIndex].data.splice(
+        toContentIndex,
+        0,
+        draft.modules[fromModuleIndex].data[fromContentIndex]
+      );
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  }
+  return {
+    ...state,
+    destinationCurriculumSequence: {
+      ...state.destinationCurriculumSequence,
+      modules: newPlaylist.modules
+    }
+  };
+};
+
+/**
+ * @param {State} state
+ * @param {Object<String, String>} args
+ * @param {import('./components/CurriculumSequence').CurriculumSequenceType} [args.payload]
+ */
+
+function* moveContentToPlaylistSaga(payload) {
+  try {
+    const state = yield select(getCurriculumSequenceState);
+    const newState = moveContentInPlaylist(state, payload);
+    yield put(
+      putCurriculumSequenceAction({
+        id: newState.destinationCurriculumSequence._id,
+        curriculumSequence: newState.destinationCurriculumSequence
+      })
+    );
+  } catch (e) {
+    notification({ messageKey: "movingTestErr" });
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -1138,6 +1225,8 @@ const initialState = {
 
   selectedItemsForAssign: [],
 
+  loading: false,
+
   destinationCurriculumSequence: {},
 
   assigned: [],
@@ -1214,6 +1303,7 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
   state.selectedGuide = newGuideId;
   state.selectedContent = latestContentCurriculumId;
   state.checkedUnitItems = [];
+  state.loading = false;
 };
 
 /**
@@ -1230,6 +1320,7 @@ const updateCurriculumSequenceReducer = (state, { payload }) => {
   state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
   state.originalData = state.destinationCurriculumSequence;
   state.destinationDirty = false;
+  state.loading = false;
   // }
 };
 
@@ -1387,60 +1478,6 @@ const setDataForAssignReducer = (state, { payload }) => {
 
 /**
  * @param {State} state
- * @param {Object<String, String>} args
- * @param {import('./components/CurriculumSequence').CurriculumSequenceType} [args.payload]
- */
-
-function* moveContentToPlaylistSaga(payload) {
-  try {
-    const state = yield select(getCurriculumSequenceState);
-    const newState = moveContentInPlaylist(state, payload);
-    yield put(
-      putCurriculumSequenceAction({
-        id: newState.destinationCurriculumSequence._id,
-        curriculumSequence: newState.destinationCurriculumSequence
-      })
-    );
-  } catch (e) {
-    notification({ messageKey: "movingTestErr" });
-  }
-}
-
-const moveContentInPlaylist = (state, { payload }) => {
-  const { toModuleIndex, toContentIndex, fromModuleIndex, fromContentIndex } = payload;
-  let newPlaylist;
-  if (!toContentIndex) {
-    newPlaylist = produce(state.destinationCurriculumSequence, draft => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: "invalidModuleSelected" });
-      }
-      draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
-    });
-  } else {
-    newPlaylist = produce(stable.destinationCurriculumSequence, draft => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: "invalidModuleSelected" });
-      }
-      draft.modules[toModuleIndex].data.splice(
-        toContentIndex,
-        0,
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      );
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
-    });
-  }
-  return {
-    ...state,
-    destinationCurriculumSequence: {
-      ...state.destinationCurriculumSequence,
-      modules: newPlaylist.modules
-    }
-  };
-};
-
-/**
- * @param {State} state
  * @param {Object<String, Object>} param2
  * @param {Object<String, Object>} [param2.payload]
  * @param {String} [param2.payload.moduleId]
@@ -1521,26 +1558,6 @@ const loadAssignedReducer = (state, { payload }) => ({
   ...state,
   assigned: payload
 });
-
-/**
- * @param {import('./components/CurriculumSequence').ModuleData} unitItem
- * @param {import('./components/CurriculumSequence').CurriculumSequenceType} curriculumSequence
- */
-function getCurriculumAsssignmentMatch(unitItem, curriculumSequence) {
-  let matchingUnitItem = {};
-
-  // here we should go with checking the testIds instead
-
-  curriculumSequence.modules.forEach(m => {
-    m.data.forEach(d => {
-      if (d.testId === unitItem.testId) {
-        matchingUnitItem = d;
-      }
-    });
-  });
-
-  return { ...matchingUnitItem };
-}
 
 function approveOrRejectSinglePlaylistReducer(state, { payload }) {
   return {
@@ -1642,18 +1659,6 @@ function toggleManageModuleHandler(state, { payload }) {
 function updateDifferentiationStudentList(state, { payload }) {
   state.differentiationStudentList = payload;
 }
-export const PLAYLIST_REORDER_TESTS = "[playlist] destination reorder test";
-export const playlistDestinationReorderTestsAction = createAction(PLAYLIST_REORDER_TESTS);
-
-export const REMOVE_TEST_FROM_MODULE_PLAYLIST = "[playlist edit] test remove from module";
-export const playlistTestRemoveFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE_PLAYLIST);
-
-export const TOGGLE_MANAGE_CONTENT_ACTIVE = "[playlist] toggle manage content";
-export const toggleManageContentActiveAction = createAction(TOGGLE_MANAGE_CONTENT_ACTIVE);
-
-// Playlist Test Details Modal
-export const TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID = "[playlist] toggle test details modal";
-export const togglePlaylistTestDetailsModalWithId = createAction(TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID);
 
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
@@ -1861,10 +1866,8 @@ export default createReducer(initialState, {
         };
         if (!state.differentiationWork[type][i].resources) {
           state.differentiationWork[type][i].resources = [subResource];
-        } else {
-          if (!state.differentiationWork[type][i].resources.find(y => y.contentId === contentId)) {
-            state.differentiationWork[type][i].resources.push(subResource);
-          }
+        } else if (!state.differentiationWork[type][i].resources.find(y => y.contentId === contentId)) {
+          state.differentiationWork[type][i].resources.push(subResource);
         }
       }
     });
@@ -1878,5 +1881,11 @@ export default createReducer(initialState, {
         );
       }
     });
+  },
+  [FETCH_CURRICULUM_SEQUENCES]: state => {
+    state.loading = true;
+  },
+  [FETCH_CURRICULUM_SEQUENCES_ERROR]: state => {
+    state.loading = false;
   }
 });

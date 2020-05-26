@@ -11,7 +11,7 @@ import { IconMoreHorizontal } from "@edulastic/icons";
 import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
-
+import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import {
   Container,
   Icon,
@@ -122,6 +122,7 @@ const TableList = ({
   testType
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
+  const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
   const convertRowData = (data, index) => ({
     class: data.name,
     type: data.testType,
@@ -160,7 +161,7 @@ const TableList = ({
     }
   };
 
-  const handleBulkAction = type => {
+  const handleBulkAction = (type, releaseScoreResponse) => {
     let selectedRowsGroupByAssignment = {};
     if (classList.length > selectedRows.length) {
       const selectedRowsData = rowData.filter((_, i) => selectedRows.includes(i));
@@ -179,13 +180,24 @@ const TableList = ({
     if (type === "close") bulkCloseAssignmentRequest(payload);
     if (type === "pause") bulkPauseAssignmentRequest(payload);
     if (type === "markAsDone") bulkMarkAsDoneAssignmentRequest(payload);
-    if (type === "releaseScore") bulkReleaseScoreAssignmentRequest(payload);
+    if (type === "releaseScore") {
+      payload.data = {
+        assignmentGroups: payload.data,
+        releaseScore: releaseScoreResponse
+      };
+      bulkReleaseScoreAssignmentRequest(payload);
+    }
     if (type === "unassign") bulkUnassignAssignmentRequest(payload);
+  };
+
+  const onUpdateReleaseScoreSettings = releaseScoreResponse => {
+    setReleaseScoreModalVisibility(false);
+    handleBulkAction("releaseScore", releaseScoreResponse);
   };
 
   const moreOptions = () => (
     <MoreOptionsContainer>
-      <MoreOption onClick={() => handleBulkAction("releaseScore")}>Release Score</MoreOption>
+      <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>Release Score</MoreOption>
       <MoreOption>Download Grades</MoreOption>
       <MoreOption>Download Responses</MoreOption>
       <MoreOption onClick={() => handleBulkAction("unassign")}>Unassign</MoreOption>
@@ -229,6 +241,11 @@ const TableList = ({
     <Container>
       {selectedRows.length > 0 && renderBulkActions()}
       <TableData columns={columns} dataSource={rowData} pagination={showPagination} rowSelection={rowSelection} />
+      <ReleaseScoreSettingsModal
+        showReleaseGradeSettings={showReleaseScoreModal}
+        onCloseReleaseScoreSettings={() => setReleaseScoreModalVisibility(false)}
+        updateReleaseScoreSettings={onUpdateReleaseScoreSettings}
+      />
     </Container>
   );
 };

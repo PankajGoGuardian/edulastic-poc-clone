@@ -70,6 +70,7 @@ const CurriculumSubHeader = ({
       </SubTopBar>
     );
   }
+
   const assigned = summaryData?.filter(d => isNumber(d.classes))?.length || 0;
   return (
     <SubTopBar>
@@ -125,6 +126,9 @@ const CurriculumSubHeader = ({
                     )}
                   </>
                 ))}
+              {!enableCustomize && isStudent && !showRightPanel && (
+                <StyledButton onClick={toggleManageContentClick("sammary")}>View Summary</StyledButton>
+              )}
             </ButtonWrapper>
           </RightColumn>
         </CurriculumSubHeaderRow>

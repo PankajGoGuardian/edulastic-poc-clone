@@ -18,7 +18,7 @@ const ResourceRow = ({
   setEmbeddedVideoPreviewModal,
   isManageContentActive,
   hideEditOptions,
-  urlHasUseThis
+  isStudent
 }) => {
   const viewResource = () => {
     if (data.contentType === "lti_resource") showResource(data.contentId);
@@ -34,17 +34,19 @@ const ResourceRow = ({
 
   return (
     <FlexContainer width="100%" justifyContent="space-between">
-      <ResourceWrapper noPadding>
+      <ResourceWrapper noPadding onClick={viewResource}>
         <ModuleDataName>
           <span>{data.contentTitle}</span>
         </ModuleDataName>
         <ResouceIcon type={data.contentType} isAdded />
       </ResourceWrapper>
-      <LastColumn justifyContent="space-between" width={urlHasUseThis ? "auto" : null}>
-        <AssignmentButton>
-          <Button onClick={viewResource}>VIEW</Button>
-        </AssignmentButton>
-        {(!hideEditOptions || mode === "embedded") && isManageContentActive && (
+      <LastColumn justifyContent="space-between" width={hideEditOptions || isStudent ? "auto" : null}>
+        {!isStudent && (
+          <AssignmentButton>
+            <Button onClick={viewResource}>VIEW</Button>
+          </AssignmentButton>
+        )}
+        {(!hideEditOptions || mode === "embedded") && isManageContentActive && !isStudent && (
           <IconActionButton onClick={deleteResource}>
             <IconTrash color={themeColor} />
           </IconActionButton>

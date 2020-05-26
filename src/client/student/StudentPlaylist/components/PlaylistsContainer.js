@@ -6,15 +6,16 @@ import { compose } from "redux";
 import { Layout, Spin } from "antd";
 
 import { Progress } from "@edulastic/common";
-const CurriculumContainer = lazy(() => import("../../../author/CurriculumSequence"));
 
 import { smallDesktopWidth } from "@edulastic/colors";
-import { slice, getDateKeysSelector } from "../ducks";
+import { slice } from "../ducks";
 import { getLastPlayListSelector } from "../../../author/Playlist/ducks";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
 
 import NoDataNotification from "../../../common/components/NoDataNotification";
 import Recommendations from "./Recommendations";
+
+const CurriculumContainer = lazy(() => import("../../../author/CurriculumSequence"));
 
 const PlaylistsContainer = ({
   match,
@@ -25,8 +26,7 @@ const PlaylistsContainer = ({
   fetchRecommendations,
   loadAllClasses,
   isLoading,
-  currentChild,
-  dateKeys
+  currentChild
 }) => {
   useEffect(() => {
     fetchPlaylists();
@@ -37,7 +37,7 @@ const PlaylistsContainer = ({
   const pathPlaylistId = location.pathname.substring(match.path.length).replace(/\//g, "");
 
   const playlist = lastPlaylist?.value?._id
-    ? playlists.find(playlist => playlist.playlistId === lastPlaylist.value._id)
+    ? playlists.find(_playlist => _playlist.playlistId === lastPlaylist.value._id)
     : null;
 
   return playlists && playlists.length ? (
@@ -48,7 +48,7 @@ const PlaylistsContainer = ({
           exact
           path={`${match.url}/:playlistId`}
           render={props => {
-            const currentGroupId = playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId;
+            const currentGroupId = playlists.find(_playlist => _playlist.playlistId === pathPlaylistId)?.groupId;
             props.location.state = { ...(props.location.state || {}), currentGroupId };
             if (isLoading) return <Spin size="large" />;
             return (

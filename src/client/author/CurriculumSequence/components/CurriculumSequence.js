@@ -350,7 +350,14 @@ class CurriculumSequence extends Component {
   };
 
   toggleManageContentClick = (contentName = "") => () => {
-    const { destinationCurriculumSequence, currentUserId, activeRightPanel, duplicateManageContent, role } = this.props;
+    const {
+      destinationCurriculumSequence,
+      currentUserId,
+      activeRightPanel,
+      duplicateManageContent,
+      role,
+      isStudent
+    } = this.props;
     const { authors } = destinationCurriculumSequence;
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
 
@@ -362,7 +369,7 @@ class CurriculumSequence extends Component {
     //   return;
     // }
 
-    if (!isManageContentActive && !canEdit) {
+    if (!isManageContentActive && !canEdit && !isStudent) {
       Modal.confirm({
         title: "Do you want to Customize ?",
         content:

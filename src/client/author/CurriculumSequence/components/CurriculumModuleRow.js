@@ -472,7 +472,7 @@ class ModuleRow extends Component {
         ) : null}
         <LastColumn
           style={moduleInlineStyle}
-          width={hideEditOptions ? "auto" : null}
+          width={hideEditOptions || isStudent ? "auto" : null}
           justifyContent={hideEditOptions && "flex-end"}
           ml={hideEditOptions && "auto"}
         >
@@ -800,7 +800,7 @@ class ModuleRow extends Component {
                           align="center"
                           justify="flex-end"
                           paddingRight="0"
-                          width={hideEditOptions ? "auto" : null}
+                          width={hideEditOptions || isStudent ? "auto" : null}
                         >
                           {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
                             (isAssigned ? (
@@ -860,7 +860,7 @@ class ModuleRow extends Component {
                     ) : (
                       !moduleData.hidden && (
                         <Fragment>
-                          <LastColumn width={hideEditOptions ? "auto" : null}>
+                          <LastColumn width={hideEditOptions || isStudent ? "auto" : null}>
                             {!isParentRoleProxy && (
                               <AssignmentButton assigned={false}>
                                 <Button data-cy={uta.text} onClick={uta.action}>
@@ -880,7 +880,7 @@ class ModuleRow extends Component {
                       )
                     )
                   ) : (
-                    <LastColumn width={hideEditOptions ? "auto" : null}>
+                    <LastColumn width={hideEditOptions || isStudent ? "auto" : null}>
                       <AssignmentButton>
                         <Button onClick={() => this.viewTest(moduleData?.contentId)}>
                           <IconVisualization width="14px" height="14px" />

@@ -44,6 +44,12 @@ export default class TestSummayTab {
       .type(testname);
   };
 
+  setDescription = description => {
+    this.getTestDescription()
+      .clear()
+      .type(description);
+  };
+
   selectSubject = (subject, clear = false) => {
     if (clear) {
       this.getTestSubjectSelect().then($ele => {
@@ -54,7 +60,7 @@ export default class TestSummayTab {
     cy.get(".ant-select-dropdown-menu-item")
       .contains(subject)
       .click({ force: true });
-    cy.focused().blur();
+    // cy.focused().blur();
   };
 
   selectCollection = (collection, clear = false) => {

@@ -35,6 +35,7 @@ const CurriculumHeaderButtons = styled(FlexContainer)`
 `;
 
 const HeaderButton = styled(EduButton)`
+  text-transform: uppercase;
   @media (max-width: ${extraDesktopWidthMax}) {
     height: 38px;
     ${({ IconBtn }) => IconBtn && "width: 38px;"};
@@ -137,7 +138,7 @@ const CurriculumHeader = ({
             {urlHasUseThis && isTeacher && !isPublisherUser && (
               <HeaderButton data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
                 <IconAirdrop />
-                {isDesktop && "AIRDROP PLAYLIST"}
+                {isDesktop && "OPEN TO STUDENTS"}
               </HeaderButton>
             )}
 

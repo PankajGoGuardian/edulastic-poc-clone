@@ -122,12 +122,12 @@ const CurriculumSubHeader = ({
                       <StyledButton onClick={toggleManageContentClick("manageContent")}>Customize Content</StyledButton>
                     )}
                     {(isManageContentActive || !showRightPanel) && urlHasUseThis && (
-                      <StyledButton onClick={toggleManageContentClick("sammary")}>View Summary</StyledButton>
+                      <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
                     )}
                   </>
                 ))}
               {!enableCustomize && isStudent && !showRightPanel && (
-                <StyledButton onClick={toggleManageContentClick("sammary")}>View Summary</StyledButton>
+                <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
               )}
             </ButtonWrapper>
           </RightColumn>

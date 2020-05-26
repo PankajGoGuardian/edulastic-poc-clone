@@ -1104,7 +1104,7 @@ const getDefaultAssignData = () => ({
 
 // Reducers
 const initialState = {
-  activeRightPanel: "manageContent",
+  activeRightPanel: "summary",
   allCurriculumSequences: [],
   destinationDirty: false,
   originalData: null,

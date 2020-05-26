@@ -17,6 +17,7 @@ const ResourceRow = ({
   showResource,
   setEmbeddedVideoPreviewModal,
   isManageContentActive,
+  showHideAssessmentButton,
   hideEditOptions,
   isStudent
 }) => {
@@ -31,16 +32,21 @@ const ResourceRow = ({
     e.stopPropagation();
     deleteTest(moduleIndex, data.contentId);
   };
+  const rowStyle = {
+    opacity: data.hidden ? `.5` : `1`,
+    pointerEvents: data.hidden ? "none" : "all"
+  };
 
   return (
     <FlexContainer width="100%" justifyContent="space-between">
-      <ResourceWrapper noPadding onClick={viewResource}>
+      <ResourceWrapper noPadding onClick={viewResource} style={rowStyle}>
         <ModuleDataName>
           <span>{data.contentTitle}</span>
         </ModuleDataName>
         <ResouceIcon type={data.contentType} isAdded style={{ marginLeft: 10 }} />
       </ResourceWrapper>
-      <LastColumn justifyContent="space-between" width={hideEditOptions || isStudent ? "auto" : null}>
+      <div style={{ marginLeft: "auto" }}>{showHideAssessmentButton}</div>
+      <LastColumn justifyContent="space-between" width={hideEditOptions || isStudent ? "auto" : null} style={rowStyle}>
         {!isStudent && (
           <AssignmentButton>
             <Button onClick={viewResource}>VIEW</Button>

@@ -782,20 +782,22 @@ class ModuleRow extends Component {
                     <ResolvedInfoColumsWrapper />
                   );
 
+                  const showHideAssessmentButton = hasEditAccess &&
+                    (!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                      <HideLinkLabel
+                        textColor={themeColor}
+                        fontWeight="Bold"
+                        data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
+                        onClick={() => this.hideTest(module._id, moduleData)}
+                      >
+                        {moduleData.hidden ? "SHOW" : "HIDE"}
+                      </HideLinkLabel>
+                    );
+
                   const assessmentActions = urlHasUseThis ? (
                     !isStudent ? (
                       <Fragment>
-                        {hasEditAccess && (!hideEditOptions || (status === "published" && mode === "embedded")) && (
-                          <HideLinkLabel
-                            textColor={themeColor}
-                            fontWeight="Bold"
-                            data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
-                            onClick={() => this.hideTest(module._id, moduleData)}
-                          >
-                            {moduleData.hidden ? "SHOW" : "HIDE"}
-                          </HideLinkLabel>
-                        )}
-
+                        {showHideAssessmentButton}
                         <LastColumn
                           align="center"
                           justify="flex-end"
@@ -998,6 +1000,8 @@ class ModuleRow extends Component {
                           isManageContentActive={isManageContentActive}
                           toggleTest={() => this.hideTest(module._id, moduleData)}
                           fromPlaylist={fromPlaylist}
+                          showHideAssessmentButton={showHideAssessmentButton}
+                          hideEditOptions={hideEditOptions}
                           {...this.props}
                         />
                         <AddResourceToPlaylist
@@ -1035,6 +1039,7 @@ class ModuleRow extends Component {
                                 mode={mode}
                                 urlHasUseThis={urlHasUseThis}
                                 showResource={this.showResource}
+                                showHideAssessmentButton={showHideAssessmentButton}
                                 isManageContentActive={isManageContentActive}
                                 hideEditOptions={hideEditOptions}
                                 setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}

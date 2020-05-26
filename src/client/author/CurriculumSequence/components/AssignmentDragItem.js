@@ -46,6 +46,7 @@ class AssignmentDragItem extends Component {
       isStudent,
       isManageContentActive,
       setEmbeddedVideoPreviewModal,
+      showHideAssessmentButton,
       fromPlaylist,
       id
     } = this.props;
@@ -64,11 +65,13 @@ class AssignmentDragItem extends Component {
             <PlaylistResourceRow
               data={moduleData}
               mode={mode}
-              urlHasUseThis
+              urlHasUseThis={urlHasUseThis}
               deleteTest={deleteTest}
               moduleIndex={moduleIndex}
               showResource={showResource}
               itemIndex={id}
+              showHideAssessmentButton={showHideAssessmentButton}
+              hideEditOptions={hideEditOptions}
               isManageContentActive={isManageContentActive}
               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />

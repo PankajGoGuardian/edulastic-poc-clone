@@ -3,7 +3,11 @@ import moment from "moment";
 import styled from "styled-components";
 import { extraDesktopWidthMax, themeColorLighter, greyThemeDark1, titleColor } from "@edulastic/colors";
 import { PieChart, Pie, Sector, Cell } from "recharts";
-import { StyledProgressDiv, StyledProgress, GraphDescription } from "../../ClassBoard/components/ProgressGraph/styled";
+import {
+  StyledProgressDiv,
+  StyledProgress,
+  GraphDescription
+} from "../../../ClassBoard/components/ProgressGraph/styled";
 
 const renderActiveShape = props => {
   const {

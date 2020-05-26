@@ -13,7 +13,7 @@ import {
   extraDesktopWidthMax
 } from "@edulastic/colors";
 
-import SummaryPieChart from "../SummaryPieChart";
+import SummaryPieChart from "./SummaryPieChart";
 import { getProgressColor } from "../../util";
 
 const SummaryBlock = ({ isStudent, summaryData, urlHasUseThis, hasSummaryDataNoData }) => {
@@ -43,12 +43,12 @@ const SummaryBlock = ({ isStudent, summaryData, urlHasUseThis, hasSummaryDataNoD
       />
       <Hr />
       <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
-      <div style={{ width: "80%", margin: "20px auto" }}>
+      <SummaryDataRows urlHasUseThis={urlHasUseThis}>
         {summaryData?.map(
           item =>
             ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
               <div style={{ opacity: item.hidden ? `.5` : `1` }}>
-                <Tooltip placement="topLeft" title={item.title || item.name}>
+                <Tooltip placement="left" title={item.title || item.name}>
                   <ModuleTitle>{item.title || item.name}</ModuleTitle>
                 </Tooltip>
                 <StyledProgressBar
@@ -63,7 +63,7 @@ const SummaryBlock = ({ isStudent, summaryData, urlHasUseThis, hasSummaryDataNoD
               </div>
             )
         )}
-      </div>
+      </SummaryDataRows>
     </SummaryBlockContainer>
   );
 };
@@ -133,7 +133,7 @@ const Hr = styled.div`
   width: 70%;
   border: 2px dashed transparent;
   border-bottom: 2px dashed #d2d2d2;
-  margin: 15px auto 30px auto;
+  margin: 20px auto;
 `;
 
 const ModuleTitle = styled.p`
@@ -156,6 +156,39 @@ const StyledProgressBar = styled(ProgressBar)`
   & .ant-progress-text {
     @media (max-width: ${extraDesktopWidthMax}) {
       font-size: 9px;
+    }
+  }
+`;
+
+const SummaryDataRows = styled.div`
+  width: 80%;
+  margin: 20px auto;
+  overflow: auto;
+  height: calc(100vh - 545px);
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
     }
   }
 `;

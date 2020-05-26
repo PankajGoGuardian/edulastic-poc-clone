@@ -1303,6 +1303,7 @@ const ModuleID = styled.div`
   width: 30px;
   height: 30px;
   flex-shrink: 0;
+  margin-top: 0.8em;
 
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 25px;

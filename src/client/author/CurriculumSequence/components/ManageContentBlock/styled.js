@@ -233,19 +233,29 @@ export const ResourceDataList = styled.div`
   align-items: start;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #888;
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+    }
   }
   @media (max-width: ${smallDesktopWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 142}px)`};

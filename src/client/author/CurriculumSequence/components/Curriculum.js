@@ -183,7 +183,7 @@ const DragHandle = styled.div`
   justify-content: center;
   cursor: grab;
   background: ${white};
-  padding-top: 0;
+  padding-top: 1.2em;
   padding-bottom: 0;
   padding-left: 0px;
   padding-right: 0px;

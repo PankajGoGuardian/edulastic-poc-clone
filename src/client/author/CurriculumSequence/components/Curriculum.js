@@ -68,7 +68,7 @@ const SortableItem = sortableElement(props => {
       {isReview && <SortableTestsHandle />}
       <DropContainer
         theme={themes.default}
-        width="calc(100% - 40px)"
+        width={isReview ? "calc(100% - 40px)" : "100%"}
         key={`drop-${id}-${moduleItem._id}`}
         drop={(arg1, item) => {
           onDrop(id, item);

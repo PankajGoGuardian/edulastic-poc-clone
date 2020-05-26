@@ -38,7 +38,7 @@ const ResourceRow = ({
         <ModuleDataName>
           <span>{data.contentTitle}</span>
         </ModuleDataName>
-        <ResouceIcon type={data.contentType} isAdded />
+        <ResouceIcon type={data.contentType} isAdded style={{ marginLeft: 10 }} />
       </ResourceWrapper>
       <LastColumn justifyContent="space-between" width={hideEditOptions || isStudent ? "auto" : null}>
         {!isStudent && (

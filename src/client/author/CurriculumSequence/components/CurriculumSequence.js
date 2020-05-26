@@ -842,8 +842,9 @@ const StyledFlexContainer = styled(FlexContainer)`
 
 const ContentContainer = styled.div`
   width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 400px)" : "100%")};
-  padding-right: 15px;
+  padding-right: 5px;
   margin: 0px auto;
+  margin-right: 10px;
   position: relative;
   height: ${({ showBreadCrumb }) => (showBreadCrumb ? "calc(100vh - 160px)" : "calc(100vh - 124px)")};
   overflow: auto;

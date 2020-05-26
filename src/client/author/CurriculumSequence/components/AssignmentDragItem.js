@@ -39,9 +39,11 @@ class AssignmentDragItem extends Component {
       showResource,
       urlHasUseThis,
       assessmentColums,
-      testTypeAndTags,
+      testTags,
+      testType,
       assignmentsRow,
       isDesktop,
+      isStudent,
       isManageContentActive,
       setEmbeddedVideoPreviewModal,
       fromPlaylist,
@@ -82,6 +84,7 @@ class AssignmentDragItem extends Component {
                       isReview
                     >
                       <span>{moduleData.contentTitle}</span>
+                      {testType}
                     </ModuleDataName>
                   </FlexContainer>
                 </AssignmentContent>
@@ -99,7 +102,7 @@ class AssignmentDragItem extends Component {
                     )}
                   </ModuleAssignedUnit>
                 )}
-                {testTypeAndTags}
+                {testTags}
               </WrapperContainer>
               {assessmentColums}
             </Fragment>
@@ -113,6 +116,7 @@ class AssignmentDragItem extends Component {
           deleteTest={deleteTest}
           moduleIndex={moduleIndex}
           itemIndex={id}
+          isStudent={isStudent}
           isTestType={isTestType}
           showResource={showResource}
           isManageContentActive={isManageContentActive}
@@ -170,7 +174,7 @@ Module.displayName = "SelectContentRowModule";
 
 const Assignment = styled(Row)`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   border: 0;
   cursor: grab;
   border-radius: 0;

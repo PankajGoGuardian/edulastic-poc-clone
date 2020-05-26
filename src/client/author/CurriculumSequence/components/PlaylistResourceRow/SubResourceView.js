@@ -20,6 +20,7 @@ export const SubResourceView = ({
   removeSubResource,
   isManageContentActive,
   type,
+  isStudent,
   fromPlaylist,
   inDiffrentiation
 }) => {
@@ -52,7 +53,7 @@ export const SubResourceView = ({
         <ResourceWrapper onClick={viewResource(data)} showBorder={isManageContentActive}>
           <ResouceIcon type={data.contentType} isAdded />
           <Title>{data.contentTitle}</Title>
-          {mode === "embedded" && (
+          {mode === "embedded" && !isStudent && (
             <InlineDelete title="Delete" onClick={deleteSubResource(data)}>
               <IconClose />
             </InlineDelete>

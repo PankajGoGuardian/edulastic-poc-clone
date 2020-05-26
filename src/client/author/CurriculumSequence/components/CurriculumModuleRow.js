@@ -947,7 +947,7 @@ class ModuleRow extends Component {
                     </CustomIcon>
                   );
 
-                  const testTypeAndTags = isTestType && (
+                  const testTags = isTestType && (
                     <FlexContainer height="25px" alignItems="center" justifyContent="flex-start">
                       <Tags
                         margin="5px 0px 0px 0px"
@@ -962,7 +962,6 @@ class ModuleRow extends Component {
                           {moduleData.status}
                         </TestStatus>
                       )}
-                      {testType}
                     </FlexContainer>
                   );
 
@@ -970,7 +969,7 @@ class ModuleRow extends Component {
                     <AssignmentsClasses assignmentRows={assignmentRows} handleActionClick={this.handleActionClick} />
                   );
 
-                  if (mode === "embedded") {
+                  if (mode === "embedded" && !(isStudent && moduleData.hidden)) {
                     return (
                       <OuterDropContainer>
                         <SortableElement
@@ -990,7 +989,8 @@ class ModuleRow extends Component {
                           urlHasUseThis={urlHasUseThis}
                           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                           assessmentColums={assessmentColums}
-                          testTypeAndTags={testTypeAndTags}
+                          testTags={testTags}
+                          testType={testType}
                           assignmentsRow={assignmentsRow}
                           isDesktop={isDesktop}
                           isStudent={isStudent}
@@ -1059,10 +1059,11 @@ class ModuleRow extends Component {
                                     >
                                       <Tooltip placement="bottomLeft" title={moduleData.contentTitle}>
                                         <span>{moduleData.contentTitle}</span>
+                                        {testType}
                                       </Tooltip>
-                                      {!isDesktop && testTypeAndTags}
+                                      {!isDesktop && testTags}
                                     </ModuleDataName>
-                                    {isDesktop && testTypeAndTags}
+                                    {isDesktop && testTags}
                                   </ModuleDataWrapper>
                                 </FirstColumn>
                                 {assessmentColums}
@@ -1218,8 +1219,7 @@ export const LastColumn = styled(StyledCol)`
   width: ${({ width }) => width || "180px"};
   margin-left: 15px;
   flex-shrink: 0;
-  padding-right: 10px;
-  justify-content: ${({ justifyContent }) => justifyContent || "flex-start"};
+  justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
   margin-left: ${({ ml }) => ml || ""};
 `;
 
@@ -1330,6 +1330,7 @@ export const ModuleDescription = styled(MathFormulaDisplay)`
   font-weight: ${props => props.fontWeight || "normal"};
   letter-spacing: 0.2px;
   max-width: 100%;
+  padding-right: 8px;
   ${({ collapsed }) => (collapsed ? ellipsisCss : "white-space: normal;")}
 
   @media (max-width: ${extraDesktopWidthMax}) {
@@ -1507,7 +1508,7 @@ export const AssignmentIcon = styled.span`
 const Assignment = styled.div`
   padding: 10px 0px;
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   position: relative;
   background: white !important;
   &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {

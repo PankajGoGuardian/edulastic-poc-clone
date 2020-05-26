@@ -16,7 +16,11 @@ export const ICONS_BY_TYPE = {
   website_resource: <WebsiteIcon />
 };
 
-export const ResouceIcon = ({ type, isAdded }) => <IconWrapper isAdded={isAdded}>{ICONS_BY_TYPE[type]}</IconWrapper>;
+export const ResouceIcon = ({ type, isAdded, ...rest }) => (
+  <IconWrapper isAdded={isAdded} {...rest}>
+    {ICONS_BY_TYPE[type]}
+  </IconWrapper>
+);
 
 const ResourceItem = ({
   contentTitle,

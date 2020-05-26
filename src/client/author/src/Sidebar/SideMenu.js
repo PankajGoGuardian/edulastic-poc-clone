@@ -13,10 +13,9 @@ import {
 } from "@edulastic/colors";
 import { get, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, message } from "antd";
-import styled, { css } from "styled-components";
+import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
+import styled from "styled-components";
 import {
   IconHeader,
   IconLogoCompact,
@@ -396,117 +395,117 @@ class SideMenu extends Component {
           >
             <AntIcon type={isCollapsed ? "right" : "left"} />
           </ToggleSidemenu>
-          <PerfectScrollbar>
-            {isMobile ? (
-              <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
-            ) : (
-              <LogoWrapper className="logoWrapper">
-                {broken ? (
-                  <Col span={3}>
-                    <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
-                  </Col>
-                ) : null}
-                <Col span={24} style={{ textAlign: isSidebarCollapsed ? "center" : "left" }}>
-                  {isCollapsed ? <LogoCompact /> : <Logo />}
+          {/* <PerfectScrollbar> */}
+          {isMobile ? (
+            <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+          ) : (
+            <LogoWrapper className="logoWrapper">
+              {broken ? (
+                <Col span={3}>
+                  <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
                 </Col>
-              </LogoWrapper>
-            )}
-            <MenuWrapper>
-              {locationState?.fadeSidebar && <Overlay />}
-              <Menu
-                selectedKeys={[defaultSelectedMenu.toString()]}
-                mode="inline"
-                onClick={item => this.handleMenu(item)}
-              >
-                {this.MenuItems.map((menu, index) => {
-                  if (menu.divider) {
-                    return <Divider isCollapsed={isCollapsed}>{!isCollapsed && <span>{menu.label}</span>}</Divider>;
-                  }
-                  /**
-                   * show playlist based on `features` list
-                   */
-                  if (menu.label === "PlayList Library" && !features.playlist) {
-                    return null;
-                  }
-                  // to hide Dashboard from side menu if a user is DA or SA.
-                  if (
-                    menu.label === "Dashboard" &&
-                    ["district-admin", "school-admin"].includes(userRole) &&
-                    !features.isCurator
-                  ) {
-                    return null;
-                  }
-                  // hide Gradebook from side menu based on features list
-                  if (menu.label === "Gradebook" && !features.gradebook) {
-                    return null;
-                  }
-                  const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
-                  const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
+              ) : null}
+              <Col span={24} style={{ textAlign: isSidebarCollapsed ? "center" : "left" }}>
+                {isCollapsed ? <LogoCompact /> : <Logo />}
+              </Col>
+            </LogoWrapper>
+          )}
+          <MenuWrapper>
+            {locationState?.fadeSidebar && <Overlay />}
+            <Menu selectedKeys={[defaultSelectedMenu.toString()]} mode="inline" onClick={item => this.handleMenu(item)}>
+              {this.MenuItems.map((menu, index) => {
+                if (menu.divider) {
                   return (
-                    <MenuItem
-                      data-cy={menu.label}
-                      key={index.toString()}
-                      onClick={this.toggleMenu}
-                      visible={isItemVisible}
-                      title={isCollapsed ? menu.label : ""}
-                    >
-                      <MenuIcon />
-                      {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
+                    <MenuItem divider visible data-cy={menu.label} key={index.toString()}>
+                      {!isCollapsed ? <span>{menu.label}</span> : <Hr />}
                     </MenuItem>
                   );
-                })}
-              </Menu>
-              <MenuFooter className="footerBottom">
-                <QuestionButton className={`questionBtn ${isCollapsed ? "active" : ""}`}>
-                  <IconContainer className={isCollapsed ? "active" : ""}>
-                    <HelpIcon />
-                  </IconContainer>
-                  {isCollapsed || isMobile ? null : <span>Help Center</span>}
-                </QuestionButton>
-                <UserInfoButton
-                  isVisible={isVisible}
-                  isCollapsed={isCollapsed}
-                  className={`userinfoBtn ${isCollapsed ? "active" : ""}`}
-                >
-                  <Dropdown
-                    onClick={this.toggleDropdown}
-                    overlayStyle={{
-                      position: "fixed",
-                      minWidth: isCollapsed ? "50px" : "220px",
-                      maxWidth: isCollapsed ? "50px" : "0px"
-                    }}
-                    className="footerDropdown"
-                    overlay={footerDropdownMenu}
-                    trigger={["click"]}
-                    placement="topCenter"
-                    isVisible={isVisible}
-                    onVisibleChange={this.handleVisibleChange}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                }
+                /**
+                 * show playlist based on `features` list
+                 */
+                if (menu.label === "PlayList Library" && !features.playlist) {
+                  return null;
+                }
+                // to hide Dashboard from side menu if a user is DA or SA.
+                if (
+                  menu.label === "Dashboard" &&
+                  ["district-admin", "school-admin"].includes(userRole) &&
+                  !features.isCurator
+                ) {
+                  return null;
+                }
+                // hide Gradebook from side menu based on features list
+                if (menu.label === "Gradebook" && !features.gradebook) {
+                  return null;
+                }
+                const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
+                const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
+                return (
+                  <MenuItem
+                    data-cy={menu.label}
+                    key={index.toString()}
+                    onClick={this.toggleMenu}
+                    visible={isItemVisible}
+                    title={isCollapsed ? menu.label : ""}
                   >
-                    <div>
-                      {profileThumbnail ? (
-                        <UserImg src={profileThumbnail} isCollapsed={isCollapsed} />
-                      ) : (
-                        <PseudoDiv isCollapsed={isCollapsed}>{this.getInitials()}</PseudoDiv>
-                      )}
-                      <div style={{ width: "100px" }}>
-                        {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
-                        {!isCollapsed && !isMobile && <UserType isVisible={isVisible}>{_userRole}</UserType>}
-                      </div>
-
-                      {!isCollapsed && !isMobile && (
-                        <IconDropdown
-                          style={{ fontSize: 15, pointerEvents: "none" }}
-                          className="drop-caret"
-                          type={isVisible ? "caret-up" : "caret-down"}
-                        />
-                      )}
+                    <MenuIcon />
+                    <LabelMenuItem isCollapsed={isCollapsed}>{menu.label}</LabelMenuItem>
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+            <MenuFooter>
+              <QuestionButton isCollapsed={isCollapsed}>
+                <IconContainer className={isCollapsed ? "active" : ""}>
+                  <HelpIcon />
+                </IconContainer>
+                <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
+              </QuestionButton>
+              <UserInfoButton
+                isVisible={isVisible}
+                isCollapsed={isCollapsed}
+                className={`userinfoBtn ${isCollapsed ? "active" : ""}`}
+              >
+                <Dropdown
+                  onClick={this.toggleDropdown}
+                  overlayStyle={{
+                    position: "fixed",
+                    minWidth: isCollapsed ? "50px" : "220px",
+                    maxWidth: isCollapsed ? "50px" : "0px"
+                  }}
+                  className="footerDropdown"
+                  overlay={footerDropdownMenu}
+                  trigger={["click"]}
+                  placement="topCenter"
+                  isVisible={isVisible}
+                  onVisibleChange={this.handleVisibleChange}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  <div>
+                    {profileThumbnail ? (
+                      <UserImg src={profileThumbnail} isCollapsed={isCollapsed} />
+                    ) : (
+                      <PseudoDiv isCollapsed={isCollapsed}>{this.getInitials()}</PseudoDiv>
+                    )}
+                    <div style={{ width: "100px", display: !isCollapsed && !isMobile ? "block" : "none" }}>
+                      <UserName>{userName || "Anonymous"}</UserName>
+                      <UserType isVisible={isVisible}>{_userRole}</UserType>
                     </div>
-                  </Dropdown>
-                </UserInfoButton>
-              </MenuFooter>
-            </MenuWrapper>
-          </PerfectScrollbar>
+
+                    {!isCollapsed && !isMobile && (
+                      <IconDropdown
+                        style={{ fontSize: 15, pointerEvents: "none" }}
+                        className="drop-caret"
+                        type={isVisible ? "caret-up" : "caret-down"}
+                      />
+                    )}
+                  </div>
+                </Dropdown>
+              </UserInfoButton>
+            </MenuFooter>
+          </MenuWrapper>
+          {/* </PerfectScrollbar> */}
         </SideBar>
       </FixedSidebar>
     );
@@ -592,18 +591,6 @@ const SideBar = styled(Layout.Sider)`
   z-index: 22;
   padding-bottom: 0;
 
-  &.ant-layout-sider-collapsed .footerBottom {
-    padding: 8px 8px 0px;
-    width: 70px;
-  }
-  &.ant-layout-sider-collapsed .questionBtn {
-    width: 50px;
-    height: 50px;
-    padding: 0px;
-    margin: 0 auto;
-    justify-content: center;
-    margin-bottom: 15px;
-  }
   &.ant-layout-sider-collapsed .userinfoBtn .ant-select-arrow {
     right: 15px;
     top: 25px;
@@ -843,10 +830,12 @@ const MenuItem = styled(AntMenu.Item)`
   line-height: 1.36;
   letter-spacing: 0.3px;
   text-align: left;
-  color: ${props => props.theme.sideMenu.menuItemLinkColor};
+  color: ${props =>
+    props.divider ? props.theme.sideMenu.sidebarDividerColor : props.theme.sideMenu.menuItemLinkColor};
   display: ${props => (props.visible ? "flex" : "none !important")};
   align-items: center;
   margin-top: 16px;
+  text-transform: ${({ divider }) => divider && "uppercase"};
 `;
 
 const UserName = styled.div`
@@ -962,16 +951,25 @@ const MenuFooter = styled.div`
   }
 `;
 
+const HelpText = styled.span`
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: ${({ isCollapsed }) => (isCollapsed ? "none" : "block")};
+`;
+
 const QuestionButton = styled.div`
-  height: 24px;
-  font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
-  color: ${props => props.theme.sideMenu.helpButtonTextColor};
-  margin: ${({ isCollapsed }) => (isCollapsed ? "0px 0px 26px 0px" : "0px 16px 26px 26px")};
+  height: 38px;
+  margin: 8px 0px;
   display: flex;
-  align-items: center;
-  justify-content: ${({ isCollapsed }) => (isCollapsed ? "center" : "")};
   position: relative;
   overflow: hidden;
+  align-items: center;
+  padding: ${({ isCollapsed }) => (isCollapsed ? "5px 0px" : "5px 25px")};
+  justify-content: ${({ isCollapsed }) => (isCollapsed ? "center" : "flex-start")};
+  font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
+  color: ${props => props.theme.sideMenu.helpButtonTextColor};
+
   cursor: pointer;
   svg {
     fill: ${props => props.theme.sideMenu.helpIconColor};
@@ -996,12 +994,6 @@ const QuestionButton = styled.div`
   }
 `;
 
-const collapsedUserImagStyle = css`
-  position: absolute;
-  left: 0px;
-  margin: 0;
-`;
-
 const UserImg = styled.div`
   width: 50px;
   height: 50px;
@@ -1009,14 +1001,12 @@ const UserImg = styled.div`
   background-position: center center;
   background-size: cover;
   border-radius: 50%;
-  margin: 10px 10px 15px 20px;
-  ${({ isCollapsed }) => isCollapsed && collapsedUserImagStyle}
+  margin: ${({ isCollapsed }) => (isCollapsed ? "0px auto" : "10px 10px 15px 20px")};
 `;
 
 const UserInfoButton = styled.div`
   cursor: pointer;
   position: relative;
-
   &.active {
     padding: 0;
     background: transparent;
@@ -1089,7 +1079,7 @@ const PseudoDiv = styled.div`
   line-height: 50px;
   text-align: center;
   text-transform: uppercase;
-  ${({ isCollapsed }) => isCollapsed && collapsedUserImagStyle}
+  margin: ${({ isCollapsed }) => (isCollapsed ? "0px auto" : "10px 10px 15px 20px")};
 `;
 
 const Logo = styled(IconHeader)`
@@ -1113,7 +1103,7 @@ const IconContainer = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: 28px;
+  margin-right: 24px;
   position: ${({ isCollapsed }) => (isCollapsed ? "absolute" : "relative")};
 
   &.active {
@@ -1144,20 +1134,11 @@ const LabelMenuItem = styled.span`
   max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: ${({ isCollapsed }) => (isCollapsed ? "none" : "block")};
 `;
 
-const Divider = styled.div`
-  text-transform: uppercase;
-  max-width: 100%;
-  font-weight: 600;
-  letter-spacing: 0.1px;
-  margin: ${({ isCollapsed }) => (isCollapsed ? "30px 14px" : "32px 0px 16px 24px")};
-  color: ${({ theme }) => theme.sideMenu.sidebarDividerColor};
-  font-size: ${({ theme }) => theme.sideMenu.userInfoNameFontSize};
-  ${({ isCollapsed, theme }) =>
-    isCollapsed &&
-    `
-    border: 1px solid ${theme.sideMenu.sidebarDividerColor}; 
-    opacity: 0.2; 
-  `}
+const Hr = styled.div`
+  border: ${({ theme }) => `1px solid ${theme.sideMenu.sidebarDividerColor}`};
+  opacity: 0.2;
+  width: 80%;
 `;

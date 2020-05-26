@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   darkGrey2,
   desktopWidth,
@@ -7,11 +8,11 @@ import {
   themeColor,
   white
 } from "@edulastic/colors";
+import { curriculumSequencesApi } from "@edulastic/api";
 import { ProgressBar } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
-import { Button, Col, Row, Spin, Tooltip } from "antd";
-import { isEmpty, last } from "lodash";
-import React from "react";
+import { Button, Col, Row, Spin, Tooltip, message } from "antd";
+import { isEmpty, last, pick } from "lodash";
 import { FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -24,6 +25,9 @@ import NoDataNotification from "../../../common/components/NoDataNotification";
 import { resumeAssignmentAction, startAssignmentAction } from "../../Assignments/ducks";
 import PlayListHeader from "../../sharedComponents/Header/PlayListHeader";
 import { getActivitiesByResourceId, getDateKeysSelector, getIsLoadingSelector, recommendationsTimed } from "../ducks";
+import { SubResourceView } from "../../../author/CurriculumSequence/components/PlaylistResourceRow";
+import { submitLTIForm } from "../../../author/CurriculumSequence/components/CurriculumModuleRow";
+import EmbeddedVideoPreviewModal from "../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal";
 
 const Recommendations = ({
   startAssignment,
@@ -34,6 +38,7 @@ const Recommendations = ({
   recommendationsByTime,
   dateKeys
 }) => {
+  const [isVideoResourcePreviewModal, setEmbeddedVideoPreviewModal] = useState(false);
   const handleStartPractice = ({ testId, classId, studentRecommendationId, activities }) => _ => {
     const lastActivity = last(activities) || {};
 
@@ -55,6 +60,16 @@ const Recommendations = ({
     }
   };
 
+  const showLtiResource = async resource => {
+    resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
+    try {
+      const signedRequest = await curriculumSequencesApi.getSignedRequest({ resource });
+      submitLTIForm(signedRequest);
+    } catch (e) {
+      message.error("Failed to load the resource");
+    }
+  };
+
   return (
     <div>
       <PlayListHeader />
@@ -67,6 +82,7 @@ const Recommendations = ({
               <div className="item" style={{ width: "100%" }}>
                 {dateKeys.map(dateStamp => {
                   const data = recommendationsByTime[dateStamp];
+
                   return (
                     <RowWrapper>
                       <Date>RECOMMENDED {<span dangerouslySetInnerHTML={{ __html: data[0].createdAt }} />}</Date>
@@ -76,108 +92,134 @@ const Recommendations = ({
                         const { score, maxScore } = lastActivity;
                         const scorePercentage = Math.round((score / maxScore) * 100);
                         const { recommendedResource = {} } = recommendation;
+
                         return (
-                          <Assignment
-                            data-cy="recommendation"
-                            data-test={recommendedResource._id}
-                            key={recommendedResource._id}
-                            borderRadius="unset"
-                            boxShadow="unset"
-                          >
-                            <ModuleFocused />
-                            <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
-                            <Row
-                              type="flex"
-                              gutter={20}
-                              align="flex-end"
-                              style={{ width: "calc(100% - 25px)" }}
-                              align="flex-end"
+                          <>
+                            <Assignment
+                              data-cy="recommendation"
+                              data-test={recommendedResource._id}
+                              key={recommendedResource._id}
+                              borderRadius="unset"
+                              boxShadow="unset"
                             >
-                              <Col span={10} align="flex-end">
-                                <ModuleDataWrapper>
-                                  <ModuleDataName>
-                                    <div style={{ textOverflow: "ellipsis", overflow: "hidden", maxWidth: "70%" }}>
-                                      <Tooltip placement="bottomLeft" title={recommendation.recommendationType.name}>
-                                        <EllipticSpan data-cy="assignmentName">{recommendedResource.name}</EllipticSpan>
-                                      </Tooltip>
-                                      <Tags
-                                        data-cy="tags"
-                                        margin="5px 0px 0px 0px"
-                                        tags={recommendedResource?.metadata?.standardIdentifiers || []}
-                                        show={2}
-                                        isPlaylist
-                                      />
-                                    </div>
-                                    <StatusWrapper
-                                      data-cy="recommendationType"
-                                      hasTags={recommendedResource?.metadata?.standardIdentifiers?.length}
-                                    >
-                                      {recommendation.recommendationType}
-                                    </StatusWrapper>
-                                  </ModuleDataName>
-                                </ModuleDataWrapper>
-                              </Col>
-                              <StyledCol
-                                span={4}
-                                style={{ flexDirection: "column" }}
-                                align="flex-start"
-                                justify="flex-end"
-                              >
-                                <span>Mastery</span>
-                                <ProgressBar
-                                  data-cy="mastery"
-                                  strokeColor={getProgressColor(scorePercentage)}
-                                  strokeWidth={13}
-                                  percent={scorePercentage}
-                                  format={percent =>
-                                    !window.isNaN(percent) && !isEmpty(lastActivity) ? `${percent}%` : ""
-                                  }
-                                />
-                              </StyledCol>
-                              <StyledCol span={2} justify="center" align="flex-end">
-                                <StyledLabel
-                                  data-cy="score"
-                                  textColor={greyThemeDark1}
-                                  fontStyle="12px/17px Open Sans"
-                                  padding="2px"
-                                  justify="center"
+                              <ModuleFocused />
+                              <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
+                              {recommendedResource.resourceType === "TEST" ? (
+                                <Row
+                                  type="flex"
+                                  gutter={20}
+                                  align="flex-end"
+                                  style={{ width: "calc(100% - 25px)" }}
+                                  align="flex-end"
                                 >
-                                  {score >= 0 && maxScore ? `${score}/${maxScore}` : "-"}
-                                </StyledLabel>
-                              </StyledCol>
-                              <StyledCol span={7} justify="flex-end" align="flex-end">
-                                <AssignmentButton>
-                                  <Button
-                                    data-cy="practice"
-                                    onClick={handleStartPractice({
-                                      testId: recommendedResource._id,
-                                      classId: recommendation.groupId,
-                                      studentRecommendationId: recommendation._id,
-                                      activities
-                                    })}
+                                  <Col span={10} align="flex-end">
+                                    <ModuleDataWrapper>
+                                      <ModuleDataName>
+                                        <div style={{ textOverflow: "ellipsis", overflow: "hidden", maxWidth: "70%" }}>
+                                          <Tooltip
+                                            placement="bottomLeft"
+                                            title={recommendation.recommendationType.name}
+                                          >
+                                            <EllipticSpan data-cy="assignmentName">
+                                              {recommendedResource.name}
+                                            </EllipticSpan>
+                                          </Tooltip>
+                                          <Tags
+                                            data-cy="tags"
+                                            margin="5px 0px 0px 0px"
+                                            tags={recommendedResource?.metadata?.standardIdentifiers || []}
+                                            show={2}
+                                            isPlaylist
+                                          />
+                                        </div>
+                                        <StatusWrapper
+                                          data-cy="recommendationType"
+                                          hasTags={recommendedResource?.metadata?.standardIdentifiers?.length}
+                                        >
+                                          {recommendation.recommendationType}
+                                        </StatusWrapper>
+                                      </ModuleDataName>
+                                    </ModuleDataWrapper>
+                                  </Col>
+                                  <StyledCol
+                                    span={4}
+                                    style={{ flexDirection: "column" }}
+                                    align="flex-start"
+                                    justify="flex-end"
                                   >
-                                    {lastActivity.status === testActivityStatus.START
-                                      ? "RESUME PRACTICE"
-                                      : "START PRACTICE"}
-                                  </Button>
-                                </AssignmentButton>
-                                {lastActivity.status === testActivityStatus.SUBMITTED && (
-                                  <StyledLink
-                                    data-cy="review"
-                                    to={{
-                                      pathname: `/home/class/${recommendation.groupId}/test/${
-                                        recommendedResource._id
-                                      }/testActivityReport/${lastActivity._id}`,
-                                      fromRecommendations: true,
-                                      playListId: match.params?.playlistId
-                                    }}
-                                  >
-                                    REVIEW
-                                  </StyledLink>
-                                )}
-                              </StyledCol>
-                            </Row>
-                          </Assignment>
+                                    <span>Mastery</span>
+                                    <ProgressBar
+                                      data-cy="mastery"
+                                      strokeColor={getProgressColor(scorePercentage)}
+                                      strokeWidth={13}
+                                      percent={scorePercentage}
+                                      format={percent =>
+                                        !window.isNaN(percent) && !isEmpty(lastActivity) ? `${percent}%` : ""
+                                      }
+                                    />
+                                  </StyledCol>
+                                  <StyledCol span={2} justify="center" align="flex-end">
+                                    <StyledLabel
+                                      data-cy="score"
+                                      textColor={greyThemeDark1}
+                                      fontStyle="12px/17px Open Sans"
+                                      padding="2px"
+                                      justify="center"
+                                    >
+                                      {score >= 0 && maxScore ? `${score}/${maxScore}` : "-"}
+                                    </StyledLabel>
+                                  </StyledCol>
+                                  <StyledCol span={7} justify="flex-end" align="flex-end">
+                                    <AssignmentButton>
+                                      <Button
+                                        data-cy="practice"
+                                        onClick={handleStartPractice({
+                                          testId: recommendedResource._id,
+                                          classId: recommendation.groupId,
+                                          studentRecommendationId: recommendation._id,
+                                          activities
+                                        })}
+                                      >
+                                        {lastActivity.status === testActivityStatus.START
+                                          ? "RESUME PRACTICE"
+                                          : "START PRACTICE"}
+                                      </Button>
+                                    </AssignmentButton>
+                                    {lastActivity.status === testActivityStatus.SUBMITTED && (
+                                      <StyledLink
+                                        data-cy="review"
+                                        to={{
+                                          pathname: `/home/class/${recommendation.groupId}/test/${
+                                            recommendedResource._id
+                                          }/testActivityReport/${lastActivity._id}`,
+                                          fromRecommendations: true,
+                                          playListId: match.params?.playlistId
+                                        }}
+                                      >
+                                        REVIEW
+                                      </StyledLink>
+                                    )}
+                                  </StyledCol>
+                                </Row>
+                              ) : (
+                                <SubResourceView
+                                  data={{ resources: [recommendedResource] }}
+                                  showLtiResource={showLtiResource}
+                                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                                />
+                              )}
+                            </Assignment>
+
+                            {recommendedResource.resourceType === "TEST" && recommendedResource.resources?.length && (
+                              <ResourcesContainer>
+                                <SubResourceView
+                                  data={{ resources }}
+                                  showResource={showLtiResource}
+                                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                                />
+                              </ResourcesContainer>
+                            )}
+                          </>
                         );
                       })}
                       {/* TODO will remove below description when there is a confirmation on the palylist data */}
@@ -221,6 +263,12 @@ const Recommendations = ({
             )}
           </Wrapper>
         </CurriculumSequenceWrapper>
+      )}
+      {isVideoResourcePreviewModal && (
+        <EmbeddedVideoPreviewModal
+          closeCallback={() => setEmbeddedVideoPreviewModal(false)}
+          isVisible={isVideoResourcePreviewModal}
+        />
       )}
     </div>
   );
@@ -435,4 +483,12 @@ const StyledLink = styled(Link)`
     color: white;
     fill: white;
   }
+`;
+
+const ResourcesContainer = styled.div`
+  width: calc(100% - 100px);
+  margin-left: 40px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 `;

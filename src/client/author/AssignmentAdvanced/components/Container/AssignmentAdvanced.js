@@ -51,6 +51,7 @@ import {
   bulkUnassignAssignmentAction,
   bulkDownloadGradesAndResponsesAction
 } from "../../ducks";
+import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
 
 const { assignmentStatusBg } = authorAssignment;
 
@@ -74,13 +75,13 @@ class AssignmentAdvanced extends Component {
 
   handleCreate = () => {};
 
-  onOpenReleaseScoreSettings = (testId, assignmentId) => {
+  onOpenReleaseScoreSettings = testId => {
     const { toggleReleaseGradePopUp } = this.props;
     toggleReleaseGradePopUp(true);
     this.setState({ currentTestId: testId });
   };
 
-  renderBreadcrumbs = (assingment, history) => {
+  renderBreadcrumbs = assingment => {
     const { filterStatus } = this.state;
 
     return (
@@ -166,6 +167,7 @@ class AssignmentAdvanced extends Component {
       bulkReleaseScoreAssignmentRequest,
       bulkUnassignAssignmentRequest,
       bulkDownloadGradesAndResponsesRequest,
+      toggleDeleteAssignmentModal,
       location
     } = this.props;
     const { testId } = match.params;
@@ -230,6 +232,7 @@ class AssignmentAdvanced extends Component {
                 bulkReleaseScoreAssignmentRequest={bulkReleaseScoreAssignmentRequest}
                 bulkUnassignAssignmentRequest={bulkUnassignAssignmentRequest}
                 bulkDownloadGradesAndResponsesRequest={bulkDownloadGradesAndResponsesRequest}
+                toggleDeleteAssignmentModal={toggleDeleteAssignmentModal}
                 testType={testType}
                 testName={assingment.title}
               />
@@ -277,7 +280,8 @@ const enhance = compose(
       bulkMarkAsDoneAssignmentRequest: bulkMarkAsDoneAssignmentAction,
       bulkReleaseScoreAssignmentRequest: bulkReleaseScoreAssignmentAction,
       bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
-      bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction
+      bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
+      toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction
     }
   )
 );

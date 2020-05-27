@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button, Radio, Row } from "antd";
 import styled from "styled-components";
-
+import { EduButton } from "@edulastic/common";
 import {
   ModalWrapper,
   InitOptions,
-  StyledButton,
   StyledInput,
   ModalFooter,
   LightGreenSpan
@@ -18,26 +16,30 @@ import {
   deleteAssignmentRequestAction as deleteAssignmetByTestId
 } from "../../../sharedDucks/assignments";
 import { deleteAssignmentAction as deleteAssigmnetByClass } from "../../../TestPage/components/Assign/ducks";
-import { EduButton } from "@edulastic/common";
 
 const DeleteAssignmentModal = ({
   toggleDeleteAssignmentModalState,
-  toggleDeleteAssignmentModalAction,
-  deleteAssignmetByTestId,
-  deleteAssigmnetByClass,
+  toggleDeleteAssignmentModal,
+  deleteAssignmetByTestIdRequest,
+  deleteAssigmnetByClassRequest,
   testId,
   testName,
   assignmentId,
   classId,
-  lcb
+  lcb,
+  advancedAssignments,
+  handleUnassignAssignments
 }) => {
   const [confirmText, setConfirmText] = useState("");
   const handleUnassign = () => {
     if (confirmText.toLocaleLowerCase() === "unassign") {
       if (lcb) {
-        return deleteAssigmnetByClass({ assignmentId, classId, testId });
+        return deleteAssigmnetByClassRequest({ assignmentId, classId, testId });
       }
-      deleteAssignmetByTestId(testId);
+      if (advancedAssignments) {
+        return handleUnassignAssignments();
+      }
+      deleteAssignmetByTestIdRequest(testId);
     }
   };
 
@@ -46,10 +48,10 @@ const DeleteAssignmentModal = ({
       visible={toggleDeleteAssignmentModalState}
       width="750px"
       title="Unassign"
-      onCancel={() => toggleDeleteAssignmentModalAction(false)}
+      onCancel={() => toggleDeleteAssignmentModal(false)}
       footer={[
         <ModalFooter>
-          <EduButton isGhost key="cancel" onClick={() => toggleDeleteAssignmentModalAction(false)}>
+          <EduButton isGhost key="cancel" onClick={() => toggleDeleteAssignmentModal(false)}>
             No, Cancel
           </EduButton>
           <EduButton
@@ -104,9 +106,9 @@ const ConnectedDeleteAssignmentModal = connect(
     toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state)
   }),
   {
-    toggleDeleteAssignmentModalAction,
-    deleteAssignmetByTestId,
-    deleteAssigmnetByClass
+    toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+    deleteAssignmetByTestIdRequest: deleteAssignmetByTestId,
+    deleteAssigmnetByClassRequest: deleteAssigmnetByClass
   }
 )(DeleteAssignmentModal);
 

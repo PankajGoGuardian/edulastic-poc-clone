@@ -2,6 +2,7 @@
   "tests": [
     {
       "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTMyNzNkYzVmNzhjMzAwMDgzNDIwYzEiLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZTMyNzRhYzBmYjYyMjAwMDhmZTI2ZGQiLCJpYXQiOjE1OTAxMzE1NTIsImV4cCI6MTU5MjcyMzU1Mn0.CaXOECO7FWGaMSqntP57BO_PDoNOmiCgXvBIOzjLqtE",
+      "userId": "5e3273dc5f78c300083420c1",
       "testName": "Math Test 1",
       "description": "This is dummy test 1",
       "grades": "Grade 5",
@@ -12,6 +13,7 @@
     },
     {
       "authToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTMyNzNkYzVmNzhjMzAwMDgzNDIwYzEiLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZTMyNzRhYzBmYjYyMjAwMDhmZTI2ZGQiLCJpYXQiOjE1OTAxMzE1NTIsImV4cCI6MTU5MjcyMzU1Mn0.CaXOECO7FWGaMSqntP57BO_PDoNOmiCgXvBIOzjLqtE",
+      "userId": "5e3273dc5f78c300083420c1",
       "testName": "Math Test 2",
       "description": "This is dummy test 2",
       "grades": "Grade 7",

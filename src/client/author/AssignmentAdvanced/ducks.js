@@ -23,54 +23,66 @@ export const bulkUnassignAssignmentAction = createAction(BULK_UNASSIGN_ASSIGNMEN
 function* bulkOpenAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkOpenAssignment, payload);
+    notification({ type: "info", msg: "Starting Bulk Action Request" });
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data?.message });
+    const errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    notification({ msg: errorMessage });
   }
 }
 
 function* bulkCloseAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkCloseAssignment, payload);
+    notification({ type: "info", msg: "Starting Bulk Action Request" });
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data?.message });
+    const errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    notification({ msg: errorMessage });
   }
 }
 
 function* bulkPauseAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkPauseAssignment, payload);
+    notification({ type: "info", msg: "Starting Bulk Action Request" });
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data?.message });
+    const errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    notification({ msg: errorMessage });
   }
 }
 
 function* bulkMarkAsDoneAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkMarkAsDoneAssignment, payload);
+    notification({ type: "info", msg: "Starting Bulk Action Request" });
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data?.message });
+    const errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    notification({ msg: errorMessage });
   }
 }
 
 function* bulkReleaseScoreAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkReleaseScoreAssignment, payload);
+    notification({ type: "info", msg: "Starting Bulk Action Request" });
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data?.message });
+    const errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    notification({ msg: errorMessage });
   }
 }
 
 function* bulkUnassignAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.bulkUnassignAssignment, payload);
+    notification({ type: "info", msg: "Starting Bulk Action Request" });
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data?.message });
+    const errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    notification({ msg: errorMessage });
   }
 }
 

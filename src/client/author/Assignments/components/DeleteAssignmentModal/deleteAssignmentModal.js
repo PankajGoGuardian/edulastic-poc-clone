@@ -35,7 +35,7 @@ const DeleteAssignmentModal = ({
   const handleUnassign = () => {
     if (confirmText.toLocaleLowerCase() === "unassign") {
       if (lcb) {
-        return deleteAssigmnetByClass({ assignmentId, classId });
+        return deleteAssigmnetByClass({ assignmentId, classId, testId });
       }
       deleteAssignmetByTestId(testId);
     }

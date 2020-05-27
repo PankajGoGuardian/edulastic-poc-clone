@@ -119,7 +119,9 @@ const TableList = ({
   bulkMarkAsDoneAssignmentRequest,
   bulkReleaseScoreAssignmentRequest,
   bulkUnassignAssignmentRequest,
-  testType
+  bulkDownloadGradesAndResponsesRequest,
+  testType,
+  testName
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
@@ -177,17 +179,23 @@ const TableList = ({
       testType
     };
     if (type === "open") bulkOpenAssignmentRequest(payload);
-    if (type === "close") bulkCloseAssignmentRequest(payload);
-    if (type === "pause") bulkPauseAssignmentRequest(payload);
-    if (type === "markAsDone") bulkMarkAsDoneAssignmentRequest(payload);
-    if (type === "releaseScore") {
+    else if (type === "close") bulkCloseAssignmentRequest(payload);
+    else if (type === "pause") bulkPauseAssignmentRequest(payload);
+    else if (type === "markAsDone") bulkMarkAsDoneAssignmentRequest(payload);
+    else if (type === "releaseScore") {
       payload.data = {
         assignmentGroups: payload.data,
         releaseScore: releaseScoreResponse
       };
       bulkReleaseScoreAssignmentRequest(payload);
+    } else if (type === "unassign") bulkUnassignAssignmentRequest(payload);
+    else {
+      payload.testName = testName;
+      if (type === "downloadResponses") {
+        payload.isResponseRequired = true;
+      }
+      bulkDownloadGradesAndResponsesRequest(payload);
     }
-    if (type === "unassign") bulkUnassignAssignmentRequest(payload);
   };
 
   const onUpdateReleaseScoreSettings = releaseScoreResponse => {
@@ -198,8 +206,8 @@ const TableList = ({
   const moreOptions = () => (
     <MoreOptionsContainer>
       <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>Release Score</MoreOption>
-      <MoreOption>Download Grades</MoreOption>
-      <MoreOption>Download Responses</MoreOption>
+      <MoreOption onClick={() => handleBulkAction("downloadGrades")}>Download Grades</MoreOption>
+      <MoreOption onClick={() => handleBulkAction("downloadResponses")}>Download Responses</MoreOption>
       <MoreOption onClick={() => handleBulkAction("unassign")}>Unassign</MoreOption>
     </MoreOptionsContainer>
   );

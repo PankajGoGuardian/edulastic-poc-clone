@@ -93,19 +93,19 @@ export const receiveAnswersAction = (assignmentId, classId, questionId, itemId) 
   payload: { assignmentId, classId, questionId, itemId }
 });
 
-export const markAsDoneAction = (assignmentId, classId) => ({
+export const markAsDoneAction = (assignmentId, classId, testId) => ({
   type: SET_MARK_AS_DONE,
-  payload: { assignmentId, classId }
+  payload: { assignmentId, classId, testId }
 });
 
-export const openAssignmentAction = (assignmentId, classId) => ({
+export const openAssignmentAction = (assignmentId, classId, testId) => ({
   type: OPEN_ASSIGNMENT,
-  payload: { assignmentId, classId }
+  payload: { assignmentId, classId, testId }
 });
 
-export const closeAssignmentAction = (assignmentId, classId) => ({
+export const closeAssignmentAction = (assignmentId, classId, testId) => ({
   type: CLOSE_ASSIGNMENT,
-  payload: { assignmentId, classId }
+  payload: { assignmentId, classId, testId }
 });
 
 export const markAbsentAction = (assignmentId, classId, students) => ({

@@ -48,7 +48,8 @@ import {
   bulkPauseAssignmentAction,
   bulkMarkAsDoneAssignmentAction,
   bulkReleaseScoreAssignmentAction,
-  bulkUnassignAssignmentAction
+  bulkUnassignAssignmentAction,
+  bulkDownloadGradesAndResponsesAction
 } from "../../ducks";
 
 const { assignmentStatusBg } = authorAssignment;
@@ -164,6 +165,7 @@ class AssignmentAdvanced extends Component {
       bulkMarkAsDoneAssignmentRequest,
       bulkReleaseScoreAssignmentRequest,
       bulkUnassignAssignmentRequest,
+      bulkDownloadGradesAndResponsesRequest,
       location
     } = this.props;
     const { testId } = match.params;
@@ -227,7 +229,9 @@ class AssignmentAdvanced extends Component {
                 bulkMarkAsDoneAssignmentRequest={bulkMarkAsDoneAssignmentRequest}
                 bulkReleaseScoreAssignmentRequest={bulkReleaseScoreAssignmentRequest}
                 bulkUnassignAssignmentRequest={bulkUnassignAssignmentRequest}
+                bulkDownloadGradesAndResponsesRequest={bulkDownloadGradesAndResponsesRequest}
                 testType={testType}
+                testName={assingment.title}
               />
             </StyledCard>
           </TableWrapper>
@@ -272,7 +276,8 @@ const enhance = compose(
       bulkPauseAssignmentRequest: bulkPauseAssignmentAction,
       bulkMarkAsDoneAssignmentRequest: bulkMarkAsDoneAssignmentAction,
       bulkReleaseScoreAssignmentRequest: bulkReleaseScoreAssignmentAction,
-      bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction
+      bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
+      bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction
     }
   )
 );

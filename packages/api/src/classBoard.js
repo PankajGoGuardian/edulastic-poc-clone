@@ -29,27 +29,27 @@ const releaseScore = ({ assignmentId, classId, releaseScore, testId, filterState
     })
     .then(result => result.data);
 
-const markAsDone = ({ assignmentId, classId }) =>
+const markAsDone = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
       method: "put",
-      url: `${prefix}/${assignmentId}/mark-as-done?groupId=${classId}`
+      url: `${prefix}/${assignmentId}/mark-as-done?groupId=${classId}&testId=${testId}`
     })
     .then(result => result.data);
 
-const openAssignment = ({ assignmentId, classId }) =>
+const openAssignment = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
       method: "put",
-      url: `${prefix}/${assignmentId}/open?groupId=${classId}`
+      url: `${prefix}/${assignmentId}/open?groupId=${classId}&testId=${testId}`
     })
     .then(result => result.data);
 
-const closeAssignment = ({ assignmentId, classId }) =>
+const closeAssignment = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
       method: "put",
-      url: `${prefix}/${assignmentId}/close?groupId=${classId}`
+      url: `${prefix}/${assignmentId}/close?groupId=${classId}&testId=${testId}`
     })
     .then(result => result.data);
 
@@ -71,11 +71,11 @@ const markSubmitted = ({ assignmentId, classId, students }) =>
     })
     .then(result => result.data.result);
 
-const togglePause = ({ assignmentId, classId, value }) =>
+const togglePause = ({ assignmentId, classId, value, testId }) =>
   api
     .callApi({
       method: "put",
-      url: `${prefix}/${assignmentId}/toggle-pause?groupId=${classId}&value=${value}`
+      url: `${prefix}/${assignmentId}/toggle-pause?groupId=${classId}&value=${value}&testId=${testId}`
     })
     .then(result => result.data);
 
@@ -183,6 +183,16 @@ const bulkUnassignAssignment = ({ testId, data, testType }) =>
     })
     .then(response => response.data);
 
+const bulkDownloadGrades = ({ testId, data, testType }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/test/${testId}/bulk-download-grades-and-response`,
+      data,
+      params: Object.keys(data).length === 0 ? { testType } : {}
+    })
+    .then(response => response.data);
+
 export default {
   gradebook,
   testActivity,
@@ -203,5 +213,6 @@ export default {
   bulkPauseAssignment,
   bulkMarkAsDoneAssignment,
   bulkReleaseScoreAssignment,
-  bulkUnassignAssignment
+  bulkUnassignAssignment,
+  bulkDownloadGrades
 };

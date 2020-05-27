@@ -141,16 +141,25 @@ class ClassHeader extends Component {
   };
 
   handleReleaseScore = releaseScore => {
-    const { match, setReleaseScore, toggleReleaseGradePopUp } = this.props;
+    const {
+      match,
+      setReleaseScore,
+      toggleReleaseGradePopUp,
+      additionalData: { testId }
+    } = this.props;
     const { classId, assignmentId } = match.params;
-    setReleaseScore(assignmentId, classId, releaseScore);
+    setReleaseScore(assignmentId, classId, releaseScore, testId);
     toggleReleaseGradePopUp(false);
   };
 
   handleMarkAsDone = () => {
-    const { setMarkAsDone, match } = this.props;
+    const {
+      setMarkAsDone,
+      match,
+      additionalData: { testId }
+    } = this.props;
     const { classId, assignmentId } = match.params;
-    setMarkAsDone(assignmentId, classId);
+    setMarkAsDone(assignmentId, classId, testId);
   };
 
   handleOpenAssignment = () => {
@@ -164,13 +173,17 @@ class ClassHeader extends Component {
       return message.warn(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
     `);
     }
-    openAssignment(assignmentId, classId);
+    openAssignment(assignmentId, classId, additionalData.testId);
   };
 
   handleCloseAssignment = () => {
-    const { closeAssignment, match } = this.props;
+    const {
+      closeAssignment,
+      match,
+      additionalData: { testId }
+    } = this.props;
     const { classId, assignmentId } = match.params;
-    closeAssignment(assignmentId, classId);
+    closeAssignment(assignmentId, classId, testId);
     this.toggleCloseModal(false);
   };
 
@@ -178,10 +191,10 @@ class ClassHeader extends Component {
     const {
       togglePauseAssignment,
       match,
-      additionalData: { testName }
+      additionalData: { testName, testId }
     } = this.props;
     const { classId, assignmentId } = match.params;
-    togglePauseAssignment({ value, assignmentId, classId, name: testName });
+    togglePauseAssignment({ value, assignmentId, classId, name: testName, testId });
     this.togglePauseModal(false);
   }
 
@@ -493,6 +506,7 @@ class ClassHeader extends Component {
             />
             <DeleteAssignmentModal
               testName={additionalData?.testName}
+              testId={additionalData?.testId}
               assignmentId={assignmentId}
               classId={classId}
               lcb

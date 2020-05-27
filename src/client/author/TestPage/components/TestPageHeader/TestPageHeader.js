@@ -467,7 +467,7 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               )}
-            {isRegradeFlow && !showEditButton && !showDuplicateButton && (
+            {isRegradeFlow && !showEditButton && !showDuplicateButton && !isPlaylist && (
               <EduButton title="Regrade Test" data-cy="publish" onClick={handleRegrade} disabled={disableButtons}>
                 REGRADE
               </EduButton>

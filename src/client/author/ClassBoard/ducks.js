@@ -76,7 +76,7 @@ function* receiveGradeBookSaga({ payload }) {
     });
   } catch (err) {
     const msg = "Receive tests is failing";
-    yield call(notification, { msg });
+    notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_GRADEBOOK_ERROR,
       payload: { error: msg }
@@ -164,7 +164,7 @@ export function* receiveTestActivitySaga({ payload }) {
   } catch (err) {
     console.log("err is", err);
     const msg = "Receive tests is failing";
-    yield call(notification, { msg });
+    notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_TESTACTIVITY_ERROR,
       payload: { error: msg }

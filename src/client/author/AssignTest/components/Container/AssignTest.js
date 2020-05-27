@@ -1,4 +1,4 @@
-import { EduButton } from "@edulastic/common";
+import { EduButton, notification } from "@edulastic/common";
 import { assignmentPolicyOptions, roleuser, test as testConst } from "@edulastic/constants";
 import { message, Spin } from "antd";
 import produce from "immer";
@@ -138,16 +138,16 @@ class AssignTest extends React.Component {
       assignment.assignmentPassword &&
       (assignment?.assignmentPassword?.length < 6 || assignment?.assignmentPassword?.length > 25)
     ) {
-      return message.error("Please add a valid password.");
+      notification({ messageKey: "enterValidPassword" });
     }
     if (isEmpty(assignment.class)) {
-      message.error("Please select at least one class to assign.");
+      notification({ messageKey: "selectClass" });
     } else if (assignment.endDate < Date.now()) {
-      message.error("Please Enter a future end date. ");
+      notification({ messageKey: "endDate" });
     } else if (this.state.changeDateSelection && assignment.dueDate > assignment.endDate) {
-      message.error("Entered due date should not be greater than end date.");
+      notification({ messageKey: "dueDateShouldNotBeGreaterThanEndDate" });
     } else if (assignment?.class[0]?.specificStudents && assignment.class.every(_class => !_class?.students?.length)) {
-      message.error("Please select the student");
+      notification({ messageKey: "selectStudent" });
     } else {
       let updatedAssignment = { ...assignment };
       if (!this.state.selectedDateOption) {
@@ -157,7 +157,7 @@ class AssignTest extends React.Component {
         assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
         !((assignment?.assignmentPassword?.trim()?.length || 0) > 5)
       ) {
-        message.error("Please add a valid password");
+        notification({ messageKey: "enterValidPassword" });
         return;
       }
       saveAssignment(updatedAssignment);

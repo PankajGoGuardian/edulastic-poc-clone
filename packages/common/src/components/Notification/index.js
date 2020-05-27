@@ -7,7 +7,7 @@ import "./notification.scss";
 
 const defaultConf = {
   key: "",
-  className: "customized-notifiction",
+  className: "customized-notification",
   message: "",
   description: "",
   type: "error",

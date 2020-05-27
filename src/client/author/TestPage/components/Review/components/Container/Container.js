@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
-import { Paper, withWindowSizes } from "@edulastic/common";
+import { Paper, withWindowSizes, notification } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
@@ -178,7 +178,7 @@ class Review extends PureComponent {
     setTestItems(testItems.map(item => item._id));
     this.setSelected([]);
     setData(newData);
-    message.success("Selected item(s) removed successfully");
+    notification({ type: "success", messageKey: "selectedItemRemovedSuccessfully" });
   };
 
   handleRemoveOne = indx => {
@@ -272,7 +272,7 @@ class Review extends PureComponent {
       history
     } = this.props;
     if (!title) {
-      return message.error("Name field cannot be empty");
+      notification({ messageKey: "nameShouldNotEmpty" });
     }
     clearDictAlignment();
     onSaveTestId();

@@ -5,7 +5,7 @@ import { cloneDeep, values, get, omit, set, uniqBy, intersection } from "lodash"
 import produce from "immer";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
-import { helpers } from "@edulastic/common";
+import { helpers, notification } from "@edulastic/common";
 import { push } from "connected-react-router";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
@@ -582,7 +582,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false));
     }
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "saveQuestionFailing" });
     yield put({
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage }

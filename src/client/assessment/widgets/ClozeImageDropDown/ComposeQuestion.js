@@ -1,6 +1,6 @@
 import { themeColor } from "@edulastic/colors";
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
-import { beforeUpload, PaddingDiv } from "@edulastic/common";
+import { beforeUpload, PaddingDiv, notification } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { aws, clozeImage } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -236,7 +236,10 @@ class ComposeQuestion extends Component {
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       this.getImageDimensions(imageUrl, true);
       this.onItemPropChange("imageUrl", imageUrl);
-      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+      notification({
+        type: "success",
+        msg: `${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`
+      });
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef

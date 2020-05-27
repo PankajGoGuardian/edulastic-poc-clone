@@ -192,7 +192,7 @@
     "description": ""
   },
   "updatePlaylist": {
-    "message": "Update Successful",
+    "message": "Update Successfull",
     "description": ""
   },
   "updatePlaylistErr": {
@@ -263,10 +263,6 @@
     "message": "Assignment already exists.",
     "description": ""
   },
-  "playlistNotAssociated": {
-    "message": "Playlist is not associated with any collection.",
-    "description": ""
-  },
   "playlistUpdated": {
     "message": "Playlist Updated Successfully.",
     "description": ""
@@ -325,6 +321,162 @@
   },
   "playlistBeingUsed": {
     "message": "This playlist is already being used and is available in 'My Playlists'",
+    "description": ""
+  },
+  "saveQuestionFailing": {
+    "message": "Save question is failing",
+    "description": ""
+  },
+  "pleaseEnterName": {
+    "message": "Please enter test name.",
+    "description": ""
+  },
+  "receiveItemFailing": {
+    "message": "Receive items is failing",
+    "description": ""
+  },
+  "receiveTestFailing": {
+    "message": "Receive tests is failing",
+    "description": ""
+  },
+  "itemAddedCart": {
+    "message": "Item added to cart",
+    "description": ""
+  },
+  "itemRemovedCart": {
+    "message": "Item removed from cart",
+    "description": ""
+  },
+  "AssignmentDelete": {
+    "message": " Assignment(s) deleted successfully.",
+    "description": ""
+  },
+  "valueMoreThanQuestions": {
+    "message": " Value cannot be more than total questions count",
+    "description": ""
+  },
+  "valueLessThanQuestions": {
+    "message": "Value cannot be less than total questions count",
+    "description": ""
+  },
+  "selectQuestionOne": {
+    "message": "select one question at a time",
+    "description": ""
+  },
+  "selectedItemRemovedSuccessfully": {
+    "message": "Selected item(s) removed successfully",
+    "description": ""
+  },
+  "gradeFieldEmpty": {
+    "message": "Grade field cannot be empty",
+    "description": ""
+  },
+  "subjectFieldEmpty": {
+    "message": "Subject field cannot be empty",
+    "description": ""
+  },
+  "teacherRemovedSuccessfully": {
+    "message": " Teacher removed successfully",
+    "description": ""
+  },
+  "studentRemovedSuccessfully": {
+    "message": " Student removed successfully",
+    "description": ""
+  },
+  "Addatleast1module": {
+    "message": "Add atleast 1 module",
+    "description": ""
+  },
+  "Creatingatestwithselecteditems": {
+    "message": " Creating a test with selected items",
+    "description": ""
+  },
+  "Playlistdroppedsuccessfully": {
+    "message": "Playlist dropped successfully",
+    "description": ""
+  },
+  "enterValidPassword": {
+    "message": "Please add a valid password.",
+    "description": ""
+  },
+  "selectClass": {
+    "message": "Please select at least one class to assign.",
+    "description": ""
+  },
+  "endDate": {
+    "message": " Please Enter a future end date.",
+    "description": ""
+  },
+  "dueDateShouldNotBeGreaterThanEndDate": {
+    "message": "  Entered due date should not be greater than end date.",
+    "description": ""
+  },
+  "selectStudent": {
+    "message": " Please select the student",
+    "description": ""
+  },
+  "selectFolder": {
+    "message": " Please select a folder",
+    "description": ""
+  },
+  "deleteFolder": {
+    "message": " Only empty folders can be deleted",
+    "description": ""
+  },
+  "testSaved": {
+    "message": "Test saved",
+    "description": ""
+  },
+  "testSavedAsDraft": {
+    "message": "Test saved as Draft",
+    "description": ""
+  },
+  "testCreated": {
+    "message": "Test created",
+    "description": ""
+  },
+  "testVersioned": {
+    "message": "Test versioned",
+    "description": ""
+  },
+  "successUpdate": {
+    "message": "Success update",
+    "description": ""
+  },
+  "testSavedSuccessfullyNotVisible": {
+    "message": "Test saved successfully. Test not visible? Clear the applied filters.",
+    "description": ""
+  },
+  "checkAnswerFailed": {
+    "message": "failed to check answer",
+    "description": ""
+  },
+  "loadAnswerFailed": {
+    "message": "  failed loading answer",
+    "description": ""
+  },
+  "getAllTagsFailed": {
+    "message": "Get All Tags failed",
+    "description": ""
+  },
+  "getDeafultSettingsFailed": {
+    "message": "  Get default settings failed",
+    "description": ""
+  },
+  "errorAddingPassageItems": {
+    "message": "  error adding passage items",
+    "description": ""
+  },
+  "errorUpdatingTest": {
+    "message": "error updating test",
+    "description": ""
+  },
+  "testNotAssociatedWithCollection": {
+    "message": "Test is not associated with any collection.",
+    "description": ""
+  },
+  "failedToFetchAutoselectItems": {
+    "message": " Failed to fetch autoselect items.",
     "description": ""
   }
 }

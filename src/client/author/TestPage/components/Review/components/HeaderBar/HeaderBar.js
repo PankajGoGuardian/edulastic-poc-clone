@@ -1,5 +1,5 @@
 import { themeColor, white } from "@edulastic/colors";
-import { CheckboxLabel } from "@edulastic/common";
+import { CheckboxLabel, notification } from "@edulastic/common";
 import { test as testContatns } from "@edulastic/constants";
 import { IconClose, IconCollapse, IconDescription, IconEye, IconMoveTo } from "@edulastic/icons";
 import { message } from "antd";
@@ -33,9 +33,9 @@ const HeaderBar = ({
   const handleSuccess = position => {
     const post = position - 1;
     if (post > itemTotal - 1) {
-      message.info("Value cannot be more than total questions count");
+      notification({ type: "info", messageKey: "valueMoreThanQuestions" });
     } else if (post < 0) {
-      message.info("Value cannot be less than total questions count");
+      notification({ type: "info", messageKey: "valueLessThanQuestions" });
     } else {
       onMoveTo(post);
       setShowPrompt(false);
@@ -47,7 +47,7 @@ const HeaderBar = ({
     if (selectedItems.length === 1) {
       setShowPrompt(!showPrompt);
     } else {
-      message.info("select one question at a time");
+      notification({ type: "info", messageKey: "selectQuestionOne" });
       setShowPrompt(false);
     }
   };

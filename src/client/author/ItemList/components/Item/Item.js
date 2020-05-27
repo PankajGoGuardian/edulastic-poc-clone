@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants, roleuser } from "@edulastic/constants";
 import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton, CheckboxLabel } from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
+import { notification } from "@edulastic/common";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 import {
   getTestItemAuthorName,
@@ -239,11 +240,11 @@ class Item extends Component {
       }
 
       setDataAndSave({ addToTest: true, item, current });
-      message.success("Item added to cart");
+      notification({ type: "success", messageKey: "itemAddedCart" });
     } else {
       keys = keys.filter(_item => _item !== row._id);
       setDataAndSave({ addToTest: false, item: { _id: row._id }, current });
-      message.success("Item removed from cart");
+      notification({ type: "success", messageKey: "itemRemovedCart" });
     }
     setTestItems(keys);
     this.setState({ selectedId: "" });
@@ -318,7 +319,7 @@ class Item extends Component {
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
-      message.success("Item added to cart");
+      notification({ type: "success", messageKey: "itemAddedCart" });
       return setAndSavePassageItems({ passageItems, page });
     }
 

@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { debounce, uniq, get } from "lodash";
 import { Pagination, Spin, message } from "antd";
 import { roleuser } from "@edulastic/constants";
-import { withWindowSizes, FlexContainer } from "@edulastic/common";
+import { withWindowSizes, FlexContainer, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
@@ -184,7 +184,7 @@ class AddItems extends PureComponent {
       updated
     } = this.props;
     if (!title) {
-      return message.error("Name field cannot be empty");
+      notification({ messageKey: "nameShouldNotEmpty" });
     }
 
     if (updated && testId) {
@@ -214,7 +214,7 @@ class AddItems extends PureComponent {
       history
     } = this.props;
     if (!title) {
-      return message.error("Name field cannot be empty");
+      notification({ messageKey: "nameShouldNotEmpty" });
     }
     clearDictAlignment();
     onSaveTestId();

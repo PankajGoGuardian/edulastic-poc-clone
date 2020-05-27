@@ -797,7 +797,7 @@ function* approveOrRejectSinglePlaylistSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      notification({ messageKey: "playlistNotAssociated" });
+      notification({ messageKey: "publishPlaylistErrWithAssociated" });
       return;
     }
     yield call(curriculumSequencesApi.updatePlaylistStatus, payload);

@@ -1,6 +1,7 @@
 import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { itemsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 import {
   RECEIVE_ITEM_REQUEST,
@@ -24,7 +25,7 @@ export function* receiveItemsSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive items is failing";
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "receiveItemFailing" });
     yield put({
       type: RECEIVE_ITEMS_ERROR,
       payload: { error: errorMessage }

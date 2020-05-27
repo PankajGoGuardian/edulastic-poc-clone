@@ -9,7 +9,7 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { withWindowSizes, EduButton, FlexContainer } from "@edulastic/common";
+import { withWindowSizes, EduButton, FlexContainer, notification } from "@edulastic/common";
 import { questionType, roleuser } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { themeColor, white } from "@edulastic/colors";
@@ -173,7 +173,7 @@ class PreviewModal extends React.Component {
       this.closeModal();
       gotoSummary();
       console.log("Reaching here");
-      return message.error("Name field cannot be empty");
+      notification({ messageKey: "nameShouldNotEmpty" });
     }
     let keys = [...(selectedRows || [])];
     if (test.safeBrowser && !test.sebPassword) {
@@ -182,11 +182,11 @@ class PreviewModal extends React.Component {
     if (!keys.includes(item._id)) {
       keys[keys.length] = item._id;
       setDataAndSave({ addToTest: true, item });
-      message.success("Item added to cart");
+      notification({ type: "success", messageKey: "itemAddedCart" });
     } else {
       keys = keys.filter(key => key !== item._id);
       setDataAndSave({ addToTest: false, item: { _id: item._id } });
-      message.success("Item removed from cart");
+      notification({ type: "success", messageKey: "itemRemovedCart" });
     }
     setTestItems(keys);
   };

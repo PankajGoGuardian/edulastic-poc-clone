@@ -1,5 +1,5 @@
 import { themeColor, lightGrey10 } from "@edulastic/colors";
-import { EduButton, FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { EduButton, FieldLabel, SelectInputStyled, notification } from "@edulastic/common";
 import {
   IconFolderAll,
   IconFolderDeactive,
@@ -143,7 +143,7 @@ class LeftFilter extends React.Component {
     } = this.props;
     const { moveFolderId } = this.state;
     if (!moveFolderId) {
-      message.info(`Please select a folder`);
+      notification({ type: "info", messageKey: "selectFolder" });
       return;
     }
     const { folderName, content } = folders.find(folder => folder._id === moveFolderId) || {};
@@ -165,12 +165,11 @@ class LeftFilter extends React.Component {
     if (itemsExistInFolder && itemsExistInFolder.length > 0) {
       const showAlreadyExistMsg =
         itemsExistInFolder.length > 1 ? `${itemsExistInFolder.length} assignments` : itemsExistInFolder;
-      message.info(`${showAlreadyExistMsg} already exist in ${folderName} folder`);
+      notification({ type: "info", msg: `${showAlreadyExistMsg} already exist in ${folderName} folder` });
     }
     if (itemsNotExistInFolder.length === 0) {
       return;
     }
-
     const params = selectedRows.map(row => {
       const param = {
         _id: row.testId,
@@ -192,7 +191,7 @@ class LeftFilter extends React.Component {
     const { folders } = this.props;
     const folderContent = folders.filter(folder => folderId === folder._id);
     if (folderContent[0] && folderContent[0].content && folderContent[0].content.length > 0) {
-      return message.info("Only empty folders can be deleted");
+      notification({ type: "info", messageKey: "deleteFolder" });
     }
     this.setState({ selectedFolder: folderId }, () => this.showModal("delFolder"));
   };

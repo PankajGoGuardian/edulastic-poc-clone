@@ -373,13 +373,13 @@ class Container extends PureComponent {
       return message.error("Save Playlist before publishing");
     }
     if (!grades.length) {
-      return message.error("Grade field cannot be empty");
+      notification({ messageKey: "gradeFieldEmpty" });
     }
     if (!subjects.length) {
-      return message.error("Subject field cannot be empty");
+      notification({ messageKey: "subjectFieldEmpty" });
     }
     if (!modules.length) {
-      return message.error("Add atleast 1 module");
+      notification({ messageKey: "Addatleast1module" });
     }
     publishPlaylist({ _id, oldId: match.params.oldId });
     this.setState({ editEnable: false });

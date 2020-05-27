@@ -4,6 +4,7 @@ import { classResponseApi, testActivityApi, attchmentApi as attachmentApi } from
 import { questionType } from "@edulastic/constants";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
+import { notification } from "@edulastic/common";
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
@@ -150,7 +151,7 @@ function* receiveStudentResponseSaga({ payload }) {
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_ERROR,
       payload: { error: errorMessage }
@@ -175,7 +176,7 @@ function* receiveClassStudentResponseSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_CLASSSTUDENT_RESPONSE_ERROR,
       payload: { error: errorMessage }
@@ -214,7 +215,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_ERROR,
       payload: { error: errorMessage }

@@ -6,11 +6,10 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { isEmpty, get } from "lodash";
-
 import { white } from "@edulastic/colors";
 import { IconDescription, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
 import { test } from "@edulastic/constants";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, notification } from "@edulastic/common";
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -148,7 +147,7 @@ class Container extends React.Component {
       changeView(tab);
       changePreviewAction("clear");
     } else {
-      message.error("Please enter test name.");
+      notification({ messageKey: "pleaseEnterName" });
     }
   };
 
@@ -171,15 +170,15 @@ class Container extends React.Component {
       sebPassword
     } = _test;
     if (!title) {
-      message.error("Name field cannot be empty");
+      notification({ messageKey: "nameShouldNotEmpty" });
       return false;
     }
     if (isEmpty(grades)) {
-      message.error("Grade field cannot be empty");
+      notification({ messageKey: "gradeFieldEmpty" });
       return false;
     }
     if (isEmpty(subjects)) {
-      message.error("Subject field cannot be empty");
+      notification({ messageKey: "subjectFieldEmpty" });
       return false;
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {

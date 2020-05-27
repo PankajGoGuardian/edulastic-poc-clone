@@ -11,7 +11,7 @@ import { get } from "lodash";
 import produce from "immer";
 import uuid from "uuid/v4";
 
-import { Paper, FlexContainer, beforeUpload } from "@edulastic/common";
+import { Paper, FlexContainer, beforeUpload, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { message, Upload } from "antd";
@@ -471,7 +471,10 @@ const EditClassification = ({
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       setImageDimensions(imageUrl, true);
       // handleItemChangeChange("imageUrl", imageUrl);
-      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+      notification({
+        type: "success",
+        msg: `${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`
+      });
     } catch (e) {
       console.log(e);
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);

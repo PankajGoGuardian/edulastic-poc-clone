@@ -5,7 +5,7 @@ import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { isEmpty, uniqBy } from "lodash";
 
-import { FlexContainer, EduButton } from "@edulastic/common";
+import { FlexContainer, EduButton, notification } from "@edulastic/common";
 import {
   lightGreySecondary,
   black,
@@ -188,7 +188,7 @@ const DropPlaylistModal = props => {
       }
     };
     if (dropPlaylistAction(payload)) {
-      message.success("Playlist dropped successfully");
+      notification({ type: "success", messageKey: "Playlistdroppedsuccessfully" });
       closeModal();
     }
   };

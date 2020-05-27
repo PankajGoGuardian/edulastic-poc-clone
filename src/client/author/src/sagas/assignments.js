@@ -2,6 +2,7 @@ import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effect
 import { assignmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { omit, get, set, unset, pickBy, identity } from "lodash";
+import { notification } from "@edulastic/common";
 
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
@@ -72,7 +73,7 @@ function* receiveAssignmentsSummary({ payload = {} }) {
     }
   } catch (error) {
     const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,
       payload: { error: errorMessage }
@@ -90,7 +91,7 @@ function* receiveAssignmentsSaga({ payload = {} }) {
     });
   } catch (err) {
     const errorMessage = "Receive tests is failing";
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "receiveTestFailing" });
     yield put({
       type: RECEIVE_ASSIGNMENTS_ERROR,
       payload: { error: errorMessage }

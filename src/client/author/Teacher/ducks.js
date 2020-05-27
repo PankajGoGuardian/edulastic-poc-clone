@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 const RECEIVE_TEACHERLIST_REQUEST = "[teacher] receive list request";
 const RECEIVE_TEACHERLIST_SUCCESS = "[teacher] receive list success";
@@ -242,7 +243,8 @@ function* deleteTeacherSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
-    message.success("Teacher removed successfully");
+    notification({ messageKey: "teacherRemovedSuccessfully" });
+
     yield put(deleteTeacherSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Teacher is failing";

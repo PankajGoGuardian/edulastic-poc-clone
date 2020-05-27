@@ -1,6 +1,7 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { questionsApi, testItemsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { history } from "../../../configureStore";
 import {
   RECEIVE_QUESTION_REQUEST,
@@ -106,7 +107,7 @@ function* saveQuestionSaga() {
   } catch (err) {
     console.error(err);
     const errorMessage = "Save question is failing";
-    yield call(message.error, errorMessage);
+    notification({ messageKey: "saveQuestionFailing" });
     yield put({
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage }

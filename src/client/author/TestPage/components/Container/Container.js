@@ -6,7 +6,7 @@ import { Spin, message } from "antd";
 import { withRouter, Prompt } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without, partial } from "lodash";
 import uuidv4 from "uuid/v4";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, notification } from "@edulastic/common";
 import { test as testContants, roleuser } from "@edulastic/constants";
 import { testsApi, assignmentApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
@@ -349,7 +349,7 @@ class Container extends PureComponent {
     const { authors, itemGroups = [] } = test;
     const { editEnable } = this.state;
     if (!test?.title?.trim()?.length) {
-      message.warn("Please enter test name.");
+      notification({ type: "warn", messageKey: "pleaseEnterName" });
       return;
     }
     if (value === "source") {
@@ -648,15 +648,15 @@ class Container extends PureComponent {
     } = test;
     const { userFeatures } = this.props;
     if (!title) {
-      message.error("Name field cannot be empty");
+      notification({ messageKey: "nameShouldNotEmpty" });
       return false;
     }
     if (isEmpty(grades)) {
-      message.error("Grade field cannot be empty");
+      notification({ messageKey: "gradeFieldEmpty" });
       return false;
     }
     if (isEmpty(subjects)) {
-      message.error("Subject field cannot be empty");
+      notification({ messageKey: "subjectFieldEmpty" });
       return false;
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {

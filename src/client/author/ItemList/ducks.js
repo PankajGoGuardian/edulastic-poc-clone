@@ -3,6 +3,7 @@ import { message } from "antd";
 import { uniq, get } from "lodash";
 import produce from "immer";
 import { test as testConstant, roleuser } from "@edulastic/constants";
+import { notification } from "@edulastic/common";
 import { setTestItemsAction, showAddPassageItemsModalAction } from "../TestPage/components/AddItems/ducks";
 import {
   setTestDataAction,
@@ -58,13 +59,13 @@ export function* addItemToCartSaga({ payload }) {
   if (testItems.some(o => o._id === item._id)) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.filter(x => x._id !== item._id);
-      message.success("Item removed from cart");
+      notification({ type: "success", messageKey: "itemRemovedCart" });
       return draft;
     });
   } else {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.push(item);
-      message.success("Item added to cart");
+      notification({ type: "success", messageKey: "itemAddedCart" });
     });
   }
   const userRole = yield select(getUserRole);
@@ -110,7 +111,7 @@ export function* createTestFromCart({ payload: { testName } }) {
     grades: uniq([...grades, ...questionGrades]),
     subjects: uniq([...subjects, ...questionSubjects])
   };
-  yield call(message.info, "Creating a test with selected items");
+  notification({ type: "info", messageKey: "Creatingatestwithselecteditems" });
   yield put(createTestAction(updatedTest, false, true));
 }
 

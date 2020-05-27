@@ -224,9 +224,10 @@ class Container extends PureComponent {
   };
 
   onDrop = (toModuleIndex, item) => {
-    const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
+    const { fromModuleIndex, fromContentId, fromContentIndex, expandedModules } = this.state;
     const { moveContentInPlaylist } = this.props;
     moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex, testItem: item });
+    this.setState({ expandedModules: [...expandedModules, toModuleIndex], droppedItemId: item?.id });
   };
 
   onSortEnd = prop => {
@@ -257,7 +258,13 @@ class Container extends PureComponent {
     if (isTestLoading) {
       return <Spin />;
     }
-    const { current, expandedModules, isTextColorPickerVisible, isBackgroundColorPickerVisible } = this.state;
+    const {
+      current,
+      expandedModules,
+      isTextColorPickerVisible,
+      isBackgroundColorPickerVisible,
+      droppedItemId
+    } = this.state;
     const { handleChangeColor } = this;
     // TODO: fix this shit!!
     const selectedTests = [];
@@ -307,6 +314,7 @@ class Container extends PureComponent {
             onSortEnd={this.onSortEnd}
             handleTestsSort={this.handleTestsSort}
             fromPlaylist
+            droppedItemId={droppedItemId}
           />
         );
       case "settings":

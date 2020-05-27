@@ -103,10 +103,10 @@ const SortableHandle = sortableHandle(() => (
 ));
 
 const SortableElement = sortableElement(props => {
-  const { moduleData, id, dropContent, showSupportingResource } = props;
+  const { moduleData, id, dropContent, showSupportingResource, droppedItemId } = props;
 
   return (
-    <AssignmentRowContainer>
+    <AssignmentRowContainer highlightMode={droppedItemId === moduleData.contentId}>
       <SortableHandle />
       <AssignmentDragItem
         key={`${id}-${moduleData.id}`}
@@ -1118,6 +1118,17 @@ const AssignmentRowContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: stretch;
+  ${({ highlightMode }) => highlightMode && `div { animation: inHighlight 5s; }`};
+  @keyframes inHighlight {
+    0% {
+      background-color: white;
+    }
+    50% {
+      background-color: #c9edda;
+    }
+    100% {
+      background-color: white;
+    }
 `;
 
 const DragHandle = styled.div`

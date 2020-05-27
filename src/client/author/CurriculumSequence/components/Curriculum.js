@@ -59,7 +59,8 @@ const SortableItem = sortableElement(props => {
     addModule,
     editModule,
     deleteModule,
-    fromPlaylist
+    fromPlaylist,
+    droppedItemId
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -107,6 +108,7 @@ const SortableItem = sortableElement(props => {
           editModule={editModule}
           deleteModule={deleteModule}
           fromPlaylist={fromPlaylist}
+          droppedItemId={droppedItemId}
         />
       </DropContainer>
     </AssignmentItemContainer>

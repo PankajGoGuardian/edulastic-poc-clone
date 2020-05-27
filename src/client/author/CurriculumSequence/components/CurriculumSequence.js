@@ -489,7 +489,8 @@ class CurriculumSequence extends Component {
       activeRightPanel,
       setEmbeddedVideoPreviewModal,
       isVideoResourcePreviewModal,
-      fromPlaylist
+      fromPlaylist,
+      droppedItemId
     } = this.props;
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
@@ -703,6 +704,7 @@ class CurriculumSequence extends Component {
                         showRightPanel={showRightPanel}
                         fromPlaylist={fromPlaylist}
                         setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                        droppedItemId={droppedItemId}
                       />
                     )}
                   </Wrapper>

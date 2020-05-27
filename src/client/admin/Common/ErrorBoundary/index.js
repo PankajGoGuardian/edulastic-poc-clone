@@ -1,4 +1,5 @@
 import React from "react";
+import * as Sentry from '@sentry/browser';
 
 class ErrorBoundary extends React.Component {
   state = { hasError: false };
@@ -9,9 +10,12 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, info) {
-    window.Raven && window.Raven.captureException(error);
     // log the error to an error reporting service
     console.error(error, info);
+    Sentry.withScope((scope) => {
+      scope.setExtras(info);
+      Sentry.captureException(error);
+    });
   }
 
   render() {

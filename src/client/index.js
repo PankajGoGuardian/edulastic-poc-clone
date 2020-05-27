@@ -10,19 +10,24 @@ import "core-js/features/object";
 import "font-awesome/css/font-awesome.css";
 import "antd/dist/antd.css";
 import "react-perfect-scrollbar/dist/css/styles.css";
+import {init as SentryInit } from "@sentry/browser";
 import "./index.css";
+import { updateSentryScope } from "@edulastic/api/src/utils/Storage";
 import App from "./App";
 import configureStore, { history } from "./configureStore";
 import AppConfig from "../../app-config";
 import { isMobileDevice, isIOS } from "./platform";
 
-if (process.env.POI_APP_SENTRY_URI && window.Raven) {
-  window.Raven.config(process.env.POI_APP_SENTRY_URI, {
-    whitelistUrls: [AppConfig.sentryWhiteListURLRegex]
-  }).install();
-
-  // if we have a kid set, pass that onto Raven
-  if (window.sessionStorage.kid) window.Raven.setTagsContext({ kid: window.sessionStorage.kid });
+if (AppConfig.sentryURI) {
+  SentryInit(
+    {
+      whitelistUrls: [AppConfig.sentryWhiteListURLRegex],
+      dsn: AppConfig.sentryURI,
+      release: AppConfig.appVersion,
+      environment: AppConfig.appStage
+    }
+  );
+  updateSentryScope();
 }
 
 if (window.location?.search?.includes("showCLIBanner=1") && !sessionStorage?.cliBannerShown) {
@@ -35,7 +40,7 @@ window.isIOS = isIOS();
 smoothscroll.polyfill();
 
 !(function() {
-  var analytics = (window.analytics = window.analytics || []);
+  const analytics = (window.analytics = window.analytics || []);
   if (!analytics.initialize)
     if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice.");
     else {
@@ -60,24 +65,24 @@ smoothscroll.polyfill();
       ];
       analytics.factory = function(t) {
         return function() {
-          var e = Array.prototype.slice.call(arguments);
+          const e = Array.prototype.slice.call(arguments);
           e.unshift(t);
           analytics.push(e);
           return analytics;
         };
       };
-      for (var t = 0; t < analytics.methods.length; t++) {
-        var e = analytics.methods[t];
+      for (let t = 0; t < analytics.methods.length; t++) {
+        const e = analytics.methods[t];
         analytics[e] = analytics.factory(e);
       }
       analytics.load = function(t, e) {
-        var n = document.createElement("script");
+        const n = document.createElement("script");
         n.type = "text/javascript";
         n.async = !0;
         // download the file from by passing the key https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js
         // and upload it to s3
         n.src = AppConfig.segmentURI;
-        var a = document.getElementsByTagName("script")[0];
+        const a = document.getElementsByTagName("script")[0];
         a.parentNode.insertBefore(n, a);
         analytics._loadOptions = e;
       };

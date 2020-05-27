@@ -1,7 +1,40 @@
 // @ts-check
 import uuid from "uuid/v4";
+import { configureScope } from "@sentry/browser";
+import AppConfig from "../../../../app-config";
 
 const tokenKey = (userId, role) => `user:${userId}:role:${role}`;
+
+/**
+ * Sets userId, districtId, role, kid, tid to Sentry for 
+ * authenticated users, and sets kid & tid for 
+ * unauthenticated users
+ */
+export const updateSentryScope = (user) => {
+  if (AppConfig.sentryURI) {
+    // for authenticated users user will be passed
+    if (user && user._id) {
+      const {_id, role, districtId, kid} = user;
+      configureScope(scope => {
+        scope.setUser({ id: _id });
+        scope.setTags({
+          "tid": window.sessionStorage.tid,
+          "districtId": districtId,
+          "role": role,
+          "kid": kid
+        });
+      });
+    } else if (window.sessionStorage.kid) {
+      // In case user is unauthenticated then set kid & tid to Sentry tags
+      configureScope(scope => {
+        scope.setTags({
+          "tid": window.sessionStorage.tid,
+          "kid": window.sessionStorage.kid
+        });
+      });
+    }
+  }
+}
 
 export function storeAccessToken(token, userId, role, _default = false) {
   const key = tokenKey(userId, role);
@@ -32,21 +65,20 @@ export const initTID = () => {
 export const initKID = () => {
   if (window.sessionStorage != null && window.sessionStorage.kid !== "" && !window.sessionStorage.kid) {
     window.sessionStorage.kid = uuid.v4();
+    updateSentryScope();
   }
-
-  // set into raven's context
-  // @ts-ignore
-  window.Raven && window.Raven.setTagsContext({ kid: window.sessionStorage.kid });
 };
 
-// Update kid after user authentication
-export const updateKID = kid => {
+/**
+ * Update kid after user authentication
+ * and sets the same to sentry scope
+ * @param {*} user 
+ */
+export const updateKID = ({_id, role, districtId, kid}) => {
   if (window.sessionStorage) {
     window.sessionStorage.kid = kid;
+    updateSentryScope({_id, role, districtId, kid});
   }
-  // set into raven's context on update
-  // @ts-ignore
-  window.Raven && window.Raven.setTagsContext({ kid: window.sessionStorage.kid });
 };
 
 // Remove kid after user logout
@@ -99,9 +131,9 @@ export function getProxyParent(roles = []) {
     const proxyParent = JSON.parse(getFromLocalStorage("proxyParent"));
     if ((!roles.length || roles.includes(proxyParent.role)) && proxyParent.role) {
       return proxyParent;
-    } else {
+    } 
       return null;
-    }
+    
   } catch (e) {
     return null;
   }

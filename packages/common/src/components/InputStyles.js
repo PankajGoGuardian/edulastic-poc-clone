@@ -43,6 +43,7 @@ export const TextInputStyled = styled(props => <Input maxLength={128} {...props}
   &.ant-input {
     ${inputCommonStyle};
     ${props => props.style};
+    color: ${({ theme }) => theme.questionTextColor};
     &:focus,
     &:hover {
       border: 1px solid ${greyThemeLight};

@@ -5,7 +5,7 @@ export const InputWrapper = styled.div`
   width: 100%;
   & > input {
     background-color: transparent;
-    color: ${props => props.theme.widgets.shortText.inputColor};
+    color: ${theme => theme.questionTextColor};
     border-color: ${props => props.theme.widgets.shortText.inputBorderColor};
     &:hover {
       border-color: ${props => props.theme.widgets.shortText.inputHoverBorderColor};

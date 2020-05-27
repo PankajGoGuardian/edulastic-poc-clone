@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { Input } from "antd";
 
 import NumberPad from "./NumberPad";
@@ -69,7 +69,7 @@ const characterMapButtons = [
   "ü"
 ];
 
-const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent, lessPadding }) => {
+const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent, lessPadding, theme = {} }) => {
   const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers } = resprops;
   const value = userAnswers[dropTargetIndex];
   const ref = useRef();
@@ -138,7 +138,8 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent, 
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
           background: item.background || "#f8f8f8",
-          padding: lessPadding ? "3px" : null
+          padding: lessPadding ? "3px" : null,
+          color: theme.questionTextColor
         }}
         placeholder={placeholder}
       />
@@ -172,7 +173,7 @@ ClozeTextInput.defaultProps = {
   disabled: false
 };
 
-export default ClozeTextInput;
+export default withTheme(ClozeTextInput);
 
 const CustomInput = styled.div`
   display: inline-flex;

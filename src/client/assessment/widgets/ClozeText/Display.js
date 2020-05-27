@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import produce from "immer";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
 import {
@@ -56,7 +56,7 @@ class ClozeTextDisplay extends Component {
   };
 
   getUiStyles = (responseBoxId, responseIndex) => {
-    const { uiStyle } = this.props;
+    const { uiStyle, theme } = this.props;
     const { widthpx, heightpx, placeholder, inputtype, stemNumeration, responsecontainerindividuals } = uiStyle;
     const fontSize = this.getFontSize(uiStyle.fontsize);
 
@@ -68,7 +68,8 @@ class ClozeTextDisplay extends Component {
       minHeight: heightpx || 35,
       type: inputtype,
       fontSize,
-      placeholder
+      placeholder,
+      color: theme.questionTextColor
     };
 
     const responseBoxStyle = find(responsecontainerindividuals, resp => resp.id === responseBoxId) || {};
@@ -287,7 +288,7 @@ ClozeTextDisplay.defaultProps = {
   isReviewTab: false
 };
 
-export default ClozeTextDisplay;
+export default withTheme(ClozeTextDisplay);
 
 const QuestionTitleWrapper = styled.div`
   display: flex;

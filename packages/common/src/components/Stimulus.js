@@ -18,7 +18,7 @@ const Stimulus = withTheme(
     & * {
       user-select: ${props => (props.userSelect ? "text !important" : "none")};
       -webkit-touch-callout: none;
-      color: ${title} !important;
+      color: ${({ theme }) => theme.questionTextColor} !important;
     }
 
     & .input__math,

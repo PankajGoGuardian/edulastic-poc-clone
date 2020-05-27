@@ -48,7 +48,7 @@ export const withMathFormula = WrappedComponent => {
           className={elemClassName}
           data-cy="styled-wrapped-component"
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
-          style={{ ...style, fontSize: fontSize || theme.fontSize }}
+          style={{ ...style, color: theme.questionTextColor, fontSize: fontSize || theme.fontSize }}
         />
       </WithResources>
     );

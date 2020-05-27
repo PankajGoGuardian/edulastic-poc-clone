@@ -460,7 +460,7 @@ export const ToolBtn = styled.li`
   align-items: center;
   justify-content: center;
   background-color: ${props => props.theme.containerWhite};
-  color: #878a91;
+  color: ${({ theme }) => theme.questionTextColor};
   cursor: pointer;
   display: inline-block;
   line-height: 1.5em;

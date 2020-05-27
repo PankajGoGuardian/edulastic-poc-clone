@@ -237,9 +237,9 @@ export const setDefaultSettingsLoadingAction = createAction(SET_DEFAULT_SETTINGS
 export const setAutoselectItemsFetchingStatusAction = createAction(SET_AUTOSELECT_ITEMS_FETCHING_STATUS);
 export const setRegradingStateAction = createAction(SET_REGRADING_STATE);
 
-export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false) => ({
+export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false, playlistId = undefined) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
-  payload: { id, requestLatest, editAssigned, isPlaylist }
+  payload: { id, requestLatest, editAssigned, isPlaylist, playlistId }
 });
 
 export const receiveTestByIdSuccess = entity => ({
@@ -1008,11 +1008,11 @@ export const getReleaseScorePremiumSelector = createSelector(
 export const getIsOverrideFreezeSelector = createSelector(
   getTestSelector,
   getUserIdSelector,
-  (test, userId) => {
-    if (!test.freezeSettings) {
+  (_test, userId) => {
+    if (!_test.freezeSettings) {
       return false;
     }
-    if (test.authors.some(author => author._id === userId)) {
+    if (_test.authors.some(author => author._id === userId)) {
       return false;
     }
     return true;
@@ -1047,7 +1047,8 @@ function* receiveTestByIdSaga({ payload }) {
     const entity = yield call(testsApi.getById, payload.id, {
       data: true,
       requestLatest: payload.requestLatest,
-      editAndRegrade: payload.editAssigned
+      editAndRegrade: payload.editAssigned,
+      ...(payload.playlistId ? { playlistId: payload.playlistId } : {})
     });
     const userId = yield select(getUserIdSelector);
     const typeOfAuthor = authorType(userId, entity);
@@ -2016,10 +2017,10 @@ function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
   }
 }
 
-export function* addAutoselectGroupItems({ payload: test }) {
+export function* addAutoselectGroupItems({ payload: _test }) {
   try {
-    const transformedData = getItemGroupsTransformed(test);
-    const allStaticGroupItemIds = getStaticGroupItemIds(test);
+    const transformedData = getItemGroupsTransformed(_test);
+    const allStaticGroupItemIds = getStaticGroupItemIds(_test);
     const promises = transformedData.map(({ data, isFetchItems }) => {
       if (isFetchItems) {
         return testItemsApi
@@ -2033,14 +2034,14 @@ export function* addAutoselectGroupItems({ payload: test }) {
     });
 
     const responses = yield Promise.all(promises);
-    const itemGroups = test.itemGroups.map((itemGroup, i) => {
+    const itemGroups = _test.itemGroups.map((itemGroup, i) => {
       if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT && transformedData?.[i].isFetchItems) {
         return { ...itemGroup, items: responses[i].items };
       }
       return itemGroup;
     });
 
-    return { ...test, itemGroups };
+    return { ..._test, itemGroups };
   } catch (err) {
     console.error(err);
   }

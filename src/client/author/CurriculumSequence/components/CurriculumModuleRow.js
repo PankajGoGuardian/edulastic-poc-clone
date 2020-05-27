@@ -1094,6 +1094,7 @@ class ModuleRow extends Component {
               onClose={togglePlaylistTestDetails}
               modalInitData={playlistTestDetailsModalData}
               viewAsStudent={this.viewTest}
+              playlistId={playlistId}
             />
           )}
         </React.Fragment>

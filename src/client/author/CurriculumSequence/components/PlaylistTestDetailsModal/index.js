@@ -20,10 +20,11 @@ const PlaylistTestDetailsModal = ({
   rows = [],
   userId = "",
   viewAsStudent,
-  isTestLoading
+  isTestLoading,
+  playlistId
 }) => {
   useEffect(() => {
-    receiveTestById(currentTestId, true, false, true);
+    receiveTestById(currentTestId, true, false, true, playlistId);
   }, []);
 
   const defaultPropsForReview = {

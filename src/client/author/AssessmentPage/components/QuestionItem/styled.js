@@ -30,6 +30,7 @@ export const AnswerForm = styled.div`
   display: flex;
   align-items: center;
   background: transparent;
+  position: relative;
 `;
 
 export const QuestionNumber = styled.span`
@@ -74,7 +75,7 @@ export const QuestionForm = styled.div`
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: ${props => (props.review ? "100%" : "100px")};
+    width: calc(100% - 40px);
   }
 `;
 
@@ -88,7 +89,8 @@ export const EditButton = styled.span`
   right: 6px;
 
   @media (max-width: ${smallDesktopWidth}) {
-    right: -36px;
+    position: absolute;
+    right: -85px;
   }
 `;
 
@@ -117,7 +119,7 @@ export const ButtonWrapper = styled.span`
 
 export const AnswerIndicator = styled.span`
   display: inline-block;
-  padding: 8px 15px;
+  padding: 8px;
 
   svg {
     fill: ${({ correct }) => (correct ? green : red)};
@@ -127,6 +129,11 @@ export const AnswerIndicator = styled.span`
     &:hover {
       fill: ${greenDark};
     }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    position: absolute;
+    right: -40px;
   }
 `;
 

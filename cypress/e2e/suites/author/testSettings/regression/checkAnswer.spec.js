@@ -72,7 +72,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
 
         // attempt as right
         studentTest.getQuestionByIndex(i);
-        if (i !== 0) cy.wait("@test-activity");
+        // if (i !== 0) cy.wait("@test-activity");
         cy.wait(500); // allow questions to render
 
         studentTest.attemptQuestion(queType, attemptTypes.RIGHT, attemptData);
@@ -84,7 +84,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
           cy.get("label")
             .find("input:checked")
             .as("checked")
-            .each(ele => {
+            .each(() => {
               cy.get("@checked")
                 .eq(0)
                 .click({ force: true });

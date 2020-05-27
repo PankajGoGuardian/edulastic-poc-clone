@@ -141,13 +141,19 @@ export default class BarGraph {
     });
 
     if (!questionCentric) return queData;
-    else return studentWiseData;
+    return studentWiseData;
   };
 
-  verifyQueToolTip = (queNum, queBarData) => {
+  verifyQueToolTip = (queIndex, queBarData, includedColors = false) => {
     const { correct, incorrect, partial } = queBarData;
 
-    cy.get("@latest-selected-bar")
+    (includedColors
+      ? cy.get("@latest-selected-bar")
+      : cy
+          .get(".recharts-bar.correctAttemps")
+          .find("path")
+          .eq(queIndex)
+    )
       .trigger("mouseover", { force: true })
       .then(() => {
         this.getToolTip().then(ele => {
@@ -168,7 +174,11 @@ export default class BarGraph {
   };
 
   verifyQueBarAndToolTipBasedOnAttemptData = (attemptsData, questions, questionCentric = false) => {
-    let rCla, wCla, pCla, mCla, sCla;
+    let rCla;
+    let wCla;
+    let pCla;
+    let mCla;
+    let sCla;
 
     if (questionCentric) {
       [rCla, wCla, pCla, mCla, sCla] = ["correct", "wrong", "pCorrect", "manuallyGraded", "skipped"];
@@ -252,7 +262,7 @@ export default class BarGraph {
             .should("have.css", "fill", queColor.SKIP);
         else this.getBarByIndexByAttemptClass(sCla, queIndex).should("have.length", 0);
 
-        this.verifyQueToolTip(queIndex, quedata);
+        this.verifyQueToolTip(queIndex, quedata, true);
       });
     }
   };

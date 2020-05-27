@@ -52,6 +52,7 @@
     "react/jsx-wrap-multilines": 0,
     "no-unused-expressions": 0,
     "eqeqeq": 0,
-    "prefer-destructuring": 0
+    "prefer-destructuring": 0,
+    "cypress/no-unnecessary-waiting": "warn"
   }
 }

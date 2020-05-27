@@ -32,7 +32,7 @@ export default class TeacherSideBar {
 
   clickOnReport = () =>
     cy
-      .get('[data-cy="Reports"]')
+      .get('[data-cy="Skill Report"]')
       // .click({ force: true })
       .click({ force: true });
 

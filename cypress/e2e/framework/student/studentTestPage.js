@@ -125,7 +125,7 @@ class StudentTestPage {
 
   //  click on finish test
   clickOnExitTest = (onlyPreview = false) => {
-    cy.url().then(url => {
+    cy.url().then(() => {
       if (Cypress.$('[data-cy="finishTest"]').length === 1) {
         this.getExitButton()
           .should("be.visible")
@@ -479,7 +479,7 @@ class StudentTestPage {
       .click({ force: true });
     cy.get("body")
       .contains(answer)
-      .click();
+      .click({ force: true });
   };
 
   clickImageDropDownByIndex = (answer, index) => {

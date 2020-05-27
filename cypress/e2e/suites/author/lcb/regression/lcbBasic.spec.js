@@ -1,9 +1,9 @@
 import FileHelper from "../../../../framework/util/fileHelper";
-import AssignmentsPage from "../../../../framework/student/assignmentsPage";
+// import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
-import { studentSide, teacherSide } from "../../../../framework/constants/assignmentStatus";
+import { studentSide } from "../../../../framework/constants/assignmentStatus";
 import ExpressGraderPage from "../../../../framework/author/assignments/expressGraderPage";
 import StandardBasedReportPage from "../../../../framework/author/assignments/standardBasedReportPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
@@ -49,7 +49,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     teacher: "lcb.teacher01@automation.com",
     student: students[1].email,
     assignmentName: "New Assessment LCB",
-    testId: "5cee418721be0e18675cd00c",
+    testId: "5ebbbca7e320b10007ec76c2",
     feedbackScoreData: [
       {
         ...students[2],
@@ -66,7 +66,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         status: studentSide.SUBMITTED
       }
     ],
-    redirectedData: [
+    /*   redirectedData: [
       {
         ...students[1],
         attempt: {
@@ -81,7 +81,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         },
         status: studentSide.SUBMITTED
       }
-    ],
+    ], */
     attemptsData: [
       {
         ...students[1],
@@ -184,7 +184,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     ]
   };
 
-  const { attemptsData, redirectedData, student, teacher, testId, feedbackScoreData, className } = lcbTestData;
+  const { attemptsData, student, teacher, testId, feedbackScoreData, className } = lcbTestData;
 
   let questionData;
   let testData;
@@ -192,8 +192,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const statsMap = {};
   const queCentric = {};
   const submittedQueCentric = {};
-  let reDirectedQueCentric;
-  let reDirectedQueCentricBeforeAttempt;
+  // let reDirectedQueCentric;
+  // let reDirectedQueCentricBeforeAttempt;
 
   const allStudentList = attemptsData.map(item => item.stuName);
 
@@ -205,10 +205,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     .filter(({ status }) => status === studentSide.SUBMITTED)
     .map(item => item.stuName);
 
-  const redirectedStudentList = redirectedData.map(item => ({ studentName: item.stuName, email: item.email }));
+  // const redirectedStudentList = redirectedData.map(item => ({ studentName: item.stuName, email: item.email }));
 
-  const redirectStatsMap = {};
-  const assignmentPage = new AssignmentsPage();
+  // const redirectStatsMap = {};
+  // const assignmentPage = new AssignmentsPage();
   const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
@@ -239,7 +239,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     // TODO: to be enable test creation later
     // testLibrary.createTest("LCB_1").then(() => {
     // testLibrary.clickOnAssign();
-    cy.visit("/author/assignments/5ebbbca7e320b10007ec76c2");
+    cy.visit(`/author/assignments/${testId}`);
     cy.wait(10000);
     testLibrary.assignPage.selectClass(className);
     testLibrary.assignPage.clickOnAssign();
@@ -568,7 +568,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           expressg.clickOnExit();
           expressg.getGridRowByStudent(updatingResponseStudent);
           expressg.getScoreforQueNum(queNum).click();
-          expressg.getEditResponseToggle().click();
+          // expressg.getEditResponseToggle().click(); // be default should be enabled as express grid is set to response
           expressg.waitForStudentData();
           expressg.updateResponse(
             questionTypeMap[queNum].queKey.split(".")[0],

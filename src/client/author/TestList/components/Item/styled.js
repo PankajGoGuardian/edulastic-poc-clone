@@ -7,7 +7,7 @@ import {
   themeColor,
   titleColor
 } from "@edulastic/colors";
-import { Card } from "@edulastic/common";
+import { Card, MathFormulaDisplay } from "@edulastic/common";
 import { Rate } from "antd/lib/index";
 import styled from "styled-components";
 
@@ -44,8 +44,8 @@ export const Container = styled(Card)`
         right: 24px;
         border-radius: 4px;
         opacity: 0.3;
-        background: url(${props =>
-          props.isPlaylist ? (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg") : ""});
+        background: ${({ isPlaylist, src }) =>
+          isPlaylist ? `url(${src})` || `url(https://cdn2.edulastic.com/default/default-test-1.jpg)` : ""};
       }
     }
   }
@@ -321,6 +321,14 @@ export const StyledLink = styled.a`
 `;
 
 export const StyledDesc = styled.p`
+  height: 75px;
+  overflow: hidden;
+  text-align: center;
+  padding-top: 10px;
+  margin-bottom: 20px;
+`;
+
+export const PlaylistDesc = styled(MathFormulaDisplay)`
   height: 75px;
   overflow: hidden;
   text-align: center;

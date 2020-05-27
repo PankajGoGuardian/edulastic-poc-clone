@@ -1,6 +1,6 @@
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
-import { CheckboxLabel } from "@edulastic/common";
+import { CheckboxLabel, MathFormulaDisplay } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -62,7 +62,6 @@ class ListItem extends Component {
   static defaultProps = {
     authorName: "",
     owner: {},
-    currentTestId: "",
     isPreviewModalVisible: false,
     testItemId: ""
   };
@@ -114,9 +113,9 @@ class ListItem extends Component {
   onApprove = (newCollections = []) => {
     const {
       item: { _id: testId },
-      approveOrRejectSingleTestRequestAction
+      approveOrRejectSingleTestRequest
     } = this.props;
-    approveOrRejectSingleTestRequestAction({
+    approveOrRejectSingleTestRequest({
       testId,
       status: "published",
       collections: newCollections
@@ -126,24 +125,14 @@ class ListItem extends Component {
   onReject = () => {
     const {
       item: { _id: testId },
-      approveOrRejectSingleTestRequestAction
+      approveOrRejectSingleTestRequest
     } = this.props;
-    approveOrRejectSingleTestRequestAction({ testId, status: "rejected" });
+    approveOrRejectSingleTestRequest({ testId, status: "rejected" });
   };
 
   render() {
     const {
-      item: {
-        title,
-        analytics = [],
-        tags = [],
-        _source,
-        _id: testId,
-        status: testStatus,
-        description,
-        thumbnail,
-        collections = []
-      },
+      item: { title, analytics = [], tags = [], _source, status: testStatus, description, thumbnail, collections = [] },
       item,
       authorName,
       owner: isOwner = false,
@@ -170,7 +159,7 @@ class ListItem extends Component {
     const usage = analytics?.[0]?.usage || "0";
     const standardsIdentifiers = isPlaylist
       ? flattenPlaylistStandards(_source?.modules)
-      : standards.map(item => item.identifier);
+      : standards.map(_item => _item.identifier);
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;
     const isInCart = !!selectedTests.find(o => o._id === item._id);
@@ -193,7 +182,7 @@ class ListItem extends Component {
           windowWidth={windowWidth}
           allowDuplicate={allowDuplicate}
           onDeletonDuplicatee={this.onDelete}
-          previewLink={e => this.showPreviewModal(item._id)}
+          previewLink={() => this.showPreviewModal(item._id)}
         />
 
         <TestPreviewModal
@@ -218,9 +207,13 @@ class ListItem extends Component {
 
                   <Inner>
                     <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-                    <Description title={isPlaylist ? _source.description : description}>
+                    <Description>
                       <EllipsisWrapper style={{ paddingRight: "15px" }} view="list">
-                        {isPlaylist ? _source.description : description}
+                        {isPlaylist ? (
+                          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: _source.description }} />
+                        ) : (
+                          description
+                        )}
                       </EllipsisWrapper>
                     </Description>
                   </Inner>
@@ -230,20 +223,24 @@ class ListItem extends Component {
                   <ViewButtonWrapper span={6}>
                     {!isTestAdded && mode === "embedded" && (
                       <ViewButton
-                        onClick={e => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}
+                        onClick={() => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}
                       >
                         ADD
                       </ViewButton>
                     )}
 
                     {!isTestAdded && mode === "embedded" && (
-                      <ViewButton isTestAdded={isTestAdded} onClick={e => this.showPreviewModal(item._id)}>
+                      <ViewButton isTestAdded={isTestAdded} onClick={() => this.showPreviewModal(item._id)}>
                         VIEW
                       </ViewButton>
                     )}
 
                     {isTestAdded && mode === "embedded" && (
-                      <div style={{ cursor: "pointer" }} onClick={e => this.showPreviewModal(item._id)} title="Preview">
+                      <div
+                        style={{ cursor: "pointer" }}
+                        onClick={() => this.showPreviewModal(item._id)}
+                        title="Preview"
+                      >
                         <IconEye color={themeColor} width={60} />
                       </div>
                     )}
@@ -251,7 +248,7 @@ class ListItem extends Component {
                     {isTestAdded && mode === "embedded" && (
                       <StyledModuleName>
                         <span style={{ width: "100%", textAlign: "center" }}>{moduleTitle}</span>
-                        <div style={{ cursor: "pointer" }} onClick={e => removeTestFromPlaylist(item._id)}>
+                        <div style={{ cursor: "pointer" }} onClick={() => removeTestFromPlaylist(item._id)}>
                           <IconClose color={fadedBlack} width={10} />
                         </div>
                       </StyledModuleName>
@@ -289,7 +286,7 @@ class ListItem extends Component {
                           <CheckboxLabel
                             checked={isInCart}
                             ml="24px"
-                            onChange={e => {
+                            onChange={() => {
                               isInCart ? onRemoveFromCart(item) : onAddToCart(item);
                             }}
                           />
@@ -365,7 +362,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       isPublisherUser: isPublisherUserSelector(state)
     }),
-    { approveOrRejectSingleTestRequestAction }
+    { approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction }
   )
 );
 

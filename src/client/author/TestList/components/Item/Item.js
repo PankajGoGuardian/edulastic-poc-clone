@@ -28,7 +28,7 @@ import {
   PlaylistId,
   StatusRow,
   Qcount,
-  StyledDesc,
+  PlaylistDesc,
   PremiumLabel,
   MidRow,
   Collection,
@@ -206,7 +206,7 @@ class Item extends Component {
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
     const standardsIdentifiers = isPlaylist
       ? flattenPlaylistStandards(_source?.modules)
-      : standards.map(item => item.identifier);
+      : standards.map(_item => _item.identifier);
 
     let collectionName = "PRIVATE";
     if (collections?.length > 0 && itemBanks.length > 0) {
@@ -295,7 +295,7 @@ class Item extends Component {
         >
           <TestInfo isPlaylist={isPlaylist}>
             <StyledLink title={isPlaylist ? _source?.title : title}>{isPlaylist ? _source?.title : title}</StyledLink>
-            {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
+            {isPlaylist && <PlaylistDesc dangerouslySetInnerHTML={{ __html: _source.description }} />}
 
             <TagsWrapper isPlaylist={isPlaylist}>
               <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />

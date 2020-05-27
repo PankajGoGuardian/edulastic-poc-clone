@@ -4,7 +4,7 @@ import { title, themeColor } from "@edulastic/colors";
 
 export const FilterContainer = styled.div`
   margin-bottom: 20px;
-  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 245px)" : "calc(100vh - 295px)")};
+  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 255px)" : "calc(100vh - 305px)")};
   overflow: auto;
   &::-webkit-scrollbar {
     width: 6px;

@@ -191,6 +191,10 @@
     "message": "Playlist versioned",
     "description": ""
   },
+  "playlistSaved": {
+    "message": "Playlist Saved Successfully",
+    "description": ""
+  },
   "updatePlaylist": {
     "message": "Update Successfull",
     "description": ""

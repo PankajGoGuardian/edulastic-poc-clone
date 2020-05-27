@@ -305,9 +305,12 @@ class ModuleRow extends Component {
         onCollapseExpand(moduleIndex);
       }
     });
+    const changedItem = dataToUpdate.modules.find(el => el._id === module._id) || {};
     updateCurriculumSequence({
       id: playlistId,
-      curriculumSequence: dataToUpdate
+      curriculumSequence: dataToUpdate,
+      toggleModuleNotification: true,
+      changedItem
     });
   };
 
@@ -333,9 +336,12 @@ class ModuleRow extends Component {
       }
     });
 
+    const changedItem = { ...assignment, hidden: !assignment.hidden };
     updateCurriculumSequence({
       id: playlistId,
-      curriculumSequence: dataToUpdate
+      curriculumSequence: dataToUpdate,
+      toggleTestNotification: true,
+      changedItem
     });
   };
 
@@ -1130,6 +1136,7 @@ const AssignmentRowContainer = styled.div`
     100% {
       background-color: white;
     }
+  }
 `;
 
 const DragHandle = styled.div`

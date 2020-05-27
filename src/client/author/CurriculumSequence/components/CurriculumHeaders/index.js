@@ -103,6 +103,10 @@ const CurriculumHeader = ({
     return <StudentPlayListHeader headingSubContent={curatedStudentPlaylists?.length > 1 && changePlaylistIcon} />;
   }
 
+  const savePlaylist = () => {
+    updateDestinationPlaylist({ showNotification: true });
+  };
+
   if (mode !== "embedded") {
     return (
       <MainHeader
@@ -122,14 +126,15 @@ const CurriculumHeader = ({
 
         <ResolvedMobileHeaderWrapper>
           <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
-            {(showUseThisButton || urlHasUseThis || features.isCurator) && role !== roleuser.EDULASTIC_CURATOR && (
-              <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
-                <IconShare />
-              </HeaderButton>
-            )}
+            {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
+              role !== roleuser.EDULASTIC_CURATOR && (
+                <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
+                  <IconShare />
+                </HeaderButton>
+              )}
 
             {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
-              <HeaderButton data-cy="save" onClick={updateDestinationPlaylist} IconBtn={!isDesktop}>
+              <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
                 <IconSave />
                 {isDesktop && "SAVE"}
               </HeaderButton>

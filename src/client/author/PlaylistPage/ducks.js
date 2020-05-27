@@ -2,13 +2,14 @@ import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
-import { omit, get, pick } from "lodash";
+import { omit, get, set } from "lodash";
 import { curriculumSequencesApi, contentSharingApi, testsApi } from "@edulastic/api";
 import produce from "immer";
 import { notification } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { getUserFeatures } from "../src/selectors/user";
+import { toggleManageContentActiveAction } from "../CurriculumSequence/ducks";
 
 // constants
 const playlistStatusConstants = {
@@ -271,15 +272,28 @@ const moveContentInPlaylist = (playlist, payload) => {
       draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
     });
   } else if (testItem) {
-    const arrivedItem = pick(testItem, ["contentTitle", "contentType", "standardIdentifiers", "status", "testType"]);
-    arrivedItem.contentId = testItem.id;
+    const itemExistsInModule = playlist.modules?.[toModuleIndex]?.data?.find(x => x?.contentId === testItem.id);
+    if (!itemExistsInModule) {
+      set(testItem, "contentId", testItem.id);
+      const attrsToOmit = ["id", "type", "fromPlaylistTestsBox"];
 
-    newPlaylist = produce(playlist, draft => {
-      const isExist = draft.modules[toModuleIndex].data.find(d => d.contentId === arrivedItem.contentId);
-      if (!isExist) {
-        draft.modules[toModuleIndex].data.push(arrivedItem);
+      if (testItem.contentType === "test") {
+        attrsToOmit.push(...["contentDescription", "contentUrl"]);
+      } else {
+        attrsToOmit.push("standardIdentifiers");
       }
-    });
+
+      const newItem = omit(testItem, attrsToOmit);
+
+      newPlaylist = produce(playlist, draft => {
+        draft.modules[toModuleIndex].data.push(newItem);
+      });
+    } else {
+      notification({
+        msg: `Dropped ${testItem.contentType === "test" ? "Test" : "Resource"} already exists in this module`
+      });
+      newPlaylist = playlist;
+    }
   } else {
     newPlaylist = playlist;
   }
@@ -744,7 +758,7 @@ function* updatePlaylistSaga({ payload }) {
 
     yield put(updatePlaylistSuccessAction(entity));
     if (!payload.hideNotification) {
-      yield call(notification, { type: "success", messageKey: "playlistVersioned" });
+      yield call(notification, { type: "success", messageKey: "playlistSaved" });
     }
     const newId = entity._id;
     if (oldId !== newId && newId) {
@@ -792,6 +806,7 @@ function* publishPlaylistSaga({ payload }) {
 
     const updatedEntityData = yield call(curriculumSequencesApi.update, { id, data: dataToSend });
     yield put(updatePlaylistSuccessAction(updatedEntityData));
+    yield put(toggleManageContentActiveAction(""));
 
     if (features.isPublisherAuthor) {
       yield call(curriculumSequencesApi.updatePlaylistStatus, {

@@ -8,6 +8,7 @@ import SummaryBlock from "./SummaryBlock";
 
 const CurriculumRightPanel = ({
   showRightPanel,
+  activeRightPanel,
   isStudent,
   urlHasUseThis,
   hideRightpanel,
@@ -17,7 +18,7 @@ const CurriculumRightPanel = ({
   destinationCurriculumSequence,
   shouldHidCustomizeButton
 }) => {
-  if (!showRightPanel) {
+  if (!showRightPanel || !activeRightPanel) {
     return <Fragment />;
   }
 

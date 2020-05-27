@@ -316,7 +316,15 @@ function* fetchItemsFromApi({ payload: { ids, showNotification } }) {
  * @param {PutCurriculumSequencePayload} [args.payload]
  */
 function* putCurriculumSequence({ payload }) {
-  const { id, curriculumSequence, isPlaylist = false } = payload;
+  const {
+    id,
+    changedItem,
+    curriculumSequence,
+    isPlaylist = false,
+    showNotification = false,
+    toggleModuleNotification = false,
+    toggleTestNotification = false
+  } = payload;
   const oldData = cloneDeep(curriculumSequence);
   try {
     const dataToSend = omit(curriculumSequence, [
@@ -343,7 +351,30 @@ function* putCurriculumSequence({ payload }) {
     }
     oldData._id = _id;
     oldData.version = version;
-    notification({ type: "success", msg: `Successfully saved ${response.title || ""}` });
+    if (showNotification) {
+      notification({ type: "success", messageKey: "playlistSaved" });
+    }
+
+    // will show the notification only when show/hide module.
+    if (toggleModuleNotification) {
+      const { title: moduleTitle, hidden } = changedItem;
+      let msg = `"${moduleTitle}" is now visible to students`;
+      if (hidden) {
+        msg = `"${moduleTitle}" is now hidden from students`;
+      }
+      notification({ type: "success", msg });
+    }
+
+    // will show the notification only when show/hide assignment or resource
+    if (toggleTestNotification) {
+      const { contentTitle, hidden } = changedItem;
+      let msg = `"${contentTitle}" is now visible to students`;
+      if (hidden) {
+        msg = `"${contentTitle}" is now hidden from students`;
+      }
+      notification({ type: "success", msg });
+    }
+
     yield put(updateCurriculumSequenceAction(oldData));
     if (isPlaylist) {
       yield put(toggleManageModulesVisibilityCSAction(false));
@@ -631,7 +662,13 @@ export function* updateDestinationCurriculumSequencesaga({ payload }) {
         title: `${curriculumSequence.title} - ${moment().format("MM/DD/YYYY HH:mm")}`
       };
     }
-    yield put(putCurriculumSequenceAction({ id: curriculumSequence._id, curriculumSequence }));
+    yield put(
+      putCurriculumSequenceAction({
+        id: curriculumSequence._id,
+        curriculumSequence,
+        showNotification: payload.showNotification
+      })
+    );
   } catch (err) {
     notification({ messageKey: "updatingCurriculumErr" });
     console.error("update curriculum sequence Error", err);
@@ -1840,8 +1877,6 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {};
     }
-    state.activeRightPanel = "manageContent";
-
     state.destinationDirty = false;
   },
   [SET_DESTINATION_ORIGINAL]: (state, { payload }) => {

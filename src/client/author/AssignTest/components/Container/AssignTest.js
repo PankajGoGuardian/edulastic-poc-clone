@@ -1,6 +1,6 @@
 import { EduButton, notification } from "@edulastic/common";
 import { assignmentPolicyOptions, roleuser, test as testConst } from "@edulastic/constants";
-import { message, Spin } from "antd";
+import { Spin } from "antd";
 import produce from "immer";
 import { get, isEmpty, keyBy, omit } from "lodash";
 import * as moment from "moment";
@@ -46,7 +46,7 @@ class AssignTest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isAdvancedView: props.userRole !== "teacher" ? true : false,
+      isAdvancedView: props.userRole !== "teacher",
       specificStudents: false,
       selectedDateOption: false
     };
@@ -65,7 +65,8 @@ class AssignTest extends React.Component {
       userRole,
       resetStudents,
       assignmentSettings = {},
-      testSettings
+      testSettings,
+      getDefaultTestSettings
     } = this.props;
 
     resetStudents();
@@ -86,6 +87,7 @@ class AssignTest extends React.Component {
 
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
+      getDefaultTestSettings();
       this.updateAssignmentNew({
         startDate: moment(),
         endDate: moment().add("days", 7),
@@ -124,6 +126,7 @@ class AssignTest extends React.Component {
 
   handleAssign = () => {
     const { saveAssignment, isAssigning, assignmentSettings: assignment } = this.props;
+    const { changeDateSelection, selectedDateOption } = this.state;
     if (isAssigning) return;
     if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
       delete assignment.passwordExpireIn;
@@ -144,13 +147,13 @@ class AssignTest extends React.Component {
       notification({ messageKey: "selectClass" });
     } else if (assignment.endDate < Date.now()) {
       notification({ messageKey: "endDate" });
-    } else if (this.state.changeDateSelection && assignment.dueDate > assignment.endDate) {
+    } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
       notification({ messageKey: "dueDateShouldNotBeGreaterThanEndDate" });
     } else if (assignment?.class[0]?.specificStudents && assignment.class.every(_class => !_class?.students?.length)) {
       notification({ messageKey: "selectStudent" });
     } else {
       let updatedAssignment = { ...assignment };
-      if (!this.state.selectedDateOption) {
+      if (!selectedDateOption) {
         updatedAssignment = omit(updatedAssignment, ["dueDate"]);
       }
       if (
@@ -168,11 +171,14 @@ class AssignTest extends React.Component {
     this.setState({ isAdvancedView: checked });
   };
 
-  renderHeaderButton = () => (
-    <EduButton data-cy="assignButton" onClick={this.handleAssign} disabled={this.props.isAssigning}>
-      ASSIGN
-    </EduButton>
-  );
+  renderHeaderButton = () => {
+    const { isAssigning } = this.props;
+    return (
+      <EduButton data-cy="assignButton" onClick={this.handleAssign} disabled={isAssigning}>
+        ASSIGN
+      </EduButton>
+    );
+  };
 
   onClassFieldChange = (value, group) => {
     const { specificStudents } = this.state;
@@ -365,7 +371,6 @@ export default connect(
 AssignTest.propTypes = {
   match: PropTypes.object.isRequired,
   fetchStudents: PropTypes.func.isRequired,
-  fetchGroups: PropTypes.func.isRequired,
   fetchAssignments: PropTypes.func.isRequired,
   classList: PropTypes.array.isRequired,
   students: PropTypes.array.isRequired,

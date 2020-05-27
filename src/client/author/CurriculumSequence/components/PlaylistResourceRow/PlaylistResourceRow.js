@@ -15,6 +15,7 @@ const ResourceRow = ({
   deleteTest,
   moduleIndex,
   showResource,
+  urlHasUseThis,
   setEmbeddedVideoPreviewModal,
   isManageContentActive,
   showHideAssessmentButton,
@@ -52,7 +53,7 @@ const ResourceRow = ({
             <Button onClick={viewResource}>VIEW</Button>
           </AssignmentButton>
         )}
-        {(!hideEditOptions || mode === "embedded") && isManageContentActive && !isStudent && (
+        {(((!hideEditOptions || mode === "embedded") && isManageContentActive) || !urlHasUseThis) && !isStudent && (
           <IconActionButton onClick={deleteResource}>
             <IconTrash color={themeColor} />
           </IconActionButton>

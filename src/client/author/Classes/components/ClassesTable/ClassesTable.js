@@ -242,7 +242,7 @@ class ClassesTable extends Component {
     const { userOrgId, createClass } = this.props;
     addClassData.districtId = userOrgId;
     addClassData.parent = {
-      id: userOrgId
+      id: addClassData?.owners?.[0]
     };
     createClass(addClassData);
     this.setState({ addClassModalVisible: false });

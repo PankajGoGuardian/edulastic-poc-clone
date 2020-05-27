@@ -927,11 +927,7 @@ class ModuleRow extends Component {
 
                   const testType = isTestType && (
                     <CustomIcon marginLeft={10} marginRight={5}>
-                      {urlHasUseThis && (!isAssigned || moduleData.assignments[0].testType === "practice") ? (
-                        <Avatar size={18} style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}>
-                          {" P "}
-                        </Avatar>
-                      ) : (
+                      {urlHasUseThis && (
                         <Avatar
                           size={18}
                           style={{
@@ -943,7 +939,7 @@ class ModuleRow extends Component {
                         >
                           {moduleData.assignments?.[0]?.testType[0].toUpperCase() ||
                             moduleData.testType[0].toUpperCase() ||
-                            null}
+                            " P "}
                         </Avatar>
                       )}
                     </CustomIcon>

@@ -377,8 +377,12 @@ const answerValidator = {
   },
   [questionType.MATH](answers) {
     if (!answers.length) return true;
+
     const hasEmpty = answers.some(answer => {
-      return answer.value.length === 0 || answer.value.some(ans => isEmpty(ans) || isEmpty(ans.value));
+      if (Array.isArray(answer.value)) {
+        return answer.value.some(ans => isEmpty(ans) || isEmpty(ans.value));
+      }
+      return answer.value.length === 0; // check for string value
     });
     return hasEmpty;
   },
@@ -390,11 +394,11 @@ const answerValidator = {
     const hasEmpty = answers.some(answer => answer.value === undefined);
     return hasEmpty;
   },
-  [questionType.EXPRESSION_MULTIPART](answers) {
+  [questionType.EXPRESSION_MULTIPART](answers = []) {
     // on removing the responses it does not remove from the validation
     // math with unit we are able to save without providing unit
     // TODO: fix it in UI maybe
-    const hasEmpty = answers.some(answer => {
+    const hasEmpty = answers.some((answer = {}) => {
       const textInputs = answer.textinput?.value || []; // get all the text inputs
       const dropdowns = answer.dropdown?.value || []; // get all the dropdown inputs
       const mathInputs = (answer.value || []).flatMap(input => input); // get all the math inputs
@@ -426,7 +430,7 @@ const answerValidator = {
 // TODO create a list of all question types where validation is stored
 // check the structure of validation for all such question types
 // make the helper generic to support all such question types
-const hasEmptyAnswers = item => {
+export const hasEmptyAnswers = item => {
   if (questionType.manuallyGradableQn.includes(item.type)) return false;
   const correctAnswers = [item?.validation?.validResponse, ...(item?.validation?.altResponses || [])];
   const hasEmpty = answerValidator[item.type]?.(correctAnswers);

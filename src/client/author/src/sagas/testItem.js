@@ -4,8 +4,9 @@ import { get as _get, round } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { LOCATION_CHANGE, push } from "connected-react-router";
 import { questionType } from "@edulastic/constants";
-import { evaluateItem } from "../utils/evalution";
 import { Effects } from "@edulastic/common";
+import { evaluateItem } from "../utils/evalution";
+import { hasEmptyAnswers } from "../../questionUtils";
 
 import {
   CREATE_TEST_ITEM_REQUEST,
@@ -108,62 +109,41 @@ function* updateTestItemSaga({ payload }) {
 
 function* evaluateAnswers({ payload }) {
   try {
-    // clear previous evaluation
-    // User is at the question
     const question = yield select(getCurrentQuestionSelector);
-    let correctAnswers = _get(question, "validation.validResponse.value", []);
-    const correctInputAnswer = _get(question, "validation.validResponse.textinput.value", []);
-    const correctDropdownAnswer = _get(question, "validation.validResponse.dropdown.value", []);
-    const correctMathUnitAnswer = _get(question, "validation.validResponse.mathUnits.value", []);
 
-    const altAnswers = _get(question, "validation.altResponses", []).map(altAns => _get(altAns, "value", []).length);
+    const hasEmptyAnswer = hasEmptyAnswers(question);
 
+    if (hasEmptyAnswer) throw new Error("Correct answer is not set");
+
+    // clear previous evaluation
     yield put({
       type: CLEAR_ITEM_EVALUATION,
       payload: question?.type === questionType.MATH
     });
 
     if (payload === "question" || (payload?.mode === "show" && question)) {
-      // some question type like fraction editor have correct answer as number
-      // need to convert into array before using spread operator
-      if (typeof correctAnswers === "number" || typeof correctAnswers === "string") {
-        correctAnswers = [correctAnswers];
-      }
-      const allCorrectAnswers = [
-        ...altAnswers,
-        ...correctAnswers,
-        ...correctInputAnswer,
-        ...correctDropdownAnswer,
-        ...correctMathUnitAnswer
-      ];
+      const answers = yield select(state => _get(state, "answers", []));
+      const { evaluation, score, maxScore } = yield evaluateItem(answers, {
+        [question?.id]: question
+      });
 
-      if (allCorrectAnswers.length) {
-        const answers = yield select(state => _get(state, "answers", []));
-        const { evaluation, score, maxScore } = yield evaluateItem(answers, {
-          [question?.id]: question
-        });
+      yield put({
+        type: ADD_ITEM_EVALUATION,
+        payload: {
+          ...evaluation
+        }
+      });
 
+      if (payload?.mode !== "show") {
+        // do not re calculate the score in case show answer is clicked
         yield put({
-          type: ADD_ITEM_EVALUATION,
+          type: SET_ITEM_SCORE,
           payload: {
-            ...evaluation
+            score: round(score, 2),
+            maxScore,
+            showScore: true
           }
         });
-
-        if (payload?.mode !== "show") {
-          // do not re calculate the score in case show answer is clicked
-          yield put({
-            type: SET_ITEM_SCORE,
-            payload: {
-              score: round(score, 2),
-              maxScore,
-              showScore: true
-            }
-          });
-        }
-      } else {
-        const errorMessage = "Correct answer is not set";
-        yield call(message.error, errorMessage);
       }
     } else {
       const answers = yield select(state => _get(state, "answers", {}));

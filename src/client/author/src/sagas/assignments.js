@@ -1,4 +1,5 @@
 import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effects";
+import { push } from "connected-react-router";
 import { assignmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { omit, get, set, unset, pickBy, identity } from "lodash";
@@ -32,6 +33,14 @@ function* receiveAssignmentClassList({ payload = {} }) {
       type: RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
       payload: { entities }
     });
+    /**
+     * Entities will come empty only when we unassign the assignments from all the entities
+     * as a bulk action performed by DA/SA. In that scenario we are routing to author
+     * assignments page from advanced assignments page.
+     */
+    if (entities.length === 0) {
+      yield put(push("/author/assignments"));
+    }
   } catch (error) {
     const errorMessage = "Receive class list failing";
     yield call(message.error, errorMessage);

@@ -1,15 +1,15 @@
-import playlistCustom from "../../../../framework/author/playlist/playListCustomizationPage";
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+import PlaylistCustom from "../../../../framework/author/playlist/playListCustomizationPage";
+// import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 
 describe("Playlist customization", () => {
-  const teacher1 = {
-    email: "ts3@yopmail.com",
-    pass: "snapwiz"
-  };
+  // const teacher1 = {
+  //   email: "ts3@yopmail.com",
+  //   pass: "snapwiz"
+  // };
 
-  const playListCustomization = new playlistCustom();
-  const testToCreate = ["search_1", "search_2"];
+  const playListCustomization = new PlaylistCustom();
+  // const testToCreate = ["search_1", "search_2"];
   const testName = "test search 1 ";
   const testId = {
     testId1: "5e70b870c513dc0008b25fde",
@@ -46,7 +46,7 @@ describe("Playlist customization", () => {
               });
           });
       }); */
-  context(">Content managment toggle button", () => {
+  context.skip(">Content managment toggle button", () => {
     /*   before(">Create new playlist", () => {
               cy.deleteAllAssignments("", teacher1.email);
               playListLibrary.createPlayList(playListData).then(id => {
@@ -79,7 +79,7 @@ describe("Playlist customization", () => {
     });
   });
 
-  context("Search from search bar", () => {
+  context.skip("Search from search bar", () => {
     before("Go to Resource Container", () => {
       playListCustomization.clickOnManageContent();
     });
@@ -108,7 +108,7 @@ describe("Playlist customization", () => {
     });
   });
 
-  context("search from Authored by me folder", () => {
+  context.skip("search from Authored by me folder", () => {
     it("Verifiy grade,subject and status filter", () => {
       playListCustomization.searchContainer.setFilters({ authoredByme: true });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
@@ -144,7 +144,7 @@ describe("Playlist customization", () => {
     });
   });
 
-  context("search from Entire Library folder", () => {
+  context.skip("search from Entire Library folder", () => {
     it("Verify collection dropdwon", () => {
       playListCustomization.searchContainer.setFilters({ collection: collection.col1 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
@@ -177,7 +177,7 @@ describe("Playlist customization", () => {
       playListCustomization.getManageContentButton().click();
     });
   });
-  context("search from Shared with me folder", () => {
+  context.skip("search from Shared with me folder", () => {
     it("Shared with Me", () => {
       playListCustomization.clickOnManageContent();
       playListCustomization.searchContainer.setFilters({ SharedWithMe: true, subject: "All Subjects" });

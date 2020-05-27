@@ -3,17 +3,17 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import SidebarPage from "../../../../framework/student/sidebarPage";
 import StudenPlaylist from "../../../../framework/student/studentPlaylist";
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+// import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list drop teacher flow`, () => {
   const playlistlibraryPage = new PlayListLibrary();
   const studentTestPage = new StudentTestPage();
   const studentSideBarPage = new SidebarPage();
   const studentPlaylistReviewPage = new StudenPlaylist();
-  const testlibraryPage = new TestLibrary();
+  // const testlibraryPage = new TestLibrary();
 
   let playlistId;
-  const testToCreate = "PLAYLIST_TEST_2";
+  // const testToCreate = "PLAYLIST_TEST_2";
   const qType = ["MCQ_TF", "MCQ_TF"];
   const attemptdata = [{ right: "right" }, { right: "right" }];
   const testids = [];
@@ -43,24 +43,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list drop teacher 
     pass: "snapwiz"
   };
 
-  before("create test", () => {
-    cy.login("teacher", teacher.email, teacher.pass);
-    testlibraryPage.createTest(testToCreate).then(id => {
-      testids.push(id);
-      cy.contains("Share With Others");
-      for (let k = 0; k < 3; k++) {
-        testlibraryPage.sidebar.clickOnTestLibrary();
-        testlibraryPage.searchFilters.clearAll();
-        testlibraryPage.clickOnTestCardById(testids[0]);
-        testlibraryPage.clickOnDuplicate();
-        testlibraryPage.header.clickOnPublishButton().then(newId => {
-          testids.push(newId);
-          cy.contains("Share With Others");
-        });
-      }
-    });
-  });
-  context(">drop", () => {
+  // before("create test", () => {
+  //   cy.login("teacher", teacher.email, teacher.pass);
+  //   testlibraryPage.createTest(testToCreate).then(id => {
+  //     testids.push(id);
+  //     cy.contains("Share With Others");
+  //     for (let k = 0; k < 3; k++) {
+  //       testlibraryPage.sidebar.clickOnTestLibrary();
+  //       testlibraryPage.searchFilters.clearAll();
+  //       testlibraryPage.clickOnTestCardById(testids[0]);
+  //       testlibraryPage.clickOnDuplicate();
+  //       testlibraryPage.header.clickOnPublishButton().then(newId => {
+  //         testids.push(newId);
+  //         cy.contains("Share With Others");
+  //       });
+  //     }
+  //   });
+  // });
+  context.skip(">drop", () => {
     context(">drop complete playlist-'by student'", () => {
       before(">create playlist", () => {
         playlistdata.moduledata.module1 = testids.slice(0, 2);

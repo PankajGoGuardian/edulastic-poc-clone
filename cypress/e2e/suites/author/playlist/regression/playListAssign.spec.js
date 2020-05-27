@@ -24,7 +24,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
   let length;
   const classId = "5e4d1b7a201714000788cab7";
 
-  const testToCreate = ["search_1", "search_2"];
+  // const testToCreate = ["search_1", "search_2"];
   const originalTestIds = [];
   const playListData = {
     name: "Play List",
@@ -44,31 +44,31 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
     email: "teacher2.school1.dis1@snapwiz.com",
     pass: "snapwiz"
   };
-  before(">create test", () => {
-    cy.login("teacher", teacher1.email, teacher1.pass);
-    testToCreate.forEach((test, i) => {
-      testLibrary.createTest(test).then(id => {
-        originalTestIds[i] = id;
-        cy.contains("Share With Others");
-      });
-    });
-  });
-  before(">create play list", () => {
-    cy.deleteAllAssignments("", teacher1.email);
-    playListLibrary.createPlayList(playListData).then(id => {
-      playListId = id;
-    });
-  });
-  before(">add tests to module", () => {
-    playListLibrary.searchFilter.clearAll();
-    playListLibrary.searchFilter.getAuthoredByMe();
-    originalTestIds.forEach(id => {
-      playListLibrary.addTestTab.addTestByIdByModule(id, 1);
-    });
-    playListLibrary.header.clickOnReview();
-    playListLibrary.header.clickOnPublish();
-  });
-  context(">play list assign", () => {
+  // before(">create test", () => {
+  //   cy.login("teacher", teacher1.email, teacher1.pass);
+  //   testToCreate.forEach((test, i) => {
+  //     testLibrary.createTest(test).then(id => {
+  //       originalTestIds[i] = id;
+  //       cy.contains("Share With Others");
+  //     });
+  //   });
+  // });
+  // before(">create play list", () => {
+  //   cy.deleteAllAssignments("", teacher1.email);
+  //   playListLibrary.createPlayList(playListData).then(id => {
+  //     playListId = id;
+  //   });
+  // });
+  // before(">add tests to module", () => {
+  //   playListLibrary.searchFilter.clearAll();
+  //   playListLibrary.searchFilter.getAuthoredByMe();
+  //   originalTestIds.forEach(id => {
+  //     playListLibrary.addTestTab.addTestByIdByModule(id, 1);
+  //   });
+  //   playListLibrary.header.clickOnReview();
+  //   playListLibrary.header.clickOnPublish();
+  // });
+  context.skip(">play list assign", () => {
     context(">whole module", () => {
       it(">assign whole module", () => {
         testCount = 2;
@@ -146,7 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
       });
     });
   });
-  context(">reassign", () => {
+  context.skip(">reassign", () => {
     context(">reassign playList", () => {
       before(">get play list", () => {
         testCount = [originalTestIds[0], ...originalTestIds].length;
@@ -217,7 +217,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
       });
     });
   });
-  context(">two teacher part of a same class", () => {
+  context.skip(">two teacher part of a same class", () => {
     before(">share the playlist", () => {
       cy.deleteAllAssignments("", teacher1.email);
       cy.deleteAllAssignments("", teacher2.email);

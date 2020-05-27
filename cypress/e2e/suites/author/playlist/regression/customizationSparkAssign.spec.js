@@ -12,7 +12,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
 
   const qType = ["MCQ_TF", "MCQ_TF"];
   const attemptdata = [{ right: "right" }, { right: "right" }];
-  const testToCreate = "PLAYLIST_TEST_1";
+  // const testToCreate = "PLAYLIST_TEST_1";
   const collection = "Spark Math";
   const testIds = [];
 
@@ -21,56 +21,56 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
 
   let newtest;
 
-  const plalistdata = {
-    metadata: {
-      name: "Play List",
-      grade: "Grade 10",
-      subject: "Math",
-      collection: "Spark Math - Spark Math Bucket"
-    },
-    moduledata: {}
-  };
+  // const plalistdata = {
+  //   metadata: {
+  //     name: "Play List",
+  //     grade: "Grade 10",
+  //     subject: "Math",
+  //     collection: "Spark Math - Spark Math Bucket"
+  //   },
+  //   moduledata: {}
+  // };
 
   const students = {
     name: "Student1 ",
     email: "student.custom@snapwiz.com",
     pass: "snapwiz"
   };
-  const contentEditor = {
-    email: "ce.sparkmath@automation.com",
-    pass: "edulastic"
-  };
+  // const contentEditor = {
+  //   email: "ce.sparkmath@automation.com",
+  //   pass: "edulastic"
+  // };
   const teacher = {
     email: "teacher.custom.assign@snapwiz.com",
     pass: "snapwiz"
   };
 
-  before("create test", () => {
-    cy.login("publisher", contentEditor.email, contentEditor.pass);
-    for (let k = 0; k <= 3; k++) {
-      testlibraryPage.createTest(testToCreate, false).then(id => {
-        testIds.push(id);
-        testlibraryPage.header.clickOnDescription();
-        testlibraryPage.testSummary.setName(`test- ${k + 1}`);
-        testlibraryPage.header.clickOnPublishButton();
-      });
-    }
+  // before("create test", () => {
+  //   cy.login("publisher", contentEditor.email, contentEditor.pass);
+  //   for (let k = 0; k <= 3; k++) {
+  //     testlibraryPage.createTest(testToCreate, false).then(id => {
+  //       testIds.push(id);
+  //       testlibraryPage.header.clickOnDescription();
+  //       testlibraryPage.testSummary.setName(`test- ${k + 1}`);
+  //       testlibraryPage.header.clickOnPublishButton();
+  //     });
+  //   }
 
-    cy.wait(1).then(() => {
-      plalistdata.moduledata.module1 = testIds.slice(0, 2);
-      plalistdata.moduledata.module2 = testIds.slice(2, 4);
-    });
-  });
-  before(">create playlist", () => {
-    playlistlibraryPage.createPlayListWithTests(plalistdata).then(id => {
-      playlisid = id;
-      playlistlibraryPage.header.clickOnEdit();
-      playlistlibraryPage.header.clickOnSettings();
-      playlistlibraryPage.setCustomization();
-      playlistlibraryPage.header.clickOnPublish();
-    });
-  });
-  context(">customization - assign", () => {
+  //   cy.wait(1).then(() => {
+  //     plalistdata.moduledata.module1 = testIds.slice(0, 2);
+  //     plalistdata.moduledata.module2 = testIds.slice(2, 4);
+  //   });
+  // });
+  // before(">create playlist", () => {
+  //   playlistlibraryPage.createPlayListWithTests(plalistdata).then(id => {
+  //     playlisid = id;
+  //     playlistlibraryPage.header.clickOnEdit();
+  //     playlistlibraryPage.header.clickOnSettings();
+  //     playlistlibraryPage.setCustomization();
+  //     playlistlibraryPage.header.clickOnPublish();
+  //   });
+  // });
+  context.skip(">customization - assign", () => {
     context(">add new test to module-'from search bar'", () => {
       before(">login", () => {
         cy.deleteAllAssignments("", teacher.email);

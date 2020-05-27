@@ -7,12 +7,12 @@ const userData = require("../../../../../fixtures/users");
 
 const { dis1: dist1, dis2: dist2 } = userData.playListSharing;
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>play list sharing`, () => {
+describe.skip(`${FileHelper.getSpecName(Cypress.spec.name)}>>play list sharing`, () => {
   const playlistlibraryPage = new PlayListLibrary();
   const testlibraryPage = new TestLibrary();
 
   let playlistid;
-  const testToCreate = ["search_1", "search_1"];
+  // const testToCreate = ["search_1", "search_1"];
   const originalTestIds = ["5e7cb56a4c9cae0007fb983a", "5e7cb5364c9cae0007fb9838"];
   const playlistdata = {
     metadata: { name: "Play List for sharing", grade: "Grade 10", subject: "Math" },
@@ -47,7 +47,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>play list sharing`, () =
       playlistid = id;
     });
   });
-  context(`>playlist sharing with 'edit and viewonly'-individually`, () => {
+  context.skip(`>playlist sharing with 'edit and viewonly'-individually`, () => {
     context(">with giving edit permission 'individual'", () => {
       before(">publish and share the published test", () => {
         playlistlibraryPage.header.clickOnShare();
@@ -132,7 +132,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>play list sharing`, () =
       });
     });
   });
-  context(">sharing school,district and public levels", () => {
+  context.skip(">sharing school,district and public levels", () => {
     context(">school- allow share", () => {
       before(">login as author and creat playlist", () => {
         cy.login("teacher", Author[email], Author[pass]);

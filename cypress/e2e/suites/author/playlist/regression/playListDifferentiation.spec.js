@@ -59,7 +59,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
     }
   ];
 
-  context(">Verify Differentiation Tab", () => {
+  context.skip(">Verify Differentiation Tab", () => {
     before("Use Playlist and navigate to Differentiation Tab", () => {
       cy.login("teacher", teacher.email, teacher.password);
       sidebar.clickOnRecentUsedPlayList();
@@ -67,13 +67,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
     });
 
     it("[TC01] > Verify Assignment and Class Dropdowns", () => {
-      for (let value of assignmentMapping) {
+      for (const value of assignmentMapping) {
         differentiationPage.selectAssignment(value.name);
         differentiationPage.selectClass(value.class);
         differentiationPage.getAssignmentSelect().should("contain", value.name);
         differentiationPage.getClassSelect().should("contain", value.class);
       }
-      differentiationPage.verifyAssignmentNotPresentInDropDown(assignment4); //verify assignment - not marked as done
+      differentiationPage.verifyAssignmentNotPresentInDropDown(assignment4); // verify assignment - not marked as done
     });
 
     it("[TC02] > Verify Review Work and Challenge work Standards for each assignment", () => {
@@ -98,15 +98,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
     it("[TC03] > Verify Mastery Range Slider", () => {
       differentiationPage.selectAssignment(assignment1);
       differentiationPage.selectClass(class1);
-      for (let value of reviewMasteryRange) {
+      for (const value of reviewMasteryRange) {
         differentiationPage.setAndVerifyReviewMasteryRange(value.mastery);
         differentiationPage.verifyReviewStudentCount(value.studCount);
       }
-      for (let value of practiceMasteryRange) {
+      for (const value of practiceMasteryRange) {
         differentiationPage.setAndVerifyPracticeMasteryRange(value.masteryMin, value.MasteryMax);
         differentiationPage.verifyPracticeStudentCount(value.studCount);
       }
-      for (let value of challengeMasteryRange) {
+      for (const value of challengeMasteryRange) {
         differentiationPage.setAndVerifyChallengeMasteryRange(value.mastery);
         differentiationPage.verifyChallengeStudentCount(value.studCount);
       }
@@ -130,7 +130,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
       differentiationPage.selectAssignment(assignment1);
       differentiationPage.selectClass(class1);
       differentiationPage.clickOnManageContent();
-      for (let value of customizedTests) {
+      for (const value of customizedTests) {
         differentiationPage.dragTestFromSearchToSectionAndVerify(value.target, value.id, value.name);
       }
     });

@@ -9,6 +9,7 @@ import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 
 const { PLAYLIST_RECOMMENDATION } = require("../../../../../fixtures/testAuthoring");
 const testItemsInStandard = require("../../../../../fixtures/recommendationTestItems");
+
 const { _ } = Cypress;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendations`, () => {
@@ -63,7 +64,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
     }
   ];
 
-  context(">add review recommendation and verify", () => {
+  context.skip(">add review recommendation and verify", () => {
     const standardId = standardMapping[0].reviewStandards[0];
 
     before("reset recommendation for all student", () => {
@@ -155,7 +156,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
     });
   });
 
-  context(">add challenge recommendation and verify", () => {
+  context.skip(">add challenge recommendation and verify", () => {
     const standardId = standardMapping[0].challengeStandards[0];
 
     before("reset recommendation for all student", () => {
@@ -247,7 +248,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
     });
   });
 
-  context(">add practice recommendation and verify", () => {
+  context.skip(">add practice recommendation and verify", () => {
     const standardId = standards[1];
 
     before("reset recommendation for all student", () => {
@@ -339,7 +340,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
     });
   });
 
-  context(">add test from manage content to review work", () => {
+  context.skip(">add test from manage content to review work", () => {
     const standardId = standardMapping[0].reviewStandards[0];
 
     const { name: testName, itemKeys } = PLAYLIST_RECOMMENDATION;
@@ -349,7 +350,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
 
     const attemptData = { right: "right", wrong: "wrong" };
 
-    let testId = "5e7f50e018565700082da8a1";
+    const testId = "5e7f50e018565700082da8a1";
 
     before("reset recommendation for all student", () => {
       _.keys(students).forEach(s => {

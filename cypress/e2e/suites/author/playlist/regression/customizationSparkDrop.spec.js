@@ -20,7 +20,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
 
   const testToCreate = "PLAYLIST_TEST_1";
   const collection = "Spark Math";
-  const testIds = [];
+  // const testIds = [];
   let newtest;
 
   const playlistdata = {
@@ -47,25 +47,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
     pass: "snapwiz"
   };
 
-  before("create test", () => {
-    cy.login("publisher", contentEditor.email, contentEditor.pass);
-    for (let k = 0; k <= 3; k++) {
-      testlibraryPage.createTest(testToCreate, false).then(id => {
-        testIds.push(id);
-        testlibraryPage.header.clickOnDescription();
-        testlibraryPage.testSummary.setName(`test- ${k + 1}`);
-        testlibraryPage.header.clickOnPublishButton();
-      });
-    }
+  // before("create test", () => {
+  //   cy.login("publisher", contentEditor.email, contentEditor.pass);
+  //   for (let k = 0; k <= 3; k++) {
+  //     testlibraryPage.createTest(testToCreate, false).then(id => {
+  //       testIds.push(id);
+  //       testlibraryPage.header.clickOnDescription();
+  //       testlibraryPage.testSummary.setName(`test- ${k + 1}`);
+  //       testlibraryPage.header.clickOnPublishButton();
+  //     });
+  //   }
 
-    cy.wait(1).then(() => {
-      console.log(testIds, testIds.slice(0, 2), testIds.slice(2, 4));
-      playlistdata.moduledata.module1 = testIds.slice(0, 2);
-      playlistdata.moduledata.module2 = testIds.slice(2, 4);
-    });
-  });
+  //   cy.wait(1).then(() => {
+  //     console.log(testIds, testIds.slice(0, 2), testIds.slice(2, 4));
+  //     playlistdata.moduledata.module1 = testIds.slice(0, 2);
+  //     playlistdata.moduledata.module2 = testIds.slice(2, 4);
+  //   });
+  // });
 
-  context(">allowing customization- drop", () => {
+  context.skip(">allowing customization- drop", () => {
     /* customizing CE playlist will create new copy and changes made will reflect only at teacher and student side not at CE side */
     before(">create playlist", () => {
       playlistlibraryPage.createPlayListWithTests(playlistdata).then(id => {
@@ -266,7 +266,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       });
       it(">search playlist and verify", () => {
         playlistlibraryPage.seachAndClickPlayListById(playlistid);
-        for (let i of [1, 2]) {
+        for (const i of [1, 2]) {
           playlistlibraryPage.reviewTab.getTestsInModuleByModule(i).should("have.length", 2);
           playlistlibraryPage.reviewTab.getModuleNameByModule(i).should("have.text", `module-${i}`);
         }
@@ -286,7 +286,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       });
     });
   });
-  context(">not allowing customization- drop", () => {
+  context.skip(">not allowing customization- drop", () => {
     /* not allowing customization will not create new  copy after customize and changes made at CE side will reflect to every one who has  acces to playlist(teachers and students) */
     before(">create playlist", () => {
       cy.login("publisher", contentEditor.email, contentEditor.pass);

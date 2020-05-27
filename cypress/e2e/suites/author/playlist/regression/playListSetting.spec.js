@@ -3,15 +3,12 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
+// import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
 import { CALCULATOR, attemptTypes, questionTypeKey } from "../../../../framework/constants/questionTypes";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
-import {
-  releaseGradeTypes,
-  releaseGradeTypesDropDown as release
-} from "../../../../framework/constants/assignmentStatus";
+import { releaseGradeTypesDropDown as release } from "../../../../framework/constants/assignmentStatus";
 import SidebarPage from "../../../../framework/student/sidebarPage";
 import PlayListAssign from "../../../../framework/author/playlist/playListAssignPage";
 
@@ -21,14 +18,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>module authoring and ass
   const studentTestPage = new StudentTestPage();
   const assignmentsPage = new AssignmentsPage();
   const playListAssign = new PlayListAssign();
-  const testSettings = new TestSettings();
+  //  const testSettings = new TestSettings();
   const authorAssignmentPage = new AuthorAssignmentPage();
   const lcb = new LiveClassboardPage();
   const reportsPage = new ReportsPage();
   const sidebarPage = new SidebarPage();
 
   const maxattempts = 3;
-  const staticPass = ["123456", "abcdefg"];
+  // const staticPass = ["123456", "abcdefg"];
   const testToCreate = ["search_1", "search_2"];
   const testIds = [];
   const dynamicPassword = [];
@@ -52,25 +49,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>module authoring and ass
     email: "teacher.playlistBasic@snapwiz.com",
     pass: "snapwiz"
   };
-  before("create test", () => {
-    cy.login("teacher", teacher.email, teacher.pass);
-    testToCreate.forEach((test, i) => {
-      testLibrary.createTest(test, false).then(id => {
-        testIds[i] = id;
-        testLibrary.header.clickOnSettings();
-        if (i === 0) testSettings.clickOnCalculatorByType(CALCULATOR.SCIENTIFIC);
-        else testSettings.setCheckAnswer(2);
-        testSettings.setRealeasePolicy(releaseGradeTypes.SCORE_ONLY);
-        testSettings.clickOnPassword();
-        testSettings.clickOnStaticPassword();
-        if (i === 0) testSettings.enterStaticPassword(staticPass[0]);
-        else testSettings.enterStaticPassword(staticPass[1]);
-        testLibrary.header.clickOnPublishButton();
-        cy.contains("Share With Others");
-      });
-    });
-  });
-  context("> authoring", () => {
+  // before("create test", () => {
+  //   cy.login("teacher", teacher.email, teacher.pass);
+  //   testToCreate.forEach((test, i) => {
+  //     testLibrary.createTest(test, false).then(id => {
+  //       testIds[i] = id;
+  //       testLibrary.header.clickOnSettings();
+  //       if (i === 0) testSettings.clickOnCalculatorByType(CALCULATOR.SCIENTIFIC);
+  //       else testSettings.setCheckAnswer(2);
+  //       testSettings.setRealeasePolicy(releaseGradeTypes.SCORE_ONLY);
+  //       testSettings.clickOnPassword();
+  //       testSettings.clickOnStaticPassword();
+  //       if (i === 0) testSettings.enterStaticPassword(staticPass[0]);
+  //       else testSettings.enterStaticPassword(staticPass[1]);
+  //       testLibrary.header.clickOnPublishButton();
+  //       cy.contains("Share With Others");
+  //     });
+  //   });
+  // });
+  context.skip("> authoring", () => {
     before("create play list", () => {
       cy.deleteAllAssignments("", teacher.email);
       playListData.moduledata.module1 = testIds;

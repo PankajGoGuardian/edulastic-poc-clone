@@ -1,6 +1,6 @@
 import PlayListLibrary from "../../../../framework/author/playlist/playListLibrary";
 import FileHelper from "../../../../framework/util/fileHelper";
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+// import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
@@ -9,7 +9,7 @@ import LiveClassboardPage from "../../../../framework/author/assignments/LiveCla
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () => {
   const playListLibrary = new PlayListLibrary();
-  const testLibrary = new TestLibrary();
+  // const testLibrary = new TestLibrary();
   const studentTestPage = new StudentTestPage();
   const assignmentsPage = new AssignmentsPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
@@ -17,11 +17,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
   const lcb = new LiveClassboardPage();
 
   let playlistId;
-  let customizedPlaylist;
-  let tests = [];
+  // let customizedPlaylist;
+  const tests = [];
 
   const standard = "K.CC.A.1";
-  const testToCreate = "search_1";
+  // const testToCreate = "search_1";
   const testIds = [];
   const playListData = {
     name: "Play List",
@@ -41,28 +41,28 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     "Some of the selected tests already exists in this module"
   ];
 
-  before("create test", () => {
-    cy.login("teacher", teacher.email, teacher.pass);
-    testLibrary.createTest(testToCreate).then(id => {
-      testIds.push(id);
-      cy.contains("Share With Others");
-      for (let k = 0; k < 3; k++) {
-        testLibrary.sidebar.clickOnTestLibrary();
-        testLibrary.searchFilters.clearAll();
-        testLibrary.clickOnTestCardById(testIds[0]);
-        testLibrary.clickOnDuplicate();
-        testLibrary.header.clickOnPublishButton().then(newId => {
-          testIds.push(newId);
-          cy.contains("Share With Others");
-        });
-      }
-    });
-  });
-  before("create play list", () => {
-    tests = testIds.slice(0, 2);
-  });
+  // before("create test", () => {
+  //   cy.login("teacher", teacher.email, teacher.pass);
+  //   testLibrary.createTest(testToCreate).then(id => {
+  //     testIds.push(id);
+  //     cy.contains("Share With Others");
+  //     for (let k = 0; k < 3; k++) {
+  //       testLibrary.sidebar.clickOnTestLibrary();
+  //       testLibrary.searchFilters.clearAll();
+  //       testLibrary.clickOnTestCardById(testIds[0]);
+  //       testLibrary.clickOnDuplicate();
+  //       testLibrary.header.clickOnPublishButton().then(newId => {
+  //         testIds.push(newId);
+  //         cy.contains("Share With Others");
+  //       });
+  //     }
+  //   });
+  // });
+  // before("create play list", () => {
+  //   tests = testIds.slice(0, 2);
+  // });
 
-  context(">  authoring", () => {
+  context.skip(">  authoring", () => {
     it(">author playlist-'summary'", () => {
       playListLibrary.sidebar.clickOnPlayListLibrary();
       playListLibrary.clickOnNewPlayList();
@@ -91,7 +91,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     it(">verify add test tab-'view test'", () => {
       playListLibrary.searchFilter.clearAll();
       playListLibrary.searchFilter.getAuthoredByMe();
-      tests.forEach((id, index) => {
+      tests.forEach(id => {
         playListLibrary.addTestTab.clickOnViewTestById(id).then(test => {
           expect(id).to.eq(test);
         });
@@ -168,7 +168,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     });
     // TODO: Drag and drop(Shuffling tests and modules)
   });
-  context(">bulk actions", () => {
+  context.skip(">bulk actions", () => {
     before("create playlist", () => {
       cy.login("teacher", teacher.email, teacher.pass);
       playListLibrary.createPlayList(playListData, testIds.length / 2).then(id => {
@@ -222,7 +222,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playListLibrary.reviewTab.verifyNoOfTestByModule(2, 3);
     });
   });
-  context(">using existing playlist template", () => {
+  context.skip(">using existing playlist template", () => {
     context(">edit-'add a test' ", () => {
       before("create a playlist", () => {
         cy.deleteAllAssignments("", teacher.email);
@@ -327,7 +327,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       });
     });
   });
-  context(">customization", () => {
+  context.skip(">customization", () => {
     before("create a playlist", () => {
       cy.deleteAllAssignments("", teacher.email);
       cy.login("teacher", teacher.email, teacher.pass);

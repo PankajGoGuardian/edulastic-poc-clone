@@ -235,7 +235,7 @@ class Container extends PureComponent {
         clearSelectedItems();
         setDefaultData();
         if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
-          setData({ testType: testContants.type.COMMON });
+          setData({ testType: testContants.type.COMMON, freezeSettings: true });
         }
         if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
           setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE });

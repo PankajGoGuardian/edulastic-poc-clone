@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { round, shuffle, get, maxBy } from "lodash";
+import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
 import { themeColorLighter, yellow, red, themeColor } from "@edulastic/colors";
 import { connect } from "react-redux";
@@ -8,9 +8,9 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { CheckboxLabel } from "@edulastic/common";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
-import { ScratchPadIcon, StyledIconCol } from "./styled";
-
 import {
+  ScratchPadIcon,
+  StyledIconCol,
   StyledCardContiner,
   StyledFlexDiv,
   PerfomanceSection,
@@ -38,6 +38,7 @@ import {
   ExclamationMark,
   StatusRow
 } from "./styled";
+
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName } from "../../Transformer";
 import { isItemVisibiltySelector, testActivtyLoadingSelector } from "../../ducks";
@@ -51,8 +52,13 @@ class DisneyCardContainer extends Component {
     viewResponses: PropTypes.func.isRequired,
     isPresentationMode: PropTypes.bool,
     isLoading: PropTypes.bool,
-    testActivityLoading: PropTypes.bool,
-    additionalData: PropTypes.object
+    testActivityLoading: PropTypes.bool
+  };
+
+  static defaultProps = {
+    isPresentationMode: false,
+    isLoading: false,
+    testActivityLoading: false
   };
 
   constructor(props) {
@@ -79,7 +85,6 @@ class DisneyCardContainer extends Component {
       viewResponses,
       isPresentationMode,
       endDate,
-      updateDisabledList,
       isLoading,
       testActivityLoading,
       enrollmentStatus,
@@ -91,23 +96,20 @@ class DisneyCardContainer extends Component {
       classId
     } = this.props;
 
-    const noDataNotification = () => {
-      return (
-        <NoDataWrapper height="300px" margin="20px auto">
-          <NoDataBox width="300px" height="200px" descSize="14px">
-            <img src={NoDataIcon} svgWidth="40px" alt="noData" />
-            <h4>No Data</h4>
-            <p>Students have not yet been assigned</p>
-          </NoDataBox>
-        </NoDataWrapper>
-      );
-    };
+    const noDataNotification = () => (
+      <NoDataWrapper height="300px" margin="20px auto">
+        <NoDataBox width="300px" height="200px" descSize="14px">
+          <img src={NoDataIcon} svgWidth="40px" alt="noData" />
+          <h4>No Data</h4>
+          <p>Students have not yet been assigned</p>
+        </NoDataBox>
+      </NoDataWrapper>
+    );
 
     const showLoader = () => <Spin size="small" />;
     let styledCard = [];
-    const classess = detailedClasses?.filter(({_id}) => _id === classId);
+    const classess = detailedClasses?.filter(({ _id }) => _id === classId);
 
-  
     if (testActivity.length > 0) {
       /**
        * FIXME:
@@ -140,12 +142,9 @@ class DisneyCardContainer extends Component {
           status.status = "In Progress";
           status.color = yellow;
         } else if (student.status === "submitted") {
+          status.status = student.status;
           if (student?.graded === "GRADED") {
             status.status = "Graded";
-          } else if (student?.graded === "IN GRADING") {
-            status.status = "In Grading";
-          } else {
-            status.status = student?.graded;
           }
           status.color = themeColorLighter;
         } else if (student.status === "redirected") {
@@ -156,14 +155,6 @@ class DisneyCardContainer extends Component {
           status.color = red;
         }
         const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
-        let correctAnswers = 0;
-        const questions = student.questionActivities.length;
-        student.questionActivities.map(questionAct => {
-          if (questionAct.correct) {
-            correctAnswers++;
-          }
-          return null;
-        });
 
         const name = isPresentationMode ? student.fakeName : student.studentName || "-";
         /**
@@ -179,13 +170,14 @@ class DisneyCardContainer extends Component {
           );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
-        const pastDueTag = (actualDueDate || dueDate) && status.status !== "Absent"
-          ? formatStudentPastDueTag({
-              status: student.status,
-              dueDate: actualDueDate || dueDate,
-              endDate: student.endDate
-            })
-          : null;
+        const pastDueTag =
+          (actualDueDate || dueDate) && status.status !== "Absent"
+            ? formatStudentPastDueTag({
+                status: student.status,
+                dueDate: actualDueDate || dueDate,
+                endDate: student.endDate
+              })
+            : null;
 
         const studentData = (
           <StyledCard
@@ -248,7 +240,11 @@ class DisneyCardContainer extends Component {
                         {enrollMentFlag}
                         {status.status}
                       </StyledParaS>
-                      {pastDueTag && <StatusRow><span>{pastDueTag}</span></StatusRow>}
+                      {pastDueTag && (
+                        <StatusRow>
+                          <span>{pastDueTag}</span>
+                        </StatusRow>
+                      )}
                     </>
                   ) : (
                     <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
@@ -323,15 +319,20 @@ class DisneyCardContainer extends Component {
                     const weight = questionAct.weight;
                     if (questionAct.notStarted) {
                       return <SquareColorDisabled key={questionIndex} />;
-                    } else if (questionAct.skipped && questionAct.score === 0) {
+                    }
+                    if (questionAct.skipped && questionAct.score === 0) {
                       return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
-                    } else if (questionAct.graded === false || questionAct.pendingEvaluation) {
+                    }
+                    if (questionAct.graded === false || questionAct.pendingEvaluation) {
                       return <SquareColorBlue key={questionIndex} />;
-                    } else if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
+                    }
+                    if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
                       return <SquareColorDivGreen key={questionIndex} />;
-                    } else if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
+                    }
+                    if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
                       return <SquareColorDivYellow key={questionIndex} />;
-                    } else if (questionAct.score === 0) {
+                    }
+                    if (questionAct.score === 0) {
                       return <SquareColorDivPink key={questionIndex} />;
                     }
                     return null;

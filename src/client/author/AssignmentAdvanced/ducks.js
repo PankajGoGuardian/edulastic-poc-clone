@@ -2,7 +2,6 @@ import { takeEvery, call, all } from "redux-saga/effects";
 import { createAction } from "redux-starter-kit";
 import { classBoardApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
-import { downloadCSV } from "../Reports/common/util";
 
 // constants
 export const BULK_OPEN_ASSIGNMENT = "[test assignments] bulk open";
@@ -91,7 +90,7 @@ function* bulkUnassignAssignmentSaga({ payload }) {
 
 function* bulkDownloadGradesAndResponsesSaga({ payload }) {
   try {
-    const { data, testId, testType, testName, isResponseRequired = false } = payload;
+    const { data, testId, testType, isResponseRequired = false } = payload;
     const _payload = {
       data: {
         assignmentGroups: data,
@@ -101,9 +100,7 @@ function* bulkDownloadGradesAndResponsesSaga({ payload }) {
       testType
     };
     notification({ type: "info", msg: "Starting Bulk Action Request" });
-    const response = yield call(classBoardApi.bulkDownloadGrades, _payload);
-    const fileName = `${testName}.csv`;
-    downloadCSV(fileName, response);
+    yield call(classBoardApi.bulkDownloadGrades, _payload);
   } catch (err) {
     console.error(err);
     const errorMessage = err.data?.message || "Failed to start Bulk Action request";

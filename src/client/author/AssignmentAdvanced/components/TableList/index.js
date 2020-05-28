@@ -112,7 +112,7 @@ const columns = [
   }
 ];
 const TableList = ({
-  classList,
+  classList = [],
   filterStatus,
   bulkOpenAssignmentRequest,
   bulkCloseAssignmentRequest,

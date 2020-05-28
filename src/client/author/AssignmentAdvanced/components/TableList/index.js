@@ -156,16 +156,25 @@ const TableList = ({
 
   const showPagination = rowData.length > 10;
 
+  const handleSelectAll = selected => {
+    if (selected) {
+      setSelectedRows(rowData.map(({ key }) => key));
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
   const rowSelection = {
     selectedRowKeys: selectedRows.map(key => key),
-    onChange: rowKeys => {
-      setSelectedRows(rowKeys);
-    }
+    onSelect: (_, __, selectedRowz) => {
+      setSelectedRows(selectedRowz.map(({ key }) => key));
+    },
+    onSelectAll: handleSelectAll
   };
 
   const handleBulkAction = (type, releaseScoreResponse) => {
     let selectedRowsGroupByAssignment = {};
-    if (classList.length > selectedRows.length) {
+    if (rowData.length > selectedRows.length) {
       const selectedRowsData = rowData.filter((_, i) => selectedRows.includes(i));
       selectedRowsGroupByAssignment = groupBy(selectedRowsData, "assignmentId");
       for (const [key, value] of Object.entries(selectedRowsGroupByAssignment)) {

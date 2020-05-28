@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { isEmpty } from "lodash";
 
 // components
 import { Link } from "react-router-dom";
@@ -44,6 +45,7 @@ const Gradebook = ({
   setPageDetail,
   termId
 }) => {
+  const [onComponentLoad, setOnComponentLoad] = useState(true);
   const [loading, setLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
@@ -56,10 +58,11 @@ const Gradebook = ({
 
   useEffect(() => {
     fetchFiltersData();
+    setOnComponentLoad(false);
   }, []);
 
   useEffect(() => {
-    if (Object.keys(filters).length) {
+    if (!isEmpty(filters)) {
       setPageDetail({ ...PAGE_DETAIL });
       setPseudoPageDetail({ ...PAGE_DETAIL });
     } else {
@@ -68,7 +71,7 @@ const Gradebook = ({
   }, [filters]);
 
   useEffect(() => {
-    if (Object.keys(filters).length) {
+    if (!onComponentLoad) {
       fetchGradebookData({ filters, pageDetail });
       setLoading(true);
     }

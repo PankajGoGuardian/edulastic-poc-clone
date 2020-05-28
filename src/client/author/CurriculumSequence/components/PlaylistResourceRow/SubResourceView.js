@@ -22,7 +22,8 @@ export const SubResourceView = ({
   type,
   isStudent,
   fromPlaylist,
-  inDiffrentiation
+  inDiffrentiation,
+  disabled = false
 }) => {
   const viewResource = data => () => {
     if (data.contentType === "lti_resource") showResource(data.contentId);
@@ -53,7 +54,7 @@ export const SubResourceView = ({
         <ResourceWrapper onClick={viewResource(data)} showBorder={isManageContentActive}>
           <ResouceIcon type={data.contentType} isAdded />
           <Title>{data.contentTitle}</Title>
-          {mode === "embedded" && !isStudent && (
+          {mode === "embedded" && !isStudent && !disabled && (
             <InlineDelete title="Delete" onClick={deleteSubResource(data)}>
               <IconClose />
             </InlineDelete>

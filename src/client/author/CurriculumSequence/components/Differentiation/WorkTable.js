@@ -20,15 +20,13 @@ import Tags from "../../../src/components/common/Tags";
 import { SubResourceView } from "../PlaylistResourceRow";
 
 function ContentDropContainer({ children, ...props }) {
-  const [{ isOver, contentType }, dropRef] = useDrop({
+  const [{ isOver }, dropRef] = useDrop({
     accept: "item",
-    collect: monitor => {
-      return {
-        isOver: !!monitor.isOver(),
-        contentType: monitor.getItem()?.contentType
-      };
-    },
-    drop: (item, monitor) => {
+    collect: monitor => ({
+      isOver: !!monitor.isOver(),
+      contentType: monitor.getItem()?.contentType
+    }),
+    drop: item => {
       const {
         parentTestId,
         type,
@@ -78,22 +76,20 @@ function ContentDropContainer({ children, ...props }) {
   );
 }
 
-function OuterDropContainer({ index, children }) {
+function OuterDropContainer({ children }) {
   const [{ isOver, contentType }, dropRef] = useDrop({
     accept: "item",
-    collect: monitor => {
-      return {
-        isOver: !!monitor.isOver(),
-        contentType: monitor.getItem()?.contentType
-      };
-    }
+    collect: monitor => ({
+      isOver: !!monitor.isOver(),
+      contentType: monitor.getItem()?.contentType
+    })
   });
 
   const showSupportingResource = contentType != "test" && isOver;
   return (
     <div ref={dropRef}>
       {React.Children.map(children, child =>
-        React.cloneElement(child, { showNewActivity: isOver, showSupportingResource })
+        React.cloneElement(child, { showNewActivity: isOver && contentType === "test", showSupportingResource })
       )}
     </div>
   );
@@ -110,6 +106,7 @@ const InnerWorkTable = ({
   addTestToDifferentiation,
   addResourceToDifferentiation,
   showNewActivity,
+  showSupportingResource,
   addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
   showResource,
@@ -150,7 +147,7 @@ const InnerWorkTable = ({
       isOver: !!monitor.isOver(),
       itemContentType: monitor.getItem()?.contentType
     }),
-    drop: (item = {}, monitor) => {
+    drop: (item = {}) => {
       if (selectedData?.assignmentId && selectedData?.classId && item.contentType === "test") {
         addTestToDifferentiation({
           type: type.toLowerCase(),
@@ -253,11 +250,11 @@ const InnerWorkTable = ({
     }
   };
 
-  const viewResource = data => {
-    if (data.contentType === "lti_resource") showResource(data.contentId);
-    if (data.contentType === "website_resource") window.open(data.contentUrl, "_blank");
-    if (data.contentType === "video_resource")
-      setEmbeddedVideoPreviewModal({ title: data.description, url: data.contentUrl });
+  const viewResource = _data => {
+    if (_data.contentType === "lti_resource") showResource(_data.contentId);
+    if (_data.contentType === "website_resource") window.open(_data.contentUrl, "_blank");
+    if (_data.contentType === "video_resource")
+      setEmbeddedVideoPreviewModal({ title: _data.description, url: _data.contentUrl });
   };
 
   const columns = [
@@ -274,8 +271,8 @@ const InnerWorkTable = ({
       ),
       dataIndex: "standardIdentifier",
       key: "standardIdentifier",
-      render: (s, record) => {
-        return record.testId || record.contentId ? (
+      render: (s, record) =>
+        record.testId || record.contentId ? (
           record?.testStandards?.length ? (
             <Tags tags={record.testStandards} show={1} />
           ) : (
@@ -283,8 +280,7 @@ const InnerWorkTable = ({
           )
         ) : (
           <Tag marginRight="10px">{s}</Tag>
-        );
-      }
+        )
     },
     {
       title: "",
@@ -301,13 +297,14 @@ const InnerWorkTable = ({
             <SubResourceView
               data={record}
               mode="embedded"
+              disabled={record.status === "ADDED"}
               showResource={showResource}
               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
               removeSubResource={removeSubResource}
               type={type.toLowerCase()}
               inDiffrentiation
             />
-            {showNewActivity && activeHoverIndex === index && itemContentType !== "test" && record.testId && (
+            {showSupportingResource && activeHoverIndex === index && itemContentType !== "test" && record.testId && (
               <ContentDropContainer
                 dropType="subResource"
                 {...containerProps}
@@ -378,44 +375,56 @@ const InnerWorkTable = ({
     if (!selectedRows.length) return message.error("Please select atleast one standard to add.");
     if (!filteredStudentList.length)
       return message.error("Please select the mastery range which is having atleast 1 student.");
-
-    const groups = groupBy(selectedRows.map(x => data[x]), x => (x.testId ? "tests" : "standards"));
     const recommendations = [];
-    if (groups.standards) {
-      const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);
-      const skillIdentifiers = compact(groups.standards.map(x => x.skillIdentifier));
-      const obj = {
-        assignmentId: selectedData.assignmentId,
-        groupId: selectedData.classId,
-        standardIdentifiers,
-        type,
-        masteryRange: {
-          min: masteryRange[0],
-          max: masteryRange[1]
-        },
-        resourceTitle: getResourceTitle()
-      };
-      if(!isEmpty(skillIdentifiers)) {
-        obj.skillIdentifiers = skillIdentifiers;
+    const selectedRowsData = selectedRows.map(x => data[x]);
+    const groupByResources = groupBy(selectedRowsData, ({ resources }) =>
+      (resources || [])
+        ?.map(x => x.contentId)
+        .sort()
+        .join(",")
+    );
+    for (const key of Object.keys(groupByResources)) {
+      const rowsData = groupByResources[key];
+      const groups = groupBy(rowsData, x => (x.testId ? "tests" : "standards"));
+      if (groups.standards) {
+        const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);
+        const skillIdentifiers = compact(groups.standards.map(x => x.skillIdentifier));
+        const obj = {
+          assignmentId: selectedData.assignmentId,
+          groupId: selectedData.classId,
+          standardIdentifiers,
+          type,
+          masteryRange: {
+            min: masteryRange[0],
+            max: masteryRange[1]
+          },
+          resourceTitle: getResourceTitle(),
+          ...(rowsData[0]?.resources?.length ? { resources: rowsData[0]?.resources } : {})
+        };
+        if (!isEmpty(skillIdentifiers)) {
+          obj.skillIdentifiers = skillIdentifiers;
+        }
+        recommendations.push(obj);
       }
-      recommendations.push(obj);
+
+      if (groups.tests) {
+        const testIds = groups.tests.map(x => x.testId);
+        const obj = {
+          assignmentId: selectedData.assignmentId,
+          groupId: selectedData.classId,
+          testIds,
+          type,
+          masteryRange: {
+            min: masteryRange[0],
+            max: masteryRange[1]
+          },
+          resourceTitle: getResourceTitle(),
+          ...(rowsData[0]?.resources?.length ? { resources: rowsData[0]?.resources } : {})
+        };
+        recommendations.push(obj);
+      }
     }
 
-    if (groups.tests) {
-      const testIds = groups.tests.map(x => x.testId);
-      const obj = {
-        assignmentId: selectedData.assignmentId,
-        groupId: selectedData.classId,
-        testIds,
-        type,
-        masteryRange: {
-          min: masteryRange[0],
-          max: masteryRange[1]
-        },
-        resourceTitle: getResourceTitle()
-      };
-      recommendations.push(obj);
-    }
 
     if (recommendations.length) {
       addRecommendations(recommendations);
@@ -453,7 +462,7 @@ const InnerWorkTable = ({
           pagination={false}
           loading={isFetchingWork}
           onRow={(record, rowIndex) => ({
-            onDragOver: e => setActiveHoverIndex(rowIndex)
+            onDragOver: () => setActiveHoverIndex(rowIndex)
           })}
         />
       ) : null}

@@ -960,10 +960,11 @@ function structureWorkData(workData, statusData, firstLoad = false) {
       Object.keys(statusData).forEach(recommentdationKey => {
         const testRecommendations = statusData[recommentdationKey]
           .filter(x => x.derivedFrom === "TESTS")
-          .map(({ resourceId, resourceName, testStandards }) => ({
+          .map(({ resourceId, resourceName, testStandards, resources }) => ({
             testId: resourceId,
             description: resourceName,
-            testStandards
+            testStandards,
+            resources
           }));
 
         const lowerCasekey = recommentdationKey.toLowerCase();

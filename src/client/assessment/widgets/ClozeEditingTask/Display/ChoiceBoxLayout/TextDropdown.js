@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { Select as AntSelect } from "antd";
-import { green } from "@edulastic/colors";
+import { lightBlue1 } from "@edulastic/colors";
 import { MathSpan, ScrollContext } from "@edulastic/common";
 import { subOptions } from "../../constants";
 
@@ -44,7 +44,7 @@ const Select = styled(AntSelect)`
 
   & .ant-select-selection {
     border: 0px;
-    ${({ isDahsline }) => (isDahsline ? "border-bottom: 2px dashed;" : `background: ${green}`)};
+    ${({ isDahsline }) => (isDahsline ? "border-bottom: 2px dashed;" : `background: ${lightBlue1}`)};
     border-radius: 0px;
   }
 

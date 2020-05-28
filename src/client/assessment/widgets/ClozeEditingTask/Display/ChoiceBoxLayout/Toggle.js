@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import fineIndex from "lodash/findIndex";
 import { MathFormulaDisplay } from "@edulastic/common";
-import { green, greyThemeDark2, greyThemeLighter, greyThemeLight, greyThemeDark1 } from "@edulastic/colors";
+import { greyThemeLight, greyThemeDark1, lightBlue1 } from "@edulastic/colors";
 import { RadioLabel, RadioLabelGroup } from "../../../../styled/RadioWithLabel";
 import { subOptions } from "../../constants";
 
@@ -91,5 +91,5 @@ const AnswerBox = styled.div`
 `;
 
 const AnswerCont = styled(MathFormulaDisplay)`
-  ${({ isHighlight }) => (isHighlight ? `background: ${green}` : "")}
+  ${({ isHighlight }) => (isHighlight ? `background: ${lightBlue1}` : "")}
 `;

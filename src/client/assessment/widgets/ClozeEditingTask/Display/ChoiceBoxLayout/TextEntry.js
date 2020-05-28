@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import { green } from "@edulastic/colors";
+import { lightBlue1 } from "@edulastic/colors";
 import { TextInputStyled } from "../../../../styled/InputStyles";
 import { subOptions } from "../../constants";
 
@@ -42,7 +42,7 @@ const TextEntryWrapper = styled.div`
 
 const inputStyle = css`
   border-bottom: ${({ isDahsline }) => (isDahsline ? "2px dashed;" : "")};
-  background-color: ${({ isDahsline }) => (isDahsline ? "transparent" : green)};
+  background-color: ${({ isDahsline }) => (isDahsline ? "transparent" : lightBlue1)};
 `;
 
 const TextInput = styled(TextInputStyled)`

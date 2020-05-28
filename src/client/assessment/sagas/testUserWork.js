@@ -29,19 +29,20 @@ function* saveTestletLog({ payload }) {
   try {
     const userTestActivityId = yield select(state => state.test && state.test.testActivityId);
     const userId = yield select(state => state?.user?.user?._id);
-
-    const result = yield call(attchmentApi.saveAttachment, {
-      type: "TESTLETLOG",
-      referrerType: "TESTLET",
-      referrerId: userTestActivityId,
-      data: payload,
-      userId,
-      status: "Attempted"
-    });
-    yield put({
-      type: SAVE_TESTLET_LOG_SUCCESS,
-      payload: result
-    });
+    if (userTestActivityId) {
+      const result = yield call(attchmentApi.saveAttachment, {
+        type: "TESTLETLOG",
+        referrerType: "TESTLET",
+        referrerId: userTestActivityId,
+        data: payload,
+        userId,
+        status: "Attempted"
+      });
+      yield put({
+        type: SAVE_TESTLET_LOG_SUCCESS,
+        payload: result
+      });
+    }
   } catch (error) {
     yield put({
       type: SAVE_TESTLET_LOG_FAILURE,

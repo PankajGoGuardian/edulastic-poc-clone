@@ -80,23 +80,25 @@ const Differentiation = ({
       }));
 
       setTestData(testDataGenerated);
-      setSelectedTest(testDataGenerated[0]._id);
-      let currentTestClasses = _assignmentsByTestId[testDataGenerated[0]._id].map(a => ({
-        classId: a.classId,
-        assignmentId: a._id,
-        className: a.className,
-        title: a.title,
-        createdAt: a.createdAt
-      }));
+      if (testDataGenerated[0]) {
+        setSelectedTest(testDataGenerated[0]._id);
+        let currentTestClasses = _assignmentsByTestId[testDataGenerated[0]._id].map(a => ({
+          classId: a.classId,
+          assignmentId: a._id,
+          className: a.className,
+          title: a.title,
+          createdAt: a.createdAt
+        }));
 
-      currentTestClasses = groupBy(currentTestClasses, "classId");
-      currentTestClasses = Object.keys(currentTestClasses).map(classId => {
-        const clazzArray = currentTestClasses[classId];
-        return maxBy(clazzArray, "createdAt");
-      });
+        currentTestClasses = groupBy(currentTestClasses, "classId");
+        currentTestClasses = Object.keys(currentTestClasses).map(classId => {
+          const clazzArray = currentTestClasses[classId];
+          return maxBy(clazzArray, "createdAt");
+        });
 
-      setClassList(currentTestClasses);
-      setSelectedClass(currentTestClasses[0]);
+        setClassList(currentTestClasses);
+        setSelectedClass(currentTestClasses[0]);
+      }
     }
   }, [assignments]);
 

@@ -116,7 +116,7 @@ const getCurrentPath = () => {
 
 const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
 
-function isLocationInTestRedirectRoutes(location) {
+function isLocationInTestRedirectRoutes(loc) {
   return testRedirectRoutes.find(
     x => loc.pathname.includes(x) || `${loc.pathname}${loc.search}${loc.hash}`.includes(x)
   );
@@ -186,7 +186,7 @@ class App extends Component {
     if (location.hash.includes("#renderResource/close/") || location.hash.includes("#assessmentQuestions/close/")) {
       const v1Id = location.hash.split("/")[2];
       history.push(`/d/ap?eAId=${v1Id}`);
-      return <loading />;
+      return <Loading />;
     }
 
     const publicPath =

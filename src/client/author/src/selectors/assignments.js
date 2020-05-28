@@ -31,6 +31,11 @@ export const getAssignmentClassList = createSelector(
   state => state.assignmentClassList
 );
 
+export const getCurrentTestSelector = createSelector(
+  stateSelector,
+  state => state.currentTest
+);
+
 export const getAssignmentsByTestSelector = createSelector(
   getEntitiesSelector,
   state => groupBy(state.assignments, item => item.testId)
@@ -78,8 +83,8 @@ export const getDistrictIdSelector = createSelector(
 export const getAssignmentViewSelector = createSelector(
   stateSelector,
   getUserRole,
-  (state, role) => (role !== "teacher" ? true : false)
-  //TODO for some sceneario we may use both advanced and simple views. We should make use of state.isAdvancedView for those cases
+  (state, role) => (role !== "teacher")
+  // TODO for some sceneario we may use both advanced and simple views. We should make use of state.isAdvancedView for those cases
 );
 
 export const getAssignmentFilterSelector = createSelector(

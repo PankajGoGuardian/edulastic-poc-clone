@@ -1,3 +1,5 @@
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { find, keyBy } from "lodash";
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
   RECEIVE_ASSIGNMENTS_SUCCESS,
@@ -13,20 +15,17 @@ import {
   TOGGLE_RELEASE_GRADE_SETTINGS,
   ADVANCED_ASSIGNMENT_VIEW,
   TOGGLE_DELETE_ASSIGNMENT_MODAL,
-  DELETE_ASSIGNMENT_REQUEST,
   DELETE_ASSIGNMENT_REQUEST_SUCCESS,
-  DELETE_ASSIGNMENT_REQUEST_FAILED,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS
 } from "../constants/actions";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { find, keyBy } from "lodash";
 
 const initialState = {
   summaryEntities: [],
   assignmentClassList: [],
+  currentTest: {},
   entities: {},
   error: null,
   page: 1,
@@ -77,7 +76,8 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         loading: false,
-        assignmentClassList: payload.entities
+        assignmentClassList: payload.entities.assignments,
+        currentTest: payload.entities.test
       };
     case RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR:
       return { ...state, loading: false, error: payload.error, assignmentClassList: [] };
@@ -117,15 +117,14 @@ const reducer = (state = initialState, { type, payload }) => {
               assignments: _assignments
             }
           };
-        } else {
-          return {
-            ...state,
-            entities: {
-              ...state.entities,
-              assignments: _assignments
-            }
-          };
         }
+        return {
+          ...state,
+          entities: {
+            ...state.entities,
+            assignments: _assignments
+          }
+        };
       }
     case SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST:
       return {

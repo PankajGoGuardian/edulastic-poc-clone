@@ -19,7 +19,8 @@ import {
 import {
   getAssignmentsSummary,
   getAssignmentClassList,
-  getToggleReleaseGradeStateSelector
+  getToggleReleaseGradeStateSelector,
+  getCurrentTestSelector
 } from "../../../src/selectors/assignments";
 import ListHeader from "../../../src/components/common/ListHeader";
 import ActionMenu from "../../../Assignments/components/ActionMenu/ActionMenu";
@@ -52,6 +53,8 @@ import {
   bulkDownloadGradesAndResponsesAction
 } from "../../ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
+import { getUserId } from "../../../src/selectors/user";
+import { canEditTest } from "../../../Assignments/utils";
 
 const { assignmentStatusBg } = authorAssignment;
 
@@ -168,7 +171,9 @@ class AssignmentAdvanced extends Component {
       bulkUnassignAssignmentRequest,
       bulkDownloadGradesAndResponsesRequest,
       toggleDeleteAssignmentModal,
-      location
+      location,
+      userId,
+      test
     } = this.props;
     const { testId } = match.params;
     const { filterStatus, openEditPopup, isPreviewModalVisible } = this.state;
@@ -200,7 +205,8 @@ class AssignmentAdvanced extends Component {
                 row: assingment,
                 history,
                 showPreviewModal: this.toggleTestPreviewModal,
-                toggleEditModal: this.toggleEditModal
+                toggleEditModal: this.toggleEditModal,
+                canEdit: canEditTest(test, userId)
               })}
               placement="bottomLeft"
               trigger={["hover"]}
@@ -267,7 +273,9 @@ const enhance = compose(
       assignmentsSummary: getAssignmentsSummary(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       error: get(state, "test.error", false),
-      classList: getAssignmentClassList(state)
+      classList: getAssignmentClassList(state),
+      test: getCurrentTestSelector(state),
+      userId: getUserId(state)
     }),
     {
       setReleaseScore: releaseScoreAction,

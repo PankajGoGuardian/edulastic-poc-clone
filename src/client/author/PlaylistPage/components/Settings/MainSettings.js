@@ -38,8 +38,9 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
             <Body smallSize={isSmallSize}>
               <Switch data-cy="customization" defaultChecked={customize} onChange={handleUserCustomize} />
               <Description>
-                If set to ON, the playlist can be customized by the users i.e, users can add/remove the items in the
-                playlist
+                If set to ON, other members of the Edulastic community who want to use this playlist can customize it as
+                per their requirements (i.e., add/remove items in the playlist). Note that this will not affect the
+                original playlist in any way.
               </Description>
             </Body>
           </StyledBlock>

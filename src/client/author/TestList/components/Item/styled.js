@@ -292,10 +292,10 @@ Header.displayName = "CardHeader";
 export const Stars = styled(Rate)`
   font-size: 13px;
   position: absolute;
-  top: ${props => (props.isPlaylist ? "auto" : "5px")};
-  left: ${props => (props.isPlaylist ? "auto" : "10px")};
-  right: ${props => (props.isPlaylist ? "10px" : "auto")};
-  bottom: ${props => (props.isPlaylist ? "10px" : "auto")};
+  top: 5px;
+  left: 10px;
+  right: auto;
+  bottom: auto;
   z-index: 1;
 `;
 

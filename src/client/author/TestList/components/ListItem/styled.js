@@ -93,6 +93,7 @@ export const Author = styled.div`
   display: inline-flex;
   align-items: center;
   max-width: 100px;
+  margin-left: 10px;
   svg {
     width: 14px;
     height: 14px;

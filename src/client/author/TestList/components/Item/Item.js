@@ -189,7 +189,7 @@ class Item extends Component {
         sharedType,
         isDocBased
       },
-      orgCollections,
+      orgCollections = [],
       item,
       authorName,
       owner: isOwner,
@@ -228,6 +228,12 @@ class Item extends Component {
       margin: "0px",
       padding: "5px 10px"
     };
+
+    const premiumCollectionIds = orgCollections.filter(c => c.name !== "Edulastic Certified").map(x => x._id);
+    const showPremiumTag =
+      (isPlaylist
+        ? _source.collections?.some(c => premiumCollectionIds.includes(c._id))
+        : collections?.some(c => premiumCollectionIds.includes(c._id))) && !isPublisherUser;
 
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
@@ -289,7 +295,7 @@ class Item extends Component {
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&
                 getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
-              {!!collections.length && !isPlaylist && !isPublisherUser && <PremiumLabel>$ PREMIUM</PremiumLabel>}
+              {showPremiumTag && <PremiumLabel>$ PREMIUM</PremiumLabel>}
             </Header>
           }
         >

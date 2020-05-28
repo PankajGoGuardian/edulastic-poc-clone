@@ -1,6 +1,6 @@
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
-import { CheckboxLabel, MathFormulaDisplay } from "@edulastic/common";
+import { CheckboxLabel, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -132,7 +132,16 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: { title, analytics = [], tags = [], _source, status: testStatus, description, thumbnail, collections = [] },
+      item: {
+        title,
+        analytics = [],
+        tags = [],
+        _source = {},
+        status: testStatus,
+        description,
+        thumbnail,
+        collections = []
+      },
       item,
       authorName,
       owner: isOwner = false,
@@ -153,7 +162,7 @@ class ListItem extends Component {
       t,
       userRole,
       isPublisherUser,
-      orgCollections
+      orgCollections = []
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -165,6 +174,12 @@ class ListItem extends Component {
     const isInCart = !!selectedTests.find(o => o._id === item._id);
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
+
+    const premiumCollectionIds = orgCollections.filter(c => c.name !== "Edulastic Certified").map(x => x._id);
+    const showPremiumTag =
+      (isPlaylist
+        ? _source.collections?.some(c => premiumCollectionIds.includes(c._id))
+        : collections?.some(c => premiumCollectionIds.includes(c._id))) && !isPublisherUser;
 
     return (
       <>
@@ -320,6 +335,7 @@ class ListItem extends Component {
 
               <ItemInformation span={12}>
                 <ContentWrapper>
+                  {showPremiumTag && <PremiumTag />}
                   {authorName && (
                     <Author>
                       {collections.find(o => o.name === "Edulastic Certified") ? (

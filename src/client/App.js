@@ -102,7 +102,13 @@ if (search) {
   }
 }
 
-const testRedirectRoutes = ["/demo/assessmentPreview", "/d/ap", "/d/cp"];
+const testRedirectRoutes = [
+  "/demo/assessmentPreview",
+  "/d/ap",
+  "/d/cp",
+  "//#renderResource/close/",
+  "/#assessmentQuestions/close/"
+];
 const getCurrentPath = () => {
   const location = window.location;
   return `${location.pathname}${location.search}${location.hash}`;
@@ -111,7 +117,9 @@ const getCurrentPath = () => {
 const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend;
 
 function isLocationInTestRedirectRoutes(location) {
-  return testRedirectRoutes.find(x => location.pathname.includes(x));
+  return testRedirectRoutes.find(
+    x => loc.pathname.includes(x) || `${loc.pathname}${loc.search}${loc.hash}`.includes(x)
+  );
 }
 
 class App extends Component {
@@ -178,6 +186,7 @@ class App extends Component {
     if (location.hash.includes("#renderResource/close/") || location.hash.includes("#assessmentQuestions/close/")) {
       const v1Id = location.hash.split("/")[2];
       history.push(`/d/ap?eAId=${v1Id}`);
+      return <loading />;
     }
 
     const publicPath =
@@ -313,9 +322,9 @@ class App extends Component {
             )}
             <Switch>
               {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
-                redirectRoute !== "" ? (
-                  <Redirect exact to={redirectRoute} />
-                ) : null}
+              redirectRoute !== "" ? (
+                <Redirect exact to={redirectRoute} />
+              ) : null}
               <PrivateRoute
                 path="/author"
                 component={Author}

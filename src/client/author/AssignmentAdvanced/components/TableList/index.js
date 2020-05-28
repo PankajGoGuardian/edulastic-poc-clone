@@ -139,7 +139,6 @@ const TableList = ({
     classId: data._id,
     key: index
   });
-
   const rowData = useMemo(
     () =>
       classList

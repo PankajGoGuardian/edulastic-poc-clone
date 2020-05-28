@@ -12,7 +12,7 @@ import viewIcon from "../../assets/view.svg";
 import infomationIcon from "../../assets/information.svg";
 import responsiveIcon from "../../assets/responses.svg";
 
-import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, ActionButton } from "./styled";
+import { Container, StyledMenu, StyledLink, SpaceElement } from "./styled";
 
 const { duplicateAssignment } = assignmentApi;
 const { testContentVisibility: testContentVisibilityOptions } = test;
@@ -28,7 +28,8 @@ const ActionMenu = ({
   row = {},
   userId = "",
   userRole = "",
-  assignmentTest = {}
+  assignmentTest = {},
+  canEdit = true
 }) => {
   const getAssignmentDetails = () => (!Object.keys(currentAssignment).length ? row : currentAssignment);
   const assignmentDetails = getAssignmentDetails();
@@ -144,13 +145,19 @@ const ActionMenu = ({
             View Summary Report
           </Link>
         </Menu.Item>
-        <Menu.Item data-cy="edit-Assignment" key="edit-Assignment" onClick={() => toggleEditModal(true, currentTestId)}>
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <img alt="icon" src={classIcon} />
-            <SpaceElement />
-            Edit and Regrade
-          </StyledLink>
-        </Menu.Item>
+        {canEdit && (
+          <Menu.Item
+            data-cy="edit-Assignment"
+            key="edit-Assignment"
+            onClick={() => toggleEditModal(true, currentTestId)}
+          >
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <img alt="icon" src={classIcon} />
+              <SpaceElement />
+              Edit and Regrade
+            </StyledLink>
+          </Menu.Item>
+        )}
         {isAssignmentOwner || isDistrictAdmin ? (
           <Menu.Item
             data-cy="delete-Assignment"

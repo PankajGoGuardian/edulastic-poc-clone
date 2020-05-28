@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { isEmpty, find, get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
-import { Dropdown, Tooltip, Spin, Icon as AntdIcon } from "antd";
+import { Dropdown, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { test } from "@edulastic/constants";
+import { test as testConstants } from "@edulastic/constants";
 
 import { FlexContainer, withWindowSizes, EduButton, CheckboxLabel } from "@edulastic/common";
 
@@ -25,7 +25,6 @@ import {
   TestThumbnail,
   AssignmentTD,
   IconArrowDown,
-  BtnAction,
   TypeIcon,
   ExpandDivdier,
   StatusLabel,
@@ -43,8 +42,9 @@ import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 import { getUserIdSelector } from "../../../src/selectors/user";
 import { getAssignmentTestsSelector } from "../../../src/selectors/assignments";
 import { ReactComponent as TimerIcon } from "./assets/timer.svg";
+import { canEditTest } from "../../utils";
 
-const convertTableData = (data, assignments = [], index) => ({
+const convertTableData = (data, assignments = [], index, userId) => ({
   name: data.title,
   thumbnail: data.thumbnail,
   key: index.toString(),
@@ -62,7 +62,10 @@ const convertTableData = (data, assignments = [], index) => ({
   currentAssignment: assignments[0],
   testType: data.testType,
   hasAutoSelectGroups: data.hasAutoSelectGroups,
-  assignmentVisibility: assignments.map(item => item.testContentVisibility || test.testContentVisibility.ALWAYS)
+  assignmentVisibility: assignments.map(
+    item => item.testContentVisibility || testConstants.testContentVisibility.ALWAYS
+  ),
+  canEdit: canEditTest(data, userId)
 });
 
 const convertExpandTableData = (data, testItem, index) => ({
@@ -136,11 +139,11 @@ const TableList = ({
         width: "14%",
         render: (_, row) => (
           <TypeWrapper>
-            {row && row.testType === test.type.PRACTICE ? (
+            {row && row.testType === testConstants.type.PRACTICE ? (
               <TypeIcon data-cy="type" type="p">
                 P
               </TypeIcon>
-            ) : row.testType === test.type.ASSESSMENT ? (
+            ) : row.testType === testConstants.type.ASSESSMENT ? (
               <TypeIcon data-cy="type">A</TypeIcon>
             ) : (
               <TypeIcon data-cy="type" type="c">
@@ -311,7 +314,7 @@ const TableList = ({
         return a.testType.localeCompare(b.testType);
       },
       width: "14%",
-      render: (text = test.type.ASSESSMENT) => <TitleCase data-cy="testType">{text}</TitleCase>
+      render: (text = testConstants.type.ASSESSMENT) => <TitleCase data-cy="testType">{text}</TitleCase>
     },
     {
       title: "Assigned by",
@@ -361,7 +364,8 @@ const TableList = ({
                 row,
                 userId,
                 assignmentTest,
-                togglePrintModal
+                togglePrintModal,
+                canEdit: row.canEdit
               })}
               placement="bottomRight"
               trigger={["click"]}
@@ -391,7 +395,7 @@ const TableList = ({
     }
   };
 
-  let data = tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
+  let data = tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i, userId));
 
   if (!isEmpty(folderData)) {
     const { content } = folderData;
@@ -403,7 +407,7 @@ const TableList = ({
         tempData.push(temp);
       }
     });
-    data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
+    data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i, userId));
   }
 
   if (status) {
@@ -464,7 +468,8 @@ TableList.defaultProps = {
   showPreviewModal: () => {},
   history: {},
   tests: [],
-  showFilter: false
+  showFilter: false,
+  togglePrintModal: () => {}
 };
 
 const enhance = compose(

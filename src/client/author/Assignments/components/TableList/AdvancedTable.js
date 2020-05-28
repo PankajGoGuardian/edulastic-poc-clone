@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { find, isEmpty, get } from "lodash";
+import { get } from "lodash";
 import { withRouter } from "react-router-dom";
 import { Dropdown, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -11,18 +11,17 @@ import produce from "immer";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 import { getAssignmentsSummary, getAssignmentTestsSelector } from "../../../src/selectors/assignments";
-import { getFolderSelector } from "../../../src/selectors/folder";
 import ActionMenu from "../ActionMenu/ActionMenu";
 
-import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, TestThumbnail } from "./styled";
+import { Container, TableData, AssignmentTD, ActionDiv, TitleCase, TestThumbnail } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
+import { canEditTest } from "../../utils";
 
 class AdvancedTable extends Component {
   state = {
     enableRowClick: true,
     perPage: 20,
-    pageNo: 1,
     current: 1,
     sort: {},
     columns: [
@@ -123,6 +122,7 @@ class AdvancedTable extends Component {
             userRole = "",
             assignmentTests
           } = this.props;
+          const canEdit = canEditTest(row, userId);
           const assignmentTest = assignmentTests.find(at => at._id === row.testId);
           return (
             <ActionDiv data-cy="testActions">
@@ -136,12 +136,13 @@ class AdvancedTable extends Component {
                   toggleEditModal,
                   userId,
                   userRole,
-                  assignmentTest
+                  assignmentTest,
+                  canEdit
                 })}
                 placement="bottomRight"
                 trigger={["click"]}
               >
-                <EduButton height="28px" width="100%" isGhost height data-cy="testActions">
+                <EduButton height="28px" width="100%" isGhost data-cy="testActions">
                   ACTIONS
                 </EduButton>
               </Dropdown>
@@ -156,10 +157,10 @@ class AdvancedTable extends Component {
     ]
   };
 
-  static getDerivedStateFromProps(nextProps, preState) {
+  static getDerivedStateFromProps(nextProps) {
     const { filtering } = nextProps;
     if (filtering) {
-      return { pageNo: 1, current: 1 };
+      return { current: 1 };
     }
     return {};
   }
@@ -196,10 +197,9 @@ class AdvancedTable extends Component {
     const { sortOrder } = col;
     const newSortOrder = sortOrder === false ? "descend" : sortOrder === "descend" ? "ascend" : false;
     const newColumns = produce(columns, draft => {
-      draft = draft.map((o, indx) => {
+      draft.forEach((o, indx) => {
         if (indx === index) o.sortOrder = newSortOrder;
         else if (indx < 7) o.sortOrder = false;
-        return o;
       });
     });
     this.setState({
@@ -258,7 +258,6 @@ class AdvancedTable extends Component {
 AdvancedTable.propTypes = {
   assignmentsSummary: PropTypes.array.isRequired,
   loadAssignmentsSummary: PropTypes.func.isRequired,
-  folderData: PropTypes.object.isRequired,
   districtId: PropTypes.string.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
   filters: PropTypes.object.isRequired,
@@ -282,7 +281,6 @@ const enhance = compose(
       filtering: get(state, "author_assignments.filtering"),
       totalData: get(state, "author_assignments.total", 0),
       loading: get(state, "author_assignments.loading"),
-      folderData: getFolderSelector(state),
       userId: getUserIdSelector(state),
       userRole: getUserRole(state),
       assignmentTests: getAssignmentTestsSelector(state)

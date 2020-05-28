@@ -11,6 +11,10 @@ export const evaluate = data =>
     })
     .then(result => result.data)
     .catch(err => {
+
+      // for certain req err respose is undefined
+      if(err && !err.response) throw err;
+
       if (!data.expected) {
         console.error("Error from mathengine", err.response.data);
         return {};

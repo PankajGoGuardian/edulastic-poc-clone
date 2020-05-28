@@ -1,30 +1,21 @@
-.customized-notification {
-  background-color: #2f4151;
-  width: auto;
-  left: 50px !important;
-  bottom: 0px !important;
-  background-color: #2f4151;
-  padding: 5px 0px;
-  .ant-notification-notice-closable {
-    width: auto;
-    background-color: #2f4151;
+.customized-notifiction {
+  padding: 16px;
+  &.ant-notification-notice {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
   }
 
-  .ant-notification-close-icon {
-    display: none;
+  & .ant-notification-notice-content {
+    margin-right: 12px;
   }
 
-  .ant-notification-notice-with-icon .ant-notification-notice-message {
-    font-size: 12px;
-    margin-top: 3px;
-    color: white;
-    font-weight: 600;
+  & .ant-notification-notice-icon {
+    margin-top: 2px;
+    margin-left: 0px;
   }
 
-  .ant-notification-notice-icon {
-    font-size: 15px;
-    margin-top: 7px;
-    line-height: 12px;
-    margin-left: 15px;
+  & .ant-notification-notice-message,
+  & .ant-notification-notice-description {
+    margin-bottom: 0px;
+    margin-left: 32px;
   }
 }

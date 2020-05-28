@@ -1,5 +1,5 @@
 import { FieldLabel, FlexContainer, SelectInputStyled } from "@edulastic/common";
-import { Row, Select } from "antd";
+import { Row, Select, Input } from "antd";
 import PropTypes from "prop-types";
 import React, { useMemo } from "react";
 import { connect } from "react-redux";
@@ -35,6 +35,7 @@ const ReviewSummary = ({
   owner,
   onChangeField,
   thumbnail,
+  onChangeSkillIdentifiers,
   onChangeSubjects,
   onChangeCollection,
   grades,
@@ -43,7 +44,7 @@ const ReviewSummary = ({
   interestedCurriculums,
   windowWidth,
   orgCollections,
-  test: { itemGroups },
+  test: { itemGroups, metadata },
   summary,
   hasRandomQuestions,
   isPublishers
@@ -57,6 +58,7 @@ const ReviewSummary = ({
     orgCollections
   ]);
 
+  const skillIdentifiers = (metadata?.skillIdentifiers || []).join(",")
   return (
     <Container>
       <FlexBoxOne>
@@ -192,6 +194,7 @@ const ReviewSummary = ({
           )}
         </FlexBoxFour>
       )}
+      <Input style={{display: "none"}} defaultValue={skillIdentifiers} onChange={e => onChangeSkillIdentifiers(e.currentTarget.value)}/>
     </Container>
   );
 };

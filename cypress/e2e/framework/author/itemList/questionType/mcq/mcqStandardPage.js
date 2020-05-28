@@ -142,6 +142,12 @@ class MCQStandardPage {
     return this; */
   }
 
+  getWrongOption = () => cy.get("label.wrong");
+
+  getRightOption = () => cy.get("label.right");
+
+  getBothHighlight = () => cy.get("label.right,label.wrong");
+
   getLabelType = () => cy.get('[data-cy="labelTypeSelect"]').should("be.visible");
 
   selectLabelType(option) {
@@ -222,6 +228,31 @@ class MCQStandardPage {
 
     return this;
   }
+
+  checkHighlight = label => {
+    const { right, wrong, both } = label;
+    if (right) {
+      this.getRightOption().should("have.length", 0);
+    }
+    if (wrong) {
+      this.getWrongOption().should("have.length", 0);
+    }
+    if (both) {
+      this.getBothHighlight().should("have.length", 0);
+    }
+  };
+
+  checkHighlightData = data => {
+    const { color, length, choices } = data;
+    if (color === "right") {
+      this.getRightOption().should("have.length", length);
+      choices.forEach(text => this.getRightOption().should("contain", text));
+    }
+    if (color === "wrong") {
+      this.getWrongOption().should("have.length", length);
+      choices.forEach(text => this.getWrongOption().should("contain", text));
+    }
+  };
 
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;

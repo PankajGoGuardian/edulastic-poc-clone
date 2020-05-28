@@ -10,6 +10,7 @@ import {
   FONT_SIZE,
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false" type question`, () => {
   const queData = {
@@ -243,12 +244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     it(" > [Tc_290]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
@@ -490,7 +486,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
       preview.getClear().click();
 
-      preview.getShowAnswer().click();
+      preview.getShowAnswer().click({ force: true });
 
       preview.getClear().click();
 
@@ -506,7 +502,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     }); */
   });
 
-  context(" > [sanity]:test => Create question using different options and validate", () => {
+  context(" > [sanity]:test => Create question using different options and validate solution block", () => {
     before("visit items list page and select question type", () => {
       editItem.createNewItem();
       // add new question
@@ -533,13 +529,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
           .should("contain", ch);
       });
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.correct[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.correct[0]);
 
       // save
       question.header.save();
@@ -554,75 +544,156 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .getShowAnswer()
         .click()
         .then(() => {
-          cy.get("label.wrong").should("have.length", 0);
+          question.checkHighlight({ wrong: true });
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
+          question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
         });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ color: "both" });
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
+      question.selectAnswerChoice(queData.correct[0]);
 
-          cy.get("label.wrong").should("have.length", 0);
+      preview.checkScore("1/1");
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
-        });
+      question.checkHighlight({ wrong: true });
+
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ color: "both" });
         });
 
       // give wrong ans and check
-      cy.contains(queData.choices[1]).click();
+      question.selectAnswerChoice(queData.choices[1]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      preview.checkScore("0/1");
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[1]);
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[1]] });
 
-          cy.get("label.right").should("have.length", 0);
-        });
+      question.checkHighlight({ right: true });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ color: "both" });
         });
 
       // give no ans and check
+      preview.checkScore("0/1");
+
+      question.checkHighlight({ color: "both" });
+    });
+  });
+  context("Score block testing", () => {
+    before("visit items list page and select question type", () => {
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
+
+      question
+        .getQuestionEditor()
+        .clear()
+        .type(queData.queText);
+
+      question.getAllChoices().each(($el, index, $list) => {
+        const cusIndex = $list.length - (index + 1);
+        question.deleteChoiceByIndex(cusIndex);
+      });
+
+      // add choices
+      const choices = queData.choices;
+      choices.forEach((ch, index) => {
+        question
+          .addNewChoice()
+          .getChoiceByIndex(index)
+          .clear()
+          .type(ch)
+          .should("contain", ch);
+      });
+      question.selectChoice(queData.correct[0]);
+
+      // save
+      question.header.save();
+    });
+    it("change points and check answer", () => {
+      //set score to 2
+      question.header.edit();
+
+      question.getPoints().type("{selectall}2");
+
+      // give correct answer and check
+      const preview = editItem.header.preview();
+
+      question.selectAnswerChoice(queData.correct[0]);
+
+      preview.checkScore("2/2");
+
+      question.checkHighlight({ wrong: true });
+
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
+
       preview
-        .getCheckAnswer()
+        .getClear()
         .click()
         .then(() => {
-          preview.verifyScore("0/1");
-
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ color: "both" });
         });
+
+      // give wrong ans and check
+      question.selectAnswerChoice(queData.choices[1]);
+
+      preview.checkScore("0/2");
+
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[1]] });
+
+      question.checkHighlight({ right: true });
     });
+
+    it("change correct answer and check score", () => {
+      question.header.edit();
+      question.selectChoice(queData.choices[1]);
+      question.checkChoiceNotSelected(queData.choices[0]);
+
+      // give correct answer and check
+      const preview = editItem.header.preview();
+
+      question.selectAnswerChoice(queData.choices[1]);
+
+      preview.checkScore("2/2");
+
+      question.checkHighlight({ wrong: true });
+
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.choices[1]] });
+
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ color: "both" });
+        });
+
+      // give wrong ans and check
+      question.selectAnswerChoice(queData.choices[0]);
+
+      preview.checkScore("0/2");
+
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[0]] });
+
+      question.checkHighlight({ right: true });
+    });
+  });
+  context("Hint and solution block testing", () => {
+    validateSolutionBlockTests(queData.group, queData.queType);
   });
 });

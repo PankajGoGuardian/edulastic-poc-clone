@@ -12,6 +12,7 @@ import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
+import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 import {
   Container,
   Icon,
@@ -73,7 +74,7 @@ const columns = [
     title: "Submitted",
     dataIndex: "submitted",
     sortDirections: ["descend", "ascend"],
-    sorter: (a, b) => parseInt(a.submitted.split("/")[0]) - parseInt(b.submitted.split("/")[0]),
+    sorter: (a, b) => parseInt(a.submitted.split("/")[0], 10) - parseInt(b.submitted.split("/")[0], 10),
     width: "16%",
     render: text => <div> {text} </div>
   },
@@ -121,7 +122,8 @@ const TableList = ({
   bulkUnassignAssignmentRequest,
   bulkDownloadGradesAndResponsesRequest,
   testType,
-  testName
+  testName,
+  toggleDeleteAssignmentModal
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
@@ -217,7 +219,7 @@ const TableList = ({
       <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>Release Score</MoreOption>
       <MoreOption onClick={() => handleBulkAction("downloadGrades")}>Download Grades</MoreOption>
       <MoreOption onClick={() => handleBulkAction("downloadResponses")}>Download Responses</MoreOption>
-      <MoreOption onClick={() => handleBulkAction("unassign")}>Unassign</MoreOption>
+      <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>Unassign</MoreOption>
     </MoreOptionsContainer>
   );
 
@@ -262,6 +264,13 @@ const TableList = ({
         showReleaseGradeSettings={showReleaseScoreModal}
         onCloseReleaseScoreSettings={() => setReleaseScoreModalVisibility(false)}
         updateReleaseScoreSettings={onUpdateReleaseScoreSettings}
+      />
+      <DeleteAssignmentModal
+        handleUnassignAssignments={() => {
+          toggleDeleteAssignmentModal(false);
+          handleBulkAction("unassign");
+        }}
+        advancedAssignments
       />
     </Container>
   );

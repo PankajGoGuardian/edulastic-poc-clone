@@ -1,4 +1,5 @@
 import { get, groupBy, isEmpty } from "lodash";
+import { roleuser } from "@edulastic/constants";
 import {
   getDropDownTestIds,
   processClassAndGroupIds,
@@ -87,7 +88,10 @@ export const filteredDropDownData = (SARFilterData, user, currentFilter) => {
 
   // Only For district admin
   // For School Id
-  const schoolIdArr = processSchoolIds(orgDataArr);
+  let schoolIdArr = processSchoolIds(orgDataArr);
+  if (user.role === roleuser.SCHOOL_ADMIN) {
+    schoolIdArr = get(user, "orgData.schools", []).map(({ _id, name }) => ({ key: _id, title: name }));
+  }
 
   // For Teacher Id
   const teacherIdArr = processTeacherIds(orgDataArr);
@@ -111,13 +115,19 @@ export const filteredDropDownData = (SARFilterData, user, currentFilter) => {
   };
 };
 
-export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) => {
+export const processTestIds = (_dropDownData, currentFilter, urlTestId, role, user) => {
   if (!(_dropDownData.testDataArr && _dropDownData.testDataArr.length)) {
     const finalTestIds = [];
     return { testIds: finalTestIds, validTestId: { key: "", title: "" } };
   }
 
-  const filtered = _dropDownData.orgDataArr.filter(item => {
+  let filteredOrgData = _dropDownData.orgDataArr;
+  if (role === roleuser.SCHOOL_ADMIN) {
+    const schoolIds = get(user, "orgData.schools", []).map(school => school._id);
+    filteredOrgData = _dropDownData.orgDataArr.filter(school => schoolIds.includes(school.schoolId));
+  }
+
+  const filtered = filteredOrgData.filter(item => {
     const checkForClassAndGroup =
       item.groupType === "class"
         ? item.groupId === currentFilter.classId || currentFilter.classId === "All"

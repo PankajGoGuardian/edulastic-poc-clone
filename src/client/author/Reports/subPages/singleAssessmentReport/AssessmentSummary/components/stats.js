@@ -1,11 +1,15 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { Row } from "antd";
+import { get } from "lodash";
 import { greyishDarker1 } from "@edulastic/colors";
+import { roleuser } from "@edulastic/constants";
 import { StyledH3, Capitalized } from "../../../../common/styled";
 import StatItem from "./StatItem";
 
 export const Stats = props => {
+  const { role, name, user } = props;
+  let { data } = props;
   const defaultState = {
     avgScore: 0,
     total: 0,
@@ -21,32 +25,29 @@ export const Stats = props => {
     "district-admin": "district"
   };
 
-  const parseData = data => {
-    let avgScore = 0,
-      total = 0,
-      avgStudentScore = 0,
-      studentsAssigned = 0,
-      studentsGraded = 0,
-      studentsAbsent = 0,
-      sumTotalScore = 0,
-      sumTotalMaxScore = 0,
-      sumStudentCount = 0;
+  const parseData = filteredData => {
+    let avgScore = 0;
+    let total = 0;
+    let avgStudentScore = 0;
+    let studentsAssigned = 0;
+    let studentsGraded = 0;
+    let studentsAbsent = 0;
+    let sumTotalScore = 0;
+    let sumTotalMaxScore = 0;
 
-    for (let item of data) {
-      let {
+    for (const item of filteredData) {
+      const {
         studentsGraded: _studentsGraded,
         studentsAssigned: _studentsAssigned,
         studentsAbsent: _studentsAbsent,
         totalScore: _totalScore,
-        totalMaxScore: _totalMaxScore,
-        sampleCount: _sampleCount
+        totalMaxScore: _totalMaxScore
       } = item;
       studentsGraded += _studentsGraded;
       studentsAssigned += _studentsAssigned;
       studentsAbsent += _studentsAbsent;
       sumTotalScore += _totalScore;
       sumTotalMaxScore += _totalMaxScore;
-      sumStudentCount += _sampleCount;
     }
 
     avgStudentScore = ((sumTotalScore / sumTotalMaxScore) * 100 || 0).toFixed(0);
@@ -54,23 +55,28 @@ export const Stats = props => {
     total = (sumTotalMaxScore / studentsGraded || 0).toFixed(2);
 
     return {
-      avgScore: avgScore,
-      total: total,
-      avgStudentScore: avgStudentScore,
-      studentsAssigned: studentsAssigned,
-      studentsGraded: studentsGraded,
-      studentsAbsent: studentsAbsent
+      avgScore,
+      total,
+      avgStudentScore,
+      studentsAssigned,
+      studentsGraded,
+      studentsAbsent
     };
   };
 
   const state = useMemo(() => {
-    return props.data ? parseData(props.data) : defaultState;
-  }, [props.data]);
+    const schoolIds = get(user, "orgData.schools", []).map(({ _id }) => _id);
+
+    if (role == roleuser.SCHOOL_ADMIN) {
+      data = props.data.filter(d => schoolIds.includes(d.schoolId));
+    }
+    return data ? parseData(data) : defaultState;
+  }, [data]);
 
   return (
     <StyledRow>
       <StyledH3>
-        <Capitalized>{rolesMap[props.role]}</Capitalized> Statistics of {props.name}
+        <Capitalized>{rolesMap[role]}</Capitalized> Statistics of {name}
       </StyledH3>
       <StyledInnerRow gutter={15} type="flex" justify="start" className="average-stats">
         <StatItem heading="Average Score" value={`${state.avgScore}/${Math.round(state.total)}`} />

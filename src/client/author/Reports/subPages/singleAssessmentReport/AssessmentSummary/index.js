@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { getUserRole } from "../../../../src/selectors/user";
+import { getUserRole, getUser } from "../../../../src/selectors/user";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getCsvDownloadingState, getPrintingState } from "../../../ducks";
 import { SimplePieChart } from "./components/charts/pieChart";
@@ -24,11 +24,12 @@ const AssessmentSummary = ({
   role,
   assessmentSummary,
   getAssessmentSummary,
-  settings
+  settings,
+  user
 }) => {
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      let q = {};
+      const q = {};
       q.testId = settings.selectedTest.key;
       const { performanceBandProfile, ...requestFilters } = settings.requestFilters;
       q.requestFilters = { ...requestFilters, profileId: performanceBandProfile };
@@ -50,7 +51,7 @@ const AssessmentSummary = ({
           <UpperContainer type="flex">
             <Col className="sub-container district-statistics" xs={24} sm={24} md={18} lg={18} xl={18}>
               <StyledCard>
-                <Stats name={assessmentName} data={metricInfo} role={role} />
+                <Stats name={assessmentName} data={metricInfo} role={role} user={user} />
               </StyledCard>
             </Col>
             <Col className="sub-container chart-container" xs={24} sm={24} md={6} lg={6} xl={6}>
@@ -105,7 +106,8 @@ const enhance = compose(
       isPrinting: getPrintingState(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),
-      assessmentSummary: getReportsAssessmentSummary(state)
+      assessmentSummary: getReportsAssessmentSummary(state),
+      user: getUser(state)
     }),
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction

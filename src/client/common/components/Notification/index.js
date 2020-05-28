@@ -41,7 +41,7 @@ export const notificationMessage = ({
     top: 70,
     duration: duration || 0,
     onClose: () => onCloseNotification(),
-    onClick: () => onButtonClick()
+    onClick: e => onButtonClick(e)
   });
 };
 

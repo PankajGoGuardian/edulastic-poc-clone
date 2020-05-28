@@ -10,6 +10,7 @@ import { StyledSelect, ClassListModal, ModalClassListTable, InstitutionSelectWra
 
 // constants
 import selectsData from "../../../TestPage/components/common/selectsData";
+
 const { allGrades, allSubjects } = selectsData;
 
 const ClassSelectModal = ({
@@ -33,8 +34,9 @@ const ClassSelectModal = ({
   useEffect(() => {
     if (type === "clever") {
       setClassListData(
-        classListToSync.map(c => ({
+        classListToSync.map((c, index) => ({
           name: c.name,
+          key: index,
           cleverId: c.id,
           // course: "",
           // subject: "",
@@ -47,11 +49,13 @@ const ClassSelectModal = ({
     }
     if (type === "googleClassroom") {
       setClassListData(
-        classListToSync.map(c => ({
+        classListToSync.map((c, index) => ({
           ...c,
+          key: index,
           disabled: syncedIds.includes(c.enrollmentCode)
         }))
       );
+      setSelectedRows(classListToSync.map((c, i) => i));
     }
   }, [classListToSync]);
 
@@ -306,7 +310,6 @@ const ClassSelectModal = ({
           IMPORT
         </EduButton>
       ]}
-      centered
     >
       {loading ? (
         <Spin />
@@ -336,4 +339,8 @@ ClassSelectModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired
 };
+ClassSelectModal.defaultProps = {
+  loading: false
+};
+
 export default ClassSelectModal;

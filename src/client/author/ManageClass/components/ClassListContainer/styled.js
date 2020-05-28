@@ -11,7 +11,8 @@ import {
   smallDesktopWidth,
   borderGrey,
   greyThemeDark1,
-  darkGrey2
+  darkGrey2,
+  lightFadedBlack
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon, Dropdown } from "antd";
 import { IconPlusCircle } from "@edulastic/icons";
@@ -411,6 +412,14 @@ export const ModalClassListTable = styled(Table)`
               }
               td:last-child {
                 padding-right: 15px;
+              }
+              .ant-checkbox-checked.ant-checkbox-disabled {
+                .ant-checkbox-inner {
+                  background-color: ${lightFadedBlack};
+                  &:after {
+                    border-color: ${lightGreySecondary};
+                  }
+                }
               }
             }
           }

@@ -38,7 +38,7 @@ function* receiveAssignmentClassList({ payload = {} }) {
      * as a bulk action performed by DA/SA. In that scenario we are routing to author
      * assignments page from advanced assignments page.
      */
-    if (entities.length === 0) {
+    if (entities?.assignments?.length === 0) {
       yield put(push("/author/assignments"));
     }
   } catch (error) {

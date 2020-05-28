@@ -80,9 +80,7 @@ function OuterDropContainer({ children }) {
       isOver: !!monitor.isOver(),
       contentType: monitor.getItem()?.contentType
     }),
-    canDrop: (item, monitor) => {
-      return !!item?.contentType;
-    }
+    canDrop: item => !!item?.contentType
   });
 
   /**
@@ -694,7 +692,7 @@ class ModuleRow extends Component {
                   const progressData = getProgressData(playlistMetrics, _id, contentId, assignments);
 
                   const assignmentRows = assignments.flatMap(assignment => {
-                    const { testType, _id: assignmentId, maxAttempts } = assignment;
+                    const { testType, _id: assignmentId, maxAttempts, assignedBy } = assignment;
                     return assignment.class.map(
                       ({
                         name,
@@ -717,6 +715,7 @@ class ModuleRow extends Component {
                         gradedNumber,
                         submittedCount: inGradingNumber + gradedNumber,
                         redirect,
+                        assignedBy: assignedBy?.name,
                         maxAttempts
                       })
                     );

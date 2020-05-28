@@ -5,15 +5,16 @@ import { get } from "lodash";
 import { Spin, message } from "antd";
 import styled from "styled-components";
 import { greyLight1 } from "@edulastic/colors";
+import { TokenStorage, testsApi } from "@edulastic/api";
+import { test as testConstants } from "@edulastic/constants";
 import ViewModal from "../../author/TestList/components/ViewModal";
 import TestPreviewModal from "../../author/Assignments/components/Container/TestPreviewModal";
 import { fetchTestAction, getAllAssignmentsSelector, fetchAssignmentsByTestAction } from "../ducks";
 import { startAssignmentAction, resumeAssignmentAction } from "../../student/Assignments/ducks";
 import { getUser } from "../../author/src/selectors/user";
-import { TokenStorage } from "@edulastic/api";
-import { redirectToStudentPage } from "../utils";
-import { test as testConstants } from "@edulastic/constants";
-import { testsApi } from "@edulastic/api";
+import { redirectToStudentPage, redirectToDashbord } from "../utils";
+
+import { fetchUserAction } from "../../student/Login/ducks";
 
 const ARCHIVED_TEST_MSG = "You can no longer use this as sharing access has been revoked by author";
 
@@ -30,29 +31,39 @@ const PublicTestPage = ({
   assignments,
   loadingAssignments,
   startAssignment,
-  resumeAssignment
+  resumeAssignment,
+  fetchUser
 }) => {
   const { testId } = match.params;
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-  //if user loggedin and role is student, then fetch assignments for current student for specific test
+  const redirectToTestPreview = isTestArchieved => {
+    if (isTestArchieved) {
+      message.warn(ARCHIVED_TEST_MSG);
+      history.push(`/author/tests`);
+    } else {
+      history.push(`/author/tests/tab/review/id/${testId}`);
+    }
+  };
+
+  // if user loggedin and role is student, then fetch assignments for current student for specific test
   // if not authenticating or no authenticated token exist, then fetch test detail to show summary
   useEffect(() => {
     if (user) {
       const { role } = user;
-      //fetch test to check if test archieved or not
+      // fetch test to check if test archieved or not
       testsApi
         .getPublicTest(testId, { sharedType: "PUBLIC" })
-        .then(test => {
-          const isTestArchieved = test.status === testConstants.statusConstants.ARCHIVED;
+        .then(_test => {
+          const isTestArchieved = _test.status === testConstants.statusConstants.ARCHIVED;
 
           if (role === "student") {
-            //if archieved, then redirect to student dashbord
+            // if archieved, then redirect to student dashbord
             if (isTestArchieved) {
               return redirectToDashbord(isTestArchieved ? "ARCHIVED" : "");
-            } else {
-              fetchAssignments({ testId });
             }
+            fetchAssignments({ testId });
+
           } else if (role === "parent") {
             redirectToDashbord(isTestArchieved ? "ARCHIVED" : "");
           } else {
@@ -64,7 +75,7 @@ const PublicTestPage = ({
           if (role !== "student" || role !== "parent") {
             redirectToTestPreview();
           } else {
-            //if got error redirect to login page
+            // if got error redirect to login page
             history.push("/login");
           }
         });
@@ -75,33 +86,26 @@ const PublicTestPage = ({
         message.warn(ARCHIVED_TEST_MSG);
         history.push("/login");
       }
+    } else {
+      fetchUser();
     }
   }, [user, test]);
 
-  //check for ungraded assignments, if exists consider that assignment for to redirect to assessment player
-  //if no assignments found, then redirect to student dashbord
-  //if only graded assignments found, then redirect to review page
+  // check for ungraded assignments, if exists consider that assignment for to redirect to assessment player
+  // if no assignments found, then redirect to student dashbord
+  // if only graded assignments found, then redirect to review page
   useEffect(() => {
     if (user && user?.role === "student" && loadingAssignments === false) {
       redirectToStudentPage(assignments, history, startAssignment, resumeAssignment);
     }
   }, [loadingAssignments]);
 
-  const redirectToTestPreview = isTestArchieved => {
-    if (isTestArchieved) {
-      message.warn(ARCHIVED_TEST_MSG);
-      history.push(`/author/tests`);
-    } else {
-      history.push(`/author/tests/tab/review/id/${testId}`);
-    }
-  };
-
   const getCurrentPath = () => {
     const location = window.location || {};
     return `${location.pathname}${location.search}${location.hash}`;
   };
 
-  //on click of assign button in test summary view
+  // on click of assign button in test summary view
   const assignTest = e => {
     e && e.stopPropagation();
 
@@ -118,11 +122,11 @@ const PublicTestPage = ({
 
   const handleShowPreviewModal = () => setShowPreviewModal(true);
 
-  //if test is not public, then redirect to login page
+  // if test is not public, then redirect to login page
   if (error) {
     message.error("Trying to access private test");
     return <Redirect to="/login" />;
-  } else if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
+  } if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
     return <Spin />;
   }
 
@@ -150,7 +154,7 @@ const PublicTestPage = ({
     </StyledMainWrapper>
   ) : (
     <Spin />
-  );
+    );
 };
 
 const StyledMainWrapper = styled.div`
@@ -192,6 +196,7 @@ export default connect(
     fetchTest: fetchTestAction,
     fetchAssignments: fetchAssignmentsByTestAction,
     startAssignment: startAssignmentAction,
-    resumeAssignment: resumeAssignmentAction
+    resumeAssignment: resumeAssignmentAction,
+    fetchUser: fetchUserAction
   }
 )(PublicTestPage);

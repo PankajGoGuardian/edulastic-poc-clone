@@ -102,7 +102,7 @@ if (search) {
   }
 }
 
-const testRedirectRoutes = ["/demo/assessmentPreview", "/d/ap"];
+const testRedirectRoutes = ["/demo/assessmentPreview", "/d/ap", "/d/cp"];
 const getCurrentPath = () => {
   const location = window.location;
   return `${location.pathname}${location.search}${location.hash}`;
@@ -175,7 +175,7 @@ class App extends Component {
      * NOTE:  this logic would be called multiple times, even after redirect
      */
     const { user, tutorial, location, history, fullName, logout, isProxyUser } = this.props;
-    if (location.hash.includes("#renderResource/close/")) {
+    if (location.hash.includes("#renderResource/close/") || location.hash.includes("#assessmentQuestions/close/")) {
       const v1Id = location.hash.split("/")[2];
       history.push(`/d/ap?eAId=${v1Id}`);
     }
@@ -313,9 +313,9 @@ class App extends Component {
             )}
             <Switch>
               {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
-              redirectRoute !== "" ? (
-                <Redirect exact to={redirectRoute} />
-              ) : null}
+                redirectRoute !== "" ? (
+                  <Redirect exact to={redirectRoute} />
+                ) : null}
               <PrivateRoute
                 path="/author"
                 component={Author}

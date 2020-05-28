@@ -19,6 +19,7 @@ const segmentURI = process.env.POI_APP_SEGMENT_URI || `${thirdPartyLibPath}/segm
 const segmentVersion = process.env.POI_APP_SEGMENT_VERSION || "4.2.2";
 const isSegmentEnabled = process.env.POI_APP_ENABLE_SEGMENT === "true";
 const segmentHashSecret = process.env.POI_APP_SEGMENT_HASH_SECRET || "ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH";
+const v1RedirectDecryptSalt = process.env.REDIRECT_DECRYPT_SALT || 436792765;
 
 export const firebaseConfig = {
   apiKey: process.env.POI_APP_FIREBASE_API_KEY /* || "AIzaSyA_2mdY_l-tHgy5LvQigdNmVmqABdx7458" */,
@@ -42,5 +43,6 @@ export default {
   mathquillPath,
   jqueryPath,
   ttsChoicesPath,
-  thirdPartyLibPath
+  thirdPartyLibPath,
+  v1RedirectDecryptSalt
 };

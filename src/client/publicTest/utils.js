@@ -2,6 +2,7 @@ import { maxBy } from "lodash";
 import { message, Modal } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
+
 const releaseGradeLabels = testConstants.releaseGradeLabels;
 const ARCHIVED_TEST_MSG = "You can no longer use this as sharing access has been revoked by author";
 
@@ -40,8 +41,8 @@ export const formatAssignment = assignment => {
     isPaused = maxCurrentClass.isPaused;
   }
   if (!endDate && close) {
-    endDate = (currentClass && currentClass.length > 0
-      ? maxBy(currentClass, "closedDate") || currentClass[currentClass.length - 1]
+    endDate = (currentClassList && currentClassList.length > 0
+      ? maxBy(currentClassList, "closedDate") || currentClassList[currentClassList.length - 1]
       : {}
     ).closedDate;
   }
@@ -55,7 +56,7 @@ export const formatAssignment = assignment => {
   newReports = newReports || [];
   const attempted = !!(newReports && newReports.length);
   const attemptCount = newReports && newReports.length;
-  //To handle regrade reduce max attempt settings.
+  // To handle regrade reduce max attempt settings.
   if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
     maxAttempts = reports.length;
   }
@@ -78,13 +79,13 @@ export const formatAssignment = assignment => {
 
 export const redirectToStudentPage = (assignments, history, startAssignment, resumeAssignment) => {
   const formatedAssignments = assignments.map(assignment => formatAssignment(assignment));
-  //filter assignments open to start/resume
+  // filter assignments open to start/resume
   const filteredAssignments = formatedAssignments.filter(
     a => !(new Date(a.startDate) > new Date() || !a.startDate || a.isPaused)
   );
 
   if (filteredAssignments.length > 0) {
-    //filter ungraded assignments
+    // filter ungraded assignments
     const ungradedAssignments = filteredAssignments.filter(a => !a.graded);
     let assignment = maxBy(filteredAssignments, "createdAt");
     if (ungradedAssignments.length) {
@@ -92,12 +93,12 @@ export const redirectToStudentPage = (assignments, history, startAssignment, res
     }
     redirectToAssessmentPlayer(assignment, history, startAssignment, resumeAssignment);
   } else {
-    //redirect to student dashboard
+    // redirect to student dashboard
     redirectToDashbord("", history);
   }
 };
 
-const redirectToDashbord = (type = "", history) => {
+export const redirectToDashbord = (type = "", history) => {
   let msg;
   switch (type) {
     case "EXPIRED":
@@ -116,7 +117,7 @@ const redirectToDashbord = (type = "", history) => {
   history.push("/home/assignments");
 };
 
-//case: check to where to navigate
+// case: check to where to navigate
 const redirectToAssessmentPlayer = (assignment, history, startAssignment, resumeAssignment) => {
   const {
     endDate,
@@ -146,7 +147,7 @@ const redirectToAssessmentPlayer = (assignment, history, startAssignment, resume
       title
     });
   }
-  //if end date is crossed, then redirect to student dashboard
+  // if end date is crossed, then redirect to student dashboard
   if (endDate < Date.now()) {
     return redirectToDashbord("EXPIRED", history);
   }
@@ -168,17 +169,17 @@ const redirectToAssessmentPlayer = (assignment, history, startAssignment, resume
         . Do you want to continue?
       </p>
     ) : (
-      <p>
-        {" "}
+        <p>
+          {" "}
         This is a timed assignment which should be finished within the time limit set for this assignment. The time
         limit for this assignment is{" "}
-        <span data-cy="test-time" style={{ fontWeight: 700 }}>
-          {" "}
-          {allowedTime / (60 * 1000)} minutes
+          <span data-cy="test-time" style={{ fontWeight: 700 }}>
+            {" "}
+            {allowedTime / (60 * 1000)} minutes
         </span>{" "}
         and you can’t quit in between. Do you want to continue?
-      </p>
-    );
+        </p>
+      );
 
     Modal.confirm({
       title: "Do you want to Continue ?",
@@ -200,7 +201,7 @@ const redirectToAssessmentPlayer = (assignment, history, startAssignment, resume
   }
 
   // case assigment is resumed, then redirect to assessment player with resumed state
-  //case assignment is not resumed, then start assignment from fresh
+  // case assignment is not resumed, then start assignment from fresh
   if (resume) {
     resumeAssignment({
       testId,

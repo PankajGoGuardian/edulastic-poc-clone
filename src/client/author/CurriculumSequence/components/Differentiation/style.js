@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 import { Table, Slider, Select } from "antd";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import { FlexContainer } from "@edulastic/common";
 import {
   smallDesktopWidth,
@@ -20,7 +19,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 export const SubHeader = styled.div`
-  padding: 15px 0px;
+  padding-bottom: 15px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -45,9 +44,38 @@ export const SideButtonContainer = styled.div`
 `;
 
 export const BodyContainer = styled.div`
-  padding: 10px 0px 0px;
+  height: calc(100vh - 190px);
+  width: ${({ width }) => width};
+  overflow: auto;
+
   .ant-progress-bg {
     border-radius: 0px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  &:hover {
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+    }
   }
 `;
 

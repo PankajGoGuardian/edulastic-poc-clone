@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { groupBy, maxBy } from "lodash";
+import { IconClose } from "@edulastic/icons";
 import { EduButton } from "@edulastic/common";
 import { assignmentStatusOptions } from "@edulastic/constants";
 import { getCurrentTerm } from "../../../src/selectors/user";
 import { receiveAssignmentsAction } from "../../../src/actions/assignments";
 import { getAssignmentsSelector } from "../../../src/selectors/assignments";
-import {
-  StyledFlexContainer,
-  SubHeader,
-  BodyContainer,
-  StyledSelect,
-  StyledPerfectScrollbar,
-  SideButtonContainer
-} from "./style";
+import { StyledFlexContainer, SubHeader, StyledSelect } from "./style";
 import WorkTable from "./WorkTable";
 import {
   fetchDifferentiationStudentListAction,
@@ -29,6 +23,8 @@ import {
   removeSubResourceInDiffAction
 } from "../../ducks";
 import ManageContentBlock from "../ManageContentBlock";
+import { HideRightPanel } from "../CurriculumRightPanel";
+import { ContentContainer } from "../CurriculumSequence";
 
 const Differentiation = ({
   termId,
@@ -46,15 +42,29 @@ const Differentiation = ({
   addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
   showResource,
-  removeSubResource
+  removeSubResource,
+  toggleManageContent,
+  activeRightPanel
 }) => {
   const [selectedClass, setSelectedClass] = useState();
   const [classList, setClassList] = useState([]);
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({});
-  const [showManageContent, setShowManageContent] = useState(false);
-
   const [testData, setTestData] = useState([]);
   const [selectedTest, setSelectedTest] = useState();
+  const showManageContent = activeRightPanel === "manageContent";
+
+  const openManageContentPanel = e => {
+    e.target.blur();
+    if (toggleManageContent) {
+      toggleManageContent("manageContent");
+    }
+  };
+
+  const hideManageContentPanel = () => {
+    if (toggleManageContent) {
+      toggleManageContent("");
+    }
+  };
 
   useEffect(() => {
     const filters = {
@@ -67,6 +77,8 @@ const Differentiation = ({
       status: "DONE"
     };
     receiveAssignments({ filters });
+
+    return hideManageContentPanel;
   }, []);
 
   useEffect(() => {
@@ -157,67 +169,65 @@ const Differentiation = ({
   };
 
   return (
-    <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start" flexDirection="row">
-      <StyledPerfectScrollbar width={showManageContent ? "calc(100% - 410px)" : "100%"}>
-        <SubHeader>
-          <div>
-            <span>Based on Performance in</span>
-            <StyledSelect
-              showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
-              data-cy="select-assignment"
-              style={{ width: "200px" }}
-              placeholder="SELECT ASSIGNMENT"
-              onChange={(value, option) => handleAssignmentChange(value, option)}
-              value={selectedTest}
-            >
-              {testData.map(({ _id, title }) => (
-                <StyledSelect.Option key={_id} value={_id} title={title}>
-                  {title}
-                </StyledSelect.Option>
-              ))}
-            </StyledSelect>
-            <span>Recommendations For</span>
-            <StyledSelect
-              showSearch
-              filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
-              data-cy="select-group"
-              style={{ width: "170px" }}
-              placeholder="SELECT GROUP"
-              onChange={(value, option) => handleClassChange(value, option)}
-              value={selectedClass ? `${selectedClass.assignmentId}_${selectedClass.classId}` : undefined}
-            >
-              {classList.map(({ classId, className, assignmentId, title }) => (
-                <StyledSelect.Option
-                  key={`${assignmentId}_${classId}`}
-                  value={`${assignmentId}_${classId}`}
-                  cName={className}
-                  assignmentId={assignmentId}
-                  classId={classId}
-                  title={title}
-                >
-                  {className}
-                </StyledSelect.Option>
-              ))}
-            </StyledSelect>
-          </div>
-          {!showManageContent && (
-            <div>
-              <EduButton
-                data-cy="manage-content"
-                isGhost
-                height="35px"
-                onClick={e => {
-                  e.target.blur();
-                  setShowManageContent(true);
-                }}
+    <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start" flexDirection="column">
+      <SubHeader>
+        <div>
+          <span>Based on Performance in</span>
+          <StyledSelect
+            showSearch
+            filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
+            data-cy="select-assignment"
+            style={{ width: "200px" }}
+            placeholder="SELECT ASSIGNMENT"
+            onChange={(value, option) => handleAssignmentChange(value, option)}
+            value={selectedTest}
+          >
+            {testData.map(({ _id, title }) => (
+              <StyledSelect.Option key={_id} value={_id} title={title}>
+                {title}
+              </StyledSelect.Option>
+            ))}
+          </StyledSelect>
+          <span>Recommendations For</span>
+          <StyledSelect
+            showSearch
+            filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
+            data-cy="select-group"
+            style={{ width: "170px" }}
+            placeholder="SELECT GROUP"
+            onChange={(value, option) => handleClassChange(value, option)}
+            value={selectedClass ? `${selectedClass.assignmentId}_${selectedClass.classId}` : undefined}
+          >
+            {classList.map(({ classId, className, assignmentId, title }) => (
+              <StyledSelect.Option
+                key={`${assignmentId}_${classId}`}
+                value={`${assignmentId}_${classId}`}
+                cName={className}
+                assignmentId={assignmentId}
+                classId={classId}
+                title={title}
               >
-                Manage Content
-              </EduButton>
-            </div>
-          )}
-        </SubHeader>
-        <BodyContainer>
+                {className}
+              </StyledSelect.Option>
+            ))}
+          </StyledSelect>
+        </div>
+        {!showManageContent && (
+          <div>
+            <EduButton
+              isGhost
+              height="35px"
+              data-cy="manage-content"
+              onClick={openManageContentPanel}
+              style={{ marginRight: 22 }}
+            >
+              Customize Content
+            </EduButton>
+          </div>
+        )}
+      </SubHeader>
+      <StyledFlexContainer width="100%" justifyContent="flex-start">
+        <ContentContainer isDifferentiationTab showRightPanel={showManageContent} urlHasUseThis>
           <div>
             <WorkTable
               type="REVIEW"
@@ -241,27 +251,28 @@ const Differentiation = ({
               {...workTableCommonProps}
             />
           </div>
-        </BodyContainer>
-      </StyledPerfectScrollbar>
-      {showManageContent && (
-        <div style={{ width: 407, position: "fixed", right: 0 }}>
-          <SideButtonContainer style={{ paddingTop: 5 }}>
-            {/* Hiding this button for now as implementation is not done. 
-          
-          <EduButton isGhost height="35px" style={{ marginLeft: "0px" }}>
-            Accept All Recommendations
-          </EduButton> 
-          
-          */}
-            {/* <EduButton isGhost height="35px">
-            Manage Content
-          </EduButton> */}
-          </SideButtonContainer>
-          <div>
-            <ManageContentBlock isDifferentiationTab onShowManageContent={() => setShowManageContent(false)} />
+        </ContentContainer>
+        {showManageContent && (
+          <div style={{ position: "relative" }}>
+            {/* <SideButtonContainer style={{ paddingTop: 5 }}>
+                Hiding this button for now as implementation is not done. 
+              
+              <EduButton isGhost height="35px" style={{ marginLeft: "0px" }}>
+                Accept All Recommendations
+              </EduButton> 
+              
+            
+                <EduButton isGhost height="35px">
+                Manage Content
+              </EduButton>
+              </SideButtonContainer> */}
+            <HideRightPanel onClick={hideManageContentPanel}>
+              <IconClose />
+            </HideRightPanel>
+            <ManageContentBlock isDifferentiationTab />
           </div>
-        </div>
-      )}
+        )}
+      </StyledFlexContainer>
     </StyledFlexContainer>
   );
 };

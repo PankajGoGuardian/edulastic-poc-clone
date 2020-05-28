@@ -12,7 +12,6 @@ import { largeDesktopWidth, smallDesktopWidth, themeColor, extraDesktopWidthMax 
 import { roleuser } from "@edulastic/constants";
 import { Modal, message, Spin } from "antd";
 
-import EmbeddedVideoPreviewModal from "./ManageContentBlock/components/EmbeddedVideoPreviewModal";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
@@ -43,7 +42,6 @@ import { getSummaryData } from "../util";
 import Curriculum from "./Curriculum";
 import Insights from "./Insights";
 import CurriculumSequenceModals from "./modals";
-import DropPlaylistModal from "./modals/DropPlaylistModal";
 import Differentiation from "./Differentiation";
 import { getDateKeysSelector } from "../../../student/StudentPlaylist/ducks";
 import { submitLTIForm } from "./CurriculumModuleRow"; // Fix ME : Needs refactor
@@ -612,6 +610,10 @@ class CurriculumSequence extends Component {
           onExplorePlaylists={this.onExplorePlaylists}
           handleGuideSave={this.handleGuideSave}
           handleGuideCancel={this.handleGuideCancel}
+          dropPlaylistModalVisible={dropPlaylistModalVisible}
+          closeDropPlaylistModal={this.closeDropPlaylistModal}
+          isVideoResourcePreviewModal={isVideoResourcePreviewModal}
+          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
 
         <CurriculumSequenceWrapper>
@@ -729,19 +731,11 @@ class CurriculumSequence extends Component {
               <Differentiation
                 setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                 showResource={this.showLtiResource}
+                {...this.props}
               />
             )}
           </MainContentWrapper>
         </CurriculumSequenceWrapper>
-        {dropPlaylistModalVisible && (
-          <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
-        )}
-        {isVideoResourcePreviewModal && (
-          <EmbeddedVideoPreviewModal
-            closeCallback={() => setEmbeddedVideoPreviewModal(false)}
-            isVisible={isVideoResourcePreviewModal}
-          />
-        )}
       </>
     );
   }
@@ -847,15 +841,23 @@ const StyledFlexContainer = styled(FlexContainer)`
   }
 `;
 
-const ContentContainer = styled.div`
+export const ContentContainer = styled.div`
   width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 400px)" : "100%")};
   padding-right: 5px;
-  margin: 0px auto;
+  margin: 0px;
   margin-right: 10px;
   position: relative;
-  height: ${({ showBreadCrumb }) => (showBreadCrumb ? "calc(100vh - 160px)" : "calc(100vh - 124px)")};
   overflow: auto;
   overflow-x: hidden;
+  height: ${({ showBreadCrumb, isDifferentiationTab }) => {
+    if (isDifferentiationTab) {
+      return "calc(100vh - 175px)";
+    }
+    if (showBreadCrumb) {
+      return "calc(100vh - 160px)";
+    }
+    return "calc(100vh - 124px)";
+  }};
   @media (max-width: ${extraDesktopWidthMax}) {
     width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 340px)" : "100%")};
   }

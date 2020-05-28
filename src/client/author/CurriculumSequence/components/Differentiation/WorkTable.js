@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useDrop } from "react-dnd";
 import { message } from "antd";
 import { groupBy, compact, isEmpty } from "lodash";
-import { ProgressBar, EduButton, FlexContainer } from "@edulastic/common";
+import { EduButton, FlexContainer } from "@edulastic/common"; //  ProgressBar,
 import { IconUser } from "@edulastic/icons";
-import { themeColorLighter, borderGrey } from "@edulastic/colors";
+// import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import {
   TableContainer,
   StyledTable,
@@ -179,29 +179,29 @@ const InnerWorkTable = ({
     }
   }, [isFetchingWork]);
 
-  const getProgressBar = percentage => {
-    if (!percentage && percentage !== 0) return null;
-    const dataObj = {
-      trailColor: borderGrey,
-      strokeColor: themeColorLighter,
-      percent: percentage || 0,
-      format: percent => `${percent}%`
-    };
+  // const getProgressBar = percentage => {
+  //   if (!percentage && percentage !== 0) return null;
+  //   const dataObj = {
+  //     trailColor: borderGrey,
+  //     strokeColor: themeColorLighter,
+  //     percent: percentage || 0,
+  //     format: percent => `${percent}%`
+  //   };
 
-    const { trailColor, strokeColor, percent, format } = dataObj;
-    return (
-      <div style={{ width: "120px" }}>
-        <ProgressBar
-          data-cy="progressbar"
-          strokeWidth={10}
-          trailColor={trailColor}
-          strokeColor={strokeColor}
-          percent={percent}
-          format={format}
-        />
-      </div>
-    );
-  };
+  //   const { trailColor, strokeColor, percent, format } = dataObj;
+  //   return (
+  //     <div style={{ width: "120px" }}>
+  //       <ProgressBar
+  //         data-cy="progressbar"
+  //         strokeWidth={10}
+  //         trailColor={trailColor}
+  //         strokeColor={strokeColor}
+  //         percent={percent}
+  //         format={format}
+  //       />
+  //     </div>
+  //   );
+  // };
 
   const getSlider = () => {
     if (type === "REVIEW") {
@@ -324,14 +324,13 @@ const InnerWorkTable = ({
         );
       }
     },
-
-    {
-      title: "AVG. Mastery",
-      dataIndex: "averageMastery",
-      key: "averageMastery",
-      width: "150px",
-      render: p => getProgressBar(p)
-    },
+    // {
+    //   title: "AVG. Mastery",
+    //   dataIndex: "averageMastery",
+    //   key: "averageMastery",
+    //   width: "150px",
+    //   render: p => getProgressBar(p)
+    // },
     {
       title: "NOT STARTED",
       dataIndex: "notStartedCount",
@@ -424,7 +423,6 @@ const InnerWorkTable = ({
         recommendations.push(obj);
       }
     }
-
 
     if (recommendations.length) {
       addRecommendations(recommendations);

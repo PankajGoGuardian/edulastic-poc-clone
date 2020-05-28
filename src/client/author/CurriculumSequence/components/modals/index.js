@@ -7,6 +7,8 @@ import AddEditModuleModal from "./AddEditModuleModal";
 import AddUnitModalBody from "./AddUnitModalBody";
 import ChangePlaylistModal from "./ChangePlaylistModal";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
+import EmbeddedVideoPreviewModal from "../ManageContentBlock/components/EmbeddedVideoPreviewModal";
+import DropPlaylistModal from "./DropPlaylistModal";
 
 const CurriculumSequenceModals = ({
   isDesktop,
@@ -36,7 +38,11 @@ const CurriculumSequenceModals = ({
   handleGuideCancel,
   countModular,
   GridCountInARow,
-  fromPlaylist
+  fromPlaylist,
+  dropPlaylistModalVisible,
+  isVideoResourcePreviewModal,
+  closeDropPlaylistModal,
+  setEmbeddedVideoPreviewModal
 }) => (
   <Fragment>
     <RemoveTestModal
@@ -117,6 +123,16 @@ const CurriculumSequenceModals = ({
         </Button>
       </ModalFooter>
     </Modal>
+
+    {dropPlaylistModalVisible && (
+      <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={closeDropPlaylistModal} />
+    )}
+    {isVideoResourcePreviewModal && (
+      <EmbeddedVideoPreviewModal
+        closeCallback={() => setEmbeddedVideoPreviewModal(false)}
+        isVisible={isVideoResourcePreviewModal}
+      />
+    )}
   </Fragment>
 );
 

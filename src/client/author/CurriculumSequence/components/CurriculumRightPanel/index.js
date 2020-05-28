@@ -59,7 +59,7 @@ const CurriculumRightPanel = ({
 
 export default CurriculumRightPanel;
 
-const HideRightPanel = styled.div`
+export const HideRightPanel = styled.div`
   position: absolute;
   right: 16px;
   top: 10px;

@@ -98,7 +98,8 @@ const ManageContentBlock = props => {
     setSearchByTab,
     addResource,
     resources = [],
-    setEmbeddedVideoPreviewModal
+    setEmbeddedVideoPreviewModal,
+    isDifferentiationTab = false
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -299,7 +300,7 @@ const ManageContentBlock = props => {
               </SearchByNavigationBar>
 
               <br />
-              <ResourceDataList urlHasUseThis={urlHasUseThis}>
+              <ResourceDataList urlHasUseThis={urlHasUseThis} isDifferentiationTab={isDifferentiationTab}>
                 {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
                 {isLoading && loadedPage !== 0 && (
                   <LoaderWrapper>

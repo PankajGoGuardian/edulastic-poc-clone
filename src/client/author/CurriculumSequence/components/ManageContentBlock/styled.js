@@ -225,12 +225,20 @@ export const ManageModuleBtn = styled.div`
 `;
 
 export const ResourceDataList = styled.div`
-  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 305px)" : "calc(100vh - 345px)")};
   margin-bottom: 20px;
   overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: start;
+  height: ${({ urlHasUseThis, isDifferentiationTab }) => {
+    if (isDifferentiationTab) {
+      return "calc(100vh - 355px)";
+    }
+    if (urlHasUseThis) {
+      return "calc(100vh - 305px)";
+    }
+    return "calc(100vh - 345px)";
+  }};
 
   &::-webkit-scrollbar {
     width: 5px;

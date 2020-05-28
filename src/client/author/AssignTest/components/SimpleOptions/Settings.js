@@ -4,6 +4,9 @@ import { Row, Col, Radio, Select, Icon, Input, message, Tooltip, Modal } from "a
 import { green, red, blueBorder, themeColor, lightGrey9 } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
 import { RadioBtn, CheckboxLabel } from "@edulastic/common";
+import { IconCaretDown, IconInfo } from "@edulastic/icons";
+import { isUndefined } from "lodash";
+import { withRouter } from "react-router-dom";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import {
   AlignRight,
@@ -35,9 +38,6 @@ import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector, getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
-import { IconCaretDown, IconInfo } from "@edulastic/icons";
-import { isUndefined } from "lodash";
-import { withRouter } from "react-router-dom";
 
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
 const {
@@ -81,7 +81,6 @@ const Settings = ({
     message: ""
   });
   const [showAdvancedOption, toggleAdvancedOption] = useState(false);
-  const [assignmentLevelFlow, setAssignmentLevelFlow] = useState(false);
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false);
 
   const advancedHandler = () => toggleAdvancedOption(!showAdvancedOption);
@@ -145,6 +144,7 @@ const Settings = ({
   const handleUpdatePasswordExpireIn = e => {
     let { value = 1 } = e.target;
     value *= 60;
+    // eslint-disable-next-line no-restricted-globals
     if (value < 60 || Number.isNaN(value)) {
       value = 60;
     } else if (value > 999 * 60) {
@@ -560,47 +560,40 @@ const Settings = ({
         }
 
         {/* Evaluation Method */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersEvaluationMethod"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersEvaluationMethod"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={6}>
-              <Label>EVALUATION METHOD</Label>
-            </Col>
-            <Col span={18}>
-              <AlignRight
-                forClassLevel={forClassLevel || freezeSettings}
-                // disabled={forClassLevel}
-                onChange={e => {
-                  if (!forClassLevel && !freezeSettings) {
-                    overRideSettings("scoringType", e.target.value);
-                  }
-                }}
-                value={scoringType}
+        <StyledRowSettings gutter={16}>
+          <Col span={6}>
+            <Label>EVALUATION METHOD</Label>
+          </Col>
+          <Col span={18}>
+            <AlignRight
+              forClassLevel={forClassLevel || freezeSettings}
+              // disabled={forClassLevel}
+              onChange={e => {
+                if (!forClassLevel && !freezeSettings) {
+                  overRideSettings("scoringType", e.target.value);
+                }
+              }}
+              value={scoringType}
+            >
+              <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
+                {evalTypes.ALL_OR_NOTHING}
+              </RadioBtn>
+              <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
+                {evalTypes.PARTIAL_CREDIT}
+              </RadioBtn>
+              <RadioBtn
+                value={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                key={PARTIAL_CREDIT_IGNORE_INCORRECT}
               >
-                <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
-                  {evalTypes.ALL_OR_NOTHING}
-                </RadioBtn>
-                <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
-                  {evalTypes.PARTIAL_CREDIT}
-                </RadioBtn>
-                <RadioBtn
-                  value={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                  data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                  key={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                >
-                  {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
-                </RadioBtn>
-                <RadioBtn value={ITEM_LEVEL_EVALUATION} data-cy={ITEM_LEVEL_EVALUATION} key={ITEM_LEVEL_EVALUATION}>
-                  {evalTypes.ITEM_LEVEL_EVALUATION}
-                </RadioBtn>
-              </AlignRight>
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
+                {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
+              </RadioBtn>
+              <RadioBtn value={ITEM_LEVEL_EVALUATION} data-cy={ITEM_LEVEL_EVALUATION} key={ITEM_LEVEL_EVALUATION}>
+                {evalTypes.ITEM_LEVEL_EVALUATION}
+              </RadioBtn>
+            </AlignRight>
+          </Col>
+        </StyledRowSettings>
         {/* Evaluation Method */}
 
         {/* Timed TEST */}
@@ -626,6 +619,7 @@ const Settings = ({
                 />
                 {timedAssignment && (
                   <>
+                    {/* eslint-disable no-restricted-globals */}
                     <TimeSpentInput
                       onChange={e => {
                         if (e.target.value.length <= 3 && e.target.value <= 300) {
@@ -641,6 +635,7 @@ const Settings = ({
                       step={1}
                     />
                     <Label>MINUTES</Label>
+                    {/* eslint-enable no-restricted-globals */}
                   </>
                 )}
               </Row>

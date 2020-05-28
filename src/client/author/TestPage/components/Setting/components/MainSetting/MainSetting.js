@@ -2,7 +2,7 @@ import { blueBorder, green, red, themeColor, lightGrey9 } from "@edulastic/color
 import { CheckboxLabel, RadioBtn, withWindowScroll, SelectInputStyled, TextInputStyled } from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
-import { Anchor, Col, Input, message, Row, Radio, Select, Switch, Tooltip } from "antd";
+import { Anchor, Col, Input, message, Row, Select, Switch, Tooltip } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -28,16 +28,11 @@ import {
   Body,
   Container,
   Description,
-  InputPassword,
-  MaxAnswerChecksInput,
-  MaxAttempts,
   MessageSpan,
   NavigationMenu,
   StyledAnchor,
   StyledRadioGroup,
-  StyledSelect,
   Title,
-  RadioGroup,
   RadioWrapper,
   StyledCol,
   Label
@@ -48,7 +43,6 @@ const {
   settingCategories,
   settingCategoriesFeatureMap,
   type,
-  navigations,
   completionTypes,
   calculators,
   calculatorKeys,
@@ -83,7 +77,6 @@ class MainSetting extends Component {
 
     this.state = {
       showPassword: false,
-      enable: true,
       showAdvancedOption: false,
       inputBlur: false,
       _releaseGradeKeys: nonPremiumReleaseGradeKeys
@@ -94,11 +87,11 @@ class MainSetting extends Component {
     const { features, entity } = nextProps;
     const { grades, subjects } = entity;
     if (
-      features["assessmentSuperPowersReleaseScorePremium"] ||
+      features.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({
-          features: features,
+          features,
           inputFeatures: "assessmentSuperPowersReleaseScorePremium",
           gradeSubject: { grades, subjects }
         }))
@@ -106,11 +99,10 @@ class MainSetting extends Component {
       return {
         _releaseGradeKeys: releaseGradeKeys
       };
-    } else {
-      return {
-        _releaseGradeKeys: nonPremiumReleaseGradeKeys
-      };
     }
+    return {
+      _releaseGradeKeys: nonPremiumReleaseGradeKeys
+    };
   }
 
   componentDidMount = () => {
@@ -124,9 +116,9 @@ class MainSetting extends Component {
     this.setState(state => ({ showPassword: !state.showPassword }));
   };
 
-  enableHandler = e => {
-    this.setState({ enable: e.target.value });
-  };
+  // enableHandler = e => {
+  //   this.setState({ enable: e.target.value });
+  // };
 
   advancedHandler = () => {
     const { showAdvancedOption } = this.state;
@@ -156,7 +148,7 @@ class MainSetting extends Component {
       disableAnswerOnPaper
     } = this.props;
     switch (key) {
-      case "testType":
+      case "testType": {
         const testProfileType = testTypeAsProfileNameType[value];
         const defaultBandId = defaultTestTypeProfiles?.performanceBand?.[testProfileType];
         const defaultStandardId = defaultTestTypeProfiles?.standardProficiency?.[testProfileType];
@@ -198,10 +190,12 @@ class MainSetting extends Component {
           });
         }
         break;
-      case "scoringType":
-        let penalty = value === evalTypeLabels.PARTIAL_CREDIT;
+      }
+      case "scoringType": {
+        const penalty = value === evalTypeLabels.PARTIAL_CREDIT;
         setTestData({ penalty });
         break;
+      }
       case "safeBrowser":
         if (!value)
           setTestData({
@@ -211,7 +205,7 @@ class MainSetting extends Component {
       case "maxAnswerChecks":
         if (value < 0) value = 0;
         break;
-      case "passwordPolicy":
+      case "passwordPolicy": {
         if (value === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
           setTestData({
             passwordExpireIn: 15 * 60
@@ -222,10 +216,14 @@ class MainSetting extends Component {
           });
         }
         break;
+      }
       case "answerOnPaper":
         if (value === true && disableAnswerOnPaper) {
           return message.error("Answer on paper not suppported for this test");
         }
+        break;
+      default:
+        break;
     }
     setTestData({
       [key]: value
@@ -241,13 +239,12 @@ class MainSetting extends Component {
     });
   };
 
-  handleBlur = e => {
-    this.setState({ inputBlur: true });
-  };
+  handleBlur = () => this.setState({ inputBlur: true });
 
   handleUpdatePasswordExpireIn = e => {
     let { value = 1 } = e.target;
-    value = value * 60;
+    value *= 60;
+    // eslint-disable-next-line no-restricted-globals
     if (value < 60 || isNaN(value)) {
       value = 60;
     } else if (value > 999 * 60) {
@@ -257,7 +254,7 @@ class MainSetting extends Component {
   };
 
   updateTimedTest = attr => value => {
-    const { totalItems, setTestData, ...otherProps } = this.props;
+    const { totalItems, setTestData } = this.props;
     if (value) {
       setTestData({
         [attr]: value,
@@ -272,7 +269,7 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { enable, showAdvancedOption, showPassword, _releaseGradeKeys } = this.state;
+    const { showAdvancedOption, showPassword, _releaseGradeKeys } = this.state;
     const {
       history,
       windowWidth,
@@ -298,7 +295,6 @@ class MainSetting extends Component {
       passwordPolicy,
       maxAnswerChecks,
       scoringType,
-      penalty,
       testType,
       calcType,
       assignmentPassword,
@@ -314,7 +310,6 @@ class MainSetting extends Component {
       showMagnifier = true,
       timedAssignment,
       allowedTime,
-      pauseAllowed,
       enableScratchpad = true,
       districtPermissions = [],
       freezeSettings = false
@@ -332,17 +327,16 @@ class MainSetting extends Component {
       }
       if (assignmentPassword.length >= 6 && assignmentPassword.length <= 25) {
         return green;
-      } else {
-        validationMessage = "Password is too short - must be at least 6 characters";
-        if (assignmentPassword.length > 25) validationMessage = "Password is too long";
-        return red;
       }
+      validationMessage = "Password is too short - must be at least 6 characters";
+      if (assignmentPassword.length > 25) validationMessage = "Password is too long";
+      return red;
     };
 
     const categories = ["show-answer-choice", "suffle-question", "check-answer-tries-per-question"];
 
     const availableFeatures = settingCategories.slice(0, -5).map(category => {
-      if (isDocBased && categories.includes(category.id)) return;
+      if (isDocBased && categories.includes(category.id)) return null;
       if (
         features[settingCategoriesFeatureMap[category.id]] ||
         isFeatureAccessible({
@@ -352,10 +346,12 @@ class MainSetting extends Component {
         })
       ) {
         return settingCategoriesFeatureMap[category.id];
-      } else if (settingCategoriesFeatureMap[category.id] === "releaseScore") {
+      }
+      if (settingCategoriesFeatureMap[category.id] === "releaseScore") {
         // release score is free feature
         return settingCategoriesFeatureMap[category.id];
       }
+      return null;
     });
 
     const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
@@ -385,6 +381,7 @@ class MainSetting extends Component {
                         />
                       );
                     }
+                    return null;
                   })}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
@@ -548,8 +545,8 @@ class MainSetting extends Component {
                     />
                   )}
                   <Description>
-                    Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To
-                    use this feature Safe Exam Browser (on Windows/Mac only) must be installed.
+                    Ensure secure testing environment by using Safe Exam Browser to lockdown the student&apos;s device.
+                    To use this feature Safe Exam Browser (on Windows/Mac only) must be installed.
                   </Description>
                 </Body>
               </Block>
@@ -728,45 +725,41 @@ class MainSetting extends Component {
             ) : (
               ""
             )}
-            {availableFeatures.includes("assessmentSuperPowersEvaluationMethod") ? (
-              <Block id="evaluation-method" smallSize={isSmallSize}>
-                <Title>Evaluation Method</Title>
-                <Body smallSize={isSmallSize}>
-                  <StyledRadioGroup
-                    disabled={!owner || !isEditable}
-                    onChange={e => this.updateTestData("scoringType")(e.target.value)}
-                    value={scoringType}
-                  >
-                    <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
-                      {evalTypes.ALL_OR_NOTHING}
-                    </RadioBtn>
-                    <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
-                      {evalTypes.PARTIAL_CREDIT}
-                    </RadioBtn>
-                    <RadioBtn
-                      value={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                      data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                      key={PARTIAL_CREDIT}
-                    >
-                      {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
-                    </RadioBtn>
-                    {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
-                    {/* not setting mb (margin bottom) as it is common component */}
-                    <RadioBtn
-                      value={ITEM_LEVEL_EVALUATION}
-                      data-cy={ITEM_LEVEL_EVALUATION}
-                      key={ITEM_LEVEL_EVALUATION}
-                      style={{ marginBottom: "0px" }}
-                    >
-                      {evalTypes.ITEM_LEVEL_EVALUATION}
-                    </RadioBtn>
-                  </StyledRadioGroup>
-                </Body>
-              </Block>
-            ) : (
-              ""
-            )}
 
+            <Block id="evaluation-method" smallSize={isSmallSize}>
+              <Title>Evaluation Method</Title>
+              <Body smallSize={isSmallSize}>
+                <StyledRadioGroup
+                  disabled={!owner || !isEditable}
+                  onChange={e => this.updateTestData("scoringType")(e.target.value)}
+                  value={scoringType}
+                >
+                  <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
+                    {evalTypes.ALL_OR_NOTHING}
+                  </RadioBtn>
+                  <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
+                    {evalTypes.PARTIAL_CREDIT}
+                  </RadioBtn>
+                  <RadioBtn
+                    value={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                    data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                    key={PARTIAL_CREDIT}
+                  >
+                    {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
+                  </RadioBtn>
+                  {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
+                  {/* not setting mb (margin bottom) as it is common component */}
+                  <RadioBtn
+                    value={ITEM_LEVEL_EVALUATION}
+                    data-cy={ITEM_LEVEL_EVALUATION}
+                    key={ITEM_LEVEL_EVALUATION}
+                    style={{ marginBottom: "0px" }}
+                  >
+                    {evalTypes.ITEM_LEVEL_EVALUATION}
+                  </RadioBtn>
+                </StyledRadioGroup>
+              </Body>
+            </Block>
             {availableFeatures.includes("assessmentSuperPowersTimedTest") && (
               <Block id="timed-test" smallSize={isSmallSize}>
                 <Title>Timed Test</Title>
@@ -782,6 +775,7 @@ class MainSetting extends Component {
                       />
                       {timedAssignment && (
                         <>
+                          {/* eslint-disable no-restricted-globals */}
                           <TextInputStyled
                             type="number"
                             width="100px"
@@ -799,6 +793,7 @@ class MainSetting extends Component {
                             step={1}
                           />
                           <Label>Minutes</Label>
+                          {/* eslint-enable no-restricted-globals */}
                         </>
                       )}
                     </StyledCol>
@@ -899,28 +894,26 @@ class MainSetting extends Component {
                   disabled={!owner || !isEditable}
                   style={{ marginTop: "29px", marginBottom: 0, flexDirection: "row" }}
                 >
-                  {Object.keys(accessibilities).map(key => {
-                    return (
-                      <Row key={accessibilities[key]} style={{ width: "100%" }} align="middle">
-                        <Col span={12}>
-                          <span style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase" }}>
-                            {accessibilities[key]}
-                          </span>
-                        </Col>
-                        <Col span={12}>
-                          <StyledRadioGroup
-                            disabled={!owner || !isEditable}
-                            onChange={e => this.updateTestData(key)(e.target.value)}
-                            defaultValue={accessibilityData[key]}
-                            style={{ flexDirection: "row", height: "18px" }}
-                          >
-                            <RadioBtn value>ENABLE</RadioBtn>
-                            <RadioBtn value={false}>DISABLE</RadioBtn>
-                          </StyledRadioGroup>
-                        </Col>
-                      </Row>
-                    );
-                  })}
+                  {Object.keys(accessibilities).map(key => (
+                    <Row key={accessibilities[key]} style={{ width: "100%" }} align="middle">
+                      <Col span={12}>
+                        <span style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase" }}>
+                          {accessibilities[key]}
+                        </span>
+                      </Col>
+                      <Col span={12}>
+                        <StyledRadioGroup
+                          disabled={!owner || !isEditable}
+                          onChange={e => this.updateTestData(key)(e.target.value)}
+                          defaultValue={accessibilityData[key]}
+                          style={{ flexDirection: "row", height: "18px" }}
+                        >
+                          <RadioBtn value>ENABLE</RadioBtn>
+                          <RadioBtn value={false}>DISABLE</RadioBtn>
+                        </StyledRadioGroup>
+                      </Col>
+                    </Row>
+                  ))}
                 </RadioWrapper>
               </Block>
               {/* {availableFeatures.includes("enableMagnifier") && (

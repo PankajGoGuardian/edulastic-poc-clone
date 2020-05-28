@@ -193,17 +193,28 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const { testName, toggleModalAction, testId, isTestFlow } = this.props;
+    const {
+      testName,
+      toggleModalAction,
+      testId,
+      isTestFlow,
+      location: { state },
+      match: { params }
+    } = this.props;
 
     if (isTestFlow) {
-      const testPath = `/author/tests/${testId || "create"}`;
+      const test_id = testId || params.testId || "";
+      let testPath = `/author/tests/create/description`;
+      if (test_id) {
+        testPath = `/author/tests/tab/description/id/${test_id}`;
+      }
       return [
         {
           title: "TEST LIBRARY",
           to: "/author/tests"
         },
         {
-          title: testName,
+          title: testName || state.testName,
           to: testPath,
           onClick: toggleModalAction,
           state: { persistStore: true }

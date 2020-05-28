@@ -30,7 +30,7 @@ import { PREVIEW, CLEAR } from "../../../assessment/constants/constantsForQuesti
 
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION, getCurrentQuestionSelector } from "../../sharedDucks/questions";
 
-function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem = false } }) {
+function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem = false, testName } }) {
   try {
     // create a empty item and put it in store.
     let item = {
@@ -74,7 +74,7 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
       yield put(
         push({
           pathname: `/author/tests/${testId}/createItem/${item._id}`,
-          state: { fadeSidebar: true }
+          state: { fadeSidebar: true, testName }
         })
       );
     }

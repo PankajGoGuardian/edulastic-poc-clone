@@ -275,6 +275,7 @@ class ClozeText extends Component {
                 />
                 <div>
                   <CheckboxLabel
+                    data-cy="ignoreCase"
                     onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
                     checked={!!ignoreCase}
                   >
@@ -282,6 +283,7 @@ class ClozeText extends Component {
                   </CheckboxLabel>
 
                   <CheckboxLabel
+                    data-cy="allowSingleLetterMistake"
                     onChange={() =>
                       this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
                     }
@@ -291,6 +293,7 @@ class ClozeText extends Component {
                   </CheckboxLabel>
 
                   <CheckboxLabel
+                    data-cy="mixAndMatchAltAnswer"
                     onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
                     checked={!!mixAndMatch}
                   >

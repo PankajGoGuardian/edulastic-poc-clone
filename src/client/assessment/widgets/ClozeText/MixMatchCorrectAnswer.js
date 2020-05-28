@@ -59,7 +59,7 @@ const MixMatchCorrectAnswer = ({
   const correctAnswersBlock = (
     // render all correct answers
     <FlexContainer flexDirection="column" alignItems="flex-start" style={{ flexShrink: 0 }}>
-      {correctValues.map(({ id, index, value }) => (
+      {correctValues.map(({ index, value }) => (
         <CorrectAnswer style={btnStyle}>
           <div className="index">{index + 1}</div>
           <div className="text">{value}</div>
@@ -91,6 +91,7 @@ const MixMatchCorrectAnswer = ({
               </FlexContainer>
             ))}
           <Input
+            data-cy="mixNmatchAltAns"
             // individual type overriding the global type
             // default to text if neither is set
             type={responseTypes[answerIndex] || inputtype || "text"}
@@ -98,7 +99,7 @@ const MixMatchCorrectAnswer = ({
             placeholder="+ Alt Ans"
             value={newValues[answerIndex]}
             onChange={handleInputChange(answerIndex)}
-            onBlur={e => handleInputConfirm(answerIndex)}
+            onBlur={() => handleInputConfirm(answerIndex)}
           />
         </AlterAnswer>
       ))}

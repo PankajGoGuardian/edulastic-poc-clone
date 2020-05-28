@@ -81,6 +81,7 @@ export const queColor = {
   BLUE: "rgba(26, 179, 148, 0.5)",
   BLUE_1: "rgb(87, 107, 169)",
   WHITE: "rgb(255, 255, 255)",
+  WHITE_1: "rgb(248, 248, 248)",
   ORANGE: "rgb(255, 165, 0)",
   ORANGE_1: "rgb(243, 147, 0)",
   ORANGE_2: "rgb(255, 233, 168)"

@@ -9,6 +9,7 @@ class ClozeWithTextPage {
     this.editToolBar = new EditToolBar();
     this.header = new Header();
     this.TemplateMarkupBar = new TemplateMarkupBar();
+    this.roundingType = { "Round down": "roundDown", None: "none" };
   }
 
   // question content
@@ -30,6 +31,34 @@ class ClozeWithTextPage {
       .get('[class^="ClozeTextInput"]')
       .eq(index)
       .find("input");
+
+  getMixAndMatchAltAnswer = () => cy.get('[data-cy="mixAndMatchAltAnswer"]');
+
+  getIgnoreCase = () => cy.get('[data-cy="ignoreCase"]');
+
+  getAllowSingleLetterMistake = () => cy.get('[data-cy="allowSingleLetterMistake"]');
+
+  updatePoints = points => this.getPoints().type(`{selectall}${points}`);
+
+  setMixNMatchAltAnswers = (index, input) => {
+    cy.get('[data-cy="mixNmatchAltAns"]')
+      .eq(index)
+      .clear()
+      .type(input)
+      .should("have.value", input);
+  };
+
+  selectRoundingType(option) {
+    const selectOp = `[data-cy="${this.roundingType[option]}"]`;
+    cy.get('[data-cy="rounding"]').click();
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+    cy.get('[data-cy="rounding"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+    return this;
+  }
 
   // advance options
   clickOnAdvancedOptions = () =>
@@ -56,6 +85,7 @@ class ClozeWithTextPage {
       const { quetext, setAns } = authoringData.TEXT_CLOZE[queKey];
       if (quetext) {
         this.getQuestionEditor().clear({ force: true });
+        this.getQuestionEditor().type(`Q ${queIndex + 1}`);
         quetext.forEach(element => {
           if (element === "INPUT") cy.get('[data-cmd="textinput"]').click({ force: true });
           else this.getQuestionEditor().type(element, { force: true });

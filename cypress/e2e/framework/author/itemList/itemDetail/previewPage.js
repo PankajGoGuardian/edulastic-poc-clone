@@ -24,6 +24,7 @@ class PreviewItemPage {
 
   checkOnCheckAnswer = () => this.getCheckAnswer().click({ force: true });
 
+  checkOnShowAnswer = () => this.getShowAnswer().click({ force: true });
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

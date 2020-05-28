@@ -34,6 +34,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
     if (!isEdit) {
       setModuleData({});
     }
+    onCancel();
   };
 
   const fieldContatinerProp = {

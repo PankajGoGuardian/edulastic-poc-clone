@@ -69,7 +69,7 @@ const ActionContainer = ({
   const [infoModelVisible, setinfoModelVisible] = useState(false);
   const [infoModalData, setInfoModalData] = useState([]);
 
-  const { addCoTeacher, textToSpeech } = features;
+  const { textToSpeech } = features;
 
   const { _id: classId, active } = selectedClass;
   let formRef = null;
@@ -188,8 +188,8 @@ const ActionContainer = ({
     formRef = node;
   };
 
-  const showMessage = (type, msg) => {
-    message.open({ type, content: msg });
+  const showMessage = (msgType, msg) => {
+    message.open({ type: msgType, content: msg });
   };
 
   const handleActionMenuClick = ({ key }) => {
@@ -249,7 +249,7 @@ const ActionContainer = ({
       case "addToGroup":
         toggleModal("addToGroup");
         break;
-      case "mergeStudents":
+      case "mergeStudents": {
         const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1);
         if (inactiveStudents.length) {
           message.error("Deactivated students selected, please select active students only");
@@ -258,6 +258,8 @@ const ActionContainer = ({
         } else {
           message.info("Please select two or more students to merge");
         }
+        break;
+      }
       default:
         break;
     }
@@ -380,12 +382,10 @@ const ActionContainer = ({
                     <span>Edit Student</span>
                   </MenuItems>
                 )}
-                {!!addCoTeacher && (
-                  <MenuItems key="addCoTeacher">
-                    <IconPlus />
-                    <span>Add a Co-Teacher</span>
-                  </MenuItems>
-                )}
+                <MenuItems key="addCoTeacher">
+                  <IconPlus />
+                  <span>Add a Co-Teacher</span>
+                </MenuItems>
                 {type === "class" && (
                   <MenuItems key="addToGroup">
                     <IconPlus />

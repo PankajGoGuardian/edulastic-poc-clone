@@ -47,7 +47,6 @@ import {
 } from "../../ducks";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
-import { getQuestionsSelector } from "../../../sharedDucks/questions";
 import {
   ItemDetailWrapper,
   PreviewContent,
@@ -108,7 +107,17 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows, history, t, loading, isTestFlow, item } = this.props;
+    const {
+      getItemDetailById,
+      match,
+      rows,
+      history,
+      t,
+      loading,
+      isTestFlow,
+      item,
+      location: { state }
+    } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
     const { itemId, testId } = match.params;
@@ -126,7 +135,8 @@ class Container extends Component {
           backUrl: isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : "/author/items",
           rowIndex: 0,
           tabIndex: 0,
-          testItemId: isTestFlow ? itemId : match.params._id
+          testItemId: isTestFlow ? itemId : match.params._id,
+          testName: state.testName || ""
         }
       });
     }
@@ -802,7 +812,6 @@ Container.propTypes = {
   setCreatedItemToTest: PropTypes.func.isRequired,
   saveItem: PropTypes.func.isRequired,
   loadQuestion: PropTypes.func.isRequired,
-  questions: PropTypes.object.isRequired,
   changeView: PropTypes.func.isRequired,
   testItemStatus: PropTypes.string,
   publishTestItem: PropTypes.func,
@@ -844,7 +853,6 @@ const enhance = compose(
       item: getItemDetailSelector(state),
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
-      questions: getQuestionsSelector(state),
       testItemStatus: getTestItemStatusSelector(state),
       passage: getPassageSelector(state),
       preview: state.view.preview,

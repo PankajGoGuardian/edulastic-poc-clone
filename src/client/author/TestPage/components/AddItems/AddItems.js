@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { debounce, uniq, get } from "lodash";
-import { Pagination, Spin, message } from "antd";
+import { Pagination, Spin } from "antd";
 import { roleuser } from "@edulastic/constants";
 import { withWindowSizes, FlexContainer, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -203,7 +203,7 @@ class AddItems extends PureComponent {
     };
     clearDictAlignment();
     onSaveTestId();
-    createTestItem(defaultWidgets, true, testId);
+    createTestItem(defaultWidgets, true, testId, false, title);
   };
 
   handleDuplicateItem = duplicateTestItemId => {

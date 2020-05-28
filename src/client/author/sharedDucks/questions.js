@@ -95,6 +95,10 @@ const deleteQuestion = (state, { payload }) => {
 const updateQuestion = (state, { payload }) => {
   let newPayload = payload;
 
+  const { updated = true } = newPayload;
+
+  delete newPayload.updated;
+
   const prevGroupPossibleResponsesState = get(state.byId[payload.id], "groupPossibleResponses");
   const groupPossibleResponses = get(payload, "groupPossibleResponses");
 
@@ -113,7 +117,7 @@ const updateQuestion = (state, { payload }) => {
   }
 
   state.byId[payload.id] = newPayload;
-  state.updated = true;
+  state.updated = updated;
 };
 
 const changeItem = (state, { payload }) => {
@@ -139,9 +143,13 @@ const setFirstMount = (state, { id }) => {
 
 // add a new question
 const addQuestion = (state, { payload }) => {
+  const { updated = true } = payload;
+
+  delete payload.updated;
+
   state.byId[payload.id] = payload;
   state.current = payload.id;
-  state.updated = true;
+  state.updated = updated;
 
   // sort the question indices in docBsed
   if (payload.isDocBased) {
@@ -262,6 +270,7 @@ export default createReducer(initialState, {
 export const getCurrentQuestionIdSelector = state => state[module].current;
 export const getQuestionsSelector = state => state[module].byId;
 export const getTestStateSelector = state => state.tests;
+export const getAuthorQuestionSelector = state => state[module];
 
 export const getTestSelector = createSelector(
   getTestStateSelector,
@@ -315,4 +324,10 @@ export const getQuestionByIdSelector = (state, qId) => state[module].byId[qId] |
 export const getQuestionAlignmentSelector = createSelector(
   getCurrentQuestionSelector,
   question => question.alignment || []
+);
+
+// get curret updated state of author question
+export const getAuthorQuestionStatus = createSelector(
+  getAuthorQuestionSelector,
+  state => state.updated
 );

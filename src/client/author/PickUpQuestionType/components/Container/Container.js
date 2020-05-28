@@ -119,7 +119,8 @@ class Container extends Component {
 
     setQuestion(question);
     // add question to the questions store.
-    addQuestion(question);
+    // selecting a question (having default values) type should not update the author question
+    addQuestion({ ...question, updated: false });
 
     if (modalItemId) {
       navigateToQuestionEdit();

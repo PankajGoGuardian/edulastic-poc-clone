@@ -1425,6 +1425,12 @@ function* savePassage({ payload }) {
 
     // if there is new, replace it with current Item's id.
     const url = backUrl.replace("new", currentItemId);
+
+    /**
+     * after saving the passage type question we can say there is no user input to be saved
+     * after saving the question it redirects to item detail page
+     */
+    yield put(changeUpdatedFlagAction(false));
     yield put(push(url));
   } catch (e) {
     console.log("error: ", e);

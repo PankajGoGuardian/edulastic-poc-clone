@@ -3,7 +3,7 @@ import { FlexContainer } from "@edulastic/common";
 import { Col, Row, Select } from "antd";
 import { get, pick as _pick } from "lodash";
 import PropTypes from "prop-types";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { getDefaultInterests, setDefaultInterests } from "../../../author/dataUtils";
 import { updateDefaultCurriculumAction } from "../../../author/src/actions/dictionaries";
@@ -50,7 +50,8 @@ const AlignmentRow = ({
   updateDefaultSubject,
   interestedCurriculums,
   recentStandardsList = [],
-  isDocBased = false
+  isDocBased = false,
+  authorQuestionStatus = false
 }) => {
   let {
     subject = "Mathematics",
@@ -59,8 +60,20 @@ const AlignmentRow = ({
     grades = ["7"],
     standards = []
   } = alignment;
+
+  const userUpdate = useRef(authorQuestionStatus);
+
+  // cleanup (on componentwillunmount)
+  useEffect(
+    () => () => {
+      userUpdate.current = false;
+    },
+    []
+  );
+
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
+    userUpdate.current = true;
     updateDefaultSubject(val);
     storeInLocalStorage("defaultSubject", val);
     removeFromLocalStorage("defaultCurriculumId");
@@ -71,6 +84,7 @@ const AlignmentRow = ({
   };
 
   const setGrades = val => {
+    userUpdate.current = true;
     updateDefaultGrades(val);
     storeInLocalStorage("defaultGrades", val);
     editAlignment(alignmentIndex, { grades: val });
@@ -78,6 +92,7 @@ const AlignmentRow = ({
   };
 
   const handleChangeStandard = (curriculum, event) => {
+    userUpdate.current = true;
     const curriculumId = event.key;
     storeInLocalStorage("defaultCurriculumId", curriculumId);
     storeInLocalStorage("defaultCurriculumName", curriculum);
@@ -93,6 +108,7 @@ const AlignmentRow = ({
   };
 
   const handleStandardSelect = (chosenStandardsArr, option) => {
+    userUpdate.current = true;
     const newStandard = _pick(option.props.obj, [
       "_id",
       "level",
@@ -137,6 +153,8 @@ const AlignmentRow = ({
   };
 
   const handleAddStandard = newStandard => {
+    userUpdate.current = true;
+
     let newStandards = standards.some(standard => {
       return standard._id === newStandard._id;
     });
@@ -162,13 +180,17 @@ const AlignmentRow = ({
   };
 
   useEffect(() => {
-    handleUpdateQuestionAlignment(alignmentIndex, {
-      curriculum,
-      curriculumId,
-      subject,
-      grades,
-      domains: alignmentStandardsFromUIToMongo([...standards])
-    });
+    handleUpdateQuestionAlignment(
+      alignmentIndex,
+      {
+        curriculum,
+        curriculumId,
+        subject,
+        grades,
+        domains: alignmentStandardsFromUIToMongo([...standards])
+      },
+      userUpdate.current
+    );
   }, [alignment]);
 
   useEffect(() => {

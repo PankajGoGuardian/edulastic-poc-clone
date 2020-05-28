@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
 import produce from "immer";
@@ -21,25 +21,31 @@ import { Col } from "../../styled/WidgetOptions/Col";
 import { TextInputStyled, SelectInputStyled } from "../../styled/InputStyles";
 
 const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
+  const updated = useRef(false);
   const handleChange = (prop, value) => {
-    setQuestionData(
-      produce(item, draft => {
-        if (prop === "paginated_content" && value) {
-          draft.pages = [draft.content];
-          delete draft.content;
-        }
-        if (prop === "paginated_content" && !value) {
-          if (draft.pages && draft.pages.length) {
-            draft.content = draft.pages.join("");
-          }
+    const updatedByUser = updated.current;
 
-          delete draft.pages;
+    const newItem = produce(item, draft => {
+      if (prop === "paginated_content" && value) {
+        draft.pages = [draft.content];
+        delete draft.content;
+      }
+      if (prop === "paginated_content" && !value) {
+        if (draft.pages && draft.pages.length) {
+          draft.content = draft.pages.join("");
         }
 
-        draft[prop] = value;
-        updateVariables(draft);
-      })
-    );
+        delete draft.pages;
+      }
+
+      draft[prop] = value;
+      updateVariables(draft);
+    });
+    setQuestionData({ ...newItem, updated: updatedByUser });
+
+    // content is being set in passage type question
+    // updating at the end of first run
+    updated.current = true;
   };
 
   const handleSortPagesEnd = ({ oldIndex, newIndex }) => {

@@ -45,11 +45,8 @@ import {
   getUserFeatures,
   getItemBucketsSelector
 } from "../../../author/src/selectors/user";
-import {
-  getAllTagsAction,
-  getAllTagsSelector,
-  addNewTagAction
-} from "../../../author/TestPage/ducks";
+import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
+import { getAuthorQuestionStatus } from "../../../author/sharedDucks/questions";
 
 const QuestionMetadata = ({
   t,
@@ -73,7 +70,8 @@ const QuestionMetadata = ({
   userFeatures,
   highlightCollection,
   recentCollectionsList,
-  orgCollections
+  orgCollections,
+  authorQuestionSatus = false
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
   const { id: qId, grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
@@ -140,10 +138,8 @@ const QuestionMetadata = ({
     setCollections(_collections);
   };
 
-  const handleUpdateQuestionAlignment = (index, alignment) => {
-    const newAlignments = (questionData.alignment || []).map((c, i) =>
-      i === index ? alignment : c
-    );
+  const handleUpdateQuestionAlignment = (index, alignment, updated = true) => {
+    const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
     if (!newAlignments.length) {
       newAlignments.push(alignment);
     }
@@ -151,7 +147,7 @@ const QuestionMetadata = ({
       ...questionData,
       alignment: newAlignments
     };
-    setQuestionData(newQuestionData);
+    setQuestionData({ ...newQuestionData, updated });
   };
 
   const searchCurriculumStandards = searchObject => {
@@ -191,6 +187,7 @@ const QuestionMetadata = ({
                 editAlignment={editAlignment}
                 interestedCurriculums={interestedCurriculums}
                 createUniqGradeAndSubjects={createUniqGradeAndSubjects}
+                authorQuestionSatus={authorQuestionSatus}
               />
             ))}
           </ShowAlignmentRowsContainer>
@@ -275,7 +272,8 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       highlightCollection: getHighlightCollectionSelector(state),
       recentCollectionsList: getRecentCollectionsListSelector(state),
-      orgCollections: getItemBucketsSelector(state)
+      orgCollections: getItemBucketsSelector(state),
+      authorQuestionSatus: getAuthorQuestionStatus(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

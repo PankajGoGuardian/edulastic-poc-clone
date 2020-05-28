@@ -1,13 +1,13 @@
-import React, { useMemo } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Button } from "antd";
-import { IconCircleLogout, IconAccessibility, IconSend } from "@edulastic/icons";
-import { FlexContainer, FireBaseService as Fbs } from "@edulastic/common";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
+import { FireBaseService as Fbs, FlexContainer } from "@edulastic/common";
+import { IconAccessibility, IconCircleLogout, IconSend } from "@edulastic/icons";
+import { Button } from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
-import { withRouter } from "react-router-dom";
+import TimedTestTimer from "./TimedTestTimer";
 
 export function useUtaPauseAllowed(utaId) {
   utaId = utaId || "undefined";
@@ -24,12 +24,15 @@ const SaveAndExit = ({
   showZoomBtn,
   onSubmit,
   pauseAllowed = true,
-  utaId
+  utaId,
+  groupId,
+  timedAssignment
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId);
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;
   return (
     <FlexContainer marginLeft="30px">
+      {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       {showZoomBtn && (
         <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
           <IconAccessibility />

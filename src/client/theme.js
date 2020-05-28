@@ -579,9 +579,9 @@ export const defaultTheme = {
   mathEssayInput: {
     inputLineWrapperBorderColor: greyThemeLight,
     inputLineButtonFontSize: linkFontSize,
-    inputLineButtonBorderColor: "none",
+    inputLineButtonBorderColor: borderColor,
     inputLineButtonBgHoverActiveClassColor: themeColorHover,
-    inputLineButtonHoverActiveClassColor: themeColorHover,
+    inputLineButtonHoverActiveClassColor: white,
     inputLineLabelBgColor: labelBgColor,
     inputLineLabelColor: labelStyle,
     inputLineLabelFontSize: subtitleFontSize,

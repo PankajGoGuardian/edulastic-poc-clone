@@ -1,11 +1,7 @@
-import React, { Component } from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import enhanceWithClickOutside from "react-click-outside";
 import { Icon } from "antd";
-import { compose } from "redux";
-
 import { MathInput, MathSpan } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
 
 import { getFontSize } from "../../../../../../utils/helpers";
 import CustomTextInput from "./components/CustomTextInput/index";
@@ -13,135 +9,86 @@ import CustomTextInput from "./components/CustomTextInput/index";
 import { Wrapper } from "./styled/Wrapper";
 import { Button } from "./styled/Button";
 import { Buttons } from "./styled/Buttons";
-import { Label } from "./styled/Label";
-import { WrapperIn } from "./styled/WrapperIn";
 
-class MathEssayInputLine extends Component {
-  state = {
-    isEmpty: false
-  };
+const MathEssayInputLine = ({
+  onAddNewLine,
+  setActive,
+  onChange,
+  line,
+  id,
+  active,
+  item,
+  onChangeType,
+  disableResponse
+}) => {
+  const inputRef = useRef();
+  const fontSize = getFontSize(item?.uiStyle?.fontsize);
+  const isEmpty = line.text === "<p><br></p>" || line.text === "";
+  const isText = line.type === "text";
 
-  inputRef = React.createRef();
-
-  handleFocus = val => {
-    const { setActive } = this.props;
-
+  const handleFocus = val => {
     if (val) {
       setActive(false);
     }
   };
 
-  componentWillReceiveProps(nextProps) {
-    const empty = nextProps.line.text === "<p><br></p>" || nextProps.line.text === "";
+  const changeType = type => () => onChangeType(type);
 
-    if (!empty) {
-      this.setState({
-        isEmpty: false
-      });
-    } else {
-      this.setState({
-        isEmpty: true
-      });
-    }
+  const renderMathText = text =>
+    isText ? text : `<p><span class="input__math" data-latex="${text}"></span>&nbsp;</p>`;
 
-    if (this.props.disableResponse && !nextProps.disableResponse) {
-      this.focus();
-    }
-  }
-
-  focus = () => {
-    const { active } = this.props;
-
-    if (active && this.inputRef.current) {
+  useEffect(() => {
+    if (active && inputRef.current) {
       setTimeout(() => {
-        this.inputRef.current.focus();
-      }, 0);
+        if (!isText) {
+          inputRef.current.setFocus();
+        } else {
+          console.log(inputRef);
+        }
+      }, 30);
     }
-  };
+  }, [active, isText]);
 
-  componentDidMount() {
-    this.focus();
-  }
+  const actionButtons = active && !disableResponse && (
+    <Buttons>
+      {isEmpty && <Button activated={!isText} onClick={changeType("math")} label="M" title="Math" />}
+      {isEmpty && <Button activated={isText} onClick={changeType("text")} label="T" title="Text" />}
+      {!isEmpty && <Button onClick={onAddNewLine} label={<Icon type="enter" />} title="New line" />}
+    </Buttons>
+  );
 
-  get fontSize() {
-    const { item } = this.props;
-    return getFontSize(item.uiStyle.fontsize);
-  }
+  const inputProps = Object.assign(
+    {},
+    isText
+      ? { onChange, toolbarId: `toolbarId${id}`, fontSize }
+      : {
+          onInput: onChange,
+          symbols: item.symbols,
+          numberPad: item.numberPad,
+          fullWidth: true,
+          style: {
+            border: 0,
+            height: "auto",
+            minHeight: "auto",
+            background: "inherit",
+            fontSize
+          }
+        }
+  );
 
-  renderMathText = text => `<p><span class="input__math" data-latex="${text}"></span>&nbsp;</p>`;
+  const ResolvedComponent = isText ? CustomTextInput : MathInput;
 
-  render() {
-    const { isEmpty } = this.state;
-    const { onAddNewLine, onChange, line, id, onChangeType, active, item, t, disableResponse } = this.props;
-
-    return (
-      <Wrapper active={disableResponse ? false : active}>
-        <WrapperIn>
-          {line.type === "text" &&
-            (disableResponse ? (
-              <div dangerouslySetInnerHTML={{ __html: line.text }} />
-            ) : (
-              <CustomTextInput
-                ref={this.inputRef}
-                toolbarId={`toolbarId${id}`}
-                onFocus={this.handleFocus}
-                value={line.text}
-                onChange={onChange}
-                fontSize={this.fontSize}
-              />
-            ))}
-          {line.type === "math" &&
-            (disableResponse ? (
-              <MathSpan dangerouslySetInnerHTML={{ __html: this.renderMathText(line.text) }} />
-            ) : (
-              <MathInput
-                ref={this.inputRef}
-                symbols={item.symbols}
-                numberPad={item.numberPad}
-                value={line.text}
-                onInput={onChange}
-                onFocus={this.handleFocus}
-                fullWidth
-                style={{
-                  border: 0,
-                  height: "auto",
-                  minHeight: "auto",
-                  fontSize: this.fontSize
-                }}
-              />
-            ))}
-          {active && isEmpty && !disableResponse && (
-            <Buttons>
-              <Button
-                className={line.type === "math" ? "active" : ""}
-                onClick={() => onChangeType("math")}
-                title="Math"
-              >
-                M
-              </Button>
-              <Button
-                className={line.type === "text" ? "active" : ""}
-                onClick={() => onChangeType("text")}
-                title="Text"
-                data-cy="answer-math-text-btn"
-              >
-                T
-              </Button>
-            </Buttons>
-          )}
-          {active && !isEmpty && !disableResponse && (
-            <Buttons>
-              <Button onClick={onAddNewLine} title={t("component.options.createNewLine")}>
-                <Icon type="enter" />
-              </Button>
-            </Buttons>
-          )}
-        </WrapperIn>
-        {active && !disableResponse && <Label>{line.type}</Label>}
-      </Wrapper>
-    );
-  }
-}
+  return (
+    <Wrapper active={disableResponse ? false : active}>
+      {disableResponse ? (
+        <MathSpan dangerouslySetInnerHTML={{ __html: renderMathText(line.text) }} />
+      ) : (
+        <ResolvedComponent ref={inputRef} value={line.text} onFocus={handleFocus} {...inputProps} />
+      )}
+      {actionButtons}
+    </Wrapper>
+  );
+};
 
 MathEssayInputLine.propTypes = {
   line: PropTypes.object,
@@ -152,7 +99,6 @@ MathEssayInputLine.propTypes = {
   active: PropTypes.bool.isRequired,
   setActive: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool
 };
 
@@ -164,9 +110,4 @@ MathEssayInputLine.defaultProps = {
   }
 };
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  enhanceWithClickOutside
-);
-
-export default enhance(MathEssayInputLine);
+export default MathEssayInputLine;

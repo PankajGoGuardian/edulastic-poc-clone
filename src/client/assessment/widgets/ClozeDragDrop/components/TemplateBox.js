@@ -69,14 +69,6 @@ const TemplateBox = ({ resprops, id }) => {
   const label = getData("label" || "");
   const imageDimensions = getImageDimensionsHook(label);
 
-  const draggableContainerStyle = {
-    display: "flex",
-    justifyContent: "flext-start",
-    alignItems: "center",
-    height: "100%",
-    "max-width": Dimensions.maxWidth
-  };
-
   const boxHeight = response ? height : responseBtnStyle.heightpx;
   const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureText(label, style);
   const getContent = (inPopover = false) => {
@@ -113,8 +105,7 @@ const TemplateBox = ({ resprops, id }) => {
     verticalAlign: "middle",
     borderRadius: 2,
     border: "1px dashed #b9b9b9",
-    background: "#f8f8f8",
-    margin: "2px"
+    background: "#f8f8f8"
   };
 
   return (

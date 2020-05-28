@@ -10,6 +10,7 @@ export const MathEssayInputContext = React.createContext({});
 
 const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item, disableResponse }) => {
   const [currentLineIndex, setCurrentLineIndex] = useState();
+  const [localType, setLocalType] = useState(uiStyle.defaultMode);
 
   const handleChange = (index, value) => {
     const newLines = cloneDeep(lines);
@@ -33,17 +34,21 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item,
 
     newLines.splice(index + 1, 0, {
       text: "",
-      type: uiStyle.defaultMode,
+      type: localType,
       index: uuidv4()
     });
     setLines(newLines);
     setCurrentLineIndex(index + 1);
   };
 
-  const handleChangeType = (index, type) => {
+  const handleChangeType = index => type => {
     const newLines = cloneDeep(lines);
     newLines[index].type = type;
+    if (newLines[index].text === "<p><br></p>" && type === "math") {
+      newLines[index].text = "";
+    }
     setLines(newLines);
+    setLocalType(type);
   };
 
   return (
@@ -67,7 +72,7 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item,
                   setCurrentLineIndex(i);
                 }
               }}
-              onChangeType={type => handleChangeType(i, type)}
+              onChangeType={handleChangeType(i)}
             />
           ))}
         </Wrapper>

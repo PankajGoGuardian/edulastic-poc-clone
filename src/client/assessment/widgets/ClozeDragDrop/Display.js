@@ -349,6 +349,7 @@ class ClozeDragDropDisplay extends Component {
           <JsxParser
             bindings={{ resProps }}
             showWarnings
+            disableKeyGeneration
             components={{
               response: templateBoxLayout,
               mathspan: MathSpanWrapper

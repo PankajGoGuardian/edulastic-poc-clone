@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { MathSpan, measureText, DragDrop } from "@edulastic/common";
+import { measureText, DragDrop } from "@edulastic/common";
 import { Popover } from "antd";
 import { response as dimensions } from "@edulastic/constants";
 
 import { getStemNumeration } from "../../../../utils/helpers";
-import { CheckboxContainer } from "./styled/CheckboxContainer";
 import { CheckBoxTemplateBox } from "./styled/CheckBoxTemplateBox";
-import { IconWrapper } from "./styled/IconWrapper";
-import { RightIcon } from "./styled/RightIcon";
-import { WrongIcon } from "./styled/WrongIcon";
-import PopoverContent from "./components/PopoverContent";
 import getImageDimensionsHook from "../../../../hooks/imageDimensions";
+
+import CheckMark from "./styled/CheckMark";
+import { AnswerBox } from "./styled/AnswerBox";
+import { IndexBox } from "./styled/IndexBox";
+import { AnswerContent } from "./styled/AnswerContent";
 
 const { DropContainer, DragItem } = DragDrop;
 
@@ -32,8 +32,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responseIDs,
     maxWidth,
     globalSettings,
-    disableResponse,
-    isExpressGrader
+    disableResponse
   } = resprops;
   const { index: dropTargetIndex } = (responseIDs && responseIDs.find(response => response.id === id)) || {};
   const status =
@@ -106,64 +105,34 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     indexStyle.minWidth = "unset";
   }
 
-  const getLabel = () => (
-    <CheckboxContainer width={btnStyle.maxWidth} showAnswer={showAnswer}>
-      <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />
-    </CheckboxContainer>
-  );
-
   const handleHover = () => {
     if (showAnswer && lessMinWidth) {
       toggleIndexVisibility(!showIndex);
     }
   };
 
-  const className = `response-btn ${choiceAttempted ? "check-answer" : ""} ${status} ${
-    showAnswer ? "show-answer" : ""
-  }`;
-
-  const answer = getLabel(dropTargetIndex);
+  const correct = status === "right";
 
   const content = (
-    <div className={className} style={btnStyle} onMouseEnter={handleHover} onMouseLeave={handleHover}>
-      {showAnswer && !lessMinWidth && (
-        <span style={indexStyle} className="index">
+    <AnswerBox
+      onMouseEnter={handleHover}
+      onMouseLeave={handleHover}
+      style={btnStyle}
+      checked={choiceAttempted}
+      correct={correct}
+    >
+      {!checkAnswer && (
+        <IndexBox checked={choiceAttempted} correct={correct}>
           {indexStr}
-        </span>
+        </IndexBox>
       )}
-
-      <span
-        style={{
-          justifyContent: showPopover ? null : "center",
-          padding: lessMinWidth ? "8px 0px" : null,
-          paddingRight: showAnswer && !lessMinWidth && 30
-        }}
-        className="text"
-      >
-        {answer}
-      </span>
-
-      {(!showAnswer || (showAnswer && !lessMinWidth)) && choiceAttempted && (
-        <IconWrapper rightPosition={0} correct={status === "right"}>
-          {choiceAttempted && status === "right" && <RightIcon />}
-          {choiceAttempted && status === "wrong" && <WrongIcon />}
-        </IconWrapper>
-      )}
-    </div>
-  );
-
-  const entireAnswer = <MathSpan dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />;
-
-  const popoverContent = (
-    <PopoverContent
-      checkAnswer={checkAnswer}
-      index={dropTargetIndex}
-      answer={entireAnswer}
-      status={status}
-      className={className}
-      isExpressGrader={isExpressGrader}
-      stemNumeration={stemNumeration}
-    />
+      <AnswerContent
+        style={{ width: "auto" }}
+        showIndex={!checkAnswer}
+        dangerouslySetInnerHTML={{ __html: label || "" }}
+      />
+      {choiceAttempted && <CheckMark correct={correct} />}
+    </AnswerBox>
   );
 
   const getData = attr => {
@@ -198,10 +167,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
   return (
     <CheckBoxTemplateBox>
-      <DropContainer drop={onDropHandler} index={dropTargetIndex}>
+      <DropContainer drop={onDropHandler} index={dropTargetIndex} style={{ border: "1px solid transparent" }}>
         <DragItem disableResponse={disableResponse} data={itemData}>
           {choiceAttempted && showPopover ? (
-            <Popover placement="bottomLeft" overlayClassName="customTooltip" content={popoverContent}>
+            <Popover placement="bottomLeft" overlayClassName="customTooltip" content={content}>
               {content}
             </Popover>
           ) : (

@@ -2,9 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 
-import { MathSpan, FlexContainer, DragDrop } from "@edulastic/common";
-import { StyledResponseDiv } from "../styled/ResponseBox";
-import { ChoiceItem, DragHandler } from "../../../components/ChoiceItem";
+import { FlexContainer, DragDrop } from "@edulastic/common";
 import { DropContainerTitle } from "../../../components/DropContainerTitle";
 import { WithPopover as ResponseWithPopover } from "./WithPopover";
 
@@ -39,62 +37,61 @@ const ResponseBoxLayout = ({
     padding: smallSize ? "5px 10px" : 16,
     borderRadius: smallSize ? 0 : 10,
     display: "flex",
+    background: theme.widgets.clozeDragDrop.responseContainerBgColor,
     flexDirection: horizontallyAligned ? "column" : "row",
     alignItems: horizontallyAligned || hasGroupResponses ? "center" : "flex-start",
     justifyContent: smallSize ? "space-around" : "flex-start"
   };
 
   return (
-    <DropContainer drop={onDrop}>
-      <StyledResponseDiv className="responses_box" style={containerStyle}>
-        <FlexContainer flexDirection="column" width={hasGroupResponses ? "100%" : "auto"}>
-          <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
-          <FlexContainer
-            flexDirection={horizontallyAligned ? "column" : "row"}
-            flexWrap={horizontallyAligned ? "nowrap" : "wrap"}
-            justifyContent={horizontallyAligned ? "center" : "flex-start"}
-            alignItems="stretch"
-          >
-            {hasGroupResponses && (
-              <GroupWrapper horizontallyAligned={horizontallyAligned}>
-                {responses.map((groupResponse, index) => {
-                  if (groupResponse !== null && typeof groupResponse === "object") {
-                    return (
-                      <div key={index} className="group">
-                        <h3>{groupResponse.title}</h3>
-                        {groupResponse.options &&
-                          groupResponse.options.map(option => {
-                            const { value, label = "" } = option;
-                            return (
-                              <DragItem id={`response-item-${index}`} key={value} data={`${value}_${index}`}>
-                                <ResponseWithPopover
-                                  showDragHandler={dragHandler}
-                                  containerStyle={itemStyle}
-                                  userAnswer={label}
-                                />
-                              </DragItem>
-                            );
-                          })}
-                      </div>
-                    );
-                  }
-                  return <React.Fragment key={index} />;
-                })}
-              </GroupWrapper>
-            )}
-
-            {!hasGroupResponses &&
-              responses.map((option, index) => {
-                const { label = "", value } = option;
-                return (
-                  <DragItem id={`response-item-${index}`} key={value} data={value}>
-                    <ResponseWithPopover showDragHandler={dragHandler} containerStyle={itemStyle} userAnswer={label} />
-                  </DragItem>
-                );
+    <DropContainer drop={onDrop} style={containerStyle}>
+      <FlexContainer flexDirection="column" width={hasGroupResponses ? "100%" : "auto"}>
+        <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
+        <FlexContainer
+          flexDirection={horizontallyAligned ? "column" : "row"}
+          flexWrap={horizontallyAligned ? "nowrap" : "wrap"}
+          justifyContent={horizontallyAligned ? "center" : "flex-start"}
+          alignItems="stretch"
+        >
+          {hasGroupResponses && (
+            <GroupWrapper horizontallyAligned={horizontallyAligned}>
+              {responses.map((groupResponse, index) => {
+                if (groupResponse !== null && typeof groupResponse === "object") {
+                  return (
+                    <div key={index} className="group">
+                      <h3>{groupResponse.title}</h3>
+                      {groupResponse.options &&
+                        groupResponse.options.map(option => {
+                          const { value, label = "" } = option;
+                          return (
+                            <DragItem id={`response-item-${index}`} key={value} data={`${value}_${index}`}>
+                              <ResponseWithPopover
+                                showDragHandler={dragHandler}
+                                containerStyle={itemStyle}
+                                userAnswer={label}
+                              />
+                            </DragItem>
+                          );
+                        })}
+                    </div>
+                  );
+                }
+                return <React.Fragment key={index} />;
               })}
-          </FlexContainer>
+            </GroupWrapper>
+          )}
+
+          {!hasGroupResponses &&
+            responses.map((option, index) => {
+              const { label = "", value } = option;
+              return (
+                <DragItem id={`response-item-${index}`} key={value} data={value}>
+                  <ResponseWithPopover showDragHandler={dragHandler} containerStyle={itemStyle} userAnswer={label} />
+                </DragItem>
+              );
+            })}
         </FlexContainer>
-      </StyledResponseDiv>
+      </FlexContainer>
     </DropContainer>
   );
 };

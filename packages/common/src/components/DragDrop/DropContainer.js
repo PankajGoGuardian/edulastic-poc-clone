@@ -25,13 +25,18 @@ const DropContainer = ({ style, drop, children, index, ...rest }) => {
     })
   });
 
-  const containerStyle = {
+  const overrideStyle = {
+    border: isOver ? "1px dashed #75b4dd" : style.border || "1px dashed #b9b9b9",
+    background: style.background || "#f8f8f8f"
+  };
+
+  const mergedStyle = {
     ...style,
-    ...(isOver ? { boxShadow: "0 0 6px #75b4dd", background: "#f8f8f8", border: "2px dashed #b9b9b9" } : {})
+    ...overrideStyle
   };
 
   return (
-    <div ref={dropRef} style={containerStyle} {...rest} id={`drop-container-${index}`}>
+    <div ref={dropRef} style={mergedStyle} {...rest} id={`drop-container-${index}`}>
       {children}
     </div>
   );

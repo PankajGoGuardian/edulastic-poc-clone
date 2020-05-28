@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
 export const Buttons = styled.div`
-  display: inline-flex;
+  display: flex;
   align-items: center;
   position: absolute;
-  right: 0;
-  top: 5px;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
 `;

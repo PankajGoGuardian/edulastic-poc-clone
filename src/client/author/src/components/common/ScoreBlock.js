@@ -51,9 +51,7 @@ const ScoreBlock = ({ score, maxScore, showScore, customStyle }) => {
   return showScore ? (
     <Wrapper customStyle={customStyle} scoreType={scoreType} data-cy="scoreBlock">
       <div>{score !== 0 ? <IconCheck /> : <IconClose />}</div>
-      <div data-cy="score">
-        Score {score}/{maxScore}
-      </div>
+      <div data-cy="score">{score === 0 ? "Incorrect" : score === maxScore ? "Correct" : "Partially Correct"}</div>
     </Wrapper>
   ) : null;
 };

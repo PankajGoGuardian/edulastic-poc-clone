@@ -124,7 +124,17 @@ const Curriculum = props => {
     dropHandler(toModuleIndex);
   };
 
-  const { curriculum: { modules } = {}, onSortEnd, manageContentDirty, resetDestination, openAddModuleModal } = props;
+  const {
+    curriculum: { modules } = {},
+    onSortEnd,
+    manageContentDirty,
+    resetDestination,
+    openAddModuleModal,
+    isStudent,
+    history,
+    status,
+    isManageContentActive
+  } = props;
 
   useEffect(() => () => resetDestination(), []);
 
@@ -143,10 +153,14 @@ const Curriculum = props => {
             {...props}
           />
         ))}
-      <AddNewOrManageModules onClick={openAddModuleModal}>
-        <IconPlusCircle />
-        <span>Add Module</span>
-      </AddNewOrManageModules>
+      {!isStudent &&
+        (isManageContentActive || history.location.state?.editFlow || status === "draft") &&
+        history.location.hash !== "#review" && (
+          <AddNewOrManageModules onClick={openAddModuleModal}>
+            <IconPlusCircle />
+            <span>Add Module</span>
+          </AddNewOrManageModules>
+        )}
     </SortableContainer>
   );
 };

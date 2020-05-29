@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Paper, FlexContainer } from "@edulastic/common";
+import { Paper, FlexContainer,notification } from "@edulastic/common";
 import { message } from "antd";
 import {
   fetchAssignmentsAction,
@@ -40,7 +40,7 @@ class Assign extends Component {
       this.props.setCurrentAssignment(id);
       this.setState({ showModal: true });
     } else {
-      message.warning("Please save and publish the test before assigning");
+      notification({ type: "warn", messageKey:"pleaseSaveAndPublish"});
     }
   };
 

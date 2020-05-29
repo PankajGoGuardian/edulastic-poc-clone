@@ -2,6 +2,7 @@ import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage, settingsApi, segmentApi, schoolApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
@@ -669,7 +670,7 @@ function* signup({ payload }) {
       }
     } else {
       if (result.existingUser && result.existingUser.passwordMatch) {
-        yield call(message.info, "We already have an account for you. The new role will be linked to existing account");
+        notification({ type: "info", messageKey: "weAlreadyHaveAccount"});
       }
       const user = pick(result, userPickFields);
 

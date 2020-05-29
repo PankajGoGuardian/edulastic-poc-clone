@@ -12,7 +12,7 @@ import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
-import { Effects } from "@edulastic/common";
+import { Effects,notification } from "@edulastic/common";
 import {
   loadQuestionsAction,
   addItemsQuestionAction,
@@ -931,7 +931,7 @@ export function* updateItemSaga({ payload }) {
       draft.map((q, index) => {
         const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(q);
         if (hasImproperConfig) {
-          message.warning(warningMsg);
+          notification({ type: "warn", msg:warningMsg});
         }
         if (shouldUncheck) {
           q.variable.enabled = false;

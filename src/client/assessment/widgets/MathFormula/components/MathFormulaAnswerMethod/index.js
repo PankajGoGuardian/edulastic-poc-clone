@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Select, message } from "antd";
 import { produce } from "immer";
 import { get } from "lodash";
-import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic } from "@edulastic/common";
+import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic,notification } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -101,7 +101,7 @@ const MathFormulaAnswerMethod = ({
     }
     const [error, errorMsg] = hasMutuallyExclusiveOptions(newOptions);
     if (error) {
-      message.warning(errorMsg);
+      notification({ type: "warn", msg:errorMsg});
       return false;
     }
     onChange("options", newOptions);

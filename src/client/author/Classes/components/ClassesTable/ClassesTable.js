@@ -1,5 +1,5 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel } from "@edulastic/common";
+import { CheckboxLabel,notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconNotes, IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -230,7 +230,7 @@ class ClassesTable extends Component {
       else message.error(t("class.validations.archiveclass"));
     } else if (e.key === "bulk edit") {
       if (!selectedRowKeys.length) {
-        message.warning(t("class.validations.selectclass"));
+        notification({ type: "warn", msg: t("class.validations.selectclass")});
       } else {
         const { setBulkEditVisibility } = this.props;
         setBulkEditVisibility(true);

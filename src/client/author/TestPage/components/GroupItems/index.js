@@ -1,5 +1,5 @@
 import { testItemsApi } from "@edulastic/api";
-import { CheckboxLabel, RadioBtn, RadioGrp } from "@edulastic/common";
+import { CheckboxLabel, RadioBtn, RadioGrp,notification } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import { IconPencilEdit } from "@edulastic/icons";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
@@ -256,7 +256,7 @@ const GroupItems = ({
 
   const handleAddGroup = () => {
     if (test.itemGroups.length === 15) {
-      return message.warning("Cannot create more than 15 groups");
+      return  notification({ type: "warn", messageKey:"cantCreateMoreThan15Groups"});
     }
     const { index } = maxBy(test.itemGroups, "index");
     const data = {
@@ -277,7 +277,7 @@ const GroupItems = ({
         g.standardDetails?.standardId === standardId
     );
     if (duplicateGroup) {
-      message.warning(`The combination already exists in ${duplicateGroup.groupName}`);
+      notification({ type: "warn", msg:`The combination already exists in ${duplicateGroup.groupName}`});
       return true;
     }
     return false;
@@ -285,7 +285,7 @@ const GroupItems = ({
 
   const handleApply = data => {
     if (!data?.eloStandards?.length) {
-      return message.warn("Please select a standard before applying");
+      return notification({ type: "warn", messageKey:"pleaseSelectStantdardBeforeApplying"});
     }
     const { subject, eloStandards } = data;
     const grades = data.grades.length ? data.grades : eloStandards[0]?.grades || [];
@@ -455,14 +455,14 @@ const GroupItems = ({
       updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
       updatedGroupData.items.some(item => item.itemLevelScoring === false)
     ) {
-      return message.warn("All items inside LIMITED delivery type group should have item level scoring.");
+      return notification({ type: "warn", messageKey:"allItemsInsideLimited"});
     }
     const disableAnswerOnPaper =
       updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
       updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT;
     if (test.answerOnPaper && disableAnswerOnPaper) {
       setTestData({ answerOnPaper: false });
-      message.warn("Answer on paper is not supported for AUTOSELECT groups or group with LIMITED delivery type");
+      notification({ type: "warn", messageKey:"answerOnPaperIsNotSupportedForAutoselecteGroup"});
     }
     updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex });
     setCurrentGroupIndex(null);

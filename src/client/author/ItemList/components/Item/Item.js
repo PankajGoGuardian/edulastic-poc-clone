@@ -263,16 +263,14 @@ class Item extends Component {
           itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
           item.itemLevelScoring === false
         ) {
-          return message.warning(
-            "This item can not be added to group with limited delivery type as it has question level scoring"
-          );
+          return notification({ type: "warn", messageKey:"itemCantBeAdded"});
         }
         setCurrentGroupIndex(index);
         this.handleSelection(item);
       } else if (staticGroups.length > 1) {
         this.setState({ showSelectGroupModal: true });
       } else {
-        return message.warning("No Static group found.");
+        return notification({ type: "warn", messageKey:"noStaticGroupFound"});
       }
     } else {
       this.handleSelection(item);
@@ -290,9 +288,7 @@ class Item extends Component {
       itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
       item.itemLevelScoring === false
     ) {
-      return message.warning(
-        "This item can not be added to group with limited delivery type as it has question level scoring"
-      );
+      return notification({ type: "warn", messageKey:"thisItemCantBeAdded"});
     }
     if (index || index === 0) {
       setCurrentGroupIndex(index);

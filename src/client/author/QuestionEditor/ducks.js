@@ -388,7 +388,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
     const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(question);
     if (hasImproperConfig) {
-      message.warning(warningMsg);
+     notification({ type: "warn", msg:warningMsg});
     }
 
     if (shouldUncheck) {
@@ -555,7 +555,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
             }
           })
         );
-        yield call(message.info, "Please add the item manually to a group.");
+        notification({ type: "info", messageKey: "pleaseAddItemManuallyToGroup"});
       } else {
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }));
@@ -713,7 +713,7 @@ function* calculateFormulaSaga({ payload }) {
       yield put({
         type: CALCULATE_FORMULA_FAILED
       });
-      message.warning(errMessage);
+      notification({ type: "warn", msg:errMessage});
       return true;
     }
 

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Col, Icon, Row, Select, message, Tooltip } from "antd";
 import moment from "moment";
 import { test as testConst, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
-import { MainContentWrapper } from "@edulastic/common";
+import { MainContentWrapper,notification } from "@edulastic/common";
 import { getAdditionalDataSelector, getTestActivitySelector } from "../ClassBoard/ducks";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { slice } from "./ducks";
@@ -74,9 +74,9 @@ function LCBAssignmentSettings({
   const { startDate, endDate, status, dueDate } = assignment?.["class"]?.[0] || {};
   const changeField = key => value => {
     if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
-      message.info("Please select your prefered start date");
+      notification({ type: "info", messageKey: "pleaseSelectYourPreferedStartDate" });
     } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
-      message.info("Please select your prefered due date");
+      notification({ type: "info", messageKey: "pleaseSelectYourPreferedDueDate  "});
     }
     changeAttrs({ key, value });
   };

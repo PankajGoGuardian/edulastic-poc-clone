@@ -3,6 +3,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeEvery, call, put, select, takeLatest } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { get, findIndex, keyBy } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi, canvasApi, cleverApi } from "@edulastic/api";
 
@@ -632,7 +633,7 @@ function* getCanvasCourseListRequestSaga({ payload }) {
   try {
     const courseList = yield call(canvasApi.fetchCourseList, payload);
     if (courseList.length === 0) {
-      yield call(message.info, "No course found in your Canvas account.");
+      notification({ type: "info", messageKey: "noCourseFound" });
       yield put(getCanvasCourseListFailedAction());
     } else {
       yield put(getCanvasCourseListSuccessAction(courseList));
@@ -649,7 +650,7 @@ function* getCanvasSectionListRequestSaga({ payload }) {
     const sectionList = yield call(canvasApi.fetchCourseSectionList, payload);
     yield put(getCanvasSectionListSuccessAction(sectionList));
     if (sectionList.length === 0) {
-      yield call(message.info, "No course section found in your Canvas account.");
+      notification({ type: "info", messageKey: "noCourseSectionFound" });
     }
   } catch (err) {
     console.error(err);
@@ -678,7 +679,7 @@ function* fetchCleverClassListRequestSaga() {
     const cleverClassList = yield call(cleverApi.fetchCleverClasses);
     yield put(fetchCleverClassListSuccessAction(cleverClassList));
     if (cleverClassList.length === 0) {
-      yield call(message.info, "No classes found in Clever account.");
+      notification({ type: "info", messageKey: "noClassessfoundInCleverAccount"});
     }
   } catch (err) {
     console.error(err);

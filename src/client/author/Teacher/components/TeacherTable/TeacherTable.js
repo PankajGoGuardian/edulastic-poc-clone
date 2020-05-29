@@ -1,5 +1,5 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Icon, Menu, message, Select } from "antd";
@@ -257,7 +257,7 @@ class TeacherTable extends Component {
       } else if (selectedRowKeys.length > 1) {
         this.setState({ showMergeTeachersModal: true });
       } else {
-        message.info("Select two or more teachers to merge");
+        notification({ type: "info", messageKey: "selectTwoOrMoreTeachers"});
       }
     }
     if (e.key === "edit user") {

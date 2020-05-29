@@ -160,7 +160,7 @@ class Review extends PureComponent {
       .filter(item => item.selected)
       .map(item => item._id);
     if (!itemsSelected.length) {
-      return message.warn("Please select at least one question to remove");
+      return  notification({ type: "warn", messageKey:"pleaseSelectAtleastOneQuestion"});
     }
     newData.itemGroups = newData.itemGroups.map(itemGroup => ({
       ...itemGroup,
@@ -191,7 +191,7 @@ class Review extends PureComponent {
       .find(item => item._id);
 
     if (!itemsSelected) {
-      return message.warn("Please select at least one question to remove");
+      return notification({ type: "warn", messageKey:"pleaseSelectAtleastOneQuestion"});
     }
 
     newData.itemGroups = newData.itemGroups.map(itemGroup => ({

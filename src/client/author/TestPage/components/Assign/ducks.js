@@ -287,11 +287,7 @@ function* saveAssignment({ payload }) {
     const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
     notification({ type: "success", msg: successMessage });
     if (gSyncStatus.length) {
-      yield call(
-        message.warn,
-        `Share with google classroom failed for few class. 
-      Please try sharing manually from Live Class Board.`
-      );
+      notification({ type: "warn", messageKey:"shareWithGoogleClassroomFailed"});
     }
     const isAdminRole = [roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(userRole);
     if (containsCanvasClass) {

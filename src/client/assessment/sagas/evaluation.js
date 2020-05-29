@@ -2,7 +2,7 @@ import { takeEvery, put, all, select, call } from "redux-saga/effects";
 import { message } from "antd";
 import { isEmpty, values } from "lodash";
 import { testItemsApi } from "@edulastic/api";
-
+import { notification } from "@edulastic/common";
 import { getQuestionIds } from "./items";
 // actions
 import {
@@ -33,7 +33,7 @@ function* evaluateAnswers({ payload: groupId }) {
     const validResponses = values(userResponse).filter(item => !!item);
     //if user response is empty show toaster msg.
     if (isEmpty(validResponses)) {
-      return message.warn("Attempt the question to check answer");
+      return notification({ type: "warn", messageKey: "attemptTheQuestonToCheckAnswer"});
     }
     const { items, currentItem } = yield select(state => state.test);
     const testItemId = items[currentItem]._id;
@@ -85,7 +85,7 @@ function* evaluateAnswers({ payload: groupId }) {
     });
     message.success(`score: ${score % 1 === 0 ? score : score.toFixed(2)}/${maxScore}`);
   } catch (err) {
-    if (err.status === 403) message.warn("Check answer limit exceeded for the item.");
+    if (err.status === 403) notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
     else message.error("Check answer failed");
     console.log(err);
   }

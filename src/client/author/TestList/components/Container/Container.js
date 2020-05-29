@@ -8,7 +8,7 @@ import { compose } from "redux";
 import moment from "moment";
 import { Button, Row, Spin, message, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
-import { withWindowSizes, FlexContainer, TextInputStyled } from "@edulastic/common";
+import { withWindowSizes, FlexContainer, TextInputStyled,notification } from "@edulastic/common";
 import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
 import { white, greyLight1, greyThemeLight } from "@edulastic/colors";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -520,7 +520,7 @@ class TestList extends Component {
 
     if (item?.status === "draft" || item?.status === "rejected") {
       const testStatus = item?.status === "draft" ? "Draft" : "Rejected";
-      message.warning(`${testStatus} tests cannot be added`);
+      notification({ type: "warn", msg:`${testStatus} tests cannot be added`});
       return;
     }
 
@@ -529,7 +529,7 @@ class TestList extends Component {
     } = this.props;
     if (!modules.length) {
       this.setState({ showManageModuleModal: true, moduleModalAdd: true, testAdded: item });
-      message.warning("Create atleast 1 module");
+      notification({ type: "warn", messageKey:"createOneModuleAtleast"});
     } else {
       this.setState({ showAddTestInModules: true, testAdded: item });
     }
@@ -542,10 +542,10 @@ class TestList extends Component {
       if (markedTests.length) {
         this.setState({ showAddModules: true });
       } else {
-        message.warning("Select one or more tests");
+        notification({ type: "warn", messageKey:"selectOneOrMoreTest"});
       }
     } else {
-      message.warning("Create atleast 1 module");
+      notification({ type: "warn", messageKey:"createOneModuleAtleast"});
     }
   };
 
@@ -556,10 +556,10 @@ class TestList extends Component {
       if (markedTests.length) {
         this.setState({ showRemoveModules: true });
       } else {
-        message.warning("Select one or more tests");
+        notification({ type: "warn", messageKey:"selectOneOrMoreTest"});
       }
     } else {
-      message.warning("Create atleast 1 module");
+      notification({ type: "warn", messageKey:"createOneModuleAtleast"});
     }
   };
 
@@ -628,11 +628,11 @@ class TestList extends Component {
     const uniqueMarkedTests = markedTests.filter(x => uniqueMarkedIds.includes(x._id));
     if (uniqueMarkedIds.length !== markedIds.length) {
       if (uniqueMarkedIds.length === 0) {
-        message.warning("Selected tests already exists in this module");
+        notification({ type: "warn", messageKey:"selectedTestAlreadyExistInModule"});
         return;
       }
       if (uniqueMarkedIds.length < markedIds.length && uniqueMarkedIds.length !== 0)
-        message.warning("Some of the selected tests already exists in this module");
+      notification({ type: "warn", messageKey:"someSelectedTestAlreadyExistInModule"});
     }
 
     // Dont add draft type tests
@@ -668,8 +668,8 @@ class TestList extends Component {
       });
       addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
       nonDraftTests.length
-        ? message.warning(`${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`)
-        : message.warning("Draft test(s) cannot be added");
+      ? notification({ type: "warn", msg:`${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`})
+      : notification({ type: "warn", messageKey:"draftTestCantBeAdded"});
     }
     if (selectedTests.length === 0) handleSave();
   };

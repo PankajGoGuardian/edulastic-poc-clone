@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, message, Button } from "antd";
+import { notification } from "@edulastic/common";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import styled from "styled-components";
@@ -11,7 +12,7 @@ const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, 
   const toggleCurrentMode = () => {
     togglePresentationMode();
     if (!isPresentationMode)
-      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
+      notification({ type: "info", messageKey: "presentationMode"});
   };
 
   const title = !isPresentationMode

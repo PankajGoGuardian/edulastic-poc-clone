@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button, Input, Cascader, message } from "antd";
+import { notification } from "@edulastic/common";
 import { desktopWidth } from "@edulastic/colors";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
@@ -73,7 +74,7 @@ class AddUnitModalBody extends React.Component {
         this.setState({ newModule: { name: "" } });
       }
     } else {
-      message.warning("Module name cannot be empty");
+      notification({ type: "warn", messageKey:"moduleShouldNotEmpty"});
     }
   };
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StyledHasLicenseKeyModal, Container } from "./styled";
 import { Input, message } from "antd";
 import { themeColor, greyishBorder, lightGreySecondary } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer,notification } from "@edulastic/common";
 import { ThemeButton } from "../styled/commonStyled";
 
 const getFooterComponent = ({ hideModal, nextAction, isSubscribed, verificationPending }) =>
@@ -44,7 +44,7 @@ const HasLicenseKeyModal = props => {
 
   const nextAction = () => {
     if (licenseKey) verifyAndUpgradeLicense(licenseKey);
-    else message.warning("Please enter your license key");
+    else notification({ type: "warn", messageKey:"pleaseEnterLisence"});
   };
 
   return (

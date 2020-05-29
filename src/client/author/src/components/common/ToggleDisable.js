@@ -1,10 +1,11 @@
 import React from "react";
 import { message, Tooltip } from "antd";
+import { notification } from "@edulastic/common";
 
 const WithDisableMessage = ({ children, disabled, errMessage }) => {
   const handleClick = () => {
     if (disabled) {
-      message.warn(errMessage || "This assignment has random items for every student.", 1);
+      notification({ type: "warn", msg:errMessage || "This assignment has random items for every student."});
     }
   };
   return disabled ? (

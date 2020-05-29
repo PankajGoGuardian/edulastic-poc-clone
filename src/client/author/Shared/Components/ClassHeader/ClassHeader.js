@@ -1,4 +1,4 @@
-import { HeaderTabs, MainHeader, EduButton } from "@edulastic/common";
+import { HeaderTabs, MainHeader, EduButton,notification } from "@edulastic/common";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { HeaderMidContainer, TitleWrapper } from "@edulastic/common/src/components/MainHeader";
 import { assignmentPolicyOptions, test as testContants } from "@edulastic/constants";
@@ -170,8 +170,8 @@ class ClassHeader extends Component {
       additionalData.testType === "common assessment" &&
       userRole === "teacher"
     ) {
-      return message.warn(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
-    `);
+      return notification({ type: "warn", msg:`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
+      `});
     }
     openAssignment(assignmentId, classId, additionalData.testId);
   };

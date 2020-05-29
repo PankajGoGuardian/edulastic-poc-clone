@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { get, debounce, isUndefined } from "lodash";
 import { ActionCreators } from "redux-undo";
-import { hexToRGB, withWindowSizes } from "@edulastic/common";
+import { hexToRGB, withWindowSizes,notification } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, message, Button } from "antd";
@@ -459,7 +459,7 @@ class WorksheetComponent extends React.Component {
     } else {
       this.setState({ activeMode: value, deleteMode: false });
       if (value === "drawBreakingLine") {
-        message.info("Please double click to stop drawing");
+        notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing" });
       }
     }
   };

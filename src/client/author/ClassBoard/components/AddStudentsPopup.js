@@ -1,4 +1,4 @@
-import { EduButton } from "@edulastic/common";
+import { EduButton,notification } from "@edulastic/common";
 import { assignmentPolicyOptions } from "@edulastic/constants";
 import { DatePicker, message, Row, Select } from "antd";
 import moment from "moment";
@@ -35,7 +35,7 @@ const AddStudentsPopup = ({
   };
 
   const submitAction = () => {
-    if (!selectedStudents.length) message.warn("Select atleast one student to submit or press cancel");
+    if (!selectedStudents.length) notification({ type: "warn", messageKey:"selectAtleastOneStudent"});
     if (endDate < moment()) {
       return message.error("Select a Future end Date");
     }

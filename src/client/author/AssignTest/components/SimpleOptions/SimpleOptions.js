@@ -29,7 +29,8 @@ import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/compon
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getReleaseScorePremiumSelector, getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
 import PlayerSkinSelector from "./PlayerSkinSelector";
-import { FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { FieldLabel, SelectInputStyled,notification } from "@edulastic/common";
+
 
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
@@ -81,7 +82,7 @@ class SimpleOptions extends React.Component {
     const { freezeSettings } = this.props;
     const { showSettings } = this.state;
     if (freezeSettings && !showSettings) {
-      message.warn("Override settings is restricted by the Admin.");
+      notification({ type: "warn", messageKey:"overrrideSettingsRestricted"});
     }
     this.setState({ showSettings: !showSettings });
   };

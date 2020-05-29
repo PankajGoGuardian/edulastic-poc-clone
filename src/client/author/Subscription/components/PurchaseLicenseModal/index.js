@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyledPurchaseLicenseModal, Title } from "./styled";
 import { Input, Radio, message } from "antd";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer,notification } from "@edulastic/common";
 import { greyishBorder, lightGreySecondary } from "@edulastic/colors";
 import { ThemeButton } from "../styled/commonStyled";
 
@@ -49,11 +49,11 @@ const PurchaseLicenseModal = props => {
             if (isValidEmail(email)) {
               // update store before proceeding
               setCurrentModalState(prev => prev + 1);
-            } else message.warning("Enter a valid email");
-          } else message.warning("Email ID cannot be empty");
-        } else message.warning("License count should be a numeric value");
-      } else message.warning("License count cannot be empty");
-      return;
+            } else notification({ type: "warn", messageKey:"enterValidEmail"});
+          } else notification({ type: "warn", messageKey:"emailCantBeEmpty"});
+        } else notification({ type: "warn", messageKey:"lisenceShouldBeNumericValue"});
+      } else notification({ type: "warn", messageKey:"lisenceCountCantBeEmpty"});
+      return; 
     }
 
     if (currentModalState === 2) {
@@ -66,7 +66,7 @@ const PurchaseLicenseModal = props => {
           // update store before proceeding
           setCurrentModalState(prev => prev + 1);
         }
-      } else message.warning("Please choose a purchase option");
+      } else notification({ type: "warn", messageKey:"pleaseChoosePurchaseOption"});
       return;
     }
 
@@ -74,9 +74,9 @@ const PurchaseLicenseModal = props => {
       if (inquiryTitle) {
         if (inquiryDescription) {
           // update store before proceeding
-        } else message.warning("Inquiry Description field is required");
-      } else message.warning("Inquiry Subject field is required");
-      return;
+        } else notification({ type: "warn", messageKey:"inquiryDescriptionFieldRequired"});
+      } else notification({ type: "warn", messageKey:"inquirySubjectFieldRequired"});
+      
     }
   };
 

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Menu, message } from "antd";
 import { questionType } from "@edulastic/constants";
-import { PaddingDiv, withWindowSizes } from "@edulastic/common";
+import { PaddingDiv, withWindowSizes, notification} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -86,7 +86,7 @@ class Container extends Component {
 
     if (isMultiDimensionalLayout) {
       if ((rowIndex === 0 && questionSelected) || (rowIndex !== 0 && resourceSelected)) {
-        message.warning(` Please add resources on the left and all the associated questions on the right.`);
+        notification({ type: "warn", messageKey:"pleaseAddResources"});
         return;
       }
     }

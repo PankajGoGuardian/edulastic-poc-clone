@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import PropTypes from "prop-types";
 import { Title, StyledInput } from "../common/commonStyles";
 import EdulasticResourceModal from "../common/EdulasticResourceModal";
@@ -38,7 +39,7 @@ const ExternalVideoLink = props => {
         contentType: "video_resource"
       });
       closeCallback();
-    } else message.warn(validationStatus);
+    } else notification({ type: "warn", msg:validationStatus});
   };
 
   return (

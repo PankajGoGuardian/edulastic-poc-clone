@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer,notification } from "@edulastic/common";
 import Question from "../../../components/Question/index";
 import { Subtitle } from "../../../styled/Subtitle";
 import Circles from "./Circles";
@@ -24,12 +24,12 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
     if (value > 0) {
       if (fractionType === "circles") {
         if (value > count * sectors) {
-          message.warning("Value cannot be greater than number of sectors");
+          notification({ type: "warn", messageKey: "valueCantBeGreaterThanSector"});
           return false;
         }
       } else {
         if (value > count * (rows * columns)) {
-          message.warning("Value cannot be greater than total rectangles");
+          notification({ type: "warn", messageKey: "valueCantBeGreaterThanRectangles"});
           return false;
         }
       }
@@ -43,7 +43,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
         })
       );
     } else {
-      message.warning("Value cannot be less than 1");
+      notification({ type: "warn", messageKey: "valueCantBeLessThanOne"});
     }
   };
 

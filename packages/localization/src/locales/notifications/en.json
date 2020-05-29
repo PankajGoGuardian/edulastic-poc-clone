@@ -482,5 +482,265 @@
   "failedToFetchAutoselectItems": {
     "message": " Failed to fetch autoselect items.",
     "description": ""
+  },
+  "pleaseDoubleClickToStopDrawing": {
+    "message": "  Please double click to stop drawing",
+    "description": ""
+  },
+  "classPausedContinueWithRedirect": {
+    "message": "The class has been paused for this assessment.Please resume to continue with redirect.",
+    "description": ""
+  },
+  "pleaseSelectYourPreferedStartDate": {
+    "message": " Please select your prefered start date",
+    "description": ""
+  },
+  "pleaseSelectYourPreferedDueDate": {
+    "message": " Please select your prefered due date",
+    "description": ""
+  },
+  "noCourseFound": {
+    "message": " No course found in your Canvas account.",
+    "description": ""
+  },
+  "noCourseSectionFound": {
+    "message": "  No course section found in your Canvas account.",
+    "description": ""
+  },
+  "noClassessfoundInCleverAccount": {
+    "message": "No classes found in Clever account.",
+    "description": ""
+  },
+  "pleaseSelectTowOrMoreStudents": {
+    "message": " Please select two or more students to merge",
+    "description": ""
+  },
+  "pleaseAddItemManuallyToGroup": {
+    "message": "  Please add the item manually to a group.",
+    "description": ""
+  },
+  "selectTwoOrMoreTeachers": {
+    "message": " Select two or more teachers to merge",
+    "description": ""
+  },
+  "presentationMode": {
+    "message": "  Presentation mode is ON. You can present assessment data without revealing student identity.",
+    "description": ""
+  },
+  "SelectTwoOrMoreStudents": {
+    "message": "select two or more students to merge",
+    "description": ""
+  },
+  "weAlreadyHaveAccount": {
+    "message": "We already have an account for you. The new role will be linked to existing account",
+    "description": ""
+  },
+  "attemptTheQuestonToCheckAnswer": {
+    "message": "Attempt the question to check answer",
+    "description": ""
+  },
+  "checkAnswerLimitExceededForItem": {
+    "message": " Check answer limit exceeded for the item.",
+    "description": ""
+  },
+  "valueCantBeGreaterThanRectangles": {
+    "message": "Value cannot be greater than total rectangles",
+    "description": ""
+  },
+  "valueCantBeLessThanOne": {
+    "message": "Value cannot be less than 1",
+    "description": ""
+  },
+  "autheticationFailed": {
+    "message": "Authetication failed",
+    "description": ""
+  },
+  "viewItemsRestriccedByAdmin": {
+    "message": "View of Items is restricted by the admin if content visibility is set to 'Always hidden' OR 'Hide prior to grading'",
+    "description": ""
+  },
+  "overrrideSettingsRestricted": {
+    "message": "Override settings is restricted by the Admin.",
+    "description": ""
+  },
+  "selectAtleastOneStudent": {
+    "message": "Select atleast one student to submit or press cancel",
+    "description": ""
+  },
+  "youCanRedirectOnly": {
+    "message": "You can redirect only Submitted and Absent student(s).",
+    "description": ""
+  },
+  "youCantRedirect": {
+    "message": " You can not redirect to not enrolled student(s).",
+    "description": ""
+  },
+  "assignmentIsNotOpenedYet": {
+    "message": "  Assignment is not opened yet",
+    "description": ""
+  },
+  "atleastOneStudent": {
+    "message": "At least one student should be selected to be Marked as Submitted",
+    "description": ""
+  },
+  "atleastOneStudentToMarkAbsent": {
+    "message": "  At least one student should be selected to be Marked as Absent.",
+    "description": ""
+  },
+  "atleastOneStudentToRemove": {
+    "message": "  At least one student should be selected to be removed.",
+    "description": ""
+  },
+  "youWillNotAbleToRemove": {
+    "message": "You will not be able to remove selected student(s) as the status is graded",
+    "description": ""
+  },
+  "noStudentsSelected": {
+    "message": " No students selected",
+    "description": ""
+  },
+  "assessmentAlreadyAssignedToAllStudents": {
+    "message": "This assessment is already assigned to all students in the class.",
+    "description": ""
+  },
+  "aleastOneStudentToDownloadGrades": {
+    "message": "At least one student should be selected to download grades.",
+    "description": ""
+  },
+  "pleaseSelectCollection": {
+    "message": " Please select a collection",
+    "description": ""
+  },
+  "pleaseEnterCollectionName": {
+    "message": " Please enter the collection name",
+    "description": ""
+  },
+  "fileNotFound": {
+    "message": " File not found",
+    "description": ""
+  },
+  "moduleHasNOTest": {
+    "message": " This module has no test.",
+    "description": ""
+  },
+  "itemCantBeAdded": {
+    "message": "This item can not be added to group with limited delivery type as it has question level scoring",
+    "description": ""
+  },
+  "noStaticGroupFound": {
+    "message": "No Static group found.",
+    "description": ""
+  },
+  "thisItemCantBeAdded": {
+    "message": "This item can not be added to group with limited delivery type as it has question level scoring",
+    "description": ""
+  },
+  "pleaseAddResources": {
+    "message": "Please add resources on the left and all the associated questions on the right.",
+    "description": ""
+  },
+  "pleaseEnterLisence": {
+    "message": "Please enter your license key",
+    "description": ""
+  },
+  "createOneModuleAtleast": {
+    "message": "Create atleast 1 module",
+    "description": ""
+  },
+  "enterValidEmail": {
+    "message": " Enter a valid email",
+    "description": ""
+  },
+  "emailCantBeEmpty": {
+    "message": "Email ID cannot be empty",
+    "description": ""
+  },
+  "lisenceShouldBeNumericValue": {
+    "message": "License count should be a numeric value",
+    "description": ""
+  },
+  "lisenceCountCantBeEmpty": {
+    "message": "License count cannot be empty",
+    "description": ""
+  },
+  "pleaseChoosePurchaseOption": {
+    "message": "Please choose a purchase option",
+    "description": ""
+  },
+  "inquiryDescriptionFieldRequired": {
+    "message": "Inquiry Description field is required",
+    "description": ""
+  },
+  "inquirySubjectFieldRequired": {
+    "message": "Inquiry Subject field is required",
+    "description": ""
+  },
+  "selectOneOrMoreTest": {
+    "message": "Select one or more tests",
+    "description": ""
+  },
+  "selectedTestAlreadyExistInModule": {
+    "message": "Selected tests already exists in this module",
+    "description": ""
+  },
+  "someSelectedTestAlreadyExistInModule": {
+    "message": "Some of the selected tests already exists in this module",
+    "description": ""
+  },
+  "draftTestCantBeAdded": {
+    "message": "Draft test(s) cannot be added",
+    "description": ""
+  },
+  "shareWithGoogleClassroomFailed": {
+    "message": "Share with google classroom failed for few class.Please try sharing manually from Live Class Board.",
+    "description": ""
+  },
+  "pleaseSaveAndPublish": {
+    "message": "Please save and publish the test before assigning",
+    "description": ""
+  },
+  "cantCreateMoreThan15Groups": {
+    "message": "  Cannot create more than 15 groups",
+    "description": ""
+  },
+  "pleaseSelectStantdardBeforeApplying": {
+    "message": "  Please select a standard before applying",
+    "description": ""
+  },
+  "allItemsInsideLimited": {
+    "message": " All items inside LIMITED delivery type group should have item level scoring.",
+    "description": ""
+  },
+  "answerOnPaperIsNotSupportedForAutoselecteGroup": {
+    "message": " Answer on paper is not supported for AUTOSELECT groups or group with LIMITED delivery type",
+    "description": ""
+  },
+  "pleaseSelectAtleastOneQuestion": {
+    "message": " Please select at least one question to remove",
+    "description": ""
+  },
+  "teacherCantRegrade": {
+    "message": " Teacher can not regrade author's test",
+    "description": ""
+  },
+  "viewOfItemsRestricted": {
+    "message": "View of Items is restricted by the admin if content visibility is set to 'Always hidden' OR 'Hide prior to grading'",
+    "description": ""
+  },
+  "aleastOneQuestion": {
+    "message": " At least one question has to be created before saving assessment",
+    "description": ""
+  },
+  "correctAnswer": {
+    "message": " Correct answers have to be chosen for every question",
+    "description": ""
+  },
+  "redirectingToStudentDshboard": {
+    "message": "Redirecting to the student dashboard",
+    "description": ""
+  },
+  "tryingToAccessPrivateTest": {
+    "message": "Trying to access private test",
+    "description": ""
   }
 }

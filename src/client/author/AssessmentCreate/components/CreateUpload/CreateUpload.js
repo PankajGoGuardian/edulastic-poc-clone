@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { IconUpload, IconGdrive, IconCloudUpload } from "@edulastic/icons";
-import { formatBytes } from "@edulastic/common";
+import { formatBytes,notification } from "@edulastic/common";
 import { Progress, Icon, Button, message, Spin } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { Container, ButtonsContainer, RoundedButton } from "../CreateBlank/styled";
@@ -20,7 +20,7 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
 
   const handleAuthFailed = data => {
     console.error("oth failed:", data);
-    return message.warn("Authetication failed");
+    return notification({ type: "warn", messageKey:"autheticationFailed"});
   };
 
   const handleDriveUpload = ({ action, docs }) => {

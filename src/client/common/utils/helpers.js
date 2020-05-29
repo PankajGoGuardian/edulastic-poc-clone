@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { isUndefined, last, get, isEmpty } from "lodash";
 import { message as AntMessage, Tooltip as AntDTooltip } from "antd";
+import { notification } from "@edulastic/common";
 import { signUpState, test as testConst } from "@edulastic/constants";
 import { Partners } from "./static/partnerData";
 import { smallestZoomLevel } from "./static/zoom";
@@ -187,7 +188,7 @@ export const removeSignOutUrl = () => sessionStorage.removeItem("signOutUrl");
 
 export const validateQuestionsForDocBased = questions => {
   if (!questions.length) {
-    AntMessage.warning("At least one question has to be created before saving assessment");
+     notification({ type: "warn", messageKey:"aleastOneQuestion"});
     return false;
   }
 
@@ -211,7 +212,7 @@ export const validateQuestionsForDocBased = questions => {
     });
 
   if (!correctAnswerPicked) {
-    AntMessage.warning("Correct answers have to be chosen for every question");
+     notification({ type: "warn", messageKey:"correctAnswer"});
     return false;
   }
   return true;

@@ -4,10 +4,10 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { message } from "antd";
+import {  message } from "antd";
 import { ActionCreators } from "redux-undo";
 import { get, keyBy } from "lodash";
-import { withWindowSizes, hexToRGB } from "@edulastic/common";
+import { withWindowSizes, hexToRGB ,notification} from "@edulastic/common";
 import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
 // import Hints from "@edulastic/common/src/components/Hints";
 
@@ -117,7 +117,7 @@ class AssessmentPlayerDefault extends React.Component {
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
-      return message.warn("Check answer limit exceeded for the item.");
+      return notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
     checkAnswer(groupId);
     this.setState({ testItemState: value });
   };
@@ -180,7 +180,7 @@ class AssessmentPlayerDefault extends React.Component {
       data.deleteMode = false;
     }
     if (value === "drawBreakingLine") {
-      message.info("Please double click to stop drawing");
+      notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing" });
     }
     updateScratchPad(data);
   };

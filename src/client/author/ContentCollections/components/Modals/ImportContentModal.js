@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Button, Input, Select, Radio, Upload, Icon, Spin, message } from "antd";
 import styled from "styled-components";
-import { RadioBtn, RadioGrp } from "@edulastic/common";
+import { RadioBtn, RadioGrp,notification } from "@edulastic/common";
 import {
   themeColor,
   whiteSmoke,
@@ -151,16 +151,18 @@ const ImportContentModal = ({
       </NoButton>
       <YesButton
         onClick={() => {
-          if (importType === EXISTING_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) {
-            return message.warn("Please select a collection");
+          if (importType === EXISTING_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) 
+          {
+          return notification({ type: "warn", messageKey: "pleaseSelectCollection"})
           }
 
-          if (importType === NEW_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) {
-            return message.warn("Please enter the collection name");
+          if (importType === NEW_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim()))
+          {
+            return  notification({ type: "warn", messageKey: "pleaseEnterCollectionName"});
           }
 
           if (!getSignedUrlData) {
-            return message.warn("File not found");
+            return notification({ type: "warn", messageKey: "fileNotFound"});
           }
 
           handleResponse({

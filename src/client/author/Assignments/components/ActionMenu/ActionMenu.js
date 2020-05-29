@@ -3,7 +3,7 @@ import { Menu, message } from "antd";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 import { get } from "lodash";
-
+import { notification } from "@edulastic/common";
 import { IconPrint, IconTrashAlt, IconBarChart } from "@edulastic/icons";
 import { roleuser, test } from "@edulastic/constants";
 import classIcon from "../../assets/manage-class.svg";
@@ -65,9 +65,7 @@ const ActionMenu = ({
     const { assignmentVisibility = [] } = row;
     const { HIDDEN, GRADING } = testContentVisibilityOptions;
     if (!isAdmin && (assignmentVisibility.includes(HIDDEN) || assignmentVisibility.includes(GRADING))) {
-      return message.warn(
-        `View of Items is restricted by the admin if content visibility is set to "Always hidden" OR "Hide prior to grading"`
-      );
+      return notification({ type: "warn", messageKey:"viewItemsRestriccedByAdmin"});
     }
     togglePrintModal(currentTestId);
   };

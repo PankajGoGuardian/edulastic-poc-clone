@@ -1,5 +1,5 @@
 import { desktopWidth, themeColor, white } from "@edulastic/colors";
-import { MainHeader, EduButton } from "@edulastic/common";
+import { MainHeader, EduButton , notification} from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import {
   IconAddItems,
@@ -210,7 +210,7 @@ const TestPageHeader = ({
   const handleRegrade = () => {
     if (isNotRegradable()) {
       //For time being block teacher regrading a authors test is blocked here
-      message.warn("Teacher can not regrade author's test");
+       notification({ type: "warn", messageKey:"teacherCantRegrade"});
       return onPublish();
     }
     setDisableAlert(true);
@@ -269,9 +269,7 @@ const TestPageHeader = ({
       (test?.testContentVisibility === testContentVisibilityOptions.HIDDEN ||
         test?.testContentVisibility === testContentVisibilityOptions.GRADING)
     ) {
-      return message.warn(
-        `View of Items is restricted by the admin if content visibility is set to "Always hidden" OR "Hide prior to grading"`
-      );
+      return notification({ type: "warn", messageKey:"viewOfItemsRestricted"});
     }
     setShowPrintOptionPopup(true);
   };

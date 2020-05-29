@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import { Spin, message } from "antd";
+import { notification } from "@edulastic/common";
 import styled from "styled-components";
 import { greyLight1 } from "@edulastic/colors";
 import { TokenStorage, testsApi } from "@edulastic/api";
@@ -71,7 +72,7 @@ const PublicTestPage = ({
           }
         })
         .catch(() => {
-          message.warn("Trying to access private test");
+          notification({ type: "info", messageKey: "tryingToAccessPrivateTest" });
           if (role !== "student" || role !== "parent") {
             redirectToTestPreview();
           } else {
@@ -83,7 +84,7 @@ const PublicTestPage = ({
       if (!test) {
         fetchTest({ testId, sharedType: "PUBLIC" });
       } else if (test?.status === testConstants.statusConstants.ARCHIVED) {
-        message.warn(ARCHIVED_TEST_MSG);
+        notification({ type: "info", msg:ARCHIVED_TEST_MSG});
         history.push("/login");
       }
     } else {

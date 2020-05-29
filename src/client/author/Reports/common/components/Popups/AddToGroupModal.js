@@ -6,7 +6,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
 import { Modal, Row, Col, Spin, Select, message } from "antd";
 import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
-import { SelectInputStyled, EduButton, withWindowSizes } from "@edulastic/common";
+import { SelectInputStyled, EduButton, withWindowSizes, notification } from "@edulastic/common";
 import {
   backgrounds,
   borderGrey4,
@@ -141,7 +141,7 @@ const AddToGroupModal = ({
     }
     // warning for no action due to lack of - checked students or existing students to remove
     if (!checkedStudents.length && !studentsToRemove.length) {
-      message.warning(`Select one or more students to add to or remove from ${groupTypeText}`);
+      notification({ type: "warn", msg:`Select one or more students to add to or remove from ${groupTypeText}`});
     } else {
       // close modal
       onCancel();
@@ -156,7 +156,7 @@ const AddToGroupModal = ({
         state: { type: groupTypeText, studentIds: checkedStudents.map(s => s._id), exitPath: match.url }
       });
     } else {
-      message.warning(`Select one or more students to add to ${groupTypeText}`);
+      notification({ type: "warn", msg:`Select one or more students to add to ${groupTypeText}`});
     }
   };
 

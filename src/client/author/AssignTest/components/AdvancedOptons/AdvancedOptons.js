@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import produce from "immer";
+import { notification } from "@edulastic/common";
 import { curry } from "lodash";
 import * as moment from "moment";
 import { Col, Icon, message } from "antd";
@@ -64,7 +65,7 @@ class AdvancedOptons extends React.Component {
     const { freezeSettings } = this.props;
     const { showSettings } = this.state;
     if (freezeSettings && !showSettings) {
-      message.warn("Override settings is restricted by the Admin.");
+      notification({ type: "warn", messageKey:"overrrideSettingsRestricted"});
     }
     this.setState({ showSettings: !showSettings });
   };

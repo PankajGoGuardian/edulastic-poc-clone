@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { message, Select } from "antd";
+import { notification } from "@edulastic/common";
 import PropTypes from "prop-types";
 import { Title, StyledInput, StyledSelect } from "../common/commonStyles";
 import EdulasticResourceModal from "../common/EdulasticResourceModal";
@@ -62,7 +63,7 @@ const LTIResourceModal = props => {
         }
       });
       closeCallback();
-    } else message.warn(validationStatus);
+    } else notification({ type: "warn", msg:validationStatus});
   };
 
   const getToolProviderOptions = () =>

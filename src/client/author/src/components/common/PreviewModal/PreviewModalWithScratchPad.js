@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
-import { AnswerContext, ScratchPadContext, hexToRGB, FlexContainer } from "@edulastic/common";
+import { AnswerContext, ScratchPadContext, hexToRGB, FlexContainer, notification } from "@edulastic/common";
 import SvgDraw from "../../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 import Tools from "../../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import { allThemeVars } from "../../../../../theme";
@@ -56,7 +56,7 @@ const PreviewModalWithScratchPad = ({
       setActiveMode("");
     } else {
       if (value === "drawBreakingLine") {
-        message.info("Please double click to stop drawing");
+        notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing"});
       }
       setActiveMode(value);
       setDeleteMode(false);

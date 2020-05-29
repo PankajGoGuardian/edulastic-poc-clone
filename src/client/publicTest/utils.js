@@ -1,5 +1,6 @@
 import { maxBy } from "lodash";
 import { message, Modal } from "antd";
+import { notification } from "@edulastic/common";
 import { themeColor } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
 
@@ -121,7 +122,7 @@ export const redirectToDashbord = (type = "", history) => {
     default:
       msg = "Assignment is not available for the attempt.";
   }
-  message.warn(msg);
+  notification({ msg: msg});
   history.push("/home/assignments");
 };
 

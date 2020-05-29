@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
 import * as moment from "moment";
-import { EduButton } from "@edulastic/common";
+import { EduButton ,notification} from "@edulastic/common";
 import {
   addStudentRequestAction,
   changeTTSRequestAction,
@@ -256,7 +256,7 @@ const ActionContainer = ({
         } else if (selectedStudent.length > 1) {
           toggleModal("mergeStudents");
         } else {
-          message.info("Please select two or more students to merge");
+          notification({ type: "info", messageKey: "pleaseSelectTowOrMoreStudents"});
         }
         break;
       }

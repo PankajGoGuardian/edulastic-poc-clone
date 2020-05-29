@@ -209,7 +209,7 @@ class CurriculumContainer extends Component {
         return false;
       }).length > 0;
 
-    if (!hasContent) return message.warning("This module has no test.");
+    if (!hasContent) return notification({ type: "warn", messageKey: "moduleHasNOTest"});
 
     const { expandedModules } = this.state;
     if (expandedModules.indexOf(moduleId) === -1) {

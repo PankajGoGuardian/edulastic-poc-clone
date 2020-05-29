@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper, CheckboxLabel } from "@edulastic/common";
+import { MainContentWrapper, CheckboxLabel,notification } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,
@@ -351,7 +351,7 @@ class ClassBoard extends Component {
   handleRedirect = () => {
     const { selectedStudents, testActivity, enrollmentStatus, additionalData = {}, assignmentStatus } = this.props;
     if (additionalData.isPaused && assignmentStatus !== "DONE" && additionalData.endDate > Date.now()) {
-      return message.info("The class has been paused for this assessment.Please resume to continue with redirect.");
+      return notification({ type: "info", messageKey: "classPausedContinueWithRedirect" });
     }
 
     const notStartedStudents = testActivity.filter(
@@ -361,12 +361,12 @@ class ClassBoard extends Component {
     );
 
     if (notStartedStudents.length > 0) {
-      message.warn("You can redirect only Submitted and Absent student(s).");
+      notification({ type: "warn", messageKey:"youCanRedirectOnly"});
       return;
     }
     const selectedStudentIds = Object.keys(selectedStudents);
     if (selectedStudentIds.some(item => enrollmentStatus[item] === "0"))
-      return message.warn("You can not redirect to not enrolled student(s).");
+      return notification({ type: "warn", messageKey:"youCantRedirect"});
     this.setState({ redirectPopup: true });
   };
 
@@ -419,36 +419,36 @@ class ClassBoard extends Component {
   handleShowMarkAsSubmittedModal = () => {
     const { selectedStudents, testActivity, assignmentStatus } = this.props;
     if (assignmentStatus.toLowerCase() === "not open") {
-      return message.warn("Assignment is not opened yet");
+      return notification({ type: "warn", messageKey:"assignmentIsNotOpenedYet"});
     }
 
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return message.warn("At least one student should be selected to be Marked as Submitted");
+      return notification({ type: "warn", messageKey:"atleastOneStudent"});
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedSubmittedStudents = selectedStudentKeys.filter(
       item => mapTestActivityByStudId[item].status === "submitted" || mapTestActivityByStudId[item].status === "graded"
     );
     if (selectedSubmittedStudents.length) {
-      return message.warn(
-        `${
-          selectedSubmittedStudents.length
-        } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`
-      );
+      return   notification({ type: "warn", msg:`${
+        selectedSubmittedStudents.length
+      } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`});
     }
+
+    
     this.setState({ showMarkSubmittedPopup: true, modalInputVal: "" });
   };
 
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
     if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
-      return message.warn("Assignment is not opened yet");
+      return notification({ type: "warn", messageKey:"assignmentIsNotOpenedYet"});
     }
 
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return message.warn("At least one student should be selected to be Marked as Absent.");
+      return notification({ type: "warn", messageKey:"atleastOneStudentToMarkAbsent"});
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
@@ -457,9 +457,7 @@ class ClassBoard extends Component {
     );
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
-      return message.warn(
-        `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`
-      );
+      return notification({ type: "warn", msg:`${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`});
     }
     this.setState({ showMarkAbsentPopup: true, selectedNotStartedStudents, modalInputVal: "" });
   };
@@ -468,12 +466,12 @@ class ClassBoard extends Component {
     const { selectedStudents, testActivity } = this.props;
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return message.warn("At least one student should be selected to be removed.");
+      return notification({ type: "warn", messageKey:"atleastOneStudentToRemove"});
     }
     const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
     const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
     if (isAnyBodyGraded) {
-      return message.warn("You will not be able to remove selected student(s) as the status is graded");
+      return notification({ type: "warn", messageKey:"youWillNotAbleToRemove"});
     }
     this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
   };
@@ -491,7 +489,7 @@ class ClassBoard extends Component {
     const { selectedNotStartedStudents } = this.state;
     const { markAbsent, match, studentUnselectAll } = this.props;
     const { assignmentId, classId } = match.params;
-    if (!selectedNotStartedStudents.length) return message.warn("No students selected");
+    if (!selectedNotStartedStudents.length) return notification({ type: "warn", messageKey:"noStudentsSelected"});
     markAbsent(assignmentId, classId, selectedNotStartedStudents);
     studentUnselectAll();
     this.setState({ showMarkAbsentPopup: false });
@@ -501,7 +499,7 @@ class ClassBoard extends Component {
     const { markSubmitted, match, studentUnselectAll, selectedStudents } = this.props;
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length) return message.warn("No students selected");
+    if (!selectedStudentKeys.length) return notification({ type: "warn", messageKey:"noStudentsSelected"});
     markSubmitted(assignmentId, classId, selectedStudentKeys);
     studentUnselectAll();
     this.setState({ showMarkSubmittedPopup: false });
@@ -511,7 +509,7 @@ class ClassBoard extends Component {
     const { additionalData, testActivity } = this.props;
     // total count represents total students count in the class
     if (additionalData.totalCount <= testActivity.length) {
-      return message.warn("This assessment is already assigned to all students in the class.");
+      return notification({ type: "warn", messageKey:"assessmentAlreadyAssignedToAllStudents"});
     }
 
     this.setState({ showAddStudentsPopup: true });
@@ -542,7 +540,7 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return message.warn("At least one student should be selected to download grades.");
+      return notification({ type: "warn", messageKey:"aleastOneStudentToDownloadGrades"});
     }
     downloadGradesResponse(assignmentId, classId, selectedStudentKeys, isResponseRequired);
   };

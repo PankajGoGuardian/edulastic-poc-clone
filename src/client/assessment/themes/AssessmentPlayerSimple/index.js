@@ -9,7 +9,7 @@ import { get } from "lodash";
 import { message } from "antd";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { hexToRGB, withWindowSizes } from "@edulastic/common";
+import { hexToRGB, withWindowSizes,notification } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
@@ -108,7 +108,7 @@ class AssessmentPlayerSimple extends React.Component {
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
-      return message.warn("Check answer limit exceeded for the item.");
+      return notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
     checkAnswer(groupId);
     this.setState({ testItemState: value });
   };
@@ -172,7 +172,7 @@ class AssessmentPlayerSimple extends React.Component {
     } else {
       updateScratchpad({ activeMode: value, deleteMode: false });
       if (value === "drawBreakingLine") {
-        message.info("Please double click to stop drawing");
+        notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing" });
       }
     }
   };

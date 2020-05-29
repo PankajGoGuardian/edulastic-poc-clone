@@ -19,6 +19,7 @@ export const REQUEST_SCRATCH_PAD_SUCCESS = "[scratchpad] load success";
 export const REQUEST_SCRATCH_PAD_ERROR = "[scratchpad] load error";
 export const TOGGLE_SCORE_MODE = "[expressgrader] toggle score/response";
 export const DISABLE_SCORE_MODE = "[expressgrader] enable score mode";
+export const SUBMIT_RESPONSE_COMPLETED = "[expressgrade] completed submitting";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -30,6 +31,7 @@ export const scratchPadLoadSuccessAction = createAction(REQUEST_SCRATCH_PAD_SUCC
 export const scratchPadLoadErrorAction = createAction(REQUEST_SCRATCH_PAD_ERROR);
 export const toggleScoreModeAction = createAction(TOGGLE_SCORE_MODE);
 export const disableScoreModeAction = createAction(DISABLE_SCORE_MODE);
+export const submitResponseCompletedAction = createAction(SUBMIT_RESPONSE_COMPLETED);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -48,6 +50,11 @@ export const getScratchpadLoadingSelector = createSelector(
   stateSelector,
   state => state.scratchPadLoading
 );
+
+export const getIsScoringCompletedSelector = createSelector(
+  stateSelector,
+  state => state.isScoring
+);
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -57,7 +64,8 @@ export const getScratchpadLoadingSelector = createSelector(
 const initialState = {
   teacherEditedScore: {},
   scratchPadLoading: false,
-  scoreMode: false
+  scoreMode: false,
+  isScoring: false
 };
 
 export const expressGraderReducer = createReducer(initialState, {
@@ -81,6 +89,12 @@ export const expressGraderReducer = createReducer(initialState, {
   },
   [DISABLE_SCORE_MODE]: state => {
     state.scoreMode = false;
+  },
+  [SUBMIT_RESPONSE]: state => {
+    state.isScoring = true;
+  },
+  [SUBMIT_RESPONSE_COMPLETED]: state => {
+    state.isScoring = false;
   }
 });
 
@@ -118,6 +132,8 @@ function* submitResponse({ payload }) {
   } catch (e) {
     console.error(e);
     yield call(message.error, "edit response failed");
+  } finally {
+    yield put(submitResponseCompletedAction());
   }
 }
 

@@ -44,7 +44,7 @@ export const SubResourceView = ({
   const hasResources = itemData?.resources?.length > 0;
 
   return (
-    <FlexContainer width="100%" justifyContent="flex-start" data-cy="subResourceView">
+    <FlexContainer width="calc(100% - 25px)" justifyContent="flex-start" marginLeft="20px" data-cy="subResourceView">
       {hasResources && (
         <ModuleDataName isReview isResource>
           <ResourceLabel>resources</ResourceLabel>
@@ -69,6 +69,8 @@ export const SubResource = connect(
   null,
   (dispatch, { fromPlaylist }) => ({
     removeSubResource: payload =>
-      dispatch(fromPlaylist ? removeSubresourceInPlaylistAction(payload) : removeSubResourceAction(payload))
+      dispatch(fromPlaylist ?
+        removeSubresourceInPlaylistAction(payload) :
+        removeSubResourceAction(payload))
   })
 )(SubResourceView);

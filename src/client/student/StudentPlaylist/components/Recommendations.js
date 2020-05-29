@@ -81,30 +81,29 @@ const Recommendations = ({
             {dateKeys.length ? (
               <div className="item" style={{ width: "100%" }}>
                 {dateKeys.map(dateStamp => {
-                  const data = recommendationsByTime[dateStamp];
+                    const data = recommendationsByTime[dateStamp];
 
-                  return (
-                    <RowWrapper>
-                      <Date>RECOMMENDED {<span dangerouslySetInnerHTML={{ __html: data[0].createdAt }} />}</Date>
-                      {data.map(recommendation => {
-                        const activities = activitiesByResourceId[recommendation._id];
-                        const lastActivity = last(activities) || {};
-                        const { score, maxScore } = lastActivity;
-                        const scorePercentage = Math.round((score / maxScore) * 100);
-                        const { recommendedResource = {} } = recommendation;
+                    return (
+                      <RowWrapper>
+                        <Date>RECOMMENDED <span dangerouslySetInnerHTML={{ __html: data[0].createdAt }} /></Date>
+                        {data.map(recommendation => {
+                          const activities = activitiesByResourceId[recommendation._id];
+                          const lastActivity = last(activities) || {};
+                          const { score, maxScore } = lastActivity;
+                          const scorePercentage = Math.round((score / maxScore) * 100);
+                          const { recommendedResource = {}, resources = [] } = recommendation;
 
-                        return (
-                          <>
-                            <Assignment
-                              data-cy="recommendation"
-                              data-test={recommendedResource._id}
-                              key={recommendedResource._id}
-                              borderRadius="unset"
-                              boxShadow="unset"
-                            >
-                              <ModuleFocused />
-                              <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
-                              {recommendedResource.resourceType === "TEST" ? (
+                          return (
+                            <>
+                              <Assignment
+                                data-cy="recommendation"
+                                data-test={recommendedResource._id}
+                                key={recommendedResource._id}
+                                borderRadius="unset"
+                                boxShadow="unset"
+                              >
+                                <ModuleFocused />
+                                <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
                                 <Row
                                   type="flex"
                                   gutter={20}
@@ -154,7 +153,7 @@ const Recommendations = ({
                                       strokeWidth={13}
                                       percent={scorePercentage}
                                       format={percent =>
-                                        !window.isNaN(percent) && !isEmpty(lastActivity) ? `${percent}%` : ""
+                                        !Number.isNaN(percent) && !isEmpty(lastActivity) ? `${percent}%` : ""
                                       }
                                     />
                                   </StyledCol>
@@ -191,7 +190,7 @@ const Recommendations = ({
                                         to={{
                                           pathname: `/home/class/${recommendation.groupId}/test/${
                                             recommendedResource._id
-                                          }/testActivityReport/${lastActivity._id}`,
+                                            }/testActivityReport/${lastActivity._id}`,
                                           fromRecommendations: true,
                                           playListId: match.params?.playlistId
                                         }}
@@ -201,69 +200,69 @@ const Recommendations = ({
                                     )}
                                   </StyledCol>
                                 </Row>
-                              ) : (
-                                <SubResourceView
-                                  data={{ resources: [recommendedResource] }}
+                                {resources && <SubResourceView
+                                  data={{ resources }}
                                   showLtiResource={showLtiResource}
                                   setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                                />
-                              )}
-                            </Assignment>
+                                />}
+                              </Assignment>
 
-                            {recommendedResource.resourceType === "TEST" && recommendedResource.resources?.length && (
-                              <ResourcesContainer>
-                                <SubResourceView
-                                  data={{ resources }}
-                                  showResource={showLtiResource}
-                                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                              {recommendedResource.resourceType === "TEST" && recommendedResource.resources?.length && (
+                                <ResourcesContainer>
+                                  <SubResourceView
+                                    data={{ resources }}
+                                    showResource={showLtiResource}
+                                    setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                                  />
+                                </ResourcesContainer>
+                              )}
+                            </>
+                          );
+                        })}
+                        {/* TODO will remove below description when there is a confirmation on the palylist data */}
+                        {data.description && (
+                          <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
+                            <Description>
+                              <DescriptionTitle>
+                                Adding fractions with unlock denominators - Khan academy
+                              </DescriptionTitle>
+                              <DescriptionContent>
+                                <img
+                                  src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
+                                  style={{ width: "18%" }}
+                                  alt=""
                                 />
-                              </ResourcesContainer>
-                            )}
-                          </>
-                        );
-                      })}
-                      {/* TODO will remove below description when there is a confirmation on the palylist data */}
-                      {data.description && (
-                        <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
-                          <Description>
-                            <DescriptionTitle>
-                              Adding fractions with unlock denominators - Khan academy
-                            </DescriptionTitle>
-                            <DescriptionContent>
-                              <img
-                                src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
-                                style={{ width: "18%" }}
-                              />
-                              <DescriptionText>{data.description}</DescriptionText>
-                            </DescriptionContent>
-                          </Description>
-                          <Description>
-                            <DescriptionTitle>
-                              Adding fractions with unlock denominators - Khan academy
-                            </DescriptionTitle>
-                            <DescriptionContent>
-                              <img
-                                src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
-                                style={{ width: "18%" }}
-                              />
-                              <DescriptionText>{data.description}</DescriptionText>
-                            </DescriptionContent>
-                          </Description>
-                        </div>
-                      )}
-                    </RowWrapper>
-                  );
-                })}
+                                <DescriptionText>{data.description}</DescriptionText>
+                              </DescriptionContent>
+                            </Description>
+                            <Description>
+                              <DescriptionTitle>
+                                Adding fractions with unlock denominators - Khan academy
+                              </DescriptionTitle>
+                              <DescriptionContent>
+                                <img
+                                  src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
+                                  style={{ width: "18%" }}
+                                  alt=""
+                                />
+                                <DescriptionText>{data.description}</DescriptionText>
+                              </DescriptionContent>
+                            </Description>
+                          </div>
+                        )}
+                      </RowWrapper>
+                    );
+                  })}
               </div>
-            ) : (
-              <NoDataNotification
-                heading="No Recommendations"
-                description={"You don't have any playlists recommendations."}
-              />
-            )}
+              ) : (
+                <NoDataNotification
+                  heading="No Recommendations"
+                  description={"You don't have any playlists recommendations."}
+                />
+                )}
           </Wrapper>
         </CurriculumSequenceWrapper>
-      )}
+        )}
       {isVideoResourcePreviewModal && (
         <EmbeddedVideoPreviewModal
           closeCallback={() => setEmbeddedVideoPreviewModal(false)}
@@ -349,8 +348,9 @@ const Date = styled.div`
 const Assignment = styled.div`
   padding: 5px 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
+  flex-direction: column;
   background: white !important;
   &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {
     opacity: 1;

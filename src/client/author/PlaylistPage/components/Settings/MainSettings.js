@@ -39,8 +39,8 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
               <Switch data-cy="customization" defaultChecked={customize} onChange={handleUserCustomize} />
               <Description>
                 If set to ON, other members of the Edulastic community who want to use this playlist can customize it as
-                per their requirements (i.e., add/remove items in the playlist). Note that this will not affect the
-                original playlist in any way.
+                per their requirements i.e., add/remove test or resources in the Playlist. Note that this will not
+                affect the original playlist in any way.
               </Description>
             </Body>
           </StyledBlock>

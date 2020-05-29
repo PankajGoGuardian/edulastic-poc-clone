@@ -119,10 +119,10 @@ const CurriculumSubHeader = ({
                   </DraftModeActionsWrapper>
                 ) : (
                   <>
-                    {(!isManageContentActive || !showRightPanel) && !shouldHidCustomizeButton && (
+                    {(!isManageContentActive || !showRightPanel) && urlHasUseThis && !shouldHidCustomizeButton && (
                       <StyledButton onClick={toggleManageContentClick("manageContent")}>Customize Content</StyledButton>
                     )}
-                    {(isManageContentActive || !showRightPanel) && urlHasUseThis && (
+                    {(isManageContentActive || !showRightPanel) && (
                       <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
                     )}
                   </>

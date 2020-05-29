@@ -79,13 +79,20 @@ function OuterDropContainer({ children }) {
     collect: monitor => ({
       isOver: !!monitor.isOver(),
       contentType: monitor.getItem()?.contentType
-    })
+    }),
+    canDrop: (item, monitor) => {
+      return !!item?.contentType;
+    }
   });
-  const showSupportingResource = contentType != "test" && isOver;
+
+  /**
+   * if contentType is undefined or null, that means its reordering
+   */
+  const showSupportingResource = contentType && contentType != "test" && isOver;
   return (
     <div ref={dropRef}>
       {React.Children.map(children, child =>
-        React.cloneElement(child, { showNewActivity: isOver, showSupportingResource })
+        React.cloneElement(child, { showNewActivity: contentType && isOver, showSupportingResource })
       )}
     </div>
   );

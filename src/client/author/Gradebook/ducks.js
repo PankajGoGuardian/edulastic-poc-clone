@@ -8,7 +8,7 @@ import { getUserOrgData } from "../src/selectors/user";
 import selectsData from "../TestPage/components/common/selectsData";
 
 // transformers & constants
-import { getUniqAssessments, STATUS_LIST } from "./transformers";
+import { getUniqAssessments, STATUS_LIST, PAGE_DETAIL } from "./transformers";
 
 // slice
 const slice = createSlice({
@@ -29,12 +29,7 @@ const slice = createSlice({
     loadingPerformanceData: false,
     showFilter: false,
     selectedFilters: {},
-    pageDetail: {
-      studentPage: 1,
-      studentPageSize: 50,
-      assignmentPage: 1,
-      assignmentPageSize: 10
-    }
+    pageDetail: { ...PAGE_DETAIL }
   },
   reducers: {
     fetchStudentPerformanceRequest: state => {
@@ -70,12 +65,13 @@ export const { actions, reducer } = slice;
 function* fetchStudentPerformanceSaga({ payload }) {
   try {
     const { filters, pageDetail } = payload;
-    const { assessmentIds, classIds, grades, subjects, termId, testType, groupId } = filters;
+    const { assessmentIds, classIds, grades, subjects, status, termId, testType, groupId } = filters;
     const response = yield call(reportsApi.fetchStudentPerformance, {
       assessmentIds: assessmentIds.join(","),
       classIds: classIds.join(","),
       grades: grades.join(","),
       subjects: subjects.join(","),
+      status,
       termId,
       testType,
       groupId,
@@ -102,8 +98,8 @@ function* fetchGradebookFiltersSaga() {
     const assessments = getUniqAssessments(assignments);
     // classes & groups
     const classList = yield call(groupApi.fetchMyGroups);
-    const classes = [],
-      groups = [];
+    const classes = [];
+    const groups = [];
     classList.forEach(c => {
       c.id = c._id;
       c.type === "class" ? classes.push(c) : groups.push(c);

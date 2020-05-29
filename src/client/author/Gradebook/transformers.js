@@ -1,4 +1,4 @@
-import { capitalize, keyBy, groupBy, uniq } from "lodash";
+import { capitalize, groupBy, uniq, isEmpty } from "lodash";
 
 // constants
 import { testActivityStatus } from "@edulastic/constants";
@@ -14,48 +14,55 @@ export const INITIAL_FILTERS = {
   groupId: ""
 };
 
+export const PAGE_DETAIL = {
+  studentPage: 1,
+  studentPageSize: 50,
+  assignmentPage: 1,
+  assignmentPageSize: 10
+};
+
 // id for STATUS_LIST items correspond to
 // testActivityStatus from @edulastic/constants
 export const STATUS_LIST = [
   {
     id: "NOT STARTED",
     name: "NOT STARTED",
-    color: "#B1B1B1"
+    color: "#E5E5E5"
   },
   {
     id: "START",
     name: "IN PROGRESS",
-    color: "#7BC0DF"
+    color: "#BEDEFF"
   },
   {
     id: "SUBMITTED",
     name: "SUBMITTED",
-    color: "#ECAB28"
+    color: "#FFE9A8"
   },
   {
     id: "GRADED",
     name: "GRADED",
-    color: "#00AD50"
+    color: "#DEF4E8"
   },
   {
     id: "ABSENT",
     name: "ABSENT",
-    color: "#F35F5F"
+    color: "#FDE0E9"
   }
 ];
 
 export const getFormattedName = (...names) => {
   const nameArr = names.filter(n => n?.trim()).map(n => capitalize(n));
   const lName = nameArr.splice(nameArr.length - 1)[0];
-  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+  return nameArr.length ? `${lName}, ${nameArr.join(" ")}` : lName;
 };
 
 export const getUniqAssessments = (assessments = []) => {
   const assessmentGroups = groupBy(assessments, "_id");
   const uniqAssessments = Object.keys(assessmentGroups).map(aId => {
-    const classIds = [],
-      subjects = [],
-      grades = [];
+    const classIds = [];
+    const subjects = [];
+    const grades = [];
     const assessment = assessmentGroups[aId][0];
     assessmentGroups[aId].forEach(a => {
       classIds.push(a.classId);
@@ -90,21 +97,44 @@ const getCuratedTestActivity = taGroup => {
   if (status === testActivityStatus.START) {
     // TODO: check if partial score, can be returned, else query in PRD
     return { laDate, status: "START" };
-  } else if (status === testActivityStatus.SUBMITTED) {
+  }
+  if (status === testActivityStatus.SUBMITTED) {
     return {
       laDate,
       status: graded === "GRADED" ? "GRADED" : "SUBMITTED",
       percentScore: `${Math.round((100 * score) / maxScore)}%`
     };
-  } else if (status === testActivityStatus.ABSENT) {
+  }
+  if (status === testActivityStatus.ABSENT) {
     return { laDate, status: "ABSENT", percentScore: "0%" };
   }
 };
 
+// function to get paginated data when test-activity status filter is set
+const getPaginatedData = (curatedData, assessmentsData, pagination) => {
+  const { studentPage, assignmentPage, studentPageSize, assignmentPageSize } = pagination;
+  const studentPos = (studentPage - 1) * studentPageSize;
+  const assignmentPos = (assignmentPage - 1) * assignmentPageSize;
+
+  // filter out empty rows
+  curatedData = curatedData.filter(d => !isEmpty(d.assessments));
+  // get student count and student paginated data
+  const studentsCount = curatedData.length;
+  curatedData = curatedData.slice(studentPos, studentPos + studentPageSize);
+
+  // filter out empty columns
+  const assessmentIds = uniq(curatedData.flatMap(d => Object.keys(d.assessments)));
+  assessmentsData = assessmentsData.filter(a => assessmentIds.includes(a.id));
+  // get assignment count and assignment paginated data
+  const assignmentsCount = assessmentsData.length;
+  assessmentsData = assessmentsData.slice(assignmentPos, assignmentPos + assignmentPageSize);
+
+  return { curatedData, assessmentsData, assignmentsCount, studentsCount };
+};
+
 // function to get curated gradebook data
-export const curateGradebookData = (gradebookData, filters) => {
-  const { students = [], assignments = [], testActivities = [] } = gradebookData;
-  const { status } = filters;
+export const curateGradebookData = (gradebookData, pagination, status) => {
+  const { students = [], assignments = [], testActivities = [], assignmentsCount, studentsCount } = gradebookData;
 
   // group test-activity by assignmentId
   const taGroups = groupBy(testActivities, "assignmentId");
@@ -143,5 +173,9 @@ export const curateGradebookData = (gradebookData, filters) => {
 
   const assessmentsData = assignments.map(a => ({ id: a._id, name: a.title }));
 
-  return [curatedData, assessmentsData];
+  if (status) {
+    return getPaginatedData(curatedData, assessmentsData, pagination);
+  }
+
+  return { curatedData, assessmentsData, assignmentsCount, studentsCount };
 };

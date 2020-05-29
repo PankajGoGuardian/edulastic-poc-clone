@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { isEmpty } from "lodash";
 
 // components
 import { Link } from "react-router-dom";
@@ -26,7 +27,7 @@ import { actions, selectors } from "../ducks";
 import { getCurrentTerm } from "../../src/selectors/user";
 
 // transformers & constants
-import { curateFiltersData, curateGradebookData, INITIAL_FILTERS } from "../transformers";
+import { curateFiltersData, curateGradebookData, INITIAL_FILTERS, PAGE_DETAIL } from "../transformers";
 
 const Gradebook = ({
   windowWidth,
@@ -35,7 +36,6 @@ const Gradebook = ({
   loadingFilters,
   filtersData,
   fetchGradebookData,
-  loading,
   gradebookData,
   showFilter,
   toggleShowFilter,
@@ -45,33 +45,50 @@ const Gradebook = ({
   setPageDetail,
   termId
 }) => {
+  const [onComponentLoad, setOnComponentLoad] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
+  const [pseudoPageDetail, setPseudoPageDetail] = useState({ ...PAGE_DETAIL });
 
   const setInitialFilters = () => setFilters({ ...INITIAL_FILTERS, termId });
 
+  const handlePagination = paginationData =>
+    filters.status ? setPseudoPageDetail(paginationData) : setPageDetail(paginationData);
+
   useEffect(() => {
     fetchFiltersData();
+    setOnComponentLoad(false);
   }, []);
 
   useEffect(() => {
-    if (Object.keys(filters).length) {
-      setPageDetail({ ...pageDetail, studentPage: 1, assignmentPage: 1 });
+    if (!isEmpty(filters)) {
+      setPageDetail({ ...PAGE_DETAIL });
+      setPseudoPageDetail({ ...PAGE_DETAIL });
     } else {
       setInitialFilters();
     }
   }, [filters]);
 
   useEffect(() => {
-    if (Object.keys(filters).length) {
+    if (!onComponentLoad) {
       fetchGradebookData({ filters, pageDetail });
+      setLoading(true);
     }
   }, [pageDetail]);
 
-  const curatedFiltersData = curateFiltersData(filtersData, filters);
-  const [curatedData, assessmentsData] = curateGradebookData(gradebookData, filters);
-  const { students = [], studentsCount, assignmentsCount } = gradebookData;
+  useEffect(() => setLoading(false), [gradebookData]);
 
+  const pagination = filters.status ? pseudoPageDetail : pageDetail;
+  const curatedFiltersData = curateFiltersData(filtersData, filters);
+  const { curatedData, assessmentsData, studentsCount, assignmentsCount } = curateGradebookData(
+    gradebookData,
+    pagination,
+    filters.status
+  );
+
+  // select unique students for AddToGroupModal
+  const { students = [] } = gradebookData;
   const selectedStudentIds = Array.from(new Set(selectedRows.map(r => r.split("_")[0])));
   const selectedStudents = students.filter(s => selectedStudentIds.includes(s._id));
 
@@ -94,7 +111,7 @@ const Gradebook = ({
           </EduButton>
         </Row>
       </MainHeader>
-      {loading || loadingFilters ? (
+      {loadingFilters ? (
         <MainContentWrapper>
           <Spin />
         </MainContentWrapper>
@@ -114,42 +131,60 @@ const Gradebook = ({
           <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
             <IconFilter width={20} height={20} />
           </FilterButton>
-          <TableContainer showFilter={showFilter}>
-            <TableHeader>
-              <LeftArrow
-                onClick={() => setPageDetail({ ...pageDetail, assignmentPage: pageDetail.assignmentPage - 1 })}
-                disabled={pageDetail.assignmentPage === 1}
+          {loading ? (
+            <TableContainer showFilter={showFilter}>
+              <Spin />
+            </TableContainer>
+          ) : (
+            <TableContainer showFilter={showFilter}>
+              <TableHeader>
+                <LeftArrow
+                  onClick={() => handlePagination({ ...pagination, assignmentPage: pagination.assignmentPage - 1 })}
+                  disabled={pagination.assignmentPage === 1}
+                />
+                <RightArrow
+                  onClick={() => handlePagination({ ...pagination, assignmentPage: pagination.assignmentPage + 1 })}
+                  disabled={
+                    assignmentsCount === 0 ||
+                    pagination.assignmentPage === Math.ceil(assignmentsCount / pagination.assignmentPageSize)
+                  }
+                />
+              </TableHeader>
+              <GradebookTable
+                data={curatedData}
+                assessments={assessmentsData}
+                selectedRows={selectedRows}
+                setSelectedRows={setSelectedRows}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
               />
-              <RightArrow
-                onClick={() => setPageDetail({ ...pageDetail, assignmentPage: pageDetail.assignmentPage + 1 })}
-                disabled={
-                  assignmentsCount &&
-                  pageDetail.assignmentPage === Math.ceil(assignmentsCount / pageDetail.assignmentPageSize)
-                }
-              />
-            </TableHeader>
-            <GradebookTable
-              data={curatedData}
-              assessments={assessmentsData}
-              selectedRows={selectedRows}
-              setSelectedRows={setSelectedRows}
-              windowWidth={windowWidth}
-              windowHeight={windowHeight}
-            />
-            <TableFooter>
-              <GradebookStatusColors />
-              <Pagination
-                current={pageDetail.studentPage}
-                pageSize={pageDetail.studentPageSize}
-                onChange={studentPage => setPageDetail({ ...pageDetail, studentPage })}
-                onShowSizeChange={(_, studentPageSize) =>
-                  setPageDetail({ ...pageDetail, studentPage: 1, studentPageSize })
-                }
-                total={studentsCount}
-                showSizeChanger={false}
-              />
-            </TableFooter>
-          </TableContainer>
+              <TableFooter>
+                <GradebookStatusColors />
+                {/* NOTE: When status filter is set, assignment pagination is dependent on student pagination */}
+                <Pagination
+                  current={pagination.studentPage}
+                  pageSize={pagination.studentPageSize}
+                  onChange={studentPage =>
+                    handlePagination({
+                      ...pagination,
+                      ...(filters.status ? { assignmentPage: 1 } : {}),
+                      studentPage
+                    })
+                  }
+                  onShowSizeChange={(_, studentPageSize) =>
+                    handlePagination({
+                      ...pagination,
+                      ...(filters.status ? { assignmentPage: 1 } : {}),
+                      studentPage: 1,
+                      studentPageSize
+                    })
+                  }
+                  total={studentsCount}
+                  showSizeChanger={false}
+                />
+              </TableFooter>
+            </TableContainer>
+          )}
         </MainContentWrapper>
       )}
     </div>
@@ -162,7 +197,6 @@ const enhance = compose(
     state => ({
       loadingFilters: selectors.loadingFilters(state),
       filtersData: selectors.filtersData(state),
-      loading: selectors.loading(state),
       gradebookData: selectors.gradebookData(state),
       showFilter: selectors.showFilter(state),
       filters: selectors.selectedFilters(state),

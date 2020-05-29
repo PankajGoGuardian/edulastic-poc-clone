@@ -15,6 +15,7 @@ import {
 } from "../../../../common/components/Notification";
 
 const collectionName = "AssignmentBulkActionEvents";
+const DOWNLOAD_GRADES_AND_RESPONSE = "DOWNLOAD_GRADES_AND_RESPONSE";
 
 const NotificationListener = ({ user, location, fetchAssignmentClassList, fetchAssignmentsSummaryAction }) => {
   const [notificationIds, setNotificationIds] = useState([]);
@@ -56,7 +57,7 @@ const NotificationListener = ({ user, location, fetchAssignmentClassList, fetchA
       if (isBulkAction && status === "initiated" && processStatus === "done" && !notificationIds.includes(doc.__id)) {
         setNotificationIds([...notificationIds, doc.__id]);
         if (statusCode === 200) {
-          if (action === "DOWNLOAD_GRADES_AND_RESPONSE") {
+          if (action === DOWNLOAD_GRADES_AND_RESPONSE) {
             notificationMessage({
               title: "Download Grades/Responses",
               message,
@@ -77,13 +78,13 @@ const NotificationListener = ({ user, location, fetchAssignmentClassList, fetchA
           antdNotification({ msg: message, key: doc.__id });
         }
 
-        if (action !== "DOWNLOAD_GRADES_AND_RESPONSE") {
+        if (action !== DOWNLOAD_GRADES_AND_RESPONSE || statusCode !== 200) {
           // if status is initiated and we are displaying, delete the notification document from firebase
           deleteNotificationDocument(doc.__id);
-          if (districtId && testId && testType) {
-            fetchAssignmentsSummaryAction({ districtId });
-            fetchAssignmentClassList({ districtId, testId, testType });
-          }
+        }
+        if (districtId && testId && testType && action !== DOWNLOAD_GRADES_AND_RESPONSE) {
+          fetchAssignmentsSummaryAction({ districtId });
+          fetchAssignmentClassList({ districtId, testId, testType });
         }
       }
     });

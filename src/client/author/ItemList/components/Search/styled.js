@@ -1,4 +1,4 @@
-import { lightGrey4, secondaryTextColor } from "@edulastic/colors";
+import { secondaryTextColor, grey } from "@edulastic/colors";
 import { DatePicker } from "antd";
 import styled from "styled-components";
 
@@ -23,7 +23,14 @@ export const IconWrapper = styled.span`
   right: 10px;
   top: 35px;
   z-index: 1;
-  color: ${lightGrey4};
+  color: ${grey};
+  cursor: pointer;
+  &.disabled {
+    cursor: not-allowed;
+    svg path {
+      fill: ${grey};
+    }
+  }
 `;
 
 export const ItemHeader = styled.span`

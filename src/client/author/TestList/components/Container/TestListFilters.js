@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { grey, themeColor, titleColor } from "@edulastic/colors";
+import { FieldLabel, FlexContainer, SelectInputStyled } from "@edulastic/common";
+import { roleuser, test as testsConstants } from "@edulastic/constants";
+import { IconExpandBox } from "@edulastic/icons";
+import { Select } from "antd";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { IconExpandBox } from "@edulastic/icons";
-import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
-import PropTypes from "prop-types";
-import { FlexContainer, FieldLabel, SelectInputStyled } from "@edulastic/common";
-import { Select } from "antd";
-import { test as testsConstants, roleuser } from "@edulastic/constants";
-import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
-import filterData from "./FilterData";
-import { getCollectionsSelector, getUserFeatures, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
+import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
+import { getFormattedCurriculumsSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
+import { getCollectionsSelector, getUserFeatures, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
-import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
+import filterData from "./FilterData";
 
 const filtersTitle = ["Grades", "Subject", "Status"];
 const TestListFilters = ({
@@ -39,7 +39,9 @@ const TestListFilters = ({
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
 
   useEffect(() => {
-    if (userFeatures.isCurator && !currentDistrictUsers?.length) getCurrentDistrictUsers(districtId);
+    if (userFeatures.isCurator && !currentDistrictUsers?.length) {
+      getCurrentDistrictUsers(districtId);
+    }
   }, []);
 
   const collectionDefaultFilter = useMemo(() => {
@@ -225,7 +227,7 @@ const TestListFilters = ({
           <>
             <FilterItemWrapper key={index}>
               {filterItem.isStandardSelect && (
-                <IconExpandBoxWrapper>
+                <IconExpandBoxWrapper className={filterItem.disabled && "disabled"}>
                   <IconExpandBox onClick={handleSetShowModal} />
                 </IconExpandBoxWrapper>
               )}
@@ -272,12 +274,10 @@ const TestListFilters = ({
 TestListFilters.propTypes = {
   onChange: PropTypes.func,
   clearFilter: PropTypes.func.isRequired,
-  search: PropTypes.object.isRequired,
-  filterData: PropTypes.array
+  search: PropTypes.object.isRequired
 };
 
 TestListFilters.defaultProps = {
-  filterData: [],
   onChange: () => null
 };
 
@@ -338,6 +338,12 @@ const IconExpandBoxWrapper = styled.div`
   bottom: 21px;
   z-index: 1;
   cursor: pointer;
+  &.disabled {
+    cursor: not-allowed;
+    svg path {
+      fill: ${grey};
+    }
+  }
 `;
 
 const SelectStyled = styled(SelectInputStyled)`

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { questionType as questionTypes, test as testsConstants, roleuser } from "@edulastic/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconExpandBox } from "@edulastic/icons";
 import { Select } from "antd";
 import PropTypes from "prop-types";
@@ -36,7 +35,6 @@ const Search = ({
   showStatus = false,
   collections,
   formattedCuriculums,
-  defaultQuestionTypes = [],
   userFeatures,
   districtId,
   currentDistrictUsers,
@@ -90,34 +88,32 @@ const Search = ({
       .sort((a, b) => (a.value > b.value ? 1 : -1))
   ];
 
-  const getStatusFilter = () => {
-    return (
-      <Item>
-        <FieldLabel>Status</FieldLabel>
-        <ItemBody>
-          <SelectInputStyled
-            data-cy="selectStatus"
-            size="large"
-            onSelect={onSearchFieldChange("status")}
-            value={status}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {selectsData.allStatus.map(el => (
+  const getStatusFilter = () => (
+    <Item>
+      <FieldLabel>Status</FieldLabel>
+      <ItemBody>
+        <SelectInputStyled
+          data-cy="selectStatus"
+          size="large"
+          onSelect={onSearchFieldChange("status")}
+          value={status}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+        >
+          {selectsData.allStatus.map(el => (
+            <Select.Option key={el.value} value={el.value}>
+              {el.text}
+            </Select.Option>
+          ))}
+          {isPublishers &&
+            selectsData.extraStatus.map(el => (
               <Select.Option key={el.value} value={el.value}>
                 {el.text}
               </Select.Option>
             ))}
-            {isPublishers &&
-              selectsData.extraStatus.map(el => (
-                <Select.Option key={el.value} value={el.value}>
-                  {el.text}
-                </Select.Option>
-              ))}
-          </SelectInputStyled>
-        </ItemBody>
-      </Item>
-    );
-  };
+        </SelectInputStyled>
+      </ItemBody>
+    </Item>
+  );
 
   return (
     <MainFilterItems>
@@ -222,7 +218,7 @@ const Search = ({
           </ItemBody>
         </Item>
         <ItemRelative>
-          <IconWrapper>
+          <IconWrapper className={isStandardsDisabled && "disabled"}>
             <IconExpandBox onClick={() => setShowModal(true)} />
           </IconWrapper>
           <FieldLabel>Standards</FieldLabel>
@@ -232,7 +228,7 @@ const Search = ({
             size="large"
             optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            placeholder={"All Standards"}
+            placeholder="All Standards"
             onChange={onSearchFieldChange("standardIds")}
             value={standardIds}
             disabled={isStandardsDisabled}
@@ -351,17 +347,8 @@ const Search = ({
 
 Search.propTypes = {
   search: PropTypes.object.isRequired,
-  curriculums: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      curriculum: PropTypes.string.isRequired,
-      grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
-    })
-  ).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
-  curriculumStandards: PropTypes.array.isRequired,
-  showStatus: PropTypes.bool
+  curriculumStandards: PropTypes.array.isRequired
 };
 
 export default connect(

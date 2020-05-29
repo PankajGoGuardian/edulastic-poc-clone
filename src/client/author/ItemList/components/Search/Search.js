@@ -156,21 +156,23 @@ const Search = ({
         )}
         <Item>
           <FieldLabel>Grades</FieldLabel>
-          <SelectInputStyled
-            data-cy="selectGrades"
-            mode="multiple"
-            size="large"
-            placeholder="All Grades"
-            value={grades}
-            onChange={onSearchFieldChange("grades")}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {selectsData.allGrades.map(el => (
-              <Select.Option key={el.value} value={el.value}>
-                {el.text}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
+          <ItemBody>
+            <SelectInputStyled
+              data-cy="selectGrades"
+              mode="multiple"
+              size="large"
+              placeholder="All Grades"
+              value={grades}
+              onChange={onSearchFieldChange("grades")}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {selectsData.allGrades.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+          </ItemBody>
         </Item>
         <Item>
           <FieldLabel>Subject</FieldLabel>
@@ -222,25 +224,47 @@ const Search = ({
             <IconExpandBox onClick={() => setShowModal(true)} />
           </IconWrapper>
           <FieldLabel>Standards</FieldLabel>
-          <StandardSelectStyled
-            data-cy="selectStd"
-            mode="multiple"
-            size="large"
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-            placeholder="All Standards"
-            onChange={onSearchFieldChange("standardIds")}
-            value={standardIds}
-            disabled={isStandardsDisabled}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {curriculumStandards.elo.map(el => (
-              <Select.Option key={el._id} value={el._id}>
-                {`${el.identifier}`}
-              </Select.Option>
-            ))}
-          </StandardSelectStyled>
+          <ItemBody>
+            <StandardSelectStyled
+              data-cy="selectStd"
+              mode="multiple"
+              size="large"
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              placeholder="All Standards"
+              onChange={onSearchFieldChange("standardIds")}
+              value={standardIds}
+              disabled={isStandardsDisabled}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {curriculumStandards.elo.map(el => (
+                <Select.Option key={el._id} value={el._id}>
+                  {`${el.identifier}`}
+                </Select.Option>
+              ))}
+            </StandardSelectStyled>
+          </ItemBody>
         </ItemRelative>
+        <Item>
+          <FieldLabel>Collections</FieldLabel>
+          <ItemBody>
+            <SelectInputStyled
+              mode="multiple"
+              data-cy="Collections"
+              size="large"
+              placeholder="All Collections"
+              onChange={onSearchFieldChange("collections")}
+              value={_collections}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {collectionData.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+          </ItemBody>
+        </Item>
         <Item>
           <FieldLabel>Question Type</FieldLabel>
           <ItemBody>
@@ -297,25 +321,6 @@ const Search = ({
               ))}
             </SelectInputStyled>
           </ItemBody>
-        </Item>
-        <Item>
-          <FieldLabel>Collections</FieldLabel>
-
-          <SelectInputStyled
-            mode="multiple"
-            data-cy="Collections"
-            size="large"
-            placeholder="All Collections"
-            onChange={onSearchFieldChange("collections")}
-            value={_collections}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {collectionData.map(el => (
-              <Select.Option key={el.value} value={el.value}>
-                {el.text}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
         </Item>
 
         {showStatus && !isPublishers && getStatusFilter()}

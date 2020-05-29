@@ -136,7 +136,7 @@ class Container extends Component {
           rowIndex: 0,
           tabIndex: 0,
           testItemId: isTestFlow ? itemId : match.params._id,
-          testName: state.testName || ""
+          testName: state?.testName || ""
         }
       });
     }

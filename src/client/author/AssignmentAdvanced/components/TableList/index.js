@@ -39,7 +39,8 @@ const columns = [
     dataIndex: "class",
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => a.class.localeCompare(b.class, "en", { ignorePunctuation: true }),
-    width: "16%",
+    width: "30%",
+    align: "left",
     render: text => <div>{text}</div>
   },
   {
@@ -47,7 +48,7 @@ const columns = [
     dataIndex: "type",
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => a.type.localeCompare(b.type, "en", { ignorePunctuation: true }),
-    width: "8%",
+    width: "6%",
     render: (text = test.type.ASSESSMENT) => (
       <Tooltip placement="bottom" title={testTypeToolTip[text]}>
         <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
@@ -59,7 +60,7 @@ const columns = [
     dataIndex: "assigned",
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => a.assigned.localeCompare(b.assigned, "en", { ignorePunctuation: true }),
-    width: "16%",
+    width: "20%",
     render: text => <div> {text} </div>
   },
   {
@@ -67,7 +68,7 @@ const columns = [
     dataIndex: "status",
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => a.status.localeCompare(b.status, "en", { ignorePunctuation: true }),
-    width: "16%",
+    width: "10%",
     render: text => (text ? <BtnStatus status={text}>{text}</BtnStatus> : "")
   },
   {
@@ -75,7 +76,7 @@ const columns = [
     dataIndex: "submitted",
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => parseInt(a.submitted.split("/")[0], 10) - parseInt(b.submitted.split("/")[0], 10),
-    width: "16%",
+    width: "8%",
     render: text => <div> {text} </div>
   },
   {
@@ -83,13 +84,13 @@ const columns = [
     dataIndex: "graded",
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => a.graded - b.graded,
-    width: "16%",
+    width: "8%",
     render: text => <div> {text} </div>
   },
   {
     title: "",
     dataIndex: "action",
-    width: "5%",
+    width: "8%",
     render: (_, row) => (
       <ActionsWrapper data-cy="PresentationIcon">
         <Tooltip placement="bottom" title="Live Class Board">

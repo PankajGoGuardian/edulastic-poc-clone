@@ -258,32 +258,32 @@ export const AssignedImg = styled.img`
 `;
 
 export const TypeIcon = styled.span`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 18px;
   height: 18px;
   max-width: 18px;
   background: ${props =>
     props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
-  text-align: center;
   color: ${white};
   border-radius: 50%;
   font-weight: 600;
   font-size: ${props => props.theme.bodyFontSize};
-  line-height: 17px;
 `;
 
 export const TypeWrapper = styled.span`
-  width: 90px;
+  width: ${props => props.width || "90px"};
   display: flex;
-  float: right;
+  float: ${props => props.float || "right"};
   align-items: center;
-  justify-content: flex-start;
+  justify-content: ${props => props.justify || "flex-start"};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    width: 110px;
+    width: ${props => props.width || "110px"};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    width: 125px;
+    width: ${props => props.width || "125px"};
   }
 `;
 

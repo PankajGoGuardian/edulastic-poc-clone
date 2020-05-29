@@ -1,22 +1,21 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
-import { withRouter } from "react-router-dom";
-import { Dropdown, Tooltip, Spin } from "antd";
-import { withNamespaces } from "@edulastic/localization";
+import { EduButton, FlexContainer } from "@edulastic/common";
 import { test } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
+import { Dropdown, Spin, Tooltip } from "antd";
 import produce from "immer";
-import { FlexContainer, EduButton } from "@edulastic/common";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 import { getAssignmentsSummary, getAssignmentTestsSelector } from "../../../src/selectors/assignments";
-import ActionMenu from "../ActionMenu/ActionMenu";
-
-import { Container, TableData, AssignmentTD, ActionDiv, TitleCase, TestThumbnail } from "./styled";
-import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
 import { canEditTest } from "../../utils";
+import ActionMenu from "../ActionMenu/ActionMenu";
+import { ActionDiv, AssignmentTD, Container, TableData, TestThumbnail, TypeIcon, TypeWrapper } from "./styled";
 
 class AdvancedTable extends Component {
   state = {
@@ -30,7 +29,7 @@ class AdvancedTable extends Component {
         dataIndex: "title",
         sortDirections: ["descend", "ascend"],
         sorter: true,
-        width: "20%",
+        width: "38%",
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 0) }),
         className: "assignment-name",
@@ -51,11 +50,25 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        width: "10%",
+        width: "6%",
         align: "left",
         className: "assignment-name",
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 1) }),
-        render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
+        render: (_, row) => (
+          <TypeWrapper width="100%" float="none" justify="center">
+            {row && row.testType === test.type.PRACTICE ? (
+              <TypeIcon data-cy="type" type="p">
+                P
+              </TypeIcon>
+            ) : row.testType === test.type.ASSESSMENT ? (
+              <TypeIcon data-cy="type">A</TypeIcon>
+            ) : (
+              <TypeIcon data-cy="type" type="c">
+                C
+              </TypeIcon>
+            )}
+          </TypeWrapper>
+        )
       },
       {
         title: "Classes",
@@ -64,7 +77,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 2) }),
-        width: "11%",
+        width: "8%",
         render: text => <div>{text}</div>
       },
       {
@@ -74,7 +87,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 3) }),
-        width: "11%",
+        width: "8%",
         render: text => <div> {text} </div>
       },
       {
@@ -84,7 +97,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 4) }),
-        width: "11%",
+        width: "8%",
         render: text => <div>{text} </div>
       },
       {
@@ -94,7 +107,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 5) }),
-        width: "11%",
+        width: "8%",
         render: text => <div> {text} </div>
       },
       {
@@ -105,13 +118,13 @@ class AdvancedTable extends Component {
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 6) }),
 
-        width: "10%",
+        width: "6%",
         render: text => <div> {text} </div>
       },
       {
         title: "",
         dataIndex: "action",
-        width: "10%",
+        width: "12%",
         render: (_, row) => {
           const {
             onOpenReleaseScoreSettings,

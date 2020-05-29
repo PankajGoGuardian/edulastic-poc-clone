@@ -120,6 +120,7 @@ export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized 
 export const SET_VIDEO_PREVIEW_RESOURCE_MODAL = "[playlist] set video resource modal content";
 export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub-resource to test";
 export const REMOVE_SUB_RESOURCE_FROM_TEST = "[playlist] remove sub-resource from test";
+export const SET_SHOW_RIGHT_SIDE_PANEL = "[playlist] set show right side panel";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -179,6 +180,7 @@ export const duplicateManageContentAction = createAction(DUPLICATE_MANAGE_CONTEN
 export const cancelPlaylistCustomizeAction = createAction(CANCEL_PLAYLIST_CUSTOMIZE);
 export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST);
 export const setEmbeddedVideoPreviewModal = createAction(SET_VIDEO_PREVIEW_RESOURCE_MODAL);
+export const setShowRightSideAction = createAction(SET_SHOW_RIGHT_SIDE_PANEL);
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -255,10 +257,10 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
     // show notification if when user comes to playlist page and playlist has assigned assignments
     // show only notification for teacher
     if (showNotification) {
-      const modules = items?.reduce((acc, curr) => [...acc, ...(curr?.modules || [])], []);
+      const modules = items ?.reduce((acc, curr) => [...acc, ...(curr ?.modules || [])], []);
       const sumOfclasse = modules
         .reduce((acc, curr) => [...acc, ...(curr.data || [])], [])
-        .flatMap(x => x?.assignments || {})
+        .flatMap(x => x ?.assignments || {})
         .reduce((acc, curr) => acc + get(curr, "class.length", 0), 0);
       if (sumOfclasse > 0) {
         notification({ type: "info", messageKey: "playlistBeingUsed" });
@@ -515,7 +517,7 @@ function* saveCurriculumSequence({ payload }) {
   delete destinationCurriculumSequence._id;
 
   yield putCurriculumSequence({
-    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload?.isPlaylist }
+    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload ?.isPlaylist }
   });
 }
 
@@ -788,8 +790,9 @@ function* duplicateManageContentSaga({ payload }) {
 
     yield put(updateCurriculumSequenceAction(duplicatedDraftPlaylist));
     yield put(setOriginalDestinationData(payload));
-    yield put(toggleManageContentActiveAction());
-    yield put(push(`/author/playlists/customize/${originalId}/${duplicatedDraftPlaylist._id}`));
+    yield put(toggleManageContentActiveAction(true));
+    yield put(setShowRightSideAction(true));
+    yield put(push(`/author/playlists/playlist/${duplicatedDraftPlaylist._id}/use-this`));
   } catch (error) {
     console.error(error);
     notification({ messageKey: "commonErr" });
@@ -854,7 +857,7 @@ function* fetchClassListByDistrictId() {
       fetchClassListSuccess({ classList: classList.map(x => ({ id: x.classId, name: x.className, type: "class" })) })
     );
   } catch (error) {
-    notification({ msg: error?.data?.message });
+    notification({ msg: error ?.data ?.message });
     console.error(error);
   }
 }
@@ -870,14 +873,14 @@ function* fetchStudentListByGroupId({ payload }) {
       fetchStudentListSuccess({
         studentList: studentList.map(x => ({
           id: x.studentId,
-          name: `${x?.firstName || ""} ${x?.lastName || ""}`,
+          name: `${x ?.firstName || ""} ${x ?.lastName || ""}`,
           type: "student",
           classId: payload.classId
         }))
       })
     );
   } catch (error) {
-    notification({ msg: error?.data?.message });
+    notification({ msg: error ?.data ?.message });
     console.error(error);
   }
 }
@@ -899,8 +902,8 @@ function* fetchPlaylistAccessList({ payload }) {
       const result = yield call(groupApi.fetchPlaylistAccess, playlistId);
       if (result) {
         yield put(updateDroppedAccessList(result));
-        const classIds = [...result?.classList?.map(x => x?._id), ...result?.studentList?.map(x => x?.groupId)];
-        if (classIds?.length) {
+        const classIds = [...result ?.classList ?.map(x => x ?._id), ...result ?.studentList ?.map(x => x ?.groupId)];
+        if (classIds ?.length) {
           yield all(classIds.map(classId => put(fetchStudentListAction({ districtId, classId }))));
         }
       }
@@ -1296,7 +1299,9 @@ const initialState = {
     isVisible: false,
     currentTestId: null
   },
-  isVideoResourcePreviewModal: false
+  isVideoResourcePreviewModal: false,
+  showSumary: true,
+  showRightPanel: false
 };
 
 /**
@@ -1351,9 +1356,9 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
  */
 const updateCurriculumSequenceReducer = (state, { payload }) => {
   const curriculumSequence = payload;
-  const id = (curriculumSequence?.[0] && curriculumSequence[0]._id) || curriculumSequence._id;
+  const id = (curriculumSequence ?.[0] && curriculumSequence[0]._id) || curriculumSequence._id;
 
-  state.byId[id] = curriculumSequence?.[0] || curriculumSequence;
+  state.byId[id] = curriculumSequence ?.[0] || curriculumSequence;
   // if (curriculumSequence.type === "guide") {
   state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
   state.originalData = state.destinationCurriculumSequence;
@@ -1639,7 +1644,7 @@ function updateStudentList(state, { payload }) {
       ...state.dropPlaylistSource,
       searchSource: {
         ...state.dropPlaylistSource.searchSource,
-        studentList: uniqBy(state?.dropPlaylistSource?.searchSource?.studentList.concat(payload.studentList), "id")
+        studentList: uniqBy(state ?.dropPlaylistSource ?.searchSource ?.studentList.concat(payload.studentList), "id")
       }
     },
     studentListFetching: false
@@ -1729,18 +1734,18 @@ export default createReducer(initialState, {
   [TOGGLE_MANAGE_MODULE]: toggleManageModuleHandler,
   [ADD_MODULE]: (state, { payload }) => {
     const newModule = createNewModuleState(
-      payload?.title || payload?.moduleName,
-      payload?.description,
+      payload ?.title || payload ?.moduleName,
+      payload ?.description,
       payload.moduleId,
       payload.moduleGroupName
     );
     if (!state.destinationCurriculumSequence.modules) {
       state.destinationCurriculumSequence.modules = [];
     }
-    if (payload?.afterModuleIndex !== undefined) {
-      state.destinationCurriculumSequence?.modules?.splice(payload.afterModuleIndex, 0, newModule);
+    if (payload ?.afterModuleIndex !== undefined) {
+      state.destinationCurriculumSequence ?.modules ?.splice(payload.afterModuleIndex, 0, newModule);
     } else {
-      state.destinationCurriculumSequence?.modules?.push(newModule);
+      state.destinationCurriculumSequence ?.modules ?.push(newModule);
     }
     return state;
   },
@@ -1756,14 +1761,14 @@ export default createReducer(initialState, {
   },
   [DELETE_MODULE]: (state, { payload }) => {
     if (payload !== undefined) {
-      state.destinationCurriculumSequence?.modules?.splice(payload, 1);
+      state.destinationCurriculumSequence ?.modules ?.splice(payload, 1);
     }
     return state;
   },
   [ORDER_MODULES]: (state, { payload }) => {
     const { oldIndex, newIndex } = payload;
-    const obj = state.destinationCurriculumSequence?.modules?.splice(oldIndex, 1);
-    state.destinationCurriculumSequence?.modules?.splice(newIndex, 0, obj[0]);
+    const obj = state.destinationCurriculumSequence ?.modules ?.splice(oldIndex, 1);
+    state.destinationCurriculumSequence ?.modules ?.splice(newIndex, 0, obj[0]);
     return state;
   },
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
@@ -1773,8 +1778,8 @@ export default createReducer(initialState, {
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload;
     const alreadyPresent = Object.keys(state.differentiationWork)
-      .flatMap(x => state.differentiationWork?.[x] || [])
-      .find(x => x?.testId === testId);
+      .flatMap(x => state.differentiationWork ?.[x] || [])
+      .find(x => x ?.testId === testId);
     if (!alreadyPresent) {
       state.differentiationWork[type].push({
         testId,
@@ -1788,7 +1793,7 @@ export default createReducer(initialState, {
   [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, contentId, masteryRange, contentTitle, contentType, contentUrl } = payload;
     const alreadyPresent = Object.keys(state.differentiationWork)
-      .flatMap(x => state.differentiationWork?.[x] || [])
+      .flatMap(x => state.differentiationWork ?.[x] || [])
       .find(x => x.contentId === contentId);
     if (!alreadyPresent) {
       state.differentiationWork[type].push({
@@ -1850,7 +1855,7 @@ export default createReducer(initialState, {
   },
   [REMOVE_TEST_FROM_MODULE_PLAYLIST]: (state, { payload }) => {
     const { moduleIndex, itemId } = payload;
-    if (state?.destinationCurriculumSequence?.modules?.[moduleIndex]?.data?.find(x => x.contentId === itemId)) {
+    if (state ?.destinationCurriculumSequence ?.modules ?.[moduleIndex] ?.data ?.find(x => x.contentId === itemId)) {
       state.destinationCurriculumSequence.modules[moduleIndex].data = state.destinationCurriculumSequence.modules[
         moduleIndex
       ].data.filter(x => x.contentId !== itemId);
@@ -1859,12 +1864,15 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
     state.activeRightPanel = payload;
+    if (payload) {
+      state.activeRightPanel = "manageContent";
+    }
   },
   [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
     state.signedRequest = payload;
   },
   [TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID]: (state, { payload }) => {
-    if (payload?.id) {
+    if (payload ?.id) {
       state.playlistTestDetailsModal.isVisible = true;
       state.playlistTestDetailsModal.currentTestId = payload.id;
     } else {
@@ -1878,13 +1886,15 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {};
     }
+    state.activeRightPanel = "summary";
+
     state.destinationDirty = false;
   },
   [SET_DESTINATION_ORIGINAL]: (state, { payload }) => {
     state.originalData = payload;
   },
   [RESET_DESTINATION_FLAGS]: state => {
-    state.activeRightPanel = "manageContent";
+    state.activeRightPanel = "summary";
     state.destinationDirty = false;
   },
   [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {
@@ -1923,5 +1933,8 @@ export default createReducer(initialState, {
   },
   [FETCH_CURRICULUM_SEQUENCES_ERROR]: state => {
     state.loading = false;
+  },
+  [SET_SHOW_RIGHT_SIDE_PANEL]: (state, { payload }) => {
+    state.showRightPanel = payload;
   }
 });

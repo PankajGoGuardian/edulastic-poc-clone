@@ -375,6 +375,7 @@ class Review extends PureComponent {
       standards,
       onChangeGrade,
       onChangeSubjects,
+      onChangeSkillIdentifiers,
       onChangeCollection,
       questions,
       owner,
@@ -503,6 +504,7 @@ class Review extends PureComponent {
                   thumbnail={defaultThumbnail || test.thumbnail}
                   onChangeGrade={onChangeGrade}
                   onChangeSubjects={onChangeSubjects}
+                  onChangeSkillIdentifiers={onChangeSkillIdentifiers}
                   onChangeCollection={onChangeCollection}
                   windowWidth={windowWidth}
                   isPublishers={isPublishers}

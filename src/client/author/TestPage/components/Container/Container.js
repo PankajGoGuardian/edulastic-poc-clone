@@ -429,6 +429,14 @@ class Container extends PureComponent {
     setDefaultInterests({ subject: subjects[0] || "" });
   };
 
+  onChangeSkillIdentifiers = (identifiers) => {
+    const { setData, test } = this.props;
+    if(!isEmpty(identifiers)) {
+      const metadata = {...test.metadata, skillIdentifiers : _uniq(identifiers.split(","))}
+      setData({ ...test,  metadata});
+    }
+  }
+
   handleSaveTestId = () => {
     const { test, saveCurrentEditingTestId } = this.props;
     saveCurrentEditingTestId(test._id);
@@ -519,6 +527,7 @@ class Container extends PureComponent {
             onSaveTestId={this.handleSaveTestId}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
+            onChangeSkillIdentifiers={this.onChangeSkillIdentifiers}
             onChangeCollection={this.handleChangeCollection}
             owner={isOwner}
             isEditable={isEditable}

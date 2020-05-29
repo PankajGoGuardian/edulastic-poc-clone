@@ -131,6 +131,7 @@ class AdvancedTable extends Component {
             history,
             showPreviewModal,
             toggleEditModal,
+            toggleDeleteModal,
             userId = "",
             userRole = "",
             assignmentTests
@@ -147,6 +148,7 @@ class AdvancedTable extends Component {
                   history,
                   showPreviewModal,
                   toggleEditModal,
+                  toggleDeleteModal,
                   userId,
                   userRole,
                   assignmentTest,

@@ -156,7 +156,7 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {isAssignmentOwner || isDistrictAdmin ? (
+        {(isAssignmentOwner || isDistrictAdmin) && (
           <Menu.Item
             data-cy="delete-Assignment"
             key="delete-Assignment"
@@ -168,7 +168,7 @@ const ActionMenu = ({
               Unassign
             </StyledLink>
           </Menu.Item>
-        ) : null}
+        )}
       </StyledMenu>
     </Container>
   );

@@ -14,6 +14,12 @@ export default class TestAddItemTab {
 
   getAddButtons = () => cy.contains("ADD");
 
+  getRemoveButtonById = id =>
+    cy
+      .get(`[data-cy="${id}"]`)
+      .find("button")
+      .contains("REMOVE");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -44,6 +50,7 @@ export default class TestAddItemTab {
   addItemById = itemId =>
     cy
       .get(`[data-cy="${itemId}"]`)
+      .find("button")
       .contains("ADD")
       .click({ force: true });
 
@@ -55,11 +62,7 @@ export default class TestAddItemTab {
       .contains("ADD")
       .click({ force: true });
 
-  removeItemById = itemId =>
-    cy
-      .get(`[data-cy="${itemId}"]`)
-      .contains("REMOVE")
-      .click({ force: true });
+  removeItemById = itemId => this.getRemoveButtonById(itemId).click({ force: true });
 
   clickOnGroupItem = () => {
     cy.server();
@@ -73,6 +76,7 @@ export default class TestAddItemTab {
     cy.server();
     cy.route("GET", /.*default-thumbnail?.*/).as("removeItem");
     cy.get(`[data-cy="${itemId}"]`)
+      .find("button")
       // .contains("Selected")
       .click({ force: true });
     // cy.wait("@removeItem");
@@ -98,7 +102,11 @@ export default class TestAddItemTab {
       .contains("REMOVE")
       .should("be.exist");
 
-  verifyGroupOfItemInList = (group, itemId) => cy.get(`[data-cy="${itemId}"]`).should("contain", `Group ${group}`);
+  verifyGroupOfItemInList = (group, itemId) =>
+    cy
+      .get(`[data-cy="${itemId}"]`)
+      .find("button")
+      .should("contain", `Group ${group}`);
 
   // *** APPHELPERS END ***
 }

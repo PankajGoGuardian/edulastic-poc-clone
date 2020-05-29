@@ -23,11 +23,14 @@ export default class TestSummayTab {
 
   // *** ACTIONS START ***
 
+  clearGrades = () =>
+    this.getTestGradeSelect().then($ele => {
+      if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
+    });
+
   selectGrade = (grade, clear = false) => {
     if (clear) {
-      this.getTestGradeSelect().then($ele => {
-        if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
-      });
+      this.clearGrades();
     }
     this.getTestGradeSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
@@ -44,11 +47,14 @@ export default class TestSummayTab {
       .type(testname);
   };
 
+  clearSubjects = () =>
+    this.getTestSubjectSelect().then($ele => {
+      if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
+    });
+
   selectSubject = (subject, clear = false) => {
     if (clear) {
-      this.getTestSubjectSelect().then($ele => {
-        if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
-      });
+      this.clearSubjects();
     }
     this.getTestSubjectSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")

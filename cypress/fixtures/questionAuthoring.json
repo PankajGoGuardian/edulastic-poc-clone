@@ -1,7 +1,7 @@
 {
   "MCQ_STD": {
     "default": {
-      "quetext": "This is MCQ_STD.default question",
+      "quetext": "This is MCQ_STD.default question unique-keyword-1",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 1 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
@@ -15,7 +15,7 @@
       ]
     },
     "1": {
-      "quetext": "This is MCQ_STD.1 question",
+      "quetext": "This is MCQ_STD.1 question unique-keyword-2",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 2 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
@@ -29,7 +29,7 @@
       ]
     },
     "2": {
-      "quetext": "This is MCQ_STD.2 question",
+      "quetext": "This is MCQ_STD.2 question unique-keyword-1 unique-keyword-2",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 2 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
@@ -195,7 +195,12 @@
           "standardSet": "ELA - Common Core",
           "grade": "Grade 2"
         }
-      ]
+      ],
+      "meta": {
+        "difficulty": "Easy",
+        "tags": ["item tag 2"],
+        "dok": "Skill/Concept"
+      }
     }
   },
   "MCQ_TF": {
@@ -808,7 +813,108 @@
           "standardSet": "Math - Common Core",
           "grade": "Grade 4"
         }
-      ]
+      ],
+      "meta": {
+        "dok": "Skill/Concept",
+        "tags": ["item tag 3"],
+        "difficulty": "Easy"
+      }
+    },
+    "2": {
+      "quetext": "This Is Essay Rich Text",
+      "attemptData": {
+        "right": "right",
+        "wrong": "wrong",
+        "partialCorrect": "partial"
+      },
+      "setAns": {
+        "points": 2
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["4.G.A.2", "4.G.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Grade 4"
+        }
+      ],
+      "meta": {
+        "dok": "Extended Thinking",
+        "tags": ["item tag 1"],
+        "difficulty": "Hard"
+      }
+    },
+    "3": {
+      "quetext": "This Is Essay Rich Text",
+      "attemptData": {
+        "right": "right",
+        "wrong": "wrong",
+        "partialCorrect": "partial"
+      },
+      "setAns": {
+        "points": 2
+      },
+      "standards": [
+        {
+          "subject": "ELA",
+          "standard": ["CCRA.L.2"],
+          "standardSet": "ELA - Common Core",
+          "grade": "Grade 2"
+        }
+      ],
+      "meta": {
+        "dok": "Strategic Thinking",
+        "difficulty": "Easy",
+        "tags": ["item tag 1"]
+      }
+    },
+    "4": {
+      "quetext": "This Is Essay Rich Text",
+      "attemptData": {
+        "right": "right",
+        "wrong": "wrong",
+        "partialCorrect": "partial"
+      },
+      "setAns": {
+        "points": 2
+      },
+      "standards": [
+        {
+          "subject": "ELA",
+          "standard": ["CCRA.L.1", "CCRA.L.2"],
+          "standardSet": "ELA - Common Core",
+          "grade": "Grade 2"
+        }
+      ],
+      "meta": {
+        "difficulty": "Easy",
+        "tags": ["item tag 2"],
+        "dok": "Skill/Concept"
+      }
+    },
+    "5": {
+      "quetext": "This Is Essay Rich Text",
+      "attemptData": {
+        "right": "right",
+        "wrong": "wrong",
+        "partialCorrect": "partial"
+      },
+      "setAns": {
+        "points": 2
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["4.G.A.2", "4.G.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Grade 4"
+        }
+      ],
+      "meta": {
+        "difficulty": "Hard",
+        "dok": "Skill/Concept",
+        "tags": ["item tag 1"]
+      }
     }
   }
 }

@@ -46,7 +46,8 @@ export const methods = {
 export const DOK = {
   Recall: "Recall",
   SkillConcept: "Skill/Concept",
-  ExtendedThinking: "Extended Thinking"
+  ExtendedThinking: "Extended Thinking",
+  StrategicThinking: "Strategic Thinking"
 };
 
 export const DIFFICULTY = {

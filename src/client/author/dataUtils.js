@@ -1,5 +1,4 @@
 import { get, keyBy, uniqBy, uniq } from "lodash";
-import produce from "immer";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { questionType } from "@edulastic/constants";
 import { UserIcon } from "./ItemList/components/Item/styled";
@@ -11,29 +10,26 @@ export const hasUserGotAccessToPremiumItem = (itemCollections = [], orgCollectio
   const itemCollectionsMap = keyBy(itemCollections, o => o._id);
   if (returnFlag) {
     return !!orgCollections.find(o => itemCollectionsMap[o._id]);
-  } else {
-    return orgCollections.find(o => itemCollectionsMap[o._id]);
   }
+  return orgCollections.find(o => itemCollectionsMap[o._id]);
 };
 
-export const getAuthorCollectionMap = (isBottom, width, height) => {
-  return {
-    edulastic_certified: {
-      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-      displayName: "Edulastic Certified"
-    },
-    engage_ny: {
-      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-      displayName: "Edulastic Certified"
-    },
-    "Edulastic Certified": {
-      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-      displayName: "Edulastic Certified"
-    },
-    Great_Minds_DATA: { icon: <UserIcon />, displayName: "Eureka Math" },
-    PROGRESS_DATA: { icon: <UserIcon />, displayName: "PROGRESS Bank" }
-  };
-};
+export const getAuthorCollectionMap = (isBottom, width, height) => ({
+  edulastic_certified: {
+    icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+    displayName: "Edulastic Certified"
+  },
+  engage_ny: {
+    icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+    displayName: "Edulastic Certified"
+  },
+  "Edulastic Certified": {
+    icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+    displayName: "Edulastic Certified"
+  },
+  Great_Minds_DATA: { icon: <UserIcon />, displayName: "Eureka Math" },
+  PROGRESS_DATA: { icon: <UserIcon />, displayName: "PROGRESS Bank" }
+});
 
 export const getTestAuthorName = (item, orgCollections) => {
   const { createdBy = {}, collections = [], authors = [] } = item;
@@ -81,7 +77,7 @@ export const getTestItemAuthorIcon = (item, orgCollections) => {
     }
   }
 
-  return <UserIcon />;
+  return <UserIcon data-cy="user" />;
 };
 
 export const getPlaylistAuthorName = item => {
@@ -164,9 +160,7 @@ export const setDefaultInterests = newInterest => {
   );
 };
 
-export const getDefaultInterests = () => {
-  return JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
-};
+export const getDefaultInterests = () => JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
 
 export const sortTestItemQuestions = testItems => {
   for (const [, item] of testItems.entries()) {

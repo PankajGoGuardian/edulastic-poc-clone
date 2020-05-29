@@ -179,7 +179,7 @@ class Item extends Component {
       (detail, index) =>
         (detail.text || detail.type === "premium") &&
         detail.text !== "Edulastic Certified" && (
-          <DetailCategory key={`DetailCategory_${index}`}>
+          <DetailCategory data-cy={`detail_index-${index}`} key={`DetailCategory_${index}`}>
             <CategoryName>{detail.name}</CategoryName>
             {detail.type !== "premium" && (
               <CategoryContent>
@@ -348,7 +348,7 @@ class Item extends Component {
 
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
-        <Container className="fr-view">
+        <Container data-cy={item._id} className="fr-view">
           {passageConfirmModalVisible && (
             <PassageConfirmationModal
               visible={passageConfirmModalVisible}
@@ -375,7 +375,7 @@ class Item extends Component {
             {windowWidth > MAX_TAB_WIDTH &&
               (page === "itemList" ? (
                 <ViewButton>
-                  <EduButton width="100px" height="40px" isGhost data_cy={item._id} onClick={openPreviewModal}>
+                  <EduButton width="100px" height="40px" isGhost onClick={openPreviewModal}>
                     <IconEye />
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
@@ -385,7 +385,6 @@ class Item extends Component {
                 </ViewButton>
               ) : isPublisher ? (
                 <AddRemoveBtnPublisher
-                  data-cy={item._id}
                   loading={selectedId === item._id}
                   onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                   isAddOrRemove={this.isAddOrRemove}
@@ -395,7 +394,6 @@ class Item extends Component {
                 </AddRemoveBtnPublisher>
               ) : (
                 <AddRemoveBtn
-                  data-cy={item._id}
                   loading={selectedId === item._id}
                   onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                   isAddOrRemove={this.isAddOrRemove}
@@ -407,16 +405,16 @@ class Item extends Component {
           <Row type="flex" align="center">
             <Detail>
               <TypeCategory>
-                {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
-                {windowWidth > MAX_TAB_WIDTH && <Tags tags={item.tags} key="tags" />}
+                {windowWidth > MAX_TAB_WIDTH && <Standards data-cy="standards" item={item} search={search} />}
+                {windowWidth > MAX_TAB_WIDTH && <Tags data-cy="tags" tags={item.tags} key="tags" />}
                 <CategoryContent>
                   {itemTypes.map(itemType => (
-                    <Label>
+                    <Label data-cy="ques-type">
                       <LabelText>{itemType}</LabelText>
                     </Label>
                   ))}
                   {item.collectionName ? <PremiumTag /> : null}
-                  <CollectionTag collectionName={item?.collectionName} />
+                  <CollectionTag data-cy="collection" collectionName={item?.collectionName} />
                 </CategoryContent>
                 {windowWidth > MAX_TAB_WIDTH && (
                   <TestStatusWrapper status={item.status}>
@@ -449,7 +447,6 @@ class Item extends Component {
                   </MoreInfo>
                   {isPublisher ? (
                     <AddRemoveBtnPublisher
-                      data-cy={item._id}
                       loading={selectedId === item._id}
                       onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                       isAddOrRemove={this.isAddOrRemove}
@@ -471,7 +468,7 @@ class Item extends Component {
           </Row>
           {windowWidth <= MAX_TAB_WIDTH && (
             <Details isOpenedDetails={isOpenedDetails}>
-              <Standards item={item} search={search} />
+              <Standards data-cy="standards" item={item} search={search} />
               <Tags tags={item.tags} key="tags" />
               <TestStatusWrapper>
                 {({ children, ...rest }) => <TestStatus {...rest}>{children}</TestStatus>}

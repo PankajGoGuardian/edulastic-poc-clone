@@ -12,6 +12,7 @@ import SearchFilters from "../searchFiltersPage";
 import TeacherSideBar from "../SideBarPage";
 import PreviewItemPopup from "./itemPreview";
 import EssayRichTextPage from "./questionType/writtenAndSpoken/essayRichTextPage";
+import CypressHelper from "../../util/cypressHelpers";
 
 class ItemListPage {
   constructor() {
@@ -22,21 +23,45 @@ class ItemListPage {
 
   // *** ELEMENTS START ***
 
-  getViewItemById = (id, text) => {
-    return cy.get(`[data_cy=${id}]`);
-    /* cy.wait(2000);
-    return cy
-      .get("body")
-      .find('[data-cy="styled-wrapped-component"]')
-      .contains(text)
-      .parent()
-      .parent()
-      .parent()
-      .parent()
-      .next()
-      .find("span", " View")
-      .eq(0); */
-  };
+  getCreateTest = () => cy.get('[data-cy="New Test"]');
+
+  getItemContainerInlistById = id => cy.get(`[data-cy="${id}"]`);
+
+  getstandardsById = id =>
+    this.getItemContainerInlistById(id)
+      .find(`[class="Tags"]`)
+      .first();
+
+  getTagsById = id =>
+    this.getItemContainerInlistById(id)
+      .find(`[class="Tags"]`)
+      .last();
+
+  getHiddenStandards = id =>
+    this.getItemContainerInlistById(id)
+      .find(".ant-dropdown-trigger")
+      .trigger("mouseover")
+      .then(() => cy.wait(1000));
+
+  getAllItemsCountInListContainer = () => cy.get(".fr-view");
+
+  getQuestionTypeById = id => this.getItemContainerInlistById(id).find('[data-cy="ques-type"]');
+
+  getAuthorById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-1"]');
+
+  getItemIdById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-2"]');
+
+  getItemDOKIById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-0"]');
+
+  getCheckBoxById = id => this.getItemContainerInlistById(id).find('[type="checkbox"]');
+
+  getViewItemById = id =>
+    cy
+      .get(`[data-cy=${id}]`)
+      .find("button")
+      .contains("VIEW");
+
+  getTotalNoOfItemsInUI = () => cy.get('[class^="styled__PaginationInfo"]');
 
   getEditButtonOnPreview = () => this.itemPreview.getEditOnPreview();
 
@@ -79,7 +104,7 @@ class ItemListPage {
 
   clickOnViewItemById = (id, text) => {
     cy.wait(1000);
-    this.getViewItemById(id, text).click();
+    this.getViewItemById(id, text).click({ force: true });
   };
 
   clickOnItemText = () => {
@@ -88,6 +113,8 @@ class ItemListPage {
       .find("a")
       .click();
   };
+
+  checkItemById = id => this.getCheckBoxById(id).check({ force: true });
 
   // *** ACTIONS END ***
   // *** APPHELPERS START ***
@@ -152,7 +179,13 @@ class ItemListPage {
         if (questionJson.meta) {
           // editItem.getEditButton().click();
           editItem.header.metadata();
-          metadataPage.setCollection(questionJson.meta.collections);
+          if (questionJson.meta.collections) metadataPage.setCollection(questionJson.meta.collections);
+          if (questionJson.meta.dok) metadataPage.setDOK(questionJson.meta.dok);
+          if (questionJson.meta.tags)
+            questionJson.meta.tags.forEach(tag => {
+              metadataPage.setTag(tag);
+            });
+          if (questionJson.meta.difficulty) metadataPage.setDifficulty(questionJson.meta.difficulty);
           metadataPage.header.edit();
         }
 
@@ -172,6 +205,33 @@ class ItemListPage {
 
   verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>
     this.testReviewTab.verifyQuestionResponseCard(questype, attempt, attemptType, showans);
+
+  verifyNoOfQuestionsInUI = count => this.getTotalNoOfItemsInUI().should("have.text", `${count} Questions Found`);
+
+  verifyNoOfItemsInContainer = count => this.getAllItemsCountInListContainer().should("have.length", count);
+
+  verifyContentById = (id, content) =>
+    this.getItemContainerInlistById(id)
+      .find("span")
+      .contains(content);
+
+  verifyTotalPagesAndTotalQuestions = () =>
+    this.searchFilters.getTotalNoOfItemsInBank().then(count =>
+      this.getTotalNoOfItemsInUI()
+        .invoke("text")
+        .then(txt => {
+          expect(parseInt(txt, 10)).to.be.greaterThan(count - 10);
+          expect(parseInt(txt, 10)).to.be.lessThan(count + 10);
+        })
+    );
+
+  verifyQuestionTypeById = (id, type) => this.getQuestionTypeById(id).should("have.text", type);
+
+  verifyItemIdById = id => this.getItemIdById(id).should("contain", CypressHelper.getShortId(id));
+
+  verifyAuthorById = (id, author) => this.getAuthorById(id).should("have.text", author);
+
+  verifydokByItemId = (id, dok) => this.getItemDOKIById(id).should("contain", dok);
 
   // *** APPHELPERS END ***
 }

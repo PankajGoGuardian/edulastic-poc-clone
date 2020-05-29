@@ -18,7 +18,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     cy.login("teacher", teacher, password);
   });
 
-  it("create new test with existing questions", () => {
+  it("> create new test with existing questions", () => {
     const testData = SMOKE_2;
     const itemsInTest = [...existingItems];
     // create new test
@@ -63,7 +63,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     testLibrary.header.clickOnPublishButton();
   });
 
-  it("create new test with new question", () => {
+  it("> create new test with new question", () => {
     const testData = SMOKE_3;
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
@@ -108,7 +108,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     testLibrary.header.clickOnPublishButton();
   });
 
-  it("create new test with existing and new question", () => {
+  it("> create new test with existing and new question", () => {
     const testData = SMOKE_4;
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
@@ -162,5 +162,49 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
 
     // publish
     testLibrary.header.clickOnPublishButton();
+  });
+
+  it("> create new test from item bank", () => {
+    const testData = SMOKE_4;
+    testLibrary.sidebar.clickOnItemBank();
+    testLibrary.searchFilters.clearAll();
+    testLibrary.searchFilters.getAuthoredByMe();
+
+    itemListPage.getCreateTest().should("not.be.visible");
+    existingItems.forEach(item => {
+      itemListPage.checkItemById(item);
+    });
+    itemListPage.getCreateTest().should("be.visible");
+
+    cy.server();
+    cy.route("POST", "**api/test").as("createTest");
+    itemListPage.getCreateTest().click({ force: true });
+    cy.wait("@createTest").then(xhr => {
+      cy.saveTestDetailToDelete(xhr.response.body.result._id);
+      testLibrary.testSummary.setName(testData.name);
+      testLibrary.testSummary.clearGrades();
+      testLibrary.testSummary.clearSubjects();
+
+      testData.grade.forEach(grade => {
+        testLibrary.testSummary.selectGrade(grade);
+      });
+      testData.subject.forEach(subject => {
+        testLibrary.testSummary.selectSubject(subject);
+      });
+
+      testLibrary.header.clickOnAddItems();
+      existingItems.forEach(item => {
+        testLibrary.testAddItem.getRemoveButtonById(item);
+      });
+
+      testLibrary.header.clickOnReview();
+      existingItems.forEach(item => {
+        testLibrary.review.verifyQustionById(item);
+      });
+
+      testLibrary.header.clickOnPublishButton();
+
+      testLibrary.searchAndClickTestCardById(xhr.response.body.result._id);
+    });
   });
 });

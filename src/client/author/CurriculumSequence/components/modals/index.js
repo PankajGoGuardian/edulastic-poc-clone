@@ -29,15 +29,13 @@ const CurriculumSequenceModals = ({
   handleAddCustomContent,
   options1,
   options2,
-  curatedStudentPlaylists,
-  slicedRecentPlaylists,
+  playlistsToSwitch,
   handlePlaylistChange,
   onExplorePlaylists,
   curriculumGuide,
   handleGuideSave,
   handleGuideCancel,
   countModular,
-  GridCountInARow,
   fromPlaylist,
   dropPlaylistModalVisible,
   isVideoResourcePreviewModal,
@@ -78,7 +76,7 @@ const CurriculumSequenceModals = ({
 
     <ChangePlaylistModal
       isStudent={isStudent}
-      playlists={isStudent ? curatedStudentPlaylists : slicedRecentPlaylists}
+      playlists={playlistsToSwitch}
       onChange={handlePlaylistChange}
       onExplorePlaylists={onExplorePlaylists}
       activePlaylistId={destinationCurriculumSequence._id}
@@ -87,7 +85,6 @@ const CurriculumSequenceModals = ({
       onOk={handleGuideSave}
       onCancel={handleGuideCancel}
       countModular={countModular}
-      GridCountInARow={GridCountInARow}
     />
 
     <Modal

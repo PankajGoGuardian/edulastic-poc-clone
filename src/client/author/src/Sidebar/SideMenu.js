@@ -14,7 +14,7 @@ import {
 import { get, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Popover } from "antd";
 import styled from "styled-components";
 import {
   IconHeader,
@@ -283,7 +283,8 @@ class SideMenu extends Component {
       className,
       profileThumbnail,
       locationState,
-      features
+      features,
+      showUseThisNotification
     } = this.props;
     if (userRole === roleuser.STUDENT) {
       return null;
@@ -441,6 +442,30 @@ class SideMenu extends Component {
                 }
                 const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
                 const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
+                if (menu.label === "My Playlist" && isCollapsed && showUseThisNotification) {
+                  const content = (
+                    <span>&quot;In Use&ldquo; Play lists are available in the &quot;My Playlists&ldquo; area.</span>
+                  );
+                  return (
+                    <MenuItem
+                      data-cy={menu.label}
+                      key={index.toString()}
+                      onClick={this.toggleMenu}
+                      visible={isItemVisible}
+                      title={isCollapsed ? menu.label : ""}
+                    >
+                      <Popover
+                        visible
+                        placement="right"
+                        content={content}
+                        overlayClassName="antd-notify-custom-popover"
+                      >
+                        <MenuIcon />
+                      </Popover>
+                      <LabelMenuItem isCollapsed={isCollapsed}>{menu.label}</LabelMenuItem>
+                    </MenuItem>
+                  );
+                }
                 return (
                   <MenuItem
                     data-cy={menu.label}
@@ -547,7 +572,8 @@ const enhance = compose(
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, "user.thumbnail"),
       switchDetails: getAccountSwitchDetails(state),
-      locationState: get(state, "router.location.state")
+      locationState: get(state, "router.location.state"),
+      showUseThisNotification: get(state, "curriculumSequence.showUseThisNotification", false)
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )

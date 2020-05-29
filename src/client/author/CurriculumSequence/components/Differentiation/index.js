@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { groupBy, maxBy } from "lodash";
+import { groupBy, maxBy, last } from "lodash";
 import { IconClose } from "@edulastic/icons";
 import { EduButton } from "@edulastic/common";
 import { assignmentStatusOptions } from "@edulastic/constants";
@@ -92,9 +92,11 @@ const Differentiation = ({
       }));
 
       setTestData(testDataGenerated);
-      if (testDataGenerated[0]) {
-        setSelectedTest(testDataGenerated[0]._id);
-        let currentTestClasses = _assignmentsByTestId[testDataGenerated[0]._id].map(a => ({
+
+      const lastTestData = last(testDataGenerated);
+      if (lastTestData) {
+        setSelectedTest(lastTestData._id);
+        let currentTestClasses = _assignmentsByTestId[lastTestData._id].map(a => ({
           classId: a.classId,
           assignmentId: a._id,
           className: a.className,
@@ -177,7 +179,7 @@ const Differentiation = ({
             showSearch
             filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
             data-cy="select-assignment"
-            style={{ width: "200px" }}
+            style={{ minWidth: 200, maxWidth: 300 }}
             placeholder="SELECT ASSIGNMENT"
             onChange={(value, option) => handleAssignmentChange(value, option)}
             value={selectedTest}
@@ -193,7 +195,7 @@ const Differentiation = ({
             showSearch
             filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
             data-cy="select-group"
-            style={{ width: "170px" }}
+            style={{ minWidth: 170, maxWidth: 280 }}
             placeholder="SELECT GROUP"
             onChange={(value, option) => handleClassChange(value, option)}
             value={selectedClass ? `${selectedClass.assignmentId}_${selectedClass.classId}` : undefined}

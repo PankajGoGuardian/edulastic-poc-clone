@@ -178,5 +178,4 @@ const StyledModal = styled(Modal)`
       }
     }
   }
-}
 `;

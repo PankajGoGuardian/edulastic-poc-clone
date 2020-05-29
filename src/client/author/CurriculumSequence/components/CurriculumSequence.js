@@ -238,7 +238,7 @@ class CurriculumSequence extends Component {
       }
     } = this.props;
     const { title, grades, subjects, customize = null } = destinationCurriculumSequence;
-    useThisPlayList({ _id, title, grades, subjects, customize });
+    useThisPlayList({ _id, title, grades, subjects, customize, fromUseThis: true });
   };
 
   handleAddUnitOpen = () => {
@@ -503,7 +503,8 @@ class CurriculumSequence extends Component {
       isVideoResourcePreviewModal,
       fromPlaylist,
       droppedItemId,
-      showRightPanel
+      showRightPanel,
+      location
     } = this.props;
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
@@ -594,6 +595,11 @@ class CurriculumSequence extends Component {
     const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
     const shouldHidCustomizeButton = status === "published" && isPlaylistDetailsPage;
 
+    const playlistsToSwitch = isStudent ? curatedStudentPlaylists : slicedRecentPlaylists;
+    // should show useThis Notification only two times
+    const showUseThisNotification =
+      location.state?.fromUseThis && !loading && playlistsToSwitch?.length && playlistsToSwitch?.length < 2;
+
     return (
       <>
         <CurriculumSequenceModals
@@ -604,13 +610,11 @@ class CurriculumSequence extends Component {
           options1={options1}
           options2={options2}
           countModular={countModular}
-          GridCountInARow={GridCountInARow}
           moduleForEdit={moduleForEdit}
           isVisibleAddModule={isVisibleAddModule}
           addCustomContent={addCustomContent}
           curriculumGuide={curriculumGuide}
-          curatedStudentPlaylists={curatedStudentPlaylists}
-          slicedRecentPlaylists={slicedRecentPlaylists}
+          playlistsToSwitch={playlistsToSwitch}
           destinationCurriculumSequence={destinationCurriculumSequence}
           showConfirmRemoveModal={showConfirmRemoveModal}
           fromPlaylist={fromPlaylist}
@@ -657,6 +661,7 @@ class CurriculumSequence extends Component {
             handleGuidePopup={this.handleGuidePopup}
             onRejectClick={this.onRejectClick}
             loading={loading}
+            showUseThisNotification={showUseThisNotification}
           />
 
           <MainContentWrapper padding="30px">

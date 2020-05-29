@@ -5,18 +5,11 @@ import { reduce, isNumber } from "lodash";
 import { roleuser } from "@edulastic/constants";
 import { Tooltip } from "antd";
 import { FlexContainer, EduButton, MainHeader } from "@edulastic/common";
-import { smallDesktopWidth, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
-import {
-  IconPencilEdit,
-  IconPlaylist,
-  IconShare,
-  IconTile,
-  IconSave,
-  IconAirdrop,
-  IconUseThis
-} from "@edulastic/icons";
+import { smallDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { IconPencilEdit, IconPlaylist, IconShare, IconSave, IconAirdrop, IconUseThis } from "@edulastic/icons";
 import StudentPlayListHeader from "../../../../student/sharedComponents/Header/PlayListHeader";
 import PlaylistPageNav from "../PlaylistPageNav";
+import SwitchPlaylist from "./SwitchPlaylist";
 
 const MobleHeaderWrapper = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
@@ -66,6 +59,7 @@ const CurriculumHeader = ({
   onShareClick,
   onApproveClick,
   handleNavChange,
+  showUseThisNotification,
   handleGuidePopup,
   onRejectClick
 }) => {
@@ -88,19 +82,21 @@ const CurriculumHeader = ({
 
   const isPlaylistDetailsPage = window.location?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
-  const changePlaylistIcon = (
-    <IconTile
-      data-cy="open-dropped-playlist"
-      style={{ cursor: "pointer", marginLeft: "18px" }}
-      onClick={handleGuidePopup}
-      width={18}
-      height={18}
-      color={themeColor}
-    />
-  );
 
   if (isStudent) {
-    return <StudentPlayListHeader headingSubContent={curatedStudentPlaylists?.length > 1 && changePlaylistIcon} />;
+    return (
+      <StudentPlayListHeader
+        headingSubContent={
+          curatedStudentPlaylists?.length > 1 && (
+            <SwitchPlaylist
+              isDesktop={isDesktop}
+              showUseThisNotification={showUseThisNotification}
+              onClickHandler={handleGuidePopup}
+            />
+          )
+        }
+      />
+    );
   }
 
   const savePlaylist = () => {
@@ -112,7 +108,17 @@ const CurriculumHeader = ({
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
         headingText={loading ? "Untitled Playlist" : title}
-        headingSubContent={urlHasUseThis && !isPublisherUser && slicedRecentPlaylists?.length > 1 && changePlaylistIcon}
+        headingSubContent={
+          urlHasUseThis &&
+          !isPublisherUser &&
+          slicedRecentPlaylists?.length > 1 && (
+            <SwitchPlaylist
+              isDesktop={isDesktop}
+              showUseThisNotification={showUseThisNotification}
+              onClickHandler={handleGuidePopup}
+            />
+          )
+        }
         titleMinWidth="unset"
         justify={urlHasUseThis ? "space-between" : "flex-start"}
       >

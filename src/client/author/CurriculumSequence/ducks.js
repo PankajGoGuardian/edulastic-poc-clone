@@ -228,6 +228,9 @@ export const toggleManageContentActiveAction = createAction(TOGGLE_MANAGE_CONTEN
 export const TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID = "[playlist] toggle test details modal";
 export const togglePlaylistTestDetailsModalWithId = createAction(TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID);
 
+// use This button notification
+export const TOGGLE_SHOW_USE_THIS_NOTIFICATION = "[playlist] remove sub-resource from test";
+export const toggleShowUseThisNotificationAction = createAction(TOGGLE_SHOW_USE_THIS_NOTIFICATION);
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
 
@@ -810,7 +813,7 @@ function* duplicateManageContentSaga({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
-    const { _id, title, grades, subjects, groupId, onChange, isStudent } = payload;
+    const { _id, title, grades, subjects, groupId, onChange, isStudent, fromUseThis } = payload;
     yield call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects });
     yield call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects });
     yield put(receiveLastPlayListAction());
@@ -821,15 +824,15 @@ function* useThisPlayListSaga({ payload }) {
     const location = yield select(state => state.router.location.pathname);
     const urlHasUseThis = location.match(/use-this/g);
     if (isStudent && onChange) {
-      yield put(push({ pathname: `/home/playlist/${_id}`, state: { currentGroupId: groupId } }));
+      yield put(push({ pathname: `/home/playlist/${_id}`, state: { currentGroupId: groupId, fromUseThis } }));
       yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id }));
     } else if (onChange && !urlHasUseThis) {
-      yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary" } }));
+      yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary", fromUseThis } }));
     } else {
       yield put(
         push({
           pathname: `/author/playlists/playlist/${_id}/use-this`,
-          state: { from: "myPlaylist" }
+          state: { from: "myPlaylist", fromUseThis }
         })
       );
       yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }));
@@ -1244,6 +1247,7 @@ const initialState = {
   activeRightPanel: "summary",
   allCurriculumSequences: [],
   destinationDirty: false,
+  showUseThisNotification: false,
   originalData: null,
   /**
    * @type {Object.<string, import('./components/CurriculumSequence').CurriculumSequenceType>}}
@@ -1945,5 +1949,8 @@ export default createReducer(initialState, {
   },
   [SET_ACTIVE_RIGHT_PANEL]: (state, { payload }) => {
     state.activeRightPanel = payload;
+  },
+  [TOGGLE_SHOW_USE_THIS_NOTIFICATION]: (state, { payload }) => {
+    state.showUseThisNotification = payload;
   }
 });

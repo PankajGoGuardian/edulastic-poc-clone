@@ -25,7 +25,8 @@ export const SubResourceView = ({
   inDiffrentiation,
   disabled = false
 }) => {
-  const viewResource = data => () => {
+  const viewResource = data => e => {
+    e.stopPropagation();
     if (data.contentType === "lti_resource") showResource(data.contentId);
     if (data.contentType === "website_resource") window.open(data.contentUrl, "_blank");
     if (data.contentType === "video_resource")
@@ -69,8 +70,6 @@ export const SubResource = connect(
   null,
   (dispatch, { fromPlaylist }) => ({
     removeSubResource: payload =>
-      dispatch(fromPlaylist ?
-        removeSubresourceInPlaylistAction(payload) :
-        removeSubResourceAction(payload))
+      dispatch(fromPlaylist ? removeSubresourceInPlaylistAction(payload) : removeSubResourceAction(payload))
   })
 )(SubResourceView);

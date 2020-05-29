@@ -2208,3 +2208,16 @@ div[class*="_pendo"] button {
 .js-focus-visible {
   width: 100% !important;
 }
+
+.antd-notify-custom-popover .ant-popover-arrow {
+  display: block;
+}
+
+.antd-notify-custom-popover .ant-popover-content {
+  margin-top: 0px;
+}
+
+.antd-notify-custom-popover {
+  max-width: 195px;
+  text-align: center;
+}

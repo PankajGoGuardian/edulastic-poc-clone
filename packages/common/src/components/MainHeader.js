@@ -130,13 +130,14 @@ export const TitleWrapper = styled.h1`
   min-width: auto;
   margin: 0px;
   white-space: nowrap;
-  max-width: ${props => (props.noEllipsis ? "unset" : "200px")};
+  max-width: ${props => (props.noEllipsis ? "unset" : props.titleMaxWidth || "200px")};
   overflow: hidden;
+  letter-spacing: 0.9px;
   text-overflow: ellipsis;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: ${props => props.theme.header.headerTitleFontSize};
-    max-width: ${props => (props.noEllipsis ? "unset" : "300px")};
+    max-width: ${props => (props.noEllipsis ? "unset" : props.titleMaxWidth || "300px")};
     min-width: ${props => props.titleMinWidth || "200px"};
   }
 `;

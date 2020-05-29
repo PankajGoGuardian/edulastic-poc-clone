@@ -60,6 +60,13 @@ export const formatAssignment = assignment => {
   if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
     maxAttempts = reports.length;
   }
+
+  let { releaseScore } = clazz.find(item => item._id === classId) || {};
+
+  if (!releaseScore) {
+    releaseScore = assignment.releaseScore;
+  }
+
   return {
     ...assignment,
     startDate,
@@ -73,7 +80,8 @@ export const formatAssignment = assignment => {
     attemptCount,
     maxAttempts,
     lastAttempt,
-    resume
+    resume,
+    releaseScore
   };
 };
 

@@ -47,6 +47,17 @@ const shouldAutoSave = itemRows => {
   return false;
 };
 
+const RealTimeV2HookWrapper = ({ userId, testId, regradedAssignment, regradedRealtimeAssignment }) => {
+  let topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
+  if (regradedAssignment?.newTestId) {
+    topics = [...topics, `student_assessment:test:${regradedAssignment?.newTestId}`];
+  }
+  useRealtimeV2(topics, {
+    regradedAssignment: payload => regradedRealtimeAssignment(payload)
+  });
+  return null;
+};
+
 const AssessmentContainer = ({
   view,
   items,
@@ -129,14 +140,6 @@ const AssessmentContainer = ({
     }
   }, [regradedAssignment?.newTestId]);
 
-  let topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
-  if (regradedAssignment?.newTestId) {
-    topics = [...topics, `student_assessment:test:${regradedAssignment?.newTestId}`];
-  }
-  useRealtimeV2(topics, {
-    regradedAssignment: payload => regradedRealtimeAssignment(payload)
-  });
-
   const onRegradedModalOk = () => {
     history.push(`/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/qid/0`);
     setShowRegradedModal(false);
@@ -178,7 +181,7 @@ const AssessmentContainer = ({
   const getUnAnsweredQuestions = () => {
     const questions = items[currentItem]?.data?.questions || [];
     return questions.filter(q => {
-      const answers = answersById[q.id];
+      const qAnswers = answersById[q.id];
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return (answersById[q.id] || []).filter(token => token?.selected).length === 0;
@@ -188,43 +191,49 @@ const AssessmentContainer = ({
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
           const initialData = q.chart_data.data;
-          return initialData.every((d, i) => d.y === answers[i].y);
+          return initialData.every((d, i) => d.y === qAnswers[i].y);
         }
         case questionType.SORT_LIST:
         case questionType.MATCH_LIST:
-          return (answers || []).every(d => isNull(d));
-        case questionType.ORDER_LIST:
+          return (qAnswers || []).every(d => isNull(d));
+        case questionType.ORDER_LIST: {
           const prevOrder = [...Array(q.list.length).keys()];
-          return answers ? isEqual(prevOrder, answers) : true;
+          return qAnswers ? isEqual(prevOrder, qAnswers) : true;
+        }
         case questionType.MATH:
           if (q.title === "Complete the Equation") {
-            const ans = (answers || "").replace(/\\ /g, "");
+            const ans = (qAnswers || "").replace(/\\ /g, "");
             return isEmpty(ans) || ans === "+=";
           }
-          return isEmpty(answers);
+          return isEmpty(qAnswers);
         case questionType.FORMULA_ESSAY:
-          return (answers || []).every(d => {
+          return (qAnswers || []).every(d => {
             const ans = (d.text || "").replace(/\\ /g, "");
             return isEmpty(ans);
           });
-        case questionType.EXPRESSION_MULTIPART:
-          const { inputs = {}, dropdowns = {}, maths = {}, mathUnits = {} } = answers || {};
-          let isAnswered = Object.values({ ...inputs, ...dropdowns, ...maths }).some(d => d.value?.trim());
+        case questionType.EXPRESSION_MULTIPART: {
+          const { inputs = {}, dropdowns = {}, maths = {}, mathUnits = {} } = qAnswers || {};
+          let isAnswered = Object.values({
+            ...inputs,
+            ...dropdowns,
+            ...maths
+          }).some(d => d.value?.trim());
           if (!isAnswered) {
             isAnswered = Object.values(mathUnits).some(d => d.value || d.unit);
           }
           return !isAnswered;
+        }
         case questionType.CLOZE_TEXT:
         case questionType.CLASSIFICATION:
         case questionType.CLOZE_IMAGE_TEXT: {
-          return (answers || []).every((d, i) => {
+          return (qAnswers || []).every(d => {
             if (typeof d === "string") {
               return isEmpty(d);
-            } else if (Array.isArray(d)) {
-              return isEmpty(d || d.value);
-            } else {
-              return isEmpty(d.value);
             }
+            if (Array.isArray(d)) {
+              return isEmpty(d || d.value);
+            }
+            return isEmpty(d.value);
           });
         }
         default:
@@ -467,7 +476,14 @@ const AssessmentContainer = ({
           data={unansweredPopupSetting.qLabels}
         />
       )}
-
+      {!preview && !demo && (
+        <RealTimeV2HookWrapper
+          userId={userId}
+          testId={testId}
+          regradedAssignment={regradedAssignment}
+          regradedRealtimeAssignment={regradedRealtimeAssignment}
+        />
+      )}
       {playerComponent}
     </AssessmentPlayerContext.Provider>
   );

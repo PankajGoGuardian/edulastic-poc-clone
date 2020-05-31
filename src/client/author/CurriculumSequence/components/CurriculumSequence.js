@@ -581,6 +581,11 @@ class CurriculumSequence extends Component {
     const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
     const shouldHidCustomizeButton = status === "published" && isPlaylistDetailsPage;
 
+    const playlistsToSwitch = isStudent ? curatedStudentPlaylists : slicedRecentPlaylists;
+    // should show useThis Notification only two times
+    const showUseThisNotification =
+      location.state?.fromUseThis && !loading && playlistsToSwitch?.length && playlistsToSwitch?.length <= 3;
+
     return (
       <>
         <CurriculumSequenceModals

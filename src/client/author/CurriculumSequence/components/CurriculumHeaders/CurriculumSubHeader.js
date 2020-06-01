@@ -20,7 +20,6 @@ const CurriculumSubHeader = ({
   match,
   isStudent,
   dateKeys,
-  urlHasUseThis,
   enableCustomize,
   showRightPanel,
   summaryData,
@@ -117,12 +116,9 @@ const CurriculumSubHeader = ({
                   </StyledButton>
                 </DraftModeActionsWrapper>
               )}
-              {enableCustomize &&
-                (!isManageContentActive || !showRightPanel) &&
-                urlHasUseThis &&
-                !shouldHidCustomizeButton && (
-                  <StyledButton onClick={toggleManageContentClick("manageContent")}>Customize Content</StyledButton>
-                )}
+              {enableCustomize && (!isManageContentActive || !showRightPanel) && !shouldHidCustomizeButton && (
+                <StyledButton onClick={toggleManageContentClick("manageContent")}>Customize Content</StyledButton>
+              )}
               {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && (
                 <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
               )}

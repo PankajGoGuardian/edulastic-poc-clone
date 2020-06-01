@@ -7,7 +7,7 @@ import { get, isEmpty } from "lodash";
 import { connect } from "react-redux";
 import Question from "../Question/Question";
 import { ModalWrapper, QuestionWrapperStyled, BottomNavigationWrapper } from "./styled";
-import { submitResponseAction, getTeacherEditedScoreSelector } from "../../ducks";
+import { submitResponseAction, getTeacherEditedScoreSelector, getIsScoringCompletedSelector } from "../../ducks";
 import { stateExpressGraderAnswerSelector, getStudentQuestionSelector } from "../../../ClassBoard/ducks";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 
@@ -134,7 +134,15 @@ class QuestionModal extends React.Component {
         groupId,
         userResponse
      */
-    const { groupId, userResponse: _userResponse, allResponse, submitResponse, teacherEditedScore } = this.props;
+    const {
+      groupId,
+      userResponse: _userResponse,
+      allResponse,
+      submitResponse,
+      teacherEditedScore,
+      studentResponseLoading
+    } = this.props;
+    if (studentResponseLoading) return;
     const { testActivityId, testItemId: itemId } = question;
     if (!isEmpty(_userResponse)) {
       /**
@@ -182,7 +190,15 @@ class QuestionModal extends React.Component {
 
   render() {
     let question = null;
-    const { isVisibleModal, tableData, record, isPresentationMode, windowWidth, studentResponseLoading } = this.props;
+    const {
+      isVisibleModal,
+      tableData,
+      record,
+      isPresentationMode,
+      windowWidth,
+      studentResponseLoading,
+      isScoringInProgress
+    } = this.props;
     const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
 
     if (colIndex !== null && rowIndex !== null) {
@@ -218,7 +234,7 @@ class QuestionModal extends React.Component {
                   student={student}
                   isPresentationMode={isPresentationMode}
                   editResponse={editResponse}
-                  studentResponseLoading={studentResponseLoading}
+                  studentResponseLoading={studentResponseLoading || isScoringInProgress}
                 />
               </QuestionWrapper>
             </ScrollContext.Provider>
@@ -259,7 +275,8 @@ export default connect(
     userResponse: stateExpressGraderAnswerSelector(state),
     allResponse: getStudentQuestionSelector(state),
     teacherEditedScore: getTeacherEditedScoreSelector(state),
-    studentResponseLoading: state.studentQuestionResponse?.loading
+    studentResponseLoading: state.studentQuestionResponse?.loading,
+    isScoringInProgress: getIsScoringCompletedSelector(state)
   }),
   { submitResponse: submitResponseAction }
 )(QuestionModal);

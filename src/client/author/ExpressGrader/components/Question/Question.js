@@ -34,7 +34,7 @@ class Question extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!isEqual(prevProps.teacherEditedScore, this.props.teacherEditedScore)) {
+    if (!isEqual(prevProps.teacherEditedScore, this.props.teacherEditedScore) && !this.props.studentResponseLoading) {
       const {
         record,
         loadStudentQuestionResponses,
@@ -111,7 +111,8 @@ const enhance = compose(
       testItems: getTestItemsDataSelector(state),
       assignmentClassId: getAssignmentClassIdSelector(state),
       studentQuestion: getStudentQuestionSelector(state),
-      teacherEditedScore: getTeacherEditedScoreSelector(state)
+      teacherEditedScore: getTeacherEditedScoreSelector(state),
+      studentResponseLoading: state.studentQuestionResponse?.loading
     }),
     {
       loadStudentQuestionResponses: receiveStudentQuestionAction

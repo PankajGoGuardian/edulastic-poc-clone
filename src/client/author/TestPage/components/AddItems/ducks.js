@@ -271,7 +271,7 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
 function* reportContentErrorSaga({ payload }) {
   try {
     yield call(contentErrorApi.reportContentError, payload);
-    yield call(message.success, "Issue reported successfully.");
+    notification({ type: "success", messageKey:"issueReportedSuccessfully"});
   } catch (err) {
     console.error(err);
     yield call(message.error, "Failed to report issue.");

@@ -5,6 +5,7 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 
 import { courseApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { groupBy, get } from "lodash";
 
 const RECEIVE_COURSE_REQUEST = "[course] receive data request";
@@ -310,7 +311,7 @@ function* updateCourseSaga({ payload }) {
   try {
     const updateCourse = yield call(courseApi.editCourse, payload.updateData);
     yield put(updateCourseSuccessAction(updateCourse.course));
-    message.success("Course updated successfully");
+    notification({ type: "success", messageKey:"courseUpdatedSuccessfully"});
   } catch (err) {
     const errorMessage = "Update Course is failing";
     yield call(message.error, errorMessage);
@@ -338,7 +339,7 @@ function* deactivateCourseSaga({ payload }) {
   try {
     yield call(courseApi.deactivateCourse, payload);
     yield put(deactivateCourseSuccessAction(payload));
-    message.success("Course(s) has been successfully deactivated");
+    notification({ type: "success", messageKey:"courseDeactivated"});
   } catch (err) {
     const errorMessage = "Deactivate course is failing";
     yield call(message.error, errorMessage);

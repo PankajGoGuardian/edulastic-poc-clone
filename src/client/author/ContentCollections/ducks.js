@@ -3,7 +3,7 @@ import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { collectionsApi, contentImportApi } from "@edulastic/api";
-import { uploadToS3 } from "@edulastic/common";
+import { uploadToS3 , notification } from "@edulastic/common";
 import { push } from "react-router-redux";
 import { aws } from "@edulastic/constants";
 import { UPLOAD_STATUS, JOB_STATUS } from "../ImportTest/ducks";
@@ -203,7 +203,7 @@ export const reducer = createReducer(initialState, {
 function* createCollectionRequestSaga({ payload }) {
   try {
     const collection = yield call(collectionsApi.createNewCollection, payload.data);
-    yield call(message.success, "Collection created Successfully.");
+    notification({ type: "success", messageKey:"collectionCreatedSuccessfully"});
     yield put(createCollectionSuccessAction(collection));
     yield put(
       fetchCollectionListRequestAction({
@@ -222,7 +222,7 @@ function* createCollectionRequestSaga({ payload }) {
 function* editCollectionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.editCollection, payload);
-    yield call(message.success, "Collection updated Successfully.");
+    notification({ type: "success", messageKey:"collectionUpdatedSuccessfully"});
     const collection = {
       ...payload.data,
       _id: payload.id
@@ -261,7 +261,7 @@ function* addPermissionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.addPermission, payload);
     yield put(fetchPermissionsRequestAction(payload.bankId));
-    yield call(message.success, `Permission added successfully for ${payload.collectionName}.`);
+    notification({ type: "success", msg: `Permission added successfully for ${payload.collectionName}.`});
   } catch (err) {
     console.error(err);
     let errorMessage = "Error occured while adding permision.";
@@ -274,7 +274,7 @@ function* editPermissionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.editPermission, payload);
     yield put(fetchPermissionsRequestAction(payload.bankId));
-    yield call(message.success, "Permission edited successfully.");
+    notification({ type: "success", messageKey:"persmissionEditedSuccessfully"});
   } catch (err) {
     console.error(err);
     let errorMessage = "Unable to edit Permission.";
@@ -297,7 +297,7 @@ function* deletePermissionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.deletePermission, payload);
     yield put(deletePermissionSuccessAction(payload.id));
-    yield call(message.success, "Permission deactivated successfully");
+    notification({ type: "success", messageKey:"persmissionDeactivatedSuccessfully"});
   } catch (err) {
     console.error(err);
     yield call(message.error, "Unable to deactivate permission");

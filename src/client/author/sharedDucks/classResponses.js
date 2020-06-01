@@ -211,7 +211,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       type: RECEIVE_STUDENT_RESPONSE_REQUEST,
       payload: { testActivityId, groupId, studentId }
     });
-    yield call(message.success("Feedback successully update"));
+    notification({ type: "success", messageKey:"feedbackSuccessfullyUpdate"});
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive tests is failing";
@@ -356,7 +356,7 @@ function* updateStudentScore({ payload }) {
       });
     }
 
-    yield call(message.success("Score is successfully updated"));
+    notification({ type: "success", messageKey:"scoreSucessfullyUpdated"});
   } catch (e) {
     console.log(e);
     yield call(message.error, "Score updation failed");

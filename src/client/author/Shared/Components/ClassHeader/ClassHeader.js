@@ -118,7 +118,7 @@ class ClassHeader extends Component {
 
   confirm = () => {
     this.setState({ visible: false });
-    message.success("Next step.");
+    notification({ type: "success", messageKey:"nextStep"});
   };
 
   cancel = () => {

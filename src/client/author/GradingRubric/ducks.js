@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { createAction, createReducer } from "redux-starter-kit";
 import { rubricsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { setRubricIdAction } from "../sharedDucks/questions";
 import { setItemLevelScoreFromRubricAction } from "../ItemDetail/ducks";
 
@@ -78,8 +79,8 @@ function* saveRubricSaga({ payload }) {
     );
     yield put(addRubricToRecentlyUsedAction(data));
     yield put(setItemLevelScoreFromRubricAction(false));
-    if (payload.rubricData.status === "draft") yield call(message.success, "Rubric is saved as draft");
-    else if (payload.rubricData.status === "published") yield call(message.success, "Rubric is saved and published");
+    if (payload.rubricData.status === "draft") notification({ type: "success", messageKey:"rubricIsSavedAsDraft"});
+    else if (payload.rubricData.status === "published")notification({ type: "success", messageKey:"rubricIsSavedAndSpublished"});
   } catch (err) {
     yield call(message.error, "Failed to save Rubric");
   }
@@ -100,8 +101,8 @@ function* updateRubricSaga({ payload }) {
     );
     yield put(addRubricToRecentlyUsedAction(payload.rubricData));
     yield put(updateRubricInRecentlyUsedAction(data));
-    if (payload.status === "draft") yield call(message.success, "Rubric is updated as draft");
-    else if (payload.status === "published") yield call(message.success, "Rubric is updated and published");
+    if (payload.status === "draft") notification({ type: "success", messageKey:"rubricUpdatedAsDraft"});
+    else if (payload.status === "published") notification({ type: "success", messageKey:"rubricUpdatedAndSPublished"});
   } catch (err) {
     yield call(message.error, "Failed to update Rubric");
   }
@@ -120,7 +121,7 @@ function* searchRubricsSaga({ payload }) {
 function* deleteRubricSaga({ payload }) {
   try {
     yield call(rubricsApi.deleteRuricsById, payload);
-    yield call(message.success, "Rubric deleted successfully.");
+    notification({ type: "success", messageKey:"rubricDeletedSuccessfully"});
   } catch (err) {
     console.error(err);
     yield call(message.error, "Failed to delete the rubric.");

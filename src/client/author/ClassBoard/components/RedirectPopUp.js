@@ -4,7 +4,7 @@ import moment from "moment";
 import { some } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { assignmentApi } from "@edulastic/api";
-import { EduButton } from "@edulastic/common";
+import { EduButton,notification } from "@edulastic/common";
 import { getUserName, getRedirectEndDate } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
@@ -121,7 +121,7 @@ const RedirectPopUp = ({
         await assignmentApi
           .redirect(assignmentId, redirectAssignment)
           .then(() => {
-            message.success("Redirect Successful");
+            notification({ type: "success", messageKey:"redirectSuccessful"});
             closePopup(true);
           })
           .catch(err => {

@@ -1,6 +1,7 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { testItemsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { keyBy as _keyBy, omit as _omit, get } from "lodash";
 
 import {
@@ -47,7 +48,7 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    yield call(message.success, "Item is saved as draft", 2);
+    notification({ type: "success", messageKey:"itemSavedSuccess"});
   } catch (err) {
     console.error(err);
     const errorMessage = "Item save is failing";

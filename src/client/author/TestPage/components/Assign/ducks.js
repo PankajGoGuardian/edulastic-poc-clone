@@ -292,8 +292,8 @@ function* saveAssignment({ payload }) {
     const isAdminRole = [roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(userRole);
     if (containsCanvasClass) {
       if (isAdminRole) {
-        yield call(message.success, "The assignments will be shared to the Canvas in some time.");
-      } else yield call(message.success, "The assignment is shared to your Canvas class also.");
+        notification({ type: "success", messageKey:"assignmentsWillBeSharedToCanvasINSometime"});
+      } else notification({ type: "success", messageKey:"asignmentSharedTOCanvasClassAlso"});
     }
     if (!assignmentId && !payload.playlistModuleId) return;
 

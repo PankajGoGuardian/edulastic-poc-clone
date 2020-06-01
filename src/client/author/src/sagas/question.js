@@ -93,7 +93,7 @@ function* saveQuestionSaga() {
       payload: { item }
     });
 
-    yield call(message.success, "Item is saved as draft", 2);
+    notification({ type: "success", messageKey:"itemSavedSuccess"});
     if (itemDetail) {
       yield call(history.push, {
         pathname: `/author/items/${itemDetail._id}/item-detail`,

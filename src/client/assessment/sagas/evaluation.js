@@ -83,7 +83,7 @@ function* evaluateAnswers({ payload: groupId }) {
         itemId: testItemId
       }
     });
-    message.success(`score: ${score % 1 === 0 ? score : score.toFixed(2)}/${maxScore}`);
+     notification({ type: "success", msg:`score: ${score % 1 === 0 ? score : score.toFixed(2)}/${maxScore}`});
   } catch (err) {
     if (err.status === 403) notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
     else message.error("Check answer failed");

@@ -43,7 +43,7 @@ function* receiveCreateFolderRequest({ payload }) {
     const { folderName } = payload;
     const entity = yield call(folderApi.createFolder, payload);
     const successMsg = `${folderName} created successfully`;
-    yield call(message.success, successMsg);
+    notification({ type: "success", msg:successMsg});
     yield put({
       type: RECEIVE_FOLDER_CREATE_SUCCESS,
       payload: { entity }

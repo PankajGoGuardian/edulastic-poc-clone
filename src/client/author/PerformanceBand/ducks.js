@@ -2,6 +2,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { createSelector } from "reselect";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { getUserOrgId } from "../src/selectors/user";
 import { get, omit } from "lodash";
@@ -218,7 +219,7 @@ function* deletePerformanceBandSaga({ payload }) {
     const createPerformanceBand = yield call(settingsApi.deletePerformanceBand, payload, districtId);
     yield put(setLoadingAction(false));
     yield put(receivePerformanceBandAction());
-    yield call(message.success, "Performance Band profile deleted successfully.");
+    notification({ type: "success", messageKey:"performanceBandProfileDeleted"});
   } catch (err) {
     yield put(setLoadingAction(false));
     if (err.status === 409) {

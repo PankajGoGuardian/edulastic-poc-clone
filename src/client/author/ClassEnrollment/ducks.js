@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { enrollmentApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 const RECEIVE_CLASSENROLLMENT_LIST_REQUEST = "[class enrollment] receive list request";
 const RECEIVE_CLASSENROLLMENT_LIST_SUCCESS = "[class enrollment] receive list success";
@@ -72,10 +73,7 @@ function* enrolExistingUserToClass({ payload }) {
     const { classCode, districtId, studentIds, type, name } = payload;
     const res = yield call(enrollmentApi.SearchAddEnrolMultiStudents, { classCode, districtId, studentIds });
     if (res)
-      yield call(
-        message.success,
-        `Students enrolled to ${type === "custom" ? "group" : "class"} ${name || ""} successfully`
-      );
+      notification({ type: "success", msg:`Students enrolled to ${type === "custom" ? "group" : "class"} ${name || ""} successfully`});
   } catch (error) {
     yield call(message.error, "Add user failed");
   }

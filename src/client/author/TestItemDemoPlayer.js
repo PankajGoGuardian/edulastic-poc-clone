@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { message, Button } from "antd";
+import { notification } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { KeyBy } from "lodash";
@@ -33,7 +34,7 @@ const ItemPlayer = ({ match, answers, addEvaluation, changePreview, evaluation, 
         testItem.itemLevelScore
       );
       addEvaluation(evals);
-      message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
+      notification({ type: "success", msg:`score: ${+score.toFixed(2)}/${maxScore}`});
     } catch (e) {
       console.log(e);
       message.error("evaluation failed");

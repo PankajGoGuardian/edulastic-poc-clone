@@ -651,7 +651,7 @@ class TestList extends Component {
         };
       });
       addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
-      message.success("Tests Added to playlist");
+      notification({ type: "success", messageKey:"testAddedPlalist"});
     } else {
       const nonDraftIds = nonDraftTests.map(x => x._id);
       this.setState(() => ({
@@ -685,9 +685,9 @@ class TestList extends Component {
     }));
     if (len) {
       deleteTestFromModuleInBulk({ testIds });
-      message.success("Tests removed from playlist");
+      notification({ type: "success", messageKey:"testremovedPlaylist"});
     } else {
-      message.success("Selected tests are cleared");
+      notification({ type: "success", messageKey:"selectedTestAreCleared"});
     }
   };
 

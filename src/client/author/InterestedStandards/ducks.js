@@ -4,6 +4,7 @@ import { get, keyBy } from "lodash";
 import { settingsApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { getUserRole } from "../src/selectors/user";
 
 // action types
@@ -122,7 +123,7 @@ function* updateInterestedStandardsSaga({ payload }) {
         curriculums: [...updateInterestedStandards.curriculums, ...daSelectedCurriculums]
       })
     );
-    yield call(message.success, "Interested Standards saved successfully.");
+    notification({ type: "success", messageKey:"intrestedStandardSavedSuccessfully"});
   } catch (err) {
     console.log(err);
     const errorMessage = "Update Interested Standards is failing";
@@ -135,7 +136,8 @@ function* saveInterestedStandardsSaga({ payload }) {
   try {
     const saveInterestedStandards = yield call(settingsApi.saveInterestedStandards, payload);
     yield put(saveInterestedStandardsSuccessAction(saveInterestedStandards));
-    yield call(message.success, "Interested Standards saved successfully.");
+    notification({ type: "success", messageKey:"intrestedStandardSavedSuccessfully"});
+
   } catch (err) {
     const errorMessage = "Save Interested Standards is failing";
     yield call(message.error, errorMessage);

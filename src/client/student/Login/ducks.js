@@ -1155,7 +1155,7 @@ function* resetPasswordRequestSaga({ payload }) {
 function* resetMyPasswordRequestSaga({ payload }) {
   try {
     yield call(userApi.resetMyPassword, payload);
-    yield call(message.success, "Password changed successfully");
+    notification({ type: "success", messageKey:"passwordChangedSucessfully"});
     yield put({ type: RESET_MY_PASSWORD_SUCCESS });
   } catch (e) {
     console.error(e);
@@ -1169,7 +1169,7 @@ function* resetMyPasswordRequestSaga({ payload }) {
 function* updateProfileImageSaga({ payload }) {
   try {
     yield call(userApi.updateUser, payload);
-    yield call(message.success, "Thumbnail changed successfully");
+    notification({ type: "success", messageKey:"thumbnailChangedSuccessfully"});
     yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS, payload: payload.data.thumbnail });
   } catch (e) {
     console.error(e);
@@ -1182,10 +1182,10 @@ function* updateProfileImageSaga({ payload }) {
 function* updateUserDetailsSaga({ payload }) {
   try {
     const result = yield call(userApi.updateUser, payload);
-    yield call(message.success, "User details updated successfully.");
+    notification({ type: "success", messageKey:"userDetailsUpdatedSUccessfully"});
     yield put({ type: UPDATE_USER_DETAILS_SUCCESS, payload: result });
     if (payload.isLogout) {
-      yield call(message.success, "Logging Out !");
+      notification({ type: "success", messageKey:"loggingOut"});
       yield put({ type: LOGOUT });
     }
   } catch (e) {
@@ -1200,7 +1200,7 @@ function* updateUserDetailsSaga({ payload }) {
 function* deleteAccountSaga({ payload }) {
   try {
     yield call(userApi.deleteAccount, payload);
-    yield call(message.success, "Account deleted successfully.");
+    notification({ type: "success", messageKey:"accountDeletedSuccessfully"});
     yield put({ type: LOGOUT });
   } catch (e) {
     console.error(e);
@@ -1211,7 +1211,7 @@ function* deleteAccountSaga({ payload }) {
 function* updateInterestedCurriculumsSaga({ payload }) {
   try {
     yield call(settingsApi.updateInterestedStandards, payload);
-    yield call(message.success, "Standard sets updated successfully.");
+    notification({ type: "success", messageKey:"standardSetsUpdatedSuccessfully"});
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
@@ -1223,7 +1223,7 @@ function* updateInterestedCurriculumsSaga({ payload }) {
 function* removeSchoolSaga({ payload }) {
   try {
     yield call(userApi.removeSchool, payload);
-    yield call(message.success, "Requested school removed successfully.");
+    notification({ type: "success", messageKey:"requestedSchoolRemovedSucessfully"});
     yield put({ type: REMOVE_SCHOOL_SUCCESS, payload: payload.schoolId });
   } catch (e) {
     yield put({ type: REMOVE_SCHOOL_FAILED });
@@ -1341,7 +1341,7 @@ function* changeChildSaga({ payload }) {
 function* updateDefaultSettingsSaga({ payload }) {
   try {
     yield call(settingsApi.updateInterestedStandards, payload);
-    yield call(message.success, "Default settings updated successfully.");
+    notification({ type: "success", messageKey:"defaultSettingsUpdatedSuccessfully"});
     yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload });
   } catch (e) {
     yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED });

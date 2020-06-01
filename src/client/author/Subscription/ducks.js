@@ -1,4 +1,5 @@
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { subscriptionApi, paymentApi } from "@edulastic/api";
@@ -67,7 +68,7 @@ function* upgradeUserLicense({ payload }) {
     const apiUpgradeUserResponse = yield call(subscriptionApi.upgradeUsingLicenseKey, payload);
     if (apiUpgradeUserResponse.success) {
       yield put(slice.actions.upgradeLicenseKeySuccess(apiUpgradeUserResponse));
-      yield call(message.success, { content: "Verified!", key: "verify-license", duration: 2 });
+      notification({ type: "success", msg:{ content: "Verified!", key: "verify-license"}});
       yield put(fetchUserAction({ background: true }));
     }
   } catch (err) {
@@ -90,7 +91,7 @@ function* handleStripePayment({ payload }) {
       const apiPaymentResponse = yield call(paymentApi.pay, { token });
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse));
-        yield call(message.success, { content: "Payment Successful", key: "handle-payment", duration: 2 });
+        notification({ type: "success", msg: { content: "Payment Successful", key: "handle-payment"}});
         yield put(fetchUserAction({ background: true }));
       } else {
         yield call(message.error, {

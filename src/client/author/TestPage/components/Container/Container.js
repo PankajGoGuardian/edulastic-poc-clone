@@ -212,16 +212,16 @@ class Container extends PureComponent {
       if (createdItems.length > 0) {
         this.setState({ editEnable: true });
         if (_location?.state?.showItemAddedMessage) {
-          message.success(
-            <span>
+         const msg=(
+             <span>
               New item has been created and added to the current test. Click{" "}
               <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
                 here
               </span>{" "}
               to see it.
-            </span>,
-            3
+             </span>
           );
+          notification({ type: "success", msg:msg});
         }
       }
 

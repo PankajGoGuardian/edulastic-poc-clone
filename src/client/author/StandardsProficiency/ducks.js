@@ -1,6 +1,7 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { getUserOrgId } from "../src/selectors/user";
 
@@ -217,7 +218,7 @@ function* deleteStandardsProficiencySaga({ payload: _id }) {
     const districtId = yield select(getUserOrgId);
     yield call(settingsApi.deleteStandardsProficiency, _id, districtId);
     yield put(receiveStandardsProficiencyAction());
-    yield call(message.success, "Standard Proficiency profile deleted successfully.");
+    notification({ type: "success", messageKey:"teacherUpdatedSuccessfully"});
   } catch (err) {
     if (err.status === 409) {
       yield put(deleteStandardsProficiencyErrorAction({ type: err.data["0"] }));

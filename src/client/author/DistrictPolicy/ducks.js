@@ -2,6 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { get } from "lodash";
 import { createSelector } from "reselect";
 import { getUserRole } from "../src/selectors/user";
@@ -141,8 +142,7 @@ function* receiveDistrictPolicySaga({ payload }) {
 function* updateDictrictPolicySaga({ payload }) {
   try {
     const updateDistrictPolicy = yield call(settingsApi.updateDistrictPolicy, payload);
-    yield put(updateDistrictPolicySuccessAction(updateDistrictPolicy));
-    yield call(message.success, "Saved Successfully");
+    notification({ type: "success", messageKey:"SavedSuccessfully"});
   } catch (err) {
     const errorMessage = "Update District Policy is failing";
     yield call(message.error, errorMessage);

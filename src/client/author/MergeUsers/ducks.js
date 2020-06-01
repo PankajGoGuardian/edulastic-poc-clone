@@ -1,4 +1,5 @@
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createSlice } from "redux-starter-kit";
 import { takeLatest, call, put } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
@@ -60,7 +61,7 @@ function* mergeUsersSaga({ payload }) {
     const { primaryUserId, userIds, onMergeAction } = payload;
     const response = yield call(userApi.mergeUsers, { primaryUserId, userIds });
     yield put(actions.mergeUsersSuccess({}));
-    yield call(message.success, response.message);
+    notification({ type: "success", msg:response.message});
     yield call(onMergeAction);
   } catch (err) {
     yield put(actions.mergeUsersFailed());

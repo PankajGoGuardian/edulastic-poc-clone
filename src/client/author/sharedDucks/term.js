@@ -1,6 +1,7 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { termApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 import {
   RECEIVE_TERM_REQUEST,
@@ -36,7 +37,7 @@ function* createTermSaga({ payload }) {
     const createTerm = yield call(termApi.createTerm, { body: payload.body });
     const key = payload.key;
     const successMessage = "Term Created Successfully!";
-    yield call(message.success, successMessage);
+    notification({ type: "success", msg:successMessage});
     yield put({
       type: CREATE_TERM_SUCCESS,
       payload: { data: createTerm, key: key }
@@ -55,7 +56,7 @@ function* updateTermSaga({ payload }) {
   try {
     const updateTerm = yield call(termApi.updateTerm, payload);
     const successMessage = "Term Saved Successfully!";
-    yield call(message.success, successMessage);
+    notification({ type: "success", msg:successMessage});
     yield put({
       type: UPDATE_TERM_SUCCESS,
       payload: updateTerm

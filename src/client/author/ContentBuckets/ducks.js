@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { contentBucketApi, collectionsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import i18next from "i18next";
 
 const localizationPrefix = "manageDistrict";
@@ -103,7 +104,7 @@ function* receiveBucketsSaga({ payload }) {
 function* updateBucketSaga({ payload }) {
   try {
     const updateBucket = yield call(contentBucketApi.updateBucket, payload);
-    message.success(i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateSuccessMsg`));
+    notification({ type: "success", msg:i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateSuccessMsg`)});
     yield put(updateBucketSuccessAction(updateBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateErrorMsg`);
@@ -115,7 +116,7 @@ function* updateBucketSaga({ payload }) {
 function* createBucketSaga({ payload }) {
   try {
     const createBucket = yield call(contentBucketApi.createBucket, payload);
-    message.success(i18next.t(`${localizationPrefix}:content.buckets.bucketCreateSuccessMsg`));
+    notification({ type: "success", msg:i18next.t(`${localizationPrefix}:content.buckets.bucketCreateSuccessMsg`)});
     yield put(createBucketSuccessAction(createBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketCreateErrorMsg`);
@@ -128,7 +129,7 @@ function* saveItemsToBucketSaga({ payload }) {
   try {
     yield call(collectionsApi.saveItemsToBucket, payload);
     yield put(setAddCollectionModalVisibleAction(false));
-    message.success(`Selected Items are added to ${payload.collectionName} - ${payload.name}`);
+    notification({ type: "success", msg:`Selected Items are added to ${payload.collectionName} - ${payload.name}`});
   } catch (e) {
     message.error(e?.message || "Failed to save item to bucket");
   }

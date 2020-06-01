@@ -119,10 +119,10 @@ export function* approveOrRejectSingleItemSaga({ payload }) {
   try {
     const result = yield call(testItemsApi.publishTestItem, payload);
     yield put({ type: APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS, payload: payload });
-    yield call(message.success, `Item successfully ${payload.status}.`);
+    notification({ type: "success", msg:`Item successfully ${payload.status}.`});
   } catch (e) {
     console.error(e);
-    yield call(message.success, `Failed to update Status`);
+    notification({ type: "success", messageKey:"failedToUpdateStatus"});
   }
 }
 
@@ -152,17 +152,14 @@ export function* approveOrRejectMultipleItemSaga({ payload }) {
       const result = yield call(testItemsApi.bulkPublishTestItems, data);
       if (result.nModified === data.itemIds.length) {
         yield put({ type: APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS, payload: data });
-        yield call(message.success, `${data.itemIds.length} item(s) successfully ${payload.status}.`);
+        notification({ type: "success", msg: `${data.itemIds.length} item(s) successfully ${payload.status}.`});
       } else {
-        yield call(
-          message.success,
-          `${result.nModified} item(s) successfully ${payload.status}, ${data.itemIds.length -
-            result.nModified} item(s) failed`
-        );
+        notification({ type: "success", msg: `${result.nModified} item(s) successfully ${payload.status}, ${data.itemIds.length -
+          result.nModified} item(s) failed`});
       }
     } catch (e) {
       console.error(e);
-      yield call(message.success, `Failed to update Status`);
+      notification({ type: "success", messageKey:"failedToUpdateStatus"});
     }
   }
 }

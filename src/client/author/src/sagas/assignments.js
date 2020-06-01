@@ -164,7 +164,7 @@ function* updateAssignmetSaga({ payload }) {
       payload: data
     });
     const successMessage = "Successfully updated release score settings";
-    yield call(message.success, successMessage);
+    notification({ type: "success", msg:successMessage});
   } catch (e) {
     const errorMessage = "Update release score settings is failing";
     yield put({
@@ -178,12 +178,12 @@ function* updateAssignmetSaga({ payload }) {
 
 function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
-    yield call(message.success, "Sharing assignment is in progress");
+    notification({ type: "success", messageKey:"sharedAssignmentInProgress"});
     yield call(assignmentApi.syncWithGoogleClassroom, payload);
     yield put({
       type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS
     });
-    yield call(message.success, "Assignment is shared with Google Classroom successfully");
+    notification({ type: "success", messageKey:"assignmentSharedWithGoggleCLassroom"});
   } catch (error) {
     const errorMessage =
       error?.data?.message || "Assignment failed to share with google classroom. Please try after sometime.";

@@ -1,6 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { createSelector } from "reselect";
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
@@ -116,7 +117,7 @@ function* submitResponse({ payload }) {
       userResponse,
       scores
     });
-    yield call(message.success, "updated response successfully");
+    notification({ type: "success", messageKey:"updatedResponseSuccessfully"});
     const { questionActivities } = scoreRes;
     yield put(
       gradebookTestItemAddAction(

@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { set } from "lodash";
 import { createAction, createReducer } from "redux-starter-kit";
 
@@ -99,7 +100,7 @@ function* updateTestSettingSaga({ payload }) {
   try {
     const updateTestSetting = yield call(settingsApi.updateTestSetting, payload);
     yield put(updateTestSettingSuccessAction(updateTestSetting));
-    yield call(message.success, "Test Settings saved successfully.");
+    notification({ type: "success", messageKey:"testSettingsSaved"});
   } catch (err) {
     const errorMessage = "Update Test Setting is failing";
     yield call(message.error, errorMessage);
@@ -111,7 +112,7 @@ function* createTestSettingSaga({ payload }) {
   try {
     const createTestSetting = yield call(settingsApi.createTestSetting, payload);
     yield put(createTestSettingSuccessAction(createTestSetting));
-    yield call(message.success, "Test Settings saved successfully.");
+    notification({ type: "success", messageKey:"testSettingsSaved"});
   } catch (err) {
     const errorMessage = "Create Test Setting is failing";
     yield call(message.error, errorMessage);

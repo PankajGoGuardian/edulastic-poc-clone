@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 const RECEIVE_DISTRICTADMIN_REQUEST = "[districtadmin] receive data request";
 const RECEIVE_DISTRICTADMIN_SUCCESS = "[districtadmin] receive data success";
@@ -217,7 +218,7 @@ function* receiveDistrictAdminSaga({ payload }) {
 function* updateDistrictAdminSaga({ payload }) {
   try {
     const updateDistrictAdmin = yield call(userApi.updateUser, payload);
-    message.success("District admin updated successfully");
+    notification({ type: "success", messageKey:"districtAdminUpdated"});
     yield put(updateDistrictAdminSuccessAction(updateDistrictAdmin));
   } catch (err) {
     const errorMessage = "Update DistrictAdmin is failing";
@@ -242,7 +243,7 @@ function* deleteDistrictAdminSaga({ payload }) {
     // for (let i = 0; i < payload.length; i++) {
     const { result } = yield call(userApi.deleteUser, payload);
     // }
-    message.success(result);
+    notification({ type: "success", msg:result});
     yield put(deleteDistrictAdminSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete DistrictAdmin is failing";

@@ -4,6 +4,7 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { googleApi, groupApi, userApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { keyBy } from "lodash";
 
 const RECEIVE_CLASSLIST_REQUEST = "[class] receive list request";
@@ -273,7 +274,7 @@ function* updateClassSaga({ payload }) {
   try {
     const updateClassData = yield call(groupApi.editGroup, payload);
     yield put(updateClassSuccessAction(updateClassData));
-    yield call(message.success, "Class updated successfully");
+    notification({ type: "success", messageKey: "classUpdatedSuccessfully" });
   } catch (err) {
     const errorMessage = "Update Class is failing";
     yield call(message.error, errorMessage);
@@ -285,7 +286,7 @@ function* createClassSaga({ payload }) {
   try {
     const createClass = yield call(groupApi.createGroup, payload);
     yield put(createClassSuccessAction(createClass));
-    yield call(message.success, "Class Created Successfully");
+    notification({ type: "success", messageKey: "classCreatedSuccessfully" });
   } catch (err) {
     const errorMessage = "Create Class is failing";
     yield call(message.error, errorMessage);
@@ -298,7 +299,7 @@ function* deleteClassSaga({ payload }) {
     yield call(groupApi.deleteGroup, payload.data);
     yield put(deleteClassSuccessAction(payload));
     yield put(receiveClassListAction(payload.searchQuery));
-    yield call(message.success, "Selected class(es) have been archived");
+    notification({ type: "success", messageKey: "selectedClassesArchived" });
   } catch (err) {
     const errorMessage = "Delete Class is failing";
     yield call(message.error, errorMessage);
@@ -322,7 +323,7 @@ function* bulkUpdateClassesSaga({ payload }) {
     const { result } = yield call(groupApi.bulkUpdateClasses, payload.data);
     yield put(receiveClassListAction(payload.searchQuery));
     yield put(bulkUpdateClassesSuccessAction(result));
-    message.success(result.message);
+    notification({ type: "success", msg:result.message});
   } catch (err) {
     const errorMessage = "Something went wrong. Please try again!";
     message.error(errorMessage);
@@ -333,7 +334,7 @@ function* archiveClassSaga({ payload }) {
   try {
     yield call(groupApi.archiveGroup, payload);
     const successMessage = "Class Archived Successfully";
-    yield call(message.success, successMessage);
+    notification({ type: "success", msg: successMessage});
     yield put(archiveClassSuccessAction({ archiveSuccess: successMessage }));
     yield put(push("/author/manageClass"));
   } catch (err) {
@@ -354,7 +355,7 @@ function* saveHangoutEventSaga({ payload }) {
       });
     }
     const successMessage = "Google Meet event saved successfully";
-    yield call(message.success, successMessage);
+    notification({ type: "success", msg:successMessage});
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
     const errorMessage = "Google Meet event save is failing";
@@ -373,7 +374,7 @@ function* updateHangoutEventSaga({ payload }) {
       });
     }
     const successMessage = "Hangouts event updated successfully";
-    yield call(message.success, successMessage);
+    notification({ type: "success", msg: successMessage});
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
     const errorMessage = "Hangouts event update is failing";

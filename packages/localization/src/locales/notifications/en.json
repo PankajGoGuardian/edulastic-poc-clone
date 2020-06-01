@@ -742,5 +742,241 @@
   "tryingToAccessPrivateTest": {
     "message": "Trying to access private test",
     "description": ""
+  },
+  "redirectSuccessful": {
+    "message": "Redirect Successful",
+    "description": ""
+  },
+  "nextStep": {
+    "message": "Next step",
+    "description": ""
+  },
+  "classUpdatedSuccessfully": {
+    "message": "Class updated successfully",
+    "description": ""
+  },
+  "classCreatedSuccessfully": {
+    "message": "Class Created Successfully",
+    "description": ""
+  },
+  "selectedClassesArchived": {
+    "message": "Selected class(es) have been archived",
+    "description": ""
+  },
+  "collectionCreatedSuccessfully": {
+    "message":"Collection created Successfully.",
+    "description": ""
+  },
+  "collectionUpdatedSuccessfully": {
+    "message":"Collection updated Successfully.",
+    "description": ""
+  },
+  "persmissionEditedSuccessfully": {
+    "message":"Permission edited successfully.",
+    "description": ""
+  },
+  "persmissionDeactivatedSuccessfully": {
+    "message":"Permission deactivated successfully",
+    "description": ""
+  },
+  "courseUpdatedSuccessfully": {
+    "message":"Course updated successfully",
+    "description": ""
+  },
+  "courseDeactivated": {
+    "message":"Course(s) has been successfully deactivated",
+    "description": ""
+  },
+  "districtAdminUpdated": {
+    "message":"  District admin updated successfully",
+    "description": ""
+  },
+  "SavedSuccessfully": {
+    "message":"Saved Successfully",
+    "description": ""
+  },
+  "profileChangeSaved": {
+    "message":" Profile changes saved successfully.",
+    "description": ""
+  },
+  "updatedResponseSuccessfully": {
+    "message":"  updated response successfully",
+    "description": ""
+  },
+  "finishedGrading": {
+    "message":"Congratulations. You have finished grading all students!",
+    "description": ""
+  },
+  "rubricDeletedSuccessfully": {
+    "message":"Rubric deleted successfully.",
+    "description": ""
+  },
+  "intrestedStandardSavedSuccessfully": {
+    "message":"Interested Standards saved successfully.",
+    "description": ""
+  },
+  "itemDeletedSuccessfully": {
+    "message":"Item deleted successfully",
+    "description": ""
+  },
+  "rubricIsSavedAsDraft": {
+    "message":" Rubric is saved as draft",
+    "description": ""
+  },
+  "rubricIsSavedAndSpublished": {
+    "message":"Rubric is saved and published",
+    "description": ""
+  },
+  "itemIsSaved": {
+    "message":"Item is saved",
+    "description": ""
+  },
+  "rubricUpdatedAsDraft": {
+    "message":"Rubric is updated as draft",
+    "description": ""
+  },
+  "rubricUpdatedAndSPublished": {
+    "message":"Rubric is updated and published",
+    "description": ""
+  },
+  "failedToUpdateStatus": {
+    "message":"Failed to update Status",
+    "description": ""
+  },
+  "settingsUpdateSuccessfully": {
+    "message":"Settings updated successfully",
+    "description": ""
+  },
+  "googleClassImportComplete": {
+    "message":"Google Class import is Complete",
+    "description": ""
+  },
+  "syncWithCanvasIsComplete": {
+    "message":"Sync with Canavs is Complete.",
+    "description": ""
+  },
+  "syncWithCleverIsComplete": {
+    "message":"Sync with Clever is complete.",
+    "description": ""
+  },
+  "classSuccessfullyUnarchived": {
+    "message":"Class successfully unarchived.",
+    "description": ""
+  },
+  "coTeacherAddedSuccessfully": {
+    "message":"co-teacher added successfully",
+    "description": ""
+  },
+  "userAddedToclassSuccessfully": {
+    "message":"User added to class successfully",
+    "description": ""
+  },
+  "performanceBandProfileDeleted": {
+    "message":"Performance Band profile deleted successfully.",
+    "description": ""
+  },
+  "userUpdatedSuccessfully": {
+    "message":"User updated successfully",
+    "description": ""
+  },
+  "userSucessfullyDeactivated": {
+    "message":"User(s) has been successfully deactivated",
+    "description": ""
+  },
+  "schoolSucessfullyDeactivated": {
+    "message":"School(s) has been successfully deactivated",
+    "description": ""
+  },
+  "feedbackSuccessfullyUpdate": {
+    "message":"Feedback successully update",
+    "description": ""
+  },
+  "scoreSucessfullyUpdated": {
+    "message":"Score is successfully updated",
+    "description": ""
+  },
+  "sharedAssignmentInProgress": {
+    "message":"Sharing assignment is in progress",
+    "description": ""
+  },
+  "assignmentSharedWithGoggleCLassroom": {
+    "message":"Assignment is shared with Google Classroom successfully",
+    "description": ""
+  },
+  "standardProficiencyProfileDeleted": {
+    "message":"Standard Proficiency profile deleted successfully.",
+    "description": ""
+  },
+  "studentUpdatedSuccessfully": {
+    "message":"Student updated successfully",
+    "description": ""
+  },
+  "teacherUpdatedSuccessfully": {
+    "message":"Teacher updated successfully",
+    "description": ""
+  },
+  "testDeletedSuccessfully": {
+    "message":"Test Deleted Successfully.",
+    "description": ""
+  },
+  "testAddedPlalist": {
+    "message":"Tests Added to playlist",
+    "description": ""
+  },
+  "testremovedPlaylist": {
+    "message":"Tests removed from playlist",
+    "description": ""
+  },
+  "selectedTestAreCleared": {
+    "message":"Selected tests are cleared",
+    "description": ""
+  },
+  "issueReportedSuccessfully": {
+    "message":"Issue reported successfully",
+    "description": ""
+  },
+  "assignmentsWillBeSharedToCanvasINSometime": {
+    "message":"The assignments will be shared to the Canvas in some time.",
+    "description": ""
+  },
+  "asignmentSharedTOCanvasClassAlso": {
+    "message":"The assignment is shared to your Canvas class also.",
+    "description": ""
+  },
+  "testSettingsSaved": {
+    "message":"Test Settings saved successfully.",
+    "description": ""
+  },
+  "thumbnailChangedSuccessfully": {
+    "message":"Thumbnail changed successfully",
+    "description": ""
+  },
+  "userDetailsUpdatedSUccessfully": {
+    "message":"User details updated successfully",
+    "description": ""
+  },
+  "passwordChangedSucessfully": {
+    "message":  "Password changed successfully",
+    "description": ""
+  },
+  "loggingOut": {
+    "message":  "Logging Out !",
+    "description": ""
+  },
+  "accountDeletedSuccessfully": {
+    "message":  "Account deleted successfully.",
+    "description": ""
+  },
+  "standardSetsUpdatedSuccessfully": {
+    "message":  "Standard sets updated successfully.",
+    "description": ""
+  },
+  "requestedSchoolRemovedSucessfully": {
+    "message":  "Requested school removed successfully.",
+    "description": ""
+  },
+  "defaultSettingsUpdatedSuccessfully": {
+    "message":  "Default settings updated successfully.",
+    "description": ""
   }
 }

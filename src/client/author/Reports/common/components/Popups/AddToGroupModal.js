@@ -127,13 +127,13 @@ const AddToGroupModal = ({
       enrollStudentsToGroup({ classCode, districtId, studentIds: studentsToAdd, type: groupType, name });
       setStudentsToAdd([]);
     } else if (checkedStudents.length) {
-      message.success(`Students enrolled to ${groupTypeText} ${name} successfully`);
+      notification({ type: "success", msg:`Students enrolled to ${groupTypeText} ${name} successfully`});
     }
     // remove students
     if (studentsToRemove.length) {
       try {
         const data = await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
-        message.success(`Students removed from ${groupTypeText} ${name} successfully`);
+        notification({ type: "success", msg:`Students removed from ${groupTypeText} ${name} successfully`});
       } catch ({ data: { message: errorMessage } }) {
         message.error(errorMessage);
       }

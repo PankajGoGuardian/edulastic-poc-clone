@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { schoolApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { get, keyBy } from "lodash";
 
 const RECEIVE_SCHOOLS_REQUEST = "[school] receive data request";
@@ -264,7 +265,7 @@ function* deleteSchoolsSaga({ payload }) {
   try {
     // for (let i = 0; i < payload.length; i++) {
     yield call(schoolApi.deleteSchool, payload);
-    message.success("School(s) has been successfully deactivated");
+    notification({ type: "success", messagKey:"schoolSucessfullyDeactivated"});
     yield put(deleteSchoolsSuccessAction(payload.schoolIds));
   } catch (err) {
     const errorMessage = "Delete School is failing";

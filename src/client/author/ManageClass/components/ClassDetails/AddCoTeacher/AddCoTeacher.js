@@ -8,7 +8,7 @@ import { receiveTeachersListAction } from "../../../../Teacher/ducks";
 import { getUserOrgId, getUserIdSelector } from "../../../../src/selectors/user";
 import { groupApi } from "@edulastic/api";
 import { setClassAction } from "../../../../ManageClass/ducks";
-import { EduButton } from "@edulastic/common";
+import { EduButton ,notification } from "@edulastic/common";
 
 class AddCoTeacher extends React.Component {
   static propTypes = {
@@ -67,7 +67,7 @@ class AddCoTeacher extends React.Component {
       .then(data => {
         if (data.groupData) {
           setClass(data.groupData);
-          message.success("co-teacher added successfully");
+          notification({ type: "success", messageKey:"coTeacherAddedSuccessfully"});
           handleCancel();
         }
       })

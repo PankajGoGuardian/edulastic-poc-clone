@@ -1,7 +1,7 @@
 import React, { createRef } from "react";
 import PropTypes from "prop-types";
 
-import { ScrollContext } from "@edulastic/common";
+import { ScrollContext,notification } from "@edulastic/common";
 import { message } from "antd";
 import { get, isEmpty } from "lodash";
 import { connect } from "react-redux";
@@ -105,7 +105,7 @@ class QuestionModal extends React.Component {
         this.setState({ rowIndex: nextIndex, loaded: true });
       });
     } else {
-      message.success("Congratulations. You have finished grading all students!");
+      notification({ type: "success", messageKey:"finishedGrading"});
     }
   };
 
@@ -173,7 +173,7 @@ class QuestionModal extends React.Component {
         this.setState({ colIndex: nextIndex, loaded: true });
       });
     } else {
-      message.success("Congratulations. You have finished grading all students!");
+      notification({ type: "success", messageKey:"finishedGrading"});
     }
   };
 

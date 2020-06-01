@@ -218,7 +218,7 @@ function* receiveTeachersListSaga({ payload }) {
 function* updateTeacherSaga({ payload }) {
   try {
     const updateTeacherdData = yield call(userApi.updateUser, payload);
-    message.success("Teacher updated successfully");
+    notification({ type: "success", messageKey:"teacherUpdatedSuccessfully"});
     yield put(updateTeacherSuccessAction(updateTeacherdData));
   } catch (err) {
     const errorMessage = "Update Teacher is failing";

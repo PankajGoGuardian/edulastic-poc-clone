@@ -2,6 +2,7 @@ import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { omitBy, isUndefined, isEmpty, invert, set, get } from "lodash";
 import { assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
 
@@ -161,7 +162,7 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
     }
     yield call(assignmentApi.updateClassSettings, { assignmentId, classId, settings });
     yield put(slice.actions.updateAssignmentClassSettingsSucess());
-    yield call(message.success, "Settings updated successfully");
+    notification({ type: "success", messageKey:"settingsUpdatedSuccessfully"});
   } catch (e) {
     console.log(e, "------");
     yield put(slice.actions.updateAssignmentClassSettingsError());

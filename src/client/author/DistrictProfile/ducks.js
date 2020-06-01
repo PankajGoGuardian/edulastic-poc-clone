@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 
 const RECEIVE_DISTRICT_PROFILE_REQUEST = "[districtProfile] receive data request";
@@ -101,7 +102,7 @@ function* updateDictrictProfileSaga({ payload }) {
   try {
     const updateDistrictProfile = yield call(settingsApi.updateDistrictProfile, payload);
     yield put(updateDistrictProfileSuccessAction(updateDistrictProfile));
-    yield call(message.success, "Profile changes saved successfully.");
+    notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
     yield call(message.error, errorMessage);
@@ -113,7 +114,7 @@ function* createDictrictProfileSaga({ payload }) {
   try {
     const createdDistrictProfile = yield call(settingsApi.createDistrictProfile, payload);
     yield put(createDistrictProfileSuccessAction(createdDistrictProfile));
-    yield call(message.success, "Profile changes saved successfully.");
+    notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
     yield call(message.error, errorMessage);

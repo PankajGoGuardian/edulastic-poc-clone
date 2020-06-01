@@ -103,7 +103,7 @@ function* deleteTestSaga({ payload }) {
   try {
     yield call(testsApi.deleteTest, payload);
     yield put(deleteTestRequestSuccessAction(payload));
-    message.success("Test Deleted Successfully.");
+    notification({ type: "success", messageKey:"testDeletedSuccessfully"});
   } catch (error) {
     console.error(error);
     // 403 means dont have permission
@@ -122,7 +122,8 @@ function* approveOrRejectSingleTestSaga({ payload }) {
     }
     yield call(testsApi.updateTestStatus, payload);
     yield put(approveOrRejectSingleTestSuccessAction(payload));
-    message.success("Test Updated Successfully.");
+    notification({ type: "success", messageKey:"teacherUpdatedSuccessfully"});
+    
   } catch (error) {
     console.error(error);
     message.error(error?.data?.message || "Test Update Failed.");
@@ -154,13 +155,10 @@ function* approveOrRejectMultipleTestsSaga({ payload }) {
       const result = yield call(testsApi.updateBulkTestsStatus, data);
       if (result.nModified === data.testIds.length) {
         yield put(approveOrRejectMultipleTestsSuccessAction(data));
-        yield call(message.success, `${data.testIds.length} tests(s) successfully ${payload.status}.`);
+        notification({ type: "success", msg:`${data.testIds.length} tests(s) successfully ${payload.status}.`});
       } else {
-        yield call(
-          message.success,
-          `${result.nModified} tests(s) successfully ${payload.status}, ${data.testIds.length -
-            result.nModified} tests(s) failed`
-        );
+        notification({ type: "success", msg: `${result.nModified} tests(s) successfully ${payload.status}, ${data.testIds.length -
+          result.nModified} tests(s) failed`});
       }
     } catch (error) {
       console.error(error);

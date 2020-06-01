@@ -503,7 +503,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    yield call(message.success, "Item is saved as draft", 2);
+    notification({ type: "success", messageKey:"itemSavedSuccess"});
 
     const { standards = [] } = alignments[0];
     // to update recent standards used in local storage and store

@@ -310,7 +310,7 @@ function* receiveStudentsListSaga({ payload }) {
 function* updateStudentSaga({ payload }) {
   try {
     const updateStudentData = yield call(userApi.updateUser, payload);
-    message.success("Student updated successfully");
+    notification({ type: "success", messageKey:"studentUpdatedSuccessfully"});
     yield put(updateStudentSuccessAction(updateStudentData));
   } catch (err) {
     const errorMessage = "Update Student is failing";

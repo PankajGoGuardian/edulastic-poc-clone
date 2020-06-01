@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { all, takeEvery, call, put } from "redux-saga/effects";
 import { enrollmentApi } from "@edulastic/api";
 import { get } from "lodash";
+import { notification } from "@edulastic/common";
 import { message } from "antd";
 
 export const RESET_ENROLLED_CLASSES = "[manage class] reset all enrolled classes";
@@ -110,7 +111,7 @@ function* joinClass({ payload }) {
       };
       yield put(joinClassSuccessAction(newStudent));
       const successMsg = "You joined class successfully.";
-      yield call(message.success, successMsg);
+      notification({ type: "success", msg:successMsg});
     }
   } catch (error) {
     const msg = get(error, "data.message", "Join class is failing.");

@@ -4,6 +4,7 @@ import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
 import { keyBy, get, omit } from "lodash";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { receiveClassEnrollmentListAction } from "../ClassEnrollment/ducks";
 
 const RECEIVE_SCHOOLADMIN_REQUEST = "[schooladmin] receive data request";
@@ -266,7 +267,7 @@ function* updateSchoolAdminSaga({ payload }) {
   try {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
-    message.success("User updated successfully");
+    notification({ type: "success", messageKey:"userUpdatedSuccessfully"});
   } catch ({ data: { message: errMsg } }) {
     const errorMessage = "Update User is failing";
     message.error(errMsg || errorMessage);
@@ -307,7 +308,7 @@ function* createSchoolAdminSaga({ payload }) {
       default:
         msg = "Created Successfully";
     }
-    yield call(message.success, msg);
+    notification({ type: "success", msg:msg});
   } catch (err) {
     const errorMessage = err.data.message || "Create new user is failing";
     yield call(message.error, errorMessage);
@@ -325,7 +326,7 @@ function* deleteSchoolAdminSaga({ payload }) {
     if (isFetchClassEnrollmentList) {
       yield put(receiveClassEnrollmentListAction(payload.listReq));
     }
-    message.success("User(s) has been successfully deactivated");
+    notification({ type: "success", messagKey:"userSucessfullyDeactivated"});
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
     yield call(message.error, errorMessage);

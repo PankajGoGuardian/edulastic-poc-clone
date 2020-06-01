@@ -111,9 +111,9 @@ const getColumns = (
     const currentTestGroup = groupedTests[testId] || {};
     const test = currentTestGroup[0] || {};
     const assessmentName = (test && test.testName) || "";
-    const startDate = groupedAvailableTests[testId].reduce((a, b) =>
-      a.startDate > b.startDate ? a.startDate : b.startDate
-    ).startDate;
+    const startDate =
+      groupedAvailableTests[testId].reduce((a, b) => (a.startDate > b.startDate ? a.startDate : b.startDate))
+        .startDate || test.assessmentDate;
 
     return {
       key: testId,
@@ -214,7 +214,13 @@ const getColumns = (
     }
   ];
 
-  return columns.concat(dynamicColumns.sort((a, b) => a.startDate - b.startDate));
+  return columns.concat(
+    dynamicColumns.sort((a, b) =>
+      a.startDate !== b.startDate
+        ? a.startDate - b.startDate
+        : a.title.toLowerCase().localeCompare(b.title.toLowerCase())
+    )
+  );
 };
 
 const TrendTable = ({

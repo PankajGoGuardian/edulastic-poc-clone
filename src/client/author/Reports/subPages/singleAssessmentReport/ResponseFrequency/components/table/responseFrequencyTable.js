@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
-import { find, keyBy } from "lodash";
+import { find, keyBy, omitBy, isEmpty } from "lodash";
 import { StyledCard, StyledTable } from "../styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { ResponseTag } from "./responseTag";
@@ -131,8 +131,12 @@ export class ResponseFrequencyTable extends Component {
       const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
       let sum = corr_cnt + incorr_cnt + part_cnt;
       if (sum == 0) sum = 1;
-      let hasChoiceData = false; // V1 migrated UQA doesn't have user answer data
-      if (!data || Object.keys(data).length === 0) {
+      // V1 migrated UQA doesn't have user answer data
+      let hasChoiceData = false;
+      // filter out empty keys from data
+      data = omitBy(data || {}, (_, key) => ["[]"].includes(key));
+      // show correct, incorrect & partial correct if data is empty
+      if (isEmpty(data)) {
         arr.push({
           value: Number(((corr_cnt / sum) * 100).toFixed(0)),
           count: corr_cnt,
@@ -226,7 +230,7 @@ export class ResponseFrequencyTable extends Component {
 
       return (
         <Row type="flex" justify="start" className="table-tag-container">
-          {arr.map((data, i) => data.value || data.record.qType.toLocaleLowerCase().includes("multiple choice") ? (
+          {arr.map((data, i) => data.value || (data.record.qType.toLocaleLowerCase().includes("multiple choice") && hasChoiceData) ? (
             <ResponseTag
               isPrinting={this.props.isPrinting}
               key={i}

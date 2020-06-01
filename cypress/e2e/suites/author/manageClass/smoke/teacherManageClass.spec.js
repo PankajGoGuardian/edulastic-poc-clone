@@ -224,6 +224,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.clickOnEditClass();
       manageClass.fillClassDetails(undefined, undefined, undefined, randomGrade, subject, standardSet, true);
       manageClass.clickOnUpdateClass();
+      sideBar.clickOnAssignment();
       sideBar.clickOnManageClass();
       cy.wait("@mygroups");
       manageClass.getClassRowDetails(classNameEdit).then(cls => {

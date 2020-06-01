@@ -3,6 +3,7 @@ import { message } from "antd";
 import { isEmpty, values } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
+import * as Sentry from '@sentry/browser';
 import { getQuestionIds } from "./items";
 // actions
 import {
@@ -31,7 +32,7 @@ function* evaluateAnswers({ payload: groupId }) {
     });
 
     const validResponses = values(userResponse).filter(item => !!item);
-    //if user response is empty show toaster msg.
+    // if user response is empty show toaster msg.
     if (isEmpty(validResponses)) {
       return notification({ type: "warn", messageKey: "attemptTheQuestonToCheckAnswer"});
     }
@@ -50,10 +51,10 @@ function* evaluateAnswers({ payload: groupId }) {
       answers: userResponse,
       groupId,
       testActivityId,
-      //TODO Need to pick as per the bookmark button status
+      // TODO Need to pick as per the bookmark button status
       reviewLater: false,
       shuffledOptions: shuffles
-      //TODO timeSpent:{}
+      // TODO timeSpent:{}
     };
     if (userWork) activity.userWork = userWork;
     const { evaluations, maxScore, score } = yield call(testItemsApi.evaluation, testItemId, activity);
@@ -88,6 +89,7 @@ function* evaluateAnswers({ payload: groupId }) {
     if (err.status === 403) notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
     else message.error("Check answer failed");
     console.log(err);
+    Sentry.captureException(err);
   }
 }
 

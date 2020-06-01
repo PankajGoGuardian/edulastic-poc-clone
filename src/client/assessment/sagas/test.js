@@ -1,6 +1,7 @@
 import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
+import * as Sentry from '@sentry/browser';
 import { push } from "react-router-redux";
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from "lodash";
 import produce from "immer";
@@ -163,6 +164,7 @@ function* loadTest({ payload }) {
             yield put(setPasswordStatusAction("validation failed"));
           }
           console.log(err);
+          Sentry.captureException(err);
         }
       }
       yield put(setPasswordStatusAction(""));
@@ -472,16 +474,17 @@ function* submitTest({ payload }) {
   } catch (err) {
     if (err.status === 403) {
       console.log(err);
+      Sentry.captureException(err);
       if (err?.data?.message === "assignment already submitted") {
         return yield put(push("/home/grades"));
-      } else {
+      } 
         yield put(push("/home/assignments"));
         yield put({
           type: SET_TEST_ACTIVITY_ID,
           payload: { testActivityId: "" }
         });
         yield call(message.error, err.data);
-      }
+      
     }
   }
 }

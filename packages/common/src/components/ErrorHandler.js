@@ -1,6 +1,8 @@
 import React from "react";
 import { greenPrimary } from "@edulastic/colors";
 import { withRouter, Link } from "react-router-dom";
+import * as Sentry from '@sentry/browser';
+
 class ErrorHandler extends React.Component {
   constructor(props) {
     super(props);
@@ -12,7 +14,7 @@ class ErrorHandler extends React.Component {
   }
 
   componentDidCatch(error, info) {
-    window.Raven && window.Raven.captureException(error);
+    Sentry.captureException(error);
     // log the error to an error reporting service
     console.error(error, info);
   }

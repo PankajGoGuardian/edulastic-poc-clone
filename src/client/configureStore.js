@@ -4,6 +4,7 @@ import createSagaMiddleware from "redux-saga";
 import { createBrowserHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createLogger } from "redux-logger";
+import * as Sentry from "@sentry/browser";
 
 import reduxReset from "redux-reset";
 
@@ -12,7 +13,12 @@ import rootSaga from "./sagas";
 
 export const history = createBrowserHistory();
 
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware({
+  onError(error) {
+    // treat the errors of the sagas here
+    Sentry.captureException(error);
+  }
+});
 
 const middleware = [sagaMiddleware, routerMiddleware(history)];
 

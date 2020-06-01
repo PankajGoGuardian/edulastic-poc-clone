@@ -1,5 +1,6 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
+import * as Sentry from '@sentry/browser';
 import { message } from "antd";
 import { maxBy } from "lodash";
 import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
@@ -188,6 +189,7 @@ function* saveUserResponse({ payload }) {
   } catch (err) {
     yield put({ type: SAVE_USER_RESPONSE_ERROR });
     console.log(err);
+    Sentry.captureException(err);
     if (err.status === 403) {
       const { isPlaylist = false } = payload;
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));

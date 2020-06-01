@@ -53,9 +53,7 @@ export const StandardsGradebookTable = ({
     });
   }
 
-  const tableData = useMemo(() => {
-    return getTableData(filteredDenormalizedData, masteryScale, tableDdFilters.compareBy, tableDdFilters.masteryLevel);
-  }, [filteredDenormalizedData, masteryScale, tableDdFilters]);
+  const tableData = useMemo(() => getTableData(filteredDenormalizedData, masteryScale, tableDdFilters.compareBy, tableDdFilters.masteryLevel), [filteredDenormalizedData, masteryScale, tableDdFilters]);
 
   const getCurrentStandard = (standardId, analyseBy) => {
     const currentStandard = standardsData.find(s => s.standardId === standardId);
@@ -63,10 +61,9 @@ export const StandardsGradebookTable = ({
     return currentStandard[analyseBy];
   };
 
-  const getFilteredTableData = () => {
-    return next(tableData, arr => {
+  const getFilteredTableData = () => next(tableData, arr => {
       arr.map((item, index) => {
-        let tempArr = item.standardsInfo.filter((_item, index) => {
+        const tempArr = item.standardsInfo.filter((_item, index) => {
           if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
             return {
               ..._item
@@ -76,7 +73,6 @@ export const StandardsGradebookTable = ({
         item.standardsInfo = tempArr;
       });
     });
-  };
 
   const filteredTableData = getFilteredTableData();
 
@@ -87,9 +83,9 @@ export const StandardsGradebookTable = ({
     }
 
     if (_analyseBy === "score(%)") {
-      printData = item.scorePercent + "%";
+      printData = `${item.scorePercent  }%`;
     } else if (_analyseBy === "rawScore") {
-      printData = item.totalTotalScore.toFixed(2) + "/" + item.totalMaxScore;
+      printData = `${item.totalTotalScore.toFixed(2)  }/${  item.totalMaxScore}`;
     } else if (_analyseBy === "masteryLevel") {
       printData = item.masteryLevel;
     } else if (_analyseBy === "masteryScore") {
@@ -99,55 +95,53 @@ export const StandardsGradebookTable = ({
   };
 
   const renderStandardIdColumns = (index, _compareBy, _analyseBy, standardName, standardId) => (data, record) => {
-    const tooltipText = record => {
-      return (
-        <div>
-          <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{idToName[_compareBy]}: </Col>
-            <Col className="custom-table-tooltip-value">{record.compareByLabel}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">Standard: </Col>
-            <Col className="custom-table-tooltip-value">{record.standardsInfo[index]?.standardName}</Col>
-          </Row>
+    const tooltipText = record => (
+      <div>
+        <Row type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">{idToName[_compareBy]}: </Col>
+          <Col className="custom-table-tooltip-value">{record.compareByLabel}</Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">Standard: </Col>
+          <Col className="custom-table-tooltip-value">{record.standardsInfo[index]?.standardName}</Col>
+        </Row>
 
-          <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{analyseByToName[_analyseBy]}: </Col>
-            {_analyseBy === "score(%)" ? (
-              <Col className="custom-table-tooltip-value">
-                {record.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
-              </Col>
+        <Row type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">{analyseByToName[_analyseBy]}: </Col>
+          {_analyseBy === "score(%)" ? (
+            <Col className="custom-table-tooltip-value">
+              {record.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
+            </Col>
             ) : null}
-            {_analyseBy === "rawScore" ? (
-              <Col className="custom-table-tooltip-value">
-                {record.standardsInfo[index]?.totalTotalScore}/{record.standardsInfo[index]?.totalMaxScore}
-              </Col>
+          {_analyseBy === "rawScore" ? (
+            <Col className="custom-table-tooltip-value">
+              {record.standardsInfo[index]?.totalTotalScore}/{record.standardsInfo[index]?.totalMaxScore}
+            </Col>
             ) : null}
-            {_analyseBy === "masteryLevel" ? (
-              <Col className="custom-table-tooltip-value">{record.standardsInfo[index]?.masteryName}</Col>
+          {_analyseBy === "masteryLevel" ? (
+            <Col className="custom-table-tooltip-value">{record.standardsInfo[index]?.masteryName}</Col>
             ) : null}
-            {_analyseBy === "masteryScore" ? (
-              <Col className="custom-table-tooltip-value">
-                {(record.standardsInfo[index] || {})[analyseByToKeyToRender[_analyseBy]]}
-              </Col>
+          {_analyseBy === "masteryScore" ? (
+            <Col className="custom-table-tooltip-value">
+              {(record.standardsInfo[index] || {})[analyseByToKeyToRender[_analyseBy]]}
+            </Col>
             ) : null}
-          </Row>
-        </div>
+        </Row>
+      </div>
       );
-    };
 
     const obj = {
       termId: filters.termId,
       studentId: record.studentId,
-      standardId: standardId,
+      standardId,
       profileId: filters.profileId
     };
 
     const getCellContents = props => {
-      let { printData } = props;
+      const { printData } = props;
       if (_compareBy === "studentId") {
         return (
-          <div style={{ backgroundColor: record.color }}>
+          <div style={{ backgroundColor: record.standardsInfo[index].color }}>
             {printData === "N/A" ? (
               printData
             ) : (
@@ -158,10 +152,10 @@ export const StandardsGradebookTable = ({
           </div>
         );
       }
-      return <div style={{ backgroundColor: record.color }}>{printData}</div>;
+      return <div style={{ backgroundColor: record.standardsInfo[index].color }}>{printData}</div>;
     };
 
-    let printData = getDisplayValue(record.standardsInfo[index], _analyseBy, data, record);
+    const printData = getDisplayValue(record.standardsInfo[index], _analyseBy, data, record);
 
     return (
       <CustomTableTooltip
@@ -181,15 +175,13 @@ export const StandardsGradebookTable = ({
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
         sorter: (a, b) => a.compareByLabel.toLowerCase().localeCompare(b.compareByLabel.toLowerCase()),
-        render: (data, record) => {
-          return record.compareBy === "studentId" ? (
-            <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
-              {record.compareByLabel}
-            </Link>
+        render: (data, record) => record.compareBy === "studentId" ? (
+          <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
+            {record.compareByLabel}
+          </Link>
           ) : (
             record.compareByLabel
-          );
-        }
+          )
       },
       {
         title: "Overall",
@@ -200,9 +192,10 @@ export const StandardsGradebookTable = ({
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
         },
-        render: (data, record) => {
-          return (
-            <Link style={{color: reportLinkColor}} to={{
+        render: (data, record) => (
+          <Link
+            style={{color: reportLinkColor}}
+            to={{
               pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
               state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
                 breadCrumb: [
@@ -216,11 +209,11 @@ export const StandardsGradebookTable = ({
                   }
                 ]
               }
-            }}>
-              {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
-            </Link>
+            }}
+          >
+            {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
+          </Link>
           )
-        }
       },
       {
         title: "SIS ID",
@@ -297,7 +290,7 @@ export const StandardsGradebookTable = ({
                   by={compareByDropDownData[0]}
                   prefix="Compare By"
                   selectCB={tableFilterDropDownCB}
-                  comData={"compareBy"}
+                  comData="compareBy"
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={8}>
@@ -306,7 +299,7 @@ export const StandardsGradebookTable = ({
                   by={dropDownFormat.analyseByDropDownData[0]}
                   prefix="Analyse By"
                   selectCB={tableFilterDropDownCB}
-                  comData={"analyseBy"}
+                  comData="analyseBy"
                 />
               </StyledDropDownContainer>
             </Row>

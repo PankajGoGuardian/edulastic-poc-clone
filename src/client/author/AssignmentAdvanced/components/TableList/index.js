@@ -123,7 +123,8 @@ const TableList = ({
   bulkDownloadGradesAndResponsesRequest,
   testType,
   testName,
-  toggleDeleteAssignmentModal
+  toggleDeleteAssignmentModal,
+  isLoadingAssignments
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
@@ -258,7 +259,13 @@ const TableList = ({
   return (
     <Container>
       {selectedRows.length > 0 && renderBulkActions()}
-      <TableData columns={columns} dataSource={rowData} pagination={showPagination} rowSelection={rowSelection} />
+      <TableData
+        columns={columns}
+        dataSource={rowData}
+        pagination={showPagination}
+        rowSelection={rowSelection}
+        loading={isLoadingAssignments}
+      />
       <ReleaseScoreSettingsModal
         showReleaseGradeSettings={showReleaseScoreModal}
         onCloseReleaseScoreSettings={() => setReleaseScoreModalVisibility(false)}

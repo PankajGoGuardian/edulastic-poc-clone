@@ -20,7 +20,8 @@ import {
   getAssignmentsSummary,
   getAssignmentClassList,
   getToggleReleaseGradeStateSelector,
-  getCurrentTestSelector
+  getCurrentTestSelector,
+  getAssignmentsLoadingSelector
 } from "../../../src/selectors/assignments";
 import ListHeader from "../../../src/components/common/ListHeader";
 import ActionMenu from "../../../Assignments/components/ActionMenu/ActionMenu";
@@ -173,7 +174,8 @@ class AssignmentAdvanced extends Component {
       toggleDeleteAssignmentModal,
       location,
       userId,
-      test
+      test,
+      isLoadingAssignments
     } = this.props;
     const { testId } = match.params;
     const { filterStatus, openEditPopup, isPreviewModalVisible } = this.state;
@@ -241,6 +243,7 @@ class AssignmentAdvanced extends Component {
                 toggleDeleteAssignmentModal={toggleDeleteAssignmentModal}
                 testType={testType}
                 testName={assingment.title}
+                isLoadingAssignments={isLoadingAssignments}
               />
             </StyledCard>
           </TableWrapper>
@@ -275,7 +278,8 @@ const enhance = compose(
       error: get(state, "test.error", false),
       classList: getAssignmentClassList(state),
       test: getCurrentTestSelector(state),
-      userId: getUserId(state)
+      userId: getUserId(state),
+      isLoadingAssignments: getAssignmentsLoadingSelector(state)
     }),
     {
       setReleaseScore: releaseScoreAction,

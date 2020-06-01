@@ -1,6 +1,8 @@
 import { identity, maxBy, max, get, isArray } from "lodash";
 import { get as levenshteinDistance } from "fast-levenshtein";
 
+import { rounding as RoundOffTypes } from "./const/rounding";
+
 // create an `{id: value}` list from object
 const createAnswerObject = answers => {
   const responses = {};
@@ -76,6 +78,10 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
       const penalty = validation.penalty * wrongAnswerCount;
       score -= penalty;
     }
+    // if rounding is selected, but score achieved is not full score, then round down to nearest integer
+    if (validation.rounding === RoundOffTypes.ROUND_DOWN && score !== questionScore) {
+      score = Math.floor(score);
+    }
   } else if (correctAnswerCount === optionCount) {
     score = questionScore;
   }
@@ -95,7 +101,6 @@ const normalEvaluator = ({ userResponse, validation }) => {
   const answers = [validation.validResponse, ...(validation.altResponses || [])];
   const evaluations = [];
   const maxScore = max(answers.map(i => i.score));
-
   for (const answer of answers) {
     const currentEvaluation = {};
     let currentScore = 0;
@@ -122,6 +127,12 @@ const normalEvaluator = ({ userResponse, validation }) => {
         const penalty = validation.penalty * wrongAnswerCount;
         currentScore -= penalty;
       }
+
+      // if rounding is selected, but score achieved is not full score, then round down to nearest integer
+      if (validation.rounding === RoundOffTypes.ROUND_DOWN && currentScore !== answer.score) {
+        currentScore = Math.floor(currentScore);
+      }
+
       // if less than 0, round it to 0
       currentScore = currentScore > 0 ? currentScore : 0;
     } else if (correctAnswerCount === answer.value.length) {

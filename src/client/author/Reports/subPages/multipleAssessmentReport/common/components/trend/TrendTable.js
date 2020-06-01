@@ -111,9 +111,8 @@ const getColumns = (
     const currentTestGroup = groupedTests[testId] || {};
     const test = currentTestGroup[0] || {};
     const assessmentName = (test && test.testName) || "";
-    const startDate =
-      groupedAvailableTests[testId].reduce((a, b) => (a.startDate > b.startDate ? a.startDate : b.startDate))
-        .startDate || test.assessmentDate;
+    const { startDate } =
+      groupedAvailableTests[testId].reduce((ele, res) => (ele.startDate > res.startDate ? ele : res)) || {};
 
     return {
       key: testId,

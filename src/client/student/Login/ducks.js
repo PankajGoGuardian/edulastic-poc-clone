@@ -5,6 +5,7 @@ import { message } from "antd";
 import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage, settingsApi, segmentApi, schoolApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
+import * as firebase from "firebase/app";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import {
@@ -19,7 +20,6 @@ import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../
 import { getUser } from "../../author/src/selectors/user";
 import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 import { JOIN_CLASS_REQUEST_SUCCESS } from "../ManageClass/ducks";
-import * as firebase from "firebase/app";
 import "firebase/auth";
 
 // types
@@ -514,7 +514,7 @@ function* login({ payload }) {
       TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     }
     TokenStorage.selectAccessToken(user._id, user.role);
-    TokenStorage.updateKID(user.kid);
+    TokenStorage.updateKID(user);
     yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({
@@ -773,7 +773,7 @@ export function* fetchUser({ payload }) {
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true);
       TokenStorage.selectAccessToken(user._id, user.role);
     }
-    TokenStorage.updateKID(user.kid);
+    TokenStorage.updateKID(user);
     const searchParam = yield select(state => state.router.location.search);
     if (searchParam.includes("showCliBanner=1")) localStorage.setItem("showCLIBanner", true);
     yield put(setUserAction(user));
@@ -816,7 +816,7 @@ export function* fetchV1Redirect({ payload: id }) {
     }
 
     const user = yield call(userApi.getUser);
-    TokenStorage.updateKID(user.kid);
+    TokenStorage.updateKID(user);
     yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({
@@ -1061,7 +1061,7 @@ function* getUserData({ payload: res }) {
     const user = pick(res, userPickFields);
     TokenStorage.storeAccessToken(res.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
-    TokenStorage.updateKID(user.kid);
+    TokenStorage.updateKID(user);
     yield put(setUserAction(user));
     yield put(receiveLastPlayListAction());
     if (user.role !== roleuser.STUDENT) {

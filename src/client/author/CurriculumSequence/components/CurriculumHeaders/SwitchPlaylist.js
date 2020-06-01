@@ -33,7 +33,7 @@ const SwitchPlaylist = ({ onClickHandler, showUseThisNotification, toggleShowUse
       <FlexContainer onClick={onClickHandler}>
         <IconTile
           data-cy="open-dropped-playlist"
-          style={{ cursor: "pointer", marginLeft: "18px" }}
+          style={{ cursor: "pointer" }}
           width={18}
           height={18}
           color={themeColor}

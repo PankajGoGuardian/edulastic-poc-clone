@@ -108,6 +108,7 @@ const CurriculumHeader = ({
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
         headingText={loading ? "Untitled Playlist" : title}
+        titleMaxWidth="22rem"
         headingSubContent={
           urlHasUseThis &&
           !isPublisherUser &&
@@ -119,7 +120,6 @@ const CurriculumHeader = ({
             />
           )
         }
-        titleMinWidth="unset"
         justify={urlHasUseThis ? "space-between" : "flex-start"}
       >
         {urlHasUseThis && isDesktop && (

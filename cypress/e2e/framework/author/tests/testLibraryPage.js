@@ -45,6 +45,8 @@ export default class TestLibrary {
 
   getDuplicateButtonInReview = () => cy.get('[data-cy="duplicate"]');
 
+  getCreateNewTestButton = () => cy.get('[data-cy="createNew"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -57,10 +59,14 @@ export default class TestLibrary {
     cy.get('[data-cy="listView"]').click();
   };
 
-  clickOnAuthorTest = () => {
-    cy.get('[data-cy="createNew"]')
+  clickOnAuthorTest = (fromAssignmentsPage = false) => {
+    this.getCreateNewTestButton()
       .click()
       .then(() => {
+        if (fromAssignmentsPage)
+          cy.get("a")
+            .contains(" Or Author a Test >>")
+            .click({ force: true });
         cy.contains("button", "CREATE TEST").click();
       });
   };

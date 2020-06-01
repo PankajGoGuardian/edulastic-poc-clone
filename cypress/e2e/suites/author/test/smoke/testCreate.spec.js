@@ -207,4 +207,38 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
       testLibrary.searchAndClickTestCardById(xhr.response.body.result._id);
     });
   });
+  it("> create new test from assignments page", () => {
+    const testData = SMOKE_4;
+    // create new test
+    testLibrary.sidebar.clickOnAssignment();
+    testLibrary.clickOnAuthorTest(true);
+
+    testLibrary.testSummary.setName(testData.name);
+    testData.grade.forEach(grade => {
+      testLibrary.testSummary.selectGrade(grade);
+    });
+    testData.subject.forEach(subject => {
+      testLibrary.testSummary.selectSubject(subject);
+    });
+
+    testLibrary.header.clickOnAddItems();
+    testLibrary.searchFilters.routeSearch();
+    cy.route("POST", "**api/test").as("createTest");
+    testLibrary.searchFilters.clearAll();
+    testLibrary.testAddItem.authoredByMe();
+    existingItems.forEach((itemId, index) => {
+      // add items existing
+      testLibrary.testAddItem.addItemById(itemId);
+      if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+    });
+
+    testLibrary.header.clickOnReview();
+    cy.contains("View as Student");
+
+    // save
+    testLibrary.header.clickOnSaveButton(true);
+
+    // publish
+    testLibrary.header.clickOnPublishButton();
+  });
 });

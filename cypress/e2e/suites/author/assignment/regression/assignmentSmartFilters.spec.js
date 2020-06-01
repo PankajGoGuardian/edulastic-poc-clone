@@ -2,7 +2,7 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import { testTypes } from "../../../../framework/constants/assignmentStatus";
+import { testTypes, teacherSide } from "../../../../framework/constants/assignmentStatus";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 
@@ -15,7 +15,9 @@ const { _ } = Cypress;
 
 const classes = {
   1: { className: "My Test Class 1" },
-  2: { className: "My Test Class 2" }
+  2: { className: "My Test Class 2" },
+  3: { className: "My Test Class 3" },
+  4: { className: "Automation Class Teacher 2" }
 };
 
 const testName = "Default Test Automation";
@@ -37,11 +39,18 @@ const filters = {
   classFilter: {
     "My Test Class 1": "My Test Class 1",
     "My Test Class 2": "My Test Class 2"
+  },
+  statusFilter: {
+    "NOT OPEN": { ...classes[1] },
+    "IN GRADING": { ...classes[3] },
+    DONE: { ...classes[4] },
+    "IN PROGRESS": { ...classes[2] }
   }
 };
 const folders = { 1: "Folder1", 2: "Folder2", 3: "Folder3" };
 
 let testId;
+const assignmentIds = {};
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => {
   before(" > create new assessment and assign", () => {
@@ -166,6 +175,50 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
           .and("have.length", 2);
       });
     });
+
+    context(`assignment filters -by Status`, () => {
+      before(`assign `, () => {
+        cy.deleteAllAssignments(undefined, teacher, password);
+        _.keys(filters.statusFilter).forEach(status => {
+          testLibrary.assignPage.visitAssignPageById(testId);
+          testLibrary.assignPage.selectClass(filters.statusFilter[`${status}`].className);
+          if (status === teacherSide.NOT_OPEN) {
+            let start = new Date();
+            start.setMinutes(start.getMinutes() + 10);
+            testLibrary.assignPage.setStartDate(start);
+          }
+          testLibrary.assignPage.clickOnAssign().then(assgnObj => {
+            assignmentIds[status] = assgnObj[testId];
+          });
+        });
+        testLibrary.sidebar.clickOnAssignment();
+        authorAssignmentPage.smartFilter.expandFilter();
+      });
+      beforeEach("reset all filters", () => {
+        authorAssignmentPage.smartFilter.routeAPI();
+        authorAssignmentPage.smartFilter.setStatus("Select Status");
+      });
+      _.keys(filters.statusFilter).forEach(status => {
+        it(`> status ${status}`, () => {
+          if (status === teacherSide.IN_GRADING) {
+            authorAssignmentPage.clickOnLCBbyTestId(testId, assignmentIds[status]);
+            lcb.checkSelectAllCheckboxOfStudent();
+            lcb.clickOnMarkAsSubmit();
+            testLibrary.sidebar.clickOnAssignment();
+          }
+          if (status === teacherSide.DONE) {
+            authorAssignmentPage.clickOnLCBbyTestId(testId, assignmentIds[status]);
+            lcb.header.clickOnClose();
+            testLibrary.sidebar.clickOnAssignment();
+          }
+          authorAssignmentPage.smartFilter.setStatus(status);
+          authorAssignmentPage
+            .getClass()
+            .should("contain", filters.statusFilter[`${status}`].className)
+            .should("have.length", 1);
+        });
+      });
+    });
   });
 
   context(`assignment folders`, () => {
@@ -218,7 +271,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
         .getClass()
         .should("contain.text", classes[1].className)
         .and("contain.text", classes[2].className)
-        .and("have.length", 2);
+        .and("have.length", 4);
 
       // select folder 2
       authorAssignmentPage.smartFilter.clickOnFolderByName(folders[2]);
@@ -226,7 +279,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
         .getClass()
         .should("contain.text", classes[1].className)
         .and("contain.text", classes[2].className)
-        .and("have.length", 2);
+        .and("have.length", 4);
     });
 
     it(`delete used folder`, () => {

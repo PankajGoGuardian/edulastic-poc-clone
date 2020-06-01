@@ -69,6 +69,11 @@ export default class SmartFilters {
     this.waitForAssignments();
   };
 
+  setStatus = status => {
+    CypressHelper.selectDropDownByAttribute("filter-status", status);
+    this.waitForAssignments();
+  };
+
   resetAll = () => {
     this.getGrades()
       .find("input")
@@ -77,6 +82,7 @@ export default class SmartFilters {
     this.setYear("All years");
     this.setTesttype("All");
     this.setClass("All classes");
+    this.setStatus("Select Status");
   };
 
   // folders

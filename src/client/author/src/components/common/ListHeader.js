@@ -116,7 +116,7 @@ const ListHeader = ({
               </Link>
             )}
             <Link to="/author/assignments/select">
-              <EduButton>
+              <EduButton data-cy="createNew">
                 <IconPlusStyled />
                 NEW ASSIGNMENT
               </EduButton>

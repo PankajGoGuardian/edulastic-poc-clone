@@ -37,6 +37,8 @@ class AuthorAssignmentPage {
 
   getOptionInDropDownByAttribute = option => cy.get(`[data-cy="${option}"]`);
 
+  getCreateNewAssignments = () => cy.get('[data-cy="new-assignment"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***

@@ -43,9 +43,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
 
   it("> signup using existing school", () => {
     const { name, email, password, school, grade, standardSet, subject, district, zip } = signupData;
+    const randomEmail = `${Helpers.getRamdomString()}.${email}`;
     signupPage.clickOnSignupLink();
     signupPage.clickOnTeacher();
-    signupPage.fillTeacherSignupForm(name, `${Helpers.getRamdomString()}.${email}`, password);
+    signupPage.fillTeacherSignupForm(name, randomEmail, password);
     // search by zip
     signupPage.searchAndSelectSchool(zip).then(() => {
       signupPage.removeSelected();
@@ -56,40 +57,52 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     signupPage.clickOnProceed();
     cy.wait("@user").then(xhr => expect(xhr.status).to.eq(200));
     cy.wait("@curriculam");
-    signupPage.selectGrade(grade);
-    signupPage.selectSubject(subject);
-    signupPage.selectStandardSet(standardSet);
+
+    // set preference
+    signupPage.setPreference(grade, subject, standardSet);
     signupPage.clickOnGetStarted();
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
+
+    // login again with new user and verify able to login
+    cy.login("teacher", randomEmail, password);
+    loginPage.assertTeacherLogin();
   });
 
   it("> signup using new school and existing district", () => {
     const { name, email, password, grade, standardSet, subject, newSchool } = signupData;
     const { schoolName, district, zip, city, country, address, state } = newSchool;
     const random = Helpers.getRamdomString();
+    const randomEmail = `${random}.${email}`;
     signupPage.clickOnSignupLink();
     signupPage.clickOnTeacher();
-    signupPage.fillTeacherSignupForm(name, `${random}.${email}`, password);
+    signupPage.fillTeacherSignupForm(name, randomEmail, password);
+
     // request new school
     signupPage.clickOnRequestNewSchoolLink();
     signupPage.fillSchoolDetails(`${schoolName}-${random}`, district, address, zip, city, state, country);
     signupPage.clickOnReqNewSchool();
     cy.wait("@schoolCreate").then(xhr => expect(xhr.status).to.eq(200));
     cy.wait("@curriculam");
-    signupPage.selectGrade(grade);
-    signupPage.selectSubject(subject);
-    signupPage.selectStandardSet(standardSet);
+
+    // set preference
+    signupPage.setPreference(grade, subject, standardSet);
     signupPage.clickOnGetStarted();
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
+
+    // login again with new user and verify able to login
+    cy.login("teacher", randomEmail, password);
+    loginPage.assertTeacherLogin();
   });
 
   it("> signup using new district and new school", () => {
     const { name, email, password, grade, standardSet, subject, newSchool, newDistrict } = signupData;
     const { schoolName, zip, city, country, address, state } = newSchool;
     const random = Helpers.getRamdomString();
+    const randomEmail = `${random}.${email}`;
+
     signupPage.clickOnSignupLink();
     signupPage.clickOnTeacher();
-    signupPage.fillTeacherSignupForm(name, `${random}.${email}`, password);
+    signupPage.fillTeacherSignupForm(name, randomEmail, password);
     // request new school and district
 
     signupPage.clickOnRequestNewSchoolLink();
@@ -106,16 +119,42 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     signupPage.clickOnReqNewSchool();
     cy.wait("@schoolCreate").then(xhr => expect(xhr.status).to.eq(200));
     cy.wait("@curriculam");
-    signupPage.selectGrade(grade);
-    signupPage.selectSubject(subject);
-    signupPage.selectStandardSet(standardSet);
+
+    // set preference
+    signupPage.setPreference(grade, subject, standardSet);
     signupPage.clickOnGetStarted();
     cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
+
+    // login again with new user and verify able to login
+    cy.login("teacher", randomEmail, password);
+    loginPage.assertTeacherLogin();
+  });
+
+  it("> signup using home school", () => {
+    const { name, email, password, grade, standardSet, subject } = signupData;
+    const randomEmail = `${Helpers.getRamdomString()}.${email}`;
+
+    signupPage.clickOnSignupLink();
+    signupPage.clickOnTeacher();
+    signupPage.fillTeacherSignupForm(name, randomEmail, password);
+
+    // select home school
+    signupPage.clickOnHomeSchool();
+    cy.wait("@user").then(xhr => expect(xhr.status).to.eq(200));
+    cy.wait("@curriculam");
+
+    // set preference
+    signupPage.setPreference(grade, subject, standardSet);
+    signupPage.clickOnGetStarted();
+    cy.wait("@courses").then(() => cy.url().should("contain", "author/dashboard"));
+
+    // login again with new user and verify able to login
+    cy.login("teacher", randomEmail, password);
+    loginPage.assertTeacherLogin();
   });
 
   it("> login with existing user", () => {
-    loginPage.fillLoginForm("ashishsnap@snawpiz.com", "snapwiz");
-    loginPage.clickOnSignin();
+    cy.login("teacher", "ashishsnap@snawpiz.com", "snapwiz");
     loginPage.assertTeacherLogin();
   });
 });

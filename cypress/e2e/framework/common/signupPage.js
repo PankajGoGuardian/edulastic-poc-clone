@@ -6,6 +6,8 @@ class SignupPage {
 
   getSchoolSearch = () => cy.get('[placeholder="Search school by Zip, name or City"]');
 
+  getHomeSchool = () => cy.contains("I want to homeschool");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -100,10 +102,18 @@ class SignupPage {
 
   selectStandardSet = standard => CypressHelper.selectMultipleSelectionDropDown("standardSet", standard);
 
+  setPreference = (grade, subject, standardSet) => {
+    this.selectGrade(grade);
+    this.selectSubject(subject);
+    this.selectStandardSet(standardSet);
+  };
+
   onClickUserInfo = () => {
     cy.get("[data-cy=userInfo]").click();
     cy.contains("SIGN OUT").click();
   };
+
+  clickOnHomeSchool = () => this.getHomeSchool().click();
 
   // new school
 

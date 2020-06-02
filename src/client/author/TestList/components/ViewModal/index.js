@@ -24,9 +24,9 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Tags from "../../../src/components/common/Tags";
 import {
   getCollectionsSelector,
-  getInterestedCurriculumsSelector,
   getUserIdSelector,
-  getUserRole
+  getUserRole,
+  isPublisherUserSelector
 } from "../../../src/selectors/user";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 import {
@@ -123,7 +123,8 @@ class ViewModal extends React.Component {
       userRole,
       previewLink,
       modalView = true,
-      publicAccess = false
+      publicAccess = false,
+      isPublisherUser
     } = this.props;
     const {
       title = "",
@@ -301,25 +302,28 @@ class ViewModal extends React.Component {
                   <span>ASSIGN</span>
                 </EduButton>
               )}
-              {(permission !== "VIEW" || status === "published") && !isEdulasticCurator && !publicAccess && (
+              {permission !== "VIEW" && !isEdulasticCurator && !publicAccess && status !== "published" && (
                 <EduButton
                   height="40px"
                   width="100%"
                   justifyContent="center"
                   data-cy="edit/assign-button"
-                  onClick={status === "published" ? assign : onEdit}
+                  onClick={onEdit}
                 >
-                  {status === "published" ? (
-                    <>
-                      <IconAssignment />
-                      <span>ASSIGN</span>
-                    </>
-                  ) : (
-                    <>
-                      <IconPencilEdit height={14} />
-                      <span>EDIT</span>
-                    </>
-                  )}
+                  <IconPencilEdit height={14} />
+                  <span>EDIT</span>
+                </EduButton>
+              )}
+              {status === "published" && !isEdulasticCurator && !publicAccess && !isPublisherUser && (
+                <EduButton
+                  height="40px"
+                  width="100%"
+                  justifyContent="center"
+                  data-cy="edit/assign-button"
+                  onClick={assign}
+                >
+                  <IconAssignment />
+                  <span>ASSIGN</span>
                 </EduButton>
               )}
             </ButtonContainer>
@@ -480,7 +484,8 @@ export default connect(
   state => ({
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    isPublisherUser: isPublisherUserSelector(state)
   }),
   {}
 )(ViewModal);

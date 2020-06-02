@@ -39,7 +39,7 @@ const ResponseContainers = ({
       left: isPrintMode ? `${(responseContainerLeft / imageWidth) * 100}%` : responseContainerLeft,
       maxWidth: response.maxWidth,
       width: isPrintMode ? `${(width / imageWidth) * 100}%` : width,
-      height: isPrintMode && !`${height}`.includes("auto") ? `${(height / imageHeight) * 100}%` : height,
+      minHeight: isPrintMode && !`${height}`.includes("auto") ? `${(height / imageHeight) * 100}%` : height,
       background: transparentBackground ? "transparent" : theme.widgets.clozeImageDragDrop.responseBoxBgColor,
       border: showDropItemBorder
         ? showDashedBorder
@@ -47,7 +47,8 @@ const ResponseContainers = ({
           : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
         : 0,
       borderRadius: 5,
-      display: "flex"
+      display: "flex",
+      padding: "5px"
     };
 
     return btnStyle;

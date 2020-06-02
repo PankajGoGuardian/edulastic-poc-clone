@@ -169,21 +169,23 @@ const MatchListPreview = ({
    */
   const userAttemptRef = useRef(false);
 
-  useEffect(() => {
-    /**
-     * simulate component will unmount
-     * during student attempt, only if shuffle is on
-     * save the order of drag items in the redux store
-     * so when user comes back to this question, show the responses in the preserved order
-     * order is preserved until user attempts again, shuffle is done for every attempt
-     * @see https://snapwiz.atlassian.net/browse/EV-14104
-     */
-    return () => {
-      if (isStudentAttempt && shuffleOptions) {
-        updateOptionsToStore({ itemId: item.id, options: dragItemsRef.current });
-      }
-    };
-  }, []);
+  useEffect(
+    () =>
+      /**
+       * simulate component will unmount
+       * during student attempt, only if shuffle is on
+       * save the order of drag items in the redux store
+       * so when user comes back to this question, show the responses in the preserved order
+       * order is preserved until user attempts again, shuffle is done for every attempt
+       * @see https://snapwiz.atlassian.net/browse/EV-14104
+       */
+      () => {
+        if (isStudentAttempt && shuffleOptions) {
+          updateOptionsToStore({ itemId: item.id, options: dragItemsRef.current });
+        }
+      },
+    []
+  );
 
   useEffect(() => {
     setAns(
@@ -317,7 +319,7 @@ const MatchListPreview = ({
     width: width || "auto",
     alignItems: "center",
     justifyContent: _preview ? "space-between" : "flex-start",
-    padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",
+    padding: flag === "dragItems" ? "10px 15px 10px 15px" : "5px",
     margin: flag === "dragItems" ? "4px" : "0px",
     background: _preview
       ? correct

@@ -31,9 +31,10 @@ const TemplateBox = ({ resprops, id }) => {
   const width = (response && response.widthpx) || responseBtnStyle.widthpx || Dimensions.minWidth;
   const style = {
     ...responseBtnStyle,
-    height: response ? height : "auto",
+    minHeight: response ? height : "auto",
     minWidth: response ? width : "auto",
-    maxWidth: maxWidth || "auto"
+    maxWidth: maxWidth || "auto",
+    padding: "5px"
   };
 
   const getData = attr => {

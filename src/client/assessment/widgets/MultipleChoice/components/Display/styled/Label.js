@@ -36,7 +36,7 @@ export const Label = styled.label`
   flex: 1;
   position: relative;
   display: inline-block;
-  padding: ${props => (props.styleType === "primary" ? "0" : "9px 0px")};
+  padding: 5px;
   padding-left: ${props =>
     props.uiStyle.type === "block"
       ? "0px"

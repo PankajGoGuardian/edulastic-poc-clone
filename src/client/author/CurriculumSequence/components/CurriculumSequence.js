@@ -8,7 +8,7 @@ import styled from "styled-components";
 import * as moment from "moment";
 import { FlexContainer, MainContentWrapper, withWindowSizes } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
-import { largeDesktopWidth, smallDesktopWidth, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
+import { smallDesktopWidth, desktopWidth, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
 import { Modal, message, Spin } from "antd";
 
@@ -662,9 +662,10 @@ class CurriculumSequence extends Component {
             onRejectClick={this.onRejectClick}
             loading={loading}
             showUseThisNotification={showUseThisNotification}
+            windowWidth={windowWidth}
           />
 
-          <MainContentWrapper padding="30px">
+          <MainContentWrapper mode={mode}>
             {showBreadCrumb && <CurriculumBreadCrumb mode={mode} />}
             {loading && <Spin />}
             {currentTab === "playlist" && !loading && (
@@ -859,7 +860,7 @@ const CurriculumSequenceWrapper = styled.div`
 `;
 
 const StyledFlexContainer = styled(FlexContainer)`
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${desktopWidth}) {
     flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
   }
 `;
@@ -881,16 +882,30 @@ export const ContentContainer = styled.div`
     }
     return "calc(100vh - 124px)";
   }};
+
   @media (max-width: ${extraDesktopWidthMax}) {
     width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 340px)" : "100%")};
   }
+
   @media (max-width: ${smallDesktopWidth}) {
-    width: 100%;
-    padding-right: 0px;
+    width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 240px)" : "100%")};
   }
 
-  @media only screen and (max-width: ${largeDesktopWidth}) {
+  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
+    height: ${({ showBreadCrumb, isDifferentiationTab }) => {
+      if (isDifferentiationTab) {
+        return "calc(100vh - 175px)";
+      }
+      if (showBreadCrumb) {
+        return "calc(100vh - 138px)";
+      }
+      return "calc(100vh - 102px)";
+    }};
+  }
+
+  @media (max-width: ${desktopWidth}) {
     width: 100%;
+    padding-right: 0px;
   }
 
   &::-webkit-scrollbar {

@@ -1,10 +1,10 @@
 import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
-  title,
   tabletWidth,
   smallDesktopWidth,
-  mobileWidthMax
+  mobileWidthMax,
+  desktopWidth
 } from "@edulastic/colors";
 import { MenuIcon } from "@edulastic/common";
 import { Affix } from "antd";
@@ -23,7 +23,7 @@ const MainHeader = ({ children, headingText, Icon, toggleSideBar, ...restProps }
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           {Icon && (
             <TitleIcon>
-              <Icon color={title} width={20} height={20} />
+              <Icon />
             </TitleIcon>
           )}
           <TitleWrapper {...restProps} title={headingText} data-cy="title">
@@ -78,8 +78,8 @@ const HeaderWrapper = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     padding-top: ${props => props.height || props.theme.HeaderHeight.xl}px;
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    padding-top: ${props => props.mobileHeaderHeight || props.theme.HeaderHeight.xs}px;
+  @media (max-width: ${smallDesktopWidth}) and (min-width: ${tabletWidth}) {
+    padding-top: ${props => props.theme.HeaderHeight.sd}px;
   }
   @media print {
     padding-top: 0px;
@@ -95,15 +95,17 @@ const Container = styled.div`
   border-bottom: 1px solid #2f4151;
   height: ${props => props.height || props.theme.HeaderHeight.md}px;
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.height || props.theme.HeaderHeight.md}px;
-  }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props => props.height || props.theme.HeaderHeight.xl}px;
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 10px 20px;
-    padding-bottom: 4px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.height || props.theme.HeaderHeight.md}px;
+  }
+  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
+    height: ${props => props.theme.HeaderHeight.sd}px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    padding: 0px 20px;
     height: ${props => props.mobileHeaderHeight || props.theme.HeaderHeight.xs}px;
     flex-wrap: wrap;
   }
@@ -130,15 +132,17 @@ export const TitleWrapper = styled.h1`
   min-width: auto;
   margin: 0px;
   white-space: nowrap;
-  max-width: ${props => (props.noEllipsis ? "unset" : props.titleMaxWidth || "200px")};
+  max-width: ${props => (props.noEllipsis ? "unset" : props.titleMaxWidth || "22rem")};
   overflow: hidden;
   letter-spacing: 0.9px;
   text-overflow: ellipsis;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: ${props => props.theme.header.headerTitleFontSize};
-    max-width: ${props => (props.noEllipsis ? "unset" : props.titleMaxWidth || "300px")};
     min-width: ${props => props.titleMinWidth || "200px"};
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 14px;
   }
 `;
 
@@ -149,9 +153,21 @@ const TitleIcon = styled.span`
   svg {
     fill: ${props => props.theme.header.headerTitleTextColor};
   }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  @media (max-width: ${tabletWidth}) {
+    display: none;
+  }
 `;
 
 export const HeaderMidContainer = styled.div`
+  align-self: flex-end;
   @media (max-width: ${mobileWidthMax}) {
     order: 3;
     flex-basis: 100%;

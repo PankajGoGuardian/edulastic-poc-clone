@@ -11,7 +11,8 @@ import {
   themeColor,
   white,
   secondaryTextColor,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  tabletWidth
 } from "@edulastic/colors";
 import { IconSearch } from "@edulastic/icons";
 import { Modal } from "antd";
@@ -26,11 +27,14 @@ export const ManageContentOuterWrapper = styled.div`
     width: 340px;
   }
   @media (max-width: ${smallDesktopWidth}) {
+    width: 240px;
+  }
+  @media (max-width: ${desktopWidth}) {
     position: fixed;
     right: 0px;
-    top: ${props => props.theme.HeaderHeight.md}px;
-    min-height: calc(100vh - 62px);
-    max-height: calc(100vh - 62px);
+    top: ${props => props.theme.HeaderHeight.sd}px;
+    min-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
+    max-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
     background: white;
 
     .inner-wrapper {
@@ -38,8 +42,13 @@ export const ManageContentOuterWrapper = styled.div`
     }
   }
 
-  @media (max-width: ${desktopWidth}) {
+  /* @media (max-width: ${desktopWidth}) {
     top: ${props => props.theme.HeaderHeight.xs}px;
+  } */
+
+  @media (max-width: ${tabletWidth}) {
+    /* top: ${props => props.theme.HeaderHeight.xs}px; */
+    top: 100px;
   }
 `;
 
@@ -265,8 +274,9 @@ export const ResourceDataList = styled.div`
       background: #888;
     }
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 142}px)`};
+
+  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
+    height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 285px)" : "calc(100vh - 322px)")};
   }
 
   @media (max-width: ${desktopWidth}) {

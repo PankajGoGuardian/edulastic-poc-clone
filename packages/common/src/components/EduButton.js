@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { white, themeColor, grey, black, extraDesktopWidthMax } from "@edulastic/colors";
+import { white, themeColor, grey, black, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
 
 const EduButton = ({ children, ...restProps }) => (
@@ -78,6 +78,10 @@ const StyledButton = styled(Button)`
     color: ${getColor};
   }
 
+  &:first-child {
+    margin-left: 0px;
+  }
+
   svg {
     fill: ${getColor};
     margin-left: 5px;
@@ -122,5 +126,10 @@ const StyledButton = styled(Button)`
       margin-left: ${props => props.ml || "5px"};
       height: ${props => props.height || "36px"};
     }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    height: ${props => props.height || "30px"};
+    width: ${({ width, IconBtn }) => width || (IconBtn ? "30px" : null)};
   }
 `;

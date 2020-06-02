@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { desktopWidth, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { desktopWidth, mediumDesktopExactWidth, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
 
 export const Content = styled.div`
   width: 100%;
@@ -10,6 +10,10 @@ export const Content = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     height: calc(100vh - 120px);
+  }
+
+  @media (min-width: ${smallDesktopWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.sd}px)`};
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { IconClose } from "@edulastic/icons";
-import { desktopWidth, smallDesktopWidth, secondaryTextColor } from "@edulastic/colors";
+import { desktopWidth, secondaryTextColor, tabletWidth } from "@edulastic/colors";
 
 import ManageContentBlock from "../ManageContentBlock";
 import SummaryBlock from "./SummaryBlock";
@@ -72,12 +72,15 @@ export const HideRightPanel = styled.div`
     fill: ${secondaryTextColor};
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${desktopWidth}) {
     position: fixed;
     right: 16px;
-    top: ${props => props.theme.HeaderHeight.md + 12}px;
+    top: ${props => props.theme.HeaderHeight.sd + 12}px;
   }
-  @media (max-width: ${desktopWidth}) {
+  /* @media (max-width: ${desktopWidth}) {
     top: ${props => props.theme.HeaderHeight.xs + 12}px;
+  } */
+  @media (max-width: ${tabletWidth}) {
+    top: 108px;
   }
 `;

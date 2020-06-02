@@ -1,31 +1,31 @@
 import styled from "styled-components";
-import { mediumDesktopExactWidth, extraDesktopWidthMax, desktopWidth, mainBgColor } from "@edulastic/colors";
-
-// breadcrumb bar height + padding of content
-const breadcrumbHeight = 92;
+import {
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+  desktopWidth,
+  mainBgColor,
+  smallDesktopWidth
+} from "@edulastic/colors";
 
 const MainContentWrapper = styled.div`
+  overflow: auto;
   background: ${mainBgColor};
-  padding: ${props => props.padding || "20px 30px"};
-  padding-top: ${({ mode }) => (mode === "embedded" ? "0px" : "")};
+  padding: ${props => props.padding || "30px"};
   width: ${props => props.width || "100%"};
-  min-height: ${props =>
-    `calc(100vh - ${props.theme.HeaderHeight.xs + (props.mode === "embedded" ? breadcrumbHeight : 0)}px)`};
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    min-height: ${props =>
-      `calc(100vh - ${props.theme.HeaderHeight.md + (props.mode === "embedded" ? breadcrumbHeight : 0)}px)`};
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    min-height: ${props =>
-      `calc(100vh - ${props.theme.HeaderHeight.xl + (props.mode === "embedded" ? breadcrumbHeight : 0)}px)`};
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
-
+  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.sd}px)`};
+  }
   @media (max-width: ${desktopWidth}) {
     padding: 20px;
-    min-height: ${props =>
-      `calc(100vh - ${props.mobileHeaderHeight + (props.mode === "embedded" ? breadcrumbHeight : 0)}px)`};
-    padding-top: ${({ mode }) => (mode === "embedded" ? "0px" : "")};
+    height: ${props => `calc(100vh - ${props.mobileHeaderHeight}px)`};
   }
 `;
 

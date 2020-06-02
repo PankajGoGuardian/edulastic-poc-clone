@@ -5,22 +5,23 @@ import { reduce, isNumber } from "lodash";
 import { roleuser } from "@edulastic/constants";
 import { Tooltip } from "antd";
 import { FlexContainer, EduButton, MainHeader } from "@edulastic/common";
-import { smallDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { smallDesktopWidth, extraDesktopWidthMax, tabletWidth } from "@edulastic/colors";
 import { IconPencilEdit, IconPlaylist, IconShare, IconSave, IconAirdrop, IconUseThis } from "@edulastic/icons";
 import StudentPlayListHeader from "../../../../student/sharedComponents/Header/PlayListHeader";
 import PlaylistPageNav from "../PlaylistPageNav";
 import SwitchPlaylist from "./SwitchPlaylist";
 
 const MobleHeaderWrapper = styled.div`
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${tabletWidth}) {
     width: 100%;
+    align-self: flex-end;
   }
 `;
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${tabletWidth}) {
     position: absolute;
     top: 10px;
     right: 20px;
@@ -32,6 +33,10 @@ const HeaderButton = styled(EduButton)`
   @media (max-width: ${extraDesktopWidthMax}) {
     height: 38px;
     ${({ IconBtn }) => IconBtn && "width: 38px;"};
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 30px;
+    width: 30px;
   }
 `;
 
@@ -61,7 +66,8 @@ const CurriculumHeader = ({
   handleNavChange,
   showUseThisNotification,
   handleGuidePopup,
-  onRejectClick
+  onRejectClick,
+  windowWidth
 }) => {
   const ResolvedMobileHeaderWrapper = isDesktop ? Fragment : MobleHeaderWrapper;
   const { isAuthor = false, status, title, collections: _playlistCollections = [] } = destinationCurriculumSequence;
@@ -102,6 +108,7 @@ const CurriculumHeader = ({
   const savePlaylist = () => {
     updateDestinationPlaylist({ showNotification: true });
   };
+  const isSmallDesktop = windowWidth <= parseInt(tabletWidth, 10);
 
   if (mode !== "embedded") {
     return (
@@ -109,6 +116,7 @@ const CurriculumHeader = ({
         Icon={isDesktop ? IconPlaylist : null}
         headingText={loading ? "Untitled Playlist" : title}
         titleMaxWidth="22rem"
+        justify="space-between"
         headingSubContent={
           urlHasUseThis &&
           !isPublisherUser &&
@@ -120,9 +128,8 @@ const CurriculumHeader = ({
             />
           )
         }
-        justify={urlHasUseThis ? "space-between" : "flex-start"}
       >
-        {urlHasUseThis && isDesktop && (
+        {urlHasUseThis && !isSmallDesktop && (
           <PlaylistPageNav
             onChange={handleNavChange}
             current={currentTab}
@@ -173,7 +180,7 @@ const CurriculumHeader = ({
             {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
           </CurriculumHeaderButtons>
 
-          {urlHasUseThis && !isDesktop && (
+          {urlHasUseThis && isSmallDesktop && (
             <PlaylistPageNav
               onChange={handleNavChange}
               current={currentTab}

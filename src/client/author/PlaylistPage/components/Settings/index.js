@@ -3,12 +3,11 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, MainContentWrapper } from "@edulastic/common";
 
 import { setUserCustomizeAction, getUserCustomizeSelector } from "../../ducks";
 import { SecondHeader } from "../../../TestPage/components/Setting/components/Container/styled";
 
-import { Container } from "../../../src/components/common";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import MainSetting from "./MainSettings";
 
@@ -25,7 +24,7 @@ const Setting = ({ current, history, windowWidth, customize, setUserCustomize })
   ];
 
   return (
-    <Container>
+    <MainContentWrapper>
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
       </SecondHeader>
@@ -35,7 +34,7 @@ const Setting = ({ current, history, windowWidth, customize, setUserCustomize })
         customize={customize}
         handleUserCustomize={setUserCustomize}
       />
-    </Container>
+    </MainContentWrapper>
   );
 };
 

@@ -69,6 +69,7 @@ export const HeadIcon = styled.div`
 export const RightSide = styled.div`
   display: flex;
   align-items: center;
+  align-self: flex-start;
 
   @media (max-width: ${desktopWidth}) {
     position: absolute;

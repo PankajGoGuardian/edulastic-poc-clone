@@ -8,7 +8,7 @@ import { playlistPageNavButtons } from "./navButtonsList";
 const PlaylistPageNav = ({ onChange, current, showDifferentiationTab }) => (
   <HeaderMidContainer>
     <StyledTabs>
-      {playlistPageNavButtons.map(({ value, text }, index) => {
+      {playlistPageNavButtons.map(({ value, text }) => {
         if (value === "differentiation" && !showDifferentiationTab) {
           return null;
         }

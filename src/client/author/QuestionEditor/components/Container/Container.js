@@ -468,7 +468,9 @@ class Container extends Component {
               <div>{view === "preview" && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>
-          <QuestionContentWrapper ref={this.scrollContainer}>{this.renderQuestion()}</QuestionContentWrapper>
+          <QuestionContentWrapper data-cy="question-editor-container" ref={this.scrollContainer}>
+            {this.renderQuestion()}
+          </QuestionContentWrapper>
           <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
         </ScrollContext.Provider>
       </EditorContainer>

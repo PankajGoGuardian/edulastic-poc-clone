@@ -730,7 +730,7 @@ class Container extends Component {
               renderRightSide={view === "edit" ? this.renderButtons : () => {}}
             />
           </ItemHeader>
-          <ContentWrapper>
+          <ContentWrapper data-cy="item-detail-container">
             <BreadCrumbBar>
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (

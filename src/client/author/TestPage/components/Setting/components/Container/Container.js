@@ -2,28 +2,12 @@ import React, { memo } from "react";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Button } from "antd";
-import { IconSource } from "@edulastic/icons";
-import { withNamespaces } from "@edulastic/localization";
-import { themeColor } from "@edulastic/colors";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, MainContentWrapper } from "@edulastic/common";
 import { SecondHeader } from "./styled";
-
-import { Container, ButtonLink } from "../../../../../src/components/common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import MainSetting from "../MainSetting/MainSetting";
 
-const Setting = ({
-  t,
-  current,
-  history,
-  onShowSource,
-  windowWidth,
-  owner,
-  isEditable = false,
-  sebPasswordRef,
-  showCancelButton
-}) => {
+const Setting = ({ current, history, windowWidth, owner, isEditable = false, sebPasswordRef, showCancelButton }) => {
   const breadcrumbData = [
     {
       title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
@@ -36,7 +20,7 @@ const Setting = ({
   ];
 
   return (
-    <Container>
+    <MainContentWrapper>
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
       </SecondHeader>
@@ -47,25 +31,22 @@ const Setting = ({
         isEditable={isEditable}
         sebPasswordRef={sebPasswordRef}
       />
-    </Container>
+    </MainContentWrapper>
   );
 };
 
 Setting.propTypes = {
-  t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   history: PropTypes.func.isRequired,
-  onShowSource: PropTypes.func.isRequired,
-  isEditable: PropTypes.bool,
-  owner: PropTypes.bool,
+  isEditable: PropTypes.bool.isRequired,
+  owner: PropTypes.bool.isRequired,
   windowWidth: PropTypes.number.isRequired
 };
 
 const enhance = compose(
   memo,
   withRouter,
-  withWindowSizes,
-  withNamespaces("author")
+  withWindowSizes
 );
 
 export default enhance(Setting);

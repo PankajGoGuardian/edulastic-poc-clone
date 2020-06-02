@@ -1,4 +1,4 @@
-import { HeaderTabs, MainHeader, EduButton,notification } from "@edulastic/common";
+import { HeaderTabs, MainHeader, EduButton, notification, withWindowSizes } from "@edulastic/common";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { HeaderMidContainer, TitleWrapper } from "@edulastic/common/src/components/MainHeader";
 import { assignmentPolicyOptions, test as testContants } from "@edulastic/constants";
@@ -14,6 +14,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
+import { smallDesktopWidth } from "@edulastic/colors";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
@@ -62,9 +63,7 @@ import {
   ClassDropMenu,
   DownArrow,
   DropMenu,
-  HeaderMenuIcon,
   MenuItems,
-  OpenCloseButton,
   OpenCloseWrapper,
   RightSideButtonWrapper,
   StudentStatusDetails,
@@ -77,7 +76,6 @@ import ViewPasswordModal from "./ViewPasswordModal";
 import { allowedSettingPageToDisplay } from "./utils/transformers";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
-const desktopWidth = 992;
 
 const classViewRoutesByActiveTabName = {
   classboard: "classboard",
@@ -92,10 +90,7 @@ class ClassHeader extends Component {
       isPauseModalVisible: false,
       isCloseModalVisible: false,
       modalInputVal: "",
-      condition: true, // Whether meet the condition, if not show popconfirm.
-      studentReportCardMenuModalVisibility: false,
-      studentReportCardModalVisibility: false,
-      studentReportCardModalColumnsFlags: {}
+      condition: true // Whether meet the condition, if not show popconfirm.
     };
     this.inputRef = React.createRef();
   }
@@ -118,7 +113,7 @@ class ClassHeader extends Component {
 
   confirm = () => {
     this.setState({ visible: false });
-    notification({ type: "success", messageKey:"nextStep"});
+    notification({ type: "success", messageKey: "nextStep" });
   };
 
   cancel = () => {
@@ -170,8 +165,11 @@ class ClassHeader extends Component {
       additionalData.testType === "common assessment" &&
       userRole === "teacher"
     ) {
-      return notification({ type: "warn", msg:`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
-      `});
+      return notification({
+        type: "warn",
+        msg: `You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
+      `
+      });
     }
     openAssignment(assignmentId, classId, additionalData.testId);
   };
@@ -260,7 +258,7 @@ class ClassHeader extends Component {
       toggleStudentReportCardPopUp,
       userId,
       assignedById,
-      history
+      windowWidth
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -290,8 +288,10 @@ class ClassHeader extends Component {
       orgClasses.find(({ _id }) => _id === classId) || {};
     const showSyncGradesWithCanvasOption = canvasCode && canvasCourseSectionCode && orgData.allowCanvas;
 
-    //hiding seeting tab if assignment assigned by either DA/SA
+    // hiding seeting tab if assignment assigned by either DA/SA
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
+
+    const isSmallDesktop = windowWidth <= parseInt(smallDesktopWidth, 10);
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -324,6 +324,7 @@ class ClassHeader extends Component {
     const actionsMenu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
+        {isSmallDesktop && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
         <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden" groupId={classId}>
           <MenuItems
             data-cy="markAsDone"
@@ -345,7 +346,6 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        {window.innerWidth <= desktopWidth && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
         <MenuItems data-cy="unAssign" key="key4" onClick={() => toggleDeleteAssignmentModal(true)}>
           Unassign
         </MenuItems>
@@ -398,8 +398,8 @@ class ClassHeader extends Component {
     );
 
     return (
-      <MainHeader mobileHeaderHeight={100}>
-        <TitleWrapper titleMinWidth="unset">
+      <MainHeader>
+        <TitleWrapper titleMinWidth="unset" titleMaxWidth="22rem">
           <div>
             {classesList.length > 1 ? (
               <Dropdown
@@ -479,13 +479,13 @@ class ClassHeader extends Component {
           </StyledTabs>
         </HeaderMidContainer>
         <RightSideButtonWrapper>
-          {window.innerWidth > desktopWidth && renderOpenClose}
+          {!isSmallDesktop && renderOpenClose}
           <Dropdown
             getPopupContainer={triggerNode => triggerNode.parentNode}
             overlay={actionsMenu}
             placement="bottomRight"
           >
-            <EduButton data-cy="headerDropDown">
+            <EduButton data-cy="headerDropDown" IconBtn>
               <FontAwesomeIcon icon={faEllipsisV} />
             </EduButton>
           </Dropdown>
@@ -580,17 +580,13 @@ ClassHeader.propTypes = {
   assignmentId: PropTypes.string.isRequired,
   classId: PropTypes.string.isRequired,
   additionalData: PropTypes.object.isRequired,
-  setReleaseScore: PropTypes.func.isRequired,
-  releaseScore: PropTypes.string
-};
-
-ClassHeader.defaultProps = {
-  releaseScore: "DONT_RELEASE"
+  setReleaseScore: PropTypes.func.isRequired
 };
 
 const enhance = compose(
   withNamespaces("classBoard"),
   withRouter,
+  withWindowSizes,
   connect(
     state => ({
       releaseScore: showScoreSelector(state),

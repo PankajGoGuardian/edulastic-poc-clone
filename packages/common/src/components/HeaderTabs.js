@@ -1,4 +1,11 @@
-import { largeDesktopWidth, mobileWidthMax, white, desktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
+import {
+  largeDesktopWidth,
+  mobileWidthMax,
+  white,
+  desktopWidth,
+  mediumDesktopExactWidth,
+  smallDesktopWidth
+} from "@edulastic/colors";
 import { PropTypes } from "prop-types";
 import React from "react";
 import { withRouter } from "react-router";
@@ -29,7 +36,7 @@ const HeaderTabs = ({
 
   return (
     <StyledLink id={id} key={key} to={to} onClick={handleOnClick} disabled={disabled} data-cy={dataCy} {...restProps}>
-      <StyledAnchor isActive={isActive}>
+      <StyledAnchor isActive={isActive} hasIcon={!!icon}>
         {icon}
         <LinkLabel hasIcon={!!icon}>{linkLabel}</LinkLabel>
       </StyledAnchor>
@@ -59,9 +66,8 @@ export const StyledTabs = styled.div`
   min-width: 300px;
   display: flex;
   align-items: center;
+  align-self: flex-end;
   justify-content: center;
-  margin-bottom: -10px;
-  padding-left: 20px;
 
   @media (min-width: ${largeDesktopWidth}) {
     min-width: 480px;
@@ -119,6 +125,15 @@ export const StyledAnchor = styled.div`
     }
   }
 
+  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
+    padding: 0px 30px;
+    height: ${props => (props.isActive ? "36px" : "35px")};
+    & svg {
+      display: block;
+      margin-right: ${({ hasIcon }) => (hasIcon ? "0px" : "")};
+    }
+  }
+
   @media (max-width: ${mobileWidthMax}) {
     flex-basis: 100%;
   }
@@ -127,6 +142,10 @@ export const StyledAnchor = styled.div`
 export const LinkLabel = styled.div`
   padding: 0px;
   white-space: nowrap;
+
+  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
+    display: ${({ hasIcon }) => (hasIcon ? "none" : "")};
+  }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     padding: ${({ hasIcon }) => (hasIcon ? "0 15px 0 0" : "0 15px")};

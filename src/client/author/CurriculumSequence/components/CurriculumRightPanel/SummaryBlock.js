@@ -32,7 +32,7 @@ const SummaryBlock = ({ isStudent, summaryData, urlHasUseThis, hasSummaryDataNoD
   ];
 
   return (
-    <SummaryBlockContainer>
+    <SummaryBlockContainer urlHasUseThis={urlHasUseThis}>
       <SummaryBlockTitle>Summary</SummaryBlockTitle>
       <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
       <SummaryPieChart
@@ -72,7 +72,7 @@ export default SummaryBlock;
 
 const SummaryBlockContainer = styled.div`
   width: 400px;
-  min-height: calc(100vh - 125px);
+  height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 125px)" : "calc(100vh - 160px)")};
   background: ${white};
   padding-top: 30px;
   border-radius: 4px;
@@ -90,12 +90,20 @@ const SummaryBlockContainer = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 340px;
   }
+
   @media (max-width: ${smallDesktopWidth}) {
+    width: 240px;
+  }
+
+  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
+    height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 105px)" : "calc(100vh - 140px)")};
+  }
+
+  @media (max-width: ${desktopWidth}) {
     position: fixed;
     right: 0px;
     top: ${props => props.theme.HeaderHeight.md}px;
-    max-height: calc(100vh - 62px);
-    min-height: calc(100vh - 62px);
+    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.md}px)`};
     overflow: auto;
   }
   @media (max-width: ${desktopWidth}) {

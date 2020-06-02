@@ -16,7 +16,7 @@ import { IconShare } from "@edulastic/icons";
 import { Status } from "../../../AssessmentPage/components/Header/styled";
 
 export const RightFlexContainer = styled(FlexContainer)`
-  flex-basis: 30%;
+  /* flex-basis: 30%; */
 `;
 
 export const AssignButton = styled(EduButton)`

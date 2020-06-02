@@ -174,6 +174,7 @@ const pastDueTagColor = "#CE5A7C";
 
 const HeaderHeight = {
   xs: 62,
+  sd: 42,
   md: 62,
   xl: 62
 };

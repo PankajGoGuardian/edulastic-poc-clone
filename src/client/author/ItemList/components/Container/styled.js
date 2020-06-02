@@ -1,31 +1,12 @@
-import {
-  desktopWidth,
-  extraDesktopWidthMax,
-  mediumDesktopExactWidth,
-  mobileWidth,
-  mobileWidthLarge,
-  white
-} from "@edulastic/colors";
-import { Paper } from "@edulastic/common";
+import { desktopWidth, mobileWidth, mobileWidthLarge, white } from "@edulastic/colors";
+import { Paper, MainContentWrapper } from "@edulastic/common";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
 
-export const Container = styled.div`
+export const Container = styled(MainContentWrapper)`
   padding: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
   overflow: hidden;
   display: flex;
-  position: relative;
-  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
-  }
 
   @media (max-width: ${mobileWidth}) {
     padding: 0;

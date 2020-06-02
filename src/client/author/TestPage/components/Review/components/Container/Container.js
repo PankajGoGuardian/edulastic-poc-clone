@@ -1,12 +1,12 @@
 import React, { PureComponent } from "react";
-import { Row, Col, message } from "antd";
+import { Row, Col } from "antd";
 import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq, keyBy, set, findIndex } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
-import { Paper, withWindowSizes, notification } from "@edulastic/common";
+import { Paper, withWindowSizes, notification, MainContentWrapper } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
@@ -29,18 +29,11 @@ import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import {
-  SecondHeader,
-  ReviewPageContainer,
-  ReviewSummaryWrapper,
-  ReviewContentWrapper,
-  ReviewLeftContainer
-} from "./styled";
+import { SecondHeader, ReviewSummaryWrapper, ReviewContentWrapper, ReviewLeftContainer } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import { getUserFeatures } from "../../../../../src/selectors/user";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
-import { Content } from "../../../Container/styled";
 import ReviewItems from "../ReviewItems";
 import { resetItemScoreAction } from "../../../../../src/ItemScore/ducks";
 
@@ -160,7 +153,7 @@ class Review extends PureComponent {
       .filter(item => item.selected)
       .map(item => item._id);
     if (!itemsSelected.length) {
-      return  notification({ type: "warn", messageKey:"pleaseSelectAtleastOneQuestion"});
+      return notification({ type: "warn", messageKey: "pleaseSelectAtleastOneQuestion" });
     }
     newData.itemGroups = newData.itemGroups.map(itemGroup => ({
       ...itemGroup,
@@ -191,7 +184,7 @@ class Review extends PureComponent {
       .find(item => item._id);
 
     if (!itemsSelected) {
-      return notification({ type: "warn", messageKey:"pleaseSelectAtleastOneQuestion"});
+      return notification({ type: "warn", messageKey: "pleaseSelectAtleastOneQuestion" });
     }
 
     newData.itemGroups = newData.itemGroups.map(itemGroup => ({
@@ -434,112 +427,110 @@ class Review extends PureComponent {
     const isPublishers = userFeatures.isPublisherAuthor || userFeatures.isCurator;
 
     return (
-      <Content ref={this.containerRef}>
-        <ReviewPageContainer>
-          {!isPlaylistTestReview && (
-            <Row>
-              <Col lg={24} xl={owner && isEditable ? 24 : 18}>
-                <div ref={this.secondHeaderRef}>
-                  <SecondHeader>
-                    <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
-                    <HeaderBar
-                      onSelectAll={this.handleSelectAll}
-                      itemTotal={testItems.length}
-                      selectedItems={selected}
-                      onRemoveSelected={this.handleRemoveSelected}
-                      onCollapse={this.handleCollapse}
-                      onMoveTo={this.handleMoveTo}
-                      owner={owner}
-                      isEditable={isEditable}
-                      windowWidth={windowWidth}
-                      setCollapse={isCollapse}
-                      toggleSummary={this.toggleSummary}
-                      isShowSummary={isShowSummary}
-                      onShowTestPreview={this.showTestPreviewModal}
-                      hasStickyHeader={hasStickyHeader}
-                      itemGroups={test.itemGroups}
-                    />
-                  </SecondHeader>
-                </div>
-              </Col>
-            </Row>
+      <MainContentWrapper ref={this.containerRef}>
+        {!isPlaylistTestReview && (
+          <Row>
+            <Col lg={24} xl={owner && isEditable ? 24 : 18}>
+              <div ref={this.secondHeaderRef}>
+                <SecondHeader>
+                  <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
+                  <HeaderBar
+                    onSelectAll={this.handleSelectAll}
+                    itemTotal={testItems.length}
+                    selectedItems={selected}
+                    onRemoveSelected={this.handleRemoveSelected}
+                    onCollapse={this.handleCollapse}
+                    onMoveTo={this.handleMoveTo}
+                    owner={owner}
+                    isEditable={isEditable}
+                    windowWidth={windowWidth}
+                    setCollapse={isCollapse}
+                    toggleSummary={this.toggleSummary}
+                    isShowSummary={isShowSummary}
+                    onShowTestPreview={this.showTestPreviewModal}
+                    hasStickyHeader={hasStickyHeader}
+                    itemGroups={test.itemGroups}
+                  />
+                </SecondHeader>
+              </div>
+            </Col>
+          </Row>
+        )}
+        <ReviewContentWrapper>
+          <ReviewLeftContainer lg={24} xl={18}>
+            <Paper padding="7px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
+              <ReviewItems
+                items={testItems}
+                scoring={test.scoring}
+                standards={standards}
+                userFeatures={userFeatures}
+                isEditable={isEditable}
+                isCollapse={isCollapse}
+                passagesKeyed={passagesKeyed}
+                rows={rows}
+                isSmallSize={isSmallSize}
+                onChangePoints={this.handleChangePoints}
+                handlePreview={this.handlePreviewTestItem}
+                moveTestItems={this.moveTestItems}
+                removeTestItem={this.handleRemoveOne}
+                getContainer={() => this.containerRef.current}
+                setSelected={this.setSelected}
+                selected={selected}
+                questions={questions}
+                owner={owner}
+                itemGroups={test.itemGroups}
+                isPublishers={isPublishers}
+                isFetchingAutoselectItems={isFetchingAutoselectItems}
+              />
+            </Paper>
+          </ReviewLeftContainer>
+          {isShowSummary && (
+            <ReviewSummaryWrapper lg={24} xl={6}>
+              <ReviewSummary
+                grades={grades}
+                subjects={subjects}
+                collections={collections}
+                owner={owner}
+                isEditable={isEditable}
+                onChangeField={this.handleChangeField}
+                thumbnail={defaultThumbnail || test.thumbnail}
+                onChangeGrade={onChangeGrade}
+                onChangeSubjects={onChangeSubjects}
+                onChangeSkillIdentifiers={onChangeSkillIdentifiers}
+                onChangeCollection={onChangeCollection}
+                windowWidth={windowWidth}
+                isPublishers={isPublishers}
+              />
+            </ReviewSummaryWrapper>
           )}
-          <ReviewContentWrapper>
-            <ReviewLeftContainer lg={24} xl={18}>
-              <Paper padding="7px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
-                <ReviewItems
-                  items={testItems}
-                  scoring={test.scoring}
-                  standards={standards}
-                  userFeatures={userFeatures}
-                  isEditable={isEditable}
-                  isCollapse={isCollapse}
-                  passagesKeyed={passagesKeyed}
-                  rows={rows}
-                  isSmallSize={isSmallSize}
-                  onChangePoints={this.handleChangePoints}
-                  handlePreview={this.handlePreviewTestItem}
-                  moveTestItems={this.moveTestItems}
-                  removeTestItem={this.handleRemoveOne}
-                  getContainer={() => this.containerRef.current}
-                  setSelected={this.setSelected}
-                  selected={selected}
-                  questions={questions}
-                  owner={owner}
-                  itemGroups={test.itemGroups}
-                  isPublishers={isPublishers}
-                  isFetchingAutoselectItems={isFetchingAutoselectItems}
-                />
-              </Paper>
-            </ReviewLeftContainer>
-            {isShowSummary && (
-              <ReviewSummaryWrapper lg={24} xl={6}>
-                <ReviewSummary
-                  grades={grades}
-                  subjects={subjects}
-                  collections={collections}
-                  owner={owner}
-                  isEditable={isEditable}
-                  onChangeField={this.handleChangeField}
-                  thumbnail={defaultThumbnail || test.thumbnail}
-                  onChangeGrade={onChangeGrade}
-                  onChangeSubjects={onChangeSubjects}
-                  onChangeSkillIdentifiers={onChangeSkillIdentifiers}
-                  onChangeCollection={onChangeCollection}
-                  windowWidth={windowWidth}
-                  isPublishers={isPublishers}
-                />
-              </ReviewSummaryWrapper>
-            )}
-          </ReviewContentWrapper>
-          {isModalVisible && (
-            <PreviewModal
-              testId={get(this.props, "match.params.id", false)}
-              isTest={!!test}
-              isVisible={isModalVisible}
-              onClose={this.closeModal}
-              showModal
-              isEditable={isEditable}
-              owner={owner}
-              addDuplicate={this.handleDuplicateItem}
-              page="review"
-              data={item}
-              questions={questions}
-              checkAnswer={() => checkAnswer(item)}
-              showAnswer={() => showAnswer(item)}
-              prevItem={this.prevItem}
-              nextItem={this.nextItem}
-              showEvaluationButtons
-            />
-          )}
-          <TestPreviewModal
-            isModalVisible={isTestPreviewModalVisible}
-            testId={currentTestId}
-            test={test}
-            closeTestPreviewModal={this.hidePreviewModal}
+        </ReviewContentWrapper>
+        {isModalVisible && (
+          <PreviewModal
+            testId={get(this.props, "match.params.id", false)}
+            isTest={!!test}
+            isVisible={isModalVisible}
+            onClose={this.closeModal}
+            showModal
+            isEditable={isEditable}
+            owner={owner}
+            addDuplicate={this.handleDuplicateItem}
+            page="review"
+            data={item}
+            questions={questions}
+            checkAnswer={() => checkAnswer(item)}
+            showAnswer={() => showAnswer(item)}
+            prevItem={this.prevItem}
+            nextItem={this.nextItem}
+            showEvaluationButtons
           />
-        </ReviewPageContainer>
-      </Content>
+        )}
+        <TestPreviewModal
+          isModalVisible={isTestPreviewModalVisible}
+          testId={currentTestId}
+          test={test}
+          closeTestPreviewModal={this.hidePreviewModal}
+        />
+      </MainContentWrapper>
     );
   }
 }

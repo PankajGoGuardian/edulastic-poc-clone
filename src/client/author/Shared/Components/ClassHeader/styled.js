@@ -71,7 +71,7 @@ export const StyledTitle = styled.h1`
 `;
 
 export const StyledParaFirst = styled.p`
-  max-width: 200px;
+  max-width: 22rem;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

@@ -9,7 +9,6 @@ import { withWindowSizes, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { themeColor, white } from "@edulastic/colors";
 import { testsApi } from "@edulastic/api";
-import { Content } from "../../../TestPage/components/Container/styled";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
   createPlaylistAction,
@@ -202,7 +201,7 @@ class Container extends PureComponent {
         return false;
       }).length > 0;
 
-    if (!hasContent) return notification({ type: "warn", messageKey:"moduleHasNOTest"});
+    if (!hasContent) return notification({ type: "warn", messageKey: "moduleHasNOTest" });
 
     const { expandedModules } = this.state;
     if (expandedModules.indexOf(moduleId) === -1) {
@@ -473,7 +472,7 @@ class Container extends PureComponent {
           isPlaylist
           playlistStatus={status}
         />
-        <Content>{this.renderContent()}</Content>
+        {this.renderContent()}
       </>
     );
   }

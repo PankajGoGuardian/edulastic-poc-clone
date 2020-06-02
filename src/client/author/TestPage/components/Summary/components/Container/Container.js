@@ -6,11 +6,11 @@ import { compose } from "redux";
 import { uniq as _uniq } from "lodash";
 import { IconSource } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, MainContentWrapper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
-import { Container, ButtonLink } from "../../../../../src/components/common";
+import { ButtonLink } from "../../../../../src/components/common";
 import SummaryCard from "../Sidebar/SideBarSwitch";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
@@ -103,7 +103,7 @@ const Summary = ({
   const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
 
   return (
-    <Container>
+    <MainContentWrapper>
       <SecondHeader>
         <Breadcrumb data={isPlaylist ? playlistBreadcrumbData : breadcrumbData} style={{ position: "unset" }} />
         {!isPlaylist && false && (
@@ -142,19 +142,20 @@ const Summary = ({
         createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
         thumbnail={defaultThumbnail || test.thumbnail}
         backgroundColor={backgroundColor}
-        description={test.description}
         onChangeColor={onChangeColor}
         isTextColorPickerVisible={isTextColorPickerVisible}
         isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
         isEditable={isEditable}
       />
-    </Container>
+    </MainContentWrapper>
   );
 };
 
 Summary.defaultProps = {
   owner: false,
-  test: {}
+  isPlaylist: false,
+  isBackgroundColorPickerVisible: false,
+  isTextColorPickerVisible: false
 };
 Summary.propTypes = {
   setData: PropTypes.func.isRequired,
@@ -173,8 +174,7 @@ Summary.propTypes = {
   backgroundColor: PropTypes.string.isRequired,
   isBackgroundColorPickerVisible: PropTypes.bool,
   isTextColorPickerVisible: PropTypes.bool,
-  isTextColorPickerVisible: PropTypes.bool,
-  onChangeColor: PropTypes.func
+  onChangeColor: PropTypes.func.isRequired
 };
 
 const enhance = compose(

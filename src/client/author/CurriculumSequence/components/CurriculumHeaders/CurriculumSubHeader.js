@@ -284,9 +284,15 @@ const RightColumn = styled.div`
   justify-content: flex-end;
   align-items: center;
 
+  @media (max-width: ${smallDesktopWidth}) {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
   @media (max-width: ${tabletWidth}) {
     width: 45%;
   }
+
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
     margin-bottom: 5px;
@@ -306,8 +312,8 @@ const SubHeaderInfoCardWrapper = styled.div`
 const ButtonWrapper = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    flex-direction: row;
+    justify-content: flex-end;
   }
 `;
 
@@ -376,6 +382,19 @@ const StyledButton = styled.div`
     font-size: 9px;
     height: ${props => props.height || "32px"};
   }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    &:first-child {
+      margin-top: 16px;
+      margin-left: 0px;
+    }
+    &:last-child {
+      margin-top: 16px;
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+  }
+
   @media (max-width: ${desktopWidth}) {
     margin-left: 15px;
   }

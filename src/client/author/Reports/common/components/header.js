@@ -1,10 +1,11 @@
-import { themeColor } from "@edulastic/colors";
-import { EduButton, MainHeader } from "@edulastic/common";
-import { IconBarChart, IconFilter } from "@edulastic/icons";
-import { Button, Col, Icon } from "antd";
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
+import { Dropdown, Menu, Button, Col, Icon } from "antd";
+import { Link } from "react-router-dom";
 import { withNamespaces } from "react-i18next";
 import styled from "styled-components";
+import { themeColor, desktopWidth, smallDesktopWidth } from "@edulastic/colors";
+import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
+import { IconBarChart, IconFilter, IconMoreVertical } from "@edulastic/icons";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import HeaderNavigation from "./Header/HeaderNavigation";
@@ -12,6 +13,7 @@ import HeaderNavigation from "./Header/HeaderNavigation";
 const CustomizedHeaderWrapper = ({
   breadcrumbsData,
   title,
+  windowWidth,
   onShareClickCB,
   onPrintClickCB,
   onDownloadCSVClickCB,
@@ -38,6 +40,51 @@ const CustomizedHeaderWrapper = ({
     setRefineButtonActive(!refineButtonActive);
     onRefineResultsCB(event, !refineButtonActive);
   };
+  const isSmallDesktop = windowWidth > parseInt(desktopWidth, 10) && windowWidth <= parseInt(smallDesktopWidth, 10);
+
+  const availableNavItems = isSmallDesktop
+    ? navigationItems.filter(ite => ite.key === activeNavigationKey)
+    : navigationItems;
+
+  const ActionButtonWrapper = isSmallDesktop ? Menu : Fragment;
+  const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
+  const navMenu = isSmallDesktop
+    ? navigationItems
+        .filter(ite => ite.key !== activeNavigationKey)
+        .map(ite => (
+          <ActionButton key={ite.key}>
+            <Link to={ite.location}>{ite.title}</Link>
+          </ActionButton>
+        ))
+    : null;
+
+  const actionRightButtons = (
+    <ActionButtonWrapper>
+      {navMenu}
+      <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
+        {onShareClickCB ? (
+          <ActionButton isGhost IconBtn title="Share" onClick={_onShareClickCB}>
+            <Icon type="share-alt" />
+            {isSmallDesktop && <span>Share</span>}
+          </ActionButton>
+        ) : null}
+      </FeaturesSwitch>
+      {onPrintClickCB ? (
+        <ActionButton isGhost IconBtn title="Print" onClick={_onPrintClickCB}>
+          <Icon type="printer" />
+          {isSmallDesktop && <span>Print</span>}
+        </ActionButton>
+      ) : null}
+      <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
+        {onDownloadCSVClickCB ? (
+          <ActionButton isGhost IconBtn title="Download CSV" onClick={_onDownloadCSVClickCB}>
+            <Icon type="download" />
+            {isSmallDesktop && <span>Download CSV</span>}
+          </ActionButton>
+        ) : null}
+      </FeaturesSwitch>
+    </ActionButtonWrapper>
+  );
 
   return (
     <div>
@@ -49,32 +96,21 @@ const CustomizedHeaderWrapper = ({
         {navigationItems.length ? (
           activeNavigationKey === "standard-reports" ? (
             <FeaturesSwitch inputFeatures="customReport" actionOnInaccessible="hidden" key="customReport">
-              <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
+              <HeaderNavigation navigationItems={availableNavItems} activeItemKey={activeNavigationKey} />
             </FeaturesSwitch>
           ) : (
-            <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
+            <HeaderNavigation navigationItems={availableNavItems} activeItemKey={activeNavigationKey} />
           )
         ) : null}
         <StyledCol>
-          <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
-            {onShareClickCB ? (
-              <EduButton isGhost IconBtn title="Share" onClick={_onShareClickCB}>
-                <Icon type="share-alt" />
+          {!isSmallDesktop && actionRightButtons}
+          {isSmallDesktop && (
+            <Dropdown overlay={actionRightButtons} trigger={["click"]}>
+              <EduButton isGhost IconBtn>
+                <IconMoreVertical color={themeColor} />
               </EduButton>
-            ) : null}
-          </FeaturesSwitch>
-          {onPrintClickCB ? (
-            <EduButton isGhost IconBtn title="Print" onClick={_onPrintClickCB}>
-              <Icon type="printer" />
-            </EduButton>
-          ) : null}
-          <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
-            {onDownloadCSVClickCB ? (
-              <EduButton isGhost IconBtn title="Download CSV" onClick={_onDownloadCSVClickCB}>
-                <Icon type="download" />
-              </EduButton>
-            ) : null}
-          </FeaturesSwitch>
+            </Dropdown>
+          )}
         </StyledCol>
       </MainHeader>
       <SecondaryHeader>
@@ -95,7 +131,7 @@ const CustomizedHeaderWrapper = ({
   );
 };
 
-export default withNamespaces("header")(CustomizedHeaderWrapper);
+export default withNamespaces("header")(withWindowSizes(CustomizedHeaderWrapper));
 
 const ArrowIcon = styled(Icon)`
   height: 14px;
@@ -156,10 +192,4 @@ const SecondaryHeader = styled.div`
   @media print {
     display: none;
   }
-`;
-const IconButton = styled(StyledButton)`
-  font-size: 16px;
-  padding-right: 11px;
-  padding-left: 11px;
-  height: 40px;
 `;

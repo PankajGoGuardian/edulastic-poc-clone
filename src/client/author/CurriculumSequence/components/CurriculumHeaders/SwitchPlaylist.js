@@ -30,7 +30,7 @@ const SwitchPlaylist = ({ onClickHandler, showUseThisNotification, toggleShowUse
 
   return (
     <Popover content={popoverContent} overlayClassName="antd-notify-custom-popover" visible={isOpen}>
-      <FlexContainer onClick={onClickHandler}>
+      <FlexContainer onClick={onClickHandler} marginLeft="4px">
         <IconTile
           data-cy="open-dropped-playlist"
           style={{ cursor: "pointer" }}

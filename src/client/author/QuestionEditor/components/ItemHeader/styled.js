@@ -16,6 +16,7 @@ export const RightSide = styled.div`
   text-align: right;
   position: relative;
   flex: 1;
+  align-self: flex-end;
 
   @media (max-width: ${desktopWidth}) {
     position: static;

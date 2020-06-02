@@ -14,9 +14,9 @@ function NewActivityTargetContainer({ children, ...props }) {
       contentType: monitor.getItem()?.contentType
     }),
     drop: item => {
-      const { moduleIndex, afterIndex, onDrop } = props;
+      const { moduleIndex, onDrop } = props;
       if (onDrop) {
-        onDrop(moduleIndex, item, afterIndex);
+        onDrop(moduleIndex, item, true);
       }
     }
   });

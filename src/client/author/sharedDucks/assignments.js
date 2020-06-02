@@ -1,5 +1,6 @@
-import { createAction, createReducer } from "redux-starter-kit";
-import { takeEvery, call, put, all, select } from "redux-saga/effects";
+import { createAction } from "redux-starter-kit";
+import { takeEvery, call, put, all } from "redux-saga/effects";
+import { push } from "connected-react-router";
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { notification } from "@edulastic/common";
@@ -9,8 +10,7 @@ import { testsApi } from "@edulastic/api";
 import {
   TOGGLE_DELETE_ASSIGNMENT_MODAL,
   DELETE_ASSIGNMENT_REQUEST,
-  DELETE_ASSIGNMENT_REQUEST_SUCCESS,
-  DELETE_ASSIGNMENT_REQUEST_FAILED
+  DELETE_ASSIGNMENT_REQUEST_SUCCESS
 } from "../src/constants/actions";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
@@ -43,7 +43,9 @@ function* deleteAssignmentSaga({ payload }) {
     const result = yield call(testsApi.deleteAssignments, payload);
     const { deletedIds } = result;
     yield put(deleteAssignmentRequestSuccessAction(deletedIds));
-    notification({ type: "success", messageKey: "AssignmentDelete" });
+    yield put(push("/"));
+    yield put(push("/author/assignments"));
+    yield call(notification, { type: "success", messageKey: "AssignmentDelete" });
   } catch (error) {
     console.log(error);
     message.error("failed to delete");

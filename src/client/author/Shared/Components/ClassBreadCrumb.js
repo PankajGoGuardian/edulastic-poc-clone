@@ -32,10 +32,14 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
       <RecentLink to="/author/assignments">ASSIGNMENTS</RecentLink>
       {data?.testName && (
         <>
-          &nbsp;{"/"}&nbsp;
+          &nbsp;/&nbsp;
           <Tooltip title={data.testName}>
             <AnchorLink
-              to={userRole === "teacher" ? "/author/assignments" : `/author/assignments/${districtId}/${data.testId}`}
+              to={
+                userRole === "teacher"
+                  ? "/author/assignments"
+                  : `/author/assignments/${districtId}/${data.testId}?testType=${data.testType}`
+              }
             >
               {data.testName}
             </AnchorLink>
@@ -44,7 +48,7 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
       )}
       {data?.className && (
         <>
-          &nbsp;{"/"}&nbsp;
+          &nbsp;/&nbsp;
           <Tooltip title={data.className}>
             <Anchor>{data.className}</Anchor>
           </Tooltip>

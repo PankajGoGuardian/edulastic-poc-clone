@@ -72,9 +72,9 @@ export const StyledDropDownContainer = styled(Col)`
 `;
 
 export const OnClick = styled.span`
-  color: ${themeColor};
   cursor: pointer;
+  font-weight: 400;
   &:hover {
-    color: ${themeColorLight};
+    font-weight: 700;
   }
 `;

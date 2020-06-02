@@ -304,6 +304,7 @@ class Assignments extends Component {
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
                           toggleEditModal={this.toggleEditModal}
+                          toggleDeleteModal={this.toggleDeleteModal}
                           showPreviewModal={this.showPreviewModal}
                           showFilter={showFilter}
                         />

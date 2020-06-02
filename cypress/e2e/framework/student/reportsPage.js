@@ -79,10 +79,12 @@ class ReportsPage {
 
   validateAssignment(name, status, reviewButton) {
     cy.contains("div", name).should("be.visible");
-    this.getStatus().should("have.text", status);
+    this.verifyStatusIs(status);
     if (reviewButton) this.getReviewButton().should("have.text", reviewButton);
     else this.getReviewButton().should("not.be.visible");
   }
+
+  verifyStatusIs = status => this.getStatus().should("have.text", status);
 
   validateStats(attemptNum, attempt, score, percent, totalAttempt) {
     this.getAttemptCount().should("have.text", attempt);

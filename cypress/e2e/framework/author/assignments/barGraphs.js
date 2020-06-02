@@ -87,12 +87,9 @@ export default class BarGraph {
     });
   };
 
-  getQueBarData = (questions, attemptsData, questionCentric = false) => {
+  getQueBarData = (questions, attemptsData) => {
     const queData = {};
-    const studentWiseData = {};
-    const students = attemptsData.map(item => item.stuName);
     questions.forEach(que => {
-      studentWiseData[que] = {};
       let correct = 0;
       let incorrect = 0;
       let partial = 0;
@@ -100,36 +97,26 @@ export default class BarGraph {
       let skip = 0;
       attemptsData
         .map(item => item.attempt)
-        .forEach((attempt, stuIndex) => {
-          const stu = students[stuIndex];
+        .forEach(attempt => {
           switch (attempt[que]) {
             case attemptTypes.RIGHT:
               correct++;
-              studentWiseData[que][stu] = attemptTypes.RIGHT;
               break;
 
             case attemptTypes.WRONG:
-              studentWiseData[que][stu] = attemptTypes.WRONG;
               incorrect++;
-
               break;
 
             case attemptTypes.PARTIAL_CORRECT:
-              studentWiseData[que][stu] = attemptTypes.PARTIAL_CORRECT;
               partial++;
-
               break;
 
             case attemptTypes.MANUAL_GRADE:
-              studentWiseData[que][stu] = attemptTypes.MANUAL_GRADE;
               manual++;
-
               break;
 
             case attemptTypes.SKIP:
-              studentWiseData[que][stu] = attemptTypes.SKIP;
               skip++;
-
               break;
 
             default:
@@ -140,8 +127,7 @@ export default class BarGraph {
       queData[que] = { correct, incorrect, partial, manual, skip };
     });
 
-    if (!questionCentric) return queData;
-    return studentWiseData;
+    return queData;
   };
 
   verifyQueToolTip = (queIndex, queBarData, includedColors = false) => {
@@ -173,98 +159,89 @@ export default class BarGraph {
       });
   };
 
-  verifyQueBarAndToolTipBasedOnAttemptData = (attemptsData, questions, questionCentric = false) => {
-    let rCla;
-    let wCla;
-    let pCla;
-    let mCla;
-    let sCla;
+  verifyQueBarAndToolTipBasedOnAttemptData = (attemptsData, questions) => {
+    // for card and student view
+    const [rCla, wCla, pCla, mCla, sCla] = [
+      "correctAttemps",
+      "incorrectAttemps",
+      "partialAttempts",
+      "manualGradedNum",
+      "skippedNum"
+    ];
+    const questBarData = this.getQueBarData(questions, Array.isArray(attemptsData) ? attemptsData : [attemptsData]);
 
-    if (questionCentric) {
-      [rCla, wCla, pCla, mCla, sCla] = ["correct", "wrong", "pCorrect", "manuallyGraded", "skipped"];
-      const studentWiseData = this.getQueBarData(questions, attemptsData, true);
+    Cypress._.values(questBarData).forEach((quedata, queIndex) => {
+      const { correct, incorrect, partial, manual, skip } = quedata;
 
-      Cypress._.values(studentWiseData).forEach((queData, index) => {
-        this.questionResponsePage.selectQuestion(`Q${index + 1}`);
+      if (correct)
+        this.getBarByIndexByAttemptClass(rCla, queIndex)
+          .should("have.length", 1)
+          .as("latest-selected-bar")
+          .should("have.css", "fill", queColor.RIGHT);
+      else this.getBarByIndexByAttemptClass(rCla, queIndex).should("have.length", 0);
 
-        Cypress._.values(queData).forEach((attempt, studentIndex) => {
-          if (attempt === attemptTypes.RIGHT)
-            this.getBarByIndexByAttemptClass(rCla, studentIndex)
-              .should("have.length", 1)
-              .should("have.css", "fill", queColor.RIGHT);
+      if (incorrect)
+        this.getBarByIndexByAttemptClass(wCla, queIndex)
+          .should("have.length", 1)
+          .as("latest-selected-bar")
+          .should("have.css", "fill", queColor.WRONG);
+      else this.getBarByIndexByAttemptClass(wCla, queIndex).should("have.length", 0);
 
-          if (attempt === attemptTypes.PARTIAL_CORRECT)
-            this.getBarByIndexByAttemptClass(pCla, studentIndex)
-              .should("have.length", 1)
-              .should("have.css", "fill", queColor.YELLOW);
+      if (partial)
+        this.getBarByIndexByAttemptClass(pCla, queIndex)
+          .should("have.length", 1)
+          .as("latest-selected-bar")
+          .should("have.css", "fill", queColor.YELLOW);
+      else this.getBarByIndexByAttemptClass(pCla, queIndex).should("have.length", 0);
 
-          if (attempt === attemptTypes.WRONG)
-            this.getBarByIndexByAttemptClass(wCla, studentIndex)
-              .should("have.length", 1)
-              .should("have.css", "fill", queColor.WRONG);
+      if (manual)
+        this.getBarByIndexByAttemptClass(mCla, queIndex)
+          .should("have.length", 1)
+          .as("latest-selected-bar")
+          .should("have.css", "fill", queColor.MANUAL_GRADE);
+      else this.getBarByIndexByAttemptClass(mCla, queIndex).should("have.length", 0);
 
-          if (attempt === attemptTypes.SKIP)
-            this.getBarByIndexByAttemptClass(sCla, studentIndex)
-              .should("have.length", 1)
-              .should("have.css", "fill", "rgb(177, 177, 177)");
+      if (skip)
+        this.getBarByIndexByAttemptClass(sCla, queIndex)
+          .should("have.length", 1)
+          .as("latest-selected-bar")
+          .should("have.css", "fill", queColor.SKIP);
+      else this.getBarByIndexByAttemptClass(sCla, queIndex).should("have.length", 0);
 
-          if (attempt === attemptTypes.MANUAL_GRADE)
-            this.getBarByIndexByAttemptClass(mCla, studentIndex)
-              .should("have.length", 1)
-              .should("have.css", "fill", queColor.MANUAL_GRADE);
-        });
-      });
-    } else {
-      [rCla, wCla, pCla, mCla, sCla] = [
-        "correctAttemps",
-        "incorrectAttemps",
-        "partialAttempts",
-        "manualGradedNum",
-        "skippedNum"
-      ];
-      const questBarData = this.getQueBarData(questions, Array.isArray(attemptsData) ? attemptsData : [attemptsData]);
-
-      Cypress._.values(questBarData).forEach((quedata, queIndex) => {
-        const { correct, incorrect, partial, manual, skip } = quedata;
-
-        if (correct)
-          this.getBarByIndexByAttemptClass(rCla, queIndex)
-            .should("have.length", 1)
-            .as("latest-selected-bar")
-            .should("have.css", "fill", queColor.RIGHT);
-        else this.getBarByIndexByAttemptClass(rCla, queIndex).should("have.length", 0);
-
-        if (incorrect)
-          this.getBarByIndexByAttemptClass(wCla, queIndex)
-            .should("have.length", 1)
-            .as("latest-selected-bar")
-            .should("have.css", "fill", queColor.WRONG);
-        else this.getBarByIndexByAttemptClass(wCla, queIndex).should("have.length", 0);
-
-        if (partial)
-          this.getBarByIndexByAttemptClass(pCla, queIndex)
-            .should("have.length", 1)
-            .as("latest-selected-bar")
-            .should("have.css", "fill", queColor.YELLOW);
-        else this.getBarByIndexByAttemptClass(pCla, queIndex).should("have.length", 0);
-
-        if (manual)
-          this.getBarByIndexByAttemptClass(mCla, queIndex)
-            .should("have.length", 1)
-            .as("latest-selected-bar")
-            .should("have.css", "fill", queColor.MANUAL_GRADE);
-        else this.getBarByIndexByAttemptClass(mCla, queIndex).should("have.length", 0);
-
-        if (skip)
-          this.getBarByIndexByAttemptClass(sCla, queIndex)
-            .should("have.length", 1)
-            .as("latest-selected-bar")
-            .should("have.css", "fill", queColor.SKIP);
-        else this.getBarByIndexByAttemptClass(sCla, queIndex).should("have.length", 0);
-
-        this.verifyQueToolTip(queIndex, quedata, true);
-      });
-    }
+      this.verifyQueToolTip(queIndex, quedata);
+    });
   };
+
+  verifyQueBarBasedOnQueAttemptData = quesData => {
+    // for question view
+    const [rCla, wCla, pCla, mCla, sCla] = ["correct", "wrong", "pCorrect", "manuallyGraded", "skipped"];
+    Cypress._.values(quesData).forEach((attempt, studentIndex) => {
+      if (attempt === attemptTypes.RIGHT)
+        this.getBarByIndexByAttemptClass(rCla, studentIndex)
+          .should("have.length", 1)
+          .should("have.css", "fill", queColor.RIGHT);
+
+      if (attempt === attemptTypes.PARTIAL_CORRECT)
+        this.getBarByIndexByAttemptClass(pCla, studentIndex)
+          .should("have.length", 1)
+          .should("have.css", "fill", queColor.YELLOW);
+
+      if (attempt === attemptTypes.WRONG)
+        this.getBarByIndexByAttemptClass(wCla, studentIndex)
+          .should("have.length", 1)
+          .should("have.css", "fill", queColor.WRONG);
+
+      if (attempt === attemptTypes.SKIP)
+        this.getBarByIndexByAttemptClass(sCla, studentIndex)
+          .should("have.length", 1)
+          .should("have.css", "fill", queColor.SKIP);
+
+      if (attempt === attemptTypes.MANUAL_GRADE)
+        this.getBarByIndexByAttemptClass(mCla, studentIndex)
+          .should("have.length", 1)
+          .should("have.css", "fill", queColor.MANUAL_GRADE);
+    });
+  };
+
   // *** APPHELPERS END ***
 }

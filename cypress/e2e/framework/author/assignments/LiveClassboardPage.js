@@ -277,10 +277,7 @@ class LiveClassboardPage {
         "stduent stats :: ",
         `${studentName}, ${status}, ${score}, ${performance}, ${JSON.stringify(queAttempt)} , ${queCards}`
       ); */
-      this.getStudentStatusByIndex(index).should(
-        "have.text",
-        status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status
-      );
+      this.verifyStudentStatusIs(index, status);
       this.getStudentScoreByIndex(index).should("have.text", score);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
@@ -302,6 +299,15 @@ class LiveClassboardPage {
       } else this.getViewResponseByStudentName(studentName).should("not.be.exist");
     });
   }
+
+  verifyStudentStatusIsByIndex = (index, status, isManualGraded = false) => {
+    if (!isManualGraded)
+      this.getStudentStatusByIndex(index).should(
+        "have.text",
+        status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status
+      );
+    else this.getStudentStatusByIndex(index).should("have.text", status);
+  };
 
   verifyRedirectIcon = student => {
     this.getStudentCardByStudentName(student)

@@ -46,14 +46,18 @@ export default class LCBHeader {
     cy.wait("@togglePause").then(xhr => assert(xhr.status === 200, `verify pause-open request ${xhr.status}`));
   };
 
-  clickOnClose = () => {
+  clickOnClose = (IsCloseAllowed = true) => {
     cy.server();
     cy.route("PUT", /close/i).as("close");
+    cy.route("GET", /assignments/).as("assignment");
     cy.get('[data-cy="closeButton"]').click();
     this.getConfirmationInput().type("CLOSE");
     this.submitConfirmationInput();
-    cy.wait("@close").then(xhr => assert(xhr.status === 200, `verify close request ${xhr.status}`));
-    cy.wait("@assignment");
+    cy.wait("@close").then(xhr =>
+      // TODO: below line need to be refactored(cy.wait("@assignment"),status code and msg displayed) once app starts behaving expected manner
+      expect(xhr.status, `verify close request`).to.eq(IsCloseAllowed ? 200 : 403)
+    );
+    if (IsCloseAllowed) cy.wait("@assignment");
   };
 
   clickOnOpen = () => {

@@ -766,36 +766,35 @@ class StudentTestPage {
         : attemptType === attemptTypes.PARTIAL_CORRECT
         ? partialCorrect
         : undefined;
-    switch (attemptQueType) {
-      case questionType.MULTIPLE_CHOICE_STANDARD:
-      case questionType.TRUE_FALSE:
-      case questionType.MULTIPLE_CHOICE_MULTIPLE:
-      case questionType.MULTIPLE_CHOICE_BLOCK:
-        if (attemptType !== attemptTypes.SKIP) {
+    if (attempts) {
+      switch (attemptQueType) {
+        case questionType.MULTIPLE_CHOICE_STANDARD:
+        case questionType.TRUE_FALSE:
+        case questionType.MULTIPLE_CHOICE_MULTIPLE:
+        case questionType.MULTIPLE_CHOICE_BLOCK:
           if (Cypress._.isArray(attempts)) attempts.forEach(choice => this.clickOnChoice(choice));
           else this.clickOnChoice(attempts);
-        }
-        break;
 
-      case questionType.CHOICE_MATRIX_STANDARD:
-      case questionType.CHOICE_MATRIX_INLINE:
-      case questionType.CHOICE_MATRIX_LABEL: {
-        const { steams } = attemptData;
-        if (attemptType !== attemptTypes.SKIP) {
+          break;
+
+        case questionType.CHOICE_MATRIX_STANDARD:
+        case questionType.CHOICE_MATRIX_INLINE:
+        case questionType.CHOICE_MATRIX_LABEL: {
+          const { steams } = attemptData;
           this.checkAnsMatrix(attempts, steams);
+          break;
         }
-        break;
-      }
-      case questionType.CLOZE_DROP_DOWN:
-        if (attemptType !== attemptTypes.SKIP) {
+        case questionType.CLOZE_DROP_DOWN:
           this.checkAnsDropdown(attempts);
-        }
-        break;
-      case questionType.ESSAY_RICH:
-        this.typeEssayRichText(attempts);
-        break;
-      default:
-        break;
+          break;
+        case questionType.ESSAY_RICH:
+          this.typeEssayRichText(attempts);
+
+          break;
+        default:
+          assert.fail(1, 2, "question type did not match while in attempt question method");
+          break;
+      }
     }
   };
 

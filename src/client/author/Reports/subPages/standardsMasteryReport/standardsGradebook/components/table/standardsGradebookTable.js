@@ -53,7 +53,10 @@ export const StandardsGradebookTable = ({
     });
   }
 
-  const tableData = useMemo(() => getTableData(filteredDenormalizedData, masteryScale, tableDdFilters.compareBy, tableDdFilters.masteryLevel), [filteredDenormalizedData, masteryScale, tableDdFilters]);
+  const tableData = useMemo(
+    () => getTableData(filteredDenormalizedData, masteryScale, tableDdFilters.compareBy, tableDdFilters.masteryLevel),
+    [filteredDenormalizedData, masteryScale, tableDdFilters]
+  );
 
   const getCurrentStandard = (standardId, analyseBy) => {
     const currentStandard = standardsData.find(s => s.standardId === standardId);
@@ -61,7 +64,8 @@ export const StandardsGradebookTable = ({
     return currentStandard[analyseBy];
   };
 
-  const getFilteredTableData = () => next(tableData, arr => {
+  const getFilteredTableData = () =>
+    next(tableData, arr => {
       arr.map((item, index) => {
         const tempArr = item.standardsInfo.filter((_item, index) => {
           if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
@@ -83,9 +87,9 @@ export const StandardsGradebookTable = ({
     }
 
     if (_analyseBy === "score(%)") {
-      printData = `${item.scorePercent  }%`;
+      printData = `${item.scorePercent}%`;
     } else if (_analyseBy === "rawScore") {
-      printData = `${item.totalTotalScore.toFixed(2)  }/${  item.totalMaxScore}`;
+      printData = `${item.totalTotalScore.toFixed(2)}/${item.totalMaxScore}`;
     } else if (_analyseBy === "masteryLevel") {
       printData = item.masteryLevel;
     } else if (_analyseBy === "masteryScore") {
@@ -112,23 +116,23 @@ export const StandardsGradebookTable = ({
             <Col className="custom-table-tooltip-value">
               {record.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
             </Col>
-            ) : null}
+          ) : null}
           {_analyseBy === "rawScore" ? (
             <Col className="custom-table-tooltip-value">
               {record.standardsInfo[index]?.totalTotalScore}/{record.standardsInfo[index]?.totalMaxScore}
             </Col>
-            ) : null}
+          ) : null}
           {_analyseBy === "masteryLevel" ? (
             <Col className="custom-table-tooltip-value">{record.standardsInfo[index]?.masteryName}</Col>
-            ) : null}
+          ) : null}
           {_analyseBy === "masteryScore" ? (
             <Col className="custom-table-tooltip-value">
               {(record.standardsInfo[index] || {})[analyseByToKeyToRender[_analyseBy]]}
             </Col>
-            ) : null}
+          ) : null}
         </Row>
       </div>
-      );
+    );
 
     const obj = {
       termId: filters.termId,
@@ -145,7 +149,7 @@ export const StandardsGradebookTable = ({
             {printData === "N/A" ? (
               printData
             ) : (
-              <OnClick onClick={() => handleOnClickStandard(obj, standardName, record?.compareByLabel)}>
+              <OnClick onClick={() => handleOnClickStandard(obj, standardName, record.compareByLabel)}>
                 {printData}
               </OnClick>
             )}
@@ -175,10 +179,11 @@ export const StandardsGradebookTable = ({
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
         sorter: (a, b) => a.compareByLabel.toLowerCase().localeCompare(b.compareByLabel.toLowerCase()),
-        render: (data, record) => record.compareBy === "studentId" ? (
-          <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
-            {record.compareByLabel}
-          </Link>
+        render: (data, record) =>
+          record.compareBy === "studentId" ? (
+            <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
+              {record.compareByLabel}
+            </Link>
           ) : (
             record.compareByLabel
           )
@@ -192,33 +197,31 @@ export const StandardsGradebookTable = ({
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
         },
-        render: (data, record) => {
-          return (
-            <Link
-              style={{ color: reportLinkColor }}
-              to={{
-                pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
-                  record.testActivityId
-                }`,
-                state: {
-                  // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-                  breadCrumb: [
-                    {
-                      title: "REPORTS",
-                      to: "/author/reports"
-                    },
-                    {
-                      title: pageTitle,
-                      to: `${location.pathname}${location.search}`
-                    }
-                  ]
-                }
-              }}
-            >
-              {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
-            </Link>
-          );
-        }
+        render: (data, record) => (
+          <Link
+            style={{ color: reportLinkColor }}
+            to={{
+              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
+                record.testActivityId
+              }`,
+              state: {
+                // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+                breadCrumb: [
+                  {
+                    title: "REPORTS",
+                    to: "/author/reports"
+                  },
+                  {
+                    title: pageTitle,
+                    to: `${location.pathname}${location.search}`
+                  }
+                ]
+              }
+            }}
+          >
+            {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
+          </Link>
+        )
       },
       {
         title: "SIS ID",

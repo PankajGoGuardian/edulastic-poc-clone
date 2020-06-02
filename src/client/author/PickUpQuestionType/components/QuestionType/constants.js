@@ -2367,7 +2367,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MTEssay,
       stimulus: "",
       data: {
-        title: "Math essay",
+        title: "Math Essay",
         stimulus: "",
         type: questionType.FORMULA_ESSAY,
         uiStyle: {

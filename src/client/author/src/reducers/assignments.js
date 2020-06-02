@@ -22,6 +22,8 @@ import {
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS
 } from "../constants/actions";
 
+import { SET_BULK_ACTION_STATUS } from "../../AssignmentAdvanced/ducks";
+
 const initialState = {
   summaryEntities: [],
   assignmentClassList: [],
@@ -39,7 +41,8 @@ const initialState = {
   currentAssignment: {},
   filtering: false,
   isAdvancedView: false,
-  syncWithGoogleClassroomInProgress: false
+  syncWithGoogleClassroomInProgress: false,
+  bulkActionInprogress: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -101,7 +104,7 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         toggleDeleteAssignmentModalState: payload
       };
-    case DELETE_ASSIGNMENT_REQUEST_SUCCESS:
+    case DELETE_ASSIGNMENT_REQUEST_SUCCESS: {
       const keyMap = keyBy(payload);
       const assignment = find(state.entities.assignments, item => keyMap[item._id]);
 
@@ -126,6 +129,8 @@ const reducer = (state = initialState, { type, payload }) => {
           }
         };
       }
+      break;
+    }
     case SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST:
       return {
         ...state,
@@ -145,6 +150,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         toggleStudentReportCardSettings: payload
+      };
+    case SET_BULK_ACTION_STATUS:
+      return {
+        ...state,
+        bulkActionInprogress: payload
       };
     default:
       return state;

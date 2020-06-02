@@ -13,11 +13,18 @@ import {
   destroyNotificationMessage,
   notificationMessage
 } from "../../../../common/components/Notification";
+import { setAssignmentBulkActionStatus } from "../../ducks";
 
 const collectionName = "AssignmentBulkActionEvents";
 const DOWNLOAD_GRADES_AND_RESPONSE = "DOWNLOAD_GRADES_AND_RESPONSE";
 
-const NotificationListener = ({ user, location, fetchAssignmentClassList, fetchAssignmentsSummaryAction }) => {
+const NotificationListener = ({
+  user,
+  location,
+  fetchAssignmentClassList,
+  fetchAssignmentsSummaryAction,
+  setBulkActionStatus
+}) => {
   const [notificationIds, setNotificationIds] = useState([]);
   let districtId = "";
   let testId = "";
@@ -86,6 +93,7 @@ const NotificationListener = ({ user, location, fetchAssignmentClassList, fetchA
           fetchAssignmentsSummaryAction({ districtId });
           fetchAssignmentClassList({ districtId, testId, testType });
         }
+        setBulkActionStatus(false);
       }
     });
   };
@@ -114,7 +122,8 @@ export default compose(
     }),
     {
       fetchAssignmentClassList: receiveAssignmentClassList,
-      fetchAssignmentsSummaryAction: receiveAssignmentsSummaryAction
+      fetchAssignmentsSummaryAction: receiveAssignmentsSummaryAction,
+      setBulkActionStatus: setAssignmentBulkActionStatus
     }
   )
 )(NotificationListener);

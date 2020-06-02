@@ -6,7 +6,7 @@ import { Tooltip, Dropdown } from "antd";
 import { Link, withRouter } from "react-router-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
-import { EduButton } from "@edulastic/common";
+import { EduButton, notification } from "@edulastic/common";
 import { IconMoreHorizontal } from "@edulastic/icons";
 import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
@@ -24,7 +24,6 @@ import {
   BulkActionsButtonContainer,
   MoreOption
 } from "./styled";
-
 import { Container as MoreOptionsContainer } from "../../../Assignments/components/ActionMenu/styled";
 
 export const testTypeToolTip = {
@@ -124,7 +123,8 @@ const TableList = ({
   testType,
   testName,
   toggleDeleteAssignmentModal,
-  isLoadingAssignments
+  isLoadingAssignments,
+  bulkActionStatus
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
@@ -175,6 +175,11 @@ const TableList = ({
   };
 
   const handleBulkAction = (type, releaseScoreResponse) => {
+    if (bulkActionStatus) {
+      return notification({
+        msg: "The test is being updated by another user, please wait for a few minutes and try again."
+      });
+    }
     let selectedRowsGroupByAssignment = {};
     if (rowData.length > selectedRows.length) {
       const selectedRowsData = rowData.filter((_, i) => selectedRows.includes(i));

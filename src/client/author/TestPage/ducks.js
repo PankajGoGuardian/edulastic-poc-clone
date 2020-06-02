@@ -34,7 +34,7 @@ import { loadQuestionsAction, getQuestionsArraySelector, UPDATE_QUESTION } from 
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
-import { getUserRole, getUserOrgData, getUserIdSelector } from "../src/selectors/user";
+import { getUserRole, getUserOrgData, getUserIdSelector, getUserId } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
 import {
@@ -1836,8 +1836,12 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       testType: testEntity?.testType,
       defaultTestProfiles
     })?.standardProficiency;
-    yield put(updateAssingnmentSettingsAction({ performanceBand, standardGradingScale }));
     const testData = yield select(getTestSelector);
+    const userId = yield select(getUserId);
+    const isAuthor = testData.authors?.some(author => author._id === userId);
+    if (!testData.freezeSettings || isAuthor) {
+      yield put(updateAssingnmentSettingsAction({ performanceBand, standardGradingScale }));
+    }
     if ((!testData._id || !testData.title) && partialScore === false) {
       yield put(
         setTestDataAction({

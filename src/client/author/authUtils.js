@@ -1,6 +1,7 @@
 //@ts-check
 import { userApi, TokenStorage } from "@edulastic/api";
 import { message } from "antd";
+import { FlexContainer,notification } from "@edulastic/common";
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId });
@@ -13,7 +14,7 @@ export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
       "_blank"
     );
   } else {
-    message.error("some error occured during proxying");
+    notification({ messageKey:"someErrorOccuredDuringProxying"});
   }
 }
 
@@ -27,7 +28,7 @@ export async function switchRole(role) {
       "_blank"
     );
   } else {
-    message.error("some error occured during switching role");
+    notification({ messageKey:"someErrorOccuredDuringSwitchingRole"});
   }
 }
 
@@ -40,7 +41,7 @@ export async function switchUser(switchToId, personId) {
       "_blank"
     );
   } else {
-    message.error("Error occured while switching user");
+    notification({ messageKey:"ErrorOccuredSwicthingRole"});
   }
 }
 

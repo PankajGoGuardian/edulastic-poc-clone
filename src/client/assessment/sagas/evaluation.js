@@ -87,7 +87,7 @@ function* evaluateAnswers({ payload: groupId }) {
      notification({ type: "success", msg:`score: ${score % 1 === 0 ? score : score.toFixed(2)}/${maxScore}`});
   } catch (err) {
     if (err.status === 403) notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
-    else message.error("Check answer failed");
+    else  notification({ messageKey:"checkAnswerFail"});
     console.log(err);
     Sentry.captureException(err);
   }

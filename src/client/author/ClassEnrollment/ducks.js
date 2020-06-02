@@ -63,7 +63,7 @@ function* receiveClassEnrollmentListSaga({ payload }) {
     yield put(receiveClassEnrollmentListSuccessAction({ activeUsers, total }));
   } catch (err) {
     const errorMessage = "Receive Enrollment Classes is failing!";
-    yield call(message.error, errorMessage);
+    notification({ msg: errorMessage });
     yield put(receiveClassEnrollmentListErrorAction({ error: errorMessage }));
   }
 }
@@ -75,7 +75,7 @@ function* enrolExistingUserToClass({ payload }) {
     if (res)
       notification({ type: "success", msg:`Students enrolled to ${type === "custom" ? "group" : "class"} ${name || ""} successfully`});
   } catch (error) {
-    yield call(message.error, "Add user failed");
+    notification({ messageKey:"addUserFailed" });
   }
 }
 

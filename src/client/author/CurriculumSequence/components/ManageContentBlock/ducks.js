@@ -5,6 +5,7 @@ import { testsApi, settingsApi, resourcesApi } from "@edulastic/api";
 import { set } from "lodash";
 import nanoid from "nanoid";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 export const sliceName = "playlistTestBox";
 const LIMIT = 20;
@@ -205,7 +206,7 @@ function* fetchResourceSaga({ payload }) {
   try {
     const result = yield call(resourcesApi.fetchResources);
     if (!result) {
-      message.error(result.error);
+      notification({ msg:result.error});
       yield put(slice.actions.fetchResourceResult([]));
     } else {
       yield put(slice.actions.fetchResourceResult(result));

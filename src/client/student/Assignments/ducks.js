@@ -6,7 +6,7 @@ import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
-import { Effects } from "@edulastic/common";
+import { Effects ,notification } from "@edulastic/common";
 import { message } from "antd";
 import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
 
@@ -402,7 +402,7 @@ function* startAssignment({ payload }) {
     const { status, data = {} } = err;
     console.error(err);
     if (status === 403 && data.message) {
-      yield call(message.error, data.message, 3);
+      notification({ msg:data.message});
     }
   }
 }

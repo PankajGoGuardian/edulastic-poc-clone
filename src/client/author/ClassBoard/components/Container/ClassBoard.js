@@ -153,7 +153,7 @@ class ClassBoard extends Component {
 
   cancel = () => {
     this.setState({ visible: false });
-    message.error("Click on cancel.");
+    notification({ messageKey: "ClickOnCancel" });
   };
 
   handleVisibleChange = visible => {
@@ -563,9 +563,9 @@ class ClassBoard extends Component {
     if (isPrintable && selectedStudentsKeys.length) {
       this.setState({ openPrintModal: true });
     } else if (!selectedStudentsKeys.length) {
-      message.error("At least one student should be selected to print responses.");
+      notification({ messageKey: "atleastOneStudentShouldBeSelectedToPrintResponse"});
     } else {
-      message.error("You can print only after the assignment has been submitted by the student(s).");
+      notification({ messageKey: "youCanOnlyPrintAfterAssignmentBeenSubmited" });
     }
   };
 

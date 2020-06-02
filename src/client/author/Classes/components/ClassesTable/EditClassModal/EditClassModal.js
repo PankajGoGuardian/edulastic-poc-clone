@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Select, DatePicker, message } from "antd";
+import { notification } from "@edulastic/common";
 import moment from "moment";
 import { debounce, uniqBy, uniq } from "lodash";
 import { tagsApi } from "@edulastic/api";
@@ -56,7 +57,7 @@ class EditClassModal extends Component {
           isInvalidEndDate = startDate > endDate;
 
           if (isInvalidEndDate) {
-            return message.error("start date is greater than end date");
+            return notification({ messageKey:"startDateGreaterThanEndDate"});
           }
 
           Object.assign(saveClassData, { endDate });
@@ -109,7 +110,7 @@ class EditClassModal extends Component {
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ messageKey:"savingTagFailed"});
       }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);

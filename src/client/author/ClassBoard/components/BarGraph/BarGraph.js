@@ -17,7 +17,7 @@ import {
 } from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import memoizeOne from "memoize-one";
-import { scrollTo, Legends, LegendContainer } from "@edulastic/common";
+import { scrollTo, Legends, LegendContainer,notification } from "@edulastic/common";
 import { MainDiv, StyledCustomTooltip, OnScreenNotification } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
 import { getAggregateByQuestion, getItemSummary, getHasRandomQuestionselector } from "../../ducks";
@@ -282,9 +282,7 @@ class BarGraph extends Component {
       return _scrollTo(qid);
     }
     if (hasRandomQuestions) {
-      return message.error(
-        "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment."
-      );
+      return notification({ messageKey: "theQuestionForStudentsDynamicallySelectedAsResult" });
     }
     if (onClickHandler) {
       onClickHandler(data, index);

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { get, debounce, uniq } from "lodash";
 import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
+import { notification } from "@edulastic/common";
 import { schoolApi, userApi, tagsApi, courseApi } from "@edulastic/api";
 import selectsData from "../../../../TestPage/components/common/selectsData";
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
@@ -142,7 +143,7 @@ class AddClassModal extends Component {
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ messageKey:"savingTagFailed"});
       }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);

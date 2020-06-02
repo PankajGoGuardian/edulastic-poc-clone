@@ -37,7 +37,7 @@ const AddStudentsPopup = ({
   const submitAction = () => {
     if (!selectedStudents.length) notification({ type: "warn", messageKey:"selectAtleastOneStudent"});
     if (endDate < moment()) {
-      return message.error("Select a Future end Date");
+      return notification({ messageKey: "SelectFutureEndDate" });
     }
     if (closePolicy === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
       addStudents(assignmentId, groupId, selectedStudents, endDate.valueOf());

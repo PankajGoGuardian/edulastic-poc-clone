@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { debounce } from "lodash";
 import qs from "query-string";
-import { MainHeader, MainContentWrapper } from "@edulastic/common";
+import { MainHeader, MainContentWrapper,notification } from "@edulastic/common";
 
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import CreationOptions from "../CreationOptions/CreationOptions";
@@ -91,10 +91,10 @@ class Container extends React.Component {
     const { location, createAssessment, isAddPdf = false } = this.props;
     const { assessmentId } = qs.parse(location.search);
     if (file.type !== "application/pdf") {
-      return message.error("File format not supported, please select a valid PDF file.");
+      return notification({ messageKey:"fileFormatNotSupported"});
     }
     if (file.size / 1024000 > 15) {
-      return message.error("File size exceeds 15 MB MB limit.");
+      return notification({ messageKey:"fileSizeExceeds"});
     }
     createAssessment({
       file,

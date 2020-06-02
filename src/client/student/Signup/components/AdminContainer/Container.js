@@ -41,7 +41,7 @@ import { Partners } from "../../../../common/utils/static/partnerData";
 import adminBg from "../../../assets/bg-adm.png";
 import googleIcon from "../../../assets/google-btn.svg";
 import icon365 from "../../../assets/icons8-office-365.svg";
-import { withWindowSizes, OnDarkBgLogo } from "@edulastic/common";
+import { withWindowSizes, OnDarkBgLogo,notification  } from "@edulastic/common";
 import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../../author/src/constants/others";
 import { IconLock, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor, white } from "@edulastic/colors";
@@ -111,7 +111,7 @@ class AdminSignup extends React.Component {
         }
       }));
     } else {
-      message.error(error);
+      notification({ msg:error});
     }
   };
 

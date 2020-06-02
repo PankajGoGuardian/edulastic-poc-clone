@@ -461,7 +461,7 @@ const EditClassification = ({
     try {
       const { file } = info;
       if (!file.type.match(/image/g)) {
-        message.error("Please upload files in image format");
+        notification({ messageKey:"pleaseUploadFileInImageFormat"});
         return;
       }
       const canUpload = beforeUpload(file);
@@ -477,7 +477,7 @@ const EditClassification = ({
       });
     } catch (e) {
       console.log(e);
-      message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
+      notification({ msg:`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`});
     }
   };
 

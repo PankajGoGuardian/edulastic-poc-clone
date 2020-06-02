@@ -104,7 +104,7 @@ class LeftFilter extends React.Component {
     const isExist = find(folders, folder => lowerCase(folder.folderName) === lowerCase(folderName));
 
     if (isExist) {
-      return message.error("The folder name is already used.");
+      return notification({ messageKey: "folderNameAlreadyUsed" });
     }
 
     if (selectedFolder) {

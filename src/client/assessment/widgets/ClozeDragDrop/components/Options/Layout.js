@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Select, TextField, Checkbox } from "@edulastic/common";
+import { Select, TextField, Checkbox , notification} from "@edulastic/common";
 import { Input, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { isEqual, clamp } from "lodash";
@@ -66,7 +66,7 @@ class Layout extends Component {
 
     const changeUiStyle = (prop, value) => {
       if (prop === "responseContainerWidth" && value < 1) {
-        message.error("Width should be greater than 0");
+        notification({ messageKey:"widthShouldBeGreaterThanZero"});
         return null;
       }
       onChange("uiStyle", {

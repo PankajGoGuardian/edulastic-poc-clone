@@ -96,7 +96,7 @@ function* receiveBucketsSaga({ payload }) {
     yield put(receiveBucketsSuccessAction(buckets));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketsLoadErrorMsg`);
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(receiveBucketsErrorAction({ error: errorMessage }));
   }
 }
@@ -108,7 +108,7 @@ function* updateBucketSaga({ payload }) {
     yield put(updateBucketSuccessAction(updateBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketUpdateErrorMsg`);
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(updateBucketErrorAction({ error: errorMessage }));
   }
 }
@@ -120,7 +120,7 @@ function* createBucketSaga({ payload }) {
     yield put(createBucketSuccessAction(createBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketCreateErrorMsg`);
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(createBucketErrorAction({ error: errorMessage }));
   }
 }
@@ -131,7 +131,7 @@ function* saveItemsToBucketSaga({ payload }) {
     yield put(setAddCollectionModalVisibleAction(false));
     notification({ type: "success", msg:`Selected Items are added to ${payload.collectionName} - ${payload.name}`});
   } catch (e) {
-    message.error(e?.message || "Failed to save item to bucket");
+    notification({ msg:e?.message || "Failed to save item to bucket"});
   }
 }
 

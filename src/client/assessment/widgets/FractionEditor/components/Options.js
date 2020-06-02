@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 // import get from "lodash/get";
 import { Select, Modal, message } from "antd";
+import { notification } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import Question from "../../../components/Question/index";
@@ -52,7 +53,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
   const handleDimensionChange = (prop, value) => {
     const regex = new RegExp("^[1-9]+([0-9]*)$", "g");
     if (!regex.test(value)) {
-      message.error("Values can only be natural numbers greater than 0");
+      notification({ messageKey:"valuesCanOnlyBeGreaterThanZero"});
       return null;
     }
     setQuestionData(

@@ -39,7 +39,7 @@ export default class Section extends React.Component {
       section: { id }
     } = this.props;
 
-    if (isEmpty(title)) return message.error("Section name can not be empty");
+    if (isEmpty(title)) return notification({ messageKey: "sectionNameCanNotEmpty" });
 
     this.handleSetEdit(false);
     onUpdate(id, title);

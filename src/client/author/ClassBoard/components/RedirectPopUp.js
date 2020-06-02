@@ -86,16 +86,14 @@ const RedirectPopUp = ({
 
   const submitAction = useCallback(async () => {
     if (endDate < moment()) {
-      return message.error("Select a Future end Date");
+      return notification({ messageKey: "SelectFutureEndDate" });
     }
     setLoading(true);
     const selected = Object.keys(studentsToRedirect);
     if (selected.length === 0) {
-      message.error(
-        type === "entire"
-          ? "You can redirect an assessment only after the assessment has been submitted by the student(s)."
-          : "At least one student should be selected to redirect assessment."
-      );
+      notification({ msg: type === "entire"
+      ? "You can redirect an assessment only after the assessment has been submitted by the student(s)."
+      : "At least one student should be selected to redirect assessment."})
     } else {
       let _selected = selected;
       if (qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG) {
@@ -127,11 +125,11 @@ const RedirectPopUp = ({
             closePopup(true);
           })
           .catch(err => {
-            message.error(err?.data?.message);
+            notification({ msg:err?.data?.message});
             closePopup();
           });
       } else {
-        message.error("Please select students with incorrect or skipped questions.");
+        notification({ messageKey: "pleaseSelectStudentsWithIncorrectOrSkippedQuestions" });
       }
     }
     setLoading(false);

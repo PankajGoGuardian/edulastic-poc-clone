@@ -302,7 +302,7 @@ function* receiveCourseListSaga({ payload }) {
     yield put(receiveCourseListSuccessAction(course));
   } catch (err) {
     const errorMessage = "Receive Course is failing!";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(receiveCourseListErrorAction({ error: errorMessage }));
   }
 }
@@ -314,7 +314,7 @@ function* updateCourseSaga({ payload }) {
     notification({ type: "success", messageKey:"courseUpdatedSuccessfully"});
   } catch (err) {
     const errorMessage = "Update Course is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(updateCourseErrorAction({ error: errorMessage }));
   }
 }
@@ -325,12 +325,12 @@ function* createCourseSaga({ payload }) {
     if (success) {
       yield put(createCourseSuccessAction(course));
     } else {
-      message.error(errorMessage);
+      notification({ msg:errorMessage});
       yield put(createCourseErrorAction({ error: errorMessage }));
     }
   } catch (err) {
     const errorMessage = "Create Course is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(createCourseErrorAction({ error: errorMessage }));
   }
 }
@@ -342,7 +342,7 @@ function* deactivateCourseSaga({ payload }) {
     notification({ type: "success", messageKey:"courseDeactivated"});
   } catch (err) {
     const errorMessage = "Deactivate course is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(deactivateCourseErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -352,7 +352,7 @@ function* uploadCourseCSVSaga({ payload }) {
     yield put(uploadCSVSuccessAction(uploadCSV));
   } catch (err) {
     const errorMessage = "CSV uploading is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(deactivateCourseErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -366,7 +366,7 @@ function* receiveSearchCourseSaga({ payload }) {
     });
   } catch (error) {
     const errorMessage = "Receive Course is failing!";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put({
       type: SEARCH_COURSE_ERROR,
       payload: error
@@ -382,7 +382,7 @@ function* saveBulkCourseSaga({ payload }) {
     yield put(receiveCourseListAction(payload.searchData));
   } catch (err) {
     const errorMessage = "Saving Bulk Course failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(saveBulkCourseErrorAction({ deleteError: errorMessage }));
   }
 }

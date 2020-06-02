@@ -219,15 +219,15 @@ class ClassesTable extends Component {
     const { t } = this.props;
     if (e.key === "edit class") {
       if (selectedRowKeys.length == 0) {
-        message.error(t("class.validations.editclass"));
+        notification({ msg:t("class.validations.editclass")});
       } else if (selectedRowKeys.length == 1) {
         this.onEditClass(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error(t("class.validations.singleeditclass"));
+        notification({ msg:t("class.validations.singleeditclass")});
       }
     } else if (e.key === "archive selected class") {
       if (selectedRowKeys.length > 0) this.onArchiveClass();
-      else message.error(t("class.validations.archiveclass"));
+      else notification({ msg:t("class.validations.archiveclass")});
     } else if (e.key === "bulk edit") {
       if (!selectedRowKeys.length) {
         notification({ type: "warn", msg: t("class.validations.selectclass")});

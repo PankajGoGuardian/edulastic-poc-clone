@@ -121,7 +121,7 @@ const ImportContentModal = ({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "testitem" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ messageKey:"savingTagFailed"});
       }
     } else {
       newTag = newAllTagsData.find(tag => tag._id === id);

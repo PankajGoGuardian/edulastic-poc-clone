@@ -1,6 +1,7 @@
 import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
+import { notification } from "@edulastic/common";
 import * as Sentry from '@sentry/browser';
 import { push } from "react-router-redux";
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from "lodash";
@@ -410,12 +411,12 @@ function* loadTest({ payload }) {
     });
     if (err.status === 403) {
       if (preview) {
-        yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+        notification({ messageKey:"youCanNoLongerUse"});
         return Modal.destroyAll();
       }
       const userRole = yield select(getUserRole);
       if (userRole === roleuser.STUDENT) {
-        message.error(err.data.message || "Failed loading the test");
+        notification({ msg:err.data.message || "Failed loading the test"});
         return yield put(push("/home/assignments"));
       }
     }
@@ -483,8 +484,8 @@ function* submitTest({ payload }) {
           type: SET_TEST_ACTIVITY_ID,
           payload: { testActivityId: "" }
         });
-        yield call(message.error, err.data);
-      
+        notification({ msg:err.data});
+      }
     }
   }
 }

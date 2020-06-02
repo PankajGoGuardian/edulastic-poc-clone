@@ -302,7 +302,7 @@ function* receiveStudentsListSaga({ payload }) {
     yield put(receiveStudentsListSuccessAction(studentsList));
   } catch (err) {
     const errorMessage = "Receive Students is failing!";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(receiveStudentsListErrorAction({ error: errorMessage }));
   }
 }
@@ -314,7 +314,7 @@ function* updateStudentSaga({ payload }) {
     yield put(updateStudentSuccessAction(updateStudentData));
   } catch (err) {
     const errorMessage = "Update Student is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(updateStudentErrorAction({ error: errorMessage }));
   }
 }
@@ -325,7 +325,7 @@ function* createStudentSaga({ payload }) {
     yield put(createStudentSuccessAction(createStudent));
   } catch (err) {
     const errorMessage = "Create Student is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(createStudentErrorAction({ error: errorMessage }));
   }
 }
@@ -339,7 +339,7 @@ function* deleteStudentSaga({ payload }) {
     yield put(deleteStudentSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Student is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(deleteStudentErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -353,7 +353,7 @@ function* addMultiStudentSaga({ payload }) {
     yield put(receiveAdminDataAction(payload.listReq));
   } catch (err) {
     const errorMessage = "Adding Multi Students is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(addMultiStudentsErrorAction({ error: errorMessage }));
   }
 }
@@ -362,10 +362,10 @@ function* addStudentsToOtherClassSaga({ payload }) {
   try {
     const { result } = yield call(userApi.addStudentsToOtherClass, payload);
     if (!result.status) yield put(addStudentsToOtherClassSuccess(result));
-    else message.error(result.status);
+    else notification({ msg:result.status});
   } catch (err) {
     const errorMessage = "Something went wrong. Please try again";
-    message.error(errorMessage);
+    notification({ msg:errorMessage});
   }
 }
 
@@ -374,7 +374,7 @@ function* fetchClassDetailsUsingCodeSaga({ payload }) {
     const { result } = yield call(userApi.validateClassCode, payload);
     if (result.isValidClassCode) yield put(fetchClassDetailsSuccess(result));
     else {
-      message.error("Invalid Class Code");
+      notification({ messageKey:"invalidClassCode"});
       yield put(fetchClassDetailsFail());
     }
   } catch (err) {
@@ -390,7 +390,7 @@ function* moveUsersToOtherClassSaga({ payload }) {
     else message.error(result.status);
   } catch (err) {
     const errorMessage = "Move Users is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(addMultiStudentsErrorAction({ error: errorMessage }));
   }
 }

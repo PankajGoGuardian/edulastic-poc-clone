@@ -532,10 +532,10 @@ class WorksheetComponent extends React.Component {
       test: { _id: assessmentId }
     } = this.props;
     if (file.type !== "application/pdf") {
-      return message.error("File format not supported, please select a valid PDF file.");
+      return  notification({ messageKey: "fileFormatNotSupported" });
     }
     if (file.size / 1024000 > 15) {
-      return message.error("File size exceeds 15 MB MB limit.");
+      return notification({ messageKey: "fileSizeExceeds" });
     }
     createAssessment({
       file,

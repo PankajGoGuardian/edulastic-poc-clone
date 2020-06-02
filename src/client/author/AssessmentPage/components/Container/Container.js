@@ -183,7 +183,7 @@ class Container extends React.Component {
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
       if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
-        message.error("Please add a valid password.");
+        notification({ messageKey:"enterValidPassword"});
         return false;
       }
     }
@@ -191,7 +191,7 @@ class Container extends React.Component {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
         this.sebPasswordRef.current.input.focus();
       }
-      message.error("Please add a valid password.");
+      notification({ messageKey:"enterValidPassword"});
       return false;
     }
 

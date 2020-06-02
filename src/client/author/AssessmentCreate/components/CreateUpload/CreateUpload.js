@@ -28,7 +28,7 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
       const [doc] = docs;
       const { id, name, sizeBytes: size, mimeType } = doc;
       if (size > 1024 * 1024 * 5) {
-        message.error("The selected document is too big to be uploaded");
+        notification({ messageKey:"selectedDocumentIsTooBigToUpload"});
         return;
       }
       uploadToDrive({ id, token: window.gapi.auth.getToken().access_token, name, size, mimeType });

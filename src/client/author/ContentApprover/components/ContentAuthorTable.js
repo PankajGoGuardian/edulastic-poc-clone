@@ -1,4 +1,4 @@
-import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Icon, message, Select } from "antd";
 import { GiDominoMask } from "react-icons/gi";
@@ -203,11 +203,11 @@ class ContentAuthorTable extends Component {
     const { selectedRowKeys } = this.state;
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-        message.error(t("users.validations.edituser"));
+        notification({ msg:t("users.validations.edituser")});
       } else if (selectedRowKeys.length === 1) {
         this.onEditDistrictAdmin(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error(t("users.validations.editsingleuser"));
+        notification({ msg:t("users.validations.editsingleuser")});
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -217,7 +217,7 @@ class ContentAuthorTable extends Component {
         });
         // deleteDistrictAdmin(selectedDistrictAdminData);
       } else {
-        message.error(t("users.validations.deleteuser"));
+        notification({ msg:t("users.validations.deleteuser")});
       }
     }
   };

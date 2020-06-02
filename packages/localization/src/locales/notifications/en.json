@@ -978,5 +978,193 @@
   "defaultSettingsUpdatedSuccessfully": {
     "message":  "Default settings updated successfully.",
     "description": ""
+  },
+  "selectOneOrMoreStudentToRemoved": {
+    "message":  "Select 1 or more Student to remove",
+    "description": ""
+  },
+  "selectOnlyStudents": {
+    "message":  "Please select only students to remove",
+    "description": ""
+  },
+  "youHaveNotSelectedAnyUsers": {
+    "message": "You have not selected any users to move",
+    "description": ""
+  },
+  "youCanOnlyMoveUsersOfSameClass": {
+    "message": "You can only move users of same class",
+    "description": ""
+  },
+  "selectOneOrMoreStudentAdd": {
+    "message": "Select 1 or more student to add",
+    "description": ""
+  },
+  "onlyStudentsCanBeAdded": {
+    "message": "Only students can be added to another class",
+    "description": ""
+  },
+  "checkAnswerFail": {
+    "message": "Check answer failed",
+    "description": ""
+  },
+  "testTimeEnded": {
+    "message": "Test time ended",
+    "description": ""
+  },
+  "failedSavingAnswer": {
+    "message": "Failed saving the Answer",
+    "description": ""
+  },
+  "failedLoadingAnswer": {
+    "message": "Failed loading the Answer",
+    "description": ""
+  },
+  "youCanNoLongerUse": {
+    "message": "You can no longer use this as sharing access has been revoked by author.",
+    "description": ""
+  },
+  "pleaseUploadFileInImageFormat": {
+    "message": "Please upload files in image format",
+    "description": ""
+  },
+  "widthShouldBeGreaterThanZero": {
+    "message": "Width should be greater than 0",
+    "description": ""
+  },
+  "widthCannotBeLessThanOne": {
+    "message": "Width cannot be less than 1",
+    "description": ""
+  },
+  "scoreShouldBeGreateThanZero": {
+    "message":"Score should be a number greater than 0",
+    "description": ""
+  },
+  "valuesCanOnlyBeGreaterThanZero": {
+    "message":"Values can only be natural numbers greater than 0",
+    "description": ""
+  },
+  "someErrorOccuredDuringProxying": {
+    "message":"some error occured during proxying",
+    "description": ""
+  },
+  "someErrorOccuredDuringSwicthingRole": {
+    "message":"some error occured during switching role",
+    "description": ""
+  },
+  "ErrorOccuredSwicthingRole": {
+    "message":"Error occured while switching user",
+    "description": ""
+  },
+  "invalidTestItem": {
+    "message": "invalid test Item",
+    "description": ""
+  },
+  "evaluationFailed": {
+    "message": "evaluation failed",
+    "description": ""
+  },
+  "uploadFailed": {
+    "message": "Upload failed!",
+    "description": ""
+  },
+  "fileFormatNotSupported": {
+    "message":  "File format not supported, please select a valid PDF file.",
+    "description": ""
+  },
+  "fileSizeExceeds": {
+    "message":"File size exceeds 15 MB limit.",
+    "description": ""
+  },
+  "selectedDocumentIsTooBigToUpload": {
+    "message":"The selected document is too big to be uploaded",
+    "description": ""
+  },
+  "answerChoiceShouldNotBeEmpty": {
+    "message": "Answer choice should not be empty.",
+    "description": ""
+  },
+  "sectionNameCanNotEmpty": {
+    "message":"Section name can not be empty",
+    "description": ""
+  },
+  "previewOfItemsRestricted": {
+    "message":"Preview of Items in the test are restricted by the author",
+    "description": ""
+  },
+  "folderNameAlreadyUsed": {
+    "message":"The folder name is already used.",
+    "description": ""
+  },
+  "answerOnPaperNotSupportedForThisTest": {
+    "message":"Answer on paper not suppported for this test.",
+    "description": ""
+  },
+  "SelectFutureEndDate": {
+    "message":"Select a Future end Date",
+    "description": ""
+  },
+  "pleaseSelectStudentsWithIncorrectOrSkippedQuestions": {
+    "message":"Please select students with incorrect or skipped questions.",
+    "description": ""
+  },
+  "theQuestionForStudentsDynamicallySelectedAsResult": {
+    "message":"The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment.",
+    "description": ""
+  },
+  "ClickOnCancel": {
+    "message":"Click on cancel.",
+    "description": ""
+  },
+  "atleastOneStudentShouldBeSelectedToPrintResponse": {
+    "message":"At least one student should be selected to print responses.",
+    "description": ""
+  },
+  "youCanOnlyPrintAfterAssignmentBeenSubmited": {
+    "message":"You can print only after the assignment has been submitted by the student(s).",
+    "description": ""
+  },
+  "addUserFailed": {
+    "message":"Add user failed",
+    "description": ""
+  },
+  "pleaseSelectOnlyStudent": {
+    "message":"Please select only student to remove",
+    "description": ""
+  },
+  "savingTagFailed": {
+    "message":"Saving tag failed",
+    "description": ""
+  },
+  "startDateGreaterThanEndDate": {
+    "message":"start date is greater than end date",
+    "description": ""
+  },
+  "UnableToGetPersmissions": {
+    "message":"Unable to get permissions",
+    "description": ""
+  },
+  "UnableToDeactivatePermission": {
+    "message": "Unable to deactivate permission",
+    "description": ""
+  },
+  "errorWhileImportingCollectionData": {
+    "message": "Error while importing collection data",
+    "description": ""
+  },
+  "failedToFetchProgressStatus": {
+    "message": "Failed to fetch progress status",
+    "description": ""
+  },
+  "collectionNameRequired": {
+    "message": "Collection name is required.",
+    "description": ""
+  },
+  "ownerNameRequired": {
+    "message": "Owner name is required.",
+    "description": ""
+  },
+  "invalidClassCode": {
+    "message": "Invalid Class Code",
+    "description": ""
   }
 }

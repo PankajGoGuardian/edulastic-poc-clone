@@ -1,5 +1,5 @@
 import { backgroundGrey2 } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { EduButton,notification } from "@edulastic/common";
 import { Input, message, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -62,10 +62,10 @@ const AddCollectionModal = ({
 
   const handleCreate = () => {
     if (!fieldData.name) {
-      return message.error("Collection name is required.");
+      return notification({ messageKey:"collectionNameRequired"});
     }
     if (!fieldData.owner) {
-      return message.error("Owner name is required.");
+      return notification({ messageKey:"ownerNameRequired"});
     }
     const payload = {
       data: fieldData,

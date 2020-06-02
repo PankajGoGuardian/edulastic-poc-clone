@@ -20,7 +20,7 @@ const ItemPlayer = ({ match, answers, addEvaluation, changePreview, evaluation, 
     testItemsApi
       .getByV1Id(itemId)
       .then(setTestItem)
-      .catch(() => message.error("invalid test Item"));
+      .catch(() =>notification({ messageKey:"invalidTestItem"})); 
   }, [match.params]);
 
   const evaluate = async () => {
@@ -37,7 +37,7 @@ const ItemPlayer = ({ match, answers, addEvaluation, changePreview, evaluation, 
       notification({ type: "success", msg:`score: ${+score.toFixed(2)}/${maxScore}`});
     } catch (e) {
       console.log(e);
-      message.error("evaluation failed");
+      notification({ messageKey:"evaluationFailed"});
     }
   };
 

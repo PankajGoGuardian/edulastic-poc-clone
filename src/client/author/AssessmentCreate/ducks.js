@@ -10,7 +10,7 @@ import { get, without, omit } from "lodash";
 
 import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
 import { aws, roleuser, test as testConstant } from "@edulastic/constants";
-import { helpers } from "@edulastic/common";
+import { helpers,notification } from "@edulastic/common";
 import { uploadToS3 } from "../src/utils/upload";
 import {
   createBlankTest,
@@ -121,7 +121,7 @@ function* createAssessmentSaga({ payload }) {
     }
   } catch (error) {
     const errorMessage = error.message || "Upload PDF is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg: errorMessage});
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
   }
@@ -131,7 +131,7 @@ function* createAssessmentSaga({ payload }) {
     }
   } catch (error) {
     const errorMessage = "Create test item is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg: errorMessage});
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
   }
@@ -269,7 +269,7 @@ function* createAssessmentSaga({ payload }) {
     } else {
       errorMessage = "Create assessment is failing";
     }
-    yield call(message.error, errorMessage);
+    notification({ msg: errorMessage});
     yield put(createAssessmentErrorAction({ error: errorMessage }));
   }
 }
@@ -282,7 +282,7 @@ function* uploadToDriveSaga({ payload }) {
     const fileURI = res.Location;
     yield put(createAssessmentRequestAction({ fileURI }));
   } catch (err) {
-    yield call(message.error, "Upload failed!");
+    notification({ messageKey:"uploadFailed"});
   }
 }
 

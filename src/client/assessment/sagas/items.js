@@ -2,6 +2,7 @@ import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import * as Sentry from '@sentry/browser';
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { maxBy } from "lodash";
 import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { assignmentPolicyOptions } from "@edulastic/constants";
@@ -84,7 +85,7 @@ function* saveUserResponse({ payload }) {
       }
     }
     if (endDate && endDate < Date.now()) {
-      yield call(message.error, "Test time ended");
+      notification({ messageKey:"testTimeEnded"});
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       return yield put(push("/home/assignments"));
     }
@@ -194,9 +195,9 @@ function* saveUserResponse({ payload }) {
       const { isPlaylist = false } = payload;
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       yield put(push("/home/assignments"));
-      yield call(message.error, err.data);
+      notification({ msg:err.data});
     } else {
-      yield call(message.error, "Failed saving the Answer");
+      notification({ messageKey:"failedSavingAnswer"});
     }
     // yield call(message.error, "Failed saving the Answer");
   }
@@ -215,7 +216,7 @@ function* loadUserResponse({ payload }) {
       }
     });
   } catch (e) {
-    yield call(message.error, "Failed loading the Answer");
+    notification({ messageKey:"failedLoadingAnswer"});
   }
 }
 

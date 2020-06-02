@@ -215,7 +215,7 @@ function* createCollectionRequestSaga({ payload }) {
     yield put(createCollectionFailedAction());
     let errorMessage = "Failed to create the Collection.";
     if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
   }
 }
 
@@ -232,7 +232,7 @@ function* editCollectionRequestSaga({ payload }) {
     console.error(err);
     let errorMessage = "Failed to update the Collection.";
     if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
   }
 }
 
@@ -252,7 +252,7 @@ function* fetchPermissionsRequestSaga({ payload }) {
     yield put(fetchPermissionsSuccessAction(permissions));
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Unable to get permissions.");
+    notification({ messageKey:"UnableToGetPersmissions"});
     yield put(fetchPermissionsFailedAction());
   }
 }
@@ -266,7 +266,7 @@ function* addPermissionRequestSaga({ payload }) {
     console.error(err);
     let errorMessage = "Error occured while adding permision.";
     if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
   }
 }
 
@@ -279,7 +279,7 @@ function* editPermissionRequestSaga({ payload }) {
     console.error(err);
     let errorMessage = "Unable to edit Permission.";
     if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
   }
 }
 
@@ -300,7 +300,7 @@ function* deletePermissionRequestSaga({ payload }) {
     notification({ type: "success", messageKey:"persmissionDeactivatedSuccessfully"});
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Unable to deactivate permission");
+    notification({ messageKey:"UnableToDeactivatePermission"});
   }
 }
 
@@ -336,13 +336,13 @@ export function* importTestToCollectionSaga({ payload }) {
     } else {
       yield put(importTestToCollectionFailedAction("Failed uploading"));
       yield put(setIsContentImportingAction(false));
-      yield call(message.error, "Uploading failed");
+      notification({ messageKey:"uploadCsvErr"});
     }
   } catch (e) {
     console.log(e);
     yield put(importTestToCollectionFailedAction(e?.data || {}));
     yield put(setIsContentImportingAction(false));
-    yield call(message.error, "Error while importing collection data");
+    notification({ messageKey:"errorWhileImportingCollectionData"});
   }
 }
 
@@ -367,7 +367,7 @@ function* getContentImportProgressSaga({ payload: jobIds }) {
     }
   } catch (e) {
     console.log({ e });
-    return message.error("Failed to fetch progress status");
+    return notification({ messageKey:"failedToFetchProgressStatus"});
   }
 }
 

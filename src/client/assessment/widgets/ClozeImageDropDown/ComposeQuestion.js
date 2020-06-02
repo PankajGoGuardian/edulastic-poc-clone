@@ -243,7 +243,7 @@ class ComposeQuestion extends Component {
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef
-      message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
+      notification({ msg:`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`});
     }
   };
 

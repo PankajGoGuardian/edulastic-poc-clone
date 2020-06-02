@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form, message, Col } from "antd";
-import { StyledComponents, RadioBtn, RadioGrp } from "@edulastic/common";
+import { StyledComponents, RadioBtn, RadioGrp,notification } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -60,7 +60,7 @@ function BulkEditModal({
     }
 
     if (isInvalidEndDate) {
-      return message.error("start date is greater than end date");
+      return notification({ messageKey:"startDateGreaterThanEndDate"});
     }
 
     bulkUpdateClasses({
@@ -101,7 +101,7 @@ function BulkEditModal({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ messageKey:"savingTagFailed"});
       }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);

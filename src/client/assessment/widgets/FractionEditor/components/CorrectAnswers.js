@@ -58,7 +58,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
         })
       );
     } else {
-      message.error("Score should be a number greater than 0");
+      notification({ messageKey:"scoreShouldBeGreateThanZero"});
     }
   };
 

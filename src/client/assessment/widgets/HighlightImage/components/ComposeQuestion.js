@@ -9,7 +9,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import { Image as Img, uploadToS3, beforeUpload, FlexContainer, EduButton } from "@edulastic/common";
+import { Image as Img, uploadToS3, beforeUpload, FlexContainer, EduButton,notification } from "@edulastic/common";
 import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -157,7 +157,7 @@ class ComposeQuestion extends Component {
         getImageDimensions(imageUrl);
       } catch (e) {
         console.error("error in image upload", e);
-        message.error(`${t("component.cloze.imageText.fileUploadFailed")}`);
+        notification({ msg:`${t("component.cloze.imageText.fileUploadFailed")}`});
       }
     };
 

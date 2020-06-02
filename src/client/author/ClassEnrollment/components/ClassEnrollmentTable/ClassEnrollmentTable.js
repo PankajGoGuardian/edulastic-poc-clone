@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon, message, Button, Menu, Select } from "antd";
+import { notification } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
@@ -121,10 +122,10 @@ class ClassEnrollmentTable extends React.Component {
     const areUsersOfDifferentClasses = uniqBy(selectedUsersInfo, "group.code").length > 1;
     if (e.key === "remove students") {
       if (selectedRowKeys.length == 0) {
-        message.error("Select 1 or more Student to remove");
+        notification({ messageKey:"selectOneOrMoreStudentToRemoved"});
       } else if (selectedRowKeys.length > 0) {
         if (isInstructor) {
-          message.error("Please select only students to remove");
+          notification({ messageKey:"selectOnlyStudents"});
         } else {
           this.setState({
             removeStudentsModalVisible: true
@@ -133,18 +134,19 @@ class ClassEnrollmentTable extends React.Component {
       }
     } else if (e.key === "move users") {
       if (selectedRowKeys.length == 0) {
-        message.error("You have not selected any users to move");
+        notification({ messageKey:"youHaveNotSelectedAnyUsers"});
       } else if (areUsersOfDifferentClasses) {
-        message.error("You can only move users of same class");
+        notification({ messageKey:"youCanOnlyMoveUsersOfSameClass"});
       } else if (selectedRowKeys.length >= 1) {
         this.setState({ moveUsersModalVisible: true });
       }
     } else if (e.key === "add students to other class") {
       if (selectedRowKeys.length == 0) {
-        message.error("Select 1 or more student to add");
+        notification({ messageKey:"selectOneOrMoreStudentAdd"});
       } else if (selectedRowKeys.length > 0) {
         if (isInstructor) {
-          message.error("Only students can be added to another class");
+          notification({ messageKey:"onlyStudentsCanBeAdded"});
+
         } else {
           this.setState({ addStudentsModalVisible: true });
         }
@@ -277,7 +279,7 @@ class ClassEnrollmentTable extends React.Component {
       return _classCode === code && userId === id;
     });
     if (role === "teacher") {
-      message.error("Please select only student to remove");
+      notification({ messageKey:"pleaseSelectOnlyStudent" });
     } else {
       this.setState({
         selectedUserIds: [id],

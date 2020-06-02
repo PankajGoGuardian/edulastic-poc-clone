@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Row, Col, Radio, Select, Icon, Input, message, Tooltip, Modal } from "antd";
 import { green, red, blueBorder, themeColor, lightGrey9 } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
-import { RadioBtn, CheckboxLabel } from "@edulastic/common";
+import { RadioBtn, CheckboxLabel,notification} from "@edulastic/common";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 import { withRouter } from "react-router-dom";
@@ -110,7 +110,7 @@ const Settings = ({
   const overRideSettings = (key, value) => {
     if ((key === "maxAnswerChecks" || key === "maxAttempts") && value < 0) value = 0;
     if (key === "answerOnPaper" && value && disableAnswerOnPaper) {
-      return message.error("Answer on paper not suppported for this test");
+      return notification({ messageKey: "answerOnPaperNotSupportedForThisTest" });
     }
 
     const penalty = value === evalTypeLabels.PARTIAL_CREDIT;

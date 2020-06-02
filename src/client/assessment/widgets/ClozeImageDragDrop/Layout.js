@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Select } from "@edulastic/common";
+import { Select, notification } from "@edulastic/common";
 import { response, ChoiceDimensions } from "@edulastic/constants";
 import { Input, message } from "antd";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -82,7 +82,7 @@ class Layout extends Component {
     const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses, item } = this.props;
     const changeUiStyle = (prop, value) => {
       if (prop === "responseContainerWidth" && value < 1) {
-        message.error("Width cannot be less than 1");
+        notification({ messageKey:"widthCannotBeLessThanOne"});
         return null;
       }
       onChange("uiStyle", {

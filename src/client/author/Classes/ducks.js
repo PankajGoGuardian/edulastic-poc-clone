@@ -265,7 +265,7 @@ function* receiveClassListSaga({ payload }) {
     yield put(receiveClassListSuccessAction(hits));
   } catch (err) {
     const errorMessage = "Receive Classes is failing!";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(receiveClassListErrorAction({ error: errorMessage }));
   }
 }
@@ -277,7 +277,7 @@ function* updateClassSaga({ payload }) {
     notification({ type: "success", messageKey: "classUpdatedSuccessfully" });
   } catch (err) {
     const errorMessage = "Update Class is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(updateClassErrorAction({ error: errorMessage }));
   }
 }
@@ -289,7 +289,7 @@ function* createClassSaga({ payload }) {
     notification({ type: "success", messageKey: "classCreatedSuccessfully" });
   } catch (err) {
     const errorMessage = "Create Class is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(createClassErrorAction({ error: errorMessage }));
   }
 }
@@ -302,7 +302,7 @@ function* deleteClassSaga({ payload }) {
     notification({ type: "success", messageKey: "selectedClassesArchived" });
   } catch (err) {
     const errorMessage = "Delete Class is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(deleteClassErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -313,7 +313,7 @@ function* receiveTeachersListSaga({ payload }) {
     yield put(receiveTeacherListSuccessAction(teachersList));
   } catch (err) {
     const errorMessage = "Receive Teachers is failing!";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(receiveTeacherListErrorAction({ error: errorMessage }));
   }
 }
@@ -326,7 +326,7 @@ function* bulkUpdateClassesSaga({ payload }) {
     notification({ type: "success", msg:result.message});
   } catch (err) {
     const errorMessage = "Something went wrong. Please try again!";
-    message.error(errorMessage);
+    notification({ msg:errorMessage });
   }
 }
 
@@ -339,7 +339,7 @@ function* archiveClassSaga({ payload }) {
     yield put(push("/author/manageClass"));
   } catch (err) {
     const errorMessage = "Archive Class is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(archiveClassErrorAction({ archiveError: errorMessage }));
   }
 }
@@ -359,7 +359,7 @@ function* saveHangoutEventSaga({ payload }) {
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
     const errorMessage = "Google Meet event save is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(saveHangoutEventErrorAction());
   }
 }
@@ -378,7 +378,7 @@ function* updateHangoutEventSaga({ payload }) {
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
     const errorMessage = "Hangouts event update is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(saveHangoutEventErrorAction());
   }
 }

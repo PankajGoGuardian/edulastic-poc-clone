@@ -44,7 +44,7 @@ const ActionMenu = ({
         assignmentDetails?.testContentVisibility
       )
     ) {
-      return message.error("Preview of Items in the test are restricted by the author");
+      return notification({ messageKey: "previewOfItemsRestricted" });
     }
     if (shouldSendAssignmentId) {
       showPreviewModal(currentTestId, currentAssignmentId, assignmentDetails?.classId);

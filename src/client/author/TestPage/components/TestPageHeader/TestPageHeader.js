@@ -32,7 +32,7 @@ import {
 } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import TestPageNav from "../TestPageNav/TestPageNav";
-import { MobileHeaderFilterIcon, RightFlexContainer, RightWrapper, ShareIcon, TestStatus } from "./styled";
+import { AssignButton, MobileHeaderFilterIcon, RightFlexContainer, RightWrapper, ShareIcon, TestStatus } from "./styled";
 import PrintTestModal from "../../../src/components/common/PrintTestModal";
 
 const { statusConstants, testContentVisibility: testContentVisibilityOptions } = testConstants;
@@ -374,13 +374,14 @@ const TestPageHeader = ({
                 !isRegradeFlow && (
                   <EduButton
                     isGhost
-                    IconBtn
+                    IconBtn={!isPublishers}
                     title="Publish Test"
                     data-cy="publish"
                     onClick={handlePublish}
                     disabled={disableButtons}
                   >
                     <IconSend />
+                    {isPublishers && "Publish"}
                   </EduButton>
                 )
               )

@@ -1,6 +1,6 @@
-import API from "./utils/API";
 import moment from "moment";
 import qs from "qs";
+import API from "./utils/API";
 
 const api = new API();
 const prefix = "/assignments";
@@ -97,7 +97,7 @@ const duplicateAssignment = ({ _id, title, isInEditAndRegrade = false }) =>
     .callApi({
       url: `test/${_id}/duplicate`,
       params: {
-        title: `${title}-${moment().format("MM/DD/YYYY HH:mm")}`,
+        title: isInEditAndRegrade ? title : `${title}-${moment().format("MM/DD/YYYY HH:mm")}`,
         isInEditAndRegrade
       },
       method: "post"

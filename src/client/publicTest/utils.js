@@ -119,10 +119,13 @@ export const redirectToDashbord = (type = "", history) => {
     case "HOME":
       msg = "Redirecting to the student dashboard";
       break;
+    case "NOT_FOUND":
+      msg = "Test not found";
+      break;
     default:
       msg = "Assignment is not available for the attempt.";
   }
-  notification({ msg: msg});
+  notification({ msg});
   history.push("/home/assignments");
 };
 
@@ -178,16 +181,16 @@ const redirectToAssessmentPlayer = (assignment, history, startAssignment, resume
         . Do you want to continue?
       </p>
     ) : (
-        <p>
-          {" "}
+      <p>
+        {" "}
         This is a timed assignment which should be finished within the time limit set for this assignment. The time
         limit for this assignment is{" "}
-          <span data-cy="test-time" style={{ fontWeight: 700 }}>
-            {" "}
-            {allowedTime / (60 * 1000)} minutes
+        <span data-cy="test-time" style={{ fontWeight: 700 }}>
+          {" "}
+          {allowedTime / (60 * 1000)} minutes
         </span>{" "}
         and you can’t quit in between. Do you want to continue?
-        </p>
+      </p>
       );
 
     Modal.confirm({

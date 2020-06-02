@@ -85,8 +85,8 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
   const attempts = redirects.length;
 
   const dueDate = Math.max(...redirects.map(x => x.endDate));
-  const { allowedTime } = redirects[redirects.length - 1];
-  return { attempts, dueDate, allowedTime };
+  const { allowedTime, pauseAllowed } = redirects[redirects.length - 1];
+  return { attempts, dueDate, allowedTime, pauseAllowed };
 };
 
 export const transformAssignmentForRedirect = (groupId, userId, classIds, assignment) => {
@@ -104,7 +104,8 @@ export const transformAssignmentForRedirect = (groupId, userId, classIds, assign
     endDate,
     maxAttempts,
     redir: true,
-    ...(redirect.allowedTime ? { allowedTime: redirect.allowedTime } : {})
+    ...(redirect.allowedTime ? { allowedTime: redirect.allowedTime } : {}),
+    ...(redirect.pauseAllowed !== undefined ? { pauseAllowed: redirect.pauseAllowed } : {})
   };
 };
 
@@ -364,7 +365,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId
@@ -376,7 +377,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -387,7 +388,7 @@ function* startAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-              testType === COMMON ? ASSESSMENT : testType
+            testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );
@@ -453,7 +454,7 @@ function* resumeAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -464,7 +465,7 @@ function* resumeAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-              testType === COMMON ? ASSESSMENT : testType
+            testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );

@@ -4,11 +4,12 @@ import moment from "moment";
 import { some } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { assignmentApi } from "@edulastic/api";
-import { EduButton,notification } from "@edulastic/common";
+
+import { EduButton , RadioBtn, RadioGrp, notification } from "@edulastic/common";
 import { getUserName, getRedirectEndDate } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
-import { RadioBtn, RadioGrp } from "@edulastic/common";
+
 
 const { redirectPolicy } = testContants;
 
@@ -65,7 +66,7 @@ const RedirectPopUp = ({
   const [showPrevAttempt, setshowPrevAttempt] = useState("FEEDBACK_ONLY");
   const [allowedTime, setAllowedTime] = useState(additionalData.allowedTime || 1);
   useEffect(() => {
-    let setRedirectStudents = {};
+    const setRedirectStudents = {};
     if (type === "absentStudents") {
       absentList.forEach(st => {
         setRedirectStudents[st] = true;
@@ -107,13 +108,14 @@ const RedirectPopUp = ({
       if (_selected.length) {
         const redirectAssignment = {
           _id: groupId,
-          specificStudents: type === "entire" ? false : true,
+          specificStudents: type !== "entire",
           students: type === "entire" ? [] : _selected,
           showPreviousAttempt: showPrevAttempt,
           questionsDelivery: qDeliveryState,
           endDate: +endDate,
           timedAssignment: additionalData.timedAssignment,
-          allowedTime
+          allowedTime,
+          pauseAllowed: !!additionalData.pauseAllowed
         };
         if (additionalData.dueDate) {
           redirectAssignment.dueDate = dueDate.valueOf();
@@ -250,11 +252,11 @@ const RedirectPopUp = ({
                     <Option key="1" value={item}>
                       {QuestionDelivery[item]}
                     </Option>
-                  ))}
+                    ))}
                 </Select>
               </Row>
             </Col>
-          )}
+            )}
           <Col span={12}>
             <h4>Close Date</h4>
             <Row>

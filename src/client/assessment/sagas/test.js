@@ -488,7 +488,7 @@ function* submitTest({ payload }) {
       }
     }
   }
-}
+
 
 export default function* watcherSaga() {
   yield all([

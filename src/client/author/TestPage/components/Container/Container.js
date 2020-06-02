@@ -1,11 +1,10 @@
-/* eslint-disable react/no-did-update-set-state */
 import React, { PureComponent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter, Prompt } from "react-router-dom";
-import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
+import { cloneDeep, uniq as _uniq, isEmpty, get, without, partial } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes, notification } from "@edulastic/common";
 import { test as testContants, roleuser } from "@edulastic/constants";
@@ -213,16 +212,16 @@ class Container extends PureComponent {
       if (createdItems.length > 0) {
         this.setState({ editEnable: true });
         if (_location?.state?.showItemAddedMessage) {
-          const msg = (
-            <span>
-              New item has been created and added to the current test. Click{" "}
-              <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
-                here
-              </span>{" "}
-              to see it.
-            </span>
+         const msg=(
+           <span>
+             New item has been created and added to the current test. Click{" "}
+             <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
+               here
+             </span>{" "}
+             to see it.
+           </span>
           );
-          notification({ type: "success", msg });
+          notification({ type: "success", msg});
         }
       }
 
@@ -277,7 +276,6 @@ class Container extends PureComponent {
       startAssignment,
       resumeAssignment
     } = this.props;
-    const { testLoaded, editEnable, studentRedirected } = this.state;
 
     if (userRole !== roleuser.STUDENT) {
       if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
@@ -287,30 +285,30 @@ class Container extends PureComponent {
       }
       const { editAssigned = false } = history.location.state || {};
 
-      if (editAssigned && test?._id && !testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
+      if (editAssigned && test?._id && !this.state.testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
         this.onEnableEdit();
       }
-      if (editAssigned && test?._id && !editEnable && test.isInEditAndRegrade && !isTestLoading) {
+      if (editAssigned && test?._id && !this.state.editEnable && test.isInEditAndRegrade && !isTestLoading) {
         const canEdit = test.authors?.some(x => x._id === userId);
         if (canEdit) {
           this.setState({ editEnable: true });
         }
       }
-      if (test._id && !testLoaded && !isTestLoading) {
+      if (test._id && !this.state.testLoaded && !isTestLoading) {
         this.setState({ testLoaded: true });
       }
       if (userRole === roleuser.EDULASTIC_CURATOR && prevProps?.test?._id !== test?._id) {
         getDefaultTestSettings(test);
       }
     } else if (userRole === roleuser.STUDENT) {
-      if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
-        // this is to call redirectToStudentPage once, even if multiple props update happend
-        if (!studentRedirected) {
-          redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment);
-          this.setState({ studentRedirected: true });
+        if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
+          // this is to call redirectToStudentPage once, even if multiple props update happend
+          if (!this.state.studentRedirected) {
+            redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment);
+            this.setState({ studentRedirected: true });
+          }
         }
       }
-    }
   }
 
   // Make use of the router Prompt Component. No custom beforeunload method is required.
@@ -429,13 +427,13 @@ class Container extends PureComponent {
     setDefaultInterests({ subject: subjects[0] || "" });
   };
 
-  onChangeSkillIdentifiers = identifiers => {
+  onChangeSkillIdentifiers = (identifiers) => {
     const { setData, test } = this.props;
-    if (!isEmpty(identifiers)) {
-      const metadata = { ...test.metadata, skillIdentifiers: _uniq(identifiers.split(",")) };
-      setData({ ...test, metadata });
+    if(!isEmpty(identifiers)) {
+      const metadata = {...test.metadata, skillIdentifiers : _uniq(identifiers.split(","))}
+      setData({ ...test,  metadata});
     }
-  };
+  }
 
   handleSaveTestId = () => {
     const { test, saveCurrentEditingTestId } = this.props;
@@ -482,38 +480,44 @@ class Container extends PureComponent {
     switch (current) {
       case "addItems":
         return (
-          <AddItems
-            current={current}
-            isEditable={isEditable}
-            onSaveTestId={this.handleSaveTestId}
-            test={test}
-            gotoSummary={this.handleNavChange("description")}
-            gotoGroupItems={this.handleNavChange("groupItems")}
-            toggleFilter={this.toggleFilter}
-            isShowFilter={isShowFilter}
-            handleSaveTest={this.handleSave}
-            updated={updated}
-            userRole={userRole}
-          />
+          <Content>
+            <AddItems
+              current={current}
+              isEditable={isEditable}
+              onSaveTestId={this.handleSaveTestId}
+              test={test}
+              gotoSummary={this.handleNavChange("description")}
+              gotoGroupItems={this.handleNavChange("groupItems")}
+              toggleFilter={this.toggleFilter}
+              isShowFilter={isShowFilter}
+              handleSaveTest={this.handleSave}
+              updated={updated}
+              userRole={userRole}
+            />
+          </Content>
         );
       case "description":
         return (
-          <Summary
-            onShowSource={this.handleNavChange("source")}
-            setData={setData}
-            test={test}
-            owner={isOwner}
-            current={current}
-            isEditable={isEditable}
-            onChangeGrade={this.handleChangeGrade}
-            onChangeCollection={this.handleChangeCollection}
-            onChangeSubjects={this.handleChangeSubject}
-            showCancelButton={showCancelButton}
-          />
+          <Content>
+            <Summary
+              onShowSource={this.handleNavChange("source")}
+              setData={setData}
+              test={test}
+              owner={isOwner}
+              current={current}
+              isEditable={isEditable}
+              onChangeGrade={this.handleChangeGrade}
+              onChangeCollection={this.handleChangeCollection}
+              onChangeSubjects={this.handleChangeSubject}
+              showCancelButton={showCancelButton}
+            />
+          </Content>
         );
       case "review":
         return isDocBased ? (
-          <MainWorksheet key="review" review {...props} viewMode="review" />
+          <Content>
+            <MainWorksheet key="review" review {...props} viewMode="review" />
+          </Content>
         ) : (
           <Review
             test={test}
@@ -531,14 +535,16 @@ class Container extends PureComponent {
         );
       case "settings":
         return (
-          <Setting
-            current={current}
-            isEditable={isEditable}
-            onShowSource={this.handleNavChange("source")}
-            sebPasswordRef={this.sebPasswordRef}
-            owner={isOwner}
-            showCancelButton={showCancelButton}
-          />
+          <Content>
+            <Setting
+              current={current}
+              isEditable={isEditable}
+              onShowSource={this.handleNavChange("source")}
+              sebPasswordRef={this.sebPasswordRef}
+              owner={isOwner}
+              showCancelButton={showCancelButton}
+            />
+          </Content>
         );
       case "worksheet":
         return (
@@ -813,11 +819,16 @@ class Container extends PureComponent {
       showWarningModal,
       proceedPublish,
       isTestLoading,
+      history,
       collections = [],
       userFeatures,
       currentTab,
       testAssignments,
-      userRole
+      userRole,
+      studentAssignments,
+      startAssignment,
+      resumeAssignment,
+      loadingAssignments
     } = this.props;
     if (userRole === roleuser.STUDENT) {
       return null;

@@ -7,9 +7,16 @@ import { IconTile } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { toggleShowUseThisNotificationAction } from "../../ducks";
 
-const SwitchPlaylist = ({ onClickHandler, showUseThisNotification, toggleShowUseThisNotification, isDesktop }) => {
+const SwitchPlaylist = ({
+  onClickHandler,
+  showUseThisNotification,
+  toggleShowUseThisNotification,
+  isDesktop,
+  playlistsToSwitch
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const popoverContent = <span>You can switch between playlists using this.</span>;
+  const isShowSwitcher = (playlistsToSwitch?.length || 0) > 1;
 
   const showNotificationInSideMenu = () => {
     setIsOpen(false);
@@ -17,16 +24,24 @@ const SwitchPlaylist = ({ onClickHandler, showUseThisNotification, toggleShowUse
       toggleShowUseThisNotification(true);
       setTimeout(() => {
         toggleShowUseThisNotification(false);
-      }, 3000);
+      }, 4000);
     }
   };
 
   useEffect(() => {
-    if (showUseThisNotification) {
-      setIsOpen(showUseThisNotification);
-      setTimeout(showNotificationInSideMenu, 3000);
+    if (showUseThisNotification && isShowSwitcher) {
+      if (isShowSwitcher) {
+        setIsOpen(showUseThisNotification);
+        setTimeout(showNotificationInSideMenu, 4000);
+      } else {
+        showNotificationInSideMenu();
+      }
     }
   }, [showUseThisNotification]);
+
+  if (!isShowSwitcher) {
+    return "";
+  }
 
   return (
     <Popover content={popoverContent} overlayClassName="antd-notify-custom-popover" visible={isOpen}>

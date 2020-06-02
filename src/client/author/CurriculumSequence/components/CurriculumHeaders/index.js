@@ -53,10 +53,9 @@ const CurriculumHeader = ({
   isDesktop,
   loading,
   urlHasUseThis,
-  recentPlaylists,
-  curatedStudentPlaylists,
   destinationCurriculumSequence,
   collections,
+  playlistsToSwitch,
   updateDestinationPlaylist,
   handleEditClick,
   handleUseThisClick,
@@ -71,8 +70,6 @@ const CurriculumHeader = ({
 }) => {
   const ResolvedMobileHeaderWrapper = isDesktop ? Fragment : MobleHeaderWrapper;
   const { isAuthor = false, status, title, collections: _playlistCollections = [] } = destinationCurriculumSequence;
-  // show all recent playlists in changePlaylistModal
-  const slicedRecentPlaylists = recentPlaylists || [];
   // figure out which tab contents to render || just render default playlist
   const {
     params: { cloneId = null, currentTab: cTab },
@@ -89,20 +86,17 @@ const CurriculumHeader = ({
   const isPlaylistDetailsPage = window.location?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
 
+  const switchPlaylist = (
+    <SwitchPlaylist
+      isDesktop={isDesktop}
+      playlistsToSwitch={playlistsToSwitch}
+      showUseThisNotification={showUseThisNotification}
+      onClickHandler={handleGuidePopup}
+    />
+  );
+
   if (isStudent) {
-    return (
-      <StudentPlayListHeader
-        headingSubContent={
-          curatedStudentPlaylists?.length > 1 && (
-            <SwitchPlaylist
-              isDesktop={isDesktop}
-              showUseThisNotification={showUseThisNotification}
-              onClickHandler={handleGuidePopup}
-            />
-          )
-        }
-      />
-    );
+    return <StudentPlayListHeader headingSubContent={switchPlaylist} />;
   }
 
   const savePlaylist = () => {

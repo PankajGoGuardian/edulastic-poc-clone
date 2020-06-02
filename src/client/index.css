@@ -2217,6 +2217,43 @@ div[class*="_pendo"] button {
   margin-top: 0px;
 }
 
+.antd-notify-custom-popover .ant-popover-inner {
+  background: #2f4151;
+}
+
+.antd-notify-custom-popover .ant-popover-inner-content {
+  color: white;
+  font-weight: 600;
+}
+
+.antd-notify-custom-popover .ant-popover-arrow {
+  width: 20px;
+  height: 20px;
+  border-width: 10px;
+}
+
+.antd-notify-custom-popover.ant-popover-placement-right {
+  left: 75px !important;
+}
+
+.antd-notify-custom-popover.ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow {
+  border-bottom-color: #2f4151;
+  border-left-color: #2f4151;
+}
+
+.antd-notify-custom-popover.ant-popover-placement-right .ant-popover-arrow {
+  left: 1px;
+}
+
+.antd-notify-custom-popover.ant-popover-placement-bottom .ant-popover-arrow {
+  top: 1px;
+}
+
+.antd-notify-custom-popover.ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow {
+  border-top-color: #2f4151;
+  border-left-color: #2f4151;
+}
+
 .antd-notify-custom-popover {
   max-width: 195px;
   text-align: center;

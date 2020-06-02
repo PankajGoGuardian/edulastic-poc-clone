@@ -70,11 +70,11 @@ class ListItem extends Component {
     isOpenModal: false
   };
 
-  moveToItem = e => {
+  moveToItem = (e, url = "") => {
     e && e.stopPropagation();
     const { history, item, match, mode } = this.props;
     if (mode !== "embedded") {
-      history.push(`${match.url}/${item._id}#review`);
+      history.push(`${url || match.url}/${item._id}#review`);
     }
   };
 
@@ -202,7 +202,9 @@ class ListItem extends Component {
           testId={currentTestId}
           closeTestPreviewModal={this.hidePreviewModal}
         />
-        <Container onClick={isPlaylist ? this.moveToItem : mode === "embedded" ? "" : this.openModal}>
+        <Container
+          onClick={isPlaylist ? () => this.moveToItem(`/author/playlists`) : mode === "embedded" ? "" : this.openModal}
+        >
           <ContentWrapper>
             <Col span={24}>
               <Outer>

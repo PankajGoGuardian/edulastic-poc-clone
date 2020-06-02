@@ -1,3 +1,4 @@
+import React from "react";
 import { get, keyBy, uniqBy, uniq } from "lodash";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { questionType } from "@edulastic/constants";
@@ -42,7 +43,7 @@ export const getTestAuthorName = (item, orgCollections) => {
     }
   }
   if (createdBy._id) {
-    const author = authors.find(item => item._id === createdBy._id) || {};
+    const author = authors.find(_item => _item._id === createdBy._id) || {};
     return author.name || authors[0].name;
   }
   return authors.length && authors[0].name;
@@ -59,7 +60,7 @@ export const getTestItemAuthorName = (item, orgCollections) => {
     }
   }
   if (owner) {
-    const author = authors.find(item => item._id === owner) || {};
+    const author = authors.find(_item => _item._id === owner) || {};
     return author.name || authors?.[0]?.name || "Anonymous";
   }
   return (authors.length && authors?.[0]?.name) || "Anonymous";
@@ -99,7 +100,7 @@ export const getPlaylistAuthorName = item => {
 export const getQuestionType = item => {
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
-  const hasPassage = resources.some(item => item.type === PASSAGE) || item.passageId;
+  const hasPassage = resources.some(_item => _item.type === PASSAGE) || item.passageId;
   if (hasPassage) {
     // All questions that are linked to passage should show type as passage and question type attached to passage
     return questions.length > 1
@@ -173,4 +174,13 @@ export const sortTestItemQuestions = testItems => {
     item.data.questions = widgets.map(widget => questions[widget.reference]).filter(q => !!q);
   }
   return testItems;
+};
+
+// Show premium label on items/tests/playlists
+export const showPremiumLabelOnContent = (itemCollections = [], orgCollections = []) => {
+  // TODO: if collection ids are constant then replace with ids instead of looping on orgCollections
+  const premiumCollectionIds = orgCollections
+    .filter(c => !["Edulastic Certified", "Engage Ny"].includes(c.name))
+    .map(x => x._id);
+  return itemCollections.some(c => premiumCollectionIds.includes(c._id));
 };

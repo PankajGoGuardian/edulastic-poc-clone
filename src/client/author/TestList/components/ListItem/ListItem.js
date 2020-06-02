@@ -10,7 +10,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { getAuthorCollectionMap, flattenPlaylistStandards } from "../../../dataUtils";
+import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import {
   AddButtonStyled,
   ViewButton as ViewButtonContainer,
@@ -175,11 +175,8 @@ class ListItem extends Component {
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
 
-    const premiumCollectionIds = orgCollections.filter(c => c.name !== "Edulastic Certified").map(x => x._id);
     const showPremiumTag =
-      (isPlaylist
-        ? _source.collections?.some(c => premiumCollectionIds.includes(c._id))
-        : collections?.some(c => premiumCollectionIds.includes(c._id))) && !isPublisherUser;
+      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) && !isPublisherUser;
 
     return (
       <>

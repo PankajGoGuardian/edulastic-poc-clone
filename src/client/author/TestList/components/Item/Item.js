@@ -45,7 +45,7 @@ import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { TestStatus } from "../ListItem/styled";
-import { getAuthorCollectionMap, flattenPlaylistStandards } from "../../../dataUtils";
+import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -229,11 +229,8 @@ class Item extends Component {
       padding: "5px 10px"
     };
 
-    const premiumCollectionIds = orgCollections.filter(c => c.name !== "Edulastic Certified").map(x => x._id);
     const showPremiumTag =
-      (isPlaylist
-        ? _source.collections?.some(c => premiumCollectionIds.includes(c._id))
-        : collections?.some(c => premiumCollectionIds.includes(c._id))) && !isPublisherUser;
+      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) && !isPublisherUser;
 
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;

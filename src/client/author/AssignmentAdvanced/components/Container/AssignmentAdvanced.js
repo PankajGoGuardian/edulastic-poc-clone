@@ -21,7 +21,8 @@ import {
   getAssignmentClassList,
   getToggleReleaseGradeStateSelector,
   getCurrentTestSelector,
-  getAssignmentsLoadingSelector
+  getAssignmentsLoadingSelector,
+  getBulkActionStatusSelector
 } from "../../../src/selectors/assignments";
 import ListHeader from "../../../src/components/common/ListHeader";
 import ActionMenu from "../../../Assignments/components/ActionMenu/ActionMenu";
@@ -175,7 +176,8 @@ class AssignmentAdvanced extends Component {
       location,
       userId,
       test,
-      isLoadingAssignments
+      isLoadingAssignments,
+      bulkActionStatus
     } = this.props;
     const { testId } = match.params;
     const { filterStatus, openEditPopup, isPreviewModalVisible } = this.state;
@@ -244,6 +246,7 @@ class AssignmentAdvanced extends Component {
                 testType={testType}
                 testName={assingment.title}
                 isLoadingAssignments={isLoadingAssignments}
+                bulkActionStatus={bulkActionStatus}
               />
             </StyledCard>
           </TableWrapper>
@@ -279,7 +282,8 @@ const enhance = compose(
       classList: getAssignmentClassList(state),
       test: getCurrentTestSelector(state),
       userId: getUserId(state),
-      isLoadingAssignments: getAssignmentsLoadingSelector(state)
+      isLoadingAssignments: getAssignmentsLoadingSelector(state),
+      bulkActionStatus: getBulkActionStatusSelector(state)
     }),
     {
       setReleaseScore: releaseScoreAction,

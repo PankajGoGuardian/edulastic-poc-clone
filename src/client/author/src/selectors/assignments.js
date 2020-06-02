@@ -41,6 +41,11 @@ export const getAssignmentsByTestSelector = createSelector(
   state => groupBy(state.assignments, item => item.testId)
 );
 
+export const getBulkActionStatusSelector = createSelector(
+  stateSelector,
+  state => state.bulkActionInprogress
+);
+
 export const getTestsSelector = createSelector(
   getEntitiesSelector,
   getAssignmentsByTestSelector,
@@ -83,7 +88,7 @@ export const getDistrictIdSelector = createSelector(
 export const getAssignmentViewSelector = createSelector(
   stateSelector,
   getUserRole,
-  (state, role) => (role !== "teacher")
+  (state, role) => role !== "teacher"
   // TODO for some sceneario we may use both advanced and simple views. We should make use of state.isAdvancedView for those cases
 );
 

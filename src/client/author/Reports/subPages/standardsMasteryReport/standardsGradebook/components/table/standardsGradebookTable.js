@@ -141,18 +141,18 @@ export const StandardsGradebookTable = ({
       const { printData } = props;
       if (_compareBy === "studentId") {
         return (
-          <div style={{ backgroundColor: record.standardsInfo[index].color }}>
+          <div style={{ backgroundColor: record.standardsInfo?.[index]?.color }}>
             {printData === "N/A" ? (
               printData
             ) : (
-              <OnClick onClick={() => handleOnClickStandard(obj, standardName, record.compareByLabel)}>
+              <OnClick onClick={() => handleOnClickStandard(obj, standardName, record?.compareByLabel)}>
                 {printData}
               </OnClick>
             )}
           </div>
         );
       }
-      return <div style={{ backgroundColor: record.standardsInfo[index].color }}>{printData}</div>;
+      return <div style={{ backgroundColor: record.standardsInfo?.[index]?.color }}>{printData}</div>;
     };
 
     const printData = getDisplayValue(record.standardsInfo[index], _analyseBy, data, record);
@@ -192,28 +192,33 @@ export const StandardsGradebookTable = ({
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
         },
-        render: (data, record) => (
-          <Link
-            style={{color: reportLinkColor}}
-            to={{
-              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-              state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-                breadCrumb: [
-                  {
-                    title: "REPORTS",
-                    to: "/author/reports"
-                  },
-                  {
-                    title: pageTitle,
-                    to: `${location.pathname}${location.search}`
-                  }
-                ]
-              }
-            }}
-          >
-            {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
-          </Link>
-          )
+        render: (data, record) => {
+          return (
+            <Link
+              style={{ color: reportLinkColor }}
+              to={{
+                pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
+                  record.testActivityId
+                }`,
+                state: {
+                  // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+                  breadCrumb: [
+                    {
+                      title: "REPORTS",
+                      to: "/author/reports"
+                    },
+                    {
+                      title: pageTitle,
+                      to: `${location.pathname}${location.search}`
+                    }
+                  ]
+                }
+              }}
+            >
+              {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
+            </Link>
+          );
+        }
       },
       {
         title: "SIS ID",

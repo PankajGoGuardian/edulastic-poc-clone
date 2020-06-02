@@ -5,7 +5,7 @@ import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 import { userBuilder } from "./generate";
 import LoginPage from "../e2e/framework/student/loginPage";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
-import { getMimetype } from "./misc/mimeTypes.js";
+import { getMimetype } from "./misc/mimeTypes";
 import DndSimulatorDataTransfer from "./misc/dndSimulator";
 import FileHelper from "../e2e/framework/util/fileHelper";
 import "cypress-file-upload";
@@ -68,8 +68,8 @@ Cypress.Commands.add("matchImageSnapshotWithSize", filename => {
   });
 });
 
-Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10, pageHeight) => {
-  return cy.document().then(doc => {
+Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10, pageHeight) =>
+  cy.document().then(doc => {
     const scrollHeight = pageHeight || doc.body.scrollHeight;
     const scroll = {
       scrollHeight,
@@ -80,8 +80,8 @@ Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10, pageHeight) => {
     };
     console.log("scroll", JSON.stringify(scroll));
     return scroll;
-  });
-});
+  })
+);
 
 Cypress.Commands.add("scrollPageAndMatchImageSnapshots", (scrollOffset, pageHeight, pageContext) => {
   cy.isPageScrollPresent(scrollOffset, pageHeight).then(({ hasScroll, minScrolls, scrollSize }) => {
@@ -213,8 +213,8 @@ Cypress.Commands.add(
             authorization: body.result.token,
             "Content-Type": "application/json"
           }
-        }).then(({ body }) => {
-          console.log("Assignment Assigned = ", body.result._id);
+        }).then(({ body: assignResponseBody }) => {
+          console.log("Assignment Assigned = ", assignResponseBody.result._id);
         });
       });
     });
@@ -239,9 +239,9 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
         authorization: authToken,
         "Content-Type": "application/json"
       }
-    }).then(({ body }) => {
-      const assignments = body.result.assignments || body.result;
-      const tests = body.result.tests || [];
+    }).then(({ body: responseBody }) => {
+      const assignments = responseBody.result.assignments || responseBody.result;
+      const tests = responseBody.result.tests || [];
       assignments.forEach(asgnDO => {
         const assignment = {};
         assignment._id = asgnDO._id;
@@ -274,7 +274,8 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
           headers: {
             authorization: authToken,
             "Content-Type": "application/json"
-          }
+          },
+          retryOnStatusCodeFailure: true // cause 502 intermittently and blocks complete suite, now will retry on such occurences
         });
       });
     });

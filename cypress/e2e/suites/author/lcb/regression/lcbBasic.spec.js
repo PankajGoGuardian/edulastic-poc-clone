@@ -610,6 +610,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
       before(() => {
         lcb.header.clickOnExpressGraderTab();
+        expressg.setToggleToScore();
       });
 
       queList.forEach(queNum => {

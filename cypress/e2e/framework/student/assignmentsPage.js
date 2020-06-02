@@ -12,7 +12,7 @@ class AssignmentsPage {
   // *** ELEMENTS START ***
 
   getAssignmentButton() {
-    return cy.get('[data-cy="assignmentButton"]');
+    return cy.get('[data-cy="assignmentButton"]', { timeout: 30000 }); // increasing timeout as work around, unblocks few cases when loading assignment page in CI was > 10 sec
   }
 
   getAssignmentByTestId(testId) {

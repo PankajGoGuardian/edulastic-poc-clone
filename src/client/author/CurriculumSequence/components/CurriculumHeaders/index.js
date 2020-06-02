@@ -83,7 +83,7 @@ const CurriculumHeader = ({
   const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
 
   const sumOfclasse = reduce(summaryData, (prev, curr) => (isNumber(curr?.classes) ? prev + curr.classes : prev), 0);
-  const shouldHideUseThis = sumOfclasse > 0 && !urlHasUseThis;
+  const shouldHideUseThis = (sumOfclasse > 0 && !urlHasUseThis) || status === "draft";
   const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser && sumOfclasse === 0;
 
   const isPlaylistDetailsPage = window.location?.hash === "#review";

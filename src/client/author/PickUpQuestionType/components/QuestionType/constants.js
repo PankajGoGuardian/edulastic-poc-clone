@@ -97,7 +97,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: BarChart,
       data: {
-        title: "Bar chart",
+        title: "Bar Chart",
         firstMount: true,
         type: questionType.BAR_CHART,
         stimulus: "",
@@ -187,7 +187,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: LineChart,
       data: {
-        title: "Line chart",
+        title: "Line Chart",
         firstMount: true,
         type: questionType.LINE_CHART,
         stimulus: "",
@@ -369,7 +369,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: DotPlot,
       data: {
-        title: "Dot plot - Categories",
+        title: "Dot Plot - Categories",
         firstMount: true,
         type: "dots",
         stimulus: "",
@@ -847,7 +847,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "highlight",
       cardImage: HLTokenHighlight,
       data: {
-        title: "Token highlight",
+        title: "Token Highlight",
         stimulus: "",
         template:
           '<p>Risus et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. dignissim, et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>',
@@ -870,7 +870,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "edit",
       cardImage: WSEssayRichText,
       data: {
-        title: "Essay with rich text",
+        title: "Essay with Rich Text",
         stimulus: "",
         type: questionType.ESSAY_RICH_TEXT,
         showWordCount: true,
@@ -916,7 +916,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "edit",
       cardImage: WSEssayPlainText,
       data: {
-        title: "Essay with plain text",
+        title: "Essay with Plain Text",
         stimulus: "",
         type: questionType.ESSAY_PLAIN_TEXT,
         showCopy: true,
@@ -935,7 +935,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "edit",
       cardImage: WSShortText,
       data: {
-        title: "Short text",
+        title: "Short Text",
         stimulus: "",
         type: questionType.SHORT_TEXT,
         validation: {
@@ -955,7 +955,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCStandard,
       data: {
-        title: "Multiple choice - standard",
+        title: "Multiple Choice - Standard",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {
@@ -984,7 +984,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMultipleResponses,
       data: {
-        title: "Multiple choice - multiple response",
+        title: "Multiple Choice - Multiple Response",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {
@@ -1013,7 +1013,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCTrueFalse,
       data: {
-        title: "True or false",
+        title: "True or False",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {
@@ -1037,7 +1037,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCBlockLayout,
       data: {
-        title: "Multiple choice - block layout",
+        title: "Multiple Choice - Block Layout",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {
@@ -1157,7 +1157,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "classify",
       cardImage: CMMatch,
       data: {
-        title: "Match list",
+        title: "Match List",
         firstMount: true,
         groupPossibleResponses: false,
         possibleResponseGroups: [
@@ -1194,7 +1194,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "classify",
       cardImage: CMOrderList,
       data: {
-        title: "OrderList",
+        title: "Order List",
         type: questionType.ORDER_LIST,
         stimulus: "",
         list: ["Item A", "Item B", "Item C"],
@@ -1214,7 +1214,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixStandard,
       data: {
-        title: "Choice matrix - standard",
+        title: "Choice Matrix - Standard",
         firstMount: true,
         type: questionType.CHOICE_MATRIX,
         stimulus: "",
@@ -1241,7 +1241,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixInline,
       data: {
-        title: "Choice matrix - inline",
+        title: "Choice Matrix - Inline",
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
@@ -1267,7 +1267,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixLabels,
       data: {
-        title: "Choice matrix - labels",
+        title: "Choice Matrix - Labels",
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
@@ -1664,7 +1664,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "graphing",
       cardImage: GRGraphingQuadrant,
       data: {
-        title: "Graphing in the 1st quadrant",
+        title: "Graphing in the 1st Quadrant",
         type: questionType.GRAPH,
         graphType: "firstQuadrant",
         stimulus: "",
@@ -1836,7 +1836,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "graphing",
       cardImage: GRNumberLinePlot,
       data: {
-        title: "Number line with plot",
+        title: "Number Line with Plot",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -1957,7 +1957,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "graphing",
       cardImage: GRNumberLineDragDrop,
       data: {
-        title: "Number line with drag & drop",
+        title: "Number Line with Drag & Drop",
         type: questionType.GRAPH,
         firstMount: true,
         graphType: "axisLabels",
@@ -2084,7 +2084,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MQPassage,
       isPassageType: true,
       data: {
-        title: "Passage with Multiple parts",
+        title: "Passage with Multiple Parts",
         type: questionType.PASSAGE,
         heading: "Section 3",
         math_renderer: "",

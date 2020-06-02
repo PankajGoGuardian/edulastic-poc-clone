@@ -1036,8 +1036,8 @@ const QuestionButton = styled.div`
   justify-content: ${({ isCollapsed }) => (isCollapsed ? "center" : "flex-start")};
   font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
   color: ${props => props.theme.sideMenu.helpButtonTextColor};
-
   cursor: pointer;
+
   svg {
     fill: ${props => props.theme.sideMenu.helpIconColor};
   }
@@ -1119,9 +1119,8 @@ const UserInfoButton = styled.div`
     width: 50px;
     padding: 0;
     margin: 0 18px 0 auto;
-    background: ${props => (props.isVisible ? "#fff" : "transparent")};
+    background: ${props => (props.isVisible ? white : "transparent")};
     border-radius: ${props => (props.isVisible ? "0 0 15px 15px" : "50%")};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
     &.active {
       opacity: 0;
@@ -1141,7 +1140,6 @@ const UserInfoButton = styled.div`
 const PseudoDiv = styled.div`
   width: 50px;
   height: 50px;
-  margin: 10px 10px 15px 20px;
   border-radius: 50%;
   background: #dddddd;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);

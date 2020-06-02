@@ -713,6 +713,10 @@ const ToggleSidemenu = styled.div`
     width: 12px;
     fill: ${themeColor};
   }
+
+  @media (max-width: ${tabletWidth}) {
+    display: none;
+  }
 `;
 
 const MenuWrapper = styled.div`

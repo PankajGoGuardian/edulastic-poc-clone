@@ -111,17 +111,7 @@ const CurriculumHeader = ({
         headingText={loading ? "Untitled Playlist" : title}
         titleMaxWidth="22rem"
         justify="space-between"
-        headingSubContent={
-          urlHasUseThis &&
-          !isPublisherUser &&
-          slicedRecentPlaylists?.length > 1 && (
-            <SwitchPlaylist
-              isDesktop={isDesktop}
-              showUseThisNotification={showUseThisNotification}
-              onClickHandler={handleGuidePopup}
-            />
-          )
-        }
+        headingSubContent={urlHasUseThis && !isPublisherUser && switchPlaylist}
       >
         {urlHasUseThis && !isSmallDesktop && (
           <PlaylistPageNav

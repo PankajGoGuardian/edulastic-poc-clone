@@ -312,19 +312,23 @@ function* putCurriculumSequence({ payload }) {
       return mod;
     });
     const response = yield curriculumSequencesApi.updateCurriculumSequence(id, dataToSend);
-    const { authors, version, _id } = response;
-    const userId = yield select(getUserId);
-    if (authors && authors.map(author => author._id).includes(userId)) {
-      response.isAuthor = true;
+    if (response.error) {
+      message.error(response.error);
     } else {
-      response.isAuthor = false;
-    }
-    oldData._id = _id;
-    oldData.version = version;
-    message.success(`Successfully saved ${response.title || ""}`);
-    yield put(updateCurriculumSequenceAction(oldData));
-    if (isPlaylist) {
-      yield put(toggleManageModulesVisibilityCSAction(false));
+      const { authors, version, _id } = response;
+      const userId = yield select(getUserId);
+      if (authors && authors.map(author => author._id).includes(userId)) {
+        response.isAuthor = true;
+      } else {
+        response.isAuthor = false;
+      }
+      oldData._id = _id;
+      oldData.version = version;
+      message.success(`Successfully saved ${response.title || ""}`);
+      yield put(updateCurriculumSequenceAction(oldData));
+      if (isPlaylist) {
+        yield put(toggleManageModulesVisibilityCSAction(false));
+      }
     }
   } catch (error) {
     message.error("There was an error updating the curriculum sequence");

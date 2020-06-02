@@ -32,10 +32,10 @@ export const getFilterData = (modules = [], selectedModules = []) => {
     let standards = [],
       groups = [],
       studentIds = [];
-    item.data.forEach(ele => {
-      standards.push(...ele.standards);
-      ele.assignments.forEach(assignment =>
-        assignment.class?.forEach(cl => groups.push({ id: cl._id, name: cl.name }))
+    item.data.forEach((ele = {}) => {
+      if (ele.standards) standards.push(...ele.standards);
+      ele.assignments?.forEach(assignment =>
+        assignment?.class?.forEach(cl => groups.push({ id: cl._id, name: cl.name }))
       );
     });
     return {

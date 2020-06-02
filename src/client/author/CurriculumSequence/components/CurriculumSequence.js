@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter, Prompt } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { groupBy, isEqual, uniqueId } from "lodash";
+import { groupBy, isEqual, uniqueId, debounce } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
@@ -744,7 +744,7 @@ class CurriculumSequence extends Component {
                   )}
 
                   {isManageContentActive && !cloneId && (
-                    <EduButton data-cy="save" onClick={updateDestinationPlaylist}>
+                    <EduButton data-cy="save" onClick={debounce(updateDestinationPlaylist, 600)}>
                       SAVE
                     </EduButton>
                   )}

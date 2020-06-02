@@ -6,22 +6,18 @@ import { fadedGrey, lightGreySecondary, black, whiteSmoke, themeColor } from "@e
 
 import { useInternalEffect } from "../../hooks/useInternalEffect";
 
-const CustomMenu = (className, data, handleMenuClick, prefix, selected) => {
-  return (
-    <Menu selectedKeys={[selected.key]} className={`${className}`} onClick={handleMenuClick}>
-      <Menu.Item key="0" disabled={true}>
-        {prefix}
+const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
+  <Menu selectedKeys={[selected.key]} className={`${className}`} onClick={handleMenuClick}>
+    <Menu.Item key="0" disabled>
+      {prefix}
+    </Menu.Item>
+    {data.map((item, index) => (
+      <Menu.Item key={item.key} title={item.title}>
+        {item.title}
       </Menu.Item>
-      {data.map((item, index) => {
-        return (
-          <Menu.Item key={item.key} title={item.title}>
-            {item.title}
-          </Menu.Item>
-        );
-      })}
-    </Menu>
+        ))}
+  </Menu>
   );
-};
 
 const ControlDropDown = ({
   className,
@@ -97,7 +93,7 @@ const ControlDropDown = ({
         trigger={trigger}
       >
         <Button title={title}>
-          {(showPrefixOnSelected ? prefix + " " : "") + selected?.title}
+          {(showPrefixOnSelected ? `${prefix  } ` : "") + selected ?.title}
           <Icon type={isActive ? "up" : "down"} />
         </Button>
       </Dropdown>
@@ -111,7 +107,7 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
-    width: ${({ buttonWidth }) => (buttonWidth ? buttonWidth : "auto")};
+    width: ${({ buttonWidth }) => (buttonWidth || "auto")};
     &.ant-btn.ant-dropdown-trigger {
       background-color: ${lightGreySecondary};
       border-color: ${fadedGrey};

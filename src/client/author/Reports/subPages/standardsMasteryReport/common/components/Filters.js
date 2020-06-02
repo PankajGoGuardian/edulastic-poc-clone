@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Row, Col, Button } from "antd";
+import { Row, Col } from "antd";
 import { get, isEmpty, keyBy, uniqBy } from "lodash";
 import qs from "qs";
 
@@ -29,7 +29,7 @@ import {
 } from "../filterDataDucks";
 
 import filtersDropDownData from "../static/json/filtersDropDownData";
-import { getDomains } from "../../common/utils";
+import { getDomains } from "../utils";
 import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
 
 const StandardsFilters = ({
@@ -53,25 +53,25 @@ const StandardsFilters = ({
   prevBrowseStandards,
   prevStandardsFilters
 }) => {
+  const preSelected = user ?.districtId === "5ebbbb3b03b7ad0924d19c46";
   const browseStandardsReceiveCount = useRef(0);
   const standardsFilteresReceiveCount = useRef(0);
 
   useEffect(() => {
     const search = qs.parse(location.search.substring(1));
-
     const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
       schoolYear.find((item, index) => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
     const urlSubject =
-      curriculums.find((item, index) => item.key === search.subject) ||
+      curriculums.find((item, index) => item.key === search.subject) || (preSelected && curriculums.find(x => x.title === "Math - Common Core")) ||
       (curriculums[0] ? curriculums[0] : { key: "", title: "" });
 
     const gradesKeys = keyBy(search.grades);
     let urlGrade = filtersDropDownData.grades.filter((item, index) => gradesKeys[item.key]);
     if (!urlGrade.length) {
-      urlGrade = [filtersDropDownData.grades[0]];
+      urlGrade = [(preSelected && filtersDropDownData.grades.find(x => x.title === "Grade 7")) || filtersDropDownData.grades[0]];
     }
 
     setFiltersAction({
@@ -82,7 +82,7 @@ const StandardsFilters = ({
     });
 
     if (browseStandards !== prevBrowseStandards) {
-      let q = {
+      const q = {
         curriculumId: urlSubject.key || undefined,
         grades: urlGrade.map((item, index) => item.key)
       };
@@ -90,7 +90,7 @@ const StandardsFilters = ({
     }
 
     if (prevStandardsFilters !== standardsFilters) {
-      let _q = {
+      const _q = {
         termId: urlSchoolYear.key
       };
       getStandardsFiltersRequestAction(_q);
@@ -101,11 +101,9 @@ const StandardsFilters = ({
 
   const schoolYear = useMemo(() => {
     let schoolYear = [];
-    let arr = get(user, "orgData.terms", []);
+    const arr = get(user, "orgData.terms", []);
     if (arr.length) {
-      schoolYear = arr.map((item, index) => {
-        return { key: item._id, title: item.name };
-      });
+      schoolYear = arr.map((item, index) => ({ key: item._id, title: item.name }));
     }
     return schoolYear;
   }, [user]);
@@ -113,9 +111,7 @@ const StandardsFilters = ({
   const curriculums = useMemo(() => {
     let curriculums = [];
     if (interestedCurriculums.length) {
-      curriculums = interestedCurriculums.map((item, index) => {
-        return { key: item._id, title: item.name };
-      });
+      curriculums = interestedCurriculums.map((item, index) => ({ key: item._id, title: item.name }));
     }
     return curriculums;
   }, [interestedCurriculums]);
@@ -128,9 +124,7 @@ const StandardsFilters = ({
       let arr = [];
       if (tempArr.length) {
         tempArr = getDomains(tempArr);
-        arr = tempArr.map((item, index) => {
-          return { key: item.tloId, title: item.tloIdentifier };
-        });
+        arr = tempArr.map((item, index) => ({ key: item.tloId, title: item.tloIdentifier }));
       }
       _domains = _domains.concat(arr);
     }
@@ -145,21 +139,21 @@ const StandardsFilters = ({
 
     // check if domainId in url is in the array if not select the first one
 
-    let urlDomainId = domains.length > 1 ? domains.slice(1) : domains;
+    const urlDomainId = domains.length > 1 ? domains.slice(1) : domains;
     // const domainIdsKeys = keyBy(search.domainIds?.split(","));
     // let urlDomainId = domains.filter((item, index) => domainIdsKeys[item.key]);
     // if (!urlDomainId.length) {
     //   urlDomainId = domains.filter((item, index) => index > 0);
     // }
 
-    let _filters = {
+    const _filters = {
       ...filters,
       domainIds: urlDomainId.map((item, index) => item.key).join()
     };
 
     setFiltersAction(_filters);
 
-    let settings = {
+    const settings = {
       filters: { ..._filters },
       selectedTest: testIds
     };
@@ -176,12 +170,10 @@ const StandardsFilters = ({
     if (standardsFilters && !isEmpty(standardsFilters)) {
       let tempArr = get(standardsFilters, "data.result.testData", []);
       tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
-      tempArr = tempArr.map((item, index) => {
-        return {
-          key: item.testId,
-          title: item.testName
-        };
-      });
+      tempArr = tempArr.map((item, index) => ({
+        key: item.testId,
+        title: item.testName
+      }));
       arr = arr.concat(tempArr);
     }
     return arr;
@@ -195,13 +187,13 @@ const StandardsFilters = ({
 
     // check if testIds in url are valid (present in the array)
 
-    let urlTestIds = search.testIds || [];
+    const urlTestIds = search.testIds || [];
 
-    let validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
+    const validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
 
     setTestIdAction(validTestIds);
 
-    let settings = {
+    const settings = {
       filters: { ...filters },
       selectedTest: validTestIds
     };
@@ -216,38 +208,38 @@ const StandardsFilters = ({
   // -----|-----|-----|-----| EVENT HANDLERS BEGIN |-----|-----|-----|----- //
 
   const updateSchoolYearDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       termId: selected.key
     };
     setFiltersAction(obj);
 
-    let q = {
+    const q = {
       termId: selected.key
     };
     getStandardsFiltersRequestAction(q);
   };
   const updateSubjectDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       subject: selected.key
     };
     setFiltersAction(obj);
 
-    let q = {
+    const q = {
       curriculumId: selected.key || undefined,
       grades: obj.grades
     };
     getStandardsBrowseStandardsRequestAction(q);
   };
   const updateGradeDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       grades: [selected.key]
     };
     setFiltersAction(obj);
 
-    let q = {
+    const q = {
       curriculumId: obj.subject || undefined,
       grades: [selected.key]
     };
@@ -255,7 +247,7 @@ const StandardsFilters = ({
   };
 
   const updateStandardProficiencyDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       profileId: selected.key
     };
@@ -267,13 +259,13 @@ const StandardsFilters = ({
       let tempArr = domains.filter((item, index) => index > 0);
       tempArr = tempArr.map(item => item.key);
 
-      let obj = {
+      const obj = {
         ...filters,
         domainIds: tempArr.join()
       };
       setFiltersAction(obj);
     } else {
-      let obj = {
+      const obj = {
         ...filters,
         domainIds: [selected.key].join()
       };
@@ -314,7 +306,7 @@ const StandardsFilters = ({
   };
 
   const onGoClick = () => {
-    let settings = {
+    const settings = {
       filters: { ...filters },
       selectedTest: testIds
     };
@@ -323,7 +315,7 @@ const StandardsFilters = ({
 
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
 
-  const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default)?._id || "", [scaleInfo]);
+  const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default) ?._id || "", [scaleInfo]);
   const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
 
   return (
@@ -405,7 +397,7 @@ const StandardsFilters = ({
               placeholder="All Assessments"
             />
           </Col>
-          <Col className={"standards-gradebook-go-button-container"}>
+          <Col className="standards-gradebook-go-button-container">
             <StyledGoButton type="primary" shape="round" onClick={onGoClick}>
               Go
             </StyledGoButton>
@@ -430,10 +422,10 @@ const enhance = compose(
       prevStandardsFilters: getPrevStandardsFiltersSelector(state)
     }),
     {
-      getStandardsBrowseStandardsRequestAction: getStandardsBrowseStandardsRequestAction,
-      getStandardsFiltersRequestAction: getStandardsFiltersRequestAction,
-      setFiltersAction: setFiltersAction,
-      setTestIdAction: setTestIdAction,
+      getStandardsBrowseStandardsRequestAction,
+      getStandardsFiltersRequestAction,
+      setFiltersAction,
+      setTestIdAction,
       setPrevBrowseStandardsAction,
       setPrevStandardsFiltersAction
     }

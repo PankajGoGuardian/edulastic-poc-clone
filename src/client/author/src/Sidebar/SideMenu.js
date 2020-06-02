@@ -328,7 +328,7 @@ class SideMenu extends Component {
 
     const footerDropdownMenu = (
       <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
-        <Menu onClick={this.onClickFooterDropDownMenu}>
+        <Menu onClick={this.onClickFooterDropDownMenu} style={{ height: "auto" }}>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/author/profile">
               <IconProfileHighlight /> {isCollapsed ? "" : "My Profile"}
@@ -697,7 +697,7 @@ const MenuWrapper = styled.div`
   padding: 8px 0px 0px;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
   @media (min-width: ${mediumDesktopExactWidth}) {
     min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.md}px)`};
   }
@@ -781,6 +781,19 @@ const Menu = styled(AntMenu)`
     height: 38px;
     width: 100%;
   }
+  @media (max-height: 720px) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      margin: 4px 0px;
+    }
+  }
+  @media (max-height: 650px) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      height: 36px;
+      margin: 2px 0px;
+    }
+  }
   @media (min-width: ${extraDesktopWidth}) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
@@ -817,6 +830,32 @@ const Menu = styled(AntMenu)`
         fill: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
       }
       color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
+    }
+  }
+
+  @media (max-height: 600px) {
+    overflow: auto;
+    height: calc(100vh - 190px);
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar-track {
+        background: #2f4151;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #557390;
+      }
     }
   }
 `;
@@ -959,7 +998,6 @@ const HelpText = styled.span`
 `;
 
 const QuestionButton = styled.div`
-  height: 38px;
   margin: 8px 0px;
   display: flex;
   position: relative;
@@ -991,6 +1029,10 @@ const QuestionButton = styled.div`
       opacity: 0;
       pointer-events: none;
     }
+  }
+  @media (max-height: 650px) {
+    height: 36px;
+    margin: 0px;
   }
 `;
 

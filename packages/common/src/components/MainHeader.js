@@ -3,8 +3,7 @@ import {
   mediumDesktopExactWidth,
   tabletWidth,
   smallDesktopWidth,
-  mobileWidthMax,
-  desktopWidth
+  mobileWidthLarge
 } from "@edulastic/colors";
 import { MenuIcon } from "@edulastic/common";
 import { Affix } from "antd";
@@ -19,8 +18,8 @@ const MainHeader = ({ children, headingText, Icon, toggleSideBar, ...restProps }
   <HeaderWrapper {...restProps}>
     <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
       <Container {...restProps}>
+        <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
         <HeaderLeftContainer headingText={headingText} {...restProps} data-cy="header-left-container">
-          <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           {Icon && (
             <TitleIcon>
               <Icon />
@@ -78,8 +77,12 @@ const HeaderWrapper = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     padding-top: ${props => props.height || props.theme.HeaderHeight.xl}px;
   }
-  @media (max-width: ${smallDesktopWidth}) and (min-width: ${tabletWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     padding-top: ${props => props.theme.HeaderHeight.sd}px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    height: ${props => props.theme.HeaderHeight.xs}px;
+    flex-wrap: wrap;
   }
   @media print {
     padding-top: 0px;
@@ -101,11 +104,10 @@ const Container = styled.div`
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => props.height || props.theme.HeaderHeight.md}px;
   }
-  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     height: ${props => props.theme.HeaderHeight.sd}px;
   }
-  @media (max-width: ${desktopWidth}) {
-    padding: 0px 20px;
+  @media (max-width: ${mobileWidthLarge}) {
     height: ${props => props.mobileHeaderHeight || props.theme.HeaderHeight.xs}px;
     flex-wrap: wrap;
   }
@@ -119,7 +121,8 @@ export const HeaderLeftContainer = styled.div`
   flex-wrap: ${props => props.flexWrap || ""};
   width: ${props => props.width || "auto"};
 
-  @media (min-width: ${tabletWidth}) {
+  @media (max-width: ${tabletWidth}) {
+    margin-left: 8px;
     display: ${props => (!props.headingText ? "none" : "")};
   }
 `;
@@ -168,7 +171,7 @@ const TitleIcon = styled.span`
 
 export const HeaderMidContainer = styled.div`
   align-self: flex-end;
-  @media (max-width: ${mobileWidthMax}) {
+  @media (max-width: ${mobileWidthLarge}) {
     order: 3;
     flex-basis: 100%;
   }

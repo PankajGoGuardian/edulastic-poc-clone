@@ -2,8 +2,8 @@ import styled from "styled-components";
 import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  desktopWidth,
   mainBgColor,
+  mobileWidthLarge,
   smallDesktopWidth
 } from "@edulastic/colors";
 
@@ -20,12 +20,12 @@ const MainContentWrapper = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
-  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     height: ${props => `calc(100vh - ${props.theme.HeaderHeight.sd}px)`};
   }
-  @media (max-width: ${desktopWidth}) {
+  @media (max-width: ${mobileWidthLarge}) {
     padding: 20px;
-    height: ${props => `calc(100vh - ${props.mobileHeaderHeight}px)`};
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
   }
 `;
 

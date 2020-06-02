@@ -887,9 +887,6 @@ export const ContentContainer = styled.div`
 
   @media (max-width: ${smallDesktopWidth}) {
     width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 240px)" : "100%")};
-  }
-
-  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
       if (isDifferentiationTab) {
         return "calc(100vh - 175px)";
@@ -903,6 +900,7 @@ export const ContentContainer = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     width: 100%;
+    margin-right: 0px;
     padding-right: 0px;
   }
 

@@ -3,7 +3,7 @@ import { Dropdown, Menu, Button, Col, Icon } from "antd";
 import { Link } from "react-router-dom";
 import { withNamespaces } from "react-i18next";
 import styled from "styled-components";
-import { themeColor, desktopWidth, smallDesktopWidth } from "@edulastic/colors";
+import { themeColor, desktopWidth, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
 import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
 import { IconBarChart, IconFilter, IconMoreVertical } from "@edulastic/icons";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
@@ -40,7 +40,7 @@ const CustomizedHeaderWrapper = ({
     setRefineButtonActive(!refineButtonActive);
     onRefineResultsCB(event, !refineButtonActive);
   };
-  const isSmallDesktop = windowWidth > parseInt(desktopWidth, 10) && windowWidth <= parseInt(smallDesktopWidth, 10);
+  const isSmallDesktop = windowWidth >= parseInt(tabletWidth, 10) && windowWidth <= parseInt(smallDesktopWidth, 10);
 
   const availableNavItems = isSmallDesktop
     ? navigationItems.filter(ite => ite.key === activeNavigationKey)

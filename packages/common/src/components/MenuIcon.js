@@ -6,11 +6,11 @@ export const MenuIcon = styled(IconMenuOpenClose)`
   display: none;
   fill: ${greyThemeDark2};
   width: 18px;
-  margin-right: 25px !important;
   pointer-events: all;
 
   @media (max-width: ${tabletWidth}) {
     display: block;
-    margin-right: 15px !important;
+    position: absolute;
+    left: 12px;
   }
 `;

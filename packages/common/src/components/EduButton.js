@@ -121,6 +121,11 @@ const StyledButton = styled(Button)`
     }
   }
 
+  &.ant-btn a {
+    display: flex;
+    align-items: center;
+  }
+
   @media (min-width: ${extraDesktopWidthMax}) {
     &.ant-btn {
       margin-left: ${props => props.ml || "5px"};

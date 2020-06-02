@@ -10,7 +10,8 @@ import {
   smallDesktopWidth,
   titleColor,
   white,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  tabletWidth
 } from "@edulastic/colors";
 
 import SummaryPieChart from "./SummaryPieChart";
@@ -95,19 +96,16 @@ const SummaryBlockContainer = styled.div`
     width: 240px;
   }
 
-  @media (min-width: ${desktopWidth}) and (max-width: ${smallDesktopWidth}) {
+  @media (min-width: ${tabletWidth}) and (max-width: ${smallDesktopWidth}) {
     height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 105px)" : "calc(100vh - 140px)")};
   }
 
   @media (max-width: ${desktopWidth}) {
     position: fixed;
     right: 0px;
-    top: ${props => props.theme.HeaderHeight.md}px;
-    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.md}px)`};
+    top: ${props => props.theme.HeaderHeight.sd}px;
+    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
     overflow: auto;
-  }
-  @media (max-width: ${desktopWidth}) {
-    top: ${props => props.theme.HeaderHeight.xs}px;
   }
 `;
 

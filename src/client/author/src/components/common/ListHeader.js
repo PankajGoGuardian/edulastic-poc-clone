@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/aria-role */
 import {
   desktopWidth,
   mediumDesktopExactWidth,
@@ -111,16 +112,17 @@ const ListHeader = ({
               </EduButton>
             )}
             {userFeatures.gradebook && (
-              <Link to="/author/gradebook">
-                <EduButton isGhost>VIEW GRADEBOOK</EduButton>
-              </Link>
+              <EduButton isGhost>
+                <Link to="/author/gradebook">VIEW GRADEBOOK </Link>
+              </EduButton>
             )}
-            <Link to="/author/assignments/select">
-              <EduButton data-cy="createNew">
+
+            <EduButton data-cy="createNew">
+              <Link to="/author/assignments/select">
                 <IconPlusStyled />
                 NEW ASSIGNMENT
-              </EduButton>
-            </Link>
+              </Link>
+            </EduButton>
           </>
         )}
         {renderExtra()}

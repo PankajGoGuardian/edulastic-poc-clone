@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import styled from "styled-components";
 import { IconClose } from "@edulastic/icons";
-import { desktopWidth, secondaryTextColor, tabletWidth } from "@edulastic/colors";
+import { desktopWidth, secondaryTextColor } from "@edulastic/colors";
 
 import ManageContentBlock from "../ManageContentBlock";
 import SummaryBlock from "./SummaryBlock";
@@ -27,16 +27,19 @@ const CurriculumRightPanel = ({
   const hasSummaryDataNoData = summaryData?.filter(item => (item.hidden ? !item.value && !isStudent : !item.value))
     .length;
 
+  const showManageContent =
+    ((isNotStudentOrParent && isManageContentActive && !urlHasUseThis && !shouldHidCustomizeButton) ||
+      (urlHasUseThis && isManageContentActive)) &&
+    !isStudent;
+  const showSummaryBlock = !isManageContentActive || isStudent;
   return (
     <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative" }}>
-      {showRightPanel && !shouldHidCustomizeButton && (
+      {(showManageContent || showSummaryBlock) && (
         <HideRightPanel onClick={hideRightpanel}>
           <IconClose />
         </HideRightPanel>
       )}
-      {((isNotStudentOrParent && isManageContentActive && !urlHasUseThis && !shouldHidCustomizeButton) ||
-        (urlHasUseThis && isManageContentActive)) &&
-      !isStudent ? (
+      {showManageContent && (
         <ManageContentBlock
           testsInPlaylist={testsInPlaylist}
           urlHasUseThis={urlHasUseThis}
@@ -44,8 +47,8 @@ const CurriculumRightPanel = ({
           gradesFromCurriculumSequence={grades}
           collectionFromCurriculumSequence={collections?.[0]?._id}
         />
-      ) : null}
-      {(!isManageContentActive || isStudent) && (
+      )}
+      {showSummaryBlock && (
         <SummaryBlock
           isStudent={isStudent}
           summaryData={summaryData}
@@ -76,11 +79,5 @@ export const HideRightPanel = styled.div`
     position: fixed;
     right: 16px;
     top: ${props => props.theme.HeaderHeight.sd + 12}px;
-  }
-  /* @media (max-width: ${desktopWidth}) {
-    top: ${props => props.theme.HeaderHeight.xs + 12}px;
-  } */
-  @media (max-width: ${tabletWidth}) {
-    top: 108px;
   }
 `;

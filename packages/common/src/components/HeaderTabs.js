@@ -4,7 +4,8 @@ import {
   white,
   desktopWidth,
   mediumDesktopExactWidth,
-  smallDesktopWidth
+  smallDesktopWidth,
+  tabletWidth
 } from "@edulastic/colors";
 import { PropTypes } from "prop-types";
 import React from "react";
@@ -125,8 +126,8 @@ export const StyledAnchor = styled.div`
     }
   }
 
-  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
-    padding: 0px 30px;
+  @media (max-width: ${smallDesktopWidth}) and (min-width: ${tabletWidth}) {
+    padding: 0px 24px;
     height: ${props => (props.isActive ? "36px" : "35px")};
     & svg {
       display: block;
@@ -143,7 +144,7 @@ export const LinkLabel = styled.div`
   padding: 0px;
   white-space: nowrap;
 
-  @media (max-width: ${smallDesktopWidth}) and (min-width: ${desktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) and (min-width: ${tabletWidth}) {
     display: ${({ hasIcon }) => (hasIcon ? "none" : "")};
   }
 

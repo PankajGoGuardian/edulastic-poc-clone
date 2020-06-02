@@ -11,8 +11,7 @@ import {
   themeColor,
   white,
   secondaryTextColor,
-  extraDesktopWidthMax,
-  tabletWidth
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 import { IconSearch } from "@edulastic/icons";
 import { Modal } from "antd";
@@ -40,15 +39,6 @@ export const ManageContentOuterWrapper = styled.div`
     .inner-wrapper {
       overflow: auto;
     }
-  }
-
-  /* @media (max-width: ${desktopWidth}) {
-    top: ${props => props.theme.HeaderHeight.xs}px;
-  } */
-
-  @media (max-width: ${tabletWidth}) {
-    /* top: ${props => props.theme.HeaderHeight.xs}px; */
-    top: 100px;
   }
 `;
 

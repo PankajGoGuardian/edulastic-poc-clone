@@ -1,4 +1,4 @@
-import { desktopWidth, white } from "@edulastic/colors";
+import { tabletWidth, white } from "@edulastic/colors";
 import { MainHeader, EduButton, notification } from "@edulastic/common";
 import { roleuser, test as testConstants } from "@edulastic/constants";
 import {
@@ -319,7 +319,7 @@ const TestPageHeader = ({
       {showPrintOptionPopup && (
         <PrintTestModal onProceed={handleOnClickPrintConfirm} onCancel={handleOnClickPrintCancel} />
       )}
-      {windowWidth > parseInt(desktopWidth, 10) ? (
+      {windowWidth >= parseInt(tabletWidth, 10) ? (
         <MainHeader
           headingText={title || (isPlaylist ? "Untitled Playlist" : "Untitled Test")}
           headingSubContent={headingSubContent}

@@ -1,6 +1,6 @@
-import { desktopWidth, themeColor, white } from "@edulastic/colors";
-import { MainHeader, EduButton , notification} from "@edulastic/common";
-import { roleuser, test } from "@edulastic/constants";
+import { desktopWidth, white } from "@edulastic/colors";
+import { MainHeader, EduButton, notification } from "@edulastic/common";
+import { roleuser, test as testConstants } from "@edulastic/constants";
 import {
   IconAddItems,
   IconCopy,
@@ -13,13 +13,11 @@ import {
   IconSettings,
   IconShare
 } from "@edulastic/icons";
-import { message } from "antd";
 import PropTypes from "prop-types";
 import React, { memo, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { get } from "lodash";
 import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
@@ -32,19 +30,12 @@ import {
   shouldDisableSelector,
   getTestItemsSelector
 } from "../../ducks";
-import { fetchAssignmentsAction, getAssignmentsSelector, getIsloadingAssignmentSelector } from "../Assign/ducks";
+import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import TestPageNav from "../TestPageNav/TestPageNav";
-import {
-  AssignButton,
-  MobileHeaderFilterIcon,
-  RightFlexContainer,
-  RightWrapper,
-  ShareIcon,
-  TestStatus
-} from "./styled";
+import { MobileHeaderFilterIcon, RightFlexContainer, RightWrapper, ShareIcon, TestStatus } from "./styled";
 import PrintTestModal from "../../../src/components/common/PrintTestModal";
 
-const { statusConstants, testContentVisibility: testContentVisibilityOptions } = test;
+const { statusConstants, testContentVisibility: testContentVisibilityOptions } = testConstants;
 
 export const navButtonsTest = [
   {
@@ -164,7 +155,7 @@ const TestPageHeader = ({
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
 
   useEffect(() => {
-    //TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
+    // TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
     if (!creating && match?.params?.oldId) {
       fetchAssignments({ testId: match?.params?.oldId, regradeAssignments: true });
     } else if (!creating && test?._id) {
@@ -209,8 +200,8 @@ const TestPageHeader = ({
 
   const handleRegrade = () => {
     if (isNotRegradable()) {
-      //For time being block teacher regrading a authors test is blocked here
-       notification({ type: "warn", messageKey:"teacherCantRegrade"});
+      // For time being block teacher regrading a authors test is blocked here
+      notification({ type: "warn", messageKey: "teacherCantRegrade" });
       return onPublish();
     }
     setDisableAlert(true);
@@ -269,18 +260,18 @@ const TestPageHeader = ({
       (test?.testContentVisibility === testContentVisibilityOptions.HIDDEN ||
         test?.testContentVisibility === testContentVisibilityOptions.GRADING)
     ) {
-      return notification({ type: "warn", messageKey:"viewOfItemsRestricted"});
+      return notification({ type: "warn", messageKey: "viewOfItemsRestricted" });
     }
     setShowPrintOptionPopup(true);
   };
+
+  const handleOnClickPrintCancel = () => setShowPrintOptionPopup(false);
 
   const handleOnClickPrintConfirm = params => {
     const { type, customValue } = params;
     handleOnClickPrintCancel();
     window.open(`/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}`, "_blank");
   };
-
-  const handleOnClickPrintCancel = () => setShowPrintOptionPopup(false);
 
   const headingSubContent = (
     <TestStatus
@@ -442,7 +433,6 @@ const TestPageHeader = ({
             {showShareButton &&
               (owner || testStatus === "published") &&
               !isPlaylist &&
-              !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
                 <EduButton data-cy="assign" disabled={disableButtons} onClick={handleAssign}>

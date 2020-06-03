@@ -306,6 +306,8 @@ class MathInput extends React.PureComponent {
               className="input__math answer-math-input-field"
               style={{
                 ...style,
+                height: "auto",
+                padding: "2px 5px",
                 minHeight: style.height,
                 fontSize: style.fontSize ? style.fontSize : "inherit",
                 background: greyThemeLighter,

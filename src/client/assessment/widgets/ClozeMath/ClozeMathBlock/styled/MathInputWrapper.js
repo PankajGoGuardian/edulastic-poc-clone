@@ -12,7 +12,7 @@ font-size: ${({ fontSize }) => fontSize};
   border-radius: 0px;
   min-width: ${({ width }) => width || 140}px;
   min-height: ${({ height }) => height || 35}px;
-  padding: 0px 15px;
+  padding: 2px 15px;
 
   ${({ disableResponse }) => disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
   background: ${greyThemeLighter};

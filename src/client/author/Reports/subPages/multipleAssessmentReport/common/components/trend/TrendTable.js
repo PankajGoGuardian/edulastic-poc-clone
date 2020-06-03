@@ -111,11 +111,13 @@ const getColumns = (
     const currentTestGroup = groupedTests[testId] || {};
     const test = currentTestGroup[0] || {};
     const assessmentName = (test && test.testName) || "";
+    const { startDate } =
+      groupedAvailableTests[testId].reduce((ele, res) => (ele.startDate > res.startDate ? ele : res)) || {};
 
     return {
       key: testId,
       title: assessmentName,
-      startDate: test.startDate,
+      startDate,
       align: "center",
       className: "normal-text",
       dataIndex: "tests",
@@ -134,7 +136,7 @@ const getColumns = (
 
         const toolTipText = () => (
           <div>
-            <TableTooltipRow title={"Assessment Name: "} value={assessmentName} />
+            <TableTooltipRow title="Assessment Name: " value={assessmentName} />
             {toolTipContent(record, value)}
             <TableTooltipRow title={`${capitalize(analyseBy.title)} : `} value={value} />
           </div>
@@ -158,15 +160,13 @@ const getColumns = (
       align: "left",
       className: "class-name-column",
       dataIndex: compareByMap[compareBy.key],
-      render: (data, record) => {
-        return compareBy.key === "student" ? (
-          <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
-            {data}
-          </Link>
+      render: (data, record) => compareBy.key === "student" ? (
+        <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
+          {data}
+        </Link>
         ) : (
           data
-        );
-      },
+        ),
       sorter: (a, b) => {
         const keyword = compareByMap[compareBy.key];
         return a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase());
@@ -190,9 +190,7 @@ const getColumns = (
             ...test,
             testName: currentTestName
           };
-        }).sort((a, b) => {
-          return a.records[0].startDate - b.records[0].startDate;
-        });
+        }).sort((a, b) => a.records[0].startDate - b.records[0].startDate);
 
         return <TrendColumn type={record.trend} tests={augmentedTests} />;
       }
@@ -215,9 +213,11 @@ const getColumns = (
   ];
 
   return columns.concat(
-    dynamicColumns.sort((a, b) => {
-      return a.startDate - b.startDate;
-    })
+    dynamicColumns.sort((a, b) =>
+      a.startDate !== b.startDate
+        ? a.startDate - b.startDate
+        : a.title.toLowerCase().localeCompare(b.title.toLowerCase())
+    )
   );
 };
 

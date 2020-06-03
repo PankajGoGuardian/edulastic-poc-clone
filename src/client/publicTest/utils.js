@@ -1,24 +1,18 @@
+import React from "react";
 import { maxBy } from "lodash";
-import { message, Modal } from "antd";
+import { Modal } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
+import { notification } from "@edulastic/common";
 
 const releaseGradeLabels = testConstants.releaseGradeLabels;
 const ARCHIVED_TEST_MSG = "You can no longer use this as sharing access has been revoked by author";
 
 // this is to format assignment, to included different state like, resume/absent/startDate/endDate etc
 export const formatAssignment = assignment => {
-  let {
-    reports = [],
-    endDate,
-    startDate,
-    open = false,
-    close = false,
-    isPaused = false,
-    class: clazz = [],
-    maxAttempts = 1,
-    classId
-  } = assignment;
+  let { endDate, startDate, open = false, close = false, isPaused = false, maxAttempts = 1 } = assignment;
+  const { class: clazz = [], classId, reports = [] } = assignment;
+
   const currentClassList = clazz.filter(cl => cl._id === classId);
 
   if (!startDate || !endDate) {
@@ -46,7 +40,7 @@ export const formatAssignment = assignment => {
       : {}
     ).closedDate;
   }
-  const lastAttempt = maxBy(reports, o => parseInt(o.startDate)) || {};
+  const lastAttempt = maxBy(reports, o => parseInt(o.startDate, 10)) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
   const absent = lastAttempt.status == 2;
@@ -57,6 +51,7 @@ export const formatAssignment = assignment => {
   const attempted = !!(newReports && newReports.length);
   const attemptCount = newReports && newReports.length;
   // To handle regrade reduce max attempt settings.
+  // eslint-disable-next-line no-restricted-globals
   if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
     maxAttempts = reports.length;
   }
@@ -85,27 +80,6 @@ export const formatAssignment = assignment => {
   };
 };
 
-export const redirectToStudentPage = (assignments, history, startAssignment, resumeAssignment) => {
-  const formatedAssignments = assignments.map(assignment => formatAssignment(assignment));
-  // filter assignments open to start/resume
-  const filteredAssignments = formatedAssignments.filter(
-    a => !(new Date(a.startDate) > new Date() || !a.startDate || a.isPaused)
-  );
-
-  if (filteredAssignments.length > 0) {
-    // filter ungraded assignments
-    const ungradedAssignments = filteredAssignments.filter(a => !a.graded);
-    let assignment = maxBy(filteredAssignments, "createdAt");
-    if (ungradedAssignments.length) {
-      assignment = maxBy(ungradedAssignments, "createdAt");
-    }
-    redirectToAssessmentPlayer(assignment, history, startAssignment, resumeAssignment);
-  } else {
-    // redirect to student dashboard
-    redirectToDashbord("", history);
-  }
-};
-
 export const redirectToDashbord = (type = "", history) => {
   let msg;
   switch (type) {
@@ -118,10 +92,13 @@ export const redirectToDashbord = (type = "", history) => {
     case "HOME":
       msg = "Redirecting to the student dashboard";
       break;
+    case "NOT_FOUND":
+      msg = "Test not found";
+      break;
     default:
       msg = "Assignment is not available for the attempt.";
   }
-  message.warn(msg);
+  notification({ msg });
   history.push("/home/assignments");
 };
 
@@ -177,17 +154,17 @@ const redirectToAssessmentPlayer = (assignment, history, startAssignment, resume
         . Do you want to continue?
       </p>
     ) : (
-        <p>
-          {" "}
+      <p>
+        {" "}
         This is a timed assignment which should be finished within the time limit set for this assignment. The time
         limit for this assignment is{" "}
-          <span data-cy="test-time" style={{ fontWeight: 700 }}>
-            {" "}
-            {allowedTime / (60 * 1000)} minutes
+        <span data-cy="test-time" style={{ fontWeight: 700 }}>
+          {" "}
+          {allowedTime / (60 * 1000)} minutes
         </span>{" "}
         and you can’t quit in between. Do you want to continue?
-        </p>
-      );
+      </p>
+    );
 
     Modal.confirm({
       title: "Do you want to Continue ?",
@@ -220,5 +197,26 @@ const redirectToAssessmentPlayer = (assignment, history, startAssignment, resume
     });
   } else if (attemptCount < maxAttempts) {
     startAssignment({ testId, assignmentId, testType, classId });
+  }
+};
+
+export const redirectToStudentPage = (assignments, history, startAssignment, resumeAssignment) => {
+  const formatedAssignments = assignments.map(assignment => formatAssignment(assignment));
+  // filter assignments open to start/resume
+  const filteredAssignments = formatedAssignments.filter(
+    a => !(new Date(a.startDate) > new Date() || !a.startDate || a.isPaused)
+  );
+
+  if (filteredAssignments.length > 0) {
+    // filter ungraded assignments
+    const ungradedAssignments = filteredAssignments.filter(a => !a.graded);
+    let assignment = maxBy(filteredAssignments, "createdAt");
+    if (ungradedAssignments.length) {
+      assignment = maxBy(ungradedAssignments, "createdAt");
+    }
+    redirectToAssessmentPlayer(assignment, history, startAssignment, resumeAssignment);
+  } else {
+    // redirect to student dashboard
+    redirectToDashbord("", history);
   }
 };

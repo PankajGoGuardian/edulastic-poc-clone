@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { greyLight1 } from "@edulastic/colors";
 import { TokenStorage, testsApi } from "@edulastic/api";
 import { test as testConstants } from "@edulastic/constants";
+import { notification } from "@edulastic/common";
 import ViewModal from "../../author/TestList/components/ViewModal";
 import TestPreviewModal from "../../author/Assignments/components/Container/TestPreviewModal";
 import { fetchTestAction, getAllAssignmentsSelector, fetchAssignmentsByTestAction } from "../ducks";
@@ -37,12 +38,12 @@ const PublicTestPage = ({
   const { testId } = match.params;
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-  const redirectToTestPreview = isTestArchieved => {
-    if (isTestArchieved) {
-      message.warn(ARCHIVED_TEST_MSG);
+  const redirectToTestPreview = (_testId, isTestArchieved = false, isTestInDraft = false) => {
+    if (isTestArchieved || isTestInDraft) {
+      notification({ msg: isTestInDraft ? "Test not found" : ARCHIVED_TEST_MSG });
       history.push(`/author/tests`);
     } else {
-      history.push(`/author/tests/tab/review/id/${testId}`);
+      history.push(`/author/tests/tab/review/id/${_testId}`);
     }
   };
 
@@ -56,34 +57,38 @@ const PublicTestPage = ({
         .getPublicTest(testId, { sharedType: "PUBLIC" })
         .then(_test => {
           const isTestArchieved = _test.status === testConstants.statusConstants.ARCHIVED;
+          const isTestInDraft = _test.status === testConstants.statusConstants.DRAFT;
 
           if (role === "student") {
             // if archieved, then redirect to student dashbord
-            if (isTestArchieved) {
-              return redirectToDashbord(isTestArchieved ? "ARCHIVED" : "");
+            if (isTestArchieved || isTestInDraft) {
+              return redirectToDashbord(isTestArchieved ? "ARCHIVED" : "NOT_FOUND", history);
             }
-            fetchAssignments({ testId });
-
+            fetchAssignments({ testId: _test._id });
           } else if (role === "parent") {
-            redirectToDashbord(isTestArchieved ? "ARCHIVED" : "");
+            redirectToDashbord(isTestArchieved ? "ARCHIVED" : "", history);
           } else {
-            redirectToTestPreview(isTestArchieved);
+            redirectToTestPreview(_test._id, isTestArchieved, isTestInDraft);
           }
         })
         .catch(() => {
-          message.warn("Trying to access private test");
+          notification({ type: "info", messageKey: "tryingToAccessPrivateTest" });
           if (role !== "student" || role !== "parent") {
-            redirectToTestPreview();
+            redirectToTestPreview(testId);
           } else {
             // if got error redirect to login page
-            history.push("/login");
+            history.push("/");
           }
         });
     } else if (!authenticating || !TokenStorage.getAccessToken()) {
       if (!test) {
         fetchTest({ testId, sharedType: "PUBLIC" });
-      } else if (test?.status === testConstants.statusConstants.ARCHIVED) {
-        message.warn(ARCHIVED_TEST_MSG);
+      } else if (
+        test?.status === testConstants.statusConstants.ARCHIVED ||
+        test?.status === testConstants.statusConstants.DRAFT
+      ) {
+        const msg = test?.status === testConstants.statusConstants.ARCHIVED ? ARCHIVED_TEST_MSG : "Test not found";
+        notification({ type: "info", msg });
         history.push("/login");
       }
     } else {
@@ -126,7 +131,8 @@ const PublicTestPage = ({
   if (error) {
     message.error("Trying to access private test");
     return <Redirect to="/login" />;
-  } if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
+  }
+  if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
     return <Spin />;
   }
 
@@ -145,7 +151,7 @@ const PublicTestPage = ({
       {showPreviewModal && (
         <TestPreviewModal
           isModalVisible
-          testId={testId}
+          testId={test?._id || testId}
           closeTestPreviewModal={() => setShowPreviewModal(false)}
           demo
           sharedType="PUBLIC"
@@ -154,7 +160,7 @@ const PublicTestPage = ({
     </StyledMainWrapper>
   ) : (
     <Spin />
-    );
+  );
 };
 
 const StyledMainWrapper = styled.div`

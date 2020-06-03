@@ -18,8 +18,8 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       dataIndex: "studentName",
       fixed: "left",
       width: colWidth + 40,
-      render: data => <Tooltip title={data}>{data}</Tooltip>,
-      sorter: (a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()),
+      render: data => <Tooltip title={data}>{data || "-"}</Tooltip>,
+      sorter: (a, b) => (a.studentName || "-").toLowerCase().localeCompare((b.studentName || "-").toLowerCase()),
       defaultSortOrder: "descend"
     },
     {
@@ -27,8 +27,8 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       key: "className",
       dataIndex: "className",
       width: colWidth + 80,
-      render: data => <Tooltip title={data}>{data}</Tooltip>,
-      sorter: (a, b) => a.className.toLowerCase().localeCompare(b.className.toLowerCase())
+      render: data => <Tooltip title={data}>{data || "-"}</Tooltip>,
+      sorter: (a, b) => (a.className || "-").toLowerCase().localeCompare((b.className || "-").toLowerCase())
     },
     {
       title: "Last Activity Date",

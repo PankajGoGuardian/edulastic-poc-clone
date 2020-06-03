@@ -1528,7 +1528,7 @@ export const AssignmentIcon = styled.span`
 const Assignment = styled.div`
   padding: 10px 0px;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   position: relative;
   background: white !important;
   &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {

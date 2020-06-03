@@ -263,6 +263,10 @@
     "message": "Assignment already exists.",
     "description": ""
   },
+  "playlistNotAssociated": {
+    "message": "Playlist is not associated with any collection.",
+    "description": ""
+  },
   "playlistUpdated": {
     "message": "Playlist Updated Successfully.",
     "description": ""

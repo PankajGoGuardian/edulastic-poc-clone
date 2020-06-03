@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import produce from "immer";
 import { get } from "lodash";
 import { lightGrey } from "@edulastic/colors";
+import { QuestionContext } from "@edulastic/common";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { RndWrapper, Rnd } from "./styled/RndWrapper";
 
@@ -21,6 +22,9 @@ const ResponseRnd = props => {
     maxWidth,
     showIndex
   } = props;
+
+  const { questionId } = useContext(QuestionContext);
+
   const [minHeight, setMinHeight] = useState(get(question, `responseOptions[${index}].height`, 0));
 
   const handleResponseDragStop = (evt, d) => {
@@ -98,6 +102,7 @@ const ResponseRnd = props => {
         onResize={handleResponseResize}
         cancel=".drag-item"
         minHeight={minHeight}
+        className={`answer-draggable-wrapper-${questionId}`}
       >
         {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
       </Rnd>

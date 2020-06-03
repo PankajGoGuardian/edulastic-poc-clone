@@ -72,7 +72,7 @@ const Container = styled.div`
       `;
     }
     return `
-      width: 100%;
+      width: max-content;
       border-radius: 10px;
       margin-top: 16px;
       & .choice-items-wrapper {

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { measureText } from "@edulastic/common";
+import { measureText, QuestionContext } from "@edulastic/common";
 import { templateHasMath } from "@edulastic/common/src/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowsAlt } from "@fortawesome/free-solid-svg-icons";
@@ -27,6 +27,8 @@ const Item = ({
   minHeight,
   maxHeight
 }) => {
+  const { questionId } = useContext(QuestionContext);
+
   const showIcon = preview && valid !== undefined;
   let showPopover = false;
   if (templateHasMath(item)) {
@@ -59,7 +61,7 @@ const Item = ({
           checked={preview && valid !== undefined}
           dangerouslySetInnerHTML={{ __html: item }}
         />
-        <TriggerStyle />
+        <TriggerStyle questionId={`classification-cols-container-${questionId}`} />
         {showIcon && <IconBox checked={showIcon}>{valid ? <IconCheck /> : <IconClose />}</IconBox>}
       </InnerWrapper>
     );

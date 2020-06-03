@@ -1,11 +1,14 @@
 /* eslint-disable func-names */
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { maxBy } from "lodash";
+import { QuestionContext } from "@edulastic/common";
 
 const TriggerStyle = () => {
+  const { questionId } = useContext(QuestionContext);
+
   const setContainerStyle = () => {
-    const colsContainer = $("#classification-cols-container");
-    const colsWrappers = $(".answer-draggable-wrapper");
+    const colsContainer = $(`.classification-cols-container-${questionId}`);
+    const colsWrappers = $(`.answer-draggable-wrapper-${questionId}`);
 
     const dimensions = [];
     colsWrappers.each(function(_i) {

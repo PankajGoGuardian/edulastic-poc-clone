@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
-import { CenteredText, MathFormulaDisplay } from "@edulastic/common";
+import { CenteredText, MathFormulaDisplay, QuestionContext } from "@edulastic/common";
 import produce from "immer";
 import DropContainer from "../../../components/DropContainer";
 import { getStemNumeration } from "../../../utils/helpers";
@@ -40,6 +40,8 @@ const TableRow = ({
   showIndex
 }) => {
   const uiStyle = get(item, "uiStyle", {});
+
+  const { questionId } = useContext(QuestionContext);
 
   const handleRowTitleDragStop = (event, data) => {
     if (setQuestionData) {
@@ -187,7 +189,7 @@ const TableRow = ({
   }
 
   return (
-    <div id="classification-cols-container" style={{ position: "relative", minHeight: 140 }}>
+    <div className={`classification-cols-container-${questionId}`} style={{ position: "relative", minHeight: 140 }}>
       {cols}
     </div>
   );

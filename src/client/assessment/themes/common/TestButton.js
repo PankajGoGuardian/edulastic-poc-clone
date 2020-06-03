@@ -70,7 +70,7 @@ const Container = styled.div`
 `;
 
 const StyledButton = styled.div`
-  margin-right: 10px;
+  margin-right: 5px;
   text-transform: uppercase;
   display: flex;
   align-items: center;

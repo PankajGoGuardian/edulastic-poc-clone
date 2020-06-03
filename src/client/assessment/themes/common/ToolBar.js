@@ -1,20 +1,19 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Button } from "antd";
-import { test, questionType } from "@edulastic/constants";
+import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
+import { questionType, test } from "@edulastic/constants";
 import {
-  IconCursor,
-  IconInRuler,
   IconCalculator,
   IconClose,
+  IconCursor,
+  IconInRuler,
+  IconMagnify,
   IconProtactor,
-  IconScratchPad,
-  IconMagnify
+  IconScratchPad
 } from "@edulastic/icons";
-import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
+import { Button } from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import styled from "styled-components";
 import { Tooltip } from "../../../common/utils/helpers";
-import TimedTestTimer from "./TimedTestTimer";
 
 const { calculatorTypes } = test;
 
@@ -24,17 +23,7 @@ const ActionButton = ({ title, icon, ...rest }) => (
   </Tooltip>
 );
 
-const ToolBar = ({
-  settings,
-  tool,
-  qType,
-  handleMagnifier,
-  enableMagnifier,
-  timedAssignment,
-  utaId,
-  groupId,
-  changeTool
-}) => {
+const ToolBar = ({ settings, tool, qType, handleMagnifier, enableMagnifier, changeTool }) => {
   const { calcType, showMagnifier, enableScratchpad } = settings;
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
@@ -91,8 +80,6 @@ const ToolBar = ({
       {showMagnifier && (
         <ActionButton title="Magnify" icon={<IconMagnify />} active={enableMagnifier} onClick={handleMagnifier} />
       )}
-
-      {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
     </Container>
   );
 };

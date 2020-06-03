@@ -1,25 +1,21 @@
 import React from "react";
+import { Tooltip } from "../../../common/utils/helpers";
 import {
   ControlBtn,
-  ToolButton,
-  Main,
+  CustomAffix,
+  FlexContainer,
   Header,
   HeaderWrapper,
-  Container,
-  FlexContainer,
+  LogoCompact,
+  MainActionWrapper,
+  SaveAndExit,
   TestButton,
   ToolBar,
-  SaveAndExit,
-  CalculatorContainer,
-  ToolTipContainer,
-  MainActionWrapper,
-  LogoCompact,
-  Nav,
-  CustomAffix
+  ToolButton,
+  ToolTipContainer
 } from "../common";
 import HeaderMainMenu from "../common/HeaderMainMenu";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
-import { Tooltip, isZoomGreator } from "../../../common/utils/helpers";
 
 const PlayerHeader = ({
   LCBPreviewModal,
@@ -56,12 +52,20 @@ const PlayerHeader = ({
   finishTest,
   handleMagnifier,
   enableMagnifier,
-  showMagnifier,
   timedAssignment,
   utaId,
   groupId
 }) => {
-  const rightButtons = <SaveAndExit utaId={utaId} previewPlayer={previewPlayer} showZoomBtn finishTest={finishTest} />;
+  const rightButtons = (
+    <SaveAndExit
+      timedAssignment={timedAssignment}
+      utaId={utaId}
+      groupId={groupId}
+      previewPlayer={previewPlayer}
+      showZoomBtn
+      finishTest={finishTest}
+    />
+  );
 
   return (
     <CustomAffix>
@@ -114,6 +118,19 @@ const PlayerHeader = ({
                     </Tooltip>
                   </>
                 )}
+                {!showSettingIcon && (
+                  <TestButton
+                    answerChecksUsedForItem={answerChecksUsedForItem}
+                    settings={settings}
+                    items={items}
+                    currentItem={currentItem}
+                    isNonAutoGradable={isNonAutoGradable}
+                    checkAnswer={checkAnswer}
+                    toggleBookmark={toggleBookmark}
+                    isBookmarked={isBookmarked}
+                    handletoggleHints={handletoggleHints}
+                  />
+                )}
               </MainActionWrapper>
               <MainActionWrapper>
                 {!LCBPreviewModal && (
@@ -130,19 +147,6 @@ const PlayerHeader = ({
                           onClick={onClickSetting}
                         />
                       </Tooltip>
-                    )}
-                    {!showSettingIcon && (
-                      <TestButton
-                        answerChecksUsedForItem={answerChecksUsedForItem}
-                        settings={settings}
-                        items={items}
-                        currentItem={currentItem}
-                        isNonAutoGradable={isNonAutoGradable}
-                        checkAnswer={checkAnswer}
-                        toggleBookmark={toggleBookmark}
-                        isBookmarked={isBookmarked}
-                        handletoggleHints={handletoggleHints}
-                      />
                     )}
                     {!showSettingIcon && (
                       <ToolBar

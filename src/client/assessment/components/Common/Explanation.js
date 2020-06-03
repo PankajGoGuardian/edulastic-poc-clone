@@ -3,8 +3,12 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { MathFormulaDisplay, EduButton } from "@edulastic/common";
 import { mainTextColor, backgroundGrey, lightGrey9 } from "@edulastic/colors";
+import { getFontSize } from "../../utils/helpers";
 
-const Explanation = ({ question, isGrade }) => {
+const Explanation = props => {
+  const { question = {}, isGrade } = props;
+  const { uiStyle: { fontsize = "" } = {} } = question;
+
   const { sampleAnswer } = question;
   if (
     !sampleAnswer ||
@@ -27,7 +31,7 @@ const Explanation = ({ question, isGrade }) => {
         <>
           <QuestionLabel>Explanation</QuestionLabel>
           <SolutionText>
-            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: sampleAnswer }} />
+            <MathFormulaDisplay fontSize={getFontSize(fontsize)} dangerouslySetInnerHTML={{ __html: sampleAnswer }} />
           </SolutionText>
         </>
       )}

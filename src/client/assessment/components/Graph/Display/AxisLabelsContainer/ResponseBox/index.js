@@ -105,7 +105,7 @@ class ResponseBox extends Component {
                       x: separationDistanceX + (i % markCountInLine) * (choiceWidth + separationDistanceX),
                       y: Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
                     }}
-                    size={{ width: choiceWidth - 20, height: markHeight }}
+                    size={{ width: choiceWidth, height: markHeight }}
                     onDragStart={this.handleDragStart(i)}
                     onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
                     style={{ zIndex: 10 }}

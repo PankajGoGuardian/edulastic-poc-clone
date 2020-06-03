@@ -54,7 +54,7 @@ const Search = ({
     }
     setShowModalValue(value);
   };
-  const handleApply = standardIds => onSearchFieldChange("standardIds")(standardIds);
+  const handleApply = _standardIds => onSearchFieldChange("standardIds")(_standardIds);
 
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
 
@@ -115,6 +115,8 @@ const Search = ({
     </Item>
   );
 
+  const selectedCurriculam = formattedCuriculums.find(fc => fc.value === curriculumId);
+
   return (
     <MainFilterItems>
       {showModal ? (
@@ -124,6 +126,7 @@ const Search = ({
           standardIds={standardIds}
           handleApply={handleApply}
           itemCount={itemCount}
+          selectedCurriculam={selectedCurriculam}
         />
       ) : (
         ""

@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Row, Col, Modal } from "antd";
+import { Row, Col, Modal } from "antd";
 import styled from "styled-components";
 import { Paper, FlexContainer, MathFormulaDisplay, CheckboxLabel, EduButton } from "@edulastic/common";
 
 import { getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { ELOList, EloText } from "../../../../assessment/containers/QuestionMetadata/styled/ELOList";
 import { TLOList, TLOListItem } from "../../../../assessment/containers/QuestionMetadata/styled/TLOList";
+import StandardSearchModalHeader from "./StandardSearchModalHeader";
 
-const StandardsSearchModal = ({ standardsList, showModal, setShowModal, standardIds = [], handleApply, itemCount }) => {
+const StandardsSearchModal = ({
+  standardsList,
+  showModal,
+  setShowModal,
+  standardIds = [],
+  handleApply,
+  itemCount,
+  selectedCurriculam
+}) => {
   const { elo: curriculumStandardsELO, tlo: curriculumStandardsTLO } = standardsList;
   const [eloStandards, setEloStandards] = useState([]);
   const [selectedTLO, setSelectedTLO] = useState(curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : "");
@@ -52,14 +61,11 @@ const StandardsSearchModal = ({ standardsList, showModal, setShowModal, standard
       </FlexContainer>
     </>
   );
+  const selectedStandards = curriculumStandardsELO.filter(f => standardIds.includes(f._id));
+
+  const title = <StandardSearchModalHeader standards={selectedStandards} selectedCurriculam={selectedCurriculam} />;
   return (
-    <StyledModal
-      title="Select Standards for This Question"
-      visible={showModal}
-      onCancel={() => setShowModal(false)}
-      footer={footer}
-      width={"80%"}
-    >
+    <StyledModal title={title} visible={showModal} onCancel={() => setShowModal(false)} footer={footer} width="80%">
       <Row type="flex" gutter={24}>
         <StandardsWrapper md={8}>
           <TLOList>
@@ -78,7 +84,7 @@ const StandardsSearchModal = ({ standardsList, showModal, setShowModal, standard
           <ELOList>
             <Container>
               {filteredELO.map(c => (
-                <FlexContainer key={c._id} alignItems="flex-start" justifyContent="flex-start" marginBottom={"15px"}>
+                <FlexContainer key={c._id} alignItems="flex-start" justifyContent="flex-start" marginBottom="15px">
                   <CheckboxLabel
                     onChange={() => handleCheckELO(c)}
                     checked={standardIds.some(item => item === c._id)}

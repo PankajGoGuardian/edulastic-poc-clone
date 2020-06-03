@@ -1,5 +1,5 @@
 import { backgroundGrey2, themeColor } from "@edulastic/colors";
-import { CheckBoxGrp, CheckboxLabel } from "@edulastic/common";
+import { CheckBoxGrp, CheckboxLabel,notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { Button, DatePicker, Input, message, Select, Spin } from "antd";
 import moment from "moment";
@@ -96,14 +96,14 @@ const AddPermissionModal = ({
 
   const validateFields = () => {
     if (!fieldData.orgType) {
-      return message.error("Please select permission level.");
+      return notification({ messageKey:"pleaseSelectPersmissionLevel"});
     }
     if (!fieldData.orgDetails.length) {
-      if (fieldData.orgType === "USER") return message.error("Please select a user.");
-      if (fieldData.orgType === "SCHOOL") return message.error("Please select a school.");
+      if (fieldData.orgType === "USER") return notification({ messageKey:"pleaseSelectAUser"});
+      if (fieldData.orgType === "SCHOOL") return notification({ messageKey:"pleaseSelectSchool"});
     }
     if (fieldData.orgType !== "USER" && !fieldData.role.length) {
-      return message.error("Please select atleast one role");
+      return notification({ messageKey:"pleaseSelectAtleastOneRole"});
     }
     const { orgDetails, role, ..._permissionDetails } = fieldData;
     let permissionDetails;
@@ -136,7 +136,7 @@ const AddPermissionModal = ({
 
   const handleFieldChange = (fieldName, value) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId) {
-      return message.error("Please select an organization first");
+      return notification({ messageKey:"pleaseSelectAnOrganization"});
     }
 
     const updatedFieldData = { ...fieldData, [fieldName]: value };
@@ -172,7 +172,7 @@ const AddPermissionModal = ({
 
   const handleSearch = (searchString, searchType) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId && searchType !== "DISTRICT")
-      return message.error("PLease select a district first");
+      return notification({ messageKey:"pleaseSelectDistrict"});
     const data = {
       orgType: searchType,
       searchString
@@ -185,13 +185,13 @@ const AddPermissionModal = ({
     let currentDate = moment().format("DD-MM-YYYY");
     currentDate = moment(currentDate, "DD-MM-YYYY").valueOf();
     if (date < currentDate) {
-      return message.error("Picked date cannot be lesser than the current date");
+      return notification({ messageKey:"pickedDateCannotBeLesseThanCurrentDate"});
     }
     if (fieldName === "startDate" && date >= fieldData?.endDate) {
-      return message.error("Start date should be lesser than the end date");
+      return notification({ messageKey:"startDateShouldBeLessThanTheEndDate"});
     }
     if (fieldName === "endDate" && date <= fieldData?.startDate) {
-      return message.error("End date should be more than the start date");
+      return notification({ messageKey:"endDateShouldBeMoreThanThestartDate"});
     }
     handleFieldChange(fieldName, date);
   };

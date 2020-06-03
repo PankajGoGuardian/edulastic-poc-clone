@@ -252,7 +252,7 @@ const ActionContainer = ({
       case "mergeStudents": {
         const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1);
         if (inactiveStudents.length) {
-          message.error("Deactivated students selected, please select active students only");
+          notification({ messageKey: "deactivatedStudentSelected"});
         } else if (selectedStudent.length > 1) {
           toggleModal("mergeStudents");
         } else {

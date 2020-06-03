@@ -326,7 +326,7 @@ function* receiveQuestionSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive question is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -399,7 +399,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const isGradingCheckboxState = yield select(getIsGradingCheckboxState);
 
     if (isGradingCheckboxState && !question.rubrics) {
-      return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
+      return notification({ messageKey:"pleaseAssociateARubric"});
     }
 
     const locationState = yield select(state => state.router.location.state);
@@ -666,7 +666,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
   } catch (e) {
     console.log(e, "error");
     const errorMessage = "Loading Question is failed";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 // actions

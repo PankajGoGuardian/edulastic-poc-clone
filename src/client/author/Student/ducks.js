@@ -379,7 +379,7 @@ function* fetchClassDetailsUsingCodeSaga({ payload }) {
     }
   } catch (err) {
     const errorMessage = "Something went wrong. Please try again";
-    message.error(errorMessage);
+    notification({ msg:errorMessage});
     yield put(fetchClassDetailsFail());
   }
 }

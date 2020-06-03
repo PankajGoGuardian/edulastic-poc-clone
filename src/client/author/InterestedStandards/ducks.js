@@ -98,7 +98,7 @@ function* receiveInterestedStandardsSaga({ payload }) {
     yield put(receiveInterestedStandardsSuccessAction(interestedStandards));
   } catch (err) {
     const errorMessage = "Receive Interested Standards is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(receiveInterestedStandardsErrorAction({ error: errorMessage }));
   }
 }
@@ -127,7 +127,7 @@ function* updateInterestedStandardsSaga({ payload }) {
   } catch (err) {
     console.log(err);
     const errorMessage = "Update Interested Standards is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(updateInterestedStandardsErrorAction({ error: errorMessage }));
   }
 }
@@ -140,7 +140,7 @@ function* saveInterestedStandardsSaga({ payload }) {
 
   } catch (err) {
     const errorMessage = "Save Interested Standards is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(saveInterestedStandardsErrorAction({ error: errorMessage }));
   }
 }

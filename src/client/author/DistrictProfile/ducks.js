@@ -93,7 +93,7 @@ function* receiveDistrictProfileSaga({ payload }) {
     yield put(receiveDistrictProfileSuccessAction(districtProfile));
   } catch (err) {
     const errorMessage = "Receive District Profile is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(receiveDistrictProfileErrorAction({ error: errorMessage }));
   }
 }
@@ -105,7 +105,7 @@ function* updateDictrictProfileSaga({ payload }) {
     notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(updateDistrictProfileErrorAction({ error: errorMessage }));
   }
 }
@@ -117,7 +117,7 @@ function* createDictrictProfileSaga({ payload }) {
     notification({ type: "success", messageKey:"profileChangeSaved"});
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(createDistrictProfileErrorAction({ error: errorMessage }));
   }
 }

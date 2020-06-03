@@ -135,7 +135,7 @@ const AddToGroupModal = ({
         const data = await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
         notification({ type: "success", msg:`Students removed from ${groupTypeText} ${name} successfully`});
       } catch ({ data: { message: errorMessage } }) {
-        message.error(errorMessage);
+        notification({msg:errorMessage});
       }
       setStudentsToRemove([]);
     }

@@ -223,12 +223,12 @@ class Item extends Component {
     } = this.props;
     if (!test.title?.trim().length && page !== "itemList") {
       gotoSummary();
-      return message.error("Name field cannot be empty");
+      return notification({ messageKey: "nameShouldNotEmpty"});
     }
 
     let keys = [];
     if (test.safeBrowser && !test.sebPassword) {
-      return message.error("Please add a valid password");
+      return notification({ messageKey: "enterValidPassword"});
     }
 
     this.setState({ selectedId: item._id });

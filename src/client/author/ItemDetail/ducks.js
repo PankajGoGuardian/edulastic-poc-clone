@@ -849,7 +849,7 @@ function* receiveItemSaga({ payload }) {
     }
     console.log("err is", err);
 
-    yield call(message.error, msg);
+    notification({ msg:msg});
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
       payload: { error: msg }
@@ -880,9 +880,9 @@ export function* deleteItemSaga({ payload }) {
     yield put(setItemDeletingAction(false));
     console.error(e);
     if (e.status === 403) {
-      return message.error(e.data.message);
+      return notification({ msg:e.data.message});
     }
-    yield call(message.error, "deleting item failed");
+    notification({ messageKey:"deletingItemFailed"});
   }
 }
 
@@ -918,13 +918,13 @@ export function* updateItemSaga({ payload }) {
       const currentQuestionId = yield select(state => get(state, "authorQuestions.current"));
       const currentQuestion = questions.find(q => q.id === currentQuestionId);
       if (!currentQuestion.rubrics)
-        return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
+        return notification({ messageKey:"pleaseAssociateARubric"});
     }
 
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
 
     if (isPassageWithQuestions && !questions.length) {
-      message.error("Cannot save without questions");
+      notification({ messageKey:"CannotSaveWithoutQuestions"});
       return null;
     }
     questions = produce(questions, draft => {
@@ -952,7 +952,7 @@ export function* updateItemSaga({ payload }) {
     if (questions.length === 1) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
       if (isIncomplete) {
-        return message.error(errMsg);
+        return notification({ msg:errMsg});
       }
     }
 
@@ -982,7 +982,7 @@ export function* updateItemSaga({ payload }) {
     if (structure) {
       const { widgets = [] } = structure;
       if (isPassageWithQuestions && !widgets.length) {
-        message.error("Cannot save without passages");
+        notification({ messageKey:"CannotSaveWithoutPasses"});
         return null;
       }
     }
@@ -1089,7 +1089,7 @@ export function* updateItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Item save is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -1138,7 +1138,7 @@ export function* updateItemDocBasedSaga({ payload }) {
     return { testId, ...item };
   } catch (err) {
     const errorMessage = "Item save is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -1206,7 +1206,7 @@ function* publishTestItemSaga({ payload }) {
     if (questions.length === 1) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
       if (isIncomplete) {
-        return message.error(errMsg);
+        return notification({ msg:errorMessage});
       }
     }
     const isGradingCheckBox = yield select(getIsGradingCheckboxState);
@@ -1214,7 +1214,7 @@ function* publishTestItemSaga({ payload }) {
       const currentQuestionId = yield select(state => get(state, "authorQuestions.current"));
       const currentQuestion = questions.find(q => q.id === currentQuestionId);
       if (!currentQuestion.rubrics)
-        return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
+        return notification({ messageKey:"pleaseAssociateARubric"});
     }
 
     const testItem = yield select(state => get(state, ["itemDetail", "item"]));
@@ -1274,12 +1274,12 @@ function* publishTestItemSaga({ payload }) {
     } else {
       yield put(changeViewAction("metadata"));
       yield put(setHighlightCollectionAction(true));
-      yield call(message.error, "Item is not associated with any collection.");
+      notification({ messageKey:"itemIsNotAssociated"});
     }
   } catch (e) {
     console.warn("publish error", e);
     const { message: errorMessage = "Failed to publish item" } = e.data;
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
   }
 }
 
@@ -1304,7 +1304,7 @@ function* convertToMultipartSaga({ payload }) {
     yield put(push(nextPageUrl));
   } catch (e) {
     console.log("error", e);
-    yield call(message.error, e);
+    notification({ msg:e});
   }
 }
 
@@ -1352,7 +1352,7 @@ function* convertToPassageWithQuestions({ payload }) {
     );
   } catch (e) {
     console.log("error", e);
-    yield call(message.error, e);
+    notification({ msg:e});
   }
 }
 
@@ -1393,7 +1393,7 @@ function* savePassage({ payload }) {
       passageData.some(i => {
         const [hasEmptyFields, msg] = isIncompleteQuestion(i);
         if (hasEmptyFields) {
-          message.error(msg);
+          notification({ msg:msg});
           return true;
         }
       })
@@ -1434,7 +1434,7 @@ function* savePassage({ payload }) {
     yield put(push(url));
   } catch (e) {
     console.log("error: ", e);
-    yield call(message.error, "error saving passage");
+    notification({ msg:"errorSavingPassing"});
   }
 }
 
@@ -1485,7 +1485,7 @@ function* addWidgetToPassage({ payload }) {
     );
   } catch (e) {
     console.log("error:", e);
-    yield call(message.error, "failed adding content");
+    notification({ messageKey:"failedAddingContent"});
   }
 }
 
@@ -1498,7 +1498,7 @@ function* loadQuestionPreviewAttachmentsSaga({ payload }) {
     });
   } catch (e) {
     const errorMessage = "Loading audit trail logs failed";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put({
       type: RECEIVE_QUESTION_PREVIEW_ATTACHMENT_FAILURE
     });

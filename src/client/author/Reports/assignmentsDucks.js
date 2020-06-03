@@ -2,6 +2,7 @@ import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 
 const GET_REPORTS_ASSIGNMENTS_REQUEST = "[reports] get reports assignments request";
@@ -66,7 +67,7 @@ export function* getReportsAssignmentsRequest({ payload }) {
   } catch (error) {
     console.log("err", error.stack);
     let msg = "Failed to fetch assignments Please try again...";
-    yield call(message.error, msg);
+    notification({msg:msg});
     yield put({
       type: GET_REPORTS_ASSIGNMENTS_REQUEST_ERROR,
       payload: { error: msg }

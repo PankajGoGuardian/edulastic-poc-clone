@@ -24,7 +24,7 @@ function* receiveTermSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive Term is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_TERM_ERROR,
       payload: { error: errorMessage }
@@ -44,7 +44,7 @@ function* createTermSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Create Term is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: CREATE_TERM_ERROR,
       payload: { createError: errorMessage }
@@ -63,7 +63,7 @@ function* updateTermSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Update Term is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: UPDATE_TERM_ERROR,
       payload: { updateError: errorMessage }

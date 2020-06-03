@@ -668,7 +668,7 @@ class Container extends PureComponent {
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
       if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
-        message.error("Please add a valid password.");
+        notification({ messageKey:"enterValidPassword"});
         return false;
       }
     }
@@ -676,12 +676,12 @@ class Container extends PureComponent {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
         this.sebPasswordRef.current.input.focus();
       }
-      message.error("Please add a valid password.");
+      notification({ messageKey:"enterValidPassword"});
       return false;
     }
     if (userFeatures.isPublisherAuthor || userFeatures.isCurator) {
       if (test.collections?.length === 0) {
-        message.error("Test is not associated with any collection.");
+        notification({ messageKey:"testNotAssociatedWithCollection"});
         return false;
       }
       if (
@@ -692,7 +692,7 @@ class Container extends PureComponent {
             itemGroup.items.length <= itemGroup.deliverItemsCount
         )
       ) {
-        message.error("Selected items count in a group should be more than the delivered items count.", 3);
+         notification({ messageKey:"selectedItemsGroupShouldNotBeMoreThanDelivedItems"});
         return false;
       }
     }
@@ -702,7 +702,7 @@ class Container extends PureComponent {
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         itemGroup.items.some(item => item.itemLevelScoring === false)
       ) {
-        message.error(`${itemGroup.name} contains items with question level scoring.`);
+        notification({ msg:`${itemGroup.name} contains items with question level scoring.`});
         return false;
       }
     }

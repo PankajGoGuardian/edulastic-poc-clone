@@ -1,5 +1,5 @@
 import { tagsApi } from "@edulastic/api";
-import { SelectInputStyled } from "@edulastic/common";
+import { SelectInputStyled,notification } from "@edulastic/common";
 import { message, Select } from "antd";
 import { uniq } from "lodash";
 import React, { useState } from "react";
@@ -25,7 +25,7 @@ const Tags = props => {
       } catch (e) {
         const tagsSelected = getFieldValue("tags");
         setFieldsValue({ tags: tagsSelected.filter(t => t !== tempSearchValue) });
-        message.error("Saving tag failed");
+        notification({ messageKey: "savingTagErr"});
       }
     }
   };

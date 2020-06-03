@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { aws, roleuser } from "@edulastic/constants";
+import { notification } from "@edulastic/common";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
 import { setImageUploadingStatusAction } from "../../ducks";
@@ -23,7 +24,7 @@ class ImageUpload extends Component {
   handleChange = async event => {
     const file = event.target.files[0];
     if (file.size > 2 * 1024 * 1024) {
-      message.error("Image must smaller then 2MB!");
+      notification({ messageKey:"imageMustBeSmallerThan2mb"});
     } else {
       this.props.setUploadingStatus(true);
       const fileUri = await uploadToS3(file, aws.s3Folders.DEFAULT);

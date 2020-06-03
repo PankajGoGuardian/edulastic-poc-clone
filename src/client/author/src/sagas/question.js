@@ -30,7 +30,7 @@ function* receiveQuestionSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive question is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -132,7 +132,7 @@ function* loadQuestionSaga({ payload }) {
   } catch (e) {
     console.error(e);
     const errorMessage = "Loading Question is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 

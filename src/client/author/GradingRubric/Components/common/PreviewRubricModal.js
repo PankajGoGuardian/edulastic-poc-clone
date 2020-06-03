@@ -6,6 +6,7 @@ import PreviewRubricTable from "./PreviewRubricTable";
 import { white, title, themeColorLighter } from "@edulastic/colors";
 import { sumBy, maxBy } from "lodash";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 const PreviewRubricModal = ({
   visible,
@@ -49,7 +50,7 @@ const PreviewRubricModal = ({
       setValidateRubricResponse(false);
       toggleModal(rubricResponse);
     } else {
-      message.error("Please select a rating from each criteria.");
+     notification({ messageKey:"pleaseSelectRatingFromEachCriteria"});
       setValidateRubricResponse(true);
     }
   };

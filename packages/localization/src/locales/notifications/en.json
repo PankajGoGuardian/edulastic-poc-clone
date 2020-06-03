@@ -1166,5 +1166,281 @@
   "invalidClassCode": {
     "message": "Invalid Class Code",
     "description": ""
+  },
+  "pleaseSelectPersmissionLevel": {
+    "message": "Please select permission level.",
+    "description": ""
+  },
+  "pleaseSelectAUser": {
+    "message": "Please select a user.",
+    "description": ""
+  },
+  "pleaseSelectSchool": {
+    "message": "Please select a school.",
+    "description": ""
+  },
+  "pleaseSelectAtleastOneRole": {
+    "message": "Please select atleast one role",
+    "description": ""
+  },
+  "pleaseSelectAnOrganization": {
+    "message": "Please select an organization first",
+    "description": ""
+  },
+  "selectedItemsGroupShouldNotBeMoreThanDelivedItems": {
+    "message": "Selected items count in a group should be more than the delivered items count.",
+    "description": ""
+  },
+  "pickedDateCannotBeLesseThanCurrentDate": {
+    "message": "Picked date cannot be lesser than the current date",
+    "description": ""
+  },
+  "startDateShouldBeLessThanTheEndDate": {
+    "message": "Start date should be lesser than the end date",
+    "description": ""
+  },
+  "endDateShouldBeMoreThanThestartDate": {
+    "message": "End date should be more than the start date",
+    "description": ""
+  },
+  "pleaseSelectDistrict": {
+    "message": "Please select a district first",
+    "description": ""
+  },
+  "pleaseSelectCourseEdit": {
+    "message": "Please select course to edit",
+    "description": ""
+  },
+  "pleaseSelectSingleCourseEdit": {
+    "message": "Please select single course to edit.",
+    "description": ""
+  },
+  "pleaseSelectCourseToDelete": {
+    "message": "Please select course to delete.",
+    "description": ""
+  },
+  "failedToLoadResource": {
+    "message": "Failed to load the resource",
+    "description": ""
+  },
+  "pleaseSelectAtleastOneStandardToAdd": {
+    "message": "Please select atleast one standard to add.",
+    "description": ""
+  },
+  "pleaseSelectMastery": {
+    "message": "Please select the mastery range which is having atleast 1 student.",
+    "description": ""
+  },
+  "failedToLaunchGoogleMeet": {
+    "message": "Failed to launch Google Meet",
+    "description": ""
+  },
+  "googleApiIsNotConfiguration": {
+    "message": "Google API is not configuration",
+    "description": ""
+  },
+  "pleaseSelectOneOrMoreSignOnParticles": {
+    "message": "Please select 1 or more sign-on policies",
+    "description": ""
+  },
+  "pleaseUploadFilesInImageFormat": {
+    "message": "Please upload files in image format",
+    "description": ""
+  },
+  "unableTOsaveThumbnail": {
+    "message": "Unable to save thumbnail.",
+    "description": ""
+  },
+  "imageMustBeSmallerThan2mb": {
+    "message": "Image must be smaller than 2MB!",
+    "description": ""
+  },
+  "editResponseFailed": {
+    "message": "edit response failed",
+    "description": ""
+  },
+  "loadingScratchFailed": {
+    "message":"Loading scratchPad failed",
+    "description": ""
+  },
+  "unableToGetList": {
+    "message":"Unable to get tools List",
+    "description": ""
+  },
+  "unableToDeleteTool": {
+    "message":"Unable to Delete Tool",
+    "description": ""
+  },
+  "failedToFetchStudentPerformanceGradeBook": {
+    "message":"Failed to fetch student performance for gradebook",
+    "description": ""
+  },
+  "failedToFetchFiltersData": {
+    "message":"Failed to fetch filters data for gradebook",
+    "description": ""
+  },
+  "failedToSaveRubric": {
+    "message":"Failed to save Rubric",
+    "description": ""
+  },
+  "failedToUpdateRubric": {
+    "message":"Failed to update Rubric",
+    "description": ""
+  },
+  "UnableToreachRubric": {
+    "message":"  Unable to fetch rubrics",
+    "description": ""
+  },
+  "failedToDeleteTheRubric": {
+    "message":"Failed to delete the rubric",
+    "description": ""
+  },
+  "failedToFetchRubric": {
+    "message":"Failed to fetch rubric.",
+    "description": ""
+  },
+  "ratingNameCannotEmpty": {
+    "message":"Rating name cannot be empty.",
+    "description": ""
+  },
+  "ratingPointMustNotBeEmpty": {
+    "message":"Rating point must not be empty.",
+    "description": ""
+  },
+  "ratingPointMustBeZero": {
+    "message":"Rating point must be 0 for at least one rating within a criteria.",
+    "description": ""
+  },
+  "ratingPointMustBeMoreThanZero": {
+    "message":"Rating point must be more than 0 for atleast one rating within a criteria",
+    "description": ""
+  },
+  "criteriaNameCannotBeEmpty": {
+    "message":"Criteria name cannot be empty.",
+    "description": ""
+  },
+  "criteriaNameShouldBeUnique": {
+    "message":"Criteria names should be unique.",
+    "description": ""
+  },
+  "rubricNameCannotBeEmpty": {
+    "message":" Rubric name cannot be empty.",
+    "description": ""
+  },
+  "pleaseSelectRatingFromEachCriteria": {
+    "message":" Please select a rating from each criteria.",
+    "description": ""
+  },
+  "failedToFetchProgress": {
+    "message":"Failed to fetch progress status",
+    "description": ""
+  },
+  "deletingItemFailed": {
+    "message":"deleting item failed",
+    "description": ""
+  },
+  "pleaseAssociateARubric": {
+    "message":"Please associate a rubric to the question or uncheck the Grading Rubric option.",
+    "description": ""
+  },
+  "CannotSaveWithoutQuestions": {
+    "message":"Cannot save without questions",
+    "description": ""
+  },
+  "CannotSaveWithoutPasses": {
+    "message":"Cannot save without passages",
+    "description": ""
+  },
+  "itemIsNotAssociated": {
+    "message":" Item is not associated with any collection.",
+    "description": ""
+  },
+  "errorSavingPassing": {
+    "message":" error saving passage",
+    "description": ""
+  },
+  "failedAddingContent": {
+    "message":"failed adding content",
+    "description": ""
+  },
+  "noChangesToBeSaved": {
+    "message":"no changes to be saved",
+    "description": ""
+  },
+  "thereShouldBeAtleastOnePassageItem": {
+    "message":"There should be at least one passage in item",
+    "description": ""
+  },
+  "failedToLoadScratchpadData": {
+    "message":"Failed to load scratchpad data",
+    "description": ""
+  },
+  "addItemsToCreateTest": {
+    "message":"Add items to create test",
+    "description": ""
+  },
+  "addAtleastOneItemToCart": {
+    "message":"Add atleast one item to cart",
+    "description": ""
+  },
+  "pleaseProvideValidTestName": {
+    "message":"Please provide valid test name",
+    "description": ""
+  },
+  "persmissionDenied": {
+    "message":"Permission denied",
+    "description": ""
+  },
+  "errorOccurredWhileEnablingOrDisablingTextToSpeech": {
+    "message":"Error occurred while enabling/disabling text to speech. Please contact customer support.",
+    "description": ""
+  },
+  "resetPasswordRequestFailing": {
+    "message":"Reset password request failing",
+    "description": ""
+  },
+  "updateAstudentRequestFailing": {
+    "message":"Update a student request failing",
+    "description": ""
+  },
+  "classNameIsMissing": {
+    "message":" Class name is missing for one of the selected class",
+    "description": ""
+  },
+  "classSyncFailed": {
+    "message":"class sync failed",
+    "description": ""
+  },
+  "failedToGetCourseList": {
+    "message":"Failed to get course list.",
+    "description": ""
+  },
+  "failedToGetCourseSectionList": {
+    "message":"Failed to get course section list.",
+    "description": ""
+  },
+  "classSyncWithCanvasFailed": {
+    "message":"Class sync with Canvas failed",
+    "description": ""
+  },
+  "failedToFetchCleverClasses": {
+    "message":"Failed to fetch Clever classes",
+    "description": ""
+  },
+  "syncWithCleverFailed": {
+    "message":"Sync with Clever failed",
+    "description": ""
+  },
+  "deactivatedStudentSelected": {
+    "message": "Deactivated students selected, please select active students only",
+    "description": ""
+  },
+  "bothCourseandSectionRequired": {
+    "message": "Both Course and Section are required.",
+    "description": ""
+  } ,
+  "failedToFetchStudentStandard": {
+    "message": "Failed to fetch student Standards",
+    "description": ""
   }
 }

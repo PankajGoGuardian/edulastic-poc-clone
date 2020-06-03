@@ -444,7 +444,7 @@ function* fetchClassList({ payload }) {
     yield put(fetchClassListStatusAction(false));
   } catch (e) {
     const errorMessage = "fetching classlist failed";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(fetchClassListStatusAction(false));
     console.log(e);
   }
@@ -477,7 +477,7 @@ function* receiveCreateClassRequest({ payload }) {
     yield put(createClassSuccessAction(result));
     yield put(addGroupAction(result));
   } catch ({ data: { message: errorMessage } }) {
-    message.error(errorMessage);
+    notification({ msg:errorMessage});
     yield put(createClassFailedAction({ message: errorMessage }));
   }
 }
@@ -509,12 +509,12 @@ function* receiveAddStudentRequest({ payload }) {
       notification({ type: "success", msg:successMsg});
     } else {
       const msg = get(result, "data.message", "Student already part of this class section");
-      message.error(msg);
+      notification({ msg:msg});
       yield put(addStudentFailedAction("add student to class failed"));
     }
   } catch (error) {
     const msg = get(error, "data.message", "User already part of this class section");
-    message.error(msg);
+    notification({ msg:msg});
     yield put(addStudentFailedAction(error));
   }
 }
@@ -538,7 +538,8 @@ function* changeUserTTSRequest({ payload }) {
     yield put(userTTSRequestSuccessAction(newStdList));
     notification({ type: "success", msg:msg});
   } catch (error) {
-    message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");
+    notification({ messageKey: "errorOccurredWhileEnablingOrDisablingTextToSpeech"});
+    
   }
 }
 
@@ -549,7 +550,7 @@ function* resetPasswordRequest({ payload }) {
     notification({ type: "success", msg:msg});
     yield put(resetPasswordSuccessAction(result.data));
   } catch (error) {
-    message.error("Reset password request failing");
+    notification({ messageKey: "resetPasswordRequestFailing"});
     yield put(resetPasswordFaildedAction());
   }
 }
@@ -577,7 +578,7 @@ function* updateStudentRequest({ payload }) {
     const msg = "Successfully Updated student.";
     notification({ type: "success", msg:msg});
   } catch (error) {
-    message.error("Update a student request failing");
+    notification({ messageKey: "updateAstudentRequestFailing"});
     yield put(updateStudentFaildedAction());
   }
 }
@@ -587,7 +588,7 @@ function* syncClass({ payload }) {
   try {
     const classNames = payload.classList.flatMap(o => o.name);
     if (classNames.includes("")) {
-      return yield call(message.error, "Class name is missing for one of the selected class");
+      return notification({ messageKey: "classNameIsMissing"});
     }
     yield put(setSyncClassLoadingAction(true));
     const response = yield call(googleApi.syncClass, payload);
@@ -602,7 +603,7 @@ function* syncClass({ payload }) {
     yield put(fetchGroupsAction());
   } catch (e) {
     yield put(setSyncClassLoadingAction(false));
-    yield call(message.error, "class sync failed");
+    notification({ messageKey: "classSyncFailed"});
     console.log(e);
   }
 }
@@ -614,7 +615,7 @@ function* syncClassUsingCode({ payload }) {
     const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId, institutionId });
     yield put(setSyncClassLoadingAction(false));
     if (resp.status === 403) {
-      return yield call(message.error, `Google Classroom ${payload.googleCode} is already synced in another group`);
+      return notification({ msg:`Google Classroom ${payload.googleCode} is already synced in another group`});
     }
     yield put(fetchStudentsByIdAction({ classId }));
     notification({ type: "success", messageKey:"googleClassImportComplete"});
@@ -622,7 +623,7 @@ function* syncClassUsingCode({ payload }) {
     if (e?.data?.message === "No class found") {
       yield put(setClassNotFoundErrorAction(true));
     } else {
-      yield call(message.error, "class sync failed");
+      notification({ messageKey: "classSyncFailed"});
     }
     yield put(setSyncClassLoadingAction(false));
     console.log(e);
@@ -641,7 +642,7 @@ function* getCanvasCourseListRequestSaga({ payload }) {
   } catch (err) {
     console.error(err);
     yield put(getCanvasCourseListFailedAction());
-    yield call(message.error, "Failed to get course list.");
+    notification({ messageKey: "failedToGetCourseList"});
   }
 }
 
@@ -655,7 +656,7 @@ function* getCanvasSectionListRequestSaga({ payload }) {
   } catch (err) {
     console.error(err);
     yield put(getCanvasSectionListFailedAction());
-    yield call(message.error, "Failed to get course section list.");
+    notification({ messageKey: "failedToGetCourseSectionList"});
   }
 }
 
@@ -669,7 +670,7 @@ function* syncClassWithCanvasSaga({ payload }) {
     notification({ type: "success", messageKey:"syncWithCanvasIsComplete"});
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Class sync with Canvas failed");
+    notification({ messageKey: "classSyncWithCanvasFailed"});
     yield put(setSyncClassLoadingAction(false));
   }
 }
@@ -684,7 +685,7 @@ function* fetchCleverClassListRequestSaga() {
   } catch (err) {
     console.error(err);
     yield put(fetchCleverClassListFailedAction());
-    yield call(message.error, "Failed to fetch Clever classes");
+    notification({ messageKey: "failedToFetchCleverClasses"});
   }
 }
 
@@ -711,7 +712,7 @@ function* syncClassListWithCleverSaga({ payload }) {
     }
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Sync with Clever failed");
+    notification({ messageKey: "syncWithCleverFailed"});
   }
 }
 
@@ -724,7 +725,7 @@ function* unarchiveClass({ payload }) {
   } catch (err) {
     console.error(err);
     yield put(unarchiveClassFailedAction());
-    yield call(message.error, err?.data?.message || "Unarchiving class failed.");
+    notification({ msg:err?.data?.message || "Unarchiving class failed." });
   }
 }
 

@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
 import { questionType as constantsQuestionType, questionType } from "@edulastic/constants";
-import { withWindowSizes, AnswerContext, ScrollContext } from "@edulastic/common";
+import { withWindowSizes, AnswerContext, ScrollContext,notification } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination, message } from "antd";
@@ -303,7 +303,8 @@ class Container extends Component {
 
   handleDeletePassageWidget = widgetIndex => {
     if (widgetIndex === 0) {
-      message.error("There should be at least one passage in item");
+      notification({ messageKey: "thereShouldBeAtleastOnePassageItem" });
+      
       return null;
     }
     const { deleteWidgetFromPassage } = this.props;

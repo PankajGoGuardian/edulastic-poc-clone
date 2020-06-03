@@ -119,7 +119,7 @@ function* loadAssignmentSaga({ payload }) {
   } catch (e) {
     console.warn("error", e, e.stack);
     yield put(slice.actions.stopLoading());
-    yield call(message.error, e?.data?.message || "Loading assignment failed");
+    notification({ msg:e?.data?.message || "Loading assignment failed"});
   }
 }
 
@@ -157,7 +157,7 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
   try {
     const settings = yield select(getSettingsSelector);
     if (isEmpty(settings)) {
-      yield call(message.error, "no changes to be saved");
+      notification({ messageKey:"noChangesToBeSaved"});
       return;
     }
     yield call(assignmentApi.updateClassSettings, { assignmentId, classId, settings });
@@ -166,7 +166,7 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
   } catch (e) {
     console.log(e, "------");
     yield put(slice.actions.updateAssignmentClassSettingsError());
-    yield call(message.error, e?.data?.message || "Updating assignment settings failed");
+    notification({ msg: e?.data?.message || "Updating assignment settings failed"});
     console.warn("error", e, e.stack);
   }
 }

@@ -181,7 +181,7 @@ function* receiveStandardsProficiencySaga({ payload }) {
     yield put(receiveStandardsProficiencySuccessAction(standardsProficiency));
   } catch (err) {
     const errorMessage = "Receive StandardsProficiency is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(receiveStandardsProficiencyErrorAction({ error: errorMessage }));
   }
 }
@@ -192,7 +192,7 @@ function* updateStandardsProficiencySaga({ payload }) {
     yield put(updateStandardsProficiencySuccessAction(updateStandardsProficiency));
   } catch (err) {
     const errorMessage = "Update StandardsProficiency is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(updateStandardsProficiencyErrorAction({ error: errorMessage }));
   }
 }
@@ -208,7 +208,7 @@ function* createStandardsProficiencySaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Update StandardsProficiency is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(updateStandardsProficiencyErrorAction({ error: errorMessage }));
   }
 }

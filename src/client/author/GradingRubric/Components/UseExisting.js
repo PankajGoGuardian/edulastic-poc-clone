@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Col, Form, Icon, message, Pagination } from "antd";
 import produce from "immer";
 import { maxBy, sumBy, uniqBy, debounce } from "lodash";
+import { notification } from "@edulastic/common";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -102,25 +103,25 @@ const UseExisting = ({
               if (!uniqueRatings.includes(rating.points)) uniqueRatings.push(parseFloat(rating.points));
             } else {
               isValid = false;
-              message.error("Rating name cannot be empty.");
+              notification({ messageKey:"ratingNameCannotEmpty"});
             }
             return isValid;
           });
           if (isValid && uniqueRatings.includes(NaN)) {
             isValid = false;
-            message.error("Rating point must not be empty.");
+            notification({ messageKey:"ratingPointMustNotBeEmpty"});
           }
           if (isValid && !uniqueRatings.includes(0)) {
             isValid = false;
-            message.error("Rating point must be 0 for at least one rating within a criteria.");
+            notification({ messageKey:"ratingPointMustBeZero"});
           }
           if (isValid && !uniqueRatings.find(p => p > 0)) {
             isValid = false;
-            message.error("Rating point must be more than 0 for atleast one rating within a criteria");
+            notification({ messageKey:"ratingPointMustBeMoreThanZero"});
           }
         } else {
           isValid = false;
-          message.error("Criteria name cannot be empty.");
+          notification({ messageKey:"criteriaNameCannotBeEmpty"});
         }
         return isValid;
       });
@@ -128,12 +129,12 @@ const UseExisting = ({
         const uniqueCriteriaArray = uniqBy(currentRubricData.criteria, "name");
         if (uniqueCriteriaArray.length < currentRubricData.criteria.length) {
           isValid = false;
-          message.error("Criteria names should be unique.");
+           notification({ messageKey:"criteriaNameShouldBeUnique"});
         }
       }
     } else {
       isValid = false;
-      message.error("Rubric name cannot be empty.");
+      notification({ messageKey:"rubricNameCannotBeEmpty"});
     }
     return isValid;
   };

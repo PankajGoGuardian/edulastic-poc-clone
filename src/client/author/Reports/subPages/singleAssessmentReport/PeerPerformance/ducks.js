@@ -96,7 +96,7 @@ function* getReportsPeerPerformanceRequest({ payload }) {
   } catch (error) {
     console.log("err", error.stack);
     let msg = "Failed to fetch sub-group performance. Please try again...";
-    yield call(message.error, msg);
+    notification({msg:msg});
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR,
       payload: { error: msg }

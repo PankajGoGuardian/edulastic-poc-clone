@@ -51,7 +51,7 @@ function* receiveClassResponseSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive class response is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_CLASS_RESPONSE_ERROR,
       payload: { error: errorMessage }
@@ -256,7 +256,7 @@ function* receiveStudentQuestionSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive answer is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_STUDENT_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -291,7 +291,7 @@ function* receiveClassQuestionSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive answers is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_CLASS_QUESTION_ERROR,
       payload: { error: errorMessage }

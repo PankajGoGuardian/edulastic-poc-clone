@@ -4,7 +4,7 @@ import { get as _get, round } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { LOCATION_CHANGE, push } from "connected-react-router";
 import { questionType } from "@edulastic/constants";
-import { Effects } from "@edulastic/common";
+import { Effects,notification } from "@edulastic/common";
 import { evaluateItem } from "../utils/evalution";
 import { hasEmptyAnswers } from "../../questionUtils";
 
@@ -81,7 +81,7 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
   } catch (err) {
     console.error(err);
     const errorMessage = "create item failed";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage }
@@ -99,7 +99,7 @@ function* updateTestItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Update item is failed";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: UPDATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage }
@@ -172,7 +172,7 @@ function* evaluateAnswers({ payload }) {
     console.error(err);
     const errorMessage =
       err.message || "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
-    yield call(message.error, errorMessage);
+      notification({msg:errorMessage});
   }
 }
 
@@ -183,7 +183,7 @@ function* showAnswers() {
   } catch (err) {
     console.error(err);
     const errorMessage = "Show Answer Failed";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 

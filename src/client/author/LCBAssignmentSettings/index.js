@@ -64,7 +64,7 @@ function LCBAssignmentSettings({
     const { assignedBy } = additionalData;
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
     if (!showSettingTab) {
-      message.error("Permission denied");
+      notification({ messageKey: "persmissionDenied"});
       history.push(`/author/classboard/${assignmentId}/${classId}`);
     }
   }, [additionalData]);

@@ -27,7 +27,7 @@ function* receiveItemSaga({ payload }) {
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive item by id is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -52,7 +52,7 @@ export function* updateItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Item save is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }

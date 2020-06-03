@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { dashboardApi } from "@edulastic/api";
-import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 
@@ -56,7 +56,7 @@ function* receiveTeacherDashboardSaga() {
     yield put(receiveTeacherDashboardSuccessAction(classDetails));
   } catch (err) {
     const errorMessage = "Teacher dahboard request is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(receiveTeacherDashboardErrorAction({ error: errorMessage }));
   }
 }

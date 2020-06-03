@@ -72,7 +72,7 @@ class AddCoTeacher extends React.Component {
         }
       })
       .catch(err => {
-        message.error(err.data.message);
+        notification({ msg:err.data.message});
       });
   }, 1000);
 

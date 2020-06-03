@@ -30,7 +30,7 @@ function* receiveGetFoldersRequest() {
     });
   } catch (error) {
     const errorMessage = "Receive folder list failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_FOLDER_ERROR,
       payload: { error: errorMessage }
@@ -50,7 +50,7 @@ function* receiveCreateFolderRequest({ payload }) {
     });
   } catch (error) {
     const errorMessage = "Create folder failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_FOLDER_CREATE_ERROR,
       payload: { error: errorMessage }

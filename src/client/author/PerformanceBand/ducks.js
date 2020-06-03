@@ -172,7 +172,7 @@ function* receivePerformanceBandSaga({ payload }) {
     yield put(receivePerformanceBandSuccessAction(performanceBand));
   } catch (err) {
     const errorMessage = "Receive PerformanceBand is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(receivePerformanceBandErrorAction({ error: errorMessage }));
   }
 }
@@ -194,7 +194,7 @@ function* updatePerformanceBandSaga({ payload: _id }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Update PerformanceBand is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(updatePerformanceBandErrorAction({ error: errorMessage }));
   }
 }
@@ -207,7 +207,7 @@ function* createPerformanceBandSaga({ payload }) {
     yield put(setEditingIndexAction(createPerformanceBand._id));
   } catch (err) {
     const errorMessage = "Create PerformanceBand is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(createPerformanceBandErrorAction({ error: errorMessage }));
   }
 }
@@ -226,7 +226,7 @@ function* deletePerformanceBandSaga({ payload }) {
       yield put(deletePerformanceBandErrorAction({ type: err.data["0"] }));
     } else {
       const errorMessage = "Deleting PerformanceBand is failing";
-      yield call(message.error, errorMessage);
+      notification({msg:errorMessage});
       yield put(createPerformanceBandErrorAction({ error: errorMessage }));
     }
   }

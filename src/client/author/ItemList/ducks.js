@@ -170,7 +170,7 @@ export function* submitReviewFeedbackSaga({ payload: { status, data } }) {
     yield put({ type: PREVIEW_FEEDBACK_SUCCESS, payload: result });
   } catch (e) {
     console.error(e);
-    yield call(message.error, `Failed to update Status`);
+    notification({ messageKey: "failedToUpdateStatus" });
   }
 }
 
@@ -179,7 +179,7 @@ export function* loadScratchPadSaga({ attachmentId }) {
     const result = yield call(attchmentApi.loadAttachment, attachmentId);
     yield put({ type: LOAD_ITEM_PREVIEW_FEEDBACK_SUCCESS, payload: result });
   } catch (e) {
-    yield call(message.error, "Failed to load scratchpad data");
+    notification({ messageKey: "failedToLoadScratchpadData" });
   }
 }
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useDrop } from "react-dnd";
 import { message } from "antd";
 import { groupBy, compact, isEmpty } from "lodash";
-import { EduButton, FlexContainer } from "@edulastic/common"; //  ProgressBar,
+import { EduButton, FlexContainer,notification } from "@edulastic/common"; //  ProgressBar,
 import { IconUser } from "@edulastic/icons";
 // import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import {
@@ -371,9 +371,9 @@ const InnerWorkTable = ({
   };
 
   const handleAdd = () => {
-    if (!selectedRows.length) return message.error("Please select atleast one standard to add.");
+    if (!selectedRows.length) return notification({ messageKey:"pleaseSelectAtleastOneStandardToAdd"});
     if (!filteredStudentList.length)
-      return message.error("Please select the mastery range which is having atleast 1 student.");
+      return notification({ messageKey:"pleaseSelectMastery"});
     const recommendations = [];
     const selectedRowsData = selectedRows.map(x => data[x]);
     const groupByResources = groupBy(selectedRowsData, ({ resources }) =>

@@ -1,5 +1,5 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -184,11 +184,11 @@ class CoursesTable extends React.Component {
       this.setState({ uploadCourseModalVisible: true });
     } else if (e.key === "edit course") {
       if (selectedRowKeys.length == 0) {
-        message.error("Please select course to edit.");
+       notification({ messageKey:"pleaseSelectCourseEdit"});
       } else if (selectedRowKeys.length == 1) {
         this.onEditCourse(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error("Please select single course to edit.");
+        notification({ messageKey:"pleaseSelectSingleCourseEdit"});
       }
     } else if (e.key === "deactivate course") {
       if (selectedRowKeys.length > 0) {
@@ -196,7 +196,7 @@ class CoursesTable extends React.Component {
           deactivateCourseModalVisible: true
         });
       } else {
-        message.error("Please select course to delete.");
+        notification({ messageKey:"pleaseSelectCourseToDelete"});
       }
     }
   };

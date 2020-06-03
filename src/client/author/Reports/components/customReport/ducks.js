@@ -3,6 +3,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { customReportApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 const GET_CUSTOM_REPORT_STATE_REQUEST = "[reports] get custom reports request";
 const GET_CUSTOM_REPORT_STATE_REQUEST_SUCCESS = "[reports] get custom reports success";
@@ -97,7 +98,7 @@ export function* getCustomReportRequest({ payload }) {
   } catch (error) {
     console.log("err", error.stack);
     let msg = "Failed to fetch custom report Please try again...";
-    yield call(message.error, msg);
+    notification({msg: msg});
     yield put({
       type: GET_CUSTOM_REPORT_STATE_REQUEST_ERROR,
       payload: { error: msg }
@@ -115,7 +116,7 @@ export function* getCustomReportURLRequest({ payload }) {
   } catch (error) {
     console.log("err", error.stack);
     let msg = "Failed to fetch custom report url Please try again...";
-    yield call(message.error, msg);
+    notification({msg: msg});
     yield put({
       type: GET_CUSTOM_REPORT_URL_REQUEST_ERROR,
       payload: { error: msg }

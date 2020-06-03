@@ -210,7 +210,7 @@ function* receiveDistrictAdminSaga({ payload }) {
     yield put(receiveDistrictAdminSuccessAction(districtAdmin));
   } catch (err) {
     const errorMessage = "Receive DistrictAdmins is failing!";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(receiveDistrictAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -222,7 +222,7 @@ function* updateDistrictAdminSaga({ payload }) {
     yield put(updateDistrictAdminSuccessAction(updateDistrictAdmin));
   } catch (err) {
     const errorMessage = "Update DistrictAdmin is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(updateDistrictAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -233,7 +233,7 @@ function* createDistrictAdminSaga({ payload }) {
     yield put(createDistrictAdminSuccessAction(createDistrictAdmin));
   } catch (err) {
     const errorMessage = "Create DistrictAdmin is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(createDistrictAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -247,7 +247,7 @@ function* deleteDistrictAdminSaga({ payload }) {
     yield put(deleteDistrictAdminSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete DistrictAdmin is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage});
     yield put(deleteDistrictAdminErrorAction({ deleteError: errorMessage }));
   }
 }

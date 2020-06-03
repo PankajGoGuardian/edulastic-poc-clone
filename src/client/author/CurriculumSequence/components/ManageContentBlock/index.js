@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { curriculumSequencesApi } from "@edulastic/api";
 import { themeColor, white } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer,notification } from "@edulastic/common";
 import { test as testsConstants } from "@edulastic/constants";
 import { IconFilter, IconPlus } from "@edulastic/icons";
 import { Dropdown, Empty, Menu, message, Spin } from "antd";
@@ -173,7 +173,7 @@ const ManageContentBlock = props => {
       const signedRequest = await curriculumSequencesApi.getSignedRequest({ resource });
       submitLTIForm(signedRequest);
     } catch (e) {
-      message.error("Failed to load the resource");
+      notification({ messageKey:"failedToLoadResource"});
     }
   };
 

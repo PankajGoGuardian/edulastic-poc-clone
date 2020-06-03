@@ -210,7 +210,7 @@ function* receiveTeachersListSaga({ payload }) {
     yield put(receiveTeachersListSuccessAction(teachersList));
   } catch (err) {
     const errorMessage = "Receive Teachers is failing!";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(receiveTeachersListErrorAction({ error: errorMessage }));
   }
 }
@@ -222,7 +222,7 @@ function* updateTeacherSaga({ payload }) {
     yield put(updateTeacherSuccessAction(updateTeacherdData));
   } catch (err) {
     const errorMessage = "Update Teacher is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(updateTeacherErrorAction({ error: errorMessage }));
   }
 }
@@ -233,7 +233,7 @@ function* createTeacherSaga({ payload }) {
     yield put(createTeacherSuccessAction(createTeacher));
   } catch (err) {
     const errorMessage = "Create Teacher is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(createTeacherErrorAction({ error: errorMessage }));
   }
 }
@@ -248,7 +248,7 @@ function* deleteTeacherSaga({ payload }) {
     yield put(deleteTeacherSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Teacher is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(deleteTeacherErrorAction({ deleteError: errorMessage }));
   }
 }

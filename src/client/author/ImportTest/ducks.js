@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { all, call, takeLatest, put } from "redux-saga/effects";
 import { contentImportApi } from "@edulastic/api";
-import { uploadToS3 } from "@edulastic/common";
+import { uploadToS3,notification } from "@edulastic/common";
 import { aws } from "@edulastic/constants";
 import { groupBy } from "lodash";
 
@@ -140,7 +140,7 @@ function* getImportProgressSaga({ payload: jobIds }) {
     }
   } catch (e) {
     console.log({ e });
-    return message.error("Failed to fetch progress status");
+    return notification({ messageKey:"failedToFetchProgress"});
   }
 }
 

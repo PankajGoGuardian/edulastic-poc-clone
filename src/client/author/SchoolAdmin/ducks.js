@@ -258,7 +258,7 @@ function* receiveSchoolAdminSaga({ payload }) {
     yield put(receiveSchoolAdminSuccessAction(data));
   } catch (err) {
     const errorMessage = "Receive SchoolAdmins is failing!";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(receiveSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -270,7 +270,7 @@ function* updateSchoolAdminSaga({ payload }) {
     notification({ type: "success", messageKey:"userUpdatedSuccessfully"});
   } catch ({ data: { message: errMsg } }) {
     const errorMessage = "Update User is failing";
-    message.error(errMsg || errorMessage);
+    notification({msg:errMsg || errorMessage});
     yield put(updateSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -311,7 +311,7 @@ function* createSchoolAdminSaga({ payload }) {
     notification({ type: "success", msg:msg});
   } catch (err) {
     const errorMessage = err.data.message || "Create new user is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(createSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -329,7 +329,7 @@ function* deleteSchoolAdminSaga({ payload }) {
     notification({ type: "success", messagKey:"userSucessfullyDeactivated"});
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -352,7 +352,7 @@ function* addBulkTeacherAdminSaga({ payload }) {
     yield put(addBulkTeacherAdminSuccessAction({ res, _bulkTeachers }));
   } catch (err) {
     const errorMessage = "Add Bulk Teacher is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(addBulkTeacherAdminErrorAction({ bulkAddError: errorMessage }));
   }
 }

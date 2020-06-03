@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { sumBy } from "lodash";
 
 import { Select, message } from "antd";
+import { notification } from "@edulastic/common";
 import { UploadTitle, UploadDescription, StyledButton, StyledUpload, uploadIconStyle, FlexContainer } from "./styled";
 import { uploadTestRequestAction } from "../ducks";
 import { getAllTagsAction, getAllTagsSelector } from "../../TestPage/ducks";
@@ -36,7 +37,7 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
     // file validation for size and type should be done here
     const totalFileSize = sumBy(fileList, "size");
     if (totalFileSize / 1024000 > 15) {
-      message.error("File size exceeds 15 MB limit.");
+       notification({ messageKey:"fileSizeExceeds"});
       return false;
     }
   };

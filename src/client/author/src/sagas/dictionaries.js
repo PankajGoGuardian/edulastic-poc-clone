@@ -1,6 +1,7 @@
 import { takeLatest, takeEvery, call, put, all } from "redux-saga/effects";
 import { dictionariesApi } from "@edulastic/api";
 import { message } from "antd";
+import  {notification} from "@edulastic/common";
 import {
   RECEIVE_DICT_CURRICULUMS_REQUEST,
   RECEIVE_DICT_CURRICULUMS_SUCCESS,
@@ -27,7 +28,7 @@ function* receiveCurriculumsSaga() {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive curriculums is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_DICT_CURRICULUMS_ERROR,
       payload: { error: errorMessage }
@@ -52,7 +53,7 @@ function* receiveStandardsSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive standards is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_DICT_STANDARDS_ERROR,
       payload: { error: errorMessage }

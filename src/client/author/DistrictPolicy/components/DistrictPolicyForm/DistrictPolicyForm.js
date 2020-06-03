@@ -1,4 +1,4 @@
-import { CheckboxLabel, RadioBtn, RadioGrp } from "@edulastic/common";
+import { CheckboxLabel, RadioBtn, RadioGrp,notification } from "@edulastic/common";
 import { Form, Input, message } from "antd";
 import { produce } from "immer";
 import { get } from "lodash";
@@ -248,7 +248,7 @@ class DistrictPolicyForm extends Component {
       !districtPolicyData.cleverSignOn &&
       !districtPolicyData.googleSignOn
     ) {
-      message.error("Please select 1 or more sign-on policies");
+      notification({ messageKey:"pleaseSelectOneOrMoreSignOnParticles"});
       return;
     }
 

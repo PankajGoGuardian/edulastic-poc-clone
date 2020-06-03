@@ -43,7 +43,7 @@ function* receiveAssignmentClassList({ payload = {} }) {
     }
   } catch (error) {
     const errorMessage = "Receive class list failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put({
       type: RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
       payload: { error: errorMessage }
@@ -171,7 +171,7 @@ function* updateAssignmetSaga({ payload }) {
       type: TOGGLE_RELEASE_GRADE_SETTINGS,
       payload: false
     });
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     console.error(e);
   }
 }
@@ -190,7 +190,7 @@ function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
     yield put({
       type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
     });
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 

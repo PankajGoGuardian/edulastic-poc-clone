@@ -6,7 +6,7 @@ import { groupBy, isEqual, uniqueId, pick } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { FlexContainer, MainContentWrapper, withWindowSizes } from "@edulastic/common";
+import { FlexContainer, MainContentWrapper, withWindowSizes,notification } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import { smallDesktopWidth, desktopWidth, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
@@ -411,7 +411,7 @@ class CurriculumSequence extends Component {
       });
       submitLTIForm(signedRequest);
     } catch (e) {
-      message.error("Failed to load the resource");
+      notification({ messageKey:"failedToLoadResource"});
     }
   };
 

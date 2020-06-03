@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { keyBy } from "lodash";
 import { borderGrey2 } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
@@ -42,7 +43,7 @@ const SelectCollectionModal = ({
       contentIds = selectedTests.map(item => item._id);
     }
     if (!contentIds.length) {
-      message.error("Add atleast one item to cart");
+      notification({ messageKey: "addAtleastOneItemToCart"});
       return handleCancel();
     }
     saveItemsToBucket({

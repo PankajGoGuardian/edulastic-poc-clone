@@ -3,6 +3,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { userApi } from "@edulastic/api";
 import { call, put, all, takeEvery } from "redux-saga/effects";
 import { message } from "antd";
+import  {notification} from "@edulastic/common";
 
 // constants
 
@@ -48,7 +49,7 @@ function* fetchAllUsersSaga({ payload }) {
     yield put(updateUsersListAction(userList));
   } catch (e) {
     const errorMessage = "Search failed";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Select, message } from "antd";
+import { EduButton,notification } from "@edulastic/common";
 import styled from "styled-components";
 import { backgroundGrey2, green, themeColorTagsBg } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { EduButton } from "@edulastic/common";
 
 const CanvasSyncModal = ({
   visible,
@@ -47,7 +47,7 @@ const CanvasSyncModal = ({
 
   const handleSync = () => {
     if (!course || !section) {
-      return message.error("Both Course and Section are required.");
+      return notification({ msg: "bothCourseandSectionRequired"});
     }
 
     const { id: canvasCourseCode, name: canvasCourseName } = canvasCourseList.find(({ id }) => id === course);

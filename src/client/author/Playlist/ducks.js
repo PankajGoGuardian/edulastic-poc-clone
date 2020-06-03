@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -56,7 +57,7 @@ function* receivePublishersSaga() {
     yield put(receivePublishersSuccessAction(result));
   } catch (err) {
     const errorMessage = "Receive publishers is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 
@@ -89,7 +90,7 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     );
   } catch (err) {
     const errorMessage = "Receive playlists is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(receivePlaylistErrorAction({ error: errorMessage }));
     console.warn(err);
   }
@@ -101,7 +102,7 @@ function* receiveLastPlayListSaga() {
     yield put(updateLastPlayListAction(result ? result : {}));
   } catch (err) {
     const errorMessage = "Receive last playslist is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 
@@ -111,7 +112,7 @@ function* receiveRecentPlayListsSaga() {
     yield put(updateRecentPlayListsAction(result ? result.value : []));
   } catch (err) {
     const errorMessage = "Receive recent playlist is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
   }
 }
 

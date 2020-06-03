@@ -2,6 +2,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { keyBy } from "lodash";
 import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
@@ -92,7 +93,7 @@ function* getReportsPerformanceOverTimeRequest({ payload }) {
   } catch (error) {
     console.log("err", error.stack);
     let msg = "Failed to fetch performance over time Please try again...";
-    yield call(message.error, msg);
+    notification({msg:msg});
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR,
       payload: { error: msg }

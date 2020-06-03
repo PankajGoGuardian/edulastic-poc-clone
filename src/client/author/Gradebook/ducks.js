@@ -1,5 +1,6 @@
 import { message } from "antd";
 import { createSlice } from "redux-starter-kit";
+import { notification } from "@edulastic/common";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { reportsApi, assignmentApi, groupApi } from "@edulastic/api";
 
@@ -80,7 +81,7 @@ function* fetchStudentPerformanceSaga({ payload }) {
     yield put(actions.fetchStudentPerformanceCompleted(response));
   } catch (e) {
     yield put(actions.fetchStudentPerformanceCompleted({}));
-    yield call(message.error, "Failed to fetch student performance for gradebook");
+    notification({ messageKey:"failedToFetchStudentPerformanceGradeBook"});
   }
 }
 
@@ -114,7 +115,7 @@ function* fetchGradebookFiltersSaga() {
     yield put(actions.fetchGradebookFiltersCompleted(filtersData));
   } catch (e) {
     yield put(actions.fetchGradebookFiltersCompleted({}));
-    yield call(message.error, "Failed to fetch filters data for gradebook");
+    notification({ messageKey:"failedToFetchFiltersData"});
   }
 }
 

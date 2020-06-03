@@ -132,7 +132,7 @@ function* submitResponse({ payload }) {
     );
   } catch (e) {
     console.error(e);
-    yield call(message.error, "edit response failed");
+    notification({ messageKey:"editResponseFailed"});
   } finally {
     yield put(submitResponseCompletedAction());
   }
@@ -162,7 +162,7 @@ function* scratchPadLoadSaga({ payload }) {
     }
   } catch (e) {
     console.error(e);
-    yield call(message.error, "Loading scratchPad failed");
+    notification({ messageKey:"loadingScratchFailed"});
     yield put(scratchPadLoadErrorAction());
   }
 }

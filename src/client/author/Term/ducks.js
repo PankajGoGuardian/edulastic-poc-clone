@@ -1,6 +1,7 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 
@@ -141,7 +142,7 @@ function* receiveTermeSaga({ payload }) {
     yield put(receiveTermSuccessAction(term));
   } catch (err) {
     const errorMessage = "Receive Term is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(receiveTermErrorAction({ error: errorMessage }));
   }
 }
@@ -153,7 +154,7 @@ function* createTermSaga({ payload }) {
     yield put(createTermSuccessAction({ data: createTerm, key: key }));
   } catch (err) {
     const errorMessage = "Create Term is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(createTermErrorAction({ error: errorMessage }));
   }
 }
@@ -164,7 +165,7 @@ function* updateTermSaga({ payload }) {
     yield put(updateTermSuccessAction(updateTerm));
   } catch (err) {
     const errorMessage = "Update Term is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(updateTermErrorAction({ error: errorMessage }));
   }
 }
@@ -175,7 +176,7 @@ function* deleteTermSaga({ payload }) {
     yield put(deleteTermSuccessAction(payload.body.termId));
   } catch (err) {
     const errorMessage = "Delete Term is failing";
-    yield call(message.error, errorMessage);
+    notification({msg:errorMessage});
     yield put(deleteTermErrorAction({ deleteError: errorMessage }));
   }
 }

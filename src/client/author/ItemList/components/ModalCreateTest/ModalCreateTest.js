@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Input, message, Row, Col } from "antd";
+import { notification } from "@edulastic/common";
 
 import Modal from "../../../src/components/common/Modal";
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
@@ -12,7 +13,7 @@ const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, selectedItem
   const inputRef = useRef(null);
   const handleProceed = () => {
     if (!inputRef.current.state.value) {
-      return message.error("Please provide valid test name");
+      return notification({ messageKey: "pleaseProvideValidTestName"});
     }
     createTestFromCart(inputRef.current.state.value);
     onProceed();

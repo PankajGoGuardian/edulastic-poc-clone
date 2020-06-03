@@ -2,6 +2,7 @@ import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
+import  {notification} from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
@@ -109,7 +110,7 @@ function* getReportsStandardsGradebookRequest({ payload }) {
   } catch (error) {
     console.log("err", error.stack);
     let msg = "Failed to fetch standards gradebook Please try again...";
-    yield call(message.error, msg);
+    notification({msg:msg});
     yield put({
       type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR,
       payload: { error: msg }
@@ -126,7 +127,7 @@ function* getStudentStandardsSaga({ payload }) {
     });
   } catch (error) {
     console.error("err", error.stack);
-    yield call(message.error, "Failed to fetch student Standards");
+    notification({messageKey:"failedToFetchStudentStandard"});
     yield put({
       type: GET_STUDENT_STANDARDS_FAILED
     });

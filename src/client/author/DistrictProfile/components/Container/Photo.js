@@ -14,7 +14,7 @@ import {
   desktopWidth
 } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
-import { beforeUpload } from "@edulastic/common";
+import { beforeUpload,notification } from "@edulastic/common";
 import { updateProfileImageAction } from "../../../../student/Login/ducks";
 
 class Photo extends React.Component {
@@ -28,7 +28,7 @@ class Photo extends React.Component {
       this.setState({ loading: true });
       const { file } = info;
       if (!file.type.match(/image/g)) {
-        message.error("Please upload files in image format");
+        notification({ messageKey:"pleaseUploadFilesInImageFormat"});
         this.setState({ loading: false });
         return;
       } else if (!beforeUpload(file)) {
@@ -48,7 +48,7 @@ class Photo extends React.Component {
         loading: false
       });
     } catch (e) {
-      message.error("Unable to save thumbnail.");
+      notification({ messageKey:"unableTOsaveThumbnail"});
       this.setState({
         loading: false
       });

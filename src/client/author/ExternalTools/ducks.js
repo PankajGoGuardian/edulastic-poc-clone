@@ -1,6 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { settingsApi } from "@edulastic/api";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { has, pick } from "lodash";
@@ -57,7 +58,7 @@ function* fetchExternalToolProviderSaga({ payload }) {
     const toolsList = yield call(settingsApi.getExternalTools, payload);
     yield put(fetchExternalToolProviderSuccessAction(toolsList));
   } catch (err) {
-    yield call(message.error, "Unable to get tools List");
+    notification({ messageKey:"unableToGetList"});
     yield put(fetchExternalToolProviderFailureAction());
   }
 }
@@ -76,7 +77,7 @@ function* saveExternalToolProviderSaga({ payload }) {
     }
   } catch (err) {
     const errorMessage = err?.data?.message;
-    yield call(message.error, errorMessage || "Unable to save Tool");
+    notification({ msg:errorMessage || "Unable to save Tool"});
   }
 }
 
@@ -86,7 +87,7 @@ function* deleteExternalToolProviderSaga({ payload }) {
     const toolsList = yield call(settingsApi.deleteExternalTools, { orgId, externalToolId: id });
     yield put(fetchExternalToolProviderSuccessAction(toolsList));
   } catch (err) {
-    yield call(message.error, "Unable to Delete Tool");
+    notification({ messageKey:"unableToDeleteTool"});
   }
 }
 

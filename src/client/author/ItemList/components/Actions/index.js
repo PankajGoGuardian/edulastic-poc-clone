@@ -6,7 +6,7 @@ import { Menu, Dropdown, message } from "antd";
 import styled from "styled-components";
 import { roleuser } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { EduButton, Label, FlexContainer } from "@edulastic/common";
+import { EduButton, Label, FlexContainer,notification } from "@edulastic/common";
 import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
@@ -39,8 +39,8 @@ const Actions = ({
   // Keep this format as createTestFromCart is directly called in Menu item it will have a payload related to event
   const handleCreateTest = () => {
     if (!numberOfSelectedItems) {
-      return message.error("Add items to create test");
-    }
+      return notification({ messageKey: "addItemsToCreateTest"});
+  }
     createTestFromCart();
   };
 

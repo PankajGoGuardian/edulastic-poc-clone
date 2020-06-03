@@ -82,7 +82,7 @@ function* saveRubricSaga({ payload }) {
     if (payload.rubricData.status === "draft") notification({ type: "success", messageKey:"rubricIsSavedAsDraft"});
     else if (payload.rubricData.status === "published")notification({ type: "success", messageKey:"rubricIsSavedAndSpublished"});
   } catch (err) {
-    yield call(message.error, "Failed to save Rubric");
+    notification({ messageKey:"failedToSaveRubric"});
   }
 }
 
@@ -104,7 +104,7 @@ function* updateRubricSaga({ payload }) {
     if (payload.status === "draft") notification({ type: "success", messageKey:"rubricUpdatedAsDraft"});
     else if (payload.status === "published") notification({ type: "success", messageKey:"rubricUpdatedAndSPublished"});
   } catch (err) {
-    yield call(message.error, "Failed to update Rubric");
+     notification({ messageKey:"failedToUpdateRubric"});
   }
 }
 
@@ -114,7 +114,7 @@ function* searchRubricsSaga({ payload }) {
     yield put(searchRubricsSuccessAction(data));
   } catch (err) {
     yield put(searchRubricsFailedAction(""));
-    yield call(message.error, "Unable to fetch rubrics");
+     notification({ messageKey:"UnableToreachRubric"});
   }
 }
 
@@ -124,7 +124,7 @@ function* deleteRubricSaga({ payload }) {
     notification({ type: "success", messageKey:"rubricDeletedSuccessfully"});
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Failed to delete the rubric.");
+     notification({ messageKey:"failedToDeleteTheRubric"});
   }
 }
 
@@ -134,7 +134,7 @@ function* getRubricByIdSaga({ payload }) {
     yield put(getRubricByIdSuccessAction(rubric));
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Failed to fetch rubric.");
+    notification({ messageKey:"failedToFetchRubric"});
   }
 }
 

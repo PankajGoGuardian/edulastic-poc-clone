@@ -1,4 +1,4 @@
-import { greyThemeDark1, lightGrey5, testTypeColor, themeColor, white } from "@edulastic/colors";
+import { lightGrey5, testTypeColor, themeColor, white } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { testActivityStatus, roleuser } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
@@ -19,7 +19,7 @@ import { Tooltip } from "../../../common/utils/helpers";
 import { resumeAssignmentAction, startAssignmentAction } from "../../../student/Assignments/ducks";
 import { getCurrentGroup, proxyRole } from "../../../student/Login/ducks";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
-import { StyledLabel, HideLinkLabel } from "../../Reports/common/styled";
+import { HideLinkLabel } from "../../Reports/common/styled";
 import Tags from "../../src/components/common/Tags";
 import { getUserRole } from "../../src/selectors/user";
 import {
@@ -30,8 +30,8 @@ import {
   toggleCheckedUnitItemAction,
   togglePlaylistTestDetailsModalWithId
 } from "../ducks";
-import { getProgressColor, getProgressData } from "../util";
-import ModuleRowView from "./ModuleRowView";
+import { getProgressData } from "../util";
+import ModuleRowView, { InfoProgressBar } from "./ModuleRowView";
 import AssignmentDragItem from "./AssignmentDragItem";
 import { PlaylistResourceRow, SubResource, AddResourceToPlaylist } from "./PlaylistResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
@@ -44,16 +44,8 @@ import {
   DragHandle,
   ModalWrapper,
   FirstColumn,
-  InfoColumnsMobile,
-  InfoColumnsDesktop,
-  StyledProgressBar,
   IconActionButton,
   LastColumn,
-  ProficiencyColumn,
-  SubmittedColumn,
-  TimeColumn,
-  ClassesColumn,
-  ScoreColumn,
   CustomIcon,
   ModuleFocused,
   AssignmentButton,
@@ -440,7 +432,6 @@ class ModuleRow extends Component {
         </Menu.Item>
       </Menu>
     );
-    const ResolvedInfoColumsWrapper = isDesktop ? InfoColumnsDesktop : InfoColumnsMobile;
 
     return (
       (isStudent && module.hidden) || (
@@ -568,52 +559,15 @@ class ModuleRow extends Component {
                     </Menu>
                   );
 
-                  const assessmentInfoProgress = urlHasUseThis ? (
-                    <ResolvedInfoColumsWrapper>
-                      <ProficiencyColumn style={rowInlineStyle}>
-                        {/* TODO: Method to display progress for assignments */}
-                        <StyledProgressBar
-                          strokeColor={getProgressColor(progressData?.progress)}
-                          strokeWidth={13}
-                          percent={progressData?.progress}
-                          format={percent => (percent ? `${percent}%` : "")}
-                        />
-                      </ProficiencyColumn>
-                      {!isStudent ? (
-                        <SubmittedColumn style={rowInlineStyle}>
-                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                            {/* TODO: Method to find submissions for each assignment */}
-                            {progressData?.submitted ? `${progressData?.submitted}%` : "-"}
-                          </StyledLabel>
-                        </SubmittedColumn>
-                      ) : (
-                        <ScoreColumn style={rowInlineStyle}>
-                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                            {/* TODO: Method to find sum of scores for each assignment */}
-                            {progressData?.scores >= 0 && progressData?.maxScore
-                              ? `${progressData?.scores}/${progressData?.maxScore}`
-                              : "-"}
-                          </StyledLabel>
-                        </ScoreColumn>
-                      )}
-                      {!isStudent ? (
-                        <ClassesColumn style={rowInlineStyle}>
-                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                            {/* TODO: Method to find classes for each assignment */}
-                            {progressData?.classes || "-"}
-                          </StyledLabel>
-                        </ClassesColumn>
-                      ) : (
-                        <TimeColumn style={rowInlineStyle}>
-                          <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
-                            {/* TODO: Method to find Total Time Spent for each assignment */}
-                            {progressData?.timeSpent}
-                          </StyledLabel>
-                        </TimeColumn>
-                      )}
-                    </ResolvedInfoColumsWrapper>
-                  ) : (
-                    <ResolvedInfoColumsWrapper />
+                  const assessmentInfoProgress = (
+                    <InfoProgressBar
+                      isDesktop={isDesktop}
+                      isStudent={isStudent}
+                      columnStyle={rowInlineStyle}
+                      urlHasUseThis={urlHasUseThis}
+                      data={progressData}
+                      isAssessment
+                    />
                   );
 
                   const showHideAssessmentButton = hasEditAccess &&

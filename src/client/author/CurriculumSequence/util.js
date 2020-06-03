@@ -1,5 +1,6 @@
 import { round, compact } from "lodash";
 import moment from "moment";
+import { lightRed3, yellow2, themeColorLighter, borderGrey4, white } from "@edulastic/colors";
 
 export const getSummaryData = (modules, playlistMetrics, isStudent) =>
   modules?.map((mod, index) => {
@@ -68,7 +69,7 @@ export const getProgressData = (playlistMetrics, _id, contentId, assignments) =>
   const data = playlistMetrics?.[_id]?.filter(x => x.testId === contentId) || [];
   const totalScore = data.reduce((a, c) => a + parseInt(c.totalScore || 0, 10), 0);
   const maxScore = data.reduce((a, c) => a + parseInt(c.maxScore || 0, 10), 0);
-  const progress = maxScore ? round((totalScore / maxScore) * 100, 0) : 0;
+  const value = maxScore ? round((totalScore / maxScore) * 100, 0) : 0;
   const classes = assignments.reduce((a, c) => a + (c?.["class"]?.length || 0), 0);
   const tSpent = data.reduce((a, c) => a + parseInt(c.timeSpent || 0, 10), 0);
   const totalAssigned = classAssignmentData.reduce((a, c) => a + parseInt(c.assignedCount || 0, 10), 0);
@@ -84,8 +85,8 @@ export const getProgressData = (playlistMetrics, _id, contentId, assignments) =>
   const timeSpent = h > 0 ? `${h}H ${m}min ${s}sec` : `${m} min ${s} sec`;
 
   return {
+    value,
     submitted,
-    progress,
     classes,
     scores: totalScore,
     timeSpent,
@@ -93,15 +94,21 @@ export const getProgressData = (playlistMetrics, _id, contentId, assignments) =>
   };
 };
 
-// TODO - use color constants
 export const getProgressColor = percentage => {
   if (percentage <= 30) {
-    return "#EC0149";
+    return lightRed3;
   }
   if (percentage <= 70) {
-    return "#FFD500";
+    return yellow2;
   }
-  return "#5eB500";
+  return themeColorLighter;
+};
+
+export const getProgressTrailColor = percentage => {
+  if (!percentage) {
+    return borderGrey4;
+  }
+  return white;
 };
 
 /**

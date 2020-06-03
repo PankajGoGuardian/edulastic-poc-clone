@@ -11,7 +11,8 @@ import {
   themeColor,
   white,
   secondaryTextColor,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  mobileWidthLarge
 } from "@edulastic/colors";
 import { IconSearch } from "@edulastic/icons";
 import { Modal } from "antd";
@@ -39,6 +40,11 @@ export const ManageContentOuterWrapper = styled.div`
     .inner-wrapper {
       overflow: auto;
     }
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    top: ${props => props.theme.HeaderHeight.xs}px;
+    min-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xs}px)`};
+    max-height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xs}px)`};
   }
 `;
 
@@ -274,6 +280,9 @@ export const ResourceDataList = styled.div`
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100vh - 332px)" : "calc(100vh - 370px)")};
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    height: calc(100vh - 242px);
   }
 `;
 

@@ -11,7 +11,8 @@ import {
   titleColor,
   white,
   extraDesktopWidthMax,
-  tabletWidth
+  tabletWidth,
+  mobileWidthLarge
 } from "@edulastic/colors";
 
 import SummaryPieChart from "./SummaryPieChart";
@@ -106,6 +107,11 @@ const SummaryBlockContainer = styled.div`
     top: ${props => props.theme.HeaderHeight.sd}px;
     height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
     overflow: auto;
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    top: ${props => props.theme.HeaderHeight.xs}px;
+    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xs}px)`};
   }
 `;
 

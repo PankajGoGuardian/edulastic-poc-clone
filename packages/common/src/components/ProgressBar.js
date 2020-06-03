@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { Progress } from "antd";
-import { greyThemeDark1, extraDesktopWidthMax } from "@edulastic/colors";
+import { greyThemeDark1, extraDesktopWidthMax, borderGrey4 } from "@edulastic/colors";
 
 const ProgressBar = styled(Progress)`
   padding: ${props => props.padding};
   .ant-progress-outer {
     .ant-progress-inner {
       background-color: ${props => props.trailColor};
+      border: 1px solid ${borderGrey4};
     }
   }
   .ant-progress-text {

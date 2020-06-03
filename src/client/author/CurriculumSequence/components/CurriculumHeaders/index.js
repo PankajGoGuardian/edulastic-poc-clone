@@ -24,6 +24,9 @@ const HeaderButton = styled(EduButton)`
   @media (max-width: ${smallDesktopWidth}) {
     height: 30px;
     width: 30px;
+    span {
+      display: none;
+    }
   }
 `;
 
@@ -74,7 +77,6 @@ const CurriculumHeader = ({
 
   const switchPlaylist = (
     <SwitchPlaylist
-      isDesktop={isDesktop}
       playlistsToSwitch={playlistsToSwitch}
       showUseThisNotification={showUseThisNotification}
       onClickHandler={handleGuidePopup}
@@ -118,14 +120,14 @@ const CurriculumHeader = ({
           {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
             <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
-              {isDesktop && "SAVE"}
+              <span>SAVE</span>
             </HeaderButton>
           )}
 
           {urlHasUseThis && isTeacher && !isPublisherUser && (
             <HeaderButton data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
               <IconAirdrop />
-              {isDesktop && "OPEN TO STUDENTS"}
+              <span>OPEN TO STUDENTS</span>
             </HeaderButton>
           )}
 
@@ -133,14 +135,14 @@ const CurriculumHeader = ({
             <Tooltip placement="bottom" title="EDIT">
               <HeaderButton isGhost data-cy="edit-playlist" onClick={handleEditClick} IconBtn={!shouldHideUseThis}>
                 <IconPencilEdit />
-                {isDesktop && shouldHideUseThis && "EDIT"}
+                {shouldHideUseThis && <span>EDIT</span>}
               </HeaderButton>
             </Tooltip>
           )}
           {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
             <HeaderButton data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
               <IconUseThis />
-              {isDesktop && "USE THIS"}
+              <span>USE THIS</span>
             </HeaderButton>
           )}
           {features.isCurator && (status === "inreview" || status === "rejected") && (

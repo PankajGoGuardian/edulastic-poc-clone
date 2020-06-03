@@ -3,7 +3,9 @@ import {
   mediumDesktopExactWidth,
   tabletWidth,
   smallDesktopWidth,
-  mobileWidthLarge
+  mobileWidthLarge,
+  middleMobileWidth,
+  smallMobileWidth
 } from "@edulastic/colors";
 import { MenuIcon } from "@edulastic/common";
 import { Affix } from "antd";
@@ -146,6 +148,13 @@ export const TitleWrapper = styled.h1`
   }
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 14px;
+    max-width: 14rem;
+  }
+  @media (max-width: ${middleMobileWidth}) {
+    max-width: 10rem;
+  }
+  @media (max-width: ${smallMobileWidth}) {
+    max-width: 7rem;
   }
 `;
 

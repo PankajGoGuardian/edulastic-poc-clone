@@ -594,7 +594,7 @@ class CurriculumSequence extends Component {
     const GridCountInARow = windowWidth >= 1600 ? 5 : 4;
     const countModular = new Array(GridCountInARow - (slicedRecentPlaylists.length % GridCountInARow)).fill(1);
 
-    const isDesktop = windowWidth > parseInt(smallDesktopWidth, 10);
+    const isDesktop = windowWidth >= parseInt(smallDesktopWidth, 10);
 
     const isPlaylistDetailsPage = window.location?.hash === "#review";
     const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;

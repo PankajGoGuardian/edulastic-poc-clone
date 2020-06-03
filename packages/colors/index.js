@@ -76,6 +76,7 @@ export const svgDisabledColor = "#80838b";
 export const red = "#FF0057";
 export const lightRed = "#fbdfe7";
 export const lightRed2 = "#f58888";
+export const lightRed3 = "#ec0149";
 export const darkRed = "#F35F5F";
 export const redDark = "#dd2e44";
 export const fadedRed = "#fce0e8";
@@ -129,6 +130,7 @@ export const greenSomeWhatDark = "#17a67d";
 
 export const yellow = "#febe00";
 export const yellow1 = "#FDCC3B";
+export const yellow2 = "#ffd500";
 
 export const orange = "#FFA200";
 export const darkOrange = "#F9942D";

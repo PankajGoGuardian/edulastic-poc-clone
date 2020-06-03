@@ -19,6 +19,7 @@ import {
 import { ProgressBar, MathFormulaDisplay } from "@edulastic/common";
 import { Col, Modal } from "antd";
 import styled, { css } from "styled-components";
+import { StyledLabel } from "../../Reports/common/styled";
 
 export const AssignmentRowContainer = styled.div`
   display: flex;
@@ -102,6 +103,11 @@ export const InfoColumnsMobile = styled(StyledCol)`
   @media (max-width: ${smallDesktopWidth}) {
     width: auto;
   }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 `;
 
 export const InfoColumnsDesktop = styled.div`
@@ -148,6 +154,19 @@ export const ProficiencyColumn = styled(Col)`
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 100px;
   }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
+    margin-bottom: 14px;
+    margin-top: ${({ isAssessment }) => (isAssessment ? "8px" : "16px")};
+  }
+`;
+
+export const InfoColumnLabel = styled(StyledLabel)`
+  display: ${({ isAssessment }) => (isAssessment ? "none" : "")};
+  @media (max-width: ${mobileWidthLarge}) {
+    display: flex;
+  }
 `;
 
 export const SubmittedColumn = styled(Col)`
@@ -156,12 +175,19 @@ export const SubmittedColumn = styled(Col)`
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 80px;
   }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 40%;
+  }
 `;
 
-export const TimeColumn = styled(SubmittedColumn)`
+export const TimeColumn = styled(Col)`
   width: 85px;
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 70px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 40%;
   }
 `;
 
@@ -171,6 +197,10 @@ export const ClassesColumn = styled(Col)`
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 65px;
   }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 40%;
+  }
 `;
 
 export const ScoreColumn = styled(ClassesColumn)`
@@ -178,6 +208,10 @@ export const ScoreColumn = styled(ClassesColumn)`
 
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 65px;
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 40%;
   }
 `;
 
@@ -201,6 +235,7 @@ export const ModuleHeaderData = styled.div`
 
   @media (max-width: ${mobileWidthLarge}) {
     flex-direction: column;
+    align-items: stretch;
   }
 `;
 

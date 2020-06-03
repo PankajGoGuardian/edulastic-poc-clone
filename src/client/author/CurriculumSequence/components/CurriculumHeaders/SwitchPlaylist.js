@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Popover } from "antd";
 import { connect } from "react-redux";
-import { themeColor, extraDesktopWidthMax } from "@edulastic/colors";
+import { themeColor, extraDesktopWidthMax, mobileWidthLarge } from "@edulastic/colors";
 import { IconTile } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { toggleShowUseThisNotificationAction } from "../../ducks";
@@ -11,7 +11,6 @@ const SwitchPlaylist = ({
   onClickHandler,
   showUseThisNotification,
   toggleShowUseThisNotification,
-  isDesktop,
   playlistsToSwitch
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +52,7 @@ const SwitchPlaylist = ({
           height={18}
           color={themeColor}
         />
-        {isDesktop && <SwitchLable>SWITCH</SwitchLable>}
+        <SwitchLable>SWITCH</SwitchLable>
       </FlexContainer>
     </Popover>
   );
@@ -69,9 +68,13 @@ const SwitchLable = styled.div`
   color: ${themeColor};
   text-transform: uppercase;
   line-height: 1;
+  font-weight: 600;
   margin-left: 8px;
 
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    font-size: 11px;
   }
 `;

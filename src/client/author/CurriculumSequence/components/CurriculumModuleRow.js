@@ -80,9 +80,7 @@ function OuterDropContainer({ children }) {
       isOver: !!monitor.isOver(),
       contentType: monitor.getItem()?.contentType
     }),
-    canDrop: (item, monitor) => {
-      return !!item?.contentType;
-    }
+    canDrop: item => !!item?.contentType
   });
 
   /**
@@ -1137,6 +1135,7 @@ const AssignmentRowContainer = styled.div`
     100% {
       background-color: white;
     }
+  }
 `;
 
 const DragHandle = styled.div`

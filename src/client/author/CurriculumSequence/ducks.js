@@ -1258,7 +1258,9 @@ const initialState = {
     isVisible: false,
     currentTestId: null
   },
-  isVideoResourcePreviewModal: false
+  isVideoResourcePreviewModal: false,
+  showSumary: true,
+  showRightPanel: true
 };
 
 /**

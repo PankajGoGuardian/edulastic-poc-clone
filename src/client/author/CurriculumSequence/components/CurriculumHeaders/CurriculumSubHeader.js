@@ -77,18 +77,20 @@ const CurriculumSubHeader = ({
       <SubTopBarContainer active={isContentExpanded}>
         <CurriculumSubHeaderRow>
           <SubHeaderTitleContainer>
-            <SubHeaderTitle>Module progress</SubHeaderTitle>
-            <SubHeaderModuleProgressContainer>
-              <div>
-                <span className="assigned">{`${assigned}/${summaryData?.length || 0}`}</span>
-                <span className="assigned-label">Assigned</span>
-              </div>
-              <SubHeaderModuleProgressTagContainer>
-                {summaryData?.map(d =>
-                  !isNumber(d.classes) ? <SquareColorDivGray key={d.index} /> : <SquareColorDivGreen key={d.index} />
-                )}
-              </SubHeaderModuleProgressTagContainer>
-            </SubHeaderModuleProgressContainer>
+            <ModuleProgres>
+              <SubHeaderTitle>Module progress</SubHeaderTitle>
+              <SubHeaderModuleProgressContainer>
+                <div>
+                  <span className="assigned">{`${assigned}/${summaryData?.length || 0}`}</span>
+                  <span className="assigned-label">Assigned</span>
+                </div>
+                <SubHeaderModuleProgressTagContainer>
+                  {summaryData?.map(d =>
+                    !isNumber(d.classes) ? <SquareColorDivGray key={d.index} /> : <SquareColorDivGreen key={d.index} />
+                  )}
+                </SubHeaderModuleProgressTagContainer>
+              </SubHeaderModuleProgressContainer>
+            </ModuleProgres>
             <SubHeaderDescription dangerouslySetInnerHTML={{ __html: description }} />
           </SubHeaderTitleContainer>
           <RightColumn>
@@ -203,7 +205,7 @@ const CurriculumSubHeaderRow = styled.div`
   margin-bottom: ${props => props.marginBottom || "0px"};
 
   @media (max-width: ${mobileWidthLarge}) {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 `;
 
@@ -228,6 +230,9 @@ const SubHeaderTitle = styled.div`
   margin-bottom: 2px;
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    font-size: 12px;
   }
 `;
 
@@ -260,6 +265,19 @@ const SubHeaderModuleProgressContainer = styled.div`
       font-size: 13px;
     }
   }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    margin-bottom: 0px;
+  }
+`;
+
+const ModuleProgres = styled.div`
+  @media (max-width: ${mobileWidthLarge}) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
 `;
 
 const SubHeaderModuleProgressTagContainer = styled.div`
@@ -275,6 +293,10 @@ const SubHeaderDescription = styled(MathFormulaDisplay)`
 
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 13px;
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    margin-bottom: 18px;
   }
 `;
 
@@ -295,8 +317,8 @@ const RightColumn = styled.div`
 
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
-    margin-bottom: 5px;
-    justify-content: space-evenly;
+    max-width: 100%;
+    align-items: stretch;
   }
 `;
 
@@ -307,6 +329,11 @@ const SubHeaderInfoCardWrapper = styled.div`
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
   }
+  @media (max-width: ${mobileWidthLarge}) {
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 18px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -314,6 +341,9 @@ const ButtonWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    flex-direction: column;
   }
 `;
 
@@ -398,6 +428,17 @@ const StyledButton = styled.div`
   @media (max-width: ${desktopWidth}) {
     margin-left: 15px;
   }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    &:first-child {
+      margin-top: 0px;
+      margin-bottom: 16px;
+    }
+    &:last-child {
+      margin-top: 0px;
+    }
+    width: 100%;
+  }
 `;
 
 const SubHeaderInfoCard = styled.div`
@@ -419,6 +460,10 @@ const SubHeaderInfoCard = styled.div`
       width: 12px;
       height: 12px;
     }
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    margin-bottom: 0px;
   }
 `;
 

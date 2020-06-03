@@ -15,6 +15,7 @@ export const themeLightGrayBgColor = "#F1F1F1";
 export const greyThemeDark1 = "#434B5D";
 export const greyThemeDark2 = "#878A91";
 export const greyThemeDark3 = "#69727e";
+export const greyThemeDark4 = "#2F4151";
 export const greyThemeLight = "#b9b9b9";
 export const greyLight1 = "#e8e8e8";
 export const greyThemeLighter = "#f8f8f8";

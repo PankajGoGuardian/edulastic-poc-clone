@@ -1,10 +1,11 @@
+/* eslint-disable no-undef */
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { desktopWidth, lightBlue, white, themeColor } from "@edulastic/colors";
 import { DragSource } from "react-dnd";
 import { FlexContainer } from "@edulastic/common";
-import { AssignmentContent, CustomIcon, ModuleDataName, ModuleAssignedUnit } from "./CurriculumModuleRow";
+import { AssignmentContent, CustomIcon, ModuleDataName, ModuleAssignedUnit } from "./styled";
 import { PlaylistResourceRow, SubResource } from "./PlaylistResourceRow";
 
 const itemSource = {

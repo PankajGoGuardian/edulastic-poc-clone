@@ -1,12 +1,10 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
-import { useDrop } from "react-dnd";
 import { ResouceIcon } from "../ResourceItem";
-import { SupportResourceDropTarget, ResourceLabel, ResourceWrapper, Title, InlineDelete } from "./styled";
-import { ModuleDataName } from "../CurriculumModuleRow";
+import { ResourceLabel, ResourceWrapper, Title, InlineDelete } from "./styled";
+import { ModuleDataName } from "../styled";
 import { removeSubResourceAction } from "../../ducks";
 import { removeSubResourceAction as removeSubresourceInPlaylistAction } from "../../../PlaylistPage/ducks";
 
@@ -21,7 +19,6 @@ export const SubResourceView = ({
   isManageContentActive,
   type,
   isStudent,
-  fromPlaylist,
   inDiffrentiation,
   disabled = false
 }) => {

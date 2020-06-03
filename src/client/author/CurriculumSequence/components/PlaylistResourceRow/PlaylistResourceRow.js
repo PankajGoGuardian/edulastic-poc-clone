@@ -4,7 +4,7 @@ import { themeColor } from "@edulastic/colors";
 import { IconTrash } from "@edulastic/icons";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
-import { LastColumn, IconActionButton, AssignmentButton, ModuleDataName } from "../CurriculumModuleRow";
+import { LastColumn, IconActionButton, AssignmentButton, ModuleDataName } from "../styled";
 import { getUserRole } from "../../../src/selectors/user";
 import { ResouceIcon } from "../ResourceItem";
 import { ResourceWrapper } from "./styled";

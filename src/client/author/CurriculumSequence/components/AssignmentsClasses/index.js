@@ -14,7 +14,7 @@ import additemsIcon from "../../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../../Assignments/assets/presentation.svg";
 import { StatusLabel } from "../../../Assignments/components/TableList/styled";
-import { CustomIcon } from "../CurriculumModuleRow";
+import { CustomIcon } from "../styled";
 
 const AssignmentsClasses = ({ assignmentRows, handleActionClick }) => {
   const data = assignmentRows?.map((assignment, index) => ({ key: index, ...assignment }));

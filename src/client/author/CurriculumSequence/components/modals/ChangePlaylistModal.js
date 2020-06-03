@@ -4,7 +4,7 @@ import { Row, Col, Modal, Avatar, Tooltip } from "antd";
 import { Card } from "@edulastic/common";
 import { IconPlaylist, IconGraduationCap, IconBook } from "@edulastic/icons";
 import { themeLightGrayColor, greyThemeDark1, lightGreen5 } from "@edulastic/colors";
-import { EllipsisContainer } from "../CurriculumModuleRow";
+import { EllipsisContainer } from "../styled";
 
 // inline styles for playlist card
 const cardHeaderRowStyle = { height: "60px", margin: "4px 0px 15px 0px" };

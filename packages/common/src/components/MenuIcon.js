@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { IconMenuOpenClose } from "@edulastic/icons";
-import { tabletWidth, greyThemeDark2 } from "@edulastic/colors";
+import { IconMatrixDot } from "@edulastic/icons";
+import { tabletWidth, greyThemeDark4 } from "@edulastic/colors";
 
-export const MenuIcon = styled(IconMenuOpenClose)`
+export const MenuIcon = styled(IconMatrixDot).attrs({
+  color: greyThemeDark4
+})`
   display: none;
-  fill: ${greyThemeDark2};
   width: 18px;
   pointer-events: all;
 

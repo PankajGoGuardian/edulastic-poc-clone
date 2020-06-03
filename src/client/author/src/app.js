@@ -84,7 +84,6 @@ const Gradebook = lazy(() => import("../Gradebook"));
 const Author = ({
   match,
   history,
-  location,
   role,
   orgId,
   districtProfileLoading,
@@ -330,7 +329,7 @@ const Author = ({
                         </Suspense>
                       )}
                     />
-                    <Route exact path={"/author/gradebook/createClass"} component={ClassCreate} />
+                    <Route exact path="/author/gradebook/createClass" component={ClassCreate} />
                     <Route exact path="/author/add-item" component={ItemAdd} />
                     <Route
                       exact

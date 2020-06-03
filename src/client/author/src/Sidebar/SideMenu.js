@@ -7,14 +7,15 @@ import {
   tabletWidth,
   themeColor,
   extraDesktopWidth,
-  mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  greyThemeLighter
+  greyThemeLighter,
+  smallDesktopWidth,
+  mobileWidthLarge
 } from "@edulastic/colors";
 import { get, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Popover } from "antd";
+import { Layout, Menu as AntMenu, Row, Dropdown, Icon as AntIcon, Popover } from "antd";
 import styled from "styled-components";
 import {
   IconLogoCompact,
@@ -395,21 +396,10 @@ class SideMenu extends Component {
           >
             <AntIcon type={isCollapsed ? "right" : "left"} />
           </ToggleSidemenu>
-          {/* <PerfectScrollbar> */}
-          {isMobile ? (
-            <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
-          ) : (
-            <LogoWrapper className="logoWrapper">
-              {broken ? (
-                <Col span={3}>
-                  <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
-                </Col>
-              ) : null}
-              <Col span={24} style={{ textAlign: isSidebarCollapsed ? "center" : "left" }}>
-                {isCollapsed ? <LogoCompact /> : <OnDarkBgLogo />}
-              </Col>
-            </LogoWrapper>
-          )}
+          <LogoWrapper className="logoWrapper">
+            {broken && <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />}
+            {isCollapsed ? !isMobile && <LogoCompact /> : <OnDarkBgLogo height={isMobile ? "16px" : "26px"} />}
+          </LogoWrapper>
           <MenuWrapper>
             {locationState?.fadeSidebar && <Overlay />}
             <Menu selectedKeys={[defaultSelectedMenu.toString()]} mode="inline" onClick={item => this.handleMenu(item)}>
@@ -512,7 +502,7 @@ class SideMenu extends Component {
                     ) : (
                       <PseudoDiv isCollapsed={isCollapsed}>{this.getInitials()}</PseudoDiv>
                     )}
-                    <div style={{ width: "100px", display: !isCollapsed && !isMobile ? "block" : "none" }}>
+                    <div style={{ width: "100px", display: !isCollapsed ? "block" : "none" }}>
                       <UserName>{userName || "Anonymous"}</UserName>
                       <UserType isVisible={isVisible}>{_userRole}</UserType>
                     </div>
@@ -529,7 +519,6 @@ class SideMenu extends Component {
               </UserInfoButton>
             </MenuFooter>
           </MenuWrapper>
-          {/* </PerfectScrollbar> */}
         </SideBar>
       </FixedSidebar>
     );
@@ -647,20 +636,11 @@ const SideBar = styled(Layout.Sider)`
     }
 
     .mobileCloseIcon {
-      position: absolute;
-      top: 0;
-      right: 0;
-      z-index: 10;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
+      margin-right: 24px;
       svg {
         width: 20px !important;
         height: 20px !important;
-        fill: #7c93a7;
+        fill: #c2c6cb;
       }
     }
 
@@ -680,17 +660,20 @@ const SideBar = styled(Layout.Sider)`
 `;
 
 const LogoWrapper = styled(Row)`
-  height: ${({ theme }) => theme.HeaderHeight.xs}px;
+  height: ${({ theme }) => theme.HeaderHeight.xl}px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 15px;
+  justify-content: flex-start;
+  padding: 0px 25px;
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     height: ${({ theme }) => theme.HeaderHeight.md}px;
   }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${({ theme }) => theme.HeaderHeight.xl}px;
+  @media (max-width: ${smallDesktopWidth}) {
+    height: ${({ theme }) => theme.HeaderHeight.sd}px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    height: ${({ theme }) => theme.HeaderHeight.xs}px;
   }
 `;
 
@@ -724,14 +707,18 @@ const MenuWrapper = styled.div`
   justify-content: space-between;
   flex-direction: column;
   padding: 8px 0px 0px;
-  min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   position: relative;
   overflow: hidden;
-  @media (min-width: ${mediumDesktopExactWidth}) {
+  min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xl}px)`};
+
+  @media (max-width: ${extraDesktopWidthMax}) {
     min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.md}px)`};
   }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xl}px)`};
+  @media (max-width: ${smallDesktopWidth}) {
+    min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.sd}px)`};
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   }
 `;
 
@@ -988,35 +975,12 @@ const FooterDropDown = styled.div`
       }
     }
   }
-  @media (max-width: ${tabletWidth}) {
-    ul {
-      width: 50px;
-      margin: 0 auto;
-      box-shadow: 0 -4px 5px 0 rgba(0, 0, 0, 0.07) !important;
-
-      li {
-        padding: 0 !important;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        a {
-          height: 20px;
-          font-size: 0 !important;
-        }
-      }
-    }
-  }
 `;
 
 const MenuFooter = styled.div`
   position: static;
   width: 100%;
   margin-top: auto;
-
-  @media (max-width: ${tabletWidth}) {
-    display: flex;
-  }
 `;
 
 const HelpText = styled.span`
@@ -1050,19 +1014,6 @@ const QuestionButton = styled.div`
       fill: ${props => props.theme.sideMenu.helpIconHoverColor};
     }
   }
-  @media (max-width: ${tabletWidth}) {
-    width: 50px;
-    margin: 0 auto 0 18px;
-
-    &.active {
-      opacity: 0;
-      pointer-events: none;
-    }
-  }
-  @media (max-height: 650px) {
-    height: 36px;
-    margin: 0px;
-  }
 `;
 
 const UserImg = styled.div`
@@ -1095,6 +1046,9 @@ const UserInfoButton = styled.div`
     left: 0px !important;
     top: unset !important;
     bottom: 80px !important;
+    @media (max-width: ${mobileWidthLarge}) {
+      bottom: 75px !important;
+    }
   }
 
   .footerDropdown {
@@ -1116,23 +1070,10 @@ const UserInfoButton = styled.div`
   }
 
   @media (max-width: ${tabletWidth}) {
-    width: 50px;
-    padding: 0;
-    margin: 0 18px 0 auto;
-    background: ${props => (props.isVisible ? white : "transparent")};
-    border-radius: ${props => (props.isVisible ? "0 0 15px 15px" : "50%")};
-
     &.active {
       opacity: 0;
       pointer-events: none;
       background: transparent;
-    }
-
-    .footerDropdown {
-      padding: 0;
-      border-radius: 50%;
-      width: 50px;
-      margin: 0;
     }
   }
 `;
@@ -1171,15 +1112,11 @@ const IconContainer = styled.span`
     margin-right: 0;
     box-shadow: none;
   }
-  @media (max-width: ${tabletWidth}) {
-    margin-right: 0;
-    box-shadow: none;
-  }
 `;
 
 const HelpIcon = styled(IconQuestion)`
   fill: #1fe3a1;
-  width: 25px;
+  width: auto;
   height: 22px;
 `;
 

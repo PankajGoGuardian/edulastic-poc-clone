@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component, Suspense, lazy } from "react";
 import { capitalize, get, isUndefined, isEmpty } from "lodash";
 import qs from "qs";
@@ -23,7 +22,7 @@ import { getUserNameSelector } from "./author/src/selectors/user";
 import { fetchUserAction, isProxyUser as isProxyUserSelector } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
-import { getWordsInURLPathName, isLoggedIn } from "./common/utils/helpers";
+import { getWordsInURLPathName } from "./common/utils/helpers";
 import LoggedOutRoute from "./common/components/loggedOutRoute";
 import PrivateRoute from "./common/components/privateRoute";
 import V1Redirect from "./author/V1Redirect";
@@ -208,7 +207,7 @@ class App extends Component {
     let defaultRoute = "";
     let redirectRoute = "";
     if (!publicPath) {
-      const path = getWordsInURLPathName(this.props.location.pathname);
+      const path = getWordsInURLPathName(location.pathname);
       if (user && user.isAuthenticated) {
         const role = get(user, ["user", "role"]);
         if (role === "teacher") {
@@ -242,22 +241,22 @@ class App extends Component {
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (
         !(
-          this.props.location.pathname.toLocaleLowerCase().includes("/getstarted") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/signup") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
+          location.pathname.toLocaleLowerCase().includes("/getstarted") ||
+          location.pathname.toLocaleLowerCase().includes("/signup") ||
+          location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
+          location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
           (path[0] && ["district", "school"].includes(path[0].toLocaleLowerCase())) ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/fwd") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/resetpassword") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/inviteteacher") ||
+          location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
+          location.pathname.toLocaleLowerCase().includes("/fwd") ||
+          location.pathname.toLocaleLowerCase().includes("/resetpassword") ||
+          location.pathname.toLocaleLowerCase().includes("/inviteteacher") ||
           // third-party auth
-          this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
-          this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
+          location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
+          location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
+          location.pathname.toLocaleLowerCase().includes("/auth/google")
         )
       ) {
-        if (this.props.location.pathname.toLocaleLowerCase().includes("/home")) {
+        if (location.pathname.toLocaleLowerCase().includes("/home")) {
           localStorage.setItem("thirdPartySignOnRole", roleuser.STUDENT);
         }
         if (!getCurrentPath().includes("/login")) {
@@ -299,9 +298,10 @@ class App extends Component {
       _userRole = "Content Author";
     }
     // signup routes hidden till org reference is not done
+    const { showAppUpdate, canShowCliBanner } = this.state;
     return (
       <div>
-        <AppUpdateModal visible={this.state.showAppUpdate} onRefresh={this.handleOk} />
+        <AppUpdateModal visible={showAppUpdate} onRefresh={this.handleOk} />
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>
@@ -321,8 +321,7 @@ class App extends Component {
               />
             )}
             <Switch>
-              {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
-              redirectRoute !== "" ? (
+              {location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() && redirectRoute !== "" ? (
                 <Redirect exact to={redirectRoute} />
               ) : null}
               <PrivateRoute
@@ -422,9 +421,9 @@ class App extends Component {
               <Redirect exact to={defaultRoute} />
             </Switch>
           </DndProvider>
-          {cliBannerVisible && this.state.canShowCliBanner && !sessionStorage.cliBannerShown && (
+          {cliBannerVisible && canShowCliBanner && !sessionStorage.cliBannerShown && (
             <CLIAccessBanner
-              visible={cliBannerVisible && this.state.canShowCliBanner}
+              visible={cliBannerVisible && canShowCliBanner}
               location={location}
               onClose={() => {
                 this.setState({ canShowCliBanner: false });

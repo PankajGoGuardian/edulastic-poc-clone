@@ -10,6 +10,24 @@ import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
 import { getMathTemplate } from "../../../utils/variables";
 
+/**
+ *
+ * @param {String} userAnswer
+ * @param {Boolean} isMath
+ * @param {String} unit
+ *
+ * combines the unit and value in case of math with unit
+ */
+function combineUnitAndValue(userAnswer, isMath, unit) {
+  return userAnswer && userAnswer.value
+    ? isMath
+      ? userAnswer.value.search("=") === -1
+        ? `${userAnswer.value}\\ ${unit}`
+        : userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
+      : userAnswer.value
+    : userAnswer?.unit || "";
+}
+
 const CheckBoxedMathBox = ({ value, style }) => {
   const filedRef = useRef();
   const replaceWithMathQuill = () => {
@@ -46,14 +64,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
     checkBoxClass = evaluation[id] ? "right" : "wrong";
   }
 
-  const showValue =
-    userAnswer && userAnswer.value
-      ? isMath
-        ? userAnswer.value.search("=") === -1
-          ? `${userAnswer.value}\\ ${unit}`
-          : userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
-        : userAnswer.value
-      : "";
+  const showValue = combineUnitAndValue(userAnswer, isMath, unit);
 
   /**
    * if its math or math with units, need to convert the latex string to actual math template

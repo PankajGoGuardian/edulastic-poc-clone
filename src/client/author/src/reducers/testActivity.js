@@ -93,11 +93,11 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: state.entities.map(x => {
           if (x.status != "notStarted") {
             return x;
-          } else if (state?.data?.status === "DONE" || state?.additionalData?.endDate < Date.now()) {
+          } if (state ?.data ?.status === "DONE" || state ?.additionalData ?.endDate < Date.now()) {
             return { ...x, status: "absent", present: false };
-          } else {
+          } 
             return x;
-          }
+          
         }),
         /**
          * justified use of cloneDeep because,
@@ -119,7 +119,7 @@ const reducer = (state = initialState, { type, payload }) => {
         allTestActivitiesForStudent: payload
       };
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
-      let entity = payload;
+      const entity = payload;
       nextState = produce(state, _st => {
         if (!state.allTestActivitiesForStudent.includes(entity.testActivityId)) {
           _st.allTestActivitiesForStudent.push(entity.testActivityId);
@@ -131,6 +131,21 @@ const reducer = (state = initialState, { type, payload }) => {
           _st.entities[index].score = 0;
           if (_st.entities[index].testActivityId) {
             _st.currentTestActivityId = _st.entities[index].testActivityId;
+          }
+          if (_st.entities[index].testActivityId != entity.testActivityId) {
+            // a new attempt being added through realtime
+            // handling for showing recent attempts
+            const { studentId } = entity;
+            const { score, _score, maxScore, number, testActivityId } = _st.entities[index];
+            const oldAttempt = {
+              _id: testActivityId,
+              score: score || _score || 0,
+              maxScore,
+              number: number || 1
+            };
+            _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId] || [];
+            _st.data.recentTestActivitiesGrouped[studentId].unshift(oldAttempt);
+            _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId].slice(0, 2);
           }
           _st.entities[index].testActivityId = entity.testActivityId;
 
@@ -171,11 +186,11 @@ const reducer = (state = initialState, { type, payload }) => {
         _state.entities = state.entities.map(x => {
           if (x.status != "notStarted") {
             return x;
-          } else if (_state?.data?.status === "DONE" || _state?.additionalData?.endDate < Date.now()) {
+          } if (_state ?.data ?.status === "DONE" || _state ?.additionalData ?.endDate < Date.now()) {
             return { ...x, status: "absent", present: false };
-          } else {
+          } 
             return x;
-          }
+          
         });
       });
 
@@ -186,7 +201,7 @@ const reducer = (state = initialState, { type, payload }) => {
         if (entityIndex != -1) {
           _st.entities[entityIndex].status = "submitted";
           _st.entities[entityIndex].graded = graded;
-          for (let qAct of _st.entities[entityIndex].questionActivities) {
+          for (const qAct of _st.entities[entityIndex].questionActivities) {
             if (qAct.notStarted) {
               qAct.skipped = true;
               qAct.notStarted = undefined;
@@ -203,11 +218,11 @@ const reducer = (state = initialState, { type, payload }) => {
          * @type string[]
          */
         const questionIds = payload;
-        let questionIdsMaxScore = {};
-        for (let qid of questionIds) {
+        const questionIdsMaxScore = {};
+        for (const qid of questionIds) {
           questionIdsMaxScore[qid] = getMaxScoreOfQid(qid, _st.data.testItemsData);
         }
-        for (let entity of _st.entities) {
+        for (const entity of _st.entities) {
           const matchingQids = entity.questionActivities.filter(x => questionIds.includes(x._id));
           entity.maxScore -= matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
           entity.questionActivities = entity.questionActivities.filter(x => !questionIds.includes(x._id));
@@ -216,12 +231,12 @@ const reducer = (state = initialState, { type, payload }) => {
       return nextState;
     case REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE:
       nextState = produce(state, _st => {
-        let questionIdsMaxScore = {};
-        for (let { qid, maxScore } of payload) {
+        const questionIdsMaxScore = {};
+        for (const { qid, maxScore } of payload) {
           questionIdsMaxScore[qid] = maxScore;
         }
         const questionIds = payload.map(x => x.qid);
-        for (let entity of _st.entities) {
+        for (const entity of _st.entities) {
           const matchingQids = entity.questionActivities.filter(x => questionIds.includes(x._id));
           entity.maxScore += matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
         }
@@ -238,8 +253,7 @@ const reducer = (state = initialState, { type, payload }) => {
             );
             if (itemIndex == -1) {
               _st.entities[entityIndex].questionActivities.push(questionItem);
-            } else {
-              if (!maxScore && (score || score === 0)) {
+            } else if (!maxScore && (score || score === 0)) {
                 delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
                 const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
                 _st.entities[entityIndex].questionActivities[itemIndex] = { ...oldQAct, ...questionItem, score };
@@ -261,7 +275,6 @@ const reducer = (state = initialState, { type, payload }) => {
                   )
                 };
               }
-            }
             if (score || score === 0) {
               _st.entities[entityIndex].score = _st.entities[entityIndex].questionActivities.reduce(
                 (acc, x) => acc + (x.score || 0),
@@ -281,7 +294,7 @@ const reducer = (state = initialState, { type, payload }) => {
           const studentIndexes = students
             .map(studentId => _st.entities.findIndex(x => x.studentId === studentId))
             .filter(x => x > -1);
-          for (let index of studentIndexes) {
+          for (const index of studentIndexes) {
             _st.entities[index].status = "redirected";
             _st.entities[index].redirected = true;
             _st.entities[index].score = 0;
@@ -317,9 +330,9 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     case UPDATE_PASSWORD_DETAILS:
       const {
-        assignmentPassword = state?.additionalData?.assignmentPassword,
-        passwordExpireTime = state?.additionalData?.passwordExpireTime,
-        passwordExpireIn = state?.additionalData?.passwordExpireIn
+        assignmentPassword = state ?.additionalData ?.assignmentPassword,
+        passwordExpireTime = state ?.additionalData ?.passwordExpireTime,
+        passwordExpireIn = state ?.additionalData ?.passwordExpireIn
       } = payload;
       return {
         ...state,
@@ -422,13 +435,13 @@ const reducer = (state = initialState, { type, payload }) => {
         studentViewFilter: payload
       };
     case SET_STUDENTS_GRADEBOOK:
-      //take out newly added students from class students
+      // take out newly added students from class students
       const pickClassStudentsObj = state.classStudents.filter(item => payload.includes(item._id));
 
-      //create presenttation data  for new students
+      // create presenttation data  for new students
       const fakeData = createFakeData(pickClassStudentsObj.length);
 
-      //map students data as per test activity api students object structure
+      // map students data as per test activity api students object structure
       const studentsData = pickClassStudentsObj.map((student, index) => ({
         _id: student._id,
         firstName: student.firstName,
@@ -440,7 +453,7 @@ const reducer = (state = initialState, { type, payload }) => {
       const activeStudents = state.data.students.filter(item => !state.removedStudents.includes(item.studentId));
       const dataToTransform = {
         ...state.data,
-        //for DONE assignment student status is absent hence update status to inprogress and increase the endDate so that student status will change to not started for done assignments
+        // for DONE assignment student status is absent hence update status to inprogress and increase the endDate so that student status will change to not started for done assignments
         status: "IN PROGRESS",
         endDate: Date.now() + 100,
         students: [...activeStudents, ...studentsData]
@@ -448,12 +461,12 @@ const reducer = (state = initialState, { type, payload }) => {
 
       return {
         ...state,
-        //update if removed students are added again
+        // update if removed students are added again
         removedStudents: state.removedStudents.filter(item => !payload.includes(item)),
         data: {
           ...state.data,
           status: state.data.status === "DONE" ? "IN PROGRESS" : state.data.status,
-          //merge newly added student to gradebook entity and student object
+          // merge newly added student to gradebook entity and student object
           students: [...activeStudents, ...studentsData]
         },
         entities: uniqBy(transformGradeBookResponse(dataToTransform), "studentId"),

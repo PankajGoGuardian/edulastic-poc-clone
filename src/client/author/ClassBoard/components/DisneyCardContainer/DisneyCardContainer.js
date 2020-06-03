@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
+import styled from 'styled-components';
 import { themeColorLighter, yellow, red, themeColor } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -58,7 +59,8 @@ class DisneyCardContainer extends Component {
   static defaultProps = {
     isPresentationMode: false,
     isLoading: false,
-    testActivityLoading: false
+    testActivityLoading: false,
+    hoverActiveStudentActive: null
   };
 
   constructor(props) {
@@ -77,7 +79,7 @@ class DisneyCardContainer extends Component {
   }
 
   render() {
-    const { testActivity } = this.state;
+    const { testActivity, hoverActiveStudentActive } = this.state;
     const {
       selectedStudents,
       studentSelect,
@@ -93,7 +95,8 @@ class DisneyCardContainer extends Component {
       t,
       dueDate,
       detailedClasses,
-      classId
+      classId,
+      recentAttemptsGrouped
     } = this.props;
 
     const noDataNotification = () => (
@@ -108,7 +111,7 @@ class DisneyCardContainer extends Component {
 
     const showLoader = () => <Spin size="small" />;
     let styledCard = [];
-    const classess = detailedClasses?.filter(({ _id }) => _id === classId);
+    const classess = detailedClasses ?.filter(({ _id }) => _id === classId);
 
     if (testActivity.length > 0) {
       /**
@@ -123,9 +126,9 @@ class DisneyCardContainer extends Component {
         };
 
         let hasUsedScratchPad = false;
-        student?.questionActivities.every(questionActivity => {
+        student ?.questionActivities.every(questionActivity => {
           // check if this breaks after we find a true value.
-          if (questionActivity?.scratchPad?.scratchpad === true) {
+          if (questionActivity ?.scratchPad ?.scratchpad === true) {
             hasUsedScratchPad = true;
             return false;
           }
@@ -143,7 +146,7 @@ class DisneyCardContainer extends Component {
           status.color = yellow;
         } else if (student.status === "submitted") {
           status.status = student.status;
-          if (student?.graded === "GRADED") {
+          if (student ?.graded === "GRADED") {
             status.status = "Graded";
           }
           status.color = themeColorLighter;
@@ -166,17 +169,17 @@ class DisneyCardContainer extends Component {
               <ExclamationMark />
             </span>
           ) : (
-            ""
-          );
+              ""
+            );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
         const pastDueTag =
           (actualDueDate || dueDate) && status.status !== "Absent"
             ? formatStudentPastDueTag({
-                status: student.status,
-                dueDate: actualDueDate || dueDate,
-                endDate: student.endDate
-              })
+              status: student.status,
+              dueDate: actualDueDate || dueDate,
+              endDate: student.endDate
+            })
             : null;
 
         const studentData = (
@@ -185,7 +188,9 @@ class DisneyCardContainer extends Component {
             bordered={false}
             key={index}
             isClickEnable={canShowResponse}
-            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
+            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => { })}
+            onMouseEnter={() => this.setState({ hoverActiveStudentActive: student.studentId })}
+            onMouseLeave={() => this.setState({ hoverActiveStudentActive: null })}
           >
             <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
               <PaginationInfoF>
@@ -205,16 +210,16 @@ class DisneyCardContainer extends Component {
                     {" "}
                   </i>
                 ) : (
-                  <CircularDiv
-                    isLink={viewResponseStatus.includes(status.status)}
-                    title={isPresentationMode ? "" : student.userName}
-                    onClick={e =>
-                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
-                    }
-                  >
-                    {getAvatarName(student.studentName)}
-                  </CircularDiv>
-                )}
+                    <CircularDiv
+                      isLink={viewResponseStatus.includes(status.status)}
+                      title={isPresentationMode ? "" : student.userName}
+                      onClick={e =>
+                        viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                      }
+                    >
+                      {getAvatarName(student.studentName)}
+                    </CircularDiv>
+                  )}
                 <StyledName>
                   <StyledParaF
                     isLink={viewResponseStatus.includes(status.status)}
@@ -247,8 +252,8 @@ class DisneyCardContainer extends Component {
                       )}
                     </>
                   ) : (
-                    <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
-                  )}
+                      <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
+                    )}
                 </StyledName>
                 <RightAlignedCol>
                   <Row>
@@ -286,6 +291,7 @@ class DisneyCardContainer extends Component {
                   </Row>
                 </RightAlignedCol>
               </PaginationInfoF>
+
               <PaginationInfoS>
                 <PerfomanceSection>
                   <StyledFlexDiv>
@@ -338,6 +344,40 @@ class DisneyCardContainer extends Component {
                     return null;
                   })}
               </PaginationInfoT>
+
+              {recentAttemptsGrouped ?.[student.studentId] ?.length > 0 && hoverActiveStudentActive === student.studentId &&
+                (
+                  <RecentAttemptsContainer>
+                    <PaginationInfoS>
+
+                      <PerfomanceSection>
+                        <StyledFlexDiv>
+                          <StyledParaFF>Performance</StyledParaFF>
+                        </StyledFlexDiv>
+                        <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
+                          <AttemptDiv>
+                            <StyledParaSS>
+                              {round(student.score || student._score, 2) || 0} / {student.maxScore || 0}
+                            </StyledParaSS>
+                            <StyledParaSSS>
+                              {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
+                          </StyledParaSSS>
+                            <p>Attempt {recentAttemptsGrouped[student.studentId][0].number + 1}</p>
+                          </AttemptDiv>
+                          {recentAttemptsGrouped ?.[student.studentId].map(attempt =>
+                            <AttemptDiv key={attempt._id || attempt.id}>
+                              <StyledParaSS>
+                                {round(attempt.score, 2) || 0} / {attempt.maxScore || 0}
+                              </StyledParaSS>
+                              <StyledParaSSS>
+                                {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
+                            </StyledParaSSS>
+                              <p>Attempt {attempt.number}</p>
+                            </AttemptDiv>)}
+                        </StyledFlexDiv>
+                      </PerfomanceSection>
+                    </PaginationInfoS>
+                  </RecentAttemptsContainer>)}
             </WithDisableMessage>
           </StyledCard>
         );
@@ -363,10 +403,38 @@ class DisneyCardContainer extends Component {
 const withConnect = connect(state => ({
   isLoading: get(state, "classResponse.loading"),
   testActivityLoading: testActivtyLoadingSelector(state),
-  isItemsVisible: isItemVisibiltySelector(state)
+  isItemsVisible: isItemVisibiltySelector(state),
+  recentAttemptsGrouped: state ?.author_classboard_testActivity ?.data ?.recentTestActivitiesGrouped || {}
 }));
 
 export default compose(
   withNamespaces("classBoard"),
   withConnect
 )(DisneyCardContainer);
+
+const AttemptDiv = styled.div`
+  text-align:center;
+  width:33%;
+  ${StyledParaSSS} {
+    margin-left:0;
+  }
+`;
+
+const RecentAttemptsContainer = styled.div`
+  position: absolute;
+  top: 98px;
+  width: 100%;
+  left: 0px; 
+  padding-left: 20px;
+  box-sizing: border-box;
+  padding-right: 20px;
+  height: 80px; 
+  background: #fff;
+  opacity:0;
+  transition: opacity 0.7s ;
+  ${StyledCard}:hover & {
+    opacity:1;
+  }
+`;
+
+

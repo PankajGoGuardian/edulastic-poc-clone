@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+import MixedFraction from "../assets/keyboardButtons/941.svg";
 import Group942 from "../assets/keyboardButtons/942.svg";
 import Group943 from "../assets/keyboardButtons/943.svg";
 import Group944 from "../assets/keyboardButtons/944.svg";
@@ -141,6 +142,14 @@ const BASIC = [
     command: "cmd"
   },
   {
+    handler: "{\\mathrm{}}\\frac{\\mathrm{}}{\\mathrm{}}",
+    labelcy: "mixedFraction",
+    value: "mixedFraction",
+    label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
+    types: ["basic"],
+    command: "write"
+  },
+  {
     handler: "\\sqrt",
     labelcy: "sqrt",
     label: <CustomImage src={Sqrt} width={32} height={32} role="presentation" />,
@@ -267,6 +276,14 @@ const INTERMEDIATE = [
     label: <CustomImage src={Fraction} width={25} height={40} role="presentation" />,
     types: ["intermediate"],
     command: "cmd"
+  },
+  {
+    handler: "{\\mathrm{}}\\frac{\\mathrm{}}{\\mathrm{}}",
+    labelcy: "mixedFraction",
+    value: "mixedFraction",
+    label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
+    types: ["intermediate"],
+    command: "write"
   },
   {
     handler: "^",
@@ -1094,6 +1111,14 @@ export const TAB_BUTTONS = [
         label: <CustomImage src={Fraction} width={25} height={40} role="presentation" />,
         types: ["all"],
         command: "cmd"
+      },
+      {
+        handler: "{\\mathrm{}}\\frac{\\mathrm{}}{\\mathrm{}}",
+        labelcy: "mixedFraction",
+        value: "mixedFraction",
+        label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
+        types: ["all"],
+        command: "write"
       },
       {
         handler: "\\sqrt",

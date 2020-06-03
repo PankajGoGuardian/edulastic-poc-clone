@@ -62,12 +62,12 @@ const Actions = ({
 
   return (
     <FlexContainer>
-      <Label>
+      <Label style={{ whiteSpace: "nowrap", marginRight: "10px" }}>
         <span>{numberOfSelectedItems || 0} </span>
         {t("component.item.itemCount")}
       </Label>
       <Dropdown overlay={menu} placement="bottomCenter">
-        <EduButton height="30px" width="150px" isGhost>
+        <EduButton height="30px" width="145px" isGhost>
           {t("component.item.actions")}
         </EduButton>
       </Dropdown>

@@ -19,7 +19,6 @@ import {
   Container,
   ButtonsContainer,
   ColumnContentArea,
-  ReportIssueButton,
   PassageNavigation,
   Divider,
   CollapseBtn,
@@ -39,7 +38,6 @@ import {
 import { getUserId, getUserFeatures, getUserSelector, getUserRole } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
-import ScoreBlock from "../ScoreBlock";
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -361,8 +359,7 @@ class AuthorTestItemPreview extends Component {
       clearView,
       page,
       toggleReportIssue,
-      onlySratchpad,
-      viewComponent = ""
+      onlySratchpad
     } = this.props;
 
     return (
@@ -384,10 +381,6 @@ class AuthorTestItemPreview extends Component {
           justifyContent="flex-end"
           style={onlySratchpad ? { visibility: "hidden", position: "relative" } : { position: "relative" }}
         >
-          {/* Using conditional flag, because ScoreBlock is also being used in author preview tab. */}
-
-          {viewComponent === "authorPreviewPopup" ? <ScoreBlock customStyle={{ left: "-5px" }} /> : null}
-
           {isAnswerBtnVisible && (
             <>
               <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={handleCheckAnswer}>

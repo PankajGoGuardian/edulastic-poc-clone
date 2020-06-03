@@ -4,7 +4,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Button, Modal, message } from "antd";
+import { Spin, Modal, message } from "antd";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -37,6 +37,7 @@ import { allowDuplicateCheck } from "../../../utils/permissionCheck";
 
 import { Nav } from "../../../../../assessment/themes/common";
 import { getAssignmentsSelector } from "../../../../AssignTest/duck";
+import ScoreBlock from "../ScoreBlock";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -241,6 +242,12 @@ class PreviewModal extends React.Component {
     );
   };
 
+  getBtnStyle = addedToTest => ({
+    backgroundColor: !addedToTest ? "#fff" : themeColor,
+    color: !addedToTest ? themeColor : "#fff",
+    borderColor: !addedToTest ? themeColor : ""
+  });
+
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -304,24 +311,49 @@ class PreviewModal extends React.Component {
         {this.navigationBtns()}
         <HeadingWrapper>
           <Title>Preview</Title>
-          {isPassage && showAddPassageItemToTestButton && (
-            <ButtonsWrapper added={this.isAddOrRemove}>
-              <Button onClick={this.handleSelection}>
+          <FlexContainer justifyContent="flex-end" width="100%">
+            <ScoreBlock
+              customStyle={{
+                position: "relative",
+                top: "unset",
+                right: "unset",
+                bottom: "unset",
+                left: "unset",
+                margin: "0 5px",
+                transform: "unset"
+              }}
+            />
+          </FlexContainer>
+
+          <ModalTopAction>
+            {isPassage && showAddPassageItemToTestButton && (
+              <EduButton
+                style={this.getBtnStyle(this.isAddOrRemove)}
+                IconBtn
+                type="primary"
+                width="210px" // default width is 32px
+                height="32px"
+                justifyContent="space-between"
+                onClick={this.handleSelection}
+              >
                 {this.isAddOrRemove ? (
                   <>
                     <PlusIcon>+</PlusIcon>
-                    {" ADD PASSAGE TO TEST"}
+                    {/* 100% - icon width(20) - icon margin(20) */}
+                    <FlexContainer width="calc(100% - 40px)" justifyContent="center">
+                      ADD PASSAGE TO TEST
+                    </FlexContainer>
                   </>
                 ) : (
                   <>
                     <PlusIcon>-</PlusIcon>
-                    {" REMOVE"}
+                    <FlexContainer width="calc(100% - 40px)" justifyContent="center">
+                      REMOVE
+                    </FlexContainer>
                   </>
                 )}
-              </Button>
-            </ButtonsWrapper>
-          )}
-          <ModalTopAction>
+              </EduButton>
+            )}
             <EduButton IconBtn type="primary" width="140px" height="32px" onClick={this.toggleFullModal}>
               {fullModal ? <IconCollapse /> : <IconExpand />} EXPAND
             </EduButton>
@@ -543,49 +575,15 @@ const Title = styled.div`
   user-select: none;
 `;
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  button {
-    margin-right: 40px;
-    background-color: ${props => (!props.added ? "#fff" : themeColor)};
-    color: ${props => (!props.added ? themeColor : "#fff")};
-    height: 45px;
-    width: 210px;
-    font-size: 11px;
-    &:hover {
-      color: ${themeColor};
-    }
-    &:active,
-    &:focus {
-      background-color: ${props => (!props.added ? "#fff" : themeColor)};
-      color: ${props => (!props.added ? themeColor : "#fff")};
-    }
-    &:hover,
-    &:active,
-    &:focus {
-      span {
-        position: absolute;
-      }
-    }
-  }
-  * {
-    margin: 0 10px;
-  }
-`;
-
 export const PlusIcon = styled.span`
-  position: absolute;
-  display: inline-block;
+  position: relative;
   width: 20px;
   height: 20px;
   background: #fff;
   border-radius: 50%;
-  margin-right: 10px;
+  margin: 0 0 0 20px !important;
   border: 1px solid ${themeColor};
   color: ${themeColor};
-  left: 0px;
-  top: 12px;
   font-size: 18px;
   line-height: 1;
 `;

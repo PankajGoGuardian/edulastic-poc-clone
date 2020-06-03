@@ -165,7 +165,8 @@ const methodOptionsGrouped = {
       "isExpanded",
       "isSimplified",
       "isMixedFraction",
-      "isRationalized"
+      "isRationalized",
+      "requireIntervalNotation"
     ],
     "INTERPRET THE VALUES AS: ": [
       "automatic",

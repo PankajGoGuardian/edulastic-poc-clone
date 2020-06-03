@@ -400,6 +400,16 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.isRationalized")}
             />
           );
+        case "requireIntervalNotation":
+          return (
+            <CheckOption
+              // Todo: dataCy
+              optionKey="requireIntervalNotation"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.requireIntervalNotation")}
+            />
+          );
         default:
           return null;
       }
@@ -444,6 +454,7 @@ const MathFormulaAnswerMethod = ({
   };
 
   const renderMethodsOptionsGrouped = () => {
+    console.log({method:methodOptionsGrouped[method]})
     const groupedMethodOptions = methodOptionsGrouped[method];
     if (groupedMethodOptions) {
       return Object.keys(groupedMethodOptions).map(key => {

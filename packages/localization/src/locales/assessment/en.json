@@ -895,7 +895,8 @@
       "interpretAsList": "Ordered List",
       "setDecimalSeparator": "Set Decimal Separator",
       "interpretAsInterval": "Interval",
-      "interpretAsNumber": "Number"
+      "interpretAsNumber": "Number",
+      "requireIntervalNotation": "INTERVAL NOTATION"
     },
     "matrix": {
       "matrixStyle": "Matrix style",

@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { isNumber } from "lodash";
 import styled from "styled-components";
+import { MathFormulaDisplay } from "@edulastic/common";
 import {
   mobileWidthLarge,
   desktopWidth,
@@ -89,7 +90,7 @@ const CurriculumSubHeader = ({
                 )}
               </SubHeaderModuleProgressTagContainer>
             </SubHeaderModuleProgressContainer>
-            <SubHeaderDescription>{description}</SubHeaderDescription>
+            <SubHeaderDescription dangerouslySetInnerHTML={{ __html: description }} />
           </SubHeaderTitleContainer>
           <RightColumn>
             <SubHeaderInfoCardWrapper>
@@ -275,7 +276,7 @@ const SubHeaderModuleProgressTagContainer = styled.div`
   justify-content: flex-start;
 `;
 
-const SubHeaderDescription = styled.p`
+const SubHeaderDescription = styled(MathFormulaDisplay)`
   color: ${lightGrey6};
   font-size: 14px;
   text-align: justify;

@@ -1,5 +1,5 @@
 import { tagsApi } from "@edulastic/api";
-import { FieldLabel, SelectInputStyled, TextAreaInputStyled, TextInputStyled } from "@edulastic/common";
+import { FieldLabel, SelectInputStyled, TextInputStyled, FroalaEditor } from "@edulastic/common";
 import { Col, message, Row, Select } from "antd";
 import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
@@ -26,13 +26,12 @@ export const renderAnalytics = (title, Icon) => (
 const PlayListDescription = ({ onChangeField, description }) => (
   <>
     <FieldLabel>Description</FieldLabel>
-    <TextAreaInputStyled
-      isPlaylist
-      value={description}
-      onChange={e => onChangeField("description", e.target.value)}
-      size="large"
-      placeholder="Enter a description"
-      height="187px"
+    <FroalaEditor
+      value={description || ""}
+      border="border"
+      onChange={dec => onChangeField("description", dec)}
+      toolbarId="playlist-description"
+      editorHeight={187}
     />
   </>
 );
@@ -229,7 +228,7 @@ const Sidebar = ({
             getPopupContainer={triggerNode => triggerNode.parentNode}
             filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
           >
-            {!!searchValue.trim() ? (
+            {searchValue.trim() ? (
               <Select.Option key={0} value={searchValue} title={searchValue}>
                 {`${searchValue} (Create new Tag)`}
               </Select.Option>
@@ -305,15 +304,15 @@ Sidebar.propTypes = {
   onChangeGrade: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   subjects: PropTypes.array.isRequired,
-  owner: PropTypes.bool,
+  owner: PropTypes.bool.isRequired,
   description: PropTypes.string.isRequired,
   textColor: PropTypes.string.isRequired,
-  createdBy: PropTypes.object,
-  thumbnail: PropTypes.string,
-  backgroundColor: PropTypes.string,
-  onChangeColor: PropTypes.func,
-  isTextColorPickerVisible: PropTypes.bool,
-  isBackgroundColorPickerVisible: PropTypes.bool,
+  createdBy: PropTypes.object.isRequired,
+  thumbnail: PropTypes.string.isRequired,
+  backgroundColor: PropTypes.string.isRequired,
+  onChangeColor: PropTypes.func.isRequired,
+  isTextColorPickerVisible: PropTypes.bool.isRequired,
+  isBackgroundColorPickerVisible: PropTypes.bool.isRequired,
   onChangeSubjects: PropTypes.func.isRequired
 };
 

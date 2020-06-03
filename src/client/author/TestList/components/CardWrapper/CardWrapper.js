@@ -16,9 +16,9 @@ class CardWrapper extends Component {
     windowWidth: PropTypes.number,
     blockStyle: PropTypes.string,
     isTestAdded: PropTypes.bool,
-    mode: PropTypes.string,
-    removeTestFromPlaylist: PropTypes.func,
-    addTestToPlaylist: PropTypes.func,
+    mode: PropTypes.string.isRequired,
+    removeTestFromPlaylist: PropTypes.func.isRequired,
+    addTestToPlaylist: PropTypes.func.isRequired,
     owner: PropTypes.object
   };
 

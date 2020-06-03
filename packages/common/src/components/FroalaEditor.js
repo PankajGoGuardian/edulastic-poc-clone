@@ -271,6 +271,19 @@ const BackgroundStyleWrapper = styled.div.attrs({
       `;
     }
   }}
+
+  ${({ editorHeight }) => {
+    if (editorHeight > 40) {
+      return `
+        .fr {
+          &-box {
+            height: ${editorHeight}px;
+            overflow: auto;
+          }
+        }
+      `;
+    }
+  }}
 `;
 
 export const ToolbarContainer = styled.div`
@@ -395,6 +408,7 @@ const CustomEditor = ({
   buttons,
   advancedAreOpen,
   customCharacters,
+  editorHeight,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -922,6 +936,7 @@ const CustomEditor = ({
         theme={theme}
         fontSize={fontSize}
         className={className}
+        editorHeight={editorHeight}
       >
         {toolbarId && (
           <ToolbarContainer
@@ -961,7 +976,8 @@ CustomEditor.propTypes = {
   imageDefaultWidth: PropTypes.number,
   initOnClick: PropTypes.bool,
   border: PropTypes.string,
-  centerContent: PropTypes.bool
+  centerContent: PropTypes.bool,
+  editorHeight: PropTypes.number
 };
 
 CustomEditor.defaultProps = {
@@ -974,7 +990,8 @@ CustomEditor.defaultProps = {
   readOnly: false,
   imageDefaultWidth: 300,
   border: "none",
-  centerContent: false
+  centerContent: false,
+  editorHeight: null
 };
 
 const enhance = compose(

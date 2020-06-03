@@ -35,7 +35,8 @@ export const questionTypeKey = {
   CHOICE_MATRIX_LABEL: "CHOICE_LABEL",
   CLOZE_TEXT: "CLOZE_TEXT",
   CLOZE_DROP_DOWN: "CLOZE_DROPDOWN",
-  ESSAY_RICH: "ESSAY_RICH"
+  ESSAY_RICH: "ESSAY_RICH",
+  CLOZE_DRAG_DROP: "CLOZE_DRAG_DROP"
 };
 
 export const attemptTypes = {

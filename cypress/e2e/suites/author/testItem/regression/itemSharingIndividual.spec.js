@@ -42,6 +42,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
   context(`>item sharing 'for individuals'`, () => {
     context(">with 'Can Edit, Add/Remove Items' permission", () => {
       before(">login as author and creat test", () => {
+        cy.getAllTestsAndDelete(Author[EMAIL]);
+        cy.getAllItemsAndDelete(Author[EMAIL]);
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.createTest(TEST, true).then(() => {
           itemIds = testLibrary.items;
@@ -57,6 +59,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.sharedWithMe();
+        itemListPage.verifyNoOfItemsInContainer(ITEMS.length);
         itemKeysInTest.forEach((item, index) => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.verifyPresenceOfItemById(itemIds[index]);

@@ -2,14 +2,19 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import { subject, grades } from "../../../../framework/constants/assignmentStatus";
 import { DOK, DIFFICULTY } from "../../../../framework/constants/questionAuthoring";
-import { COLLECTION } from "../../../../framework/constants/questionTypes";
+import { COLLECTION, questionTypeKey } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
   const itemlist = new ItemListPage();
   const itemKeys = ["ESSAY_RICH.1", "ESSAY_RICH.2", "ESSAY_RICH.3", "ESSAY_RICH.4", "ESSAY_RICH.5", "MCQ_MULTI.6"];
   const user = "teacher.item.filters@snapwiz.com";
   const mathCommonCore = "Math - Common Core";
-  const filters = [
+  const standard_1 = "K.CC.A.1";
+  const standard_2 = "K.CC.A.2";
+  const filterAttr = Cypress._.values(itemlist.searchFilters.itemBankFilterAttrs);
+
+  let queType;
+  let filters = [
     {
       standards: {
         subject: "Mathematics",
@@ -20,8 +25,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 3"],
-      id: "5ecfd4523a814400077da2ad",
-      queType: "Essay Rich Text"
+      id: "5ed60c179b0c340007b33ecb",
+      queType: "ESSAY_RICH"
     },
     {
       standards: {
@@ -33,8 +38,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Extended Thinking",
       difficulty: "Hard",
       tags: ["item tag 1"],
-      id: "5ecfd478a9222f0007a11915",
-      queType: "Essay Rich Text"
+      id: "5ed60c3f99cd5200070b046b",
+      queType: "ESSAY_RICH"
     },
     {
       standards: {
@@ -46,8 +51,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Strategic Thinking",
       difficulty: "Easy",
       tags: ["item tag 1"],
-      id: "5ecfd4a63a814400077da2af",
-      queType: "Essay Rich Text"
+      id: "5ed60c769b0c340007b33ecd",
+      queType: "ESSAY_RICH"
     },
     {
       standards: {
@@ -59,8 +64,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 2"],
-      id: "5ecfd4e33a814400077da2b1",
-      queType: "Essay Rich Text"
+      id: "5ed60cb2e49b9a0008109805",
+      queType: "ESSAY_RICH"
     },
     {
       standards: {
@@ -72,8 +77,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Hard",
       tags: ["item tag 1"],
-      id: "5ecfd529e880fb00083c5cf6",
-      queType: "Essay Rich Text"
+      id: "5ed60cfbe49b9a0008109807",
+      queType: "ESSAY_RICH"
     },
     {
       standards: {
@@ -85,45 +90,46 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 2"],
-      id: "5ecfd585d4924b0007478ad1",
-      queType: "Multiple Choice"
+      id: "5ed60d5ce49b9a0008109809",
+      queType: "MCQ_MULTI"
     }
   ];
-
   before("> create items", () => {
     cy.login("teacher", user);
-    // cy.getAllTestsAndDelete(user);
-    // cy.getAllItemsAndDelete(user);
-    // filters = [];
-    // itemKeys.forEach((item, index) => {
-    //   itemlist.createItem(item, index + 1).then(id => {
-    //     const filtersObj = {};
-    //     cy.fixture("questionAuthoring").then(questionData => {
-    //       const itemProps = questionData[`${item.split(".")[0]}`][`${item.split(".")[1]}`];
+    itemlist.sidebar.clickOnDashboard();
+    itemlist.sidebar.clickOnItemBank();
+    /*  cy.getAllTestsAndDelete(user);
+    cy.getAllItemsAndDelete(user);
+    filters = [];
+    itemKeys.forEach((item, index) => {
+      itemlist.createItem(item, index + 1).then(id => {
+        const filtersObj = {};
+        cy.fixture("questionAuthoring").then(questionData => {
+          const itemProps = questionData[`${item.split(".")[0]}`][`${item.split(".")[1]}`];
 
-    //       filtersObj.standards = {};
-    //       filtersObj.standards.subject = itemProps.standards[0].subject;
-    //       filtersObj.standards.standardSet = itemProps.standards[0].standardSet;
-    //       filtersObj.standards.standard = itemProps.standards[0].standard;
-    //       filtersObj.standards.grade = [itemProps.standards[0].grade];
-    //       if (itemProps.meta) {
-    //         if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok;
-    //         if (itemProps.meta.difficulty) filtersObj.difficulty = itemProps.meta.difficulty;
-    //         if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags;
-    //       }
-    //       filtersObj.id = id;
-    //       filtersObj.queType = item.split(".")[0] === "MCQ_MULTI" ? "Multiple Choice" : "Essay Rich Text";
-    //       filters.push(filtersObj);
-    //     });
-    //   });
-    // });
+          filtersObj.standards = {};
+          filtersObj.standards.subject = itemProps.standards[0].subject;
+          filtersObj.standards.standardSet = itemProps.standards[0].standardSet;
+          filtersObj.standards.standard = itemProps.standards[0].standard;
+          filtersObj.standards.grade = [itemProps.standards[0].grade];
+          if (itemProps.meta) {
+            if (itemProps.meta.dok) filtersObj.dok = itemProps.meta.dok;
+            if (itemProps.meta.difficulty) filtersObj.difficulty = itemProps.meta.difficulty;
+            if (itemProps.meta.tags) filtersObj.tags = itemProps.meta.tags;
+          }
+          filtersObj.id = id;
+          filtersObj.queType = item.split(".")[0];
+          filters.push(filtersObj);
+        });
+      });
+    }); */
   });
 
-  // before(">", () => {
-  //   cy.writeFile("temp.json", filters);
-  // });
+  /*  before(">", () => {
+    cy.writeFile("temp.json", filters);
+  }); */
 
-  context("> total questions, search, pagination", () => {
+  context("> total questions, search, collapse/expand filters", () => {
     it("> total questions in authored by me", () => {
       itemlist.sidebar.clickOnDashboard();
       itemlist.sidebar.clickOnItemBank();
@@ -183,26 +189,37 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
     });
   });
 
-  context("> ques type, standards, author and item id", () => {
-    before("> set filter", () => {
-      itemlist.searchFilters.setFilters(filters[1]);
-    });
-    it("> quetype, author and item id", () => {
-      itemlist.verifyQuestionTypeById(filters[1].id, "Essay with rich text");
-      itemlist.verifyAuthorById(filters[1].id, "Teacher");
-      itemlist.verifyItemIdById(filters[1].id);
-    });
+  context(`> ques type, standards, author and item id on item cards in 'authored by me'`, () => {
+    [filters[1], filters[5], filters[2]].forEach((filter, index) => {
+      context(`> for filter${index + 1}`, () => {
+        before("> set filter", () => {
+          queType = filter.queType;
+          itemlist.searchFilters.clearAll();
+          itemlist.searchFilters.getAuthoredByMe();
+          filter.queType = itemlist.mapQueTypeKeyToUITextInDropDown(filter.queType);
+          itemlist.searchFilters.setFilters(filter);
+        });
 
-    it("> standards and dok", () => {
-      filters[1].standards.standard.forEach((std, ind) => {
-        if (ind > 0) itemlist.getHiddenStandards(filters[1].id);
-        itemlist.verifyContentById(filters[1].id, std);
+        it("> quetype, author and item id", () => {
+          filter.queType = queType;
+          itemlist.verifyQuestionTypeById(filter.id, filter.queType);
+          itemlist.verifyAuthorById(filter.id, "Teacher");
+          itemlist.verifyItemIdById(filter.id);
+        });
+
+        it("> standards and dok", () => {
+          filter.standards.standard.forEach((std, ind) => {
+            if (ind > 0) itemlist.getHiddenStandards(filter.id);
+            itemlist.verifyContentById(filter.id, std);
+          });
+          itemlist.verifydokByItemId(filter.id, filter.dok);
+        });
       });
-      itemlist.verifydokByItemId(filters[1].id, filters[1].dok);
     });
   });
 
-  context("> filters", () => {
+  // exact verification of all filters as all own items of known count
+  context("> filters in 'authored by me'", () => {
     it("> grades", () => {
       const customFilter = { standards: { grade: [grades.GRADE_2] } };
       const expectedItem = filters.filter(item => item.standards.grade.indexOf(grades.GRADE_2) !== -1);
@@ -245,8 +262,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
     });
 
     it("> question type", () => {
-      const customFilter = { queType: "Essay Rich Text" };
-      const expectedItem = filters.filter(item => item.queType === "Essay Rich Text");
+      const customFilter = { queType: questionTypeKey.ESSAY_RICH };
+      customFilter.queType = itemlist.mapQueTypeKeyToUITextInDropDown(customFilter.queType);
+      const expectedItem = filters.filter(item => item.queType === questionTypeKey.ESSAY_RICH);
 
       itemlist.searchFilters.clearAll();
       itemlist.searchFilters.getAuthoredByMe();
@@ -395,9 +413,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
     });
 
     it("> grades + question type", () => {
-      const customFilter = { standards: { grade: [grades.GRADE_4] }, queType: "Multiple Choice" };
+      const customFilter = {
+        standards: { grade: [grades.GRADE_4] },
+        queType: questionTypeKey.MULTIPLE_CHOICE_MULTIPLE
+      };
+      customFilter.queType = itemlist.mapQueTypeKeyToUITextInDropDown(customFilter.queType);
       const expectedItem = filters.filter(
-        item => item.standards.grade.indexOf(grades.GRADE_4) !== -1 && item.queType === "Multiple Choice"
+        item =>
+          item.standards.grade.indexOf(grades.GRADE_4) !== -1 &&
+          item.queType === questionTypeKey.MULTIPLE_CHOICE_MULTIPLE
       );
 
       itemlist.searchFilters.clearAll();
@@ -436,6 +460,90 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       itemlist.verifyNoOfQuestionsInUI(expectedItem.length);
       expectedItem.forEach(item => {
         itemlist.getItemContainerInlistById(item.id);
+      });
+    });
+  });
+
+  // just UI text verification as items come from multiple users only possible filters along with item cards are verified
+  context(`> filters in 'entire libray'`, () => {
+    it("> presence/absence of filter dropdowns", () => {
+      itemlist.searchFilters.clearAll();
+      filterAttr
+        .filter(value => value !== "selectStatus")
+        .forEach(attr => {
+          itemlist.searchFilters.getFilterButtonByAttr(attr).should("exist");
+        });
+      itemlist.searchFilters.getFilterButtonByAttr("selectStatus").should("not.exist");
+    });
+
+    context(`> question type on item cards`, () => {
+      it("> verify question type with 'Cloze Drop Down'", () => {
+        const customFilter = { queType: questionTypeKey.CLOZE_DROP_DOWN };
+        customFilter.queType = itemlist.mapQueTypeKeyToUITextInDropDown(customFilter.queType);
+
+        itemlist.searchFilters.clearAll();
+        itemlist.searchFilters.setFilters(customFilter);
+        itemlist.verifyQuestionTypeAllItemsInCurrentPage(questionTypeKey.CLOZE_DROP_DOWN);
+      });
+      it("> verify question type with 'Cloze Drag Drop'", () => {
+        const customFilter = { queType: questionTypeKey.CLOZE_DRAG_DROP };
+        customFilter.queType = itemlist.mapQueTypeKeyToUITextInDropDown(customFilter.queType);
+
+        itemlist.searchFilters.clearAll();
+        itemlist.searchFilters.setFilters(customFilter);
+        itemlist.verifyQuestionTypeAllItemsInCurrentPage(questionTypeKey.CLOZE_DRAG_DROP);
+      });
+    });
+
+    context(`> standards on item cards`, () => {
+      it("> verify standards with 'K.CC.A.1'", () => {
+        const customFilter = {
+          standards: {
+            subject: subject.MATH,
+            grade: [grades.KINDERGARTEN],
+            standardSet: mathCommonCore,
+            standard: [standard_1]
+          }
+        };
+        itemlist.searchFilters.clearAll();
+        itemlist.searchFilters.setFilters(customFilter);
+        itemlist.verifyStandardOfAllItemsInCurrentPage(standard_1);
+      });
+      it("> verify question type with 'K.CC.A.2'", () => {
+        const customFilter = {
+          standards: {
+            subject: subject.MATH,
+            grade: [grades.KINDERGARTEN],
+            standardSet: mathCommonCore,
+            standard: [standard_2]
+          }
+        };
+        itemlist.searchFilters.clearAll();
+        itemlist.searchFilters.setFilters(customFilter);
+        itemlist.verifyStandardOfAllItemsInCurrentPage(standard_2);
+      });
+    });
+
+    context("> dok on item cards", () => {
+      Cypress._.values(DOK).forEach(dok => {
+        it(`> for dok ${dok}`, () => {
+          const customFilter = {
+            dok
+          };
+          itemlist.searchFilters.clearAll();
+          itemlist.searchFilters.setFilters(customFilter);
+          itemlist.verifyDokOfAllItemsInCurrentPage(dok);
+        });
+      });
+    });
+  });
+
+  context(`> filters in 'shared with me'`, () => {
+    it("> presence/absence of filter dropdowns", () => {
+      itemlist.searchFilters.clearAll();
+      itemlist.searchFilters.sharedWithMe();
+      filterAttr.forEach(attr => {
+        itemlist.searchFilters.getFilterButtonByAttr(attr).should("exist");
       });
     });
   });

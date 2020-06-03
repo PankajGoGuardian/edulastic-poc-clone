@@ -51,6 +51,13 @@ export default class CypressHelper {
       .then(() => options);
   };
 
+  static verifySelectedOptionInDropDownByAttr = (attr, value, isMultipleSelectionAllowed = false) => {
+    const clas = isMultipleSelectionAllowed ? ".ant-select-selection__choice" : ".ant-select-selection-selected-value";
+    cy.get(`[data-cy="${attr}"]`)
+      .find(`${clas}`)
+      .should("contain", value);
+  };
+
   // datetime => new Date() instance
   static setDateInCalender = (dateTime, time = true) => {
     console.log("time here", dateTime);

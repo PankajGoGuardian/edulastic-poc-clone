@@ -3,6 +3,20 @@ import { DOK } from "../constants/questionAuthoring";
 
 export default class SearchFilters {
   // *** ELEMENTS START ***
+  constructor() {
+    this.itemBankFilterAttrs = {
+      staus: "selectStatus",
+      grades: "selectGrades",
+      subject: "selectSubject",
+      standardSet: "selectSdtSet",
+      standard: "selectStd",
+      queType: "selectqType",
+      dok: "selectDOK",
+      difficulty: "selectDifficulty",
+      collection: "Collections",
+      tags: "selectTags"
+    };
+  }
 
   getSearch = () => cy.get(".ant-input-search");
 
@@ -24,6 +38,8 @@ export default class SearchFilters {
       .get('[data-cy="filter"]')
       .last()
       .find("svg");
+
+  getFilterButtonByAttr = attr => cy.get(`[data-cy="${attr}"]`);
 
   // *** ELEMENTS END ***
 
@@ -122,32 +138,38 @@ export default class SearchFilters {
   getTotalNoOfItemsInBank = () => this.getTotalPagesInPagination().then(count => count * 10);
 
   setFilters = ({ standards, queType, dok, difficulty, collection, status, tags }) => {
+    const dataCyAttributes = this.itemBankFilterAttrs;
     this.routeSearch();
     cy.route("POST", "**/search/browse-standards").as("brwose-standards-1");
     if (standards) {
       if (standards.grade)
-        standards.grade.forEach(sta => {
-          CypressHelper.selectDropDownByAttribute("selectGrades", sta);
+        standards.grade.forEach(grade => {
+          CypressHelper.selectDropDownByAttribute(dataCyAttributes.grades, grade);
           this.waitForSearchResponse();
+          CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.grades, grade, true);
         });
       if (standards.subject) {
-        CypressHelper.selectDropDownByAttribute("selectSubject", standards.subject);
+        CypressHelper.selectDropDownByAttribute(dataCyAttributes.subject, standards.subject);
         this.waitForSearchResponse();
+        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.subject, standards.subject);
       }
       if (standards.standardSet) {
-        CypressHelper.selectDropDownByAttribute("selectSdtSet", standards.standardSet);
+        CypressHelper.selectDropDownByAttribute(dataCyAttributes.standardSet, standards.standardSet);
         this.waitForSearchResponse();
         cy.wait("@brwose-standards-1");
+        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.standardSet, standards.standardSet);
       }
       if (standards.standard)
         standards.standard.forEach(sta => {
-          CypressHelper.selectDropDownByAttribute("selectStd", sta);
+          CypressHelper.selectDropDownByAttribute(dataCyAttributes.standard, sta);
           this.waitForSearchResponse();
+          CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.standard, sta, true);
         });
     }
     if (queType) {
-      CypressHelper.selectDropDownByAttribute("selectqType", queType);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.queType, queType);
       this.waitForSearchResponse();
+      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.queType, queType);
     }
 
     if (dok) {
@@ -171,29 +193,34 @@ export default class SearchFilters {
         default:
           break;
       }
-      CypressHelper.selectDropDownByAttribute("selectDOK", dok);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.dok, dok);
       this.waitForSearchResponse();
+      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.dok, dok);
     }
 
     if (difficulty) {
-      CypressHelper.selectDropDownByAttribute("selectDifficulty", difficulty);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.difficulty, difficulty);
       this.waitForSearchResponse();
+      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.difficulty, difficulty);
     }
 
     if (collection) {
-      CypressHelper.selectDropDownByAttribute("Collections", collection);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.collection, collection);
       this.waitForSearchResponse();
+      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.collection, collection, true);
     }
 
     if (status) {
-      CypressHelper.selectDropDownByAttribute("selectStatus", status);
+      CypressHelper.selectDropDownByAttribute(dataCyAttributes.staus, status);
       this.waitForSearchResponse();
+      CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.staus, status);
     }
 
     if (tags)
       tags.forEach(tag => {
-        CypressHelper.selectDropDownByAttribute("selectTags", tag);
+        CypressHelper.selectDropDownByAttribute(dataCyAttributes.tags, tag);
         this.waitForSearchResponse();
+        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.tags, tag, true);
       });
   };
 

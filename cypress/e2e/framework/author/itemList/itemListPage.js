@@ -1,7 +1,7 @@
 import MCQStandardPage from "./questionType/mcq/mcqStandardPage";
 import ClozeWithTextPage from "./questionType/fillInBlank/clozeWithTextPage";
 import EditItemPage from "./itemDetail/editPage";
-import { questionTypeKey as queTypes } from "../../constants/questionTypes";
+import { questionTypeKey as queTypes, questionType } from "../../constants/questionTypes";
 import MCQMultiplePage from "./questionType/mcq/mcqMultiplePage";
 import MCQTrueFalsePage from "./questionType/mcq/mcqTrueFalsePage";
 import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
@@ -43,7 +43,7 @@ class ItemListPage {
       .trigger("mouseover")
       .then(() => cy.wait(1000));
 
-  getAllItemsCountInListContainer = () => cy.get(".fr-view");
+  getAllItemsInListContainer = () => cy.get(".fr-view");
 
   getQuestionTypeById = id => this.getItemContainerInlistById(id).find('[data-cy="ques-type"]');
 
@@ -208,7 +208,7 @@ class ItemListPage {
 
   verifyNoOfQuestionsInUI = count => this.getTotalNoOfItemsInUI().should("have.text", `${count} Questions Found`);
 
-  verifyNoOfItemsInContainer = count => this.getAllItemsCountInListContainer().should("have.length", count);
+  verifyNoOfItemsInContainer = count => this.getAllItemsInListContainer().should("have.length", count);
 
   verifyContentById = (id, content) =>
     this.getItemContainerInlistById(id)
@@ -225,7 +225,10 @@ class ItemListPage {
         })
     );
 
-  verifyQuestionTypeById = (id, type) => this.getQuestionTypeById(id).should("have.text", type);
+  verifyQuestionTypeById = (id, type) => {
+    const qType = this.mapQueTypeKeyToUITextInItemCard(type);
+    this.getQuestionTypeById(id).should("have.text", qType);
+  };
 
   verifyItemIdById = id => this.getItemIdById(id).should("contain", CypressHelper.getShortId(id));
 
@@ -233,6 +236,90 @@ class ItemListPage {
 
   verifydokByItemId = (id, dok) => this.getItemDOKIById(id).should("contain", dok);
 
+  mapQueTypeKeyToUITextInItemCard = key => {
+    let qType;
+    switch (key) {
+      case queTypes.MULTIPLE_CHOICE_MULTIPLE:
+        qType = "Multiple choice - multiple response";
+        break;
+      case queTypes.ESSAY_RICH:
+        qType = "Essay with rich text";
+        break;
+      case queTypes.CLOZE_DROP_DOWN:
+        qType = "Cloze with Drop Down";
+        break;
+      case queTypes.CLOZE_DRAG_DROP:
+        qType = "Cloze with Drag & Drop";
+        break;
+      default:
+        assert.fail(1, 2, "failed to match que type key in question card");
+        break;
+    }
+    return qType;
+  };
+
+  mapQueTypeKeyToUITextInDropDown = key => {
+    let qType;
+    switch (key) {
+      case queTypes.MULTIPLE_CHOICE_MULTIPLE:
+        qType = "Multiple Choice";
+        break;
+      case queTypes.ESSAY_RICH:
+        qType = "Essay Rich Text";
+        break;
+      case queTypes.CLOZE_DROP_DOWN:
+        qType = "Cloze Drop Down";
+        break;
+      case queTypes.CLOZE_DRAG_DROP:
+        qType = "Cloze Drag Drop";
+        break;
+      default:
+        assert.fail(1, 2, "failed to match que type key in question drop down");
+        break;
+    }
+    return qType;
+  };
+
+  getItemIdByIndex = index =>
+    this.getAllItemsInListContainer()
+      .eq(index)
+      .invoke("attr", "data-cy");
+
+  showAllStandardsOnItemCardById = id =>
+    this.getItemContainerInlistById(id).then($ele => {
+      if ($ele.find(".ant-dropdown-trigger").length === 1) this.getHiddenStandards(id);
+    });
+
+  verifyQuestionTypeAllItemsInCurrentPage = qType => {
+    const queType = this.mapQueTypeKeyToUITextInItemCard(qType);
+    this.getAllItemsInListContainer().each($ele => {
+      cy.wrap($ele)
+        .find('[data-cy="ques-type"]')
+        .should("have.text", queType);
+    });
+  };
+
+  verifyStandardOfAllItemsInCurrentPage = standard => {
+    this.getAllItemsInListContainer().each($ele => {
+      if ($ele.find(".ant-dropdown-trigger").length === 1) {
+        cy.wrap($ele)
+          .find(".ant-dropdown-trigger")
+          .trigger("mouseover");
+        cy.wait(1000);
+      }
+      cy.wrap($ele)
+        .find("span")
+        .contains(standard);
+    });
+  };
+
+  verifyDokOfAllItemsInCurrentPage = dok => {
+    this.getAllItemsInListContainer().each($ele => {
+      cy.wrap($ele)
+        .find('[data-cy="detail_index-0"]')
+        .contains(dok);
+    });
+  };
   // *** APPHELPERS END ***
 }
 

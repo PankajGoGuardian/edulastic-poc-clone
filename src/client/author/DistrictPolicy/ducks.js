@@ -21,9 +21,8 @@ const CREATE_DISTRICT_POLICY_ERROR = "[district policy] create data error";
 const CHANGE_DISTRICT_POLICY_ACTION = "[district policy] save changed data";
 
 export const receiveDistrictPolicyAction = createAction(RECEIVE_DISTRICT_POLICY_REQUEST);
-export const receiveSchoolPolicyAction = schoolId => {
-  return receiveDistrictPolicyAction({ orgType: "institution", orgId: schoolId });
-};
+export const receiveSchoolPolicyAction = schoolId =>
+  receiveDistrictPolicyAction({ orgType: "institution", orgId: schoolId });
 export const receiveDistrictPolicySuccessAction = createAction(RECEIVE_DISTRICT_POLICY_SUCCESS);
 export const receiveDistrictPolicyErrorAction = createAction(RECEIVE_DISTRICT_POLICY_ERROR);
 export const updateDistrictPolicyAction = createAction(UPDATE_DISTRICT_POLICY_REQUEST);
@@ -143,7 +142,8 @@ function* receiveDistrictPolicySaga({ payload }) {
 function* updateDictrictPolicySaga({ payload }) {
   try {
     const updateDistrictPolicy = yield call(settingsApi.updateDistrictPolicy, payload);
-    notification({ type: "success", messageKey:"SavedSuccessfully"});
+    notification({ type: "success", messageKey: "SavedSuccessfully" });
+    yield put(updateDistrictPolicySuccessAction({ ...updateDistrictPolicy }));
   } catch (err) {
     const errorMessage = "Update District Policy is failing";
     notification({ msg:errorMessage});

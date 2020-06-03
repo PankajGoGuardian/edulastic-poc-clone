@@ -4,8 +4,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
 import { maxBy, indexOf } from "lodash";
-import { MathKeyboard, measureText, SelectInputStyled } from "@edulastic/common";
-import { response } from "@edulastic/constants";
+import { MathKeyboard, measureText, SelectInputStyled, MathFormulaDisplay } from "@edulastic/common";
 import { darkBlue } from "@edulastic/colors";
 import { getStemNumeration } from "../../../../utils/helpers";
 
@@ -81,7 +80,7 @@ const SelectUnit = ({
       >
         {allBtns.map((btn, i) => (
           <Option value={btn.handler} key={i}>
-            {btn.label}
+            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: btn.label }} />
           </Option>
         ))}
       </SelectInputStyled>
@@ -121,8 +120,15 @@ const DropDownWrapper = styled.div`
   align-self: stretch;
   height: auto;
   position: relative;
+
   .ant-select-dropdown {
     ${({ menuStyle }) => menuStyle};
+
+    .input__math {
+      border: none;
+      background: none;
+      padding: unset;
+    }
   }
   .ant-select {
     min-width: 118px;
@@ -151,6 +157,12 @@ const DropDownWrapper = styled.div`
     }
     .ant-select-selection-selected-value {
       ${({ isPrintPreview }) => (isPrintPreview ? { color: darkBlue } : {})};
+
+      .input__math {
+        border: none;
+        background: none;
+        padding: unset;
+      }
     }
   }
 `;

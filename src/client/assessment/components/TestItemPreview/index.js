@@ -270,7 +270,7 @@ class TestItemPreview extends Component {
     } = restProps;
 
     const isStudentAttempt = ["studentPlayer", "practicePlayer"].includes(viewComponent);
-    const hideInternalOverflow = isLCBView || isQuestionView || isExpressGrader;
+    const hideInternalOverflow = isLCBView || isQuestionView || isExpressGrader || isReviewTab;
     const borderProps = showScratchpadByDefault
       ? { border: isLCBView ? "1px solid #DADAE4" : "none", borderRadius: "10px" }
       : {};

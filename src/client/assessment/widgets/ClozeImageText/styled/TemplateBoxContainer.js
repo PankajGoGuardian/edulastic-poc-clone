@@ -6,6 +6,10 @@ export const TemplateBoxContainer = styled.div`
   margin: ${props => (props.smallSize ? "-30px -40px" : "0px")};
   flex-direction: ${({ flexDirection }) => (!flexDirection ? null : flexDirection)};
   zoom: ${props => props.theme.widgets.clozeImageText.imageZoom};
-  max-width: 100%;
-  overflow: auto;
+  ${({ hideInternalOverflow }) =>
+    !hideInternalOverflow &&
+    `
+      max-width: 100%;
+      overflow: auto;
+      `}
 `;

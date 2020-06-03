@@ -176,7 +176,8 @@ class Display extends Component {
       disableResponse,
       imageOptions,
       isExpressGrader,
-      view
+      view,
+      hideInternalOverflow
     } = this.props;
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers } = this.state;
@@ -338,8 +339,7 @@ class Display extends Component {
 
           <QuestionContentWrapper>
             <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
-
-            <TemplateBoxContainer flexDirection="column">
+            <TemplateBoxContainer hideInternalOverflow={hideInternalOverflow} flexDirection="column">
               <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
             </TemplateBoxContainer>
             {view && view !== EDIT && <Instructions item={item} />}

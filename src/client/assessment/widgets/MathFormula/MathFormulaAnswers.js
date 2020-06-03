@@ -51,7 +51,15 @@ class MathFormulaAnswers extends React.Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.value[index][prop] = value;
+        // default mode selection
+        if (prop === "keypadMode") {
+          draft.keypadMode = value; // adding new fields to testItem
+          // user input (comma separated custom units)
+        } else if (prop === "customUnits") {
+          draft.customUnits = value; // adding new fields to testItem
+        } else {
+          draft.validation.validResponse.value[index][prop] = value;
+        }
         if (
           [
             // methods.IS_SIMPLIFIED,
@@ -233,7 +241,7 @@ class MathFormulaAnswers extends React.Component {
             value.method = value.method || methods.EQUIV_SYMBOLIC;
           });
         }
-        // change keypade mode and custom keys
+        // change keypad mode and custom keys
         if (v) {
           if (!draft.symbols) {
             draft.symbols = [];
@@ -255,7 +263,7 @@ class MathFormulaAnswers extends React.Component {
   };
 
   render() {
-    const { fillSections, cleanSections, keypadOffset } = this.props;
+    const { fillSections, cleanSections, keypadOffset, view } = this.props;
     const { item, setQuestionData } = this.props;
     const { correctTab } = this.state;
 
@@ -285,6 +293,7 @@ class MathFormulaAnswers extends React.Component {
             onChangeKeypad={this.handleKeypadMode}
             keypadOffset={keypadOffset}
             toggleAdditional={this.toggleAdditional}
+            view={view}
           />
         )}
         {item.validation.altResponses &&
@@ -307,6 +316,7 @@ class MathFormulaAnswers extends React.Component {
                   onChangeKeypad={this.handleKeypadMode}
                   keypadOffset={keypadOffset}
                   toggleAdditional={this.toggleAdditional}
+                  view={view}
                 />
               );
             }

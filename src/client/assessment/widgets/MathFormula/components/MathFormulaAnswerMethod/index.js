@@ -67,6 +67,9 @@ const MathFormulaAnswerMethod = ({
   isClozeMath, // this is from clozemath
   template = "",
   useTemplate, // this is from clozemath
+  view,
+  unitsDropdown, // this is for Math with unit
+  isClozeMathWithUnit = false,
   t
 }) => {
   const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {
@@ -90,6 +93,11 @@ const MathFormulaAnswerMethod = ({
    */
   const showAdditional = isClozeMath ? get(item, `showAdditional`, {}) : get(item, `showAdditional`, false);
 
+  /**
+   * Stores validation data (answer) of testItem
+   * @param {string} prop
+   * @param {string} val
+   */
   const changeOptions = (prop, val) => {
     const newOptions = {
       ...options,
@@ -515,6 +523,8 @@ const MathFormulaAnswerMethod = ({
                   onInput={handleChangeStaticMathInput}
                 />
               )}
+              {/* when dropdown is selected */}
+              {item.showDropdown && unitsDropdown(changeOptions)}
               {renderExtra}
             </MathInputWrapper>
           </Col>
@@ -533,6 +543,9 @@ const MathFormulaAnswerMethod = ({
               keypadOffset={keypadOffset}
               onChangeShowDropdown={onChangeShowDropdown}
               unitsStyle={methodOptions.includes("notExpected")}
+              preview={view === "preview"}
+              view={view}
+              keypadMode={keypadMode}
             />
           </Col>
         )}
@@ -551,7 +564,7 @@ const MathFormulaAnswerMethod = ({
         </div>
       ) : null}
       {/* This needs only for Math w/Units in ClozMath type */}
-      {showDefaultMode && (
+      {(item.showDropdown || (isClozeMathWithUnit && showDefaultMode)) && (
         <StyledRow gutter={24}>
           <Col span={6}>
             <Label data-cy="unit-dropdown-default-mode">{t("component.options.defaultMode")}</Label>
@@ -660,7 +673,10 @@ MathFormulaAnswerMethod.propTypes = {
   containerHeight: PropTypes.any,
   labelValue: PropTypes.string,
   renderExtra: PropTypes.any,
-  template: PropTypes.string
+  template: PropTypes.string,
+  unitsDropdown: PropTypes.func,
+  isClozeMathWithUnit: PropTypes.bool,
+  view: PropTypes.string
 };
 
 MathFormulaAnswerMethod.defaultProps = {
@@ -674,9 +690,12 @@ MathFormulaAnswerMethod.defaultProps = {
   showDefaultMode: false,
   customUnits: "",
   containerHeight: "auto",
-  keypadMode: "",
+  keypadMode: "units_us",
   renderExtra: null,
-  template: ""
+  unitsDropdown: () => {},
+  template: "",
+  isClozeMathWithUnit: false,
+  view: ""
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

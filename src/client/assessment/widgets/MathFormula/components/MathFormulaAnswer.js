@@ -8,6 +8,7 @@ import MathFormulaAnswerMethod from "./MathFormulaAnswerMethod";
 import { getStylesFromUiStyleToCssStyle } from "../../../utils/helpers";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
+import SelectUnit from "../../ClozeMath/ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit";
 
 class MathFormulaAnswer extends Component {
   render() {
@@ -21,7 +22,8 @@ class MathFormulaAnswer extends Component {
       onChangeAllowedOptions,
       keypadOffset,
       onChangeShowDropdown,
-      toggleAdditional
+      toggleAdditional,
+      view = ""
     } = this.props;
 
     const handleChangeMethod = index => (prop, val) => {
@@ -32,6 +34,23 @@ class MathFormulaAnswer extends Component {
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
     cssStyles.width = cssStyles.width || minWidth;
     cssStyles.height = cssStyles.height || expectedAnsMinHeight;
+
+    // Validation data (answer)
+    const { options: { unit = "" } = {} } = answer[0] || {};
+
+    // Adding new fields to testItem to store custom value for keypadMode & customUnits
+    const { keypadMode = "units_us", customUnits = "" } = item;
+
+    const dropdownUnit = changeOptions => (
+      <SelectUnit
+        height="36px"
+        width="140px"
+        customUnits={customUnits}
+        onChange={changeOptions}
+        unit={unit}
+        keypadMode={keypadMode}
+      />
+    );
     return (
       <Row>
         <Col span={24}>
@@ -54,6 +73,11 @@ class MathFormulaAnswer extends Component {
               keypadOffset={keypadOffset}
               style={cssStyles}
               toggleAdditional={toggleAdditional}
+              showDefaultMode={item?.isUnits}
+              view={view}
+              unitsDropdown={dropdownUnit}
+              keypadMode={keypadMode}
+              customUnits={customUnits}
               {...method}
             />
           ))}

@@ -94,6 +94,7 @@ const MathFormula = ({
               keypadOffset={keypadOffset}
               fillSections={fillSections}
               cleanSections={cleanSections}
+              view={view}
             />
           </Question>
 

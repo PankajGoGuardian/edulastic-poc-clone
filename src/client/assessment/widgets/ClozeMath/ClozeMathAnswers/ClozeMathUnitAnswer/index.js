@@ -75,6 +75,7 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
             containerHeight={collapseHeight}
             showDefaultMode
             isClozeMath
+            isClozeMathWithUnit
             {...answer}
           />
         </Panel>

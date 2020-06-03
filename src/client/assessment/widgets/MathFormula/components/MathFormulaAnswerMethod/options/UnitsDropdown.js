@@ -6,8 +6,9 @@ import styled from "styled-components";
 import { Radio, Select } from "antd";
 import { get, isObject } from "lodash";
 
+import { MathKeyboard } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { white, red } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 import { Label } from "../../../../../styled/WidgetOptions/Label";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 import { SelectInputStyled } from "../../../../../styled/InputStyles";
@@ -27,7 +28,9 @@ const UnitsDropdownPure = ({
   options,
   onChangeShowDropdown,
   disabled,
-  statusColor
+  statusColor,
+  keypadMode = "units_us",
+  view
 }) => {
   const [offset, updateOffset] = useState(keypadOffset);
 
@@ -52,14 +55,21 @@ const UnitsDropdownPure = ({
   };
 
   const symbol = get(item, "symbols", [])[0]; // units_us units_si
-  const customKeys = get(item, "customKeys", []);
 
-  const allBtns = customKeys.map(key => ({
-    handler: key,
-    label: key,
-    types: [isObject(symbol) ? symbol.label : symbol],
-    command: "write"
-  }));
+  // Only for math with units
+  const customUnits = item?.customUnits?.split(",") || [];
+
+  // Get predefined math keyboard data
+  let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
+
+  // Get data entered by author on custom mode
+  if (keypadMode === "custom")
+    allBtns = customUnits.map(key => ({
+      handler: key,
+      label: key,
+      types: [isObject(symbol) ? symbol.label : symbol],
+      command: "write"
+    }));
 
   const getLabel = handler => {
     const seleted = allBtns.find(btn => btn.handler === handler) || {};
@@ -92,7 +102,7 @@ const UnitsDropdownPure = ({
           </Col>
         </Row>
       )}
-      {item.showDropdown && (
+      {item.showDropdown && view !== "edit" && (
         <Row>
           <Col span={12} marginBottom="0px" style={{ height: "100%" }}>
             <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>

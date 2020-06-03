@@ -287,7 +287,6 @@ class MathFormulaPreview extends Component {
     if (expressGrader && isAnswerModifiable) {
       statusIcon = null;
     }
-
     return (
       <div>
         {showCalculatingSpinner && <Spinner />}
@@ -383,6 +382,7 @@ class MathFormulaPreview extends Component {
                       selected={this.selectedUnit}
                       disabled={disableResponse}
                       statusColor={statusColor}
+                      keypadMode={item?.keypadMode} // to get selected keypadMode on student side
                     />
                     {statusIcon}
                   </>

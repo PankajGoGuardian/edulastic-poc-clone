@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 import { TextInputStyled } from "../../../../../styled/InputStyles";
 
-export const CustomUnit = ({ onChange, customUnits }) => {
+const CustomUnitPure = ({
+  onChange,
+  customUnits,
+  theme: {
+    default: { textFieldHeight = "" }
+  }
+}) => {
   const [keys, updateKeys] = useState(customUnits);
   const onBlurHandler = e => {
     onChange("customUnits", e.target.value);
@@ -38,11 +45,14 @@ export const CustomUnit = ({ onChange, customUnits }) => {
       value={keys}
       onChange={onChangeHandler}
       onBlur={onBlurHandler}
+      height={textFieldHeight}
     />
   );
 };
 
-CustomUnit.propTypes = {
+CustomUnitPure.propTypes = {
   onChange: PropTypes.func.isRequired,
   customUnits: PropTypes.func.isRequired
 };
+
+export const CustomUnit = withTheme(CustomUnitPure);

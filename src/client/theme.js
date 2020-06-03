@@ -172,6 +172,10 @@ const chartStockColor = "#42d184";
 const pastDueTagBackground = "#F6C7D5";
 const pastDueTagColor = "#CE5A7C";
 
+// Text input field starts
+const textFieldHeight = "36px";
+// Text input field ends
+
 const HeaderHeight = {
   xs: 62,
   sd: 42,
@@ -407,7 +411,8 @@ export const defaultTheme = {
     headerBookmarkIconHeight: `12px`,
     headerLeftButtonBgHoverColor: buttonBackgroundColor,
     pastDueTagBackground,
-    pastDueTagColor
+    pastDueTagColor,
+    textFieldHeight
   },
   header: {
     headerBgColor: white, // greenDark

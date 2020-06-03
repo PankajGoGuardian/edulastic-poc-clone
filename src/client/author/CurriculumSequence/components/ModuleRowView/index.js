@@ -113,7 +113,7 @@ const ModuleRowView = props => {
             </StyledTag>
           )
         )}
-        {isDesktop && !isStudent && (
+        {isDesktop && !isStudent && hasEditAccess && (
           <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
             <IconActionButton onClick={e => e.stopPropagation()}>
               <IconMoreVertical width={5} height={14} color={themeColor} />

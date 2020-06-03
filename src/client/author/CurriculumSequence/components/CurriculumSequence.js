@@ -448,6 +448,13 @@ class CurriculumSequence extends Component {
     }
   }
 
+  checkWritePermission = () => {
+    const { destinationCurriculumSequence, currentUserId } = this.props;
+    // Plsylist is being authored - editFlow
+    if (!destinationCurriculumSequence.authors) return true;
+    return !!destinationCurriculumSequence.authors?.find(x => x?._id === currentUserId);
+  };
+
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
 
@@ -495,7 +502,6 @@ class CurriculumSequence extends Component {
       collections,
       dateKeys,
       resetDestination,
-      currentUserId,
       cancelPlaylistCustomize,
       publishCustomizedPlaylist,
       activeRightPanel,
@@ -508,8 +514,7 @@ class CurriculumSequence extends Component {
     } = this.props;
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
-    const hasEditAccess = destinationCurriculumSequence?.authors?.find(x => x?._id === currentUserId);
-
+    const hasEditAccess = this.checkWritePermission();
     const isNotStudentOrParent = !(role === "student" || role === "parent");
 
     // figure out which tab contents to render || just render default playlist

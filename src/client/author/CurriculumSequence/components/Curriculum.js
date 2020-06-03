@@ -133,7 +133,8 @@ const Curriculum = props => {
     isStudent,
     history,
     status,
-    isManageContentActive
+    isManageContentActive,
+    hasEditAccess
   } = props;
 
   useEffect(() => () => resetDestination(), []);
@@ -154,6 +155,7 @@ const Curriculum = props => {
           />
         ))}
       {!isStudent &&
+        hasEditAccess &&
         (isManageContentActive || history.location.state?.editFlow || status === "draft") &&
         history.location.hash !== "#review" && (
           <AddNewOrManageModules onClick={openAddModuleModal}>

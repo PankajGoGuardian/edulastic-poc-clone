@@ -2,9 +2,6 @@ import { createSlice } from "redux-starter-kit";
 import { delay } from "redux-saga";
 import { takeEvery, takeLatest, put, call, all, select } from "redux-saga/effects";
 import { testsApi, settingsApi, resourcesApi } from "@edulastic/api";
-import { set } from "lodash";
-import nanoid from "nanoid";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 
 export const sliceName = "playlistTestBox";
@@ -97,7 +94,7 @@ const slice = createSlice({
       state.selectedTestForPreview = "";
       state.testPreviewModalVisible = false;
     },
-    fetchExternalToolProvidersAction: (state, { payload }) => {
+    fetchExternalToolProvidersAction: state => {
       state.externalToolsProviders = [];
     },
     fetchExternalToolProvidersSuccess: (state, { payload }) => {
@@ -106,10 +103,10 @@ const slice = createSlice({
     setSearchByTab: (state, { payload }) => {
       state.searchResourceBy = payload;
     },
-    addResource: (state, { payload }) => {
+    addResource: state => {
       state.searchResourceBy = "resources";
     },
-    fetchResource: (state, { payload }) => {
+    fetchResource: state => {
       state.isLoading = true;
     },
     fetchResourceResult: (state, { payload }) => {
@@ -126,28 +123,32 @@ const slice = createSlice({
 
 export default slice;
 
-function* fetchTestsSaga({ payload }) {
+function* fetchTestsSaga() {
   try {
     const { status, subject, grades, loadedPage, filter, collection } = yield select(state => state[sliceName]);
     // Add authoredBy and sources once BE is fixed
-    const { items, count } = yield call(testsApi.getAll, {
-      search: {
-        status,
-        subject,
-        grades,
-        filter,
-        collections: collection === "" ? [] : [collection]
-      },
-      page: loadedPage + 1,
-      limit: LIMIT
-    });
+
+    const { items, count } =
+      status === "draft" && filter === "ENTIRE_LIBRARY"
+        ? { items: [], count: 0 }
+        : yield call(testsApi.getAll, {
+            search: {
+              status,
+              subject,
+              grades,
+              filter,
+              collections: collection === "" ? [] : [collection]
+            },
+            page: loadedPage + 1,
+            limit: LIMIT
+          });
     yield put(slice.actions.fetchTestsSuccess({ items, count }));
   } catch (e) {
     console.error("Error Occured: fetchTestsSaga ", e);
   }
 }
 
-function* fetchTestsBySearchString({ payload }) {
+function* fetchTestsBySearchString() {
   try {
     yield delay(600);
     yield put(slice.actions?.resetLoadedPage());
@@ -202,11 +203,11 @@ function* addResourceSaga({ payload }) {
   }
 }
 
-function* fetchResourceSaga({ payload }) {
+function* fetchResourceSaga() {
   try {
     const result = yield call(resourcesApi.fetchResources);
     if (!result) {
-      notification({ msg:result.error});
+      notification({ msg: result.error });
       yield put(slice.actions.fetchResourceResult([]));
     } else {
       yield put(slice.actions.fetchResourceResult(result));

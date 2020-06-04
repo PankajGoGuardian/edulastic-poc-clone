@@ -1,5 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from "react";
 import { withRouter } from "react-router-dom";
+import { notification } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -186,7 +187,8 @@ const AssignmentCard = memo(
     }
     const startTest = () => {
       if (endDate < Date.now()) {
-        return message.error("Test is expired");
+        notification({ messageKey:"testIsExpired"});
+        return;
       }
 
       if (!resume && timedAssignment) {

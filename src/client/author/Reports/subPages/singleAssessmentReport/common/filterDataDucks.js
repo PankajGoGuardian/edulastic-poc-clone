@@ -2,6 +2,7 @@ import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy, set, get } from "lodash";
 
@@ -205,7 +206,7 @@ function* getReportsSARFilterDataRequest({ payload }) {
     });
   } catch (error) {
     let msg = "Failed to fetch filter data Please try again...";
-    yield call(message.error, msg);
+    notification({ msg:msg });
     yield put({
       type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR,
       payload: { error: msg }

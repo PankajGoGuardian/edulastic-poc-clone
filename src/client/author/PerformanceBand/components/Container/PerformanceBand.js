@@ -35,7 +35,7 @@ import {
   StyledList
 } from "./styled";
 import styled from "styled-components";
-import { EduButton } from "@edulastic/common";
+import { EduButton ,notification } from "@edulastic/common";
 
 const title = "Manage District";
 const BlueBold = styled.b`
@@ -223,7 +223,7 @@ export function PerformanceBandAlt(props) {
   const handleProfileLimit = () => {
     const canCreateProfile = profiles.filter(x => x.createdBy?._id === currentUserId).length <= 10;
     if (!canCreateProfile) {
-      message.error("Maximum 10 profiles per user is allowed");
+      notification({ messageKey: "maximumTenProfilesPerUser" });
       return false;
     }
     return true;
@@ -235,11 +235,11 @@ export function PerformanceBandAlt(props) {
     if (name) {
       // needed for unicode aware length
       if ([...name].length > 150) {
-        message.error("Sorry! Maximum length of Profile Name is 150 characters");
+        notification({ messageKey: "maximumLengthForProifleName150" });
         return;
       }
       if (profiles.find(p => (p.name || "").toLowerCase() === name.toLocaleLowerCase())) {
-        message.error(`Profile with name "${name}" already exists. Please try with a different name`);
+        notification({ msg:`Profile with name "${name}" already exists. Please try with a different name`});
         return;
       }
       const initialObj = {
@@ -274,7 +274,7 @@ export function PerformanceBandAlt(props) {
       setConfirmVisible(false);
       setProfileName("");
     } else {
-      message.error("name can't be empty");
+      notification({ messageKey:"NameCantBeEmpty"});
     }
   };
 

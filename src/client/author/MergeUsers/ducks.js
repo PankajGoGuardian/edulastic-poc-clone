@@ -52,7 +52,7 @@ function* fetchUserDetailsSaga({ payload }) {
     // yield call(message.success, "Success fetching user details for merge");
   } catch (err) {
     yield put(actions.fetchUserDetailsFailed());
-    yield call(message.error, "Failed to fetch user details for merge");
+    notification({ messageKey: "failedToFetchUserDetails" });
   }
 }
 
@@ -65,7 +65,7 @@ function* mergeUsersSaga({ payload }) {
     yield call(onMergeAction);
   } catch (err) {
     yield put(actions.mergeUsersFailed());
-    yield call(message.error, "Failed to merge selected users");
+    notification({ messageKey: "failedToMergerSelectedUsers" });
   }
 }
 

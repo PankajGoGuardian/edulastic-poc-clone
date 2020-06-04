@@ -119,7 +119,7 @@ function* getStudentStandardsSaga({ payload }) {
     });
   } catch (error) {
     console.error("err", error.stack);
-    yield call(message.error, "Failed to fetch student Standards");
+    notification({ messageKey:"faildedToFetchStudentsStandard" });
     yield put({
       type: GET_STUDENT_STANDARDS_FAILED
     });

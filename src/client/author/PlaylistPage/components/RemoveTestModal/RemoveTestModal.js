@@ -1,5 +1,5 @@
 import { lightGreySecondary } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { EduButton,notification } from "@edulastic/common";
 import { Input, message } from "antd";
 import PropTypes from "prop-types";
 import React from "react";
@@ -37,7 +37,7 @@ class RemoveTestModal extends React.Component {
       handleRemove();
     } else {
       this.setState({ remove: "" });
-      message.error("Incorrect Input ");
+      notification({ messageKey: "incorrectInput" });
     }
   };
 

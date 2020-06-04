@@ -158,10 +158,12 @@ const GroupItems = ({
       };
     } else if (fieldName === "deliverItemsCount") {
       if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC && value >= updatedGroupData.items.length) {
-        return message.error("Total items to be delivered should be lesser than the number of items selected.", 3);
+        notification({ messageKey:"totalItemsToBeDelivered"});
+        return;
       }
       if (updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT && value > 100) {
-        return message.error("Total Items to be delivered cannot be more than 100");
+        notification({ messageKey:"totalItemsToBeDeliveredCannotBeMOreThan100"});
+        return;
       }
       updatedGroupData = {
         ...updatedGroupData,
@@ -173,7 +175,8 @@ const GroupItems = ({
         value === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         updatedGroupData.items.length < 2
       ) {
-        return message.error("Please select atleast 2 items to manually give the items delivery count.", 3);
+        notification({ messageKey:"pleaseSelectAtleastTwoItems"});
+        return;
       }
       updatedGroupData = {
         ...updatedGroupData,
@@ -256,7 +259,8 @@ const GroupItems = ({
 
   const handleAddGroup = () => {
     if (test.itemGroups.length === 15) {
-      return  notification({ type: "warn", messageKey:"cantCreateMoreThan15Groups"});
+      notification({ type: "warn", messageKey:"cantCreateMoreThan15Groups"});
+      return;
     }
     const { index } = maxBy(test.itemGroups, "index");
     const data = {
@@ -323,7 +327,7 @@ const GroupItems = ({
 
   const validateGroups = () => {
     if (currentGroupIndex !== null) {
-      return message.error("Please save the changes made to the group first.");
+      return notification({ messageKey:"pleaseSaveTheChangesMadeToGroupFirst"});
     }
     let staticGroups = [];
     let autoSelectGroups = [];
@@ -337,12 +341,12 @@ const GroupItems = ({
     for (let i = 0; i < staticGroups.length; i++) {
       const { items, deliveryType, deliverItemsCount } = staticGroups[i];
       if (items.length === 0) {
-        message.error("Each Static group should contain at least 1 test item.");
+        notification({ messageKey:"eachStaticGroupShouldContainAtleastOneItems"});
         isValid = false;
         break;
       }
       if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
-        message.error("Please enter the total number of items to be delivered.");
+        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
         isValid = false;
         break;
       }
@@ -351,12 +355,12 @@ const GroupItems = ({
     for (let i = 0; i < autoSelectGroups.length; i++) {
       const { collectionDetails, standardDetails, deliverItemsCount } = autoSelectGroups[i];
       if (!collectionDetails || !standardDetails) {
-        message.error("Each Autoselect group should have a standard and a collection.");
+        notification({ messageKey:"eachAutoselectGroupShouldHaveAStandardAndCollection"});
         isValid = false;
         break;
       }
       if (!deliverItemsCount) {
-        message.error("Please enter the total number of items to be delivered.");
+        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
         isValid = false;
         break;
       }
@@ -378,17 +382,17 @@ const GroupItems = ({
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
       const { deliveryType, deliverItemsCount } = editGroupDetail;
       if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
-        message.error("Please enter the total number of items to be delivered.");
+        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
         isValid = false;
       }
     } else {
       const { collectionDetails, standardDetails, deliverItemsCount } = editGroupDetail;
       if (!collectionDetails || !standardDetails) {
-        message.error("Each Autoselect group should have a standard and a collection.");
+        notification({ messageKey:"eachAutoselectGroupShouldHaveAStandardAndCollection"});
         isValid = false;
       }
       if (isValid && !deliverItemsCount) {
-        message.error("Please enter the total number of items to be delivered.");
+        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
         isValid = false;
       }
     }
@@ -418,7 +422,8 @@ const GroupItems = ({
       }
     };
     if (data.limit > 100) {
-      return message.error("Maximum 100 question can be selected to deliver.");
+      notification({ messageKey:"maximum100Questions"});
+      return;
     }
     setFetchingItems(true);
 
@@ -428,16 +433,17 @@ const GroupItems = ({
       .then(res => {
         const { items, total } = res;
         if (items.length === 0) {
-          return message.error("No test items found for current combination of filters.");
+          notification({ messageKey:"noItemsFoundForCurrentCombination"});
+          return;
         }
         if (total < data.limit) {
-          return message.error(`There are only ${total} items that meet the search criteria`);
+          return  notification({ msg:`There are only ${total} items that meet the search criteria`});
         }
         const testItems = items.map(i => ({ ...i, autoselectedItem: true }));
         saveGroupToTest(testItems);
       })
       .catch(err => {
-        message.error(err.message || "Failed to fetch test items");
+        notification({ msg:err.message || "Failed to fetch test items"});
       });
     setFetchingItems(false);
   };
@@ -455,7 +461,8 @@ const GroupItems = ({
       updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
       updatedGroupData.items.some(item => item.itemLevelScoring === false)
     ) {
-      return notification({ type: "warn", messageKey:"allItemsInsideLimited"});
+      notification({ type: "warn", messageKey:"allItemsInsideLimited"});
+      return;
     }
     const disableAnswerOnPaper =
       updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||

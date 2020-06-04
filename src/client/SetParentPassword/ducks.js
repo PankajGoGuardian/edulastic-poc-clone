@@ -1,4 +1,5 @@
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, putResolve, all } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
@@ -42,7 +43,7 @@ function* sendParentCodeSaga({ payload }) {
     const result = yield call(userApi.sendParentCode, payload);
     yield put(slice.actions.sendParentCodeSucess(result));
   } catch (e) {
-    yield call(message.error, "error parent code");
+    notification({ messageKey:"errorParentCode"});
     yield put(slice.actions.sendParentCodeError());
     console.log("sendParent error", e);
   }
@@ -55,7 +56,7 @@ function* resetPasswordSaga({ payload }) {
     yield put(fetchUserAction());
     window.location.href = "/home/assignments";
   } catch (e) {
-    yield call(message.error, "error setting password");
+    notification({ messageKey:"errorSettingPassword"});
     yield put(slice.actions.hideLoading());
     console.log("setting password error", e);
   }

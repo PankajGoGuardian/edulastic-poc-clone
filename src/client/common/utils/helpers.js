@@ -197,7 +197,7 @@ export const validateQuestionsForDocBased = questions => {
     .every(question => !!question.title.trim());
 
   if (!sectionTitle) {
-    AntMessage.error("Section name can not be empty");
+    notification({ messageKey:"sectionNameCanNotEmpty"});
     return false;
   }
 

@@ -7,7 +7,7 @@ import { message } from "antd";
 import { canvasApi } from "@edulastic/api";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
-import { TypeToConfirmModal } from "@edulastic/common";
+import { TypeToConfirmModal,notification } from "@edulastic/common";
 import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
@@ -44,7 +44,7 @@ const SubHeader = ({
   };
 
   const handleError = err => {
-    message.error("Google login failed");
+    notification({ messageKey: "googleLoginFailed" });
     console.log("error", err);
   };
 
@@ -87,13 +87,13 @@ const SubHeader = ({
           })
           .catch(err => {
             console.error("Error while authorizing", err);
-            message.error("Error occured while authorizing");
+            notification({ messageKey: "errorOccuredWhileAuthorizing" });
           });
       } else {
         syncCanvasModal();
       }
     } catch (err) {
-      message.error("Error while getting Auth URI");
+      notification({ messageKey: "errorWhileGettingAuthUri" });
     }
   };
 

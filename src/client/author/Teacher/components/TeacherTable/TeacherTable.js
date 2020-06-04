@@ -253,7 +253,7 @@ class TeacherTable extends Component {
         u => selectedRowKeys.includes(u._id) && u._source.status !== 1
       );
       if (inactiveUsers.length) {
-        message.error("Deactivated users selected, please select active students only");
+        notification({messageKey:"deactivatedUserSelected"});
       } else if (selectedRowKeys.length > 1) {
         this.setState({ showMergeTeachersModal: true });
       } else {
@@ -262,11 +262,11 @@ class TeacherTable extends Component {
     }
     if (e.key === "edit user") {
       if (selectedRowKeys.length == 0) {
-        message.error("Please select user to edit.");
+        notification({messageKey:"pleaseSelectUser"});
       } else if (selectedRowKeys.length == 1) {
         this.onEditTeacher(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error("Please select single user to edit.");
+        notification({messageKey:"pleaseSelectSingleUserToEdit"});
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -275,7 +275,7 @@ class TeacherTable extends Component {
           deactivateAdminModalVisible: true
         });
       } else {
-        message.error("Please select users to delete.");
+        notification({messageKey:"pleaseSelectUserToDelete"});
       }
     }
   };

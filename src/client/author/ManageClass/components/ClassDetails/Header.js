@@ -1,4 +1,4 @@
-import { MainHeader, EduButton } from "@edulastic/common";
+import { MainHeader, EduButton,notification } from "@edulastic/common";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -31,7 +31,7 @@ const Header = ({
   };
 
   const handleError = err => {
-    message.error("Google login failed");
+    notification({ messageKey: "googleLoginFailed" });
     console.log("error", err);
   };
 
@@ -46,13 +46,13 @@ const Header = ({
           })
           .catch(err => {
             console.error("Error while authorizing", err);
-            message.error("Error occured while authorizing");
+            notification({ messageKey: "errorOccuredWhileAuthorizing" });
           });
       } else {
         syncCanvasModal();
       }
     } catch (err) {
-      message.error("Error while getting Auth URI");
+      notification({ messageKey: "errorWhileGettingAuthUri" });
     }
   };
 

@@ -91,7 +91,7 @@ function* receiveTestSettingeSaga({ payload }) {
     yield put(receiveTestSettingSuccessAction(testSetting));
   } catch (err) {
     const errorMessage = "Receive Test Setting is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(receiveTestSettingErrorAction({ error: errorMessage }));
   }
 }
@@ -103,7 +103,7 @@ function* updateTestSettingSaga({ payload }) {
     notification({ type: "success", messageKey:"testSettingsSaved"});
   } catch (err) {
     const errorMessage = "Update Test Setting is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(updateTestSettingErrorAction({ error: errorMessage }));
   }
 }
@@ -115,7 +115,7 @@ function* createTestSettingSaga({ payload }) {
     notification({ type: "success", messageKey:"testSettingsSaved"});
   } catch (err) {
     const errorMessage = "Create Test Setting is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
     yield put(createTestSettingErrorAction({ error: errorMessage }));
   }
 }

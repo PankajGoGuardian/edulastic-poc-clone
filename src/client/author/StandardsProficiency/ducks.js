@@ -223,7 +223,7 @@ function* deleteStandardsProficiencySaga({ payload: _id }) {
     if (err.status === 409) {
       yield put(deleteStandardsProficiencyErrorAction({ type: err.data["0"] }));
     } else {
-      yield call(message.error, "Deleting standards proficiency failed");
+      notification({ messageKey:"deletingStandardsProficiencyFailed"});
     }
   }
 }

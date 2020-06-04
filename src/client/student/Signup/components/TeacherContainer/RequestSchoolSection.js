@@ -7,7 +7,7 @@ import { get } from "lodash";
 import styled from "styled-components";
 import { Form, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { EduButton } from "@edulastic/common";
+import { EduButton,notification } from "@edulastic/common";
 import { userApi } from "@edulastic/api";
 import { themeColor, mobileWidthLarge, greyGraphstroke } from "@edulastic/colors";
 
@@ -38,7 +38,7 @@ const RequestSchool = props => {
         await userApi.validateDistrictPolicy(checkDistrictPolicyPayload);
         setRequestButtonDisabled(false);
       } catch (error) {
-        message.error(t("common.policyviolation"));
+        notification({ msg:t("common.policyviolation")});
         setRequestButtonDisabled(true);
       }
     })();

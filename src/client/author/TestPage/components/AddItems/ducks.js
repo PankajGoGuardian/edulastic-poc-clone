@@ -274,7 +274,7 @@ function* reportContentErrorSaga({ payload }) {
     notification({ type: "success", messageKey:"issueReportedSuccessfully"});
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Failed to report issue.");
+    notification({ messageKey:"failedToReportIssue"});
   }
 }
 

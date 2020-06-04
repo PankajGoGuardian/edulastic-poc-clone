@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { notification } from "@edulastic/common";
 import { Layout, Button, Icon, Form, Input, Row, Col, Spin, message } from "antd";
 import { withRouter } from "react-router";
 import { compose } from "redux";
@@ -57,11 +58,11 @@ function SetParentPassword({
     form.validateFields((err, values) => {
       const { password, confirm } = values;
       if (password !== confirm) {
-        message.error("password and confirm password should match");
+        notification({ messageKey:"passwordAndConfirmShouldMatch"});
         return;
       }
       if (password.length < 7) {
-        message.error("password should be at-least 7 characters");
+        notification({ messageKey:"passwordShouldBeAtleast7Characters"});
         return;
       }
       resetPassword({ password, username: loadedUserName });

@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Icon, Radio, Button, message, Row } from "antd";
+import { EduButton,notification} from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -100,7 +101,7 @@ class StandardsProficiencyTable extends React.Component {
   handleAdd = () => {
     const { data, editingKey } = this.state;
     if (data.length >= 5) {
-      message.error("Maximum five levels are required.");
+      notification({ messageKey:"maximumFiveLevels"});
       return;
     }
 
@@ -132,7 +133,7 @@ class StandardsProficiencyTable extends React.Component {
   handleDelete = key => {
     const data = [...this.state.data];
     if (data.length <= 3) {
-      message.error("Minimum three levels are required.");
+       notification({ messageKey:"minimumThreeLevel"});
       return;
     }
     const newData = data.filter(item => item.key !== key);

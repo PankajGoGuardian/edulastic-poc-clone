@@ -387,7 +387,7 @@ function* moveUsersToOtherClassSaga({ payload }) {
   try {
     const result = yield call(userApi.moveUsersToOtherClass, payload);
     if (!result.status) yield put(addStudentsToOtherClassSuccess(result));
-    else message.error(result.status);
+    else  notification({ msg:result.status});
   } catch (err) {
     const errorMessage = "Move Users is failing";
     notification({ msg:errorMessage});

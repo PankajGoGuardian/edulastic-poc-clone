@@ -9,7 +9,7 @@ import {
   white
 } from "@edulastic/colors";
 import { curriculumSequencesApi } from "@edulastic/api";
-import { ProgressBar } from "@edulastic/common";
+import { ProgressBar,notification } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { Button, Col, Row, Spin, Tooltip, message } from "antd";
 import { isEmpty, last, pick } from "lodash";
@@ -66,7 +66,7 @@ const Recommendations = ({
       const signedRequest = await curriculumSequencesApi.getSignedRequest({ resource });
       submitLTIForm(signedRequest);
     } catch (e) {
-      message.error("Failed to load the resource");
+      notification({ messageKey:"failedToLoadResource"});
     }
   };
 

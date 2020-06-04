@@ -1,4 +1,4 @@
-import { OnWhiteBgLogo } from "@edulastic/common";
+import { OnWhiteBgLogo,notification } from "@edulastic/common";
 import { IconCanvasBook } from "@edulastic/icons";
 import { message, Select } from "antd";
 import { get, groupBy } from "lodash";
@@ -136,7 +136,8 @@ const CanvasBulkAddClass = ({
 
   const handleFinish = () => {
     if (!selectedRows.length) {
-      return message.error("Please select atleast one canvas course section to sync.");
+      notification({ messageKey:"pleaseSelectAtleastOneCanvasCourseSectionToSync"});
+      return;
     }
     let selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
 

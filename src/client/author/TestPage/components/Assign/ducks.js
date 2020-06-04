@@ -186,7 +186,8 @@ function* saveAssignment({ payload }) {
         const module = playlist.modules.filter(module => module._id === payload.playlistModuleId);
         if (!module || !(module && module.length)) {
           yield put(setAssignmentSavingAction(false));
-          return message.error("Module not found in playlist");
+          notification({ messageKey:"moduleNotFoundInPlaylist"});
+          return;
         }
         module &&
           module[0].data.forEach(dat => {
@@ -196,7 +197,8 @@ function* saveAssignment({ payload }) {
           });
         if (!testIds.length) {
           yield put(setAssignmentSavingAction(false));
-          return message.error("No test in module");
+          notification({ messageKey:"noTestInModule"});
+          return;
         }
       }
     }
@@ -323,7 +325,7 @@ function* saveAssignment({ payload }) {
     }
     yield put(toggleHasCommonAssignmentsPopupAction(false));
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
-    yield call(message.error, err.statusText);
+    notification({ msg:err.statusText});
   }
 }
 
@@ -366,7 +368,7 @@ function* deleteAssignment({ payload }) {
     notification({ type: "success", messageKey: "AssignmentDelete" });
   } catch (error) {
     console.log(error);
-    message.error("failed to delete");
+    notification({ messageKey:"failedToDelete"});
   }
   yield put(toggleDeleteAssignmentModalAction(false));
 }

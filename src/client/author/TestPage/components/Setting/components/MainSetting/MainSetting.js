@@ -1,5 +1,5 @@
 import { blueBorder, green, red, themeColor, lightGrey9 } from "@edulastic/colors";
-import { CheckboxLabel, RadioBtn, withWindowScroll, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { CheckboxLabel, RadioBtn, withWindowScroll, SelectInputStyled, TextInputStyled,notification } from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { Anchor, Col, Input, message, Row, Select, Switch, Tooltip } from "antd";
@@ -219,7 +219,8 @@ class MainSetting extends Component {
       }
       case "answerOnPaper":
         if (value === true && disableAnswerOnPaper) {
-          return message.error("Answer on paper not suppported for this test");
+          notification({ messageKey:"answerOnPaperNotSupportedForThisTest"});
+          return;
         }
         break;
       default:

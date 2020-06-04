@@ -5,7 +5,7 @@ import { Pagination, message, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, red } from "@edulastic/colors";
 import { questionType, roleuser } from "@edulastic/constants";
-import { Tabs, EduButton, withWindowSizes, ScrollContext, ScratchPadContext } from "@edulastic/common";
+import { Tabs, EduButton, withWindowSizes, ScrollContext, ScratchPadContext,notification } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
@@ -87,7 +87,8 @@ class AuthorTestItemPreview extends Component {
       closeModal
     } = this.props;
     if (!isEditable) {
-      return message.error("Don't have write permission to delete the item");
+      notification({ messageKey:"dontHaveWritePermission" });
+      return;
     }
     if (closeModal) closeModal();
     return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });

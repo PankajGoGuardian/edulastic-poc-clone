@@ -1,5 +1,5 @@
 import { lightGrey5, testTypeColor, themeColor, white } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer,notification } from "@edulastic/common";
 import { testActivityStatus, roleuser } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
 import { Avatar, Button, Dropdown, Menu, message } from "antd";
@@ -365,7 +365,7 @@ class ModuleRow extends Component {
       });
       submitLTIForm(signedRequest);
     } catch (e) {
-      message.error("Failed to load the resource");
+      notification({ messageKey: "FailedToLoadTheResource" });
     }
   };
 

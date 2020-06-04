@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { all, takeEvery, call, put } from "redux-saga/effects";
 import { publisherApi } from "@edulastic/api";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 
 // CONSTANTS
 export const GET_COLLECTIONS_DATA_REQUEST = "[publisherDashboard] get collections data request";
@@ -36,7 +37,7 @@ function* getCollectionsDataSaga({ payload }) {
     yield put(setCollectionsDataAction(collectionData));
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Failed to load collection data.");
+    notification({ messageKey:"failedToLoadCollectionData"});
   }
 }
 

@@ -127,7 +127,7 @@ const PublicTestPage = ({
 
   // if test is not public, then redirect to login page
   if (error) {
-    message.error("Trying to access private test");
+    notification({ messageKey:"tryingToAccessPrivateTest"});
     return <Redirect to="/login" />;
   } if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
     return <Spin />;

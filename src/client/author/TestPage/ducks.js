@@ -1255,7 +1255,7 @@ function* updateTestSaga({ payload }) {
         payload.data.assignmentPassword.length < 6 ||
         payload.data.assignmentPassword.length > 25)
     ) {
-      yield call(message.error, "Please add a valid password.");
+      notification({ messageKey:"enterValidPassword"});
       return yield put(setTestsLoadingAction(false));
     }
 
@@ -1615,7 +1615,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
       if (newTest.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
         delete newTest.assignmentPassword;
       } else if (!newTest.assignmentPassword) {
-        yield call(message.error, "Please add a valid password.");
+        notification({ messageKey:"enterValidPassword"});
         return;
       }
 

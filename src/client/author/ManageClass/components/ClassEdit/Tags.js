@@ -1,5 +1,5 @@
 import { tagsApi } from "@edulastic/api";
-import { SelectInputStyled } from "@edulastic/common";
+import { SelectInputStyled,notification } from "@edulastic/common";
 import { Select } from "antd";
 import { uniq } from "lodash";
 import PropTypes from "prop-types";
@@ -18,7 +18,7 @@ const Tags = props => {
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ messageKey: "savingTagErr" });
       }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);

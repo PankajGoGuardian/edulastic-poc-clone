@@ -1,5 +1,5 @@
 import { tagsApi } from "@edulastic/api";
-import { FieldLabel, FlexContainer, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { FieldLabel, FlexContainer, SelectInputStyled, TextInputStyled,notification } from "@edulastic/common";
 import { message, Select } from "antd";
 import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
@@ -68,7 +68,7 @@ const Sidebar = ({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "test" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ messageKey:"savingTagErr"});
       }
     } else {
       newTag = newAllTagsData.find(tag => tag._id === id);

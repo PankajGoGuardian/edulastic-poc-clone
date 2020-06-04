@@ -69,7 +69,7 @@ class AddStudentModal extends React.Component {
       loadStudents({ classId });
       return null;
     }
-    message.error("Create User is failing");
+    notification({ messageKey: "createUserIsFailing" });
   };
 
   render() {

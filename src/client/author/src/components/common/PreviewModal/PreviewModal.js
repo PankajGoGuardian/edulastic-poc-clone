@@ -178,7 +178,8 @@ class PreviewModal extends React.Component {
     }
     let keys = [...(selectedRows || [])];
     if (test.safeBrowser && !test.sebPassword) {
-      return message.error("Please add a valid password");
+      notification({ messageKey:"enterValidPassword"});
+      return;
     }
     if (!keys.includes(item._id)) {
       keys[keys.length] = item._id;

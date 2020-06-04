@@ -1,6 +1,7 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { get, pick } from "lodash";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import mqtt from "mqtt";
 import produce from "immer";
 import { push } from "connected-react-router";
@@ -380,7 +381,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
     yield put({
       type: JOIN_SCHOOL_FAILED
     });
-    yield call(message.error, JOIN_SCHOOL_FAILED);
+    notification({ msg:JOIN_SCHOOL_FAILED});
   }
 }
 
@@ -398,7 +399,7 @@ function* joinSchoolSaga({ payload = {} }) {
       type: JOIN_SCHOOL_FAILED,
       payload: {}
     });
-    yield call(message.error, JOIN_SCHOOL_FAILED);
+    notification({ msg:JOIN_SCHOOL_FAILED});
   }
 }
 
@@ -429,7 +430,7 @@ function* saveSubjectGradeSaga({ payload }) {
       type: SAVE_SUBJECTGRADE_FAILED,
       payload: {}
     });
-    yield call(message.error, SAVE_SUBJECTGRADE_FAILED);
+    notification({ msg:SAVE_SUBJECTGRADE_FAILED});
 
     const errMsg = get(err, "data.message", "");
     if (errMsg === "Settings already exist") {
@@ -456,7 +457,7 @@ function* saveSubjectGradeSaga({ payload }) {
     }
   } catch (err) {
     console.log("_err", err);
-    yield call(message.error, "Failed to update user please try again.");
+    notification({ messageKey:"failedToUpdateUser"});
   }
 }
 
@@ -492,7 +493,7 @@ function* checkDistrictPolicyRequestSaga({ payload }) {
   } catch (e) {
     console.log("e", e);
     yield put(checkDistrictPolicyFailedAction());
-    yield call(message.error, payload.error.message);
+    notification({ msg:payload.error.message});
   }
 }
 
@@ -550,7 +551,7 @@ function* bulkSyncCanvasClassSaga({ payload }) {
     };
     const { data } = yield call(getCanvasBulkSyncUpdate, payloadData);
     if (data.failedCourseSections.length === payload.bulkSyncData.length) {
-      yield call(message.error, "Bulk sync failed.");
+      notification({ messageKey:"bulkSyncFailed"});
       yield put(setBulkSyncCanvasStateAction("FAILED"));
     } else {
       yield put(setBulkSyncCanvasStateAction("SUCCESS"));
@@ -558,7 +559,7 @@ function* bulkSyncCanvasClassSaga({ payload }) {
     }
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Bulk sync failed.");
+    notification({ messageKey:"bulkSyncFailed"});
     yield put(setBulkSyncCanvasStateAction("FAILED"));
   }
 }

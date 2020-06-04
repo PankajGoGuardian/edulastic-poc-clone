@@ -48,7 +48,7 @@ function* deleteAssignmentSaga({ payload }) {
     yield call(notification, { type: "success", messageKey: "AssignmentDelete" });
   } catch (error) {
     console.log(error);
-    message.error("failed to delete");
+    notification({ messageKey:"failedToDelete" });
   }
   yield put(toggleDeleteAssignmentModalAction(false));
 }

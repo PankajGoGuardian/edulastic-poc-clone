@@ -278,7 +278,7 @@ class StudentTable extends Component {
         u => selectedRowKeys.includes(u._id) && u._source.status !== 1
       );
       if (inactiveUsers.length) {
-        message.error("Deactivated users selected, please select active students only");
+        notification({ messageKey:"deactivatedUserSelected"});
       } else if (selectedRowKeys.length > 1) {
         this.setState({ showMergeStudentsModal: true });
       } else {
@@ -287,11 +287,12 @@ class StudentTable extends Component {
     }
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-        message.error(t("users.validations.edituser"));
+
+        notification({ msg:t("users.validations.edituser")});
       } else if (selectedRowKeys.length === 1) {
         this.onEditStudent(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error(t("users.validations.editsingleuser"));
+        notification({ msg:t("users.validations.editsingleuser")});
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -300,13 +301,13 @@ class StudentTable extends Component {
           deactivateAdminModalVisible: true
         });
       } else {
-        message.error(t("users.validations.deleteuser"));
+        notification({ msg:t("users.validations.deleteuser")});
       }
     } else if (e.key === "addStudentsToAnotherClass") {
       if (selectedRowKeys.length) {
         setAddStudentsToOtherClassVisiblity(true);
       } else {
-        message.error("Please select atleast 1 user");
+        notification({messageKey:"pleaseSelectAtleastOneUser"});
       }
     }
   };

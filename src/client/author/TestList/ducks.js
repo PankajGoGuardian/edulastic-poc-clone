@@ -107,7 +107,7 @@ function* deleteTestSaga({ payload }) {
   } catch (error) {
     console.error(error);
     // 403 means dont have permission
-    message.error(error?.data?.message || "You don't have access to delete this test.");
+    notification({msg:error?.data?.message || "You don't have access to delete this test."});
   }
 }
 
@@ -117,7 +117,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      message.error("Test is not associated with any collection.");
+      notification({ messageKey:"testNotAssociatedWithCollection"});
       return;
     }
     yield call(testsApi.updateTestStatus, payload);
@@ -126,7 +126,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
     
   } catch (error) {
     console.error(error);
-    message.error(error?.data?.message || "Test Update Failed.");
+    notification({msg:error?.data?.message || "Test Update Failed."});
   }
 }
 
@@ -162,7 +162,7 @@ function* approveOrRejectMultipleTestsSaga({ payload }) {
       }
     } catch (error) {
       console.error(error);
-      message.error(error?.data?.message || `Failed to update Status`);
+      notification({ msg:error?.data?.message || `Failed to update Status`});
     }
   }
 }

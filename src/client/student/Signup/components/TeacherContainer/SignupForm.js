@@ -1,5 +1,5 @@
 import { themeColor, white } from "@edulastic/colors";
-import { OnDarkBgLogo, withWindowSizes } from "@edulastic/common";
+import { OnDarkBgLogo, withWindowSizes,notification } from "@edulastic/common";
 import { IconLock, IconMail, IconUser } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col, Form, Input, message } from "antd";
@@ -155,14 +155,14 @@ class Signup extends React.Component {
       }));
     } else if (error.askPassword) {
       if (error.passwordMatch === false) {
-        message.error("Password is incorrect. Please enter the correct password.");
+        notification({ messageKey:"passwordIsIncorrect"});
       }
       this.setState({
         showModal: true,
         existingUser: error
       });
     } else {
-      message.error(error);
+      notification({ msg:error});
     }
   };
 

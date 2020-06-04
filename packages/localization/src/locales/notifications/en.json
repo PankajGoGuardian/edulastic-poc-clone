@@ -1450,5 +1450,317 @@
   "failedToFetchStudentStandard": {
     "message": "Failed to fetch student Standards",
     "description": ""
+  },
+  "FailedToLoadTheResource": {
+    "message": "Failed to fetch student Standards",
+    "description": ""
+  },
+  "googleLoginFailed": {
+    "message": "Google login failed",
+    "description": ""
+  },
+  "errorOccuredWhileAuthorizing": {
+    "message": "Error occured while authorizing",
+    "description": ""
+  },
+  "errorWhileGettingAuthUri": {
+    "message": " Error while getting Auth URI",
+    "description": ""
+  },
+  "enterValidGoogleClassroomCode": {
+    "message": "Enter valid google classroom code",
+    "description": ""
+  },
+  "pleaseSelectCoTeacher": {
+    "message": "Please select co-teacher",
+    "description": ""
+  },
+  "createUserIsFailing": {
+    "message": "Create User is failing",
+    "description": ""
+  },
+  "pleaseSelectAClass": {
+    "message": "Please select a class to sync.",
+    "description": ""
+  },
+  "pleaseSelectAnInstitution": {
+    "message": " Please select an institution.",
+    "description": ""
+  },
+  "failedToFetchUserDetails": {
+    "message":"Failed to fetch user details for merge",
+    "description": ""
+  },
+  "failedToMergerSelectedUsers": {
+    "message":"Failed to merge selected users",
+    "description": ""
+  },
+  "maximumTenProfilesPerUser": {
+    "message":"Maximum 10 profiles per user is allowed",
+    "description": ""
+  },
+  "maximumLengthForProifleName150": {
+    "message": "Sorry! Maximum length of Profile Name is 150 characters",
+    "description": ""
+  },
+  "NameCantBeEmpty": {
+    "message": "Name can't be empty",
+    "description": ""
+  },
+  "pleaseSelectADifferentColor": {
+    "message":"Please select a different color. The selected color is already used for different Band",
+    "description": ""
+  },
+  "performanceBandShouldAtLeast": {
+    "message":"Performance Band should at least 2.",
+    "description": ""
+  },
+  "savePlaylistBeforPublishing": {
+    "message":"Save Playlist before publishing",
+    "description": ""
+  },
+  "incorrectInput": {
+    "message":"Incorrect Input ",
+    "description": ""
+  },
+  "somethingWentPleaseTryAgain": {
+    "message":"some thing went wrong. please try again.",
+    "description": ""
+  },
+  "faildedToFetchStudentsStandard": {
+    "message": "Failed to fetch student Standards",
+    "description": ""
+  },
+  "pleaseSelectUser": {
+    "message": "Please select user to edit.",
+    "description": ""
+  },
+  "pleaseSelectSingleUserToEdit": {
+    "message": "Please select single user to edit.",
+    "description": ""
+  },
+  "pleaseSelectSchoolsToDelete": {
+    "message": "Please select schools to delete.",
+    "description": ""
+  },
+  "assignmentShouldBeOpenToSeePassword": {
+    "message": "assignment should be open to see password",
+    "description": ""
+  },
+  "noStudentIsGradedToGenerateReportCard": {
+    "message":"No student is Graded to generate report card.",
+    "description": ""
+  },
+  "youAreNotAuthorizedToUpdate": {
+    "message":"You are not authorized to update the Release Score policy",
+    "description": ""
+  },
+  "failedToDelete": {
+    "message":"failed to delete",
+    "description": ""
+  },
+  "scoreUpdationFailed": {
+    "message":"Score updation failed",
+    "description": ""
+  },
+   "dontHaveWritePermission": {
+    "message":"Don't have write permission to delete the item",
+    "description": ""
+  },
+  "pleaseSelectAnyUser": {
+    "message":"Please select any user which are not in the shared list",
+    "description": ""
+  },
+  "userHasPermission": {
+    "message":"This user has permission",
+    "description": ""
+  },
+  "deletingStandardsProficiencyFailed": {
+    "message":"Deleting standards proficiency failed",
+    "description": ""
+  },
+  "nameCannotBeEmpty": {
+    "message":"Name cannot be empty",
+    "description": ""
+  },
+  "maximumFiveLevels": {
+    "message":"Maximum five levels are required.",
+    "description": ""
+  },
+  "minimumThreeLevel": {
+    "message":"Minimum three levels are required.",
+    "description": ""
+  },
+  "deactivatedUserSelected": {
+    "message":"Deactivated users selected, please select active students only",
+    "description": ""
+  },
+  "pleaseSelectAtleastOneUser": {
+    "message":"Please select atleast 1 user",
+    "description": ""
+  },
+  "theLisenceKeyEnteredIEitherUseOrNotValid": {
+    "message":"The License Key entered is either already used or not valid. Please contact your admin.",
+    "description": ""
+  },
+  "pleaseSelectUserToDelete": {
+    "message":"Please select users to delete.",
+    "description": ""
+  },
+  "failedToReportIssue": {
+    "message":"Failed to report issue..",
+    "description": ""
+  },
+  "moduleNotFoundInPlaylist": {
+    "message":"Module not found in playlist",
+    "description": ""
+  },
+  "noTestInModule": {
+    "message":"No test in module",
+    "description": ""
+  },
+  "nameFieldRequired": {
+    "message":"Name field is required",
+    "description": ""
+  },
+  "totalItemsToBeDelivered": {
+    "message":"Total items to be delivered should be lesser than the number of items selected.",
+    "description": ""
+  },
+  "totalItemsToBeDeliveredCannotBeMOreThan100": {
+    "message":"Total Items to be delivered cannot be more than 100",
+    "description": ""
+  },
+  "pleaseSelectAtleastTwoItems": {
+    "message":" Please select atleast 2 items to manually give the items delivery count.",
+    "description": ""
+  },
+  "pleaseSaveTheChangesMadeToGroupFirst": {
+    "message":"Please save the changes made to the group first.",
+    "description": ""
+  },
+  "eachStaticGroupShouldContainAtleastOneItems": {
+    "message":"Each Static group should contain at least 1 test item",
+    "description": ""
+  },
+  "pleaseEnterTotalNumberOfItems": {
+    "message":"Please enter the total number of items to be delivered.",
+    "description": ""
+  } ,
+  "eachAutoselectGroupShouldHaveAStandardAndCollection": {
+    "message":"Each Autoselect group should have a standard and a collection.",
+    "description": ""
+  },
+  "maximum100Questions": {
+    "message":"Maximum 100 question can be selected to deliver.",
+    "description": ""
+  },
+  "noItemsFoundForCurrentCombination": {
+    "message":"No test items found for current combination of filters.",
+    "description": ""
+  },
+  "pleaseSelectAtleastOneCanvasCourseSectionToSync": {
+    "message":"Please select atleast one canvas course section to sync.",
+    "description": ""
+  },
+  "failedToLoadCollectionData": {
+    "message":"Failed to load collection data.",
+    "description": ""
+  },
+  "errorParentCode": {
+    "message":"error parent code",
+    "description": ""
+  },
+  "errorSettingPassword": {
+    "message":"error setting password",
+    "description": ""
+  },
+  "passwordAndConfirmShouldMatch": {
+    "message":"password and confirm password should match",
+    "description": ""
+  },
+  "passwordShouldBeAtleast7Characters": {
+    "message":"password should be at-least 7 characters",
+    "description": ""
+  },
+  "failedLoadingUserData": {
+    "message":"failed loading user data",
+    "description": ""
+  },
+  "authtokenInvalidOnRedirection": {
+    "message":"authtoken invalid on redirection",
+    "description": ""
+  },
+  "cleverLoginFailed": {
+    "message":"Clever Login failed",
+    "description": ""
+  },
+  "failedToFetchUserData": {
+    "message":"Failed to fetch user data.",
+    "description": ""
+  },
+  "failedToResetPassword": {
+    "message":"Failed to reset password..",
+    "description": ""
+  },
+  "failedToUpdateImage": {
+    "message":"Failed to Update Image",
+    "description": ""
+  },
+  "failedToUpdateUserDetails": {
+    "message":"Failed to update user details.",
+    "description": ""
+  },
+  "unableToDeleteAccount": {
+    "message":"Unable to delete Account",
+    "description": ""
+  },
+  "failedToUploadStandardSets": {
+    "message":"Failed to update Standard sets",
+    "description": ""
+  },
+  "failedToRemoveRequestedSchool": {
+    "message":"Failed to remove requested school",
+    "description": ""
+  },
+  "failedToAddRequestedSchool": {
+    "message":"Failed to add requested school",
+    "description": ""
+  },
+  "failedToCreateSchool": {
+    "message":"Failed to create school",
+    "description": ""
+  },
+  "failedToJoinSchool": {
+    "message":"Failed to join school",
+    "description": ""
+  },
+  "failedToGetUsersFromDistrict": {
+    "message":"Failed to get users from District.",
+    "description": ""
+  },
+  "failedToUpdateDefaultSettings": {
+    "message":"Failed to update default settings.",
+    "description": ""
+  },
+  "testIsExpired": {
+    "message":"Test is expired",
+    "description": ""
+  },
+  "failedToUpdateUser": {
+    "message":"Failed to update user please try again.",
+    "description": ""
+  },
+  "bulkSyncFailed": {
+    "message":"Bulk sync failed",
+    "description": ""
+  },
+  "passwordIsIncorrect": {
+    "message":"Password is incorrect. Please enter the correct password.",
+    "description": ""
+  },
+  "canvasAuthenticationFailed": {
+    "message":"Canvas authentication Failed",
+    "description": ""
   }
 }

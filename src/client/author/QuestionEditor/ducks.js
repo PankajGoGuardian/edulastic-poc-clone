@@ -384,7 +384,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
     const { itemLevelScoring = false } = itemDetail;
     const [isIncomplete, errMsg] = isIncompleteQuestion(question, itemLevelScoring);
-    if (isIncomplete) return message.error(errMsg);
+    if (isIncomplete) return notification({ msg:errMsg });
 
     const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(question);
     if (hasImproperConfig) {
@@ -748,7 +748,7 @@ function* calculateFormulaSaga({ payload }) {
     yield put({
       type: CALCULATE_FORMULA_FAILED
     });
-    yield call(message.error, "some thing went wrong. please try again.");
+    notification({ messageKey: "somethingWentPleaseTryAgain" });
     console.log(err);
   }
 }
@@ -792,7 +792,7 @@ function* loadQuestionSaga({ payload }) {
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (e) {
     const errorMessage = "Loading Question is failing";
-    yield call(message.error, errorMessage);
+    notification({ msg:errorMessage });
   }
 }
 

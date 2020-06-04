@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import { Col, message } from "antd";
+import { notification } from "@edulastic/common";
 import { canvasApi } from "@edulastic/api";
 import Header from "./Header";
 import JoinSchool from "./JoinSchool";
@@ -56,7 +57,7 @@ const Container = ({
           setIsAuthorized(true);
         })
         .catch(() => {
-          message.error("Canvas authentication Failed");
+          notification({ msg:"canvasAuthenticationFailed"});
         });
     } else {
       setIsAuthorized(true);

@@ -1,5 +1,5 @@
 import { backgroundGrey2, fadedGrey, greenDark, themeColor, whiteSmoke, mobileWidthMax } from "@edulastic/colors";
-import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled } from "@edulastic/common";
+import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled,notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconClose, IconShare } from "@edulastic/icons";
 import { Col, message, Row, Select, Spin, Typography, Modal } from "antd";
@@ -179,10 +179,11 @@ class ShareModal extends React.Component {
     let emails = [];
     if (sharedType === sharedKeysObj.INDIVIDUAL) {
       if (Object.keys(currentUser).length === 0) {
-        if (!searchString.length) return message.error("Please select any user which are not in the shared list");
+        if (!searchString.length) return notification({ messageKey:"pleaseSelectAnyUser"});
         emails = searchString.split(",");
       } else if (isExisting) {
-        return message.error("This user has permission");
+        notification({ messageKey:"userHasPermission"});
+        return;
       } else {
         const { _userId, userName, email } = currentUser;
         person = { sharedWith: [{ _id: _userId, name: userName, email }] };
@@ -190,7 +191,8 @@ class ShareModal extends React.Component {
     } else {
       const isTypeExisting = sharedUsersList.some(item => item.userName === shareTypes[sharedType]);
       if (isTypeExisting) {
-        return message.error(`You have shared with ${shareTypes[sharedType]} try other option`);
+        notification({ msg:`You have shared with ${shareTypes[sharedType]} try other option`});
+        return;
       }
     }
     const data = {

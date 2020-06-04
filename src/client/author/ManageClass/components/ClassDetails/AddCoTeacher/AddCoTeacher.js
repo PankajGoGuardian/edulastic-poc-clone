@@ -54,7 +54,8 @@ class AddCoTeacher extends React.Component {
     const { coTeacherId } = this.state;
     const { setClass } = this.props;
     if (isNull(coTeacherId)) {
-      return message.error("Please select co-teacher");
+      notification({ messageKey: "pleaseSelectCoTeacher" });
+      return;
     }
     const { handleCancel, selectedClass } = this.props;
     const { _id: classId } = selectedClass;

@@ -1,5 +1,5 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, StyledComponents, TypeToConfirmModal } from "@edulastic/common";
+import { CheckboxLabel, StyledComponents,notification, TypeToConfirmModal } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { GiDominoMask } from "react-icons/gi";
@@ -150,11 +150,11 @@ class SchoolAdminTable extends Component {
     const { selectedRowKeys } = this.state;
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-        message.error("Please select user to edit.");
+       notification({ messageKey:"pleaseSelectUser" });
       } else if (selectedRowKeys.length === 1) {
         this.onEditSchoolAdmin(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        message.error("Please select single user to edit.");
+        notification({ messageKey:"pleaseSelectSingleUserToEdit" });
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -163,7 +163,7 @@ class SchoolAdminTable extends Component {
           deactivateAdminModalVisible: true
         });
       } else {
-        message.error("Please select schools to delete.");
+        notification({ messageKey:"pleaseSelectSchoolsToDelete" });
       }
     }
   };

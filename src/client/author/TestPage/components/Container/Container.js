@@ -607,14 +607,16 @@ class Container extends PureComponent {
       userRole
     } = this.props;
     if (!test?.title?.trim()?.length) {
-      return message.error("Name field is required");
+      notification({ messageKey:"nameFieldRequired"});
+      return;
     }
     const newTest = this.modifyTest();
     if (newTest.safeBrowser && !newTest.sebPassword) {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
         this.sebPasswordRef.current.input.focus();
       }
-      return message.error("Please add a valid password");
+      notification({ messageKey:"enterValidPassword"});
+      return;
     }
 
     updateLastUsedCollectionList(test.collections);

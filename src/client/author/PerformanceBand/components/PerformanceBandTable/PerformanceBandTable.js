@@ -1,5 +1,5 @@
 import { themeColor, white } from "@edulastic/colors";
-import { CheckboxLabel } from "@edulastic/common";
+import { CheckboxLabel,notification } from "@edulastic/common";
 import { Col, Form, Icon, Input, InputNumber, message, Row, Slider, Table } from "antd";
 import produce from "immer";
 import { get } from "lodash";
@@ -306,7 +306,7 @@ export class PerformanceBandTable extends React.Component {
       .includes(color);
 
     if (colorExists) {
-      message.error("Please select a different color. The selected color is already used for different Band");
+      notification({ messageKey: "pleaseSelectADifferentColor" });
       return;
     }
     const data = produce(this.state.dataSource, ds => {
@@ -324,7 +324,9 @@ export class PerformanceBandTable extends React.Component {
   handleDelete = (e, key) => {
     const dataSource = [...this.state.dataSource];
     if (dataSource.length <= 2) {
-      message.error("Performance Band should at least 2.");
+      notification({ messageKey: "performanceBandShouldAtLeast" });
+
+      
       return;
     }
     if (dataSource[0].key === key) dataSource[1].from = 100;

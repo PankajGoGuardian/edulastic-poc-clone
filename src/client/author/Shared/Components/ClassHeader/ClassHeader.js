@@ -118,7 +118,7 @@ class ClassHeader extends Component {
 
   cancel = () => {
     this.setState({ visible: false });
-    message.error("Click on cancel.");
+    notification({ messageKey:"ClickOnCancel" });
   };
 
   handleVisibleChange = visible => {
@@ -214,7 +214,8 @@ class ClassHeader extends Component {
       assignmentStatus === "NOT OPEN" &&
       passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
-      return message.error("assignment should be open to see password");
+      notification({ messageKey:"assignmentShouldBeOpenToSeePassword" });
+      return;
     }
     toggleViewPassword();
   };
@@ -225,7 +226,7 @@ class ClassHeader extends Component {
     if (isAnyBodyGraded) {
       toggleStudentReportCardPopUp(true);
     } else {
-      message.error("No student is Graded to generate report card.");
+     notification({ messageKey:"noStudentIsGradedToGenerateReportCard" });
     }
   };
 
@@ -340,7 +341,7 @@ class ClassHeader extends Component {
           key="key2"
           onClick={() =>
             assignedById !== userId
-              ? message.error("You are not authorized to update the Release Score policy")
+              ? notification({ messageKey:"youAreNotAuthorizedToUpdate" })
               : toggleReleaseGradePopUp(true)
           }
         >

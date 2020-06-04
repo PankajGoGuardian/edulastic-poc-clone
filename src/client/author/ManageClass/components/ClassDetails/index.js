@@ -8,7 +8,7 @@ import { red } from "@edulastic/colors";
 
 // components
 import { Input, message, Spin } from "antd";
-import { MainContentWrapper, EduButton } from "@edulastic/common";
+import { MainContentWrapper, EduButton,notification } from "@edulastic/common";
 import Header from "./Header";
 import MainInfo from "./MainInfo";
 import StudentsList from "./StudentsList";
@@ -106,7 +106,7 @@ const ClassDetails = ({
         institutionId
       });
     } else {
-      message.error("Enter valid google classroom code");
+      notification({ messageKey: "enterValidGoogleClassroomCode" });
     }
   };
 

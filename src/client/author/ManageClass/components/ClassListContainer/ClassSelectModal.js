@@ -4,7 +4,7 @@ import { capitalize } from "lodash";
 
 // components
 import { Spin, Select, Input, message } from "antd";
-import { EduButton } from "@edulastic/common";
+import { EduButton,notification } from "@edulastic/common";
 import { IconClever, IconClose } from "@edulastic/icons";
 import { StyledSelect, ClassListModal, ModalClassListTable, InstitutionSelectWrapper } from "./styled";
 
@@ -68,9 +68,9 @@ const ClassSelectModal = ({
   const handleClassListSync = () => {
     const classList = classListData.filter((_, index) => selectedRows.includes(index));
     if (!classList?.length) {
-      message.error("Please select a class to sync.");
+      notification({ messageKey: "pleaseSelectAClass" });
     } else if (type === "googleClassroom" && !institutionId) {
-      return message.error("Please select an institution.");
+      notification({ messageKey: "pleaseSelectAnInstitution" });
     } else {
       onSubmit({ classList, institutionId, refreshPage });
       onCancel();

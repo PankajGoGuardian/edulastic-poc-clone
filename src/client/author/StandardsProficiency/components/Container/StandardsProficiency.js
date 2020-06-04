@@ -1,4 +1,4 @@
-import { EduButton } from "@edulastic/common";
+import { EduButton,notification} from "@edulastic/common";
 import { Col, Icon, Input, message, Row } from "antd";
 import { get, upperFirst } from "lodash";
 import PropTypes from "prop-types";
@@ -246,7 +246,7 @@ function StandardsProficiency(props) {
   const handleProfileLimit = () => {
     const canCreateProfile = props.profiles.filter(x => x.createdBy?._id === props.userId).length <= 10;
     if (!canCreateProfile) {
-      message.error("Maximum 10 profiles per user is allowed");
+      notification({ messageKey:"maximumTenProfilesPerUser"});
       return false;
     }
     return true;
@@ -255,16 +255,16 @@ function StandardsProficiency(props) {
   const createStandardProficiency = () => {
     const name = profileName;
     if (name === "") {
-      message.error("Name cannot be empty");
+     notification({ messageKey:"nameCannotBeEmpty"});
     } else if (name) {
       // needed for unicode aware length
       if ([...name].length > 150) {
-        message.error("Sorry! Maximum length of Profile Name is 150 characters");
+        notification({ messageKey:"maximumLengthForProifleName150"});
         return;
       }
 
       if (props.profiles.find(p => (p.name || "").toLowerCase() === name.toLowerCase())) {
-        message.error(`Profile with name "${name}" already exists. Please try with a different name`);
+       notification({ msg:`Profile with name "${name}" already exists. Please try with a different name`});
         return;
       }
       create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });

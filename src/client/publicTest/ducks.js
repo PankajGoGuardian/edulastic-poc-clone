@@ -11,6 +11,7 @@ import { assignmentSchema } from "../student/sharedDucks/AssignmentModule/ducks"
 
 import { reportSchema } from "../student/sharedDucks/ReportsModule/ducks";
 import { message } from "antd";
+import { notification } from "@edulastic/common";
 import { push } from "connected-react-router";
 
 const FETCH_PUBLIC_TEST = "[test] fetch publicly shared test";
@@ -130,7 +131,7 @@ function* fetchAssignmentsByTest({ payload }) {
 
     yield put({ type: FETCH_ASSIGNMENTS_DATA_BY_TEST_SUCCESS, payload: { allAssignments, assignmentObj, reportsObj } });
   } catch (e) {
-    message.warn("Redirecting to the student dashboard");
+    notification({ type:"warn" , messageKey:"redirectingToStudentDshboard"});
     yield put(push("/home/assignments"));
   }
 }

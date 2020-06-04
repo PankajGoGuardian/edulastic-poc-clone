@@ -1,5 +1,5 @@
 import { tagsApi } from "@edulastic/api";
-import { FieldLabel, SelectInputStyled, TextInputStyled, FroalaEditor } from "@edulastic/common";
+import { FieldLabel, SelectInputStyled, TextInputStyled, FroalaEditor,notification } from "@edulastic/common";
 import { Col, message, Row, Select } from "antd";
 import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
@@ -94,7 +94,7 @@ const Sidebar = ({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "playlist" });
       } catch (e) {
-        message.error("Saving tag failed");
+        notification({ messageKey:"savingTagErr"});
       }
     } else {
       newTag = newAllTagsData.find(tag => tag._id === id);

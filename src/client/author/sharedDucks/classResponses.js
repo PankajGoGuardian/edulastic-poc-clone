@@ -359,7 +359,7 @@ function* updateStudentScore({ payload }) {
     notification({ type: "success", messageKey:"scoreSucessfullyUpdated"});
   } catch (e) {
     console.log(e);
-    yield call(message.error, "Score updation failed");
+    notification({ messageKey:"scoreUpdationFailed" });
   }
 }
 

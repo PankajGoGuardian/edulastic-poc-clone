@@ -73,11 +73,7 @@ function* upgradeUserLicense({ payload }) {
     }
   } catch (err) {
     yield put(slice.actions.upgradeLicenseKeyFailure(err?.data?.message));
-    yield call(message.error, {
-      content: "The License Key entered is either already used or not valid. Please contact your admin.",
-      key: "verify-license",
-      duration: 2
-    });
+    notification({messageKey:"theLisenceKeyEnteredIEitherUseOrNotValid",Key:"verify-license"});
     console.error("ERROR WHILE VERIFYING USER LICENSE KEY : ", err);
   }
 }
@@ -94,29 +90,18 @@ function* handleStripePayment({ payload }) {
         notification({ type: "success", msg: { content: "Payment Successful", key: "handle-payment"}});
         yield put(fetchUserAction({ background: true }));
       } else {
-        yield call(message.error, {
-          content: "API Response failed: " + error,
-          key: "handle-payment",
-          duration: 2
-        });
+    
+        notification({msg:"API Response failed: " + error,Key:"handle-payment"});
         console.error("API Response failed");
       }
     } else {
-      yield call(message.error, {
-        content: "Creating token failed : " + error.message,
-        key: "handle-payment",
-        duration: 2
-      });
+      notification({msg:"Creating token failed : " + error.message,Key:"handle-payment"});
       yield put(slice.actions.disablePending());
       console.error("ERROR WHILE PROCESSING PAYMENT [Create Token] : ", error);
     }
   } catch (err) {
     yield put(slice.actions.stripePaymentFailure(err?.data?.message));
-    yield call(message.error, {
-      content: "Payment Failed : " + err?.data?.message,
-      key: "handle-payment",
-      duration: 2
-    });
+    notification({msg:"Payment Failed : " + err?.data?.message,Key:"handle-payment"});
     console.error("ERROR WHILE PROCESSING PAYMENT : ", err);
   }
 }

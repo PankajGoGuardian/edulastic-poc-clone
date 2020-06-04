@@ -376,7 +376,8 @@ class Container extends PureComponent {
     const { publishPlaylist, playlist, match } = this.props;
     const { grades = [], subjects = [], _id, modules = [] } = playlist;
     if (!_id) {
-      return message.error("Save Playlist before publishing");
+      notification({ messageKey: "savePlaylistBeforPublishing" });
+      return;
     }
     if (!grades.length) {
       notification({ messageKey: "gradeFieldEmpty" });

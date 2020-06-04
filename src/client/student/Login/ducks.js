@@ -95,6 +95,9 @@ export const UPDATE_DEFAULT_SETTINGS_FAILED = "[user] update default settings fa
 
 export const SET_SETTINGS_SA_SCHOOL = "[user] set sa settings school";
 export const SET_SIGNUP_STATUS = "[user] set signup status";
+export const UPDATE_POWER_TEACHER_TOOLS_REQUEST = "[user] update power teacher permission request";
+export const UPDATE_POWER_TEACHER_TOOLS_SUCCESS = "[user] update power teacher permission success";
+export const UPDATE_POWER_TEACHER_TOOLS_FAILED = "[user] update power teacher permission failed"
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -141,6 +144,7 @@ export const changeChildAction = createAction(CHANGE_CHILD);
 export const updateDefaultSettingsAction = createAction(UPDATE_DEFAULT_SETTINGS_REQUEST);
 export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
 export const fetchUserFailureAction = createAction(FETCH_USER_FAILURE);
+export const updatePowerTeacherAction = createAction(UPDATE_POWER_TEACHER_TOOLS_REQUEST);
 
 const initialState = {
   addAccount: false,
@@ -387,6 +391,18 @@ export default createReducer(initialState, {
   },
   [SET_SIGNUP_STATUS]: (state, { payload }) => {
     state.signupStatus = payload;
+  },
+  [UPDATE_POWER_TEACHER_TOOLS_REQUEST]: state => {
+    state.updatingPowerTeacher = true;
+  },
+  [UPDATE_POWER_TEACHER_TOOLS_SUCCESS]: state => {;
+    Object.assign(state.user, {
+      isPowerTeacher: !state.user.isPowerTeacher
+    });
+    state.updatingPowerTeacher = false;
+  },
+  [UPDATE_POWER_TEACHER_TOOLS_FAILED]: state => {
+    state.updatingPowerTeacher = false;
   }
 });
 
@@ -1350,6 +1366,17 @@ function* updateDefaultSettingsSaga({ payload }) {
   }
 }
 
+function* updatePowerTeacher({ payload }) {
+  try {
+    yield call(userApi.updatePowerTeacherTools, payload);
+    notification({ type: "success", messageKey:"powerTeacherToolsUpdatedSuccessfully"});
+    yield put({ type: UPDATE_POWER_TEACHER_TOOLS_SUCCESS, payload });
+  } catch (e) {
+    yield put({ type: UPDATE_POWER_TEACHER_TOOLS_FAILED });
+    notification({ type: "error", messageKey:"failedToUpdatePowerTeacherTools"});
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
@@ -1382,4 +1409,5 @@ export function* watcherSaga() {
   yield takeLatest(GET_CURRENT_DISTRICT_USERS_REQUEST, getCurrentDistrictUsersSaga);
   yield takeLatest(CHANGE_CHILD, changeChildSaga);
   yield takeLatest(UPDATE_DEFAULT_SETTINGS_REQUEST, updateDefaultSettingsSaga);
+  yield takeLatest(UPDATE_POWER_TEACHER_TOOLS_REQUEST, updatePowerTeacher);
 }

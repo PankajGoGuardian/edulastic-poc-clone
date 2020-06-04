@@ -3,7 +3,6 @@ import {
   backgrounds,
   borders,
   desktopWidth,
-  extraDesktopWidth,
   fadedGreen,
   largeDesktopWidth,
   mobileWidthLarge,
@@ -24,6 +23,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
+import Switch from "antd/lib/switch";
+import { roleuser } from "@edulastic/constants";
 import {
   deleteAccountAction,
   removeInterestedCurriculumsAction,
@@ -33,7 +34,8 @@ import {
   updateInterestedCurriculumsAction,
   updateUserDetailsAction,
   showJoinSchoolAction,
-  hideJoinSchoolAction
+  hideJoinSchoolAction,
+  updatePowerTeacherAction
 } from "../../../../student/Login/ducks";
 import { Wrapper } from "../../../../student/styled/index";
 import StandardSetModal from "../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal";
@@ -44,7 +46,6 @@ import DeleteSchoolModal from "../DeleteSchoolModal/DeleteSchoolModal";
 import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
 import Photo from "./Photo";
 import { selectsData } from "../../../TestPage/components/common";
-import Switch from "antd/lib/switch";
 import JoinSchool from "../../../../student/Signup/components/TeacherContainer/JoinSchool";
 
 const FormItem = Form.Item;
@@ -118,19 +119,19 @@ class ProfileBody extends React.Component {
     const { showChangePassword, isEditProfile } = this.state;
     const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
 
-    var data = {
+    const data = {
       districtId: user.districtId,
       email: isEditProfile && !isnotNormalLogin ? getFieldValue("email") : user.email,
       firstName: isEditProfile ? getFieldValue("firstName") : user.firstName,
       lastName: isEditProfile ? getFieldValue("lastName") : user.lastName,
       title: isEditProfile ? getFieldValue("title") : user.title
     };
-    if (showChangePassword) data["password"] = getFieldValue("password");
+    if (showChangePassword) data.password = getFieldValue("password");
 
     updateUserDetails({
       data,
       userId: user._id,
-      isLogout: isLogout
+      isLogout
     });
     this.setState({ showEmailConfirmModal: false, isEditProfile: false, showChangePassword: false });
   }
@@ -271,7 +272,7 @@ class ProfileBody extends React.Component {
         {school.name}
         <Icon
           type="close"
-          onClick={e => {
+          onClick={() => {
             if (user.orgData.schools.length > 1) this.setState({ selectedSchool: school, showDeleteSchoolModal: true });
           }}
         />
@@ -281,7 +282,6 @@ class ProfileBody extends React.Component {
   };
 
   getStandardSets = () => {
-    const { user } = this.props;
     const { interestedCurriculums } = this.state;
     const curriculums = interestedCurriculums.map(curriculum => (
       <StyledTag id={curriculum._id}>
@@ -292,7 +292,7 @@ class ProfileBody extends React.Component {
     return curriculums;
   };
 
-  handleRemoveSchool = e => {
+  handleRemoveSchool = () => {
     const { selectedSchool } = this.state;
     const { removeSchool, user } = this.props;
     removeSchool({
@@ -302,7 +302,7 @@ class ProfileBody extends React.Component {
     this.toggleModal("REMOVE_SCHOOL", false);
   };
 
-  handleSelectStandardButton = e => {
+  handleSelectStandardButton = () => {
     const { getDictCurriculums } = this.props;
     getDictCurriculums();
     this.setState({ showStandardSetsModal: true });
@@ -311,6 +311,11 @@ class ProfileBody extends React.Component {
   handleAddSchool = () => {
     const { showJoinSchool } = this.props;
     showJoinSchool();
+  };
+
+  handlePowerTeacherUpdate = () => {
+    const { updatePowerTeacher } = this.props;
+    updatePowerTeacher();
   };
 
   checkUser = async (rule, value, callback) => {
@@ -343,10 +348,10 @@ class ProfileBody extends React.Component {
                 initialValue: user.title
               })(
                 <TitleSelect>
-                  <Option value="Mr.">Mr.</Option>
-                  <Option value="Mrs.">Mrs.</Option>
-                  <Option value="Ms.">Ms.</Option>
-                  <Option value="Dr.">Dr.</Option>
+                  <Select.Option value="Mr.">Mr.</Select.Option>
+                  <Select.Option value="Mrs.">Mrs.</Select.Option>
+                  <Select.Option value="Ms.">Ms.</Select.Option>
+                  <Select.Option value="Dr.">Dr.</Select.Option>
                 </TitleSelect>
               )}
             </InputItemWrapper>{" "}
@@ -411,7 +416,7 @@ class ProfileBody extends React.Component {
       form: { getFieldDecorator }
     } = this.props;
 
-    const { flag, t, user, curriculums, userInfo, joinSchoolVisible, showJoinSchool, hideJoinSchool } = this.props;
+    const { flag, t, user, curriculums, userInfo, joinSchoolVisible, hideJoinSchool } = this.props;
     const {
       showChangePassword,
       isEditProfile,
@@ -438,6 +443,17 @@ class ProfileBody extends React.Component {
     const interestedStaData = {
       curriculums: user.orgData.interestedCurriculums
     };
+    const { features, role } = user;
+    let showPowerTools = false;
+
+    if (
+      ((role === roleuser.TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
+        [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role)) &&
+      features.premium
+    ) {
+      showPowerTools = true;
+    }
+
     return (
       <MainContentWrapper padding="30px" flag={flag}>
         <ProfileWrapper display="flex" boxShadow="none" minHeight="max-content">
@@ -572,67 +588,86 @@ class ProfileBody extends React.Component {
                     </SelectSetsButton>
                   </StandardSetsButtons>
                 </SchoolWrapper>
-                <SchoolWrapper>
-                  <Block>
-                    <StyledDiv>
-                      <Title>Default Settings</Title>
-                      {showDefaultSettingSave && (
-                        <SaveDefaultSettingsBtn onClick={this.saveSettings}>SAVE</SaveDefaultSettingsBtn>
-                      )}
-                    </StyledDiv>
-                    <FieldLabel>{t("common.title.interestedGrade")}</FieldLabel>
-                    <SelectInputStyled
-                      data-cy="gradeSelect"
-                      mode="multiple"
-                      size="large"
-                      placeholder="Please select"
-                      defaultValue={defaultGrades}
-                      onChange={value => this.onSettingChange(value, "grade")}
-                      optionFilterProp="children"
-                      getPopupContainer={trigger => trigger.parentNode}
-                      margin="0px 0px 15px"
-                      filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {selectsData.allGrades.map(({ value, text }) => (
-                        <Select.Option key={value} value={value}>
-                          {text}
-                        </Select.Option>
-                      ))}
-                    </SelectInputStyled>
-                    <FieldLabel>{t("common.title.interestedSubject")}</FieldLabel>
-                    <SelectInputStyled
-                      data-cy="subjectSelect"
-                      mode="multiple"
-                      size="large"
-                      margin="0px 0px 15px"
-                      placeholder="Please select"
-                      defaultValue={defaultSubjects}
-                      onChange={value => this.onSettingChange(value, "subject")}
-                      optionFilterProp="children"
-                      getPopupContainer={trigger => trigger.parentNode}
-                      filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {subjectsList.map(({ value, text }) => (
-                        <Select.Option key={value} value={value}>
-                          {text}
-                        </Select.Option>
-                      ))}
-                    </SelectInputStyled>
-                    {googleClassRoomAllowed && [
-                      <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
-                      <Switch
-                        style={{ width: "30px" }}
-                        defaultChecked={autoShareGCAssignment}
-                        onChange={checked => this.onSettingChange(checked, "autoSync")}
-                      />
-                    ]}
-                  </Block>
-                </SchoolWrapper>
               </>
+            )}
+            {(user.role.toUpperCase() === "TEACHER" || showPowerTools) && (
+              <SchoolWrapper>
+                <Block>
+                  <StyledDiv>
+                    <Title>Default Settings</Title>
+                    {showDefaultSettingSave && (
+                      <SaveDefaultSettingsBtn onClick={this.saveSettings}>SAVE</SaveDefaultSettingsBtn>
+                    )}
+                  </StyledDiv>
+                  {user.role.toUpperCase() === "TEACHER" && (
+                    <>
+                      <FieldLabel>{t("common.title.interestedGrade")}</FieldLabel>
+                      <SelectInputStyled
+                        data-cy="gradeSelect"
+                        mode="multiple"
+                        size="large"
+                        placeholder="Please select"
+                        defaultValue={defaultGrades}
+                        onChange={value => this.onSettingChange(value, "grade")}
+                        optionFilterProp="children"
+                        getPopupContainer={trigger => trigger.parentNode}
+                        margin="0px 0px 15px"
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {selectsData.allGrades.map(({ value, text }) => (
+                          <Select.Option key={value} value={value}>
+                            {text}
+                          </Select.Option>
+                        ))}
+                      </SelectInputStyled>
+                      <FieldLabel>{t("common.title.interestedSubject")}</FieldLabel>
+                      <SelectInputStyled
+                        data-cy="subjectSelect"
+                        mode="multiple"
+                        size="large"
+                        margin="0px 0px 15px"
+                        placeholder="Please select"
+                        defaultValue={defaultSubjects}
+                        onChange={value => this.onSettingChange(value, "subject")}
+                        optionFilterProp="children"
+                        getPopupContainer={trigger => trigger.parentNode}
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {subjectsList.map(({ value, text }) => (
+                          <Select.Option key={value} value={value}>
+                            {text}
+                          </Select.Option>
+                        ))}
+                      </SelectInputStyled>
+                      {googleClassRoomAllowed && [
+                        <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
+                        <Switch
+                          style={{ width: "30px" }}
+                          defaultChecked={autoShareGCAssignment}
+                          onChange={checked => this.onSettingChange(checked, "autoSync")}
+                        />
+                      ]}
+                    </>
+                  )}
+                  {showPowerTools && (
+                    <PowerUserWrapper style={{ justifyContent: "space-between" }}>
+                      <FieldLabel>POWER USER</FieldLabel>
+                      <PowerUserBtn
+                        onClick={this.handlePowerTeacherUpdate}
+                        type="primary"
+                        ghost
+                        isPowerUser={userInfo.isPowerTeacher}
+                      >
+                        {userInfo.isPowerTeacher ? "Opt-Out" : "Opt-In"}
+                      </PowerUserBtn>
+                    </PowerUserWrapper>
+                  )}
+                </Block>
+              </SchoolWrapper>
             )}
           </RightContainer>
         </ProfileWrapper>
@@ -703,7 +738,8 @@ const enhance = compose(
       removeInterestedCurriculum: removeInterestedCurriculumsAction,
       updateDefaultSettings: updateDefaultSettingsAction,
       showJoinSchool: showJoinSchoolAction,
-      hideJoinSchool: hideJoinSchoolAction
+      hideJoinSchool: hideJoinSchoolAction,
+      updatePowerTeacher: updatePowerTeacherAction
     }
   )
 );
@@ -1042,4 +1078,20 @@ const AddSchoolBtn = styled(EditProfileButton)`
 
 const AddSchoolSection = styled.div`
   float: right;
+`;
+
+const PowerUserWrapper = styled.div`
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+const PowerUserBtn = styled(Button)`
+  padding: 0px 20px;
+  &:hover {
+    background: ${themeColor}!important;
+    border-color: ${themeColor}!important;
+    color: ${white}!important;
+  }
 `;

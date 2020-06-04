@@ -26,5 +26,6 @@ export const userPickFields = [
   "children",
   "username",
   "personId",
-  "otherAccounts"
+  "otherAccounts",
+  "isPowerTeacher"
 ];

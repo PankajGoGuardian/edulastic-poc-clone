@@ -132,8 +132,7 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
-const checkUser = payload => {
-  return api
+const checkUser = payload => api
     .callApi({
       url: `${prefix}/username-email/`,
       params: {
@@ -144,15 +143,12 @@ const checkUser = payload => {
       method: "get"
     })
     .then(result => result.data.result);
-};
 
-const SearchAddEnrolMultiStudents = (classCode, data) => {
-  return api.callApi({
+const SearchAddEnrolMultiStudents = (classCode, data) => api.callApi({
     url: `${prefix}/${classCode}/class-students`,
     method: "post",
     data
   });
-};
 
 const addStudentsToOtherClass = ({ classCode, userDetails }) =>
   api
@@ -222,8 +218,7 @@ const resetMyPassword = data =>
     data
   });
 
-const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) => {
-  return api
+const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) => api
     .callApi({
       url: `${prefix}/move-users`,
       data: {
@@ -235,7 +230,6 @@ const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCo
       method: "POST"
     })
     .then(result => result.data.result);
-};
 
 const removeSchool = data =>
   api.callApi({
@@ -285,6 +279,14 @@ const mergeUsers = ({ primaryUserId, userIds }) =>
     })
     .then(result => result.data);
 
+const updatePowerTeacherTools = payload =>
+  api
+    .callApi({
+      url: `${prefix}/power-teacher`,
+      method: "post",
+      data: payload
+    })
+
 export default {
   getUser,
   fetchUsers,
@@ -316,5 +318,6 @@ export default {
   sendParentCode,
   fetchUsersForMerge,
   getSwitchUser,
-  mergeUsers
+  mergeUsers,
+  updatePowerTeacherTools
 };

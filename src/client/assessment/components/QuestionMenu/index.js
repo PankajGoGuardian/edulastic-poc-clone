@@ -87,7 +87,15 @@ class QuestionMenu extends Component {
   };
 
   render() {
-    const { main, advanced, advancedAreOpen, handleAdvancedOpen, windowWidth, questionTitle } = this.props;
+    const {
+      main,
+      advanced,
+      advancedAreOpen,
+      handleAdvancedOpen,
+      windowWidth,
+      questionTitle,
+      hideAdvancedToggleOption
+    } = this.props;
     const { activeTab, isVideoModalVisible } = this.state;
 
     return (
@@ -107,7 +115,11 @@ class QuestionMenu extends Component {
           </MainOptions>
           {advanced.length > 0 && (
             <Fragment>
-              <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} />
+              <AdvancedOptionsLink
+                handleAdvancedOpen={handleAdvancedOpen}
+                advancedAreOpen={advancedAreOpen}
+                hideAdvancedToggleOption={hideAdvancedToggleOption}
+              />
               {advancedAreOpen && (
                 <AdvancedOptions>
                   {advanced.map((option, index) => (

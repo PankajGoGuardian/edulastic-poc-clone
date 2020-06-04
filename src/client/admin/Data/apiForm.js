@@ -175,6 +175,30 @@ export const apiForms = [
     ]
   },
   {
+    id: "power-tools",
+    name: "Enable Power Tools For Teacher",
+    endPoint: "user/power-teacher",
+    method: "post",
+    fields: [
+      {
+        name: "usernames",
+        displayName: "Username/Email",
+        placeholder: "Enter teacher username or email in comma separated",
+        type: "textarea",
+        formatter: value => value.split(",")?.map(v => v.trim()),
+        required: true
+      },
+      {
+        name: "enable",
+        placeholder: "Enable/Disable",
+        type: "radiogroup",
+        values: ["enable", "disable"],
+        formatter: value => value === "enable",
+        required: true
+      }
+    ]
+  },
+  {
     id: "other1",
     name: "Other 1",
     endPoint: "other1",

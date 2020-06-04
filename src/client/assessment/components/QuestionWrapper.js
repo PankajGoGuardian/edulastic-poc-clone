@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider, withTheme } from "styled-components";
-import { questionType, test } from "@edulastic/constants";
+import { questionType, test, roleuser } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, round } from "lodash";
@@ -52,7 +52,7 @@ import { setQuestionDataAction } from "../../author/src/actions/question";
 import { requestScratchPadAction } from "../../author/ExpressGrader/ducks";
 import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
-import { getUserRole } from "../../author/src/selectors/user";
+import { getUserRole, getUserFeatures } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
 
 import { getFontSize } from "../utils/helpers";
@@ -240,6 +240,8 @@ const getQuestion = type => {
   }
 };
 
+const { TEACHER, SCHOOL_ADMIN, DISTRICT_ADMIN } = roleuser;
+
 class QuestionWrapper extends Component {
   static contextType = ItemDetailContext;
 
@@ -330,6 +332,9 @@ class QuestionWrapper extends Component {
       isGrade,
       enableMagnifier,
       playerSkinType = test.playerSkinValues.edulastic,
+      isPowerTeacher = false,
+      isPremiumUser = false,
+      features,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -377,6 +382,18 @@ class QuestionWrapper extends Component {
     const rubricFeedback = data?.activity?.rubricFeedback;
 
     const { calculatedHeight, fullHeight } = restProps;
+    let openAdvancedOptions = false;
+
+    if (
+      (userRole === TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
+      [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
+    ) {
+      openAdvancedOptions = true;
+      if (isPremiumUser && isPowerTeacher) {
+        openAdvancedOptions = false;
+      }
+    }
+
     return (
       <ThemeProvider
         theme={{
@@ -413,10 +430,11 @@ class QuestionWrapper extends Component {
                   activeTab={activeTab}
                   main={main}
                   advanced={advanced}
-                  advancedAreOpen={advancedAreOpen}
+                  advancedAreOpen={openAdvancedOptions || advancedAreOpen}
                   handleAdvancedOpen={handleAdvancedOpen}
                   scrollContainer={scrollContainer}
                   questionTitle={data?.title || ""}
+                  hideAdvancedToggleOption={openAdvancedOptions}
                 />
               </QuestionMenuWrapper>
             )}
@@ -449,7 +467,7 @@ class QuestionWrapper extends Component {
                   changePreviewTab={changePreviewTab}
                   qIndex={qIndex}
                   advancedLink={advancedLink}
-                  advancedAreOpen={advancedAreOpen}
+                  advancedAreOpen={openAdvancedOptions || advancedAreOpen}
                   cleanSections={this.cleanSections}
                   fillSections={this.fillSections}
                   showQuestionNumber={!isPassageOrVideoType && data.qLabel}
@@ -579,7 +597,10 @@ const enhance = compose(
       zoomLevel: state.ui.zoomLevel,
       userRole: getUserRole(state),
       enableMagnifier: state.testPlayer.enableMagnifier,
-      playerSkinType: playerSkinTypeSelector(state)
+      playerSkinType: playerSkinTypeSelector(state),
+      isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
+      isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
+      features: getUserFeatures(state)
     }),
     {
       setQuestionData: setQuestionDataAction,

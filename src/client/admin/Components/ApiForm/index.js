@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Alert, Button, Form } from "antd";
 import Field from "./Field";
 import { FirstDiv, H2, OuterDiv } from "../../Common/StyledComponents";
@@ -10,16 +10,31 @@ const ApiFormsMain = ({ fields, name, handleOnSave }) => {
     setData({ ...data, [type]: value });
   };
 
+  const onCloseError = () => setErrors([]);
+
+  const formatData = useMemo(
+    () =>
+      Object.keys(data).reduce((acc, key) => {
+        const field = fields.find(f => f.name === key);
+        if (data[key] && field.formatter) {
+          acc[key] = field.formatter(data[key]);
+        } else {
+          acc[key] = data[key];
+        }
+        return { ...acc };
+      }, {}),
+    [data]
+  );
+
   const onSave = () => {
     const requiredFields = fields.filter(f => f.required);
-    const errors = requiredFields.filter(rf => !data[rf.name]).map(f => f.displayName || f.name);
-    if (errors.length) {
-      return setErrors(errors);
+    const errorFields = requiredFields.filter(rf => !data[rf.name]).map(f => f.displayName || f.name);
+    if (errorFields.length) {
+      return setErrors(errorFields);
     }
     onCloseError();
-    handleOnSave(data);
+    handleOnSave(formatData);
   };
-  const onCloseError = () => setErrors([]);
 
   return (
     <div>

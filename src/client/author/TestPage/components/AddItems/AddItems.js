@@ -415,8 +415,23 @@ class AddItems extends PureComponent {
       search,
       features,
       gotoGroupItems,
-      userRole
+      userRole,
+      isPowerTeacher,
+      isPremiumUser
     } = this.props;
+
+    const { isCurator, isPublisherAuthor } = features;
+    let showGroupItemsBtn = false;
+
+    if (
+      isCurator ||
+      isPublisherAuthor ||
+      ([roleuser.TEACHER, roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(userRole) &&
+        isPowerTeacher &&
+        isPremiumUser)
+    ) {
+      showGroupItemsBtn = true;
+    }
 
     return (
       <Container>
@@ -470,7 +485,7 @@ class AddItems extends PureComponent {
                       <span>Create new Item</span>
                     </StyledButton>
                   )}
-                  {(features.isCurator || features.isPublisherAuthor) && (
+                  {showGroupItemsBtn && (
                     <StyledButton data-cy="groupItem" type="secondary" size="large" onClick={gotoGroupItems}>
                       <IconItemGroup color={themeColor} width={15} height={15} />
                       <span>Group Items</span>
@@ -532,7 +547,9 @@ const enhance = compose(
       search: getSearchFilterStateSelector(state),
       features: getUserFeatures(state),
       interestedGrades: getInterestedGradesSelector(state),
-      interestedSubjects: getInterestedSubjectsSelector(state)
+      interestedSubjects: getInterestedSubjectsSelector(state),
+      isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
+      isPremiumUser: get(state, ["user", "user", "features", "premium"], false)
     }),
     {
       receiveTestItems: receiveTestItemsAction,

@@ -2,10 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-
+import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
+import { roleuser as userRoles } from "@edulastic/constants";
+import { getUserRole, getUserFeatures } from "../../../author/src/selectors/user";
 
 import { Widget } from "../../styled/Widget";
+
+const { TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = userRoles;
 
 class Question extends Component {
   constructor(props) {
@@ -22,24 +26,48 @@ class Question extends Component {
   componentDidMount = () => {
     const { fillSections, section, label, sectionId, visible } = this.props;
 
-    const { current: node } = this.node;
-    if (typeof node !== "object") return false;
-    if (visible === false) return false;
+    if (this.showSection()) {
+      const { current: node } = this.node;
+      if (typeof node !== "object") return false;
+      if (visible === false) return false;
 
-    fillSections(section, label, node, sectionId);
+      fillSections(section, label, node, sectionId);
 
-    // fix me
-    // i keep running indefinitely
-    // not sure why it is required.
-    this.setState({
-      intervalID: setInterval(() => {
-        this.updateVariablesOfSection();
-      }, 1000)
-    });
+      // fix me
+      // i keep running indefinitely
+      // not sure why it is required.
+      this.setState({
+        intervalID: setInterval(() => {
+          this.updateVariablesOfSection();
+        }, 1000)
+      });
 
-    this.setState({
-      el: node
-    });
+      this.setState({
+        el: node
+      });
+    }
+  };
+
+  showSection = () => {
+    const { userRole, isPowerTeacher, isPremiumUser, section, label, features } = this.props;
+
+    // show all tools except advanced section and 'Solution' section
+    if (section !== "advanced" || label === "Solution") {
+      return true;
+    }
+    let showAdvancedTools = true;
+
+    // allowed for teacher/DA/SA having premium feature and enabled power tools
+    if (
+      (userRole === TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
+      [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
+    ) {
+      showAdvancedTools = false;
+      if (isPremiumUser && isPowerTeacher) {
+        showAdvancedTools = true;
+      }
+    }
+    return showAdvancedTools;
   };
 
   componentWillUnmount() {
@@ -67,6 +95,10 @@ class Question extends Component {
   };
 
   render() {
+    if (!this.showSection()) {
+      return null;
+    }
+
     const {
       dataCy,
       children,
@@ -121,7 +153,12 @@ Question.defaultProps = {
 export default compose(
   withNamespaces("assessment"),
   connect(
-    null,
+    state => ({
+      userRole: getUserRole(state),
+      isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
+      isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
+      features: getUserFeatures(state)
+    }),
     null
   )
 )(Question);

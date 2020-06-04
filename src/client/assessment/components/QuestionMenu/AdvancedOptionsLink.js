@@ -3,9 +3,14 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { themeColor } from "@edulastic/colors";
 
-const AdvancedOptionsLink = ({ handleAdvancedOpen, advancedAreOpen, bottom }) => (
-  <AdvancedOptionsHeader onClick={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} bottom={bottom}>
-    <p>{advancedAreOpen ? "HIDE" : "SHOW"} ADVANCED OPTIONS</p>
+const AdvancedOptionsLink = ({ handleAdvancedOpen, advancedAreOpen, bottom, hideAdvancedToggleOption }) => (
+  <AdvancedOptionsHeader
+    onClick={handleAdvancedOpen}
+    advancedAreOpen={advancedAreOpen}
+    bottom={bottom}
+    hideAdvancedToggleOption={hideAdvancedToggleOption}
+  >
+    <p>{hideAdvancedToggleOption ? "" : advancedAreOpen ? "HIDE" : "SHOW"} ADVANCED OPTIONS</p>
   </AdvancedOptionsHeader>
 );
 
@@ -22,7 +27,7 @@ AdvancedOptionsLink.defaultProps = {
 export default AdvancedOptionsLink;
 
 const AdvancedOptionsHeader = styled.div`
-  cursor: pointer;
+  cursor: ${({ hideAdvancedToggleOption }) => !hideAdvancedToggleOption && "pointer"};
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
@@ -36,7 +41,9 @@ const AdvancedOptionsHeader = styled.div`
     return "50px 0px";
   }};
   position: relative;
-
+  ${({ hideAdvancedToggleOption }) =>
+    !hideAdvancedToggleOption &&
+    `
   &:before {
     content: "";
     position: absolute;
@@ -47,7 +54,7 @@ const AdvancedOptionsHeader = styled.div`
     border-right: 5px solid transparent;
     border-top: 5.5px solid ${themeColor};
     transition: all 0.2s ease;
-  }
+  }`}
 
   p {
     margin: 0;

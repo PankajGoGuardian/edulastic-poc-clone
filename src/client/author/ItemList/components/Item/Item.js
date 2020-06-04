@@ -8,15 +8,23 @@ import { get } from "lodash";
 import { message, Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants, roleuser } from "@edulastic/constants";
-import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton, CheckboxLabel } from "@edulastic/common";
+import {
+  MathFormulaDisplay,
+  PremiumTag,
+  helpers,
+  WithResources,
+  EduButton,
+  CheckboxLabel,
+  notification
+} from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
-import { notification } from "@edulastic/common";
+
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 import {
   getTestItemAuthorName,
   getQuestionType,
   getTestItemAuthorIcon,
-  hasUserGotAccessToPremiumItem
+  showPremiumLabelOnContent
 } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
@@ -55,8 +63,8 @@ import PassageConfirmationModal from "../../../TestPage/components/PassageConfir
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
-import { getCollectionsSelector, isPublisherUserSelector } from "../../../src/selectors/user";
-import { getUserRole } from "../../../src/selectors/user";
+import { getCollectionsSelector, isPublisherUserSelector, getUserRole } from "../../../src/selectors/user";
+
 import { TestStatus } from "../../../TestList/components/ListItem/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
@@ -171,7 +179,7 @@ class Item extends Component {
       details.push(ttsStatusSuccess);
     }
 
-    if (!isPublisherUser && hasUserGotAccessToPremiumItem(item.collections, collections)) {
+    if (!isPublisherUser && showPremiumLabelOnContent(item.collections, collections)) {
       details.unshift({ name: <PremiumTag />, type: "premium" });
     }
 
@@ -263,16 +271,14 @@ class Item extends Component {
           itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
           item.itemLevelScoring === false
         ) {
-          return message.warning(
-            "This item can not be added to group with limited delivery type as it has question level scoring"
-          );
+          return notification({ type: "warn", messageKey: "itemCantBeAdded" });
         }
         setCurrentGroupIndex(index);
         this.handleSelection(item);
       } else if (staticGroups.length > 1) {
         this.setState({ showSelectGroupModal: true });
       } else {
-        return message.warning("No Static group found.");
+        return notification({ type: "warn", messageKey: "noStaticGroupFound" });
       }
     } else {
       this.handleSelection(item);
@@ -290,9 +296,7 @@ class Item extends Component {
       itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
       item.itemLevelScoring === false
     ) {
-      return message.warning(
-        "This item can not be added to group with limited delivery type as it has question level scoring"
-      );
+      return notification({ type: "warn", messageKey: "thisItemCantBeAdded" });
     }
     if (index || index === 0) {
       setCurrentGroupIndex(index);

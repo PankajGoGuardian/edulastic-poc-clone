@@ -1,6 +1,6 @@
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
-import { CheckboxLabel, MathFormulaDisplay } from "@edulastic/common";
+import { CheckboxLabel, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -10,7 +10,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { getAuthorCollectionMap, flattenPlaylistStandards } from "../../../dataUtils";
+import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import {
   AddButtonStyled,
   ViewButton as ViewButtonContainer,
@@ -166,6 +166,9 @@ class ListItem extends Component {
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
 
+    const showPremiumTag =
+      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) && !isPublisherUser;
+
     return (
       <>
         <ViewModal
@@ -320,6 +323,7 @@ class ListItem extends Component {
 
               <ItemInformation span={12}>
                 <ContentWrapper>
+                  {showPremiumTag && <PremiumTag />}
                   {authorName && (
                     <Author>
                       {collections.find(o => o.name === "Edulastic Certified") ? (

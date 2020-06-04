@@ -45,7 +45,7 @@ import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { TestStatus } from "../ListItem/styled";
-import { getAuthorCollectionMap, flattenPlaylistStandards } from "../../../dataUtils";
+import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -229,6 +229,9 @@ class Item extends Component {
       padding: "5px 10px"
     };
 
+    const showPremiumTag =
+      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) && !isPublisherUser;
+
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
     return (
@@ -289,7 +292,7 @@ class Item extends Component {
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&
                 getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
-              {!!collections.length && !isPlaylist && !isPublisherUser && <PremiumLabel>$ PREMIUM</PremiumLabel>}
+              {showPremiumTag && <PremiumLabel>$ PREMIUM</PremiumLabel>}
             </Header>
           }
         >

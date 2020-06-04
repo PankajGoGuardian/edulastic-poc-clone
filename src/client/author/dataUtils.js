@@ -1,5 +1,5 @@
+import React from "react";
 import { get, keyBy, uniqBy, uniq } from "lodash";
-import produce from "immer";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { questionType } from "@edulastic/constants";
 import { UserIcon } from "./ItemList/components/Item/styled";
@@ -11,29 +11,26 @@ export const hasUserGotAccessToPremiumItem = (itemCollections = [], orgCollectio
   const itemCollectionsMap = keyBy(itemCollections, o => o._id);
   if (returnFlag) {
     return !!orgCollections.find(o => itemCollectionsMap[o._id]);
-  } else {
-    return orgCollections.find(o => itemCollectionsMap[o._id]);
   }
+  return orgCollections.find(o => itemCollectionsMap[o._id]);
 };
 
-export const getAuthorCollectionMap = (isBottom, width, height) => {
-  return {
-    edulastic_certified: {
-      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-      displayName: "Edulastic Certified"
-    },
-    engage_ny: {
-      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-      displayName: "Edulastic Certified"
-    },
-    "Edulastic Certified": {
-      icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-      displayName: "Edulastic Certified"
-    },
-    Great_Minds_DATA: { icon: <UserIcon />, displayName: "Eureka Math" },
-    PROGRESS_DATA: { icon: <UserIcon />, displayName: "PROGRESS Bank" }
-  };
-};
+export const getAuthorCollectionMap = (isBottom, width, height) => ({
+  edulastic_certified: {
+    icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+    displayName: "Edulastic Certified"
+  },
+  engage_ny: {
+    icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+    displayName: "Edulastic Certified"
+  },
+  "Edulastic Certified": {
+    icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
+    displayName: "Edulastic Certified"
+  },
+  Great_Minds_DATA: { icon: <UserIcon />, displayName: "Eureka Math" },
+  PROGRESS_DATA: { icon: <UserIcon />, displayName: "PROGRESS Bank" }
+});
 
 export const getTestAuthorName = (item, orgCollections) => {
   const { createdBy = {}, collections = [], authors = [] } = item;
@@ -46,7 +43,7 @@ export const getTestAuthorName = (item, orgCollections) => {
     }
   }
   if (createdBy._id) {
-    const author = authors.find(item => item._id === createdBy._id) || {};
+    const author = authors.find(_item => _item._id === createdBy._id) || {};
     return author.name || authors[0].name;
   }
   return authors.length && authors[0].name;
@@ -63,7 +60,7 @@ export const getTestItemAuthorName = (item, orgCollections) => {
     }
   }
   if (owner) {
-    const author = authors.find(item => item._id === owner) || {};
+    const author = authors.find(_item => _item._id === owner) || {};
     return author.name || authors?.[0]?.name || "Anonymous";
   }
   return (authors.length && authors?.[0]?.name) || "Anonymous";
@@ -103,7 +100,7 @@ export const getPlaylistAuthorName = item => {
 export const getQuestionType = item => {
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
-  const hasPassage = resources.some(item => item.type === PASSAGE) || item.passageId;
+  const hasPassage = resources.some(_item => _item.type === PASSAGE) || item.passageId;
   if (hasPassage) {
     // All questions that are linked to passage should show type as passage and question type attached to passage
     return questions.length > 1
@@ -164,9 +161,7 @@ export const setDefaultInterests = newInterest => {
   );
 };
 
-export const getDefaultInterests = () => {
-  return JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
-};
+export const getDefaultInterests = () => JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
 
 export const sortTestItemQuestions = testItems => {
   for (const [, item] of testItems.entries()) {
@@ -179,4 +174,13 @@ export const sortTestItemQuestions = testItems => {
     item.data.questions = widgets.map(widget => questions[widget.reference]).filter(q => !!q);
   }
   return testItems;
+};
+
+// Show premium label on items/tests/playlists
+export const showPremiumLabelOnContent = (itemCollections = [], orgCollections = []) => {
+  // TODO: if collection ids are constant then replace with ids instead of looping on orgCollections
+  const premiumCollectionIds = orgCollections
+    .filter(c => !["Edulastic Certified", "Engage Ny"].includes(c.name))
+    .map(x => x._id);
+  return itemCollections.some(c => premiumCollectionIds.includes(c._id));
 };

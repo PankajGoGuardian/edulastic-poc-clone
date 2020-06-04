@@ -277,7 +277,7 @@ class LiveClassboardPage {
         "stduent stats :: ",
         `${studentName}, ${status}, ${score}, ${performance}, ${JSON.stringify(queAttempt)} , ${queCards}`
       ); */
-      this.verifyStudentStatusIs(index, status);
+      this.verifyStudentStatusIsByIndex(index, status);
       this.getStudentScoreByIndex(index).should("have.text", score);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);

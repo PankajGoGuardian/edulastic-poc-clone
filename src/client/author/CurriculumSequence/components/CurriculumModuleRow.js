@@ -894,18 +894,15 @@ class ModuleRow extends Component {
                           Preview
                         </Button>
                       </AssignmentButton>
-
-                      {mode === "embedded" ? (
-                        <IconActionButton
-                          data-cy="assignmentDeleteOptionsIcon"
-                          onClick={e => {
-                            e.stopPropagation();
-                            this.deleteTest(moduleIndex, moduleData.contentId);
-                          }}
-                        >
-                          <IconTrash color={themeColor} />
-                        </IconActionButton>
-                      ) : null}
+                      <IconActionButton
+                        data-cy="assignmentDeleteOptionsIcon"
+                        onClick={e => {
+                          e.stopPropagation();
+                          this.deleteTest(moduleIndex, moduleData.contentId);
+                        }}
+                      >
+                        <IconTrash color={themeColor} />
+                      </IconActionButton>
                     </LastColumn>
                   );
 

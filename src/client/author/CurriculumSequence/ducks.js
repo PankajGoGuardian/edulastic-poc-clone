@@ -120,8 +120,6 @@ export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized 
 export const SET_VIDEO_PREVIEW_RESOURCE_MODAL = "[playlist] set video resource modal content";
 export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub-resource to test";
 export const REMOVE_SUB_RESOURCE_FROM_TEST = "[playlist] remove sub-resource from test";
-export const SET_SHOW_RIGHT_SIDE_PANEL = "[playlist] set show right side panel";
-export const SET_ACTIVE_RIGHT_PANEL = "[playlist] set active right panel view";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -181,8 +179,6 @@ export const duplicateManageContentAction = createAction(DUPLICATE_MANAGE_CONTEN
 export const cancelPlaylistCustomizeAction = createAction(CANCEL_PLAYLIST_CUSTOMIZE);
 export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST);
 export const setEmbeddedVideoPreviewModal = createAction(SET_VIDEO_PREVIEW_RESOURCE_MODAL);
-export const setShowRightSideAction = createAction(SET_SHOW_RIGHT_SIDE_PANEL);
-export const setActiveRightPanelViewAction = createAction(SET_ACTIVE_RIGHT_PANEL);
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -746,25 +742,17 @@ function* fetchAssigned() {
 
 function* duplicateManageContentSaga({ payload }) {
   try {
-    const { _id: originalId, title: originalTitle, grades, subjects } = payload;
+    const { _id: originalId, title: originalTitle } = payload;
     const duplicatedDraftPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
       _id: originalId,
       title: originalTitle,
       forUseThis: true
     });
 
-    const newId = duplicatedDraftPlaylist._id;
-    yield all([
-      call(userContextApi.setLastUsedPlayList, { _id: newId, title: originalTitle, grades, subjects }),
-      call(userContextApi.setRecentUsedPlayLists, { _id: newId, title: originalTitle, grades, subjects })
-    ]);
-
     yield put(updateCurriculumSequenceAction(duplicatedDraftPlaylist));
     yield put(setOriginalDestinationData(payload));
-    yield put(toggleManageContentActiveAction(true));
-    yield put(setActiveRightPanelViewAction("manageContent"));
-    yield put(setShowRightSideAction(true));
-    yield put(push(`/author/playlists/playlist/${duplicatedDraftPlaylist._id}/use-this`));
+    yield put(toggleManageContentActiveAction());
+    yield put(push(`/author/playlists/customize/${originalId}/${duplicatedDraftPlaylist._id}`));
   } catch (error) {
     console.error(error);
     notification({ messageKey: "commonErr" });
@@ -1901,11 +1889,5 @@ export default createReducer(initialState, {
   },
   [FETCH_CURRICULUM_SEQUENCES_ERROR]: state => {
     state.loading = false;
-  },
-  [SET_SHOW_RIGHT_SIDE_PANEL]: (state, { payload }) => {
-    state.showRightPanel = payload;
-  },
-  [SET_ACTIVE_RIGHT_PANEL]: (state, { payload }) => {
-    state.activeRightPanel = payload;
   }
 });

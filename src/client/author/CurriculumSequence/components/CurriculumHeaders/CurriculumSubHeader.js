@@ -20,6 +20,7 @@ const CurriculumSubHeader = ({
   match,
   isStudent,
   dateKeys,
+  urlHasUseThis,
   enableCustomize,
   showRightPanel,
   summaryData,
@@ -97,29 +98,36 @@ const CurriculumSubHeader = ({
               {subHeaderIcon2}
             </SubHeaderInfoCardWrapper>
             <ButtonWrapper>
-              {enableCustomize && isManageContentActive && cloneId && (
-                <DraftModeActionsWrapper>
-                  <StyledButton
-                    width="100px"
-                    data-cy="cancel-customize"
-                    onClick={() => cancelPlaylistCustomize({ parentId })}
-                  >
-                    Cancel
-                  </StyledButton>
-                  <StyledButton
-                    width="100px"
-                    data-cy="publish-customized-playlist"
-                    onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
-                    isManageContentActive={isManageContentActive}
-                  >
-                    Update
-                  </StyledButton>
-                </DraftModeActionsWrapper>
-              )}
-              {enableCustomize && (!isManageContentActive || !showRightPanel) && !shouldHidCustomizeButton && (
-                <StyledButton onClick={toggleManageContentClick("manageContent")}>Customize Content</StyledButton>
-              )}
-              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && (
+              {enableCustomize &&
+                (isManageContentActive && cloneId ? (
+                  <DraftModeActionsWrapper>
+                    <StyledButton
+                      width="100px"
+                      data-cy="cancel-customize"
+                      onClick={() => cancelPlaylistCustomize({ parentId })}
+                    >
+                      Cancel
+                    </StyledButton>
+                    <StyledButton
+                      width="100px"
+                      data-cy="publish-customized-playlist"
+                      onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
+                      isManageContentActive={isManageContentActive}
+                    >
+                      Update
+                    </StyledButton>
+                  </DraftModeActionsWrapper>
+                ) : (
+                  <>
+                    {(!isManageContentActive || !showRightPanel) && !shouldHidCustomizeButton && (
+                      <StyledButton onClick={toggleManageContentClick("manageContent")}>Customize Content</StyledButton>
+                    )}
+                    {(isManageContentActive || !showRightPanel) && urlHasUseThis && (
+                      <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
+                    )}
+                  </>
+                ))}
+              {!enableCustomize && isStudent && !showRightPanel && (
                 <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
               )}
             </ButtonWrapper>

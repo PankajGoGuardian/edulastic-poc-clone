@@ -126,7 +126,7 @@ const OPERATORS = [
     handler: "\\div",
     label: <CustomImage src={Group2788} width={12} height={12} role="presentation" />,
     command: "cmd",
-    types: ["all"]
+    types: ["all", "basic", "intermediate"]
   }
 ];
 

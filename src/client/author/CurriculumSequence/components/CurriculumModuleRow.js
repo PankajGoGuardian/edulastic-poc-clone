@@ -60,6 +60,35 @@ const NOT_ASSIGNED = "ASSIGN";
 
 const SortableHOC = sortableContainer(({ children }) => <div onClick={e => e.stopPropagation()}>{children}</div>);
 
+const SortableContainer = props => {
+  const { mode, children } = props;
+  return mode === "embedded" ? <SortableHOC {...props}>{children}</SortableHOC> : <div>{children}</div>;
+};
+
+const SortableHandle = sortableHandle(() => (
+  <DragHandle>
+    <FaBars />
+  </DragHandle>
+));
+
+const ResourceActivity = props => {
+  const { moduleData, id, dropContent, showSupportingResource, droppedItemId } = props;
+
+  return (
+    <AssignmentRowContainer highlightMode={droppedItemId === moduleData.contentId}>
+      <SortableHandle onClick={e => e && e.stopPropagation()} />
+      <AssignmentDragItem
+        key={`${id}-${moduleData.id}`}
+        contentIndex={id}
+        showSupportingResource={showSupportingResource}
+        handleDrop={dropContent}
+        onClick={e => e && e.stopPropagation()}
+        {...props}
+      />
+    </AssignmentRowContainer>
+  );
+};
+
 function OuterDropContainer({ children }) {
   const [{ isOver, contentType }, dropRef] = useDrop({
     accept: "item",
@@ -83,32 +112,19 @@ function OuterDropContainer({ children }) {
   );
 }
 
-const SortableContainer = props => {
-  const { mode, children } = props;
-  return mode === "embedded" ? <SortableHOC {...props}>{children}</SortableHOC> : <div>{children}</div>;
-};
-
-const SortableHandle = sortableHandle(() => (
-  <DragHandle>
-    <FaBars />
-  </DragHandle>
-));
-
 const SortableElement = sortableElement(props => {
-  const { moduleData, id, dropContent, showSupportingResource, droppedItemId } = props;
-
+  const { onDrop, index, moduleIndex, isTestType, fromPlaylist } = props;
   return (
-    <AssignmentRowContainer highlightMode={droppedItemId === moduleData.contentId}>
-      <SortableHandle />
-      <AssignmentDragItem
-        key={`${id}-${moduleData.id}`}
-        contentIndex={id}
-        showSupportingResource={showSupportingResource}
-        handleDrop={dropContent}
-        onClick={e => e.stopPropagation()}
-        {...props}
+    <OuterDropContainer>
+      <ResourceActivity {...props} />
+      <AddResourceToPlaylist
+        onDrop={onDrop}
+        index={index}
+        moduleIndex={moduleIndex}
+        isTestType={isTestType}
+        fromPlaylist={fromPlaylist}
       />
-    </AssignmentRowContainer>
+    </OuterDropContainer>
   );
 });
 
@@ -760,45 +776,40 @@ class ModuleRow extends Component {
 
                   if (mode === "embedded" && !(isStudent && moduleData.hidden)) {
                     return (
-                      <OuterDropContainer>
-                        <SortableElement
-                          moduleData={moduleData}
-                          index={index}
-                          id={index}
-                          menu={menu}
-                          dropContent={dropContent}
-                          moreMenu={moreMenu}
-                          isAssigned={isAssigned}
-                          standardTags={moduleData.standardIdentifiers}
-                          assignTest={this.assignTest}
-                          viewTest={this.viewTest}
-                          deleteTest={this.deleteTest}
-                          onClick={e => e.stopPropagation()}
-                          showResource={this.showResource}
-                          urlHasUseThis={urlHasUseThis}
-                          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-                          assessmentColums={assessmentColums}
-                          testTags={testTags}
-                          testType={testType}
-                          assignmentsRow={assignmentsRow}
-                          isDesktop={isDesktop}
-                          isStudent={isStudent}
-                          showRightPanel={showRightPanel}
-                          isManageContentActive={isManageContentActive}
-                          toggleTest={() => this.hideTest(module._id, moduleData)}
-                          fromPlaylist={fromPlaylist}
-                          showHideAssessmentButton={showHideAssessmentButton}
-                          hideEditOptions={hideEditOptions}
-                          {...this.props}
-                        />
-                        <AddResourceToPlaylist
-                          onDrop={onDrop}
-                          index={index}
-                          moduleIndex={moduleIndex}
-                          isTestType={isTestType}
-                          fromPlaylist={fromPlaylist}
-                        />
-                      </OuterDropContainer>
+                      <SortableElement
+                        {...this.props}
+                        key={`content-${moduleData.contentId}`}
+                        moduleData={moduleData}
+                        index={index}
+                        id={index}
+                        menu={menu}
+                        dropContent={dropContent}
+                        moreMenu={moreMenu}
+                        isAssigned={isAssigned}
+                        standardTags={moduleData.standardIdentifiers}
+                        assignTest={this.assignTest}
+                        viewTest={this.viewTest}
+                        deleteTest={this.deleteTest}
+                        onClick={e => e.stopPropagation()}
+                        showResource={this.showResource}
+                        urlHasUseThis={urlHasUseThis}
+                        setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                        assessmentColums={assessmentColums}
+                        testTags={testTags}
+                        testType={testType}
+                        assignmentsRow={assignmentsRow}
+                        isDesktop={isDesktop}
+                        isStudent={isStudent}
+                        showRightPanel={showRightPanel}
+                        isManageContentActive={isManageContentActive}
+                        toggleTest={() => this.hideTest(module._id, moduleData)}
+                        fromPlaylist={fromPlaylist}
+                        showHideAssessmentButton={showHideAssessmentButton}
+                        hideEditOptions={hideEditOptions}
+                        onDrop={onDrop}
+                        moduleIndex={moduleIndex}
+                        isTestType={isTestType}
+                      />
                     );
                   }
 

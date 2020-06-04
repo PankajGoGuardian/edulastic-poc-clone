@@ -36,7 +36,9 @@ import {
   cancelPlaylistCustomizeAction,
   publishCustomizedPlaylistAction,
   toggleManageModulesVisibilityCSAction,
-  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction
+  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction,
+  setShowRightSideAction,
+  setActiveRightPanelViewAction
 } from "../ducks";
 import { getSummaryData } from "../util";
 /* eslint-enable */
@@ -357,7 +359,8 @@ class CurriculumSequence extends Component {
       activeRightPanel,
       duplicateManageContent,
       role,
-      isStudent
+      isStudent,
+      current
     } = this.props;
     const { authors } = destinationCurriculumSequence;
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
@@ -369,8 +372,8 @@ class CurriculumSequence extends Component {
     //   message.warn("Changes left unsaved. Please save it first");
     //   return;
     // }
-
-    if (!isManageContentActive && !canEdit && !isStudent) {
+    const isAuthoringFlowReview = current === "review";
+    if (!isManageContentActive && !canEdit && !isStudent && contentName === "manageContent" && !isAuthoringFlowReview) {
       Modal.confirm({
         title: "Do you want to Customize ?",
         content:
@@ -434,6 +437,17 @@ class CurriculumSequence extends Component {
   deleteModule = moduleIndex => {
     this.setState({ moduleForEdit: { moduleIndexForDelete: moduleIndex }, isVisibleAddModule: true });
   };
+
+  componentDidMount() {
+    const { current, setActiveRightPanelView, urlHasUseThis, setShowRightPanel } = this.props;
+    const isAuthoringFlowReview = current === "review";
+    if (isAuthoringFlowReview) {
+      setActiveRightPanelView("manageContent");
+    } else if (!urlHasUseThis) {
+      setShowRightPanel(true);
+      setActiveRightPanelView("summary");
+    }
+  }
 
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
@@ -793,7 +807,9 @@ const enhance = compose(
       cancelPlaylistCustomize: cancelPlaylistCustomizeAction,
       publishCustomizedPlaylist: publishCustomizedPlaylistAction,
       toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
-      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction
+      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
+      setShowRightPanel: setShowRightSideAction,
+      setActiveRightPanelView: setActiveRightPanelViewAction
     }
   )
 );

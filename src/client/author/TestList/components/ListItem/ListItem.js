@@ -203,7 +203,9 @@ class ListItem extends Component {
           closeTestPreviewModal={this.hidePreviewModal}
         />
         <Container
-          onClick={isPlaylist ? () => this.moveToItem(`/author/playlists`) : mode === "embedded" ? "" : this.openModal}
+          onClick={
+            isPlaylist ? e => this.moveToItem(e, `/author/playlists`) : mode === "embedded" ? "" : this.openModal
+          }
         >
           <ContentWrapper>
             <Col span={24}>

@@ -23,5 +23,9 @@ module.exports = {
       NOT_STARTED_PAUSED: "NOT STARTED (PAUSED)",
       DONE: "DONE"
     }
+  },
+  status: {
+    SUBMITTED: "submitted",
+    IN_PROGRESS: "inProgress"
   }
 };

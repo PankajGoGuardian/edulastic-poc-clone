@@ -6,11 +6,11 @@ import { groupBy, isEqual, uniqueId, pick } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { FlexContainer, MainContentWrapper, withWindowSizes,notification } from "@edulastic/common";
+import { FlexContainer, MainContentWrapper, withWindowSizes, notification } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
-import { smallDesktopWidth, desktopWidth, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
+import { smallDesktopWidth, desktopWidth, themeColor, extraDesktopWidthMax, mobileWidthLarge } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
-import { Modal, message, Spin } from "antd";
+import { Modal, Spin } from "antd";
 
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
@@ -411,7 +411,7 @@ class CurriculumSequence extends Component {
       });
       submitLTIForm(signedRequest);
     } catch (e) {
-      notification({ messageKey:"failedToLoadResource"});
+      notification({ messageKey: "failedToLoadResource" });
     }
   };
 
@@ -595,6 +595,7 @@ class CurriculumSequence extends Component {
     const countModular = new Array(GridCountInARow - (slicedRecentPlaylists.length % GridCountInARow)).fill(1);
 
     const isDesktop = windowWidth >= parseInt(smallDesktopWidth, 10);
+    const isMobile = windowWidth <= parseInt(mobileWidthLarge, 10);
 
     const isPlaylistDetailsPage = window.location?.hash === "#review";
     const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
@@ -711,7 +712,6 @@ class CurriculumSequence extends Component {
                         modulesStatus={modulesStatus}
                         customize={customize}
                         handleRemove={handleRemoveTest}
-                        hideEditOptions={!urlHasUseThis}
                         onBeginDrag={onBeginDrag}
                         isReview={isAuthoringFlowReview}
                         onSortEnd={onSortEnd}
@@ -726,6 +726,7 @@ class CurriculumSequence extends Component {
                         editModule={this.editModule}
                         deleteModule={this.deleteModule}
                         isDesktop={isDesktop}
+                        isMobile={isMobile}
                         isStudent={isStudent}
                         showRightPanel={showRightPanel}
                         fromPlaylist={fromPlaylist}

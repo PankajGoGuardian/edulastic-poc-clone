@@ -32,7 +32,6 @@ class AssignmentDragItem extends Component {
       connectDragSource,
       mode,
       isContentExpanded,
-      hideEditOptions,
       moduleIndex,
       deleteTest,
       isDragging,
@@ -72,7 +71,6 @@ class AssignmentDragItem extends Component {
               showResource={showResource}
               itemIndex={id}
               showHideAssessmentButton={showHideAssessmentButton}
-              hideEditOptions={hideEditOptions}
               isManageContentActive={isManageContentActive}
               setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />
@@ -92,7 +90,7 @@ class AssignmentDragItem extends Component {
                     </ModuleDataName>
                   </FlexContainer>
                 </AssignmentContent>
-                {!hideEditOptions && (
+                {!urlHasUseThis && (
                   <ModuleAssignedUnit>
                     {moduleData.assigned && !moduleData.completed && (
                       <CustomIcon>

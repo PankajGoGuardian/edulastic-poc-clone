@@ -6,7 +6,7 @@ const SVG = styled("svg")`
   min-width: ${({ width = 15 }) => width}px;
   height: ${({ height = 15 }) => height}px;
   fill: ${({ color = "#000" }) => (color === themeColor ? `${color} !important` : color)};
-  left: ${({ left }) => left}px;
+  left: ${({ left }) => left && `${left}px`};
   stroke: ${({ stroke }) => (stroke === themeColor ? `${stroke} !important` : stroke)};
   background: ${({ backgroundColor }) => backgroundColor};
   margin: ${({ margin }) => margin};

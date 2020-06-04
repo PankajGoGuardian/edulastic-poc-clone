@@ -1,48 +1,61 @@
 import styled from "styled-components";
 
-import { Card } from "@edulastic/common";
-import { themeColor, secondaryTextColor, lightGreySecondary, white } from "@edulastic/colors";
+import { Card, EduButton } from "@edulastic/common";
+import { themeColor, darkGrey2, authorAssignment } from "@edulastic/colors";
 
 import { BtnAction } from "../../../TableList/styled";
 
+const { assignmentStatusBg } = authorAssignment;
+
 export const AssignmentThumbnail = styled.div`
-  width: calc(100vw - 42px - 82px);
-  height: 50px;
+  width: 100%;
+  height: 66px;
   background: ${({ thumbnail }) => `url(${thumbnail})` || themeColor};
   background-size: cover;
   background-position: center left;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   text-align: center;
   display: inline-block;
 `;
 
-export const AssignmentWrapper = styled(Card)`
+export const AssignmentBodyWrapper = styled.div`
+  background: #f6f6f6;
+  border-radius: 2px;
   padding: 20px;
+`;
+
+export const AssignmentWrapper = styled(Card)`
   text-align: center;
-  margin-left: 20px;
-
-  &:last-child {
-    margin-right: 26px;
-  }
-
+  box-shadow: none;
+  border-radius: 0px;
+  margin-bottom: ${({ mb }) => mb || "15px"};
   .ant-card-body {
     padding: 0;
   }
 `;
 
+export const TypeWrapper = styled.span`
+  width: 20px;
+  height: 20px;
+`;
+
 export const AssignmentTitle = styled.h3`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: ${secondaryTextColor};
+  color: ${darkGrey2};
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 `;
 
 export const AssignmentDetailsWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
 `;
 
 export const ExpandedRow = styled.div`
@@ -51,19 +64,10 @@ export const ExpandedRow = styled.div`
   text-align: center;
   font-weight: 600;
   font-size: 14px;
-  margin-bottom: 15px;
 `;
 
 export const ExpandRowWrapper = styled.div`
-  display: ${props => (props.expanded ? "flex" : "none")};
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  background: ${lightGreySecondary};
-  overflow: hidden;
-  height: ${props =>
-    props.animationEnabled ? (props.expanded ? (props.doubleRow ? "83px" : "49px") : "15px") : "15px"};
   pointer-events: ${props => (props.expanded ? "all" : "none")};
   transition: all 200ms ease-out;
 
@@ -81,40 +85,51 @@ export const ExpandRowTopContentItem = styled.div`
   width: 50%;
 `;
 
-export const ExpandButton = styled.p`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin: 0;
-  text-transform: uppercase;
-  color: ${themeColor};
-  font-weight: 600;
-  font-size: 11px;
-
-  span {
-    display: inline-block;
-    margin-bottom: 10px;
+export const ExpandButton = styled(EduButton)`
+  &.ant-btn.ant-btn-primary {
+    background: transparent;
   }
-
-  svg {
-    width: 12px;
-    fill: ${themeColor};
-    transform: ${props => (props.expanded ? "rotate(180deg)" : "rotate(0deg)")};
-  }
+  height: 36px !important;
+  width: 90%;
 `;
 
 export const AssignmentStatus = styled.span`
   display: inline-block;
-  color: ${white};
   font-size: 10px;
   text-transform: uppercase;
   text-align: center;
   line-height: 24px;
-  width: 111px !important;
+  width: 80px !important;
   height: 24px;
   border-radius: 4px;
-  background: ${({ type }) => (type === "IN PROGRESS" ? "#F9942D" : type === "SUBMITTED" ? "#5EB500" : "#AAAFB5")};
+  background: ${({ type }) => {
+    if (type === "IN PROGRESS") {
+      return assignmentStatusBg.IN_PROGRESS;
+    }
+    if (type === "IN GRADING") {
+      return assignmentStatusBg.IN_GRADING;
+    }
+    if (type === "DONE") {
+      return assignmentStatusBg.DONE;
+    }
+    if (type === "SUBMITTED") {
+      return assignmentStatusBg.SUBMITTED;
+    }
+    if (type === "NOT STARTED") {
+      return assignmentStatusBg.NOT_OPEN;
+    }
+    return assignmentStatusBg.NOT_OPEN;
+  }};
+
+  color: ${({ type }) => {
+    if (type === "IN PROGRESS") {
+      return "#316086";
+    }
+    if (type === "SUBMITTED") {
+      return "#00624F";
+    }
+    return "#2E4D6C";
+  }};
 `;
 
 export const AssignmentNavigation = styled.div`

@@ -241,3 +241,4 @@ export { default as IconGradebook } from "./src/IconGradebook";
 export { default as IconRubrics } from "./src/IconRubrics";
 export { default as IconWriting } from "./src/IconWriting";
 export { default as IconMatrixDot } from "./src/IconMatrixDot";
+export { default as IconNotAllowed } from "./src/IconNotAllowed";

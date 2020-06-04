@@ -1,43 +1,32 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { Dropdown } from "antd";
+import { test as testConstants } from "@edulastic/constants";
 
 import presentationIcon from "../../../../assets/presentation.svg";
 import additemsIcon from "../../../../assets/add-items.svg";
 import piechartIcon from "../../../../assets/pie-chart.svg";
-import ActionMenu from "../../../ActionMenu/ActionMenu";
-import { TypeIcon, IconExpand, Icon } from "../../../TableList/styled";
+import { TypeIcon, Icon } from "../../../TableList/styled";
 import AssignmentDetails from "../AssignmentDetails/AssignmentDetails";
 import {
   AssignmentThumbnail,
+  AssignmentBodyWrapper,
   AssignmentWrapper,
   AssignmentTitle,
   AssignmentDetailsWrapper,
-  ExpandedRow,
   ExpandButton,
   AssignmentStatus,
-  AssignmentNavigation,
-  ExpandRowWrapper,
-  ExpandRowTopContent,
-  ExpandRowTopContentItem,
-  MobileActionButton
+  AssignmentNavigation
 } from "./styled";
 
 export default class MobileAssignment extends React.Component {
   static propTypes = {
-    assignment: PropTypes.object.isRequired,
-    onOpenReleaseScoreSettings: PropTypes.func.isRequired
+    assignment: PropTypes.object.isRequired
   };
 
   state = {
-    expandItems: false,
-    enableExpandAnimation: false
+    expandItems: false
   };
-
-  componentDidMount() {
-    this.setState({ enableExpandAnimation: true });
-  }
 
   shouldComponentUpdate(nextProps, nextState) {
     const { expandItems } = this.state;
@@ -65,82 +54,91 @@ export default class MobileAssignment extends React.Component {
     );
   }
 
-  render() {
-    const { expandItems, enableExpandAnimation } = this.state;
-    const { assignment, onOpenReleaseScoreSettings } = this.props;
-    const [defaultAssignment] = assignment;
+  renderTestType = testType =>
+    testType === testConstants.type.PRACTICE ? (
+      <TypeIcon data-cy="type" type="p">
+        P
+      </TypeIcon>
+    ) : testType === testConstants.type.ASSESSMENT ? (
+      <TypeIcon data-cy="type">A</TypeIcon>
+    ) : (
+      <TypeIcon data-cy="type" type="c">
+        C
+      </TypeIcon>
+    );
 
-    const { title, thumbnail, className, type, assigned, status, submitted, graded } = defaultAssignment;
+  renderClass = classes => (item, key) => {
+    const {
+      assignedBy: { name },
+      testType,
+      className,
+      totalNumber,
+      submittedCount,
+      status,
+      gradedCount
+    } = item;
 
-    const submittedValue = `${submitted || 0} of ${assignment.length}`;
-    const expandedRowsProps = {
-      animationEnabled: enableExpandAnimation,
-      expanded: expandItems
-    };
+    const type = this.renderTestType(testType);
+    const itemStatus = <AssignmentStatus type={status}>{status || "NOT STARTED"}</AssignmentStatus>;
+    const submitted = `${submittedCount} of ${totalNumber}`;
 
     return (
-      <AssignmentWrapper>
-        <AssignmentThumbnail thumbnail={thumbnail} />
-        <AssignmentTitle>{title}</AssignmentTitle>
-        <AssignmentDetailsWrapper>
-          <AssignmentDetails title="Class" value={className || "1"} />
-          <AssignmentDetails title="Type" value={type || "Assessment"} />
-        </AssignmentDetailsWrapper>
-        <ExpandedRow>
-          {assignment.map((item, key) => (
-            <ExpandRowWrapper key={`classname-${key}`} {...expandedRowsProps}>
-              <ExpandRowTopContent>
-                <ExpandRowTopContentItem>{item.className || "Class 1"}</ExpandRowTopContentItem>
-                <ExpandRowTopContentItem>
-                  <TypeIcon>A</TypeIcon>
-                </ExpandRowTopContentItem>
-              </ExpandRowTopContent>
-            </ExpandRowWrapper>
-          ))}
-        </ExpandedRow>
-        <AssignmentDetailsWrapper>
-          <AssignmentDetails title="Assigned by" value={assigned} />
-          <AssignmentDetails title="Status" value={status || "Not Started"} />
-        </AssignmentDetailsWrapper>
-        <ExpandedRow>
-          {assignment.map((item, key) => (
-            <ExpandRowWrapper key={`status-${key}`} {...expandedRowsProps}>
-              <ExpandRowTopContent>
-                <ExpandRowTopContentItem>{item.assigned || ""}</ExpandRowTopContentItem>
-                <ExpandRowTopContentItem>
-                  <AssignmentStatus type={item.status}>{item.status || "NOT STARTED"}</AssignmentStatus>
-                </ExpandRowTopContentItem>
-              </ExpandRowTopContent>
-            </ExpandRowWrapper>
-          ))}
-        </ExpandedRow>
-        <AssignmentDetailsWrapper>
-          <AssignmentDetails title="Submitted" value={submittedValue} />
-          <AssignmentDetails title="Graded" value={graded || 0} />
-        </AssignmentDetailsWrapper>
-        <ExpandedRow>
-          {assignment.map((item, key) => (
-            <ExpandRowWrapper key={`graded-${key}`} {...expandedRowsProps} doubleRow>
-              <ExpandRowTopContent>
-                <ExpandRowTopContentItem>{`${item.submitted || 0} of ${assignment.length}`}</ExpandRowTopContentItem>
-                <ExpandRowTopContentItem>{item.graded || 0}</ExpandRowTopContentItem>
-              </ExpandRowTopContent>
-              {MobileAssignment.renderExpandRowIcons(item)}
-            </ExpandRowWrapper>
-          ))}
-        </ExpandedRow>
-        <Dropdown
-          overlay={ActionMenu({ onOpenReleaseScoreSettings, currentAssignment: assignment[0] })}
-          placement="topCenter"
-          trigger={["click"]}
-        >
-          <MobileActionButton>Actions</MobileActionButton>
-        </Dropdown>
-        <ExpandButton expanded={expandItems} onClick={this.handleToggleExpandItems}>
-          <span>{expandItems ? "Less Options" : "More Options"}</span>
-          <IconExpand />
-        </ExpandButton>
+      <AssignmentWrapper mb={key + 1 === classes ? "40px" : "5px"}>
+        <AssignmentBodyWrapper key={`status-${key}`}>
+          <AssignmentDetailsWrapper>
+            <AssignmentDetails title="Class" value={className} />
+            <AssignmentDetails title="Type" value={type} />
+            <AssignmentDetails title="ASSIGNED BY" value={name} />
+          </AssignmentDetailsWrapper>
+          <AssignmentDetailsWrapper>
+            <AssignmentDetails title="SUBMITTED" value={submitted} />
+            <AssignmentDetails title="STATUS" value={itemStatus} />
+            <AssignmentDetails title="GRADED" value={gradedCount} />
+          </AssignmentDetailsWrapper>
+        </AssignmentBodyWrapper>
       </AssignmentWrapper>
+    );
+  };
+
+  render() {
+    const { expandItems } = this.state;
+    const { assignment } = this.props;
+    const [defaultAssignment] = assignment;
+    const { title, thumbnail, submittedCount, gradedCount, testType } = defaultAssignment;
+
+    const classes = (assignment || []).length;
+    const submittedValue = submittedCount || 0;
+    const type = this.renderTestType(testType);
+
+    const notStarted = (assignment || []).filter(ite => ite.status === "NOT OPEN").length;
+    const inProgress = (assignment || []).filter(ite => ite.status === "IN PROGRESS").length;
+
+    return (
+      <Fragment>
+        <AssignmentWrapper>
+          <AssignmentThumbnail thumbnail={thumbnail} />
+          <AssignmentBodyWrapper>
+            <AssignmentTitle>{title}</AssignmentTitle>
+            <AssignmentDetailsWrapper>
+              <AssignmentDetails title="Class" value={classes} />
+              <AssignmentDetails title="Type" value={type} />
+              <AssignmentDetails title="Not Started" value={notStarted} />
+            </AssignmentDetailsWrapper>
+            <AssignmentDetailsWrapper>
+              <AssignmentDetails title="In Progress" value={inProgress} />
+              <AssignmentDetails title="Submitted" value={submittedValue} />
+              <AssignmentDetails title="Graded" value={gradedCount || 0} />
+            </AssignmentDetailsWrapper>
+
+            <AssignmentDetailsWrapper>
+              <ExpandButton onClick={this.handleToggleExpandItems} isGhost>
+                <span>{expandItems ? "HIDE ASSIGMENTS" : "SHOW ASSIGMENTS"}</span>
+              </ExpandButton>
+            </AssignmentDetailsWrapper>
+          </AssignmentBodyWrapper>
+        </AssignmentWrapper>
+        {expandItems && assignment.map(this.renderClass(classes))}
+      </Fragment>
     );
   }
 }

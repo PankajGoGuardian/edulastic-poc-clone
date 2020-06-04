@@ -10,7 +10,7 @@ import { roleuser } from "@edulastic/constants";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { get } from "lodash";
 import { themes } from "../../theme";
-import Sidebar from "./Sidebar/SideMenu";
+import Sidebar, { isDisablePageInMobile } from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 import { MainContainer } from "./MainStyle";
 import { getUserOrgId, getUserRole } from "./selectors/user";
@@ -117,7 +117,7 @@ const Author = ({
             <Spin spinning={districtProfileLoading} />
             <SidebarCompnent isPrintPreview={isPrintPreview} isProxyUser={isProxyUser} />
             <Wrapper>
-              <ErrorHandler>
+              <ErrorHandler disablePage={isDisablePageInMobile(history.location.pathname)}>
                 <Suspense fallback={<Progress />}>
                   <Switch>
                     <Route exact path={`${match.url}/assignments`} component={Assignments} />

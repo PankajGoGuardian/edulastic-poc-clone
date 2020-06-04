@@ -1,7 +1,11 @@
-import React from "react";
+import React, { Fragment } from "react";
+import styled from "styled-components";
 import { greenPrimary } from "@edulastic/colors";
-import { withRouter, Link } from "react-router-dom";
-import * as Sentry from '@sentry/browser';
+import { withRouter } from "react-router-dom";
+import * as Sentry from "@sentry/browser";
+import { IconNotAllowed } from "@edulastic/icons";
+import MainHeader from "./MainHeader";
+import MainContentWrapper from "./MainContentWrapper";
 
 class ErrorHandler extends React.Component {
   constructor(props) {
@@ -9,7 +13,7 @@ class ErrorHandler extends React.Component {
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError() {
     return { hasError: true, path: window.location.pathname };
   }
 
@@ -19,7 +23,7 @@ class ErrorHandler extends React.Component {
     console.error(error, info);
   }
 
-  static getDerivedStateFromProps(prop, prevState) {
+  static getDerivedStateFromProps(prevState) {
     if (prevState.path !== window.location.pathname && prevState.hasError) {
       return {
         hasError: false,
@@ -29,21 +33,62 @@ class ErrorHandler extends React.Component {
   }
 
   render() {
-    const { history } = this.props;
-    if (this.state.hasError) {
+    const { history, children, disablePage } = this.props;
+    const { hasError } = this.state;
+    if (hasError) {
       return (
         <div style={{ textAlign: "center" }}>
           <h1> Sorry, something went wrong.</h1>
-          <h2> We're working on it and we will get it fixed as soon as we can. </h2>
-          <h3 style={{ color: greenPrimary }} onClick={history.goBack}>
-            Go Back
-          </h3>
+          <h2> We are working on it and we will get it fixed as soon as we can. </h2>
+          <GoBacK onClick={history.goBack}>Go Back</GoBacK>
         </div>
       );
     }
 
-    return this.props.children;
+    if (disablePage) {
+      const mainContentStyle = {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column"
+      };
+
+      return (
+        <Fragment>
+          <MainHeader />
+          <MainContentWrapper style={mainContentStyle}>
+            <IconNotAllowed color="#6c7781" />
+            <DesktopOnlyText>Desktop only</DesktopOnlyText>
+            <DesktopOnlyDescription>
+              This functionality is available only on a device <br />
+              with a higher resolution (tablet or desktop)
+            </DesktopOnlyDescription>
+          </MainContentWrapper>
+        </Fragment>
+      );
+    }
+
+    return children;
   }
 }
 
 export default withRouter(ErrorHandler);
+
+const GoBacK = styled.h3`
+  color: ${greenPrimary};
+`;
+
+const DesktopOnlyText = styled.h1`
+  color: #304050;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin: 20px 0px;
+  line-height: 1;
+`;
+
+const DesktopOnlyDescription = styled.p`
+  color: #848993;
+  font-size: 14px;
+  text-align: center;
+`;

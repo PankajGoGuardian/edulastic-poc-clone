@@ -203,13 +203,13 @@ const AssignmentSelectClass = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     position: absolute;
     top: calc(100% + 11px);
-    left: -70px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100vw !important;
     padding: 16px 26px;
     z-index: 1;
     background: #fff;
     padding-top: 10px;
-    width: 100%;
     opacity: ${({ isShown }) => (isShown ? 1 : 0)};
     pointer-events: ${({ isShown }) => (isShown ? "all" : "none")};
 

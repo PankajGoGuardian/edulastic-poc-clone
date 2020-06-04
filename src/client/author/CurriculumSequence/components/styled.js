@@ -148,6 +148,22 @@ export const LastColumn = styled(StyledCol)`
   margin-left: ${({ ml }) => ml || ""};
 `;
 
+export const HideLinkLabel = styled(StyledLabel)`
+  width: 80px;
+  white-space: nowrap;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 9px;
+
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 50px;
+    margin-bottom: 4px;
+    white-space: normal;
+    text-align: center;
+  }
+`;
+
 export const ProficiencyColumn = styled(Col)`
   width: 130px;
 
@@ -177,7 +193,7 @@ export const SubmittedColumn = styled(Col)`
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    width: 40%;
+    width: calc(50% - 30px);
   }
 `;
 
@@ -187,7 +203,7 @@ export const TimeColumn = styled(Col)`
     width: 70px;
   }
   @media (max-width: ${mobileWidthLarge}) {
-    width: 40%;
+    width: calc(50% - 30px);
   }
 `;
 
@@ -199,7 +215,7 @@ export const ClassesColumn = styled(Col)`
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    width: 40%;
+    width: calc(50% - 30px);
   }
 `;
 
@@ -211,7 +227,7 @@ export const ScoreColumn = styled(ClassesColumn)`
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    width: 40%;
+    width: calc(50% - 30px);
   }
 `;
 

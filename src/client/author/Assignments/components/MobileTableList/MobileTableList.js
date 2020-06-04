@@ -128,26 +128,18 @@ class MobileTableList extends Component {
   render() {
     const { currentItem } = this.state;
     const { tests } = this.props;
-
-    const amountOfVisibleItems = 3;
-    const startItemIndex = currentItem === 0 ? currentItem : currentItem - 1;
-
-    // render only `amountOfVisibleItems` assignments simultaneously
-    // in order to prevent performance issues when there are hundreds of items
     const currentPage = currentItem + 1;
 
     return (
       <ContentWrapper>
-        <div>
-          <Container
-            onTouchStart={this.handleTouchStart}
-            onTouchMove={this.handleTouchMove}
-            onTouchEnd={this.handleTouchEnd}
-            ref={this.handleSetContainerRef}
-          >
-            {tests.map(this.renderItem)}
-          </Container>
-        </div>
+        <Container
+          onTouchStart={this.handleTouchStart}
+          onTouchMove={this.handleTouchMove}
+          onTouchEnd={this.handleTouchEnd}
+          ref={this.handleSetContainerRef}
+        >
+          {tests.map(this.renderItem)}
+        </Container>
         <MobilePaginationWrapper>
           <MobilePagination
             defaultPageSize={1}

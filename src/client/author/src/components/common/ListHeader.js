@@ -273,6 +273,9 @@ const RightButtonWrapper = styled.div`
       }
     }
   }
+  @media (max-width: ${mobileWidthLarge}) {
+    display: none;
+  }
 `;
 
 const MidTitleWrapper = styled.div`

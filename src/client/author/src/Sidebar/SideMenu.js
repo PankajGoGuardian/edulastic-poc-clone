@@ -12,7 +12,7 @@ import {
   smallDesktopWidth,
   mobileWidthLarge
 } from "@edulastic/colors";
-import { get, cloneDeep } from "lodash";
+import { get, cloneDeep, some } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Dropdown, Icon as AntIcon, Popover } from "antd";
@@ -127,6 +127,14 @@ const menuItems = [
 ];
 
 const libraryItems = ["library", "Item Bank", "Test Library", "PlayList Library"];
+
+// Only "My Playlist" and assignment screens are visible in mobile
+const allowedPathInMobile = ["assignments", "playlists/playlist"];
+export const isDisablePageInMobile = path => {
+  const isMobileSize = window.innerWidth <= parseInt(mobileWidthLarge, 10);
+  const isAllowedPath = some(allowedPathInMobile, p => path.includes(p));
+  return isMobileSize && !isAllowedPath;
+};
 
 class SideMenu extends Component {
   constructor(props) {
@@ -431,6 +439,8 @@ class SideMenu extends Component {
                 }
                 const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
                 const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
+
+                const disableMenu = isDisablePageInMobile(menu?.path);
                 if (menu.label === "My Playlist" && isCollapsed && showUseThisNotification) {
                   const content = (
                     <span>&quot;In Use&ldquo; Play lists are available in the &quot;My Playlists&ldquo; area.</span>
@@ -462,6 +472,7 @@ class SideMenu extends Component {
                     onClick={this.toggleMenu}
                     visible={isItemVisible}
                     title={isCollapsed ? menu.label : ""}
+                    disabled={disableMenu}
                   >
                     <MenuIcon />
                     <LabelMenuItem isCollapsed={isCollapsed}>{menu.label}</LabelMenuItem>
@@ -507,7 +518,7 @@ class SideMenu extends Component {
                       <UserType isVisible={isVisible}>{_userRole}</UserType>
                     </div>
 
-                    {!isCollapsed && !isMobile && (
+                    {!isCollapsed && (
                       <IconDropdown
                         style={{ fontSize: 15, pointerEvents: "none" }}
                         className="drop-caret"
@@ -567,6 +578,7 @@ const enhance = compose(
   )
 );
 
+export const SideMenuComp = SideMenu;
 export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
 
 const Overlay = styled.div`
@@ -891,6 +903,13 @@ const MenuItem = styled(AntMenu.Item)`
   align-items: center;
   margin-top: 16px;
   text-transform: ${({ divider }) => divider && "uppercase"};
+  &.ant-menu-item-disabled,
+  &.ant-menu-submenu-disabled {
+    color: rgba(121, 143, 163, 0.3) !important;
+    & svg {
+      fill: rgba(121, 143, 163, 0.3) !important;
+    }
+  }
 `;
 
 const UserName = styled.div`

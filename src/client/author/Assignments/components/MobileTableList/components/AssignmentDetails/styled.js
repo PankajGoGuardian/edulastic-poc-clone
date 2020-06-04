@@ -1,28 +1,29 @@
 import styled from "styled-components";
 
-import { secondaryTextColor } from "@edulastic/colors";
-
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 50%;
+  width: 30%;
 `;
 
-export const Title = styled.p`
-  font-size: 12px;
+export const Title = styled.div`
+  font-size: 11px;
   font-weight: 600;
-  line-height: 12px;
+  line-height: 11px;
   color: #aaafb5;
   text-transform: uppercase;
-  margin: 0;
-  margin-bottom: 11px;
+  margin-bottom: 6px;
+  white-space: nowrap;
 `;
 
-export const Value = styled.p`
+export const Value = styled.div`
   font-size: 14px;
   line-height: 14px;
-  font-weight: bold
-  color: ${secondaryTextColor};
-  margin: 0;
+  font-weight: bold;
+  color: #30404f;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

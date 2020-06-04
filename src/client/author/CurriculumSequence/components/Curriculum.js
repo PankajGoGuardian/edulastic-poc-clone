@@ -15,7 +15,6 @@ import CurriculumModuleRow from "./CurriculumModuleRow";
  * @property {import('./CurriculumSequence').CurriculumSequenceType} curriculum
  * @property {function} onCollapseExpand
  * @property {string[]} expandedModules
- * @property {boolean} hideEditOptions
  */
 
 export const SortableTestsHandle = sortableHandle(({ clickHandle }) => (
@@ -30,7 +29,6 @@ const SortableItem = sortableElement(props => {
   const {
     curriculum: { _id: playlistId } = {},
     curriculum,
-    hideEditOptions,
     expandedModules,
     onCollapseExpand,
     mode,
@@ -60,7 +58,8 @@ const SortableItem = sortableElement(props => {
     editModule,
     deleteModule,
     fromPlaylist,
-    droppedItemId
+    droppedItemId,
+    ...rest
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -77,6 +76,7 @@ const SortableItem = sortableElement(props => {
         isPlaylist
       >
         <CurriculumModuleRow
+          {...rest}
           mode={mode}
           status={status}
           curriculum={curriculum}
@@ -91,7 +91,6 @@ const SortableItem = sortableElement(props => {
           padding={padding}
           onBeginDrag={onBeginDrag}
           handleRemove={handleRemove}
-          hideEditOptions={hideEditOptions}
           customize={customize}
           handleTestsSort={handleTestSort}
           urlHasUseThis={urlHasUseThis}

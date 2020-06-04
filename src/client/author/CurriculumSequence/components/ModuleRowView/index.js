@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { Dropdown, Icon, Menu } from "antd";
 import { IconMoreVertical, IconVerified } from "@edulastic/icons";
 import { lightGrey5, themeColor, themeColorLighter } from "@edulastic/colors";
-import { StyledLabel, StyledTag, HideLinkLabel } from "../../../Reports/common/styled";
+import { StyledLabel, StyledTag } from "../../../Reports/common/styled";
 import { Tooltip } from "../../../../common/utils/helpers";
 import ProgressBars from "./ProgressBars";
 import {
@@ -15,7 +15,8 @@ import {
   ModuleTitle,
   ModuleTitlePrefix,
   ModuleDescription,
-  LastColumn
+  LastColumn,
+  HideLinkLabel
 } from "../styled";
 
 const ModuleRowView = props => {
@@ -32,6 +33,7 @@ const ModuleRowView = props => {
     removeUnit,
     toggleModule,
     assignModule,
+    isMobile,
     addModuleMenuClick,
     editModuleMenuClick,
     deleteModuleMenuClick
@@ -116,8 +118,7 @@ const ModuleRowView = props => {
         justifyContent={hideEditOptions && "flex-end"}
         ml={hideEditOptions && "auto"}
       >
-        {moduleCompleteOrAssign}
-        {moreActions}
+        {[moduleCompleteOrAssign, moreActions]}
       </LastColumn>
     </Fragment>
   );
@@ -167,6 +168,7 @@ const ModuleRowView = props => {
           urlHasUseThis={urlHasUseThis}
           columnStyle={moduleInlineStyle}
           data={summaryData[moduleIndex]}
+          renderExtra={isMobile ? hideLink : ""}
         />
         {isDesktop ? moduleActions : moreActions}
       </ModuleHeaderData>

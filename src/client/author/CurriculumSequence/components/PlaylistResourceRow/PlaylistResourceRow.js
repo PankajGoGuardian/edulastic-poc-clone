@@ -19,7 +19,6 @@ const ResourceRow = ({
   setEmbeddedVideoPreviewModal,
   isManageContentActive,
   showHideAssessmentButton,
-  hideEditOptions,
   isStudent
 }) => {
   const viewResource = () => {
@@ -47,12 +46,12 @@ const ResourceRow = ({
         <ResouceIcon type={data.contentType} isAdded style={{ marginLeft: 10 }} />
       </ResourceWrapper>
       <div style={{ marginLeft: "auto" }}>{showHideAssessmentButton}</div>
-      <LastColumn justifyContent="space-between" width={hideEditOptions || isStudent ? "auto" : null} style={rowStyle}>
+      <LastColumn justifyContent="space-between" width={!urlHasUseThis || isStudent ? "auto" : null} style={rowStyle}>
         <AssignmentButton>
           <Button onClick={viewResource}>VIEW</Button>
         </AssignmentButton>
 
-        {(((!hideEditOptions || mode === "embedded") && isManageContentActive) || !urlHasUseThis) && !isStudent && (
+        {(((!urlHasUseThis || mode === "embedded") && isManageContentActive) || !urlHasUseThis) && !isStudent && (
           <IconActionButton onClick={deleteResource}>
             <IconTrash color={themeColor} />
           </IconActionButton>

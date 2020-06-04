@@ -13,7 +13,7 @@ import {
   TimeColumn
 } from "../styled";
 
-const ProgressBars = ({ isDesktop, urlHasUseThis, isStudent, isAssessment, columnStyle, data }) => {
+const ProgressBars = ({ isDesktop, urlHasUseThis, isStudent, isAssessment, columnStyle, data, renderExtra }) => {
   const ResolvedInfoColumsWrapper = isDesktop ? InfoColumnsDesktop : InfoColumnsMobile;
   if (urlHasUseThis) {
     return (
@@ -73,6 +73,7 @@ const ProgressBars = ({ isDesktop, urlHasUseThis, isStudent, isAssessment, colum
             </InfoColumnLabel>
           </TimeColumn>
         )}
+        {renderExtra}
       </ResolvedInfoColumsWrapper>
     );
   }

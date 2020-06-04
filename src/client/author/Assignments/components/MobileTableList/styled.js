@@ -5,11 +5,8 @@ import { white, themeColor } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
-  align-items: flex-start;
-  width: calc(100% + 52px);
-  overflow: hidden;
-  padding-bottom: 40px;
-  margin-left: -26px;
+  flex-direction: column;
+  width: 100%;
 `;
 
 export const ContentWrapper = styled.div`

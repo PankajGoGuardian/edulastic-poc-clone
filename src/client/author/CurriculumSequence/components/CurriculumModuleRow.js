@@ -1,8 +1,8 @@
 import { lightGrey5, testTypeColor, themeColor, white } from "@edulastic/colors";
-import { FlexContainer,notification } from "@edulastic/common";
+import { FlexContainer, notification } from "@edulastic/common";
 import { testActivityStatus, roleuser } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
-import { Avatar, Button, Dropdown, Menu, message } from "antd";
+import { Avatar, Button, Dropdown, Menu } from "antd";
 import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
@@ -19,7 +19,6 @@ import { Tooltip } from "../../../common/utils/helpers";
 import { resumeAssignmentAction, startAssignmentAction } from "../../../student/Assignments/ducks";
 import { getCurrentGroup, proxyRole } from "../../../student/Login/ducks";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
-import { HideLinkLabel } from "../../Reports/common/styled";
 import Tags from "../../src/components/common/Tags";
 import { getUserRole } from "../../src/selectors/user";
 import {
@@ -52,7 +51,8 @@ import {
   ModuleDataWrapper,
   ModuleDataName,
   Assignment,
-  ModuleWrapper
+  ModuleWrapper,
+  HideLinkLabel
 } from "./styled";
 
 const IS_ASSIGNED = "ASSIGNED";
@@ -408,7 +408,6 @@ class ModuleRow extends Component {
       moduleIndex,
       mode,
       dropContent,
-      hideEditOptions,
       curriculum,
       moduleStatus: completed,
       removeUnit,
@@ -422,6 +421,7 @@ class ModuleRow extends Component {
       togglePlaylistTestDetails,
       hasEditAccess,
       isDesktop,
+      isMobile,
       showRightPanel,
       setEmbeddedVideoPreviewModal,
       onDrop,
@@ -432,7 +432,6 @@ class ModuleRow extends Component {
     } = this.props;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignTest } = this;
-
     const { _id, data = [] } = module;
     const isParentRoleProxy = proxyUserRole === "parent";
 
@@ -483,6 +482,7 @@ class ModuleRow extends Component {
               summaryData={summaryData}
               isStudent={isStudent}
               isDesktop={isDesktop}
+              isMobile={isMobile}
               urlHasUseThis={urlHasUseThis}
               hasEditAccess={hasEditAccess}
               moduleStatus={completed}
@@ -557,15 +557,19 @@ class ModuleRow extends Component {
 
                   const moreMenu = (
                     <Menu data-cy="assessmentItemMoreMenu">
-                      <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
-                      {isAssigned && (
+                      {!isStudent && (
+                        <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
+                      )}
+                      {!isStudent && isAssigned && (
                         <Menu.Item>
                           <Link to="/author/assignments">View Assignments</Link>
                         </Menu.Item>
                       )}
-                      <Menu.Item data-cy="view-test" onClick={() => this.viewTest(moduleData.contentId)}>
-                        Preview Test
-                      </Menu.Item>
+                      {!isStudent && (
+                        <Menu.Item data-cy="view-test" onClick={() => this.viewTest(moduleData.contentId)}>
+                          Preview Test
+                        </Menu.Item>
+                      )}
                       {/* <Menu.Item
                           data-cy="moduleItemMoreMenuItem"
                           onClick={() => handleRemove(moduleIndex, moduleData.contentId)}
@@ -575,19 +579,8 @@ class ModuleRow extends Component {
                     </Menu>
                   );
 
-                  const assessmentInfoProgress = (
-                    <InfoProgressBar
-                      isDesktop={isDesktop}
-                      isStudent={isStudent}
-                      columnStyle={rowInlineStyle}
-                      urlHasUseThis={urlHasUseThis}
-                      data={progressData}
-                      isAssessment
-                    />
-                  );
-
                   const showHideAssessmentButton = hasEditAccess &&
-                    (!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                    (urlHasUseThis || (status === "published" && mode === "embedded")) && (
                       <HideLinkLabel
                         textColor={themeColor}
                         fontWeight="Bold"
@@ -598,6 +591,18 @@ class ModuleRow extends Component {
                       </HideLinkLabel>
                     );
 
+                  const assessmentInfoProgress = (
+                    <InfoProgressBar
+                      isDesktop={isDesktop}
+                      isStudent={isStudent}
+                      columnStyle={rowInlineStyle}
+                      urlHasUseThis={urlHasUseThis}
+                      data={progressData}
+                      renderExtra={isMobile ? showHideAssessmentButton : ""}
+                      isAssessment
+                    />
+                  );
+
                   const assessmentActions = urlHasUseThis ? (
                     !isStudent ? (
                       <Fragment>
@@ -606,9 +611,9 @@ class ModuleRow extends Component {
                           align="center"
                           justify="flex-end"
                           paddingRight="0"
-                          width={hideEditOptions || isStudent ? "auto" : null}
+                          width={!urlHasUseThis || isStudent ? "auto" : null}
                         >
-                          {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
+                          {(urlHasUseThis || (status === "published" && mode === "embedded")) &&
                             (isAssigned ? (
                               <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
                                 <Button
@@ -628,7 +633,7 @@ class ModuleRow extends Component {
                                 </Button>
                               </AssignmentButton>
                             ) : (
-                              (!hideEditOptions || (status === "published" && mode === "embedded")) &&
+                              (urlHasUseThis || (status === "published" && mode === "embedded")) &&
                               userRole !== roleuser.EDULASTIC_CURATOR && (
                                 <AssignmentButton assigned={isAssigned}>
                                   <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
@@ -650,7 +655,7 @@ class ModuleRow extends Component {
                               </IconActionButton>
                             </Dropdown>
                           )}
-                          {(!hideEditOptions || mode === "embedded") && isManageContentActive && (
+                          {(urlHasUseThis || mode === "embedded") && isManageContentActive && (
                             <IconActionButton
                               data-cy="assignmentDeleteOptionsIcon"
                               onClick={e => {
@@ -666,7 +671,7 @@ class ModuleRow extends Component {
                     ) : (
                       !moduleData.hidden && (
                         <Fragment>
-                          <LastColumn width={hideEditOptions || isStudent ? "auto" : null}>
+                          <LastColumn width={!urlHasUseThis || isStudent ? "auto" : null}>
                             {!isParentRoleProxy && (
                               <AssignmentButton assigned={false}>
                                 <Button data-cy={uta.text} onClick={uta.action}>
@@ -686,7 +691,7 @@ class ModuleRow extends Component {
                       )
                     )
                   ) : (
-                    <LastColumn width={hideEditOptions || isStudent ? "auto" : null}>
+                    <LastColumn width={!urlHasUseThis || isStudent ? "auto" : null}>
                       <AssignmentButton>
                         <Button onClick={() => this.viewTest(moduleData?.contentId)}>
                           <IconVisualization width="14px" height="14px" />
@@ -758,7 +763,7 @@ class ModuleRow extends Component {
                         margin="5px 0px 0px 0px"
                         flexWrap="nowrap"
                         tags={moduleData.standardIdentifiers}
-                        completed={!hideEditOptions && contentCompleted}
+                        completed={urlHasUseThis && contentCompleted}
                         show={2}
                         isPlaylist
                       />
@@ -805,7 +810,6 @@ class ModuleRow extends Component {
                         toggleTest={() => this.hideTest(module._id, moduleData)}
                         fromPlaylist={fromPlaylist}
                         showHideAssessmentButton={showHideAssessmentButton}
-                        hideEditOptions={hideEditOptions}
                         onDrop={onDrop}
                         moduleIndex={moduleIndex}
                         isTestType={isTestType}
@@ -839,7 +843,6 @@ class ModuleRow extends Component {
                                 showResource={this.showResource}
                                 showHideAssessmentButton={showHideAssessmentButton}
                                 isManageContentActive={isManageContentActive}
-                                hideEditOptions={hideEditOptions}
                                 setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                               />
                             )}

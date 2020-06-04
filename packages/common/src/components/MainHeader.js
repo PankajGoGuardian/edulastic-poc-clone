@@ -5,7 +5,8 @@ import {
   smallDesktopWidth,
   mobileWidthLarge,
   middleMobileWidth,
-  smallMobileWidth
+  smallMobileWidth,
+  mobileWidthMax
 } from "@edulastic/colors";
 import { MenuIcon } from "@edulastic/common";
 import { Affix } from "antd";
@@ -180,8 +181,7 @@ const TitleIcon = styled.span`
 
 export const HeaderMidContainer = styled.div`
   align-self: flex-end;
-  @media (max-width: ${mobileWidthLarge}) {
-    order: 3;
-    flex-basis: 100%;
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
   }
 `;

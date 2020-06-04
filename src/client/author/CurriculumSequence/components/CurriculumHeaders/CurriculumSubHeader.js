@@ -119,7 +119,7 @@ const CurriculumSubHeader = ({
                 </DraftModeActionsWrapper>
               )}
               {enableCustomize && (!isManageContentActive || !showRightPanel) && !shouldHidCustomizeButton && (
-                <StyledButton onClick={toggleManageContentClick("manageContent")}>Customize Content</StyledButton>
+                <CustomizeButton onClick={toggleManageContentClick("manageContent")}>Customize Content</CustomizeButton>
               )}
               {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && (
                 <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
@@ -438,6 +438,12 @@ const StyledButton = styled.div`
       margin-top: 0px;
     }
     width: 100%;
+  }
+`;
+
+const CustomizeButton = styled(StyledButton)`
+  @media (max-width: ${mobileWidthLarge}) {
+    display: none;
   }
 `;
 

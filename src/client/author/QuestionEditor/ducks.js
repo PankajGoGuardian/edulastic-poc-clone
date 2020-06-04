@@ -388,7 +388,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
     const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(question);
     if (hasImproperConfig) {
-     notification({ type: "warn", msg:warningMsg});
+      notification({ type: "warn", msg: warningMsg });
     }
 
     if (shouldUncheck) {
@@ -503,7 +503,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    notification({ type: "success", messageKey:"itemSavedSuccess"});
+    notification({ type: "success", messageKey: "itemSavedSuccess" });
 
     const { standards = [] } = alignments[0];
     // to update recent standards used in local storage and store
@@ -555,7 +555,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
             }
           })
         );
-        notification({ type: "info", messageKey: "pleaseAddItemManuallyToGroup"});
+        notification({ type: "info", messageKey: "pleaseAddItemManuallyToGroup" });
       } else {
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }));
@@ -647,7 +647,6 @@ function* addAuthoredItemsToTestSaga({ payload }) {
       yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
     } else {
       const test = yield select(getTestSelector);
-
       // update the test store with new test ITem
       const updatedTest = produce(test, draft => {
         draft.itemGroups[currentGroupIndex].items.push(item);
@@ -713,7 +712,7 @@ function* calculateFormulaSaga({ payload }) {
       yield put({
         type: CALCULATE_FORMULA_FAILED
       });
-      notification({ type: "warn", msg:errMessage});
+      notification({ type: "warn", msg: errMessage });
       return true;
     }
 
@@ -758,6 +757,7 @@ function* loadQuestionSaga({ payload }) {
   try {
     const { data, rowIndex, isPassageWidget = false } = payload;
     const pathname = yield select(state => state.router.location.pathname);
+    const locationState = yield select(state => state.router.location?.state || {});
     yield put(changeCurrentQuestionAction(data.reference));
     if (pathname.includes("tests")) {
       yield put(
@@ -767,7 +767,8 @@ function* loadQuestionSaga({ payload }) {
             backText: "question edit",
             backUrl: pathname,
             rowIndex,
-            isPassageWithQuestions: isPassageWidget
+            isPassageWithQuestions: isPassageWidget,
+            ...locationState
           }
         })
       );

@@ -782,7 +782,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_CREATED_ITEM_TO_TEST:
       return {
         ...state,
-        createdItems: [...state.createdItems, payload],
+        createdItems: [payload, ...state.createdItems],
         updated: true
       };
     case TEST_CREATE_SUCCESS:
@@ -1074,11 +1074,14 @@ function* receiveTestByIdSaga({ payload }) {
       );
     }
     entity.itemGroups[currentGroupIndex].items = entity.itemGroups[currentGroupIndex].items.map(testItem =>
-      createdItems.length > 0 && createdItems[0]._id === testItem._id ? createdItems[0] : testItem
+      createdItems.length > 0 &&
+      (createdItems[0]._id === testItem._id || createdItems[0].previousTestItemId === testItem._id)
+        ? createdItems[0]
+        : testItem
     );
     entity.itemGroups[currentGroupIndex].items = uniqBy(
       [...entity.itemGroups[currentGroupIndex].items, ...createdItems],
-      "_id"
+      x => x.previousTestItemId || x._id
     );
     const questions = getQuestions(entity.itemGroups);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
@@ -1898,7 +1901,6 @@ function* setAndSavePassageItems({ payload: { passageItems, page } }) {
     // for weird reason there is another store to show if a testItem should be shown
     // as selected or not in item banks page. Adding test items to there.
     yield put(setTestItemsAction(itemIds));
-
     // update the test data wth testItems, and passage if needed.
     yield put(setTestDataAction(newPayload));
   } catch (e) {

@@ -12,7 +12,7 @@ import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
-import { Effects,notification } from "@edulastic/common";
+import { Effects, notification } from "@edulastic/common";
 import {
   loadQuestionsAction,
   addItemsQuestionAction,
@@ -864,7 +864,7 @@ export function* deleteItemSaga({ payload }) {
     yield call(testItemsApi.deleteById, id);
     yield put(setItemDeletingAction(false));
     yield put(deleteItemSuccesAction(id));
-    notification({ type: "success", messageKey:"itemDeletedSuccessfully"});
+    notification({ type: "success", messageKey: "itemDeletedSuccessfully" });
     if (isItemPrevew) return;
 
     if (isTestFlow) {
@@ -931,7 +931,7 @@ export function* updateItemSaga({ payload }) {
       draft.map((q, index) => {
         const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(q);
         if (hasImproperConfig) {
-          notification({ type: "warn", msg:warningMsg});
+          notification({ type: "warn", msg: warningMsg });
         }
         if (shouldUncheck) {
           q.variable.enabled = false;
@@ -1042,8 +1042,8 @@ export function* updateItemSaga({ payload }) {
     }
 
     const userRole = yield select(getUserRole);
-    if (userRole === roleuser.EDULASTIC_CURATOR) notification({ type: "success", messageKey:"itemIsSaved"});
-    else notification({ type: "success", messageKey:"itemSavedSuccess"});
+    if (userRole === roleuser.EDULASTIC_CURATOR) notification({ type: "success", messageKey: "itemIsSaved" });
+    else notification({ type: "success", messageKey: "itemSavedSuccess" });
     yield put(changeUpdatedFlagAction(false));
     if (addToTest) {
       // add item to test entity
@@ -1064,7 +1064,7 @@ export function* updateItemSaga({ payload }) {
             }
           })
         );
-        return notification({ type: "success", messageKey:"pleaseAddItemManuallyToGroup"});
+        return notification({ type: "success", messageKey: "pleaseAddItemManuallyToGroup" });
       }
       const nextTestItems = [...testItems, item._id];
 
@@ -1134,7 +1134,7 @@ export function* updateItemDocBasedSaga({ payload }) {
       recentCollectionsList = generateRecentlyUsedCollectionsList(collections, itemBanks, recentCollectionsList);
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
-    notification({ type: "success", messageKey:"itemSavedSuccess"});
+    notification({ type: "success", messageKey: "itemSavedSuccess" });
     return { testId, ...item };
   } catch (err) {
     const errorMessage = "Item save is failing";
@@ -1270,7 +1270,7 @@ function* publishTestItemSaga({ payload }) {
         yield put(push({ pathname: "/author/items", state: { isAuthoredNow: true } }));
       }
 
-      notification({ type: "success", msg:successMessage});
+      notification({ type: "success", msg: successMessage });
     } else {
       yield put(changeViewAction("metadata"));
       yield put(setHighlightCollectionAction(true));

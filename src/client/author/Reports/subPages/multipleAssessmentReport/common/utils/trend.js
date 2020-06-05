@@ -1,13 +1,12 @@
 import next from "immer";
-import { groupBy, map, sumBy, forEach, find, round, head, values, filter, orderBy, maxBy } from "lodash";
+import { groupBy, map, sumBy, forEach, find, round, head, values, filter, orderBy, maxBy, isEmpty } from "lodash";
 import { filterAccordingToRole, percentage } from "../../../../common/util";
 
 import dropDownData from "../static/json/dropDownData.json";
 
 const sanitizeNullNumberFields = (records, fields = []) => {
   let allAbsent = true;
-  const sanitizedRecords = map(records, record => {
-    return next(record, draftRecord => {
+  const sanitizedRecords = map(records, record => next(record, draftRecord => {
       forEach(fields, field => {
         if (record[field] === null || typeof record[field] === "undefined") {
           draftRecord[field] = 0;
@@ -17,8 +16,7 @@ const sanitizeNullNumberFields = (records, fields = []) => {
           allAbsent = false;
         }
       });
-    });
-  });
+    }));
   return { sanitizedRecords, allAbsent };
 };
 
@@ -31,7 +29,12 @@ export const compareByMap = {
   school: "schoolName",
   teacher: "teacherName",
   group: "groupName",
-  student: "studentName"
+  student: "studentName",
+  race: "race",
+  gender : "gender",
+  ellStatus : "ellStatus",
+  iepStatus : "iepStatus",
+  frlStatus : "frlStatus"
 };
 
 const groupByCompareKey = (metricInfo, compareBy) => {
@@ -44,6 +47,16 @@ const groupByCompareKey = (metricInfo, compareBy) => {
       return groupBy(metricInfo, "groupId");
     case "teacher":
       return groupBy(metricInfo, "teacherId");
+    case "race":
+      return groupBy(metricInfo, "race");
+    case "gender":
+      return groupBy(metricInfo, "gender");
+    case "ellStatus":
+      return groupBy(metricInfo, "ellStatus");
+    case "iepStatus":
+      return groupBy(metricInfo, "iepStatus");
+    case "frlStatus":
+      return groupBy(metricInfo, "frlStatus");
     default:
       return {};
   }
@@ -56,27 +69,21 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
     case "school":
       return map(metricInfo, metric => {
         const relatedSchool =
-          find(dataSource, school => {
-            return metric.id === school.schoolId;
-          }) || {};
+          find(dataSource, school => metric.id === school.schoolId) || {};
 
         return { ...metric, ...relatedSchool };
       });
     case "group":
       return map(metricInfo, metric => {
         const relatedGroup =
-          find(dataSource, school => {
-            return metric.id === school.groupId;
-          }) || {};
+          find(dataSource, school => metric.id === school.groupId) || {};
 
         return { ...metric, ...relatedGroup };
       });
     case "teacher":
       return map(metricInfo, metric => {
         const relatedTeacher =
-          find(dataSource, school => {
-            return metric.id === school.teacherId;
-          }) || {};
+          find(dataSource, school => metric.id === school.teacherId) || {};
 
         return { ...metric, ...relatedTeacher };
       });
@@ -87,6 +94,16 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
         const { firstName = "", lastName = "", groupId = "" } = firstRecord;
         return { ...metric, firstName, lastName, studentName: `${firstName} ${lastName}`, groupId };
       });
+    case "race":
+      return metricInfo;
+    case "gender":
+      return metricInfo;
+    case "ellStatus":
+      return metricInfo;
+    case "iepStatus":
+      return metricInfo;
+    case "frlStatus":
+      return metricInfo;
     default:
       return [];
   }
@@ -94,7 +111,6 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
 
 export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], selectedTrend = "") => {
   const groupedMetric = groupByCompareKey(metricInfo, compareBy);
-
   const parsedGroupedMetric = map(groupedMetric, (value, metricId) => {
     const groupByTests = groupBy(value, "testId");
     const tests = {};
@@ -112,15 +128,20 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
         studentCount: parseInt(maxStudents[studentCountKey]) || 0
       };
     });
+    const dInfo = {}
+    if(["race", "gender", "ellStatus", "iepStatus", "frlStatus"].includes(compareBy)) {
+      dInfo[compareBy] = isEmpty(metricId) ? "NA" : metricId;
+    }
     return {
       tests,
       studentCount: maxBy(values(tests), "studentCount").studentCount,
       id: metricId,
-      assessmentDate: assessmentDate,
-      startDate: startDate,
+      assessmentDate,
+      startDate,
       sisId,
       assignmentId,
-      testActivityId
+      testActivityId,
+      ...dInfo
     };
   });
 
@@ -132,24 +153,22 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
 };
 
 export const calculateTrend = groupedData => {
-  let counts = {
+  const counts = {
     up: 0,
     flat: 0,
     down: 0
   };
 
   const dataWithTrend = map(groupedData, d => {
-    let slope = 0,
-      sum_xy = 0,
-      sum_xx = 0,
-      sum_x = 0,
-      sum_y = 0,
-      trend = "flat";
-    let allAssessments = values(d.tests)
+    let slope = 0;
+      let sum_xy = 0;
+      let sum_xx = 0;
+      let sum_x = 0;
+      let sum_y = 0;
+      let trend = "flat";
+    const allAssessments = values(d.tests)
       .filter(a => !a.allAbsent)
-      .sort(function(a, b) {
-        return a.records[0].startDate - b.records[0].startDate;
-      });
+      .sort((a, b) => a.records[0].startDate - b.records[0].startDate);
 
     const n = allAssessments.length;
 

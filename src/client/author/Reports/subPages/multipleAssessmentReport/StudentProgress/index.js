@@ -1,6 +1,6 @@
 import { SpinLoader } from "@edulastic/common";
-import { get, head } from "lodash";
-import React, { useState } from "react";
+import { get, head, toLower } from "lodash";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getUserRole } from "../../../../src/selectors/user";
 import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
@@ -61,12 +61,47 @@ const StudentProgress = ({
 
   usefetchProgressHook(settings, getStudentProgressRequestAction);
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
+  const [ddfilter, setDdFilter] = useState({
+    gender: "all",
+    frlStatus: "all",
+    ellStatus: "all",
+    iepStatus: "all",
+    race: "all"
+  });
+
   const [selectedTrend, setSelectedTrend] = useState("");
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [selectedRowKeys, onSelectChange] = useState([]);
   const [checkedStudents, setCheckedStudents] = useState([]);
+  const [metricInfo, setMetricInfo] = useState(get(studentProgress, "data.result.metricInfo", []));
 
-  const { metricInfo = [] } = get(studentProgress, "data.result", {});
+  useEffect(() => {
+    setMetricInfo(get(studentProgress, "data.result.metricInfo", []))
+  }, [studentProgress])
+
+  useEffect(() => {
+    const filteredInfo = get(studentProgress, "data.result.metricInfo", []).filter(info => {
+      
+      if(ddfilter.gender !== "all" && ddfilter.gender !== info.gender) {
+        return false
+      }
+      if(ddfilter.frlStatus !== "all" && toLower(ddfilter.frlStatus) !== toLower(info.frlStatus)) {
+        return false
+      }
+      if(ddfilter.ellStatus !== "all" && toLower(ddfilter.ellStatus) !== toLower(info.ellStatus)) {
+        return false
+      }
+      if(ddfilter.iepStatus !== "all" && toLower(ddfilter.iepStatus) !== toLower(info.iepStatus)) {
+        return false
+      }
+      if(ddfilter.race !== "all" && ddfilter.race !== info.race) {
+        return false
+      }
+      return true
+    })
+    setMetricInfo(filteredInfo)
+  }, [ddfilter])
+
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", {});
   const [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
 
@@ -97,6 +132,13 @@ const StudentProgress = ({
     .filter(d => checkedStudents.includes(d.id))
     .map(({ id, firstName, lastName, username }) => ({ _id: id, firstName, lastName, username }));
 
+  const filterDropDownCB = (event, selected, comData) => {
+    setDdFilter({
+      ...ddfilter,
+      [comData]: selected.key
+    });
+  };
+
   return (
     <>
       <AddToGroupModal
@@ -111,7 +153,7 @@ const StudentProgress = ({
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
         setShowAddToGroupModal={setShowAddToGroupModal}
-        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
+        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} filterDropDownCB={filterDropDownCB} analyseBy={analyseBy} />}
       />
       <TrendTable
         filters={filters}
@@ -122,26 +164,25 @@ const StudentProgress = ({
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
+        ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={customTableColumns}
         isCellClickable
         location={location}
         pageTitle={pageTitle}
-        toolTipContent={(record, columnValue) => {
-          return (
-            <>
-              <TableTooltipRow title={`Student Name : `} value={record.studentName} />
-              {role === "teacher" ? (
-                <TableTooltipRow title={`Class Name : `} value={record.groupName} />
+        toolTipContent={(record) => (
+          <>
+            <TableTooltipRow title={`Student Name : `} value={record.studentName} />
+            {role === "teacher" ? (
+              <TableTooltipRow title={`Class Name : `} value={record.groupName} />
               ) : (
                 <>
                   <TableTooltipRow title={`School Name : `} value={record.schoolName} />
                   <TableTooltipRow title={`Teacher Name : `} value={record.teacherName} />
                 </>
               )}
-            </>
-          );
-        }}
+          </>
+          )}
       />
     </>
   );

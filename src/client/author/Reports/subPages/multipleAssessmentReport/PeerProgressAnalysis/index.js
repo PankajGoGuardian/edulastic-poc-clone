@@ -20,7 +20,30 @@ import dropDownData from "./static/json/dropDownData.json";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
-const usefetchProgressHook = (settings, compareBy, fetchAction) => {
+const options = [
+  {
+    key: "race",
+    title: "Race"
+  },
+  {
+    key: "gender",
+    title: "Gender"
+  },
+  {
+    key: "ellStatus",
+    title: "ELL Status"
+  },
+  {
+    key: "iepStatus",
+    title: "IEP Status"
+  },
+  {
+    key: "frlStatus",
+    title: "FRL Status"
+  }
+]
+
+const usefetchProgressHook = (settings, compareBy, ddfilter, fetchAction) => {
   useEffect(() => {
     const { requestFilters = {} } = settings;
     const { termId = "" } = requestFilters;
@@ -28,10 +51,11 @@ const usefetchProgressHook = (settings, compareBy, fetchAction) => {
     if (termId) {
       fetchAction({
         compareBy: compareBy.key,
-        ...requestFilters
+        ...requestFilters,
+        ...ddfilter
       });
     }
-  }, [settings, compareBy.key]);
+  }, [settings, compareBy.key, ddfilter]);
 };
 
 const PeerProgressAnalysis = ({
@@ -43,12 +67,13 @@ const PeerProgressAnalysis = ({
   loading,
   role
 }) => {
-  const compareByData = getCompareByOptions(role);
+  const compareByData = [...getCompareByOptions(role), ...options ];
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [compareBy, setCompareBy] = useState(head(compareByData));
   const [selectedTrend, setSelectedTrend] = useState("");
+  const [ddfilter, setDdFilter] = useState({});
 
-  usefetchProgressHook(settings, compareBy, getPeerProgressAnalysisRequestAction);
+  usefetchProgressHook(settings, compareBy, ddfilter, getPeerProgressAnalysisRequestAction);
 
   const { metricInfo = [] } = get(peerProgressAnalysis, "data.result", {});
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", []);
@@ -65,8 +90,15 @@ const PeerProgressAnalysis = ({
         setAnalyseBy(selectedItem);
         break;
       default:
-        return;
+        
     }
+  };
+
+  const filterDropDownCB = (event, selected, comData) => {
+    setDdFilter({
+      ...ddfilter,
+      [comData]: selected.key === "all" ? "" : selected.key
+    });
   };
 
   const onCsvConvert = data => downloadCSV(`Peer Progress.csv`, data);
@@ -94,6 +126,8 @@ const PeerProgressAnalysis = ({
           <Filters
             compareByOptions={compareByData}
             onFilterChange={onFilterChange}
+            filterDropDownCB={filterDropDownCB}
+            ddfilter={ddfilter}
             compareBy={compareBy}
             analyseBy={analyseBy}
           />
@@ -107,19 +141,18 @@ const PeerProgressAnalysis = ({
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
+        ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={[studentColumn]}
-        toolTipContent={(record, columnValue) => {
-          return (
-            <>
-              <TableTooltipRow title={"Student Count: "} value={record.studentCount} />
-              <TableTooltipRow
-                title={`${capitalize(compareBy.title)} : `}
-                value={record[compareByMap[compareBy.key]]}
-              />
-            </>
-          );
-        }}
+        toolTipContent={(record) => (
+          <>
+            <TableTooltipRow title="Student Count: " value={record.studentCount} />
+            <TableTooltipRow
+              title={`${capitalize(compareBy.title)} : `}
+              value={record[compareByMap[compareBy.key]]}
+            />
+          </>
+          )}
       />
     </>
   );

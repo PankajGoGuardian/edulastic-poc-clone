@@ -361,7 +361,10 @@ class MainSetting extends Component {
       edulastic
     };
 
-    const accessibilityData = { showMagnifier, enableScratchpad };
+    const accessibilityData = [
+      { key: "showMagnifier", value: showMagnifier },
+      { key: "enableScratchpad", value: enableScratchpad }
+    ].filter(a => features[a.key]);
 
     return (
       <Container padding="30px" marginTop="10px">
@@ -386,13 +389,13 @@ class MainSetting extends Component {
                   })}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
-              {!isDocBased && (
+              {!isDocBased && features.premium && (
                 <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
                   {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
                   <IconCaretDown color={themeColor} width={11} height={6} />
                 </AdvancedButton>
               )}
-              {showAdvancedOption && (
+              {features.premium && showAdvancedOption && (
                 <StyledAnchor affix={false} offsetTop={125}>
                   {settingCategories.slice(-6, -4).map(category => (
                     <Anchor.Link
@@ -889,34 +892,36 @@ class MainSetting extends Component {
                   </Row>
                 </Block>
               )}
-              <Block id="accessibility" smallSize={isSmallSize}>
-                <Title>Accessibility</Title>
-                <RadioWrapper
-                  disabled={!owner || !isEditable}
-                  style={{ marginTop: "29px", marginBottom: 0, flexDirection: "row" }}
-                >
-                  {Object.keys(accessibilities).map(key => (
-                    <Row key={accessibilities[key]} style={{ width: "100%" }} align="middle">
-                      <Col span={12}>
-                        <span style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase" }}>
-                          {accessibilities[key]}
-                        </span>
-                      </Col>
-                      <Col span={12}>
-                        <StyledRadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={e => this.updateTestData(key)(e.target.value)}
-                          defaultValue={accessibilityData[key]}
-                          style={{ flexDirection: "row", height: "18px" }}
-                        >
-                          <RadioBtn value>ENABLE</RadioBtn>
-                          <RadioBtn value={false}>DISABLE</RadioBtn>
-                        </StyledRadioGroup>
-                      </Col>
-                    </Row>
-                  ))}
-                </RadioWrapper>
-              </Block>
+              {!!accessibilityData.length && (
+                <Block id="accessibility" smallSize={isSmallSize}>
+                  <Title>Accessibility</Title>
+                  <RadioWrapper
+                    disabled={!owner || !isEditable}
+                    style={{ marginTop: "29px", marginBottom: 0, flexDirection: "row" }}
+                  >
+                    {accessibilityData.map(o => (
+                      <Row key={o.key} style={{ width: "100%" }} align="middle">
+                        <Col span={12}>
+                          <span style={{ fontSize: 13, fontWeight: 600, textTransform: "uppercase" }}>
+                            {accessibilities[o.key]}
+                          </span>
+                        </Col>
+                        <Col span={12}>
+                          <StyledRadioGroup
+                            disabled={!owner || !isEditable}
+                            onChange={e => this.updateTestData(o.key)(e.target.value)}
+                            defaultValue={o.value}
+                            style={{ flexDirection: "row", height: "18px" }}
+                          >
+                            <RadioBtn value>ENABLE</RadioBtn>
+                            <RadioBtn value={false}>DISABLE</RadioBtn>
+                          </StyledRadioGroup>
+                        </Col>
+                      </Row>
+                    ))}
+                  </RadioWrapper>
+                </Block>
+              )}
               {/* {availableFeatures.includes("enableMagnifier") && (
               <Block id="enable-magnifier" smallSize={isSmallSize}>
                 <Title>Accessibility</Title>

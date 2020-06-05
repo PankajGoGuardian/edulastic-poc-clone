@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Row, Col, Radio, Select, Icon, Input, message, Tooltip, Modal } from "antd";
+import { Row, Col, Radio, Select, Icon, Input, Tooltip, Modal } from "antd";
 import { green, red, blueBorder, themeColor, lightGrey9 } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
-import { RadioBtn, CheckboxLabel,notification} from "@edulastic/common";
+import { RadioBtn, CheckboxLabel, notification } from "@edulastic/common";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 import { withRouter } from "react-router-dom";
@@ -34,7 +34,7 @@ import SubscriptionsBlock from "../../../TestPage/components/Setting/components/
 
 import PeformanceBand from "../../../TestPage/components/Setting/components/MainSetting/PeformanceBand";
 
-import { getUserRole } from "../../../src/selectors/user";
+import { getUserRole, getUserFeatures } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector, getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
@@ -72,7 +72,8 @@ const Settings = ({
   premium,
   totalItems,
   match,
-  freezeSettings = false
+  freezeSettings = false,
+  features
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -204,10 +205,10 @@ const Settings = ({
     enableScratchpad = tempTestSettings.enableScratchpad
   } = assignmentSettings;
   const playerSkinType = assignmentSettings.playerSkinType || testSettings.playerSkinType;
-  const accessiblilityData = {
-    showMagnifier,
-    enableScratchpad
-  };
+  const accessibilityData = [
+    { key: "showMagnifier", value: showMagnifier },
+    { key: "enableScratchpad", value: enableScratchpad }
+  ].filter(a => features[a.key]);
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -714,30 +715,34 @@ const Settings = ({
         {showAdvancedOption && (
           <div>
             <Block id="accessibility">
-              <Title>Accessibility</Title>
-              {!isDocBased && (
-                <RadioWrapper disabled={forClassLevel || freezeSettings} style={{ marginTop: "29px", marginBottom: 0 }}>
-                  {Object.keys(accessibilities).map(key => {
-                    const value = accessiblilityData[key];
-                    return (
-                      <StyledRowSettings key={accessibilities[key]} style={{ width: "100%" }}>
-                        <Col span={12}>
-                          <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
-                        </Col>
-                        <Col span={12}>
-                          <StyledRadioGroup
-                            disabled={forClassLevel || freezeSettings}
-                            onChange={e => overRideSettings(key, e.target.value)}
-                            defaultValue={isUndefined(value) ? true : value}
-                          >
-                            <Radio value>ENABLE</Radio>
-                            <Radio value={false}>DISABLE</Radio>
-                          </StyledRadioGroup>
-                        </Col>
-                      </StyledRowSettings>
-                    );
-                  })}
-                </RadioWrapper>
+              {!!accessibilityData.length && (
+                <>
+                  <Title>Accessibility</Title>
+                  {!isDocBased && (
+                    <RadioWrapper
+                      disabled={forClassLevel || freezeSettings}
+                      style={{ marginTop: "29px", marginBottom: 0 }}
+                    >
+                      {accessibilityData.map(({ key, value }) => (
+                        <StyledRowSettings key={accessibilities[key]} style={{ width: "100%" }}>
+                          <Col span={12}>
+                            <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
+                          </Col>
+                          <Col span={12}>
+                            <StyledRadioGroup
+                              disabled={forClassLevel || freezeSettings}
+                              onChange={e => overRideSettings(key, e.target.value)}
+                              defaultValue={isUndefined(value) ? true : value}
+                            >
+                              <Radio value>ENABLE</Radio>
+                              <Radio value={false}>DISABLE</Radio>
+                            </StyledRadioGroup>
+                          </Col>
+                        </StyledRowSettings>
+                      ))}
+                    </RadioWrapper>
+                  )}
+                </>
               )}
               {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
                 <FeaturesSwitch
@@ -772,7 +777,8 @@ export default connect(
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions
       : state?.tests?.entity?.summary?.totalItems,
-    freezeSettings: getIsOverrideFreezeSelector(state)
+    freezeSettings: getIsOverrideFreezeSelector(state),
+    features: getUserFeatures(state)
   }),
   null
 )(withRouter(Settings));

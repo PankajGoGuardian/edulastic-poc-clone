@@ -186,7 +186,7 @@ const MainContent = styled.div`
   ${({ zoomLevel, responsiveWidth }) => {
     const zoomed = zoomLevel > 1 && zoomLevel !== undefined;
     return `
-      width: ${responsiveWidth}px;
+      min-width: ${responsiveWidth}px;
       height: ${zoomed ? `${100 / zoomLevel}%` : "100%"};
       transform: ${zoomed ? `scale(${zoomLevel})` : ""};
       transform-origin: ${zoomed ? `top left` : ""};

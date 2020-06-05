@@ -37,6 +37,7 @@ const PublicTestPage = ({
 }) => {
   const { testId } = match.params;
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [publicTest, setPublicTest] = useState();
 
   const redirectToTestPreview = (_testId, isTestArchieved = false, isTestInDraft = false) => {
     if (isTestArchieved || isTestInDraft) {
@@ -60,19 +61,21 @@ const PublicTestPage = ({
           const isTestInDraft = _test.status === testConstants.statusConstants.DRAFT;
 
           if (role === "student") {
-            // if archieved, then redirect to student dashbord
-            if (isTestArchieved || isTestInDraft) {
-              return redirectToDashbord(isTestArchieved ? "ARCHIVED" : "NOT_FOUND", history);
-            } else {
-              fetchAssignments({ testId: _test._id });
-            }
+            fetchAssignments({ testId: _test._id });
+            setPublicTest(_test);
           } else if (role === "parent") {
-            redirectToDashbord(isTestArchieved ? "ARCHIVED" : "", history);
+            let msgType = "";
+            if (isTestArchieved) {
+              msgType = "ARCHIVED";
+            } else if (isTestInDraft) {
+              msgType = "NOT_FOUND";
+            }
+            redirectToDashbord(msgType, history);
           } else {
             redirectToTestPreview(_test._id, isTestArchieved, isTestInDraft);
           }
         })
-        .catch((e) => {
+        .catch(() => {
           notification({ type: "info", messageKey: "tryingToAccessPrivateTest" });
           if (role !== "student" || role !== "parent") {
             redirectToTestPreview(testId);
@@ -84,9 +87,12 @@ const PublicTestPage = ({
     } else if (!authenticating || !TokenStorage.getAccessToken()) {
       if (!test) {
         fetchTest({ testId, sharedType: "PUBLIC" });
-      } else if (test?.status === testConstants.statusConstants.ARCHIVED || test?.status === testConstants.statusConstants.DRAFT) {
+      } else if (
+        test?.status === testConstants.statusConstants.ARCHIVED ||
+        test?.status === testConstants.statusConstants.DRAFT
+      ) {
         const msg = test?.status === testConstants.statusConstants.ARCHIVED ? ARCHIVED_TEST_MSG : "Test not found";
-        notification({ type: "info", msg});
+        notification({ type: "info", msg });
         history.push("/login");
       }
     } else {
@@ -99,7 +105,7 @@ const PublicTestPage = ({
   // if only graded assignments found, then redirect to review page
   useEffect(() => {
     if (user && user?.role === "student" && loadingAssignments === false) {
-      redirectToStudentPage(assignments, history, startAssignment, resumeAssignment);
+      redirectToStudentPage(assignments, history, startAssignment, resumeAssignment, publicTest);
     }
   }, [loadingAssignments]);
 
@@ -129,7 +135,8 @@ const PublicTestPage = ({
   if (error) {
     notification({ messageKey:"tryingToAccessPrivateTest"});
     return <Redirect to="/login" />;
-  } if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
+  }
+  if (loading || !test || (authenticating && TokenStorage.getAccessToken())) {
     return <Spin />;
   }
 
@@ -157,7 +164,7 @@ const PublicTestPage = ({
     </StyledMainWrapper>
   ) : (
     <Spin />
-    );
+  );
 };
 
 const StyledMainWrapper = styled.div`

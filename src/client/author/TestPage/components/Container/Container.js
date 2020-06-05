@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter, Prompt } from "react-router-dom";
-import { cloneDeep, uniq as _uniq, isEmpty, get, without, partial } from "lodash";
+import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes, notification } from "@edulastic/common";
 import { test as testContants, roleuser } from "@edulastic/constants";
@@ -212,16 +212,16 @@ class Container extends PureComponent {
       if (createdItems.length > 0) {
         this.setState({ editEnable: true });
         if (_location?.state?.showItemAddedMessage) {
-         const msg=(
-           <span>
-             New item has been created and added to the current test. Click{" "}
-             <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
-               here
-             </span>{" "}
-             to see it.
-           </span>
+          const msg = (
+            <span>
+              New item has been created and added to the current test. Click{" "}
+              <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
+                here
+              </span>{" "}
+              to see it.
+            </span>
           );
-          notification({ type: "success", msg});
+          notification({ type: "success", msg });
         }
       }
 
@@ -277,6 +277,8 @@ class Container extends PureComponent {
       resumeAssignment
     } = this.props;
 
+    const { testLoaded, editEnable, studentRedirected } = this.state;
+
     if (userRole !== roleuser.STUDENT) {
       if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
         const testItem = test.itemGroups?.[0].items?.[0] || {};
@@ -285,30 +287,33 @@ class Container extends PureComponent {
       }
       const { editAssigned = false } = history.location.state || {};
 
-      if (editAssigned && test?._id && !this.state.testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
+      if (editAssigned && test?._id && !testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
         this.onEnableEdit();
       }
-      if (editAssigned && test?._id && !this.state.editEnable && test.isInEditAndRegrade && !isTestLoading) {
+      if (editAssigned && test?._id && !editEnable && test.isInEditAndRegrade && !isTestLoading) {
         const canEdit = test.authors?.some(x => x._id === userId);
         if (canEdit) {
+          // eslint-disable-next-line react/no-did-update-set-state
           this.setState({ editEnable: true });
         }
       }
-      if (test._id && !this.state.testLoaded && !isTestLoading) {
+      if (test._id && !testLoaded && !isTestLoading) {
+        // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ testLoaded: true });
       }
       if (userRole === roleuser.EDULASTIC_CURATOR && prevProps?.test?._id !== test?._id) {
         getDefaultTestSettings(test);
       }
     } else if (userRole === roleuser.STUDENT) {
-        if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
-          // this is to call redirectToStudentPage once, even if multiple props update happend
-          if (!this.state.studentRedirected) {
-            redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment);
-            this.setState({ studentRedirected: true });
-          }
+      if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
+        // this is to call redirectToStudentPage once, even if multiple props update happend
+        if (!studentRedirected) {
+          redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment, test);
+          // eslint-disable-next-line react/no-did-update-set-state
+          this.setState({ studentRedirected: true });
         }
       }
+    }
   }
 
   // Make use of the router Prompt Component. No custom beforeunload method is required.
@@ -427,13 +432,13 @@ class Container extends PureComponent {
     setDefaultInterests({ subject: subjects[0] || "" });
   };
 
-  onChangeSkillIdentifiers = (identifiers) => {
+  onChangeSkillIdentifiers = identifiers => {
     const { setData, test } = this.props;
-    if(!isEmpty(identifiers)) {
-      const metadata = {...test.metadata, skillIdentifiers : _uniq(identifiers.split(","))}
-      setData({ ...test,  metadata});
+    if (!isEmpty(identifiers)) {
+      const metadata = { ...test.metadata, skillIdentifiers: _uniq(identifiers.split(",")) };
+      setData({ ...test, metadata });
     }
-  }
+  };
 
   handleSaveTestId = () => {
     const { test, saveCurrentEditingTestId } = this.props;
@@ -500,7 +505,7 @@ class Container extends PureComponent {
         return (
           <Content>
             <Summary
-              onShowSource={this.handleNavChange("source")}
+              onShowSource={this.handleNavChange("source")} // eslint-disable-next-line react/no-did-update-set-state
               setData={setData}
               test={test}
               owner={isOwner}
@@ -670,7 +675,7 @@ class Container extends PureComponent {
     }
     if (passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC) {
       if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
-        notification({ messageKey:"enterValidPassword"});
+        notification({ messageKey: "enterValidPassword" });
         return false;
       }
     }
@@ -678,12 +683,12 @@ class Container extends PureComponent {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
         this.sebPasswordRef.current.input.focus();
       }
-      notification({ messageKey:"enterValidPassword"});
+      notification({ messageKey: "enterValidPassword" });
       return false;
     }
     if (userFeatures.isPublisherAuthor || userFeatures.isCurator) {
       if (test.collections?.length === 0) {
-        notification({ messageKey:"testNotAssociatedWithCollection"});
+        notification({ messageKey: "testNotAssociatedWithCollection" });
         return false;
       }
       if (
@@ -694,7 +699,7 @@ class Container extends PureComponent {
             itemGroup.items.length <= itemGroup.deliverItemsCount
         )
       ) {
-         notification({ messageKey:"selectedItemsGroupShouldNotBeMoreThanDelivedItems"});
+        notification({ messageKey: "selectedItemsGroupShouldNotBeMoreThanDelivedItems" });
         return false;
       }
     }
@@ -704,7 +709,7 @@ class Container extends PureComponent {
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         itemGroup.items.some(item => item.itemLevelScoring === false)
       ) {
-        notification({ msg:`${itemGroup.name} contains items with question level scoring.`});
+        notification({ msg: `${itemGroup.name} contains items with question level scoring.` });
         return false;
       }
     }
@@ -821,16 +826,11 @@ class Container extends PureComponent {
       showWarningModal,
       proceedPublish,
       isTestLoading,
-      history,
       collections = [],
       userFeatures,
       currentTab,
       testAssignments,
-      userRole,
-      studentAssignments,
-      startAssignment,
-      resumeAssignment,
-      loadingAssignments
+      userRole
     } = this.props;
     if (userRole === roleuser.STUDENT) {
       return null;

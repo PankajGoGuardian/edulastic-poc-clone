@@ -47,7 +47,7 @@ const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClo
       >
         Continue
       </Button>
-      <BaseText>Edulastic @ 2018 - All rights reserved.</BaseText>
+      <BaseText>Edulastic @ 2020 - All rights reserved.</BaseText>
     </Modal>
   );
 };

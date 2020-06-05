@@ -3,7 +3,6 @@ import { createAction } from "redux-starter-kit";
 import { test, roleuser, questionType, test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
-import { message } from "antd";
 import {
   keyBy as _keyBy,
   omit,
@@ -573,10 +572,12 @@ export const createBlankTest = () => ({
   subjects: [],
   courses: [],
   collections: [],
-  analytics: {
-    usage: "0",
-    likes: "0"
-  },
+  analytics: [
+    {
+      usage: "0",
+      likes: "0"
+    }
+  ],
   passages: [],
   freezeSettings: false
 });
@@ -1255,7 +1256,7 @@ function* updateTestSaga({ payload }) {
         payload.data.assignmentPassword.length < 6 ||
         payload.data.assignmentPassword.length > 25)
     ) {
-      notification({ messageKey:"enterValidPassword"});
+      notification({ messageKey: "enterValidPassword" });
       return yield put(setTestsLoadingAction(false));
     }
 
@@ -1615,7 +1616,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
       if (newTest.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
         delete newTest.assignmentPassword;
       } else if (!newTest.assignmentPassword) {
-        notification({ messageKey:"enterValidPassword"});
+        notification({ messageKey: "enterValidPassword" });
         return;
       }
 

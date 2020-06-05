@@ -39,7 +39,8 @@ import {
   getOrgDataSelector,
   getCollectionsSelector,
   isPublisherUserSelector,
-  getUserRole
+  getUserRole,
+  getUserId
 } from "../../../src/selectors/user";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
@@ -199,7 +200,8 @@ class Item extends Component {
       standards = [],
       orgData: { itemBanks },
       isPublisherUser,
-      userRole
+      userRole,
+      currentUserId
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -230,7 +232,9 @@ class Item extends Component {
     };
 
     const showPremiumTag =
-      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) && !isPublisherUser;
+      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
+      !isPublisherUser &&
+      !(_source?.createdBy?._id === currentUserId);
 
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
@@ -380,7 +384,8 @@ const enhance = compose(
       orgData: getOrgDataSelector(state),
       orgCollections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      currentUserId: getUserId(state)
     }),
     { approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction }
   )

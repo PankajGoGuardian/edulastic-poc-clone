@@ -17,7 +17,7 @@ import {
   ViewButtonStyled
 } from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
-import { getUserRole, isPublisherUserSelector, getCollectionsSelector } from "../../../src/selectors/user";
+import { getUserRole, isPublisherUserSelector, getCollectionsSelector, getUserId } from "../../../src/selectors/user";
 import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector } from "../../ducks";
 import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -162,7 +162,8 @@ class ListItem extends Component {
       t,
       userRole,
       isPublisherUser,
-      orgCollections = []
+      orgCollections = [],
+      currentUserId
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -176,7 +177,9 @@ class ListItem extends Component {
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
 
     const showPremiumTag =
-      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) && !isPublisherUser;
+      showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
+      !isPublisherUser &&
+      !(_source?.createdBy?._id === currentUserId);
 
     return (
       <>
@@ -377,7 +380,8 @@ const enhance = compose(
       selectedTests: getSelectedTestsSelector(state),
       orgCollections: getCollectionsSelector(state),
       userRole: getUserRole(state),
-      isPublisherUser: isPublisherUserSelector(state)
+      isPublisherUser: isPublisherUserSelector(state),
+      currentUserId: getUserId(state)
     }),
     { approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction }
   )

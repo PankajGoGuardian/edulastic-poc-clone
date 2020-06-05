@@ -3,15 +3,14 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { Select } from "antd";
 
+import { EduButton } from "@edulastic/common";
 import {
   ModalWrapper,
   ModalFooter,
-  StyledButton,
   InitOptions,
   StyledDiv
 } from "../../../../common/components/ConfirmationModal/styled";
 import { StyledSelect } from "../../../../common/styled";
-import { EduButton } from "@edulastic/common";
 
 import { getCollectionsSelector, getItemBucketsSelector } from "../../../src/selectors/user";
 
@@ -22,7 +21,6 @@ const CollectionsSelectModal = ({
   onOk,
   onChange,
   bodyStyle = {},
-  collections,
   orgCollections = [],
   selectedCollections = [],
   className,
@@ -31,7 +29,7 @@ const CollectionsSelectModal = ({
   const modalRef = useRef(null);
 
   const onCollectionsChange = (_, options) => {
-    let data = {};
+    const data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
         data[o.props._id].push(o.props.value);
@@ -65,14 +63,14 @@ const CollectionsSelectModal = ({
       width="750px"
       title={title}
       onCancel={onCancel}
-      destroyOnClose={true}
-      maskClosable={true}
+      destroyOnClose
+      maskClosable
       footer={[
         <ModalFooter>
-          <EduButton isGhost key={"1"} onClick={onCancel}>
+          <EduButton isGhost key="1" onClick={onCancel}>
             CANCEL
           </EduButton>
-          <EduButton key={"2"} onClick={() => onOk("published", selectedCollections)}>
+          <EduButton key="2" onClick={() => onOk("published", selectedCollections)}>
             {okText.toUpperCase()}
           </EduButton>
         </ModalFooter>
@@ -86,7 +84,7 @@ const CollectionsSelectModal = ({
             size="medium"
             style={{ width: "100%" }}
             value={filteredCollections.flatMap(c => c.bucketIds)}
-            filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+            filterOption={(input, option = {}) => option.props?.children?.toLowerCase().includes(input?.toLowerCase())}
             getPopupContainer={() => modalRef.current}
             onChange={onCollectionsChange}
           >

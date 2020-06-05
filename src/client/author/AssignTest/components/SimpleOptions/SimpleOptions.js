@@ -1,25 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Col, Icon, Row, Select, message } from "antd";
+import { Col, Icon, Row, Select } from "antd";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
 import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
 import * as moment from "moment";
+import { FieldLabel, SelectInputStyled, notification } from "@edulastic/common";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
 import Settings from "./Settings";
-import {
-  OptionConationer,
-  InitOptions,
-  StyledRowButton,
-  SettingsBtn,
-  ColLabel,
-  StyledSelect,
-  Label,
-  StyledRow
-} from "./styled";
+import { OptionConationer, InitOptions, StyledRowButton, SettingsBtn, StyledRow } from "./styled";
 import { getListOfActiveStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
@@ -28,9 +20,6 @@ import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/compon
 
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getReleaseScorePremiumSelector, getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
-import PlayerSkinSelector from "./PlayerSkinSelector";
-import { FieldLabel, SelectInputStyled,notification } from "@edulastic/common";
-
 
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
@@ -56,15 +45,15 @@ class SimpleOptions extends React.Component {
     };
   }
 
-  static getDerivedStateFromProps(nextProps, nextState) {
+  static getDerivedStateFromProps(nextProps) {
     const { features, testSettings } = nextProps;
     const { grades, subjects } = testSettings || {};
     if (
-      features["assessmentSuperPowersReleaseScorePremium"] ||
+      features.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({
-          features: features,
+          features,
           inputFeatures: "assessmentSuperPowersReleaseScorePremium",
           gradeSubject: { grades, subjects }
         }))
@@ -82,13 +71,14 @@ class SimpleOptions extends React.Component {
     const { freezeSettings } = this.props;
     const { showSettings } = this.state;
     if (freezeSettings && !showSettings) {
-      notification({ type: "warn", messageKey:"overrrideSettingsRestricted"});
+      notification({ type: "warn", messageKey: "overrrideSettingsRestricted" });
     }
     this.setState({ showSettings: !showSettings });
   };
 
   onDeselect = classId => {
-    const removedStudents = this.props.assignment.class.find(_class => _class._id === classId)?.students || [];
+    const { assignment } = this.props;
+    const removedStudents = assignment.class.find(_class => _class._id === classId)?.students || [];
     this.setState(prevState => ({
       studentList: prevState.studentList.filter(item => !removedStudents.includes(item))
     }));
@@ -130,7 +120,7 @@ class SimpleOptions extends React.Component {
 
     const nextAssignment = produce(assignment, state => {
       switch (field) {
-        case "startDate":
+        case "startDate": {
           const { endDate } = assignment;
           if (value === null) {
             value = moment();
@@ -140,7 +130,8 @@ class SimpleOptions extends React.Component {
             state.endDate = moment(value).add("days", 7);
           }
           break;
-        case "testType":
+        }
+        case "testType": {
           if (value === testConst.type.ASSESSMENT || value === testConst.type.COMMON) {
             state.releaseScore =
               value === testConst.type.ASSESSMENT && isReleaseScorePremium
@@ -152,7 +143,8 @@ class SimpleOptions extends React.Component {
             state.maxAttempts = 3;
           }
           break;
-        case "passwordPolicy":
+        }
+        case "passwordPolicy": {
           if (value === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
             state.openPolicy =
               userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
@@ -166,6 +158,9 @@ class SimpleOptions extends React.Component {
                 : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE;
           }
           break;
+        }
+        default:
+          break;
       }
 
       state[field] = value;
@@ -175,9 +170,10 @@ class SimpleOptions extends React.Component {
 
   updateStudents = studentId => {
     const { group, students, assignment, updateOptions } = this.props;
+    const { studentList } = this.state;
     const groupById = keyBy(group, "_id");
     const studentById = keyBy(students, "_id");
-    const selectedStudentsById = [...this.state.studentList, studentId].map(_id => studentById[_id]);
+    const selectedStudentsById = [...studentList, studentId].map(_id => studentById[_id]);
     const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
     const classData = assignment.class.map(item => {
       const { _id, specificStudents } = item;
@@ -186,7 +182,7 @@ class SimpleOptions extends React.Component {
         _id,
         name: get(groupById, `${_id}.name`, ""),
         assignedCount: studentsByGroupId[_id].length,
-        students: studentsByGroupId[_id].map(item => item._id),
+        students: studentsByGroupId[_id].map(_item => _item._id),
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
         termId: get(groupById, `${_id}.termId`, ""),
@@ -236,7 +232,8 @@ class SimpleOptions extends React.Component {
       specificStudents,
       changeDateSelection,
       selectedDateOption,
-      freezeSettings
+      freezeSettings,
+      features
     } = this.props;
     const changeField = curry(this.onChange);
     let { openPolicy } = selectsData;
@@ -247,7 +244,6 @@ class SimpleOptions extends React.Component {
     }
     const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
     const studentOfSelectedClass = getListOfActiveStudents(students, classIds);
-    const playerSkinType = assignment.playerSkinType || testSettings.playerSkinType;
 
     return (
       <OptionConationer>
@@ -277,6 +273,7 @@ class SimpleOptions extends React.Component {
             passwordPolicy={assignment.passwordPolicy}
             changeRadioGrop={changeDateSelection}
             selectedOption={selectedDateOption}
+            showOpenDueAndCloseDate={features.assignTestEnableOpenDueAndCloseDate}
           />
 
           <StyledRow gutter={32} mb="15px">

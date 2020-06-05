@@ -3,9 +3,9 @@ import React from "react";
 // import PropTypes from "prop-types";
 import { test as testConst, assignmentStatusOptions } from "@edulastic/constants";
 import { Col, Row } from "antd";
-import { StyledRow, StyledRadioGropRow, Label } from "./styled";
 import { FieldLabel, DatePickerStyled, RadioBtn, RadioGrp } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { StyledRow, StyledRadioGropRow, Label } from "./styled";
 
 const DateSelector = ({
   startDate,
@@ -17,25 +17,28 @@ const DateSelector = ({
   dueDate,
   changeRadioGrop,
   selectedOption,
-  t }) => {
-  const disabledStartDate = startDate => {
-    if (!startDate || !endDate) {
+  showOpenDueAndCloseDate,
+  t
+}) => {
+  const disabledStartDate = _startDate => {
+    if (!_startDate || !endDate) {
       return false;
     }
-    return startDate.valueOf() < Date.now();
+    return _startDate.valueOf() < Date.now();
   };
 
-  const disabledEndDate = endDate => {
-    if (!endDate || !startDate) {
+  const disabledEndDate = _endDate => {
+    if (!_endDate || !startDate) {
       return false;
     }
-    return endDate.valueOf() < startDate.valueOf() || endDate.valueOf() < Date.now();
+    return _endDate.valueOf() < startDate.valueOf() || _endDate.valueOf() < Date.now();
   };
 
-  const handleDisableDueDate = currentDate => currentDate.valueOf() > endDate.valueOf() || currentDate.valueOf() < startDate.valueOf();
+  const handleDisableDueDate = currentDate =>
+    currentDate.valueOf() > endDate.valueOf() || currentDate.valueOf() < startDate.valueOf();
 
-  const colSpan = forClassLevel ? (dueDate ? 8 : 12) : (selectedOption ? 8 : 12);
-  const showDueDatePicker = forClassLevel ? dueDate : selectedOption;
+  const colSpan = forClassLevel ? (dueDate ? 8 : 12) : showOpenDueAndCloseDate && selectedOption ? 8 : 12;
+  const showDueDatePicker = forClassLevel ? dueDate : showOpenDueAndCloseDate && selectedOption;
 
   return (
     <React.Fragment>
@@ -63,28 +66,28 @@ const DateSelector = ({
             </Col>
           </Row>
         </Col>
-        { showDueDatePicker && <Col span={colSpan}>
-          <Row>
-            <Col span={24}>
-              <FieldLabel>{t("common.assignTest.dueDateTitle")}</FieldLabel>
-              <DatePickerStyled
-                allowClear={false}
-                data-cy="dueDate"
-                size="large"
-                style={{ width: "100%" }}
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                value={dueDate}
-                placeholder={t("common.assignTest.dueDatePlaceholder")}
-                onChange={changeField("dueDate")}
-                disabled={
-                  forClassLevel && status === assignmentStatusOptions.DONE
-                }
-                disabledDate={handleDisableDueDate}
-              />
-            </Col>
-          </Row>
-        </Col> }
+        {!!showDueDatePicker && (
+          <Col span={colSpan}>
+            <Row>
+              <Col span={24}>
+                <FieldLabel>{t("common.assignTest.dueDateTitle")}</FieldLabel>
+                <DatePickerStyled
+                  allowClear={false}
+                  data-cy="dueDate"
+                  size="large"
+                  style={{ width: "100%" }}
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  value={dueDate}
+                  placeholder={t("common.assignTest.dueDatePlaceholder")}
+                  onChange={changeField("dueDate")}
+                  disabled={forClassLevel && status === assignmentStatusOptions.DONE}
+                  disabledDate={handleDisableDueDate}
+                />
+              </Col>
+            </Row>
+          </Col>
+        )}
         <Col span={colSpan}>
           <Row>
             <Col span={24}>
@@ -107,18 +110,23 @@ const DateSelector = ({
           </Row>
         </Col>
       </StyledRow>
-      {!forClassLevel && <StyledRadioGropRow gutter={32}>
-        <Col span={24}>
-          <RadioGrp onChange={changeRadioGrop} value={selectedOption}>
-            <RadioBtn data-cy="radioOpenCloseDate" value={false}>
-              <Label>{t("common.assignTest.dateRadioGroup.openClose")}</Label>
-            </RadioBtn>
-            <RadioBtn data-cy="radioOpenDueCloseDate" value={true}>
-              <Label>{t("common.assignTest.dateRadioGroup.openCloseDue")} <span style={{fontWeight: "normal"}}>(Allows Late Submissions)</span></Label>
-            </RadioBtn>
-          </RadioGrp>
-        </Col>
-      </StyledRadioGropRow>}
+      {!forClassLevel && showOpenDueAndCloseDate && (
+        <StyledRadioGropRow gutter={32}>
+          <Col span={24}>
+            <RadioGrp onChange={changeRadioGrop} value={selectedOption}>
+              <RadioBtn data-cy="radioOpenCloseDate" value={false}>
+                <Label>{t("common.assignTest.dateRadioGroup.openClose")}</Label>
+              </RadioBtn>
+              <RadioBtn data-cy="radioOpenDueCloseDate" value>
+                <Label>
+                  {t("common.assignTest.dateRadioGroup.openCloseDue")}{" "}
+                  <span style={{ fontWeight: "normal" }}>(Allows Late Submissions)</span>
+                </Label>
+              </RadioBtn>
+            </RadioGrp>
+          </Col>
+        </StyledRadioGropRow>
+      )}
     </React.Fragment>
   );
 };

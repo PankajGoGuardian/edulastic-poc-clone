@@ -1,5 +1,5 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel,notification } from "@edulastic/common";
+import { CheckboxLabel, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconNotes, IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -59,7 +59,7 @@ const { Option } = Select;
 
 const gradeOptions = [];
 gradeOptions.push({ title: "Kindergarten", value: "K", disabled: false });
-for (let i = 1; i <= 12; i++) gradeOptions.push({ title: `Grade ${i}`, value: i + "", disabled: false });
+for (let i = 1; i <= 12; i++) gradeOptions.push({ title: `Grade ${i}`, value: `${i  }`, disabled: false });
 gradeOptions.push({ title: "Other", value: "O", disabled: false });
 
 const filterStrDD = {
@@ -177,6 +177,7 @@ class ClassesTable extends Component {
       archiveClassModalVisible: true
     });
   };
+
   handleBulkEdit = () => {
     const { setBulkEditVisibility } = this.props;
     setBulkEditVisibility(true);
@@ -296,7 +297,7 @@ class ClassesTable extends Component {
   };
 
   _bulkUpdateClasses = obj => {
-    let _obj = {
+    const _obj = {
       data: obj,
       searchQuery: this.getSearchQuery()
     };
@@ -323,7 +324,7 @@ class ClassesTable extends Component {
       if (index === i) {
         return {
           ...item,
-          filterAdded: value ? true : false
+          filterAdded: !!value
         };
       }
       return item;
@@ -338,7 +339,7 @@ class ClassesTable extends Component {
       if (index === key) {
         return {
           ...item,
-          filterAdded: event.target.value ? true : false
+          filterAdded: !!event.target.value
         };
       }
       return item;
@@ -352,7 +353,7 @@ class ClassesTable extends Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value ? true : false
+          filterAdded: !!value
         };
       }
       return item;
@@ -448,7 +449,7 @@ class ClassesTable extends Component {
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      let { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
       if (
         filtersColumn &&
         filtersValue &&
@@ -460,13 +461,11 @@ class ClassesTable extends Component {
           } else {
             search[filtersColumn].push(filterStr);
           }
-        } else {
-          if (!search[filtersColumn]) {
+        } else if (!search[filtersColumn]) {
             search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
           } else {
             search[filtersColumn].push({ type: filtersValue, value: filterStr });
           }
-        }
       }
     }
     if (role === "school-admin") {
@@ -600,7 +599,7 @@ class ClassesTable extends Component {
           return (
             <Link
               to={{
-                pathname: "/author/Class-Enrollment",
+                pathname: "/author/class-enrollment",
                 state: {
                   filtersColumn: "code",
                   filtersValue: "eq",
@@ -626,21 +625,19 @@ class ClassesTable extends Component {
       },
       {
         dataIndex: "_id",
-        render: id => {
-          return (
-            <div style={{ whiteSpace: "nowrap" }}>
-              <StyledTableButton onClick={() => this.onEditClass(id)} title="Edit">
-                <IconPencilEdit color={themeColor} />
-              </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(id)} title="Archive">
-                <IconTrash color={themeColor} />
-              </StyledTableButton>
-              <StyledTableButton onClick={this.handleBulkEdit} title="Bulk edit">
-                <IconNotes color={themeColor} />
-              </StyledTableButton>
-            </div>
-          );
-        }
+        render: id => (
+          <div style={{ whiteSpace: "nowrap" }}>
+            <StyledTableButton onClick={() => this.onEditClass(id)} title="Edit">
+              <IconPencilEdit color={themeColor} />
+            </StyledTableButton>
+            <StyledTableButton onClick={() => this.handleDelete(id)} title="Archive">
+              <IconTrash color={themeColor} />
+            </StyledTableButton>
+            <StyledTableButton onClick={this.handleBulkEdit} title="Bulk edit">
+              <IconNotes color={themeColor} />
+            </StyledTableButton>
+          </div>
+          )
       }
     ];
     const breadcrumbData = [
@@ -679,7 +676,7 @@ class ClassesTable extends Component {
         optValues.push(<Option value="eq">{t("common.equals")}</Option>);
       } else {
         optValues.push(
-          <Option value="" disabled={true}>
+          <Option value="" disabled>
             {t("common.selectvalue")}
           </Option>
         );
@@ -694,7 +691,7 @@ class ClassesTable extends Component {
             onChange={e => this.changeFilterColumn(e, i)}
             value={filtersColumn}
           >
-            <Option value="" disabled={true}>
+            <Option value="" disabled>
               {t("common.selectcolumn")}
             </Option>
             <Option value="codes">{t("class.code")}</Option>
@@ -757,7 +754,7 @@ class ClassesTable extends Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -807,7 +804,7 @@ class ClassesTable extends Component {
             pageSize={25}
             total={totalClassCount}
             onChange={this.changePagination}
-            hideOnSinglePage={true}
+            hideOnSinglePage
           />
         </TableContainer>
         {editClassModalVisible && (

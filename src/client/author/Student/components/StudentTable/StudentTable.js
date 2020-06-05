@@ -170,7 +170,7 @@ class StudentTable extends Component {
           return (
             <Link
               to={{
-                pathname: "/author/Class-Enrollment",
+                pathname: "/author/class-enrollment",
                 state: {
                   filtersColumn: "username",
                   filtersValue: "eq",
@@ -350,7 +350,7 @@ class StudentTable extends Component {
     });
     const { addMultiStudents, userOrgId } = this.props;
 
-    let o = {
+    const o = {
       addReq: { districtId: userOrgId, data: inviteStudentList },
       listReq: this.getSearchQuery()
     };
@@ -366,7 +366,7 @@ class StudentTable extends Component {
         if (!err) {
           const { fullName, email, password } = values;
 
-          let name = getFullNameFromString(fullName);
+          const name = getFullNameFromString(fullName);
           values.firstName = name.firstName;
           values.middleName = name.middleName;
           values.lastName = name.lastName;
@@ -382,7 +382,7 @@ class StudentTable extends Component {
           unset(values, ["confirmPassword"]);
           unset(values, ["fullName"]);
 
-          let o = {
+          const o = {
             createReq: pickBy(values, identity),
             listReq: this.getSearchQuery()
           };
@@ -423,6 +423,7 @@ class StudentTable extends Component {
       deactivateAdminModalVisible: false
     });
   };
+
   _onRefineResultsCB = () => {
     this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
@@ -444,7 +445,7 @@ class StudentTable extends Component {
       if (index === i) {
         return {
           ...item,
-          filterAdded: value ? true : false
+          filterAdded: !!value
         };
       }
       return item;
@@ -459,7 +460,7 @@ class StudentTable extends Component {
       if (index === key) {
         return {
           ...item,
-          filterAdded: event.target.value ? true : false
+          filterAdded: !!event.target.value
         };
       }
       return item;
@@ -473,7 +474,7 @@ class StudentTable extends Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== "" ? true : false
+          filterAdded: value !== ""
         };
       }
       return item;
@@ -498,7 +499,7 @@ class StudentTable extends Component {
   changeFilterColumn = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (key === index) {
-        let _item = {
+        const _item = {
           ...item,
           filtersColumn: value
         };
@@ -566,8 +567,8 @@ class StudentTable extends Component {
     const { filtersData, searchByName, currentPage } = this.state;
     let { showActive } = this.state;
 
-    let search = {};
-    for (let [index, item] of filtersData.entries()) {
+    const search = {};
+    for (const [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (filtersColumn === "status") {
@@ -583,7 +584,7 @@ class StudentTable extends Component {
     }
 
     if (searchByName) {
-      search["name"] = searchByName;
+      search.name = searchByName;
     }
     const queryObj = {
       search,
@@ -600,10 +601,10 @@ class StudentTable extends Component {
       queryObj.institutionId = location.institutionId;
     }
 
-    queryObj["status"] = 0;
+    queryObj.status = 0;
 
     if (showActive) {
-      queryObj["status"] = 1;
+      queryObj.status = 1;
     }
     return queryObj;
   };
@@ -692,7 +693,7 @@ class StudentTable extends Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -711,9 +712,9 @@ class StudentTable extends Component {
                   <StyledFilterSelect
                     placeholder={t("common.selectcolumn")}
                     onChange={e => this.changeFilterColumn(e, i)}
-                    value={filtersColumn ? filtersColumn : undefined}
+                    value={filtersColumn || undefined}
                   >
-                    <Option value="other" disabled={true}>
+                    <Option value="other" disabled>
                       {t("common.selectcolumn")}
                     </Option>
                     <Option value="username">{t("users.student.username")}</Option>
@@ -725,9 +726,9 @@ class StudentTable extends Component {
                   <StyledFilterSelect
                     placeholder={t("common.selectvalue")}
                     onChange={e => this.changeFilterValue(e, i)}
-                    value={filtersValue ? filtersValue : undefined}
+                    value={filtersValue || undefined}
                   >
-                    <Option value="" disabled={true}>
+                    <Option value="" disabled>
                       {t("common.selectvalue")}
                     </Option>
                     <Option value="eq">{t("common.equals")}</Option>
@@ -739,7 +740,7 @@ class StudentTable extends Component {
                       onChange={e => this.changeFilterText(e, i)}
                       onSearch={(v, e) => this.onSearchFilter(v, e, i)}
                       onBlur={e => this.onBlurFilterText(e, i)}
-                      value={filterStr ? filterStr : undefined}
+                      value={filterStr || undefined}
                       disabled={isFilterTextDisable}
                       ref={this.filterTextInputRef[i]}
                     />
@@ -817,7 +818,7 @@ class StudentTable extends Component {
             pageSize={25}
             total={totalUsers}
             onChange={page => this.setPageNo(page)}
-            hideOnSinglePage={true}
+            hideOnSinglePage
             pagination={{
               current: pageNo,
               total: totalUsers,
@@ -843,7 +844,7 @@ class StudentTable extends Component {
             showModal={editStudentModaVisible}
             role="student"
             formTitle="Update User"
-            showAdditionalFields={true}
+            showAdditionalFields
             userOrgId={userOrgId}
             modalData={result[editStudentKey]}
             modalFunc={updateAdminUser}
@@ -859,7 +860,7 @@ class StudentTable extends Component {
             isOpen={addStudentModalVisible}
             submitted={false}
             wrappedComponentRef={this.saveFormRef}
-            showClassCodeField={true}
+            showClassCodeField
             fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
             showTtsField
             validatedClassDetails={validatedClassDetails}

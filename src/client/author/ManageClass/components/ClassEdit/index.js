@@ -48,20 +48,20 @@ class ClassEdit extends React.Component {
 
   state = {};
 
-  componentDidUpdate({ updating, history, selctedClass }, { submitted }) {
+  componentDidUpdate({ updating, history, selctedClass, location }, { submitted }) {
+    const { exitPath, showPath, exitToShow } = location?.state || {};
     if (updating && submitted) {
       const { _id: classId } = selctedClass;
-      history.push(`/author/manageClass/${classId}`);
+      history.push((exitToShow ? showPath : exitPath) || `/author/manageClass/${classId}`);
     }
   }
 
   componentDidMount() {
     const { curriculums, getCurriculums, selctedClass, loadStudents, match, getAllTags } = this.props;
-    if (isEmpty(selctedClass)) {
-      const { classId } = match.params;
+    const { classId } = match.params;
+    if (isEmpty(selctedClass) || selctedClass?._id !== classId) {
       loadStudents({ classId });
     }
-
     if (isEmpty(curriculums)) {
       getCurriculums();
     }
@@ -75,7 +75,7 @@ class ClassEdit extends React.Component {
     form.validateFields((err, values) => {
       if (!err) {
         const { updateClass, curriculums, selctedClass } = this.props;
-        const { standardSets, endDate, startDate, tags } = values;
+        const { standardSets, endDate, startDate, tags, description } = values;
         const { _id: classId, type } = selctedClass;
 
         const updatedStandardsSets = standardSets?.map(el => {
@@ -90,7 +90,7 @@ class ClassEdit extends React.Component {
         values.type = type;
         values.parent = { id: userId };
         values.owners = [userId];
-
+        values.description = description || "";
         values.institutionId = values.institutionId || selctedClass.institutionId;
         values.standardSets = updatedStandardsSets || selctedClass.standardSets;
         values.endDate = moment(endDate).format("x") || selctedClass.startDate;
@@ -134,28 +134,56 @@ class ClassEdit extends React.Component {
   };
 
   getBreadCrumbData = ({ classId, name, type }) => {
-    const breadCrumbData = [
-      {
-        title: "MANAGE CLASS",
-        to: "/author/manageClass"
-      },
-      {
-        title: "GROUPS",
-        to: "/author/manageClass",
-        state: { currentTab: "group" }
-      }
-    ];
-    const editClassBreadCrumb = [
-      {
-        title: `${name}`,
-        to: `/author/manageClass/${classId}`
-      },
-      {
-        title: `Edit ${type === "custom" ? "Group" : "Class"}`,
-        to: `/author/manageClass/${classId}/edit`
-      }
-    ];
-    return type === "class" ? [breadCrumbData[0], ...editClassBreadCrumb] : [...breadCrumbData, ...editClassBreadCrumb];
+    const { match, location } = this.props;
+    const { showPath, exitPath } = location?.state || {};
+    type = type !== "class" ? "group" : "class";
+    const pathList = match.url.split("/");
+    let breadCrumbData = [];
+
+    const editClassBreadCrumb = {
+      title: `Edit ${type}`,
+      to: match.url,
+      state: { type, exitPath, showPath }
+    };
+
+    // pathList[2] determines the origin of the ClassEdit component
+    switch (pathList[2]) {
+      case "groups":
+        breadCrumbData = [
+          {
+            title: pathList[2].split("-").join(" "),
+            to: `/author/${pathList[2]}`
+          },
+          {
+            title: `${name}`,
+            to: showPath,
+            state: { type, exitPath, editPath: match.url }
+          }
+        ];
+        break;
+      case "manageClass":
+      default:
+        breadCrumbData = [
+          {
+            title: "MANAGE CLASS",
+            to: "/author/manageClass"
+          },
+          ...(type !== "class"
+            ? [
+                {
+                  title: "GROUPS",
+                  to: "/author/manageClass",
+                  state: { currentTab: "group" }
+                }
+              ]
+            : []),
+          {
+            title: `${name}`,
+            to: `/author/manageClass/${classId}`
+          }
+        ];
+    }
+    return [...breadCrumbData, editClassBreadCrumb];
   };
 
   render() {
@@ -172,10 +200,12 @@ class ClassEdit extends React.Component {
       allTagsData,
       addNewTag,
       selectedSubject = "",
-      userOrgData = {}
+      userOrgData = {},
+      location
     } = this.props;
     const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
-
+    const { exitPath, showPath, exitToShow } = location?.state || {};
+    const { schools } = userOrgData;
     const {
       _id: classId,
       thumbnail = "",
@@ -195,11 +225,9 @@ class ClassEdit extends React.Component {
 
     if (!classLoaded) return <Spin />;
 
-    const { schools } = userOrgData;
-
     return (
       <Form onSubmit={this.handleSubmit} style={{ position: "relative" }}>
-        <Header classId={classId} type={type} />
+        <Header classId={classId} type={type} exitPath={exitToShow ? showPath : exitPath} />
         <Spin spinning={updating}>
           <BreadCrumb
             ellipsis="calc(100% - 200px)"
@@ -275,7 +303,7 @@ const enhance = compose(
         userId: get(state, "user.user._id"),
         updating: get(state, "manageClass.updating"),
         selctedClass: get(state, "manageClass.entity", {}),
-        classLoaded: get(state, "manageClass.classLoaded"),
+        classLoaded: get(state, "manageClass.classLoaded") && get(state, "manageClass.loaded"),
         allTagsData: getAllTagsSelector(state, "group"),
         filteredCurriculums: getFormattedCurriculumsSelector(state, { subject: selectedSubject }),
         selectedSubject

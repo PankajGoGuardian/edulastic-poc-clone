@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
+
+// components
 import PerfectScrollbar from "react-perfect-scrollbar";
-import styled from "styled-components";
 import { Modal, Row, Col, Spin, Select, message } from "antd";
 import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
 import { SelectInputStyled, EduButton, withWindowSizes, notification } from "@edulastic/common";
+
+// api, ducks, helpers
+import { enrollmentApi } from "@edulastic/api";
 import {
   backgrounds,
   borderGrey4,
@@ -19,20 +24,20 @@ import {
   largeDesktopWidth,
   tabletWidth
 } from "@edulastic/colors";
-import { enrollmentApi } from "@edulastic/api";
-
 import { fetchGroupsAction, getGroupsSelector, groupsLoadingSelector } from "../../../../sharedDucks/groups";
 import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollment/ducks";
 
 const getParentUrl = urlList => {
   // urlList[2] decides the origin of the createClass route
   switch (urlList[2]) {
-    case "gradebook":
-      return "/author/gradebook";
     case "reports":
       // equivalent to /author/reports/<report-type>
       return urlList.slice(0, 4).join("/");
     case "manageClass":
+    case "gradebook":
+    case "groups":
+    case "class-enrollment":
+      return `/author/${urlList[2]}`;
     default:
       return "/author/manageClass";
   }
@@ -127,21 +132,21 @@ const AddToGroupModal = ({
       enrollStudentsToGroup({ classCode, districtId, studentIds: studentsToAdd, type: groupType, name });
       setStudentsToAdd([]);
     } else if (checkedStudents.length) {
-      notification({ type: "success", msg:`Students enrolled to ${groupTypeText} ${name} successfully`});
+      notification({ type: "success", msg: `Students enrolled to ${groupTypeText} ${name} successfully` });
     }
     // remove students
     if (studentsToRemove.length) {
       try {
-        const data = await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
-        notification({ type: "success", msg:`Students removed from ${groupTypeText} ${name} successfully`});
+        await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
+        notification({ type: "success", msg: `Students removed from ${groupTypeText} ${name} successfully` });
       } catch ({ data: { message: errorMessage } }) {
-        notification({msg:errorMessage});
+        notification({ msg: errorMessage });
       }
       setStudentsToRemove([]);
     }
     // warning for no action due to lack of - checked students or existing students to remove
     if (!checkedStudents.length && !studentsToRemove.length) {
-      notification({ type: "warn", msg:`Select one or more students to add to or remove from ${groupTypeText}`});
+      notification({ type: "warn", msg: `Select one or more students to add to or remove from ${groupTypeText}` });
     } else {
       // close modal
       onCancel();
@@ -149,14 +154,14 @@ const AddToGroupModal = ({
   };
 
   const handleAddNew = () => {
-    if (checkedStudents.length) {
+    if (studentsToAdd.length) {
       const parentUrl = getParentUrl(match.url.split("/"));
       history.push({
         pathname: `${parentUrl}/createClass/`,
-        state: { type: groupTypeText, studentIds: checkedStudents.map(s => s._id), exitPath: match.url }
+        state: { type: groupTypeText, studentIds: studentsToAdd, exitPath: match.url }
       });
     } else {
-      notification({ type: "warn", msg:`Select one or more students to add to ${groupTypeText}`});
+      notification({ type: "warn", msg: `Select one or more students to add to ${groupTypeText}` });
     }
   };
 
@@ -233,7 +238,7 @@ const AddToGroupModal = ({
                 <Select.Option key={_id} value={_id}>
                   {name}
                 </Select.Option>
-              ))}
+                ))}
             </SelectInputStyled>
 
             <StyledEduButton
@@ -291,7 +296,7 @@ const AddToGroupModal = ({
             </EduButton>
           </StyledCol>
         </Row>
-      )}
+        )}
     </StyledModal>
   );
 };

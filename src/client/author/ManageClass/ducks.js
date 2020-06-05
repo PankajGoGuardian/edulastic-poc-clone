@@ -2,17 +2,16 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeEvery, call, put, select, takeLatest } from "redux-saga/effects";
 import { createSelector } from "reselect";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { get, findIndex, keyBy } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi, canvasApi, cleverApi } from "@edulastic/api";
 
+import { push } from "connected-react-router";
 import { receiveTeacherDashboardAction } from "../Dashboard/duck";
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
 import { setUserGoogleLoggedInAction } from "../../student/Login/ducks";
 import { requestEnrolExistingUserToClassAction } from "../ClassEnrollment/ducks";
 import { RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR } from "../src/constants/actions";
-import { push } from "connected-react-router";
 
 // selectors
 const manageClassSelector = state => state.manageClass;
@@ -509,12 +508,12 @@ function* receiveAddStudentRequest({ payload }) {
       notification({ type: "success", msg:successMsg});
     } else {
       const msg = get(result, "data.message", "Student already part of this class section");
-      notification({ msg:msg});
+      notification({ msg });
       yield put(addStudentFailedAction("add student to class failed"));
     }
   } catch (error) {
     const msg = get(error, "data.message", "User already part of this class section");
-    notification({ msg:msg});
+    notification({ msg });
     yield put(addStudentFailedAction(error));
   }
 }
@@ -536,7 +535,7 @@ function* changeUserTTSRequest({ payload }) {
       return std;
     });
     yield put(userTTSRequestSuccessAction(newStdList));
-    notification({ type: "success", msg:msg});
+    notification({ type: "success", msg});
   } catch (error) {
     notification({ messageKey: "errorOccurredWhileEnablingOrDisablingTextToSpeech"});
     
@@ -547,7 +546,7 @@ function* resetPasswordRequest({ payload }) {
   try {
     const result = yield call(userApi.resetPassword, payload);
     const msg = "Password has been changed for the selected student(s).";
-    notification({ type: "success", msg:msg});
+    notification({ type: "success", msg});
     yield put(resetPasswordSuccessAction(result.data));
   } catch (error) {
     notification({ messageKey: "resetPasswordRequestFailing"});
@@ -559,7 +558,7 @@ function* removeStudentsRequest({ payload }) {
   try {
     const result = yield call(enrollmentApi.removeStudents, payload);
     const { result: msg } = result.data;
-    notification({ type: "success", msg:msg});
+    notification({ type: "success", msg});
     yield put(removeStudentsSuccessAction(payload.studentIds));
   } catch (error) {
     yield put(removeStudentsFaildedAction(error));
@@ -576,7 +575,7 @@ function* updateStudentRequest({ payload }) {
     };
     yield put(updateStudentSuccessAction(updatedStudent));
     const msg = "Successfully Updated student.";
-    notification({ type: "success", msg:msg});
+    notification({ type: "success", msg});
   } catch (error) {
     notification({ messageKey: "updateAstudentRequestFailing"});
     yield put(updateStudentFaildedAction());
@@ -717,15 +716,18 @@ function* syncClassListWithCleverSaga({ payload }) {
 }
 
 function* unarchiveClass({ payload }) {
+  const { isGroup, exitPath, ...restPayload } = payload || {};
+  const groupTypeText = isGroup ? "group" : "class";
   try {
-    yield call(groupApi.unarchiveClass, payload);
+    yield call(groupApi.unarchiveClass, restPayload);
     yield put(unarchiveClassSuccessAction());
-    notification({ type: "success", messageKey:"classSuccessfullyUnarchived"});
-    yield put(push("/author/manageClass"));
+    notification({ type: "success", messageKey:`${groupTypeText}SuccessfullyUnarchived`});
+    if (exitPath) yield put(push("/"));
+    yield put(push(exitPath || "/author/manageClass"));
   } catch (err) {
     console.error(err);
     yield put(unarchiveClassFailedAction());
-    notification({ msg:err?.data?.message || "Unarchiving class failed." });
+    notification({ msg: err?.data?.message || `Unarchiving ${groupTypeText} failed.` });
   }
 }
 

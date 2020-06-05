@@ -1,7 +1,6 @@
 import { MainHeader } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconSettings } from "@edulastic/icons";
-import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -19,73 +18,63 @@ class AdminHeader extends Component {
     const { history, role } = this.props;
     // eslint-disable-next-line default-case
     switch (key) {
-      case "District Profile":
-        history.push(`/author/districtprofile`);
-        return;
-      case "School Profile":
-        history.push(`/author/schoolprofile`);
-        return;
-      case "Schools":
-        history.push(`/author/Schools`);
-        return;
-      case "Users":
+      case "users":
         if (role === "district-admin") {
           history.push(`/author/users/district-admin`);
         } else if (role === "school-admin") {
           history.push(`/author/users/school-admin`);
         }
         return;
-      case "Classes":
-        history.push(`/author/Classes`);
-        return;
-      case "Courses":
-        history.push(`/author/Courses`);
-        return;
-      case "Class Enrollment":
-        history.push(`/author/Class-Enrollment`);
-        return;
-      // case "Groups":
-      //   history.push(`/author/Groups`);
-      //   return;
-      case "Settings":
+      case "settings":
         if (role === roleuser.DISTRICT_ADMIN) {
           history.push(`/author/settings/districtpolicies`);
         } else {
           history.push(`/author/settings/schoolpolicies`);
         }
         return;
-      case "Content":
+      case "content":
         history.push(`/author/content/collections`);
+        return;
+      // case "districtprofile":
+      // case "schoolprofile":
+      // case "schools":
+      // case "classes":
+      // case "groups":
+      // case "courses":
+      // case "class-enrollment":
+      default:
+        history.push(`/author/${key}`);
     }
   };
 
   render() {
     const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel, children } = this.props;
-    const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
+    const schoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     const isDA = role === roleuser.DISTRICT_ADMIN;
+    const defaultTab = isDA ? "District Profile" : "School Profile";
+    const defaultKey = isDA ? "districtprofile" : "schoolprofile";
+    const activeKey = (active.mainMenu || "").toLocaleLowerCase().split(" ").join("");
     return (
       <MainHeader Icon={IconSettings} headingText={manageTabLabel} mobileHeaderHeight={100}>
         <AdminHeaderContent>
           <StyledTabs
             type="card"
             tabPosition="top"
-            defaultActiveKey={active.mainMenu}
+            activeKey={activeKey}
+            defaultActiveKey=""
             onTabClick={this.onHeaderTabClick}
           >
-            <StyledTabPane
-              tab={isDA ? "District Profile" : "School Profile"}
-              key={isDA ? "District Profile" : "School Profile"}
-            />
-            <StyledTabPane tab={SchoolTabtext} key="Schools" />
-            <StyledTabPane tab="Users" key="Users" />
-            <StyledTabPane tab="Classes" key="Classes" />
-            <StyledTabPane tab="Courses" key="Courses" />
-            <StyledTabPane tab="Class Enrollment" key="Class Enrollment" />
-            {/* <StyledTabPane tab="Groups" key={"Groups"} /> */}
-            {isDA && <StyledTabPane tab="Content" key="Content" />}
-            {isDA || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
-              <StyledTabPane tab="Settings" key="Settings" />
-            ) : null}
+            <StyledTabPane tab={defaultTab} key={defaultKey} />
+            <StyledTabPane tab={schoolTabtext} key="schools" />
+            <StyledTabPane tab="Users" key="users" />
+            <StyledTabPane tab="Classes" key="classes" />
+            <StyledTabPane tab="Groups" key="groups" />
+            <StyledTabPane tab="Courses" key="courses" />
+            <StyledTabPane tab="Class Enrollment" key="class-enrollment" />
+            {isDA && <StyledTabPane tab="Content" key="content" />}
+            {(isDA || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings)) && (
+              <StyledTabPane tab="Settings" key="settings" />
+            )}
           </StyledTabs>
           {children}
         </AdminHeaderContent>

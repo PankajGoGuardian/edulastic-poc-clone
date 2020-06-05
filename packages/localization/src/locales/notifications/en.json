@@ -863,6 +863,10 @@
     "message": "Class successfully unarchived.",
     "description": ""
   },
+  "groupSuccessfullyUnarchived": {
+    "message": "Group successfully unarchived.",
+    "description": ""
+  },
   "coTeacherAddedSuccessfully": {
     "message": "co-teacher added successfully",
     "description": ""

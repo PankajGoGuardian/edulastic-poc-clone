@@ -4,7 +4,9 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-// actions
+
+import ClassListContainer from "./ClassListContainer";
+
 import {
   fetchGroupsAction,
   fetchArchiveGroupsAction,
@@ -19,10 +21,6 @@ import {
   updateGoogleCourseListAction,
   getGoogleCourseListSelector
 } from "../ducks";
-
-// components
-
-import ClassListContainer from "./ClassListContainer";
 import { getDictCurriculumsAction } from "../../src/actions/dictionaries";
 import { receiveSearchCourseAction } from "../../Courses/ducks";
 import { getGoogleAllowedInstitionPoliciesSelector } from "../../src/selectors/user";

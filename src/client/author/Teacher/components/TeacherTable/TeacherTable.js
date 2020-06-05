@@ -154,7 +154,7 @@ class TeacherTable extends Component {
           return (
             <Link
               to={{
-                pathname: "/author/Class-Enrollment",
+                pathname: "/author/class-enrollment",
                 state: {
                   filtersColumn: "username",
                   filtersValue: "eq",
@@ -302,7 +302,7 @@ class TeacherTable extends Component {
 
   sendInvite = obj => {
     const { addTeachers } = this.props;
-    let o = {
+    const o = {
       addReq: obj,
       listReq: this.getSearchQuery()
     };
@@ -314,8 +314,8 @@ class TeacherTable extends Component {
     createReq.role = "teacher";
     createReq.districtId = userOrgId;
 
-    let o = {
-      createReq: createReq,
+    const o = {
+      createReq,
       listReq: this.getSearchQuery()
     };
 
@@ -378,7 +378,7 @@ class TeacherTable extends Component {
       if (index === i) {
         return {
           ...item,
-          filterAdded: value ? true : false
+          filterAdded: !!value
         };
       }
       return item;
@@ -393,7 +393,7 @@ class TeacherTable extends Component {
       if (index === key) {
         return {
           ...item,
-          filterAdded: event.target.value ? true : false
+          filterAdded: !!event.target.value
         };
       }
       return item;
@@ -407,7 +407,7 @@ class TeacherTable extends Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== "" ? true : false
+          filterAdded: value !== ""
         };
       }
       return item;
@@ -432,7 +432,7 @@ class TeacherTable extends Component {
   changeFilterColumn = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (key === index) {
-        let _item = {
+        const _item = {
           ...item,
           filtersColumn: value
         };
@@ -499,8 +499,8 @@ class TeacherTable extends Component {
     const { userOrgId, location = {} } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
     let { showActive } = this.state;
-    let search = {};
-    for (let [index, item] of filtersData.entries()) {
+    const search = {};
+    for (const [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (filtersColumn === "status") {
@@ -516,7 +516,7 @@ class TeacherTable extends Component {
     }
 
     if (searchByName) {
-      search["name"] = searchByName;
+      search.name = searchByName;
     }
 
     const queryObj = {
@@ -531,10 +531,10 @@ class TeacherTable extends Component {
       // order
     };
 
-    queryObj["status"] = 0;
+    queryObj.status = 0;
 
     if (showActive) {
-      queryObj["status"] = 1;
+      queryObj.status = 1;
     }
     return queryObj;
   };
@@ -543,6 +543,7 @@ class TeacherTable extends Component {
     const { loadAdminData } = this.props;
     loadAdminData(this.getSearchQuery());
   };
+
   closeTeachersDetailModal = () => {
     this.props.setTeachersDetailsModalVisible(false);
   };
@@ -614,7 +615,7 @@ class TeacherTable extends Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -634,9 +635,9 @@ class TeacherTable extends Component {
                   <StyledFilterSelect
                     placeholder={t("common.selectcolumn")}
                     onChange={e => this.changeFilterColumn(e, i)}
-                    value={filtersColumn ? filtersColumn : undefined}
+                    value={filtersColumn || undefined}
                   >
-                    <Option value="other" disabled={true}>
+                    <Option value="other" disabled>
                       {t("common.selectcolumn")}
                     </Option>
                     <Option value="username">Username</Option>
@@ -649,9 +650,9 @@ class TeacherTable extends Component {
                   <StyledFilterSelect
                     placeholder={t("common.selectvalue")}
                     onChange={e => this.changeFilterValue(e, i)}
-                    value={filtersValue ? filtersValue : undefined}
+                    value={filtersValue || undefined}
                   >
-                    <Option value="" disabled={true}>
+                    <Option value="" disabled>
                       {t("common.selectvalue")}
                     </Option>
                     <Option value="eq">{t("common.equals")}</Option>
@@ -663,7 +664,7 @@ class TeacherTable extends Component {
                       onChange={e => this.changeFilterText(e, i)}
                       onSearch={(v, e) => this.onSearchFilter(v, e, i)}
                       onBlur={e => this.onBlurFilterText(e, i)}
-                      value={filterStr ? filterStr : undefined}
+                      value={filterStr || undefined}
                       disabled={isFilterTextDisable}
                       ref={this.filterTextInputRef[i]}
                     />
@@ -741,7 +742,7 @@ class TeacherTable extends Component {
             pageSize={25}
             total={totalUsers}
             onChange={page => this.setPageNo(page)}
-            hideOnSinglePage={true}
+            hideOnSinglePage
             pagination={{
               current: pageNo,
               total: totalUsers,

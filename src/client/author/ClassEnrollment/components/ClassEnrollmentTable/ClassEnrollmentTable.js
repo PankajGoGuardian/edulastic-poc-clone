@@ -5,6 +5,12 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
 import moment from "moment";
+import { IconTrash } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
+import { TypeToConfirmModal } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { roleuser } from "@edulastic/constants";
+import withRouter from "react-router/withRouter";
 import { AddNewUserModal } from "../Common/AddNewUser";
 import { StyledTable } from "./styled";
 
@@ -16,9 +22,6 @@ import {
   getClassEnrollmentUsersCountSelector,
   requestEnrolExistingUserToClassAction
 } from "../../ducks";
-
-import { AddStudentsToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
-import { AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 import {
   getAddStudentsToOtherClassSelector,
   addStudentsToOtherClassAction,
@@ -26,6 +29,10 @@ import {
   moveUsersToOtherClassAction,
   getValidatedClassDetails
 } from "../../../Student/ducks";
+
+import { AddStudentsToOtherClassModal , AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
+
+import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
 
 import {
   MainContainer,
@@ -49,13 +56,6 @@ import {
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
 import Breadcrumb from "../../../src/components/Breadcrumb";
-import { IconTrash } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import { TypeToConfirmModal } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-import { roleuser } from "@edulastic/constants";
-import { enrollmentApi } from "@edulastic/api";
-import withRouter from "react-router/withRouter";
 
 const { Option } = Select;
 
@@ -81,7 +81,8 @@ class ClassEnrollmentTable extends React.Component {
       selectedUsersInfo: [],
       addStudentsModalVisible: false,
       moveUsersModalVisible: false,
-      refineButtonActive: false
+      refineButtonActive: false,
+      showAddToGroupModal: false
     };
   }
 
@@ -102,6 +103,7 @@ class ClassEnrollmentTable extends React.Component {
       return <StyledClassName key={id}>{username}</StyledClassName>;
     });
   }
+
   onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -151,6 +153,8 @@ class ClassEnrollmentTable extends React.Component {
           this.setState({ addStudentsModalVisible: true });
         }
       }
+    } else if (e.key === "add to student group") {
+      this.setState({ showAddToGroupModal: true });
     }
   };
 
@@ -182,7 +186,7 @@ class ClassEnrollmentTable extends React.Component {
       form.validateFields((err, values) => {
         if (!err) {
           const { fullName, role } = values;
-          let name = getFullNameFromString(fullName);
+          const name = getFullNameFromString(fullName);
           values.firstName = name.firstName;
           values.middleName = name.middleName;
           values.lastName = name.lastName;
@@ -190,7 +194,7 @@ class ClassEnrollmentTable extends React.Component {
           const contactEmails = get(values, "contactEmails");
 
           if (role === "teacher") {
-            let institutionIds = [];
+            const institutionIds = [];
             for (let i = 0; i < values.institutionIds.length; i++) {
               institutionIds.push(values.institutionIds[i].key);
             }
@@ -204,7 +208,7 @@ class ClassEnrollmentTable extends React.Component {
           }
           unset(values, ["confirmPassword"]);
           unset(values, ["fullName"]);
-          let o = {
+          const o = {
             createReq: pickBy(values, identity),
             listReq: {
               districtId,
@@ -253,6 +257,7 @@ class ClassEnrollmentTable extends React.Component {
       addUserFormModalVisible: false
     });
   };
+
   onOpenaddNewUserModal = () => {
     this.setState({
       addUserFormModalVisible: true
@@ -264,6 +269,7 @@ class ClassEnrollmentTable extends React.Component {
     this.setState({ addStudentsModalVisible: false });
     resetClassDetails();
   };
+
   onCloseMoveUsersToOtherClassModal = () => {
     const { resetClassDetails } = this.props;
     this.setState({ moveUsersModalVisible: false });
@@ -288,6 +294,7 @@ class ClassEnrollmentTable extends React.Component {
       });
     }
   };
+
   setPageNo = page => {
     this.setState({ currentPage: page }, this.loadClassEnrollmentList);
   };
@@ -298,7 +305,7 @@ class ClassEnrollmentTable extends React.Component {
   changeFilterColumn = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (key === index) {
-        let _item = {
+        const _item = {
           ...item,
           filtersColumn: value
         };
@@ -309,6 +316,7 @@ class ClassEnrollmentTable extends React.Component {
     });
     this.setState({ filtersData: _filtersData });
   };
+
   changeFilterValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
@@ -322,13 +330,14 @@ class ClassEnrollmentTable extends React.Component {
 
     this.setState({ filtersData: _filtersData });
   };
+
   changeRoleValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== "" ? true : false
+          filterAdded: value !== ""
         };
       }
       return item;
@@ -336,6 +345,7 @@ class ClassEnrollmentTable extends React.Component {
 
     this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList);
   };
+
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
@@ -365,6 +375,7 @@ class ClassEnrollmentTable extends React.Component {
       }));
     }
   };
+
   removeFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     let newFiltersData;
@@ -382,6 +393,7 @@ class ClassEnrollmentTable extends React.Component {
     }
     this.setState({ filtersData: newFiltersData }, this.loadClassEnrollmentList);
   };
+
   loadClassEnrollmentList = () => {
     const { receiveClassEnrollmentList } = this.props;
     receiveClassEnrollmentList(this.getSearchQuery());
@@ -393,8 +405,8 @@ class ClassEnrollmentTable extends React.Component {
 
     const { role = "" } = filtersData?.[0] || {};
 
-    let search = {};
-    for (let [index, item] of filtersData.entries()) {
+    const search = {};
+    for (const [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (!search[filtersColumn]) {
@@ -418,7 +430,7 @@ class ClassEnrollmentTable extends React.Component {
     }
 
     if (searchByName) {
-      search["name"] = [{ type: "cont", value: searchByName }];
+      search.name = [{ type: "cont", value: searchByName }];
     }
     const data = {
       search,
@@ -434,12 +446,13 @@ class ClassEnrollmentTable extends React.Component {
     }
     return data;
   };
+
   onBlurFilterText = (event, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterAdded: event.target.value ? true : false
+          filterAdded: !!event.target.value
         };
       }
       return item;
@@ -475,7 +488,8 @@ class ClassEnrollmentTable extends React.Component {
       moveUsersModalVisible,
       currentPage,
       pageNo,
-      refineButtonActive
+      refineButtonActive,
+      showAddToGroupModal
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -519,9 +533,10 @@ class ClassEnrollmentTable extends React.Component {
     };
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="remove students">Remove Selected Student(s)</Menu.Item>
-        <Menu.Item key="move users">Move User(s)</Menu.Item>
-        <Menu.Item key="add students to other class">Add Student(s) to another Class</Menu.Item>
+        <Menu.Item key="remove students">{t("classenrollment.removestudents")}</Menu.Item>
+        <Menu.Item key="move users">{t("classenrollment.moveusers")}</Menu.Item>
+        <Menu.Item key="add students to other class">{t("classenrollment.addstdstoanotherclass")}</Menu.Item>
+        <Menu.Item key="add to student group">{t("classenrollment.addToStudentGroup")}</Menu.Item>
       </Menu>
     );
     const columnsData = [
@@ -557,13 +572,11 @@ class ClassEnrollmentTable extends React.Component {
       },
       {
         dataIndex: "id",
-        render: (_, record) => {
-          return (
-            <StyledTableButton key={record.key} onClick={() => this.handleDeactivateUser(record)} title="Deactivate">
-              <IconTrash color={themeColor} />
-            </StyledTableButton>
-          );
-        },
+        render: (_, record) => (
+          <StyledTableButton key={record.key} onClick={() => this.handleDeactivateUser(record)} title="Deactivate">
+            <IconTrash color={themeColor} />
+          </StyledTableButton>
+          ),
         textWrap: "word-break",
         width: 100
       }
@@ -572,10 +585,10 @@ class ClassEnrollmentTable extends React.Component {
     const breadcrumbData = [
       {
         title: userRole === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
-        to: userRole === roleuser.SCHOOL_ADMIN ? "/author/Class-Enrollment" : "/author/districtprofile"
+        to: userRole === roleuser.SCHOOL_ADMIN ? "/author/class-enrollment" : "/author/districtprofile"
       },
       {
-        title: "CLASSES",
+        title: "CLASS ENROLLMENT",
         to: ""
       }
     ];
@@ -592,7 +605,7 @@ class ClassEnrollmentTable extends React.Component {
         optValues.push(<Option value="eq">{t("common.equals")}</Option>);
       } else {
         optValues.push(
-          <Option value="" disabled={true}>
+          <Option value="" disabled>
             {t("common.selectvalue")}
           </Option>
         );
@@ -607,7 +620,7 @@ class ClassEnrollmentTable extends React.Component {
             onChange={e => this.changeFilterColumn(e, i)}
             value={filtersColumn}
           >
-            <Option value="" disabled={true}>
+            <Option value="" disabled>
               {t("common.selectcolumn")}
             </Option>
             <Option value="code">{t("classenrollment.classcode")}</Option>
@@ -643,7 +656,7 @@ class ClassEnrollmentTable extends React.Component {
               disabled={isFilterTextDisable}
               value={filterStr}
             />
-          )}
+            )}
           {i < 2 && (
             <StyledAddFilterButton
               type="primary"
@@ -666,7 +679,7 @@ class ClassEnrollmentTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -707,7 +720,7 @@ class ClassEnrollmentTable extends React.Component {
             current={currentPage}
             pageSize={25}
             total={totalUsers}
-            hideOnSinglePage={true}
+            hideOnSinglePage
             onChange={page => this.setPageNo(page)}
           />
         </TableContainer>
@@ -768,6 +781,14 @@ class ClassEnrollmentTable extends React.Component {
           askUserConfirmation
           t={t}
         />
+        {showAddToGroupModal && (
+          <AddToGroupModal
+            groupType="custom"
+            visible={showAddToGroupModal}
+            onCancel={() => this.setState({ showAddToGroupModal: false })}
+            checkedStudents={uniqBy(selectedUsersInfo.map(({ user }) => ({ ...user })), "_id")}
+          />
+        )}
       </MainContainer>
     );
   }

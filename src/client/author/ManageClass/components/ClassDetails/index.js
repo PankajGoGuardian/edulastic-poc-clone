@@ -35,15 +35,16 @@ import {
 import { getCleverSyncEnabledInstitutionPoliciesSelector } from "../../../src/selectors/user";
 
 const ClassDetails = ({
+  location,
+  history,
+  match,
   selectedClass,
   loadStudents,
   fetchClassList,
   isUserGoogleLoggedIn,
-  history,
   syncClassLoading,
   fetchClassListLoading,
   classLoaded,
-  match,
   syncClassUsingCode,
   archiveClass,
   getCanvasCourseListRequest,
@@ -58,7 +59,9 @@ const ClassDetails = ({
   setClassNotFoundError,
   unarchiveClass
 }) => {
-  const { _id, name, type, cleverId, institutionId } = selectedClass;
+  const { editPath, exitPath } = location?.state || {};
+  const { name, type, cleverId, institutionId } = selectedClass;
+  const typeText = type !== "class" ? "group" : "class";
 
   // sync checks for institution
   const { allowGoogleClassroom: allowGoogleLogin, allowCanvas: allowCanvasLogin, searchAndAddStudents } = useMemo(
@@ -95,7 +98,10 @@ const ClassDetails = ({
 
   const handleEditClick = () => {
     const classId = selectedClass._id || match.params.classId;
-    history.push(`/author/manageClass/${classId}/edit`);
+    history.push({
+      pathname: editPath || `/author/manageClass/${classId}/edit`,
+      state: { type: typeText, exitPath, showPath: match.url, exitToShow: true }
+    });
   };
 
   const handleSyncGC = () => {
@@ -116,24 +122,39 @@ const ClassDetails = ({
     setClassNotFoundError(false);
   };
 
-  const breadCrumbData = [
-    {
-      title: "MANAGE CLASS",
-      to: "/author/manageClass"
-    },
-    {
-      title: "GROUPS",
-      to: "/author/manageClass",
-      state: { currentTab: "group" }
-    }
-  ];
-
   const getBreadCrumbData = () => {
+    const pathList = match.url.split("/");
+    let breadCrumbData = [];
     const classBreadCrumb = {
       title: `${name}`,
-      to: `/author/manageClass/${_id}`
-    };
-    return type === "class" ? [breadCrumbData[0], classBreadCrumb] : [...breadCrumbData, classBreadCrumb];
+      to: match.url,
+      state: { type: typeText, exitPath, editPath }
+    }
+    // pathList[2] determines the origin of the ClassDetails component
+    switch(pathList[2]) {
+      case "groups":
+        breadCrumbData = [
+          {
+            title: pathList[2].split("-").join(" "),
+            to: `/author/${pathList[2]}`
+          }
+        ];
+        break;
+      case "manageClass":
+      default:
+        breadCrumbData = [
+          {
+            title: "MANAGE CLASS",
+            to: "/author/manageClass"
+          },
+          ...(type !== "class" ? [{
+            title: "GROUPS",
+            to: "/author/manageClass",
+            state: { currentTab: "group" }
+          }] : [])
+        ];
+    }
+    return [...breadCrumbData, classBreadCrumb];
   };
 
   const viewAssessmentHandler = () => {};

@@ -12,8 +12,7 @@ export const FieldLabel = ({
   fiedlName,
   initialValue,
   getFieldValue,
-  style = {},
-  required = true
+  style = {}
 }) => {
   const checkStartDate = (rule, value, callback) => {
     const diff = moment().diff(value, "days");
@@ -36,13 +35,13 @@ export const FieldLabel = ({
 
   const validations = {
     name: [
-      { required: required, message: "Please enter a valid class name" },
+      { required: true, message: "Please enter a valid class name" },
       { max: 256, message: "Must less than 256 characters!" }
     ],
     tags: [],
     startDate: [{ validator: checkStartDate, message: "Should be later than the today!" }],
     endDate: [{ validator: checkEndDate, message: "Should be later than the Start date" }],
-    institutionId: [{ required: required, message: "Please select a School." }]
+    institutionId: [{ required: true, message: "Please select a School." }]
   };
 
   return (

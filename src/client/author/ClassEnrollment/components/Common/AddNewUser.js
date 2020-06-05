@@ -1,17 +1,18 @@
 import React from "react";
 import { get, isEmpty } from "lodash";
+
+// components
 import { Collapse, DatePicker, Icon, Input, Select, Spin } from "antd";
+import { EduButton } from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
 import { schoolApi, userApi } from "@edulastic/api";
+import { Field, FooterDiv, Form, PanelHeader, StyledModal, Title } from "./styled";
 import { isEmailValid, nameValidator } from "../../../../common/utils/helpers";
-
-import { ActionButton, Field, FooterDiv, Form, PanelHeader, StyledModal, Title } from "./styled";
 
 import keyIcon from "../../../../student/assets/key-icon.svg";
 import hashIcon from "../../../../student/assets/hashtag-icon.svg";
 import userIcon from "../../../../student/assets/user-icon.svg";
 import mailIcon from "../../../../student/assets/mail-icon.svg";
-import { EduButton } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -97,7 +98,7 @@ class AddNewUserForm extends React.Component {
           userInfo: user,
           role: user.role === "teacher" ? "teacher" : "student"
         }));
-        if (user.role === "teacher" && pathname.split("/").includes("Class-Enrollment")) {
+        if (user.role === "teacher" && pathname.split("/").includes("class-enrollment")) {
           this.prePopulateDataToState();
         }
         const { lastName = "", firstName } = user;
@@ -352,7 +353,7 @@ class AddNewUserForm extends React.Component {
                 <Form.Item>
                   {getFieldDecorator("role", { initialValue: role })(
                     <Select
-                      disabled={pathname.split("/").includes("Class-Enrollment")}
+                      disabled={pathname.split("/").includes("class-enrollment")}
                       onSelect={this.onRoleChange}
                       getPopupContainer={triggerNode => triggerNode.parentNode}
                     >

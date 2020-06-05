@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
 import * as moment from "moment";
-import { EduButton ,notification} from "@edulastic/common";
+import { EduButton, notification } from "@edulastic/common";
 import {
   addStudentRequestAction,
   changeTTSRequestAction,
@@ -70,9 +70,10 @@ const ActionContainer = ({
   const [infoModalData, setInfoModalData] = useState([]);
 
   const { textToSpeech } = features;
-
   const { _id: classId, active } = selectedClass;
   let formRef = null;
+
+  const checkForAddStudent = !!(active && !cleverId && type === "class");
 
   const toggleModal = key => {
     setModalStatus({ [key]: !isOpen[key] });
@@ -256,7 +257,7 @@ const ActionContainer = ({
         } else if (selectedStudent.length > 1) {
           toggleModal("mergeStudents");
         } else {
-          notification({ type: "info", messageKey: "pleaseSelectTowOrMoreStudents"});
+          notification({ type: "info", messageKey: "pleaseSelectTowOrMoreStudents" });
         }
         break;
       }
@@ -266,8 +267,10 @@ const ActionContainer = ({
   };
 
   useEffect(() => {
-    // if school policy does not exists then action will populate district policy
-    loadSchoolPolicy(selectedClass.institutionId);
+    if (checkForAddStudent) {
+      // if school policy does not exists then action will populate district policy
+      loadSchoolPolicy(selectedClass.institutionId);
+    }
   }, []);
 
   const onMergeStudents = () => {
@@ -334,12 +337,12 @@ const ActionContainer = ({
 
       <AddStudentDivider>
         <ButtonsWrapper>
-          {active && !cleverId && type === "class" ? (
+          {checkForAddStudent && (
             <EduButton height="30px" isGhost data-cy="addStudent" onClick={() => toggleModal("add")}>
               <IconPlusCircle />
               ADD STUDENT
             </EduButton>
-          ) : null}
+          )}
           <EduButton
             height="30px"
             isGhost
@@ -407,11 +410,11 @@ const ActionContainer = ({
             </EduButton>
           </Dropdown>
 
-          {active && !cleverId && type === "class" ? (
+          {checkForAddStudent && (
             <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
               ADD MULTIPLE STUDENTS
             </EduButton>
-          ) : null}
+          )}
 
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal

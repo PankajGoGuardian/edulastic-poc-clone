@@ -76,14 +76,13 @@ class ClassCreate extends React.Component {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { createClass, curriculums } = this.props;
-        const { standardSets, endDate, startDate, courseId, grades, subject, tags } = values;
+        const { standardSets, endDate, startDate, courseId, grades, subject, tags, description } = values;
 
         // default start and end date
         const term =
-          userOrgData.terms.length &&
-          userOrgData.terms.find(term => term.endDate > Date.now() && term.startDate < Date.now());
-        const defaultStartDate = moment(),
-          defaultEndDate = term ? term.endDate : defaultStartDate.add(1, "year");
+          userOrgData.terms.length && userOrgData.terms.find(t => t.endDate > Date.now() && t.startDate < Date.now());
+        const defaultStartDate = moment();
+        const defaultEndDate = term ? term.endDate : defaultStartDate.add(1, "year");
 
         const updatedStandardsSets = standardSets?.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
@@ -97,6 +96,7 @@ class ClassCreate extends React.Component {
         values.type = location?.state?.type === "group" ? "custom" : "class";
         values.parent = { id: userId };
         values.owners = [userId];
+        values.description = description || "";
         values.standardSets = updatedStandardsSets || [];
         values.endDate = moment(endDate || defaultEndDate).format("x");
         values.startDate = moment(startDate || defaultStartDate).format("x");
@@ -104,7 +104,6 @@ class ClassCreate extends React.Component {
         values.grades = isEmpty(grades) ? ["O"] : grades;
         values.subject = isEmpty(subject) ? "Other Subjects" : subject;
         values.tags = tags?.map(t => allTagsData.find(o => o._id === t));
-
         values.studentIds = location?.state?.studentIds || [];
 
         // eslint-disable-next-line react/no-unused-state
@@ -159,13 +158,15 @@ class ClassCreate extends React.Component {
     // pathList[2] determines the origin of the ClassCreate component
     switch (pathList[2]) {
       case "gradebook":
+      case "groups":
+      case "class-enrollment":
         breadCrumbData = [
           {
-            title: "Gradebook",
-            to: "/author/gradebook"
+            title: pathList[2].split("-").join(" "),
+            to: `/author/${pathList[2]}`
           }
         ];
-        return [...breadCrumbData, createClassBreadCrumb];
+        break;
       case "reports":
         breadCrumbData = [
           {
@@ -178,7 +179,7 @@ class ClassCreate extends React.Component {
             to: exitPath
           }
         ];
-        return [...breadCrumbData, createClassBreadCrumb];
+        break;
       case "manageClass":
       default:
         breadCrumbData = [
@@ -186,16 +187,18 @@ class ClassCreate extends React.Component {
             title: "MANAGE CLASS",
             to: "/author/manageClass"
           },
-          {
-            title: "GROUPS",
-            to: "/author/manageClass",
-            state: { currentTab: "group" }
-          }
+          ...(type !== "class"
+            ? [
+                {
+                  title: "GROUPS",
+                  to: "/author/manageClass",
+                  state: { currentTab: "group" }
+                }
+              ]
+            : [])
         ];
-        return type === "class"
-          ? [breadCrumbData[0], createClassBreadCrumb]
-          : [...breadCrumbData, createClassBreadCrumb];
     }
+    return [...breadCrumbData, createClassBreadCrumb];
   };
 
   render() {
@@ -223,11 +226,7 @@ class ClassCreate extends React.Component {
     const { defaultSchool, schools } = userOrgData;
     const { submitted } = this.state;
     if (!creating && submitted && isEmpty(error)) {
-      if (exitPath) {
-        history.push(exitPath);
-      } else {
-        history.push(`/author/manageClass/${classId}`);
-      }
+      history.push(exitPath || `/author/manageClass/${classId}`);
     }
     return (
       <Form onSubmit={this.handleSubmit}>

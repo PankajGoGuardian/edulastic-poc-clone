@@ -3,7 +3,6 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { googleApi, groupApi, userApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { keyBy } from "lodash";
 
@@ -198,7 +197,7 @@ export const reducer = createReducer(initialState, {
       teacherData.key = i;
       if (teacherData.hasOwnProperty("_source")) {
         const source = teacherData._source;
-        Object.keys(source).map((key, value) => {
+        Object.keys(source).forEach(key => {
           teacherData[key] = source[key];
         });
       }
@@ -331,15 +330,18 @@ function* bulkUpdateClassesSaga({ payload }) {
 }
 
 function* archiveClassSaga({ payload }) {
+  const { isGroup, exitPath, ...restPayload } = payload || {};
+  const groupTypeText = isGroup ? "Group" : "Class";
   try {
-    yield call(groupApi.archiveGroup, payload);
-    const successMessage = "Class Archived Successfully";
+    yield call(groupApi.archiveGroup, restPayload);
+    const successMessage = `${groupTypeText} Archived Successfully`;
     notification({ type: "success", msg: successMessage});
     yield put(archiveClassSuccessAction({ archiveSuccess: successMessage }));
-    yield put(push("/author/manageClass"));
+    if (exitPath) yield put(push("/"));
+    yield put(push(exitPath || "/author/manageClass"));
   } catch (err) {
-    const errorMessage = "Archive Class is failing";
-    notification({ msg:errorMessage });
+    const errorMessage = `Archive ${groupTypeText} is failing`;
+    notification({ msg: errorMessage });
     yield put(archiveClassErrorAction({ archiveError: errorMessage }));
   }
 }
@@ -350,7 +352,7 @@ function* saveHangoutEventSaga({ payload }) {
     delete payload.postMeeting;
     const savedGroup = yield call(groupApi.saveHangoutEvent, payload);
     if (postMeeting) {
-      const postedMeeting = yield call(googleApi.postGoogleClassRoomAnnouncement, {
+      yield call(googleApi.postGoogleClassRoomAnnouncement, {
         groupId: payload.groupId
       });
     }

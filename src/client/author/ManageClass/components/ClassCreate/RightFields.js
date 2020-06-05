@@ -29,11 +29,10 @@ const RightFields = ({
 }) => {
   const [startDate, setStartDate] = useState(moment());
 
-  //@todo default term id is not coming in terms list.
+  // @todo default term id is not coming in terms list.
   // For now below logic is implemented to set default term end date
   const term =
-    userOrgData.terms.length &&
-    userOrgData.terms.find(term => term.endDate > Date.now() && term.startDate < Date.now());
+    userOrgData.terms.length && userOrgData.terms.find(t => t.endDate > Date.now() && t.startDate < Date.now());
   const endDate = term ? term.endDate : moment().add(1, "year");
   const updateSubject = e => {
     setSubject(e);
@@ -47,15 +46,14 @@ const RightFields = ({
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
   const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
   let isDropdown = isArray(schoolList) && !isEmpty(schoolList);
-  if (isArray(schoolList) && !isEmpty(schoolList) && schoolList.length === 1) {
-    defaultSchool = schoolList[0]._id;
-  }
 
   if (isDropdown) {
+    defaultSchool = defaultSchool || schoolList[0]._id;
     if (schoolList.length === 1) {
       isDropdown = schoolList[0]._id !== defaultSchool;
     }
   }
+
   const disabledStartDate = current => current && current < moment().subtract(1, "day");
   const disabledEndDate = current => current && current < moment(startDate);
 
@@ -111,7 +109,7 @@ const RightFields = ({
       ) : (
         <StyledFlexContainer gutter={24}>
           <Col xs={24}>
-            <FieldLabel label={"Descripition"} {...restProps} fiedlName="description">
+            <FieldLabel label="Descripition" {...restProps} fiedlName="description">
               <TextInputStyled placeholder={`Enter ${type} description`} maxLength="512" />
             </FieldLabel>
           </Col>
@@ -203,14 +201,9 @@ const RightFields = ({
           </FeaturesSwitch>
         </Col>
       </StyledFlexContainer>
-      {!isDropdown && (
-        <FieldLabel
-          {...restProps}
-          fiedlName="institutionId"
-          initialValue={defaultSchool}
-          style={{ height: "0px" }}
-          required={type === "class"}
-        >
+
+      {((!isDropdown && type === "class") || (isDropdown && type !== "class")) && (
+        <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool} style={{ height: "0px" }}>
           <input type="hidden" />
         </FieldLabel>
       )}

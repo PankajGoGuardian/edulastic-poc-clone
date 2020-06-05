@@ -3,18 +3,16 @@ import withRouter from "react-router-dom/withRouter";
 import { compose } from "redux";
 import connect from "react-redux/lib/connect/connect";
 import PropTypes from "prop-types";
-import { message } from "antd";
 import { canvasApi } from "@edulastic/api";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
-import { TypeToConfirmModal,notification } from "@edulastic/common";
+import { TypeToConfirmModal, SimpleConfirmModal, notification } from "@edulastic/common";
 import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
 import { ContainerHeader, RightContent, ClassCode, IconArchiveClass, ClassLink } from "./styled";
 import { Tooltip } from "../../../../common/utils/helpers";
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
-import { SimpleConfirmModal } from "@edulastic/common";
 
 const SubHeader = ({
   name,
@@ -31,6 +29,7 @@ const SubHeader = ({
   cleverId,
   setAssignmentFilters,
   history,
+  location,
   allowCanvasLogin,
   syncCanvasModal,
   user,
@@ -39,6 +38,9 @@ const SubHeader = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
+  const { exitPath } = location?.state || {};
+  const typeText = type !== "class" ? "Group" : "Class";
+
   const handleLoginSuccess = data => {
     fetchClassList({ data, showModal: false });
   };
@@ -49,7 +51,7 @@ const SubHeader = ({
   };
 
   const handleArchiveClass = () => {
-    archiveClass({ _id, districtId });
+    archiveClass({ _id, districtId, exitPath, isGroup: type !== "class" });
     setShowModal(false);
   };
   const handleArchiveClassCancel = () => {
@@ -57,7 +59,7 @@ const SubHeader = ({
   };
 
   const handleUnarchiveClass = () => {
-    unarchiveClass({ groupId: _id });
+    unarchiveClass({ groupId: _id, exitPath, isGroup: type !== "class" });
     setShowUnarchiveModal(false);
   };
   const handleUnarchiveClassCancel = () => {
@@ -150,46 +152,45 @@ const SubHeader = ({
             )}
             {/* hiding icons as of now, after functinality is added these icons will be displayed */}
             {/* <StyledIcon type="user" fill={greenDark} /> */}
-            {active !== 1 && <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>}
-            {active === 1 && !cleverId && (
-              <Tooltip placement="top" title="Archive Class">
-                <span onClick={() => setShowModal(true)}>
-                  <IconArchiveClass width={20} height={20} />
-                </span>
-              </Tooltip>
-            )}
-
-            {showModal && (
-              <TypeToConfirmModal
-                modalVisible={showModal}
-                title="Archive Class"
-                handleOnOkClick={handleArchiveClass}
-                wordToBeTyped="ARCHIVE"
-                primaryLabel="Are you sure want to archive the following class?"
-                secondaryLabel={
-                  <p style={{ margin: "5px 0" }}>
-                    <LightGreenSpan>{name}</LightGreenSpan>
-                  </p>
-                }
-                closeModal={handleArchiveClassCancel}
-                okButtonText="Archive"
-              />
-            )}
-            {showUnarchiveModal && (
-              <SimpleConfirmModal
-                visible={showUnarchiveModal}
-                title="Unarchive Class"
-                description={
-                  <p style={{ margin: "5px 0" }}>
-                    Are you sure want to Unarchive <LightGreenSpan>{name}</LightGreenSpan>?
-                  </p>
-                }
-                buttonText="Unarchive"
-                onProceed={handleUnarchiveClass}
-                onCancel={handleUnarchiveClassCancel}
-              />
-            )}
           </>
+        )}
+        {active === 1 && !cleverId && (
+          <Tooltip placement="top" title={`Archive ${typeText}`}>
+            <span onClick={() => setShowModal(true)}>
+              <IconArchiveClass width={20} height={20} />
+            </span>
+          </Tooltip>
+        )}
+        {showModal && (
+          <TypeToConfirmModal
+            modalVisible={showModal}
+            title={`Archive ${typeText}`}
+            handleOnOkClick={handleArchiveClass}
+            wordToBeTyped="ARCHIVE"
+            primaryLabel={`Are you sure you want to archive the following ${typeText.toLowerCase()}?`}
+            secondaryLabel={
+              <p style={{ margin: "5px 0" }}>
+                <LightGreenSpan>{name}</LightGreenSpan>
+              </p>
+            }
+            closeModal={handleArchiveClassCancel}
+            okButtonText="Archive"
+          />
+        )}
+        {active !== 1 && <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>}
+        {showUnarchiveModal && (
+          <SimpleConfirmModal
+            visible={showUnarchiveModal}
+            title={`Unarchive ${typeText}`}
+            description={
+              <p style={{ margin: "5px 0" }}>
+                Are you sure you want to Unarchive <LightGreenSpan>{name}</LightGreenSpan>?
+              </p>
+            }
+            buttonText="Unarchive"
+            onProceed={handleUnarchiveClass}
+            onCancel={handleUnarchiveClassCancel}
+          />
         )}
       </RightContent>
       {type === "class" && (

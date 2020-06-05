@@ -24,7 +24,7 @@ import {
 import { receiveClassEnrollmentListAction } from "../../ducks";
 
 const title = "Class Enrollment";
-const menuActive = { mainMenu: "Class Enrollment", subMenu: "" };
+const menuActive = { mainMenu: "class-enrollment", subMenu: "" };
 
 class ClassEnrollment extends Component {
   render() {

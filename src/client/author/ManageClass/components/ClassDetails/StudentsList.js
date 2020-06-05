@@ -7,6 +7,7 @@ import { get, isEmpty, pullAt } from "lodash";
 import { Spin, Switch, Tooltip } from "antd";
 import { GiDominoMask } from "react-icons/gi";
 import { IconClose, IconCorrect } from "@edulastic/icons";
+import { lightBlue3 } from "@edulastic/colors";
 import { NoStudents, NoConentDesc, StyledIcon, StudentsTable, TableWrapper, SwitchBox } from "./styled";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
@@ -15,9 +16,6 @@ import { proxyUser } from "../../../authUtils";
 import { selectStudentAction } from "../../ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getUserId, getUserRole, getGroupList } from "../../../src/selectors/user";
-
-// constants
-import { lightBlue3 } from "@edulastic/colors";
 
 const StudentsList = ({
   cuId,
@@ -33,8 +31,10 @@ const StudentsList = ({
   allowGoogleLogin,
   allowCanvasLogin
 }) => {
-  const { _id: groupId, active } = selectedClass;
   const [showCurrentStudents, setShowCurrentStudents] = useState(true);
+
+  const { _id: groupId, type, active } = selectedClass;
+  const typeText = type !== "class" ? "group" : "class";
 
   const rowSelection = {
     onChange: (_, selectedRows) => {
@@ -161,8 +161,8 @@ const StudentsList = ({
         <NoStudents>
           <StyledIcon type="user-add" fill={lightBlue3} size={45} />
           <NoConentDesc>
-            <div> There are no students in your class.</div>
-            <p>Add students to your class and begin assigning work</p>
+            <div> There are no students in your { typeText }.</div>
+            <p>Add students to your { typeText } and begin assigning work</p>
           </NoConentDesc>
         </NoStudents>
       ) : (

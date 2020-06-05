@@ -70,6 +70,7 @@ const ContentAuthor = lazy(() => import("../ContentAuthor"));
 const ContentApprover = lazy(() => import("../ContentApprover"));
 const Courses = lazy(() => import("../Courses"));
 const Classes = lazy(() => import("../Classes"));
+const Groups = lazy(() => import("../Groups"));
 const InterestedStandards = lazy(() => import("../InterestedStandards"));
 const PlayList = lazy(() => import("../Playlist"));
 const PlaylistPage = lazy(() => import("../PlaylistPage"));
@@ -520,8 +521,13 @@ const Author = ({
                     <Route exact path="/author/users/content-approvers" component={ContentApprover} />
                     <Route exact path="/author/courses" component={Courses} />
                     <Route exact path="/author/classes" component={Classes} />
+                    <Route exact path="/author/groups" component={Groups} />
+                    <Route exact path="/author/groups/createClass" component={ClassCreate} />
+                    <Route exact path="/author/groups/details/:classId" component={ClassDetails} />
+                    <Route exact path="/author/groups/edit/:classId" component={ClassEdit} />
                     <Route exact path="/author/settings/interested-standards" component={InterestedStandards} />
-                    <Route exact path="/author/Class-Enrollment" component={ClassEnrollment} />
+                    <Route exact path="/author/class-enrollment" component={ClassEnrollment} />
+                    <Route exact path="/author/class-enrollment/createClass" component={ClassCreate} />
                     <Route exact path="/author/content/buckets" component={ContentBuckets} />
                     <Route exact path="/author/content/collections" component={Collections} />
                     <Route exact path="/author/content/tools" component={ExternalTools} />

@@ -432,6 +432,16 @@
       "uploadsuccess": "course(s) uploaded successfully and 0 course(s) failed to upload"
     }
   },
+  "group": {
+    "name": "Group Name",
+    "students": "Students",
+    "createGroup": "CREATE NEW GROUP",
+    "showActive": "Show Active Groups",
+    "archiveGroups": "Archive Selected Group(s)",
+    "validations": {
+      "archiveGroups": "Please select group(s) to archive"
+    }
+  },
   "classenrollment": {
     "classname": "Class name",
     "classcode": "Class Code",
@@ -443,6 +453,7 @@
     "confirmtext": "Are you sure you want to remove the following student(s)?",
     "addusertoclass": "Add User to Class",
     "addstdstoanotherclass": "Add Student(s) to another class",
+    "addToStudentGroup": "Add to Student Group",
     "addstds": "Add Student(s)",
     "movetoanotherclass": "Move User(s) to another class",
     "moveusers": "Move User(s)"

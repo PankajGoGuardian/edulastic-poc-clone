@@ -1,7 +1,6 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { get } from "lodash";
 import { createSelector } from "reselect";
@@ -133,7 +132,7 @@ function* receiveDistrictPolicySaga({ payload }) {
     yield put(receiveDistrictPolicySuccessAction({ ...districtPolicy, schoolLevel }));
   } catch (err) {
     const errorMessage = "Receive District Policy is failing";
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
 
     yield put(receiveDistrictPolicyErrorAction({ error: errorMessage }));
   }
@@ -146,7 +145,7 @@ function* updateDictrictPolicySaga({ payload }) {
     yield put(updateDistrictPolicySuccessAction({ ...updateDistrictPolicy }));
   } catch (err) {
     const errorMessage = "Update District Policy is failing";
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(updateDistrictPolicyErrorAction({ error: errorMessage }));
   }
 }
@@ -157,7 +156,7 @@ function* createDictrictPolicySaga({ payload }) {
     yield put(createDistrictPolicySuccessAction(createDistrictPolicy));
   } catch (err) {
     const errorMessage = "Create District Policy is failing";
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(createDistrictPolicyErrorAction({ error: errorMessage }));
   }
 }

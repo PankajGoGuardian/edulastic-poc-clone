@@ -116,13 +116,16 @@ class MobileTableList extends Component {
 
   renderItem = (item, key) => {
     const { onOpenReleaseScoreSettings, assignmentsByTestId } = this.props;
-    return (
-      <MobileAssignment
-        key={key}
-        assignment={assignmentsByTestId[item._id]}
-        onOpenReleaseScoreSettings={onOpenReleaseScoreSettings}
-      />
-    );
+    if (assignmentsByTestId[item._id]) {
+      return (
+        <MobileAssignment
+          key={key}
+          assignment={assignmentsByTestId[item._id]}
+          onOpenReleaseScoreSettings={onOpenReleaseScoreSettings}
+        />
+      );
+    }
+    return "";
   };
 
   render() {

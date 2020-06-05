@@ -493,6 +493,7 @@ class ModuleRow extends Component {
               addModuleMenuClick={this.addModuleMenuClick}
               editModuleMenuClick={this.editModuleMenuClick}
               deleteModuleMenuClick={this.deleteModuleMenuClick}
+              isManageContentActive={isManageContentActive}
             />
 
             {!collapsed && (

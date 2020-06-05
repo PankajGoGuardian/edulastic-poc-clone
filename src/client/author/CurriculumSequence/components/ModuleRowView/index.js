@@ -36,7 +36,8 @@ const ModuleRowView = props => {
     isMobile,
     addModuleMenuClick,
     editModuleMenuClick,
-    deleteModuleMenuClick
+    deleteModuleMenuClick,
+    isManageContentActive
   } = props;
 
   const { title, data = [], description = "", moduleId, moduleGroupName } = module;
@@ -44,6 +45,7 @@ const ModuleRowView = props => {
   const hideEditOptions = !urlHasUseThis;
 
   const totalAssigned = data.length;
+  const isPlaylistDetailsPage = window.location?.hash === "#review";
 
   const moduleInlineStyle = {
     "white-space": "nowrap",
@@ -118,7 +120,7 @@ const ModuleRowView = props => {
         justifyContent={hideEditOptions && "flex-end"}
         ml={hideEditOptions && "auto"}
       >
-        {[moduleCompleteOrAssign, moreActions]}
+        {[moduleCompleteOrAssign, !isManageContentActive && isPlaylistDetailsPage ? null : moreActions]}
       </LastColumn>
     </Fragment>
   );

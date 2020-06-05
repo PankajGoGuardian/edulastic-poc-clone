@@ -52,6 +52,8 @@ class EditItemPage {
       .find(".ant-input");
   };
 
+  getProceedBuuton = () => cy.get("button").contains("PROCEED");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -182,6 +184,13 @@ class EditItemPage {
       }
     });
   }
+
+  clickProceedToPublishWithoutStandard = () => {
+    cy.server();
+    cy.route("PUT", "**/testitem/*/publish?status=published").as("publish-item");
+    this.getProceedBuuton().click({ force: true });
+    cy.wait("@publish-item");
+  };
 
   // *** ACTIONS END ***
 

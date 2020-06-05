@@ -12,6 +12,10 @@ class Header {
 
   getMetadata = () => cy.get('[data-cy="metadataButton"]');
 
+  getPublishButton = () => cy.get('[data-cy="publishItem"]');
+
+  getSaveButton = () => cy.get('[data-cy="saveButton"]').should("be.visible");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -40,9 +44,8 @@ class Header {
       cy.route("PUT", "**/testitem/**").as("saveItem");
       cy.route("GET", "**/testitem/**").as("reload");
       const isNew = url.includes("questions/create");
-      cy.get('[data-cy="saveButton"]')
-        .should("be.visible")
-        .click();
+      this.getSaveButton().click();
+
       if (isNew) {
         cy.wait("@createItem").then(xhr => {
           assert(xhr.status === 200, "Creating item failed");
@@ -61,7 +64,7 @@ class Header {
   clickOnPublishItem = () => {
     cy.route("PUT", "**/publish?status=published").as("publish");
     cy.route("POST", "**/search/items").as("itemSearch");
-    cy.get('[data-cy="publishItem"]').click();
+    this.getPublishButton().click();
     cy.wait("@saveItem").then(xhr => expect(xhr.status).to.eq(200));
     return cy.wait("@publish").then(xhr => {
       expect(xhr.status).to.eq(200);
@@ -82,9 +85,7 @@ class Header {
     cy.server();
     if (!isOld) cy.route("POST", "**/testitem").as("saveItem");
     else cy.route("PUT", "**/api/testitem/*").as("saveItem");
-    cy.get('[data-cy="saveButton"]')
-      .should("be.visible")
-      .click();
+    this.getSaveButton().click();
     return cy.wait("@saveItem").then(xhr => xhr.response.body.result._id);
   };
 

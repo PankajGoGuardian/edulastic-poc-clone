@@ -53,9 +53,10 @@ export default class CypressHelper {
 
   static verifySelectedOptionInDropDownByAttr = (attr, value, isMultipleSelectionAllowed = false) => {
     const clas = isMultipleSelectionAllowed ? ".ant-select-selection__choice" : ".ant-select-selection-selected-value";
-    cy.get(`[data-cy="${attr}"]`)
+    return cy
+      .get(`[data-cy="${attr}"]`)
       .find(`${clas}`)
-      .should("contain", value);
+      .then($ele => cy.wrap($ele.filter((i, ele) => Cypress.$(ele).text() === value)).should("have.length", 1));
   };
 
   // datetime => new Date() instance
@@ -102,4 +103,6 @@ export default class CypressHelper {
     parseInt(hours.split(":")[0].trim()) * 60 * 60 +
     parseInt(hours.split(":")[1].trim()) * 60 +
     parseInt(hours.split(":")[2].trim());
+
+  static verifyAntMesssage = msg => cy.get(".ant-notification-notice-message").should("contain", msg);
 }

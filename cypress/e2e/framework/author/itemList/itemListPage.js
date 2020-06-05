@@ -69,6 +69,8 @@ class ItemListPage {
 
   getItemIdByURL = () => cy.url().then(url => url.split("/").reverse()[1]);
 
+  getCreateNewItem = () => cy.get('[data-cy="createNew"]').should("be.visible");
+
   // *** ELEMENTS END ***
   // *** ACTIONS START ***
 
@@ -77,9 +79,7 @@ class ItemListPage {
     // cy.route("POST", "**/testitem").as("saveItem");
     //  cy.route("GET", "**/testitem/**").as("reload");
 
-    cy.get('[data-cy="createNew"]')
-      .should("be.visible")
-      .click();
+    this.getCreateNewItem().click();
 
     /*  cy.wait("@saveItem").then(xhr => {
       assert(xhr.status === 200, "Creating item failed");

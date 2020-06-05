@@ -40,9 +40,10 @@ class KeyPadOptions extends Component {
   componentDidMount = () => {
     const { fillSections, t, setKeyPadOffest } = this.props;
     const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
-    setKeyPadOffest(node.offsetTop);
+    if (node) {
+      fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
+      setKeyPadOffest(node.offsetTop);
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -50,7 +51,7 @@ class KeyPadOptions extends Component {
 
     const node = ReactDOM.findDOMNode(this);
 
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+    if (prevProps.advancedAreOpen !== advancedAreOpen && node) {
       fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
       setKeyPadOffest(node.offsetTop);
     }

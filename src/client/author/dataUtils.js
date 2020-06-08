@@ -180,7 +180,7 @@ export const sortTestItemQuestions = testItems => {
 export const showPremiumLabelOnContent = (itemCollections = [], orgCollections = []) => {
   // TODO: if collection ids are constant then replace with ids instead of looping on orgCollections
   const premiumCollectionIds = orgCollections
-    .filter(c => !["Edulastic Certified", "Engage Ny"].includes(c.name))
+    .filter(c => !["edulastic certified", "engage ny"].includes(c.name.toLowerCase()))
     .map(x => x._id);
   return itemCollections.some(c => premiumCollectionIds.includes(c._id));
 };

@@ -416,12 +416,8 @@ const AssignmentCard = memo(
                 {isValidAttempt && (
                   <React.Fragment>
                     <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
-                      <span data-cy="attemptsCount">
-                        {attemptCount}/{maxAttempts || attemptCount}
-                      </span>
-                      <AttemptsTitle data-cy="attemptClick">
-                        {arrow} &nbsp;&nbsp;{t("common.attemps")}
-                      </AttemptsTitle>
+                      {attemptCount > 1 && <span data-cy="attemptsCount"> {attemptCount}/{maxAttempts} </span>}
+                      {attemptCount > 1 && <AttemptsTitle data-cy="attemptClick"> {arrow} &nbsp; &nbsp; {t("common.attemps")} </AttemptsTitle>}
                     </Attempts>
                     {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
                   </React.Fragment>
@@ -521,7 +517,7 @@ const ButtonAndDetail = styled(Col)`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 62%;
+  width: 53%;
 
   @media screen and (min-width: 1025px) {
     margin-left: auto;
@@ -539,7 +535,7 @@ const ButtonAndDetail = styled(Col)`
 `;
 
 const AttemptDetails = styled(Row)`
-  width: 65%;
+  width: 62%;
   display: flex;
 
   ${({ isValidAttempt }) =>
@@ -565,7 +561,6 @@ const AnswerAndScore = styled(Col)`
   display: flex;
   align-items: center;
   flex-direction: column;
-
   & > span {
     font-size: ${props => props.theme.assignment.cardAnswerAndScoreTextSize};
     font-weight: bold;

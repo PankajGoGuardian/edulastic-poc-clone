@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { clearUserWorkAction } from "../../../assessment/actions/userWork";
-import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
+import Work from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../author/sharedDucks/questions";
 import { getTestEntitySelector } from "../../../author/TestPage/ducks";
 // components
@@ -30,7 +30,8 @@ const ReportListContainer = ({
   questionsById,
   testTitle,
   testFeedback,
-  clearUserWork
+  clearUserWork,
+  history
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
 
@@ -67,12 +68,18 @@ const ReportListContainer = ({
   }
   return (
     <MainContainer flag={flag}>
-      <TestAcivityHeader isDocBased={isDocBased} titleIcon={IconReport} titleText={test?.title || ""} />
+      <TestAcivityHeader
+        isDocBased={isDocBased}
+        titleIcon={IconReport}
+        titleText={test?.title || ""}
+        history={history}
+        showExit
+      />
       <MainContentWrapper padding={isDocBased ? "0px" : "20px 50px"}>
         <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
         {isDocBased ? (
           <div>
-            <Worksheet key="review" review {...props} viewMode="report" />
+            <Work key="review" review {...props} viewMode="report" />
           </div>
         ) : (
           <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />

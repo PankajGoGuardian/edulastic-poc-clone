@@ -1,5 +1,5 @@
 import { smallDesktopWidth, tabletWidth } from "@edulastic/colors";
-import { MainHeader } from "@edulastic/common";
+import { MainHeader, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import React, { memo } from "react";
@@ -19,6 +19,8 @@ const Header = ({
   setShowClass,
   showAllClassesOption = true,
   titleIcon,
+  showExit = false,
+  history,
   ...rest
 }) => (
   <MainHeader Icon={titleIcon} headingText={titleText} headingSubContent={titleSubContent} {...rest}>
@@ -26,6 +28,15 @@ const Header = ({
     {classSelect && <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />}
     {showActiveClass && (
       <ShowActiveClass t={t} classList={classList} setClassList={setClassList} setShowClass={setShowClass} />
+    )}
+    {showExit && (
+      <EduButton
+        onClick={() => {
+          history.push("/home/grades");
+        }}
+      >
+        EXIT
+      </EduButton>
     )}
   </MainHeader>
 );

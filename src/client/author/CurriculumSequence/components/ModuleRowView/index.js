@@ -46,7 +46,6 @@ const ModuleRowView = props => {
   const hideEditOptions = !urlHasUseThis;
 
   const totalAssigned = data.length;
-  const isPlaylistDetailsPage = window.location?.hash === "#review";
 
   const moduleInlineStyle = {
     "white-space": "nowrap",

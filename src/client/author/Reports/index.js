@@ -1,19 +1,14 @@
-import { Col, Row } from "antd";
 import { pullAllBy } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
-import FeaturesSwitch from "../../features/components/FeaturesSwitch";
-import CustomizedHeaderWrapper from "./common/components/header";
+import { MainContentWrapper } from "@edulastic/common";
+import { Header, SubHeader } from "./common/components/Header";
+import StandardReport from "./components/StandardReport";
 import navigation from "./common/static/json/navigation.json";
-import { PrintableScreen, StyledCard, StyledContainer, StyledReportsContentContainer } from "./common/styled";
+import { PrintableScreen } from "./common/styled";
 import CustomReports from "./components/customReport";
 import CustomReportIframe from "./components/customReport/customReportIframe";
-import { MultipleAssessmentReport } from "./components/multipleAssessmentReport";
-import { SingleAssessmentReport } from "./components/singleAssessmentReport";
-import { StandardsMasteryReport } from "./components/standardsMasteryReport";
-import { StudentProfileReport } from "./components/studentProfileReport";
-import { SubscriptionReport } from "./components/subscriptionReport";
 import {
   getCsvDownloadingState,
   getPrintingState,
@@ -125,18 +120,21 @@ const Container = props => {
         }}
       />
       {showHeader && (
-        <CustomizedHeaderWrapper
-          breadcrumbsData={headerSettings.breadcrumbData}
-          title={headerSettings.title}
+        <Header
           onShareClickCB={headerSettings.onShareClickCB}
           onPrintClickCB={headerSettings.onPrintClickCB}
           onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
-          onRefineResultsCB={headerSettings.onRefineResultsCB}
           navigationItems={headerSettings.navigationItems}
           activeNavigationKey={reportType}
         />
       )}
-      <StyledReportsContentContainer>
+      <MainContentWrapper>
+        <SubHeader
+          breadcrumbsData={headerSettings.breadcrumbData}
+          onRefineResultsCB={headerSettings.onRefineResultsCB}
+          showFilter={expandFilter}
+          title={headerSettings.title}
+        />
         {reportType === "custom-reports" ? (
           <Route
             exact
@@ -152,7 +150,7 @@ const Container = props => {
             path={match.path}
             component={() => {
               setShowHeader(true);
-              return <Reports premium={props.premium} />;
+              return <StandardReport premium={props.premium} />;
             }}
           />
         ) : null}
@@ -231,59 +229,10 @@ const Container = props => {
             return <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />;
           }}
         />
-      </StyledReportsContentContainer>
+      </MainContentWrapper>
     </PrintableScreen>
   );
 };
-
-const Reports = ({ premium }) => (
-  <StyledContainer>
-    {premium && (
-      <Row gutter={60}>
-        <FeaturesSwitch
-          inputFeatures={["singleAssessmentReport", "studentProfileReport"]}
-          operation="OR"
-          actionOnInaccessible="hidden"
-        >
-          <Col md={12} xs={24}>
-            <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
-              <StyledCard className="single-assessment-reports report">
-                <SingleAssessmentReport />
-              </StyledCard>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
-              <StyledCard className="student-profile-reports report">
-                <StudentProfileReport />
-              </StyledCard>
-            </FeaturesSwitch>
-          </Col>
-        </FeaturesSwitch>
-        <Col md={12} xs={24}>
-          <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
-            <StyledCard className="multiple-assessment-reports report">
-              <MultipleAssessmentReport />
-            </StyledCard>
-          </FeaturesSwitch>
-          <StyledCard className="standards-mastery-reports report">
-            <StandardsMasteryReport premium={premium} />
-          </StyledCard>
-        </Col>
-      </Row>
-    )}
-    {!premium && (
-      <Row>
-        <Col md={24} xs={24}>
-          <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
-            <StandardsMasteryReport premium={premium} />
-          </StyledCard>
-          <StyledCard margin="0px 0px 20px" className="upgrade subscription report">
-            <SubscriptionReport premium={premium} />
-          </StyledCard>
-        </Col>
-      </Row>
-    )}
-  </StyledContainer>
-);
 
 const enhance = connect(
   state => ({
@@ -295,6 +244,6 @@ const enhance = connect(
     setPrintingStateAction,
     setCsvDownloadingStateAction
   }
-)(Container);
+);
 
-export default enhance;
+export default enhance(Container);

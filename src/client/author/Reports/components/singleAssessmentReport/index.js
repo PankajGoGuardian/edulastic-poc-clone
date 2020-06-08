@@ -1,39 +1,56 @@
 import React from "react";
-import styled from "styled-components";
-
-import { LinkItem } from "../../common/components/linkItem";
+import { LinkItem, CardsWrapper } from "../../common/components/linkItem";
 import { BoxHeading } from "../../common/components/boxHeading";
-import { StyledP } from "../../common/styled";
+
+import AssessmentSummaryImg from "../../../src/assets/reports/assessment-summary/assessment-summary.png";
+import PeerPerformanceImg from "../../../src/assets/reports/sup-group-performance/sup-group-performance.png";
+import QuestionAnalysis from "../../../src/assets/reports/question-analysis/question-analysis.png";
+import ResponseFrequency from "../../../src/assets/reports/response-frequency/response-frequency.png";
+import PerformanceByStandards from "../../../src/assets/reports/performance-by-standards/performance-by-standards.png";
+import performanceByStudents from "../../../src/assets/reports/performance-by-students/performance-by-students.png";
 
 const links = [
   {
     key: "assessmentSummary",
     title: "Assessment Summary",
-    location: "/author/reports/assessment-summary/test/"
+    thumbnail: AssessmentSummaryImg,
+    location: "/author/reports/assessment-summary/test/",
+    description: "View a high level analysis of data for one assessment."
   },
   {
     key: "peerPerformance",
-    title: "Sub-group Performance",
+    title: "Peer Performance",
+    thumbnail: PeerPerformanceImg,
+    description: "Drill down to compare the performance on an assessment by student group, class, or cohort.",
     location: "/author/reports/peer-performance/test/"
   },
   {
     key: "questionAnalysis",
     title: "Question Analysis",
+    thumbnail: QuestionAnalysis,
+    description: "Identity the most difficult questions for further analysis.",
     location: "/author/reports/question-analysis/test/"
   },
   {
     key: "responseFrequency",
     title: "Response Frequency",
+    thumbnail: ResponseFrequency,
+    description: "Diagnose the areas of misunderstanding by question type and frequently chosen answers.",
     location: "/author/reports/response-frequency/test/"
   },
   {
     key: "performanceByStandards",
     title: "Performance by Standards",
+    thumbnail: PerformanceByStandards,
+    description: "View overall performance of the standards assessed. Analyze by domain, standard, and student levels.",
     location: "/author/reports/performance-by-standards/test/"
   },
   {
     key: "performanceByStudents",
     title: "Performance by Students",
+    thumbnail: performanceByStudents,
+    description:
+      "Identify groups of students by proficiency level to gauge next steps or develop differentiated paths.",
     location: "/author/reports/performance-by-students/test/"
   }
 ];
@@ -41,20 +58,11 @@ const links = [
 export const SingleAssessmentReport = () => (
   <div>
     <BoxHeading heading="Single Assessment Report" iconType="bar-chart" />
-    <StyledP>
-      View deep analysis of a single assessment. Compare class level performance, view item analysis, diagnose difficult
-      items and areas of misunderstanding.
-    </StyledP>
-    <LinksWrapper>
+
+    <CardsWrapper>
       {links.map(data => (
-        <LinkItem key={data.title} data={data} />
+        <LinkItem key={data.title} data={data} tiles />
       ))}
-    </LinksWrapper>
+    </CardsWrapper>
   </div>
 );
-
-const LinksWrapper = styled.ul`
-  padding: 0px;
-  margin: 0px;
-  list-style: none;
-`;

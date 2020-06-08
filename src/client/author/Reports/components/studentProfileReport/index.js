@@ -1,46 +1,42 @@
 import React from "react";
-import styled from "styled-components";
 
-import { LinkItem } from "../../common/components/linkItem";
+import { LinkItem, CardsWrapper } from "../../common/components/linkItem";
 import { BoxHeading } from "../../common/components/boxHeading";
-import { StyledP } from "../../common/styled";
+import StudentSummaryImg from "../../../src/assets/reports/student-profile-summary/student-profile-summary.png";
+import StudentMasteryImg from "../../../src/assets/reports/student-mastery-profile/student-mastery-profile.png";
+import StudentAssessmentImg from "../../../src/assets/reports/student-assessment-profile/student-assessment-profile.png";
 
 const links = [
   {
     key: "studentProfileSummary",
     title: "Student Profile Summary",
-    location: "/author/reports/student-profile-summary/student/"
+    location: "/author/reports/student-profile-summary/student/",
+    thumbnail: StudentSummaryImg,
+    description: "View an overall snapshot of student performance to date."
   },
   {
     key: "studentMasteryProfile",
     title: "Student Mastery Profile",
-    location: "/author/reports/student-mastery-profile/student/"
+    thumbnail: StudentMasteryImg,
+    location: "/author/reports/student-mastery-profile/student/",
+    description: "Drill down to individual performance by domain and standards."
   },
   {
     key: "studentAssessmentProfile",
     title: "Student Assessment Profile",
-    location: "/author/reports/student-assessment-profile/student/"
+    thumbnail: StudentAssessmentImg,
+    location: "/author/reports/student-assessment-profile/student/",
+    description: "See performance by score on each assessment taken, filtered by course."
   }
 ];
 
-export const StudentProfileReport = props => {
-  return (
-    <div>
-      <BoxHeading heading={"Student Profile Report"} iconType={"line-chart"} />
-      <StyledP>
-        Get an in-depth analysis for any individual student to view breakdown of their mastery, performance and progress
-      </StyledP>
-      <LinksWrapper>
-        {links.map((data, index) => {
-          return <LinkItem key={data.title} data={data} />;
-        })}
-      </LinksWrapper>
-    </div>
-  );
-};
-
-const LinksWrapper = styled.ul`
-  padding: 0px;
-  margin: 0px;
-  list-style: none;
-`;
+export const StudentProfileReport = () => (
+  <div>
+    <BoxHeading heading="Student Profile Report" iconType="line-chart" />
+    <CardsWrapper>
+      {links.map(data => (
+        <LinkItem key={data.title} data={data} tiles />
+      ))}
+    </CardsWrapper>
+  </div>
+);

@@ -1,45 +1,42 @@
 import React from "react";
-import styled from "styled-components";
 
-import { LinkItem } from "../../common/components/linkItem";
+import { LinkItem, CardsWrapper } from "../../common/components/linkItem";
 import { BoxHeading } from "../../common/components/boxHeading";
-import { StyledP } from "../../common/styled";
+import MarAnalysis from "../../../src/assets/reports/mar-analysis/mar-analysis.png";
+import MarOverTime from "../../../src/assets/reports/mar-over-time/mar-over-time.png";
+import MarProgress from "../../../src/assets/reports/mar-progress/mar-progress.png";
 
 const links = [
   {
     key: "performanceOverTime",
     title: "Performance Over Time",
-    location: "/author/reports/performance-over-time"
+    thumbnail: MarOverTime,
+    location: "/author/reports/performance-over-time",
+    description: "Compare student performance across two or more assessments."
   },
   {
     key: "peerProgressAnalysis",
     title: "Peer Progress Analysis",
-    location: "/author/reports/peer-progress-analysis"
+    thumbnail: MarAnalysis,
+    location: "/author/reports/peer-progress-analysis",
+    description: "Explore trends in performance by class or cohort. Isolates groups that are on, at or below target."
   },
   {
     key: "studentProgress",
     title: "Student Progress",
-    location: "/author/reports/student-progress"
+    thumbnail: MarProgress,
+    location: "/author/reports/student-progress",
+    description:
+      "Explore trends in performance by student. Isolates those who are on, at, or below target to aid in differentiated instruction."
   }
 ];
-export const MultipleAssessmentReport = props => {
-  return (
-    <div>
-      <BoxHeading heading={"Multiple Assessment Report"} iconType={"area-chart"} />
-      <StyledP>
-        View assessments over time and analyze how your students have progressed since the beginning of the school year.
-      </StyledP>
-      <LinksWrapper>
-        {links.map((data, index) => {
-          return <LinkItem key={data.title} data={data} />;
-        })}
-      </LinksWrapper>
-    </div>
-  );
-};
-
-const LinksWrapper = styled.ul`
-  padding: 0px;
-  margin: 0px;
-  list-style: none;
-`;
+export const MultipleAssessmentReport = () => (
+  <div>
+    <BoxHeading heading="Multiple Assessment Report" iconType="area-chart" />
+    <CardsWrapper>
+      {links.map(data => (
+        <LinkItem key={data.title} data={data} tiles />
+      ))}
+    </CardsWrapper>
+  </div>
+);

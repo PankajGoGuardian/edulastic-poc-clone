@@ -2,18 +2,16 @@ import React from "react";
 import { Row, Col } from "antd";
 import styled from "styled-components";
 
-export const BoxHeading = props => {
-  return (
-    <StyledRow type="flex" justify="start">
-      <StyledCol>
-        <StyledH3>{props.heading}</StyledH3>
-      </StyledCol>
-    </StyledRow>
-  );
-};
+export const BoxHeading = ({ heading }) => (
+  <StyledRow type="flex" justify="start">
+    <StyledCol>
+      <StyledH3>{heading}</StyledH3>
+    </StyledCol>
+  </StyledRow>
+);
 
 const StyledRow = styled(Row)`
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 `;
 
 const StyledCol = styled(Col)`

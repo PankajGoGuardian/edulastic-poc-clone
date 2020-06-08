@@ -1,3 +1,10 @@
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import * as moment from "moment";
+import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
+import { Dropdown, message } from "antd";
+
 import { enrollmentApi } from "@edulastic/api";
 import {
   IconCircle,
@@ -10,13 +17,20 @@ import {
   IconVolumeUp,
   IconEclipse
 } from "@edulastic/icons";
-import { Dropdown, message } from "antd";
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
-import PropTypes from "prop-types";
-import * as moment from "moment";
 import { EduButton, notification } from "@edulastic/common";
+
+import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
+import ResetPwd from "./ResetPwd/ResetPwd";
+import { AddStudentDivider, ButtonsWrapper, CaretUp, DropMenu, MenuItems } from "./styled";
+import AddStudentModal from "./AddStudent/AddStudentModal";
+import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
+import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
+import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
+import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
+import { MergeStudentsModal } from "../../../MergeUsers";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+
+// ducks
 import {
   addStudentRequestAction,
   changeTTSRequestAction,
@@ -25,17 +39,7 @@ import {
 } from "../../ducks";
 import { getUserOrgData, getUserOrgId } from "../../../src/selectors/user";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
-import ResetPwd from "./ResetPwd/ResetPwd";
-import { AddStudentDivider, ButtonsWrapper, CaretUp, DropMenu, MenuItems } from "./styled";
 import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
-
-import AddStudentModal from "./AddStudent/AddStudentModal";
-import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
-import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
-import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
-import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
-import { MergeStudentsModal } from "../../../MergeUsers";
 
 const modalStatus = {};
 
@@ -253,7 +257,7 @@ const ActionContainer = ({
       case "mergeStudents": {
         const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1);
         if (inactiveStudents.length) {
-          notification({ messageKey: "deactivatedStudentSelected"});
+          notification({ messageKey: "deactivatedStudentSelected" });
         } else if (selectedStudent.length > 1) {
           toggleModal("mergeStudents");
         } else {
@@ -318,12 +322,14 @@ const ActionContainer = ({
       />
 
       {type === "class" && (
-        <AddToGroupModal
-          type="group"
-          visible={isOpen.addToGroup}
-          onCancel={() => toggleModal("addToGroup")}
-          checkedStudents={selectedStudent}
-        />
+        <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+          <AddToGroupModal
+            type="group"
+            visible={isOpen.addToGroup}
+            onCancel={() => toggleModal("addToGroup")}
+            checkedStudents={selectedStudent}
+          />
+        </FeaturesSwitch>
       )}
 
       {type === "class" && (
@@ -390,10 +396,12 @@ const ActionContainer = ({
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
                 {type === "class" && (
-                  <MenuItems key="addToGroup">
-                    <IconPlus />
-                    <span>Add To Group</span>
-                  </MenuItems>
+                  <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+                    <MenuItems key="addToGroup">
+                      <IconPlus />
+                      <span>Add To Group</span>
+                    </MenuItems>
+                  </FeaturesSwitch>
                 )}
                 {type === "class" && (
                   <MenuItems key="mergeStudents">

@@ -187,6 +187,7 @@ const ClassList = ({
       }
     }
   });
+
   const breadCrumbData = [
     {
       title: "MANAGE CLASS",
@@ -257,7 +258,7 @@ const ClassList = ({
                   fetchClassList={fetchClassList}
                   googleAllowedInstitutions={googleAllowedInstitutions}
                 />
-              )}
+                )}
             </>
           )}
 

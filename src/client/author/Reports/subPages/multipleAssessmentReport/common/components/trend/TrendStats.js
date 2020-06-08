@@ -9,6 +9,7 @@ import { IconPlusCircle } from "@edulastic/icons";
 import { StyledCard, StyledH3 } from "../../../../../common/styled";
 import TrendCard from "./TrendCard";
 import { trendTypes } from "../../utils/constants";
+import FeaturesSwitch from "../../../../../../../features/components/FeaturesSwitch";
 
 const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading, setShowAddToGroupModal }) => {
   const trends = Object.keys(trendTypes);
@@ -28,13 +29,16 @@ const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, h
             xl={12}
             style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
           >
-            <EduButton
-              style={{ height: "32px", padding: "0 15px 0 10px" }}
-              onClick={() => setShowAddToGroupModal(true)}
-            >
-              <IconPlusCircle />
-              Add To Student Group
-            </EduButton>
+            {!!setShowAddToGroupModal && (
+              <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+                <EduButton
+                  style={{ height: "32px", padding: "0 15px 0 10px" }}
+                  onClick={() => setShowAddToGroupModal(true)}
+                >
+                  <IconPlusCircle /> Add To Student Group
+                </EduButton>
+              </FeaturesSwitch>
+            )}
             {renderFilters()}
           </Col>
         </Row>

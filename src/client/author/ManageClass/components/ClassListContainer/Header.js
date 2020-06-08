@@ -9,6 +9,7 @@ import { EduButton, MainHeader, HeaderTabs } from "@edulastic/common";
 import { IconGoogleClassroom, IconManage, IconPlusCircle, IconClass, IconGroup, IconClever } from "@edulastic/icons";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { ButtonsWrapper } from "./styled";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { scopes } from "./ClassCreatePage";
 
@@ -46,9 +47,9 @@ const Header = ({
 
   return (
     <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
-      <StyledTabs>
-        {pageNavButtons.map(({ value, text, icon }, index) => {
-          return (
+      <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+        <StyledTabs>
+          {pageNavButtons.map(({ value, text, icon }) => (
             <HeaderTabs
               style={currentTab === value ? { cursor: "not-allowed" } : { cursor: "pointer" }}
               dataCy={value}
@@ -58,9 +59,9 @@ const Header = ({
               icon={icon}
               onClickHandler={() => onClickHandler(value)}
             />
-          );
-        })}
-      </StyledTabs>
+          ))}
+        </StyledTabs>
+      </FeaturesSwitch>
       <ButtonsWrapper>
         {enableCleverSync && (
           <EduButton isGhost onClick={() => setShowCleverSyncModal(true)}>

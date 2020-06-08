@@ -1,11 +1,17 @@
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { get } from "lodash";
+
+// components
 import { MainHeader } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconSettings } from "@edulastic/icons";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
 import { AdminHeaderContent, StyledTabPane, StyledTabs } from "./styled";
+import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+
+// ducks
+import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
 import { getSchoolAdminSettingsAccess } from "../../../../DistrictPolicy/ducks";
 
 class AdminHeader extends Component {
@@ -68,7 +74,9 @@ class AdminHeader extends Component {
             <StyledTabPane tab={schoolTabtext} key="schools" />
             <StyledTabPane tab="Users" key="users" />
             <StyledTabPane tab="Classes" key="classes" />
-            <StyledTabPane tab="Groups" key="groups" />
+            <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+              <StyledTabPane tab="Groups" key="groups" />
+            </FeaturesSwitch>
             <StyledTabPane tab="Courses" key="courses" />
             <StyledTabPane tab="Class Enrollment" key="class-enrollment" />
             {isDA && <StyledTabPane tab="Content" key="content" />}

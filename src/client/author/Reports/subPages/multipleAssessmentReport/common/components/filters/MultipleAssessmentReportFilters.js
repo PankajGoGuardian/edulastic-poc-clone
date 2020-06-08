@@ -8,10 +8,13 @@ import queryString from "query-string";
 
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
+import school from "@edulastic/api/src/school";
 
+import { StyledFilterWrapper, StyledGoButton } from "../../../../../common/styled";
 import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
 import { MultipleSelect } from "../../../../../common/components/widgets/MultipleSelect";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
+import FeaturesSwitch from "../../../../../../../features/components/FeaturesSwitch";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../../utils/transformers";
 import { toggleItem } from "../../../../../common/util";
@@ -26,12 +29,10 @@ import {
   setPrevMARFilterDataAction,
   getReportsMARFilterLoadingState
 } from "../../filterDataDucks";
-import { getUserRole } from "../../../../../../src/selectors/user";
-import { getUser } from "../../../../../../src/selectors/user";
+import { getUserRole , getUser } from "../../../../../../src/selectors/user";
 
-import staticDropDownData from "../../static/staticDropDownData";
-import school from "@edulastic/api/src/school";
-import { StyledFilterWrapper, StyledGoButton } from "../../../../../common/styled";
+
+import staticDropDownData from "../../static/staticDropDownData.json";
 
 const SingleAssessmentReportFilters = ({
   MARFilterData,
@@ -56,11 +57,9 @@ const SingleAssessmentReportFilters = ({
 
   const schoolYear = useMemo(() => {
     let schoolYear = [];
-    let arr = get(user, "orgData.terms", []);
+    const arr = get(user, "orgData.terms", []);
     if (arr.length) {
-      schoolYear = arr.map((item, index) => {
-        return { key: item._id, title: item.name };
-      });
+      schoolYear = arr.map((item, index) => ({ key: item._id, title: item.name }));
     }
     return schoolYear;
   });
@@ -70,7 +69,7 @@ const SingleAssessmentReportFilters = ({
       const search = queryString.parse(location.search);
       const termId =
         search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
-      let q = {
+      const q = {
         termId
       };
       getMARFilterDataRequestAction(q);
@@ -130,9 +129,9 @@ const SingleAssessmentReportFilters = ({
 
     const testIdsArr = [].concat(search.testIds?.split(",") || []);
 
-    let urlTestIds = testIdsArr.map(key => find(dropDownData.testIdArr, test => test.key == key)).filter(item => item);
+    const urlTestIds = testIdsArr.map(key => find(dropDownData.testIdArr, test => test.key == key)).filter(item => item);
 
-    let obtainedFilters = {
+    const obtainedFilters = {
       termId: urlSchoolYear.key,
       subject: urlSubject.key,
       grade: urlGrade.key,
@@ -149,7 +148,7 @@ const SingleAssessmentReportFilters = ({
 
     processedTestIds = processTestIds(dropDownData, obtainedFilters, "", role);
 
-    let urlParams = { ...obtainedFilters };
+    const urlParams = { ...obtainedFilters };
 
     if (role === "teacher") {
       delete urlParams.schoolId;
@@ -169,8 +168,7 @@ const SingleAssessmentReportFilters = ({
 
   dropDownData = useMemo(() => filteredDropDownData(MARFilterData, user, { ...filters }), [MARFilterData, filters]);
 
-  processedTestIds = useMemo(() => {
-    return processTestIds(
+  processedTestIds = useMemo(() => processTestIds(
       dropDownData,
       {
         termId: filters.termId,
@@ -185,16 +183,15 @@ const SingleAssessmentReportFilters = ({
       },
       testIds,
       role
-    );
-  }, [MARFilterData, filters, testIds]);
+    ), [MARFilterData, filters, testIds]);
 
   const updateSchoolYearDropDownCB = selected => {
-    let pathname = location.pathname;
-    let _filters = { ...filters };
+    const pathname = location.pathname;
+    const _filters = { ...filters };
     _filters.termId = selected.key;
-    history.push(pathname + "?" + queryString.stringify(_filters));
+    history.push(`${pathname  }?${  queryString.stringify(_filters)}`);
 
-    let q = {
+    const q = {
       termId: selected.key
     };
 
@@ -202,7 +199,7 @@ const SingleAssessmentReportFilters = ({
   };
 
   const updateSubjectDropDownCB = selected => {
-    let obj = {
+    const obj = {
       filters: {
         ...filters,
         subject: selected.key
@@ -213,7 +210,7 @@ const SingleAssessmentReportFilters = ({
   };
 
   const onChangePerformanceBand = selected => {
-    let obj = {
+    const obj = {
       filters: {
         ...filters,
         profileId: selected.key
@@ -224,7 +221,7 @@ const SingleAssessmentReportFilters = ({
   };
 
   const updateGradeDropDownCB = selected => {
-    let obj = {
+    const obj = {
       filters: {
         ...filters,
         grade: selected.key
@@ -234,7 +231,7 @@ const SingleAssessmentReportFilters = ({
     setFiltersAction(obj);
   };
   const updateCourseDropDownCB = selected => {
-    let obj = {
+    const obj = {
       filters: {
         ...filters,
         courseId: selected.key
@@ -244,35 +241,35 @@ const SingleAssessmentReportFilters = ({
     setFiltersAction(obj);
   };
   const updateClassesDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       classId: selected.key
     };
     setFiltersAction(obj);
   };
   const updateGroupsDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       groupId: selected.key
     };
     setFiltersAction(obj);
   };
   const updateSchoolsDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       schoolId: selected.key
     };
     setFiltersAction(obj);
   };
   const updateTeachersDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       teacherId: selected.key
     };
     setFiltersAction(obj);
   };
   const updateAssessmentTypeDropDownCB = selected => {
-    let obj = {
+    const obj = {
       ...filters,
       assessmentType: selected.key
     };
@@ -280,7 +277,7 @@ const SingleAssessmentReportFilters = ({
   };
 
   const onGoClick = () => {
-    let settings = {
+    const settings = {
       filters: { ...filters },
       selectedTest: testIds
     };
@@ -346,15 +343,17 @@ const SingleAssessmentReportFilters = ({
               dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
             />
           </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <AutocompleteDropDown
-              prefix="Group"
-              by={filters.groupId}
-              selectCB={updateGroupsDropDownCB}
-              data={dropDownData.groups}
-              dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
-            />
-          </Col>
+          <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <AutocompleteDropDown
+                prefix="Group"
+                by={filters.groupId}
+                selectCB={updateGroupsDropDownCB}
+                data={dropDownData.groups}
+                dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
+              />
+            </Col>
+          </FeaturesSwitch>
           {role !== "teacher" ? (
             <>
               <Col xs={12} sm={12} md={8} lg={4} xl={4}>
@@ -406,7 +405,7 @@ const SingleAssessmentReportFilters = ({
               placeholder="All Assessments"
             />
           </Col>
-          <Col className={"single-assessment-report-go-button-container"}>
+          <Col className="single-assessment-report-go-button-container">
             <StyledGoButton type="primary" shape="round" onClick={onGoClick}>
               Go
             </StyledGoButton>
@@ -429,9 +428,9 @@ const enhance = compose(
       loading: getReportsMARFilterLoadingState(state)
     }),
     {
-      getMARFilterDataRequestAction: getMARFilterDataRequestAction,
-      setFiltersAction: setFiltersAction,
-      setTestIdAction: setTestIdAction,
+      getMARFilterDataRequestAction,
+      setFiltersAction,
+      setTestIdAction,
       setPrevMARFilterDataAction
     }
   )

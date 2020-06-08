@@ -1,19 +1,23 @@
-import { SpinLoader } from "@edulastic/common";
-import { get, head, toLower } from "lodash";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { getUserRole } from "../../../../src/selectors/user";
+import { get, head, toLower } from "lodash";
+
+import { SpinLoader } from "@edulastic/common";
 import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
-import { downloadCSV, filterAccordingToRole, getFormattedName } from "../../../common/util";
-import { getCsvDownloadingState } from "../../../ducks";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
+import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+
+import { downloadCSV, filterAccordingToRole, getFormattedName } from "../../../common/util";
+import { getCsvDownloadingState } from "../../../ducks";
+import { getUserRole } from "../../../../src/selectors/user";
 import { getFiltersSelector, getReportsMARFilterData } from "../common/filterDataDucks";
 import { usefetchProgressHook } from "../common/hooks";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
 import { useGetBandData } from "./hooks";
+
 import dropDownData from "./static/json/dropDownData.json";
 import tableColumns from "./static/json/tableColumns.json";
 
@@ -81,20 +85,20 @@ const StudentProgress = ({
 
   useEffect(() => {
     const filteredInfo = get(studentProgress, "data.result.metricInfo", []).filter(info => {
-      
-      if(ddfilter.gender !== "all" && ddfilter.gender !== info.gender) {
+
+      if (ddfilter.gender !== "all" && ddfilter.gender !== info.gender) {
         return false
       }
-      if(ddfilter.frlStatus !== "all" && toLower(ddfilter.frlStatus) !== toLower(info.frlStatus)) {
+      if (ddfilter.frlStatus !== "all" && toLower(ddfilter.frlStatus) !== toLower(info.frlStatus)) {
         return false
       }
-      if(ddfilter.ellStatus !== "all" && toLower(ddfilter.ellStatus) !== toLower(info.ellStatus)) {
+      if (ddfilter.ellStatus !== "all" && toLower(ddfilter.ellStatus) !== toLower(info.ellStatus)) {
         return false
       }
-      if(ddfilter.iepStatus !== "all" && toLower(ddfilter.iepStatus) !== toLower(info.iepStatus)) {
+      if (ddfilter.iepStatus !== "all" && toLower(ddfilter.iepStatus) !== toLower(info.iepStatus)) {
         return false
       }
-      if(ddfilter.race !== "all" && ddfilter.race !== info.race) {
+      if (ddfilter.race !== "all" && ddfilter.race !== info.race) {
         return false
       }
       return true
@@ -141,12 +145,14 @@ const StudentProgress = ({
 
   return (
     <>
-      <AddToGroupModal
-        groupType="custom"
-        visible={showAddToGroupModal}
-        onCancel={() => setShowAddToGroupModal(false)}
-        checkedStudents={checkedStudentsForModal}
-      />
+      <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+        <AddToGroupModal
+          groupType="custom"
+          visible={showAddToGroupModal}
+          onCancel={() => setShowAddToGroupModal(false)}
+          checkedStudents={checkedStudentsForModal}
+        />
+      </FeaturesSwitch>
       <TrendStats
         heading="How well are students progressing ?"
         trendCount={trendCount}
@@ -175,14 +181,14 @@ const StudentProgress = ({
             <TableTooltipRow title={`Student Name : `} value={record.studentName} />
             {role === "teacher" ? (
               <TableTooltipRow title={`Class Name : `} value={record.groupName} />
-              ) : (
-                <>
-                  <TableTooltipRow title={`School Name : `} value={record.schoolName} />
-                  <TableTooltipRow title={`Teacher Name : `} value={record.teacherName} />
-                </>
+            ) : (
+              <>
+                <TableTooltipRow title={`School Name : `} value={record.schoolName} />
+                <TableTooltipRow title={`Teacher Name : `} value={record.teacherName} />
+              </>
               )}
           </>
-          )}
+        )}
       />
     </>
   );

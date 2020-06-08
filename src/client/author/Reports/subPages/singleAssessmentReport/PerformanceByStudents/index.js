@@ -3,18 +3,10 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import { Row, Col } from "antd";
+
+// components
 import { EduButton, SpinLoader } from "@edulastic/common";
 import { IconPlusCircle } from "@edulastic/icons";
-import {
-  getPerformanceByStudentsRequestAction,
-  getReportsPerformanceByStudents,
-  getReportsPerformanceByStudentsLoader
-} from "./ducks";
-import { getUserRole } from "../../../../../student/Login/ducks";
-import { getCsvDownloadingState } from "../../../ducks";
-
-import { parseData, getTableData, getColumns, getProficiencyBandData } from "./util/transformers";
-import { downloadCSV } from "../../../common/util";
 
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { StyledH3, StyledCard } from "../../../common/styled";
@@ -23,6 +15,18 @@ import { FilterDropDownWithDropDown } from "../../../common/components/widgets/f
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
 import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
+import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+
+// ducks & helpers
+import { parseData, getTableData, getColumns, getProficiencyBandData } from "./util/transformers";
+import { downloadCSV } from "../../../common/util";
+import {
+  getPerformanceByStudentsRequestAction,
+  getReportsPerformanceByStudents,
+  getReportsPerformanceByStudentsLoader
+} from "./ducks";
+import { getUserRole } from "../../../../../student/Login/ducks";
+import { getCsvDownloadingState } from "../../../ducks";
 import {
   getSAFFilterSelectedPerformanceBandProfile,
   getSAFFilterPerformanceBandProfiles
@@ -71,7 +75,7 @@ const PerformanceByStudents = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      let q = {};
+      const q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
       getPerformanceByStudents(q);
@@ -87,13 +91,9 @@ const PerformanceByStudents = ({
   const proficiencyBandData = getProficiencyBandData(res && res.bandInfo);
   const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0]);
 
-  const parsedData = useMemo(() => {
-    return parseData(res, ddfilter);
-  }, [res, ddfilter]);
+  const parsedData = useMemo(() => parseData(res, ddfilter), [res, ddfilter]);
 
-  const tableData = useMemo(() => {
-    return getTableData(res, ddfilter, range, selectedProficiency.key);
-  }, [res, ddfilter, range, selectedProficiency.key]);
+  const tableData = useMemo(() => getTableData(res, ddfilter, range, selectedProficiency.key), [res, ddfilter, range, selectedProficiency.key]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -155,12 +155,14 @@ const PerformanceByStudents = ({
         <SpinLoader position="fixed" />
       ) : (
         <UpperContainer>
-          <AddToGroupModal
-            groupType="custom"
-            visible={showAddToGroupModal}
-            onCancel={() => setShowAddToGroupModal(false)}
-            checkedStudents={checkedStudentsForModal}
-          />
+          <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+            <AddToGroupModal
+              groupType="custom"
+              visible={showAddToGroupModal}
+              onCancel={() => setShowAddToGroupModal(false)}
+              checkedStudents={checkedStudentsForModal}
+            />
+          </FeaturesSwitch>
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -182,18 +184,19 @@ const PerformanceByStudents = ({
                 <StyledH3>Student Performance | {testName}</StyledH3>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
-                <StyledDropDownContainer padding="5px 0">
-                  <EduButton
-                    style={{ height: "32px", padding: "0 15px 0 10px" }}
-                    onClick={() => setShowAddToGroupModal(true)}
-                  >
-                    <IconPlusCircle />
-                    Add To Student Group
-                  </EduButton>
-                </StyledDropDownContainer>
+                <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+                  <StyledDropDownContainer padding="5px 0">
+                    <EduButton
+                      style={{ height: "32px", padding: "0 15px 0 10px" }}
+                      onClick={() => setShowAddToGroupModal(true)}
+                    >
+                      <IconPlusCircle /> Add To Student Group
+                    </EduButton>
+                  </StyledDropDownContainer>
+                </FeaturesSwitch>
                 <StyledDropDownContainer>
                   <ControlDropDown
-                    prefix={"Proficiency Band - "}
+                    prefix="Proficiency Band - "
                     data={proficiencyBandData}
                     by={selectedProficiency}
                     selectCB={updateProficiencyFilter}
@@ -221,7 +224,7 @@ const PerformanceByStudents = ({
             </Row>
           </StyledCard>
         </UpperContainer>
-      )}
+        )}
     </>
   );
 };

@@ -2,17 +2,19 @@ import React, { useEffect, useMemo } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Row, Col } from "antd";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 import qs from "qs";
+import { Row, Col } from "antd";
 
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
-
 import { roleuser } from "@edulastic/constants";
+
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
+import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
+import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../utils/transformers";
 import {
@@ -34,7 +36,6 @@ import { receivePerformanceBandAction } from "../../../../../PerformanceBand/duc
 import { receiveStandardsProficiencyAction } from "../../../../../StandardsProficiency/ducks";
 
 import staticDropDownData from "../static/staticDropDownData.json";
-import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
 
 const getTestIdFromURL = url => {
   if (url.length > 16) {
@@ -371,16 +372,18 @@ const SingleAssessmentReportFilters = ({
               dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
             />
           </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <PrintablePrefix>Group</PrintablePrefix>
-            <AutocompleteDropDown
-              prefix="Group"
-              by={filters.groupId}
-              selectCB={updateGroupsDropDownCB}
-              data={dropDownData.groups}
-              dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
-            />
-          </Col>
+          <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <PrintablePrefix>Group</PrintablePrefix>
+              <AutocompleteDropDown
+                prefix="Group"
+                by={filters.groupId}
+                selectCB={updateGroupsDropDownCB}
+                data={dropDownData.groups}
+                dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
+              />
+            </Col>
+          </FeaturesSwitch>
           {role !== "teacher" ? (
             <>
               <Col xs={12} sm={12} md={8} lg={4} xl={4}>

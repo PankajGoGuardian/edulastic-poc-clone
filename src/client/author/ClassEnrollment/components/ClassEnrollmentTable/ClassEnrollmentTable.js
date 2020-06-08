@@ -1,18 +1,19 @@
 import React from "react";
-import { Icon, message, Button, Menu, Select } from "antd";
-import { notification } from "@edulastic/common";
+import { Icon, Button, Menu, Select } from "antd";
+import { notification, TypeToConfirmModal } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
 import moment from "moment";
 import { IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-import { TypeToConfirmModal } from "@edulastic/common";
+
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
 import withRouter from "react-router/withRouter";
 import { AddNewUserModal } from "../Common/AddNewUser";
 import { StyledTable } from "./styled";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
 import { getUserOrgId, getUser, getUserRole } from "../../../src/selectors/user";
@@ -30,7 +31,7 @@ import {
   getValidatedClassDetails
 } from "../../../Student/ducks";
 
-import { AddStudentsToOtherClassModal , AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
+import { AddStudentsToOtherClassModal, AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 
 import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
 
@@ -124,10 +125,10 @@ class ClassEnrollmentTable extends React.Component {
     const areUsersOfDifferentClasses = uniqBy(selectedUsersInfo, "group.code").length > 1;
     if (e.key === "remove students") {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey:"selectOneOrMoreStudentToRemoved"});
+        notification({ messageKey: "selectOneOrMoreStudentToRemoved" });
       } else if (selectedRowKeys.length > 0) {
         if (isInstructor) {
-          notification({ messageKey:"selectOnlyStudents"});
+          notification({ messageKey: "selectOnlyStudents" });
         } else {
           this.setState({
             removeStudentsModalVisible: true
@@ -136,18 +137,18 @@ class ClassEnrollmentTable extends React.Component {
       }
     } else if (e.key === "move users") {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey:"youHaveNotSelectedAnyUsers"});
+        notification({ messageKey: "youHaveNotSelectedAnyUsers" });
       } else if (areUsersOfDifferentClasses) {
-        notification({ messageKey:"youCanOnlyMoveUsersOfSameClass"});
+        notification({ messageKey: "youCanOnlyMoveUsersOfSameClass" });
       } else if (selectedRowKeys.length >= 1) {
         this.setState({ moveUsersModalVisible: true });
       }
     } else if (e.key === "add students to other class") {
       if (selectedRowKeys.length == 0) {
-        notification({ messageKey:"selectOneOrMoreStudentAdd"});
+        notification({ messageKey: "selectOneOrMoreStudentAdd" });
       } else if (selectedRowKeys.length > 0) {
         if (isInstructor) {
-          notification({ messageKey:"onlyStudentsCanBeAdded"});
+          notification({ messageKey: "onlyStudentsCanBeAdded" });
 
         } else {
           this.setState({ addStudentsModalVisible: true });
@@ -285,7 +286,7 @@ class ClassEnrollmentTable extends React.Component {
       return _classCode === code && userId === id;
     });
     if (role === "teacher") {
-      notification({ messageKey:"pleaseSelectOnlyStudent" });
+      notification({ messageKey: "pleaseSelectOnlyStudent" });
     } else {
       this.setState({
         selectedUserIds: [id],
@@ -527,18 +528,23 @@ class ClassEnrollmentTable extends React.Component {
       };
       return obj;
     });
+
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange
     };
+
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="remove students">{t("classenrollment.removestudents")}</Menu.Item>
         <Menu.Item key="move users">{t("classenrollment.moveusers")}</Menu.Item>
         <Menu.Item key="add students to other class">{t("classenrollment.addstdstoanotherclass")}</Menu.Item>
-        <Menu.Item key="add to student group">{t("classenrollment.addToStudentGroup")}</Menu.Item>
+        <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+          <Menu.Item key="add to student group">{t("classenrollment.addToStudentGroup")}</Menu.Item>
+        </FeaturesSwitch>
       </Menu>
     );
+
     const columnsData = [
       {
         title: t("classenrollment.classname"),
@@ -576,7 +582,7 @@ class ClassEnrollmentTable extends React.Component {
           <StyledTableButton key={record.key} onClick={() => this.handleDeactivateUser(record)} title="Deactivate">
             <IconTrash color={themeColor} />
           </StyledTableButton>
-          ),
+        ),
         textWrap: "word-break",
         width: 100
       }
@@ -782,12 +788,14 @@ class ClassEnrollmentTable extends React.Component {
           t={t}
         />
         {showAddToGroupModal && (
-          <AddToGroupModal
-            groupType="custom"
-            visible={showAddToGroupModal}
-            onCancel={() => this.setState({ showAddToGroupModal: false })}
-            checkedStudents={uniqBy(selectedUsersInfo.map(({ user }) => ({ ...user })), "_id")}
-          />
+          <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+            <AddToGroupModal
+              groupType="custom"
+              visible={showAddToGroupModal}
+              onCancel={() => this.setState({ showAddToGroupModal: false })}
+              checkedStudents={uniqBy(selectedUsersInfo.map(({ user }) => ({ ...user })), "_id")}
+            />
+          </FeaturesSwitch>
         )}
       </MainContainer>
     );

@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Col, Icon, Row, Select } from "antd";
+import { FieldLabel, SelectInputStyled, notification } from "@edulastic/common";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
 import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
 import * as moment from "moment";
-import { FieldLabel, SelectInputStyled, notification } from "@edulastic/common";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
@@ -65,6 +65,16 @@ class SimpleOptions extends React.Component {
     return {
       _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
+  }
+
+  componentDidMount() {
+    const {
+      features: { free, premium }
+    } = this.props;
+    const { showSettings } = this.state;
+    if (free && !premium && !showSettings) {
+      this.setState({ showSettings: true });
+    }
   }
 
   toggleSettings = () => {
@@ -159,8 +169,7 @@ class SimpleOptions extends React.Component {
           }
           break;
         }
-        default:
-          break;
+        // no default
       }
 
       state[field] = value;
@@ -182,7 +191,7 @@ class SimpleOptions extends React.Component {
         _id,
         name: get(groupById, `${_id}.name`, ""),
         assignedCount: studentsByGroupId[_id].length,
-        students: studentsByGroupId[_id].map(_item => _item._id),
+        students: studentsByGroupId[_id].map(i => i._id),
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
         termId: get(groupById, `${_id}.termId`, ""),

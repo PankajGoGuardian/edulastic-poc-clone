@@ -97,7 +97,7 @@ export const SET_SETTINGS_SA_SCHOOL = "[user] set sa settings school";
 export const SET_SIGNUP_STATUS = "[user] set signup status";
 export const UPDATE_POWER_TEACHER_TOOLS_REQUEST = "[user] update power teacher permission request";
 export const UPDATE_POWER_TEACHER_TOOLS_SUCCESS = "[user] update power teacher permission success";
-export const UPDATE_POWER_TEACHER_TOOLS_FAILED = "[user] update power teacher permission failed"
+export const UPDATE_POWER_TEACHER_TOOLS_FAILED = "[user] update power teacher permission failed";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -395,7 +395,7 @@ export default createReducer(initialState, {
   [UPDATE_POWER_TEACHER_TOOLS_REQUEST]: state => {
     state.updatingPowerTeacher = true;
   },
-  [UPDATE_POWER_TEACHER_TOOLS_SUCCESS]: state => {;
+  [UPDATE_POWER_TEACHER_TOOLS_SUCCESS]: state => {
     Object.assign(state.user, {
       isPowerTeacher: !state.user.isPowerTeacher
     });
@@ -484,7 +484,7 @@ export const isProxyUser = createSelector(
 
 export const proxyRole = createSelector(
   ["user.user.proxyRole"],
-  proxyRole => proxyRole
+  proxyrole => proxyrole
 );
 
 export const getAddAccount = createSelector(
@@ -524,7 +524,7 @@ function* login({ payload }) {
     }
     const result = yield call(authApi.login, _payload);
     const user = pick(result, userPickFields);
-    const firebaseUser = yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
+    yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
     if (addAccount === true) {
       TokenStorage.storeAccessToken(result.token, user._id, user.role, false);
     } else {
@@ -550,7 +550,7 @@ function* login({ payload }) {
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl);
     if (redirectUrl && !isAuthUrl) {
-      if (user.role === roleuser.STUDENT && localStorage.hasOwnProperty("publicUrlAccess")) {
+      if (user.role === roleuser.STUDENT && Object.prototype.hasOwnProperty.call(localStorage, "publicUrlAccess")) {
         const publicUrl = localStorage.getItem("publicUrlAccess");
         localStorage.removeItem("publicUrlAccess");
         yield put(push({ pathname: publicUrl, state: { isLoading: true } }));
@@ -573,7 +573,7 @@ function* login({ payload }) {
     if (status === 403 && data.message) {
       errorMessage = data.message;
     }
-    notification({ msg:errorMessage });
+    notification({ msg: errorMessage });
   }
 }
 
@@ -626,7 +626,7 @@ function* signup({ payload }) {
     let nameList = name.split(" ");
     nameList = nameList.filter(item => !!(item && item.trim()));
     if (!nameList.length) {
-      throw { message: "Please provide your full name." };
+      throw new Error({ message: "Please provide your full name." });
     }
     const allow = checkEmailPolicy(districtPolicy, role, email);
     if (!allow.status) {
@@ -682,11 +682,11 @@ function* signup({ payload }) {
           errorCallback(_responseMsg);
         }
       } else {
-        notification({ msg: _responseMsg});
+        notification({ msg: _responseMsg });
       }
     } else {
       if (result.existingUser && result.existingUser.passwordMatch) {
-        notification({ type: "info", messageKey: "weAlreadyHaveAccount"});
+        notification({ type: "info", messageKey: "weAlreadyHaveAccount" });
       }
       const user = pick(result, userPickFields);
 
@@ -714,8 +714,7 @@ function* signup({ payload }) {
     if (errorCallback) {
       errorCallback(msg);
     } else {
-      notification({ msg:msg});
-      
+      notification({ msg: msg });
     }
   }
 }
@@ -752,7 +751,7 @@ const getLoggedOutUrl = () => {
     return window.location.href.split(window.location.origin)[1];
   }
   if (pathname === "/inviteteacher") {
-    return `${location.pathname}${location.search}${location.hash}`;
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
   }
   return "/login";
 };
@@ -761,7 +760,7 @@ export function* fetchUser({ payload }) {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
-      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+      if (!window.location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
         localStorage.setItem("loginRedirectUrl", getCurrentPath());
       }
       yield put(push(getLoggedOutUrl()));
@@ -807,9 +806,9 @@ export function* fetchUser({ payload }) {
     }
   } catch (error) {
     console.log("err", error, error);
-    notification({ messageKey:"failedLoadingUserData"});
+    notification({ messageKey: "failedLoadingUserData" });
     if (!(error?.response && error?.response?.status === 501)) {
-      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+      if (!window.location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
         localStorage.setItem("loginRedirectUrl", getCurrentPath());
       }
       const pathname = window.location.pathname.toLocaleLowerCase().split("/");
@@ -829,7 +828,7 @@ export function* fetchV1Redirect({ payload: id }) {
       TokenStorage.storeAccessToken(authToken, _id, role);
       TokenStorage.selectAccessToken(_id, role);
     } else {
-      notification({ messageKey:"authtokenInvalidOnRedirection"});
+      notification({ messageKey: "authtokenInvalidOnRedirection" });
       return;
     }
 
@@ -846,7 +845,7 @@ export function* fetchV1Redirect({ payload: id }) {
     yield put(push(redirectUrl));
   } catch (e) {
     console.log(e);
-    notification({ messageKey:"failedLoadingUserData"});
+    notification({ messageKey: "failedLoadingUserData" });
   }
 }
 
@@ -862,6 +861,7 @@ function* logout() {
       sessionStorage.removeItem("cliBannerShown");
       sessionStorage.removeItem("cliBannerVisible");
       sessionStorage.removeItem("addAccountDetails");
+      sessionStorage.removeItem("filters[Assignments]");
       TokenStorage.removeKID();
       TokenStorage.initKID();
       yield put({ type: "RESET" });
@@ -910,7 +910,7 @@ function* googleLogin({ payload }) {
     }
 
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, {
+      yield call(authApi.validateClassCode, {
         classCode,
         signOnMethod: "googleSignOn",
         role,
@@ -920,8 +920,8 @@ function* googleLogin({ payload }) {
 
     const res = yield call(authApi.googleLogin);
     window.location.href = res;
-  } catch (e) { 
-    notification({ msg: e.data && e.data.message ? e.data.message : "Google Login failed"});
+  } catch (e) {
+    notification({ msg: e.data && e.data.message ? e.data.message : "Google Login failed" });
   }
 }
 
@@ -945,7 +945,7 @@ function* googleSSOLogin({ payload }) {
     const res = yield call(authApi.googleSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    notification({ msg: get(e, "data.message", "Google Login failed")});
+    notification({ msg: get(e, "data.message", "Google Login failed") });
 
     yield put(push(getSignOutUrl()));
     removeSignOutUrl();
@@ -980,7 +980,7 @@ function* msoLogin({ payload }) {
       }
     }
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, {
+      yield call(authApi.validateClassCode, {
         classCode,
         signOnMethod: "office365SignOn",
         role,
@@ -990,7 +990,7 @@ function* msoLogin({ payload }) {
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
   } catch (e) {
-    notification({ msg:get(e, "data.message", "MSO Login failed")});
+    notification({ msg: get(e, "data.message", "MSO Login failed") });
   }
 }
 
@@ -1014,7 +1014,7 @@ function* msoSSOLogin({ payload }) {
     const res = yield call(authApi.msoSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    notification({ msg:get(e, "data.message", "MSO Login failed")});
+    notification({ msg: get(e, "data.message", "MSO Login failed") });
 
     yield put(push(getSignOutUrl()));
     removeSignOutUrl();
@@ -1039,7 +1039,7 @@ function* cleverLogin({ payload }) {
     const res = yield call(authApi.cleverLogin);
     window.location.href = res;
   } catch (e) {
-    notification({ messageKey:"cleverLoginFailed"});
+    notification({ messageKey: "cleverLoginFailed" });
   }
 }
 
@@ -1060,7 +1060,7 @@ function* cleverSSOLogin({ payload }) {
     if (e?.data?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
       yield put(push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" }));
     } else {
-      notification({ msg:e?.data?.message || "Clever Login failed"});
+      notification({ msg: e?.data?.message || "Clever Login failed" });
       yield put(push(getSignOutUrl()));
     }
     removeSignOutUrl();
@@ -1096,7 +1096,7 @@ function* getUserData({ payload: res }) {
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (e) {
-    notification({ messageKey:"failedToFetchUserData"});
+    notification({ messageKey: "failedToFetchUserData" });
 
     yield put(push(getSignOutUrl()));
     removeSignOutUrl();
@@ -1118,7 +1118,7 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.selectAccessToken(_user._id, _user.role);
     yield put(signupSuccessAction(_user));
   } catch (e) {
-    notification({ msg:get(e, "data.message", "Failed to update user please try again.")});
+    notification({ msg: get(e, "data.message", "Failed to update user please try again.") });
   }
 }
 
@@ -1131,7 +1131,7 @@ function* requestNewPasswordSaga({ payload }) {
     });
   } catch (e) {
     console.error(e);
-    notification({ msg:e && e.data ? e.data.message : "Failed to request new password."});
+    notification({ msg: e && e.data ? e.data.message : "Failed to request new password." });
     yield put({
       type: REQUEST_NEW_PASSWORD_FAILED
     });
@@ -1147,7 +1147,7 @@ function* resetPasswordUserSaga({ payload }) {
       yield put(push("/login"));
     }
   } catch (e) {
-    notification({ msg:e && e.data ? e.data.message : "Failed to user data."});
+    notification({ msg: e && e.data ? e.data.message : "Failed to user data." });
     yield put(push("/login"));
   }
 }
@@ -1162,7 +1162,7 @@ function* resetPasswordRequestSaga({ payload }) {
     yield put(signupSuccessAction(result));
     localStorage.removeItem("loginRedirectUrl");
   } catch (e) {
-    notification({ msg: e && e.data ? e.data.message : "Failed to reset password."});
+    notification({ msg: e && e.data ? e.data.message : "Failed to reset password." });
     yield put({
       type: RESET_PASSWORD_FAILED
     });
@@ -1172,11 +1172,11 @@ function* resetPasswordRequestSaga({ payload }) {
 function* resetMyPasswordRequestSaga({ payload }) {
   try {
     yield call(userApi.resetMyPassword, payload);
-    notification({ type: "success", messageKey:"passwordChangedSucessfully"});
+    notification({ type: "success", messageKey: "passwordChangedSucessfully" });
     yield put({ type: RESET_MY_PASSWORD_SUCCESS });
   } catch (e) {
     console.error(e);
-    notification({ messageKey:"failedToResetPassword"});
+    notification({ messageKey: "failedToResetPassword" });
     yield put({
       type: RESET_MY_PASSWORD_FAILED
     });
@@ -1186,11 +1186,11 @@ function* resetMyPasswordRequestSaga({ payload }) {
 function* updateProfileImageSaga({ payload }) {
   try {
     yield call(userApi.updateUser, payload);
-    notification({ type: "success", messageKey:"thumbnailChangedSuccessfully"});
+    notification({ type: "success", messageKey: "thumbnailChangedSuccessfully" });
     yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS, payload: payload.data.thumbnail });
   } catch (e) {
     console.error(e);
-    notification({ messageKey:"failedToUpdateImage"});
+    notification({ messageKey: "failedToUpdateImage" });
     yield put({
       type: UPDATE_PROFILE_IMAGE_PATH_FAILED
     });
@@ -1199,15 +1199,15 @@ function* updateProfileImageSaga({ payload }) {
 function* updateUserDetailsSaga({ payload }) {
   try {
     const result = yield call(userApi.updateUser, payload);
-    notification({ type: "success", messageKey:"userDetailsUpdatedSUccessfully"});
+    notification({ type: "success", messageKey: "userDetailsUpdatedSUccessfully" });
     yield put({ type: UPDATE_USER_DETAILS_SUCCESS, payload: result });
     if (payload.isLogout) {
-      notification({ type: "success", messageKey:"loggingOut"});
+      notification({ type: "success", messageKey: "loggingOut" });
       yield put({ type: LOGOUT });
     }
   } catch (e) {
     console.error(e);
-    notification({ messageKey:"failedToUpdateUserDetails"});
+    notification({ messageKey: "failedToUpdateUserDetails" });
     yield put({
       type: UPDATE_USER_DETAILS_FAILED
     });
@@ -1217,38 +1217,38 @@ function* updateUserDetailsSaga({ payload }) {
 function* deleteAccountSaga({ payload }) {
   try {
     yield call(userApi.deleteAccount, payload);
-    notification({ type: "success", messageKey:"accountDeletedSuccessfully"});
+    notification({ type: "success", messageKey: "accountDeletedSuccessfully" });
     yield put({ type: LOGOUT });
   } catch (e) {
     console.error(e);
-    notification({ messageKey:"failedToUpdateUserDetails"});
+    notification({ messageKey: "failedToUpdateUserDetails" });
   }
 }
 
 function* updateInterestedCurriculumsSaga({ payload }) {
   try {
     yield call(settingsApi.updateInterestedStandards, payload);
-    notification({ type: "success", messageKey:"standardSetsUpdatedSuccessfully"});
+    notification({ type: "success", messageKey: "standardSetsUpdatedSuccessfully" });
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
     console.error(e);
-    notification({ messageKey:"failedToUploadStandardSets"});
+    notification({ messageKey: "failedToUploadStandardSets" });
   }
 }
 
 function* removeSchoolSaga({ payload }) {
   try {
     yield call(userApi.removeSchool, payload);
-    notification({ type: "success", messageKey:"requestedSchoolRemovedSucessfully"});
+    notification({ type: "success", messageKey: "requestedSchoolRemovedSucessfully" });
     yield put({ type: REMOVE_SCHOOL_SUCCESS, payload: payload.schoolId });
   } catch (e) {
     yield put({ type: REMOVE_SCHOOL_FAILED });
     console.error(e);
     if (e.status === 403) {
-      notification({ msg:e.data});
+      notification({ msg: e.data });
     } else {
-      notification({ messageKey:"failedToRemoveRequestedSchool"});
+      notification({ messageKey: "failedToRemoveRequestedSchool" });
     }
   }
 }
@@ -1261,7 +1261,7 @@ function* addSchoolSaga({ payload = {} }) {
     yield put({ type: HIDE_JOIN_SCHOOL });
   } catch (err) {
     yield put({ type: ADD_SCHOOL_FAILED });
-    notification({ messageKey:"failedToAddRequestedSchool"});
+    notification({ messageKey: "failedToAddRequestedSchool" });
   }
 }
 
@@ -1279,7 +1279,7 @@ function* createAndAddSchoolSaga({ payload = {} }) {
       type: CREATE_AND_ADD_SCHOOL_FAILED
     });
     console.log("err", err);
-    notification({ messageKey:"failedToCreateSchool"});
+    notification({ messageKey: "failedToCreateSchool" });
   }
 
   try {
@@ -1299,18 +1299,18 @@ function* createAndAddSchoolSaga({ payload = {} }) {
     yield put({
       type: CREATE_AND_ADD_SCHOOL_FAILED
     });
-    notification({ messageKey:"failedToJoinSchool"});
+    notification({ messageKey: "failedToJoinSchool" });
   }
 }
 
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
-    const result = yield call(authApi.validateClassCode, payload.reqData);
+    yield call(authApi.validateClassCode, payload.reqData);
   } catch (e) {
     if (payload.errorCallback) {
       payload.errorCallback(e.data.message);
     } else {
-      notification({ msg:e.data.message});
+      notification({ msg: e.data.message });
     }
   }
 }
@@ -1343,7 +1343,7 @@ function* getCurrentDistrictUsersSaga({ payload }) {
     const users = yield call(userApi.fetchUsersFromDistrict, payload);
     yield put(getCurrentDistrictUsersSuccessAction(users));
   } catch (e) {
-    notification({ messageKey:"failedToGetUsersFromDistrict"});
+    notification({ messageKey: "failedToGetUsersFromDistrict" });
     console.error(e);
   }
 }
@@ -1358,23 +1358,23 @@ function* changeChildSaga({ payload }) {
 function* updateDefaultSettingsSaga({ payload }) {
   try {
     yield call(settingsApi.updateInterestedStandards, payload);
-    notification({ type: "success", messageKey:"defaultSettingsUpdatedSuccessfully"});
+    notification({ type: "success", messageKey: "defaultSettingsUpdatedSuccessfully" });
     yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload });
   } catch (e) {
     yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED });
     console.error(e);
-    notification({ messageKey:"failedToUpdateDefaultSettings"});
+    notification({ messageKey: "failedToUpdateDefaultSettings" });
   }
 }
 
 function* updatePowerTeacher({ payload }) {
   try {
     yield call(userApi.updatePowerTeacherTools, payload);
-    notification({ type: "success", messageKey:"powerTeacherToolsUpdatedSuccessfully"});
+    notification({ type: "success", messageKey: "powerTeacherToolsUpdatedSuccessfully" });
     yield put({ type: UPDATE_POWER_TEACHER_TOOLS_SUCCESS, payload });
   } catch (e) {
     yield put({ type: UPDATE_POWER_TEACHER_TOOLS_FAILED });
-    notification({ type: "error", messageKey:"failedToUpdatePowerTeacherTools"});
+    notification({ type: "error", messageKey: "failedToUpdatePowerTeacherTools" });
   }
 }
 

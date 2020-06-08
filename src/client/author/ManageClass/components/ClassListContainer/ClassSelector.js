@@ -21,7 +21,7 @@ const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, set
         Active Classes
       </Menu.Item>
       <Menu.Item key="2" onClick={handleArchiveClassClick}>
-        Archive Classes
+        Archived Classes
       </Menu.Item>
     </Menu>
   );

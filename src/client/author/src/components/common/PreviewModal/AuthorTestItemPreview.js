@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Pagination, message, Icon } from "antd";
+import { Pagination, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, red } from "@edulastic/colors";
 import { questionType, roleuser } from "@edulastic/constants";
-import { Tabs, EduButton, withWindowSizes, ScrollContext, ScratchPadContext,notification } from "@edulastic/common";
+import { Tabs, EduButton, withWindowSizes, ScrollContext, ScratchPadContext, notification } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
@@ -87,7 +87,7 @@ class AuthorTestItemPreview extends Component {
       closeModal
     } = this.props;
     if (!isEditable) {
-      notification({ messageKey:"dontHaveWritePermission" });
+      notification({ messageKey: "dontHaveWritePermission" });
       return;
     }
     if (closeModal) closeModal();
@@ -243,6 +243,7 @@ class AuthorTestItemPreview extends Component {
           LCBPreviewModal={LCBPreviewModal}
           borderRadius={borderRadius}
           {...restProps}
+          tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />
       </Tabs.TabContainer>
     );

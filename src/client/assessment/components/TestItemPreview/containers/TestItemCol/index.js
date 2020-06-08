@@ -121,6 +121,7 @@ class TestItemCol extends Component {
           fullMode
           {...restProps}
           style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
+          tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
         />
         {/*  on the student side, show feedback for each question only when item level scoring is off */}
         {isStudentReport && !itemLevelScoring && teachCherFeedBack(widget, null, null, showStackedView)}

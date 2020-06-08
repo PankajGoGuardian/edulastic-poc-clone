@@ -2,7 +2,7 @@
 /* eslint-disable func-names */
 
 import React, { useState, useEffect, useRef } from "react";
-import { isEmpty } from "lodash";
+import { isEmpty, get } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
 import {
@@ -71,14 +71,15 @@ const PassageView = ({
   saveUserWork,
   clearUserWork,
   previewTab,
-  passageTestItemID
+  passageTestItemID,
+  tabIndex
 }) => {
   const mainContentsRef = useRef();
   const [page, setPage] = useState(1);
   const [isOpen, toggleOpen] = useState(false);
   const [selectHighlight, setSelectedHighlight] = useState(null);
   // use the userWork in author mode
-  const _highlights = setHighlights ? highlights : userWork;
+  const _highlights = setHighlights ? get(highlights, `[${tabIndex}]`, "") : get(userWork, `[${tabIndex}]`, "");
 
   const saveHistory = () => {
     let { innerHTML: highlightContent = "" } = mainContentsRef.current;
@@ -89,13 +90,14 @@ const PassageView = ({
       highlightContent = highlightContent.replace(/input__math/g, "");
     }
 
+    const newHighlights = highlights || {};
     if (setHighlights) {
       // this is available only at student side
-      setHighlights(highlightContent);
+      setHighlights({ ...newHighlights, [tabIndex]: highlightContent });
     } else {
       // saving the highlights at author side
       // setHighlights is not available at author side
-      saveUserWork({ [passageTestItemID]: { resourceId: highlightContent } });
+      saveUserWork({ [passageTestItemID]: { resourceId: { ...newHighlights, [tabIndex]: highlightContent } } });
     }
   };
 
@@ -238,7 +240,7 @@ PassageView.propTypes = {
   clearUserWork: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool.isRequired,
   highlights: PropTypes.array.isRequired,
-  userWork: PropTypes.string.isRequired,
+  userWork: PropTypes.object.isRequired,
   flowLayout: PropTypes.bool
 };
 

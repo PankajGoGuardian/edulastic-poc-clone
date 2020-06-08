@@ -37,6 +37,7 @@ const ModuleRowView = props => {
     addModuleMenuClick,
     editModuleMenuClick,
     deleteModuleMenuClick,
+    isPlaylistDetailsPage,
     isManageContentActive
   } = props;
 
@@ -103,7 +104,7 @@ const ModuleRowView = props => {
     );
   }
 
-  const moreActions = !isStudent && (
+  const moreActions = !isStudent && (!isPlaylistDetailsPage || isManageContentActive) && (
     <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
       <IconActionButton onClick={e => e.stopPropagation()}>
         <IconMoreVertical width={5} height={14} color={themeColor} />

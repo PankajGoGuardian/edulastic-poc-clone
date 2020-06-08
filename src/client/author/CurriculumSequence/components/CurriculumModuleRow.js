@@ -428,7 +428,8 @@ class ModuleRow extends Component {
       proxyUserRole,
       isManageContentActive,
       userRole,
-      fromPlaylist
+      fromPlaylist,
+      isPlaylistDetailsPage
     } = this.props;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignTest } = this;
@@ -493,6 +494,7 @@ class ModuleRow extends Component {
               addModuleMenuClick={this.addModuleMenuClick}
               editModuleMenuClick={this.editModuleMenuClick}
               deleteModuleMenuClick={this.deleteModuleMenuClick}
+              isPlaylistDetailsPage={isPlaylistDetailsPage}
               isManageContentActive={isManageContentActive}
             />
 

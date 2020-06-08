@@ -732,6 +732,7 @@ class CurriculumSequence extends Component {
                         fromPlaylist={fromPlaylist}
                         setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                         droppedItemId={droppedItemId}
+                        isPlaylistDetailsPage={isPlaylistDetailsPage}
                       />
                     )}
                   </Wrapper>

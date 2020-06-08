@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { IconCheck, IconClose } from "@edulastic/icons";
 import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { getTypeAndMsgBasedOnScore } from "../../../../common/utils/helpers";
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,10 +20,10 @@ const Wrapper = styled.div`
   
   ${({ scoreType, theme }) => {
     const obj = {};
-    if (scoreType === "allCorrect") {
+    if (scoreType === "Correct") {
       obj.backgroundColor = theme.common.correctScoreBlockBgColor;
       obj.fillColor = theme.common.correctScoreBlockIconFillColor;
-    } else if (scoreType === "partiallyCorrect") {
+    } else if (scoreType === "Partially Correct") {
       obj.backgroundColor = theme.common.partiallyCorrectScoreBlockBgColor;
       obj.fillColor = theme.common.partiallyCorrectScoreBlockIconFillColor;
     } else {
@@ -47,11 +48,13 @@ const Wrapper = styled.div`
 `;
 
 const ScoreBlock = ({ score, maxScore, showScore, customStyle }) => {
-  const scoreType = score === 0 ? "incorrect" : score === maxScore ? "allCorrect" : "partiallyCorrect";
+  const [type, status] = getTypeAndMsgBasedOnScore(score, maxScore);
   return showScore ? (
-    <Wrapper customStyle={customStyle} scoreType={scoreType} data-cy="scoreBlock">
+    <Wrapper customStyle={customStyle} scoreType={status} data-cy="scoreBlock">
       <div>{score !== 0 ? <IconCheck /> : <IconClose />}</div>
-      <div data-cy="score">{score === 0 ? "Incorrect" : score === maxScore ? "Correct" : "Partially Correct"}</div>
+      <div data-cy="score" type={type}>
+        {status}
+      </div>
     </Wrapper>
   ) : null;
 };

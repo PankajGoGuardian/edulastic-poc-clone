@@ -1,9 +1,8 @@
 import { takeEvery, put, all, select, call } from "redux-saga/effects";
-import { message } from "antd";
 import { isEmpty, values } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
-import * as Sentry from '@sentry/browser';
+import * as Sentry from "@sentry/browser";
 import { getQuestionIds } from "./items";
 // actions
 import {
@@ -14,6 +13,7 @@ import {
 } from "../constants/actions";
 import { itemQuestionsSelector, answersForCheck } from "../selectors/test";
 import { CHANGE_PREVIEW, CHANGE_VIEW } from "../../author/src/constants/actions";
+import { getTypeAndMsgBasedOnScore } from "../../common/utils/helpers";
 
 function* evaluateAnswers({ payload: groupId }) {
   try {
@@ -34,7 +34,7 @@ function* evaluateAnswers({ payload: groupId }) {
     const validResponses = values(userResponse).filter(item => !!item);
     // if user response is empty show toaster msg.
     if (isEmpty(validResponses)) {
-      return notification({ type: "warn", messageKey: "attemptTheQuestonToCheckAnswer"});
+      return notification({ type: "warn", messageKey: "attemptTheQuestonToCheckAnswer" });
     }
     const { items, currentItem } = yield select(state => state.test);
     const testItemId = items[currentItem]._id;
@@ -58,6 +58,7 @@ function* evaluateAnswers({ payload: groupId }) {
     };
     if (userWork) activity.userWork = userWork;
     const { evaluations, maxScore, score } = yield call(testItemsApi.evaluation, testItemId, activity);
+    const [type, message] = getTypeAndMsgBasedOnScore(score, maxScore);
     yield put({
       type: CHANGE_PREVIEW,
       payload: {
@@ -84,10 +85,10 @@ function* evaluateAnswers({ payload: groupId }) {
         itemId: testItemId
       }
     });
-     notification({ type: "success", msg:`score: ${score % 1 === 0 ? score : score.toFixed(2)}/${maxScore}`});
+    notification({ type, msg: message });
   } catch (err) {
-    if (err.status === 403) notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
-    else  notification({ messageKey:"checkAnswerFail"});
+    if (err.status === 403) notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem" });
+    else notification({ messageKey: "checkAnswerFail" });
     console.log(err);
     Sentry.captureException(err);
   }

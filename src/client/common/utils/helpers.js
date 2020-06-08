@@ -188,7 +188,7 @@ export const removeSignOutUrl = () => sessionStorage.removeItem("signOutUrl");
 
 export const validateQuestionsForDocBased = questions => {
   if (!questions.length) {
-     notification({ type: "warn", messageKey:"aleastOneQuestion"});
+    notification({ type: "warn", messageKey: "aleastOneQuestion" });
     return false;
   }
 
@@ -197,7 +197,7 @@ export const validateQuestionsForDocBased = questions => {
     .every(question => !!question.title.trim());
 
   if (!sectionTitle) {
-    notification({ messageKey:"sectionNameCanNotEmpty"});
+    notification({ messageKey: "sectionNameCanNotEmpty" });
     return false;
   }
 
@@ -212,7 +212,7 @@ export const validateQuestionsForDocBased = questions => {
     });
 
   if (!correctAnswerPicked) {
-     notification({ type: "warn", messageKey:"correctAnswer"});
+    notification({ type: "warn", messageKey: "correctAnswer" });
     return false;
   }
   return true;
@@ -268,4 +268,22 @@ export const getDefaultSettings = ({ testType = "", defaultTestProfiles = {} }) 
         standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.common || "" }
       };
   }
+};
+
+/**
+ *
+ * @param score
+ * @param maxScore
+ * @returns a tuple containing the type and message for notifaction [type, msg]
+ */
+export const getTypeAndMsgBasedOnScore = (score, maxScore) => {
+  let returnValue = [];
+  if (score === maxScore) {
+    returnValue = ["success", "Correct"];
+  } else if (score > 0) {
+    returnValue = ["success", "Partially Correct"];
+  } else {
+    returnValue = ["error", "Incorrect"];
+  }
+  return returnValue;
 };

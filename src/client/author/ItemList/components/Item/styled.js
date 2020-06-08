@@ -43,12 +43,14 @@ export const Link = styled.a`
   font-weight: 700;
   line-height: 20px;
   font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: nowrap;
   text-decoration: none;
   color: #333333;
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
 
   :hover {
     color: #333333;

@@ -4,12 +4,10 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import {  message } from "antd";
 import { ActionCreators } from "redux-undo";
 import { get, keyBy } from "lodash";
-import { withWindowSizes, hexToRGB ,notification} from "@edulastic/common";
-import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
-// import Hints from "@edulastic/common/src/components/Hints";
+import { withWindowSizes, hexToRGB, notification } from "@edulastic/common";
+import { nonAutoGradableTypes } from "@edulastic/constants";
 
 import { themes } from "../../../theme";
 import MainWrapper from "./MainWrapper";
@@ -117,7 +115,7 @@ class AssessmentPlayerDefault extends React.Component {
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
-      return notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
+      return notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem" });
     checkAnswer(groupId);
     this.setState({ testItemState: value });
   };
@@ -205,11 +203,18 @@ class AssessmentPlayerDefault extends React.Component {
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
   saveHistory = sourceId => data => {
-    const { saveUserWork, items, currentItem, setUserAnswer, userAnswers, userWork } = this.props;
+    const { saveUserWork, items, currentItem, setUserAnswer, userAnswers, userWork, passage } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
+    // resourceId(passage) will use passage._id
+    // @see https://snapwiz.atlassian.net/browse/EV-14181
+    let userWorkId = items[currentItem]?._id;
+    if (sourceId === "resourceId") {
+      userWorkId = passage._id;
+    }
+
     saveUserWork({
-      [items[currentItem]?._id]: { ...userWork, [sourceId]: data }
+      [userWorkId]: { ...userWork, [sourceId]: data }
     });
     const qId = items[currentItem].data.questions[0].id;
     if (!userAnswers[qId]) {
@@ -332,8 +337,6 @@ class AssessmentPlayerDefault extends React.Component {
       scratchpadActivity,
       showHints,
       timedAssignment = false,
-      currentAssignmentTime = null,
-      stopTimerFlag = false,
       groupId,
       utaId
     } = this.props;
@@ -621,12 +624,6 @@ class AssessmentPlayerDefault extends React.Component {
                     enableMagnifier={enableMagnifier}
                   />
                 )}
-                {/* we may need to bring hint button back */}
-                {/* {showHints && (
-                  <StyledPaddingDiv>
-                    <Hints questions={get(item, [`data`, `questions`], [])} />
-                  </StyledPaddingDiv>
-                )} */}
               </MainWrapper>
             </Main>
 
@@ -684,7 +681,7 @@ const enhance = compose(
       preview: state.view.preview,
       questions: state.assessmentplayerQuestions.byId,
       scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].scratchpad`, null),
-      highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].resourceId`, null),
+      highlights: get(state, `userWork.present[${ownProps?.passage?._id}].resourceId`, null),
       crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].crossAction`, null),
       userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}]`, {}),
       settings: state.test.settings,

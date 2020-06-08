@@ -2,12 +2,14 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { launchAssignmentFromLinkAction } from "./Assignments/ducks";
-import { changeClassAction } from "./Login/ducks";
+import { changeClassAction, getUserRole } from "./Login/ducks";
 
-const StartAssignment = ({ match, launchAssignment, changeClass }) => {
+const StartAssignment = ({ match, launchAssignment, changeClass, userRole }) => {
   useEffect(() => {
     const { assignmentId, groupId } = match.params;
-    changeClass(groupId);
+    if (userRole === "student") {
+      changeClass(groupId);
+    }
     launchAssignment({ assignmentId, groupId });
   }, []);
   return <div> Initializing Assignment... </div>;
@@ -23,6 +25,7 @@ export default connect(
   null,
   {
     launchAssignment: launchAssignmentFromLinkAction,
-    changeClass: changeClassAction
+    changeClass: changeClassAction,
+    userRole: getUserRole
   }
 )(StartAssignment);

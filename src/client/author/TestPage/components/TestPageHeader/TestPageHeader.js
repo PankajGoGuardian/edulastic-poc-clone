@@ -1,4 +1,4 @@
-import { desktopWidth, themeColor, white } from "@edulastic/colors";
+import { desktopWidth, white } from "@edulastic/colors";
 import { MainHeader, EduButton } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import {
@@ -19,7 +19,6 @@ import React, { memo, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { get } from "lodash";
 import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
@@ -32,16 +31,9 @@ import {
   shouldDisableSelector,
   getTestItemsSelector
 } from "../../ducks";
-import { fetchAssignmentsAction, getAssignmentsSelector, getIsloadingAssignmentSelector } from "../Assign/ducks";
+import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import TestPageNav from "../TestPageNav/TestPageNav";
-import {
-  AssignButton,
-  MobileHeaderFilterIcon,
-  RightFlexContainer,
-  RightWrapper,
-  ShareIcon,
-  TestStatus
-} from "./styled";
+import { MobileHeaderFilterIcon, RightFlexContainer, RightWrapper, ShareIcon, TestStatus } from "./styled";
 import PrintTestModal from "../../../src/components/common/PrintTestModal";
 
 const { statusConstants, testContentVisibility: testContentVisibilityOptions } = test;
@@ -164,7 +156,7 @@ const TestPageHeader = ({
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
 
   useEffect(() => {
-    //TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
+    // TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
     if (!creating && match?.params?.oldId) {
       fetchAssignments({ testId: match?.params?.oldId, regradeAssignments: true });
     } else if (!creating && test?._id) {
@@ -209,7 +201,7 @@ const TestPageHeader = ({
 
   const handleRegrade = () => {
     if (isNotRegradable()) {
-      //For time being block teacher regrading a authors test is blocked here
+      // For time being block teacher regrading a authors test is blocked here
       message.warn("Teacher can not regrade author's test");
       return onPublish();
     }
@@ -276,13 +268,13 @@ const TestPageHeader = ({
     setShowPrintOptionPopup(true);
   };
 
+  const handleOnClickPrintCancel = () => setShowPrintOptionPopup(false);
+
   const handleOnClickPrintConfirm = params => {
     const { type, customValue } = params;
     handleOnClickPrintCancel();
     window.open(`/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}`, "_blank");
   };
-
-  const handleOnClickPrintCancel = () => setShowPrintOptionPopup(false);
 
   const headingSubContent = (
     <TestStatus
@@ -385,13 +377,14 @@ const TestPageHeader = ({
                 !isRegradeFlow && (
                   <EduButton
                     isGhost
-                    IconBtn
+                    IconBtn={!isPublishers}
                     title="Publish Test"
                     data-cy="publish"
                     onClick={handlePublish}
                     disabled={disableButtons}
                   >
                     <IconSend />
+                    {isPublishers && "Publish"}
                   </EduButton>
                 )
               )

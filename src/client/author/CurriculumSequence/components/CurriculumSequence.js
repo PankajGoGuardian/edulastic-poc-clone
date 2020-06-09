@@ -51,6 +51,7 @@ import CurriculumHeader from "./CurriculumHeaders";
 import CurriculumSubHeader from "./CurriculumHeaders/CurriculumSubHeader";
 import CurriculumBreadCrumb from "./CurriculumHeaders/BreadCrumb";
 import CurriculumRightPanel from "./CurriculumRightPanel";
+import { allowDuplicateCheck } from "../../src/utils/permissionCheck";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -474,7 +475,7 @@ class CurriculumSequence extends Component {
       loading,
       expandedModules,
       onCollapseExpand,
-      destinationCurriculumSequence,
+      destinationCurriculumSequence = {},
       windowWidth,
       selectContent,
       onDrop,
@@ -599,7 +600,10 @@ class CurriculumSequence extends Component {
 
     const isPlaylistDetailsPage = window.location?.hash === "#review";
     const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
-    const shouldHidCustomizeButton = status === "published" && isPlaylistDetailsPage;
+    const shouldHidCustomizeButton =
+      (isPlaylistDetailsPage || urlHasUseThis) &&
+      status === "published" &&
+      (!enableCustomize || !allowDuplicateCheck(destinationCurriculumSequence.collections, collections, "playlist"));
 
     const playlistsToSwitch = isStudent ? curatedStudentPlaylists : slicedRecentPlaylists;
     // should show useThis Notification only two times

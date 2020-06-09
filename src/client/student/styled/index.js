@@ -8,7 +8,10 @@ import {
   textColor,
   titleColor,
   title,
-  backgrounds
+  backgrounds,
+  white,
+  themeColor,
+  linkColor
 } from "@edulastic/colors";
 
 export const Wrapper = styled.div`
@@ -157,4 +160,39 @@ export const Title = styled.h3`
   display: block;
   margin-left: 12px;
   margin: 15px 0px;
+`;
+
+export const PaginationWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
+  margin: 20px 0px 0px;
+  padding: 0 5px;
+  font-size: 11px;
+  color: ${linkColor};
+  .ant-pagination-item-active {
+    a {
+      color: ${white};
+    }
+    background-color: ${themeColor};
+  }
+  .ant-pagination-item,
+  .ant-pagination-prev,
+  .ant-pagination-next {
+    box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
+    border: 0;
+    a {
+      border: none;
+    }
+  }
+
+  .ant-pagination {
+    margin: 0 10px;
+    &li {
+      .ant-pagination-item a {
+        color: ${linkColor};
+      }
+    }
+  }
 `;

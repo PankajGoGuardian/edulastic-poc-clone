@@ -6,6 +6,7 @@ import styled from "styled-components";
 import React from "react";
 import { withNamespaces } from "@edulastic/localization";
 import { largeDesktopWidth } from "@edulastic/colors";
+import { get } from "lodash";
 
 // actions
 import { setFilterAction } from "../../sharedDucks/AssignmentModule/ducks";
@@ -20,7 +21,14 @@ import { setStatusBgColor } from "../../utils";
 
 const breadcrumbData = [{ title: "ASSIGNMENTS", to: "" }];
 
-const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsCountByFilerName }) => {
+const AssignmentSubHeader = ({
+  t,
+  setFilter,
+  filter,
+  selectedTheme,
+  assignmentsCountByFilerName,
+  assignmentsCount
+}) => {
   const filterItems = Object.keys(FILTERS);
   const Filter = ({ value }) => (
     <FilterBtn
@@ -30,7 +38,7 @@ const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsC
       selectedTheme={selectedTheme}
       filter={filter}
     >
-      {assignmentsCountByFilerName[value]}&nbsp;{t(FILTERS[value])}
+      {value === "ALL" ? assignmentsCount : assignmentsCountByFilerName[value]}&nbsp;{t(FILTERS[value])}
     </FilterBtn>
   );
 
@@ -52,7 +60,8 @@ const enhance = compose(
     state => ({
       filter: filterSelector(state),
       selectedTheme: state.ui.selectedTheme,
-      assignmentsCountByFilerName: assignmentsCountByFilerNameSelector(state)
+      assignmentsCountByFilerName: assignmentsCountByFilerNameSelector(state),
+      assignmentsCount: get(state, "studentAssignment.assignmentsCount")
     }),
     {
       setFilter: setFilterAction

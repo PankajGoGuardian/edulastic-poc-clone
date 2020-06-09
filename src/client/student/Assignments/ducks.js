@@ -6,8 +6,7 @@ import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
-import { Effects ,notification } from "@edulastic/common";
-import { message } from "antd";
+import { Effects, notification } from "@edulastic/common";
 import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -271,8 +270,8 @@ function* fetchAssignments({ payload }) {
     const groupId = yield select(getCurrentGroup);
     const userId = yield select(getCurrentUserId);
     const classIds = yield select(getClassIds);
-    const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId),
+    const [{ assignments, assignmentsCount }, reports] = yield all([
+      call(assignmentApi.fetchAssigned, groupId, "", payload.pageNumber, payload.pageSize),
       call(reportsApi.fetchReports, groupId)
     ]);
     // transform to handle redirect
@@ -292,7 +291,7 @@ function* fetchAssignments({ payload }) {
       entities: { assignments: assignmentObj }
     } = normalize(assignmentsProcessed, [assignmentSchema]);
 
-    yield put(setAssignmentsAction({ allAssignments, assignmentObj }));
+    yield put(setAssignmentsAction({ allAssignments, assignmentObj, assignmentsCount: assignmentsCount.count }));
   } catch (e) {
     console.log(e);
   }
@@ -365,7 +364,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId
@@ -377,7 +376,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -388,7 +387,7 @@ function* startAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );
@@ -402,7 +401,7 @@ function* startAssignment({ payload }) {
     const { status, data = {} } = err;
     console.error(err);
     if (status === 403 && data.message) {
-      notification({ msg:data.message});
+      notification({ msg: data.message });
     }
   }
 }
@@ -454,7 +453,7 @@ function* resumeAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -465,7 +464,7 @@ function* resumeAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );

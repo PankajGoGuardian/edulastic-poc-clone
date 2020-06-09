@@ -58,6 +58,7 @@ const setAssignments = (state, { payload }) => {
     state.allIds = payload.allAssignments;
   }
   state.isLoading = false;
+  state.assignmentsCount = payload.assignmentsCount;
 };
 
 // filtering assignments

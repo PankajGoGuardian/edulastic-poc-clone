@@ -1,10 +1,10 @@
 import { largeDesktopWidth } from "@edulastic/colors";
 import { useRealtimeV2 } from "@edulastic/common";
 import useInterval from "@use-it/interval";
-import { Layout, Spin } from "antd";
+import { Layout, Spin, Pagination } from "antd";
 import { get, values } from "lodash";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import NoDataNotification from "../../../common/components/NoDataNotification";
@@ -17,7 +17,7 @@ import {
   rerenderAssignmentsAction
 } from "../../sharedDucks/AssignmentModule/ducks";
 import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
-import { Wrapper } from "../../styled";
+import { Wrapper, PaginationWrapper } from "../../styled";
 // actions
 import {
   assignmentsSelector,
@@ -70,7 +70,8 @@ const Content = ({
   rerenderAssignments,
   allAssignments,
   removeAssignment,
-  currentChild
+  currentChild,
+  assignmentsCount
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
@@ -102,6 +103,16 @@ const Content = ({
     }
   }, 60 * 1000);
 
+  const [pagination, setPagination] = useState({
+    pageNumber: 1,
+    pageSize: 100
+  });
+
+  const handlePagination = paginationData => {
+    setPagination(paginationData);
+    fetchAssignments({ currentGroup, ...paginationData });
+  };
+
   const noDataNotification = () => (
     <NoDataNotification
       heading="No Assignments "
@@ -128,6 +139,20 @@ const Content = ({
             : noDataNotification()
           : showLoader()}
       </Wrapper>
+      <PaginationWrapper>
+        <Pagination
+          current={pagination.pageNumber}
+          pageSize={pagination.pageSize}
+          onChange={pageNumber =>
+            handlePagination({
+              ...pagination,
+              pageNumber
+            })
+          }
+          total={assignmentsCount}
+          showSizeChanger={false}
+        />
+      </PaginationWrapper>
     </LayoutContent>
   );
 };
@@ -141,7 +166,8 @@ export default connect(
     allClasses: getClasses(state),
     userId: get(state, "user.user._id"),
     isLoading: get(state, "studentAssignment.isLoading"),
-    currentChild: state?.user?.currentChild
+    currentChild: state?.user?.currentChild,
+    assignmentsCount: get(state, "studentAssignment.assignmentsCount")
   }),
   {
     fetchAssignments: fetchAssignmentsAction,

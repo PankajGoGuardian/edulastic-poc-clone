@@ -38,6 +38,9 @@ import {
 import { getUserId, getUserFeatures, getUserSelector, getUserRole } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
+import { resetItemScoreAction } from "../../../ItemScore/ducks";
+import { clearAnswersAction } from "../../../actions/answers";
+import { clearEvaluationAction } from "../../../../../assessment/actions/evaluation";
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -70,6 +73,13 @@ class AuthorTestItemPreview extends Component {
     if (attachmentId) {
       loadScratchPad(attachmentId);
     }
+  }
+
+  componentWillUnmount() {
+    const { clearAnswers, clearEvaluation, resetItemScore } = this.props;
+    clearAnswers();
+    clearEvaluation();
+    resetItemScore();
   }
 
   handleTabChange = value => {
@@ -645,7 +655,10 @@ const enhance = compose(
       deleteItem: deleteItemAction,
       approveOrRejectSingleItem: approveOrRejectSingleItemAction,
       submitReviewFeedback: submitReviewFeedbackAction,
-      loadScratchPad: loadScratchPadAction
+      loadScratchPad: loadScratchPadAction,
+      resetItemScore: resetItemScoreAction,
+      clearAnswers: clearAnswersAction,
+      clearEvaluation: clearEvaluationAction
     }
   )
 );

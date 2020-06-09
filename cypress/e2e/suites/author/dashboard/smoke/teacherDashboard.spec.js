@@ -41,6 +41,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Dashboard`, () => {
     dashboard.verifyClassDetail(classDetail.name, classDetail.grades, classDetail.subject, classDetail.students);
   });
 
+  it("> verify google meet launcher is visible", () => {
+    dashboard.clickOnLaunchGoogleMeet();
+    dashboard.verifyLauncherPopupIsShown();
+    dashboard
+      .getClassListOnMeet()
+      .then(classes => expect(classes, "verify class list is shown").to.include(classDetail.name));
+  });
+
   it("> create new class and verify new class details on dashboard", () => {
     const { className, grade, subject, standardSet } = create;
     const name = `smokeaddstudent ${random}`;

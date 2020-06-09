@@ -7,7 +7,7 @@ const signupData = {
   name: "smoke signupstudent",
   email: "smoke.signupstudent@snapwiz.com",
   password: "snapwiz",
-  classCode: "CKO8FR"
+  classCode: "V28ZBK31"
 };
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Signup`, () => {

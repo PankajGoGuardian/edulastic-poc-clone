@@ -8,6 +8,7 @@ import { roleuser } from "@edulastic/constants";
 import { IconClose, IconCorrect } from "@edulastic/icons";
 import { withNamespaces } from "react-i18next";
 import { compose } from "redux";
+import { EduButton } from "@edulastic/common";
 import {
   StyledTextArea,
   PlaceHolderText,
@@ -29,7 +30,6 @@ import {
   IconSwap
 } from "./styled";
 import { ModalFormItem } from "../AddStudentModal/styled";
-import { EduButton } from "@edulastic/common";
 
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
@@ -354,13 +354,13 @@ class InviteMultipleStudentModal extends Component {
             {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
               <Row type="flex" justify="space-between" align="middle">
                 <ColWrapper span={11}>
-                  <PerfectScrollbar>{allLists || <div />}</PerfectScrollbar>
+                  <PerfectScrollbar data-cy="all-students">{allLists || <div />}</PerfectScrollbar>
                 </ColWrapper>
                 <Col span={2}>
                   <IconSwap type="swap" />
                 </Col>
                 <ColWrapper span={11}>
-                  <PerfectScrollbar>{toEnrollLists || <div />}</PerfectScrollbar>
+                  <PerfectScrollbar data-cy="students-to-enroll">{toEnrollLists || <div />}</PerfectScrollbar>
                 </ColWrapper>
               </Row>
             )}

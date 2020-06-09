@@ -43,6 +43,7 @@ const HangoutsModal = ({
             dropdownStyle={{ zIndex: 2000 }}
             defaultValue={selected?._id}
             onChange={onSelect}
+            data-cy="select-class"
           >
             {classList.map(({ _id, name }) => (
               <Select.Option key={_id} value={_id}>

@@ -1,17 +1,32 @@
+import CypressHelper from "../util/cypressHelpers";
+
 export default class TeacherDashBoardPage {
   // *** ELEMENTS START ***
 
   getClasCardByName = className => cy.get(`[data-cy="${className}"]`);
 
+  getMeetLauncherButton = () => cy.get('[data-cy="launch-google-meet"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
+  clickOnClassDropDown = () => cy.get('[data-cy="select-class"]').click();
+
   clickOnManageClass = () => cy.get('[data-cy="manageClass"]').click();
+
+  clickOnLaunchGoogleMeet = () => this.getMeetLauncherButton().click();
+
+  selectClassOnMeet = clas => CypressHelper.selectDropDownByAttribute("select-class", clas);
 
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
+
+  getClassListOnMeet = () => this.clickOnClassDropDown().then(() => CypressHelper.getDropDownList("select-class"));
+
+  verifyLauncherPopupIsShown = () =>
+    cy.contains("Select the class that you want to invite for the Google Meet session.").should("be.visible");
 
   verifyClassDetail = (className, grade, subject, students, assignmentCount = 0, assignmentTitle, asgnStatus) => {
     this.getClasCardByName(className).as("classCard");

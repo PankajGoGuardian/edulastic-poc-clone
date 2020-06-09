@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Menu, Icon } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { ClassSelect, ClassStatusButton, ClassStatusDropdown } from "./styled";
@@ -29,7 +29,7 @@ const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, set
   return (
     <ClassSelect>
       <ClassStatusDropdown overlay={menu}>
-        <ClassStatusButton>
+        <ClassStatusButton data-cy="class-status">
           {filterClass || options[0]} <Icon color={themeColor} type="down" />
         </ClassStatusButton>
       </ClassStatusDropdown>

@@ -54,6 +54,12 @@ export default class TeacherManageClassPage {
 
   removeStudentButton = () => cy.get(".ant-dropdown-menu-item").contains("Remove Student");
 
+  getStudentSearchInput = () => cy.get('[placeholder="Type student name or email"]');
+
+  getAllStudentSearchResult = () => cy.get('[data-cy="all-students"]');
+
+  getToEnrollStudents = () => cy.get('[data-cy="students-to-enroll"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -61,6 +67,7 @@ export default class TeacherManageClassPage {
   clickOnActionButton = () => {
     cy.get('[data-cy="actions"]').click();
   };
+
   clickOnActionAddToGroup = () => {
     this.clickOnActionButton();
     cy.contains("Add To Group").click();
@@ -273,6 +280,29 @@ export default class TeacherManageClassPage {
     cy.get('[data-cy="addMultipleStudent"]').click();
   };
 
+  clickOnClassStatusDropdown = () => cy.get('[data-cy="class-status"]').click();
+
+  selectActiveClass = () => {
+    this.clickOnClassStatusDropdown();
+    cy.contains("li", "Active Classes").click();
+  };
+
+  selectArchieveClass = () => {
+    this.clickOnClassStatusDropdown();
+    cy.contains("li", "Archived Classes").click();
+  };
+
+  archieveClass = () => {
+    cy.server();
+    cy.route("DELETE", "**/group/**").as("archieveClass");
+    cy.get('[data-cy="archive-class"]').click();
+    cy.get("input").type("ARCHIVE");
+    cy.contains("Yes, Archive").click();
+    cy.wait("@archieveClass")
+      .its("status")
+      .should("be.eq", 200);
+  };
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -314,7 +344,7 @@ export default class TeacherManageClassPage {
   };
 
   getDateInFormate = datetime => {
-    const [day, mon, date, year] = datetime.toDateString().split(" ");
+    const [mon, date, year] = datetime.toDateString().split(" ");
     return `${date} ${mon}, ${year}`;
   };
 
@@ -338,5 +368,32 @@ export default class TeacherManageClassPage {
     this.clickOnRemoveStudentPopupTextbox().type("REMOVE");
     this.clickOnRemoveButtonInPopUp();
   };
+
+  searchStudentAndAdd(username) {
+    cy.route("POST", "**/class-students").as("newenrollment");
+    cy.route("GET", "**/enrollment/**").as("enrollment");
+    cy.route("POST", "**/search/users").as("searchUser");
+    this.clickOnSearchTab();
+    this.getStudentSearchInput().type(username);
+    this.getAllStudentSearchResult()
+      .should("contains.text", username)
+      .contains(username)
+      .click();
+
+    this.getToEnrollStudents()
+      .contains(username)
+      .should("be.visible");
+    this.clickOnAddStudentsButton();
+    this.clickOnDone();
+  }
+
+  verifyClassRowVisibleByName = className => this.getClassRowByName(className).should("be.visible");
+
+  verifyNoClassRowByName = className =>
+    cy
+      .get("table")
+      .contains("span", className)
+      .should("not.exist");
+
   // *** APPHELPERS END ***
 }

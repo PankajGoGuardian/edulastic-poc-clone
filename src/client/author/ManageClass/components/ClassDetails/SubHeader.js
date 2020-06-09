@@ -157,7 +157,7 @@ const SubHeader = ({
         {active === 1 && !cleverId && (
           <Tooltip placement="top" title={`Archive ${typeText}`}>
             <span onClick={() => setShowModal(true)}>
-              <IconArchiveClass width={20} height={20} />
+              <IconArchiveClass data-cy="archive-class" width={20} height={20} />
             </span>
           </Tooltip>
         )}

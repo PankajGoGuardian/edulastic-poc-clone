@@ -28,6 +28,12 @@ const testData = {
     subject: "Mathematics",
     standardSet: "Math - Common Core"
   },
+  archieve: {
+    className: `smoke archive class-${random}`,
+    grade: grades.GRADE_10,
+    subject: "Mathematics",
+    standardSet: "Math - Common Core"
+  },
   edit: {
     className: `smoke edit new class-${random}`,
     grade: grades.GRADE_5,
@@ -188,6 +194,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
         });
       });
     });
+
+    it("> search and add existing student", () => {
+      const username = "search.addstu1@sw.com";
+      manageClass.getClassRowDetails(testData.create.className).then(cls => {
+        const previousCount = parseInt(cls.students, 10);
+        manageClass.getClassDetailsByName(testData.create.className);
+        manageClass.clickOnAddStudents();
+        manageClass.searchStudentAndAdd(username);
+        sideBar.clickOnManageClass();
+        cy.wait("@mygroups");
+        manageClass.getClassRowDetails(testData.create.className).then(c => {
+          expect(c.students).to.eq(`${previousCount + 1}`);
+        });
+      });
+    });
   });
 
   context("> edit class", () => {
@@ -235,6 +256,45 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
         expect(cls.students).to.eq("0");
         expect(cls.assignments).to.eq("0");
       });
+    });
+  });
+
+  context("> archieve class", () => {
+    const { className, grade, subject, standardSet } = testData.archieve;
+
+    before(() => {
+      sideBar.clickOnAssignment();
+      sideBar.clickOnManageClass();
+    });
+
+    it("> create new class", () => {
+      manageClass.clickOnCreateClass();
+      manageClass.fillClassDetails(className, undefined, undefined, grade, subject, standardSet);
+      manageClass.clickOnSaveClass();
+    });
+
+    it("> verify on active class list", () => {
+      sideBar.clickOnManageClass();
+      cy.wait("@mygroups");
+      manageClass.selectActiveClass();
+      manageClass.verifyClassRowVisibleByName(className);
+    });
+
+    it("> archive class and verify on archived list", () => {
+      manageClass.clickOnClassRowByName(className);
+      manageClass.archieveClass();
+
+      sideBar.clickOnAssignment();
+      sideBar.clickOnManageClass();
+      cy.wait("@mygroups");
+
+      // check in active class
+      manageClass.selectActiveClass();
+      manageClass.verifyNoClassRowByName(className);
+
+      // check in archieve class
+      manageClass.selectArchieveClass();
+      manageClass.verifyClassRowVisibleByName(className);
     });
   });
 });

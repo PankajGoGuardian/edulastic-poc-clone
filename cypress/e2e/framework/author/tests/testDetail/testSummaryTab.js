@@ -60,7 +60,8 @@ export default class TestSummayTab {
     cy.get(".ant-select-dropdown-menu-item")
       .contains(subject)
       .click({ force: true });
-    cy.focused().blur();
+    this.header.clickOnDescription();
+    // cy.focused().blur();
   };
 
   selectCollection = (collection, clear = false) => {
@@ -73,7 +74,8 @@ export default class TestSummayTab {
     cy.get(".ant-select-dropdown-menu-item")
       .contains(collection)
       .click({ force: true });
-    cy.focused().blur();
+    this.header.clickOnDescription();
+    // cy.focused().blur();
   };
 
   addTags = tags => {

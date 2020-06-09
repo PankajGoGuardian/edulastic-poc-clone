@@ -289,6 +289,7 @@ class ListItem extends Component {
                   (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.TEACHER || isPublisherUser) && (
                     <ViewButtonContainer>
                       <ViewButtonStyled
+                        data-cy="view"
                         onClick={e => {
                           e.stopPropagation();
                           this.showPreviewModal(item._id);
@@ -317,13 +318,14 @@ class ListItem extends Component {
             </Col>
 
             <Footer span={24}>
-              <TagsWrapper span={12}>
+              <TagsWrapper data-cy="test-standards" span={12}>
                 <Tags tags={tags} show={1} key="tags" />
                 {tags.length && standardsIdentifiers.length ? <span style={{ marginRight: "10px" }} /> : ""}
                 <Tags tags={standardsIdentifiers} show={1} key="standards" isStandards />
                 <TestStatusWrapper status={testStatus || _source?.status} checkUser={false}>
                   {({ children, ...rest }) => (
                     <TestStatus
+                      data-cy="test-status"
                       style={{
                         marginLeft: tags.length || (standardsIdentifiers && standardsIdentifiers.length) ? "10px" : 0
                       }}
@@ -348,12 +350,14 @@ class ListItem extends Component {
                         <IconUser color={cardTitleColor} />
                       )}{" "}
                       &nbsp;
-                      <AuthorName title={authorName}>{authorName}</AuthorName>
+                      <AuthorName data-cy="test-author-name" title={authorName}>
+                        {authorName}
+                      </AuthorName>
                     </Author>
                   )}
                   <CardIdWrapper>
                     <IconId /> &nbsp;
-                    <CardId>{testItemId}</CardId>
+                    <CardId data-cy="test-id">{testItemId}</CardId>
                   </CardIdWrapper>
                   <IconWrapper>
                     <IconShare color={darkGrey} width={14} height={14} /> &nbsp;

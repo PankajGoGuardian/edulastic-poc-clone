@@ -16,6 +16,14 @@ export default class SearchFilters {
       collection: "Collections",
       tags: "selectTags"
     };
+    this.testLibaryFilterAttrs = {
+      grades: "Grades",
+      subject: "Subject",
+      standardSet: "Standard set",
+      standard: "Standards",
+      collection: "Collections",
+      tags: "Tags"
+    };
   }
 
   getSearch = () => cy.get(".ant-input-search");
@@ -137,8 +145,8 @@ export default class SearchFilters {
 
   getTotalNoOfItemsInBank = () => this.getTotalPagesInPagination().then(count => count * 10);
 
-  setFilters = ({ standards, queType, dok, difficulty, collection, status, tags }) => {
-    const dataCyAttributes = this.itemBankFilterAttrs;
+  setFilters = ({ standards, queType, dok, difficulty, collection, status, tags }, isItemBank = true) => {
+    const dataCyAttributes = isItemBank ? this.itemBankFilterAttrs : this.testLibaryFilterAttrs;
     this.routeSearch();
     cy.route("POST", "**/search/browse-standards").as("brwose-standards-1");
     if (standards) {

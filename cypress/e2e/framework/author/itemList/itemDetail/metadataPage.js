@@ -75,9 +75,9 @@ class MetadataPage {
                   if (selector === "grade-Select") this.waitForStandarSearch();
                 });
 
-            cy.wait(300).then(() =>
-              expect(Cypress.$($ele).find(".ant-select-selection__choice__content").length).to.eq(0)
-            );
+            cy.wrap(Cypress.$($ele))
+              .find(".ant-select-selection__choice__content")
+              .should("have.length", 0);
           });
         }
       });

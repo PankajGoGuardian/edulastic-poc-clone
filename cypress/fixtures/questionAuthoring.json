@@ -778,7 +778,7 @@
   },
   "ESSAY_RICH": {
     "default": {
-      "quetext": "This Is Essay Rich Text",
+      "quetext": "This Is Essay Rich Text ESSAY_RICH.default",
       "attemptData": {
         "right": "right",
         "wrong": "wrong0",
@@ -797,7 +797,7 @@
       ]
     },
     "1": {
-      "quetext": "This Is Essay Rich Text",
+      "quetext": "This Is Essay Rich Text ESSAY_RICH.1",
       "attemptData": {
         "right": "right",
         "wrong": "wrong",
@@ -821,7 +821,7 @@
       }
     },
     "2": {
-      "quetext": "This Is Essay Rich Text",
+      "quetext": "This Is Essay Rich Text ESSAY_RICH.2",
       "attemptData": {
         "right": "right",
         "wrong": "wrong",
@@ -845,7 +845,7 @@
       }
     },
     "3": {
-      "quetext": "This Is Essay Rich Text",
+      "quetext": "This Is Essay Rich Text ESSAY_RICH.3",
       "attemptData": {
         "right": "right",
         "wrong": "wrong",
@@ -869,7 +869,7 @@
       }
     },
     "4": {
-      "quetext": "This Is Essay Rich Text",
+      "quetext": "This Is Essay Rich Text ESSAY_RICH.4",
       "attemptData": {
         "right": "right",
         "wrong": "wrong",
@@ -893,7 +893,7 @@
       }
     },
     "5": {
-      "quetext": "This Is Essay Rich Text",
+      "quetext": "This Is Essay Rich Text ESSAY_RICH.5",
       "attemptData": {
         "right": "right",
         "wrong": "wrong",

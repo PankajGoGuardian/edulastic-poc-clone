@@ -353,7 +353,7 @@ class ViewModal extends React.Component {
           </ModalColumn>
           <ModalColumn>
             <AssessmentNameLabel>Test Name</AssessmentNameLabel>
-            <AssessmentName>{title}</AssessmentName>
+            <AssessmentName data-cy="testcard-name">{title}</AssessmentName>
 
             <DescriptionLabel>Description</DescriptionLabel>
             <Description>{description}</Description>
@@ -361,23 +361,25 @@ class ViewModal extends React.Component {
             <Row gutter={10}>
               <Col span={12}>
                 <GradeLabel>Grade</GradeLabel>
-                <GradeConatiner>
+                <GradeConatiner data-cy="testcard-grades">
                   {grades && <Tags isGrayTags tags={selectedGrades} show={2} key="grades" />}
                 </GradeConatiner>
               </Col>
-              <Col span={12}>
+              <Col span={12} data-cy="testcard-subject">
                 <SubjectLabel>Subject</SubjectLabel>
                 {subjects && <Tags isGrayTags tags={subjects} show={1} key="subjects" />}
               </Col>
             </Row>
 
             <TagsLabel>Tags</TagsLabel>
-            <TagsConatiner>{tags && <Tags isCustomTags tags={tags} show={2} key="tags" />}</TagsConatiner>
+            <TagsConatiner data-cy="testcard-tags">
+              {tags && <Tags isCustomTags tags={tags} show={2} key="tags" />}
+            </TagsConatiner>
 
             <Footer>
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} />
-                <IconText>
+                <IconText data-cy="testcard-collection">
                   {sharing[0] ? sharing[0].type : item.status === "draft" ? "Private Library" : "Public Library"}
                 </IconText>
               </FooterIcon>
@@ -395,7 +397,7 @@ class ViewModal extends React.Component {
             <SummaryContainer>
               <SummaryTitle>Summary</SummaryTitle>
               <SummaryCardContainer>
-                <SummaryCard>
+                <SummaryCard data-cy="testcard-total-items">
                   <SummaryCardValue>
                     {isPlaylist
                       ? _source.modules && _source.modules.length
@@ -406,7 +408,7 @@ class ViewModal extends React.Component {
                   </SummaryCardValue>
                   <SummaryCardLabel>Items</SummaryCardLabel>
                 </SummaryCard>
-                <SummaryCard>
+                <SummaryCard data-cy="testcard-total-points">
                   <SummaryCardValue>{summary.totalPoints}</SummaryCardValue>
                   <SummaryCardLabel>Points</SummaryCardLabel>
                 </SummaryCard>
@@ -443,7 +445,7 @@ class ViewModal extends React.Component {
                     summary.standards.map(
                       data =>
                         !data.isEquivalentStandard && (
-                          <ListRow>
+                          <ListRow data-cy={data.identifier}>
                             <ListCell>
                               <SammaryMark>{data.identifier}</SammaryMark>
                             </ListCell>

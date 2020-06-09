@@ -285,7 +285,12 @@ class Item extends Component {
                 )}
                 {(status === "published" || status === "draft") && (
                   <>
-                    <EduButton style={btnStyle} height="32px" onClick={e => this.showPreviewModal(testId, e)}>
+                    <EduButton
+                      data-cy="test-preview-button"
+                      style={btnStyle}
+                      height="32px"
+                      onClick={e => this.showPreviewModal(testId, e)}
+                    >
                       Preview
                     </EduButton>
                     <EduButton style={btnStyle} height="32px" onClick={this.openModal}>
@@ -304,9 +309,9 @@ class Item extends Component {
             <StyledLink title={isPlaylist ? _source?.title : title}>{isPlaylist ? _source?.title : title}</StyledLink>
             {isPlaylist && <PlaylistDesc dangerouslySetInnerHTML={{ __html: _source.description }} />}
 
-            <TagsWrapper isPlaylist={isPlaylist}>
+            <TagsWrapper data-cy="test-standards" isPlaylist={isPlaylist}>
               <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
-              {isPlaylist && <Tags show={2} tags={_source.tags || tags} key="tags" />}
+              {isPlaylist && <Tags data-cy="test-tags" show={2} tags={_source.tags || tags} key="tags" />}
             </TagsWrapper>
           </TestInfo>
 
@@ -314,7 +319,9 @@ class Item extends Component {
             <MidRow>
               <Collection>
                 <label>COLLECTIONS</label>
-                <CollectionNameWrapper title={collectionName}>{collectionName}</CollectionNameWrapper>
+                <CollectionNameWrapper data-cy="test-collection" title={collectionName}>
+                  {collectionName}
+                </CollectionNameWrapper>
               </Collection>
               <Qcount>
                 <label>TOTAL ITEMS</label>
@@ -322,7 +329,7 @@ class Item extends Component {
                  * For doc based wee need to consider
                  *  total number questions and toal number of items
                  *  */}
-                <div>{isDocBased ? summary.totalQuestions : summary.totalItems}</div>
+                <div data-cy="test-item-count">{isDocBased ? summary.totalQuestions : summary.totalItems}</div>
               </Qcount>
             </MidRow>
           )}
@@ -336,14 +343,16 @@ class Item extends Component {
                   ) : (
                     <IconUser color={cardTitleColor} />
                   )}
-                  <AuthorName title={authorName}>{authorName}</AuthorName>
+                  <AuthorName data-cy="test-author-name" title={authorName}>
+                    {authorName}
+                  </AuthorName>
                 </AuthorWrapper>
               </Author>
             )}
             <StatusRow>
               <TestStatusWrapper status={status || _source?.status} checkUser={false}>
                 {({ children, ...rest }) => (
-                  <TestStatus {...rest} view="tile">
+                  <TestStatus data-cy="test-status" {...rest} view="tile">
                     {children}
                   </TestStatus>
                 )}
@@ -353,7 +362,7 @@ class Item extends Component {
 
           <Footer>
             {testItemId ? (
-              <PlaylistId>
+              <PlaylistId data-cy="test-id">
                 <span>#</span>
                 <span>{testItemId}</span>
               </PlaylistId>

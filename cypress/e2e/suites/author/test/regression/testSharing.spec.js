@@ -347,7 +347,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         // Verify sharing for techer from same school
         cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
         testLibrary.searchByCollection(COLLECTION.school);
+        testLibrary.verifyCollectionOnTestCardbyId(test_id, COLLECTION.school.toUpperCase());
         testLibrary.clickOnTestCardById(test_id);
+        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.school);
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
     });
@@ -387,7 +389,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         // Verify sharing for techer from different school but from same district
         cy.login("teacher", dist1_school2[teacher1][email], dist1_school2[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.district);
+        testLibrary.verifyCollectionOnTestCardbyId(test_id, COLLECTION.district.toUpperCase());
         testLibrary.clickOnTestCardById(test_id);
+        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.district);
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
     });
@@ -427,7 +431,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       }' from other district`, () => {
         cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.public);
+        testLibrary.verifyCollectionOnTestCardbyId(test_id, COLLECTION.public.toUpperCase());
         testLibrary.clickOnTestCardById(test_id);
+        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.public);
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
       it(`>assert share and 'View & Duplicate' for '${

@@ -47,16 +47,110 @@ export default class TestLibrary {
 
   getCreateNewTestButton = () => cy.get('[data-cy="createNew"]');
 
+  getTileViewButton = () => cy.get('[data-cy="tileView"]');
+
+  getListViewButton = () => cy.get('[data-cy="listView"]');
+
+  getPreviewByTestId = id => this.getTestCardById(id).find('[data-cy="view"]');
+
+  getTestIdOnCardByTestId = id => this.getTestCardById(id).find('[data-cy="test-id"]');
+
+  getAuthorNameByTestId = id => this.getTestCardById(id).find('[data-cy="test-author-name"]');
+
+  getCollectionByTestId = id => this.getTestCardById(id).find('[data-cy="test-collection"]');
+
+  getTotalItemCountBtTestId = id => this.getTestCardById(id).find('[data-cy="test-item-count"]');
+
+  getStandardsByTestId = id => this.getTestCardById(id).find('[data-cy="test-standards"]');
+
+  getTestTagsByTestId = id => this.getTestCardById(id).find('[data-cy="test-tags"]');
+
+  getTestStatusByTestId = id => this.getTestCardById(id).find('[data-cy="test-status"]');
+
+  getGradesOnTestCardPopUp = () => cy.get('[data-cy="testcard-grades"]');
+
+  getTestNameOnTestCardPopUp = () => cy.get('[data-cy="testcard-name"]');
+
+  getTestSubjectsOnTestCardPopUp = () => cy.get('[data-cy="testcard-subject"]');
+
+  getTestTagsOnTestCardPopUp = () => cy.get('[data-cy="testcard-tags"]');
+
+  getTestCollectionOnTestCardPopUp = () => cy.get('[data-cy="testcard-collection"]');
+
+  getTestTotalItemsOnTestCardPopUp = () => cy.get('[data-cy="testcard-total-items"]');
+
+  getTestTotalPointsOnTestCardPopUp = () => cy.get('[data-cy="testcard-total-points"]');
+
+  getStandardRowByStandardOnTestCardPopUp = standard => cy.get(`[data-cy="${standard}"]`);
+
+  getPreviewButtonOnTestCardPopUp = () => cy.get('[data-cy="preview-button"]');
+
+  getAssignButtonOnTestCardById = id =>
+    this.showButtonsOnTestCardById(id).then(() =>
+      this.getTestCardById(id)
+        .find("button")
+        .contains("Assign")
+    );
+
+  getPreviewButtonOnTestCardById = id =>
+    this.showButtonsOnTestCardById(id).then(() =>
+      this.getTestCardById(id)
+        .find("button")
+        .contains("Preview")
+    );
+
+  getMoreButtonOnTestCardById = id =>
+    this.showButtonsOnTestCardById(id).then(() =>
+      this.getTestCardById(id)
+        .find("button")
+        .contains("More")
+    );
+
+  getAllTestCardsInCurrentPage = () => cy.get('[data-cy="test-id"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   clickOnTileView = () => {
-    cy.get('[data-cy="tileView"]').click();
+    this.getTileViewButton()
+      .click()
+      .should("have.css", "color", "rgb(185, 185, 185)");
   };
 
   clickOnListView = () => {
-    cy.get('[data-cy="listView"]').click();
+    this.getListViewButton()
+      .click()
+      .should("have.css", "color", "rgb(185, 185, 185)");
+  };
+
+  clickOnPreviewByTestId = id => {
+    this.getPreviewByTestId(id).click();
+  };
+
+  showButtonsOnTestCardById = id =>
+    this.getTestCardById(id)
+      .find(".ant-card-head-title")
+      .trigger("mouseover");
+
+  clickAssignOnTestCardById = id => {
+    cy.server();
+    cy.route("POST", "**/group/search").as("load-classes");
+    this.getAssignButtonOnTestCardById(id).click({ force: true });
+    cy.wait("@load-classes");
+  };
+
+  clickMoreOnTestCardById = id => this.getMoreButtonOnTestCardById(id).click({ force: true });
+
+  clickPreviewOnTestCardById = id => this.getPreviewButtonOnTestCardById(id).click({ force: true });
+
+  clickPreviewOnTestCardPopUp = () => this.getPreviewButtonOnTestCardPopUp().click();
+
+  clickAssignOnTestCardPopUp = () => {
+    cy.server();
+    cy.route("POST", "**/group/search").as("load-classes");
+    this.getAssignEdit().click();
+    cy.wait("@load-classes");
   };
 
   clickOnAuthorTest = (fromAssignmentsPage = false) => {
@@ -404,13 +498,23 @@ export default class TestLibrary {
   };
 
   createNewTestAndFillDetails = testData => {
-    const { grade, name, subject, collections } = testData;
+    const { grade, name, subject, collections, tags } = testData;
     this.sidebar.clickOnTestLibrary();
     this.clickOnAuthorTest();
     this.testSummary.setName(name);
-    if (grade) this.testSummary.selectGrade(grade);
-    if (subject) this.testSummary.selectSubject(subject);
+    if (grade) {
+      this.testSummary.clearGrades();
+      if (Array.isArray(grade)) grade.forEach(gra => this.testSummary.selectGrade(gra));
+      else this.testSummary.selectGrade(grade);
+    }
+    if (subject) {
+      this.testSummary.clearSubjects();
+      if (Array.isArray(subject)) subject.forEach(sub => this.testSummary.selectSubject(sub));
+      else this.testSummary.selectSubject(subject);
+    }
     if (collections) this.testSummary.selectCollection(collections);
+
+    if (tags) this.testSummary.addTags(tags);
   };
 
   seachTestAndGotoReviewById = id => {
@@ -436,5 +540,112 @@ export default class TestLibrary {
     this.sidebar.clickOnTestLibrary();
     this.searchFilters.clearAll();
     this.searchFilters.setCollection(collection);
+  };
+
+  verifyLayoutByViewById = (id, isListView = false) => {
+    this.getAuthorNameByTestId(id);
+    if (!isListView) this.getPreviewByTestId(id).should("not.exist");
+    else this.getPreviewByTestId(id).should("exist");
+  };
+
+  verifyTestIdOnTestCardById = id => this.getTestIdOnCardByTestId(id).should("contain", this.getShortId(id));
+
+  verifyAuthorNameOnTestCardById = (id, author) => this.getAuthorNameByTestId(id).should("contain", author);
+
+  verifyCollectionOnTestCardbyId = (id, collection) => this.getCollectionByTestId(id).should("contain", collection);
+
+  verifyTotalItemCountByTestId = (id, count) => this.getTotalItemCountBtTestId(id).should("contain", count);
+
+  verifyStatusOnTestCardById = (id, status) => this.getTestStatusByTestId(id).should("contain", status);
+
+  verifyStandardsOnTestCardById = (id, standards) => {
+    this.getStandardsByTestId(id).then($ele => {
+      if ($ele.find(".ant-dropdown-trigger").length > 0)
+        cy.wrap($ele)
+          .find(".ant-dropdown-trigger")
+          .last()
+          .trigger("mouseover")
+          .then(() => cy.wait(500));
+    });
+    standards.forEach(sta =>
+      this.getStandardsByTestId(id)
+        .find("span")
+        .contains(sta)
+    );
+  };
+
+  verifyTagsOnTestCardById = (id, tags) => {
+    this.getStandardsByTestId(id).then($ele => {
+      if ($ele.find(".ant-dropdown-trigger").length > 0)
+        cy.wrap($ele)
+          .find(".ant-dropdown-trigger")
+          .first()
+          .trigger("mouseover")
+          .then(() => cy.wait(500));
+    });
+    tags.forEach(sta =>
+      this.getStandardsByTestId(id)
+        .find("span")
+        .contains(sta)
+    );
+  };
+
+  verifyGradesOnTestCardPopUp = grades => {
+    this.getGradesOnTestCardPopUp().then($ele => {
+      if ($ele.find(".ant-dropdown-trigger").length > 0)
+        cy.wrap($ele)
+          .find(".ant-dropdown-trigger")
+          .trigger("mouseover")
+          .then(() => cy.wait(500));
+    });
+    grades.forEach(grade => {
+      this.getGradesOnTestCardPopUp()
+        .find("span")
+        .contains(grade);
+    });
+  };
+
+  verifySubjectsOnTestCardPopUp = subjects =>
+    this.getTestSubjectsOnTestCardPopUp().then($ele => {
+      if ($ele.find(".ant-dropdown-trigger").length > 0)
+        cy.wrap($ele)
+          .find(".ant-dropdown-trigger")
+          .trigger("mouseover")
+          .then(() => cy.wait(500));
+
+      subjects.forEach(sub => {
+        this.getTestSubjectsOnTestCardPopUp()
+          .find("span")
+          .contains(sub);
+      });
+    });
+
+  verifyTestNameOnTestCardPopUp = name => this.getTestNameOnTestCardPopUp().should("contain", name);
+
+  verifyTestCollectionOnTestCardPopUp = collection =>
+    this.getTestCollectionOnTestCardPopUp().should("have.text", collection);
+
+  verifyTotalItemsOnTestCardPopUp = count =>
+    this.getTestTotalItemsOnTestCardPopUp().should("have.text", `${count}Items`);
+
+  verifyTotalPointsOnTestCardPopUp = points =>
+    this.getTestTotalPointsOnTestCardPopUp().should("have.text", `${points}Points`);
+
+  verifyStandardTableRowByStandard = (standard, questCount, points) => {
+    this.getStandardRowByStandardOnTestCardPopUp(standard)
+      .children()
+      .then($ele => {
+        cy.wrap($ele)
+          .eq(0)
+          .should("have.text", standard);
+
+        cy.wrap($ele)
+          .eq(1)
+          .should("have.text", `${questCount}`);
+
+        cy.wrap($ele)
+          .eq(2)
+          .should("have.text", `${points}`);
+      });
   };
 }

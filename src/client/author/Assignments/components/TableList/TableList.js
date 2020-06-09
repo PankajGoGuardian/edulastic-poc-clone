@@ -6,7 +6,7 @@ import { isEmpty, find, get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
 import { Dropdown, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { test as testConstants } from "@edulastic/constants";
+import { test as testConstants, roleuser } from "@edulastic/constants";
 
 import { FlexContainer, withWindowSizes, EduButton, CheckboxLabel } from "@edulastic/common";
 
@@ -39,7 +39,7 @@ import {
 } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
-import { getUserIdSelector } from "../../../src/selectors/user";
+import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
 import { getAssignmentTestsSelector } from "../../../src/selectors/assignments";
 import { ReactComponent as TimerIcon } from "./assets/timer.svg";
 import { canEditTest } from "../../utils";
@@ -65,7 +65,10 @@ const convertTableData = (data, assignments = [], index, userId) => ({
   assignmentVisibility: assignments.map(
     item => item.testContentVisibility || testConstants.testContentVisibility.ALWAYS
   ),
-  canEdit: canEditTest(data, userId)
+  canEdit: canEditTest(data, userId),
+  hasAdminAssignments: assignments.some(
+    item => item.assignedBy.role === roleuser.SCHOOL_ADMIN || item.assignedBy.role === roleuser.DISTRICT_ADMIN
+  )
 });
 
 const convertExpandTableData = (data, testItem, index) => ({
@@ -106,7 +109,8 @@ const TableList = ({
   userId = "",
   status = "",
   assignmentTests,
-  togglePrintModal
+  togglePrintModal,
+  userRole
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -365,7 +369,7 @@ const TableList = ({
                 userId,
                 assignmentTest,
                 togglePrintModal,
-                canEdit: row.canEdit
+                canEdit: row.canEdit && !(row.hasAdminAssignments && userRole === roleuser.TEACHER)
               })}
               placement="bottomRight"
               trigger={["click"]}
@@ -481,7 +485,8 @@ const enhance = compose(
       loading: get(state, "author_assignments.loading"),
       folderData: getFolderSelector(state),
       userId: getUserIdSelector(state),
-      assignmentTests: getAssignmentTestsSelector(state)
+      assignmentTests: getAssignmentTestsSelector(state),
+      userRole: getUserRole(state)
     }),
     {}
   )

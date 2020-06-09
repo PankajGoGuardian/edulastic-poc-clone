@@ -41,6 +41,7 @@ export const MobileFilterIcon = styled.div`
 export const ListItems = styled.div`
   flex: 1;
   padding-left: ${props => (props.isShowFilter ? "0px" : "30px")};
+  width: calc(100% - 370px); /* 370px --> width of the item filter */
 
   @media (max-width: ${desktopWidth}) {
     padding-left: 0px;

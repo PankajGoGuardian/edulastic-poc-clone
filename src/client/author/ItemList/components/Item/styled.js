@@ -113,6 +113,8 @@ export const Question = styled.div`
 export const QuestionContent = styled.div`
   flex: 1;
   line-height: 1;
+  width: calc(100% - 180px); /* 130px --> width of the Add btn */
+  margin-right: 10px;
 
   @media (max-width: ${tabletWidth}) {
     text-align: left;

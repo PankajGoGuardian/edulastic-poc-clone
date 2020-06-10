@@ -1,5 +1,5 @@
 import { themeColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
-import { math, questionType, canvasDimensions } from "@edulastic/constants";
+import { math, questionType, canvasDimensions, questionTitle } from "@edulastic/constants";
 
 import uuid from "uuid/v4";
 import {
@@ -955,7 +955,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCStandard,
       data: {
-        title: "Multiple Choice - Standard",
+        title: questionTitle.MCQ_STANDARD,
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {
@@ -1013,7 +1013,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCTrueFalse,
       data: {
-        title: "True or False",
+        title: questionTitle.MCQ_TRUE_OR_FALSE,
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {

@@ -1,6 +1,6 @@
-const QuestionTitles = require("./questionTitles");
+const questionTitle = require("./questionTitle");
 
-const { MCQ_STANDARD, MCQ_TRUE_OR_FALSE } = QuestionTitles;
+const { MCQ_STANDARD, MCQ_TRUE_OR_FALSE } = questionTitle;
 // 16:9
 
 const uiConfig = {

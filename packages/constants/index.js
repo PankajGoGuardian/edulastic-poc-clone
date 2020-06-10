@@ -1,4 +1,5 @@
 const questionType = require("./const/questionType");
+const questionTitle = require("./const/questionTitle");
 const evaluationType = require("./const/evaluationType.js");
 const nonAutoGradableTypes = require("./const/nonAutoGradableTypes.js");
 const httpMessages = require("./const/httpMessage");
@@ -33,6 +34,7 @@ const customTags = require("./const/customTags");
 module.exports = {
   question,
   questionType,
+  questionTitle,
   evaluationType,
   nonAutoGradableTypes,
   evaluatorTypes,

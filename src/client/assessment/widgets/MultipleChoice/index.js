@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { get, cloneDeep } from "lodash";
 import styled from "styled-components";
 import produce from "immer";
-
+import { questionTitle } from "@edulastic/constants";
 import { PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -234,13 +234,16 @@ class MultipleChoice extends Component {
                   {...restProps}
                 />
                 <Divider />
-                <CheckboxLabel
-                  data-cy="multi"
-                  onChange={() => this.handleOptionsChange("multipleResponses", !multipleResponses)}
-                  checked={multipleResponses}
-                >
-                  {t("component.multiplechoice.multipleResponses")}
-                </CheckboxLabel>
+                {/* checkbox should be hideden for True or False */}
+                {item.title !== questionTitle.MCQ_TRUE_OR_FALSE && (
+                  <CheckboxLabel
+                    data-cy="multi"
+                    onChange={() => this.handleOptionsChange("multipleResponses", !multipleResponses)}
+                    checked={multipleResponses}
+                  >
+                    {t("component.multiplechoice.multipleResponses")}
+                  </CheckboxLabel>
+                )}
               </Question>
 
               {advancedLink}

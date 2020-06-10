@@ -7,11 +7,11 @@ import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
-import QuestionTextArea from "../../../QuestionTextArea";
 import { Subtitle } from "../../../../styled/Subtitle";
 import { CustomStyleBtn } from "../../../../styled/ButtonStyles";
 import Question from "../../../Question";
 import QuillSortableList from "../../../QuillSortableList";
+import ComposeQuestion from "./ComposeQuestion";
 
 class GraphQuadrants extends Component {
   isQuadrantsPlacement = () => {
@@ -90,30 +90,19 @@ class GraphQuadrants extends Component {
   };
 
   render() {
-    const { t, graphData, fillSections, cleanSections, fontSize } = this.props;
+    const { t, graphData, fillSections, cleanSections, setQuestionData } = this.props;
 
     return (
       <div>
-        <Question
-          section="main"
-          label="Compose Question"
+        <ComposeQuestion
           cleanSections={cleanSections}
           fillSections={fillSections}
-          advancedAreOpen
-        >
-          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.question.composequestion")}`)}>
-            {t("component.graphing.question.composequestion")}
-          </Subtitle>
-
-          <QuestionTextArea
-            onChange={this.onChangeQuestion}
-            value={graphData.stimulus}
-            firstFocus={graphData.firstMount}
-            placeholder={t("component.graphing.question.enteryourquestion")}
-            border="border"
-            fontSize={fontSize}
-          />
-        </Question>
+          t={t}
+          stimulus={graphData.stimulus}
+          title={graphData.title}
+          setQuestionData={setQuestionData}
+          item={graphData}
+        />
         {this.isQuadrantsPlacement() && (
           <Question
             section="main"

@@ -605,6 +605,7 @@ const CustomEditor = ({
             this.hasFocus = false;
             this.toolbar.hide();
           }
+          setChange(this.html.get());
         },
         "commands.after": function(cmd) {
           if (cmd === "moreText") {
@@ -947,15 +948,7 @@ const CustomEditor = ({
           />
         )}
 
-        {configState && (
-          <Editor
-            tag={tag}
-            model={content}
-            onModelChange={setChange}
-            config={configState}
-            onManualControllerReady={manualControl}
-          />
-        )}
+        {configState && <Editor tag={tag} model={value} config={configState} onManualControllerReady={manualControl} />}
       </BackgroundStyleWrapper>
       <NoneDiv>
         <span ref={mathFieldRef} className="input__math__field" />

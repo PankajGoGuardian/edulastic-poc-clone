@@ -1422,7 +1422,7 @@ function* savePassage({ payload }) {
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),
       currentItem._id !== "new" ? call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId) : null
     ]);
-
+    yield put(changeUpdatedFlagAction(false));
     // if there is new, replace it with current Item's id.
     const url = backUrl.replace("new", currentItemId);
     yield put(push(url));

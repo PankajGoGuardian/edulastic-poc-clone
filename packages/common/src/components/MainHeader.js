@@ -22,17 +22,19 @@ const MainHeader = ({ children, headingText, Icon, toggleSideBar, ...restProps }
     <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
       <Container {...restProps}>
         <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-        <HeaderLeftContainer headingText={headingText} {...restProps} data-cy="header-left-container">
-          {Icon && (
-            <TitleIcon>
-              <Icon />
-            </TitleIcon>
-          )}
-          <TitleWrapper {...restProps} title={headingText} data-cy="title">
-            {headingText}
-          </TitleWrapper>
-          {restProps.headingSubContent}
-        </HeaderLeftContainer>
+        {headingText && (
+          <HeaderLeftContainer headingText={headingText} {...restProps} data-cy="header-left-container">
+            {Icon && (
+              <TitleIcon>
+                <Icon />
+              </TitleIcon>
+            )}
+            <TitleWrapper {...restProps} title={headingText} data-cy="title">
+              {headingText}
+            </TitleWrapper>
+            {restProps.headingSubContent}
+          </HeaderLeftContainer>
+        )}
         {children}
       </Container>
     </Affix>

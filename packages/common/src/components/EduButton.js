@@ -78,6 +78,10 @@ const StyledButton = styled(Button)`
     color: ${getColor};
   }
 
+  &.ant-btn[disabled] {
+    opacity: 0.3;
+  }
+
   &:first-child {
     margin-left: 0px;
   }

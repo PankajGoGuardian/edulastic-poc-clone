@@ -278,37 +278,51 @@ class AuthorTestItemPreview extends Component {
 
     const { isRejectMode } = this.state;
     const isOwner = item?.createdBy?._id === userId || userRole === roleuser.EDULASTIC_CURATOR;
+    const isDisableEdit = !(isEditable && userRole !== roleuser.EDULASTIC_CURATOR);
+    const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
     return (
       <>
         <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
           <ButtonsWrapper justifyContent="flex-start">
-            {allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR && (
-              <EduButton IconBtn isGhost width="28px" height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
-                <IconCopy color={themeColor} />
-                {/* <span>CLONE</span> */}
+            <EduButton
+              IconBtn
+              isGhost
+              width="28px"
+              height="28px"
+              title={isDisableDuplicate ? "Clone permission is restricted by the author" : "Clone"}
+              noHover={isDisableDuplicate}
+              disabled={isDisableDuplicate}
+              onClick={handleDuplicateTestItem}
+            >
+              <IconCopy color={themeColor} />
+            </EduButton>
+            {disableEdit && userRole !== roleuser.EDULASTIC_CURATOR ? (
+              <EduButton
+                IconBtn
+                noHover
+                isGhost
+                disabled
+                height="28px"
+                width="28px"
+                title="Editing the question with dynamic parameters is disabled during the Test edit and regrade."
+              >
+                <IconPencilEdit color={themeColor} />
+              </EduButton>
+            ) : (
+              <EduButton
+                IconBtn
+                isGhost
+                height="28px"
+                width="28px"
+                title={isDisableEdit ? "Edit permission is restricted by the author" : "Edit item"}
+                noHover={isDisableEdit}
+                disabled={isDisableEdit}
+                onClick={editTestItem}
+              >
+                <IconPencilEdit color={themeColor} title="Edit item" />
               </EduButton>
             )}
-            {(isEditable || userRole === roleuser.EDULASTIC_CURATOR) &&
-              (disableEdit && userRole !== roleuser.EDULASTIC_CURATOR ? (
-                <EduButton
-                  IconBtn
-                  noHover
-                  isGhost
-                  disabled
-                  height="28px"
-                  width="28px"
-                  title="Editing the question with dynamic parameters is disabled during the Test edit and regrade."
-                >
-                  <IconPencilEdit color={themeColor} />
-                  {/* <span>edit</span> */}
-                </EduButton>
-              ) : (
-                <EduButton IconBtn isGhost height="28px" width="28px" title="Edit item" onClick={editTestItem}>
-                  <IconPencilEdit color={themeColor} title="Edit item" />
-                  {/* <span>edit</span> */}
-                </EduButton>
-              ))}
             {isOwner &&
               !(userFeatures?.isPublisherAuthor && item.status === "published") &&
               (page === "addItems" || page === "itemList") && (

@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin, message } from "antd";
+import { Spin } from "antd";
 import { withRouter } from "react-router-dom";
 import { isObject as _isObject, uniq as _uniq, get, omit } from "lodash";
 import { withWindowSizes, notification } from "@edulastic/common";
@@ -430,6 +430,12 @@ class Container extends PureComponent {
     }
   };
 
+  playlistHasDraftTests = () => {
+    const { playlist = {} } = this.props;
+    const modulesData = playlist.modules?.flatMap(({ data }) => data);
+    return modulesData.some(({ status }) => status === "draft");
+  };
+
   render() {
     const { creating, windowWidth, playlist, testStatus, userId, location: { state } = {}, useRole } = this.props;
     const { showShareModal, current, editEnable, showSelectCollectionsModal } = this.state;
@@ -479,6 +485,7 @@ class Container extends PureComponent {
           onShowSource={this.handleNavChange("source")}
           isPlaylist
           playlistStatus={status}
+          playlistHasDraftTests={this.playlistHasDraftTests}
         />
         {this.renderContent()}
       </>

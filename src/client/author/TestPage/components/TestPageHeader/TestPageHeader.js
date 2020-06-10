@@ -1,4 +1,4 @@
-import { tabletWidth, white } from "@edulastic/colors";
+import { tabletWidth, white, themeColor } from "@edulastic/colors";
 import { MainHeader, EduButton, notification } from "@edulastic/common";
 import { roleuser, test as testConstants } from "@edulastic/constants";
 import {
@@ -18,6 +18,7 @@ import React, { memo, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
+import { Modal } from "antd";
 import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
@@ -141,7 +142,8 @@ const TestPageHeader = ({
   testItems,
   isTestLoading,
   validateTest,
-  setDisableAlert
+  setDisableAlert,
+  playlistHasDraftTests
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -184,11 +186,30 @@ const TestPageHeader = ({
   };
 
   const handlePublish = () => {
+    if (isPlaylist && playlistHasDraftTests()) {
+      Modal.confirm({
+        title: "Do you want to Publish ?",
+        content:
+          "Playlist has some draft Test. Publishing the playlist will not display the draft test to users until they are published.",
+        onOk: () => {
+          onPublish();
+          Modal.destroyAll();
+        },
+        okText: "Yes, Publish",
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor, outline: "none" }
+        }
+      });
+      return;
+    }
     if (isUsed && (updated || test.status !== statusConstants.PUBLISHED) && testAssignments?.length > 0) {
       setCurrentAction("publish");
       onRegradeConfirm();
-      return true;
+      return;
     }
+
     onPublish();
   };
 

@@ -436,6 +436,8 @@ class ModuleRow extends Component {
     const { _id, data = [] } = module;
     const isParentRoleProxy = proxyUserRole === "parent";
 
+    const contentData = urlHasUseThis || isStudent ? data.filter(test => test?.status !== "draft") : data;
+
     const menu = (
       <Menu data-cy="addContentMenu">
         {curriculum.modules.map(moduleItem => (
@@ -508,7 +510,7 @@ class ModuleRow extends Component {
                 lockToContainerEdges
                 useDragHandle
               >
-                {data.map((moduleData, index) => {
+                {contentData.map((moduleData, index) => {
                   const { assignments = [], contentId, contentType, hidden } = moduleData;
                   const isTestType = contentType === "test";
                   const statusList = assignments.flatMap(item => item.class || []).flatMap(item => item.status || []);

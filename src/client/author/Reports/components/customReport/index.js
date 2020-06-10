@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { StyledContainer } from "../../common/styled";
-import { connect } from "react-redux";
-import CustomReportCard from "./customReportCard/customReportCard";
-import { getCustomReportAction, getCustomReportList, getCustomReportLoader } from "../../components/customReport/ducks";
 import { Result, Spin } from "antd";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { StyledContainer } from "../../common/styled";
+import CustomReportCard from "./customReportCard/customReportCard";
+import { getCustomReportAction, getCustomReportList, getCustomReportLoader } from "./ducks";
 
 const CustomReports = props => {
   const { customReportList = [], getCustomReport, isLoading, history } = props;
@@ -15,7 +15,7 @@ const CustomReports = props => {
     }
   }, []);
 
-  const showReport = (_id, title) => {
+  const showReport = _id => {
     history.push(`/author/reports/custom-reports/${_id}`);
   };
 
@@ -33,8 +33,8 @@ const CustomReports = props => {
 };
 
 CustomReports.propTypes = {
-  isLoading: PropTypes.bool,
-  customReportList: PropTypes.array,
+  isLoading: PropTypes.bool.isRequired,
+  customReportList: PropTypes.array.isRequired,
   getCustomReport: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 };

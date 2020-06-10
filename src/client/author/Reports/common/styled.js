@@ -125,6 +125,11 @@ export const StyledCard = styled(Card)`
 
 export const StyledContainer = styled.div`
   padding: 0px;
+  position: relative;
+`;
+
+export const StyledIframe = styled.iframe`
+  border: 0px;
 `;
 
 export const StyledTable = styled(Table)`

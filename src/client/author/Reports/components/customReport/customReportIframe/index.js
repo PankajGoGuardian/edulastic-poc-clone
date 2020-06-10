@@ -1,9 +1,17 @@
-import React, { useEffect, useRef } from "react";
-import { StyledContainer } from "../../../common/styled";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { Spin } from "antd";
-import { getCustomReportLoader, getCustomReportURL, getCustomReportURLAction, getCustomReportName } from "../ducks";
+import styled from "styled-components";
 import PropTypes from "prop-types";
+import { IconExpandArrowIn, IconExpandArrowOut } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
+import {
+  getCustomReportLoader,
+  getCustomReportURL as getCustomReportURLSelector,
+  getCustomReportURLAction,
+  getCustomReportName
+} from "../ducks";
+import { StyledContainer, StyledIframe } from "../../../common/styled";
 
 const CustomReportIframe = props => {
   const {
@@ -16,6 +24,8 @@ const CustomReportIframe = props => {
   } = props;
   const frameRef = useRef();
 
+  const [isFull, toggleFullScreen] = useState(false);
+
   useEffect(() => {
     if (params?.id) {
       getCustomReportURL(params.id);
@@ -26,14 +36,23 @@ const CustomReportIframe = props => {
     setDynamicBreadcrumb(customReportName);
   }, [customReportName]);
 
+  const toggleExpand = () => toggleFullScreen(!isFull);
+
+  const fullScreenStyle = { position: "absolute", height: "100vh", top: 0, zIndex: 1000, left: 0, right: 0 };
+
   return (
-    <StyledContainer style={{ position: "relative", height: "calc(100vh - 140px)", padding: "10px" }}>
+    <StyledContainer style={isFull ? fullScreenStyle : { position: "relative", height: "calc(100vh - 165px)" }}>
+      {!isLoading && (
+        <ExpandButton onClick={toggleExpand} isFull={isFull}>
+          {isFull ? <IconExpandArrowOut /> : <IconExpandArrowIn />}
+        </ExpandButton>
+      )}
       {isLoading ? (
         <Spin size="small" />
       ) : (
-        <iframe
-          width={"100%"}
-          height={"100%"}
+        <StyledIframe
+          width="100%"
+          height="100%"
           ref={frameRef}
           id={params?.id || ""}
           src={reportUrl}
@@ -45,9 +64,9 @@ const CustomReportIframe = props => {
 };
 
 CustomReportIframe.propTypes = {
-  isLoading: PropTypes.bool,
-  reportUrl: PropTypes.string,
-  customReportName: PropTypes.string,
+  isLoading: PropTypes.bool.isRequired,
+  reportUrl: PropTypes.string.isRequired,
+  customReportName: PropTypes.string.isRequired,
   getCustomReportURL: PropTypes.func.isRequired,
   setDynamicBreadcrumb: PropTypes.func.isRequired
 };
@@ -55,7 +74,7 @@ CustomReportIframe.propTypes = {
 const enhance = connect(
   state => ({
     isLoading: getCustomReportLoader(state),
-    reportUrl: getCustomReportURL(state),
+    reportUrl: getCustomReportURLSelector(state),
     customReportName: getCustomReportName(state)
   }),
   {
@@ -64,3 +83,16 @@ const enhance = connect(
 );
 
 export default enhance(CustomReportIframe);
+
+const ExpandButton = styled.div`
+  position: absolute;
+  right: ${({ isFull }) => (isFull ? 4 : -8)}px;
+  top: ${({ isFull }) => (isFull ? 4 : -8)}px;
+  cursor: pointer;
+  svg {
+    fill: ${themeColor};
+    &:hover {
+      fill: ${themeColor};
+    }
+  }
+`;

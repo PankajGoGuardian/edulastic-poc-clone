@@ -1,32 +1,30 @@
+import React from "react";
 import { Avatar, Col, Row } from "antd";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const CustomReportCard = ({ reportCards = [], showReport }) => {
-  return (
-    <Row gutter={20} type={"flex"} wrap={"wrap"}>
-      {reportCards.map(reportCard => (
-        <StyledReportCard span={8} key={reportCard._id} onClick={() => showReport(reportCard._id, reportCard.title)}>
-          <StyledRow type={"flex"} wrap={"wrap"}>
-            <Col span={4}>
-              <Avatar size="large" src={reportCard.thumbnail} />
-            </Col>
-            <Col span={20} title={reportCard.title}>
-              <StyledH3>{reportCard.title}</StyledH3>
-            </Col>
-            <Col span={24} title={reportCard.description}>
-              <StyledPara>{reportCard.description}</StyledPara>
-            </Col>
-          </StyledRow>
-        </StyledReportCard>
-      ))}
-    </Row>
-  );
-};
+const CustomReportCard = ({ reportCards = [], showReport }) => (
+  <Row gutter={20} type="flex" wrap="wrap">
+    {reportCards.map(reportCard => (
+      <StyledReportCard span={8} key={reportCard._id} onClick={() => showReport(reportCard._id, reportCard.title)}>
+        <StyledRow type="flex" wrap="wrap">
+          <Col span={4}>
+            <Avatar size="large" src={reportCard.thumbnail} />
+          </Col>
+          <Col span={20} title={reportCard.title}>
+            <StyledH3>{reportCard.title}</StyledH3>
+          </Col>
+          <Col span={24} title={reportCard.description}>
+            <StyledPara>{reportCard.description}</StyledPara>
+          </Col>
+        </StyledRow>
+      </StyledReportCard>
+    ))}
+  </Row>
+);
 
 CustomReportCard.propTypes = {
-  isLoading: PropTypes.bool,
-  reportCards: PropTypes.array
+  reportCards: PropTypes.array.isRequired
 };
 
 export default CustomReportCard;

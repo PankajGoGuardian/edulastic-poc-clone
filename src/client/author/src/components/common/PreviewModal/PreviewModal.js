@@ -4,7 +4,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Modal, message } from "antd";
+import { Spin, Modal } from "antd";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -178,7 +178,7 @@ class PreviewModal extends React.Component {
     }
     let keys = [...(selectedRows || [])];
     if (test.safeBrowser && !test.sebPassword) {
-      notification({ messageKey:"enterValidPassword"});
+      notification({ messageKey: "enterValidPassword" });
       return;
     }
     if (!keys.includes(item._id)) {
@@ -356,7 +356,17 @@ class PreviewModal extends React.Component {
               </EduButton>
             )}
             <EduButton IconBtn type="primary" width="140px" height="32px" onClick={this.toggleFullModal}>
-              {fullModal ? <IconCollapse /> : <IconExpand />} EXPAND
+              {fullModal ? (
+                <>
+                  <IconCollapse />
+                  COLLAPSE
+                </>
+              ) : (
+                <>
+                  <IconExpand />
+                  EXPAND
+                </>
+              )}
             </EduButton>
             <EduButton
               data-cy="close-preview"

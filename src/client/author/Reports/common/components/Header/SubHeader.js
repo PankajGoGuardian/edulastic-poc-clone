@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { EduButton } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import Breadcrumb from "../../../../src/components/Breadcrumb";
 
 const SubHeader = ({ breadcrumbsData, onRefineResultsCB, title, showFilter }) => {
-  const [refineButtonActive, setRefineButtonActive] = useState(false);
   const _onRefineResultsCB = event => {
     event.target.blur();
-    setRefineButtonActive(!refineButtonActive);
-    onRefineResultsCB(event, !refineButtonActive);
+    onRefineResultsCB(event, !showFilter);
   };
 
   const isShowBreadcrumb = title !== "Standard Reports";
@@ -25,7 +23,7 @@ const SubHeader = ({ breadcrumbsData, onRefineResultsCB, title, showFilter }) =>
       </HeaderTitle>
       {onRefineResultsCB ? (
         <StyledButton isGhost={!showFilter} onClick={_onRefineResultsCB}>
-          <IconFilter width={20} height={20} />
+          <IconFilter width={15} height={15} />
           FILTERS
         </StyledButton>
       ) : null}

@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+/* eslint-disable array-callback-return */
+import React, { useEffect, useRef } from "react";
 import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
 import { connect } from "react-redux";
+import { FlexContainer } from "@edulastic/common";
 
 import StandardsGradebook from "./standardsGradebook";
 import StandardsPerfromance from "./standardsPerformance";
@@ -14,40 +16,54 @@ import navigation from "../../common/static/json/navigation.json";
 
 import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
+import { FilterIcon, ReportContaner } from "../../common/styled";
 
 const StandardsMasteryReportContainer = props => {
-  const { gradebookSettings, setSMRSettingsAction, premium, setShowHeader } = props;
+  const {
+    gradebookSettings,
+    setSMRSettings,
+    resetAllReports,
+    premium,
+    setShowHeader,
+    updateNavigation,
+    loc,
+    history,
+    location,
+    match,
+    onRefineResultsCB,
+    showFilter
+  } = props;
 
   const firstRender = useRef(true);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       console.log("Standards Mastery Report Component Unmount");
-      props.resetAllReportsAction();
-    };
-  }, []);
+      resetAllReports();
+    },
+    []
+  );
 
   const computeChartNavigationLinks = filt => {
-    if (navigation.locToData[props.loc]) {
-      let arr = Object.keys(filt);
-      let obj = {};
-      arr.map((item, index) => {
-        let val = filt[item] === "" ? "All" : filt[item];
+    if (navigation.locToData[loc]) {
+      const arr = Object.keys(filt);
+      const obj = {};
+      arr.map(item => {
+        const val = filt[item] === "" ? "All" : filt[item];
         obj[item] = val;
       });
-      return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
-        getNavigationTabLinks(arr, "?" + qs.stringify(obj, { arrayFormat: "comma" }));
+      return next(navigation.navigation[navigation.locToData[loc].group], draft => {
+        getNavigationTabLinks(draft, `?${qs.stringify(obj, { arrayFormat: "comma" })}`);
       });
-    } else {
-      return [];
     }
+    return [];
   };
 
   useEffect(() => {
     if (!firstRender.current) {
-      let obj = {};
-      let arr = Object.keys(gradebookSettings.requestFilters);
-      arr.map((item, index) => {
+      const obj = {};
+      const arr = Object.keys(gradebookSettings.requestFilters);
+      arr.map(item => {
         if (gradebookSettings.requestFilters[item] === "") {
           obj[item] = "All";
         } else {
@@ -55,21 +71,19 @@ const StandardsMasteryReportContainer = props => {
         }
       });
       obj.testIds = gradebookSettings.selectedTest.map(items => items.key).join();
-      let path = qs.stringify(obj, { arrayFormat: "comma" });
-      props.history.push("?" + path);
+      const path = qs.stringify(obj, { arrayFormat: "comma" });
+      history.push(`?${path}`);
     }
     firstRender.current = false;
 
     const computedChartNavigatorLinks = computeChartNavigationLinks(gradebookSettings.requestFilters);
-    props.updateNavigation(!premium ? [computedChartNavigatorLinks[1]] : computedChartNavigatorLinks);
+    updateNavigation(!premium ? [computedChartNavigatorLinks[1]] : computedChartNavigatorLinks);
   }, [gradebookSettings]);
 
-  let computedChartNavigatorLinks;
-
   const onStandardsGradebookGoClick = _settings => {
-    let obj = {};
-    let arr = Object.keys(_settings.filters);
-    arr.map((item, index) => {
+    const obj = {};
+    const arr = Object.keys(_settings.filters);
+    arr.map(item => {
       if (_settings.filters[item] === "All") {
         obj[item] = "";
       } else {
@@ -77,48 +91,57 @@ const StandardsMasteryReportContainer = props => {
       }
     });
 
-    setSMRSettingsAction({
+    setSMRSettings({
       ...gradebookSettings,
       selectedTest: _settings.selectedTest,
       requestFilters: { ...obj }
     });
   };
 
+  const toggleFilter = e => {
+    if (onRefineResultsCB) {
+      onRefineResultsCB(e, !showFilter);
+    }
+  };
+
   return (
-    <>
+    <FlexContainer alignItems="flex-start">
       <StandardsFilters
         onGoClick={onStandardsGradebookGoClick}
-        loc={props.loc}
-        history={props.history}
-        location={props.location}
-        match={props.match}
-        style={props.showFilter ? { display: "block" } : { display: "none" }}
+        loc={loc}
+        history={history}
+        location={location}
+        match={match}
+        style={showFilter ? { display: "block" } : { display: "none" }}
       />
-      <Route
-        exact
-        path={`/author/reports/standards-gradebook`}
-        render={_props => {
-          setShowHeader(true);
-          return <StandardsGradebook {..._props} settings={gradebookSettings} pageTitle={props.loc} />;
-        }}
-      />
-      <Route
-        exact
-        path={`/author/reports/standards-performance-summary`}
-        render={_props => {
-          setShowHeader(true);
-          return <StandardsPerfromance {..._props} settings={gradebookSettings} />;
-        }}
-      />
-    </>
+      <ReportContaner showFilter={showFilter}>
+        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+        <Route
+          exact
+          path="/author/reports/standards-gradebook"
+          render={_props => {
+            setShowHeader(true);
+            return <StandardsGradebook {..._props} settings={gradebookSettings} pageTitle={loc} />;
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/standards-performance-summary"
+          render={_props => {
+            setShowHeader(true);
+            return <StandardsPerfromance {..._props} settings={gradebookSettings} />;
+          }}
+        />
+      </ReportContaner>
+    </FlexContainer>
   );
 };
 
 const ConnectedStandardsMasteryReportContainer = connect(
   state => ({ gradebookSettings: getReportsSMRSettings(state) }),
   {
-    setSMRSettingsAction,
-    resetAllReportsAction
+    setSMRSettings: setSMRSettingsAction,
+    resetAllReports: resetAllReportsAction
   }
 )(StandardsMasteryReportContainer);
 

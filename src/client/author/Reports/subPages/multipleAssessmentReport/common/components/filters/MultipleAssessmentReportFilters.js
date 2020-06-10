@@ -1,20 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, Fragment } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import styled from "styled-components";
-import { Row, Col, Button } from "antd";
 import { find, get, isEmpty, map } from "lodash";
 import queryString from "query-string";
-
+import { FieldLabel } from "@edulastic/common";
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
-import school from "@edulastic/api/src/school";
-
-import { StyledFilterWrapper, StyledGoButton } from "../../../../../common/styled";
 import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
 import { MultipleSelect } from "../../../../../common/components/widgets/MultipleSelect";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
-import FeaturesSwitch from "../../../../../../../features/components/FeaturesSwitch";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../../utils/transformers";
 import { toggleItem } from "../../../../../common/util";
@@ -29,10 +23,16 @@ import {
   setPrevMARFilterDataAction,
   getReportsMARFilterLoadingState
 } from "../../filterDataDucks";
-import { getUserRole , getUser } from "../../../../../../src/selectors/user";
-
+import { getUserRole, getUser } from "../../../../../../src/selectors/user";
 
 import staticDropDownData from "../../static/staticDropDownData.json";
+import {
+  StyledFilterWrapper,
+  StyledGoButton,
+  GoButtonWrapper,
+  SearchField,
+  ApplyFitlerLabel
+} from "../../../../../common/styled";
 
 const SingleAssessmentReportFilters = ({
   MARFilterData,
@@ -40,28 +40,26 @@ const SingleAssessmentReportFilters = ({
   testIds,
   user,
   role,
-  getMARFilterDataRequestAction,
-  setFiltersAction,
-  setTestIdAction,
+  style,
+  getMARFilterDataRequest,
+  setFilters,
+  setTestId,
   onGoClick: _onGoClick,
   location,
-  className,
   history,
-  style,
-  setPrevMARFilterDataAction,
+  setPrevMARFilterData,
   prevMARFilterData,
-  loading,
   performanceBandRequired
 }) => {
   const profiles = MARFilterData?.data?.result?.bandInfo || [];
 
   const schoolYear = useMemo(() => {
-    let schoolYear = [];
+    let _schoolYear = [];
     const arr = get(user, "orgData.terms", []);
     if (arr.length) {
-      schoolYear = arr.map((item, index) => ({ key: item._id, title: item.name }));
+      _schoolYear = arr.map(item => ({ key: item._id, title: item.name }));
     }
-    return schoolYear;
+    return _schoolYear;
   });
 
   useEffect(() => {
@@ -72,7 +70,7 @@ const SingleAssessmentReportFilters = ({
       const q = {
         termId
       };
-      getMARFilterDataRequestAction(q);
+      getMARFilterDataRequest(q);
     }
   }, []);
 
@@ -85,51 +83,51 @@ const SingleAssessmentReportFilters = ({
     dropDownData = getDropDownData(MARFilterData, user);
     const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
-      schoolYear.find((item, index) => item.key === search.termId) ||
-      schoolYear.find((item, index) => item.key === defaultTermId) ||
+      schoolYear.find(item => item.key === search.termId) ||
+      schoolYear.find(item => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
-    const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
+    const urlSubject = staticDropDownData.subjects.find(item => item.key === search.subject) || {
       key: "All",
       title: "All Subjects"
     };
-    const urlGrade = staticDropDownData.grades.find((item, index) => item.key === search.grade) || {
+    const urlGrade = staticDropDownData.grades.find(item => item.key === search.grade) || {
       key: "All",
       title: "All Grades"
     };
-    const urlCourseId = dropDownData.courses.find((item, index) => item.key === search.courseId) || {
+    const urlCourseId = dropDownData.courses.find(item => item.key === search.courseId) || {
       key: "All",
       title: "All Courses"
     };
-    const urlClassId = dropDownData.classes.find((item, index) => item.key === search.groupId) || {
+    const urlClassId = dropDownData.classes.find(item => item.key === search.groupId) || {
       key: "All",
       title: "All Classes"
     };
-    const urlGroupId = dropDownData.groups.find((item, index) => item.key === search.groupId) || {
+    const urlGroupId = dropDownData.groups.find(item => item.key === search.groupId) || {
       key: "All",
       title: "All Groups"
     };
     let urlSchoolId = { key: "All", title: "All Schools" };
     let urlTeacherId = { key: "All", title: "All Teachers" };
     if (role !== "teacher") {
-      urlSchoolId = dropDownData.schools.find((item, index) => item.key === search.schoolId) || {
+      urlSchoolId = dropDownData.schools.find(item => item.key === search.schoolId) || {
         key: "All",
         title: "All Schools"
       };
-      urlTeacherId = dropDownData.teachers.find((item, index) => item.key === search.teacherId) || {
+      urlTeacherId = dropDownData.teachers.find(item => item.key === search.teacherId) || {
         key: "All",
         title: "All Teachers"
       };
     }
-    const urlAssessmentType = staticDropDownData.assessmentType.find(
-      (item, index) => item.key === search.assessmentType
-    ) || {
+    const urlAssessmentType = staticDropDownData.assessmentType.find(item => item.key === search.assessmentType) || {
       key: "All",
       title: "All Assignment Types"
     };
 
     const testIdsArr = [].concat(search.testIds?.split(",") || []);
 
-    const urlTestIds = testIdsArr.map(key => find(dropDownData.testIdArr, test => test.key == key)).filter(item => item);
+    const urlTestIds = testIdsArr
+      .map(key => find(dropDownData.testIdArr, test => test.key == key))
+      .filter(item => item);
 
     const obtainedFilters = {
       termId: urlSchoolYear.key,
@@ -155,47 +153,51 @@ const SingleAssessmentReportFilters = ({
       delete urlParams.teacherId;
     }
 
-    setFiltersAction(urlParams);
-    setTestIdAction(urlTestIds);
+    setFilters(urlParams);
+    setTestId(urlTestIds);
 
     _onGoClick({
       selectedTest: urlTestIds,
       filters: urlParams
     });
 
-    setPrevMARFilterDataAction(MARFilterData);
+    setPrevMARFilterData(MARFilterData);
   }
 
   dropDownData = useMemo(() => filteredDropDownData(MARFilterData, user, { ...filters }), [MARFilterData, filters]);
 
-  processedTestIds = useMemo(() => processTestIds(
-      dropDownData,
-      {
-        termId: filters.termId,
-        subject: filters.subject,
-        grade: filters.grade,
-        courseId: filters.courseId,
-        classId: filters.classId,
-        groupId: filters.groupId,
-        schoolId: filters.schoolId,
-        teacherId: filters.teacherId,
-        assessmentType: filters.assessmentType
-      },
-      testIds,
-      role
-    ), [MARFilterData, filters, testIds]);
+  processedTestIds = useMemo(
+    () =>
+      processTestIds(
+        dropDownData,
+        {
+          termId: filters.termId,
+          subject: filters.subject,
+          grade: filters.grade,
+          courseId: filters.courseId,
+          classId: filters.classId,
+          groupId: filters.groupId,
+          schoolId: filters.schoolId,
+          teacherId: filters.teacherId,
+          assessmentType: filters.assessmentType
+        },
+        testIds,
+        role
+      ),
+    [MARFilterData, filters, testIds]
+  );
 
   const updateSchoolYearDropDownCB = selected => {
     const pathname = location.pathname;
     const _filters = { ...filters };
     _filters.termId = selected.key;
-    history.push(`${pathname  }?${  queryString.stringify(_filters)}`);
+    history.push(`${pathname}?${queryString.stringify(_filters)}`);
 
     const q = {
       termId: selected.key
     };
 
-    getMARFilterDataRequestAction(q);
+    getMARFilterDataRequest(q);
   };
 
   const updateSubjectDropDownCB = selected => {
@@ -206,7 +208,7 @@ const SingleAssessmentReportFilters = ({
       },
       orgDataArr: dropDownData.orgDataArr
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
 
   const onChangePerformanceBand = selected => {
@@ -217,7 +219,7 @@ const SingleAssessmentReportFilters = ({
       },
       orgDataArr: dropDownData.orgDataArr
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
 
   const updateGradeDropDownCB = selected => {
@@ -228,7 +230,7 @@ const SingleAssessmentReportFilters = ({
       },
       orgDataArr: dropDownData.orgDataArr
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
   const updateCourseDropDownCB = selected => {
     const obj = {
@@ -238,42 +240,42 @@ const SingleAssessmentReportFilters = ({
       },
       orgDataArr: dropDownData.orgDataArr
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
   const updateClassesDropDownCB = selected => {
     const obj = {
       ...filters,
       classId: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
   const updateGroupsDropDownCB = selected => {
     const obj = {
       ...filters,
       groupId: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
   const updateSchoolsDropDownCB = selected => {
     const obj = {
       ...filters,
       schoolId: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
   const updateTeachersDropDownCB = selected => {
     const obj = {
       ...filters,
       teacherId: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
   const updateAssessmentTypeDropDownCB = selected => {
     const obj = {
       ...filters,
       assessmentType: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
 
   const onGoClick = () => {
@@ -285,134 +287,138 @@ const SingleAssessmentReportFilters = ({
   };
 
   const onSelectTest = test => {
-    const items = toggleItem(map(testIds, test => test.key), test.key);
-    setTestIdAction(processedTestIds.testIds.filter(test => !!items.includes(test.key)));
+    const items = toggleItem(map(testIds, _test => _test.key), test.key);
+    setTestId(processedTestIds.testIds.filter(_test => !!items.includes(_test.key)));
   };
 
   const onChangeTest = items => {
     if (!items.length) {
-      setTestIdAction([]);
+      setTestId([]);
     }
   };
 
   return (
-    <div className={className} style={style}>
-      <StyledFilterWrapper>
-        <Row type="flex" className="single-assessment-report-top-filter">
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <ControlDropDown
-              by={filters.termId}
-              selectCB={updateSchoolYearDropDownCB}
-              data={dropDownData.schoolYear}
-              prefix="School Year"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <ControlDropDown
-              by={filters.subject}
-              selectCB={updateSubjectDropDownCB}
-              data={staticDropDownData.subjects}
-              prefix="Subject"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+    <StyledFilterWrapper style={style}>
+      <GoButtonWrapper>
+        <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
+        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+      </GoButtonWrapper>
+      <SearchField>
+        <FieldLabel>Assessment Name</FieldLabel>
+        <MultipleSelect
+          containerClassName="single-assessment-report-test-autocomplete"
+          data={processedTestIds.testIds ? processedTestIds.testIds : []}
+          valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+          by={testIds}
+          prefix="Assessment Name"
+          onSelect={onSelectTest}
+          onChange={onChangeTest}
+          placeholder="All Assessments"
+        />
+      </SearchField>
+      {performanceBandRequired && (
+        <SearchField>
+          <FieldLabel>Performance Band</FieldLabel>
+          <ControlDropDown
+            by={{ key: filters.profileId }}
+            selectCB={onChangePerformanceBand}
+            data={profiles.map(p => ({ key: p._id, title: p.name }))}
+            prefix="Performance Band"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+      )}
+      <SearchField>
+        <FieldLabel>Assessment Type</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Assessment Type"
+          by={filters.assessmentType}
+          selectCB={updateAssessmentTypeDropDownCB}
+          data={staticDropDownData.assessmentType}
+        />
+      </SearchField>
+      {role !== "teacher" && (
+        <Fragment>
+          <SearchField>
+            <FieldLabel>School</FieldLabel>
             <AutocompleteDropDown
-              prefix="Grade"
-              className="custom-1-scrollbar"
-              by={filters.grade}
-              selectCB={updateGradeDropDownCB}
-              data={staticDropDownData.grades}
+              prefix="School"
+              by={filters.schoolId}
+              selectCB={updateSchoolsDropDownCB}
+              data={dropDownData.schools}
             />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          </SearchField>
+          <SearchField>
+            <FieldLabel>Teacher</FieldLabel>
             <AutocompleteDropDown
-              prefix="Course"
-              by={filters.courseId}
-              selectCB={updateCourseDropDownCB}
-              data={dropDownData.courses}
+              prefix="Teacher"
+              by={filters.teacherId}
+              selectCB={updateTeachersDropDownCB}
+              data={dropDownData.teachers}
             />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <AutocompleteDropDown
-              prefix="Class"
-              by={filters.classId}
-              selectCB={updateClassesDropDownCB}
-              data={dropDownData.classes}
-              dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
-            />
-          </Col>
-          <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <AutocompleteDropDown
-                prefix="Group"
-                by={filters.groupId}
-                selectCB={updateGroupsDropDownCB}
-                data={dropDownData.groups}
-                dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
-              />
-            </Col>
-          </FeaturesSwitch>
-          {role !== "teacher" ? (
-            <>
-              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-                <AutocompleteDropDown
-                  prefix="School"
-                  by={filters.schoolId}
-                  selectCB={updateSchoolsDropDownCB}
-                  data={dropDownData.schools}
-                />
-              </Col>
-              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-                <AutocompleteDropDown
-                  prefix="Teacher"
-                  by={filters.teacherId}
-                  selectCB={updateTeachersDropDownCB}
-                  data={dropDownData.teachers}
-                />
-              </Col>
-            </>
-          ) : null}
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <AutocompleteDropDown
-              prefix="Assessment Type"
-              by={filters.assessmentType}
-              selectCB={updateAssessmentTypeDropDownCB}
-              data={staticDropDownData.assessmentType}
-            />
-          </Col>
-          {performanceBandRequired ? (
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <ControlDropDown
-                by={{ key: filters.profileId }}
-                selectCB={onChangePerformanceBand}
-                data={profiles.map(p => ({ key: p._id, title: p.name }))}
-                prefix="Performance Band"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          ) : null}
-          <Col xs={12} sm={12} md={10} lg={6} xl={6} className="single-assessment-report-test-autocomplete-container">
-            <MultipleSelect
-              containerClassName="single-assessment-report-test-autocomplete"
-              data={processedTestIds.testIds ? processedTestIds.testIds : []}
-              valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
-              by={testIds}
-              prefix="Assessment Name"
-              onSelect={onSelectTest}
-              onChange={onChangeTest}
-              placeholder="All Assessments"
-            />
-          </Col>
-          <Col className="single-assessment-report-go-button-container">
-            <StyledGoButton type="primary" shape="round" onClick={onGoClick}>
-              Go
-            </StyledGoButton>
-          </Col>
-        </Row>
-      </StyledFilterWrapper>
-    </div>
+          </SearchField>
+        </Fragment>
+      )}
+      <SearchField>
+        <FieldLabel>Group</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Group"
+          by={filters.groupId}
+          selectCB={updateGroupsDropDownCB}
+          data={dropDownData.groups}
+          dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Class</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Class"
+          by={filters.classId}
+          selectCB={updateClassesDropDownCB}
+          data={dropDownData.classes}
+          dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Course</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Course"
+          by={filters.courseId}
+          selectCB={updateCourseDropDownCB}
+          data={dropDownData.courses}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Grade</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Grade"
+          className="custom-1-scrollbar"
+          by={filters.grade}
+          selectCB={updateGradeDropDownCB}
+          data={staticDropDownData.grades}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Subject</FieldLabel>
+        <ControlDropDown
+          by={filters.subject}
+          selectCB={updateSubjectDropDownCB}
+          data={staticDropDownData.subjects}
+          prefix="Subject"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>School Year</FieldLabel>
+        <ControlDropDown
+          by={filters.termId}
+          selectCB={updateSchoolYearDropDownCB}
+          data={dropDownData.schoolYear}
+          prefix="School Year"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+    </StyledFilterWrapper>
   );
 };
 
@@ -428,55 +434,12 @@ const enhance = compose(
       loading: getReportsMARFilterLoadingState(state)
     }),
     {
-      getMARFilterDataRequestAction,
-      setFiltersAction,
-      setTestIdAction,
-      setPrevMARFilterDataAction
+      getMARFilterDataRequest: getMARFilterDataRequestAction,
+      setFilters: setFiltersAction,
+      setTestId: setTestIdAction,
+      setPrevMARFilterData: setPrevMARFilterDataAction
     }
   )
 );
 
-const StyledSingleAssessmentReportFilters = styled(SingleAssessmentReportFilters)`
-  padding: 10px;
-  .single-assessment-report-top-filter {
-    .control-dropdown {
-      margin: 0px;
-      padding: 5px;
-
-      button {
-        width: 100%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-    }
-
-    .autocomplete-dropdown {
-      margin: 0px;
-      padding: 5px;
-      .ant-select-auto-complete {
-        width: 100%;
-      }
-    }
-  }
-
-  .single-assessment-report-go-button-container {
-    padding: 5px;
-  }
-
-  .single-assessment-report-bottom-filter {
-    .single-assessment-report-test-autocomplete-container {
-      flex: 1;
-    }
-    .single-assessment-report-test-autocomplete {
-      margin: 0px;
-      padding: 5px;
-      width: 100%;
-      .ant-select-show-search {
-        width: 100%;
-      }
-    }
-  }
-`;
-
-export default enhance(StyledSingleAssessmentReportFilters);
+export default enhance(SingleAssessmentReportFilters);

@@ -1,20 +1,16 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, Fragment } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import styled from "styled-components";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 import qs from "qs";
-import { Row, Col } from "antd";
-
+import { FieldLabel } from "@edulastic/common";
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
 
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
-import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
-import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../utils/transformers";
 import {
@@ -36,6 +32,13 @@ import { receivePerformanceBandAction } from "../../../../../PerformanceBand/duc
 import { receiveStandardsProficiencyAction } from "../../../../../StandardsProficiency/ducks";
 
 import staticDropDownData from "../static/staticDropDownData.json";
+import {
+  StyledFilterWrapper,
+  StyledGoButton,
+  GoButtonWrapper,
+  SearchField,
+  ApplyFitlerLabel
+} from "../../../../common/styled";
 
 const getTestIdFromURL = url => {
   if (url.length > 16) {
@@ -60,7 +63,6 @@ const SingleAssessmentReportFilters = ({
   setTestId,
   onGoClick: _onGoClick,
   location,
-  className,
   style,
   history,
   setPrevSARFilterData,
@@ -320,145 +322,136 @@ const SingleAssessmentReportFilters = ({
   ]);
 
   return (
-    <div className={className} style={style}>
-      <StyledFilterWrapper>
-        <Row type="flex" className="single-assessment-report-top-filter">
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <PrintablePrefix>School Year</PrintablePrefix>
-            <ControlDropDown
-              by={filters.termId}
-              selectCB={updateSchoolYearDropDownCB}
-              data={dropDownData.schoolYear}
-              prefix="School Year"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <PrintablePrefix>Subject</PrintablePrefix>
-            <ControlDropDown
-              by={filters.subject}
-              selectCB={updateSubjectDropDownCB}
-              data={staticDropDownData.subjects}
-              prefix="Subject"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <PrintablePrefix>Grade</PrintablePrefix>
+    <StyledFilterWrapper style={style}>
+      <GoButtonWrapper>
+        <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
+        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+      </GoButtonWrapper>
+      <SearchField>
+        <FieldLabel>Assessment Name</FieldLabel>
+        <AutocompleteDropDown
+          containerClassName="single-assessment-report-test-autocomplete"
+          data={processedTestIds.testIds ? processedTestIds.testIds : []}
+          by={testId}
+          prefix="Assessment Name"
+          selectCB={onTestIdChange}
+        />
+      </SearchField>
+      {isStandardProficiencyRequired && (
+        <SearchField>
+          <FieldLabel>Standard Proficiency</FieldLabel>
+          <ControlDropDown
+            by={filters.standardsProficiencyProfile || standardProficiencyProfiles[0]?._id}
+            selectCB={({ key }) => setStandardsProficiency(key)}
+            data={standardProficiencyList}
+            prefix="Standard Proficiency"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+      )}
+      {performanceBandRequired && (
+        <SearchField>
+          <FieldLabel>Performance Band </FieldLabel>
+          <ControlDropDown
+            by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
+            selectCB={({ key }) => setPerformanceBand(key)}
+            data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
+            prefix="Performance Band"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+      )}
+      <SearchField>
+        <FieldLabel>Assessment Type</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Assessment Type"
+          by={filters.assessmentType}
+          selectCB={updateAssessmentTypeDropDownCB}
+          data={staticDropDownData.assessmentType}
+        />
+      </SearchField>
+      {role !== "teacher" && (
+        <Fragment>
+          <SearchField>
+            <FieldLabel>School</FieldLabel>
             <AutocompleteDropDown
-              prefix="Grade"
-              className="custom-1-scrollbar"
-              by={filters.grade}
-              selectCB={updateGradeDropDownCB}
-              data={staticDropDownData.grades}
+              prefix="School"
+              by={filters.schoolId}
+              selectCB={updateSchoolsDropDownCB}
+              data={dropDownData.schools}
             />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <PrintablePrefix>Course</PrintablePrefix>
+          </SearchField>
+          <SearchField>
+            <FieldLabel>Teacher</FieldLabel>
             <AutocompleteDropDown
-              prefix="Course"
-              by={filters.courseId}
-              selectCB={updateCourseDropDownCB}
-              data={dropDownData.courses}
+              prefix="Teacher"
+              by={filters.teacherId}
+              selectCB={updateTeachersDropDownCB}
+              data={dropDownData.teachers}
             />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <PrintablePrefix>Class</PrintablePrefix>
-            <AutocompleteDropDown
-              prefix="Class"
-              by={filters.classId}
-              selectCB={updateClassesDropDownCB}
-              data={dropDownData.classes}
-              dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
-            />
-          </Col>
-          <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <PrintablePrefix>Group</PrintablePrefix>
-              <AutocompleteDropDown
-                prefix="Group"
-                by={filters.groupId}
-                selectCB={updateGroupsDropDownCB}
-                data={dropDownData.groups}
-                dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
-              />
-            </Col>
-          </FeaturesSwitch>
-          {role !== "teacher" ? (
-            <>
-              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-                <PrintablePrefix>School</PrintablePrefix>
-                <AutocompleteDropDown
-                  prefix="School"
-                  by={filters.schoolId}
-                  selectCB={updateSchoolsDropDownCB}
-                  data={dropDownData.schools}
-                />
-              </Col>
-              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-                <PrintablePrefix>Teacher</PrintablePrefix>
-                <AutocompleteDropDown
-                  prefix="Teacher"
-                  by={filters.teacherId}
-                  selectCB={updateTeachersDropDownCB}
-                  data={dropDownData.teachers}
-                />
-              </Col>
-            </>
-          ) : null}
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <PrintablePrefix>Assessment Type</PrintablePrefix>
-            <AutocompleteDropDown
-              prefix="Assessment Type"
-              by={filters.assessmentType}
-              selectCB={updateAssessmentTypeDropDownCB}
-              data={staticDropDownData.assessmentType}
-            />
-          </Col>
-          {performanceBandRequired ? (
-            <Col xs={12} sm={12} md={10} lg={6} xl={6}>
-              <PrintablePrefix>Performance Band </PrintablePrefix>
-              <ControlDropDown
-                by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
-                selectCB={({ key }) => setPerformanceBand(key)}
-                data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
-                prefix="Performance Band"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          ) : null}
-          {isStandardProficiencyRequired && (
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <PrintablePrefix>Standard Proficiency</PrintablePrefix>
-              <ControlDropDown
-                by={filters.standardsProficiencyProfile || standardProficiencyProfiles[0]?._id}
-                selectCB={({ key }) => setStandardsProficiency(key)}
-                data={standardProficiencyList}
-                prefix="Standard Proficiency"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          )}
-          <Col xs={12} sm={12} md={10} lg={6} xl={6} className="single-assessment-report-test-autocomplete-container">
-            <div>
-              <PrintablePrefix>Assessment Name</PrintablePrefix>
-            </div>
-            <AutocompleteDropDown
-              containerClassName="single-assessment-report-test-autocomplete"
-              data={processedTestIds.testIds ? processedTestIds.testIds : []}
-              by={testId}
-              prefix="Assessment Name"
-              selectCB={onTestIdChange}
-            />
-          </Col>
-          <Col className="single-assessment-report-go-button-container">
-            <StyledGoButton type="primary" onClick={onGoClick}>
-              Go
-            </StyledGoButton>
-          </Col>
-        </Row>
-      </StyledFilterWrapper>
-    </div>
+          </SearchField>
+        </Fragment>
+      )}
+      <SearchField>
+        <FieldLabel>Group</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Group"
+          by={filters.groupId}
+          selectCB={updateGroupsDropDownCB}
+          data={dropDownData.groups}
+          dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Class</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Class"
+          by={filters.classId}
+          selectCB={updateClassesDropDownCB}
+          data={dropDownData.classes}
+          dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Course</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Course"
+          by={filters.courseId}
+          selectCB={updateCourseDropDownCB}
+          data={dropDownData.courses}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Grade</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Grade"
+          className="custom-1-scrollbar"
+          by={filters.grade}
+          selectCB={updateGradeDropDownCB}
+          data={staticDropDownData.grades}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Subject</FieldLabel>
+        <ControlDropDown
+          by={filters.subject}
+          selectCB={updateSubjectDropDownCB}
+          data={staticDropDownData.subjects}
+          prefix="Subject"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>School Year</FieldLabel>
+        <ControlDropDown
+          by={filters.termId}
+          selectCB={updateSchoolYearDropDownCB}
+          data={dropDownData.schoolYear}
+          prefix="School Year"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+    </StyledFilterWrapper>
   );
 };
 
@@ -491,88 +484,4 @@ const enhance = compose(
   )
 );
 
-const PrintablePrefix = styled.b`
-  display: none;
-  padding-left: 5px;
-  float: left;
-
-  @media print {
-    display: block;
-  }
-`;
-
-const StyledSingleAssessmentReportFilters = styled(SingleAssessmentReportFilters)`
-  padding: 10px;
-  .single-assessment-report-top-filter {
-    .control-dropdown {
-      margin: 0px;
-      padding: 5px;
-
-      button {
-        width: 100%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-    }
-
-    .autocomplete-dropdown {
-      margin: 0px;
-      padding: 5px;
-      .ant-select-auto-complete {
-        width: 100%;
-      }
-    }
-  }
-
-  .single-assessment-report-go-button-container {
-    padding: 5px;
-  }
-
-  .single-assessment-report-bottom-filter {
-    .single-assessment-report-test-autocomplete-container {
-      flex: 1;
-    }
-    .single-assessment-report-test-autocomplete {
-      margin: 0px;
-      padding: 5px;
-      width: 100%;
-      .ant-select-show-search {
-        width: 100%;
-      }
-    }
-  }
-
-  @media print {
-    .control-dropdown,
-    .autocomplete-dropdown {
-      display: inline-block !important;
-      padding: 0px 0px 0px 10px !important;
-      width: auto !important;
-    }
-
-    .single-assessment-report-test-autocomplete {
-      display: block !important;
-    }
-
-    .ant-dropdown-trigger,
-    .ant-select-selection,
-    .ant-input {
-      border-color: transparent !important;
-      background-color: transparent !important;
-      box-shadow: none !important;
-      padding: 0px !important;
-      height: auto !important;
-    }
-
-    .ant-select {
-      height: 20px;
-    }
-
-    .ant-select-auto-complete.ant-select .ant-select-search--inline {
-      margin-top: -5px;
-    }
-  }
-`;
-
-export default enhance(StyledSingleAssessmentReportFilters);
+export default enhance(SingleAssessmentReportFilters);

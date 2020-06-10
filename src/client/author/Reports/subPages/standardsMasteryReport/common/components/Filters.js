@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import styled from "styled-components";
-import { Row, Col } from "antd";
 import { get, isEmpty, keyBy, uniqBy } from "lodash";
 import qs from "qs";
-
+import { FieldLabel } from "@edulastic/common";
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import { MultipleSelect } from "../../../../common/components/widgets/MultipleSelect";
@@ -28,9 +26,15 @@ import {
   setPrevStandardsFiltersAction
 } from "../filterDataDucks";
 
-import filtersDropDownData from "../static/json/filtersDropDownData";
+import filtersDropDownData from "../static/json/filtersDropDownData.json";
 import { getDomains } from "../utils";
-import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
+import {
+  StyledFilterWrapper,
+  StyledGoButton,
+  GoButtonWrapper,
+  SearchField,
+  ApplyFitlerLabel
+} from "../../../../common/styled";
 
 const StandardsFilters = ({
   filters,
@@ -38,83 +42,85 @@ const StandardsFilters = ({
   standardsFilters,
   browseStandards,
   user,
-  role,
   interestedCurriculums,
-  getStandardsBrowseStandardsRequestAction,
-  getStandardsFiltersRequestAction,
-  setFiltersAction,
-  setTestIdAction,
+  getStandardsBrowseStandardsRequest,
+  getStandardsFiltersRequest,
+  setFilters,
+  setTestId,
   onGoClick: _onGoClick,
   location,
-  className,
   style,
-  setPrevBrowseStandardsAction,
-  setPrevStandardsFiltersAction,
+  setPrevBrowseStandards,
+  setPrevStandardsFilters,
   prevBrowseStandards,
   prevStandardsFilters
 }) => {
-  const preSelected = user ?.districtId === "5ebbbb3b03b7ad0924d19c46";
+  const preSelected = user?.districtId === "5ebbbb3b03b7ad0924d19c46";
   const browseStandardsReceiveCount = useRef(0);
   const standardsFilteresReceiveCount = useRef(0);
+
+  const schoolYear = useMemo(() => {
+    let _schoolYear = [];
+    const arr = get(user, "orgData.terms", []);
+    if (arr.length) {
+      _schoolYear = arr.map(item => ({ key: item._id, title: item.name }));
+    }
+    return _schoolYear;
+  }, [user]);
+
+  const curriculums = useMemo(() => {
+    let _curriculums = [];
+    if (interestedCurriculums.length) {
+      _curriculums = interestedCurriculums.map(item => ({ key: item._id, title: item.name }));
+    }
+    return _curriculums;
+  }, [interestedCurriculums]);
 
   useEffect(() => {
     const search = qs.parse(location.search.substring(1));
     const defaultTermId = get(user, "orgData.defaultTermId", "");
+
     const urlSchoolYear =
-      schoolYear.find((item, index) => item.key === search.termId) ||
-      schoolYear.find((item, index) => item.key === defaultTermId) ||
+      schoolYear.find(item => item.key === search.termId) ||
+      schoolYear.find(item => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
     const urlSubject =
-      curriculums.find((item, index) => item.key === search.subject) || (preSelected && curriculums.find(x => x.title === "Math - Common Core")) ||
+      curriculums.find(item => item.key === search.subject) ||
+      (preSelected && curriculums.find(x => x.title === "Math - Common Core")) ||
       (curriculums[0] ? curriculums[0] : { key: "", title: "" });
 
     const gradesKeys = keyBy(search.grades);
-    let urlGrade = filtersDropDownData.grades.filter((item, index) => gradesKeys[item.key]);
+    let urlGrade = filtersDropDownData.grades.filter(item => gradesKeys[item.key]);
     if (!urlGrade.length) {
-      urlGrade = [(preSelected && filtersDropDownData.grades.find(x => x.title === "Grade 7")) || filtersDropDownData.grades[0]];
+      urlGrade = [
+        (preSelected && filtersDropDownData.grades.find(x => x.title === "Grade 7")) || filtersDropDownData.grades[0]
+      ];
     }
 
-    setFiltersAction({
+    setFilters({
       ...filters,
       termId: urlSchoolYear.key,
       subject: urlSubject.key,
-      grades: urlGrade.map((item, index) => item.key)
+      grades: urlGrade.map(item => item.key)
     });
 
     if (browseStandards !== prevBrowseStandards) {
       const q = {
         curriculumId: urlSubject.key || undefined,
-        grades: urlGrade.map((item, index) => item.key)
+        grades: urlGrade.map(item => item.key)
       };
-      getStandardsBrowseStandardsRequestAction(q);
+      getStandardsBrowseStandardsRequest(q);
     }
 
     if (prevStandardsFilters !== standardsFilters) {
       const _q = {
         termId: urlSchoolYear.key
       };
-      getStandardsFiltersRequestAction(_q);
+      getStandardsFiltersRequest(_q);
     }
   }, []);
 
   const scaleInfo = get(standardsFilters, "data.result.scaleInfo", []);
-
-  const schoolYear = useMemo(() => {
-    let schoolYear = [];
-    const arr = get(user, "orgData.terms", []);
-    if (arr.length) {
-      schoolYear = arr.map((item, index) => ({ key: item._id, title: item.name }));
-    }
-    return schoolYear;
-  }, [user]);
-
-  const curriculums = useMemo(() => {
-    let curriculums = [];
-    if (interestedCurriculums.length) {
-      curriculums = interestedCurriculums.map((item, index) => ({ key: item._id, title: item.name }));
-    }
-    return curriculums;
-  }, [interestedCurriculums]);
 
   const domains = useMemo(() => {
     let _domains = [{ key: "All", title: "All Domains" }];
@@ -124,7 +130,7 @@ const StandardsFilters = ({
       let arr = [];
       if (tempArr.length) {
         tempArr = getDomains(tempArr);
-        arr = tempArr.map((item, index) => ({ key: item.tloId, title: item.tloIdentifier }));
+        arr = tempArr.map(item => ({ key: item.tloId, title: item.tloIdentifier }));
       }
       _domains = _domains.concat(arr);
     }
@@ -132,10 +138,7 @@ const StandardsFilters = ({
   }, [browseStandards]);
 
   if (browseStandards !== prevBrowseStandards && !isEmpty(browseStandards)) {
-    // domainIds Received
-
-    const search = qs.parse(location.search.substring(1));
-    setPrevBrowseStandardsAction(browseStandards);
+    setPrevBrowseStandards(browseStandards);
 
     // check if domainId in url is in the array if not select the first one
 
@@ -148,10 +151,10 @@ const StandardsFilters = ({
 
     const _filters = {
       ...filters,
-      domainIds: urlDomainId.map((item, index) => item.key).join()
+      domainIds: urlDomainId.map(item => item.key).join()
     };
 
-    setFiltersAction(_filters);
+    setFilters(_filters);
 
     const settings = {
       filters: { ..._filters },
@@ -170,7 +173,7 @@ const StandardsFilters = ({
     if (standardsFilters && !isEmpty(standardsFilters)) {
       let tempArr = get(standardsFilters, "data.result.testData", []);
       tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
-      tempArr = tempArr.map((item, index) => ({
+      tempArr = tempArr.map(item => ({
         key: item.testId,
         title: item.testName
       }));
@@ -183,7 +186,7 @@ const StandardsFilters = ({
     // allTestIds Received
 
     const search = qs.parse(location.search.substring(1));
-    setPrevStandardsFiltersAction(standardsFilters);
+    setPrevStandardsFilters(standardsFilters);
 
     // check if testIds in url are valid (present in the array)
 
@@ -191,7 +194,7 @@ const StandardsFilters = ({
 
     const validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
 
-    setTestIdAction(validTestIds);
+    setTestId(validTestIds);
 
     const settings = {
       filters: { ...filters },
@@ -212,38 +215,38 @@ const StandardsFilters = ({
       ...filters,
       termId: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
 
     const q = {
       termId: selected.key
     };
-    getStandardsFiltersRequestAction(q);
+    getStandardsFiltersRequest(q);
   };
   const updateSubjectDropDownCB = selected => {
     const obj = {
       ...filters,
       subject: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
 
     const q = {
       curriculumId: selected.key || undefined,
       grades: obj.grades
     };
-    getStandardsBrowseStandardsRequestAction(q);
+    getStandardsBrowseStandardsRequest(q);
   };
   const updateGradeDropDownCB = selected => {
     const obj = {
       ...filters,
       grades: [selected.key]
     };
-    setFiltersAction(obj);
+    setFilters(obj);
 
     const q = {
       curriculumId: obj.subject || undefined,
       grades: [selected.key]
     };
-    getStandardsBrowseStandardsRequestAction(q);
+    getStandardsBrowseStandardsRequest(q);
   };
 
   const updateStandardProficiencyDropDownCB = selected => {
@@ -251,7 +254,7 @@ const StandardsFilters = ({
       ...filters,
       profileId: selected.key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
 
   const updateDomainDropDownCB = selected => {
@@ -263,13 +266,13 @@ const StandardsFilters = ({
         ...filters,
         domainIds: tempArr.join()
       };
-      setFiltersAction(obj);
+      setFilters(obj);
     } else {
       const obj = {
         ...filters,
         domainIds: [selected.key].join()
       };
-      setFiltersAction(obj);
+      setFilters(obj);
     }
   };
 
@@ -279,7 +282,7 @@ const StandardsFilters = ({
   //     ...filters,
   //     groupId: selected.key
   //   };
-  //   setFiltersAction(obj);
+  //   setFilters(obj);
   // };
 
   // const updateAssessmentTypeDropDownCB = selected => {
@@ -287,21 +290,21 @@ const StandardsFilters = ({
   //     ...filters,
   //     assessmentType: selected.key
   //   };
-  //   setFiltersAction(obj);
+  //   setFilters(obj);
   // };
 
   // const onTestIdChange = (selected, comData) => {
-  //   setTestIdAction(selected.key);
+  //   setTestId(selected.key);
   // };
 
   const onSelectTest = test => {
-    const items = toggleItem(testIds.map(test => test.key), test.key);
-    setTestIdAction(allTestIds.filter(test => !!items.includes(test.key)));
+    const items = toggleItem(testIds.map(_test => _test.key), test.key);
+    setTestId(allTestIds.filter(_test => !!items.includes(_test.key)));
   };
 
   const onChangeTest = items => {
     if (!items.length) {
-      setTestIdAction([]);
+      setTestId([]);
     }
   };
 
@@ -315,96 +318,97 @@ const StandardsFilters = ({
 
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
 
-  const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default) ?._id || "", [scaleInfo]);
+  const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default)?._id || "", [scaleInfo]);
   const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
 
   return (
-    <div className={className} style={style}>
-      <StyledFilterWrapper>
-        <Row type="flex" className="standards-gradebook-top-filter">
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <ControlDropDown
-              by={filters.termId}
-              selectCB={updateSchoolYearDropDownCB}
-              data={schoolYear}
-              prefix="School Year"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <ControlDropDown
-              by={filters.subject}
-              selectCB={updateSubjectDropDownCB}
-              data={curriculums}
-              prefix="Subject"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <AutocompleteDropDown
-              prefix="Grade"
-              className="custom-1-scrollbar"
-              by={filters.grades[0]}
-              selectCB={updateGradeDropDownCB}
-              data={filtersDropDownData.grades}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <AutocompleteDropDown
-              prefix="Domain"
-              by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0] || domains[0]}
-              selectCB={updateDomainDropDownCB}
-              data={domains}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <ControlDropDown
-              by={filters.profileId || selectedProficiencyId}
-              selectCB={updateStandardProficiencyDropDownCB}
-              data={standardProficiencyList}
-              prefix="Standard Proficiency"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          {/* // IMPORTANT: To be implemented later */}
-          {/* <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <AutocompleteDropDown
-              prefix="Class Section"
-              by={filters.groupId}
-              selectCB={updateClassSectionDropDownCB}
-              data={dropDownData.classSections}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-            <ControlDropDown
-              prefix="Assessment Type"
-              by={filters.assessmentType}
-              selectCB={updateAssessmentTypeDropDownCB}
-              data={filtersDropDownData.assessmentType}
-            />
-          </Col> */}
-        </Row>
-        <Row type="flex" className="standards-gradebook-bottom-filter">
-          <Col className="standards-gradebook-domain-autocomplete-container">
-            <MultipleSelect
-              containerClassName="standards-gradebook-domain-autocomplete"
-              data={allTestIds}
-              valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
-              by={testIds}
-              prefix="Assessment Name"
-              onSelect={onSelectTest}
-              onChange={onChangeTest}
-              placeholder="All Assessments"
-            />
-          </Col>
-          <Col className="standards-gradebook-go-button-container">
-            <StyledGoButton type="primary" shape="round" onClick={onGoClick}>
-              Go
-            </StyledGoButton>
-          </Col>
-        </Row>
-      </StyledFilterWrapper>
-    </div>
+    <StyledFilterWrapper style={style}>
+      <GoButtonWrapper>
+        <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
+        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+      </GoButtonWrapper>
+      <SearchField>
+        <FieldLabel>Assessment Name</FieldLabel>
+        <MultipleSelect
+          containerClassName="standards-gradebook-domain-autocomplete"
+          data={allTestIds}
+          valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+          by={testIds}
+          prefix="Assessment Name"
+          onSelect={onSelectTest}
+          onChange={onChangeTest}
+          placeholder="All Assessments"
+        />
+      </SearchField>
+      {/* // IMPORTANT: To be implemented later */}
+      {/* <SearchField>
+        <FieldLabel>Class Section</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Class Section"
+          by={filters.groupId}
+          selectCB={updateClassSectionDropDownCB}
+          data={dropDownData.classSections}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Assessment Type</FieldLabel>
+        <ControlDropDown
+          prefix="Assessment Type"
+          by={filters.assessmentType}
+          selectCB={updateAssessmentTypeDropDownCB}
+          data={filtersDropDownData.assessmentType}
+        />
+      </SearchField> */}
+      <SearchField>
+        <FieldLabel>Standard Proficiency</FieldLabel>
+        <ControlDropDown
+          by={filters.profileId || selectedProficiencyId}
+          selectCB={updateStandardProficiencyDropDownCB}
+          data={standardProficiencyList}
+          prefix="Standard Proficiency"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Domain</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Domain"
+          by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0] || domains[0]}
+          selectCB={updateDomainDropDownCB}
+          data={domains}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Grade</FieldLabel>
+        <AutocompleteDropDown
+          prefix="Grade"
+          className="custom-1-scrollbar"
+          by={filters.grades[0]}
+          selectCB={updateGradeDropDownCB}
+          data={filtersDropDownData.grades}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Subject</FieldLabel>
+        <ControlDropDown
+          by={filters.subject}
+          selectCB={updateSubjectDropDownCB}
+          data={curriculums}
+          prefix="Subject"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>School Year</FieldLabel>
+        <ControlDropDown
+          by={filters.termId}
+          selectCB={updateSchoolYearDropDownCB}
+          data={schoolYear}
+          prefix="School Year"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+    </StyledFilterWrapper>
   );
 };
 
@@ -422,57 +426,14 @@ const enhance = compose(
       prevStandardsFilters: getPrevStandardsFiltersSelector(state)
     }),
     {
-      getStandardsBrowseStandardsRequestAction,
-      getStandardsFiltersRequestAction,
-      setFiltersAction,
-      setTestIdAction,
-      setPrevBrowseStandardsAction,
-      setPrevStandardsFiltersAction
+      getStandardsBrowseStandardsRequest: getStandardsBrowseStandardsRequestAction,
+      getStandardsFiltersRequest: getStandardsFiltersRequestAction,
+      setFilters: setFiltersAction,
+      setTestId: setTestIdAction,
+      setPrevBrowseStandards: setPrevBrowseStandardsAction,
+      setPrevStandardsFilters: setPrevStandardsFiltersAction
     }
   )
 );
 
-const StyledStandardsFilters = styled(StandardsFilters)`
-  padding: 10px;
-  .standards-gradebook-top-filter {
-    .control-dropdown {
-      margin: 0px;
-      padding: 5px;
-
-      button {
-        width: 100%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-    }
-
-    .autocomplete-dropdown {
-      margin: 0px;
-      padding: 5px;
-      .ant-select-auto-complete {
-        width: 100%;
-      }
-    }
-  }
-
-  .standards-gradebook-go-button-container {
-    padding: 5px;
-  }
-
-  .standards-gradebook-bottom-filter {
-    .standards-gradebook-domain-autocomplete-container {
-      flex: 1;
-    }
-    .standards-gradebook-domain-autocomplete {
-      margin: 0px;
-      padding: 5px;
-      width: 100%;
-      .ant-select-show-search {
-        width: 100%;
-      }
-    }
-  }
-`;
-
-export default enhance(StyledStandardsFilters);
+export default enhance(StandardsFilters);

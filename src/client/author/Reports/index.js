@@ -169,6 +169,7 @@ const Container = props => {
               <SingleAssessmentReportContainer
                 {..._props}
                 showFilter={expandFilter}
+                onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
                 updateNavigation={setNavigationItems}
               />
@@ -185,6 +186,7 @@ const Container = props => {
             <MultipleAssessmentReportContainer
               {..._props}
               showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
               updateNavigation={setNavigationItems}
               setShowHeader={setShowHeader}
@@ -198,6 +200,7 @@ const Container = props => {
               {..._props}
               premium={props.premium}
               showFilter={expandFilter}
+              onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
               updateNavigation={setNavigationItems}
               setShowHeader={setShowHeader}
@@ -216,6 +219,7 @@ const Container = props => {
               <StudentProfileReportContainer
                 {..._props}
                 showFilter={showFilter}
+                onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
                 updateNavigation={setNavigationItems}
               />

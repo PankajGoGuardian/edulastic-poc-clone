@@ -9,7 +9,8 @@ import {
   themeColor,
   white
 } from "@edulastic/colors";
-import { Card } from "@edulastic/common";
+import { EduButton, Card, FieldLabel } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
 import { Text } from "@vx/text";
 import { Button, Col, Slider, Table } from "antd";
 import styled from "styled-components";
@@ -34,21 +35,20 @@ export const PrintablePrefix = styled.b`
   }
 `;
 
-export const StyledGoButton = styled(Button)`
-  font-size: 16px;
-  padding-right: 11px;
-  padding-left: 11px;
-  height: 37px;
-  border-radius: 3px;
-  background-color: ${themeColor} !important;
-  border-color: transparent;
+export const StyledGoButton = styled(EduButton)`
+  height: 24px;
+`;
+
+export const GoButtonWrapper = styled.div`
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledFilterWrapper = styled.div`
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px 20px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  margin-right: 30px;
+  width: 230px;
+  flex-shrink: 0;
 
   .ant-select-selection {
     &__rendered {
@@ -367,7 +367,6 @@ export const StyledDropDownContainer = styled(Col)`
 `;
 
 export const StyledAutocompleteDropDownContainer = styled.div`
-  margin: 0px 5px;
   overflow: hidden;
   button {
     white-space: pre-wrap;
@@ -402,7 +401,6 @@ export const StyledP = styled.p`
 
 export const NoDataContainer = styled.div`
   background: white;
-  margin: 20px 10px;
   height: 500px;
   display: flex;
   justify-content: center;
@@ -478,4 +476,30 @@ export const HideLinkLabel = styled(StyledLabel)`
   flex-shrink: 0;
   cursor: pointer;
   font-size: 9px;
+`;
+
+export const ReportContaner = styled.div`
+  width: ${({ showFilter }) => (showFilter ? "calc(100% - 260px)" : "100%")};
+  position: relative;
+`;
+
+export const FilterIcon = styled(IconFilter).attrs({
+  color: themeColor,
+  width: 15,
+  height: 15
+})`
+  margin-left: auto;
+  cursor: pointer;
+  position: absolute;
+  left: ${({ showFilter }) => (showFilter ? -45 : -20)}px;
+  top: 4px;
+  z-index: 50;
+`;
+
+export const SearchField = styled.div`
+  margin-bottom: 10px;
+`;
+
+export const ApplyFitlerLabel = styled(FieldLabel)`
+  margin-bottom: 0px;
 `;

@@ -15,9 +15,9 @@ const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
       <Menu.Item key={item.key} title={item.title}>
         {item.title}
       </Menu.Item>
-        ))}
+    ))}
   </Menu>
-  );
+);
 
 const ControlDropDown = ({
   className,
@@ -93,7 +93,7 @@ const ControlDropDown = ({
         trigger={trigger}
       >
         <Button title={title}>
-          {(showPrefixOnSelected ? `${prefix  } ` : "") + selected ?.title}
+          {(showPrefixOnSelected ? `${prefix} ` : "") + selected?.title}
           <Icon type={isActive ? "up" : "down"} />
         </Button>
       </Dropdown>
@@ -102,12 +102,11 @@ const ControlDropDown = ({
 };
 
 const StyledDiv = styled.div`
-  padding: 5px;
   button {
     display: flex;
     justify-content: start;
     align-items: center;
-    width: ${({ buttonWidth }) => (buttonWidth || "auto")};
+    width: ${({ buttonWidth }) => buttonWidth || "auto"};
     &.ant-btn.ant-dropdown-trigger {
       background-color: ${lightGreySecondary};
       border-color: ${fadedGrey};

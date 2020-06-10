@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable array-callback-return */
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
+import { FlexContainer } from "@edulastic/common";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
@@ -15,64 +17,70 @@ import StudentProfileReportsFilters from "./common/components/filter/StudentProf
 
 import { setSPRSettingsAction, getReportsSPRSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
+import { FilterIcon, ReportContaner } from "../../common/styled";
 
 const StudentProfileReportContainer = props => {
-  const { settings, setSPRSettingsAction } = props;
+  const { settings, loc, history, updateNavigation, location, match, showFilter, onRefineResultsCB } = props;
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       console.log("Student Profile Reports Component Unmount");
-      props.resetAllReportsAction();
-    };
-  }, []);
+      resetAllReportsAction();
+    },
+    []
+  );
 
   const computeChartNavigationLinks = (sel, filt) => {
-    if (navigation.locToData[props.loc]) {
-      let arr = Object.keys(filt);
-      let obj = {};
-      arr.map((item, index) => {
-        let val = filt[item] === "" ? "All" : filt[item];
+    if (navigation.locToData[loc]) {
+      const arr = Object.keys(filt);
+      const obj = {};
+      arr.map(item => {
+        const val = filt[item] === "" ? "All" : filt[item];
         obj[item] = val;
       });
-      return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
-        getNavigationTabLinks(arr, sel.key + "?" + qs.stringify(obj));
+      return next(navigation.navigation[navigation.locToData[loc].group], draft => {
+        getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`);
       });
-    } else {
-      return [];
     }
+    return [];
   };
 
   useEffect(() => {
     if (settings.selectedStudent.key) {
-      let path = settings.selectedStudent.key + "?" + qs.stringify(settings.requestFilters);
-      props.history.push(path);
+      const path = `${settings.selectedStudent.key}?${qs.stringify(settings.requestFilters)}`;
+      history.push(path);
       const computedChartNavigatorLinks = computeChartNavigationLinks(
         settings.selectedStudent,
         settings.requestFilters
       );
-      props.updateNavigation(computedChartNavigatorLinks);
+      updateNavigation(computedChartNavigatorLinks);
     }
     const computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedStudent, settings.requestFilters);
-    props.updateNavigation(computedChartNavigatorLinks);
+    updateNavigation(computedChartNavigatorLinks);
   }, [settings]);
 
   const onGoClick = _settings => {
-    props.setSPRSettingsAction({
+    setSPRSettingsAction({
       requestFilters: _settings.filters,
       selectedStudent: _settings.selectedStudent
     });
   };
+  const toggleFilter = e => {
+    if (onRefineResultsCB) {
+      onRefineResultsCB(e, !showFilter);
+    }
+  };
 
   return (
-    <>
-      <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
+    <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
+      <FlexContainer alignItems="flex-start">
         <StudentProfileReportsFilters
           onGoClick={onGoClick}
-          loc={props.loc}
-          history={props.history}
-          location={props.location}
-          match={props.match}
-          style={props.showFilter ? { display: "block", padding: "10px" } : { display: "none" }}
+          loc={loc}
+          history={history}
+          location={location}
+          match={match}
+          style={showFilter ? { display: "block" } : { display: "none" }}
           performanceBandRequired={[
             "/author/reports/student-profile-summary",
             "/author/reports/student-assessment-profile"
@@ -82,23 +90,26 @@ const StudentProfileReportContainer = props => {
             "/author/reports/student-mastery-profile"
           ].find(x => window.location.pathname.startsWith(x))}
         />
-        <Route
-          exact
-          path={`/author/reports/student-mastery-profile/student/:studentId?`}
-          render={_props => <StudentMasteryProfile {..._props} settings={settings} />}
-        />
-        <Route
-          exact
-          path={`/author/reports/student-assessment-profile/student/:studentId?`}
-          render={_props => <StudentAssessmentProfile {..._props} settings={settings} pageTitle={props.loc} />}
-        />
-        <Route
-          exact
-          path={`/author/reports/student-profile-summary/student/:studentId?`}
-          render={_props => <StudentProfileSummary {..._props} settings={settings} pageTitle={props.loc} />}
-        />
-      </FeaturesSwitch>
-    </>
+        <ReportContaner showFilter={showFilter}>
+          <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+          <Route
+            exact
+            path="/author/reports/student-mastery-profile/student/:studentId?"
+            render={_props => <StudentMasteryProfile {..._props} settings={settings} />}
+          />
+          <Route
+            exact
+            path="/author/reports/student-assessment-profile/student/:studentId?"
+            render={_props => <StudentAssessmentProfile {..._props} settings={settings} pageTitle={loc} />}
+          />
+          <Route
+            exact
+            path="/author/reports/student-profile-summary/student/:studentId?"
+            render={_props => <StudentProfileSummary {..._props} settings={settings} pageTitle={loc} />}
+          />
+        </ReportContaner>
+      </FlexContainer>
+    </FeaturesSwitch>
   );
 };
 

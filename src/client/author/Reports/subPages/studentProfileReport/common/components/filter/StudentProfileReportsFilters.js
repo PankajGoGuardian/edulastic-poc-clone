@@ -1,13 +1,12 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import queryString from "query-string";
 import { connect } from "react-redux";
-import { Row, Col, AutoComplete } from "antd";
-import { get, find, groupBy, map, isEmpty } from "lodash";
-import { StyledFilterWrapper, PrintablePrefix, StyledGoButton } from "../../../../../common/styled";
+import { get, find, isEmpty } from "lodash";
+import { FieldLabel } from "@edulastic/common";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import StudentAutoComplete from "./StudentAutoComplete";
 import { getUserRole, getOrgDataSelector } from "../../../../../../src/selectors/user";
-import { receiveStudentsListAction, getStudentsListSelector } from "../../../../../../Student/ducks.js";
+import { receiveStudentsListAction, getStudentsListSelector } from "../../../../../../Student/ducks";
 import {
   getFiltersSelector,
   getStudentSelector,
@@ -23,26 +22,29 @@ import {
 } from "../../filterDataDucks";
 import { getFilterOptions } from "../../utils/transformers";
 import { getFullNameFromAsString } from "../../../../../../../common/utils/helpers";
+import {
+  StyledFilterWrapper,
+  StyledGoButton,
+  GoButtonWrapper,
+  SearchField,
+  ApplyFitlerLabel
+} from "../../../../../common/styled";
 
 const StudentProfileReportsFilters = ({
   style,
-  className,
   onGoClick: _onGoClick,
   SPRFilterData,
   prevSPRFilterData,
   location,
-  loading,
   orgData,
-  studentList,
-  getSPRFilterDataRequestAction,
-  setPrevSPRFilterDataAction,
-  receiveStudentsListAction,
+  getSPRFilterDataRequest,
+  setPrevSPRFilterData,
   filters,
   student,
   performanceBandRequired,
   standardProficiencyRequired,
-  setFiltersAction,
-  setStudentAction,
+  setFilters,
+  setStudent,
   setPerformanceBand,
   setStandardsProficiency
 }) => {
@@ -51,12 +53,7 @@ const StudentProfileReportsFilters = ({
   const urlStudentId = splittedPath[splittedPath.length - 1];
   const parsedQuery = queryString.parse(location.search);
 
-  const {
-    termId: urlTermId,
-    courseId: urlCourseId,
-    performanceBandProfileId: urlPerformanceBandProfileId,
-    standardsProficiencyProfileId: urlStandardsProficiencyProfileId
-  } = parsedQuery;
+  const { termId: urlTermId, courseId: urlCourseId } = parsedQuery;
 
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const { terms = [] } = orgData;
@@ -75,8 +72,6 @@ const StudentProfileReportsFilters = ({
   const profiles = get(SPRFilterData, "data.result.bandInfo", []);
   const scales = get(SPRFilterData, "data.result.scaleInfo", []);
   const standardProficiencyList = useMemo(() => scales.map(s => ({ key: s._id, title: s.name })), [scales]);
-  const selectedProfile = useMemo(() => find(profiles, item => item._id === urlPerformanceBandProfileId), [profiles]);
-  const selectedScale = useMemo(() => find(scales, item => item._id === urlStandardsProficiencyProfileId), [scales]);
 
   useEffect(() => {
     if (SPRFilterData !== prevSPRFilterData) {
@@ -85,26 +80,26 @@ const StudentProfileReportsFilters = ({
           termId: urlTermId,
           studentId: urlStudentId
         };
-        getSPRFilterDataRequestAction(q);
-        setStudentAction({ key: urlStudentId });
+        getSPRFilterDataRequest(q);
+        setStudent({ key: urlStudentId });
       }
     }
   }, []);
 
   if (SPRFilterData !== prevSPRFilterData && !isEmpty(SPRFilterData)) {
-    setPrevSPRFilterDataAction(SPRFilterData);
+    setPrevSPRFilterData(SPRFilterData);
 
     if (studentClassData.length) {
       // if there is no student name for the selected name extract it from the class data
       if (!student.title) {
         const classRecord = studentClassData[0];
-        setStudentAction({
+        setStudent({
           ...student,
           title: getFullNameFromAsString(classRecord)
         });
       }
 
-      let _filters = {
+      const _filters = {
         ...filters,
         termId: selectedTerm.key,
         courseId: selectedCourse.key
@@ -112,8 +107,8 @@ const StudentProfileReportsFilters = ({
         // performanceBandProfileId: selectedProfile,
         // standardsProficiencyProfileId: selectedScale
       };
-      let _student = { ...student };
-      setFiltersAction(_filters);
+      const _student = { ...student };
+      setFilters(_filters);
 
       if (firstPlot.current) {
         _onGoClick({ filters: { ..._filters }, selectedStudent: _student });
@@ -125,38 +120,38 @@ const StudentProfileReportsFilters = ({
 
   const onStudentSelect = item => {
     if (item && item.key) {
-      setStudentAction(item);
+      setStudent(item);
 
       const q = {
         termId: filters.termId,
         studentId: item.key
       };
-      getSPRFilterDataRequestAction(q);
+      getSPRFilterDataRequest(q);
 
       _onGoClick({ filters: { ...filters }, selectedStudent: item });
     }
   };
 
   const onUpdateTerm = ({ key }) => {
-    let obj = {
+    const obj = {
       ...filters,
       termId: key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
   const onUpdateCourse = ({ key }) => {
-    let obj = {
+    const obj = {
       ...filters,
       courseId: key
     };
-    setFiltersAction(obj);
+    setFilters(obj);
   };
 
   const onChangePerformanceBand = ({ key }) => setPerformanceBand(key);
   const onChangeStandardsProficiency = ({ key }) => setStandardsProficiency(key);
 
   const onGoClick = () => {
-    let settings = {
+    const settings = {
       filters: { ...filters },
       selectedStudent: student
     };
@@ -164,64 +159,60 @@ const StudentProfileReportsFilters = ({
   };
 
   return (
-    <div className={className} style={style}>
-      <StyledFilterWrapper>
-        <Row type="flex" className="single-assessment-report-top-filter">
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
-            <PrintablePrefix>School Year</PrintablePrefix>
-            <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} />
-          </Col>
-          <Col xs={12} sm={12} md={7} lg={7} xl={7}>
-            <PrintablePrefix>School Year</PrintablePrefix>
-            <ControlDropDown
-              by={filters.termId}
-              selectCB={onUpdateTerm}
-              data={termOptions}
-              prefix="School Year"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
-            <PrintablePrefix>Subject</PrintablePrefix>
-            <ControlDropDown
-              by={filters.courseId}
-              selectCB={onUpdateCourse}
-              data={courseOptions}
-              prefix="Courses"
-              showPrefixOnSelected={false}
-            />
-          </Col>
-          {performanceBandRequired ? (
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <ControlDropDown
-                by={filters.performanceBandProfileId}
-                selectCB={onChangePerformanceBand}
-                data={profiles.map(p => ({ key: p._id, title: p.name }))}
-                prefix="Performance Band"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          ) : null}
-          {standardProficiencyRequired && (
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <PrintablePrefix>Standard Proficiency</PrintablePrefix>
-              <ControlDropDown
-                by={filters.standardsProficiencyProfileId}
-                selectCB={onChangeStandardsProficiency}
-                data={standardProficiencyList}
-                prefix="Standard Proficiency"
-                showPrefixOnSelected={false}
-              />
-            </Col>
-          )}
-          <Col xs={12} sm={12} md={1} lg={1} xl={1} style={{ padding: "5px" }}>
-            <StyledGoButton type="primary" onClick={onGoClick}>
-              Go
-            </StyledGoButton>
-          </Col>
-        </Row>
-      </StyledFilterWrapper>
-    </div>
+    <StyledFilterWrapper style={style}>
+      <GoButtonWrapper>
+        <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
+        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
+      </GoButtonWrapper>
+      <SearchField>
+        <FieldLabel>Student</FieldLabel>
+        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} />
+      </SearchField>
+      <SearchField>
+        <FieldLabel>Subject</FieldLabel>
+        <ControlDropDown
+          by={filters.courseId}
+          selectCB={onUpdateCourse}
+          data={courseOptions}
+          prefix="Courses"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+      {performanceBandRequired && (
+        <SearchField>
+          <FieldLabel>Performance Band</FieldLabel>
+          <ControlDropDown
+            by={filters.performanceBandProfileId}
+            selectCB={onChangePerformanceBand}
+            data={profiles.map(p => ({ key: p._id, title: p.name }))}
+            prefix="Performance Band"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+      )}
+      {standardProficiencyRequired && (
+        <SearchField>
+          <FieldLabel>Standard Proficiency</FieldLabel>
+          <ControlDropDown
+            by={filters.standardsProficiencyProfileId}
+            selectCB={onChangeStandardsProficiency}
+            data={standardProficiencyList}
+            prefix="Standard Proficiency"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+      )}
+      <SearchField>
+        <FieldLabel>School Year</FieldLabel>
+        <ControlDropDown
+          by={filters.termId}
+          selectCB={onUpdateTerm}
+          data={termOptions}
+          prefix="School Year"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+    </StyledFilterWrapper>
   );
 };
 
@@ -237,11 +228,11 @@ const enhance = connect(
     studentList: getStudentsListSelector(state)
   }),
   {
-    getSPRFilterDataRequestAction,
-    setPrevSPRFilterDataAction,
+    getSPRFilterDataRequest: getSPRFilterDataRequestAction,
+    setPrevSPRFilterData: setPrevSPRFilterDataAction,
     receiveStudentsListAction,
-    setFiltersAction,
-    setStudentAction,
+    setFilters: setFiltersAction,
+    setStudent: setStudentAction,
     setPerformanceBand: setPbIdAction,
     setStandardsProficiency: setSpIdAction
   }

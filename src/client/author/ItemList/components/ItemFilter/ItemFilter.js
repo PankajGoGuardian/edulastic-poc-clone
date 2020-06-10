@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, { memo } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { libraryFilters } from "@edulastic/constants";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
 import {
@@ -38,6 +39,7 @@ const ItemFilter = ({
           onChange={onSearchInputChange}
           size="large"
           value={search.searchString}
+          disabled={search.filter === libraryFilters.SMART_FILTERS.FAVORITES}
         />
       </HeaderRow>
     </SearchWrapper>

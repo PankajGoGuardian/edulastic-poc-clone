@@ -6,12 +6,14 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import moment from "moment";
-import { Button, Row, Spin, message, Dropdown, Menu } from "antd";
+import { Button, Row, Spin, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
-import { withWindowSizes, FlexContainer, TextInputStyled,notification } from "@edulastic/common";
+import { withWindowSizes, FlexContainer, TextInputStyled, notification } from "@edulastic/common";
 import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
 import { white, greyLight1, greyThemeLight } from "@edulastic/colors";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { storeInLocalStorage, getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
+import { libraryFilters } from "@edulastic/constants";
+import { withNamespaces } from "react-i18next";
 import {
   ScrollBox,
   Container,
@@ -102,9 +104,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
-import { withNamespaces } from "react-i18next";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
-import { getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -175,7 +175,8 @@ class TestList extends Component {
         ...prevState,
         blockstyle: localBlockstyle
       };
-    } else if (features.isCurator && mode !== "embedded") {
+    }
+    if (features.isCurator && mode !== "embedded") {
       setBlockstyleInSession("horizontal");
       return {
         ...prevState,
@@ -219,7 +220,7 @@ class TestList extends Component {
       ...sessionFilters,
       subject,
       grades,
-      curriculumId: parseInt(curriculumId) || ""
+      curriculumId: parseInt(curriculumId, 10) || ""
     };
 
     // propagate filter from query params to the store (test.filters)
@@ -227,7 +228,7 @@ class TestList extends Component {
     searchParams = this.typeCheck(searchParams, searchFilters);
     if (Object.keys(searchParams).length) {
       searchParams.curriculumId = Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
-      searchParams.standardIds = searchParams.standardIds ? searchParams.standardIds.map(id => parseInt(id)) : [];
+      searchParams.standardIds = searchParams.standardIds ? searchParams.standardIds.map(id => parseInt(id, 10)) : [];
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
@@ -267,9 +268,9 @@ class TestList extends Component {
     }
 
     if (searchFilters.curriculumId) {
-      const { curriculumId, grades: curriculumGrades = [] } = searchFilters;
+      const { curriculumId: _curriculumId, grades: curriculumGrades = [] } = searchFilters;
       clearDictStandards();
-      getCurriculumStandards(curriculumId, curriculumGrades, "");
+      getCurriculumStandards(_curriculumId, curriculumGrades, "");
     }
     clearCreatedItems();
     clearSelectedItems();
@@ -520,7 +521,7 @@ class TestList extends Component {
 
     if (item?.status === "draft" || item?.status === "rejected") {
       const testStatus = item?.status === "draft" ? "Draft" : "Rejected";
-      notification({ type: "warn", msg:`${testStatus} tests cannot be added`});
+      notification({ type: "warn", msg: `${testStatus} tests cannot be added` });
       return;
     }
 
@@ -529,7 +530,7 @@ class TestList extends Component {
     } = this.props;
     if (!modules.length) {
       this.setState({ showManageModuleModal: true, moduleModalAdd: true, testAdded: item });
-      notification({ type: "warn", messageKey:"createOneModuleAtleast"});
+      notification({ type: "warn", messageKey: "createOneModuleAtleast" });
     } else {
       this.setState({ showAddTestInModules: true, testAdded: item });
     }
@@ -542,10 +543,10 @@ class TestList extends Component {
       if (markedTests.length) {
         this.setState({ showAddModules: true });
       } else {
-        notification({ type: "warn", messageKey:"selectOneOrMoreTest"});
+        notification({ type: "warn", messageKey: "selectOneOrMoreTest" });
       }
     } else {
-      notification({ type: "warn", messageKey:"createOneModuleAtleast"});
+      notification({ type: "warn", messageKey: "createOneModuleAtleast" });
     }
   };
 
@@ -556,10 +557,10 @@ class TestList extends Component {
       if (markedTests.length) {
         this.setState({ showRemoveModules: true });
       } else {
-        notification({ type: "warn", messageKey:"selectOneOrMoreTest"});
+        notification({ type: "warn", messageKey: "selectOneOrMoreTest" });
       }
     } else {
-      notification({ type: "warn", messageKey:"createOneModuleAtleast"});
+      notification({ type: "warn", messageKey: "createOneModuleAtleast" });
     }
   };
 
@@ -628,11 +629,11 @@ class TestList extends Component {
     const uniqueMarkedTests = markedTests.filter(x => uniqueMarkedIds.includes(x._id));
     if (uniqueMarkedIds.length !== markedIds.length) {
       if (uniqueMarkedIds.length === 0) {
-        notification({ type: "warn", messageKey:"selectedTestAlreadyExistInModule"});
+        notification({ type: "warn", messageKey: "selectedTestAlreadyExistInModule" });
         return;
       }
       if (uniqueMarkedIds.length < markedIds.length && uniqueMarkedIds.length !== 0)
-      notification({ type: "warn", messageKey:"someSelectedTestAlreadyExistInModule"});
+        notification({ type: "warn", messageKey: "someSelectedTestAlreadyExistInModule" });
     }
 
     // Dont add draft type tests
@@ -644,14 +645,12 @@ class TestList extends Component {
       }));
       const uniqueMarkedTestsIds = uniqueMarkedTests.map(x => x?._id);
       const testsToAdd = tests.filter(x => uniqueMarkedTestsIds?.includes(x?._id));
-      const testsWithStandardIdentifiers = testsToAdd?.map(x => {
-        return {
-          ...x,
-          standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
-        };
-      });
+      const testsWithStandardIdentifiers = testsToAdd?.map(x => ({
+        ...x,
+        standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
+      }));
       addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
-      notification({ type: "success", messageKey:"testAddedPlalist"});
+      notification({ type: "success", messageKey: "testAddedPlalist" });
     } else {
       const nonDraftIds = nonDraftTests.map(x => x._id);
       this.setState(() => ({
@@ -660,16 +659,17 @@ class TestList extends Component {
       }));
       const nonDraftTestsIds = nonDraftTests?.map(x => x?._id);
       const testsToAdd = tests.filter(x => nonDraftTestsIds?.includes(x?._id));
-      const testsWithStandardIdentifiers = testsToAdd?.map(x => {
-        return {
-          ...x,
-          standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
-        };
-      });
+      const testsWithStandardIdentifiers = testsToAdd?.map(x => ({
+        ...x,
+        standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
+      }));
       addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
       nonDraftTests.length
-      ? notification({ type: "warn", msg:`${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`})
-      : notification({ type: "warn", messageKey:"draftTestCantBeAdded"});
+        ? notification({
+            type: "warn",
+            msg: `${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`
+          })
+        : notification({ type: "warn", messageKey: "draftTestCantBeAdded" });
     }
     if (selectedTests.length === 0) handleSave();
   };
@@ -685,22 +685,22 @@ class TestList extends Component {
     }));
     if (len) {
       deleteTestFromModuleInBulk({ testIds });
-      notification({ type: "success", messageKey:"testremovedPlaylist"});
+      notification({ type: "success", messageKey: "testremovedPlaylist" });
     } else {
-      notification({ type: "success", messageKey:"selectedTestAreCleared"});
+      notification({ type: "success", messageKey: "selectedTestAreCleared" });
     }
   };
 
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   onAddToCart = item => {
-    const { addTestToCartAction } = this.props;
-    addTestToCartAction(item);
+    const { addTestToCart } = this.props;
+    addTestToCart(item);
   };
 
   onRemoveFromCart = item => {
-    const { removeTestFromCartAction } = this.props;
-    removeTestFromCartAction(item);
+    const { removeTestFromCart } = this.props;
+    removeTestFromCart(item);
   };
 
   renderCardContent = () => {
@@ -846,16 +846,16 @@ class TestList extends Component {
       <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
         <CartButton
           onClick={() => {
-            const { approveOrRejectMultipleTestsRequestAction } = this.props;
-            approveOrRejectMultipleTestsRequestAction({ status: "rejected" });
+            const { approveOrRejectMultipleTestsRequest } = this.props;
+            approveOrRejectMultipleTestsRequest({ status: "rejected" });
           }}
           buttonText="Reject"
           numberChecker={this.rejectNumberChecker}
         />
         <CartButton
           onClick={() => {
-            const { approveOrRejectMultipleTestsRequestAction } = this.props;
-            approveOrRejectMultipleTestsRequestAction({ status: "published" });
+            const { approveOrRejectMultipleTestsRequest } = this.props;
+            approveOrRejectMultipleTestsRequest({ status: "published" });
           }}
           buttonText="Approve"
           numberChecker={this.approveNumberChecker}
@@ -876,7 +876,6 @@ class TestList extends Component {
       updateModuleInPlaylist,
       resequenceModules,
       testFilters,
-      handleSave,
       isProxyUser,
       t
     } = this.props;
@@ -970,6 +969,7 @@ class TestList extends Component {
               onChange={this.handleSearchInputChange}
               size="large"
               value={testFilters.searchString}
+              disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
             />
             <FilterButton>
               <Button onClick={() => this.showFilterHandler()}>
@@ -1053,6 +1053,7 @@ class TestList extends Component {
                         onChange={this.handleSearchInputChange}
                         size="large"
                         value={testFilters.searchString}
+                        disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
                       />
                       <TestListFilters
                         search={search}
@@ -1165,9 +1166,9 @@ const enhance = compose(
       updateTestFilters: updateTestSearchFilterAction,
       updateAllTestFilters: updateAllTestSearchFilterAction,
       clearAllFilters: clearTestFiltersAction,
-      addTestToCartAction,
-      removeTestFromCartAction,
-      approveOrRejectMultipleTestsRequestAction
+      addTestToCart: addTestToCartAction,
+      removeTestFromCart: removeTestFromCartAction,
+      approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction
     }
   )
 );

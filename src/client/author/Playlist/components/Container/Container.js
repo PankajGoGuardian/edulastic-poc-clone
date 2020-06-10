@@ -3,7 +3,7 @@ import { greyLight1, greyThemeLight } from "@edulastic/colors";
 import { FlexContainer, withWindowSizes } from "@edulastic/common";
 import { IconList, IconPlaylist2, IconTile } from "@edulastic/icons";
 import { Button, Input, Row, Spin } from "antd";
-import { debounce, get, has, identity, pick, pickBy } from "lodash";
+import { debounce, get, pick } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import * as qs from "query-string";
@@ -12,6 +12,8 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import Modal from "react-responsive-modal";
 import { compose } from "redux";
+import { libraryFilters } from "@edulastic/constants";
+import { withNamespaces } from "react-i18next";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import {
   updateDefaultGradesAction,
@@ -67,22 +69,23 @@ import {
 } from "../../ducks";
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
-import { withNamespaces } from "react-i18next";
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 
 function getUrlFilter(filter) {
   if (filter === "AUTHORED_BY_ME") {
     return "by-me";
-  } else if (filter === "SHARED_WITH_ME") {
-    return "shared";
-  } else if (filter === "CO_AUTHOR") {
-    return "co-author";
-  } else if (filter === "ENTIRE_LIBRARY") {
-    return "all";
-  } else {
-    return "";
   }
+  if (filter === "SHARED_WITH_ME") {
+    return "shared";
+  }
+  if (filter === "CO_AUTHOR") {
+    return "co-author";
+  }
+  if (filter === "ENTIRE_LIBRARY") {
+    return "all";
+  }
+  return "";
 }
 class TestList extends Component {
   static propTypes = {
@@ -138,7 +141,6 @@ class TestList extends Component {
       getAllTags,
       match: { params = {} },
       playListFilters,
-      page,
       history,
       interestedSubjects,
       interestedGrades
@@ -158,9 +160,6 @@ class TestList extends Component {
       Object.assign(searchFilters, pick(searchParams, Object.keys(playListFilters)));
     }
     this.updateFilterState(searchFilters);
-    const pageNumber = params.page || page;
-    const limitCount = params.limit || limit;
-    const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
 
     const pageFinal = parseInt(params?.page, 10) || 1;
     const urlToPush = this.getUrlToPush(pageFinal);
@@ -293,28 +292,6 @@ class TestList extends Component {
     return parsedQueryDataClone;
   };
 
-  setFilterParams(parsedQueryData) {
-    const { receivePlaylists, playListFilters } = this.props;
-    // const { search } = this.state;
-
-    parsedQueryData = this.typeCheck(parsedQueryData, playListFilters);
-    const searchClone = {};
-
-    for (const key of Object.keys(parsedQueryData)) {
-      if (has(search, key)) {
-        searchClone[key] = parsedQueryData[key];
-      }
-    }
-
-    this.updateFilterState(searchClone);
-
-    receivePlaylists({
-      page: Number(searchClone.page),
-      limit: Number(searchClone.limit),
-      search: searchClone
-    });
-  }
-
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   handleCheckboxAction = (e, selectedId) => {
@@ -431,6 +408,7 @@ class TestList extends Component {
               onChange={this.handleSearchInputChange}
               size="large"
               value={searchString}
+              disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
             />
             <FilterButton>
               <Button data-cy="filter" onClick={() => this.showFilterHandler()}>
@@ -463,6 +441,7 @@ class TestList extends Component {
                         onChange={this.handleSearchInputChange}
                         size="large"
                         value={searchString}
+                        disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
                       />
                       <TestListFilters
                         isPlaylist

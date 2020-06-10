@@ -1,22 +1,23 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
+import produce from "immer";
 import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
+import { libraryFilters } from "@edulastic/constants";
 import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
 
+const { SMART_FILTERS } = libraryFilters;
 export const filterMenuItems = [
-  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
-  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
-  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },
-  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" }
+  { icon: "book", filter: SMART_FILTERS.ENTIRE_LIBRARY, path: "all", text: "Entire Library" },
+  { icon: "folder", filter: SMART_FILTERS.AUTHORED_BY_ME, path: "by-me", text: "Authored by me" },
+  { icon: "share-alt", filter: SMART_FILTERS.SHARED_WITH_ME, path: "shared", text: "Shared with me" },
+  { icon: "copy", filter: SMART_FILTERS.CO_AUTHOR, path: "co-author", text: "I am a Co-Author" }
 
   // These two filters are to be enabled later so, commented out
   // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+  // { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" }
 ];
 
 // types
@@ -57,7 +58,7 @@ function* receivePublishersSaga() {
     yield put(receivePublishersSuccessAction(result));
   } catch (err) {
     const errorMessage = "Receive publishers is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 
@@ -90,7 +91,7 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     );
   } catch (err) {
     const errorMessage = "Receive playlists is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(receivePlaylistErrorAction({ error: errorMessage }));
     console.warn(err);
   }
@@ -99,10 +100,10 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
 function* receiveLastPlayListSaga() {
   try {
     const result = yield call(userContextApi.getLastPlayList);
-    yield put(updateLastPlayListAction(result ? result : {}));
+    yield put(updateLastPlayListAction(result || {}));
   } catch (err) {
     const errorMessage = "Receive last playslist is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 
@@ -112,7 +113,7 @@ function* receiveRecentPlayListsSaga() {
     yield put(updateRecentPlayListsAction(result ? result.value : []));
   } catch (err) {
     const errorMessage = "Receive recent playlist is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 

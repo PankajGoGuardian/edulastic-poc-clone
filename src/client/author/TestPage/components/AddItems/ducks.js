@@ -1,25 +1,26 @@
 import { createSelector } from "reselect";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
+import { libraryFilters } from "@edulastic/constants";
 import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effects";
 import { testItemsApi, contentErrorApi } from "@edulastic/api";
 import { keyBy } from "lodash";
 import { getAllTagsSelector } from "../../ducks";
-import { SET_USER } from "../../../../student/Login/ducks";
 import { DELETE_ITEM_SUCCESS } from "../../../ItemDetail/ducks";
 import {
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../../../src/constants/actions";
 
+const { SMART_FILTERS } = libraryFilters;
+
 export const filterMenuItems = [
-  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
-  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
-  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" }
+  { icon: "book", filter: SMART_FILTERS.ENTIRE_LIBRARY, path: "all", text: "Entire Library" },
+  { icon: "folder", filter: SMART_FILTERS.AUTHORED_BY_ME, path: "by-me", text: "Authored by me" },
+  { icon: "share-alt", filter: SMART_FILTERS.SHARED_WITH_ME, path: "shared", text: "Shared with me" },
 
   // These two filters are to be enabled later so, commented out
   // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+  { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" }
 ];
 
 // constants
@@ -226,7 +227,7 @@ export const reducer = (state = initialState, { type, payload }) => {
           return i;
         })
       };
-    case APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS:
+    case APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS: {
       const itemIdsMap = keyBy(payload.itemIds);
       return {
         ...state,
@@ -241,7 +242,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         }),
         selectedItems: [...state.selectedItems]
       };
-
+    }
     default:
       return state;
   }
@@ -271,10 +272,10 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
 function* reportContentErrorSaga({ payload }) {
   try {
     yield call(contentErrorApi.reportContentError, payload);
-    notification({ type: "success", messageKey:"issueReportedSuccessfully"});
+    notification({ type: "success", messageKey: "issueReportedSuccessfully" });
   } catch (err) {
     console.error(err);
-    notification({ messageKey:"failedToReportIssue"});
+    notification({ messageKey: "failedToReportIssue" });
   }
 }
 

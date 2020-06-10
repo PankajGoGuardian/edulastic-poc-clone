@@ -1,6 +1,6 @@
 import { grey, themeColor, titleColor } from "@edulastic/colors";
 import { FieldLabel, FlexContainer, SelectInputStyled } from "@edulastic/common";
-import { roleuser, test as testsConstants } from "@edulastic/constants";
+import { roleuser, test as testsConstants, libraryFilters } from "@edulastic/constants";
 import { IconExpandBox } from "@edulastic/icons";
 import { Select } from "antd";
 import PropTypes from "prop-types";
@@ -81,10 +81,13 @@ const TestListFilters = ({
       const filterTitles = ["Grades", "Subject"];
       const showStatusFilter =
         (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
-      if (showStatusFilter) {
+      if (showStatusFilter && filter !== libraryFilters.SMART_FILTERS.FAVORITES) {
         filterTitles.push("Status");
       }
       filterData1 = filterData.filter(o => filterTitles.includes(o.title));
+      if (filter === libraryFilters.SMART_FILTERS.FAVORITES) {
+        return filterData1;
+      }
       return [
         ...filterData1,
         {
@@ -121,8 +124,11 @@ const TestListFilters = ({
     filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     const showStatusFilter =
       (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
-    if (!showStatusFilter) {
+    if (!showStatusFilter || filter === libraryFilters.SMART_FILTERS.FAVORITES) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
+    }
+    if (filter === libraryFilters.SMART_FILTERS.FAVORITES) {
+      return filterData1;
     }
     let curriculumsList = [];
     if (subject) curriculumsList = [...formattedCuriculums];

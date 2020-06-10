@@ -36,6 +36,7 @@ export default TestFiltersNav;
 const Container = styled(Menu)`
   border-right: none;
   background: transparent;
+  margin-bottom: 5px;
 `;
 
 const Item = styled(Menu.Item)`

@@ -2,14 +2,18 @@ import React, { useMemo, useRef } from "react";
 import { connect } from "react-redux";
 import { Tag, Popover } from "antd";
 import styled, { css } from "styled-components";
-import { test as testsConstants, questionType as questionTypes } from "@edulastic/constants";
+import { test as testsConstants, questionType as questionTypes, libraryFilters } from "@edulastic/constants";
 import { curriculumsByIdSelector, standardsSelector } from "../../../src/selectors/dictionaries";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
 const gradeKeys = { O: "Other", K: "Kindergarten", o: "Other", k: "Kindergarten" };
-const filtersTagToBeShown = [
+
+const allStatus = [...selectsData.allStatus, ...selectsData.extraStatus];
+
+const gradeAndSubjectFilters = ["grades", "subject"];
+const allFilters = [
   "grades",
   "subject",
   "curriculumId",
@@ -21,12 +25,10 @@ const filtersTagToBeShown = [
   "status",
   "tags"
 ];
-
-const allStatus = [...selectsData.allStatus, ...selectsData.extraStatus];
-
 const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList, collectionsList, allTagsData }) => {
   const containerRef = useRef(null);
-  const { curriculumId, standardIds = [], collections = [], tags = [] } = search;
+  const { curriculumId, standardIds = [], collections = [], tags = [], filter } = search;
+  const filtersTagToBeShown = filter === libraryFilters.SMART_FILTERS.FAVORITES ? gradeAndSubjectFilters : allFilters;
   const curriculum = curriculumById[curriculumId];
   const selectedStandards = useMemo(() => standardsList.elo.filter(s => standardIds.includes(s._id)), [
     standardsList,

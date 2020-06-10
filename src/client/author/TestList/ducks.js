@@ -1,26 +1,26 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import produce from "immer";
 import { testsApi } from "@edulastic/api";
+import { cloneDeep, keyBy } from "lodash";
+import { libraryFilters } from "@edulastic/constants";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
-import { cloneDeep, keyBy } from "lodash";
 
+const { SMART_FILTERS } = libraryFilters;
 export const filterMenuItems = [
-  { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
-  { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
-  { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },
-  { icon: "copy", filter: "CO_AUTHOR", path: "co-author", text: "I am a Co-Author" }
+  { icon: "book", filter: SMART_FILTERS.ENTIRE_LIBRARY, path: "all", text: "Entire Library" },
+  { icon: "folder", filter: SMART_FILTERS.AUTHORED_BY_ME, path: "by-me", text: "Authored by me" },
+  { icon: "share-alt", filter: SMART_FILTERS.SHARED_WITH_ME, path: "shared", text: "Shared with me" },
+  { icon: "copy", filter: SMART_FILTERS.CO_AUTHOR, path: "co-author", text: "I am a Co-Author" },
 
   // These two filters are to be enabled later so, commented out
   // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
-  // { icon: "heart", filter: "FAVORITES", path: "favourites", text: "My Favorites" }
+  { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" }
 ];
 
 // types
@@ -55,6 +55,41 @@ export const approveOrRejectMultipleTestsSuccessAction = createAction(APPROVE_OR
 export const addTestToCartAction = createAction(ADD_TEST_TO_CART);
 export const removeTestFromCartAction = createAction(REMOVE_TEST_FROM_CART);
 
+// selectors
+export const stateSelector = state => state.testList;
+
+export const getTestsSelector = createSelector(
+  stateSelector,
+  state => state.entities
+);
+export const getTestsLoadingSelector = createSelector(
+  stateSelector,
+  state => state.loading
+);
+export const getTestsPageSelector = createSelector(
+  stateSelector,
+  state => state.page
+);
+export const getTestsLimitSelector = createSelector(
+  stateSelector,
+  state => state.limit
+);
+export const getTestsCountSelector = createSelector(
+  stateSelector,
+  state => state.count
+);
+
+export const getTestsFilterSelector = createSelector(
+  stateSelector,
+  state => state.filters
+);
+
+export const getSelectedTestsSelector = createSelector(
+  stateSelector,
+  state => state.selectedTests
+);
+
+// sagas
 function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
     const { items, count } = yield call(testsApi.getAll, {
@@ -103,11 +138,11 @@ function* deleteTestSaga({ payload }) {
   try {
     yield call(testsApi.deleteTest, payload);
     yield put(deleteTestRequestSuccessAction(payload));
-    notification({ type: "success", messageKey:"testDeletedSuccessfully"});
+    notification({ type: "success", messageKey: "testDeletedSuccessfully" });
   } catch (error) {
     console.error(error);
     // 403 means dont have permission
-    notification({msg:error?.data?.message || "You don't have access to delete this test."});
+    notification({ msg: error?.data?.message || "You don't have access to delete this test." });
   }
 }
 
@@ -117,16 +152,15 @@ function* approveOrRejectSingleTestSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      notification({ messageKey:"testNotAssociatedWithCollection"});
+      notification({ messageKey: "testNotAssociatedWithCollection" });
       return;
     }
     yield call(testsApi.updateTestStatus, payload);
     yield put(approveOrRejectSingleTestSuccessAction(payload));
-    notification({ type: "success", messageKey:"teacherUpdatedSuccessfully"});
-    
+    notification({ type: "success", messageKey: "teacherUpdatedSuccessfully" });
   } catch (error) {
     console.error(error);
-    notification({msg:error?.data?.message || "Test Update Failed."});
+    notification({ msg: error?.data?.message || "Test Update Failed." });
   }
 }
 
@@ -155,14 +189,17 @@ function* approveOrRejectMultipleTestsSaga({ payload }) {
       const result = yield call(testsApi.updateBulkTestsStatus, data);
       if (result.nModified === data.testIds.length) {
         yield put(approveOrRejectMultipleTestsSuccessAction(data));
-        notification({ type: "success", msg:`${data.testIds.length} tests(s) successfully ${payload.status}.`});
+        notification({ type: "success", msg: `${data.testIds.length} tests(s) successfully ${payload.status}.` });
       } else {
-        notification({ type: "success", msg: `${result.nModified} tests(s) successfully ${payload.status}, ${data.testIds.length -
-          result.nModified} tests(s) failed`});
+        notification({
+          type: "success",
+          msg: `${result.nModified} tests(s) successfully ${payload.status}, ${data.testIds.length -
+            result.nModified} tests(s) failed`
+        });
       }
     } catch (error) {
       console.error(error);
-      notification({ msg:error?.data?.message || `Failed to update Status`});
+      notification({ msg: error?.data?.message || `Failed to update Status` });
     }
   }
 }
@@ -267,13 +304,12 @@ export const reducer = (state = initialState, { type, payload }) => {
         entities: state.entities.map(item => {
           if (item._id !== payload.testId) {
             return item;
-          } else {
-            item.status = payload.status;
-            if (payload.collections) {
-              item.collections = payload.collections;
-            }
-            return item;
           }
+          item.status = payload.status;
+          if (payload.collections) {
+            item.collections = payload.collections;
+          }
+          return item;
         })
       };
     case ADD_TEST_TO_CART:
@@ -286,7 +322,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         selectedTests: state.selectedTests.filter(o => o._id !== payload._id)
       };
-    case APPROVE_OR_REJECT_MULTIPLE_TESTS_SUCCESS:
+    case APPROVE_OR_REJECT_MULTIPLE_TESTS_SUCCESS: {
       const testIdsMap = keyBy(payload.testIds);
       return {
         ...state,
@@ -301,41 +337,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         }),
         selectedTests: []
       };
+    }
     default:
       return state;
   }
 };
-
-// selectors
-export const stateSelector = state => state.testList;
-
-export const getTestsSelector = createSelector(
-  stateSelector,
-  state => state.entities
-);
-export const getTestsLoadingSelector = createSelector(
-  stateSelector,
-  state => state.loading
-);
-export const getTestsPageSelector = createSelector(
-  stateSelector,
-  state => state.page
-);
-export const getTestsLimitSelector = createSelector(
-  stateSelector,
-  state => state.limit
-);
-export const getTestsCountSelector = createSelector(
-  stateSelector,
-  state => state.count
-);
-
-export const getTestsFilterSelector = createSelector(
-  stateSelector,
-  state => state.filters
-);
-
-export const getSelectedTestsSelector = createSelector(
-  stateSelector,
-  state => state.selectedTests
-);

@@ -30,6 +30,7 @@ const ChoiceDimensions = require("./const/ChoiceDimensions");
 const assignmentStatusOptions = require("./const/assignmentStatus");
 const { youtubeVideoDetails } = require("./const/howToAuthorVideos");
 const customTags = require("./const/customTags");
+const libraryFilters = require("./const/filters");
 
 module.exports = {
   question,
@@ -63,5 +64,6 @@ module.exports = {
   fonts,
   assignmentStatusOptions,
   youtubeVideoDetails,
-  customTags
+  customTags,
+  libraryFilters
 };

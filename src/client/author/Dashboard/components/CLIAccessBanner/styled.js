@@ -1,11 +1,38 @@
 import styled from "styled-components";
 import { themeColor } from "@edulastic/colors";
+import { Icon as AntIcon } from "antd";
 import { OnDarkBgLogo } from "@edulastic/common";
 
 export const EduLogo = styled(OnDarkBgLogo)`
   position: fixed;
   top: 20px;
   left: 20px;
+`;
+
+export const StyledSignOut = styled.div`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+`;
+
+export const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin: 0px 4px;
+  color: white;
+`;
+
+export const UserName = styled.div`
+  font-size: 13px;
+  color: white;
+`;
+
+export const IconDropdown = styled(AntIcon)`
+  color: white;
+  position: fixed;
+  top: 20px;
+  right: 5px;
 `;
 
 export const StyledLogo = styled.img`

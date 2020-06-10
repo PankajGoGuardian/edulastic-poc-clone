@@ -1,15 +1,37 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
+import { logoutAction } from "../../../src/actions/auth";
 import CLILogo from "../../assets/svgs/cli-logo.svg";
-import { BaseText, Button, EduLogo, HighlightedText, StyledLogo, StyledText } from "./styled";
+import {
+  BaseText,
+  Button,
+  EduLogo,
+  HighlightedText,
+  StyledLogo,
+  StyledText,
+  StyledSignOut,
+  UserInfo,
+  UserName,
+  IconDropdown
+} from "./styled";
 
-const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClose }) => {
-  const [bannerVisible, showBanner] = useState(visible);
+const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClose, logout }) => {
+  const [isVisible, setVisible] = useState(false);
 
+  const menu = (
+    <Menu>
+      <Menu.Item onClick={logout}>Sign Out</Menu.Item>
+    </Menu>
+  );
+
+  const toggleDropdown = () => {
+    setVisible(!isVisible);
+  };
   return (
     <Modal
-      open={bannerVisible}
+      open={visible}
       onClose={() => {}}
       showCloseIcon={false}
       center
@@ -33,6 +55,29 @@ const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClo
       }}
     >
       <EduLogo />
+      <StyledSignOut>
+        <Dropdown
+          overlay={menu}
+          onClick={toggleDropdown}
+          className="headerDropdown"
+          trigger={["click"]}
+          style={{ zIndex: 1003 }}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+          placement="topCenter"
+        >
+          <div>
+            <UserInfo>
+              <UserName>
+                {firstName} {lastName}
+              </UserName>
+            </UserInfo>
+            <IconDropdown
+              style={{ fontSize: 20, pointerEvents: "none" }}
+              type={isVisible ? "caret-up" : "caret-down"}
+            />
+          </div>
+        </Dropdown>
+      </StyledSignOut>
       <StyledLogo src={CLILogo} />
       <StyledText margin="50px auto 20px auto">
         Welcome <HighlightedText>{`${firstName} ${lastName}`}!</HighlightedText>
@@ -52,7 +97,12 @@ const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClo
   );
 };
 
-export default connect(state => ({
-  firstName: state.user.user.firstName,
-  lastName: state.user.user.lastName
-}))(CLIAccessBanner);
+export default connect(
+  state => ({
+    firstName: state.user.user.firstName,
+    lastName: state.user.user.lastName
+  }),
+  {
+    logout: logoutAction
+  }
+)(CLIAccessBanner);

@@ -80,7 +80,11 @@ const SelectUnit = ({
       >
         {allBtns.map((btn, i) => (
           <Option value={btn.handler} key={i}>
-            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: btn.label }} />
+            {typeof btn.label === "object" ? (
+              btn.label
+            ) : (
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: btn.label }} />
+            )}
           </Option>
         ))}
       </SelectInputStyled>

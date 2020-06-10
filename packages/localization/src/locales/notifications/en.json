@@ -203,6 +203,14 @@
     "message": "Update playlist is failing",
     "description": ""
   },
+  "updatePlaylistErrViewOnlyAccess": {
+    "message": "Edit permissions have been revoked by the owner. You can clone and modify the Playlist.",
+    "description": ""
+  },
+  "updatePlaylistErrNoAccess": {
+    "message": "Your access has expired. Please contact the Playlist owner.",
+    "description": ""
+  },
   "sharedPlaylist": {
     "message": "Successfully shared",
     "description": ""

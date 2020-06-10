@@ -765,8 +765,16 @@ function* updatePlaylistSaga({ payload }) {
       yield put(push(`/author/playlists/${newId}/versioned/old/${oldId}`));
     }
   } catch (err) {
-    yield call(notification, { messageKey: "updatePlaylistErr" });
-    yield put(updatePlaylistErrorAction("updatePlaylistErr"));
+    let messageKey = "updatePlaylistErr";
+    if (err?.data?.permissions) {
+      if (err.data.permissions?.length && err.data.permissions.includes("read")) {
+        messageKey = "updatePlaylistErrViewOnlyAccess";
+      } else {
+        messageKey = "updatePlaylistErrNoAccess";
+      }
+    }
+    yield call(notification, { messageKey });
+    yield put(updatePlaylistErrorAction(messageKey));
   }
 }
 

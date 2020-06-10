@@ -3,11 +3,12 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
+import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic } from "@edulastic/icons";
 import { get } from "lodash";
-import { message, Row, Icon } from "antd";
+import { Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants, roleuser } from "@edulastic/constants";
+import { themeColor } from "@edulastic/colors";
 import {
   MathFormulaDisplay,
   PremiumTag,
@@ -65,7 +66,7 @@ import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
 import { getCollectionsSelector, isPublisherUserSelector, getUserRole } from "../../../src/selectors/user";
 
-import { TestStatus } from "../../../TestList/components/ListItem/styled";
+import { TestStatus, DynamicIconWrapper } from "../../../TestList/components/ListItem/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants;
@@ -223,12 +224,12 @@ class Item extends Component {
     } = this.props;
     if (!test.title?.trim().length && page !== "itemList") {
       gotoSummary();
-      return notification({ messageKey: "nameShouldNotEmpty"});
+      return notification({ messageKey: "nameShouldNotEmpty" });
     }
 
     let keys = [];
     if (test.safeBrowser && !test.sebPassword) {
-      return notification({ messageKey: "enterValidPassword"});
+      return notification({ messageKey: "enterValidPassword" });
     }
 
     this.setState({ selectedId: item._id });
@@ -354,6 +355,8 @@ class Item extends Component {
         : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
     const hideAddRemove = userRole === roleuser.EDULASTIC_CURATOR;
 
+    const isDynamicItem = item.data.questions.some(q => q?.variable?.enabled);
+
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
         <Container data-cy={item._id} className="fr-view">
@@ -429,6 +432,11 @@ class Item extends Component {
                     {({ children, ...rest }) => <TestStatus {...rest}>{children}</TestStatus>}
                   </TestStatusWrapper>
                 )}
+                {windowWidth > MAX_TAB_WIDTH && isDynamicItem && (
+                  <DynamicIconWrapper title="Every student may get different values in there assignment">
+                    <IconDynamic color={themeColor} />
+                  </DynamicIconWrapper>
+                )}
               </TypeCategory>
               {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
             </Detail>
@@ -481,6 +489,11 @@ class Item extends Component {
               <TestStatusWrapper>
                 {({ children, ...rest }) => <TestStatus {...rest}>{children}</TestStatus>}
               </TestStatusWrapper>
+              {isDynamicItem && (
+                <DynamicIconWrapper title="Every student may get different values in there assignment">
+                  <IconDynamic color={themeColor} />
+                </DynamicIconWrapper>
+              )}
               <Categories>{this.renderDetails()}</Categories>
             </Details>
           )}

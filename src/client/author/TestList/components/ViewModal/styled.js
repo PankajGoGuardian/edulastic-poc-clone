@@ -6,9 +6,9 @@ import {
   lightGrey,
   white,
   greenDark,
-  borders,
   themeLightGrayColor,
-  smallDesktopWidth
+  smallDesktopWidth,
+  greyThemeDark2
 } from "@edulastic/colors";
 import {
   testStatusBackgroundColor as backgroundColor,
@@ -78,7 +78,9 @@ const Label = styled.div`
   font-weight: 600;
 `;
 
-export const AssessmentNameLabel = styled(Label)``;
+export const AssessmentNameLabel = styled(Label)`
+  display: inline-block;
+`;
 export const AssessmentName = styled.div`
   margin-left: 10px;
   font-size: 15px;
@@ -303,4 +305,11 @@ export const TestTitleWrapper = styled.span`
 export const ViewModalButton = styled(ButtonComponent)`
   height: 40px;
   padding: 0px 11px;
+`;
+
+export const DynamicIconWrapper = styled.span`
+  margin-left: 20px;
+  font-weight: bolder;
+  font-size: 11px;
+  color: ${greyThemeDark2};
 `;

@@ -4,11 +4,11 @@ import { compose } from "redux";
 import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
+import { IconHeart, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
 import { assignmentApi } from "@edulastic/api";
-import { cardTitleColor } from "@edulastic/colors";
+import { cardTitleColor, themeColor } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
+import { roleuser, test } from "@edulastic/constants";
 import {
   Container,
   Inner,
@@ -33,7 +33,8 @@ import {
   MidRow,
   Collection,
   CollectionNameWrapper,
-  ThinLine
+  ThinLine,
+  DynamicIconWrapper
 } from "./styled";
 import {
   getOrgDataSelector,
@@ -238,6 +239,8 @@ class Item extends Component {
 
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
+
+    const isDynamic = !isPlaylist && item.itemGroups.some(group => group.type === test.ITEM_GROUP_TYPES.AUTOSELECT);
     return (
       <>
         <ViewModal
@@ -256,6 +259,7 @@ class Item extends Component {
           windowWidth={windowWidth}
           allowDuplicate={allowDuplicate}
           previewLink={e => this.showPreviewModal(testId, e)}
+          isDynamic={isDynamic}
         />
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -317,7 +321,7 @@ class Item extends Component {
 
           {!isPlaylist && (
             <MidRow>
-              <Collection>
+              <Collection isDynamic>
                 <label>COLLECTIONS</label>
                 <CollectionNameWrapper data-cy="test-collection" title={collectionName}>
                   {collectionName}
@@ -331,6 +335,11 @@ class Item extends Component {
                  *  */}
                 <div data-cy="test-item-count">{isDocBased ? summary.totalQuestions : summary.totalItems}</div>
               </Qcount>
+              {isDynamic && (
+                <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
+                  <IconDynamic color={themeColor} />
+                </DynamicIconWrapper>
+              )}
             </MidRow>
           )}
           {isPlaylist ? <ThinLine /> : null}

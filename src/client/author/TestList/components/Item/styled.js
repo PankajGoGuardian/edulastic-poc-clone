@@ -365,13 +365,13 @@ export const MidRow = styled.div`
   }
 `;
 export const Collection = styled.div`
-  width: 55%;
-  padding: 0px 15px;
+  width: ${({ isDynamic }) => (isDynamic ? "45%" : "55%")};
+  padding: 0px 10px;
 `;
 
 export const Qcount = styled.div`
   flex-basis: 50%;
-  padding: 0px 15px;
+  padding: 0px 10px;
 `;
 
 export const DraftIconWrapper = styled.div`
@@ -389,4 +389,9 @@ export const CollectionNameWrapper = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+`;
+
+export const DynamicIconWrapper = styled.div`
+  padding: 0px 10px;
+  margin-top: auto;
 `;

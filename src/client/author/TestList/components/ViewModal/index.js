@@ -1,4 +1,4 @@
-import { darkGrey, white } from "@edulastic/colors";
+import { darkGrey, white, greyThemeDark2 } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import {
@@ -10,7 +10,8 @@ import {
   IconWorldWide,
   IconEye,
   IconPencilEdit,
-  IconAssignment
+  IconAssignment,
+  IconDynamic
 } from "@edulastic/icons";
 import { Icon, Select, Tooltip, Col, Row } from "antd";
 import { find } from "lodash";
@@ -63,7 +64,8 @@ import {
   TagsConatiner,
   TagsLabel,
   TestStatus,
-  TestTitleWrapper
+  TestTitleWrapper,
+  DynamicIconWrapper
 } from "./styled";
 
 class ViewModal extends React.Component {
@@ -124,7 +126,8 @@ class ViewModal extends React.Component {
       previewLink,
       modalView = true,
       publicAccess = false,
-      isPublisherUser
+      isPublisherUser,
+      isDynamic
     } = this.props;
     const {
       title = "",
@@ -352,7 +355,15 @@ class ViewModal extends React.Component {
             ) : null}
           </ModalColumn>
           <ModalColumn>
-            <AssessmentNameLabel>Test Name</AssessmentNameLabel>
+            <div>
+              <AssessmentNameLabel>Test Name</AssessmentNameLabel>
+              {isDynamic && (
+                <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
+                  <IconDynamic color={greyThemeDark2} />
+                  &nbsp;&nbsp; DYNAMIC TEST
+                </DynamicIconWrapper>
+              )}
+            </div>
             <AssessmentName data-cy="testcard-name">{title}</AssessmentName>
 
             <DescriptionLabel>Description</DescriptionLabel>

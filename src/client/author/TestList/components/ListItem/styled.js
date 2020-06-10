@@ -285,3 +285,8 @@ export const AddButton = styled.div`
 export const Footer = styled(Col)`
   margin-top: 15px;
 `;
+
+export const DynamicIconWrapper = styled.span`
+  display: inline-flex;
+  margin: auto 10px;
+`;

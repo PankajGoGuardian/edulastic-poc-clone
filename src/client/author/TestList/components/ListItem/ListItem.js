@@ -1,8 +1,8 @@
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
 import { CheckboxLabel, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
+import { roleuser, test } from "@edulastic/constants";
+import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col } from "antd";
 import PropTypes from "prop-types";
@@ -43,7 +43,8 @@ import {
   StyledModuleName,
   TagsWrapper,
   TestStatus,
-  ViewButtonWrapper
+  ViewButtonWrapper,
+  DynamicIconWrapper
 } from "./styled";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 
@@ -181,6 +182,8 @@ class ListItem extends Component {
       !isPublisherUser &&
       !(_source?.createdBy?._id === currentUserId);
 
+    const isDynamic = !isPlaylist && item.itemGroups.some(group => group.type === test.ITEM_GROUP_TYPES.AUTOSELECT);
+
     return (
       <>
         <ViewModal
@@ -198,6 +201,7 @@ class ListItem extends Component {
           allowDuplicate={allowDuplicate}
           onDeletonDuplicatee={this.onDelete}
           previewLink={() => this.showPreviewModal(item._id)}
+          isDynamic={isDynamic}
         />
 
         <TestPreviewModal
@@ -337,6 +341,11 @@ class ListItem extends Component {
                 </TestStatusWrapper>
                 {collections.find(o => o.name === "Edulastic Certified") &&
                   getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon}
+                {isDynamic && (
+                  <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
+                    <IconDynamic color={themeColor} />
+                  </DynamicIconWrapper>
+                )}
               </TagsWrapper>
 
               <ItemInformation span={12}>

@@ -106,7 +106,21 @@ export default class TestLibrary {
         .contains("More")
     );
 
-  getAllTestCardsInCurrentPage = () => cy.get('[data-cy="test-id"]');
+  getAllTestCardsInCurrentPage = () =>
+    cy
+      .get('[data-cy="test-id"]')
+      .closest(".ant-card")
+      .parent();
+
+  getTestCardInCurrentPageByIndex = index => this.getAllTestCardsInCurrentPage().eq(index);
+
+  getTestIdOfCardInCurrentPageByIndex = index => this.getTestCardInCurrentPageByIndex(index).invoke("attr", "data-cy");
+
+  getCloseTestCardPopUpButton = () => cy.get(`button[class^="styles_closeButton"]`);
+
+  getTestNameOnTestCardById = id => this.getTestCardById(id).find('[data-cy="test-title"]');
+
+  getDescriptionOnTestCardById = id => this.getTestCardById(id).find('[data-cy="test-description"]');
 
   // *** ELEMENTS END ***
 
@@ -152,6 +166,8 @@ export default class TestLibrary {
     this.getAssignEdit().click();
     cy.wait("@load-classes");
   };
+
+  clickCloseTestCardPopUp = () => this.getCloseTestCardPopUpButton().click();
 
   clickOnAuthorTest = (fromAssignmentsPage = false) => {
     this.getCreateNewTestButton()
@@ -498,10 +514,11 @@ export default class TestLibrary {
   };
 
   createNewTestAndFillDetails = testData => {
-    const { grade, name, subject, collections, tags } = testData;
+    const { grade, name, subject, collections, tags, description } = testData;
     this.sidebar.clickOnTestLibrary();
     this.clickOnAuthorTest();
     this.testSummary.setName(name);
+    if (description) this.testSummary.setDescription(description);
     if (grade) {
       this.testSummary.clearGrades();
       if (Array.isArray(grade)) grade.forEach(gra => this.testSummary.selectGrade(gra));
@@ -557,6 +574,10 @@ export default class TestLibrary {
   verifyTotalItemCountByTestId = (id, count) => this.getTotalItemCountBtTestId(id).should("contain", count);
 
   verifyStatusOnTestCardById = (id, status) => this.getTestStatusByTestId(id).should("contain", status);
+
+  verifyNameOnTestCardById = (id, name) => this.getTestNameOnTestCardById(id).should("have.text", name);
+
+  verifyDescriptionOnTestCardById = (id, desc) => this.getDescriptionOnTestCardById(id).should("have.text", desc);
 
   verifyStandardsOnTestCardById = (id, standards) => {
     this.getStandardsByTestId(id).then($ele => {

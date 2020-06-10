@@ -5,6 +5,7 @@ import StudentsReportCard from "../../../../framework/author/assignments/student
 import { COLLECTION } from "../../../../framework/constants/questionTypes";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 const questionData = require("../../../../../fixtures/questionAuthoring");
 
@@ -14,7 +15,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
   const lcb = new LiveClassboardPage();
   const studentsReportCard = new StudentsReportCard();
   const studentTestPage = new StudentTestPage();
+  const itemListPage = new ItemListPage();
 
+  const testsTobeVerified = 5;
   const teacher = "teacher.testlibrary@snapwiz.com";
   const stuAttempt = [
     {
@@ -37,65 +40,78 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
     "ESSAY_RICH.5"
   ];
   const allItemIds = [
-    "5ede3e60a7e4ff000881085c",
-    "5ede3e7ea7e4ff0008810860",
-    "5ede3ea27a335a0007c75adc",
-    "5ede3ecdae8fff000851885d",
-    "5ede3f05ac561400070d51bd",
-    "5ede3f417a335a0007c75ade"
+    "5edf6757216e5c000873b58a",
+    "5edf67751f39910007b25e74",
+    "5edf6799216e5c000873b58e",
+    "5edf67c4b620ec0007ecd546",
+    "5edf67e380e8250008f4f6e5",
+    "5edf67f9216e5c000873b592"
   ];
 
   const alltags = ["test-tag-1", "test-tag-2", "test-tag-3", "test-tag-4", "test-tag-5"];
-
+  let randomIndices = [];
+  let currentTestKey;
   const testData = {
     test_1: {
       subjects: ["ELA", "Mathematics"],
       grades: ["Grade 5", "Grade 6"],
       tags: ["test-tag-3", "test-tag-4"],
       items: ["ESSAY_RICH.default", "ESSAY_RICH.2", "ESSAY_RICH.5"],
-      id: "5ede3f84ac561400070d51bf"
+      name: "test_1",
+      description: "This is test_1",
+      id: "5edf683f1f39910007b25e78"
     },
     test_2: {
       subjects: ["ELA", "Mathematics"],
       grades: ["Grade 4", "Grade 6"],
       tags: ["test-tag-5", "test-tag-1"],
       items: ["ESSAY_RICH.1", "ESSAY_RICH.3", "ESSAY_RICH.5"],
-      id: "5ede3fcdae8fff000851885f"
+      name: "test_2",
+      description: "This is test_2",
+      id: "5edf6888216e5c000873b594"
     },
     test_3: {
       subjects: ["ELA", "Mathematics"],
       grades: ["Grade 8", "Grade 12"],
       tags: ["test-tag-2", "test-tag-4"],
       items: ["ESSAY_RICH.default", "ESSAY_RICH.2", "ESSAY_RICH.3"],
-      id: "5ede40183f636700071af2cd"
+      name: "test_3",
+      description: "This is test_3",
+      id: "5edf68ddb620ec0007ecd54b"
     },
     test_4: {
       subjects: ["ELA", "Mathematics"],
       grades: ["Grade 4", "Grade 5"],
       tags: ["test-tag-4", "test-tag-5"],
       items: ["ESSAY_RICH.2", "ESSAY_RICH.4", "ESSAY_RICH.1"],
-      id: "5ede40657a335a0007c75ae1"
+      name: "test_4",
+      description: "This is test_4",
+      id: "5edf69391bdcd70008ca4021"
     },
     test_5: {
       subjects: ["ELA", "Mathematics"],
       grades: ["Grade 8", "Grade 4", "Grade 5", "Grade 6"],
       tags: ["test-tag-1", "test-tag-2", "test-tag-3", "test-tag-4", "test-tag-5"],
       items: ["ESSAY_RICH.default", "ESSAY_RICH.3", "ESSAY_RICH.1"],
-      id: "5ede40c8a7e4ff0008810864"
+      name: "test_5",
+      description: "This is test_5",
+      id: "5edf69a6e0b8770008ff3364"
     },
     test_6: {
       subjects: ["ELA", "Mathematics"],
       grades: ["Grade 10", "Kindergarten"],
       tags: ["test-tag-4", "test-tag-2"],
       items: ["ESSAY_RICH.1", "ESSAY_RICH.2", "ESSAY_RICH.3"],
-      id: "5ede411f3f636700071af2d1"
+      name: "test_6",
+      description: "This is test_6",
+      id: "5edf69ffe0b8770008ff3366"
     }
   };
 
   before("> create all items", () => {
     cy.login("Teacher", teacher);
-    /*  allItems.forEach(item => {
-      itemListPage.createItem(item).then(id => allItemIds.push(id));
+    /*  allItems.forEach((item, index) => {
+      itemListPage.createItem(item, index).then(id => allItemIds.push(id));
     }); */
   });
 
@@ -107,27 +123,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
         grade: entry[1].grades,
         subject: entry[1].subjects,
         tags: entry[1].tags
+        description:entry[1].description,
       });
       testLibraryPage.header.clickOnAddItems();
       testLibraryPage.testAddItem.searchFilters.clearAll();
+      testLibraryPage.searchFilters.getAuthoredByMe()
 
       cy.server();
       cy.route("POST", "**api/test").as("create-test");
       entry[1].items.forEach((item, ind) => {
         const itemToAdd = allItemIds[allItems.indexOf(item)];
-        testLibraryPage.testAddItem.searchFilters.typeInSearchBox(itemToAdd);
+       // testLibraryPage.testAddItem.searchFilters.typeInSearchBox(itemToAdd);
         testLibraryPage.testAddItem.addItemById(itemToAdd);
         if (ind === 0)
           cy.wait("@create-test").then(xhr => {
             // testLibraryPage.saveTestId(xhr);
             testData[entry[0]].id = xhr.response.body.result._id;
+            testData.name = entry[0];
           });
       });
       testLibraryPage.header.clickOnPublishButton();
     });
-  });
+  }); */
 
-  before("> write results", () => {
+  /* before("> write results", () => {
     testData.itms = allItemIds;
     cy.writeFile("tests.json", testData);
   }); */
@@ -159,24 +178,26 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
 
   context("> test card in tile view", () => {
     before("> search and get test", () => {
-      const { id } = testData.test_5;
+      currentTestKey = _.shuffle(_.keys(testData))[0];
+      const { id } = testData[currentTestKey];
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.clickOnTileView();
       testLibraryPage.searchFilters.clearAll();
       testLibraryPage.searchFilters.typeInSearchBox(id);
     });
     it("> verify standards and collection", () => {
-      const { id, standardTableData } = testData.test_5;
+      const { id, standardTableData } = testData[currentTestKey];
       testLibraryPage.verifyStandardsOnTestCardById(id, _.keys(standardTableData));
       testLibraryPage.verifyCollectionOnTestCardbyId(id, COLLECTION.private.split(" ")[0].toUpperCase());
     });
-    it("> verify total items and teacher name", () => {
-      const { id, items } = testData.test_5;
+    it("> verify test name,total items and teacher name", () => {
+      const { id, items, name } = testData[currentTestKey];
       testLibraryPage.verifyTotalItemCountByTestId(id, items.length);
       testLibraryPage.verifyAuthorNameOnTestCardById(id, "Teacher");
+      testLibraryPage.verifyNameOnTestCardById(id, name);
     });
     it("> verify id and status", () => {
-      const { id } = testData.test_5;
+      const { id } = testData[currentTestKey];
       testLibraryPage.verifyStatusOnTestCardById(id, "published");
       testLibraryPage.verifyTestIdOnTestCardById(id);
     });
@@ -184,27 +205,34 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
 
   context("> test card in list view", () => {
     before("> search and get test", () => {
-      const { id } = testData.test_5;
+      currentTestKey = _.shuffle(_.keys(testData))[0];
+      const { id } = testData[currentTestKey];
       testLibraryPage.clickOnListView();
       testLibraryPage.searchFilters.clearAll();
       testLibraryPage.searchFilters.typeInSearchBox(id);
     });
 
     it("> verify standards and tags", () => {
-      const { id, standardTableData, tags } = testData.test_5;
+      const { id, standardTableData, tags } = testData[currentTestKey];
       testLibraryPage.verifyStandardsOnTestCardById(id, _.keys(standardTableData));
       testLibraryPage.verifyTagsOnTestCardById(id, tags);
     });
 
     it("> verify teacher name,id and status", () => {
-      const { id } = testData.test_5;
+      const { id } = testData[currentTestKey];
       testLibraryPage.verifyAuthorNameOnTestCardById(id, "Teacher");
       testLibraryPage.verifyStatusOnTestCardById(id, "published");
       testLibraryPage.verifyTestIdOnTestCardById(id);
     });
 
+    it("> verify name and description", () => {
+      const { id, description, name } = testData[currentTestKey];
+      testLibraryPage.verifyNameOnTestCardById(id, name);
+      testLibraryPage.verifyDescriptionOnTestCardById(id, description);
+    });
+
     it("> preview button", () => {
-      const { items, id } = testData.test_5;
+      const { items, id } = testData[currentTestKey];
       testLibraryPage.clickPreviewOnTestCardById(id);
       studentTestPage.verifyNoOfQuestions(items.length);
       items.forEach(item => {
@@ -218,30 +246,32 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
   context("> test card in pop up view", () => {
     before("> search and get test", () => {
       studentTestPage.clickOnExitTest(true);
-      const { id } = testData.test_5;
+      currentTestKey = _.shuffle(_.keys(testData))[0];
+      const { id } = testData[currentTestKey];
       testLibraryPage.clickOnTileView();
       testLibraryPage.searchFilters.clearAll();
       testLibraryPage.searchFilters.typeInSearchBox(id);
       testLibraryPage.clickOnTestCardById(id);
     });
     it("> verify test name and collection", () => {
-      testLibraryPage.verifyTestNameOnTestCardPopUp("test_5");
+      const { name } = testData[currentTestKey];
+      testLibraryPage.verifyTestNameOnTestCardPopUp(name);
       testLibraryPage.verifyTestCollectionOnTestCardPopUp(COLLECTION.private);
     });
     it("> verify grade and subject", () => {
-      const { testGrades, subjects } = testData.test_5;
+      const { testGrades, subjects } = testData[currentTestKey];
       testLibraryPage.verifyGradesOnTestCardPopUp(testGrades);
       testLibraryPage.verifySubjectsOnTestCardPopUp(subjects);
     });
 
     it("> verify total items and points", () => {
-      const { items, points } = testData.test_5;
+      const { items, points } = testData[currentTestKey];
       testLibraryPage.verifyTotalPointsOnTestCardPopUp(points);
       testLibraryPage.verifyTotalItemsOnTestCardPopUp(items.length);
     });
 
     it("> verify standard table", () => {
-      const { standardTableData } = testData.test_5;
+      const { standardTableData } = testData[currentTestKey];
       _.keys(standardTableData).forEach(standard => {
         const { max, questions } = standardTableData[standard];
         testLibraryPage.verifyStandardTableRowByStandard(standard, questions.length, max);
@@ -249,7 +279,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
     });
 
     it("> preview button", () => {
-      const { items } = testData.test_5;
+      const { items } = testData[currentTestKey];
       testLibraryPage.clickPreviewOnTestCardPopUp();
       studentTestPage.verifyNoOfQuestions(items.length);
       items.forEach(item => {
@@ -312,172 +342,283 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
   });
 
   context("> filters", () => {
-    beforeEach("> clear filters", () => {
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
+    context("> authored by me", () => {
+      beforeEach("> clear filters", () => {
+        testLibraryPage.searchFilters.clearAll();
+        testLibraryPage.searchFilters.getAuthoredByMe();
+      });
+      it("> grades", () => {
+        const customFilter = { standards: { grade: [GRADES.GRADE_10, GRADES.KINDERGARTEN] } };
+        const filteredTest = _.values(testData).filter(
+          a => _.intersection(customFilter.standards.grade, a.testGrades).length > 0
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> subjects", () => {
+        const customFilter = { standards: { subject: subject.MATH } };
+        const filteredTest = _.values(testData).filter(a => a.subjects.indexOf(customFilter.standards.subject) !== -1);
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> standard set", () => {
+        const customFilter = { standards: { subject: subject.ELA, standardSet: "ELA - Common Core" } };
+        const filteredTest = _.values(testData).filter(
+          a => a.standardSet.indexOf(customFilter.standards.standardSet) !== -1
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> standard", () => {
+        const customFilter = {
+          standards: { subject: subject.ELA, standardSet: "ELA - Common Core", standard: ["CCRA.L.1"] }
+        };
+        const filteredTest = _.values(testData).filter(
+          a => _.intersection(_.keys(a.standardTableData), customFilter.standards.standard).length > 0
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> collection", () => {
+        const customFilter = { collection: COLLECTION.private };
+        testLibraryPage.searchFilters.clearAll();
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        _.values(testData).forEach(test => testLibraryPage.getTestCardById(test.id));
+      });
+
+      it("> tags", () => {
+        const customFilter = { tags: [alltags[2], alltags[4]] };
+        const filteredTest = _.values(testData).filter(a => _.intersection(a.tags, customFilter.tags).length > 0);
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> grades + subject", () => {
+        const customFilter = { standards: { grade: [GRADES.GRADE_10], subject: subject.ELA } };
+        const filteredTest = _.values(testData).filter(
+          a =>
+            _.intersection(customFilter.standards.grade, a.testGrades).length > 0 &&
+            a.subjects.indexOf(customFilter.standards.subject) !== -1
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> grades + standard set", () => {
+        const customFilter = {
+          standards: { grade: [GRADES.KINDERGARTEN], subject: subject.ELA, standardSet: "ELA - Common Core" }
+        };
+        const filteredTest = _.values(testData).filter(
+          a =>
+            _.intersection(customFilter.standards.grade, a.testGrades).length > 0 &&
+            a.standardSet.indexOf(customFilter.standards.standardSet) !== -1
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> grades + standards", () => {
+        const customFilter = {
+          standards: {
+            grade: [GRADES.GRADE_4],
+            subject: subject.MATH,
+            standardSet: "Math - Common Core",
+            standard: ["4.G.A.2", "4.G.A.1"]
+          }
+        };
+        const filteredTest = _.values(testData).filter(
+          a =>
+            _.intersection(customFilter.standards.grade, a.testGrades).length > 0 &&
+            _.intersection(customFilter.standards.standard, _.keys(a.standardTableData)).length > 0
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> grades + collection", () => {
+        const customFilter = {
+          standards: {
+            grade: [GRADES.KINDERGARTEN]
+          },
+          collection: COLLECTION.private
+        };
+        const filteredTest = _.values(testData).filter(
+          a => _.intersection(customFilter.standards.grade, a.testGrades).length > 0
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
+
+      it("> grades + tags", () => {
+        const customFilter = {
+          standards: {
+            grade: [GRADES.GRADE_5]
+          },
+          tags: [alltags[0], alltags[2]]
+        };
+        const filteredTest = _.values(testData).filter(
+          a =>
+            _.intersection(customFilter.standards.grade, a.testGrades).length > 0 &&
+            _.intersection(customFilter.tags, a.tags).length > 0
+        );
+
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+        filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
+        testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+      });
     });
-    it("> grades", () => {
-      const customFilter = { standards: { grades: [GRADES.GRADE_10, GRADES.KINDERGARTEN] } };
-      const filteredTest = _.values(testData).filter(
-        a => _.intersection(customFilter.standards.grades, a.testGrades).length > 0
-      );
 
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
-
-    it("> subjects", () => {
-      const customFilter = { standards: { subject: subject.MATH } };
-      const filteredTest = _.values(testData).filter(a => a.subjects.indexOf(customFilter.standards.subject) !== -1);
-
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
-
-    it("> standard set", () => {
-      const customFilter = { standards: { subject: subject.ELA, standardSet: "ELA - Common Core" } };
-      const filteredTest = _.values(testData).filter(
-        a => a.standardSet.indexOf(customFilter.standards.standardSet) !== -1
-      );
-
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
-
-    it("> standard", () => {
-      const customFilter = {
-        standards: { subject: subject.ELA, standardSet: "ELA - Common Core", standard: ["CCRA.L.1"] }
-      };
-      const filteredTest = _.values(testData).filter(
-        a => _.intersection(_.keys(a.standardTableData), customFilter.standards.standard).length > 0
-      );
-
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
-
-    it("> collection", () => {
-      const customFilter = { collection: COLLECTION.private };
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      _.values(testData).forEach(test => testLibraryPage.getTestCardById(test.id));
-    });
-
-    it("> tags", () => {
-      const customFilter = { tags: [alltags[2], alltags[4]] };
-      const filteredTest = _.values(testData).filter(a => _.intersection(a.tags, customFilter.tags).length > 0);
-
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
-
-    it("> grades + subject", () => {
-      const customFilter = { standards: { grades: [GRADES.GRADE_10], subject: subject.ELA } };
-      const filteredTest = _.values(testData).filter(
-        a =>
-          _.intersection(customFilter.standards.grades, a.testGrades).length > 0 &&
-          a.subjects.indexOf(customFilter.standards.subject) !== -1
-      );
-
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
-
-    it("> grades + standard set", () => {
-      const customFilter = {
-        standards: { grades: [GRADES.KINDERGARTEN], subject: subject.ELA, standardSet: "ELA - Common Core" }
-      };
-      const filteredTest = _.values(testData).filter(
-        a =>
-          _.intersection(customFilter.standards.grades, a.testGrades).length > 0 &&
-          a.standardSet.indexOf(customFilter.standards.standardSet) !== -1
-      );
-
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
-
-    it("> grades + standards", () => {
-      const customFilter = {
-        standards: {
-          grades: [GRADES.GRADE_4],
-          subject: subject.MATH,
-          standardSet: "Math - Common Core",
-          standard: ["4.G.A.2", "4.G.A.1"]
+    context("> entire library", () => {
+      beforeEach("> clear filters", () => {
+        testLibraryPage.searchFilters.clearAll();
+        randomIndices = [];
+        for (let i = 0; i < testsTobeVerified; i++) {
+          const randomIndex = _.random(19);
+          if (randomIndices.indexOf(randomIndex) === -1) randomIndices.push(randomIndex);
         }
-      };
-      const filteredTest = _.values(testData).filter(
-        a =>
-          _.intersection(customFilter.standards.grades, a.testGrades).length > 0 &&
-          _.intersection(customFilter.standards.standard, _.keys(a.standardTableData)).length > 0
-      );
+      });
+      it("> grades", () => {
+        const customFilter = { standards: { grade: [GRADES.GRADE_10] } };
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
 
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
+        randomIndices.forEach(index => {
+          testLibraryPage.getTestIdOfCardInCurrentPageByIndex(index).then(id => {
+            testLibraryPage.clickOnTestCardById(id);
+            testLibraryPage.verifyGradesOnTestCardPopUp(customFilter.standards.grade);
+            testLibraryPage.clickCloseTestCardPopUp();
+          });
+        });
+      });
 
-    it("> grades + collection", () => {
-      const customFilter = {
-        standards: {
-          grades: [GRADES.KINDERGARTEN]
-        },
-        collection: COLLECTION.private
-      };
-      const filteredTest = _.values(testData).filter(
-        a => _.intersection(customFilter.standards.grades, a.testGrades).length > 0
-      );
+      it("> subjects", () => {
+        const customFilter = { standards: { subject: subject.ELA } };
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
 
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
-    });
+        randomIndices.forEach(index => {
+          testLibraryPage.getTestIdOfCardInCurrentPageByIndex(index).then(id => {
+            testLibraryPage.clickOnTestCardById(id);
+            testLibraryPage.verifySubjectsOnTestCardPopUp([customFilter.standards.subject]);
+            testLibraryPage.clickCloseTestCardPopUp();
+          });
+        });
+      });
 
-    it("> grades + tags", () => {
-      const customFilter = {
-        standards: {
-          grades: [GRADES.GRADE_5]
-        },
-        tags: [alltags[0], alltags[2]]
-      };
-      const filteredTest = _.values(testData).filter(
-        a =>
-          _.intersection(customFilter.standards.grades, a.testGrades).length > 0 &&
-          _.intersection(customFilter.tags, a.tags).length > 0
-      );
+      it("> standard", () => {
+        const customFilter = {
+          standards: {
+            grade: [GRADES.GRADE_7],
+            subject: subject.MATH,
+            standardSet: "Math - Common Core",
+            standard: ["7.EE.A.1"]
+          }
+        };
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
 
-      testLibraryPage.searchFilters.setFilters(customFilter, false);
-      filteredTest.forEach(test => testLibraryPage.getTestCardById(test.id));
-      testLibraryPage.getAllTestCardsInCurrentPage().should("have.length", filteredTest.length);
+        randomIndices.forEach(index => {
+          testLibraryPage.getTestIdOfCardInCurrentPageByIndex(index).then(id => {
+            testLibraryPage.verifyStandardsOnTestCardById(id, customFilter.standards.standard);
+          });
+        });
+      });
+
+      it("> grades + subject", () => {
+        const customFilter = { standards: { grade: [GRADES.GRADE_10], subject: subject.ELA } };
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+
+        randomIndices.forEach(index => {
+          testLibraryPage.getTestIdOfCardInCurrentPageByIndex(index).then(id => {
+            testLibraryPage.clickOnTestCardById(id);
+            testLibraryPage.verifySubjectsOnTestCardPopUp([customFilter.standards.subject]);
+            testLibraryPage.verifyGradesOnTestCardPopUp(customFilter.standards.grade);
+            testLibraryPage.clickCloseTestCardPopUp();
+          });
+        });
+      });
+
+      it("> grades + standards", () => {
+        const customFilter = {
+          standards: {
+            grade: [GRADES.GRADE_4],
+            subject: subject.MATH,
+            standardSet: "Math - Common Core",
+            standard: ["4.G.A.1"]
+          }
+        };
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+
+        randomIndices.forEach(index => {
+          testLibraryPage.getTestIdOfCardInCurrentPageByIndex(index).then(id => {
+            testLibraryPage.verifyStandardsOnTestCardById(id, customFilter.standards.standard);
+            testLibraryPage.clickOnTestCardById(id);
+            testLibraryPage.verifyGradesOnTestCardPopUp(customFilter.standards.grade);
+            testLibraryPage.clickCloseTestCardPopUp();
+          });
+        });
+      });
+
+      it("> grades + collection", () => {
+        const customFilter = {
+          standards: {
+            grade: [GRADES.KINDERGARTEN]
+          },
+          collection: COLLECTION.public
+        };
+        testLibraryPage.searchFilters.setFilters(customFilter, false);
+
+        randomIndices.forEach(index => {
+          testLibraryPage.getTestIdOfCardInCurrentPageByIndex(index).then(id => {
+            testLibraryPage.verifyCollectionOnTestCardbyId(id, COLLECTION.public.split(" ")[0].toUpperCase());
+            testLibraryPage.clickOnTestCardById(id);
+            testLibraryPage.verifyGradesOnTestCardPopUp(customFilter.standards.grade);
+            testLibraryPage.clickCloseTestCardPopUp();
+          });
+        });
+      });
     });
   });
 
   context("> assign, more, preview", () => {
     beforeEach("> search test", () => {
-      const { id } = testData.test_3;
+      currentTestKey = _.shuffle(_.keys(testData))[0];
       testLibraryPage.sidebar.clickOnDashboard();
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.clickOnTileView();
       testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.typeInSearchBox(id);
+      testLibraryPage.searchFilters.getAuthoredByMe();
     });
+
     it("> 'assign' button", () => {
       cy.deleteAllAssignments(undefined, teacher);
-      const { id } = testData.test_3;
+      const { id } = testData[currentTestKey];
       testLibraryPage.clickAssignOnTestCardById(id);
       testLibraryPage.assignPage.selectClass("Class");
       testLibraryPage.assignPage.clickOnAssign();
     });
 
     it("> 'preview' button", () => {
-      const { id, items } = testData.test_3;
+      const { id, items } = testData[currentTestKey];
       testLibraryPage.clickPreviewOnTestCardById(id);
       studentTestPage.verifyNoOfQuestions(items.length);
       items.forEach(item => {
@@ -486,8 +627,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       });
       cy.wait(1000);
     });
+
     it("> 'more' button", () => {
-      const { id } = testData.test_3;
+      const { id } = testData[currentTestKey];
       studentTestPage.clickOnExitTest(true);
       testLibraryPage.clickMoreOnTestCardById(id);
       testLibraryPage.getAssignEdit().should("be.visible");

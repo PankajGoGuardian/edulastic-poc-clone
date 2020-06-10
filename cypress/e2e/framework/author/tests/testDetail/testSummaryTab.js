@@ -47,6 +47,11 @@ export default class TestSummayTab {
       .type(testname);
   };
 
+  setDescription = description =>
+    this.getTestDescription()
+      .clear()
+      .type(description);
+
   clearSubjects = () =>
     this.getTestSubjectSelect().then($ele => {
       if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });

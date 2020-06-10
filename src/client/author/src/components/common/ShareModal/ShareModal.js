@@ -1,9 +1,9 @@
 import { backgroundGrey2, fadedGrey, greenDark, themeColor, whiteSmoke, mobileWidthMax } from "@edulastic/colors";
-import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled,notification } from "@edulastic/common";
+import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconClose, IconShare } from "@edulastic/icons";
-import { Col, message, Row, Select, Spin, Typography, Modal } from "antd";
-import { debounce, get as _get } from "lodash";
+import { Col, Row, Select, Spin, Typography, Modal } from "antd";
+import { debounce, get as _get, isUndefined } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -60,13 +60,17 @@ class ShareModal extends React.Component {
       sharedType: sharedKeysObj.INDIVIDUAL,
       searchString: "",
       currentUser: {},
-      permission: props.features.editPermissionOnTestSharing ? "EDIT" : "VIEW",
-      _permissionKeys: props.features.editPermissionOnTestSharing ? permissionKeys : [permissionKeys[1]]
-    };
+      permission: (isUndefined(props.hasPlaylistEditAccess) ?
+        props.features.editPermissionOnTestSharing :
+        (props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)) ? "EDIT" : "VIEW",
+      _permissionKeys: (isUndefined(props.hasPlaylistEditAccess) ?
+        props.features.editPermissionOnTestSharing :
+        (props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)) ? permissionKeys : [permissionKeys[1]]
+    }
     this.handleSearch = this.handleSearch.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps, nextState) {
+  static getDerivedStateFromProps(nextProps) {
     const { features, gradeSubject } = nextProps;
     const { grades, subjects } = gradeSubject || {};
     if (
@@ -105,7 +109,8 @@ class ShareModal extends React.Component {
 
   radioHandler = e => {
     this.setState({ sharedType: e.target.value });
-    if (e.target.value !== sharedKeysObj.INDIVIDUAL) {
+    const { hasPlaylistEditAccess } = this.props;
+    if (e.target.value !== sharedKeysObj.INDIVIDUAL || !hasPlaylistEditAccess) {
       this.setState({
         permission: "VIEW"
       });
@@ -179,10 +184,10 @@ class ShareModal extends React.Component {
     let emails = [];
     if (sharedType === sharedKeysObj.INDIVIDUAL) {
       if (Object.keys(currentUser).length === 0) {
-        if (!searchString.length) return notification({ messageKey:"pleaseSelectAnyUser"});
+        if (!searchString.length) return notification({ messageKey: "pleaseSelectAnyUser" });
         emails = searchString.split(",");
       } else if (isExisting) {
-        notification({ messageKey:"userHasPermission"});
+        notification({ messageKey: "userHasPermission" });
         return;
       } else {
         const { _userId, userName, email } = currentUser;
@@ -191,7 +196,7 @@ class ShareModal extends React.Component {
     } else {
       const isTypeExisting = sharedUsersList.some(item => item.userName === shareTypes[sharedType]);
       if (isTypeExisting) {
-        notification({ msg:`You have shared with ${shareTypes[sharedType]} try other option`});
+        notification({ msg: `You have shared with ${shareTypes[sharedType]} try other option` });
         return;
       }
     }
@@ -248,7 +253,8 @@ class ShareModal extends React.Component {
       isPlaylist,
       userOrgData,
       features,
-      userRole
+      userRole,
+      hasPlaylistEditAccess = true
     } = this.props;
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
@@ -262,7 +268,7 @@ class ShareModal extends React.Component {
 
     const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
       currentUser.email ? currentUser.email : ""
-    }`;
+      }`;
     const { districtName, schools } = userOrgData;
     const isDA = userRole === roleuser.DISTRICT_ADMIN;
     let sharedTypeMessage = "The entire Edulastic Community";
@@ -322,7 +328,7 @@ class ShareModal extends React.Component {
                     disabled={
                       (!isPublished && item !== shareTypeKeys[3]) ||
                       (item === shareTypeKeys[0] && hasPremiumQuestion) ||
-                      ((features.isCurator || features.isPublisherAuthor) && item === "PUBLIC")
+                      ((features.isCurator || features.isPublisherAuthor || !hasPlaylistEditAccess) && item === "PUBLIC")
                     }
                   >
                     {shareTypes[item]}
@@ -358,7 +364,7 @@ class ShareModal extends React.Component {
                 </IndividualSelectInputStyled>
               ) : (
                 <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
-              )}
+                )}
               <IndividualSelectInputStyled
                 style={sharedType === sharedKeysObj.INDIVIDUAL ? { marginLeft: "0px" } : { display: "none" }}
                 onChange={this.permissionHandler}
@@ -400,13 +406,14 @@ ShareModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPlaylist: PropTypes.bool,
   hasPremiumQuestion: PropTypes.bool,
-  isPublished: PropTypes.bool,
-  gradeSubject: PropTypes.object
+  isPublished: PropTypes.bool
 };
 
 ShareModal.defaultProps = {
   isPlaylist: false,
-  gradeSubject: {}
+  hasPremiumQuestion: false,
+  isPublished: false
+
 };
 
 const enhance = compose(

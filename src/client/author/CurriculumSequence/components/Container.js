@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { message } from "antd";
+import { roleuser as userRoles, test } from "@edulastic/constants";
 import { withWindowSizes, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { test } from "@edulastic/constants";
-import { set, omit } from "lodash";
 
+import { set, omit } from "lodash";
+import { getUserId } from "../../src/selectors/user";
 import CurriculumSequence from "./CurriculumSequence";
 import {
   getAllCurriculumSequencesAction,
@@ -209,7 +209,7 @@ class CurriculumContainer extends Component {
         return false;
       }).length > 0;
 
-    if (!hasContent) return notification({ type: "warn", messageKey: "moduleHasNOTest"});
+    if (!hasContent) return notification({ type: "warn", messageKey: "moduleHasNOTest" });
 
     const { expandedModules } = this.state;
     if (expandedModules.indexOf(moduleId) === -1) {
@@ -279,6 +279,13 @@ class CurriculumContainer extends Component {
     setPlaylistData({ collections: selectedCollections });
   };
 
+  checkWritePermission = () => {
+    const { destinationCurriculumSequence, currentUserId } = this.props;
+    // Playlist is being authored - editFlow
+    if (!destinationCurriculumSequence.authors) return true;
+    return !!destinationCurriculumSequence.authors?.find(x => x?._id === currentUserId);
+  };
+
   render() {
     const { windowWidth, curriculumSequences, isContentExpanded, match, mode, resequenceTests, loading } = this.props;
     const { expandedModules, showShareModal, showSelectCollectionsModal } = this.state;
@@ -304,6 +311,9 @@ class CurriculumContainer extends Component {
       subjects: destinationCurriculumSequence.subjects
     };
 
+    // check Current user's edit permission
+    const hasEditAccess = this.checkWritePermission();
+
     return (
       <>
         <ShareModal
@@ -314,6 +324,7 @@ class CurriculumContainer extends Component {
           isPlaylist
           onClose={onShareModalChange}
           gradeSubject={gradeSubject}
+          hasPlaylistEditAccess={hasEditAccess}
         />
         <CollectionsSelectModal
           isVisible={showSelectCollectionsModal}
@@ -417,12 +428,13 @@ const enhance = compose(
   withWindowSizes,
   withNamespaces("author"),
   connect(
-    ({ curriculumSequence, user }) => ({
-      loading: curriculumSequence.loading,
-      curriculumSequences: curriculumSequence,
-      isContentExpanded: curriculumSequence?.isContentExpanded,
-      destinationCurriculumSequence: curriculumSequence?.destinationCurriculumSequence,
-      isStudent: user?.user?.role === "student"
+    state => ({
+      loading: state.curriculumSequence.loading,
+      curriculumSequences: state.curriculumSequence,
+      isContentExpanded: state.curriculumSequence?.isContentExpanded,
+      destinationCurriculumSequence: state.curriculumSequence?.destinationCurriculumSequence,
+      isStudent: state.user?.user?.role === userRoles.STUDENT,
+      currentUserId: getUserId(state)
     }),
     mapDispatchToProps
   )

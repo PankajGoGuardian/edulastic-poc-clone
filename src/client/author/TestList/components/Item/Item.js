@@ -7,7 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor, themeColor } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { PremiumLabel, EduButton } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import {
   Container,
@@ -29,7 +29,6 @@ import {
   StatusRow,
   Qcount,
   PlaylistDesc,
-  PremiumLabel,
   MidRow,
   Collection,
   CollectionNameWrapper,

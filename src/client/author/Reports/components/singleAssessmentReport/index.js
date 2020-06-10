@@ -55,13 +55,13 @@ const links = [
   }
 ];
 
-export const SingleAssessmentReport = () => (
+export const SingleAssessmentReport = ({ premium }) => (
   <div>
     <BoxHeading heading="Single Assessment Report" iconType="bar-chart" />
 
     <CardsWrapper>
       {links.map(data => (
-        <LinkItem key={data.title} data={data} tiles />
+        <LinkItem key={data.title} data={data} tiles premium={premium} />
       ))}
     </CardsWrapper>
   </div>

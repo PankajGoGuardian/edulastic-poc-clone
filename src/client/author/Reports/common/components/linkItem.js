@@ -1,27 +1,33 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Icon } from "antd";
+import { PremiumLabel } from "@edulastic/common";
 import { themeColorLight } from "@edulastic/colors";
 
-export const LinkItem = ({ data, inverse, tiles }) => {
+export const LinkItem = ({ data, inverse, tiles, premium }) => {
+  const showPremiumLabel = !premium && data.key !== "assessmentSummary";
+  const showGreenBorder = !premium && data.key === "assessmentSummary";
+  const ResolvedLink = showPremiumLabel ? Fragment : Link;
+
   if (tiles) {
     return (
-      <Link data-cy={data.key} to={!inverse && data.location}>
+      <ResolvedLink data-cy={data.key} to={data.location}>
         <ItemCard>
-          <StyledPreviewImage src={data.thumbnail} alt={data.title} />
+          {showPremiumLabel && <PremiumLabel style={{ top: 8, right: 8 }}>$ PREMIUM</PremiumLabel>}
+          <StyledPreviewImage src={data.thumbnail} alt={data.title} showGreenBorder={showGreenBorder} />
           <CardTitle>{data.title}</CardTitle>
           <CardDescription>{data.description}</CardDescription>
         </ItemCard>
-      </Link>
+      </ResolvedLink>
     );
   }
   return (
     <Item>
-      <Link data-cy={data.key} to={!inverse && data.location}>
+      <ResolvedLink data-cy={data.key} to={!inverse && data.location}>
         {data.title}
         {!inverse && <StyledIcon type="right" />}
-      </Link>
+      </ResolvedLink>
     </Item>
   );
 };
@@ -38,6 +44,7 @@ export const CardsWrapper = styled.div`
 `;
 
 const ItemCard = styled.div`
+  position: relative;
   width: 235px;
   margin: 0px 14px 20px 0px;
 `;
@@ -48,6 +55,7 @@ const StyledPreviewImage = styled.img`
   user-select: none;
   pointer-events: none;
   object-fit: contain;
+  ${({ showGreenBorder }) => showGreenBorder && "border: 2px solid;"}
 `;
 
 const CardTitle = styled.h4`

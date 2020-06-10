@@ -30,12 +30,12 @@ const links = [
   }
 ];
 
-export const StudentProfileReport = () => (
+export const StudentProfileReport = ({ premium }) => (
   <div>
     <BoxHeading heading="Student Profile Report" iconType="line-chart" />
     <CardsWrapper>
       {links.map(data => (
-        <LinkItem key={data.title} data={data} tiles />
+        <LinkItem key={data.title} data={data} tiles premium={premium} />
       ))}
     </CardsWrapper>
   </div>

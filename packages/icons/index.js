@@ -244,3 +244,6 @@ export { default as IconMatrixDot } from "./src/IconMatrixDot";
 export { default as IconNotAllowed } from "./src/IconNotAllowed";
 export { default as IconQuestionCircle } from "./src/IconQuestionCircle";
 export { default as IconDynamic } from "./src/IconDynamic";
+export { default as IconEconomic } from "./src/IconEconomic";
+export { default as IconMother } from "./src/IconMother";
+export { default as IconWrench } from "./src/IconWrench";

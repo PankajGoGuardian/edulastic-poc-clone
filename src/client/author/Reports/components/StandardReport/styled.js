@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { Card, TextInputStyled } from "@edulastic/common";
 import { Drawer } from "antd";
 
+export const StandardReportWrapper = styled.div`
+  position: relative;
+`;
+
 export const StyledCard = styled(Card)`
   box-shadow: none;
   margin-bottom: 20px;
@@ -20,7 +24,11 @@ export const StyledCard = styled(Card)`
 
 export const StyledContainer = styled.div`
   padding: 0px;
+  display: flex;
+  ${({ premium }) => !premium && `padding-top: 15px;`}
 `;
+
+export const ReportCardsWrapper = styled.div``;
 
 export const SearchBoxContainer = styled.div`
   display: flex;

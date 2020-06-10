@@ -36,11 +36,9 @@ export const StandardsMasteryReport = ({ premium }) => (
   <div>
     <BoxHeading heading="Standards Mastery Report" iconType="pie-chart" />
     <CardsWrapper>
-      {!premium ? (
-        <LinkItem key={links[1].title} data={links[1]} tiles />
-      ) : (
-        links.map(data => <LinkItem key={data.title} data={data} tiles />)
-      )}
+      {links.map(data => (
+        <LinkItem key={data.title} data={data} tiles premium={premium} />
+      ))}
     </CardsWrapper>
   </div>
 );

@@ -30,12 +30,12 @@ const links = [
       "Explore trends in performance by student. Isolates those who are on, at, or below target to aid in differentiated instruction."
   }
 ];
-export const MultipleAssessmentReport = () => (
+export const MultipleAssessmentReport = ({ premium }) => (
   <div>
     <BoxHeading heading="Multiple Assessment Report" iconType="area-chart" />
     <CardsWrapper>
       {links.map(data => (
-        <LinkItem key={data.title} data={data} tiles />
+        <LinkItem key={data.title} data={data} tiles premium={premium} />
       ))}
     </CardsWrapper>
   </div>

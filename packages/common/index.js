@@ -70,6 +70,7 @@ export { default as Label } from "./src/components/Label";
 export { default as CustomPrompt } from "./src/components/CustomPrompt";
 export { default as notification } from "./src/components/Notification";
 export { default as DragDropInnerContainer } from "./src/components/DragDrop/DragDropInnerContainer";
+export { default as PremiumLabel } from "./src/components/PremiumLabel";
 
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";

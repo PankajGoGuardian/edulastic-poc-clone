@@ -10,7 +10,7 @@ const { Content } = Layout;
 export const LogoCompact = styled(IconLogoCompact)`
   width: 22px;
   height: 22px;
-  margin: 14px 0 9px 19px;
+  margin: ${props => props.margin || "14px 0 9px 19px"};
   fill: #0eb08d;
   &:hover {
     fill: #0eb08d;

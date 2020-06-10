@@ -1,98 +1,32 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Layout, Menu, Icon } from "antd";
-import { ThemeProvider } from "styled-components";
-import { ErrorHandler, OnWhiteBgLogo } from "@edulastic/common";
-import { Route, Switch, Redirect } from "react-router-dom";
-import { themes } from "../theme";
-import Sider from "./Common/Sider";
-import { LogoCompact, Button, MainDiv } from "./Common/StyledComponents";
-import CleverSearch from "./Containers/CleverSearch";
-import ProxyUser from "./Components/ProxyUser";
-import UpgradeUser from "./Containers/UpgradeUser";
-import { logoutAction } from "../author/src/actions/auth";
-import Logout from "./Common/Logout";
-import Collections from "../author/ContentCollections/components/Collections/Collections";
+import { ErrorHandler } from "@edulastic/common";
+import { Layout } from "antd";
+import React, { useState } from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
+import styled, { ThemeProvider } from "styled-components";
 import ContentBucket from "../author/ContentBuckets/components/ContentBucketsTable/index";
-import ApiForm from "./Containers/ApiForm";
+import Collections from "../author/ContentCollections/components/Collections/Collections";
+import { themes } from "../theme";
+import SideMenu from "./Common/SideMenu";
+import { MainDiv } from "./Common/StyledComponents";
 import CustomReportContainer from "./Components/CustomReportContainer";
+import ProxyUser from "./Components/ProxyUser";
+import ApiForm from "./Containers/ApiForm";
+import CleverSearch from "./Containers/CleverSearch";
+import UpgradeUser from "./Containers/UpgradeUser";
 
-const siderMenuData = [
-  {
-    icon: "pie-chart",
-    label: "clever search",
-    href: "/admin/search"
-  },
-  {
-    icon: "team",
-    label: "proxy",
-    href: "/admin/proxyUser"
-  },
-  {
-    icon: "team",
-    label: "Upgrade Plan",
-    href: "/admin/upgrade"
-  },
+function Admin({ match, history, location }) {
+  const [state, toggleState] = useState();
 
-  {
-    icon: "team",
-    label: "Api Forms",
-    href: "/admin/apiForms"
-  },
-  {
-    label: "Content",
-    href: "/admin/content/collections"
-  },
-  {
-    icon: "team",
-    label: "Custom Report",
-    href: "/admin/customReport"
-  }
-];
-
-function Admin({ match, history, logoutAction, location }) {
   return (
     <ThemeProvider theme={themes.default}>
       <Layout style={{ minHeight: "100vh" }}>
-        <Logout logoutAction={logoutAction} />
-        <Sider role="navigation">
-          {([state, toggleState]) => {
-            return (
-              <div>
-                <Button
-                  aria-label={`${state ? "Open" : "Close"} sidebar`}
-                  onClick={() => toggleState(val => !val)}
-                  noStyle
-                  style={{ minHeight: "60px" }}
-                >
-                  {state ? <LogoCompact /> : <OnWhiteBgLogo />}
-                </Button>
-                <Menu theme="light" defaultSelectedKeys={[location.pathname]} mode="inline">
-                  {siderMenuData.map(item => (
-                    <Menu.Item
-                      onClick={() => {
-                        toggleState(false);
-                        if (item.href) {
-                          history.push(item.href);
-                        }
-                      }}
-                      key={item.href}
-                    >
-                      <Icon title={item.label} type={item.icon} />
-                      <span>{item.label}</span>
-                    </Menu.Item>
-                  ))}
-                </Menu>
-              </div>
-            );
-          }}
-        </Sider>
-        <MainDiv>
+        <SideMenu isCollapsed={state} toggleState={toggleState} history={history} location={location} />
+        <MainWrapper isCollapsed={state}>
           <ErrorHandler>
             <Switch>
-              <Redirect exact path={match.path} to={`${match.path}/search`} />
-              <Route path={`${match.path}/search`} component={CleverSearch} />
+              <Redirect exact path={match.path} to={`${match.path}/proxyUser`} />
               <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
+              <Route path={`${match.path}/search`} component={CleverSearch} />
               <Route path={`${match.path}/upgrade`} component={UpgradeUser} />
               <Route path={`${match.path}/apiForms`} component={ApiForm} />
               <Route path={`${match.path}/content/collections`} component={Collections} />
@@ -100,17 +34,14 @@ function Admin({ match, history, logoutAction, location }) {
               <Route path={`${match.path}/customReport`} component={CustomReportContainer} />
             </Switch>
           </ErrorHandler>
-        </MainDiv>
+        </MainWrapper>
       </Layout>
     </ThemeProvider>
   );
 }
 
-const withConnect = connect(
-  null,
-  {
-    logoutAction
-  }
-)(Admin);
+export default Admin;
 
-export default withConnect;
+const MainWrapper = styled(MainDiv)`
+  padding-left: ${props => (props.isCollapsed ? "85px" : "235px")};
+`;

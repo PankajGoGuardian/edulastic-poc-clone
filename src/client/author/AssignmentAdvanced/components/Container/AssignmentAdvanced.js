@@ -55,8 +55,9 @@ import {
   bulkDownloadGradesAndResponsesAction
 } from "../../ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
-import { getUserId } from "../../../src/selectors/user";
+import { getUserId, getUserRole } from "../../../src/selectors/user";
 import { canEditTest } from "../../../Assignments/utils";
+import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 
 const { assignmentStatusBg } = authorAssignment;
 
@@ -64,7 +65,8 @@ class AssignmentAdvanced extends Component {
   state = {
     openEditPopup: false,
     isPreviewModalVisible: false,
-    filterStatus: ""
+    filterStatus: "",
+    isHeaderAction: false
   };
 
   componentDidMount() {
@@ -177,14 +179,16 @@ class AssignmentAdvanced extends Component {
       userId,
       test,
       isLoadingAssignments,
-      bulkActionStatus
+      bulkActionStatus,
+      userRole
     } = this.props;
     const { testId } = match.params;
-    const { filterStatus, openEditPopup, isPreviewModalVisible } = this.state;
+    const { filterStatus, openEditPopup, isPreviewModalVisible, isHeaderAction } = this.state;
     const assingment = find(assignmentsSummary, item => item.testId === testId) || {};
     const { testType = "" } = qs.parse(location.search);
     return (
       <div>
+        {isHeaderAction && <DeleteAssignmentModal testId={testId} testName={assingment?.title} />}
         <EditTestModal
           visible={openEditPopup}
           isUsed
@@ -210,7 +214,13 @@ class AssignmentAdvanced extends Component {
                 history,
                 showPreviewModal: this.toggleTestPreviewModal,
                 toggleEditModal: this.toggleEditModal,
-                canEdit: canEditTest(test, userId)
+                canEdit: canEditTest(test, userId),
+                userRole,
+                userId,
+                toggleDeleteModal: () => {
+                  this.setState({ isHeaderAction: true });
+                  toggleDeleteAssignmentModal(true);
+                }
               })}
               placement="bottomLeft"
               trigger={["hover"]}
@@ -242,11 +252,15 @@ class AssignmentAdvanced extends Component {
                 bulkReleaseScoreAssignmentRequest={bulkReleaseScoreAssignmentRequest}
                 bulkUnassignAssignmentRequest={bulkUnassignAssignmentRequest}
                 bulkDownloadGradesAndResponsesRequest={bulkDownloadGradesAndResponsesRequest}
-                toggleDeleteAssignmentModal={toggleDeleteAssignmentModal}
+                toggleDeleteAssignmentModal={() => {
+                  this.setState({ isHeaderAction: false });
+                  toggleDeleteAssignmentModal(true);
+                }}
                 testType={testType}
                 testName={assingment.title}
                 isLoadingAssignments={isLoadingAssignments}
                 bulkActionStatus={bulkActionStatus}
+                isHeaderAction={isHeaderAction}
               />
             </StyledCard>
           </TableWrapper>
@@ -283,7 +297,8 @@ const enhance = compose(
       test: getCurrentTestSelector(state),
       userId: getUserId(state),
       isLoadingAssignments: getAssignmentsLoadingSelector(state),
-      bulkActionStatus: getBulkActionStatusSelector(state)
+      bulkActionStatus: getBulkActionStatusSelector(state),
+      userRole: getUserRole(state)
     }),
     {
       setReleaseScore: releaseScoreAction,

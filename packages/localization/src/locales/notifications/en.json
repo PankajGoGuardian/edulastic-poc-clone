@@ -355,6 +355,10 @@
     "message": " Assignment(s) deleted successfully.",
     "description": ""
   },
+  "AssignmentDeleteFailed": {
+    "message": " Assignment(s) failed to delete.",
+    "description": ""
+  },
   "valueMoreThanQuestions": {
     "message": " Value cannot be more than total questions count",
     "description": ""
@@ -992,11 +996,11 @@
     "description": ""
   },
   "selectOneOrMoreStudentToRemoved": {
-    "message":  "Select 1 or more Student to remove",
+    "message": "Select 1 or more Student to remove",
     "description": ""
   },
   "selectOnlyStudents": {
-    "message":  "Please select only students to remove",
+    "message": "Please select only students to remove",
     "description": ""
   },
   "youHaveNotSelectedAnyUsers": {
@@ -1048,23 +1052,23 @@
     "description": ""
   },
   "scoreShouldBeGreateThanZero": {
-    "message":"Score should be a number greater than 0",
+    "message": "Score should be a number greater than 0",
     "description": ""
   },
   "valuesCanOnlyBeGreaterThanZero": {
-    "message":"Values can only be natural numbers greater than 0",
+    "message": "Values can only be natural numbers greater than 0",
     "description": ""
   },
   "someErrorOccuredDuringProxying": {
-    "message":"some error occured during proxying",
+    "message": "some error occured during proxying",
     "description": ""
   },
   "someErrorOccuredDuringSwicthingRole": {
-    "message":"some error occured during switching role",
+    "message": "some error occured during switching role",
     "description": ""
   },
   "ErrorOccuredSwicthingRole": {
-    "message":"Error occured while switching user",
+    "message": "Error occured while switching user",
     "description": ""
   },
   "invalidTestItem": {
@@ -1080,15 +1084,15 @@
     "description": ""
   },
   "fileFormatNotSupported": {
-    "message":  "File format not supported, please select a valid PDF file.",
+    "message": "File format not supported, please select a valid PDF file.",
     "description": ""
   },
   "fileSizeExceeds": {
-    "message":"File size exceeds 15 MB limit.",
+    "message": "File size exceeds 15 MB limit.",
     "description": ""
   },
   "selectedDocumentIsTooBigToUpload": {
-    "message":"The selected document is too big to be uploaded",
+    "message": "The selected document is too big to be uploaded",
     "description": ""
   },
   "answerChoiceShouldNotBeEmpty": {
@@ -1096,63 +1100,63 @@
     "description": ""
   },
   "sectionNameCanNotEmpty": {
-    "message":"Section name can not be empty",
+    "message": "Section name can not be empty",
     "description": ""
   },
   "previewOfItemsRestricted": {
-    "message":"Preview of Items in the test are restricted by the author",
+    "message": "Preview of Items in the test are restricted by the author",
     "description": ""
   },
   "folderNameAlreadyUsed": {
-    "message":"The folder name is already used.",
+    "message": "The folder name is already used.",
     "description": ""
   },
   "answerOnPaperNotSupportedForThisTest": {
-    "message":"Answer on paper not suppported for this test.",
+    "message": "Answer on paper not suppported for this test.",
     "description": ""
   },
   "SelectFutureEndDate": {
-    "message":"Select a Future end Date",
+    "message": "Select a Future end Date",
     "description": ""
   },
   "pleaseSelectStudentsWithIncorrectOrSkippedQuestions": {
-    "message":"Please select students with incorrect or skipped questions.",
+    "message": "Please select students with incorrect or skipped questions.",
     "description": ""
   },
   "theQuestionForStudentsDynamicallySelectedAsResult": {
-    "message":"The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment.",
+    "message": "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment.",
     "description": ""
   },
   "ClickOnCancel": {
-    "message":"Click on cancel.",
+    "message": "Click on cancel.",
     "description": ""
   },
   "atleastOneStudentShouldBeSelectedToPrintResponse": {
-    "message":"At least one student should be selected to print responses.",
+    "message": "At least one student should be selected to print responses.",
     "description": ""
   },
   "youCanOnlyPrintAfterAssignmentBeenSubmited": {
-    "message":"You can print only after the assignment has been submitted by the student(s).",
+    "message": "You can print only after the assignment has been submitted by the student(s).",
     "description": ""
   },
   "addUserFailed": {
-    "message":"Add user failed",
+    "message": "Add user failed",
     "description": ""
   },
   "pleaseSelectOnlyStudent": {
-    "message":"Please select only student to remove",
+    "message": "Please select only student to remove",
     "description": ""
   },
   "savingTagFailed": {
-    "message":"Saving tag failed",
+    "message": "Saving tag failed",
     "description": ""
   },
   "startDateGreaterThanEndDate": {
-    "message":"start date is greater than end date",
+    "message": "start date is greater than end date",
     "description": ""
   },
   "UnableToGetPersmissions": {
-    "message":"Unable to get permissions",
+    "message": "Unable to get permissions",
     "description": ""
   },
   "UnableToDeactivatePermission": {
@@ -1272,175 +1276,175 @@
     "description": ""
   },
   "loadingScratchFailed": {
-    "message":"Loading scratchPad failed",
+    "message": "Loading scratchPad failed",
     "description": ""
   },
   "unableToGetList": {
-    "message":"Unable to get tools List",
+    "message": "Unable to get tools List",
     "description": ""
   },
   "unableToDeleteTool": {
-    "message":"Unable to Delete Tool",
+    "message": "Unable to Delete Tool",
     "description": ""
   },
   "failedToFetchStudentPerformanceGradeBook": {
-    "message":"Failed to fetch student performance for gradebook",
+    "message": "Failed to fetch student performance for gradebook",
     "description": ""
   },
   "failedToFetchFiltersData": {
-    "message":"Failed to fetch filters data for gradebook",
+    "message": "Failed to fetch filters data for gradebook",
     "description": ""
   },
   "failedToSaveRubric": {
-    "message":"Failed to save Rubric",
+    "message": "Failed to save Rubric",
     "description": ""
   },
   "failedToUpdateRubric": {
-    "message":"Failed to update Rubric",
+    "message": "Failed to update Rubric",
     "description": ""
   },
   "UnableToreachRubric": {
-    "message":"  Unable to fetch rubrics",
+    "message": "  Unable to fetch rubrics",
     "description": ""
   },
   "failedToDeleteTheRubric": {
-    "message":"Failed to delete the rubric",
+    "message": "Failed to delete the rubric",
     "description": ""
   },
   "failedToFetchRubric": {
-    "message":"Failed to fetch rubric.",
+    "message": "Failed to fetch rubric.",
     "description": ""
   },
   "ratingNameCannotEmpty": {
-    "message":"Rating name cannot be empty.",
+    "message": "Rating name cannot be empty.",
     "description": ""
   },
   "ratingPointMustNotBeEmpty": {
-    "message":"Rating point must not be empty.",
+    "message": "Rating point must not be empty.",
     "description": ""
   },
   "ratingPointMustBeZero": {
-    "message":"Rating point must be 0 for at least one rating within a criteria.",
+    "message": "Rating point must be 0 for at least one rating within a criteria.",
     "description": ""
   },
   "ratingPointMustBeMoreThanZero": {
-    "message":"Rating point must be more than 0 for atleast one rating within a criteria",
+    "message": "Rating point must be more than 0 for atleast one rating within a criteria",
     "description": ""
   },
   "criteriaNameCannotBeEmpty": {
-    "message":"Criteria name cannot be empty.",
+    "message": "Criteria name cannot be empty.",
     "description": ""
   },
   "criteriaNameShouldBeUnique": {
-    "message":"Criteria names should be unique.",
+    "message": "Criteria names should be unique.",
     "description": ""
   },
   "rubricNameCannotBeEmpty": {
-    "message":" Rubric name cannot be empty.",
+    "message": " Rubric name cannot be empty.",
     "description": ""
   },
   "pleaseSelectRatingFromEachCriteria": {
-    "message":" Please select a rating from each criteria.",
+    "message": " Please select a rating from each criteria.",
     "description": ""
   },
   "failedToFetchProgress": {
-    "message":"Failed to fetch progress status",
+    "message": "Failed to fetch progress status",
     "description": ""
   },
   "deletingItemFailed": {
-    "message":"deleting item failed",
+    "message": "deleting item failed",
     "description": ""
   },
   "pleaseAssociateARubric": {
-    "message":"Please associate a rubric to the question or uncheck the Grading Rubric option.",
+    "message": "Please associate a rubric to the question or uncheck the Grading Rubric option.",
     "description": ""
   },
   "CannotSaveWithoutQuestions": {
-    "message":"Cannot save without questions",
+    "message": "Cannot save without questions",
     "description": ""
   },
   "CannotSaveWithoutPasses": {
-    "message":"Cannot save without passages",
+    "message": "Cannot save without passages",
     "description": ""
   },
   "itemIsNotAssociated": {
-    "message":" Item is not associated with any collection.",
+    "message": " Item is not associated with any collection.",
     "description": ""
   },
   "errorSavingPassing": {
-    "message":" error saving passage",
+    "message": " error saving passage",
     "description": ""
   },
   "failedAddingContent": {
-    "message":"failed adding content",
+    "message": "failed adding content",
     "description": ""
   },
   "noChangesToBeSaved": {
-    "message":"no changes to be saved",
+    "message": "no changes to be saved",
     "description": ""
   },
   "thereShouldBeAtleastOnePassageItem": {
-    "message":"There should be at least one passage in item",
+    "message": "There should be at least one passage in item",
     "description": ""
   },
   "failedToLoadScratchpadData": {
-    "message":"Failed to load scratchpad data",
+    "message": "Failed to load scratchpad data",
     "description": ""
   },
   "addItemsToCreateTest": {
-    "message":"Add items to create test",
+    "message": "Add items to create test",
     "description": ""
   },
   "addAtleastOneItemToCart": {
-    "message":"Add atleast one item to cart",
+    "message": "Add atleast one item to cart",
     "description": ""
   },
   "pleaseProvideValidTestName": {
-    "message":"Please provide valid test name",
+    "message": "Please provide valid test name",
     "description": ""
   },
   "persmissionDenied": {
-    "message":"Permission denied",
+    "message": "Permission denied",
     "description": ""
   },
   "errorOccurredWhileEnablingOrDisablingTextToSpeech": {
-    "message":"Error occurred while enabling/disabling text to speech. Please contact customer support.",
+    "message": "Error occurred while enabling/disabling text to speech. Please contact customer support.",
     "description": ""
   },
   "resetPasswordRequestFailing": {
-    "message":"Reset password request failing",
+    "message": "Reset password request failing",
     "description": ""
   },
   "updateAstudentRequestFailing": {
-    "message":"Update a student request failing",
+    "message": "Update a student request failing",
     "description": ""
   },
   "classNameIsMissing": {
-    "message":" Class name is missing for one of the selected class",
+    "message": " Class name is missing for one of the selected class",
     "description": ""
   },
   "classSyncFailed": {
-    "message":"class sync failed",
+    "message": "class sync failed",
     "description": ""
   },
   "failedToGetCourseList": {
-    "message":"Failed to get course list.",
+    "message": "Failed to get course list.",
     "description": ""
   },
   "failedToGetCourseSectionList": {
-    "message":"Failed to get course section list.",
+    "message": "Failed to get course section list.",
     "description": ""
   },
   "classSyncWithCanvasFailed": {
-    "message":"Class sync with Canvas failed",
+    "message": "Class sync with Canvas failed",
     "description": ""
   },
   "failedToFetchCleverClasses": {
-    "message":"Failed to fetch Clever classes",
+    "message": "Failed to fetch Clever classes",
     "description": ""
   },
   "syncWithCleverFailed": {
-    "message":"Sync with Clever failed",
+    "message": "Sync with Clever failed",
     "description": ""
   },
   "deactivatedStudentSelected": {
@@ -1450,7 +1454,7 @@
   "bothCourseandSectionRequired": {
     "message": "Both Course and Section are required.",
     "description": ""
-  } ,
+  },
   "failedToFetchStudentStandard": {
     "message": "Failed to fetch student Standards",
     "description": ""
@@ -1492,15 +1496,15 @@
     "description": ""
   },
   "failedToFetchUserDetails": {
-    "message":"Failed to fetch user details for merge",
+    "message": "Failed to fetch user details for merge",
     "description": ""
   },
   "failedToMergerSelectedUsers": {
-    "message":"Failed to merge selected users",
+    "message": "Failed to merge selected users",
     "description": ""
   },
   "maximumTenProfilesPerUser": {
-    "message":"Maximum 10 profiles per user is allowed",
+    "message": "Maximum 10 profiles per user is allowed",
     "description": ""
   },
   "maximumLengthForProifleName150": {
@@ -1512,23 +1516,23 @@
     "description": ""
   },
   "pleaseSelectADifferentColor": {
-    "message":"Please select a different color. The selected color is already used for different Band",
+    "message": "Please select a different color. The selected color is already used for different Band",
     "description": ""
   },
   "performanceBandShouldAtLeast": {
-    "message":"Performance Band should at least 2.",
+    "message": "Performance Band should at least 2.",
     "description": ""
   },
   "savePlaylistBeforPublishing": {
-    "message":"Save Playlist before publishing",
+    "message": "Save Playlist before publishing",
     "description": ""
   },
   "incorrectInput": {
-    "message":"Incorrect Input ",
+    "message": "Incorrect Input ",
     "description": ""
   },
   "somethingWentPleaseTryAgain": {
-    "message":"some thing went wrong. please try again.",
+    "message": "some thing went wrong. please try again.",
     "description": ""
   },
   "faildedToFetchStudentsStandard": {
@@ -1552,219 +1556,219 @@
     "description": ""
   },
   "noStudentIsGradedToGenerateReportCard": {
-    "message":"No student is Graded to generate report card.",
+    "message": "No student is Graded to generate report card.",
     "description": ""
   },
   "youAreNotAuthorizedToUpdate": {
-    "message":"You are not authorized to update the Release Score policy",
+    "message": "You are not authorized to update the Release Score policy",
     "description": ""
   },
   "failedToDelete": {
-    "message":"failed to delete",
+    "message": "failed to delete",
     "description": ""
   },
   "scoreUpdationFailed": {
-    "message":"Score updation failed",
+    "message": "Score updation failed",
     "description": ""
   },
-   "dontHaveWritePermission": {
-    "message":"Don't have write permission to delete the item",
+  "dontHaveWritePermission": {
+    "message": "Don't have write permission to delete the item",
     "description": ""
   },
   "pleaseSelectAnyUser": {
-    "message":"Please select any user which are not in the shared list",
+    "message": "Please select any user which are not in the shared list",
     "description": ""
   },
   "userHasPermission": {
-    "message":"This user has permission",
+    "message": "This user has permission",
     "description": ""
   },
   "deletingStandardsProficiencyFailed": {
-    "message":"Deleting standards proficiency failed",
+    "message": "Deleting standards proficiency failed",
     "description": ""
   },
   "nameCannotBeEmpty": {
-    "message":"Name cannot be empty",
+    "message": "Name cannot be empty",
     "description": ""
   },
   "maximumFiveLevels": {
-    "message":"Maximum five levels are required.",
+    "message": "Maximum five levels are required.",
     "description": ""
   },
   "minimumThreeLevel": {
-    "message":"Minimum three levels are required.",
+    "message": "Minimum three levels are required.",
     "description": ""
   },
   "deactivatedUserSelected": {
-    "message":"Deactivated users selected, please select active students only",
+    "message": "Deactivated users selected, please select active students only",
     "description": ""
   },
   "pleaseSelectAtleastOneUser": {
-    "message":"Please select atleast 1 user",
+    "message": "Please select atleast 1 user",
     "description": ""
   },
   "theLisenceKeyEnteredIEitherUseOrNotValid": {
-    "message":"The License Key entered is either already used or not valid. Please contact your admin.",
+    "message": "The License Key entered is either already used or not valid. Please contact your admin.",
     "description": ""
   },
   "pleaseSelectUserToDelete": {
-    "message":"Please select users to delete.",
+    "message": "Please select users to delete.",
     "description": ""
   },
   "failedToReportIssue": {
-    "message":"Failed to report issue..",
+    "message": "Failed to report issue..",
     "description": ""
   },
   "moduleNotFoundInPlaylist": {
-    "message":"Module not found in playlist",
+    "message": "Module not found in playlist",
     "description": ""
   },
   "noTestInModule": {
-    "message":"No test in module",
+    "message": "No test in module",
     "description": ""
   },
   "nameFieldRequired": {
-    "message":"Name field is required",
+    "message": "Name field is required",
     "description": ""
   },
   "totalItemsToBeDelivered": {
-    "message":"Total items to be delivered should be lesser than the number of items selected.",
+    "message": "Total items to be delivered should be lesser than the number of items selected.",
     "description": ""
   },
   "totalItemsToBeDeliveredCannotBeMOreThan100": {
-    "message":"Total Items to be delivered cannot be more than 100",
+    "message": "Total Items to be delivered cannot be more than 100",
     "description": ""
   },
   "pleaseSelectAtleastTwoItems": {
-    "message":" Please select atleast 2 items to manually give the items delivery count.",
+    "message": " Please select atleast 2 items to manually give the items delivery count.",
     "description": ""
   },
   "pleaseSaveTheChangesMadeToGroupFirst": {
-    "message":"Please save the changes made to the group first.",
+    "message": "Please save the changes made to the group first.",
     "description": ""
   },
   "eachStaticGroupShouldContainAtleastOneItems": {
-    "message":"Each Static group should contain at least 1 test item",
+    "message": "Each Static group should contain at least 1 test item",
     "description": ""
   },
   "pleaseEnterTotalNumberOfItems": {
-    "message":"Please enter the total number of items to be delivered.",
+    "message": "Please enter the total number of items to be delivered.",
     "description": ""
-  } ,
+  },
   "eachAutoselectGroupShouldHaveAStandardAndCollection": {
-    "message":"Each Autoselect group should have a standard and a collection.",
+    "message": "Each Autoselect group should have a standard and a collection.",
     "description": ""
   },
   "maximum100Questions": {
-    "message":"Maximum 100 question can be selected to deliver.",
+    "message": "Maximum 100 question can be selected to deliver.",
     "description": ""
   },
   "noItemsFoundForCurrentCombination": {
-    "message":"No test items found for current combination of filters.",
+    "message": "No test items found for current combination of filters.",
     "description": ""
   },
   "pleaseSelectAtleastOneCanvasCourseSectionToSync": {
-    "message":"Please select atleast one canvas course section to sync.",
+    "message": "Please select atleast one canvas course section to sync.",
     "description": ""
   },
   "failedToLoadCollectionData": {
-    "message":"Failed to load collection data.",
+    "message": "Failed to load collection data.",
     "description": ""
   },
   "errorParentCode": {
-    "message":"error parent code",
+    "message": "error parent code",
     "description": ""
   },
   "errorSettingPassword": {
-    "message":"error setting password",
+    "message": "error setting password",
     "description": ""
   },
   "passwordAndConfirmShouldMatch": {
-    "message":"password and confirm password should match",
+    "message": "password and confirm password should match",
     "description": ""
   },
   "passwordShouldBeAtleast7Characters": {
-    "message":"password should be at-least 7 characters",
+    "message": "password should be at-least 7 characters",
     "description": ""
   },
   "failedLoadingUserData": {
-    "message":"failed loading user data",
+    "message": "failed loading user data",
     "description": ""
   },
   "authtokenInvalidOnRedirection": {
-    "message":"authtoken invalid on redirection",
+    "message": "authtoken invalid on redirection",
     "description": ""
   },
   "cleverLoginFailed": {
-    "message":"Clever Login failed",
+    "message": "Clever Login failed",
     "description": ""
   },
   "failedToFetchUserData": {
-    "message":"Failed to fetch user data.",
+    "message": "Failed to fetch user data.",
     "description": ""
   },
   "failedToResetPassword": {
-    "message":"Failed to reset password..",
+    "message": "Failed to reset password..",
     "description": ""
   },
   "failedToUpdateImage": {
-    "message":"Failed to Update Image",
+    "message": "Failed to Update Image",
     "description": ""
   },
   "failedToUpdateUserDetails": {
-    "message":"Failed to update user details.",
+    "message": "Failed to update user details.",
     "description": ""
   },
   "unableToDeleteAccount": {
-    "message":"Unable to delete Account",
+    "message": "Unable to delete Account",
     "description": ""
   },
   "failedToUploadStandardSets": {
-    "message":"Failed to update Standard sets",
+    "message": "Failed to update Standard sets",
     "description": ""
   },
   "failedToRemoveRequestedSchool": {
-    "message":"Failed to remove requested school",
+    "message": "Failed to remove requested school",
     "description": ""
   },
   "failedToAddRequestedSchool": {
-    "message":"Failed to add requested school",
+    "message": "Failed to add requested school",
     "description": ""
   },
   "failedToCreateSchool": {
-    "message":"Failed to create school",
+    "message": "Failed to create school",
     "description": ""
   },
   "failedToJoinSchool": {
-    "message":"Failed to join school",
+    "message": "Failed to join school",
     "description": ""
   },
   "failedToGetUsersFromDistrict": {
-    "message":"Failed to get users from District.",
+    "message": "Failed to get users from District.",
     "description": ""
   },
   "failedToUpdateDefaultSettings": {
-    "message":"Failed to update default settings.",
+    "message": "Failed to update default settings.",
     "description": ""
   },
   "testIsExpired": {
-    "message":"Test is expired",
+    "message": "Test is expired",
     "description": ""
   },
   "failedToUpdateUser": {
-    "message":"Failed to update user please try again.",
+    "message": "Failed to update user please try again.",
     "description": ""
   },
   "bulkSyncFailed": {
-    "message":"Bulk sync failed",
+    "message": "Bulk sync failed",
     "description": ""
   },
   "passwordIsIncorrect": {
-    "message":"Password is incorrect. Please enter the correct password.",
+    "message": "Password is incorrect. Please enter the correct password.",
     "description": ""
   },
   "canvasAuthenticationFailed": {
-    "message":"Canvas authentication Failed",
+    "message": "Canvas authentication Failed",
     "description": ""
   }
 }

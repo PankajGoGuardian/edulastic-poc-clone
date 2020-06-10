@@ -42,10 +42,14 @@ function* deleteAssignmentSaga({ payload }) {
   try {
     const result = yield call(testsApi.deleteAssignments, payload);
     const { deletedIds } = result;
-    yield put(deleteAssignmentRequestSuccessAction(deletedIds));
-    yield put(push("/"));
-    yield put(push("/author/assignments"));
-    yield call(notification, { type: "success", messageKey: "AssignmentDelete" });
+    if (deletedIds.length) {
+      yield put(deleteAssignmentRequestSuccessAction(deletedIds));
+      yield put(push("/"));
+      yield put(push("/author/assignments"));
+      yield call(notification, { type: "success", messageKey: "AssignmentDelete" });
+    } else {
+      yield call(notification, { type: "error", messageKey: "AssignmentDeleteFailed" });
+    }
   } catch (error) {
     console.log(error);
     notification({ messageKey:"failedToDelete" });

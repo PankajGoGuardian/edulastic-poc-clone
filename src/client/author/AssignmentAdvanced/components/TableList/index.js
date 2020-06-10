@@ -125,7 +125,8 @@ const TableList = ({
   testName,
   toggleDeleteAssignmentModal,
   isLoadingAssignments,
-  bulkActionStatus
+  bulkActionStatus,
+  isHeaderAction
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
@@ -277,13 +278,15 @@ const TableList = ({
         onCloseReleaseScoreSettings={() => setReleaseScoreModalVisibility(false)}
         updateReleaseScoreSettings={onUpdateReleaseScoreSettings}
       />
-      <DeleteAssignmentModal
-        handleUnassignAssignments={() => {
-          toggleDeleteAssignmentModal(false);
-          handleBulkAction("unassign");
-        }}
-        advancedAssignments
-      />
+      {!isHeaderAction && (
+        <DeleteAssignmentModal
+          handleUnassignAssignments={() => {
+            toggleDeleteAssignmentModal(false);
+            handleBulkAction("unassign");
+          }}
+          advancedAssignments
+        />
+      )}
     </Container>
   );
 };

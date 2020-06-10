@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, message } from "antd";
+import { Menu } from "antd";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 import { get } from "lodash";
@@ -65,7 +65,7 @@ const ActionMenu = ({
     const { assignmentVisibility = [] } = row;
     const { HIDDEN, GRADING } = testContentVisibilityOptions;
     if (!isAdmin && (assignmentVisibility.includes(HIDDEN) || assignmentVisibility.includes(GRADING))) {
-      return notification({ type: "warn", messageKey:"viewItemsRestriccedByAdmin"});
+      return notification({ type: "warn", messageKey: "viewItemsRestriccedByAdmin" });
     }
     togglePrintModal(currentTestId);
   };
@@ -76,7 +76,7 @@ const ActionMenu = ({
   // current user and assignment owner is same: true
   const isAssignmentOwner = (userId && userId === assignmentOwnerId) || false;
 
-  const isDistrictAdmin = roleuser.DISTRICT_ADMIN === userRole;
+  const isAdmin = roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole;
 
   return (
     <Container>
@@ -156,7 +156,7 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {(isAssignmentOwner || isDistrictAdmin) && (
+        {(isAssignmentOwner || isAdmin) && (
           <Menu.Item
             data-cy="delete-Assignment"
             key="delete-Assignment"

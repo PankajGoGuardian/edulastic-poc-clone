@@ -1,8 +1,7 @@
 import { delay } from "redux-saga";
-import { takeEvery, call, put, all, takeLatest, select, fork } from "redux-saga/effects";
+import { takeEvery, call, put, all, takeLatest, select, fork, actionChannel, take } from "redux-saga/effects";
 import { classResponseApi, testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
-import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { notification } from "@edulastic/common";
 import {
@@ -51,7 +50,7 @@ function* receiveClassResponseSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive class response is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_CLASS_RESPONSE_ERROR,
       payload: { error: errorMessage }
@@ -211,7 +210,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       type: RECEIVE_STUDENT_RESPONSE_REQUEST,
       payload: { testActivityId, groupId, studentId }
     });
-    notification({ type: "success", messageKey:"feedbackSuccessfullyUpdate"});
+    notification({ type: "success", messageKey: "feedbackSuccessfullyUpdate" });
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive tests is failing";
@@ -256,7 +255,7 @@ function* receiveStudentQuestionSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive answer is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_STUDENT_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -291,7 +290,7 @@ function* receiveClassQuestionSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive answers is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_CLASS_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -299,7 +298,7 @@ function* receiveClassQuestionSaga({ payload }) {
   }
 }
 
-function* updateStudentScore({ payload }) {
+function* updateStudentScore(payload) {
   try {
     const {
       testActivityId,
@@ -321,7 +320,7 @@ function* updateStudentScore({ payload }) {
     });
 
     const { questionActivities, testActivity } = scoreRes;
-    let gradeBookTestItemAddPayload = [];
+    const gradeBookTestItemAddPayload = [];
     for (const {
       qid: _id,
       score: _score,
@@ -356,10 +355,10 @@ function* updateStudentScore({ payload }) {
       });
     }
 
-    notification({ type: "success", messageKey:"scoreSucessfullyUpdated"});
+    notification({ type: "success", messageKey: "scoreSucessfullyUpdated" });
   } catch (e) {
     console.log(e);
-    notification({ messageKey:"scoreUpdationFailed" });
+    notification({ messageKey: "scoreUpdationFailed" });
   }
 }
 
@@ -370,7 +369,11 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST, receiveClassStudentResponseSaga),
     yield takeEvery(RECEIVE_CLASS_QUESTION_REQUEST, receiveClassQuestionSaga),
     yield takeEvery(RECEIVE_STUDENT_RESPONSE_REQUEST, receiveStudentResponseSaga),
-    yield takeLatest(RECEIVE_FEEDBACK_RESPONSE_REQUEST, receiveFeedbackResponseSaga),
-    yield takeLatest(UPDATE_STUDENT_ACTIVITY_SCORE, updateStudentScore)
+    yield takeLatest(RECEIVE_FEEDBACK_RESPONSE_REQUEST, receiveFeedbackResponseSaga)
   ]);
+  const requestChan = yield actionChannel(UPDATE_STUDENT_ACTIVITY_SCORE);
+  while (true) {
+    const { payload } = yield take(requestChan);
+    yield call(updateStudentScore, payload);
+  }
 }

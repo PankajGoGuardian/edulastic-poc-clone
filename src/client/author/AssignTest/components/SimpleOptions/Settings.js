@@ -114,16 +114,21 @@ const Settings = ({
       return notification({ messageKey: "answerOnPaperNotSupportedForThisTest" });
     }
 
-    const penalty = value === evalTypeLabels.PARTIAL_CREDIT;
+    // SimpleOptions onChange method has similar condition
+    if (key === "scoringType") {
+      const penalty = value === evalTypeLabels.PARTIAL_CREDIT;
+      assignmentSettings.penalty = penalty;
+      tempTestSettings.penalty = penalty;
+    }
+
     const newSettingsState = {
       ...assignmentSettings,
-      [key]: value,
-      penalty
+      [key]: value
     };
+
     const newTempTestSettingsState = {
       ...tempTestSettings,
-      [key]: value,
-      penalty
+      [key]: value
     };
     if (key === "safeBrowser" && value === false) {
       delete newSettingsState.sebPassword;

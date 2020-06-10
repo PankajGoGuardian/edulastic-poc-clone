@@ -24,7 +24,7 @@ import { getReleaseScorePremiumSelector, getIsOverrideFreezeSelector } from "../
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
-const { releaseGradeLabels } = testConst;
+const { releaseGradeLabels, evalTypeLabels } = testConst;
 class SimpleOptions extends React.Component {
   static propTypes = {
     group: PropTypes.array.isRequired,
@@ -172,6 +172,10 @@ class SimpleOptions extends React.Component {
         // no default
       }
 
+      // Settings OverrideSettings method has similar condition
+      if (field === "scoringType") {
+        state.penalty = value === evalTypeLabels.PARTIAL_CREDIT;
+      }
       state[field] = value;
     });
     updateOptions(nextAssignment);

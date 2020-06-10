@@ -33,6 +33,8 @@ import Annotations from "../Annotations/Annotations";
 
 import Question from "../Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import Instructions from "../Instructions";
+import { EDIT } from "../../constants/constantsForQuestions";
 
 const EmptyWrapper = styled.div``;
 
@@ -489,6 +491,7 @@ class Graph extends Component {
                     {...restProps}
                   />
                 )}
+                {view !== EDIT && <Instructions item={item} />}
                 {previewTab === "show" && item.canvas && item.uiStyle && (
                   <Fragment>
                     <CorrectAnswersContainer minWidth="max-content" title={t("component.graphing.correctAnswer")}>

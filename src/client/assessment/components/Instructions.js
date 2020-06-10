@@ -12,7 +12,7 @@ const Instructions = ({
   isScoringInstructionsEnabled && !isRichTextFieldEmpty(scoringInstructions) ? (
     <InstructionsContainer>
       <i
-        style={{ display: "flex", alignItems: "center", fontSize: fontsize }}
+        style={{ fontSize: getFontSize(fontsize), lineHeight: 1.5 }}
         className="fa fa-info-circle"
         aria-hidden="true"
       />
@@ -25,7 +25,7 @@ const Instructions = ({
   ) : null;
 
 const InstructionsContainer = styled.div`
-  display: flex;
+  display: inline-flex;
   border: 1px solid ${borderGrey2};
   border-radius: 4px;
   margin: 1rem 0;
@@ -35,7 +35,8 @@ const InstructionsContainer = styled.div`
 Instructions.protoTypes = {
   item: PropTypes.shape({
     uiStyle: PropTypes.shape({
-      fontSize: PropTypes.string.isRequired
+      fontSize: PropTypes.string.isRequired,
+      currentFontSize: PropTypes.string.isRequired
     }).isRequired,
     scoringInstructions: PropTypes.string.isRequired,
     isScoringInstructionsEnabled: PropTypes.bool.isRequired

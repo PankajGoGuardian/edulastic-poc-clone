@@ -14,6 +14,7 @@ import { MathEssayInputWrapper } from "./styled";
 import MathEssayInput from "./MathEssayInput";
 
 import { QuestionTitleWrapper } from "../styled/QustionNumber";
+import Instructions from "../../../components/Instructions";
 
 const FormulaEssayPreview = ({ item, lines, setLines, showQuestionNumber, disableResponse }) => (
   <MathEssayInputWrapper>
@@ -25,10 +26,7 @@ const FormulaEssayPreview = ({ item, lines, setLines, showQuestionNumber, disabl
 
       <QuestionContentWrapper>
         <QuestionTitleWrapper>
-          <MathFormulaDisplay
-            style={{ marginBottom: 15 }}
-            dangerouslySetInnerHTML={{ __html: item.stimulus }}
-          />
+          <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </QuestionTitleWrapper>
         <MathEssayInput
           disableResponse={disableResponse}
@@ -42,6 +40,7 @@ const FormulaEssayPreview = ({ item, lines, setLines, showQuestionNumber, disabl
         />
       </QuestionContentWrapper>
     </FlexContainer>
+    <Instructions item={item} />
   </MathEssayInputWrapper>
 );
 

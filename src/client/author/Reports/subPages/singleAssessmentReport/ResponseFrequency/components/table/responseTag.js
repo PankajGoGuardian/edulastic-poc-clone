@@ -1,26 +1,21 @@
-import React from "react";
+import React, { Component } from "react";
 import next from "immer";
-import { Component } from "react";
+
 import styled from "styled-components";
-import { get } from "lodash";
+import { get, isNaN } from "lodash";
 import { Row, Col, Tag } from "antd";
 
-import { getHSLFromRange1, getHSLFromRange2 } from "../../../../../common/util";
+import { darkGrey, themeColorLighter, incorrect, yellow1 } from "@edulastic/colors";
 import { StyledResponseTagContainer } from "../styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import { darkGrey, themeColorLight } from "@edulastic/colors";
 
 export class ResponseTag extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   tooltipText = data => () => {
-    let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = data.record;
-    let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
+    const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = data.record;
+    const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
     let skip = (skip_cnt / sum) * 100;
     if (isNaN(skip)) skip = 0;
-    skip = Math.round(skip) + "%";
+    skip = `${Math.round(skip)}%`;
 
     return (
       <div>
@@ -57,11 +52,12 @@ export class ResponseTag extends Component {
   };
 
   getPrintableTag = (exisitingStyle, name, value) => {
-    let modifiedStyle = next(exisitingStyle, styleDraft => {
-      if (this.props.data.isCorrect) {
-        styleDraft.color = getHSLFromRange1(100, 60);
-      } else if (value > this.props.incorrectFrequencyThreshold) {
-        styleDraft.color = getHSLFromRange2(100 - value, 30);
+    const { data, incorrectFrequencyThreshold } = this.props;
+    const modifiedStyle = next(exisitingStyle, styleDraft => {
+      if (data.isCorrect) {
+        styleDraft.color = themeColorLighter;
+      } else if (value > incorrectFrequencyThreshold) {
+        styleDraft.color = yellow1;
       }
 
       styleDraft.backgroundColor = "transparent";
@@ -75,34 +71,31 @@ export class ResponseTag extends Component {
   };
 
   getCellContents = () => {
-    let name = get(this.props, "data.name", "");
-    let value = Number(get(this.props, "data.value", 0));
+    const { data, incorrectFrequencyThreshold, isPrinting } = this.props;
+    const name = get(data, "name", "");
+    const value = Number(get(data, "value", 0));
 
-    let style = this.props.data.isCorrect
-      ? { borderColor: themeColorLight, color: themeColorLight }
-      : value > this.props.incorrectFrequencyThreshold
-      ? { borderColor: getHSLFromRange2(100 - value), color: getHSLFromRange2(100 - value) }
-      : { borderColor: "#cccccc" };
+    const style = data.isCorrect
+      ? { borderColor: themeColorLighter, color: themeColorLighter }
+      : value > incorrectFrequencyThreshold
+      ? { borderColor: yellow1, color: yellow1 }
+      : { borderColor: incorrect };
 
-    if (this.props.isPrinting) {
+    if (isPrinting) {
       return this.getPrintableTag(style, name, value);
     }
 
-    const textStyle = {
-      color: style.borderColor
-    };
-
     return (
       <StyledTag style={style}>
-        {<p>{name}</p>}
+        <p>{name}</p>
         <p>{value}%</p>
       </StyledTag>
     );
   };
 
   render() {
-    let data = get(this.props, "data", "");
-
+    const data = get(this.props, "data", "");
+    console.log(data.key);
     return (
       <StyledResponseTagContainer>
         <CustomTableTooltip placement="top" title={this.tooltipText(data)} getCellContents={this.getCellContents} />

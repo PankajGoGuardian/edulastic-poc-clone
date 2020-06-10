@@ -708,10 +708,10 @@ const Settings = ({
             setSettingsData={val => overRideSettings("standardGradingScale", val)}
           />
         </DivBlock>
-        <AdvancedButton onClick={advancedHandler} show={showAdvancedOption}>
+        {premium && <AdvancedButton onClick={advancedHandler} show={showAdvancedOption}>
           {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
           <IconCaretDown color={themeColor} width={11} height={6} />
-        </AdvancedButton>
+        </AdvancedButton>}
         {showAdvancedOption && (
           <div>
             <Block id="accessibility">
@@ -744,7 +744,8 @@ const Settings = ({
                   )}
                 </>
               )}
-              {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
+              {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased &&
+              (
                 <FeaturesSwitch
                   inputFeatures="selectPlayerSkinType"
                   actionOnInaccessible="hidden"

@@ -135,8 +135,16 @@ export const SelectInputStyled = styled(Select)`
           width: 100%;
           height: auto;
           margin: 0px;
+          line-height: 30px;
+          .ant-select-selection__choice {
+            & + .ant-select-search--inline {
+              margin-top: 5px;
+            }
+          }
           .ant-select-search--inline {
             margin-left: 10px;
+            height: 24px;
+            line-height: 24px;
           }
           .ant-select-selection__placeholder {
             color: ${greyThemeDark2};

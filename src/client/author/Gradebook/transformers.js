@@ -58,16 +58,19 @@ export const getFormattedName = (...names) => {
 };
 
 export const getUniqAssessments = (assessments = []) => {
-  const assessmentGroups = groupBy(assessments, "_id");
+  // group assignments by report key and title
+  const assessmentGroups = groupBy(assessments, a => `${a.reportKey}_${a.title}`);
   const uniqAssessments = Object.keys(assessmentGroups).map(aId => {
     const classIds = [];
     const subjects = [];
     const grades = [];
+    const assessmentIds = [];
     const assessment = assessmentGroups[aId][0];
     assessmentGroups[aId].forEach(a => {
       classIds.push(a.classId);
       subjects.push(...a.subjects);
       grades.push(...a.grades);
+      assessmentIds.push(a._id);
     });
     return {
       id: assessment._id,
@@ -75,7 +78,8 @@ export const getUniqAssessments = (assessments = []) => {
       termId: assessment.termId,
       classIds: uniq(classIds),
       subjects: uniq(subjects),
-      grades: uniq(grades)
+      grades: uniq(grades),
+      assessmentIds: uniq(assessmentIds)
     };
   });
   return uniqAssessments;
@@ -171,7 +175,26 @@ export const curateGradebookData = (gradebookData, pagination, status) => {
     return { _id: sId, studentName, classId, className, laDate, assessments };
   });
 
-  const assessmentsData = assignments.map(a => ({ id: a._id, name: a.title }));
+  // group assignments by report key and title
+  const assignmentsMap = {};
+  const assignmentGroups = groupBy(assignments, a => `${a.reportKey}_${a.title}`);
+  const assignmentsData = Object.keys(assignmentGroups).map(aId => {
+    const assignment = assignmentGroups[aId][0];
+    assignmentGroups[aId].forEach(a => {
+      assignmentsMap[a._id] = assignment._id;
+    });
+    return assignment;
+  });
+  // re-curate student data for the grouped assignments
+  curatedData.forEach(d => {
+    const assessments = {};
+    Object.entries(d.assessments).forEach(([k, v]) => {
+      assessments[assignmentsMap[k]] = v;
+    });
+    d.assessments = assessments;
+  });
+
+  const assessmentsData = assignmentsData.map(a => ({ id: a._id, name: a.title }));
 
   if (status) {
     return getPaginatedData(curatedData, assessmentsData, pagination);

@@ -72,7 +72,10 @@ const Gradebook = ({
 
   useEffect(() => {
     if (!onComponentLoad) {
-      fetchGradebookData({ filters, pageDetail });
+      const assessmentIds = filtersData.assessments
+        .filter(a => filters.assessmentIds.includes(a.id))
+        .flatMap(a => a.assessmentIds);
+      fetchGradebookData({ filters: { ...filters, assessmentIds }, pageDetail });
       setLoading(true);
     }
   }, [pageDetail]);

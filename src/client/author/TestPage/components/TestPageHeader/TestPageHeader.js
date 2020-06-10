@@ -32,7 +32,7 @@ import {
 } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import TestPageNav from "../TestPageNav/TestPageNav";
-import { AssignButton, MobileHeaderFilterIcon, RightFlexContainer, RightWrapper, ShareIcon, TestStatus } from "./styled";
+import { MobileHeaderFilterIcon, RightFlexContainer, RightWrapper, ShareIcon, TestStatus } from "./styled";
 import PrintTestModal from "../../../src/components/common/PrintTestModal";
 
 const { statusConstants, testContentVisibility: testContentVisibilityOptions } = testConstants;
@@ -317,7 +317,7 @@ const TestPageHeader = ({
         onClose={() => setCancelState(false)}
       />
       {showPrintOptionPopup && (
-        <PrintTestModal onProceed={handleOnClickPrintConfirm} onCancel={handleOnClickPrintCancel} />
+        <PrintTestModal onProceed={handleOnClickPrintConfirm} onCancel={handleOnClickPrintCancel} currentTestId={test?._id} />
       )}
       {windowWidth >= parseInt(tabletWidth, 10) ? (
         <MainHeader

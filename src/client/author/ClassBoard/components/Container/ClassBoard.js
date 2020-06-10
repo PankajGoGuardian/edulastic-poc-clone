@@ -9,11 +9,10 @@ import {
   IconMoreHorizontal,
   IconPrint,
   IconRedirect,
-  IconRemove,
-  IconStudentReportCard
+  IconRemove
 } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { Dropdown, message, Select } from "antd";
+import { Dropdown, Select } from "antd";
 import { get, isEmpty, keyBy, round } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
@@ -120,14 +119,12 @@ class ClassBoard extends Component {
     this.state = {
       flag: true,
       selectedTab: _selectedTab,
-      selectAll: false,
       selectedQuestion: 0,
       selectedQid: questionId,
       itemId: null,
       nCountTrue: 0,
       redirectPopup: false,
       selectedStudentId: "",
-      visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
@@ -147,27 +144,11 @@ class ClassBoard extends Component {
   };
 
   confirm = () => {
-    this.setState({ visible: false });
     notification({ type: "success", messageKey:"nextStep"});
   };
 
   cancel = () => {
-    this.setState({ visible: false });
     notification({ messageKey: "ClickOnCancel" });
-  };
-
-  handleVisibleChange = visible => {
-    if (!visible) {
-      this.setState({ visible });
-      return;
-    }
-    const { condition } = this.state;
-    // Determining condition before show the popconfirm.
-    if (condition) {
-      this.confirm(); // next step
-    } else {
-      this.setState({ visible }); // show the popconfirm
-    }
   };
 
   handleScroll = () => {
@@ -280,7 +261,6 @@ class ClassBoard extends Component {
       return null;
     });
     this.setState({
-      selectAll: checked,
       nCountTrue: checked ? testActivity.length : 0
     });
     if (checked) {
@@ -379,7 +359,6 @@ class ClassBoard extends Component {
       return null;
     });
     this.setState({
-      selectAll: nCountTrue === testActivity.length,
       nCountTrue
     });
   };
@@ -548,7 +527,7 @@ class ClassBoard extends Component {
   onClickPrint = event => {
     event.preventDefault();
 
-    const { testActivity, selectedStudents, match } = this.props;
+    const { testActivity, selectedStudents } = this.props;
 
     const selectedStudentsKeys = Object.keys(selectedStudents);
 
@@ -635,9 +614,6 @@ class ClassBoard extends Component {
       selectedQuestion,
       redirectPopup,
       selectedStudentId,
-      studentReportCardMenuModalVisibility,
-      studentReportCardModalVisibility,
-      studentReportCardModalColumnsFlags,
       itemId,
       selectedQid,
       modalInputVal,
@@ -747,7 +723,7 @@ class ClassBoard extends Component {
             okText="Yes, Remove"
           />
         )}
-        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.closePrintModal} />}
+        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.closePrintModal} currentTestId={additionalData.testId} />}
         <HooksContainer additionalData={additionalData} classId={classId} assignmentId={assignmentId} />
         <ClassHeader
           classId={classId}

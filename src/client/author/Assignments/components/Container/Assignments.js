@@ -256,7 +256,7 @@ class Assignments extends Component {
           currentAssignmentId={currentAssignmentId}
           currentAssignmentClass={currentAssignmentClass}
         />
-        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal} />}
+        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal} currentTestId={currentTestId} />}
         <ListHeader
           onCreate={this.handleCreate}
           createAssignment

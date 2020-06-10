@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Radio, Modal, Input, Alert } from "antd";
 import { EduButton, FlexContainer } from "@edulastic/common";
 import { greyThemeDark1, greyishBorder, lightGreySecondary } from "@edulastic/colors";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { testsApi } from "@edulastic/api";
+import { getOrderedQuestionsAndAnswers } from "../../../PrintAssessment/utils";
 
 const regexStr = /^[0-9,-]+$/;
 const optionInfos = {
@@ -16,10 +18,24 @@ const optionInfos = {
   custom: ["Enter the item numbers in the below box to print"]
 };
 
-const PrintTestModal = ({ onCancel, onProceed }) => {
+const PrintTestModal = ({ onCancel, onProceed, currentTestId }) => {
   const [option, setOption] = useState("complete");
   const [customValue, setCustomValue] = useState("");
   const [error, setError] = useState("");
+  const [haveManualGradedQs, setHaveManualGradedQs] = useState(false);
+
+  useEffect(() => {
+    // fetching test to check if manual graded items avaiable or not
+    testsApi.getById(currentTestId).then(test => {
+      const {
+        passages,
+        itemGroups = []
+      } = test;
+      const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
+      const { questions } = getOrderedQuestionsAndAnswers(testItems, passages, "manualGraded", []);
+      setHaveManualGradedQs(!!questions.length);
+    });
+  }, []);
 
   const handleChangeOption = e => {
     setError("");
@@ -28,7 +44,7 @@ const PrintTestModal = ({ onCancel, onProceed }) => {
 
   const onChangeInput = e => {
     const { value } = e.target;
-    //restricting to comma, dash and number
+    // restricting to comma, dash and number
     if (regexStr.test(value)) {
       setCustomValue(value);
     }
@@ -76,7 +92,7 @@ const PrintTestModal = ({ onCancel, onProceed }) => {
         <div style={{ marginBottom: "31px", fontSize: "14px" }}>Select the print type based on your need.</div>
         <StyledRadioGroup onChange={handleChangeOption} value={option}>
           <Radio value="complete">COMPLETE TEST</Radio>
-          <Radio value="manualGraded">MANUAL GRADED ITEMS</Radio>
+          {haveManualGradedQs && <Radio value="manualGraded">MANUAL GRADED ITEMS</Radio>}
           <Radio value="custom">CUSTOM</Radio>
         </StyledRadioGroup>
 

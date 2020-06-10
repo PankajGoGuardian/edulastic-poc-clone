@@ -8,7 +8,6 @@ import { MainHeader } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconSettings } from "@edulastic/icons";
 import { AdminHeaderContent, StyledTabPane, StyledTabs } from "./styled";
-import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 
 // ducks
 import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
@@ -54,7 +53,7 @@ class AdminHeader extends Component {
   };
 
   render() {
-    const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel, children } = this.props;
+    const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel, children, enableStudentGroups } = this.props;
     const schoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     const isDA = role === roleuser.DISTRICT_ADMIN;
     const defaultTab = isDA ? "District Profile" : "School Profile";
@@ -74,9 +73,7 @@ class AdminHeader extends Component {
             <StyledTabPane tab={schoolTabtext} key="schools" />
             <StyledTabPane tab="Users" key="users" />
             <StyledTabPane tab="Classes" key="classes" />
-            <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
-              <StyledTabPane tab="Groups" key="groups" />
-            </FeaturesSwitch>
+            {enableStudentGroups && <StyledTabPane tab="Groups" key="groups" />}
             <StyledTabPane tab="Courses" key="courses" />
             <StyledTabPane tab="Class Enrollment" key="class-enrollment" />
             {isDA && <StyledTabPane tab="Content" key="content" />}
@@ -95,7 +92,8 @@ export default connect(
   state => ({
     role: getUserRole(state),
     schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state),
-    manageTabLabel: getManageTabLabelSelector(state)
+    manageTabLabel: getManageTabLabelSelector(state),
+    enableStudentGroups: get(state, "user.user.features.studentGroups")
   }),
   {}
 )(AdminHeader);

@@ -12,7 +12,7 @@ import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { createClassAction, getSelectedSubject, setSubjectAction } from "../../ducks";
 // selectors
 import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { getUserOrgData } from "../../../src/selectors/user";
+import { getUserOrgData, getUserRole } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 
 // componentes
@@ -216,7 +216,8 @@ class ClassCreate extends React.Component {
       allTagsData,
       addNewTag,
       history,
-      location
+      location,
+      userRole
     } = this.props;
 
     const { type, exitPath } = location?.state || {};
@@ -270,6 +271,7 @@ class ClassCreate extends React.Component {
                   allTagsData={allTagsData}
                   addNewTag={addNewTag}
                   type={type || "class"}
+                  userRole={userRole}
                 />
               </RightContainer>
             </Row>
@@ -301,7 +303,8 @@ const enhance = compose(
         filteredCurriculums: getFormattedCurriculumsSelector(state, {
           subject: selectedSubject
         }),
-        selectedSubject
+        selectedSubject,
+        userRole: getUserRole(state)
       };
     },
     {

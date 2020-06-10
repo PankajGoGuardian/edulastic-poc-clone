@@ -62,7 +62,8 @@ const ActionContainer = ({
   cleverId,
   loadSchoolPolicy,
   policy,
-  searchAndAddStudents
+  searchAndAddStudents,
+  enableStudentGroups
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -395,13 +396,11 @@ const ActionContainer = ({
                   <IconPlus />
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
-                {type === "class" && (
-                  <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
-                    <MenuItems key="addToGroup">
-                      <IconPlus />
-                      <span>Add To Group</span>
-                    </MenuItems>
-                  </FeaturesSwitch>
+                {type === "class" && enableStudentGroups && (
+                  <MenuItems key="addToGroup">
+                    <IconPlus />
+                    <span>Add To Group</span>
+                  </MenuItems>
                 )}
                 {type === "class" && (
                   <MenuItems key="mergeStudents">
@@ -470,7 +469,8 @@ export default connect(
     selectedStudent: get(state, "manageClass.selectedStudent", []),
     studentsList: get(state, "manageClass.studentsList", []),
     features: getUserFeatures(state),
-    policy: getSchoolPolicy(state)
+    policy: getSchoolPolicy(state),
+    enableStudentGroups: get(state, "user.user.features.studentGroups")
   }),
   {
     addStudentRequest: addStudentRequestAction,

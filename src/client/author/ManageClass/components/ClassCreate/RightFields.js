@@ -4,6 +4,8 @@ import { debounce, filter, isArray, isEmpty } from "lodash";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+
+import { roleuser } from "@edulastic/constants";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { FieldLabel } from "./components";
@@ -25,6 +27,7 @@ const RightFields = ({
   userOrgData,
   clearStandards,
   type,
+  userRole,
   ...restProps
 }) => {
   const [startDate, setStartDate] = useState(moment());
@@ -45,13 +48,11 @@ const RightFields = ({
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
   const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
-  let isDropdown = isArray(schoolList) && !isEmpty(schoolList);
 
-  if (isDropdown) {
+  let isDropdown = false;
+  if (isArray(schoolList) && !isEmpty(schoolList)) {
     defaultSchool = defaultSchool || schoolList[0]._id;
-    if (schoolList.length === 1) {
-      isDropdown = schoolList[0]._id !== defaultSchool;
-    }
+    isDropdown = schoolList.length > 1;
   }
 
   const disabledStartDate = current => current && current < moment().subtract(1, "day");
@@ -202,7 +203,7 @@ const RightFields = ({
         </Col>
       </StyledFlexContainer>
 
-      {((!isDropdown && type === "class") || (isDropdown && type !== "class")) && (
+      {(!isDropdown || type !== "class") && userRole !== roleuser.DISTRICT_ADMIN && (
         <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool} style={{ height: "0px" }}>
           <input type="hidden" />
         </FieldLabel>

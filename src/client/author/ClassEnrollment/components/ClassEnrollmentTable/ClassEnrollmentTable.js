@@ -504,7 +504,8 @@ class ClassEnrollmentTable extends React.Component {
       totalUsers,
       userRole,
       t,
-      location
+      location,
+      enableStudentGroups
     } = this.props;
 
     const tableDataSource = classEnrollmentData.map(item => {
@@ -539,9 +540,7 @@ class ClassEnrollmentTable extends React.Component {
         <Menu.Item key="remove students">{t("classenrollment.removestudents")}</Menu.Item>
         <Menu.Item key="move users">{t("classenrollment.moveusers")}</Menu.Item>
         <Menu.Item key="add students to other class">{t("classenrollment.addstdstoanotherclass")}</Menu.Item>
-        <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
-          <Menu.Item key="add to student group">{t("classenrollment.addToStudentGroup")}</Menu.Item>
-        </FeaturesSwitch>
+        {enableStudentGroups && <Menu.Item key="add to student group">{t("classenrollment.addToStudentGroup")}</Menu.Item>}
       </Menu>
     );
 
@@ -812,7 +811,8 @@ const enhance = compose(
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
       totalUsers: getClassEnrollmentUsersCountSelector(state),
       userRole: getUserRole(state),
-      getValidatedClass: getValidatedClassDetails(state)
+      getValidatedClass: getValidatedClassDetails(state),
+      enableStudentGroups: get(state, "user.user.features.studentGroups")
     }),
     {
       createAdminUser: createAdminUserAction,

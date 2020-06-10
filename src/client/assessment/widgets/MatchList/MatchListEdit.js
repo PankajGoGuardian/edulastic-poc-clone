@@ -178,6 +178,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
+      showBorder
     />
   );
 

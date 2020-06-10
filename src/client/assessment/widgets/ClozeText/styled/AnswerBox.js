@@ -22,8 +22,4 @@ export const AnswerBox = styled.div`
       return theme.widgets.clozeText.boxBgCorrectColor;
     }
   }};
-
-  &.answer-list {
-    border: none;
-  }
 `;

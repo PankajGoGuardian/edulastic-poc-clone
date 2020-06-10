@@ -215,6 +215,16 @@ const Answer = styled.div`
   display: inline-flex;
   margin-right: 15px;
   margin-bottom: 10px;
+  border: ${({
+    theme: {
+      answerBox: { borderWidth, borderStyle, borderColor }
+    }
+  }) => `${borderWidth} ${borderStyle} ${borderColor}`};
+  border-radius: ${({
+    theme: {
+      answerBox: { borderRadius }
+    }
+  }) => borderRadius};
 `;
 
 const Label = styled.div`

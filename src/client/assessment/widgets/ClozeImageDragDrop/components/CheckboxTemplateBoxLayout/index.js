@@ -31,7 +31,6 @@ const CheckboxTemplateBox = ({
   evaluation,
   onDropHandler,
   theme,
-  showBorder,
   disableResponse,
   isSnapFitValues,
   isExpressGrader,
@@ -84,13 +83,18 @@ const CheckboxTemplateBox = ({
       indexStr = index + 1;
   }
 
+  const {
+    answerBox: { borderWidth, borderStyle, borderColor }
+  } = theme;
+
   const dropContainerStyle = {
     ...btnStyle,
     width: isPrintMode ? `${(respWidth / imageWidth) * 100}%` : respWidth,
     height: isPrintMode ? `${(respHeight / imageHeight) * 100}%` : respHeight,
     minWidth: lessMinWidth ? parseInt(respWidth, 10) + 4 : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
-    background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
+    background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null,
+    border: `${borderWidth} ${borderStyle} ${borderColor}`
   };
 
   let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
@@ -236,7 +240,6 @@ CheckboxTemplateBox.propTypes = {
   onDropHandler: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool.isRequired,
-  showBorder: PropTypes.bool.isRequired,
   lessMinWidth: PropTypes.bool.isRequired,
   isExpressGrader: PropTypes.bool.isRequired,
   isSnapFitValues: PropTypes.bool.isRequired

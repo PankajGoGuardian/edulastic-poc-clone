@@ -18,7 +18,16 @@ const CorItem = styled.div`
   text-align: center;
   background-color: #fff;
   overflow: hidden;
-
+  border: ${({
+    theme: {
+      answerBox: { borderWidth, borderStyle, borderColor }
+    }
+  }) => `${borderWidth} ${borderStyle} ${borderColor}`};
+  border-radius: ${({
+    theme: {
+      answerBox: { borderRadius }
+    }
+  }) => borderRadius};
   ${({ index }) =>
     index &&
     `&:before {

@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { smallDesktopWidth } from "@edulastic/colors";
 
+import { withTheme } from "styled-components";
 import { StyledTemplateBox } from "./styled/StyledTemplateBox";
 import { TemplateCover } from "./styled/TemplateCover";
 // import { calculateRatio } from "../../../../utils/helpers";
@@ -30,7 +31,10 @@ const CheckboxTemplateBoxLayout = ({
   onClickHandler,
   isExpressGrader,
   item,
-  isPrintPreview
+  isPrintPreview,
+  theme: {
+    answerBox: { borderWidth, borderStyle, borderColor, borderRadius }
+  }
 }) => {
   const widthGreaterThanWindowWidth = window.innerWidth > parseInt(smallDesktopWidth.replace("px", ""), 10);
   return (
@@ -68,7 +72,8 @@ const CheckboxTemplateBoxLayout = ({
             left: isPrintPreview ? `${(left / imageWidth) * 100}%` : left,
             height: responseContainer.height,
             width: responseContainer.width,
-            borderRadius: 5
+            border: `${borderWidth} ${borderStyle} ${borderColor}`,
+            borderRadius
           };
           let indexStr = "";
           switch (stemNumeration) {
@@ -137,4 +142,4 @@ CheckboxTemplateBoxLayout.defaultProps = {
   isExpressGrader: false
 };
 
-export default React.memo(CheckboxTemplateBoxLayout);
+export default withTheme(React.memo(CheckboxTemplateBoxLayout));

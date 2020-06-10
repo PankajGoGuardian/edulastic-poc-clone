@@ -7,7 +7,8 @@ import {
   greyThemeLight,
   greyThemeDark2,
   greyThemeLighter,
-  title
+  title,
+  greyishBorder
 } from "@edulastic/colors";
 
 // all theme variables
@@ -681,6 +682,12 @@ export const defaultTheme = {
     labelFontWeight: semiBold,
     labelColor: labelStyle
   },
+  answerBox: {
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: greyishBorder,
+    borderRadius: "4px"
+  },
   correctAnswers: {
     iconPlusColor: actionIconActiveColor,
     iconCloseColor: closeColor,
@@ -692,7 +699,8 @@ export const defaultTheme = {
   dropContainer: {
     isOverBorderColor: greyThemeLight,
     isNotOverBorderColor: greyThemeLight,
-    noBorderColor: "none"
+    noBorderColor: "none",
+    dragItemContainerBgColor: "#f8f8f8"
   },
   dropArea: {
     iconTrashColor: iconDeleteColor,

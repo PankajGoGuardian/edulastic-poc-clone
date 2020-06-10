@@ -13,4 +13,9 @@ export const CorTitle = styled.div`
   word-break: break-word;
   padding: 8px 12px;
   overflow: hidden;
+  border: ${({
+    theme: {
+      answerBox: { borderWidth, borderStyle, borderColor }
+    }
+  }) => `${borderWidth} ${borderStyle} ${borderColor}`};
 `;

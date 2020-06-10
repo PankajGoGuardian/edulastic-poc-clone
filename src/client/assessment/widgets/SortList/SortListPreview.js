@@ -15,6 +15,8 @@ import {
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
 
+import { compose } from "redux";
+import { withTheme } from "styled-components";
 import { SHOW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 import Instructions from "../../components/Instructions";
 import DropContainer from "../../components/DropContainer";
@@ -53,7 +55,10 @@ const SortListPreview = ({
   disableResponse,
   changePreviewTab,
   isReviewTab,
-  isPrintPreview
+  isPrintPreview,
+  theme: {
+    answerBox: { borderWidth, borderStyle, borderColor }
+  }
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
@@ -367,7 +372,7 @@ const SortListPreview = ({
               altList={altResponseCorrectList}
               altResponses={altResponses}
               correctList={validResponse}
-              itemStyle={dragItemStyle}
+              itemStyle={{ ...dragItemStyle, border: `${borderWidth} ${borderStyle} ${borderColor}` }}
               stemNumeration={stemNumeration}
             />
           )}
@@ -399,4 +404,9 @@ SortListPreview.defaultProps = {
   isReviewTab: false
 };
 
-export default withNamespaces("assessment")(SortListPreview);
+const enhance = compose(
+  withNamespaces("assessment"),
+  withTheme
+);
+
+export default enhance(SortListPreview);

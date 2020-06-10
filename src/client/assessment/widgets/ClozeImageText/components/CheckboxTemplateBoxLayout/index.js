@@ -6,6 +6,8 @@ import { helpers } from "@edulastic/common";
 
 import { response } from "@edulastic/constants";
 
+import { withTheme } from "styled-components";
+import { compose } from "redux";
 import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "../../styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "../../styled/StyledPreviewContainer";
@@ -29,7 +31,10 @@ const CheckboxTemplateBoxLayout = ({
   canvasWidth,
   backgroundColor,
   onClickHandler,
-  isExpressGrader
+  isExpressGrader,
+  theme: {
+    answerBox: { borderWidth, borderStyle, borderColor, borderRadius }
+  }
 }) => (
   <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
     <StyledPreviewContainer data-cy="image-text-preview-board" width={canvasWidth} height={canvasHeight}>
@@ -54,7 +59,8 @@ const CheckboxTemplateBoxLayout = ({
           height: responseContainer.height,
           position: "absolute",
           backgroundColor,
-          borderRadius: 5
+          border: `${borderWidth} ${borderStyle} ${borderColor}`,
+          borderRadius
         };
 
         const indexStr = helpers.getNumeration(dropTargetIndex, stemNumeration);
@@ -99,4 +105,9 @@ CheckboxTemplateBoxLayout.propTypes = {
   isExpressGrader: PropTypes.bool.isRequired
 };
 
-export default React.memo(CheckboxTemplateBoxLayout);
+const enhance = compose(
+  React.memo,
+  withTheme
+);
+
+export default enhance(CheckboxTemplateBoxLayout);

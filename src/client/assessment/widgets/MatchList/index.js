@@ -14,7 +14,7 @@ const MatchList = props => {
   return (
     <Fragment>
       {view === PREVIEW && itemForPreview && itemForPreview.possibleResponseGroups && (
-        <MatchListPreview {...props} showBorder={false} item={itemForPreview} />
+        <MatchListPreview {...props} showBorder item={itemForPreview} />
       )}
       {view === EDIT && <MatchListEdit {...props} />}
     </Fragment>

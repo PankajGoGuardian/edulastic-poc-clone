@@ -72,7 +72,6 @@ const MatchListPreview = ({
   smallSize,
   theme,
   showQuestionNumber,
-  showBorder,
   setQuestionData,
   disableResponse,
   changePreviewTab,
@@ -314,6 +313,10 @@ const MatchListPreview = ({
   const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
   const horizontallyAligned = listPosition === "left" || listPosition === "right";
 
+  const {
+    answerBox: { borderWidth, borderStyle, borderColor }
+  } = theme;
+
   const getStyles = ({ flag, _preview, correct, isDragging, width }) => ({
     display: "flex",
     width: width || "auto",
@@ -326,7 +329,11 @@ const MatchListPreview = ({
         ? theme.widgets.matchList.dragItemCorrectBgColor
         : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
-    border: showBorder && correct !== undefined ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
+    border: _preview
+      ? `${borderWidth} ${borderStyle} ${borderColor}`
+      : flag === "ans"
+      ? "none"
+      : `2px dotted ${borderColor}`,
     cursor: "pointer",
     alignSelf: "stretch",
     borderRadius: 4,
@@ -631,7 +638,6 @@ MatchListPreview.propTypes = {
   userAnswer: PropTypes.array,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  showBorder: PropTypes.bool,
   disableResponse: PropTypes.bool,
   setQuestionData: PropTypes.func.isRequired,
   changePreview: PropTypes.func.isRequired,
@@ -646,7 +652,6 @@ MatchListPreview.defaultProps = {
   userAnswer: [],
   evaluation: [],
   showQuestionNumber: false,
-  showBorder: false,
   disableResponse: false,
   isReviewTab: false
 };

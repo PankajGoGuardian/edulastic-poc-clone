@@ -923,7 +923,8 @@ textinput {
 }
 
 .response-btn.check-answer {
-  border: none;
+  /* theme greyishBorder */
+  border: 1px solid #b9b9b9;
 }
 
 paragraphnumber {
@@ -1047,6 +1048,7 @@ textinput::before {
   display: flex;
   align-items: center;
   border-radius: 5px;
+  border: 1px solid red;
 }
 
 .imagelabeldragdrop-droppable .index-box {

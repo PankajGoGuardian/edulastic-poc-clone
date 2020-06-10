@@ -1,11 +1,10 @@
+import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
 
-export const AnswerBox = styled.div`
-  display: inline-flex;
-  margin: 5px;
-  min-width: 150px;
-  border-radius: 4px;
-  background: ${({ theme }) => theme.widgets.clozeImageText.boxBgColor};
+export default styled(FlexContainer)`
+  background-color: ${({ theme }) => theme.dropContainer.dragItemContainerBgColor};
+  padding: 2rem;
+  width: 100%;
   border: ${({
     theme: {
       answerBox: { borderWidth, borderStyle, borderColor }

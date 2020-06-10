@@ -259,11 +259,11 @@ class Display extends Component {
                 left: isPrintPreview ? `${(left / containerWidth) * 100}%` : left,
                 border: showDropItemBorder
                   ? showDashedBorder
-                    ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
-                    : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
-                  : 0,
+                    ? `2px dashed ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                    : "none"
+                  : "none",
                 position: "absolute",
-                borderRadius: 0
+                borderRadius: "4px"
               };
 
               return (
@@ -271,7 +271,7 @@ class Display extends Component {
                   key={index}
                   style={{
                     ...btnStyle,
-                    borderStyle: smallSize ? "dashed" : "solid"
+                    borderStyle: smallSize ? "dashed" : "none"
                   }}
                   className="imagelabeldragdrop-droppable active"
                 >

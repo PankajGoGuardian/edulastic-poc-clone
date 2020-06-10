@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { MathSpan, FlexContainer, DragDrop } from "@edulastic/common";
+import { MathSpan, FlexContainer, DragDrop, DragDropInnerContainer } from "@edulastic/common";
 import { StyledResponseDiv } from "../../ClozeDragDrop/styled/ResponseBox";
 import { ChoiceItem, DragHandler } from "../../../components/ChoiceItem";
 import { DropContainerTitle } from "../../../components/DropContainerTitle";
@@ -31,28 +31,34 @@ const ResponseBoxLayout = ({
   };
 
   return (
-    <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%" }}>
+    <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%", border: "none" }}>
       <StyledResponseDiv className="responses_box" data-cy="responses-box" style={containerStyle}>
-        <FlexContainer flexDirection="column" style={isPrintMode ? {width: "100%"} : {}}>
+        <FlexContainer flexDirection="column" style={isPrintMode ? { width: "100%" } : {}}>
           <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
-          <FlexContainer justifyContent="flex-start" flexDirection={isPrintMode ? "column" : horizontallyAligned ? "column" : "row"} flexWrap="wrap">
-            {responses.map((option = "", index) => (
-              <DragItem
-                id={`response-item-${index}`}
-                key={`response-item-${index}`}
-                data={{ option, fromRespIndex: index }}
-                size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
-              >
-                <ChoiceItem
-                  style={itemStyle}
-                  className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
+          <DragDropInnerContainer>
+            <FlexContainer
+              justifyContent="flex-start"
+              flexDirection={isPrintMode ? "column" : horizontallyAligned ? "column" : "row"}
+              flexWrap="wrap"
+            >
+              {responses.map((option = "", index) => (
+                <DragItem
+                  id={`response-item-${index}`}
+                  key={`response-item-${index}`}
+                  data={{ option, fromRespIndex: index }}
+                  size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
                 >
-                  {dragHandler && <DragHandler />}
-                  <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
-                </ChoiceItem>
-              </DragItem>
-            ))}
-          </FlexContainer>
+                  <ChoiceItem
+                    style={itemStyle}
+                    className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
+                  >
+                    {dragHandler && <DragHandler />}
+                    <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
+                  </ChoiceItem>
+                </DragItem>
+              ))}
+            </FlexContainer>
+          </DragDropInnerContainer>
         </FlexContainer>
       </StyledResponseDiv>
     </DropContainer>

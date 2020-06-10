@@ -338,7 +338,11 @@ const TestPageHeader = ({
         onClose={() => setCancelState(false)}
       />
       {showPrintOptionPopup && (
-        <PrintTestModal onProceed={handleOnClickPrintConfirm} onCancel={handleOnClickPrintCancel} currentTestId={test?._id} />
+        <PrintTestModal
+          onProceed={handleOnClickPrintConfirm}
+          onCancel={handleOnClickPrintCancel}
+          currentTestId={test?._id}
+        />
       )}
       {windowWidth >= parseInt(tabletWidth, 10) ? (
         <MainHeader
@@ -456,7 +460,8 @@ const TestPageHeader = ({
               (owner || testStatus === "published") &&
               !isPlaylist &&
               !isPublishers &&
-              !isEdulasticCurator && (
+              !isEdulasticCurator &&
+              !isRegradeFlow && (
                 <EduButton data-cy="assign" disabled={disableButtons} onClick={handleAssign}>
                   ASSIGN
                 </EduButton>
@@ -554,7 +559,8 @@ const TestPageHeader = ({
               (owner || testStatus === "published") &&
               !isPlaylist &&
               !isPublishers &&
-              !isEdulasticCurator && (
+              !isEdulasticCurator &&
+              !isRegradeFlow && (
                 <EduButton disabled={disableButtons} data-cy="assign" onClick={handleAssign}>
                   ASSIGN
                 </EduButton>

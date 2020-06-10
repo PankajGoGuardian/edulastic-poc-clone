@@ -4,12 +4,14 @@
     "title": "School Name",
     "dataIndex": "schoolName",
     "hiddenFromRole": ["teacher"],
+    "width": 120,
     "align": "left"
   },
   {
     "key": "teacherName",
     "title": "Teacher Name",
     "dataIndex": "teacherName",
+    "width": 120,
     "hiddenFromRole": ["teacher"],
     "align": "left"
   },
@@ -17,6 +19,7 @@
     "key": "groupName",
     "title": "Class Name",
     "className": "class-name-column",
+    "width": 120,
     "dataIndex": "groupName",
     "hiddenFromRole": ["district-admin"],
     "align": "left"

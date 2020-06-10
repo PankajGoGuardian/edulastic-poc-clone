@@ -3,7 +3,8 @@
     "title": "Question",
     "dataIndex": "qLabel",
     "key": "qLabel",
-    "width": 75
+    "width": 90,
+    "fixed": "left"
   },
   {
     "title": "Standards",

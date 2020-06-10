@@ -33,45 +33,43 @@ const compareByToPluralName = {
 };
 
 const sortNumbers = (compareByType, index, key) => (a, b) => {
-  let _a = a[compareByType][index][key] || 0;
-  let _b = b[compareByType][index][key] || 0;
+  const _a = a[compareByType][index][key] || 0;
+  const _b = b[compareByType][index][key] || 0;
 
   return _a - _b;
 };
 
 export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCsvDownloading, compareByTitle }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
-    const tooltipText = (_compareByType, _record, _index) => {
-      return (
-        <div>
-          <Row type="flex" justify="center">
-            <Col className="custom-table-tooltip-value">{_record.qLabel}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].name}: </Col>
-            <Col className="custom-table-tooltip-value">
-              {_record[_compareByType][_index][comparedByToToolTipLabel[_compareByType].nameKey]}
-            </Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].type}: </Col>
-            <Col className="custom-table-tooltip-value">{_record[_compareByType][_index].avgPerformance}%</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].all}: </Col>
-            <Col className="custom-table-tooltip-value">{_record.avgPerformance}%</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">District (% Score): </Col>
-            <Col className="custom-table-tooltip-value">{_record.districtAvg}%</Col>
-          </Row>
-        </div>
-      );
-    };
+    const tooltipText = (_compareByType, _record, _index) => (
+      <div>
+        <Row type="flex" justify="center">
+          <Col className="custom-table-tooltip-value">{_record.qLabel}</Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].name}: </Col>
+          <Col className="custom-table-tooltip-value">
+            {_record[_compareByType][_index][comparedByToToolTipLabel[_compareByType].nameKey]}
+          </Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].type}: </Col>
+          <Col className="custom-table-tooltip-value">{_record[_compareByType][_index].avgPerformance}%</Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].all}: </Col>
+          <Col className="custom-table-tooltip-value">{_record.avgPerformance}%</Col>
+        </Row>
+        <Row type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">District (% Score): </Col>
+          <Col className="custom-table-tooltip-value">{_record.districtAvg}%</Col>
+        </Row>
+      </div>
+    );
 
     const getCellContents = props => {
-      let { printData } = props;
-      return <div style={{ backgroundColor: getHSLFromRange1(printData) }}>{printData + "%"}</div>;
+      const { printData } = props;
+      return <div style={{ backgroundColor: getHSLFromRange1(printData) }}>{`${printData}%`}</div>;
     };
 
     return (
@@ -87,32 +85,26 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
   const _columns = next(columns, rawColumns => {
     rawColumns[0].sorter = (a, b) => {
       if (a.qLabel && b.qLabel) {
-        let _a = parseInt(a.qLabel.substring(1));
-        let _b = parseInt(b.qLabel.substring(1));
+        const _a = parseInt(a.qLabel.substring(1), 10);
+        const _b = parseInt(b.qLabel.substring(1), 10);
         return _a - _b;
-      } else {
-        return 0;
       }
+      return 0;
     };
-    rawColumns[0].render = (text, record, _index) => (
+    rawColumns[0].render = (text, record) => (
       <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.questionId}`}>
         {text}
       </Link>
     );
 
-    rawColumns[1].render = (text, record, _index) => {
+    rawColumns[1].render = text => {
       if (Array.isArray(text)) {
         return text.join(", ");
-      } else {
-        return text;
       }
+      return text;
     };
-    rawColumns[2].render = (text, record, _index) => {
-      return text.toFixed(2);
-    };
-    rawColumns[3].render = (text, record, _index) => {
-      return text + "%";
-    };
+    rawColumns[2].render = text => text.toFixed(2);
+    rawColumns[3].render = text => `${text}%`;
 
     if (roleuser.TEACHER === role) {
       rawColumns.push({
@@ -120,16 +112,14 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
         dataIndex: "avgPerformance",
         key: "avgPerformance",
         width: 150,
-        render: (text, record, _index) => {
-          return text + "%";
-        }
+        render: text => `${text}%`
       });
     }
     if (!tableData.length) {
       return;
     }
     if (compareBy === "schoolId") {
-      for (let [index, item] of tableData[0].comparedBySchool.entries()) {
+      for (const [index, item] of tableData[0].comparedBySchool.entries()) {
         const col = {
           title: item.schoolName,
           dataIndex: item.schoolId,
@@ -142,7 +132,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
         rawColumns.push(col);
       }
     } else if (compareBy === "teacherId") {
-      for (let [index, item] of tableData[0].comparedByTeacher.entries()) {
+      for (const [index, item] of tableData[0].comparedByTeacher.entries()) {
         const col = {
           title: item.teacherName,
           dataIndex: item.teacherId,
@@ -155,7 +145,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
         rawColumns.push(col);
       }
     } else if (compareBy === "groupId") {
-      for (let [index, item] of tableData[0].comparedByClass.entries()) {
+      for (const [index, item] of tableData[0].comparedByClass.entries()) {
         const col = {
           title: item.groupName,
           dataIndex: item.groupId,
@@ -173,11 +163,10 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
   const _tableData = useMemo(() => {
     const len = Object.keys(filter).length;
     return tableData.filter(item => {
-      if (filter[item["qLabel"]] || len === 0) {
+      if (filter[item.qLabel] || len === 0) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     });
   }, [filter]);
 
@@ -190,8 +179,9 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
       tableToRender={StyledTable}
       columns={_columns}
       dataSource={_tableData}
-      rowKey={"questionId"}
+      rowKey="questionId"
       colorCellStart={role === roleuser.TEACHER ? 6 : 5}
+      scroll={{ x: "100%" }}
     />
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
@@ -53,7 +54,10 @@ export const StandardsGradebookTable = ({
     });
   }
 
-  const tableData = useMemo(() => getTableData(filteredDenormalizedData, masteryScale, tableDdFilters.compareBy, tableDdFilters.masteryLevel), [filteredDenormalizedData, masteryScale, tableDdFilters]);
+  const tableData = useMemo(
+    () => getTableData(filteredDenormalizedData, masteryScale, tableDdFilters.compareBy, tableDdFilters.masteryLevel),
+    [filteredDenormalizedData, masteryScale, tableDdFilters]
+  );
 
   const getCurrentStandard = (standardId, analyseBy) => {
     const currentStandard = standardsData.find(s => s.standardId === standardId);
@@ -61,22 +65,23 @@ export const StandardsGradebookTable = ({
     return currentStandard[analyseBy];
   };
 
-  const getFilteredTableData = () => next(tableData, arr => {
-    arr.map((item, index) => {
-      const tempArr = item.standardsInfo.filter((_item, index) => {
-        if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
-          return {
-            ..._item
-          };
-        }
+  const getFilteredTableData = () =>
+    next(tableData, arr => {
+      arr.map(item => {
+        const tempArr = item.standardsInfo.filter(_item => {
+          if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
+            return {
+              ..._item
+            };
+          }
+        });
+        item.standardsInfo = tempArr;
       });
-      item.standardsInfo = tempArr;
     });
-  });
 
   const filteredTableData = getFilteredTableData();
 
-  const getDisplayValue = (item, _analyseBy, data, record) => {
+  const getDisplayValue = (item, _analyseBy) => {
     let printData;
     if (!item) {
       return "N/A";
@@ -95,35 +100,35 @@ export const StandardsGradebookTable = ({
   };
 
   const renderStandardIdColumns = (index, _compareBy, _analyseBy, standardName, standardId) => (data, record) => {
-    const tooltipText = record => (
+    const tooltipText = rec => (
       <div>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">{idToName[_compareBy]}: </Col>
-          <Col className="custom-table-tooltip-value">{record.compareByLabel}</Col>
+          <Col className="custom-table-tooltip-value">{rec.compareByLabel}</Col>
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Standard: </Col>
-          <Col className="custom-table-tooltip-value">{record.standardsInfo[index] ?.standardName}</Col>
+          <Col className="custom-table-tooltip-value">{rec.standardsInfo[index]?.standardName}</Col>
         </Row>
 
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">{analyseByToName[_analyseBy]}: </Col>
           {_analyseBy === "score(%)" ? (
             <Col className="custom-table-tooltip-value">
-              {record.standardsInfo[index] ?.[analyseByToKeyToRender[_analyseBy]]}%
+              {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
             </Col>
           ) : null}
           {_analyseBy === "rawScore" ? (
             <Col className="custom-table-tooltip-value">
-              {record.standardsInfo[index] ?.totalTotalScore}/{record.standardsInfo[index] ?.totalMaxScore}
+              {rec.standardsInfo[index]?.totalTotalScore}/{rec.standardsInfo[index]?.totalMaxScore}
             </Col>
           ) : null}
           {_analyseBy === "masteryLevel" ? (
-            <Col className="custom-table-tooltip-value">{record.standardsInfo[index] ?.masteryName}</Col>
+            <Col className="custom-table-tooltip-value">{rec.standardsInfo[index]?.masteryName}</Col>
           ) : null}
           {_analyseBy === "masteryScore" ? (
             <Col className="custom-table-tooltip-value">
-              {(record.standardsInfo[index] || {})[analyseByToKeyToRender[_analyseBy]]}
+              {(rec.standardsInfo[index] || {})[analyseByToKeyToRender[_analyseBy]]}
             </Col>
           ) : null}
         </Row>
@@ -141,14 +146,14 @@ export const StandardsGradebookTable = ({
       const { printData } = props;
       if (_compareBy === "studentId") {
         return (
-          <div style={{ backgroundColor: record.standardsInfo ?.[index] ?.color }}>
+          <div style={{ backgroundColor: record.standardsInfo?.[index]?.color }}>
             {printData === "N/A" ? (
               printData
             ) : (
-                <OnClick onClick={() => handleOnClickStandard(obj, standardName, record.compareByLabel)}>
-                  {printData}
-                </OnClick>
-              )}
+              <OnClick onClick={() => handleOnClickStandard(obj, standardName, record.compareByLabel)}>
+                {printData}
+              </OnClick>
+            )}
           </div>
         );
       }
@@ -175,11 +180,12 @@ export const StandardsGradebookTable = ({
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
         sorter: (a, b) => a.compareByLabel.toLowerCase().localeCompare(b.compareByLabel.toLowerCase()),
-        render: (data, record) => record.compareBy === "studentId" ? (
-          <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters ?.termId}`}>
-            {record.compareByLabel}
-          </Link>
-        ) : (
+        render: (data, record) =>
+          record.compareBy === "studentId" ? (
+            <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
+              {record.compareByLabel}
+            </Link>
+          ) : (
             record.compareByLabel
           )
       },
@@ -196,8 +202,11 @@ export const StandardsGradebookTable = ({
           <Link
             style={{ color: reportLinkColor }}
             to={{
-              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-              state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
+                record.testActivityId
+              }`,
+              state: {
+                // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
                 breadCrumb: [
                   {
                     title: "REPORTS",
@@ -313,6 +322,7 @@ export const StandardsGradebookTable = ({
             tableToRender={StyledTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
+            scroll={{ x: "100%" }}
           />
         </Row>
       </StyledCard>

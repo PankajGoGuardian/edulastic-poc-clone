@@ -4,15 +4,60 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { extraDesktopWidthMax } from "@edulastic/colors";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
-import { StyledCard, StyledCell, StyledH3, StyledTable } from "../../../../../common/styled";
+import { StyledCard, StyledCell, StyledH3, StyledTable as Table } from "../../../../../common/styled";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import dropDownData from "../../static/json/dropDownData.json";
 import { reportLinkColor } from "../../utils/constants";
 import { compareByMap } from "../../utils/trend";
 import TrendColumn from "./TrendColumn";
+
+const StyledTable = styled(Table)`
+  .ant-table-layout-fixed {
+    .ant-table-scroll {
+      table tbody tr td {
+        border-bottom: 1px solid #e9e9e9;
+      }
+      .ant-table-thead {
+        th {
+          /* white-space: nowrap; */
+        }
+      }
+      .ant-table-body {
+        overflow-x: auto !important;
+      }
+    }
+    .ant-table-fixed-left {
+      .ant-table-thead {
+        th {
+          padding: 8px;
+          color: #aaafb5;
+          font-weight: 900;
+          text-transform: uppercase;
+          font-size: 10px;
+          border: 0px;
+          .ant-table-column-sorter {
+            vertical-align: top;
+          }
+        }
+      }
+      .ant-table-tbody {
+        td {
+          padding: 10px 8px;
+          font-size: 11px;
+          color: #434b5d;
+          font-weight: 600;
+          @media (min-width: ${extraDesktopWidthMax}) {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+`;
 
 const formatText = (test, type) => {
   if (test[type] === null || typeof test[type] === "undefined") return "N/A";
@@ -121,6 +166,7 @@ const getColumns = (
       align: "center",
       className: "normal-text",
       dataIndex: "tests",
+      width: 120,
       render: (tests = {}, record) => {
         const currentTest = tests[testId];
 
@@ -158,6 +204,8 @@ const getColumns = (
       key: compareBy.key,
       title: capitalize(compareBy.title),
       align: "left",
+      fixed: "left",
+      width: 180,
       className: "class-name-column",
       dataIndex: compareByMap[compareBy.key],
       render: (data, record) =>
@@ -200,7 +248,7 @@ const getColumns = (
       key: "type",
       title: "Trend",
       dataIndex: "trend",
-      width: 0,
+      width: 150,
       align: "center",
       visibleOn: ["csv"],
       render: trend => capitalize(trend)
@@ -209,6 +257,7 @@ const getColumns = (
       title: "SIS ID",
       dataIndex: "sisId",
       key: "sisId",
+      width: 100,
       visibleOn: ["csv"]
     }
   ];
@@ -268,6 +317,7 @@ const TrendTable = ({
           colouredCellsNo={values(groupedAvailableTests).length}
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
+          scroll={{ x: "100%" }}
           tableToRender={StyledTable}
         />
       </TableContainer>

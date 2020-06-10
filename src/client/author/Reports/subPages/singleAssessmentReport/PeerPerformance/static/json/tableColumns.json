@@ -27,7 +27,14 @@
         }
       ],
       "groupId": [
-        { "title": "Class", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250, "align": "left" },
+        {
+          "title": "Class",
+          "dataIndex": "compareBylabel",
+          "key": "compareBylabel",
+          "width": 250,
+          "align": "left",
+          "fixed": "left"
+        },
         { "title": "Teacher", "dataIndex": "teacherName", "key": "teacherName", "width": 250, "align": "left" },
         { "title": "School", "dataIndex": "schoolName", "key": "schoolName", "width": 250, "align": "left" },
         { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 250 },

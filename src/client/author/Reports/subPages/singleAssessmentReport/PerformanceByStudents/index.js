@@ -93,7 +93,12 @@ const PerformanceByStudents = ({
 
   const parsedData = useMemo(() => parseData(res, ddfilter), [res, ddfilter]);
 
-  const tableData = useMemo(() => getTableData(res, ddfilter, range, selectedProficiency.key), [res, ddfilter, range, selectedProficiency.key]);
+  const tableData = useMemo(() => getTableData(res, ddfilter, range, selectedProficiency.key), [
+    res,
+    ddfilter,
+    range,
+    selectedProficiency.key
+  ]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -113,15 +118,15 @@ const PerformanceByStudents = ({
     },
     onSelectAll: flag => {
       if (flag) {
-        const res = {};
+        const _res = {};
         tableData.forEach(ele => {
-          if (res[ele.studentId]) {
-            res[ele.studentId].push(ele.testActivityId);
+          if (_res[ele.studentId]) {
+            _res[ele.studentId].push(ele.testActivityId);
           } else {
-            res[ele.studentId] = [ele.testActivityId];
+            _res[ele.studentId] = [ele.testActivityId];
           }
         });
-        setCheckedStudents(res);
+        setCheckedStudents(_res);
       } else {
         setCheckedStudents({});
       }
@@ -218,13 +223,14 @@ const PerformanceByStudents = ({
                   onChange={setPagination}
                   tableToRender={StyledTable}
                   location={location}
+                  scroll={{ x: "100%" }}
                   pageTitle={pageTitle}
                 />
               </Col>
             </Row>
           </StyledCard>
         </UpperContainer>
-        )}
+      )}
     </>
   );
 };

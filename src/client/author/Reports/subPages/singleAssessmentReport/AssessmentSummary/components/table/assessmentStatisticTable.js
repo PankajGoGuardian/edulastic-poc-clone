@@ -15,8 +15,9 @@ import columnData from "../../static/json/tableColumns.json";
 
 export const AssessmentStatisticTable = props => {
   const [tableType, setTableType] = useState({ key: "school", title: "School" });
+  const { data, role, className, name, isCsvDownloading, isPrinting } = props;
 
-  if (props.role === "teacher" && tableType.key !== "class") {
+  if (role === "teacher" && tableType.key !== "class") {
     const o = { key: "class", title: "Class" };
     setTableType(o);
   }
@@ -31,14 +32,13 @@ export const AssessmentStatisticTable = props => {
       hMap = groupBy(_data, o => `${o.assignmentId}_${o.groupId}`);
     }
 
-    const arr = Object.keys(hMap).map((key, index) => {
-      const data = hMap[key];
-      const obj = { ...data[0] };
+    const arr = Object.keys(hMap).map(key => {
+      const __data = hMap[key];
+      const obj = { ...__data[0] };
 
       let maxAssessmentDate = 0;
       let sumTotalScore = 0;
       let sumTotalMaxScore = 0;
-      let sumSampleCount = 0;
       let sumStudentsAbsent = 0;
       let sumStudentsAssigned = 0;
       let sumStudentsGraded = 0;
@@ -46,11 +46,10 @@ export const AssessmentStatisticTable = props => {
       let maxScore = -Infinity;
       let concatScores = [];
 
-      for (const item of data) {
+      for (const item of __data) {
         const {
           totalScore = 0,
           totalMaxScore = 0,
-          sampleCount,
           assessmentDate,
           studentsAbsent,
           studentsAssigned,
@@ -63,7 +62,6 @@ export const AssessmentStatisticTable = props => {
         sumTotalScore += totalScore;
         sumTotalMaxScore += totalMaxScore;
 
-        sumSampleCount += sampleCount;
         if (maxAssessmentDate < assessmentDate) maxAssessmentDate = assessmentDate;
 
         sumStudentsAbsent += studentsAbsent;
@@ -106,64 +104,60 @@ export const AssessmentStatisticTable = props => {
   const sortAlphabets = key => (a, b) => {
     if (a[key] < b[key]) {
       return -1;
-    } else if (a[key] > b[key]) {
+    }
+    if (a[key] > b[key]) {
       return 1;
     }
     return 0;
   };
 
   const sortNumbers = key => (a, b) => {
-    let _a = a[key] || 0;
-    let _b = b[key] || 0;
+    const _a = a[key] || 0;
+    const _b = b[key] || 0;
     return _a - _b;
   };
 
-  const getColumns = tableType => {
-    return next(columnData[tableType.key].columns, columns => {
-      if (props.role === "teacher") {
+  const getColumns = _tableType =>
+    next(columnData[_tableType.key].columns, columns => {
+      if (role === "teacher") {
         columns.splice(0, 1);
         columns[0].sorter = sortAlphabets("groupName");
       } else {
         columns[0].sorter = sortAlphabets("schoolId");
       }
 
-      if (tableType.key === "school" || props.role === "teacher") {
+      if (_tableType.key === "school" || role === "teacher") {
         columns[1].sorter = sortNumbers("avgStudentScore");
-        columns[1].render = (text, record, index) => {
-          return text + "%";
-        };
+        columns[1].render = text => `${text}%`;
       } else {
         columns[2].sorter = sortNumbers("avgStudentScore");
-        columns[2].render = (text, record, index) => {
-          return text + "%";
-        };
+        columns[2].render = text => `${text}%`;
       }
     });
-  };
 
   const table = useMemo(() => {
-    if (props.data) {
+    if (data) {
       let tt = tableType;
-      if (props.role === "teacher") {
-        let o = { key: "class", title: "Class" };
+      if (role === "teacher") {
+        const o = { key: "class", title: "Class" };
         tt = o;
       }
       return {
         columns: getColumns(tt),
-        tableData: updateTable(tt.key, props.data)
+        tableData: updateTable(tt.key, data)
       };
     }
     return {
       columns: [],
       tableData: []
     };
-  }, [props.data, tableType]);
+  }, [data, tableType]);
 
-  const updateTableCB = (event, selected, comData) => {
+  const updateTableCB = (event, selected) => {
     setTableType(selected);
   };
 
-  const onCsvConvert = data => downloadCSV(`${tableType.title} Level Performance Report.csv`, data);
+  const onCsvConvert = _data => downloadCSV(`${tableType.title} Level Performance Report.csv`, _data);
 
   const dropDownData = [
     { key: "school", title: "School" },
@@ -172,30 +166,31 @@ export const AssessmentStatisticTable = props => {
   ];
 
   return (
-    <div className={`${props.className}`}>
+    <div className={`${className}`}>
       <Row type="flex" justify="start" className="top-area">
         <Col className="top-area-col table-title">
           <StyledH3>
-            Assessment Statistics of {props.name} by <span className="stats-grouped-by">{tableType.title}</span>
+            Assessment Statistics of {name} by <span className="stats-grouped-by">{tableType.title}</span>
           </StyledH3>
         </Col>
-        {props.role !== "teacher" ? (
+        {role !== "teacher" ? (
           <StyledControlDropDownContainer className="top-area-col control-area">
-            <ControlDropDown prefix={"Compare by"} by={tableType} selectCB={updateTableCB} data={dropDownData} />
+            <ControlDropDown prefix="Compare by" by={tableType} selectCB={updateTableCB} data={dropDownData} />
           </StyledControlDropDownContainer>
         ) : (
           ""
         )}
       </Row>
       <CsvTable
-        isPrinting={props.isPrinting}
+        isPrinting={isPrinting}
         component={StyledTable}
         columns={table.columns}
         dataSource={table.tableData}
-        rowKey={"groupId"}
+        rowKey="groupId"
         onCsvConvert={onCsvConvert}
-        isCsvDownloading={props.isCsvDownloading}
+        isCsvDownloading={isCsvDownloading}
         tableToRender={PrintableTable}
+        scroll={{ x: "100%" }}
       />
     </div>
   );

@@ -163,6 +163,7 @@
         "title": "Class Name",
         "dataIndex": "groupName",
         "key": "groupName",
+        "fixed": "left",
         "width": 250,
         "align": "left"
       },
@@ -170,7 +171,7 @@
         "title": "Avg. Student Score (%)",
         "dataIndex": "avgStudentScore",
         "key": "avgStudentScore",
-        "width": 100
+        "width": 141
       },
       {
         "title": "#Assigned",
@@ -195,37 +196,37 @@
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
-        "width": 100
+        "width": 110
       },
       {
         "title": "Min. Score",
         "dataIndex": "minScore",
         "key": "minScore",
-        "width": 50
+        "width": 75
       },
       {
         "title": "Max. Score",
         "dataIndex": "maxScore",
         "key": "maxScore",
-        "width": 50
+        "width": 75
       },
       {
         "title": "Avg. Score",
         "dataIndex": "avgScore",
         "key": "avgScore",
-        "width": 50
+        "width": 75
       },
       {
         "title": "Std. dev.(P) of Score",
         "dataIndex": "scoreStdDeviation",
         "key": "scoreStdDeviation",
-        "width": 70
+        "width": 130
       },
       {
         "title": "Variance (P) of Score",
         "dataIndex": "scoreVariance",
         "key": "scoreVariance",
-        "width": 70
+        "width": 130
       }
     ]
   }

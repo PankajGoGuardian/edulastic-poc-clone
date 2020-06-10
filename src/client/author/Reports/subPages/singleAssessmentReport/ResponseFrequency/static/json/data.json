@@ -4,6 +4,7 @@
       "title": "Q#",
       "dataIndex": "qLabel",
       "key": "qLabel",
+      "fixed": "left",
       "width": 50
     },
     {

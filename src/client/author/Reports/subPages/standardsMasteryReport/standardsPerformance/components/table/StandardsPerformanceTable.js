@@ -52,18 +52,16 @@ const getCol = (record = {}, domainId, analyseByKey, scaleInfo) => {
 };
 
 const getColorCell = (domainId, domainName, compareBy, analyseByKey, scaleInfo) => (_, record) => {
-  const toolTipText = record => {
-    return (
-      <div>
-        <TableTooltipRow title={`${compareBy.title}: `} value={record.name} />
-        <TableTooltipRow title={"Domain: "} value={domainName} />
-        <TableTooltipRow
-          title={`${getAnalyseByTitle(analyseByKey)}: `}
-          value={getColValue(record, domainId, analyseByKey, scaleInfo)}
-        />
-      </div>
-    );
-  };
+  const toolTipText = rec => (
+    <div>
+      <TableTooltipRow title={`${compareBy.title}: `} value={rec.name} />
+      <TableTooltipRow title="Domain: " value={domainName} />
+      <TableTooltipRow
+        title={`${getAnalyseByTitle(analyseByKey)}: `}
+        value={getColValue(rec, domainId, analyseByKey, scaleInfo)}
+      />
+    </div>
+  );
 
   return (
     <CustomTableTooltip
@@ -85,15 +83,17 @@ const getOverallColSorter = (analyseKey, scaleInfo) => {
     case "masteryLevel":
       return (a, b) =>
         getRecordMasteryLevel(a.records, scaleInfo).score - getRecordMasteryLevel(b.records, scaleInfo).score;
+    default:
+      break;
   }
 };
 
 export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selectedDomains, filters = {}) => {
-  let filteredDomains = filter(
+  const filteredDomains = filter(
     domains,
     domain => includes(selectedDomains, domain.domainId) || !selectedDomains.length
   );
-  let domainCols = filteredDomains.map(domain => ({
+  const domainCols = filteredDomains.map(domain => ({
     title: (
       <>
         <span>{domain.domainName}</span>
@@ -108,21 +108,20 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
     render: getColorCell(domain.domainId, domain.domainName, compareBy, analyseByKey, scaleInfo)
   }));
 
-  let cols = [
+  const cols = [
     {
       title: compareBy.title,
       dataIndex: "name",
       key: "name",
       sorter: (a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
-      render: (data, record) => {
-        return compareBy.title === "Student" ? (
+      render: (data, record) =>
+        compareBy.title === "Student" ? (
           <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
             {data}
           </Link>
         ) : (
           data
-        );
-      }
+        )
     },
     {
       title: "Overall",
@@ -188,7 +187,7 @@ const StandardsPerformanceTable = ({
           <Row className="control-dropdown-row">
             <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
               <ControlDropDown
-                prefix={"Compare by "}
+                prefix="Compare by "
                 data={compareByData}
                 by={tableFilters.compareBy}
                 selectCB={bindOnChange("compareBy", compareByData)}
@@ -196,7 +195,7 @@ const StandardsPerformanceTable = ({
             </StyledDropDownContainer>
             <StyledDropDownContainer xs={24} sm={24} md={13} lg={13} xl={8}>
               <ControlDropDown
-                prefix={"Analyse by "}
+                prefix="Analyse by "
                 data={analyseByData}
                 by={tableFilters.analyseBy}
                 selectCB={bindOnChange("analyseBy", analyseByData)}
@@ -215,6 +214,7 @@ const StandardsPerformanceTable = ({
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
             tableToRender={StyledTable}
+            scroll={{ x: "100%" }}
           />
         </Col>
       </Row>

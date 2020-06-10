@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
-import { find, keyBy, omitBy, isEmpty } from "lodash";
+import { find, keyBy, omitBy, isEmpty, isNaN } from "lodash";
 import { StyledCard, StyledTable } from "../styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { ResponseTag } from "./responseTag";
@@ -16,11 +16,12 @@ export class ResponseFrequencyTable extends Component {
   }
 
   init() {
-    this.columns = this.props.columns;
+    const { columns, assessment, correctThreshold, isPrinting, incorrectFrequencyThreshold } = this.props;
+    this.columns = columns;
 
     this.columns[0].sorter = this.sortQuestionColumn.bind(null, "qLabel");
 
-    this.columns[0].render = (text, record, _index) => (
+    this.columns[0].render = (text, record) => (
       <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.uid}`}>
         {text}
       </Link>
@@ -28,10 +29,11 @@ export class ResponseFrequencyTable extends Component {
 
     // README: below line might work if antd version is upgraded to 3.15.0
     // this.columns[0].sortDirections = ["descend"];
-    this.columns[2].render = (data, record) => {
+    this.columns[2].render = data => {
       if (data && Array.isArray(data)) {
         return data.join(", ");
-      } if (typeof data == "string") {
+      }
+      if (typeof data == "string") {
         return data;
       }
       return "";
@@ -41,30 +43,30 @@ export class ResponseFrequencyTable extends Component {
     // README: below line might work if antd version is upgraded to 3.15.0
     // this.columns[4].sortDirections = ["descend"];
     this.columns[4].render = (data, record) => {
-      const tooltipText = record => () => {
-        const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
+      const tooltipText = rec => () => {
+        const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = rec;
         const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
         return (
           <div>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Assessment Name: </Col>
-              <Col className="custom-table-tooltip-value">{this.props.assessment.testName}</Col>
+              <Col className="custom-table-tooltip-value">{assessment.testName}</Col>
             </Row>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Question: </Col>
-              <Col className="custom-table-tooltip-value">{record.qLabel}</Col>
+              <Col className="custom-table-tooltip-value">{rec.qLabel}</Col>
             </Row>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Question Type: </Col>
-              <Col className="custom-table-tooltip-value">{record.qType}</Col>
+              <Col className="custom-table-tooltip-value">{rec.qType}</Col>
             </Row>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Standards: </Col>
-              <Col className="custom-table-tooltip-value">{record.standards}</Col>
+              <Col className="custom-table-tooltip-value">{rec.standards}</Col>
             </Row>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Max Score: </Col>
-              <Col className="custom-table-tooltip-value">{record.maxScore}</Col>
+              <Col className="custom-table-tooltip-value">{rec.maxScore}</Col>
             </Row>
             <Row type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Performance: </Col>
@@ -86,17 +88,17 @@ export class ResponseFrequencyTable extends Component {
         );
       };
 
-      const getCellContents = props => {
-        const { correct, correctThreshold } = props;
+      const getCellContents = cellData => {
+        const { correct, correctThreshold: _correctThreshold } = cellData;
         return (
           <div style={{ width: "100%", height: "100%" }}>
-            {correct < correctThreshold ? (
+            {correct < _correctThreshold ? (
               <div className="response-frequency-table-correct-td" style={{ backgroundColor: getHSLFromRange1(0) }}>
                 {correct}%
               </div>
             ) : (
               <div className="response-frequency-table-correct-td">{correct}%</div>
-              )}
+            )}
           </div>
         );
       };
@@ -109,7 +111,7 @@ export class ResponseFrequencyTable extends Component {
       return (
         <CustomTableTooltip
           correct={correct}
-          correctThreshold={this.props.correctThreshold}
+          correctThreshold={correctThreshold}
           placement="top"
           title={tooltipText(record)}
           getCellContents={getCellContents}
@@ -128,7 +130,7 @@ export class ResponseFrequencyTable extends Component {
     this.columns[6].render = (data, record) => {
       const numToAlp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       let arr = [];
-      const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
+      const { corr_cnt = 0, incorr_cnt = 0, part_cnt = 0 } = record;
       let sum = corr_cnt + incorr_cnt + part_cnt;
       if (sum == 0) sum = 1;
       // V1 migrated UQA doesn't have user answer data
@@ -166,8 +168,7 @@ export class ResponseFrequencyTable extends Component {
         });
       } else {
         hasChoiceData = true;
-        arr = Object.keys(data).map((comboKey, i) => {
-          const validMap = {};
+        arr = Object.keys(data).map(comboKey => {
           const slittedKeyArr = comboKey.split(",");
           let str = "";
           let isCorrect = true;
@@ -222,7 +223,8 @@ export class ResponseFrequencyTable extends Component {
       arr.sort((a, b) => {
         if (a.name < b.name) {
           return -1;
-        } if (a.name > b.name) {
+        }
+        if (a.name > b.name) {
           return 1;
         }
         return 0;
@@ -230,31 +232,33 @@ export class ResponseFrequencyTable extends Component {
 
       return (
         <Row type="flex" justify="start" className="table-tag-container">
-          {arr.map((data, i) => data.value || (data.record.qType.toLocaleLowerCase().includes("multiple choice") && hasChoiceData) ? (
-            <ResponseTag
-              isPrinting={this.props.isPrinting}
-              key={i}
-              data={data}
-              incorrectFrequencyThreshold={this.props.incorrectFrequencyThreshold}
-            />
-          ) : null)}
+          {arr.map((_data, i) =>
+            _data.value || (_data.record.qType.toLocaleLowerCase().includes("multiple choice") && hasChoiceData) ? (
+              <ResponseTag
+                isPrinting={isPrinting}
+                key={i}
+                data={_data}
+                incorrectFrequencyThreshold={incorrectFrequencyThreshold}
+              />
+            ) : null
+          )}
         </Row>
       );
     };
   }
 
-  sortCorrectColumn(key, a, b) {
+  sortCorrectColumn = (key, a, b) => {
     const _a = a[key] || 0;
     const _b = b[key] || 0;
 
     return _a - _b;
-  }
+  };
 
-  sortQuestionColumn(key, a, b) {
+  sortQuestionColumn = (key, a, b) => {
     const _a = Number(a[key].substring(1));
     const _b = Number(b[key].substring(1));
     return _a - _b;
-  }
+  };
 
   onCsvConvert = (data, rawData) => {
     // extract all rows excpet the columns name
@@ -263,20 +267,17 @@ export class ResponseFrequencyTable extends Component {
     const modifiedCsvRows = csvRows.map(csvRow => {
       const item = csvRow[6];
 
-      csvRow[6] =
-        `"${
-        item
-          .replace(/"/g, "")
-          .replace(/%/g, "%,")
-          .split(",")
-          .filter(item => item)
-          .map(item => {
-            const option = item.replace(/\d+%/g, "");
-            const number = item.match(/\d+%/g)[0];
-            return `${option ? `${option} :` : ""} ${number || "N/A"}`;
-          })
-          .join(", ")
-        }"`;
+      csvRow[6] = `"${item
+        .replace(/"/g, "")
+        .replace(/%/g, "%,")
+        .split(",")
+        .filter(_item => _item)
+        .map(_item => {
+          const option = _item.replace(/\d+%/g, "");
+          const number = _item.match(/\d+%/g)[0];
+          return `${option ? `${option} :` : ""} ${number || "N/A"}`;
+        })
+        .join(", ")}"`;
 
       return csvRow.join(",");
     });
@@ -286,17 +287,19 @@ export class ResponseFrequencyTable extends Component {
   };
 
   render() {
+    const { isCsvDownloading, data, isPrinting } = this.props;
     return (
       <StyledCard className="response-frequency-table">
         <CsvTable
-          isCsvDownloading={this.props.isCsvDownloading}
+          isCsvDownloading={isCsvDownloading}
           onCsvConvert={this.onCsvConvert}
           tableToRender={PrintableTable}
-          isPrinting={this.props.isPrinting}
+          isPrinting={isPrinting}
           component={StyledTable}
           columns={this.columns}
-          dataSource={this.props.data}
+          dataSource={data}
           rowKey="uid"
+          scroll={{ x: "100%" }}
         />
       </StyledCard>
     );

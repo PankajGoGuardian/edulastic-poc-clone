@@ -163,14 +163,14 @@ export const StyledTable = styled(Table)`
           th {
             padding: 8px;
             text-align: center;
-            font-weight: 900;
+            font-weight: 600;
             font-size: 10px;
             border: 0px;
             color: #aaafb5;
             background: ${white};
 
             .ant-table-column-sorters {
-              display: inline;
+              /* display: inline; */
             }
 
             &.ant-table-column-sort {
@@ -208,7 +208,7 @@ export const StyledTable = styled(Table)`
           td {
             padding: 10px 8px;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             border-bottom: 1px solid #f3f3f3;
             color: #434b5d;
 

@@ -1,7 +1,9 @@
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { uniqBy, map, round, reduce } from "lodash";
 import { Link } from "react-router-dom";
+import { extraDesktopWidthMax } from "@edulastic/colors";
 import {
   compareByColumns,
   analyzeByMode,
@@ -16,6 +18,64 @@ import { CustomTableTooltip } from "../../../../../common/components/customTable
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
 import { reportLinkColor } from "../../../../multipleAssessmentReport/common/utils/constants";
+
+const AnalysisTable = styled(StyledTable)`
+  .ant-table-layout-fixed {
+    .ant-table-scroll {
+      table tbody tr td {
+        border-bottom: 1px solid #e9e9e9;
+      }
+      .ant-table-thead {
+        th {
+          white-space: nowrap;
+        }
+      }
+      .ant-table-body {
+        overflow-x: auto !important;
+      }
+    }
+    .ant-table-fixed-left {
+      .ant-table-thead {
+        th {
+          padding: 8px;
+          color: #aaafb5;
+          font-weight: 900;
+          text-transform: uppercase;
+          font-size: 10px;
+          border: 0px;
+          .ant-table-column-sorter {
+            vertical-align: top;
+          }
+        }
+      }
+      .ant-table-tbody {
+        td {
+          padding: 10px 8px;
+          font-size: 11px;
+          color: #434b5d;
+          font-weight: 600;
+          @media (min-width: ${extraDesktopWidthMax}) {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+  .ant-table-tbody {
+    td {
+      min-width: 100px;
+      padding: 0;
+      &:nth-child(1) {
+        padding: 0px 8px;
+      }
+    }
+  }
+`;
+
+const ScoreCell = styled.div`
+  background: ${props => props.color};
+  padding: 10px 8px;
+`;
 
 const columnHashMap = {
   teacher: "teacherName",
@@ -49,8 +109,8 @@ const PerformanceAnalysisTable = ({
   location = { pathname: "" },
   pageTitle
 }) => {
-  const formatScore = (score, analyzeBy) => {
-    switch (analyzeBy) {
+  const formatScore = (score, _analyzeBy) => {
+    switch (_analyzeBy) {
       case analyzeByMode.SCORE:
         return `${Math.round(Number(score))}%`;
       case analyzeByMode.RAW_SCORE:
@@ -96,15 +156,15 @@ const PerformanceAnalysisTable = ({
 
   const { scaleInfo } = report;
 
-  const getOverallValue = (records = {}, analyzeBy) => {
+  const getOverallValue = (records = {}, _analyzeBy) => {
     const allRecords = reduce(records, (result, value = {}) => result.concat(value.records || []), []);
     const masteryLevel = getMasteryLevel(getOverallScore(allRecords), scaleInfo);
 
-    switch (analyzeBy) {
+    switch (_analyzeBy) {
       case analyzeByMode.SCORE:
-        return formatScore(getOverallScore(allRecords), analyzeBy);
+        return formatScore(getOverallScore(allRecords), _analyzeBy);
       case analyzeByMode.RAW_SCORE:
-        return formatScore(getOverallRawScore(allRecords), analyzeBy);
+        return formatScore(getOverallRawScore(allRecords), _analyzeBy);
       case analyzeByMode.MASTERY_LEVEL:
         return masteryLevel.masteryLabel;
       case analyzeByMode.MASTERY_SCORE:
@@ -161,19 +221,13 @@ const PerformanceAnalysisTable = ({
     };
   };
 
-  const getFieldTotalValue = (tableData, analyzeBy, config) => {
-    const allRecords = reduce(
-      tableData,
-      (result, value) => {
-        return result.concat(value.standardMetrics[config.key]);
-      },
-      []
-    );
+  const getFieldTotalValue = (_tableData, _analyzeBy, config) => {
+    const allRecords = reduce(_tableData, (result, value) => result.concat(value.standardMetrics[config.key]), []);
 
-    return getOverallValue(allRecords, analyzeBy);
+    return getOverallValue(allRecords, _analyzeBy);
   };
 
-  const makeStandardColumns = tableData => {
+  const makeStandardColumns = _tableData => {
     const { selectedData, dataField, standardColumnsData } = makeStandardColumnData()[viewBy];
 
     const selectedItems = skill => selectedData.includes(skill[dataField]) || !selectedData.length;
@@ -190,7 +244,7 @@ const PerformanceAnalysisTable = ({
             <br />
             Points - {parseFloat(averagePoints.toFixed(2))}
             <br />
-            {getFieldTotalValue(tableData, analyzeBy, config)}
+            {getFieldTotalValue(_tableData, analyzeBy, config)}
           </p>
         ),
         dataIndex: "standardMetrics",
@@ -206,11 +260,11 @@ const PerformanceAnalysisTable = ({
           const getColValue = (columnKey, record) => {
             if (columnKey === "students") {
               return `${record.firstName} ${record.lastName}`;
-            } else if (record[columnHashMap[columnKey]]) {
-              return record[columnHashMap[columnKey]];
-            } else {
-              return record[columnKey];
             }
+            if (record[columnHashMap[columnKey]]) {
+              return record[columnHashMap[columnKey]];
+            }
+            return record[columnKey];
           };
 
           switch (analyzeBy) {
@@ -229,17 +283,21 @@ const PerformanceAnalysisTable = ({
             let lastItem = null;
 
             switch (analyzeBy) {
-              case analyzeByMode.MASTERY_LEVEL:
+              case analyzeByMode.MASTERY_LEVEL: {
                 lastItem = {
                   title: "Mastery Code: ",
                   value: `${formatScore(standard[field], analyzeByMode.MASTERY_LEVEL)}`
                 };
                 break;
-              case analyzeByMode.MASTERY_SCORE:
+              }
+              case analyzeByMode.MASTERY_SCORE: {
                 lastItem = {
                   title: "Mastery Score: ",
                   value: `${formatScore(standard[field], analyzeByMode.MASTERY_SCORE)}`
                 };
+                break;
+              }
+              default:
                 break;
             }
 
@@ -306,10 +364,10 @@ const PerformanceAnalysisTable = ({
     const header = splittedData[0];
     const columns = header.split(",");
     for (let i = 2; i < columns.length; i++) {
-      let str = columns[i];
-      let _str = str.toLocaleLowerCase();
-      let indexOfPoints = _str.lastIndexOf("points");
-      let indexOfLastSpace = _str.lastIndexOf(" ");
+      const str = columns[i];
+      const _str = str.toLocaleLowerCase();
+      const indexOfPoints = _str.lastIndexOf("points");
+      const indexOfLastSpace = _str.lastIndexOf(" ");
 
       const transformedStr = `${str.substring(0, indexOfPoints - 1)}(${str
         .substring(indexOfPoints, indexOfLastSpace)
@@ -336,6 +394,7 @@ const PerformanceAnalysisTable = ({
       isCsvDownloading={isCsvDownloading}
       tableToRender={AnalysisTable}
       dataSource={dataSource}
+      scroll={{ x: "100%" }}
       columns={columns}
     />
   );
@@ -363,20 +422,3 @@ PerformanceAnalysisTable.defaultProps = {
 };
 
 export default PerformanceAnalysisTable;
-
-const AnalysisTable = styled(StyledTable)`
-  .ant-table-tbody {
-    td {
-      min-width: 100px;
-      padding: 0;
-      &:nth-child(1) {
-        padding: 0px 8px;
-      }
-    }
-  }
-`;
-
-const ScoreCell = styled.div`
-  background: ${props => props.color};
-  padding: 10px 8px;
-`;

@@ -6,6 +6,7 @@
     "dataIndex": "proficiencyBand",
     "key": "proficiencyBand",
     "width": 250,
+    "fixed": "left",
     "align": "left"
   },
   {

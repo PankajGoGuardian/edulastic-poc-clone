@@ -41,7 +41,7 @@ const options = [
     key: "frlStatus",
     title: "FRL Status"
   }
-]
+];
 
 const usefetchProgressHook = (settings, compareBy, ddfilter, fetchAction) => {
   useEffect(() => {
@@ -59,7 +59,7 @@ const usefetchProgressHook = (settings, compareBy, ddfilter, fetchAction) => {
 };
 
 const PeerProgressAnalysis = ({
-  getPeerProgressAnalysisRequestAction,
+  getPeerProgressAnalysisRequest,
   peerProgressAnalysis,
   isCsvDownloading,
   MARFilterData,
@@ -67,13 +67,13 @@ const PeerProgressAnalysis = ({
   loading,
   role
 }) => {
-  const compareByData = [...getCompareByOptions(role), ...options ];
+  const compareByData = [...getCompareByOptions(role), ...options];
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [compareBy, setCompareBy] = useState(head(compareByData));
   const [selectedTrend, setSelectedTrend] = useState("");
   const [ddfilter, setDdFilter] = useState({});
 
-  usefetchProgressHook(settings, compareBy, ddfilter, getPeerProgressAnalysisRequestAction);
+  usefetchProgressHook(settings, compareBy, ddfilter, getPeerProgressAnalysisRequest);
 
   const { metricInfo = [] } = get(peerProgressAnalysis, "data.result", {});
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", []);
@@ -90,7 +90,6 @@ const PeerProgressAnalysis = ({
         setAnalyseBy(selectedItem);
         break;
       default:
-        
     }
   };
 
@@ -112,6 +111,7 @@ const PeerProgressAnalysis = ({
     title: "Student#",
     className: "studentCount",
     align: "center",
+    width: 70,
     dataIndex: "studentCount"
   };
 
@@ -144,15 +144,12 @@ const PeerProgressAnalysis = ({
         ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={[studentColumn]}
-        toolTipContent={(record) => (
+        toolTipContent={record => (
           <>
             <TableTooltipRow title="Student Count: " value={record.studentCount} />
-            <TableTooltipRow
-              title={`${capitalize(compareBy.title)} : `}
-              value={record[compareByMap[compareBy.key]]}
-            />
+            <TableTooltipRow title={`${capitalize(compareBy.title)} : `} value={record[compareByMap[compareBy.key]]} />
           </>
-          )}
+        )}
       />
     </>
   );
@@ -167,7 +164,7 @@ const enhance = connect(
     isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
-    getPeerProgressAnalysisRequestAction
+    getPeerProgressAnalysisRequest: getPeerProgressAnalysisRequestAction
   }
 );
 

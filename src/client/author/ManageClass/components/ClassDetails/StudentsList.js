@@ -14,7 +14,7 @@ import { isFeatureAccessible } from "../../../../features/components/FeaturesSwi
 // ducks
 import { proxyUser } from "../../../authUtils";
 import { selectStudentAction } from "../../ducks";
-import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getUserFeatures, isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
 import { getUserId, getUserRole, getGroupList } from "../../../src/selectors/user";
 
 const StudentsList = ({
@@ -29,7 +29,8 @@ const StudentsList = ({
   selectedClass,
   updating,
   allowGoogleLogin,
-  allowCanvasLogin
+  allowCanvasLogin,
+  isProxyUser
 }) => {
   const [showCurrentStudents, setShowCurrentStudents] = useState(true);
 
@@ -129,13 +130,15 @@ const StudentsList = ({
     },
     {
       render: (_, { _id, enrollmentStatus }) =>
-        enrollmentStatus == 1 && (
+        !isProxyUser && enrollmentStatus == 1 ? (
           <Tooltip placement="topRight" title="View as Student">
             <GiDominoMask
-              onClick={() => proxyUser({ userId: _id, groupId, currentUser: { _id: cuId, role: cuRole } })}
+              onClick={() =>
+                proxyUser({ userId: _id, groupId, currentUser: { _id: cuId, role: cuRole } })
+              }
             />
           </Tooltip>
-        )
+        ) : null
     }
   ];
 
@@ -202,7 +205,8 @@ export default connect(
     selectedStudent: get(state, "manageClass.selectedStudent", []),
     features: getUserFeatures(state),
     groupList: getGroupList(state),
-    updating: state.manageClass.updating
+    updating: state.manageClass.updating,
+    isProxyUser: isProxyUserSelector(state)
   }),
   {
     selectStudents: selectStudentAction

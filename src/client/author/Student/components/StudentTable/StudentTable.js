@@ -33,7 +33,7 @@ import {
   TableContainer
 } from "../../../../common/styled";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
-import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getUserFeatures,isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getPolicies, receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
 import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
@@ -76,7 +76,7 @@ import {
 import { AddStudentsToOtherClassModal } from "./AddStudentToOtherClass";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
 import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
-import { StyledStudentTable } from "./styled";
+import { StyledStudentTable, StyledMaskButton } from "./styled";
 import { MergeStudentsModal } from "../../../MergeUsers";
 
 const menuActive = { mainMenu: "Users", subMenu: "Student" };
@@ -119,7 +119,7 @@ class StudentTable extends Component {
       currentPage: 1,
       refineButtonActive: false
     };
-    const { t } = this.props;
+    const { t, isProxyUser } = this.props;
     this.columns = [
       {
         title: t("users.student.name"),
@@ -196,10 +196,10 @@ class StudentTable extends Component {
               : `${firstName} ${lastName}`;
           return (
             <div style={{ whiteSpace: "nowrap" }}>
-              {status === 1 ? (
-                <StyledTableButton onClick={() => this.onProxyStudent(id)} title={`Act as ${fullName}`}>
+              {status === 1 && (!isProxyUser) ? (
+                <StyledMaskButton onClick={() => this.onProxyStudent(id)} title={`Act as ${fullName}`}>
                   <GiDominoMask />
-                </StyledTableButton>
+                </StyledMaskButton>
               ) : null}
               <StyledTableButton onClick={() => this.onEditStudent(id)} title="Edit">
                 <IconPencilEdit color={themeColor} />
@@ -935,7 +935,8 @@ const enhance = compose(
       validatedClassDetails: getValidatedClassDetails(state),
       policy: getPolicies(state),
       schoolId: get(state, "user.saSettingsSchool"),
-      role: getUserRole(state)
+      role: getUserRole(state),
+      isProxyUser: isProxyUserSelector(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,

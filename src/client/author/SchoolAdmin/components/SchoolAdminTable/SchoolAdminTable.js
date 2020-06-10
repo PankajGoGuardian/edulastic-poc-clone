@@ -33,6 +33,7 @@ import {
 } from "../../../../common/styled";
 import { getFullNameFromAsString } from "../../../../common/utils/helpers";
 import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
+import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
@@ -59,7 +60,7 @@ import {
 } from "../../ducks";
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
-import { StyledSchoolAdminTable } from "./styled";
+import { StyledSchoolAdminTable, StyledMaskButton } from "./styled";
 
 const menuActive = { mainMenu: "Users", subMenu: "School Admin" };
 
@@ -440,6 +441,7 @@ class SchoolAdminTable extends Component {
       addFilter,
       removeFilter,
       history,
+      isProxyUser,
       t
     } = this.props;
 
@@ -492,10 +494,10 @@ class SchoolAdminTable extends Component {
             <div style={{ whiteSpace: "nowrap" }}>
               {role === roleuser.DISTRICT_ADMIN && (
                 <>
-                  {status === 1 ? (
-                    <StyledTableButton onClick={() => this.onProxySchoolAdmin(id)} title={`Act as ${fullName}`}>
+                  {status === 1 && !isProxyUser ? (
+                    <StyledMaskButton onClick={() => this.onProxySchoolAdmin(id)} title={`Act as ${fullName}`}>
                       <GiDominoMask />
-                    </StyledTableButton>
+                    </StyledMaskButton>
                   ) : null}
                   <StyledTableButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
                     <IconPencilEdit color={themeColor} />
@@ -727,7 +729,8 @@ const enhance = compose(
       schoolsData: getSchoolsSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
-      filters: getFiltersSelector(state)
+      filters: getFiltersSelector(state),
+      isProxyUser: isProxyUserSelector(state)
     }),
     {
       createAdminUser: createAdminUserAction,

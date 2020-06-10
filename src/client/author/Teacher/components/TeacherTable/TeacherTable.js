@@ -58,10 +58,11 @@ import { getUserOrgId } from "../../../src/selectors/user";
 import { proxyUser } from "../../../authUtils";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import { getTeachersListSelector } from "../../ducks";
+import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-import { StyledTeacherTable } from "./styled";
+import { StyledTeacherTable, StyledMaskButton } from "./styled";
 import { MergeTeachersModal } from "../../../MergeUsers";
 
 const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
@@ -104,7 +105,7 @@ class TeacherTable extends Component {
       currentPage: 1,
       refineButtonActive: false
     };
-    const { t } = this.props;
+    const { t, isProxyUser } = this.props;
     this.columns = [
       {
         title: t("users.teacher.name"),
@@ -181,10 +182,10 @@ class TeacherTable extends Component {
           return (
             <div style={{ whiteSpace: "nowrap" }}>
               <>
-                {status === 1 ? (
-                  <StyledTableButton onClick={() => this.onProxyTeacher(id)} title={`Act as ${fullName}`}>
+                {status === 1 && !isProxyUser ? (
+                  <StyledMaskButton onClick={() => this.onProxyTeacher(id)} title={`Act as ${fullName}`}>
                     <GiDominoMask />
-                  </StyledTableButton>
+                  </StyledMaskButton>
                 ) : null}
                 <StyledTableButton onClick={() => this.onEditTeacher(id)} title="Edit">
                   <IconPencilEdit color={themeColor} />
@@ -831,7 +832,8 @@ const enhance = compose(
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
-      teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
+      teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false),
+      isProxyUser: isProxyUserSelector(state)
     }),
     {
       createAdminUser: createAdminUserAction,

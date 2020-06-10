@@ -1,9 +1,11 @@
 import styled from "styled-components";
-import { StyledTable } from "../../../../common/styled";
+import { StyledTable, StyledTableButton } from "../../../../common/styled";
 
-export const StyledTeacherTable = styled(StyledTable)`
-  .ant-table-tbody > tr > td:last-child a:first-child svg {
+export const StyledTeacherTable = styled(StyledTable)``;
+
+export const StyledMaskButton = styled(StyledTableButton)`
+  svg {
     transform: scale(2);
     margin-right: 5px;
   }
-`;
+`

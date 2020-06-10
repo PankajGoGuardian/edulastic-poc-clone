@@ -50,6 +50,7 @@ import {
 import Breadcrumb from "../../src/components/Breadcrumb";
 import AdminSubHeader from "../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId } from "../../src/selectors/user";
+import { isProxyUser as isProxyUserSelector } from "../../../student/Login/ducks";
 import { proxyUser } from "../../authUtils";
 import CreateContentAuthorModal from "./CreateContentAuthorModal";
 import EditContentAuthorModal from "./EditContentAuthorModal";
@@ -93,7 +94,7 @@ class ContentAuthorTable extends Component {
       currentPage: 1,
       refineButtonActive: false
     };
-    const { t } = this.props;
+    const { t, isProxyUser } = this.props;
     this.columns = [
       {
         title: t("users.contentApprover.name"),
@@ -134,6 +135,7 @@ class ContentAuthorTable extends Component {
       {
         dataIndex: "_id",
         render: (id, { _source }) => {
+          if (isProxyUser) return null;
           const firstName = get(_source, "firstName", "");
           const lastName = get(_source, "lastName", "");
           const status = get(_source, "status", "");
@@ -671,7 +673,8 @@ const enhance = compose(
       totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
-      filters: getFiltersSelector(state)
+      filters: getFiltersSelector(state),
+      isProxyUser: isProxyUserSelector(state)
     }),
     {
       createAdminUser: createAdminUserAction,

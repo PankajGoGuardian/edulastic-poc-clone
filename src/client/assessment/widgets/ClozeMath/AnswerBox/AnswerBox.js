@@ -138,43 +138,32 @@ const AnswerBox = ({
 
     return _altAnswers.sort((a, b) => a.index - b.index);
   });
-  const alternateAnswers = {};
-  altAnswers.forEach(altAnswer => {
-    altAnswer.forEach(alt => {
-      alternateAnswers[alt.index + 1] = alternateAnswers[alt.index + 1] || [];
-      if (alt.value) {
-        alternateAnswers[alt.index + 1].push({ value: alt.value, isMath: alt.isMath });
-      }
-    });
-  });
+
   return (
-    <Wrapper>
-      <Title>Correct answers</Title>
-      {validAnswers.map((answer, index) => (
-        <Answer key={index}>
-          <Label>{answer.index + 1}</Label>
-          <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
-        </Answer>
-      ))}
-      {!isEmpty(alternateAnswers) && (
-        <div>
-          <Title>Alternate answers</Title>
-          {Object.keys(alternateAnswers).map(key => (
-            <Answer key={key}>
-              <Label>{key}</Label>
-              <AnswerBoxText isMath={alternateAnswers[key][0].isMath}>
-                {alternateAnswers[key]
-                  .reduce((acc, alternateAnswer) => {
-                    acc.push(alternateAnswer.value);
-                    return acc;
-                  }, [])
-                  .join()}
-              </AnswerBoxText>
-            </Answer>
-          ))}
-        </div>
-      )}
-    </Wrapper>
+    <>
+      <Wrapper>
+        <Title>Correct answers</Title>
+        {validAnswers.map((answer, index) => (
+          <Answer key={index}>
+            <Label>{answer.index + 1}</Label>
+            <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
+          </Answer>
+        ))}
+      </Wrapper>
+
+      {!isEmpty(altAnswers) &&
+        altAnswers.map((altAnswer, index) => (
+          <Wrapper>
+            <Title>Alternate answers {index + 1}</Title>
+            {altAnswer.map(altAns => (
+              <Answer>
+                <Label>{altAns.index + 1}</Label>
+                <AnswerBoxText isMath={altAns.isMath}>{altAns.value}</AnswerBoxText>
+              </Answer>
+            ))}
+          </Wrapper>
+        ))}
+    </>
   );
 };
 

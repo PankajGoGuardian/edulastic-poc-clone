@@ -55,6 +55,7 @@ export const ResponseCard = styled(Card)`
     padding: 7px 35px;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
   }
 
   @media (max-width: ${mobileWidthMax}) {

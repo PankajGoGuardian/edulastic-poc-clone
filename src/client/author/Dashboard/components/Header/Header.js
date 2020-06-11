@@ -51,7 +51,7 @@ const HeaderSection = ({
   };
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
-      <FlexContainer style={{minWidth:"48%", justifyContent:"space-between"}}>
+      <FlexContainer>
         <StyledEduButton data-cy="launch-google-meet" onClick={launchHangout} isGhost>
           <IconHangouts height={21} width={19} />
           Launch Google Meet
@@ -66,7 +66,7 @@ const HeaderSection = ({
               onClick={() => setvisible(true)}
               visible={visible}
             >
-              <EduButton btnType="primary" isGhost data-cy="manageClass">
+              <EduButton style={{marginLeft:"5px"}} btnType="primary" isGhost data-cy="manageClass">
                 <i
                   className={isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"}
                   aria-hidden="true"
@@ -81,7 +81,7 @@ const HeaderSection = ({
           </PopoverWrapper>
         )}
         <Link to="/author/manageClass">
-          <EduButton data-cy="manageClass">
+          <EduButton style={{marginLeft:"5px"}} data-cy="manageClass">
             <IconPlus />
             MANAGE CLASS
           </EduButton>

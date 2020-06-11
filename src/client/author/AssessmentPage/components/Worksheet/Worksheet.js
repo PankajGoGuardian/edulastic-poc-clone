@@ -2,15 +2,16 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
+import produce from "immer"
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { get, debounce, isUndefined } from "lodash";
+import { get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
-import { hexToRGB, withWindowSizes,notification } from "@edulastic/common";
+import { hexToRGB, withWindowSizes, notification } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
-import { Modal, message, Button } from "antd";
+import { Modal, Button } from "antd";
 import { IconGraphRightArrow } from "@edulastic/icons";
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
@@ -19,7 +20,7 @@ import Questions from "../Questions/Questions";
 import { WorksheetWrapper, MinimizeButton } from "./styled";
 import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
-import { updateQuestionNumberAction } from "../../../sharedDucks/questions";
+import { loadQuestionsAction } from "../../../sharedDucks/questions";
 
 import { saveUserWorkAction } from "../../../../assessment/actions/userWork";
 import { getTestEntitySelector } from "../../../AssignTest/duck";
@@ -137,6 +138,7 @@ class WorksheetComponent extends React.Component {
 
   static getDerivedStateFromProps(props, prevState) {
     let data;
+    // TODO: data is assigned values but never used ??? Remove this if not required 
     if (prevState.uploadModal && prevState.creating && !props.creating) {
       data = {
         uploadModal: false,
@@ -350,8 +352,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page
+            ? pageIndex + 1
+            : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -394,8 +396,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page
+            ? pageIndex + 1
+            : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -532,7 +534,7 @@ class WorksheetComponent extends React.Component {
       test: { _id: assessmentId }
     } = this.props;
     if (file.type !== "application/pdf") {
-      return  notification({ messageKey: "fileFormatNotSupported" });
+      return notification({ messageKey: "fileFormatNotSupported" });
     }
     if (file.size / 1024000 > 15) {
       return notification({ messageKey: "fileSizeExceeds" });
@@ -571,9 +573,33 @@ class WorksheetComponent extends React.Component {
     this.setState(prev => ({ isToolBarVisible: !prev.isToolBarVisible }));
   };
 
-  onSortEnd = data => {
-    const { updateQuestionNumber } = this.props;
-    updateQuestionNumber(data);
+  onSortEnd = ({ newIndex, oldIndex }) => {
+    const { setQuestionsById, setTestData, annotations, questionsById, questions } = this.props;
+
+    // Update the qIndex based on newIndex
+    const newQuestionsById = produce(questionsById, draft => {
+      const qids = questions.sort((a, b) => a?.qIndex - b?.qIndex).map(obj => obj?.id);
+      const id = qids[oldIndex];
+      qids.splice(qids.indexOf(id), 1);
+      qids.splice(newIndex, 0, id);
+      qids.forEach((idx, i) => {
+        draft[idx].qIndex = i + 1;
+      });
+    });
+
+    setQuestionsById(newQuestionsById);
+
+    const questionIdsMap = {};
+    Object.values(newQuestionsById).forEach(q => { questionIdsMap[q?.id] = q?.qIndex });
+
+    // Update the corresponding annotations
+    setTestData({
+      annotations: produce(annotations, draft => {
+        draft.forEach(a => {
+          a.qIndex = questionIdsMap[a.questionId];
+        });
+      })
+    });
   };
 
   setZoom = zoom => this.setState({ pageZoom: zoom });
@@ -831,7 +857,7 @@ const enhance = compose(
       scratchPad: get(
         state,
         `userWork.present[${
-          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
+        ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
         }].scratchpad`,
         null
       ),
@@ -854,7 +880,7 @@ const enhance = compose(
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       setTestData: setTestDataAction,
-      updateQuestionNumber: updateQuestionNumberAction,
+      setQuestionsById: loadQuestionsAction,
       uploadToDrive: uploadToDriveAction
     }
   )

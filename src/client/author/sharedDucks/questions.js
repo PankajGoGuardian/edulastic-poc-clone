@@ -18,7 +18,6 @@ export const LOAD_QUESTIONS = "[author questions] load questions";
 export const ADD_ITEMS_QUESTION = "[author question] load question";
 export const UPDATE_QUESTION = "[author questions] update questions";
 export const CHANGE_LABEL = "[author questions] change label";
-export const UPDATE_QUESTION_NUMBER = "[author questions] update question number (doc based)";
 export const SET_FIRST_MOUNT = "[author questions] set first mount";
 export const CHANGE_ITEM = "[author questions] change item";
 export const CHANGE_ITEM_UI_STYLE = "[author questions] change item uiStyle";
@@ -42,7 +41,6 @@ export const changeCurrentQuestionAction = createAction(CHANGE_CURRENT_QUESTION)
 export const addAlignmentAction = createAction(ADD_ALIGNMENT);
 export const removeAlignmentAction = createAction(REMOVE_ALIGNMENT);
 export const deleteQuestionAction = createAction(DELETE_QUESTION);
-export const updateQuestionNumberAction = createAction(UPDATE_QUESTION_NUMBER);
 export const setRubricIdAction = createAction(SET_RUBRIC_ID);
 export const removeRubricIdAction = createAction(REMOVE_RUBRIC_ID);
 export const changeUpdatedFlagAction = createAction(CHANGE_UPDATE_FLAG);
@@ -74,9 +72,9 @@ const deleteQuestion = (state, { payload }) => {
     index < questionIndex
       ? question
       : {
-          ...question,
-          qIndex: question.qIndex - 1
-        }
+        ...question,
+        qIndex: question.qIndex - 1
+      }
   );
   updatedQuestions.splice(questionIndex, 1);
   const byId = updatedQuestions.reduce(
@@ -241,19 +239,6 @@ export default createReducer(initialState, {
         }
       }
     }
-  },
-  [UPDATE_QUESTION_NUMBER]: (state, { payload }) => {
-    // allow user to change question number in doc-based view
-    const { newIndex, oldIndex } = payload;
-    const qids = Object.values(state.byId)
-      .sort((a, b) => a.qIndex - b.qIndex)
-      .map(obj => obj.id);
-    const id = qids[oldIndex];
-    qids.splice(qids.indexOf(id), 1);
-    qids.splice(newIndex, 0, id);
-    qids.forEach((idx, i) => {
-      state.byId[idx].qIndex = i + 1;
-    });
   },
   [SET_RUBRIC_ID]: (state, { payload }) => {
     state.byId[state.current].rubrics = payload.metadata;

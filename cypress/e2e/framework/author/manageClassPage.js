@@ -343,10 +343,7 @@ export default class TeacherManageClassPage {
     });
   };
 
-  getDateInFormate = datetime => {
-    const [mon, date, year] = datetime.toDateString().split(" ");
-    return `${date} ${mon}, ${year}`;
-  };
+  getDateInFormate = datetime => Cypress.moment(datetime).format("DD MMM, YYYY");
 
   addMultipleStudent(users, uType) {
     cy.route("POST", "**/enrollment/**").as("newenrollment");

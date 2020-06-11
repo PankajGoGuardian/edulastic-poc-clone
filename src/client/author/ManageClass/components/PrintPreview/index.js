@@ -46,12 +46,8 @@ class PrintPreviewClass extends React.Component {
     selectedStudent: PropTypes.array.isRequired
   };
 
-  componentDidMount() {
-    window.print();
-  }
-
   render() {
-    const appLoginUrl = window.location.origin + "/login";
+    const appLoginUrl = `${window.location.origin}/login`;
     const { selctedClass, students, selectedStudent } = this.props;
     const { code, name: className, owners = [] } = selctedClass;
     const teacherName = owners[0].name;

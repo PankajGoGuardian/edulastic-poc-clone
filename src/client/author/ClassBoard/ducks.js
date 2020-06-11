@@ -20,7 +20,8 @@ import {
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
   redirectToAssignmentsAction,
-  updatePasswordDetailsAction
+  updatePasswordDetailsAction,
+  toggleViewPasswordAction
 } from "../src/actions/classBoard";
 
 import { createFakeData, hasRandomQuestions } from "./utils";
@@ -140,7 +141,7 @@ export function* receiveTestActivitySaga({ payload }) {
           allItems = [...gradebookData.testItemsData, ...dummyItems];
         }
         return {
-          activityId: activity?._id || "",
+          activityId: activity ?._id || "",
           studentId: student._id,
           items: allItems
         };
@@ -177,7 +178,7 @@ function* releaseScoreSaga({ payload }) {
     yield call(classBoardApi.releaseScore, payload);
     yield call(notification, { type: "success", msg: "Successfully updated the release score settings" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     const msg = err.data.message || "Update release score is failed";
@@ -194,10 +195,10 @@ function* markAsDoneSaga({ payload }) {
     if (err && err.status == 422 && err.data && err.data.message) {
       yield call(notification, { msg: err.data.message });
     } else {
-      if (err?.data?.message === "Assignment does not exist anymore") {
+      if (err ?.data ?.message === "Assignment does not exist anymore") {
         yield put(redirectToAssignmentsAction(""));
       }
-      yield call(notification, { msg: err.data?.message || "Mark as done is failed" });
+      yield call(notification, { msg: err.data ?.message || "Mark as done is failed" });
     }
   }
 }
@@ -215,12 +216,15 @@ function* openAssignmentSaga({ payload }) {
         passwordExpireIn: assignment.passwordExpireIn
       })
     );
+    if (classData.assignmentPassword) {
+      yield put(toggleViewPasswordAction());
+    }
     yield call(notification, { type: "success", msg: "Success" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data?.message || "Failed to open" });
+    yield call(notification, { msg: err.data ?.message || "Failed to open" });
   }
 }
 
@@ -231,10 +235,10 @@ function* closeAssignmentSaga({ payload }) {
     yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId));
     yield call(notification, { type: "success", msg: "Success" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data?.message || "Failed to close" });
+    yield call(notification, { msg: err.data ?.message || "Failed to close" });
   }
 }
 
@@ -243,10 +247,10 @@ function* saveOverallFeedbackSaga({ payload }) {
     yield call(testActivityApi.saveOverallFeedback, payload);
     yield call(notification, { type: "success", msg: "feedback saved" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err?.data?.message || "Saving failed" });
+    yield call(notification, { msg: err ?.data ?.message || "Saving failed" });
   }
 }
 
@@ -256,7 +260,7 @@ function* markAbsentSaga({ payload }) {
     yield put(updateStudentActivityAction(payload.students));
     yield call(notification, { type: "success", msg: "Successfully marked as absent" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     yield call(notification, { msg: err.data.message || "Mark absent students failed" });
@@ -269,7 +273,7 @@ function* markAsSubmittedSaga({ payload }) {
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(notification, { type: "success", msg: "Successfully marked as submitted" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     yield call(notification, { msg: err.data.message || "Mark as submit failed" });
@@ -282,10 +286,10 @@ function* togglePauseAssignment({ payload }) {
     yield put(setIsPausedAction(payload.value));
     const msg = `Assignment ${payload.name} is now ${
       payload.value ? "paused." : "open and available for students to work."
-    }`;
+      }`;
     yield call(notification, { type: "success", msg });
   } catch (e) {
-    if (e?.data?.message === "Assignment does not exist anymore") {
+    if (e ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     const msg = e.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`;
@@ -308,7 +312,7 @@ function* removeStudentsSaga({ payload }) {
     yield put(updateRemovedStudentsAction(students));
     yield call(notification, { type: "success", msg: "Successfully removed" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     yield call(notification, { msg: err.data.message || "Remove students failed" });
@@ -321,7 +325,7 @@ function* addStudentsSaga({ payload }) {
     yield put(setStudentsGradeBookAction(students));
     yield call(notification, { type: "success", msg: "Successfully added" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     yield call(notification, { msg: err.data.message || "Add students failed" });
@@ -335,10 +339,10 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     yield put(setAllTestActivitiesForStudentAction(result));
     yield put(setCurrentTestActivityIdAction(""));
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (err ?.data ?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err?.data?.message || "Fetching all test activities failed" });
+    yield call(notification, { msg: err ?.data ?.message || "Fetching all test activities failed" });
   }
 }
 
@@ -350,7 +354,7 @@ function* downloadGradesAndResponseSaga({ payload }) {
     const fileName = `${testName}_${userName}.csv`;
     downloadCSV(fileName, data);
   } catch (e) {
-    yield call(notification, { msg: e.data?.message || "Download failed" });
+    yield call(notification, { msg: e.data ?.message || "Download failed" });
   }
 }
 
@@ -424,12 +428,12 @@ export const getClassResponseSelector = createSelector(
 
 export const getHasRandomQuestionselector = createSelector(
   getClassResponseSelector,
-  test => hasRandomQuestions(test?.itemGroups || [])
+  test => hasRandomQuestions(test ?.itemGroups || [])
 );
 
 export const getTotalPoints = createSelector(
   getClassResponseSelector,
-  test => test?.summary?.totalPoints
+  test => test ?.summary ?.totalPoints
 );
 
 export const getCurrentTestActivityIdSelector = createSelector(
@@ -450,9 +454,9 @@ export const getViewPasswordSelector = createSelector(
 export const getAssignmentPasswordDetailsSelector = createSelector(
   stateTestActivitySelector,
   state => ({
-    assignmentPassword: state?.additionalData?.assignmentPassword,
-    passwordExpireTime: state?.additionalData?.passwordExpireTime,
-    passwordExpireIn: state?.additionalData?.passwordExpireIn
+    assignmentPassword: state ?.additionalData ?.assignmentPassword,
+    passwordExpireTime: state ?.additionalData ?.passwordExpireTime,
+    passwordExpireIn: state ?.additionalData ?.passwordExpireIn
   })
 );
 
@@ -637,7 +641,7 @@ export const getSortedTestActivitySelector = createSelector(
   getTotalPoints,
   (state, tqa, hasRandomQuest, totalPoints) => {
     const sortedTestActivities =
-      state?.sort((a, b) => (a?.studentName?.toUpperCase() > b?.studentName?.toUpperCase() ? 1 : -1)) || [];
+      state ?.sort((a, b) => (a ?.studentName ?.toUpperCase() > b ?.studentName ?.toUpperCase() ? 1 : -1)) || [];
     if (hasRandomQuest) {
       const qActivityByUser = groupBy(tqa, "userId");
       return sortedTestActivities.map(activity => ({
@@ -723,12 +727,12 @@ export const getCanCloseAssignmentSelector = createSelector(
   getAssignmentStatusSelector,
   (additionalData, currentClass, userRole, status) => {
     return (
-      additionalData?.canCloseClass.includes(currentClass) &&
-      status !== "DONE" &&
-      status !== "NOT OPEN" &&
-      !(
-        additionalData?.closePolicy === assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN &&
-        userRole === roleuser.TEACHER
+      additionalData ?.canCloseClass.includes(currentClass) &&
+        status !== "DONE" &&
+        status !== "NOT OPEN" &&
+        !(
+          additionalData ?.closePolicy === assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN &&
+            userRole === roleuser.TEACHER
       )
     );
   }
@@ -740,10 +744,10 @@ export const getCanOpenAssignmentSelector = createSelector(
   getUserRole,
   (additionalData, currentClass, userRole) => {
     return (
-      additionalData?.canOpenClass.includes(currentClass) &&
-      !(
-        additionalData?.openPolicy === assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&
-        userRole === roleuser.TEACHER
+      additionalData ?.canOpenClass.includes(currentClass) &&
+        !(
+          additionalData ?.openPolicy === assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&
+            userRole === roleuser.TEACHER
       )
     );
   }
@@ -765,14 +769,14 @@ export const isItemVisibiltySelector = createSelector(
   getUserId,
   getAssignedBySelector,
   (state, additionalData, userId, assignedBy) => {
-    const assignmentStatus = state?.data?.status;
-    const contentVisibility = additionalData?.testContentVisibility;
+    const assignmentStatus = state ?.data ?.status;
+    const contentVisibility = additionalData ?.testContentVisibility;
     // For assigned by user content will be always visible.
-    if (userId === assignedBy?._id) {
+    if (userId === assignedBy ?._id) {
       return true;
     }
     // No key called testContentVisibility ?
-    if (!additionalData?.hasOwnProperty("testContentVisibility")) {
+    if (!additionalData ?.hasOwnProperty("testContentVisibility")) {
       return true;
     }
     // Enable for contentVisibility settings ALWAYS or settings GRADING and assignment status is grading or done.
@@ -785,12 +789,12 @@ export const isItemVisibiltySelector = createSelector(
 
 export const classListSelector = createSelector(
   getAdditionalDataSelector,
-  state => state?.classes || []
+  state => state ?.classes || []
 );
 
 export const getPasswordPolicySelector = createSelector(
   getAdditionalDataSelector,
-  state => state?.passwordPolicy
+  state => state ?.passwordPolicy
 );
 
 export const testActivtyLoadingSelector = createSelector(

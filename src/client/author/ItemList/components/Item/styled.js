@@ -274,6 +274,24 @@ export const AddButtonStyled = styled(ButtonStyle)`
   }
 `;
 
+export const AddRemoveButton = styled(ButtonStyle)`
+  margin-left: 10px;
+  color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+  border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+  svg {
+    fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+  }
+  &:hover,
+  &:focus {
+    background: ${lightGrey};
+    color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+    border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+    svg {
+      fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+    }
+  }
+`;
+
 export const Detail = styled.div`
   width: 100%;
   display: flex;

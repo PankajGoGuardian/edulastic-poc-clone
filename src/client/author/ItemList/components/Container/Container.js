@@ -405,7 +405,7 @@ class Contaier extends Component {
                 <>
                   <ItemsMenu>
                     <PaginationInfo>
-                      <span>{count}</span> <span>{t("author:component.item.questionFound")}</span>
+                      <span>{count}</span> <span>{t("author:component.item.itemsFound")}</span>
                     </PaginationInfo>
                     <HeaderFilter
                       search={search}

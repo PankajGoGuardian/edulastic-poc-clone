@@ -3,21 +3,13 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic } from "@edulastic/icons";
+import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume, IconDynamic, IconClose } from "@edulastic/icons";
 import { get } from "lodash";
 import { Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants, roleuser } from "@edulastic/constants";
 import { themeColor } from "@edulastic/colors";
-import {
-  MathFormulaDisplay,
-  PremiumTag,
-  helpers,
-  WithResources,
-  EduButton,
-  CheckboxLabel,
-  notification
-} from "@edulastic/common";
+import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton, notification } from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
 
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
@@ -52,7 +44,8 @@ import {
   MoreInfo,
   Details,
   AddRemoveBtn,
-  AddRemoveBtnPublisher
+  AddRemoveBtnPublisher,
+  AddRemoveButton
 } from "./styled";
 import {
   setAndSavePassageItemsAction,
@@ -391,7 +384,13 @@ class Item extends Component {
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
                   {!hideAddRemove && (
-                    <CheckboxLabel checked={selectedToCart} ml="24px" onChange={this.handleToggleItemToCart(item)} />
+                    <AddRemoveButton
+                      selectedToCart={selectedToCart}
+                      height="40px"
+                      onClick={this.handleToggleItemToCart(item)}
+                    >
+                      {selectedToCart ? <IconClose /> : <IconPlus />}
+                    </AddRemoveButton>
                   )}
                 </ViewButton>
               ) : isPublisher ? (

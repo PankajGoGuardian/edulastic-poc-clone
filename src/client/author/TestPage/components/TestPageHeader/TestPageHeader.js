@@ -456,16 +456,6 @@ const TestPageHeader = ({
                 <IconCopy />
               </EduButton>
             )}
-            {showShareButton &&
-              (owner || testStatus === "published") &&
-              !isPlaylist &&
-              !isPublishers &&
-              !isEdulasticCurator &&
-              !isRegradeFlow && (
-                <EduButton data-cy="assign" disabled={disableButtons} onClick={handleAssign}>
-                  ASSIGN
-                </EduButton>
-              )}
             {showCancelButton && (
               <EduButton data-cy="assign" onClick={() => setCancelState(true)}>
                 CANCEL
@@ -480,6 +470,16 @@ const TestPageHeader = ({
               !isRegradeFlow && (
                 <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={disableButtons}>
                   PUBLISH
+                </EduButton>
+              )}
+            {showShareButton &&
+              (owner || testStatus === "published") &&
+              !isPlaylist &&
+              !isPublishers &&
+              !isEdulasticCurator &&
+              !isRegradeFlow && (
+                <EduButton data-cy="assign" disabled={disableButtons} onClick={handleAssign}>
+                  ASSIGN
                 </EduButton>
               )}
             {isRegradeFlow && !showEditButton && !showDuplicateButton && !isPlaylist && (

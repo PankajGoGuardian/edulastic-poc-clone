@@ -1,10 +1,9 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
-import { message } from "antd";
 import { get as _get, round } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { LOCATION_CHANGE, push } from "connected-react-router";
 import { questionType } from "@edulastic/constants";
-import { Effects,notification } from "@edulastic/common";
+import { Effects, notification } from "@edulastic/common";
 import { evaluateItem } from "../utils/evalution";
 import { hasEmptyAnswers } from "../../questionUtils";
 
@@ -81,7 +80,7 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
   } catch (err) {
     console.error(err);
     const errorMessage = "create item failed";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage }
@@ -99,7 +98,7 @@ function* updateTestItemSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Update item is failed";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: UPDATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage }
@@ -110,18 +109,19 @@ function* updateTestItemSaga({ payload }) {
 function* evaluateAnswers({ payload }) {
   try {
     const question = yield select(getCurrentQuestionSelector);
+    const item = yield select(state => state.itemDetail?.item);
+    if (question) {
+      const hasEmptyAnswer = hasEmptyAnswers(question);
 
-    const hasEmptyAnswer = hasEmptyAnswers(question);
+      if (hasEmptyAnswer) throw new Error("Correct answer is not set");
 
-    if (hasEmptyAnswer) throw new Error("Correct answer is not set");
-
-    // clear previous evaluation
-    yield put({
-      type: CLEAR_ITEM_EVALUATION,
-      payload: question?.type === questionType.MATH
-    });
-
-    if (payload === "question" || (payload?.mode === "show" && question)) {
+      // clear previous evaluation
+      yield put({
+        type: CLEAR_ITEM_EVALUATION,
+        payload: question?.type === questionType.MATH
+      });
+    }
+    if ((payload === "question" || (payload?.mode === "show" && question)) && !item.isDocBased) {
       const answers = yield select(state => _get(state, "answers", []));
       const { evaluation, score, maxScore } = yield evaluateItem(answers, {
         [question?.id]: question
@@ -150,7 +150,6 @@ function* evaluateAnswers({ payload }) {
       const { itemLevelScore, itemLevelScoring = false } = yield select(state => state.itemDetail.item);
       const questions = yield select(getQuestionsSelector);
       const { evaluation, score, maxScore } = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
-
       yield put({
         type: ADD_ITEM_EVALUATION,
         payload: {
@@ -172,7 +171,7 @@ function* evaluateAnswers({ payload }) {
     console.error(err);
     const errorMessage =
       err.message || "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
-      notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 
@@ -183,7 +182,7 @@ function* showAnswers() {
   } catch (err) {
     console.error(err);
     const errorMessage = "Show Answer Failed";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 

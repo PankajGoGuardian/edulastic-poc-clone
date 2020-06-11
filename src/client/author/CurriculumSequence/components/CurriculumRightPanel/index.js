@@ -64,8 +64,8 @@ export default CurriculumRightPanel;
 
 export const HideRightPanel = styled.div`
   position: absolute;
-  right: 16px;
-  top: 10px;
+  right: 18px;
+  top: 1.21rem;
   z-index: 50;
   cursor: pointer;
 
@@ -77,11 +77,10 @@ export const HideRightPanel = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     position: fixed;
-    right: 16px;
-    top: ${props => props.theme.HeaderHeight.sd + 12}px;
+    top: ${props => props.theme.HeaderHeight.sd + 18}px;
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    top: ${props => props.theme.HeaderHeight.xs + 12}px;
+    top: ${props => props.theme.HeaderHeight.xs + 18}px;
   }
 `;

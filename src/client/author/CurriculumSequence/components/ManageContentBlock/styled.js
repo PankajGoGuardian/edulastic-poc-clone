@@ -4,7 +4,6 @@ import {
   greyThemeDark1,
   greyThemeLight,
   mainBgColor,
-  mediumDesktopExactWidth,
   playlistTabLink,
   smallDesktopWidth,
   desktopWidth,
@@ -100,10 +99,6 @@ export const ManageContentContainer = styled.div`
         fill: #676e74 !important;
       }
     }
-  }
-
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    padding: 10px 15px;
   }
 
   @media (max-width: ${smallDesktopWidth}) {

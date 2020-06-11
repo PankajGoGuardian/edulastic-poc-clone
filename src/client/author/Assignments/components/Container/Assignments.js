@@ -105,11 +105,12 @@ class Assignments extends Component {
     if (!defaultTermId) {
       filters.termId = storedFilters.termId || "";
     }
-
-    loadAssignments({ filters });
-
-    loadFolders();
-    loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
+    if(userRole == roleuser.TEACHER) {
+      loadAssignments({ filters });
+    } else {
+      loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
+    }
+    
     this.setState({ filterState: filters });
   }
 

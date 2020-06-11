@@ -14,15 +14,15 @@ export const CustomTooltip = props => {
         <div className={className}>
           <div className="classboard-tooltip-title">{label}</div>
           <Row type="flex" justify="start">
-            <Col className="classboard-tooltip-key">Correct Attemps: </Col>
+            <Col className="classboard-tooltip-key">Correct Attempts: </Col>
             <Col className="classboard-tooltip-value">{payload[0].value}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="classboard-tooltip-key">Incorrect Attemps: </Col>
+            <Col className="classboard-tooltip-key">Incorrect Attempts: </Col>
             <Col className="classboard-tooltip-value">{payload[1].value}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="classboard-tooltip-key">Partial Attemps: </Col>
+            <Col className="classboard-tooltip-key">Partial Attempts: </Col>
             <Col className="classboard-tooltip-value">{payload[2].value}</Col>
           </Row>
           <Row type="flex" justify="start">

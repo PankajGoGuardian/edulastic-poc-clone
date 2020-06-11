@@ -228,7 +228,7 @@ const JoinSchool = ({
   }, []);
 
   useEffect(() => {
-    if (newSchool._id && !homeSchool) {
+    if (newSchool._id && !homeSchool && !fromUserProfile) {
       setSchool(newSchool._id);
     }
   }, [newSchool]);
@@ -392,7 +392,7 @@ const JoinSchool = ({
         </Col>
       </JoinSchoolBody>
       {showModal ? (
-        <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} homeSchool />
+        <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} />
       ) : null}
     </>
   );

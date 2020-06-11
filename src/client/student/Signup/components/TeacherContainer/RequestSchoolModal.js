@@ -39,7 +39,7 @@ class RequestSchool extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, districts, createAndJoinSchoolRequestAction, homeSchool } = this.props;
+    const { form, districts, createAndJoinSchoolRequestAction } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
         const { name, districtId, address, city, country, state, zip } = values;
@@ -62,9 +62,6 @@ class RequestSchool extends React.Component {
 
         if (district.districtId) {
           body.districtId = district.districtId;
-        }
-        if (homeSchool) {
-          body.homeSchool = true;
         }
         const { firstName, middleName, lastName } = this.props.userInfo;
         createAndJoinSchoolRequestAction({

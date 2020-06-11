@@ -7,7 +7,8 @@ const pickerWidth = 212; // width of color picker, and will not change.
 
 // returns the position of popover based on user selection.
 const getStyles = ({ windowWidth, selectionTop, selectionLeft, selectionWidth, selectionHeight }) => {
-  const style = { position: "fixed" };
+  // Adding zIndex to color picker
+  const style = { position: "fixed", zIndex: 1 };
 
   style.left = selectionLeft + selectionWidth / 2 - pickerWidth / 2;
   style.top = selectionTop - 50; // - 50 is height of picker

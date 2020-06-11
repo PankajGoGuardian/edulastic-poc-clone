@@ -1,4 +1,4 @@
-import React, { Component, Suspense, lazy } from "react";
+import React, { Component, Suspense, lazy, useEffect } from "react";
 import { capitalize, get, isUndefined, isEmpty } from "lodash";
 import qs from "qs";
 import queryString from "query-string";
@@ -119,6 +119,17 @@ function isLocationInTestRedirectRoutes(loc) {
   return testRedirectRoutes.find(
     x => loc.pathname.includes(x) || `${loc.pathname}${loc.search}${loc.hash}`.includes(x)
   );
+}
+
+function CheckRoutePatternsEffectContainer({ role, location, history }) {
+  useEffect(() => {
+    if (role === "student" && location.pathname.startsWith("/author")) {
+      history.push("/home/assignments");
+    } else if (role !== "student" && role !== "parent" && location.pathname.startsWith("/home")) {
+      history.push("/author/assignments");
+    }
+  }, []);
+  return null;
 }
 
 class App extends Component {
@@ -301,6 +312,7 @@ class App extends Component {
     const { showAppUpdate, canShowCliBanner } = this.state;
     return (
       <div>
+        <CheckRoutePatternsEffectContainer role={userRole} location={location} history={history} />
         <AppUpdateModal visible={showAppUpdate} onRefresh={this.handleOk} />
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}

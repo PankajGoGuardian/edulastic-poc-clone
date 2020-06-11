@@ -60,7 +60,9 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       sorter: (a, b) => a.firstName > b.firstName,
       render: (_, { firstName, lastName }) => (
-        <span>{`${firstName === "Anonymous" || firstName === "" ? "-" : firstName} ${lastName || ""}`}</span>
+        <span>
+          {`${lastName ? `${lastName}, ` : ""}${firstName === "Anonymous" || firstName === "" ? "-" : firstName}`}
+        </span>
       )
     },
     {
@@ -133,9 +135,7 @@ const StudentsList = ({
         !isProxyUser && enrollmentStatus == 1 ? (
           <Tooltip placement="topRight" title="View as Student">
             <GiDominoMask
-              onClick={() =>
-                proxyUser({ userId: _id, groupId, currentUser: { _id: cuId, role: cuRole } })
-              }
+              onClick={() => proxyUser({ userId: _id, groupId, currentUser: { _id: cuId, role: cuRole } })}
             />
           </Tooltip>
         ) : null
@@ -164,8 +164,8 @@ const StudentsList = ({
         <NoStudents>
           <StyledIcon type="user-add" fill={lightBlue3} size={45} />
           <NoConentDesc>
-            <div> There are no students in your { typeText }.</div>
-            <p>Add students to your { typeText } and begin assigning work</p>
+            <div> There are no students in your {typeText}.</div>
+            <p>Add students to your {typeText} and begin assigning work</p>
           </NoConentDesc>
         </NoStudents>
       ) : (

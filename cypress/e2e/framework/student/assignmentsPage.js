@@ -101,6 +101,9 @@ class AssignmentsPage {
   getTimeOnPopUP = () => cy.get('[data-cy="test-time"]');
 
   getLaunchRetakeButton = () => cy.get('[data-cy="launch-retake"]');
+
+  getTestTypeByTestId = id => this.getAssignmentByTestId(id).find('[data-cy="testType"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -250,6 +253,8 @@ class AssignmentsPage {
 
   verifyTimeAvalableForTestById = (testid, time) =>
     this.getTimeAvailableForAssignmentById(testid).should("contain.text", `${time} minutes`);
+
+  verifyAssignTypeByTestId = (id, aType) => this.getTestTypeByTestId(id).should("have.text", aType);
 
   // *** APPHELPERS END ***
 }

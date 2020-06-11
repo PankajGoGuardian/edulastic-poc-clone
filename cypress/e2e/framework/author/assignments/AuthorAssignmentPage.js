@@ -20,6 +20,8 @@ class AuthorAssignmentPage {
 
   getTestRowByTestId = id => cy.get(`[data-test=${id}]`).closest("tr");
 
+  getAssignmentTypeByTestId = id => this.getAssignmentRowsTestById(id).find('[data-cy="type"]');
+
   getAllPresantationButtonsByAssignmentId = (testId, assignmentid) =>
     this.getAssignmentRowsTestById(testId).find(`[data-test=${assignmentid}]`);
 
@@ -38,6 +40,10 @@ class AuthorAssignmentPage {
   getOptionInDropDownByAttribute = option => cy.get(`[data-cy="${option}"]`);
 
   getCreateNewAssignments = () => cy.get('[data-cy="new-assignment"]');
+
+  getChooseFromPlaylistsButton = () => cy.get("button").contains("PLAYLIST");
+
+  getChooseFromTestlibraryButton = () => cy.get("button").contains("BROWSE ALL");
 
   // *** ELEMENTS END ***
 
@@ -269,6 +275,11 @@ class AuthorAssignmentPage {
     this.getOptionInDropDownByAttribute("summary-grades").click();
     // cy.wait("@load-summary");
   };
+
+  clickChoosefromPlaylistButton = () => this.getChooseFromPlaylistsButton().click({ force: true });
+
+  clickChooseFromTestLibrary = () => this.getChooseFromTestlibraryButton().click({ force: true });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -288,10 +299,11 @@ class AuthorAssignmentPage {
       })
     );
 
-  verifyAssignmentRowByTestId = (testId, className, submitted = 0, total) => {
+  verifyAssignmentRowByTestId = (testId, className, submitted = 0, total, aType) => {
     this.getAssignmentRowsTestById(testId);
     if (className) this.getClassByAssignmentRow().should("have.text", className);
     if (total) this.getSubmittedByAssignmentRow().should("have.text", `${submitted} of ${total}`);
+    if (aType) this.getAssignmentTypeByTestId(testId).should("have.text", aType);
   };
 
   // *** APPHELPERS END ***

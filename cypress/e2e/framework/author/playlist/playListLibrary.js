@@ -36,8 +36,12 @@ export default class PlayListLibrary {
   getDoneDropPlaylist = () => cy.get('[data-cy="done-drop-playlist"]');
 
   getRemoveDropByName = name => cy.get(`[data-cy="remove-${name}"]`);
+
+  getPLaylistLibraryTitle = () => cy.get('[title="Playlist Library"]');
+
   // *** ELEMENTS END ***
   // *** ACTIONS START ***
+
   checkDropByClass = () => this.getDropByClass().check({ force: true });
 
   checkDropByStudent = () => this.getDropByStudent().check({ force: true });

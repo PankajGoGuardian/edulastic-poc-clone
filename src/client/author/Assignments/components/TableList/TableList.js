@@ -58,7 +58,7 @@ const convertTableData = (data, assignments = [], index, userId) => ({
     .reduce((t, c) => t + c, 0) || 0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c, 0)}`,
   graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c, 0) || 0}`,
   action: "",
-  classId: assignments[0]?.classId,
+  classId: assignments[0] ?.classId,
   currentAssignment: assignments[0],
   testType: data.testType,
   hasAutoSelectGroups: data.hasAutoSelectGroups,
@@ -156,7 +156,7 @@ const TableList = ({
               <TypeIcon data-cy="type" type="c">
                 C
               </TypeIcon>
-            )}
+                )}
             {row.timedAssignment && (
               <TimedTestIndicator data-cy="type" type="p">
                 <TimerIcon />
@@ -194,8 +194,8 @@ const TableList = ({
               {text}
             </StatusLabel>
           ) : (
-            ""
-          )
+              ""
+            )
       },
       {
         dataIndex: "submitted",
@@ -259,7 +259,7 @@ const TableList = ({
       }
     ];
     const expandTableList = [];
-    let filterData = assignmentsByTestId?.[parentData.testId] || [];
+    let filterData = assignmentsByTestId ?.[parentData.testId] || [];
     let getInfo;
     if (status) {
       filterData = filterData.filter(assignment => assignment.status === status);
@@ -385,7 +385,7 @@ const TableList = ({
             <Dropdown
               overlay={ActionMenu({
                 onOpenReleaseScoreSettings,
-                currentAssignment: row?.currentAssignment || {},
+                currentAssignment: row ?.currentAssignment || {},
                 history,
                 showPreviewModal,
                 toggleEditModal,
@@ -491,14 +491,14 @@ TableList.propTypes = {
 };
 
 TableList.defaultProps = {
-  onOpenReleaseScoreSettings: () => {},
-  renderFilter: () => {},
-  onSelectRow: () => {},
-  showPreviewModal: () => {},
+  onOpenReleaseScoreSettings: () => { },
+  renderFilter: () => { },
+  onSelectRow: () => { },
+  showPreviewModal: () => { },
   history: {},
   tests: [],
   showFilter: false,
-  togglePrintModal: () => {}
+  togglePrintModal: () => { }
 };
 
 const enhance = compose(

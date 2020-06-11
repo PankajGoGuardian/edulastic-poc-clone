@@ -63,24 +63,24 @@ const reducer = (state = initialState, { type, payload }) => {
         error: payload.error
       };
     case ADD_MOVE_FOLDER_SUCCESS: {
-      //params and result are always expected from action.
+      // params and result are always expected from action.
       const { result, params } = payload;
-      const { sourceFolderId } = params?.[0];
+      const { sourceFolderId } = params ?.[0];
       let currentFolderContent = [];
-      //Update folder.entities to reflect the moved assignments.
+      // Update folder.entities to reflect the moved assignments.
       const entities = state.entities.map(entity => {
-        //is this entity is target folder ?
+        // is this entity is target folder ?
         if (entity._id === result._id) {
           return { ...entity, ...result };
         }
-        //is this entity is source folder ?
+        // is this entity is source folder ?
         if (entity._id === sourceFolderId) {
-          //Get all moved assignments in the source folder and filter those contents.
+          // Get all moved assignments in the source folder and filter those contents.
           const allAssignments = params.map(item => item._id);
           currentFolderContent = entity.content.filter(item => !allAssignments.includes(item._id));
           return {
             ...entity,
-            content: currentFolderContent
+            ...(currentFolderContent.length > 0 ? { content: currentFolderContent } : {})
           };
         }
         return entity;
@@ -88,10 +88,10 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities,
-        //entity should have the assignments for displaying inside entity.content
+        // entity should have the assignments for displaying inside entity.content
         entity: {
           ...state.entity,
-          content: currentFolderContent
+          ...(currentFolderContent.length > 0 ? { content: currentFolderContent } : {})
         }
       };
     }

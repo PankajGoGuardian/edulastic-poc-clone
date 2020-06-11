@@ -240,7 +240,6 @@ class Assignments extends Component {
     const tabletWidth = 768;
 
     const currentTest = find(tests, o => o._id === currentTestId);
-
     return (
       <div>
         <EditTestModal
@@ -327,7 +326,7 @@ class Assignments extends Component {
                           status={filterState.status}
                           togglePrintModal={this.togglePrintModal}
                         />
-                      )}
+                        )}
                     </StyledCard>
                   </TableWrapper>
                 </>
@@ -337,7 +336,7 @@ class Assignments extends Component {
                   tests={tests}
                   onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                 />
-              )}
+                )}
             </Main>
           </FlexContainer>
         </Container>

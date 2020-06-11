@@ -95,7 +95,7 @@ export class ResponseTag extends Component {
 
   render() {
     const data = get(this.props, "data", "");
-    console.log(data.key);
+
     return (
       <StyledResponseTagContainer>
         <CustomTableTooltip placement="top" title={this.tooltipText(data)} getCellContents={this.getCellContents} />

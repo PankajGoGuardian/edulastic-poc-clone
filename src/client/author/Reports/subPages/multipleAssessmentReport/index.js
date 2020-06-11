@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route } from "react-router-dom";
 import { map } from "lodash";
 import next from "immer";
@@ -10,15 +10,17 @@ import { FlexContainer } from "@edulastic/common";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
+import extraFilterData from "./common/static/extraFilterData.json";
 
 import MultipleAssessmentReportFilters from "./common/components/filters/MultipleAssessmentReportFilters";
+import { ControlDropDown } from "../../common/components/widgets/controlDropDown";
 import PeerProgressAnalysis from "./PeerProgressAnalysis";
 import StudentProgress from "./StudentProgress";
 import PerformanceOverTime from "./PerformanceOverTime";
 
 import { setMARSettingsAction, getReportsMARSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner } from "../../common/styled";
+import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
 
 const MultipleAssessmentReportContainer = props => {
   const {
@@ -95,6 +97,33 @@ const MultipleAssessmentReportContainer = props => {
     }
   };
 
+  const filterlist = extraFilterData[pageTitle] || [];
+  const [ddfilter, setDdFilter] = useState({});
+  useEffect(() => {
+    setDdFilter(filterlist.reduce((acc, curr) => ({ ...acc, [curr.key]: "" }), {}));
+  }, [pageTitle]);
+
+  const updateCB = (event, selected, comData) => {
+    setDdFilter({
+      ...ddfilter,
+      [comData]: selected.key === "all" ? "" : selected.key
+    });
+  };
+
+  let extraFilters = [];
+  if (
+    pageTitle === "performance-over-time" ||
+    pageTitle === "peer-progress-analysis" ||
+    pageTitle === "student-progress"
+  ) {
+    extraFilters = filterlist.map(item => (
+      <SearchField key={item.key}>
+        <FilterLabel>{item.title}</FilterLabel>
+        <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
+      </SearchField>
+    ));
+  }
+
   return (
     <FlexContainer alignItems="flex-start">
       <MultipleAssessmentReportFilters
@@ -107,6 +136,7 @@ const MultipleAssessmentReportContainer = props => {
           window.location.pathname.startsWith(x)
         )}
         style={showFilter ? { display: "block" } : { display: "none" }}
+        extraFilter={extraFilters}
       />
       <ReportContaner showFilter={showFilter}>
         <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
@@ -115,7 +145,7 @@ const MultipleAssessmentReportContainer = props => {
           path="/author/reports/peer-progress-analysis/"
           render={_props => {
             setShowHeader(true);
-            return <PeerProgressAnalysis {..._props} settings={settings} />;
+            return <PeerProgressAnalysis {..._props} settings={settings} ddfilter={ddfilter} />;
           }}
         />
         <Route
@@ -123,7 +153,7 @@ const MultipleAssessmentReportContainer = props => {
           path="/author/reports/student-progress/"
           render={_props => {
             setShowHeader(true);
-            return <StudentProgress {..._props} settings={settings} pageTitle={pageTitle} />;
+            return <StudentProgress {..._props} settings={settings} pageTitle={pageTitle} ddfilter={ddfilter} />;
           }}
         />
         <Route
@@ -131,7 +161,7 @@ const MultipleAssessmentReportContainer = props => {
           path="/author/reports/performance-over-time/"
           render={_props => {
             setShowHeader(true);
-            return <PerformanceOverTime {..._props} settings={settings} />;
+            return <PerformanceOverTime {..._props} settings={settings} ddfilter={ddfilter} />;
           }}
         />
       </ReportContaner>

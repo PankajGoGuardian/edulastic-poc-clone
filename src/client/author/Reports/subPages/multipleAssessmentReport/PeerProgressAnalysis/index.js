@@ -63,6 +63,7 @@ const PeerProgressAnalysis = ({
   peerProgressAnalysis,
   isCsvDownloading,
   MARFilterData,
+  ddfilter,
   settings,
   loading,
   role
@@ -71,7 +72,6 @@ const PeerProgressAnalysis = ({
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [compareBy, setCompareBy] = useState(head(compareByData));
   const [selectedTrend, setSelectedTrend] = useState("");
-  const [ddfilter, setDdFilter] = useState({});
 
   usefetchProgressHook(settings, compareBy, ddfilter, getPeerProgressAnalysisRequest);
 
@@ -91,13 +91,6 @@ const PeerProgressAnalysis = ({
         break;
       default:
     }
-  };
-
-  const filterDropDownCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
-      [comData]: selected.key === "all" ? "" : selected.key
-    });
   };
 
   const onCsvConvert = data => downloadCSV(`Peer Progress.csv`, data);
@@ -126,8 +119,6 @@ const PeerProgressAnalysis = ({
           <Filters
             compareByOptions={compareByData}
             onFilterChange={onFilterChange}
-            filterDropDownCB={filterDropDownCB}
-            ddfilter={ddfilter}
             compareBy={compareBy}
             analyseBy={analyseBy}
           />

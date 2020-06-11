@@ -1,9 +1,10 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
 import { connect } from "react-redux";
+import { get, isEmpty } from "lodash";
 import { FlexContainer } from "@edulastic/common";
 
 import StandardsGradebook from "./standardsGradebook";
@@ -11,12 +12,17 @@ import StandardsPerfromance from "./standardsPerformance";
 
 import StandardsFilters from "./common/components/Filters";
 import { getNavigationTabLinks } from "../../common/util";
-
+import { ControlDropDown } from "../../common/components/widgets/controlDropDown";
 import navigation from "../../common/static/json/navigation.json";
 
 import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner } from "../../common/styled";
+import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
+
+import { getReportsStandardsGradebook } from "./standardsGradebook/ducks";
+import dropDownFormat from "./standardsGradebook/static/json/dropDownFormat.json";
+import { getUserRole } from "../../../src/selectors/user";
+import { getFilterDropDownData } from "./standardsGradebook/utils/transformers";
 
 const StandardsMasteryReportContainer = props => {
   const {
@@ -30,6 +36,8 @@ const StandardsMasteryReportContainer = props => {
     history,
     location,
     match,
+    role,
+    standardsGradebook,
     onRefineResultsCB,
     showFilter
   } = props;
@@ -104,6 +112,45 @@ const StandardsMasteryReportContainer = props => {
     }
   };
 
+  const [ddfilter, setDdFilter] = useState({
+    schoolId: "all",
+    teacherId: "all",
+    groupId: "all",
+    gender: "all",
+    frlStatus: "all",
+    ellStatus: "all",
+    iepStatus: "all",
+    race: "all"
+  });
+
+  let filterDropDownData = dropDownFormat.filterDropDownData;
+  filterDropDownData = useMemo(() => {
+    const _standardsGradebook = get(standardsGradebook, "data.result", {});
+    if (!isEmpty(_standardsGradebook)) {
+      const ddTeacherInfo = _standardsGradebook.teacherInfo;
+      const temp = next(dropDownFormat.filterDropDownData, () => {});
+      return getFilterDropDownData(ddTeacherInfo, role).concat(temp);
+    }
+    return dropDownFormat.filterDropDownData;
+  }, [standardsGradebook]);
+
+  const filterDropDownCB = (event, selected, comData) => {
+    setDdFilter({
+      ...ddfilter,
+      [comData]: selected.key
+    });
+  };
+
+  let extraFilters = [];
+  if (loc === "standards-gradebook") {
+    extraFilters = filterDropDownData.map(item => (
+      <SearchField key={item.key}>
+        <FilterLabel>{item.title}</FilterLabel>
+        <ControlDropDown selectCB={filterDropDownCB} data={item.data} comData={item.key} by={item.data[0]} />
+      </SearchField>
+    ));
+  }
+
   return (
     <FlexContainer alignItems="flex-start">
       <StandardsFilters
@@ -113,6 +160,7 @@ const StandardsMasteryReportContainer = props => {
         location={location}
         match={match}
         style={showFilter ? { display: "block" } : { display: "none" }}
+        extraFilter={extraFilters}
       />
       <ReportContaner showFilter={showFilter}>
         <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
@@ -121,7 +169,16 @@ const StandardsMasteryReportContainer = props => {
           path="/author/reports/standards-gradebook"
           render={_props => {
             setShowHeader(true);
-            return <StandardsGradebook {..._props} settings={gradebookSettings} pageTitle={loc} />;
+            return (
+              <StandardsGradebook
+                {..._props}
+                role={role}
+                pageTitle={loc}
+                ddfilter={ddfilter}
+                settings={gradebookSettings}
+                standardsGradebook={standardsGradebook}
+              />
+            );
           }}
         />
         <Route
@@ -138,7 +195,11 @@ const StandardsMasteryReportContainer = props => {
 };
 
 const ConnectedStandardsMasteryReportContainer = connect(
-  state => ({ gradebookSettings: getReportsSMRSettings(state) }),
+  state => ({
+    role: getUserRole(state),
+    standardsGradebook: getReportsStandardsGradebook(state),
+    gradebookSettings: getReportsSMRSettings(state)
+  }),
   {
     setSMRSettings: setSMRSettingsAction,
     resetAllReports: resetAllReportsAction

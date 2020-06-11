@@ -1,11 +1,10 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { keyBy } from "lodash";
-import { getReportsMARFilterData, getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
+import { getReportsMARSelectedPerformanceBandProfile } from "../common/filterDataDucks";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 import { getClassAndGroupIds } from "../common/utils/transformers";
@@ -48,8 +47,8 @@ const initialState = {
 };
 
 export const reportPerformanceOverTimeReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: () => initialState,
+  [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: state => {
     state.loading = true;
   },
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -78,7 +77,7 @@ function* getReportsPerformanceOverTimeRequest({ payload }) {
     });
     const selectedProfile = yield select(getReportsMARSelectedPerformanceBandProfile);
     const thresholdNameIndexed = keyBy(selectedProfile?.performanceBand || [], "threshold");
-    const metricInfo = (performanceOverTime?.data?.result?.metricInfo || []).map(x => ({
+    const metricInfo = (performanceOverTime?.data?.result?.metricInfo || [])?.map(x => ({
       ...x,
       bandName: thresholdNameIndexed[x.bandScore].name
     }));
@@ -92,8 +91,8 @@ function* getReportsPerformanceOverTimeRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch performance over time Please try again...";
-    notification({msg:msg});
+    const msg = "Failed to fetch performance over time Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR,
       payload: { error: msg }

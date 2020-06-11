@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from "react";
 import queryString from "query-string";
 import { connect } from "react-redux";
 import { get, find, isEmpty } from "lodash";
-import { FieldLabel } from "@edulastic/common";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import StudentAutoComplete from "./StudentAutoComplete";
 import { getUserRole, getOrgDataSelector } from "../../../../../../src/selectors/user";
@@ -27,7 +26,8 @@ import {
   StyledGoButton,
   GoButtonWrapper,
   SearchField,
-  ApplyFitlerLabel
+  ApplyFitlerLabel,
+  FilterLabel
 } from "../../../../../common/styled";
 
 const StudentProfileReportsFilters = ({
@@ -165,11 +165,11 @@ const StudentProfileReportsFilters = ({
         <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
       <SearchField>
-        <FieldLabel>Student</FieldLabel>
+        <FilterLabel>Student</FilterLabel>
         <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} />
       </SearchField>
       <SearchField>
-        <FieldLabel>Subject</FieldLabel>
+        <FilterLabel>Subject</FilterLabel>
         <ControlDropDown
           by={filters.courseId}
           selectCB={onUpdateCourse}
@@ -180,7 +180,7 @@ const StudentProfileReportsFilters = ({
       </SearchField>
       {performanceBandRequired && (
         <SearchField>
-          <FieldLabel>Performance Band</FieldLabel>
+          <FilterLabel>Performance Band</FilterLabel>
           <ControlDropDown
             by={filters.performanceBandProfileId}
             selectCB={onChangePerformanceBand}
@@ -192,7 +192,7 @@ const StudentProfileReportsFilters = ({
       )}
       {standardProficiencyRequired && (
         <SearchField>
-          <FieldLabel>Standard Proficiency</FieldLabel>
+          <FilterLabel>Standard Proficiency</FilterLabel>
           <ControlDropDown
             by={filters.standardsProficiencyProfileId}
             selectCB={onChangeStandardsProficiency}
@@ -203,7 +203,7 @@ const StudentProfileReportsFilters = ({
         </SearchField>
       )}
       <SearchField>
-        <FieldLabel>School Year</FieldLabel>
+        <FilterLabel>School Year</FilterLabel>
         <ControlDropDown
           by={filters.termId}
           selectCB={onUpdateTerm}

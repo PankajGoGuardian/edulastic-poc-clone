@@ -45,7 +45,7 @@ const compareBy = {
 };
 
 const StudentProgress = ({
-  getStudentProgressRequestAction,
+  getStudentProgressRequest,
   studentProgress,
   MARFilterData,
   isCsvDownloading,
@@ -54,7 +54,8 @@ const StudentProgress = ({
   role,
   filters,
   pageTitle,
-  location
+  location,
+  ddfilter
 }) => {
   const profiles = MARFilterData?.data?.result?.bandInfo || [];
 
@@ -63,15 +64,8 @@ const StudentProgress = ({
     profiles[0]?.performanceBand ||
     DefaultBandInfo;
 
-  usefetchProgressHook(settings, getStudentProgressRequestAction);
+  usefetchProgressHook(settings, getStudentProgressRequest);
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
-  const [ddfilter, setDdFilter] = useState({
-    gender: "all",
-    frlStatus: "all",
-    ellStatus: "all",
-    iepStatus: "all",
-    race: "all"
-  });
 
   const [selectedTrend, setSelectedTrend] = useState("");
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
@@ -80,31 +74,30 @@ const StudentProgress = ({
   const [metricInfo, setMetricInfo] = useState(get(studentProgress, "data.result.metricInfo", []));
 
   useEffect(() => {
-    setMetricInfo(get(studentProgress, "data.result.metricInfo", []))
-  }, [studentProgress])
+    setMetricInfo(get(studentProgress, "data.result.metricInfo", []));
+  }, [studentProgress]);
 
   useEffect(() => {
     const filteredInfo = get(studentProgress, "data.result.metricInfo", []).filter(info => {
-
       if (ddfilter.gender !== "all" && ddfilter.gender !== info.gender) {
-        return false
+        return false;
       }
       if (ddfilter.frlStatus !== "all" && toLower(ddfilter.frlStatus) !== toLower(info.frlStatus)) {
-        return false
+        return false;
       }
       if (ddfilter.ellStatus !== "all" && toLower(ddfilter.ellStatus) !== toLower(info.ellStatus)) {
-        return false
+        return false;
       }
       if (ddfilter.iepStatus !== "all" && toLower(ddfilter.iepStatus) !== toLower(info.iepStatus)) {
-        return false
+        return false;
       }
       if (ddfilter.race !== "all" && ddfilter.race !== info.race) {
-        return false
+        return false;
       }
-      return true
-    })
-    setMetricInfo(filteredInfo)
-  }, [ddfilter])
+      return true;
+    });
+    setMetricInfo(filteredInfo);
+  }, [ddfilter]);
 
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", {});
   const [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
@@ -116,7 +109,7 @@ const StudentProgress = ({
   const customTableColumns = filterAccordingToRole(tableColumns, role);
 
   const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
-  const onCsvConvert = data => downloadCSV(`Student Progress.csv`, data);
+  const onCsvConvert = _data => downloadCSV(`Student Progress.csv`, _data);
 
   const dataSource = data
     .map(d => ({ ...d, studentName: getFormattedName(d.studentName) }))
@@ -135,13 +128,6 @@ const StudentProgress = ({
   const checkedStudentsForModal = dataSource
     .filter(d => checkedStudents.includes(d.id))
     .map(({ id, firstName, lastName, username }) => ({ _id: id, firstName, lastName, username }));
-
-  const filterDropDownCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
-      [comData]: selected.key
-    });
-  };
 
   const handleAddToGroupClick = () => {
     if (checkedStudentsForModal.length < 1) {
@@ -167,7 +153,7 @@ const StudentProgress = ({
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
         handleAddToGroupClick={handleAddToGroupClick}
-        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} filterDropDownCB={filterDropDownCB} analyseBy={analyseBy} />}
+        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
       />
       <TrendTable
         filters={filters}
@@ -184,7 +170,7 @@ const StudentProgress = ({
         isCellClickable
         location={location}
         pageTitle={pageTitle}
-        toolTipContent={(record) => (
+        toolTipContent={record => (
           <>
             <TableTooltipRow title={`Student Name : `} value={record.studentName} />
             {role === "teacher" ? (
@@ -194,7 +180,7 @@ const StudentProgress = ({
                 <TableTooltipRow title={`School Name : `} value={record.schoolName} />
                 <TableTooltipRow title={`Teacher Name : `} value={record.teacherName} />
               </>
-              )}
+            )}
           </>
         )}
       />
@@ -212,7 +198,7 @@ const enhance = connect(
     isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
-    getStudentProgressRequestAction
+    getStudentProgressRequest: getStudentProgressRequestAction
   }
 );
 

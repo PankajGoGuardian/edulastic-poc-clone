@@ -8,7 +8,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { getUserRole } from "../../../../src/selectors/user";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import { StyledCard, StyledH3, StyledSignedBarContainer } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
@@ -28,18 +27,16 @@ const denormalizeData = res => {
   const hMap = keyBy(res.metaInfo, "groupId");
 
   if (res && !isEmpty(res.metricInfo)) {
-    const filteredArr = res.metricInfo.filter((data, index) => {
+    const filteredArr = res.metricInfo.filter(data => {
       if (hMap[data.groupId]) return true;
       return false;
     });
 
-    const denormArr = filteredArr.map((data, index) => {
-      return {
-        ...hMap[data.groupId],
-        ...data,
-        gender: data.gender.toLowerCase() === "m" ? "Male" : data.gender.toLowerCase() === "f" ? "Female" : data.gender
-      };
-    });
+    const denormArr = filteredArr.map(data => ({
+      ...hMap[data.groupId],
+      ...data,
+      gender: data.gender.toLowerCase() === "m" ? "Male" : data.gender.toLowerCase() === "f" ? "Female" : data.gender
+    }));
 
     return denormArr;
   }
@@ -57,26 +54,31 @@ const PeerPerformance = ({
   selectedPerformanceBand,
   peerPerformance,
   getPeerPerformance,
-  settings
+  settings,
+  filters
 }) => {
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
     performanceBandProfiles[0]?.performanceBand;
 
   const [ddfilter, setDdFilter] = useState({
+    ...filters,
     analyseBy: "score(%)",
-    compareBy: role === "teacher" ? "groupId" : "schoolId",
-    gender: "all",
-    frlStatus: "all",
-    ellStatus: "all",
-    iepStatus: "all",
-    race: "all"
+    compareBy: role === "teacher" ? "groupId" : "schoolId"
   });
+
+  useEffect(() => {
+    setDdFilter({
+      ...ddfilter,
+      ...filters
+    });
+  }, [filters]);
+
   const [chartFilter, setChartFilter] = useState({});
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      let q = {};
+      const q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
       getPeerPerformance(q);
@@ -96,16 +98,14 @@ const PeerPerformance = ({
 
   const res = { ...peerPerformance, bandInfo };
 
-  const denormData = useMemo(() => {
-    return denormalizeData(res);
-  }, [res]);
+  const denormData = useMemo(() => denormalizeData(res), [res]);
 
-  const parsedData = useMemo(() => {
-    return { data: parseData(res, denormData, ddfilter), columns: getColumns() };
-  }, [ddfilter, res]);
+  const parsedData = useMemo(() => ({ data: parseData(res, denormData, ddfilter), columns: getColumns() }), [
+    ddfilter,
+    res
+  ]);
 
-  //
-  const updateAnalyseByCB = (event, selected, comData) => {
+  const updateAnalyseByCB = (event, selected) => {
     setDdFilter({
       ...ddfilter,
       analyseBy: selected.key
@@ -113,21 +113,13 @@ const PeerPerformance = ({
     setChartFilter({});
   };
 
-  const updateCompareByCB = (event, selected, comData) => {
+  const updateCompareByCB = (event, selected) => {
     setDdFilter({
       ...ddfilter,
       compareBy: selected.key
     });
     setChartFilter({});
   };
-
-  const filterDropDownCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
-      [comData]: selected.key
-    });
-  };
-  //
 
   const onBarClickCB = key => {
     const _chartFilter = { ...chartFilter };
@@ -162,18 +154,18 @@ const PeerPerformance = ({
                   </Col>
                   <Col className="dropdown-container" xs={24} sm={24} md={12} lg={16} xl={12}>
                     <ControlDropDown
-                      prefix={"Analyse by"}
+                      prefix="Analyse by"
                       by={dropDownFormat.analyseByDropDownData[0]}
                       selectCB={updateAnalyseByCB}
                       data={dropDownFormat.analyseByDropDownData}
                     />
                     <ControlDropDown
-                      prefix={"Compare by"}
+                      prefix="Compare by"
+                      style={{ marginLeft: 8 }}
                       by={compareByDropDownData[0]}
                       selectCB={updateCompareByCB}
                       data={compareByDropDownData}
                     />
-                    <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
                   </Col>
                 </Row>
                 <div>
@@ -212,7 +204,7 @@ const PeerPerformance = ({
                 isCsvDownloading={isCsvDownloading}
                 columns={parsedData.columns}
                 dataSource={parsedData.data}
-                rowKey={"compareBylabel"}
+                rowKey="compareBylabel"
                 filter={chartFilter}
                 analyseBy={ddfilter.analyseBy}
                 compareBy={ddfilter.compareBy}

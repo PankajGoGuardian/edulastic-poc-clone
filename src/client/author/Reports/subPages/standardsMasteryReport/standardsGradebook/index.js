@@ -1,69 +1,45 @@
 import { SpinLoader } from "@edulastic/common";
 import { Col, Row } from "antd";
-import next from "immer";
-import { get, isEmpty } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { getInterestedCurriculumsSelector, getUserRole } from "../../../../src/selectors/user";
+import { getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
-import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getStudentAssignments } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
-import {
-  getFiltersSelector,
-  getSelectedStandardProficiency,
-  getStandardsFiltersRequestAction
-} from "../common/filterDataDucks";
+import { getFiltersSelector, getSelectedStandardProficiency } from "../common/filterDataDucks";
 import { getMaxMasteryScore } from "../standardsPerformance/utils/transformers";
 import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
 import { TableContainer, UpperContainer } from "./components/styled";
 import { StandardsGradebookTable } from "./components/table/standardsGradebookTable";
 import {
-  getReportsStandardsGradebook,
   getReportsStandardsGradebookLoader,
   getStandardsGradebookRequestAction,
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction
 } from "./ducks";
-import dropDownFormat from "./static/json/dropDownFormat.json";
-import {
-  getDenormalizedData,
-  getFilterDropDownData,
-  getFilteredDenormalizedData,
-  groupedByStandard
-} from "./utils/transformers";
+import { getDenormalizedData, getFilteredDenormalizedData, groupedByStandard } from "./utils/transformers";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
 const StandardsGradebook = ({
   standardsGradebook,
-  getStandardsGradebookRequestAction,
+  getStandardsGradebookRequest,
   isCsvDownloading,
   role,
   settings,
   loading,
   selectedStandardProficiency,
   filters,
-  getStudentStandardsAction,
+  getStudentStandards,
   studentStandardData,
   loadingStudentStandard,
   location,
-  pageTitle
+  pageTitle,
+  ddfilter
 }) => {
-  const [ddfilter, setDdFilter] = useState({
-    schoolId: "all",
-    teacherId: "all",
-    groupId: "all",
-    gender: "all",
-    frlStatus: "all",
-    ellStatus: "all",
-    iepStatus: "all",
-    race: "all"
-  });
-
   const [chartFilter, setChartFilter] = useState({});
 
   const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(false);
@@ -77,17 +53,15 @@ const StandardsGradebook = ({
 
   useEffect(() => {
     if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
-      let q = {
+      const q = {
         testIds: settings.selectedTest.map(test => test.key).join(),
         ...settings.requestFilters
       };
-      getStandardsGradebookRequestAction(q);
+      getStandardsGradebookRequest(q);
     }
   }, [settings]);
 
-  const denormalizedData = useMemo(() => {
-    return getDenormalizedData(standardsGradebook);
-  }, [standardsGradebook]);
+  const denormalizedData = useMemo(() => getDenormalizedData(standardsGradebook), [standardsGradebook]);
 
   const filteredDenormalizedData = useMemo(() => getFilteredDenormalizedData(denormalizedData, ddfilter, role), [
     denormalizedData,
@@ -95,27 +69,8 @@ const StandardsGradebook = ({
     role
   ]);
 
-  let filterDropDownData = dropDownFormat.filterDropDownData;
-  filterDropDownData = useMemo(() => {
-    let _standardsGradebook = get(standardsGradebook, "data.result", {});
-    if (!isEmpty(_standardsGradebook)) {
-      let ddTeacherInfo = _standardsGradebook.teacherInfo;
-      let temp = next(dropDownFormat.filterDropDownData, arr => {});
-      return getFilterDropDownData(ddTeacherInfo, role).concat(temp);
-    } else {
-      return dropDownFormat.filterDropDownData;
-    }
-  }, [standardsGradebook]);
-
-  const filterDropDownCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
-      [comData]: selected.key
-    });
-  };
-
   const onBarClickCB = key => {
-    let _chartFilter = { ...chartFilter };
+    const _chartFilter = { ...chartFilter };
     if (_chartFilter[key]) {
       delete _chartFilter[key];
     } else {
@@ -134,7 +89,7 @@ const StandardsGradebook = ({
   ]);
 
   const handleOnClickStandard = (params, standard, studentName) => {
-    getStudentStandardsAction({ ...params, testIds: settings.selectedTest.map(test => test.key).join() });
+    getStudentStandards({ ...params, testIds: settings.selectedTest.map(test => test.key).join() });
     setClickedStandard(standard);
     setStudentAssignmentModal(true);
     setClickedStudentName(studentName);
@@ -157,9 +112,6 @@ const StandardsGradebook = ({
               <Row type="flex" justify="start">
                 <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                   <StyledH3>Mastery Level Distribution Standards</StyledH3>
-                </Col>
-                <Col className="dropdown-container" xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={filterDropDownData} />
                 </Col>
               </Row>
               <Row>
@@ -207,9 +159,7 @@ const StandardsGradebook = ({
 const enhance = compose(
   connect(
     state => ({
-      standardsGradebook: getReportsStandardsGradebook(state),
       loading: getReportsStandardsGradebookLoader(state),
-      role: getUserRole(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),
@@ -218,9 +168,8 @@ const enhance = compose(
       loadingStudentStandard: getStudentStandardLoader(state)
     }),
     {
-      getStandardsGradebookRequestAction: getStandardsGradebookRequestAction,
-      getStandardsFiltersRequestAction,
-      getStudentStandardsAction
+      getStandardsGradebookRequest: getStandardsGradebookRequestAction,
+      getStudentStandards: getStudentStandardsAction
     }
   )
 );

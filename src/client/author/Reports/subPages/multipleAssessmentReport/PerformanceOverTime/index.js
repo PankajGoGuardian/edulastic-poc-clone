@@ -20,14 +20,14 @@ import {
 import { augmentTestData, parseData } from "./utils/transformers";
 
 const PerformanceOverTime = ({
-  getPerformanceOverTimeRequestAction,
+  getPerformanceOverTimeRequest,
   performanceOverTime,
   isCsvDownloading,
   MARFilterData,
   settings,
   loading
 }) => {
-  usefetchProgressHook(settings, getPerformanceOverTimeRequestAction);
+  usefetchProgressHook(settings, getPerformanceOverTimeRequest);
 
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0]);
   const [selectedTests, setSelectedTests] = useState([]);
@@ -35,9 +35,9 @@ const PerformanceOverTime = ({
   const rawData = get(performanceOverTime, "data.result", {});
   const { testData = [] } = get(MARFilterData, "data.result", {});
   const dataWithTestInfo = augmentTestData(parseData(rawData), testData);
-  const filteredTableData = filter(dataWithTestInfo, test => {
-    return selectedTests.length ? includes(selectedTests, test.uniqId) : true;
-  });
+  const filteredTableData = filter(dataWithTestInfo, test =>
+    selectedTests.length ? includes(selectedTests, test.uniqId) : true
+  );
 
   if (loading) {
     return <SpinLoader position="fixed" />;
@@ -76,7 +76,7 @@ const enhance = connect(
     isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
-    getPerformanceOverTimeRequestAction
+    getPerformanceOverTimeRequest: getPerformanceOverTimeRequestAction
   }
 );
 

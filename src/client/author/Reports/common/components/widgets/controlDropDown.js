@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useEffect } from "react";
+/* eslint-disable array-callback-return */
+import React, { useState, useCallback } from "react";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import styled from "styled-components";
 import { partial } from "lodash";
-import { fadedGrey, lightGreySecondary, black, whiteSmoke, themeColor } from "@edulastic/colors";
+import { fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
 
 import { useInternalEffect } from "../../hooks/useInternalEffect";
 
@@ -11,7 +12,7 @@ const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
     <Menu.Item key="0" disabled>
       {prefix}
     </Menu.Item>
-    {data.map((item, index) => (
+    {data.map(item => (
       <Menu.Item key={item.key} title={item.title}>
         {item.title}
       </Menu.Item>
@@ -29,7 +30,8 @@ const ControlDropDown = ({
   data,
   comData,
   trigger = ["click"],
-  buttonWidth
+  buttonWidth,
+  style
 }) => {
   const [selected, setSelected] = useState(by);
   const [isActive, setActive] = useState(false);
@@ -37,8 +39,8 @@ const ControlDropDown = ({
   useInternalEffect(() => {
     let item = null;
     if (data.length) {
-      item = data.find((item, index) => {
-        if (item.key === selected.key) {
+      item = data.find(_item => {
+        if (_item.key === selected.key) {
           return true;
         }
       });
@@ -53,11 +55,11 @@ const ControlDropDown = ({
   }, [data]);
 
   useInternalEffect(() => {
-    let item = data.find((item, index) => {
-      if (typeof by === "string" && item.key === by) {
+    let item = data.find(_item => {
+      if (typeof by === "string" && _item.key === by) {
         return true;
       }
-      if (typeof by === "object" && item.key === by.key) {
+      if (typeof by === "object" && _item.key === by.key) {
         return true;
       }
     });
@@ -86,7 +88,7 @@ const ControlDropDown = ({
   const title = (selected && selected.title) || prefix;
 
   return (
-    <StyledDiv className={`${containerClassName} control-dropdown`} buttonWidth={buttonWidth}>
+    <StyledDiv className={`${containerClassName} control-dropdown`} buttonWidth={buttonWidth} style={style}>
       <Dropdown
         onVisibleChange={setActive}
         overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)}
@@ -106,6 +108,7 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+    font-size: 11px;
     width: ${({ buttonWidth }) => buttonWidth || "auto"};
     &.ant-btn.ant-dropdown-trigger {
       background-color: ${lightGreySecondary};
@@ -151,10 +154,9 @@ const StyledControlDropDown = styled(ControlDropDown)`
     color: #ffffff;
   }
 
-  .ant-dropdown-menu-item-disabled {
-    font-weight: 900;
-    color: ${black};
-    cursor: default;
+  .ant-dropdown-menu-item,
+  .ant-dropdown-menu-submenu-title {
+    font-size: 11px;
   }
 `;
 

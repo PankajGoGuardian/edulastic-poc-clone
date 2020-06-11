@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
@@ -13,14 +13,16 @@ import PerformanceByStudents from "./PerformanceByStudents";
 import QuestionAnalysis from "./QuestionAnalysis";
 
 import SingleAssessmentReportFilters from "./common/components/filters";
+import { ControlDropDown } from "../../common/components/widgets/controlDropDown";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
+import extraFilterData from "./common/static/extraFilterData.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner } from "../../common/styled";
+import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
 
 const SingleAssessmentReportContainer = props => {
   const {
@@ -43,6 +45,14 @@ const SingleAssessmentReportContainer = props => {
     },
     []
   );
+
+  const [ddfilter, setDdFilter] = useState({
+    gender: "all",
+    frlStatus: "all",
+    ellStatus: "all",
+    iepStatus: "all",
+    race: "all"
+  });
 
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[loc]) {
@@ -100,6 +110,23 @@ const SingleAssessmentReportContainer = props => {
     }
   };
 
+  const updateCB = (event, selected, comData) => {
+    setDdFilter({
+      ...ddfilter,
+      [comData]: selected.key
+    });
+  };
+
+  let extraFilters = [];
+  if (loc === "peer-performance" || loc === "performance-by-standards" || loc === "performance-by-students") {
+    extraFilters = extraFilterData[loc].map(item => (
+      <SearchField key={item.key}>
+        <FilterLabel>{item.title}</FilterLabel>
+        <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
+      </SearchField>
+    ));
+  }
+
   return (
     <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
       <FlexContainer alignItems="flex-start">
@@ -117,6 +144,7 @@ const SingleAssessmentReportContainer = props => {
           isStandardProficiencyRequired={["/author/reports/performance-by-standards"].find(x =>
             window.location.pathname.startsWith(x)
           )}
+          extraFilters={extraFilters}
           style={showFilter ? { display: "block" } : { display: "none" }}
         />
         <ReportContaner showFilter={showFilter}>
@@ -129,7 +157,7 @@ const SingleAssessmentReportContainer = props => {
           <Route
             exact
             path="/author/reports/peer-performance/test/:testId?"
-            render={_props => <PeerPerformance {..._props} settings={settings} />}
+            render={_props => <PeerPerformance {..._props} settings={settings} filters={ddfilter} />}
           />
           <Route
             exact
@@ -144,13 +172,21 @@ const SingleAssessmentReportContainer = props => {
           <Route
             exact
             path="/author/reports/performance-by-standards/test/:testId?"
-            render={_props => <PerformanceByStandards {..._props} settings={settings} pageTitle={loc} />}
+            render={_props => (
+              <PerformanceByStandards {..._props} settings={settings} pageTitle={loc} filters={ddfilter} />
+            )}
           />
           <Route
             exact
             path="/author/reports/performance-by-students/test/:testId?"
             render={_props => (
-              <PerformanceByStudents {..._props} showFilter={showFilter} settings={settings} pageTitle={loc} />
+              <PerformanceByStudents
+                {..._props}
+                showFilter={showFilter}
+                settings={settings}
+                pageTitle={loc}
+                filters={ddfilter}
+              />
             )}
           />
         </ReportContaner>

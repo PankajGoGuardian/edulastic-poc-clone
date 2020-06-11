@@ -11,7 +11,6 @@ import { IconPlusCircle } from "@edulastic/icons";
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { StyledH3, StyledCard } from "../../../common/styled";
 import { UpperContainer, StyledDropDownContainer, StyledTable } from "./components/styled";
-import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
 import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
@@ -32,7 +31,6 @@ import {
   getSAFFilterPerformanceBandProfiles
 } from "../common/filterDataDucks";
 
-import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import columns from "./static/json/tableColumns.json";
 
 const PerformanceByStudents = ({
@@ -45,7 +43,8 @@ const PerformanceByStudents = ({
   getPerformanceByStudents,
   settings,
   location = { pathname: "" },
-  pageTitle
+  pageTitle,
+  filters
 }) => {
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
@@ -54,14 +53,6 @@ const PerformanceByStudents = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [selectedRowKeys, onSelectChange] = useState([]);
   const [checkedStudents, setCheckedStudents] = useState({});
-
-  const [ddfilter, setDdFilter] = useState({
-    gender: "all",
-    frlStatus: "all",
-    ellStatus: "all",
-    iepStatus: "all",
-    race: "all"
-  });
 
   const [range, setRange] = useState({
     left: "",
@@ -91,11 +82,11 @@ const PerformanceByStudents = ({
   const proficiencyBandData = getProficiencyBandData(res && res.bandInfo);
   const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0]);
 
-  const parsedData = useMemo(() => parseData(res, ddfilter), [res, ddfilter]);
+  const parsedData = useMemo(() => parseData(res, filters), [res, filters]);
 
-  const tableData = useMemo(() => getTableData(res, ddfilter, range, selectedProficiency.key), [
+  const tableData = useMemo(() => getTableData(res, filters, range, selectedProficiency.key), [
     res,
-    ddfilter,
+    filters,
     range,
     selectedProficiency.key
   ]);
@@ -131,13 +122,6 @@ const PerformanceByStudents = ({
         setCheckedStudents({});
       }
     }
-  };
-
-  const filterDropDownCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
-      [comData]: selected.key
-    });
   };
 
   const updateProficiencyFilter = (_, selected) => {
@@ -180,9 +164,6 @@ const PerformanceByStudents = ({
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                 <StyledH3>Student score distribution | {testName}</StyledH3>
-              </Col>
-              <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
-                <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
               </Col>
             </Row>
             <Row type="flex" justify="start">

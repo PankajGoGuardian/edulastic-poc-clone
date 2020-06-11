@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, isEmpty, keyBy, uniqBy } from "lodash";
 import qs from "qs";
-import { FieldLabel } from "@edulastic/common";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import { MultipleSelect } from "../../../../common/components/widgets/MultipleSelect";
@@ -33,7 +33,8 @@ import {
   StyledGoButton,
   GoButtonWrapper,
   SearchField,
-  ApplyFitlerLabel
+  ApplyFitlerLabel,
+  FilterLabel
 } from "../../../../common/styled";
 
 const StandardsFilters = ({
@@ -53,7 +54,8 @@ const StandardsFilters = ({
   setPrevBrowseStandards,
   setPrevStandardsFilters,
   prevBrowseStandards,
-  prevStandardsFilters
+  prevStandardsFilters,
+  extraFilter
 }) => {
   const preSelected = user?.districtId === "5ebbbb3b03b7ad0924d19c46";
   const browseStandardsReceiveCount = useRef(0);
@@ -327,22 +329,23 @@ const StandardsFilters = ({
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
-      <SearchField>
-        <FieldLabel>Assessment Name</FieldLabel>
-        <MultipleSelect
-          containerClassName="standards-gradebook-domain-autocomplete"
-          data={allTestIds}
-          valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
-          by={testIds}
-          prefix="Assessment Name"
-          onSelect={onSelectTest}
-          onChange={onChangeTest}
-          placeholder="All Assessments"
-        />
-      </SearchField>
-      {/* // IMPORTANT: To be implemented later */}
-      {/* <SearchField>
-        <FieldLabel>Class Section</FieldLabel>
+      <PerfectScrollbar>
+        <SearchField>
+          <FilterLabel>Assessment Name</FilterLabel>
+          <MultipleSelect
+            containerClassName="standards-gradebook-domain-autocomplete"
+            data={allTestIds}
+            valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+            by={testIds}
+            prefix="Assessment Name"
+            onSelect={onSelectTest}
+            onChange={onChangeTest}
+            placeholder="All Assessments"
+          />
+        </SearchField>
+        {/* // IMPORTANT: To be implemented later */}
+        {/* <SearchField>
+        <FilterLabel>Class Section</FilterLabel>
         <AutocompleteDropDown
           prefix="Class Section"
           by={filters.groupId}
@@ -351,7 +354,7 @@ const StandardsFilters = ({
         />
       </SearchField>
       <SearchField>
-        <FieldLabel>Assessment Type</FieldLabel>
+        <FilterLabel>Assessment Type</FilterLabel>
         <ControlDropDown
           prefix="Assessment Type"
           by={filters.assessmentType}
@@ -359,55 +362,57 @@ const StandardsFilters = ({
           data={filtersDropDownData.assessmentType}
         />
       </SearchField> */}
-      <SearchField>
-        <FieldLabel>Standard Proficiency</FieldLabel>
-        <ControlDropDown
-          by={filters.profileId || selectedProficiencyId}
-          selectCB={updateStandardProficiencyDropDownCB}
-          data={standardProficiencyList}
-          prefix="Standard Proficiency"
-          showPrefixOnSelected={false}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>Domain</FieldLabel>
-        <AutocompleteDropDown
-          prefix="Domain"
-          by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0] || domains[0]}
-          selectCB={updateDomainDropDownCB}
-          data={domains}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>Grade</FieldLabel>
-        <AutocompleteDropDown
-          prefix="Grade"
-          className="custom-1-scrollbar"
-          by={filters.grades[0]}
-          selectCB={updateGradeDropDownCB}
-          data={filtersDropDownData.grades}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>Subject</FieldLabel>
-        <ControlDropDown
-          by={filters.subject}
-          selectCB={updateSubjectDropDownCB}
-          data={curriculums}
-          prefix="Subject"
-          showPrefixOnSelected={false}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>School Year</FieldLabel>
-        <ControlDropDown
-          by={filters.termId}
-          selectCB={updateSchoolYearDropDownCB}
-          data={schoolYear}
-          prefix="School Year"
-          showPrefixOnSelected={false}
-        />
-      </SearchField>
+        <SearchField>
+          <FilterLabel>Standard Proficiency</FilterLabel>
+          <ControlDropDown
+            by={filters.profileId || selectedProficiencyId}
+            selectCB={updateStandardProficiencyDropDownCB}
+            data={standardProficiencyList}
+            prefix="Standard Proficiency"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Domain</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Domain"
+            by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0] || domains[0]}
+            selectCB={updateDomainDropDownCB}
+            data={domains}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Grade</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Grade"
+            className="custom-1-scrollbar"
+            by={filters.grades[0]}
+            selectCB={updateGradeDropDownCB}
+            data={filtersDropDownData.grades}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Subject</FilterLabel>
+          <ControlDropDown
+            by={filters.subject}
+            selectCB={updateSubjectDropDownCB}
+            data={curriculums}
+            prefix="Subject"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>School Year</FilterLabel>
+          <ControlDropDown
+            by={filters.termId}
+            selectCB={updateSchoolYearDropDownCB}
+            data={schoolYear}
+            prefix="School Year"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+        {extraFilter}
+      </PerfectScrollbar>
     </StyledFilterWrapper>
   );
 };

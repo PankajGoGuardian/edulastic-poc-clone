@@ -1,11 +1,12 @@
-//@ts-check
+/* eslint-disable array-callback-return */
+// @ts-check
 import React, { useState, useRef } from "react";
-import { AutoComplete, Input, Icon, Menu } from "antd";
+import { AutoComplete, Input, Icon } from "antd";
 import styled from "styled-components";
 
+import { black, lightGreySecondary, themeColor } from "@edulastic/colors";
 import { useInternalEffect } from "../../hooks/useInternalEffect";
 
-import { black } from "@edulastic/colors";
 import { StyledAutocompleteDropDownContainer } from "../../styled";
 
 const Option = AutoComplete.Option;
@@ -33,8 +34,8 @@ const AutocompleteDropDown = ({
   useInternalEffect(() => {
     let item = null;
     if (data.length) {
-      item = data.find((item, index) => {
-        if (item.key === selected.key) {
+      item = data.find(_item => {
+        if (_item.key === selected.key) {
           return true;
         }
       });
@@ -51,11 +52,11 @@ const AutocompleteDropDown = ({
   }, [data]);
 
   useInternalEffect(() => {
-    let item = data.find((item, index) => {
-      if (typeof by === "string" && item.key === by) {
+    let item = data.find(_item => {
+      if (typeof by === "string" && _item.key === by) {
         return true;
       }
-      if (typeof by === "object" && item.key === by.key) {
+      if (typeof by === "object" && _item.key === by.key) {
         return true;
       }
     });
@@ -71,13 +72,13 @@ const AutocompleteDropDown = ({
   }, [by]);
 
   const buildDropDownData = datum => {
-    let arr = [
-      <OptGroup key={"group"} label={prefix ? prefix : ""}>
-        {datum.map((item, index) => {
+    const arr = [
+      <OptGroup key="group" label={prefix || ""}>
+        {datum.map(item => {
           const isSelected = selected.key === item.key;
-          const className = isSelected ? "ant-select-dropdown-menu-item-active" : null;
+          const _className = isSelected ? "ant-select-dropdown-menu-item-active" : null;
           return (
-            <Option key={item.key} title={item.title} className={className}>
+            <Option key={item.key} title={item.title} className={_className}>
               {dropdownMenuIcon || item.dropdownMenuIcon}
               {item.title}
             </Option>
@@ -90,26 +91,23 @@ const AutocompleteDropDown = ({
 
   const onSearch = value => {
     if (value.length > 2) {
-      let regExp = new RegExp(`${value}`, "i");
-      let searchedData = data.filter((item, index) => {
+      const regExp = new RegExp(`${value}`, "i");
+      const searchedData = data.filter(item => {
         if (regExp.test(item.title)) {
           return true;
-        } else {
-          return false;
         }
+        return false;
       });
       setDropDownData(searchedData);
-    } else {
-      if (data.length !== dropDownData.length) {
-        setDropDownData(data);
-      }
+    } else if (data.length !== dropDownData.length) {
+      setDropDownData(data);
     }
     setText(value);
     textChangeStatusRef.current = true;
   };
 
   const onBlur = key => {
-    let item = data.find(o => o.key === key);
+    const item = data.find(o => o.key === key);
     if (!item) {
       setText(selected.title);
     }
@@ -119,7 +117,7 @@ const AutocompleteDropDown = ({
   };
 
   const onSelect = (key, item) => {
-    let obj = { key: key, title: item.props.title };
+    const obj = { key, title: item.props.title };
     setSelected(obj);
     selectCB(obj, comData);
     setActive(false);
@@ -127,7 +125,7 @@ const AutocompleteDropDown = ({
     textChangeStatusRef.current = false;
   };
 
-  const onChange = value => {
+  const onChange = () => {
     if (textChangeStatusRef.current !== true) {
       autoRef.current.blur();
     }
@@ -169,6 +167,20 @@ const AutocompleteDropDown = ({
 };
 
 const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
+  .ant-input {
+    background-color: ${lightGreySecondary};
+    border-radius: 3px;
+    padding: 16px;
+    padding-right: 24px;
+    font-size: 11px;
+    font-weight: 600;
+    &:focus {
+      outline: 0px;
+      box-shadow: none;
+      border-color: ${themeColor};
+    }
+  }
+
   .ant-select-dropdown-menu {
     display: flex;
     flex-direction: column;
@@ -176,8 +188,7 @@ const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
       display: flex;
       flex-direction: column;
       .ant-select-dropdown-menu-item-group-title {
-        font-weight: 900;
-        font-size: 14px;
+        font-weight: 600;
         color: ${black};
         cursor: default;
       }
@@ -192,14 +203,14 @@ const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
     }
   }
   .ant-select-dropdown-menu-item-disabled {
-    font-weight: 900;
+    font-weight: 600;
     color: ${black};
     cursor: default;
   }
 
   .anticon {
     height: 13px;
-    font-size: 13px;
+    font-size: 11px;
   }
 `;
 

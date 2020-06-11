@@ -37,6 +37,13 @@ export const PrintablePrefix = styled.b`
 
 export const StyledGoButton = styled(EduButton)`
   height: 24px;
+  width: 80px;
+  font-size: 11px;
+  margin-left: 15px;
+`;
+
+export const FilterLabel = styled(FieldLabel)`
+  font-size: 10px;
 `;
 
 export const GoButtonWrapper = styled.div`
@@ -49,6 +56,7 @@ export const StyledFilterWrapper = styled.div`
   margin-right: 30px;
   width: 230px;
   flex-shrink: 0;
+  height: calc(100vh - 250px);
 
   .ant-select-selection {
     &__rendered {
@@ -58,20 +66,7 @@ export const StyledFilterWrapper = styled.div`
 
   .ant-select {
     width: 100%;
-  }
-
-  .ant-select-auto-complete.ant-select .ant-input {
-    background-color: ${lightGreySecondary};
-    border-radius: 3px;
-    padding: 18px;
-    padding-right: 24px;
-    font-size: 13px;
-    font-weight: 600;
-    &:focus {
-      outline: 0px;
-      box-shadow: none;
-      border-color: ${themeColor};
-    }
+    font-size: 11px;
   }
 
   .ant-input-affix-wrapper .ant-input-suffix {
@@ -89,8 +84,8 @@ export const StyledFilterWrapper = styled.div`
       border-radius: 3px;
       padding: 8.5px 18px;
       padding-right: 8px;
-      height: auto;
-      font-size: 13px;
+      height: 34px;
+      font-size: 11px;
       font-weight: 600;
       max-width: 100%;
       width: 100%;
@@ -484,6 +479,8 @@ export const HideLinkLabel = styled(StyledLabel)`
 
 export const ReportContaner = styled.div`
   width: ${({ showFilter }) => (showFilter ? "calc(100% - 260px)" : "100%")};
+  height: calc(100vh - 170px);
+  overflow: auto;
   position: relative;
 `;
 
@@ -506,4 +503,6 @@ export const SearchField = styled.div`
 
 export const ApplyFitlerLabel = styled(FieldLabel)`
   margin-bottom: 0px;
+  color: #434b5d;
+  font-weight: bolder;
 `;

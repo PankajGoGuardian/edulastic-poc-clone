@@ -9,7 +9,6 @@ import { getInterestedCurriculumsSelector, getUserRole } from "../../../../src/s
 import { EmptyData } from "../../../common/components/emptyData";
 import { AutocompleteDropDown } from "../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { StyledCard, StyledDropDownContainer, StyledH3, StyledSignedBarContainer } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
@@ -27,8 +26,6 @@ import {
 } from "./ducks";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { analysisParseData, analyzeByMode, compareByMode, viewByMode } from "./util/transformers";
-
-const PAGE_SIZE = 15;
 
 const findCompareByTitle = (key = "") => {
   if (!key) return "";
@@ -50,7 +47,8 @@ const PerformanceByStandards = ({
   selectedStandardProficiencyProfile,
   standardProficiencyProfiles,
   location,
-  pageTitle
+  pageTitle,
+  filters
 }) => {
   const scaleInfo = useMemo(
     () =>
@@ -71,12 +69,14 @@ const PerformanceByStandards = ({
   const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0;
   const isViewByStandards = viewBy === viewByMode.STANDARDS;
 
-  const reportWithFilteredSkills = useMemo(() => {
-    return next(report, draftReport => {
-      draftReport.skillInfo = filterArr(draftReport.skillInfo, skill => skill.curriculumId === standardId);
-      draftReport.scaleInfo = scaleInfo;
-    });
-  }, [report, standardId, scaleInfo]);
+  const reportWithFilteredSkills = useMemo(
+    () =>
+      next(report, draftReport => {
+        draftReport.skillInfo = filterArr(draftReport.skillInfo, skill => skill.curriculumId === standardId);
+        draftReport.scaleInfo = scaleInfo;
+      }),
+    [report, standardId, scaleInfo]
+  );
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
     if (o.allowedRoles) {
@@ -84,16 +84,6 @@ const PerformanceByStandards = ({
     }
     return true;
   });
-
-  const [filter, setFilter] = useState(
-    dropDownFormat.filterDropDownData.reduce(
-      (total, item) => ({
-        ...total,
-        [item.key]: item.data[0].key
-      }),
-      {}
-    )
-  );
 
   const getTitleByTestId = () => {
     const {
@@ -104,7 +94,7 @@ const PerformanceByStandards = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      let q = {};
+      const q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
       getPerformanceByStandards(q);
@@ -171,7 +161,7 @@ const PerformanceByStandards = ({
     return <SpinLoader position="fixed" />;
   }
 
-  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter);
+  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filters);
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
@@ -194,13 +184,6 @@ const PerformanceByStandards = ({
     );
   }
 
-  const filterDropDownCB = (event, selected, comData) => {
-    setFilter({
-      ...filter,
-      [comData]: selected.key
-    });
-  };
-
   return (
     <>
       <StyledCard>
@@ -222,13 +205,14 @@ const PerformanceByStandards = ({
               </StyledDropDownContainer>
               <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
                 <ControlDropDown
+                  style={{ marginLeft: 8 }}
                   prefix="Analyze By"
                   by={dropDownFormat.analyzeByDropDownData[0]}
                   selectCB={handleAnalyzeByChange}
                   data={dropDownFormat.analyzeByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer padding="5px" xs={24} sm={24} md={7} lg={7} xl={7}>
+              <StyledDropDownContainer padding="0px 5px" xs={24} sm={24} md={7} lg={7} xl={7}>
                 <AutocompleteDropDown
                   prefix="Standard set"
                   by={selectedStandardId || { key: "", title: "" }}
@@ -236,16 +220,13 @@ const PerformanceByStandards = ({
                   data={standardsDropdownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer width="44px" xs={2} sm={2} md={2} lg={2} xl={2}>
-                <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
-              </StyledDropDownContainer>
             </Row>
           </Col>
         </Row>
         <StyledSignedBarContainer>
           <BarToRender
             report={reportWithFilteredSkills}
-            filter={filter}
+            filter={filters}
             viewBy={viewBy}
             analyzeBy={analyzeBy}
             onBarClick={handleToggleSelectedData}

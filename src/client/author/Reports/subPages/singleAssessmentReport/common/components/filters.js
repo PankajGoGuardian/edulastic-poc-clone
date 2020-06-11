@@ -4,10 +4,10 @@ import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 import qs from "qs";
-import { FieldLabel } from "@edulastic/common";
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
@@ -37,7 +37,8 @@ import {
   StyledGoButton,
   GoButtonWrapper,
   SearchField,
-  ApplyFitlerLabel
+  ApplyFitlerLabel,
+  FilterLabel
 } from "../../../../common/styled";
 
 const getTestIdFromURL = url => {
@@ -70,7 +71,8 @@ const SingleAssessmentReportFilters = ({
   setPerformanceBand,
   setStandardsProficiency,
   performanceBandRequired,
-  isStandardProficiencyRequired = false
+  isStandardProficiencyRequired = false,
+  extraFilters
 }) => {
   const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
   const standardProficiencyProfiles = get(SARFilterData, "data.result.scaleInfo", []);
@@ -327,130 +329,133 @@ const SingleAssessmentReportFilters = ({
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
-      <SearchField>
-        <FieldLabel>Assessment Name</FieldLabel>
-        <AutocompleteDropDown
-          containerClassName="single-assessment-report-test-autocomplete"
-          data={processedTestIds.testIds ? processedTestIds.testIds : []}
-          by={testId}
-          prefix="Assessment Name"
-          selectCB={onTestIdChange}
-        />
-      </SearchField>
-      {isStandardProficiencyRequired && (
+      <PerfectScrollbar>
         <SearchField>
-          <FieldLabel>Standard Proficiency</FieldLabel>
+          <FilterLabel>Assessment Name</FilterLabel>
+          <AutocompleteDropDown
+            containerClassName="single-assessment-report-test-autocomplete"
+            data={processedTestIds.testIds ? processedTestIds.testIds : []}
+            by={testId}
+            prefix="Assessment Name"
+            selectCB={onTestIdChange}
+          />
+        </SearchField>
+        {isStandardProficiencyRequired && (
+          <SearchField>
+            <FilterLabel>Standard Proficiency</FilterLabel>
+            <ControlDropDown
+              by={filters.standardsProficiencyProfile || standardProficiencyProfiles[0]?._id}
+              selectCB={({ key }) => setStandardsProficiency(key)}
+              data={standardProficiencyList}
+              prefix="Standard Proficiency"
+              showPrefixOnSelected={false}
+            />
+          </SearchField>
+        )}
+        {performanceBandRequired && (
+          <SearchField>
+            <FilterLabel>Performance Band </FilterLabel>
+            <ControlDropDown
+              by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
+              selectCB={({ key }) => setPerformanceBand(key)}
+              data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
+              prefix="Performance Band"
+              showPrefixOnSelected={false}
+            />
+          </SearchField>
+        )}
+        <SearchField>
+          <FilterLabel>Assessment Type</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Assessment Type"
+            by={filters.assessmentType}
+            selectCB={updateAssessmentTypeDropDownCB}
+            data={staticDropDownData.assessmentType}
+          />
+        </SearchField>
+        {role !== "teacher" && (
+          <Fragment>
+            <SearchField>
+              <FilterLabel>School</FilterLabel>
+              <AutocompleteDropDown
+                prefix="School"
+                by={filters.schoolId}
+                selectCB={updateSchoolsDropDownCB}
+                data={dropDownData.schools}
+              />
+            </SearchField>
+            <SearchField>
+              <FilterLabel>Teacher</FilterLabel>
+              <AutocompleteDropDown
+                prefix="Teacher"
+                by={filters.teacherId}
+                selectCB={updateTeachersDropDownCB}
+                data={dropDownData.teachers}
+              />
+            </SearchField>
+          </Fragment>
+        )}
+        <SearchField>
+          <FilterLabel>Group</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Group"
+            by={filters.groupId}
+            selectCB={updateGroupsDropDownCB}
+            data={dropDownData.groups}
+            dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Class</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Class"
+            by={filters.classId}
+            selectCB={updateClassesDropDownCB}
+            data={dropDownData.classes}
+            dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Course</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Course"
+            by={filters.courseId}
+            selectCB={updateCourseDropDownCB}
+            data={dropDownData.courses}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Grade</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Grade"
+            className="custom-1-scrollbar"
+            by={filters.grade}
+            selectCB={updateGradeDropDownCB}
+            data={staticDropDownData.grades}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Subject</FilterLabel>
           <ControlDropDown
-            by={filters.standardsProficiencyProfile || standardProficiencyProfiles[0]?._id}
-            selectCB={({ key }) => setStandardsProficiency(key)}
-            data={standardProficiencyList}
-            prefix="Standard Proficiency"
+            by={filters.subject}
+            selectCB={updateSubjectDropDownCB}
+            data={staticDropDownData.subjects}
+            prefix="Subject"
             showPrefixOnSelected={false}
           />
         </SearchField>
-      )}
-      {performanceBandRequired && (
         <SearchField>
-          <FieldLabel>Performance Band </FieldLabel>
+          <FilterLabel>School Year</FilterLabel>
           <ControlDropDown
-            by={{ key: filters.performanceBandProfile || performanceBandProfiles[0]?._id }}
-            selectCB={({ key }) => setPerformanceBand(key)}
-            data={performanceBandProfiles.map(profile => ({ key: profile._id, title: profile.name }))}
-            prefix="Performance Band"
+            by={filters.termId}
+            selectCB={updateSchoolYearDropDownCB}
+            data={dropDownData.schoolYear}
+            prefix="School Year"
             showPrefixOnSelected={false}
           />
         </SearchField>
-      )}
-      <SearchField>
-        <FieldLabel>Assessment Type</FieldLabel>
-        <AutocompleteDropDown
-          prefix="Assessment Type"
-          by={filters.assessmentType}
-          selectCB={updateAssessmentTypeDropDownCB}
-          data={staticDropDownData.assessmentType}
-        />
-      </SearchField>
-      {role !== "teacher" && (
-        <Fragment>
-          <SearchField>
-            <FieldLabel>School</FieldLabel>
-            <AutocompleteDropDown
-              prefix="School"
-              by={filters.schoolId}
-              selectCB={updateSchoolsDropDownCB}
-              data={dropDownData.schools}
-            />
-          </SearchField>
-          <SearchField>
-            <FieldLabel>Teacher</FieldLabel>
-            <AutocompleteDropDown
-              prefix="Teacher"
-              by={filters.teacherId}
-              selectCB={updateTeachersDropDownCB}
-              data={dropDownData.teachers}
-            />
-          </SearchField>
-        </Fragment>
-      )}
-      <SearchField>
-        <FieldLabel>Group</FieldLabel>
-        <AutocompleteDropDown
-          prefix="Group"
-          by={filters.groupId}
-          selectCB={updateGroupsDropDownCB}
-          data={dropDownData.groups}
-          dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>Class</FieldLabel>
-        <AutocompleteDropDown
-          prefix="Class"
-          by={filters.classId}
-          selectCB={updateClassesDropDownCB}
-          data={dropDownData.classes}
-          dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>Course</FieldLabel>
-        <AutocompleteDropDown
-          prefix="Course"
-          by={filters.courseId}
-          selectCB={updateCourseDropDownCB}
-          data={dropDownData.courses}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>Grade</FieldLabel>
-        <AutocompleteDropDown
-          prefix="Grade"
-          className="custom-1-scrollbar"
-          by={filters.grade}
-          selectCB={updateGradeDropDownCB}
-          data={staticDropDownData.grades}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>Subject</FieldLabel>
-        <ControlDropDown
-          by={filters.subject}
-          selectCB={updateSubjectDropDownCB}
-          data={staticDropDownData.subjects}
-          prefix="Subject"
-          showPrefixOnSelected={false}
-        />
-      </SearchField>
-      <SearchField>
-        <FieldLabel>School Year</FieldLabel>
-        <ControlDropDown
-          by={filters.termId}
-          selectCB={updateSchoolYearDropDownCB}
-          data={dropDownData.schoolYear}
-          prefix="School Year"
-          showPrefixOnSelected={false}
-        />
-      </SearchField>
+        {extraFilters}
+      </PerfectScrollbar>
     </StyledFilterWrapper>
   );
 };

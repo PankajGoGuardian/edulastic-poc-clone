@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 import React, { useMemo } from "react";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -14,10 +14,11 @@ import {
   realtimeGradebookRedirectAction,
   realtimeGradebookCloseAction,
   realtimeUpdateAssignmentAction
+  , recalculateAdditionalDataAction
 } from "../../../src/reducers/testActivity";
 import useRealtimeUpdates from "../../useRealtimeUpdates";
 import { receiveTestActivitydAction } from "../../../src/actions/classBoard";
-import { recalculateAdditionalDataAction } from "../../../src/reducers/testActivity";
+
 
 const needRealtimeDateTracking = ({ openPolicy, closePolicy, startDate, endDate }) => {
   const now = Date.now();
@@ -80,8 +81,11 @@ const Shell = ({
     submitActivity,
     redirect: redirectCheck,
     // "assignment:close": closeAssignment,
-    assignment: realtimeUpdateAssignment
-    //TODO: need to comeback to it when we need to handle realtime impact of regrading
+    assignment: () => {
+      const { assignmentId, classId } = match.params;
+      loadTestActivity(assignmentId, classId)
+    }
+    // TODO: need to comeback to it when we need to handle realtime impact of regrading
     // removeQuestions,
     // addQuestionsMaxScore
   });

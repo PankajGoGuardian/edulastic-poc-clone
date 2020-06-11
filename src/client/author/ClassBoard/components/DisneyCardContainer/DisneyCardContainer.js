@@ -148,6 +148,8 @@ class DisneyCardContainer extends Component {
           status.status = student.status;
           if (student ?.graded === "GRADED") {
             status.status = "Graded";
+          } else if (student ?.graded === "IN GRADING") {
+            status.status = "In Grading";
           }
           status.color = themeColorLighter;
         } else if (student.status === "redirected") {
@@ -210,15 +212,15 @@ class DisneyCardContainer extends Component {
                     {" "}
                   </i>
                 ) : (
-                    <CircularDiv
-                      isLink={viewResponseStatus.includes(status.status)}
-                      title={isPresentationMode ? "" : student.userName}
-                      onClick={e =>
+                  <CircularDiv
+                    isLink={viewResponseStatus.includes(status.status)}
+                    title={isPresentationMode ? "" : student.userName}
+                    onClick={e =>
                         viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
                       }
-                    >
-                      {getAvatarName(student.studentName)}
-                    </CircularDiv>
+                  >
+                    {getAvatarName(student.studentName)}
+                  </CircularDiv>
                   )}
                 <StyledName>
                   <StyledParaF
@@ -252,7 +254,7 @@ class DisneyCardContainer extends Component {
                       )}
                     </>
                   ) : (
-                      <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
+                    <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
                     )}
                 </StyledName>
                 <RightAlignedCol>
@@ -361,7 +363,7 @@ class DisneyCardContainer extends Component {
                             </StyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
-                          </StyledParaSSS>
+                            </StyledParaSSS>
                             <p>Attempt {recentAttemptsGrouped[student.studentId][0].number + 1}</p>
                           </AttemptDiv>
                           {recentAttemptsGrouped ?.[student.studentId].map(attempt =>
@@ -371,7 +373,7 @@ class DisneyCardContainer extends Component {
                               </StyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
-                            </StyledParaSSS>
+                              </StyledParaSSS>
                               <p>Attempt {attempt.number}</p>
                             </AttemptDiv>)}
                         </StyledFlexDiv>

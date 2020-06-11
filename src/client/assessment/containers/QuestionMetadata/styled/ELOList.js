@@ -3,7 +3,7 @@ import { lightGreySecondary } from "@edulastic/colors";
 
 export const ELOList = styled.div`
   max-height: 40vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 15px;
   width: 100%;
   border: 1px solid ${lightGreySecondary};

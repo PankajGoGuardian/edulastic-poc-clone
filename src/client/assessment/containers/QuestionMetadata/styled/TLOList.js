@@ -4,7 +4,7 @@ import { themeColor, black, lightGrey6 } from "@edulastic/colors";
 
 export const TLOList = styled.div`
   max-height: 40vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding-right: 15px;
   width: calc(100% + 15px);
   .tlo-list-item {

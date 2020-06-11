@@ -264,12 +264,11 @@ class AddItems extends PureComponent {
 
   searchDebounce = debounce(this.handleSearch, 500);
 
-  handleSearchInputChange = e => {
+  handleSearchInputChange = tags => {
     const { search } = this.props;
-    const searchString = e.target.value;
     const updatedKeys = {
       ...search,
-      searchString
+      searchString: tags
     };
     this.updateFilterState(updatedKeys);
     this.searchDebounce(updatedKeys);

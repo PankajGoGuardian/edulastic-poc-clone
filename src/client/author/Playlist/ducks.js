@@ -130,7 +130,7 @@ export const emptyFilters = {
   grades: [],
   subject: "",
   filter: filterMenuItems[0].filter,
-  searchString: "",
+  searchString: [],
   type: "",
   status: "",
   tags: [],

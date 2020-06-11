@@ -13,10 +13,10 @@ import {
   HeaderRow,
   MainFilter,
   MainFilterHeader,
-  SearchInput,
   SearchWrapper,
   Title
 } from "./styled";
+import InputTag from "./SearchTag";
 
 const ItemFilter = ({
   onClearSearch,
@@ -34,11 +34,10 @@ const ItemFilter = ({
   const renderFullTextSearch = () => (
     <SearchWrapper>
       <HeaderRow>
-        <SearchInput
-          placeholder="Search by skills and keywords"
-          onChange={onSearchInputChange}
-          size="large"
+        <InputTag
+          onSearchInputChange={onSearchInputChange}
           value={search.searchString}
+          placeholder="Search by skills and keywords"
           disabled={search.filter === libraryFilters.SMART_FILTERS.FAVORITES}
         />
       </HeaderRow>

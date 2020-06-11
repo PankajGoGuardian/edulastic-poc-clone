@@ -2,10 +2,10 @@ import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { notification } from "@edulastic/common";
+import { libraryFilters } from "@edulastic/constants";
 import produce from "immer";
 import { testsApi } from "@edulastic/api";
 import { cloneDeep, keyBy } from "lodash";
-import { libraryFilters } from "@edulastic/constants";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
@@ -225,7 +225,7 @@ export const emptyFilters = {
   grades: [],
   subject: "",
   tags: [],
-  searchString: "",
+  searchString: [],
   filter: "ENTIRE_LIBRARY",
   createdAt: ""
 };

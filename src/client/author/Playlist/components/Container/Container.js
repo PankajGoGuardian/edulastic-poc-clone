@@ -43,7 +43,6 @@ import {
   PaginationWrapper,
   ScrollbarWrapper,
   ScrollBox,
-  SearchInput,
   SearchModalContainer,
   StyleChangeWrapper
 } from "../../../TestList/components/Container/styled";
@@ -71,6 +70,7 @@ import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
+import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
 
 function getUrlFilter(filter) {
   if (filter === "AUTHORED_BY_ME") {
@@ -186,12 +186,11 @@ class TestList extends Component {
     });
   }, 500);
 
-  handleSearchInputChange = e => {
+  handleSearchInputChange = tags => {
     const { playListFilters } = this.props;
-    const searchString = e.target.value;
     const newSearch = {
       ...playListFilters,
-      searchString
+      searchString: tags
     };
     this.updateFilterState(newSearch);
     this.searchTest(newSearch);
@@ -436,10 +435,9 @@ class TestList extends Component {
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
-                      <SearchInput
+                      <InputTag
                         placeholder="Search by skill and keywords"
-                        onChange={this.handleSearchInputChange}
-                        size="large"
+                        onSearchInputChange={this.handleSearchInputChange}
                         value={searchString}
                         disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
                       />

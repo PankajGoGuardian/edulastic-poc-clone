@@ -30,8 +30,7 @@ import {
   StyleChangeWrapper,
   CardBox,
   StyledCountText,
-  ItemsMenu,
-  SearchInput
+  ItemsMenu
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -105,6 +104,8 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
+
+import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -299,12 +300,11 @@ class TestList extends Component {
     receiveTests({ search, limit, page: 1 });
   }, 500);
 
-  handleSearchInputChange = e => {
+  handleSearchInputChange = tags => {
     const { testFilters } = this.props;
-    const searchString = e.target.value;
     const newSearch = {
       ...testFilters,
-      searchString
+      searchString: tags
     };
 
     this.updateFilterState(newSearch, true);
@@ -964,10 +964,9 @@ class TestList extends Component {
         )}
         <Container>
           <MobileFilter>
-            <TextInputStyled
+            <InputTag
               placeholder="Search by skills and keywords"
-              onChange={this.handleSearchInputChange}
-              size="large"
+              onSearchInputChange={this.handleSearchInputChange}
               value={testFilters.searchString}
               disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
             />
@@ -1048,9 +1047,9 @@ class TestList extends Component {
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
-                      <SearchInput
+                      <InputTag
                         placeholder="Search by skills and keywords"
-                        onChange={this.handleSearchInputChange}
+                        onSearchInputChange={this.handleSearchInputChange}
                         size="large"
                         value={testFilters.searchString}
                         disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}

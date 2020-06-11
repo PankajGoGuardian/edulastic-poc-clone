@@ -28,7 +28,9 @@ import { ContentArea } from "../../styled/ContentArea";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
+// import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
+import ChoicesForDropDown from "./ChoicesForDropDown";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
 import AppConfig from "../../../../../app-config";
@@ -185,6 +187,8 @@ const ClozeMath = ({
                     t={t}
                   />
                 </Question>
+
+                <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
                 {advancedLink}
 

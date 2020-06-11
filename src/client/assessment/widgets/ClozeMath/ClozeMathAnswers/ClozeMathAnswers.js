@@ -483,7 +483,6 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                     <DropDownAnswer
                       key={index}
                       item={item}
-                      setQuestionData={setQuestionData}
                       onChange={_updateDropDownCorrectAnswer}
                       answers={[answer]}
                     />
@@ -503,7 +502,6 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                     <DropDownAnswer
                       key={index}
                       item={item}
-                      setQuestionData={setQuestionData}
                       onChange={_changeAltDropDownMethod(correctTab - 1)}
                       answers={[altAnswer]}
                     />

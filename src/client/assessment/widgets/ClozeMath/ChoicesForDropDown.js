@@ -134,9 +134,9 @@ class ChoicesForDropDown extends Component {
               sectionId={dropdown.id}
               cleanSections={cleanSections}
             >
-              <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.math.choicesfordropdown")}`)}>{`${t(
-                "component.math.choicesfordropdown"
-              )} ${dropdown.index + 1}`}</Subtitle>
+              <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.math.choicesfordropdown")}`)}>
+                {`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}
+              </Subtitle>
               <SortableList
                 items={options[dropdown.id] || []}
                 dirty={stimulus}

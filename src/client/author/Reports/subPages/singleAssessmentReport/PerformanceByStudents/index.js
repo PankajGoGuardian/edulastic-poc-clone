@@ -5,7 +5,7 @@ import { get } from "lodash";
 import { Row, Col } from "antd";
 
 // components
-import { EduButton, SpinLoader } from "@edulastic/common";
+import { EduButton, SpinLoader, notification } from "@edulastic/common";
 import { IconPlusCircle } from "@edulastic/icons";
 
 import CsvTable from "../../../common/components/tables/CsvTable";
@@ -154,6 +154,14 @@ const PerformanceByStudents = ({
     .filter(d => checkedStudents[d.studentId] && checkedStudents[d.studentId][0] === d.testActivityId)
     .map(({ studentId, firstName, lastName, username }) => ({ _id: studentId, firstName, lastName, username }));
 
+  const handleAddToGroupClick = () => {
+    if (checkedStudentsForModal.length < 1) {
+      notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
+    } else {
+      setShowAddToGroupModal(true);
+    }
+  };
+
   return (
     <>
       {loading ? (
@@ -190,10 +198,10 @@ const PerformanceByStudents = ({
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
                 <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
-                  <StyledDropDownContainer padding="5px 0">
+                  <StyledDropDownContainer>
                     <EduButton
-                      style={{ height: "32px", padding: "0 15px 0 10px" }}
-                      onClick={() => setShowAddToGroupModal(true)}
+                      style={{ height: "31px", padding: "0 15px 0 10px", marginRight: "5px" }}
+                      onClick={handleAddToGroupClick}
                     >
                       <IconPlusCircle /> Add To Student Group
                     </EduButton>

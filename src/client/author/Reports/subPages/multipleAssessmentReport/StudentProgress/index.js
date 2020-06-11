@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { get, head, toLower } from "lodash";
 
-import { SpinLoader } from "@edulastic/common";
+import { SpinLoader, notification } from "@edulastic/common";
 import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
@@ -143,6 +143,14 @@ const StudentProgress = ({
     });
   };
 
+  const handleAddToGroupClick = () => {
+    if (checkedStudentsForModal.length < 1) {
+      notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
+    } else {
+      setShowAddToGroupModal(true);
+    }
+  };
+
   return (
     <>
       <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
@@ -158,7 +166,7 @@ const StudentProgress = ({
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
-        setShowAddToGroupModal={setShowAddToGroupModal}
+        handleAddToGroupClick={handleAddToGroupClick}
         renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} filterDropDownCB={filterDropDownCB} analyseBy={analyseBy} />}
       />
       <TrendTable

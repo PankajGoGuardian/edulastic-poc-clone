@@ -7,11 +7,11 @@ import { FilterDropDownWithDropDown } from "../../../../../common/components/wid
 import analyseByData from "../../static/json/analyseByDropDown.json";
 import dropDownFormat from "../../../../../common/static/json/dropDownFormat.json";
 
-const AnalyseByFilter = ({ onFilterChange, filterDropDownCB,  analyseBy }) => {
+const AnalyseByFilter = ({ onFilterChange, filterDropDownCB, analyseBy }) => {
   const onAnalyseByChange = (_, selectedItem) => onFilterChange(selectedItem);
 
   return (
-    <Row type="flex" justify="end">
+    <Row type="flex" justify="end" align="middle">
       <ControlDropDown prefix="Analyse By" by={analyseBy} selectCB={onAnalyseByChange} data={analyseByData} />
       <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
     </Row>

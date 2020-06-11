@@ -155,7 +155,11 @@ class ClassEnrollmentTable extends React.Component {
         }
       }
     } else if (e.key === "add to student group") {
-      this.setState({ showAddToGroupModal: true });
+      if (selectedRowKeys.length < 1) {
+        notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
+      } else {
+        this.setState({ showAddToGroupModal: true });
+      }
     }
   };
 

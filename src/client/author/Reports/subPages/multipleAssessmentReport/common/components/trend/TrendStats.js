@@ -11,29 +11,29 @@ import TrendCard from "./TrendCard";
 import { trendTypes } from "../../utils/constants";
 import FeaturesSwitch from "../../../../../../../features/components/FeaturesSwitch";
 
-const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading, setShowAddToGroupModal }) => {
+const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading, handleAddToGroupClick }) => {
   const trends = Object.keys(trendTypes);
 
   return (
     <UpperContainer>
       <PaddedContainer>
         <Row>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={10} lg={10} xl={10}>
             <StyledH3>{heading}</StyledH3>
           </Col>
           <Col
             xs={24}
             sm={24}
-            md={12}
-            lg={12}
-            xl={12}
-            style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+            md={14}
+            lg={14}
+            xl={14}
+            style={{ display: "inline-flex", alignItems: "center", justifyContent: "flex-end" }}
           >
-            {!!setShowAddToGroupModal && (
+            {!!handleAddToGroupClick && (
               <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
                 <EduButton
-                  style={{ height: "32px", padding: "0 15px 0 10px" }}
-                  onClick={() => setShowAddToGroupModal(true)}
+                  style={{ height: "32px", padding: "0 15px 0 10px", marginRight: "5px" }}
+                  onClick={handleAddToGroupClick}
                 >
                   <IconPlusCircle /> Add To Student Group
                 </EduButton>
@@ -80,7 +80,7 @@ TrendStats.defaultProps = {
     down: 0
   },
   selectedTrend: "",
-  onTrendSelect: () => {},
+  onTrendSelect: () => { },
   renderFilters: () => null,
   heading: ""
 };

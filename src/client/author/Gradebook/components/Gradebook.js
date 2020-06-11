@@ -6,7 +6,7 @@ import { isEmpty } from "lodash";
 // components
 import { Link } from "react-router-dom";
 import { Spin, Pagination, Row } from "antd";
-import { MainHeader, MainContentWrapper, EduButton, withWindowSizes } from "@edulastic/common";
+import { MainHeader, MainContentWrapper, EduButton, withWindowSizes, notification } from "@edulastic/common";
 import { IconInterface, IconFilter, IconPlusCircle } from "@edulastic/icons";
 import GradebookFilters from "./GradebookFilters";
 import GradebookTable from "./GradebookTable";
@@ -55,6 +55,14 @@ const Gradebook = ({
 
   const handlePagination = paginationData =>
     filters.status ? setPseudoPageDetail(paginationData) : setPageDetail(paginationData);
+
+  const handleAddToGroupClick = () => {
+    if (selectedRows.length < 1) {
+      notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
+    } else {
+      setShowAddToGroupModal(true);
+    }
+  };
 
   useEffect(() => {
     fetchFiltersData();
@@ -108,7 +116,7 @@ const Gradebook = ({
           <Link to="/author/assignments">
             <EduButton isGhost>VIEW ASSIGNMENTS</EduButton>
           </Link>
-          <EduButton onClick={() => setShowAddToGroupModal(true)}>
+          <EduButton onClick={handleAddToGroupClick}>
             <IconPlusCircle />
             Add to Student Group
           </EduButton>
@@ -121,16 +129,16 @@ const Gradebook = ({
       ) : (
         <MainContentWrapper style={{ display: "inline-flex" }}>
           {showFilter && (
-            <ScrollbarContainer height={windowHeight - 120}>
-              <GradebookFilters
-                data={curatedFiltersData}
-                filters={filters}
-                updateFilters={setFilters}
-                clearFilters={setInitialFilters}
-                onNewGroupClick={() => setShowAddToGroupModal(true)}
-              />
-            </ScrollbarContainer>
-          )}
+          <ScrollbarContainer height={windowHeight - 120}>
+            <GradebookFilters
+              data={curatedFiltersData}
+              filters={filters}
+              updateFilters={setFilters}
+              clearFilters={setInitialFilters}
+              onNewGroupClick={handleAddToGroupClick}
+            />
+          </ScrollbarContainer>
+            )}
           <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
             <IconFilter width={20} height={20} />
           </FilterButton>
@@ -138,58 +146,58 @@ const Gradebook = ({
             <TableContainer showFilter={showFilter}>
               <Spin />
             </TableContainer>
-          ) : (
-            <TableContainer showFilter={showFilter}>
-              <TableHeader>
-                <LeftArrow
-                  onClick={() => handlePagination({ ...pagination, assignmentPage: pagination.assignmentPage - 1 })}
-                  disabled={pagination.assignmentPage === 1}
+            ) : (
+              <TableContainer showFilter={showFilter}>
+                <TableHeader>
+                  <LeftArrow
+                    onClick={() => handlePagination({ ...pagination, assignmentPage: pagination.assignmentPage - 1 })}
+                    disabled={pagination.assignmentPage === 1}
+                  />
+                  <RightArrow
+                    onClick={() => handlePagination({ ...pagination, assignmentPage: pagination.assignmentPage + 1 })}
+                    disabled={
+                        assignmentsCount === 0 ||
+                        pagination.assignmentPage === Math.ceil(assignmentsCount / pagination.assignmentPageSize)
+                      }
+                  />
+                </TableHeader>
+                <GradebookTable
+                  data={curatedData}
+                  assessments={assessmentsData}
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
+                  windowWidth={windowWidth}
+                  windowHeight={windowHeight}
                 />
-                <RightArrow
-                  onClick={() => handlePagination({ ...pagination, assignmentPage: pagination.assignmentPage + 1 })}
-                  disabled={
-                    assignmentsCount === 0 ||
-                    pagination.assignmentPage === Math.ceil(assignmentsCount / pagination.assignmentPageSize)
-                  }
-                />
-              </TableHeader>
-              <GradebookTable
-                data={curatedData}
-                assessments={assessmentsData}
-                selectedRows={selectedRows}
-                setSelectedRows={setSelectedRows}
-                windowWidth={windowWidth}
-                windowHeight={windowHeight}
-              />
-              <TableFooter>
-                <GradebookStatusColors />
-                {/* NOTE: When status filter is set, assignment pagination is dependent on student pagination */}
-                <Pagination
-                  current={pagination.studentPage}
-                  pageSize={pagination.studentPageSize}
-                  onChange={studentPage =>
-                    handlePagination({
-                      ...pagination,
-                      ...(filters.status ? { assignmentPage: 1 } : {}),
-                      studentPage
-                    })
-                  }
-                  onShowSizeChange={(_, studentPageSize) =>
-                    handlePagination({
-                      ...pagination,
-                      ...(filters.status ? { assignmentPage: 1 } : {}),
-                      studentPage: 1,
-                      studentPageSize
-                    })
-                  }
-                  total={studentsCount}
-                  showSizeChanger={false}
-                />
-              </TableFooter>
-            </TableContainer>
-          )}
+                <TableFooter>
+                  <GradebookStatusColors />
+                  {/* NOTE: When status filter is set, assignment pagination is dependent on student pagination */}
+                  <Pagination
+                    current={pagination.studentPage}
+                    pageSize={pagination.studentPageSize}
+                    onChange={studentPage =>
+                        handlePagination({
+                          ...pagination,
+                          ...(filters.status ? { assignmentPage: 1 } : {}),
+                          studentPage
+                        })
+                      }
+                    onShowSizeChange={(_, studentPageSize) =>
+                        handlePagination({
+                          ...pagination,
+                          ...(filters.status ? { assignmentPage: 1 } : {}),
+                          studentPage: 1,
+                          studentPageSize
+                        })
+                      }
+                    total={studentsCount}
+                    showSizeChanger={false}
+                  />
+                </TableFooter>
+              </TableContainer>
+              )}
         </MainContentWrapper>
-      )}
+        )}
     </div>
   );
 };

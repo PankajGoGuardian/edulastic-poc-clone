@@ -199,6 +199,7 @@ const ActionContainer = ({
   };
 
   const handleActionMenuClick = ({ key }) => {
+    const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1);
     switch (key) {
       case "enableSpeech":
         if (isEmpty(selectedStudent)) {
@@ -253,10 +254,15 @@ const ActionContainer = ({
         toggleModal("addCoTeacher");
         break;
       case "addToGroup":
-        toggleModal("addToGroup");
+        if (inactiveStudents.length) {
+          notification({ messageKey: "deactivatedStudentSelected" });
+        } else if (selectedStudent.length < 1) {
+          notification({ messageKey: "selectOneOrMoreStudentsForGroup" });
+        } else {
+          toggleModal("addToGroup");
+        }
         break;
       case "mergeStudents": {
-        const inactiveStudents = selectedStudent.filter(s => s.enrollmentStatus !== 1);
         if (inactiveStudents.length) {
           notification({ messageKey: "deactivatedStudentSelected" });
         } else if (selectedStudent.length > 1) {

@@ -13,7 +13,7 @@ const Filters = ({ compareByOptions = [], onFilterChange, filterDropDownCB, ddfi
   const onAnalyseByChange = onDropDownChange("analyseBy");
 
   return (
-    <Row type="flex" justify="end">
+    <Row type="flex" justify="end" align="middle">
       <ControlDropDown
         prefix="Analyse By"
         by={analyseBy}

@@ -1,11 +1,10 @@
 import React, { useState, memo, useEffect, useRef } from "react";
 import { withRouter } from "react-router-dom";
-import { notification } from "@edulastic/common";
+import { notification, useRealtimeV2 , EduButton } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import {
-  extraDesktopWidth,
   mobileWidthMax,
   smallDesktopWidth,
   lightGreySecondary,
@@ -16,11 +15,11 @@ import {
   tabletWidth
 } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
-import { EduButton } from "@edulastic/common";
+
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
-import { Row, Col, message, Icon, Modal } from "antd";
+import { Row, Col, Icon, Modal } from "antd";
 import { TokenStorage } from "@edulastic/api";
 import { maxDueDateFromClassess } from "../utils";
 
@@ -35,6 +34,7 @@ import { ConfirmationModal } from "../../author/src/components/common/Confirmati
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
 import { proxyRole } from "../Login/ducks";
+import { updateTestIdRealTimeAction } from "../sharedDucks/AssignmentModule/ducks";
 
 const isSEB = () => window.navigator.userAgent.includes("SEB");
 
@@ -90,7 +90,8 @@ const AssignmentCard = memo(
     classId,
     user: { role: userRole, _id: userId },
     proxyUserRole,
-    highlightMode
+    highlightMode,
+    updateTestIdRealTime
   }) => {
     const [showAttempts, setShowAttempts] = useState(false);
     const toggleAttemptsView = () => setShowAttempts(prev => !prev);
@@ -99,8 +100,8 @@ const AssignmentCard = memo(
     const [showRetakeModal, setShowRetakeModal] = useState(false);
     const assignmentCardRef = useRef();
 
-    //case: when highlightMode is true i.e if want to highlight and assignment
-    //scoll to specific assignment view
+    // case: when highlightMode is true i.e if want to highlight and assignment
+    // scoll to specific assignment view
     useEffect(() => {
       if (highlightMode) {
         if (assignmentCardRef.current) {
@@ -134,7 +135,10 @@ const AssignmentCard = memo(
       dueDate,
       assignedBy
     } = data;
-
+    const topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
+    useRealtimeV2(topics, {
+      regradedAssignment: payload => updateTestIdRealTime({ assignmentId, ...payload })
+    });
     const currentClassList = clazz.filter(cl => cl._id === classId);
     if (!startDate || !endDate) {
       const maxCurrentClass =
@@ -164,7 +168,7 @@ const AssignmentCard = memo(
 
     // if duedate is not passed get max due date from classAssessments
     if (!dueDate) {
-      //to find all classes have specific student and get max dueDate
+      // to find all classes have specific student and get max dueDate
       dueDate = maxDueDateFromClassess(currentClassList, userId);
     }
 
@@ -181,13 +185,13 @@ const AssignmentCard = memo(
     const attemptCount = newReports && newReports.length;
     const scorePercentage = (score / maxScore) * 100 || 0;
     const arrow = showAttempts ? "\u2191" : "\u2193";
-    //To handle regrade reduce max attempt settings.
+    // To handle regrade reduce max attempt settings.
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
       maxAttempts = reports.length;
     }
     const startTest = () => {
       if (endDate < Date.now()) {
-        notification({ messageKey:"testIsExpired"});
+        notification({ messageKey: "testIsExpired" });
         return;
       }
 
@@ -416,8 +420,18 @@ const AssignmentCard = memo(
                 {isValidAttempt && (
                   <React.Fragment>
                     <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
-                      {attemptCount > 1 && <span data-cy="attemptsCount"> {attemptCount}/{maxAttempts} </span>}
-                      {attemptCount > 1 && <AttemptsTitle data-cy="attemptClick"> {arrow} &nbsp; &nbsp; {t("common.attemps")} </AttemptsTitle>}
+                      {attemptCount > 1 && (
+                        <span data-cy="attemptsCount">
+                          {" "}
+                          {attemptCount}/{maxAttempts}{" "}
+                        </span>
+                      )}
+                      {attemptCount > 1 && (
+                        <AttemptsTitle data-cy="attemptClick">
+                          {" "}
+                          {arrow} &nbsp; &nbsp; {t("common.attemps")}{" "}
+                        </AttemptsTitle>
+                      )}
                     </Attempts>
                     {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}
                   </React.Fragment>
@@ -466,7 +480,8 @@ const enhance = compose(
     }),
     {
       startAssignment: startAssignmentAction,
-      resumeAssignment: resumeAssignmentAction
+      resumeAssignment: resumeAssignmentAction,
+      updateTestIdRealTime: updateTestIdRealTimeAction
     },
     undefined, // (a, b, c) => ({ ...a, ...b, ...c }), // mergeProps
     { pure: false }

@@ -21,6 +21,7 @@ export const ADD_EVALUATION = "add evaluation";
 export const RERENDER_ASSIGNMENTS = "[studentAssignments] rerender assignments";
 export const REMOVE_ASSIGNMENT = "[studentAssignments] remove assignment";
 export const REGRADE_ASSIGNMENT_REALTIME = "[studentAssessmentPlayer] regrade assessment realtime";
+export const UPDATE_REALTIME_ASSIGNMENT_TEST_ID = "[studentAssignments] update test id real time";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -31,6 +32,7 @@ export const addRealtimeAssignmentAction = createAction(ADD_ASSIGNMENT_REALTIME)
 export const rerenderAssignmentsAction = createAction(RERENDER_ASSIGNMENTS);
 export const removeAssignmentAction = createAction(REMOVE_ASSIGNMENT);
 export const regradedRealtimeAssignmentAction = createAction(REGRADE_ASSIGNMENT_REALTIME);
+export const updateTestIdRealTimeAction = createAction(UPDATE_REALTIME_ASSIGNMENT_TEST_ID);
 
 // initial State
 const initialState = {
@@ -94,6 +96,19 @@ export default createReducer(initialState, {
   },
   [REGRADE_ASSIGNMENT_REALTIME]: (state, { payload }) => {
     state.regradedAssignment = payload;
+  },
+  [UPDATE_REALTIME_ASSIGNMENT_TEST_ID]: (state, { payload }) => {
+    const { newTestId, oldTestId, assignmentId } = payload;
+    if (
+      state.byId[assignmentId] &&
+      state.byId[assignmentId].testId !== newTestId &&
+      state.byId[assignmentId].testId === oldTestId
+    ) {
+      state.byId[assignmentId] = {
+        ...state.byId[assignmentId],
+        testId: newTestId
+      };
+    }
   }
 });
 

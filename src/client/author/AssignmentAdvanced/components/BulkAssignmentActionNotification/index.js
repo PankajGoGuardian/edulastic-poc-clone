@@ -23,7 +23,8 @@ const NotificationListener = ({
   location,
   fetchAssignmentClassList,
   fetchAssignmentsSummaryAction,
-  setBulkActionStatus
+  setBulkActionStatus,
+  history
 }) => {
   const [notificationIds, setNotificationIds] = useState([]);
   let districtId = "";
@@ -92,6 +93,18 @@ const NotificationListener = ({
         if (districtId && testId && testType && action !== DOWNLOAD_GRADES_AND_RESPONSE) {
           fetchAssignmentsSummaryAction({ districtId });
           fetchAssignmentClassList({ districtId, testId, testType });
+        }
+
+        // if user at assignments home page and bulk action has been processed successfully
+        const isAssignmentsHomePage =
+          !districtId &&
+          !testId &&
+          !testType &&
+          location?.pathname?.includes("author/assignments") &&
+          statusCode == 200;
+
+        if (isAssignmentsHomePage) {
+          history.push("author/assignments");
         }
         setBulkActionStatus(false);
       }

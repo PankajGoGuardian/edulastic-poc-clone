@@ -94,11 +94,11 @@ class Assignments extends Component {
     };
     if (
       (userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN) &&
-      !storedFilters.hasOwnProperty("testType")
+      !Object.prototype.hasOwnProperty.call(storedFilters, "testType")
     ) {
       filters.testType = testConstants.type.COMMON;
     }
-    if (defaultTermId && !storedFilters.hasOwnProperty("termId")) {
+    if (defaultTermId && !Object.prototype.hasOwnProperty.call(storedFilters, "termId")) {
       const isTermExists = terms.some(({ _id }) => _id === defaultTermId);
       filters.termId = isTermExists ? defaultTermId : "";
     }
@@ -131,18 +131,22 @@ class Assignments extends Component {
   };
 
   toggleDeleteModal = currentTestId => {
-    const { toggleDeleteAssignmentModalAction } = this.props;
-    toggleDeleteAssignmentModalAction(true);
+    const { toggleDeleteAssignmentModal } = this.props;
+    toggleDeleteAssignmentModal(true);
     this.setState({ currentTestId });
   };
 
-  togglePrintModal = (currentTestId = "") =>
-    this.setState({ openPrintModal: !this.state.openPrintModal, currentTestId });
+  togglePrintModal = (currentTestId = "") => {
+    const { openPrintModal } = this.state;
+    this.setState({ openPrintModal: !openPrintModal, currentTestId });
+  };
 
   gotoPrintView = data => {
     const { type, customValue } = data;
+    const { currentTestId } = this.state;
+
     window.open(
-      `/author/printAssessment/${this.state.currentTestId}?type=${type}&qs=${type === "custom" ? customValue : ""}`,
+      `/author/printAssessment/${currentTestId}?type=${type}&qs=${type === "custom" ? customValue : ""}`,
       "_blank"
     );
     this.togglePrintModal();
@@ -187,11 +191,11 @@ class Assignments extends Component {
   );
 
   toggleFilter = () => {
-    const { filterState } = this.state;
     this.setState(
       prev => ({ filterState: { ...prev.filterState, showFilter: !prev.filterState.showFilter } }),
       () => {
-        sessionStorage.setItem("filters[Assignments]", JSON.stringify(this.state.filterState));
+        const { filterState } = this.state;
+        sessionStorage.setItem("filters[Assignments]", JSON.stringify(filterState));
       }
     );
   };
@@ -246,7 +250,7 @@ class Assignments extends Component {
           onOk={this.onEnableEdit}
         />
         {toggleDeleteAssignmentModalState ? (
-          <DeleteAssignmentModal testId={currentTestId} testName={currentTest?.title} />
+          <DeleteAssignmentModal testId={currentTestId} testName={currentTest?.title} testType={currentTest.testType} />
         ) : null}
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -398,7 +402,7 @@ const enhance = compose(
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       setAssignmentFilters: setAssignmentFiltersAction,
       toggleAssignmentView: toggleAssignmentViewAction,
-      toggleDeleteAssignmentModalAction
+      toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction
     }
   )
 );

@@ -1,6 +1,7 @@
 import { EduButton, CustomModalStyled } from "@edulastic/common";
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { roleuser } from "@edulastic/constants";
 import {
   InitOptions,
   LightGreenSpan,
@@ -13,6 +14,8 @@ import {
   toggleDeleteAssignmentModalAction
 } from "../../../sharedDucks/assignments";
 import { deleteAssignmentAction as deleteAssigmnetByClass } from "../../../TestPage/components/Assign/ducks";
+import { bulkUnassignAssignmentAction } from "../../../AssignmentAdvanced/ducks";
+import { getUserRole } from "../../../src/selectors/user";
 
 const DeleteAssignmentModal = ({
   toggleDeleteAssignmentModalState,
@@ -25,7 +28,10 @@ const DeleteAssignmentModal = ({
   classId,
   lcb,
   advancedAssignments,
-  handleUnassignAssignments
+  handleUnassignAssignments,
+  bulkUnassignAssignmentRequest,
+  testType,
+  userRole
 }) => {
   const [confirmText, setConfirmText] = useState("");
   const handleUnassign = () => {
@@ -35,6 +41,15 @@ const DeleteAssignmentModal = ({
       }
       if (advancedAssignments) {
         return handleUnassignAssignments();
+      }
+
+      if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
+        bulkUnassignAssignmentRequest({
+          data: {},
+          testId,
+          testType
+        });
+        return toggleDeleteAssignmentModal(false);
       }
       deleteAssignmetByTestIdRequest(testId);
     }
@@ -88,12 +103,14 @@ const DeleteAssignmentModal = ({
 
 const ConnectedDeleteAssignmentModal = connect(
   state => ({
-    toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state)
+    toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state),
+    userRole: getUserRole(state)
   }),
   {
     toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
     deleteAssignmetByTestIdRequest: deleteAssignmetByTestId,
-    deleteAssigmnetByClassRequest: deleteAssigmnetByClass
+    deleteAssigmnetByClassRequest: deleteAssigmnetByClass,
+    bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction
   }
 )(DeleteAssignmentModal);
 

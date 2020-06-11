@@ -25,6 +25,7 @@ import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions
 import { ValidList, qlToFroalaMapping } from "./constants/validList";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import Instructions from "../../components/Instructions";
 
 const getToolBarButtons = item =>
   (item.formattingOptions || [])
@@ -172,6 +173,7 @@ const EssayRichTextPreview = ({
           </div>
         </QuestionContentWrapper>
       </FlexContainer>
+      <Instructions item={item} />
     </StyledPaperWrapper>
   ) : null;
 };

@@ -24,6 +24,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { preventEvent, getFontSize, getSpellCheckAttributes } from "../../utils/helpers";
 import Character from "./components/Character";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import Instructions from "../../components/Instructions";
 
 const EssayPlainTextPreview = ({
   col,
@@ -212,6 +213,7 @@ const EssayPlainTextPreview = ({
           )}
         </QuestionContentWrapper>
       </FlexContainer>
+      <Instructions item={item} />
     </StyledPaperWrapper>
   );
 };

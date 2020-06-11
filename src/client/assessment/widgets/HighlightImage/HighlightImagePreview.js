@@ -21,6 +21,7 @@ import Scratch from "../../components/Scratch";
 import { PreviewContainer } from "./styled/PreviewContainer";
 import DEFAULT_IMAGE from "../../assets/highlightImageBackground.svg";
 import { s3ImageBucketPath } from "../../../config";
+import Instructions from "../../components/Instructions";
 
 const HighlightImagePreview = ({
   view,
@@ -72,6 +73,7 @@ const HighlightImagePreview = ({
           </QuestionContentWrapper>
         </FlexContainer>
       </PreviewContainer>
+      <Instructions item={item} />
     </ResolvedWrapper>
   );
 };

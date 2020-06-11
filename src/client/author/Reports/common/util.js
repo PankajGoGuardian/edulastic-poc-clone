@@ -255,7 +255,7 @@ export const getFormattedName = name => {
 };
 
 export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) => {
-  const assignments = map(studentStandardData, data => {
+  const assignments = studentStandardData.sort((a,b) => a.insertedAt - b.insertedAt).map(data => {
     const score = round(percentage(data.obtainedScore, data.maxScore));
     const scale = getProficiencyBand(score, scaleInfo);
 

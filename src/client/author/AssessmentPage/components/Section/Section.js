@@ -4,8 +4,8 @@ import { isEmpty } from "lodash";
 
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 
+import { notification } from "@edulastic/common";
 import { SectionWrapper, SectionTitle, SectionForm, SectionFormConfirmButton, Actions } from "./styled";
-import { message } from "antd";
 
 export default class Section extends React.Component {
   static propTypes = {

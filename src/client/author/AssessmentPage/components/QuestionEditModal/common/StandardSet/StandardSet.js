@@ -35,7 +35,8 @@ const StandardSet = ({
   getCurriculumStandards,
   curriculumStandards,
   curriculumStandardsLoading,
-  isDocBased
+  isDocBased,
+  showIconBrowserBtn
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
 
@@ -83,7 +84,7 @@ const StandardSet = ({
     }
   };
 
-  const handleCreateGradeAndSubjects = () => {};
+  const handleCreateGradeAndSubjects = () => { };
 
   return (
     <>
@@ -104,6 +105,7 @@ const StandardSet = ({
           editAlignment={handleEditAlignment}
           createUniqGradeAndSubjects={handleCreateGradeAndSubjects}
           isDocBased={isDocBased}
+          showIconBrowserBtn={showIconBrowserBtn}
         />
       </ThemeProvider>
     </>

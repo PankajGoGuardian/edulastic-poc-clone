@@ -5,9 +5,8 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import PropTypes from "prop-types";
-import { sortBy, maxBy, get, uniqBy } from "lodash";
+import { sortBy, maxBy, uniqBy } from "lodash";
 import { SortableElement, sortableHandle, SortableContainer } from "react-sortable-hoc";
-import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import {
@@ -94,7 +93,7 @@ const SortableQuestionItem = SortableElement(
         testMode={testMode}
       />
     </div>
-  )
+    )
 );
 
 const defaultQuestionValue = {
@@ -177,7 +176,7 @@ const typeTitleHash = {
   [ESSAY_PLAIN_TEXT]: "Essay with plain text"
 };
 
-const createQuestion = (type, index, isDocBased = false) => ({
+const createQuestion = (type, index, isDocBased = false, docBasedCommonData = {}) => ({
   id: uuid(),
   qIndex: index,
   title: typeTitleHash[type],
@@ -196,6 +195,7 @@ const createQuestion = (type, index, isDocBased = false) => ({
   stimulus: "",
   smallSize: true,
   alignment: [],
+  ...docBasedCommonData,
   ...(type === CLOZE_DROP_DOWN ? clozeDropDownData : {}),
   ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),
   ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
@@ -296,7 +296,7 @@ class Questions extends React.Component {
     }
   };
 
-  handleAddQuestion = (type, index, modalQuestionId) => () => {
+  handleAddQuestion = (type, index, modalQuestionId, docBasedCommonData = {}) => () => {
     const { addQuestion, list, isDocBased = false } = this.props;
     const questions = list.filter(q => q.type !== "sectionLabel");
 
@@ -305,7 +305,7 @@ class Questions extends React.Component {
     const questionIndex =
       index || (lastQuestion && lastQuestion.qIndex ? lastQuestion.qIndex + 1 : questions.length + 1);
 
-    const question = createQuestion(type, questionIndex, isDocBased);
+    const question = createQuestion(type, questionIndex, isDocBased, docBasedCommonData);
     addQuestion(question);
 
     const questionIdToOpen = modalQuestionId - 1 || list.length;
@@ -466,7 +466,6 @@ class Questions extends React.Component {
       onDragStart,
       review,
       testMode,
-      isDocBased,
       reportMode,
       onHighlightQuestion
     } = this.props;
@@ -516,7 +515,7 @@ class Questions extends React.Component {
                     testMode={testMode}
                     onHighlightQuestion={onHighlightQuestion}
                   />
-                )
+                  )
               )}
             </PerfectScrollbar>
           </QuestionWidgetWrapper>

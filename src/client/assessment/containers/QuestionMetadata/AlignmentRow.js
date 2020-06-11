@@ -5,6 +5,7 @@ import { get, pick as _pick } from "lodash";
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
+import { IconExpandBox } from "@edulastic/icons";
 import { getDefaultInterests, setDefaultInterests } from "../../../author/dataUtils";
 import { updateDefaultCurriculumAction } from "../../../author/src/actions/dictionaries";
 import {
@@ -22,7 +23,7 @@ import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 import CustomTreeSelect from "./CustomTreeSelect";
 import RecentStandardsList from "./RecentStandardsList";
 import StandardsModal from "./StandardsModal";
-import BrowseButton from "./styled/BrowseButton";
+import { BrowseButton, IconWrapper } from "./styled/BrowseButton";
 import { ItemBody } from "./styled/ItemBody";
 
 const AlignmentRow = ({
@@ -34,7 +35,6 @@ const AlignmentRow = ({
   alignment,
   alignmentIndex,
   qId,
-  onDelete,
   handleUpdateQuestionAlignment,
   curriculumStandardsLoading,
   editAlignment,
@@ -51,9 +51,10 @@ const AlignmentRow = ({
   interestedCurriculums,
   recentStandardsList = [],
   isDocBased = false,
-  authorQuestionStatus = false
+  authorQuestionStatus = false,
+  showIconBrowserBtn = false
 }) => {
-  let {
+  const {
     subject = "Mathematics",
     curriculumId = 212,
     curriculum = "Math - Common Core",
@@ -155,9 +156,7 @@ const AlignmentRow = ({
   const handleAddStandard = newStandard => {
     userUpdate.current = true;
 
-    let newStandards = standards.some(standard => {
-      return standard._id === newStandard._id;
-    });
+    let newStandards = standards.some(standard => standard._id === newStandard._id);
     if (newStandards) {
       newStandards = standards.filter(standard => standard._id !== newStandard._id);
     } else {
@@ -240,6 +239,7 @@ const AlignmentRow = ({
       };
     }
   }, []);
+
   return (
     <Fragment>
       {showModal && (
@@ -270,7 +270,7 @@ const AlignmentRow = ({
                 data-cy="subjectStandardSet"
                 title={`${curriculum}${curriculum && grades.length ? " - " : ""}${grades.length ? "Grade - " : ""}${
                   grades.length ? grades : ""
-                }`}
+                  }`}
                 style={{ marginTop: 11 }}
               >
                 <Fragment>
@@ -289,8 +289,8 @@ const AlignmentRow = ({
                             {text}
                           </Select.Option>
                         ) : (
-                          ""
-                        )
+                            ""
+                          )
                       )}
                     </Select>
                   </ItemBody>
@@ -383,13 +383,18 @@ const AlignmentRow = ({
             </Col>
           </Row>
         </Col>
-        <Col md={4}>
-          <ItemBody>
-            <FlexContainer>
-              <BrowseButton onClick={handleShowBrowseModal}>{t("component.options.browse")}</BrowseButton>
-            </FlexContainer>
-          </ItemBody>
-        </Col>
+        {showIconBrowserBtn ?
+          (<IconWrapper>
+            <IconExpandBox onClick={handleShowBrowseModal} />
+          </IconWrapper>)
+          : (<Col md={4}>
+            <ItemBody>
+              <FlexContainer>
+                <BrowseButton onClick={handleShowBrowseModal}>{t("component.options.browse")}</BrowseButton>
+              </FlexContainer>
+            </ItemBody>
+          </Col>)}
+
         {recentStandardsList && recentStandardsList.length > 0 && isDocBased && (
           <Col xs={24}>
             <RecentStandardsList

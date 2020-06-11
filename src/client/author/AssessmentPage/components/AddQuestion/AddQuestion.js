@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Tooltip } from "../../../../common/utils/helpers";
 import {
   SHORT_TEXT,
   MULTIPLE_CHOICE,
@@ -10,6 +9,7 @@ import {
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
 import { IconNewList, IconMath, IconTrueFalse, IconPencilHollow, IconTextEntry, IconDropDown } from "@edulastic/icons";
+import { Tooltip } from "../../../../common/utils/helpers";
 
 import AddBulkModal from "../AddBulkModal/AddBulkModal";
 import { AddQuestionWrapper, AddQuestionIcon, QuestionTypes, ContentWrapper, AddButton } from "./styled";
@@ -25,12 +25,12 @@ class AddQuestion extends React.Component {
     }));
   };
 
-  handleApply = ({ number, type, startingIndex }) => {
+  handleApply = ({ number, type, startingIndex, alignment, authorDifficulty, depthOfKnowledge }) => {
     const { onAddQuestion, scrollToBottom } = this.props;
 
     for (let i = 0; i < number; i++) {
       const index = startingIndex + i;
-      onAddQuestion(type, index, startingIndex)();
+      onAddQuestion(type, index, startingIndex, { alignment, authorDifficulty, depthOfKnowledge })();
     }
 
     this.toggleBulkModal();

@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Button } from "antd";
+import { themeColor } from "@edulastic/colors";
 
-const BrowseButton = styled(Button)`
+export const BrowseButton = styled(Button)`
   text-transform: uppercase;
   color: ${props => props.theme.questionMetadata.selectSuffixIconColor};
   font-weight: 600;
@@ -12,4 +13,12 @@ const BrowseButton = styled(Button)`
   }
 `;
 
-export default BrowseButton;
+export const IconWrapper = styled.div`
+  position: absolute;
+  right: 140px;
+  top: 22px;
+  z-index: 1;
+  color: ${themeColor};
+  cursor: pointer;
+`;
+

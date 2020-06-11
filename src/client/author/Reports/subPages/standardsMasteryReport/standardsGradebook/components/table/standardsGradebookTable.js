@@ -220,7 +220,11 @@ export const StandardsGradebookTable = ({
               }
             }}
           >
-            {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
+            {tableDdFilters.analyseBy === "score(%)"
+              ? `${data}%`
+              : tableDdFilters.analyseBy === "rawScore"
+              ? `${data}/${record.totalMaxScore}`
+              : data}
           </Link>
         )
       },

@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { capitalize } from "lodash";
 
 // components
-import { Spin, Select, Input, message } from "antd";
-import { EduButton,notification } from "@edulastic/common";
+import { Spin, Select, Input } from "antd";
+import { EduButton, notification } from "@edulastic/common";
 import { IconClever, IconClose } from "@edulastic/icons";
 import { StyledSelect, ClassListModal, ModalClassListTable, InstitutionSelectWrapper } from "./styled";
 
@@ -24,7 +24,9 @@ const ClassSelectModal = ({
   courseList,
   getStandardsListBySubject,
   refreshPage,
-  allowedInstitutions
+  allowedInstitutions,
+  defaultGrades = [],
+  defaultSubjects = []
 }) => {
   const [classListData, setClassListData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -121,7 +123,7 @@ const ClassSelectModal = ({
         align: "center",
         render: (data, row, index) => (
           <StyledSelect
-            value={data}
+            value={data || defaultGrades}
             mode="multiple"
             placeholder="Select Grades"
             disabled={row.disabled}
@@ -149,7 +151,7 @@ const ClassSelectModal = ({
         render: (data, row, index) => (
           <StyledSelect
             style={{ minWidth: "80px" }}
-            value={data}
+            value={data || defaultSubjects[0]}
             placeholder="Select Subject"
             disabled={row.disabled}
             onChange={subject => {

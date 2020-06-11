@@ -20,7 +20,6 @@ import ShowSyncDetailsModal from "./ShowSyncDetailsModal";
 const ClassListContainer = ({
   groups,
   archiveGroups,
-  groupsLoading,
   googleCourseList,
   courseList,
   googleAllowedInstitutions,
@@ -38,7 +37,9 @@ const ClassListContainer = ({
   cleverClassList,
   fetchCleverClassList,
   syncCleverClassList,
-  getStandardsListBySubject
+  getStandardsListBySubject,
+  defaultGrades = [],
+  defaultSubjects = []
 }) => {
   const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
 
@@ -82,6 +83,8 @@ const ClassListContainer = ({
         courseList={courseList}
         getStandardsListBySubject={getStandardsListBySubject}
         allowedInstitutions={googleAllowedInstitutions}
+        defaultGrades={defaultGrades}
+        defaultSubjects={defaultSubjects}
       />
       <ShowSyncDetailsModal
         syncClassResponse={syncClassResponse}
@@ -101,14 +104,13 @@ const ClassListContainer = ({
 };
 
 ClassListContainer.propTypes = {
-  setModal: PropTypes.func.isRequired,
   syncClass: PropTypes.func.isRequired,
   groups: PropTypes.array.isRequired,
-  syncClassLoading: PropTypes.bool,
+  syncClassLoading: PropTypes.bool.isRequired,
   archiveGroups: PropTypes.array.isRequired,
   isGoogleModalVisible: PropTypes.bool.isRequired,
   googleCourseList: PropTypes.array.isRequired,
-  updateGoogleCourseList: PropTypes.func
+  updateGoogleCourseList: PropTypes.func.isRequired
 };
 
 export default connect(

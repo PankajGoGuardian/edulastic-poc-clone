@@ -23,7 +23,11 @@ import {
 } from "../ducks";
 import { getDictCurriculumsAction } from "../../src/actions/dictionaries";
 import { receiveSearchCourseAction } from "../../Courses/ducks";
-import { getGoogleAllowedInstitionPoliciesSelector } from "../../src/selectors/user";
+import {
+  getGoogleAllowedInstitionPoliciesSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector
+} from "../../src/selectors/user";
 
 const ManageClass = ({
   fetchGroups,
@@ -93,7 +97,9 @@ ManageClass.propTypes = {
   syncClass: PropTypes.func.isRequired,
   groups: PropTypes.array.isRequired,
   isGoogleModalVisible: PropTypes.bool.isRequired,
-  googleCourseList: PropTypes.array.isRequired
+  googleCourseList: PropTypes.array.isRequired,
+  defaultGrades: PropTypes.array.isRequired,
+  defaultSubjects: PropTypes.array.isRequired
 };
 
 const enhance = compose(
@@ -109,7 +115,9 @@ const enhance = compose(
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       syncClassResponse: get(state, "manageClass.syncClassResponse", {}),
       syncClassLoading: get(state, "manageClass.syncClassLoading", false),
-      googleCourseList: getGoogleCourseListSelector(state)
+      googleCourseList: getGoogleCourseListSelector(state),
+      defaultGrades: getInterestedGradesSelector(state),
+      defaultSubjects: getInterestedSubjectsSelector(state)
     }),
     {
       fetchGroups: fetchGroupsAction,

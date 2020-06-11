@@ -1247,7 +1247,7 @@ function* publishTestItemSaga({ payload }) {
       let successMessage;
       let testItemStatus;
       if (payload.status === "published") {
-        successMessage = "Item saved successfully. Item not visible? Clear the applied filters.";
+        successMessage = "Item published successfully. Item not visible? Clear the applied filters.";
         testItemStatus = testItemStatusConstants.PUBLISHED;
       } else {
         successMessage = "Review request is submitted successfully.";

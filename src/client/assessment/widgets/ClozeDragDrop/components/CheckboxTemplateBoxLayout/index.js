@@ -32,7 +32,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
     evaluation = [],
     onDropHandler = () => {},
     responseIDs,
-    maxWidth,
     globalSettings,
     disableResponse
   } = resprops;
@@ -49,11 +48,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
   const heightpx = (response && response.heightpx) || btnStyle.heightpx;
   const widthpx = (response && response.widthpx) || btnStyle.widthpx;
   btnStyle.minWidth = !globalSettings ? (widthpx ? `${widthpx}px` : "auto") : "auto";
-  btnStyle.height = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
-
-  if (maxWidth) {
-    btnStyle.maxWidth = maxWidth;
-  }
+  btnStyle.height = "auto";
+  btnStyle.minHeight = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
 
   const getFormulaLabel = () => {
     let formulaLabel = "";

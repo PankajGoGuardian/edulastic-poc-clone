@@ -2,13 +2,12 @@ import styled from "styled-components";
 
 export const IndexBox = styled.div`
   width: 40px;
-  height: 100%;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   display: flex;
+  align-self: stretch;
   justify-content: center;
   align-items: center;
-  flex-shrink: 0;
   ${({ theme, checked, correct }) => `
     background: ${
       !checked && !correct

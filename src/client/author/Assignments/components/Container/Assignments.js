@@ -21,7 +21,6 @@ import {
   setAssignmentFiltersAction
 } from "../../../src/actions/assignments";
 import { releaseScoreAction } from "../../../src/actions/classBoard";
-import { receiveFolderAction } from "../../../src/actions/folder";
 import TestPreviewModal from "./TestPreviewModal";
 import {
   getAssignmentsSummary,
@@ -82,7 +81,7 @@ class Assignments extends Component {
   };
 
   componentDidMount() {
-    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, userRole, orgData } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, districtId, userRole, orgData } = this.props;
 
     const { defaultTermId, terms } = orgData;
     const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
@@ -105,12 +104,12 @@ class Assignments extends Component {
     if (!defaultTermId) {
       filters.termId = storedFilters.termId || "";
     }
-    if(userRole == roleuser.TEACHER) {
+    if (userRole == roleuser.TEACHER) {
       loadAssignments({ filters });
     } else {
       loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
     }
-    
+
     this.setState({ filterState: filters });
   }
 
@@ -240,7 +239,11 @@ class Assignments extends Component {
     const { showFilter = false } = filterState;
     const tabletWidth = 768;
 
-    const currentTest = find(tests, o => o._id === currentTestId);
+    let currentTest = find(tests, o => o._id === currentTestId);
+    if (!currentTest) {
+      currentTest = find(assignmentsSummary, o => o.testId === currentTestId);
+    }
+
     return (
       <div>
         <EditTestModal
@@ -250,7 +253,11 @@ class Assignments extends Component {
           onOk={this.onEnableEdit}
         />
         {toggleDeleteAssignmentModalState ? (
-          <DeleteAssignmentModal testId={currentTestId} testName={currentTest?.title} testType={currentTest.testType} />
+          <DeleteAssignmentModal
+            testId={currentTestId}
+            testName={currentTest?.title}
+            testType={currentTest?.testType}
+          />
         ) : null}
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -260,7 +267,13 @@ class Assignments extends Component {
           currentAssignmentId={currentAssignmentId}
           currentAssignmentClass={currentAssignmentClass}
         />
-        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal} currentTestId={currentTestId} />}
+        {openPrintModal && (
+          <PrintTestModal
+            onProceed={this.gotoPrintView}
+            onCancel={this.togglePrintModal}
+            currentTestId={currentTestId}
+          />
+        )}
         <ListHeader
           onCreate={this.handleCreate}
           createAssignment
@@ -327,7 +340,7 @@ class Assignments extends Component {
                           status={filterState.status}
                           togglePrintModal={this.togglePrintModal}
                         />
-                        )}
+                      )}
                     </StyledCard>
                   </TableWrapper>
                 </>
@@ -337,7 +350,7 @@ class Assignments extends Component {
                   tests={tests}
                   onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                 />
-                )}
+              )}
             </Main>
           </FlexContainer>
         </Container>
@@ -354,7 +367,6 @@ class Assignments extends Component {
 Assignments.propTypes = {
   assignmentsSummary: PropTypes.array,
   loadAssignmentsSummary: PropTypes.func.isRequired,
-  loadFolders: PropTypes.func.isRequired,
   assignmentsByTestId: PropTypes.object.isRequired,
   loadAssignments: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
@@ -394,7 +406,6 @@ const enhance = compose(
     }),
     {
       loadAssignments: receiveAssignmentsAction,
-      loadFolders: receiveFolderAction,
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       loadAssignmentById: receiveAssignmentByIdAction,
       updateReleaseScoreSettings: updateReleaseScoreSettingsAction,

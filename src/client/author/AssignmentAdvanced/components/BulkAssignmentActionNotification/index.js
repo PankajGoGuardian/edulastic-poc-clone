@@ -44,7 +44,8 @@ const NotificationListener = ({
     Fbs.db
       .collection(collectionName)
       .doc(docId)
-      .delete();
+      .delete()
+      .catch(err => console.error(err));
   };
 
   const onNotificationClick = (e, docId) => {

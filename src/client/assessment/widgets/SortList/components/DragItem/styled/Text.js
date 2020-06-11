@@ -12,9 +12,16 @@ export const Text = styled.div`
       : "none"};
   display: flex;
   position: relative;
-  align-items: center;
+  /**
+    removing align-items: center because choice can contain image
+   */
+  overflow: auto;
   .math-formula-display {
-    padding: 4px;
+    /** 
+      To cope up removing align item 
+      current choice box height is 40px
+    */
+    padding: 10px;
     padding-right: ${({ checkStyle }) => (checkStyle ? 40 : 4)}px;
   }
 `;

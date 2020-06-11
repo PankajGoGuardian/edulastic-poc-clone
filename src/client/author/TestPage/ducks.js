@@ -19,6 +19,8 @@ import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testIt
 import moment from "moment";
 import nanoid from "nanoid";
 import produce from "immer";
+import * as Sentry from "@sentry/browser";
+
 import { helpers, notification } from "@edulastic/common";
 import { createGroupSummary } from "./utils";
 import {
@@ -203,6 +205,7 @@ export const UPDATE_CREATING = "[test] create test request initiated";
 export const SET_DEFAULT_SETTINGS_LOADING = "[test] deafult settings loading";
 export const SET_AUTOSELECT_ITEMS_FETCHING_STATUS = "[test] set autoselect items fetching status";
 export const SET_REGRADING_STATE = "[test] set regrading state";
+export const SET_EDIT_ENABLE = "[test] set enable edit state";
 
 // actions
 
@@ -235,6 +238,7 @@ export const setIsCreatingAction = createAction(UPDATE_CREATING);
 export const setDefaultSettingsLoadingAction = createAction(SET_DEFAULT_SETTINGS_LOADING);
 export const setAutoselectItemsFetchingStatusAction = createAction(SET_AUTOSELECT_ITEMS_FETCHING_STATUS);
 export const setRegradingStateAction = createAction(SET_REGRADING_STATE);
+export const setEditEnableAction = createAction(SET_EDIT_ENABLE);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false, playlistId = undefined) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -602,7 +606,8 @@ const initialState = {
   defaultTestTypeProfiles: {},
   currentGroupIndex: 0,
   isFetchingAutoselectItems: false,
-  regrading: false
+  regrading: false,
+  editEnable: false
 };
 
 export const testTypeAsProfileNameType = {
@@ -956,6 +961,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         regrading: payload
+      };
+    case SET_EDIT_ENABLE:
+      return {
+        ...state,
+        editEnable: payload
       };
     default:
       return state;
@@ -1862,6 +1872,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
 
 function* duplicateTestSaga({ payload }) {
   yield put(setTestsLoadingAction(true));
+  const { onRegrade = false } = payload;
   try {
     const { _id, title, currentTab, isInEditAndRegrade = false } = payload;
     const data = yield call(assignmentApi.duplicateAssignment, { _id, title, isInEditAndRegrade });
@@ -1871,6 +1882,14 @@ function* duplicateTestSaga({ payload }) {
   } catch (e) {
     yield put(setTestsLoadingAction(false));
     console.warn("error", e, e.stack);
+    Sentry.captureException(e);
+    if (onRegrade === true && e?.status === 403) {
+      yield put(setEditEnableAction(false));
+      yield put(setTestDataAction({ isUsed: false }));
+      yield put(setCreateSuccessAction());
+      return notification({ msg: "Duplicating the test permission denied and failed to regrade" });
+    }
+    return notification({ msg: e?.data?.message || "Failed to duplicate test" });
   }
 }
 

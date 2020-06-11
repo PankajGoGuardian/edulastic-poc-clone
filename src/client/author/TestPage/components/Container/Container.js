@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin, message } from "antd";
+import { Spin } from "antd";
 import { withRouter, Prompt } from "react-router-dom";
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
@@ -36,7 +36,8 @@ import {
   getReleaseScorePremiumSelector,
   approveOrRejectSingleTestRequestAction,
   updateLastUsedCollectionListAction,
-  removeTestEntityAction
+  removeTestEntityAction,
+  setEditEnableAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -157,7 +158,6 @@ class Container extends PureComponent {
 
   state = {
     showModal: false,
-    editEnable: false,
     showShareModal: false,
     isShowFilter: true,
     showCancelButton: false,
@@ -201,7 +201,8 @@ class Container extends PureComponent {
       userRole,
       isReleaseScorePremium,
       location: _location,
-      fetchAssignmentsByTest
+      fetchAssignmentsByTest,
+      setEditEnable
     } = this.props;
     if (userRole !== roleuser.STUDENT) {
       const self = this;
@@ -210,7 +211,7 @@ class Container extends PureComponent {
         this.handleNavChange("review", true)();
       }
       if (createdItems.length > 0) {
-        this.setState({ editEnable: true });
+        setEditEnable(true);
         if (_location?.state?.showItemAddedMessage) {
           const msg = (
             <span>
@@ -242,7 +243,8 @@ class Container extends PureComponent {
         }
       }
       if (showCancelButton) {
-        this.setState({ editEnable: true, showCancelButton });
+        setEditEnable(true);
+        this.setState({ showCancelButton });
       }
 
       if (editAssigned) {
@@ -274,10 +276,12 @@ class Container extends PureComponent {
       studentAssignments,
       loadingAssignments,
       startAssignment,
-      resumeAssignment
+      resumeAssignment,
+      setEditEnable,
+      editEnable
     } = this.props;
 
-    const { testLoaded, editEnable, studentRedirected } = this.state;
+    const { testLoaded, studentRedirected } = this.state;
 
     if (userRole !== roleuser.STUDENT) {
       if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
@@ -288,13 +292,12 @@ class Container extends PureComponent {
       const { editAssigned = false } = history.location.state || {};
 
       if (editAssigned && test?._id && !testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
-        this.onEnableEdit();
+        this.onEnableEdit(true);
       }
       if (editAssigned && test?._id && !editEnable && test.isInEditAndRegrade && !isTestLoading) {
         const canEdit = test.authors?.some(x => x._id === userId);
         if (canEdit) {
-          // eslint-disable-next-line react/no-did-update-set-state
-          this.setState({ editEnable: true });
+          setEditEnable(true);
         }
       }
       if (test._id && !testLoaded && !isTestLoading) {
@@ -324,10 +327,11 @@ class Container extends PureComponent {
       userId,
       testStatus,
       questionsUpdated,
-      updated
+      updated,
+      editEnable
     } = this.props;
     const { authors, itemGroups, isDocBased } = test;
-    const { editEnable, disableAlert } = this.state;
+    const { disableAlert } = this.state;
     const isOwner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
     if (
@@ -347,10 +351,10 @@ class Container extends PureComponent {
       match: { params },
       userId,
       testStatus,
-      updated
+      updated,
+      editEnable
     } = this.props;
     const { authors, itemGroups = [] } = test;
-    const { editEnable } = this.state;
     if (!test?.title?.trim()?.length) {
       notification({ type: "warn", messageKey: "pleaseEnterName" });
       return;
@@ -459,14 +463,15 @@ class Container extends PureComponent {
       history,
       updated,
       currentTab,
-      userRole
+      userRole,
+      editEnable
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
     const { params = {} } = match;
     const { showCancelButton = false } = history.location.state || this.state || {};
-    const { editEnable, isShowFilter } = this.state;
+    const { isShowFilter } = this.state;
     const current = currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const isOwner =
@@ -612,7 +617,7 @@ class Container extends PureComponent {
       userRole
     } = this.props;
     if (!test?.title?.trim()?.length) {
-      notification({ messageKey:"nameFieldRequired"});
+      notification({ messageKey: "nameFieldRequired" });
       return;
     }
     const newTest = this.modifyTest();
@@ -620,7 +625,7 @@ class Container extends PureComponent {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
         this.sebPasswordRef.current.input.focus();
       }
-      notification({ messageKey:"enterValidPassword"});
+      notification({ messageKey: "enterValidPassword" });
       return;
     }
 
@@ -744,7 +749,7 @@ class Container extends PureComponent {
   };
 
   handlePublishTest = (assignFlow = false) => {
-    const { publishTest, test, match, currentTab, updateLastUsedCollectionList } = this.props;
+    const { publishTest, test, match, currentTab, updateLastUsedCollectionList, setEditEnable } = this.props;
     const { _id } = test;
     if (this.validateTest(test)) {
       const newTest = this.modifyTest();
@@ -755,34 +760,34 @@ class Container extends PureComponent {
         assignFlow,
         currentTab
       });
-      this.setState({ editEnable: false });
+      setEditEnable(false);
       updateLastUsedCollectionList(test.collections);
     }
   };
 
-  onEnableEdit = () => {
-    const { test, userId, duplicateTest, currentTab, userRole } = this.props;
+  onEnableEdit = onRegrade => {
+    const { test, userId, duplicateTest, currentTab, userRole, setEditEnable } = this.props;
     const { _id: testId, authors, title, isUsed } = test;
     const canEdit = (authors && authors.some(x => x._id === userId)) || userRole === roleuser.EDULASTIC_CURATOR;
-    this.setState({ editEnable: true });
+    setEditEnable(true);
     if (canEdit) {
       return this.handleSave();
     }
     if (!test.isInEditAndRegrade) {
-      duplicateTest({ currentTab, title, _id: testId, isInEditAndRegrade: isUsed });
+      duplicateTest({ currentTab, title, _id: testId, isInEditAndRegrade: isUsed, onRegrade });
     }
   };
 
   handleDuplicateTest = async e => {
     e && e.stopPropagation();
-    const { history, test } = this.props;
+    const { history, test, setEditEnable } = this.props;
     const duplicateTest = await assignmentApi.duplicateAssignment({
       _id: test._id,
       title: test.title,
       isInEditAndRegrade: test.isUsed
     });
     history.push(`/author/tests/${duplicateTest._id}`);
-    this.setState({ editEnable: true });
+    setEditEnable(true);
   };
 
   renderModal = () => {
@@ -830,12 +835,13 @@ class Container extends PureComponent {
       userFeatures,
       currentTab,
       testAssignments,
-      userRole
+      userRole,
+      editEnable
     } = this.props;
     if (userRole === roleuser.STUDENT) {
       return null;
     }
-    const { showShareModal, editEnable, isShowFilter } = this.state;
+    const { showShareModal, isShowFilter } = this.state;
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
     const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
@@ -846,7 +852,12 @@ class Container extends PureComponent {
     const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test") || isOwner;
     const showDuplicateButton = testStatus === statusConstants.PUBLISHED && !editEnable && allowDuplicate && !isCurator;
     const showEditButton = testStatus === statusConstants.PUBLISHED && !editEnable && (isOwner || isCurator);
-    const showCancelButton = test.isUsed && !!testAssignments.length && !showEditButton && !showDuplicateButton;
+    const showCancelButton =
+      test.isUsed &&
+      !!testAssignments.length &&
+      !showEditButton &&
+      !showDuplicateButton &&
+      (testStatus === "draft" || editEnable);
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 
@@ -938,7 +949,8 @@ const enhance = compose(
       groupId: getCurrentGroup(state),
       classIds: getClassIds(state),
       studentAssignments: getAllAssignmentsSelector(state),
-      loadingAssignments: get(state, "publicTest.loadingAssignments")
+      loadingAssignments: get(state, "publicTest.loadingAssignments"),
+      editEnable: get(state, "tests.editEnable")
     }),
     {
       createTest: createTestAction,
@@ -964,7 +976,8 @@ const enhance = compose(
       removeTestEntity: removeTestEntityAction,
       fetchAssignmentsByTest: fetchAssignmentsByTestAction,
       startAssignment: startAssignmentAction,
-      resumeAssignment: resumeAssignmentAction
+      resumeAssignment: resumeAssignmentAction,
+      setEditEnable: setEditEnableAction
     }
   )
 );

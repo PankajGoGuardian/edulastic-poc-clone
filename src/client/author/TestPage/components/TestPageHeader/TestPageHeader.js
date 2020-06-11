@@ -305,7 +305,8 @@ const TestPageHeader = ({
     </TestStatus>
   );
 
-  const isRegradeFlow = test.isUsed && !!testAssignments.length && !isEdulasticCurator;
+  const isRegradeFlow =
+    test.isUsed && !!testAssignments.length && !isEdulasticCurator && (testStatus === "draft" || editEnable);
   // if edit assigned there should be assignments to enable the buttons
   const disableButtons =
     isLoadingData || (history.location.state?.editAssigned && !testAssignments.length && !test.isInEditAndRegrade);
@@ -475,9 +476,9 @@ const TestPageHeader = ({
             {showShareButton &&
               (owner || testStatus === "published") &&
               !isPlaylist &&
+              !showCancelButton &&
               !isPublishers &&
-              !isEdulasticCurator &&
-              !isRegradeFlow && (
+              !isEdulasticCurator && (
                 <EduButton data-cy="assign" disabled={disableButtons} onClick={handleAssign}>
                   ASSIGN
                 </EduButton>
@@ -521,18 +522,16 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               ) : (
-                !isRegradeFlow && (
-                  <EduButton
-                    isGhost
-                    IconBtn
-                    title="Publish Test"
-                    data-cy="publish"
-                    onClick={handlePublish}
-                    disabled={disableButtons}
-                  >
-                    <IconSend />
-                  </EduButton>
-                )
+                <EduButton
+                  isGhost
+                  IconBtn
+                  title="Publish Test"
+                  data-cy="publish"
+                  onClick={handlePublish}
+                  disabled={disableButtons}
+                >
+                  <IconSend />
+                </EduButton>
               )
             ) : null}
             {features.isCurator && testStatus === "inreview" && (
@@ -558,9 +557,9 @@ const TestPageHeader = ({
             {showShareButton &&
               (owner || testStatus === "published") &&
               !isPlaylist &&
+              !showCancelButton &&
               !isPublishers &&
-              !isEdulasticCurator &&
-              !isRegradeFlow && (
+              !isEdulasticCurator && (
                 <EduButton disabled={disableButtons} data-cy="assign" onClick={handleAssign}>
                   ASSIGN
                 </EduButton>

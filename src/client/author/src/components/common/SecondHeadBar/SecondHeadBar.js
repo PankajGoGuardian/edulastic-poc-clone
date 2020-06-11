@@ -9,37 +9,34 @@ import { clearAnswersAction } from "../../../actions/answers";
 import Breadcrumb from "../../Breadcrumb";
 import { Container } from "./styled_components";
 
-const breadCrumbTarget = `/author/items/${window.location.pathname.split("/")[3]}/item-detail`;
 class SecondHeadBar extends Component {
+  get breadCrumbTarget() {
+    const { itemId } = this.props;
+    return `/author/items/${itemId || window.location.pathname.split("/")[3]}/item-detail`;
+  }
+
   render() {
-    let { breadcrumb, breadCrumbQType } = this.props;
+    const { breadCrumbQType, children } = this.props;
+    let { breadcrumb } = this.props;
     if (breadCrumbQType) {
-      breadcrumb = [...breadcrumb, { title: breadCrumbQType, to: breadCrumbTarget }];
+      breadcrumb = [...breadcrumb, { title: breadCrumbQType, to: this.breadCrumbTarget }];
     }
     return (
       <Container padding="0px">
         <Breadcrumb data={breadcrumb} style={{ position: "unset" }} />
-        {this.props.children ? this.props.children : null}
+        {children}
       </Container>
     );
   }
 }
 
 SecondHeadBar.propTypes = {
-  breadcrumb: PropTypes.array
+  breadcrumb: PropTypes.array.isRequired,
+  itemId: PropTypes.string
 };
 
 SecondHeadBar.defaultProps = {
-  breadcrumb: [
-    {
-      title: "ITEM BANK",
-      to: "/author/items"
-    },
-    {
-      title: "ADD NEW",
-      to: breadCrumbTarget
-    }
-  ]
+  itemId: ""
 };
 
 const enhance = compose(

@@ -7,10 +7,10 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
 import { questionType as constantsQuestionType, questionType } from "@edulastic/constants";
-import { withWindowSizes, AnswerContext, ScrollContext,notification } from "@edulastic/common";
+import { withWindowSizes, AnswerContext, ScrollContext, notification } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
-import { Row, Col, Layout, Button, Pagination, message } from "antd";
+import { Row, Col, Layout, Button, Pagination } from "antd";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
@@ -304,7 +304,7 @@ class Container extends Component {
   handleDeletePassageWidget = widgetIndex => {
     if (widgetIndex === 0) {
       notification({ messageKey: "thereShouldBeAtleastOnePassageItem" });
-      
+
       return null;
     }
     const { deleteWidgetFromPassage } = this.props;
@@ -578,6 +578,40 @@ class Container extends Component {
 
   renderAuditTrailLogs = () => <QuestionAuditTrailLogs />;
 
+  get breadCrumbs() {
+    const { item, isTestFlow, match } = this.props;
+    if (isTestFlow) {
+      const { testId } = match.params;
+      const testPath = `/author/tests/${testId || "create"}`;
+
+      const breadCrumb = [
+        {
+          title: "TEST LIBRARY",
+          to: "/author/tests"
+        },
+        {
+          title: "TEST",
+          to: `${testPath}#review`
+        }
+      ];
+
+      if (item.isPassageWithQuestions || item.multipartItem) {
+        breadCrumb.push({ title: "MULTIPART ITEM", to: `${testPath}/createItem/${item._id}` });
+      }
+      return breadCrumb;
+    }
+    return [
+      {
+        title: "ITEM BANK",
+        to: "/author/items"
+      },
+      {
+        title: "ADD NEW",
+        to: `/author/items/${item._id}/item-detail`
+      }
+    ];
+  }
+
   render() {
     const { showSettings, showRemovePassageItemPopup } = this.state;
     const {
@@ -616,23 +650,6 @@ class Container extends Component {
     const passageTestItems = get(passage, "testItems", []);
 
     const qLength = rows.flatMap(x => x.widgets.filter(y => y.widgetType === "question")).length;
-
-    const { testId } = match.params;
-    const testPath = `/author/tests/${testId || "create"}`;
-    const breadCrumb = [
-      {
-        title: "TEST LIBRARY",
-        to: "/author/tests"
-      },
-      {
-        title: "TEST",
-        to: `${testPath}#review`
-      }
-    ];
-
-    if (item.isPassageWithQuestions || item.multipartItem) {
-      breadCrumb.push({ title: "MULTIPART ITEM", to: `${testPath}/createItem/${item._id}` });
-    }
 
     const isPassageQuestion = !!item.passageId;
     const useTabsLeft = isPassageQuestion
@@ -735,7 +752,7 @@ class Container extends Component {
             <BreadCrumbBar>
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
-                  <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
+                  <SecondHeadBar itemId={item._id} breadCrumbQType={breadCrumbQType} breadcrumb={this.breadCrumbs}>
                     {item.canAddMultipleItems && passage && view !== "metadata" && (
                       <PassageNavigation>
                         {passageTestItems.length > 1 && (

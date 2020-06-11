@@ -477,7 +477,7 @@ class QuestionWrapper extends Component {
                   isPrintPreview={isPrintPreview}
                   {...userAnswerProps}
                 />
-                {!restProps.viewAtStudentRes && showFeedback && (
+                {!restProps.viewAtStudentRes && showFeedback && !isPrintPreview && (
                   <>
                     <TimeSpentWrapper>
                       {!!showStudentWork && (

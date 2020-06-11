@@ -4,11 +4,14 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 import { questionType } from "@edulastic/constants";
-import { get, isEmpty } from "lodash";
+import { get, isEmpty, round } from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { PrintPreviewScore } from "./printPreviewScore";
 import FeedbackRight from "./FeedbackRight";
 import FeedBackContainer from "./FeedBackContainer";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
+import { TimeSpentWrapper } from "./QuestionWrapper";
 
 const FeedbackWrapper = ({
   showFeedback,
@@ -61,6 +64,8 @@ const FeedbackWrapper = ({
   }
 
   const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
+  const timeSpent = get(data, "activity.timeSpent", false);
+
   return (
     <StyledFeedbackWrapper
       style={{
@@ -107,6 +112,12 @@ const FeedbackWrapper = ({
         />
       )}
       {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} />}
+      {isPrintPreview && timeSpent && (
+        <TimeSpentWrapper style={{ justifyContent: "center" }}>
+          <FontAwesomeIcon icon={faClock} aria-hidden="true" />
+          {round(timeSpent / 1000, 1)}s
+        </TimeSpentWrapper>
+      )}
       {showFeedback && isPrintPreview && (
         <div data-cy="teacherFeedBack" className="print-preview-feedback">
           {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}

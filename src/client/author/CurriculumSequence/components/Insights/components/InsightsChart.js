@@ -74,10 +74,10 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
 
   return (
     <Row type="flex" justify="center" align="middle" style={{ width: "100%" }}>
-      <StyledCol xs={1} sm={2} md={2} lg={2} xl={2}>
-        LOW EFFORT
+      <StyledCol xs={2} sm={3} md={3} lg={3} xl={3} style={{ textAlign: "right" }}>
+        TIME SPENT (LOW)
       </StyledCol>
-      <StyledCol xs={22} sm={20} md={20} lg={16} xl={16}>
+      <StyledCol xs={20} sm={18} md={18} lg={18} xl={18}>
         <Row type="flex" justify="center" style={{ width: "100%" }}>
           HIGH PERFORMANCE
         </Row>
@@ -85,8 +85,8 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
           <StyledImg alt="icon" src={gradientColorRuler} />
           <ResponsiveContainer {...responsiveContainerProps}>
             <ScatterChart {...scatterChartProps}>
-              <XAxis type="number" dataKey={"effort"} name="effort" domain={[-graphLimit, graphLimit]} hide />
-              <YAxis type="number" dataKey={"performance"} name="performance" domain={[-graphLimit, graphLimit]} hide />
+              <XAxis type="number" dataKey="effort" name="effort" domain={[-graphLimit, graphLimit]} hide />
+              <YAxis type="number" dataKey="performance" name="performance" domain={[-graphLimit, graphLimit]} hide />
               <Scatter
                 name="Effort vs Performance"
                 data={activeData}
@@ -110,8 +110,8 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
           LOW PERFORMANCE
         </Row>
       </StyledCol>
-      <StyledCol xs={1} sm={2} md={2} lg={2} xl={2}>
-        HIGH EFFORT
+      <StyledCol xs={2} sm={3} md={3} lg={3} xl={3}>
+        TIME SPENT (HIGH)
       </StyledCol>
     </Row>
   );
@@ -123,7 +123,6 @@ const StyledCol = styled(Col)`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  min-width: 75px;
   text-transform: uppercase;
   color: ${lightGrey7};
   font: Bold 11px/15px Open Sans;

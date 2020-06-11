@@ -52,9 +52,9 @@ export const Li = styled.li`
   height: ${({ height }) => height * 40}px;
   background: ${getItemBackground(0.5)};
   cursor: ${({ locked }) => (locked ? "not-allowed" : "pointer")};
-  border: ${props => (props.border === "full" ? `2px solid ${props.theme.widgets.shading.liBorderColor}` : "none")};
+  border: ${props => (props.border === "full" ? `1px solid ${props.theme.widgets.shading.liBorderColor}` : "none")};
   display: inline-block;
-  margin-left: -2px;
+  margin-left: 0px;
   position: relative;
   padding: 0;
   z-index: 0;

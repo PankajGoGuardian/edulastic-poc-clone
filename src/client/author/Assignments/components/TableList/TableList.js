@@ -130,8 +130,11 @@ const TableList = ({
       {
         dataIndex: "class",
         width: "25%",
-        render: text => (
-          <GreyFont className="class-column">
+        render: (text, row) => (
+          <GreyFont
+            className="class-column"
+            onClick={() => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)}
+          >
             <Tooltip placement="bottom" title={text}>
               <span data-cy="class">{text}</span>
             </Tooltip>
@@ -142,7 +145,7 @@ const TableList = ({
         dataIndex: "testType",
         width: "14%",
         render: (_, row) => (
-          <TypeWrapper>
+          <TypeWrapper onClick={() => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)}>
             {row && row.testType === testConstants.type.PRACTICE ? (
               <TypeIcon data-cy="type" type="p">
                 P
@@ -166,9 +169,13 @@ const TableList = ({
       {
         dataIndex: "assigned",
         width: "11%",
-        render: text => (
+        render: (text, row) => (
           <Tooltip title={text} placement="top">
-            <GreyFont data-cy="assigned" showEllipsis={text.length > 15}>
+            <GreyFont
+              data-cy="assigned"
+              showEllipsis={text.length > 15}
+              onClick={() => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)}
+            >
               {text}
             </GreyFont>
           </Tooltip>
@@ -177,9 +184,13 @@ const TableList = ({
       {
         dataIndex: "status",
         width: "14%",
-        render: text =>
+        render: (text, row) =>
           text ? (
-            <StatusLabel data-cy="status" status={text}>
+            <StatusLabel
+              onClick={() => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)}
+              data-cy="status"
+              status={text}
+            >
               {text}
             </StatusLabel>
           ) : (
@@ -189,12 +200,26 @@ const TableList = ({
       {
         dataIndex: "submitted",
         width: "8%",
-        render: text => <GreyFont data-cy="submitted">{text}</GreyFont>
+        render: (text, row) => (
+          <GreyFont
+            onClick={() => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)}
+            data-cy="submitted"
+          >
+            {text}
+          </GreyFont>
+        )
       },
       {
         dataIndex: "graded",
         width: "8%",
-        render: text => <GreyFont data-cy="graded">{text}</GreyFont>
+        render: (text, row) => (
+          <GreyFont
+            onClick={() => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)}
+            data-cy="graded"
+          >
+            {text}
+          </GreyFont>
+        )
       },
       {
         dataIndex: "action",

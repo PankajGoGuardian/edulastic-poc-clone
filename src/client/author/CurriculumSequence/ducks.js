@@ -365,9 +365,9 @@ function* putCurriculumSequence({ payload }) {
     // will show the notification only when show/hide module.
     if (toggleModuleNotification) {
       const { title: moduleTitle, hidden } = changedItem;
-      let msg = `"${moduleTitle}" is now visible to students`;
+      let msg = `"${moduleTitle}" is visible now`;
       if (hidden) {
-        msg = `"${moduleTitle}" is now hidden from students`;
+        msg = `"${moduleTitle}" is hidden now.`;
       }
       notification({ type: "success", msg });
     }
@@ -375,9 +375,9 @@ function* putCurriculumSequence({ payload }) {
     // will show the notification only when show/hide assignment or resource
     if (toggleTestNotification) {
       const { contentTitle, hidden } = changedItem;
-      let msg = `"${contentTitle}" is now visible to students`;
+      let msg = `"${contentTitle}" is visible now`;
       if (hidden) {
-        msg = `"${contentTitle}" is now hidden from students`;
+        msg = `"${contentTitle}" is hidden now.`;
       }
       notification({ type: "success", msg });
     }

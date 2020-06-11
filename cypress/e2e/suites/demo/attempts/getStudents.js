@@ -32,6 +32,7 @@ export function getStudents(token, allGroups = []) {
             }));
             // allstudents = Cypress._.concat(allstudents, students);
             allstudents.push(students);
+            // allstudents = [...allstudents, ...students];
           });
         }
       });

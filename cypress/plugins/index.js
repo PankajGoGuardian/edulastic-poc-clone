@@ -15,7 +15,7 @@ module.exports = (on, config) => {
     if (browser.name === "chrome") {
       args.push("--cast-initial-screen-width=1920");
       args.push("--cast-initial-screen-height=1080");
-      args.push("--start-fullscreen");
+      // args.push("--start-fullscreen");
 
       return args;
     }
@@ -23,7 +23,7 @@ module.exports = (on, config) => {
     if (browser.name === "electron") {
       args.width = 1920;
       args.height = 1080;
-      args.fullscreen = true;
+      // args.fullscreen = true;
 
       return args;
     }

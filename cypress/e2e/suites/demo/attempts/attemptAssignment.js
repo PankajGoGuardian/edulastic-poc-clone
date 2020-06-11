@@ -21,7 +21,8 @@ export function attemptAssignment(auth, assignment, testItems, attempts) {
       headers: {
         Authorization: token,
         "Content-Type": "application/json"
-      }
+      },
+      retryOnStatusCodeFailure: true
     })
     .then(({ status, body }) => {
       const testActivityId = body.result._id;
@@ -41,14 +42,11 @@ export function attemptAssignment(auth, assignment, testItems, attempts) {
             }
           };
           if (getResponseByAttempt(attempts[itemId], options, validResponse))
-            postItemActivity.userResponse[questionId] = getResponseByAttempt(
-              attempts[itemId],
-              options,
-              validResponse
-            );
+            postItemActivity.userResponse[questionId] = getResponseByAttempt(attempts[itemId], options, validResponse);
           postItemActivity.timesSpent[questionId] = Cypress._.random(5, 55) * 1000;
           return cy
             .request({
+              // url: `${BASE_URL}/test-activity/${testActivityId}/test-item/${itemId}?autoSave=false&pausing=false`,
               url: `${BASE_URL}/test-activity/${testActivityId}/test-item/${itemId}?autoSave=false`,
               method: "POST",
               body: postItemActivity,
@@ -56,7 +54,7 @@ export function attemptAssignment(auth, assignment, testItems, attempts) {
                 Authorization: token,
                 "Content-Type": "application/json"
               },
-              failOnStatusCode: false
+              retryOnStatusCodeFailure: true
             })
             .then(({ status, body }) => {
               expect(status).to.eq(200);
@@ -73,7 +71,8 @@ export function attemptAssignment(auth, assignment, testItems, attempts) {
             headers: {
               Authorization: token,
               "Content-Type": "application/json"
-            }
+            },
+            retryOnStatusCodeFailure: true
           })
           .then(({ status, body }) => {
             expect(status).to.eq(200);

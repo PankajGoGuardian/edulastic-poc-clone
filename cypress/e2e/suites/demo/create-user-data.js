@@ -1,7 +1,7 @@
 const BASE_URL = Cypress.config("API_URL");
 
-const districtId = "5d6f541e5abd8778a64e590c";
-const institutionId = "5de0f9054bf9dc0007c3a84a";
+const districtId = "5d00a260ddd15a3a52c124a9";
+const institutionId = "5e0dba2dbd61a000075e288b";
 
 const school = {
   institutionIds: [institutionId],
@@ -34,7 +34,7 @@ let standards = {
 let group = {
   thumbnail: "https://cdn.edulastic.com/images/classThumbnails/learning-7.jpg-3.jpg",
   startDate: `${new Date().getTime()}`,
-  endDate: "1880150400000",
+  endDate: "1880064000000",
   grades: ["K"],
   subject: "Mathematics",
   standardSets: [
@@ -49,16 +49,18 @@ let group = {
   districtId
 };
 
-const suiteName = "teacherDashboard";
-const teacherCount = 5;
-const classPerTeacherCount = 2;
-const studentsPerClassCount = 5;
+const suiteName = "hogwarts";
+const teacherCount = 1;
+const classPerTeacherCount = 4;
+const studentsPerClassCount = 100;
+const studentStart = 200;
+const studentMax = studentStart + studentsPerClassCount;
 
 function getUser(suiteKey, role, i) {
   const user = {};
   user.firstName = `${role}.${i}`;
   user.lastName = suiteKey;
-  user.email = `${role}.${i}.${suiteKey}@snapwiz.com`.toLowerCase();
+  user.email = `${role}.${i}.${suiteKey}@automation.com`.toLowerCase();
   user.password = "snapwiz";
   user.role = `${role}`;
   return user;
@@ -95,19 +97,26 @@ function loginUser(user) {
 }
 
 describe("create-test-data", () => {
-  it.skip("create data", () => {
+  it("create data", () => {
     window.localStorage.clear();
     window.sessionStorage.clear();
 
-    const teacher = getUser(suiteName, "teacher", 1);
-    // loginUser(teacher).then(user => {
-    signupUser(teacher).then(user => {
+    const teacher = {
+      firstName: `Severus`,
+      lastName: "Snape",
+      email: "severus.snape@hogwarts.com",
+      password: "snapwiz",
+      role: `teacher`
+    };
+    // getUser(suiteName, "teacher", 1);
+    loginUser(teacher).then(user => {
+      // signupUser(teacher).then(user => {
       // SETTING SCHOOL
       const setSchoolBody = school;
       setSchoolBody.email = teacher.email.toLowerCase();
       setSchoolBody.firstName = teacher.firstName;
       setSchoolBody.lastName = teacher.lastName;
-      cy.request({
+      /*   cy.request({
         url: `${BASE_URL}/user/${user._id}`,
         method: "PUT",
         body: setSchoolBody,
@@ -147,44 +156,44 @@ describe("create-test-data", () => {
           }).then(({ status }) => {
             expect(status).to.eq(200);
             console.log(`signup done :: ${teacher.role} :: ${teacher.email}`);
+ */
+      // CREATE CLASS
+      group.name = `Automation Class - ${suiteName} ${teacher.firstName} - Class 5`;
+      group.parent = {
+        id: user._id
+      };
+      group.owners = [user._id];
 
-            // CREATE CLASS
-            group.name = `Automation Class - ${suiteName} ${teacher.firstName}`;
-            group.parent = {
-              id: user._id
-            };
-            group.owners = [user._id];
+      cy.request({
+        url: `${BASE_URL}/group`,
+        method: "POST",
+        body: group,
+        headers: {
+          Authorization: user.token,
+          "Content-Type": "application/json"
+        }
+      }).then(({ status, body }) => {
+        let students = {};
+        const { code, _id } = body.result;
+        expect(status).to.eq(200);
+        console.log(`class created :: ${_id} :: ${code} :: '${group.name}'`);
 
-            cy.request({
-              url: `${BASE_URL}/group`,
-              method: "POST",
-              body: group,
-              headers: {
-                Authorization: user.token,
-                "Content-Type": "application/json"
-              }
-            }).then(({ status, body }) => {
-              let students = {};
-              const { code, _id } = body.result;
-              expect(status).to.eq(200);
-              console.log(`class created :: ${_id} :: ${code} :: '${group.name}'`);
-
-              // CREATE STUDENTS
-              for (let index = 0; index < studentsPerClassCount; index++) {
-                const student = getUser(suiteName, "student", index + 1);
-                student.code = code;
-                signupUser(student); // "khioio5, student.1"
-                students[index + 1] = {
-                  email: student.email,
-                  stuName: `${student.lastName}, ${student.firstName}`
-                };
-              }
-              console.log("students :: ", students);
-              console.log("students string:: ", JSON.stringify(students));
-            });
-          });
-        });
+        // CREATE STUDENTS
+        for (let index = studentStart; index < studentMax; index++) {
+          const student = getUser(suiteName, "student", index + 1);
+          student.code = code;
+          signupUser(student); // "khioio5, student.1"
+          students[index + 1] = {
+            email: student.email,
+            stuName: `${student.lastName}, ${student.firstName}`
+          };
+        }
+        console.log("students :: ", students);
+        console.log("students string:: ", JSON.stringify(students));
       });
     });
   });
+  //     });
+  //   });
+  // });
 });

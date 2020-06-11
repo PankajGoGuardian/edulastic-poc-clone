@@ -8,6 +8,7 @@
   "integrationFolder": "cypress/e2e/suites",
   "modifyObstructiveCode": false,
   "requestTimeout": 30000,
+  "responseTimeout": 60000,
   "reporter": "mocha-multi-reporters",
   "reporterOptions": {
     "configFile": "cypress/config/reporter-config.json"

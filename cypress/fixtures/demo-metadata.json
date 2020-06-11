@@ -1,0 +1,314 @@
+{
+  "5ec4edec6cd8fb0008e7d4e5": {
+    "5e4a464203b7ad092442f5e6": {
+      "itemId": "5e4a464203b7ad092442f5e6",
+      "questionId": "125134",
+      "options": [
+        "1f796a06-6c83-c545-a7e6-eaac55ebf011",
+        "7a229a4b-9266-30d8-208f-c5bc4edb93af",
+        "8721f864-9186-7588-1ea4-955089009ef7"
+      ],
+      "validResponse": ["7a229a4b-9266-30d8-208f-c5bc4edb93af"]
+    },
+    "5e4a463f03b7ad092442c7f8": {
+      "itemId": "5e4a463f03b7ad092442c7f8",
+      "questionId": "77307",
+      "options": [
+        "5319fb68-6fa7-cc74-5130-9228a0a2eeb5",
+        "bf892c66-1efd-b1c8-294c-ab11f2ad88ee",
+        "0366b3e4-7075-3b98-09e5-efb7f54fcc18",
+        "8a00d066-8938-9c50-d1e2-a129d2b69067"
+      ],
+      "validResponse": ["5319fb68-6fa7-cc74-5130-9228a0a2eeb5"]
+    },
+    "5e4a463903b7ad0924427111": {
+      "itemId": "5e4a463903b7ad0924427111",
+      "questionId": "193709",
+      "options": [
+        "3ea0ce59-d97a-4e2f-bab9-167ec59f267f",
+        "03a5a0b4-41ef-e048-ae15-c846e49a73e8",
+        "e845ac55-fded-21b2-070d-1fc3ac7219a8",
+        "1c1000ed-cfaa-7a32-6f94-f9a77c23fb71"
+      ],
+      "validResponse": ["03a5a0b4-41ef-e048-ae15-c846e49a73e8"]
+    },
+    "5e4a3f4403b7ad092425f79e": {
+      "itemId": "5e4a3f4403b7ad092425f79e",
+      "questionId": "1151858",
+      "options": [
+        "982eca67-18ba-65b6-f953-773bba16e5eb",
+        "cf1bfcfd-1283-7a22-f67e-2fdcdbf9b799",
+        "530d2602-b0d1-a6a1-7226-c6867260852f",
+        "1363602b-6854-9482-62a4-15f0e4049481",
+        "80c70fab-1f62-15e4-a21f-29690154fe5e",
+        "81a514f5-7660-2d72-bb43-4d2cff4801bc",
+        "b942f9ce-9305-5ac3-2f4a-0bddd0dcc7e7"
+      ],
+      "validResponse": ["b942f9ce-9305-5ac3-2f4a-0bddd0dcc7e7"]
+    },
+    "5e4a462a03b7ad092441bc00": {
+      "itemId": "5e4a462a03b7ad092441bc00",
+      "questionId": "988189",
+      "options": [
+        "91c4fa59-db0b-8f36-e3d7-221cb0e816a7",
+        "d3a9e460-9966-425f-8ebe-83dafaa92a52",
+        "183fcf8e-b633-af03-cbac-86ee5ec32858",
+        "55271ade-441f-e5e3-586d-67779506f457"
+      ],
+      "validResponse": ["91c4fa59-db0b-8f36-e3d7-221cb0e816a7"]
+    },
+    "5e4a3f4403b7ad092425f736": {
+      "itemId": "5e4a3f4403b7ad092425f736",
+      "questionId": "1151855",
+      "options": [
+        "982eca67-18ba-65b6-f953-773bba16e5eb",
+        "cf1bfcfd-1283-7a22-f67e-2fdcdbf9b799",
+        "530d2602-b0d1-a6a1-7226-c6867260852f",
+        "1363602b-6854-9482-62a4-15f0e4049481",
+        "80c70fab-1f62-15e4-a21f-29690154fe5e",
+        "81a514f5-7660-2d72-bb43-4d2cff4801bc",
+        "b942f9ce-9305-5ac3-2f4a-0bddd0dcc7e7"
+      ],
+      "validResponse": ["cf1bfcfd-1283-7a22-f67e-2fdcdbf9b799", "530d2602-b0d1-a6a1-7226-c6867260852f"]
+    },
+    "5e4a410c03b7ad092431d63f": {
+      "itemId": "5e4a410c03b7ad092431d63f",
+      "questionId": "5815982",
+      "options": [
+        "67ce2c79-e106-4164-94eb-c5d1e0b70fae",
+        "94b0f0df-490c-eabc-4b9f-87363a05f8dd",
+        "ed3dc69c-da76-639d-9d0d-38e7f101f32b",
+        "31a369be-ba05-bc62-e4e7-79e6a732d183"
+      ],
+      "validResponse": ["31a369be-ba05-bc62-e4e7-79e6a732d183"]
+    },
+    "5e4a410c03b7ad092431d5c9": {
+      "itemId": "5e4a410c03b7ad092431d5c9",
+      "questionId": "5815825",
+      "options": [
+        "adb05ea2-6f09-b531-3691-66057c44a016",
+        "f663148c-3d22-b77c-561b-3325c362a7e5",
+        "8e6c513c-0ea4-0237-9afc-9e20bbaaaec8",
+        "1893fad3-ace3-0c02-3ec0-1dbc7023e3b9"
+      ],
+      "validResponse": ["8e6c513c-0ea4-0237-9afc-9e20bbaaaec8"]
+    },
+    "5e4a410c03b7ad092431d560": {
+      "itemId": "5e4a410c03b7ad092431d560",
+      "questionId": "5815782",
+      "options": [
+        "945018ae-b6bb-c866-a4c2-90fde713c41b",
+        "9ff90e46-6ac3-bef6-9d71-643750aa3d11",
+        "97ceeccf-aaa5-6450-d88c-0df703c80d3c",
+        "b5d587a4-5c90-4043-9d93-7031172cce09",
+        "93f4a6f0-20e4-a07e-5a52-0ca61a4191ea",
+        "2b8c4ad7-f50c-d44e-3cb7-99243a66b9cf"
+      ],
+      "validResponse": ["945018ae-b6bb-c866-a4c2-90fde713c41b", "97ceeccf-aaa5-6450-d88c-0df703c80d3c"]
+    },
+    "5e4a410c03b7ad092431d59f": {
+      "itemId": "5e4a410c03b7ad092431d59f",
+      "questionId": "5815815",
+      "options": [
+        "a58845f1-f763-9e96-8132-7265947edb80",
+        "94432bf7-987f-84fc-6149-90abd3b12004",
+        "fb596918-65f6-fbc9-23bf-7fcffb289628",
+        "4f77ba33-62f5-f504-9010-9c88aca6316f"
+      ],
+      "validResponse": ["94432bf7-987f-84fc-6149-90abd3b12004"]
+    },
+    "5e4a3f4403b7ad092425f701": {
+      "itemId": "5e4a3f4403b7ad092425f701",
+      "questionId": "1151853",
+      "options": [
+        "982eca67-18ba-65b6-f953-773bba16e5eb",
+        "cf1bfcfd-1283-7a22-f67e-2fdcdbf9b799",
+        "530d2602-b0d1-a6a1-7226-c6867260852f",
+        "1363602b-6854-9482-62a4-15f0e4049481",
+        "80c70fab-1f62-15e4-a21f-29690154fe5e",
+        "81a514f5-7660-2d72-bb43-4d2cff4801bc",
+        "b942f9ce-9305-5ac3-2f4a-0bddd0dcc7e7"
+      ],
+      "validResponse": ["982eca67-18ba-65b6-f953-773bba16e5eb", "cf1bfcfd-1283-7a22-f67e-2fdcdbf9b799"]
+    },
+    "5e4a3f4403b7ad092425f837": {
+      "itemId": "5e4a3f4403b7ad092425f837",
+      "questionId": "1151861",
+      "options": [
+        "982eca67-18ba-65b6-f953-773bba16e5eb",
+        "cf1bfcfd-1283-7a22-f67e-2fdcdbf9b799",
+        "530d2602-b0d1-a6a1-7226-c6867260852f",
+        "1363602b-6854-9482-62a4-15f0e4049481",
+        "80c70fab-1f62-15e4-a21f-29690154fe5e",
+        "81a514f5-7660-2d72-bb43-4d2cff4801bc",
+        "b942f9ce-9305-5ac3-2f4a-0bddd0dcc7e7"
+      ],
+      "validResponse": ["1363602b-6854-9482-62a4-15f0e4049481"]
+    },
+    "5e4a3f2203b7ad092424e1d7": {
+      "itemId": "5e4a3f2203b7ad092424e1d7",
+      "questionId": "43768",
+      "options": [
+        "ecea058b-a4e8-4d36-1e92-23fad9d5e16b",
+        "59e70946-38d0-4bed-7d77-8805f2aae677",
+        "d3e4a35f-671d-6968-d70e-59034c74aa55",
+        "838e89e0-a271-d87c-19f8-341fe6779f78"
+      ],
+      "validResponse": ["59e70946-38d0-4bed-7d77-8805f2aae677"]
+    },
+    "5e4a3f2003b7ad092424d655": {
+      "itemId": "5e4a3f2003b7ad092424d655",
+      "questionId": "989942",
+      "options": [
+        "382d4d06-2282-face-37c1-1386fbed64bf",
+        "3281bb28-f755-06dd-df74-a83db49ef16c",
+        "05f224b9-584f-bb4d-e3b9-7f96a98abf69",
+        "d1efec86-47f1-3b94-6497-e7ef85824326"
+      ],
+      "validResponse": ["3281bb28-f755-06dd-df74-a83db49ef16c"]
+    },
+    "5e4a3f2003b7ad092424d61e": {
+      "itemId": "5e4a3f2003b7ad092424d61e",
+      "questionId": "988912",
+      "options": [
+        "f4b24584-7358-118f-5f0c-f1a04ef20eb0",
+        "4633fc16-dabf-ba5d-71c8-7c825c578715",
+        "068fcf40-74ac-52ab-2917-16e2cedf8b79",
+        "d9ce2d0b-309d-9890-3e8b-2a46679ddae5"
+      ],
+      "validResponse": ["f4b24584-7358-118f-5f0c-f1a04ef20eb0"]
+    }
+  },
+  "5ec4cfc7dd933400082dfa9e": {
+    "5e4a3f2203b7ad092424e1d7": {
+      "itemId": "5e4a3f2203b7ad092424e1d7",
+      "questionId": "43768",
+      "options": [
+        "ecea058b-a4e8-4d36-1e92-23fad9d5e16b",
+        "59e70946-38d0-4bed-7d77-8805f2aae677",
+        "d3e4a35f-671d-6968-d70e-59034c74aa55",
+        "838e89e0-a271-d87c-19f8-341fe6779f78"
+      ],
+      "validResponse": ["59e70946-38d0-4bed-7d77-8805f2aae677"]
+    },
+    "5e4a3f2003b7ad092424d655": {
+      "itemId": "5e4a3f2003b7ad092424d655",
+      "questionId": "989942",
+      "options": [
+        "382d4d06-2282-face-37c1-1386fbed64bf",
+        "3281bb28-f755-06dd-df74-a83db49ef16c",
+        "05f224b9-584f-bb4d-e3b9-7f96a98abf69",
+        "d1efec86-47f1-3b94-6497-e7ef85824326"
+      ],
+      "validResponse": ["3281bb28-f755-06dd-df74-a83db49ef16c"]
+    },
+    "5e4a3ee103b7ad092422df6e": {
+      "itemId": "5e4a3ee103b7ad092422df6e",
+      "questionId": "702636",
+      "options": [
+        "021214fd-d9a6-cb17-2735-4c80f329bc05",
+        "19ef39d5-857c-3add-a6a5-c22707c6554c",
+        "4135b437-53dd-11bc-ae08-4ed8bc185998",
+        "450ebdcd-94a3-6f5e-8e39-7c0ecaf50d26",
+        "8b0e6ca5-e627-980b-1fe4-e130437005ef"
+      ],
+      "validResponse": [
+        "19ef39d5-857c-3add-a6a5-c22707c6554c",
+        "450ebdcd-94a3-6f5e-8e39-7c0ecaf50d26",
+        "8b0e6ca5-e627-980b-1fe4-e130437005ef"
+      ]
+    },
+    "5e4a3ee003b7ad092422d8f3": {
+      "itemId": "5e4a3ee003b7ad092422d8f3",
+      "questionId": "552028",
+      "options": [
+        "cd18d479-bdc5-3769-bba7-c7a4fec02c4b",
+        "56665e3d-8a1e-f613-dd56-5a1680a673d1",
+        "0118713a-a4a6-fddb-8cbf-ed665127dc33",
+        "44477853-86c0-baaf-b2e3-43011a55807e",
+        "2b752a6d-7b30-3cdd-dcfa-bd3dec904379",
+        "4ca0278d-f0a9-b1f6-2be4-3e747cc051fa"
+      ],
+      "validResponse": [
+        "cd18d479-bdc5-3769-bba7-c7a4fec02c4b",
+        "0118713a-a4a6-fddb-8cbf-ed665127dc33",
+        "44477853-86c0-baaf-b2e3-43011a55807e",
+        "4ca0278d-f0a9-b1f6-2be4-3e747cc051fa"
+      ]
+    },
+    "5e4a3edb03b7ad0924229acd": {
+      "itemId": "5e4a3edb03b7ad0924229acd",
+      "questionId": "69537",
+      "options": [
+        "a79b4f01-357a-3410-d6a2-8d18fcbd19af",
+        "2ade5fd7-b20f-2f88-29f4-cbb8fd63cc9d",
+        "f9362e3f-0a5f-634e-0e52-2f6749c0d320",
+        "3c4f2071-c801-1c95-1f79-36aa7a54f53d",
+        "b879ed74-ef2a-bab6-7318-cfa7e3e34cfc",
+        "2a48fedb-bc2e-6409-e1ca-e748f071da9e"
+      ],
+      "validResponse": ["2ade5fd7-b20f-2f88-29f4-cbb8fd63cc9d", "f9362e3f-0a5f-634e-0e52-2f6749c0d320"]
+    },
+    "5e4a3e6f03b7ad09241f5954": {
+      "itemId": "5e4a3e6f03b7ad09241f5954",
+      "questionId": "512660",
+      "options": [
+        "17746618-ad05-4d4f-9753-048c4c6019d1",
+        "2dbd928e-5e69-64e8-e76d-86203b1dd36f",
+        "ad5d0728-0426-da07-4f39-3357bcee48c8",
+        "5c8744bb-8e77-d39f-4e8d-36d11e2f5758",
+        "220bceb5-c701-8366-7f05-ed32517a01f9",
+        "3a04e72c-444c-669d-8618-441451fef593"
+      ],
+      "validResponse": [
+        "ad5d0728-0426-da07-4f39-3357bcee48c8",
+        "5c8744bb-8e77-d39f-4e8d-36d11e2f5758",
+        "3a04e72c-444c-669d-8618-441451fef593"
+      ]
+    },
+    "5e4a462a03b7ad092441bc00": {
+      "itemId": "5e4a462a03b7ad092441bc00",
+      "questionId": "988189",
+      "options": [
+        "91c4fa59-db0b-8f36-e3d7-221cb0e816a7",
+        "d3a9e460-9966-425f-8ebe-83dafaa92a52",
+        "183fcf8e-b633-af03-cbac-86ee5ec32858",
+        "55271ade-441f-e5e3-586d-67779506f457"
+      ],
+      "validResponse": ["91c4fa59-db0b-8f36-e3d7-221cb0e816a7"]
+    },
+    "5e4a463903b7ad0924427111": {
+      "itemId": "5e4a463903b7ad0924427111",
+      "questionId": "193709",
+      "options": [
+        "3ea0ce59-d97a-4e2f-bab9-167ec59f267f",
+        "03a5a0b4-41ef-e048-ae15-c846e49a73e8",
+        "e845ac55-fded-21b2-070d-1fc3ac7219a8",
+        "1c1000ed-cfaa-7a32-6f94-f9a77c23fb71"
+      ],
+      "validResponse": ["03a5a0b4-41ef-e048-ae15-c846e49a73e8"]
+    },
+    "5e4a3ecc03b7ad09242224f6": {
+      "itemId": "5e4a3ecc03b7ad09242224f6",
+      "questionId": "4804351",
+      "options": [
+        "4135bf42-16d4-7daf-bee9-946967b45603",
+        "ceacaeee-6d1e-240d-2e29-abe353e17630",
+        "385bd24b-a790-c8d4-8247-854053035c58",
+        "6b57481f-15b1-61c4-9514-5fb363a5d0b7"
+      ],
+      "validResponse": ["385bd24b-a790-c8d4-8247-854053035c58"]
+    },
+    "5e4a3ec703b7ad0924220a4e": {
+      "itemId": "5e4a3ec703b7ad0924220a4e",
+      "questionId": "4804339",
+      "options": [
+        "45787a3e-2ffd-075a-3941-93b7d8491a34",
+        "817d9281-8b5e-de7a-1e29-114a2390f286",
+        "40af0e43-1af1-24d9-b5d8-7223b24c74fa",
+        "a6e78b0d-bac4-748c-6e3b-7079c2901c79"
+      ],
+      "validResponse": ["40af0e43-1af1-24d9-b5d8-7223b24c74fa"]
+    }
+  }
+}

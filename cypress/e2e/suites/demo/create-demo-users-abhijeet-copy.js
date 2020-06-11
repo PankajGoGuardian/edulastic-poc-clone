@@ -1,12 +1,19 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /* eslint-disable no-loop-func */
+
+import { classes } from "./temp-class";
+
 const BASE_URL = Cypress.config("API_URL");
 
-const districtId = "5dce7e3f3d12210006256c58";
-const institutionId = "5e3a9f9e953588000806332c";
+// const districtId = "5dce7e3f3d12210006256c58";
+// const institutionId = "5e3a9f9e953588000806332c";
 
 // const districtId = "5d00a260ddd15a3a52c124a9";
 // const institutionId = "5e0dba2dbd61a000075e288b";
+
+// AMIT
+const districtId = "5eb42520254763000734b599";
+const institutionId = "5eb42520254763000734b5a0";
 
 const allGrades = ["K", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
@@ -59,20 +66,19 @@ const group = {
 };
 
 const suiteName = "";
-const classPerTeacherCount = 2;
-const studentsPerClassCount = 4;
-const domain = "v2demo";
-let studentNumber = 5233; // 137;
-let teacherNumber = 655; // to be continue from POST 502 https://v2.edulastic.com/api/setting/interested-standards
-
+const classPerTeacherCount = 1;
+const studentsPerClassCount = 300;
+const domain = "edulastic";
+let studentNumber = 1; // 137;
+let teacherNumber = 1;
 const teacherCount = teacherNumber + 0;
 
 function getUser(classs, role, i) {
   const user = {};
-  user.firstName = role;
-  user.lastName = `${role === "teacher" ? "t" : "s"}${i < 10 ? "00" : i < 100 ? "0" : ""}${i}`;
-  user.email = `${role === "teacher" ? "t" : "s"}${i < 10 ? "00" : i < 100 ? "0" : ""}${i}@${domain}.com`.toLowerCase();
-  user.password = "edulastic";
+  user.firstName = classs;
+  user.lastName = `${role === "teacher" ? "t" : "student"}${i < 10 ? "00" : i < 100 ? "0" : ""}${i}`;
+  user.email = `${classs}.student${i < 10 ? "00" : i < 100 ? "0" : ""}${i}@${domain}.com`.toLowerCase();
+  user.password = "snapwiz";
   user.role = `${role}`;
   return user;
 }
@@ -132,11 +138,20 @@ describe("create-test-data", () => {
     window.sessionStorage.clear();
 
     for (; teacherNumber <= teacherCount; teacherNumber++) {
-      const teacher = getUser(suiteName, "teacher", teacherNumber);
+      // const teacher = getUser(suiteName, "teacher", teacherNumber);
+      const teacher = {
+        firstName: "teacher",
+        lastName: `spr`,
+        email: "teacher.spr@edulastic.com",
+        password: "snapwiz",
+        role: `teacher`
+      };
+
       loginUser(teacher).then(user => {
         // signupUser(teacher).then(user => {
-        cy.wait(1);
-        // START
+        // cy.wait(300);
+
+        /*         // START
         // SETTING SCHOOL
         const setSchoolBody = school;
         setSchoolBody.email = teacher.email.toLowerCase();
@@ -149,10 +164,9 @@ describe("create-test-data", () => {
           headers: {
             Authorization: user.token,
             "Content-Type": "application/json"
-          },
-          retryOnStatusCodeFailure: true
+          }
         }).then(({ status }) => {
-          cy.wait(1);
+          cy.wait(300);
           expect(status).to.eq(200);
           //   console.log(`school set :: ${teacher.role} :: ${teacher.email}`);
 
@@ -166,10 +180,9 @@ describe("create-test-data", () => {
             headers: {
               Authorization: user.token,
               "Content-Type": "application/json"
-            },
-            retryOnStatusCodeFailure: true
+            }
           }).then(({ status }) => {
-            cy.wait(1);
+            cy.wait(300);
 
             expect(status).to.eq(200);
             // console.log(`standard set :: ${teacher.role} :: ${teacher.email}`);
@@ -183,62 +196,74 @@ describe("create-test-data", () => {
               headers: {
                 Authorization: user.token,
                 "Content-Type": "application/json"
-              },
-              retryOnStatusCodeFailure: true
+              }
             }).then(({ status }) => {
-              cy.wait(1);
+              cy.wait(300);
 
               expect(status).to.eq(200);
-              // END
               console.log(`signup done :: ${teacher.role} :: ${teacher.email}`);
+              // END */
+        // for (let classNumber = 1; classNumber <= classPerTeacherCount; classNumber++) {
 
-              for (let classNumber = 1; classNumber <= classPerTeacherCount; classNumber++) {
+        classes.forEach((cls, i) => {
+          if (i == 9) {
+            cy.wait(1).then(() => {
+              let classNumber = i + 1;
+              const { code } = cls;
+
+              // cy.wait(1).then(() => {
+              console.log("classNumber", classNumber);
+              console.log("classCode", code);
+
+              /*   // CREATE CLASS
+            group.name = `SPR Class-${classNumber}`;
+            group.parent = {
+              id: user._id
+            };
+            group.owners = [user._id];
+            group.grades = [allGrades[Math.floor(Math.random() * allGrades.length)]];
+            cy.request({
+              url: `${BASE_URL}/group`,
+              method: "POST",
+              body: group,
+              headers: {
+                Authorization: user.token,
+                "Content-Type": "application/json"
+              }
+            }).then(({ status, body }) => {
+              cy.wait(300);
+
+              let students = [];
+              const { code, _id } = body.result;
+              expect(status).to.eq(200);
+              console.log(`class created :: ${_id} :: ${code} :: '${group.name}'`);
+ */
+              let students = [];
+
+              // CREATE STUDENTS
+              for (let index = 1; index <= studentsPerClassCount; index++) {
                 cy.wait(1).then(() => {
-                  console.log("classNumber", classNumber);
-                  // CREATE CLASS
-                  group.name = `${teacher.lastName}c${classNumber < 10 ? "00" : "0"}${classNumber}`;
-                  group.parent = {
-                    id: user._id
-                  };
-                  group.owners = [user._id];
-                  group.grades = [allGrades[Math.floor(Math.random() * allGrades.length)]];
-                  cy.request({
-                    url: `${BASE_URL}/group`,
-                    method: "POST",
-                    body: group,
-                    headers: {
-                      Authorization: user.token,
-                      "Content-Type": "application/json"
-                    }
-                  }).then(({ status, body }) => {
-                    cy.wait(1);
-
-                    let students = [];
-                    const { code, _id } = body.result;
-                    expect(status).to.eq(200);
-
-                    console.log(`class created :: ${_id} :: ${code} :: '${group.name}'`);
-
-                    // CREATE STUDENTS
-                    for (let index = 1; index <= studentsPerClassCount; index++) {
-                      cy.wait(1).then(() => {
-                        const student = getUser(group.name, "student", studentNumber);
-                        student.code = code;
-                        signupUser(student);
-                        studentNumber++;
-                        // "khioio5, student.1"
-                        students.push(student.email);
-                      });
-                    }
-                    // console.log("students :: ", students);
-                    console.log("students string:: ", JSON.stringify(students));
-                  });
+                  const student = getUser(`c${classNumber}`, "student", index);
+                  student.code = code;
+                  signupUser(student);
+                  studentNumber++;
+                  // "khioio5, student.1"
+                  students.push(student.email);
                 });
               }
+              // console.log("students :: ", students);
+              cy.wait(1).then(() => console.log("students string:: ", JSON.stringify(students)));
+              // });
             });
-          });
+          }
         });
+
+        // });
+        // }
       });
+      // });
+      // });
+      // });
     }
   });
 
@@ -253,7 +278,7 @@ describe("create-test-data", () => {
         expect(status).to.eq(200);
         console.log(`user login :: ${teausername} `);
         orgData.classList.forEach(({ _id: classId, name }) => {
-          cy.wait(1).then(() => {
+          cy.wait(300).then(() => {
             groupUpdate.parent = {
               id: _id
             };
@@ -269,7 +294,7 @@ describe("create-test-data", () => {
                 "Content-Type": "application/json"
               }
             }).then(({ status }) => {
-              cy.wait(1);
+              cy.wait(300);
               expect(status).to.eq(200);
             });
           });

@@ -1,0 +1,26 @@
+{
+  "students": [
+    [
+      {
+        "id": "5eb3c520d282920007e3da15",
+        "email": "s2801@v2demo.com",
+        "groupId": "5eb3c51f1b88a30007d6e831"
+      },
+      {
+        "id": "5eb3c521d282920007e3da17",
+        "email": "s2802@v2demo.com",
+        "groupId": "5eb3c51f1b88a30007d6e831"
+      },
+      {
+        "id": "5eb3c523d282920007e3da19",
+        "email": "s2803@v2demo.com",
+        "groupId": "5eb3c51f1b88a30007d6e831"
+      },
+      {
+        "id": "5eb3c524d282920007e3da1b",
+        "email": "s2804@v2demo.com",
+        "groupId": "5eb3c51f1b88a30007d6e831"
+      }
+    ]
+  ]
+}

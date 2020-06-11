@@ -82,10 +82,8 @@ export const ModalWrapper = styled(Modal)`
 
 export const InitOptions = styled.div`
   background: ${white};
-  box-shadow: 2px 3px 10px 0px rgba(0, 0, 0, 0.2);
-  margin-bottom: 40px;
   border-radius: 8px;
-  padding: 60px 80px;
+  padding: 15px 80px;
   text-align: center;
   font-weight: bold;
   ${props => props.bodyStyle}

@@ -52,6 +52,7 @@ const StyledModal = styled(Modal)`
         color: ${titleColor};
         font-weight: 600;
         width: 100%;
+        margin-bottom: 10px;
       }
     }
     .ant-modal-footer {

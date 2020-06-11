@@ -1,19 +1,16 @@
+import { EduButton, CustomModalStyled } from "@edulastic/common";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import styled from "styled-components";
-import { EduButton } from "@edulastic/common";
 import {
-  ModalWrapper,
   InitOptions,
-  StyledInput,
+  LightGreenSpan,
   ModalFooter,
-  LightGreenSpan
+  StyledInput
 } from "../../../../common/components/ConfirmationModal/styled";
-
 import {
+  deleteAssignmentRequestAction as deleteAssignmetByTestId,
   getToggleDeleteAssignmentModalState,
-  toggleDeleteAssignmentModalAction,
-  deleteAssignmentRequestAction as deleteAssignmetByTestId
+  toggleDeleteAssignmentModalAction
 } from "../../../sharedDucks/assignments";
 import { deleteAssignmentAction as deleteAssigmnetByClass } from "../../../TestPage/components/Assign/ducks";
 
@@ -44,7 +41,7 @@ const DeleteAssignmentModal = ({
   };
 
   return (
-    <StyledModal
+    <CustomModalStyled
       visible={toggleDeleteAssignmentModalState}
       width="750px"
       title="Unassign"
@@ -85,21 +82,9 @@ const DeleteAssignmentModal = ({
           />
         </div>
       </InitOptions>
-    </StyledModal>
+    </CustomModalStyled>
   );
 };
-
-const StyledModal = styled(ModalWrapper)`
-  .ant-modal-body {
-    .delete-message-container {
-      font-weight: 600;
-
-      .delete-message-test-name {
-        font-weight: bold;
-      }
-    }
-  }
-`;
 
 const ConnectedDeleteAssignmentModal = connect(
   state => ({

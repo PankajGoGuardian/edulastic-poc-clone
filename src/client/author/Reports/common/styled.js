@@ -117,7 +117,6 @@ export const DropDownContainer = styled.div`
 
 export const StyledCard = styled(Card)`
   box-shadow: none;
-  margin-bottom: 20px;
   .ant-card-body {
     padding: 0px;
   }

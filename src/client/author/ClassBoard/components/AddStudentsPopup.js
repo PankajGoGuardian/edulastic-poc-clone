@@ -1,11 +1,17 @@
-import { EduButton,notification } from "@edulastic/common";
+import {
+  EduButton,
+  FieldLabel,
+  notification,
+  CustomModalStyled,
+  DatePickerStyled,
+  SelectInputStyled
+} from "@edulastic/common";
 import { assignmentPolicyOptions } from "@edulastic/constants";
-import { DatePicker, message, Row, Select } from "antd";
+import { Row, Select } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { addStudentsAction, fetchClassStudentsAction } from "../../src/actions/classBoard";
-import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { classStudentsSelector } from "../ducks";
 import { getUserName } from "../utils";
 import { BodyContainer } from "./styled";
@@ -35,7 +41,7 @@ const AddStudentsPopup = ({
   };
 
   const submitAction = () => {
-    if (!selectedStudents.length) notification({ type: "warn", messageKey:"selectAtleastOneStudent"});
+    if (!selectedStudents.length) notification({ type: "warn", messageKey: "selectAtleastOneStudent" });
     if (endDate < moment()) {
       return notification({ messageKey: "SelectFutureEndDate" });
     }
@@ -48,9 +54,8 @@ const AddStudentsPopup = ({
   };
 
   return (
-    <ConfirmationModal
+    <CustomModalStyled
       centered
-      textAlign="left"
       title="Add Students"
       visible={open}
       onCancel={closePopup}
@@ -64,15 +69,14 @@ const AddStudentsPopup = ({
       ]}
     >
       <BodyContainer>
-        <h4> Students </h4>
         <Row>
-          <Select
+          <FieldLabel> Students </FieldLabel>
+          <SelectInputStyled
             data-cy="selectStudents"
             showSearch
             optionFilterProp="children"
             filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             mode="multiple"
-            style={{ width: "100%" }}
             onChange={value => setSelectedStudent(value)}
             placeholder="Select the students"
             getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -91,11 +95,11 @@ const AddStudentsPopup = ({
                   </Select.Option>
                 )
             )}
-          </Select>
+          </SelectInputStyled>
         </Row>
-        <h4>Close Date</h4>
         <Row>
-          <DatePicker
+          <FieldLabel>Close Date</FieldLabel>
+          <DatePickerStyled
             allowClear={false}
             disabledDate={disabledEndDate}
             disabled={closePolicy !== assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE}
@@ -113,7 +117,7 @@ const AddStudentsPopup = ({
           />
         </Row>
       </BodyContainer>
-    </ConfirmationModal>
+    </CustomModalStyled>
   );
 };
 

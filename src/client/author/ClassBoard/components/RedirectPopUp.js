@@ -1,15 +1,22 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { Row, Select, DatePicker, message, Col, Input } from "antd";
-import moment from "moment";
-import { some } from "lodash";
-import { test as testContants } from "@edulastic/constants";
 import { assignmentApi } from "@edulastic/api";
-
-import { EduButton , RadioBtn, RadioGrp, notification } from "@edulastic/common";
-import { getUserName, getRedirectEndDate } from "../utils";
-import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
+import {
+  CustomModalStyled,
+  EduButton,
+  notification,
+  RadioBtn,
+  RadioGrp,
+  FieldLabel,
+  SelectInputStyled,
+  DatePickerStyled,
+  TextInputStyled
+} from "@edulastic/common";
+import { test as testContants } from "@edulastic/constants";
+import { Col, Row, Select } from "antd";
+import { some } from "lodash";
+import moment from "moment";
+import React, { useCallback, useEffect, useState } from "react";
+import { getRedirectEndDate, getUserName } from "../utils";
 import { BodyContainer } from "./styled";
-
 
 const { redirectPolicy } = testContants;
 
@@ -91,9 +98,12 @@ const RedirectPopUp = ({
     setLoading(true);
     const selected = Object.keys(studentsToRedirect);
     if (selected.length === 0) {
-      notification({ msg: type === "entire"
-      ? "You can redirect an assessment only after the assessment has been submitted by the student(s)."
-      : "At least one student should be selected to redirect assessment."})
+      notification({
+        msg:
+          type === "entire"
+            ? "You can redirect an assessment only after the assessment has been submitted by the student(s)."
+            : "At least one student should be selected to redirect assessment."
+      });
     } else {
       let _selected = selected;
       if (qDeliveryState === redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG) {
@@ -121,11 +131,11 @@ const RedirectPopUp = ({
         await assignmentApi
           .redirect(assignmentId, redirectAssignment)
           .then(() => {
-            notification({ type: "success", messageKey:"redirectSuccessful"});
+            notification({ type: "success", messageKey: "redirectSuccessful" });
             closePopup(true);
           })
           .catch(err => {
-            notification({ msg:err?.data?.message});
+            notification({ msg: err?.data?.message });
             closePopup();
           });
       } else {
@@ -145,9 +155,8 @@ const RedirectPopUp = ({
   const disabledDueDate = useCallback(dueDate => dueDate < moment().startOf("day") || dueDate > endDate, [endDate]);
 
   return (
-    <ConfirmationModal
+    <CustomModalStyled
       centered
-      textAlign="left"
       title="Redirect Assignment"
       visible={open}
       onCancel={closePopup}
@@ -185,9 +194,9 @@ const RedirectPopUp = ({
           </RadioGrp>
         </Row>
 
-        <h4> Students </h4>
         <Row>
-          <Select
+          <FieldLabel> Students </FieldLabel>
+          <SelectInputStyled
             showSearch
             optionFilterProp="data"
             filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -200,7 +209,6 @@ const RedirectPopUp = ({
             onChange={v => {
               setSelected(v);
             }}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             {allStudents.map(
               x =>
@@ -215,121 +223,109 @@ const RedirectPopUp = ({
                   </Option>
                 )
             )}
-          </Select>
+          </SelectInputStyled>
         </Row>
 
         <Row gutter={24}>
           {additionalData.dueDate ? (
             <Col span={12}>
-              <h4>Due Date</h4>
-              <Row>
-                <DatePicker
-                  data-cy="dueDate"
-                  allowClear={false}
-                  disabledDate={disabledDueDate}
-                  style={{ width: "100%", cursor: "pointer" }}
-                  value={dueDate}
-                  showTime
-                  showToday={false}
-                  onChange={v => setDueDate(v)}
-                />
-              </Row>
+              <FieldLabel>Due Date</FieldLabel>
+              <DatePickerStyled
+                data-cy="dueDate"
+                allowClear={false}
+                disabledDate={disabledDueDate}
+                style={{ width: "100%", cursor: "pointer" }}
+                value={dueDate}
+                showTime
+                showToday={false}
+                onChange={v => setDueDate(v)}
+              />
             </Col>
           ) : (
             <Col span={12}>
-              <h4>Questions delivery</h4>
-              <Row>
-                <Select
-                  data-cy="questionDelivery"
-                  defaultValue={qDeliveryState}
-                  onChange={val => setQDeliveryState(val)}
-                  style={{ width: "100%" }}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {Object.keys(QuestionDelivery).map(item => (
-                    <Option key="1" value={item}>
-                      {QuestionDelivery[item]}
-                    </Option>
-                    ))}
-                </Select>
-              </Row>
+              <FieldLabel>Questions delivery</FieldLabel>
+              <SelectInputStyled
+                data-cy="questionDelivery"
+                defaultValue={qDeliveryState}
+                onChange={val => setQDeliveryState(val)}
+                style={{ width: "100%" }}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {Object.keys(QuestionDelivery).map(item => (
+                  <Option key="1" value={item}>
+                    {QuestionDelivery[item]}
+                  </Option>
+                ))}
+              </SelectInputStyled>
             </Col>
-            )}
+          )}
           <Col span={12}>
-            <h4>Close Date</h4>
-            <Row>
-              <DatePicker
-                data-cy="closeDate"
-                allowClear={false}
-                disabledDate={disabledEndDate}
-                style={{ width: "100%", cursor: "pointer" }}
-                value={endDate}
-                showTime
-                showToday={false}
-                onChange={v => setEndDate(v)}
-              />
-            </Row>
+            <FieldLabel>Close Date</FieldLabel>
+            <DatePickerStyled
+              data-cy="closeDate"
+              allowClear={false}
+              disabledDate={disabledEndDate}
+              style={{ width: "100%", cursor: "pointer" }}
+              value={endDate}
+              showTime
+              showToday={false}
+              onChange={v => setEndDate(v)}
+            />
           </Col>
         </Row>
         <Row gutter={24}>
           {additionalData.dueDate ? (
             <Col span={12}>
-              <h4>Questions delivery</h4>
-              <Row>
-                <Select
-                  data-cy="questionDelivery"
-                  defaultValue={qDeliveryState}
-                  onChange={val => setQDeliveryState(val)}
-                  style={{ width: "100%" }}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {Object.keys(QuestionDelivery).map(item => (
-                    <Option key="1" value={item}>
-                      {QuestionDelivery[item]}
-                    </Option>
-                  ))}
-                </Select>
-              </Row>
-            </Col>
-          ) : null}
-          <Col span={12}>
-            <h4>Show Previous attempt</h4>
-            <Row>
-              <Select
-                data-cy="previousAttempt"
-                value={showPrevAttempt}
-                onChange={val => setshowPrevAttempt(val)}
+              <FieldLabel>Questions delivery</FieldLabel>
+              <SelectInputStyled
+                data-cy="questionDelivery"
+                defaultValue={qDeliveryState}
+                onChange={val => setQDeliveryState(val)}
                 style={{ width: "100%" }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
               >
-                {Object.keys(ShowPreviousAttempt).map((item, index) => (
-                  <Option key={index} value={item}>
-                    {ShowPreviousAttempt[item]}
+                {Object.keys(QuestionDelivery).map(item => (
+                  <Option key="1" value={item}>
+                    {QuestionDelivery[item]}
                   </Option>
                 ))}
-              </Select>
-            </Row>
+              </SelectInputStyled>
+            </Col>
+          ) : null}
+          <Col span={12}>
+            <FieldLabel>Show Previous attempt</FieldLabel>
+            <SelectInputStyled
+              data-cy="previousAttempt"
+              value={showPrevAttempt}
+              onChange={val => setshowPrevAttempt(val)}
+              style={{ width: "100%" }}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {Object.keys(ShowPreviousAttempt).map((item, index) => (
+                <Option key={index} value={item}>
+                  {ShowPreviousAttempt[item]}
+                </Option>
+              ))}
+            </SelectInputStyled>
           </Col>
           {additionalData.timedAssignment ? (
             <Col span={12}>
-              <h4>Time Limit</h4>
-              <Row>
-                <Input
-                  type="number"
-                  data-cy="allowedTime"
-                  value={allowedTime / (60 * 1000)}
-                  onChange={e => setAllowedTime(e.target.value * (60 * 1000))}
-                  style={{ width: "60%" }}
-                  min={1}
-                  max={300}
-                />{" "}
-                <span>&nbsp;minutes</span>
-              </Row>
+              <FieldLabel>Time Limit</FieldLabel>
+              <TextInputStyled
+                type="number"
+                data-cy="allowedTime"
+                value={allowedTime / (60 * 1000)}
+                onChange={e => setAllowedTime(e.target.value * (60 * 1000))}
+                style={{ width: "60%" }}
+                min={1}
+                max={300}
+              />{" "}
+              <span>&nbsp;minutes</span>
             </Col>
           ) : null}
         </Row>
       </BodyContainer>
-    </ConfirmationModal>
+    </CustomModalStyled>
   );
 };
 

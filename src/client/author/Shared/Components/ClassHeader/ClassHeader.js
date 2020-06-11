@@ -6,7 +6,7 @@ import { IconBookMarkButton, IconDeskTopMonitor, IconNotes, IconSettings } from 
 import { withNamespaces } from "@edulastic/localization";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, message } from "antd";
+import { Dropdown } from "antd";
 import { get } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
@@ -118,7 +118,7 @@ class ClassHeader extends Component {
 
   cancel = () => {
     this.setState({ visible: false });
-    notification({ messageKey:"ClickOnCancel" });
+    notification({ messageKey: "ClickOnCancel" });
   };
 
   handleVisibleChange = visible => {
@@ -214,7 +214,7 @@ class ClassHeader extends Component {
       assignmentStatus === "NOT OPEN" &&
       passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
-      notification({ messageKey:"assignmentShouldBeOpenToSeePassword" });
+      notification({ messageKey: "assignmentShouldBeOpenToSeePassword" });
       return;
     }
     toggleViewPassword();
@@ -226,7 +226,7 @@ class ClassHeader extends Component {
     if (isAnyBodyGraded) {
       toggleStudentReportCardPopUp(true);
     } else {
-     notification({ messageKey:"noStudentIsGradedToGenerateReportCard" });
+      notification({ messageKey: "noStudentIsGradedToGenerateReportCard" });
     }
   };
 
@@ -341,7 +341,7 @@ class ClassHeader extends Component {
           key="key2"
           onClick={() =>
             assignedById !== userId
-              ? notification({ messageKey:"youAreNotAuthorizedToUpdate" })
+              ? notification({ messageKey: "youAreNotAuthorizedToUpdate" })
               : toggleReleaseGradePopUp(true)
           }
         >
@@ -546,7 +546,6 @@ class ClassHeader extends Component {
               inputVal={modalInputVal}
               onInputChange={this.handleValidateInput}
               expectedVal="CLOSE"
-              bodyStyle={{ padding: "60px 20px" }}
               bodyText={
                 <div>
                   <StudentStatusDetails>

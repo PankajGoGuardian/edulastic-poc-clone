@@ -93,15 +93,19 @@ class TemplateMarkup extends Component {
 
       return _validation;
     };
-
-    const reduceOptions = (responseIds, options) => {
+    // Fix me: We might not require this for display type input
+    const reduceOptions = (responseIds, options = {}) => {
       const _options = cloneDeep(options);
-      Object.keys(_options).map(id => {
-        const isExist = find(responseIds, response => response.id === id);
-        if (!isExist) {
-          delete _options[id];
-        }
-      });
+
+      const optionsKeys = Object.keys(_options);
+      if (optionsKeys.length) {
+        optionsKeys.map(id => {
+          const isExist = find(responseIds, response => response.id === id);
+          if (!isExist) {
+            delete _options[id];
+          }
+        });
+      }
       return _options;
     };
 

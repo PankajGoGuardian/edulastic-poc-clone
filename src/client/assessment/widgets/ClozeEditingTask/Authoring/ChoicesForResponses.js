@@ -125,7 +125,7 @@ class ChoicesForResponse extends Component {
             </Subtitle>
             <SortableList
               useDragHandle
-              items={options[response.id] || []}
+              items={options?.[response.id] || []} // Fix me: We might not require this for display type input
               defaultOptions={defaultOptions}
               onSortEnd={params => this.onSortEnd(response.id, params)}
               onRemove={itemIndex => this.remove(response.id, itemIndex)}

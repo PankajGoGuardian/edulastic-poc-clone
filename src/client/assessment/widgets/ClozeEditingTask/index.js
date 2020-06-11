@@ -12,7 +12,7 @@ import { replaceVariables } from "../../utils/variables";
 import Authoring from "./Authoring";
 import Display from "./Display";
 import { EDIT, PREVIEW, SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
-import { subOptions } from "./constants";
+import { subOptions, displayStyles } from "./constants";
 
 const EmptyWrapper = Fragment;
 
@@ -83,9 +83,16 @@ const EditingTask = ({
   const isExpressGrader = expressGrader && previewTab === SHOW;
 
   useEffect(() => {
-    if (isPreview && !isPrint && !isPrintPreview && displayStyle?.option !== subOptions.EMPTY) {
+    // Fix me: We might not require this for display type input
+    if (
+      isPreview &&
+      !isPrint &&
+      !isPrintPreview &&
+      displayStyle?.option !== subOptions.EMPTY &&
+      displayStyle.type !== displayStyles.TEXT_INPUT
+    ) {
       const initialAnswers = responseIds.map(response => {
-        const opts = previewDisplayOptions[response.id] || [];
+        const opts = previewDisplayOptions?.[response.id] || [];
         return { value: opts[0] || "", ...response };
       });
       handleAddAnswer(initialAnswers);

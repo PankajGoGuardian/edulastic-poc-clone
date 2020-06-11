@@ -2,8 +2,9 @@ import { questionType, question, customTags } from "@edulastic/constants";
 import { get, isString, isEmpty } from "lodash";
 import striptags from "striptags";
 import { templateHasImage } from "@edulastic/common";
+import { displayStyles } from "../assessment/widgets/ClozeEditingTask/constants";
 
-const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT, PASSAGE } = questionType;
+const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT, PASSAGE, EDITING_TASK } = questionType;
 
 export const isRichTextFieldEmpty = text => {
   if (!text) {
@@ -173,6 +174,18 @@ const passageCheck = i => {
   }
 };
 
+const editingTaskOptionsCheck = ({ displayStyle: { type = "", value = "" } = {}, options = {} }) => {
+  // Don't need to check options for input type display
+  if (type === displayStyles.TEXT_INPUT || value === displayStyles.TEXT_INPUT) return false;
+
+  const valueSet = Object.values(options);
+
+  if (!valueSet.length) return true;
+
+  // for other display type we need to check option's values
+  return valueSet.some(_value => (typeof _value === "string" ? !_value.trim() : isEmpty(_value)));
+};
+
 const hasEmptyOptions = item => {
   // options check for expression multipart type question.
   switch (item.type) {
@@ -182,6 +195,8 @@ const hasEmptyOptions = item => {
       return clozeDropDownOptionsCheck(item);
     case MULTIPLE_CHOICE:
       return multipleChoiceOptionsCheck(item);
+    case EDITING_TASK:
+      return editingTaskOptionsCheck(item);
     default:
       return false;
   }
@@ -424,6 +439,14 @@ const answerValidator = {
   },
   [questionType.HOTSPOT](answers) {
     return this[questionType.SORT_LIST](answers);
+  },
+  [questionType.EDITING_TASK](answers) {
+    // when there is no response box
+    return answers.some(
+      ({ value = [] }) =>
+        isEmpty(value) ||
+        value.some(({ value: _value = "" }) => (typeof _value === "string" ? !_value.trim() : isEmpty(_value)))
+    );
   }
 };
 

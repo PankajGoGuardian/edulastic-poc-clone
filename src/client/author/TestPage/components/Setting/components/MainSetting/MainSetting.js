@@ -1,8 +1,15 @@
 import { blueBorder, green, red, themeColor, lightGrey9 } from "@edulastic/colors";
-import { CheckboxLabel, RadioBtn, withWindowScroll, SelectInputStyled, TextInputStyled,notification } from "@edulastic/common";
+import {
+  CheckboxLabel,
+  RadioBtn,
+  withWindowScroll,
+  SelectInputStyled,
+  TextInputStyled,
+  notification
+} from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
-import { Anchor, Col, Input, message, Row, Select, Switch, Tooltip } from "antd";
+import { Anchor, Col, Input, Row, Select, Switch, Tooltip } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -38,6 +45,7 @@ import {
   Label
 } from "./styled";
 import SubscriptionsBlock from "./SubscriptionsBlock";
+import { isPublisherUserSelector } from "../../../../../src/selectors/user";
 
 const {
   settingCategories,
@@ -66,6 +74,11 @@ const { ASSESSMENT, PRACTICE, COMMON } = type;
 
 const testTypes = {
   [ASSESSMENT]: "Class Assessment",
+  [PRACTICE]: "Practice"
+};
+
+const authorPublisherTestTypes = {
+  [ASSESSMENT]: "Assessment",
   [PRACTICE]: "Practice"
 };
 
@@ -106,9 +119,12 @@ class MainSetting extends Component {
   }
 
   componentDidMount = () => {
-    const { entity } = this.props;
+    const { entity, isAuthorPublisher } = this.props;
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData("scoringType")(PARTIAL_CREDIT_IGNORE_INCORRECT);
+    }
+    if (isAuthorPublisher) {
+      this.updateTestData("testType")(ASSESSMENT);
     }
   };
 
@@ -219,7 +235,7 @@ class MainSetting extends Component {
       }
       case "answerOnPaper":
         if (value === true && disableAnswerOnPaper) {
-          notification({ messageKey:"answerOnPaperNotSupportedForThisTest"});
+          notification({ messageKey: "answerOnPaperNotSupportedForThisTest" });
           return;
         }
         break;
@@ -282,7 +298,9 @@ class MainSetting extends Component {
       sebPasswordRef,
       windowScrollTop,
       disableAnswerOnPaper,
-      premium
+      premium,
+      districtPermissions = [],
+      isAuthorPublisher
     } = this.props;
 
     const {
@@ -312,7 +330,6 @@ class MainSetting extends Component {
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
-      districtPermissions = [],
       freezeSettings = false
     } = entity;
 
@@ -430,9 +447,9 @@ class MainSetting extends Component {
                               Common Assessment
                             </Option>
                           )}
-                        {Object.keys(testTypes).map(key => (
+                        {Object.keys(isAuthorPublisher ? authorPublisherTestTypes : testTypes).map(key => (
                           <Option key={key} value={key}>
-                            {testTypes[key]}
+                            {isAuthorPublisher ? authorPublisherTestTypes[key] : testTypes[key]}
                           </Option>
                         ))}
                       </SelectInputStyled>
@@ -1118,7 +1135,8 @@ export default connect(
     premium: state?.user?.user?.features?.premium,
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions
-      : state?.tests?.entity?.summary?.totalItems
+      : state?.tests?.entity?.summary?.totalItems,
+    isAuthorPublisher: isPublisherUserSelector(state)
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

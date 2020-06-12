@@ -53,7 +53,10 @@ class ItemListPage {
 
   getItemDOKIById = id => this.getItemContainerInlistById(id).find('[data-cy="detail_index-0"]');
 
-  getCheckBoxById = id => this.getItemContainerInlistById(id).find('[type="checkbox"]');
+  getAddButtonById = id =>
+    this.getViewItemById(id)
+      .parent()
+      .next();
 
   getViewItemById = id =>
     cy
@@ -114,7 +117,7 @@ class ItemListPage {
       .click();
   };
 
-  checkItemById = id => this.getCheckBoxById(id).check({ force: true });
+  addItemById = id => this.getAddButtonById(id).click({ force: true });
 
   // *** ACTIONS END ***
   // *** APPHELPERS START ***

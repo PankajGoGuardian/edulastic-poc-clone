@@ -458,7 +458,7 @@ Cypress.Commands.add("getAllOwnTests", (access_token = getAccessToken()) => {
           grades: [],
           subject: "",
           tags: [],
-          searchString: "",
+          searchString: [],
           filter: "AUTHORED_BY_ME",
           createdAt: ""
         },

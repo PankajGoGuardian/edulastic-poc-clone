@@ -16,7 +16,7 @@ const ApiFormsMain = ({ fields, name, handleOnSave }) => {
     () =>
       Object.keys(data).reduce((acc, key) => {
         const field = fields.find(f => f.name === key);
-        if (data[key] && field.formatter) {
+        if (data[key] && field && field.formatter) {
           acc[key] = field.formatter(data[key]);
         } else {
           acc[key] = data[key];

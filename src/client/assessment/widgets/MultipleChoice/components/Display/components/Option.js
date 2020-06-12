@@ -165,10 +165,9 @@ const Option = props => {
     // TODO setup label background color for each option
     <Label
       data-cy="anwer-labels"
-      style={{ breakBefore : 'avoid-page', breakInside: 'avoid', pageBreakInside: 'avoid'}}
       maxWidth={maxWidth}
       smallSize={smallSize}
-      className={`${className} __before-break`}
+      className={className}
       showAnswer={showAnswer}
       uiStyle={uiStyle}
       showIcon={showIcon}

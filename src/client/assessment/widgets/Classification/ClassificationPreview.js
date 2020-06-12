@@ -75,8 +75,7 @@ const ClassificationPreview = ({
       flexDirection:
         (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
       width: "100%",
-      justifyContent: justification,
-      pageBreakInside: 'avoid'
+      justifyContent: justification
     },
     dragItemsContainerStyle: {
       display: "flex",

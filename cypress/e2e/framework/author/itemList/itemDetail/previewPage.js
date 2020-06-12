@@ -29,11 +29,11 @@ class PreviewItemPage {
 
   // *** APPHELPERS START ***
 
-  checkScore = expectedScore => {
+  checkLabel = label => {
     this.getCheckAnswer()
       .click()
       .then(() => {
-        this.getScore().should("have.text", `Score ${expectedScore}`);
+        this.getScore().should("have.text", label);
       });
 
     return this;

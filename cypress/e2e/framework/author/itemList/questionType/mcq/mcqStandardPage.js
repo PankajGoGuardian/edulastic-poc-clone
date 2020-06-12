@@ -54,13 +54,12 @@ class MCQStandardPage {
       .type(text);
 
   // choices
-  getChoiceByIndex = index => {
+  getChoiceByIndex = index =>
     // const selector = `#idprefix${index}`;
-    return cy
+    cy
       .get('[data-cy="quillSortableItem"]')
       .eq(index)
       .find('[contenteditable="true"]');
-  };
 
   deleteChoiceByIndex(index) {
     const selector = `[data-cy=deleteprefix${index}]`;
@@ -106,16 +105,18 @@ class MCQStandardPage {
   deleteAlternate() {
     return this;
   }
+
   selectAlternatetab = () => {
     cy.contains("span", "Alternate 1").click();
   };
+
   getMultipleResponse = () => cy.get('[data-cy="multi"]').closest("label");
 
   // advance options
   clickOnAdvancedOptions() {
     cy.contains("ADVANCED OPTIONS")
       .should("be.visible")
-      .click();
+      .click({ force: true });
     return this;
   }
 
@@ -181,6 +182,7 @@ class MCQStandardPage {
 
     return this;
   }
+
   selectChoice = choice => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
@@ -189,6 +191,7 @@ class MCQStandardPage {
       .find("input")
       .should("be.checked");
   };
+
   deselectChoice = choice => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
@@ -197,6 +200,7 @@ class MCQStandardPage {
       .find("input")
       .should("not.be.checked");
   };
+
   checkChoiceSelected = choice => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
@@ -204,6 +208,7 @@ class MCQStandardPage {
       .find("input")
       .should("be.checked");
   };
+
   checkChoiceNotSelected = choice => {
     this.getAllAnsChoicesLabel()
       .contains(choice)
@@ -296,10 +301,8 @@ class MCQStandardPage {
 
   getCheckAnsAttempt = () => cy.get('[data-cy="checkAttempts"]').should("be.visible");
 
-  getEnableAutoScoring = () => {
-    return cy.get('[data-cy="autoscoreChk"]');
-    // return cy.contains("Enable auto scoring").prev();
-  };
+  getEnableAutoScoring = () => cy.get('[data-cy="autoscoreChk"]');
+  // return cy.contains("Enable auto scoring").prev();
 
   getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 

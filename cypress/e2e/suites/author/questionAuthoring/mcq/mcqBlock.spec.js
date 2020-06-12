@@ -1,7 +1,6 @@
-/// <reference types="Cypress" />
-import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
-import MCQMultiplePage from "../../../../framework/author/itemList/questionType/mcq/mcqMultiplePage.js";
+// / <reference types="Cypress" />
+import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
+import MCQBlockLayoutPage from "../../../../framework/author/itemList/questionType/mcq/mcqBlockLayoutPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import {
   SCORING_TYPE,
@@ -10,26 +9,25 @@ import {
   FONT_SIZE,
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
 )} >> Author "Multiple choice - block layout" type question`, () => {
   const queData = {
     group: "Multiple Choice",
-    queType: "Multiple choice - block layout",
+    queType: "Multiple Choice - Block Layout",
     queText: "Indian state known as garden spice is:",
-    choices: ["Karnataka", "West Bengal", "Kerala", "Delhi", "KL"],
-    correct: ["Kerala"],
-    alterate: ["KL"],
+    choices: ["choice a", "choice b", "choice c", "choice d", "choice e"],
+    correct: ["choice a", "choice b"],
+    alterate: ["choice c", "choice d"],
     extlink: "www.testdomain.com",
     formattext: "formattedtext",
     formula: "s=ar^2"
   };
-  const question = new MCQMultiplePage();
+  const question = new MCQBlockLayoutPage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
   const text = "testtext";
-  const { formates } = question;
 
   before(() => {
     cy.login();
@@ -245,7 +243,7 @@ describe(`${FileHelper.getSpecName(
         .should("not.have.class", "ant-checkbox-checked"); */
     });
 
-    it(" > [Tc_305]:test => Layout", () => {
+    it(" > [Tc_305]:test => Display", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
@@ -291,12 +289,7 @@ describe(`${FileHelper.getSpecName(
     it(" > [Tc_307]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
@@ -309,18 +302,6 @@ describe(`${FileHelper.getSpecName(
   });
 
   context(" > User edit the question.", () => {
-    const queData = {
-      group: "Multiple Choice",
-      queType: "Multiple choice - block layout",
-      queText: "editIndian state known as garden spice is:",
-      choices: ["editKarnataka", "editWest Bengal", "editKerala", "editDelhi", "KL"],
-      correct: ["editKerala"],
-      alterate: ["editKL"],
-      extlink: "editwww.testdomain.com",
-      formattext: "editformattedtext",
-      formula: "edits=ar^2"
-    };
-
     before("delete old question and create dummy que to edit", () => {
       question.createQuestion();
       question.header.save();
@@ -476,12 +457,10 @@ describe(`${FileHelper.getSpecName(
     });
 
     it(" > [Tc_311]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
-
       // scoring
       // question.getMaxScore().verifyNumInput(1);
 
-      /*  question
+      /*   question
         .getEnableAutoScoring()
         .click()
         .then($el => {
@@ -497,9 +476,7 @@ describe(`${FileHelper.getSpecName(
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question.getPanalty().verifyNumInput(1);
-
       // question.getCheckAnsAttempt().verifyNumInput(1);
-
       // question.getMinScore().verifyNumInput(1);
 
       question
@@ -507,6 +484,7 @@ describe(`${FileHelper.getSpecName(
         .click()
         .then($el2 => {
           cy.wrap($el2).should("have.class", "ant-checkbox-checked");
+
           // question.getMinScore().should("have.attr", "disabled");
         });
 
@@ -516,7 +494,7 @@ describe(`${FileHelper.getSpecName(
         .should("not.have.class", "ant-checkbox-checked");
       // });
 
-      /* question
+      /*  question
         .getEnableAutoScoring()
         .click()
         .should("not.have.class", "ant-checkbox-checked"); */
@@ -558,6 +536,8 @@ describe(`${FileHelper.getSpecName(
           .find(".labelOnly")
           .should("have.text", option.key);
       });
+
+      question.selectChoicesStyle("Standard");
     });
 
     it(" > [Tc_313]:test => Save question", () => {
@@ -568,29 +548,16 @@ describe(`${FileHelper.getSpecName(
     it(" > [Tc_314]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 
-      preview.getShowAnswer().click();
+      preview.getShowAnswer().click({ force: true });
 
       preview.getClear().click();
 
       preview.header.edit();
     });
-
-    /* it(" > [Tc_315]:test => Delete question from item", () => {
-      editItem
-        .getDelButton()
-        .should("have.length", 1)
-        .click()
-        .should("have.length", 0);
-    }); */
   });
 
   context(" > [sanity]:test => Create question using different options and validate", () => {
@@ -622,29 +589,9 @@ describe(`${FileHelper.getSpecName(
 
       // set correct multiple ans
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.correct[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
+      question.selectChoice(queData.correct[0]);
 
-      question
-        .getAllAnsChoicesLabel()
-        .contains(queData.alterate[0])
-        .click()
-        .closest("label")
-        .find("input")
-        .should("be.checked");
-
-      /* question
-        .getAllAnsChoicesLabel()
-        .eq(1)
-        .click()
-        .closest("label")
-        .find("input")
-        .should("not.be.checked"); */
+      question.selectChoice(queData.alterate[0]);
 
       // save
       question.header.save();
@@ -673,83 +620,61 @@ describe(`${FileHelper.getSpecName(
         .getShowAnswer()
         .click()
         .then(() => {
-          cy.get("label.wrong").should("have.length", 0);
-
-          cy.get("label.right")
-            .should("have.length", 2)
-            .and("contain", queData.correct[0])
-            .and("contain", queData.alterate[0]);
+          question.checkHighlight({ wrong: true });
+          question.checkHighlightData({
+            color: "right",
+            length: 2,
+            choices: [queData.correct[0], queData.alterate[0]]
+          });
         });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ both: true });
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
 
-      cy.contains(queData.alterate[0]).click();
+      question.selectAnswerChoice(queData.alterate[0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
+      preview.checkScore("1/1");
 
-          cy.get("label.wrong").should("have.length", 0);
+      question.checkHighlight({ wrong: true });
 
-          cy.get("label.right")
-            .should("have.length", 2)
-            .and("contain", queData.correct[0])
-            .and("contain", queData.alterate[0]);
-        });
+      question.checkHighlightData({ color: "right", length: 2, choices: [queData.correct[0], queData.alterate[0]] });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ both: true });
         });
 
       // give partial wrong ans and check
-      cy.contains(queData.choices[0]).click();
-      cy.contains(queData.correct[0]).click();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[0]);
+      preview.checkScore("0/1");
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
-        });
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.correct[1]] });
+
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ both: true });
         });
 
       // give no ans and check
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("0/1");
+      preview.checkScore("0/1");
 
-          cy.get("label.right,label.wrong").should("have.length", 0);
-        });
-
+      question.checkHighlight({ both: true });
       // partial match
       preview.header.edit();
 
@@ -767,81 +692,350 @@ describe(`${FileHelper.getSpecName(
         .getShowAnswer()
         .click()
         .then(() => {
-          cy.get("label.wrong").should("have.length", 0);
+          question.checkHighlight({ wrong: true });
 
-          cy.get("label.right")
-            .should("have.length", 2)
-            .and("contain", queData.correct[0])
-            .and("contain", queData.alterate[0]);
+          question.checkHighlightData({
+            color: "right",
+            length: 2,
+            choices: [queData.correct[0], queData.alterate[0]]
+          });
         });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ both: true });
         });
 
       // give correct ans and validate
-      cy.contains(queData.correct[0]).click();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
 
-      cy.contains(queData.alterate[0]).click();
-
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("1/1");
-          cy.get("label.wrong").should("have.length", 0);
-
-          cy.get("label.right")
-            .should("have.length", 2)
-            .and("contain", queData.correct[0])
-            .and("contain", queData.alterate[0]);
-        });
+      preview.checkScore("1/1");
+      question.checkHighlight({ wrong: true });
+      question.checkHighlightData({ color: "right", length: 2, choices: [queData.correct[0], queData.alterate[0]] });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ both: true });
         });
 
       // give partial wrong ans and check
-      cy.contains(queData.choices[0]).click();
-      cy.contains(queData.correct[0]).click();
+
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+
+      preview.checkScore("0.5/1");
+
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.correct[1]] });
+
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
 
       preview
-        .getCheckAnswer()
+        .getClear()
         .click()
         .then(() => {
-          preview.verifyScore("0.5/1");
+          question.checkHighlight({ both: true });
+        });
 
-          cy.get("label.wrong")
-            .should("have.length", 1)
-            .and("contain", queData.choices[0]);
+      // give no ans and check
+      preview.checkScore("0/1");
 
-          cy.get("label.right")
-            .should("have.length", 1)
-            .and("contain", queData.correct[0]);
+      question.checkHighlight({ both: true });
+    });
+  });
+  context("Score block testing", () => {
+    before("visit items list page and select question type", () => {
+      editItem.createNewItem();
+      // select que type
+      editItem.chooseQuestion(queData.group, queData.queType);
+
+      question
+        .getQuestionEditor()
+        .clear()
+        .type(queData.queText);
+
+      question.getAllChoices().each(($el, index, $list) => {
+        const cusIndex = $list.length - (index + 1);
+        question.deleteChoiceByIndex(cusIndex);
+      });
+
+      // add choices
+      const { choices } = queData;
+      choices.forEach((ch, index) => {
+        question
+          .addNewChoice()
+          .getChoiceByIndex(index)
+          .clear()
+          .type(ch)
+          .should("contain", ch);
+      });
+
+      question.selectChoice(queData.choices[0]);
+
+      // save
+      question.header.save();
+    });
+
+    it("default test with exact score", () => {
+      const preview = editItem.header.preview();
+
+      preview
+        .getShowAnswer()
+        .click()
+        .then(() => {
+          question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
+        });
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ both: true });
+        });
+
+      // give correct ans and validate
+      question.selectAnswerChoice(queData.correct[0]);
+      preview.checkScore("1/1");
+      question.checkHighlight({ wrong: true });
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ both: true });
+        });
+
+      // give wrong ans and check
+      question.selectAnswerChoice(queData.choices[1]);
+      preview.checkScore("0/1");
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[1]] });
+      question.checkHighlight({ right: true });
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ both: true });
+        });
+
+      // give no ans and check
+      preview.checkScore("0/1");
+    });
+
+    it("Select multiple correct answer with exact score", () => {
+      question.header.edit();
+
+      // select multiple correct answer
+
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.selectChoice(queData.correct[1]);
+
+      // set score as 2
+      question.getPoints().type("{selectall}2");
+
+      // check answer in preview
+      const preview = editItem.header.preview();
+
+      preview
+        .getShowAnswer()
+        .click()
+        .then(() => {
+          question.checkHighlightData({ color: "right", length: 2, choices: [queData.correct[0], queData.correct[1]] });
         });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ both: true });
         });
 
-      // give no ans and check
+      // give correct ans and validate
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+
+      preview.checkScore("2/2");
+
+      question.checkHighlightData({ color: "right", length: 2, choices: [queData.correct[0], queData.correct[1]] });
       preview
-        .getCheckAnswer()
+        .getClear()
         .click()
         .then(() => {
-          preview.verifyScore("0/1");
-
-          cy.get("label.right,label.wrong").should("have.length", 0);
+          question.checkHighlight({ both: true });
         });
+
+      // give wrong answer and validate
+
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.choices[3]);
+
+      preview.checkScore("0/2");
+
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[3]] });
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
     });
+
+    it("Select partial correct answer", () => {
+      // change the scoring tye to partial
+      question.header.edit();
+
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+
+      // verify with partial correct answer
+
+      question.checkChoiceSelected(queData.correct[0]);
+      question.checkChoiceSelected(queData.correct[1]);
+
+      const preview = editItem.header.preview();
+      question.selectAnswerChoice(queData.choices[3]);
+      question.selectAnswerChoice(queData.correct[0]);
+
+      preview.checkScore("1/2");
+
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[3]] });
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.correct[0]] });
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ both: true });
+        });
+      // give all correct answer and validate
+
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+      question.selectAnswerChoice(queData.alterate[0]);
+
+      preview.checkScore("2/2");
+
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.alterate[0]] });
+
+      question.checkHighlightData({ color: "right", length: 2, choices: [queData.correct[0], queData.correct[1]] });
+    });
+
+    it("Verify alternate answer", () => {
+      question.header.edit();
+
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.checkChoiceSelected(queData.correct[1]);
+
+      question.checkChoiceNotSelected(queData.alterate[0]);
+
+      // add a alternate answer - score by default 1
+      question.addAlternate();
+
+      question.selectChoice(queData.alterate[0]);
+
+      question.selectChoice(queData.alterate[1]);
+      // set scoring type exact
+      question.selectScoringType(SCORING_TYPE.EXACT);
+      const preview = question.header.preview();
+      preview
+        .getShowAnswer()
+        .click()
+        .then(() => {
+          question.checkHighlightData({
+            color: "right",
+            length: 4,
+            choices: [queData.correct[0], queData.correct[1], queData.alterate[0], queData.alterate[1]]
+          });
+        });
+
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.alterate[1]);
+      preview.checkScore("1/2");
+
+      question.checkHighlightData({ color: "right", length: 2, choices: [queData.alterate[0], queData.alterate[1]] });
+
+      // set alternate answer point as 2
+      question.header.edit();
+      question.getPoints().type("{selectall}1");
+      question.selectAlternatetab();
+      question.getPoints().type("{selectall}2");
+
+      // set scoring type to partial
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+
+      // check partial score for alternate answer
+      question.header.preview();
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.choices[4]);
+      preview.checkScore("1/2");
+
+      question.checkHighlightData({ color: "right", length: 1, choices: [queData.alterate[0]] });
+      question.checkHighlightData({ color: "wrong", length: 1, choices: [queData.choices[4]] });
+    });
+
+    it("verify for penalty", () => {
+      const preview = question.header.preview();
+
+      question.header.edit();
+
+      question.checkChoiceSelected(queData.correct[0]);
+
+      question.checkChoiceSelected(queData.correct[1]);
+      // change the score to 2
+      question.getPoints().type("{selectall}2");
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.getPanalty().type("{selectall}1");
+
+      // case 1
+      question.header.preview();
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("0.5/2");
+
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ both: true });
+        });
+      // case 2
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      preview.checkScore("1.5/2");
+
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ both: true });
+        });
+      // case 3
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.alterate[1]);
+      preview.checkScore("1.5/2");
+
+      preview
+        .getClear()
+        .click()
+        .then(() => {
+          question.checkHighlight({ both: true });
+        });
+
+      // case 4
+      question.header.edit();
+
+      // change score
+      question.getPoints().type("{selectall}2.6");
+
+      question.header.preview();
+
+      question.selectAnswerChoice(queData.correct[0]);
+      question.selectAnswerChoice(queData.correct[1]);
+      question.selectAnswerChoice(queData.alterate[0]);
+      question.selectAnswerChoice(queData.alterate[1]);
+      preview.checkScore("1.6/2.6");
+    });
+  });
+  context("Validate solution block", () => {
+    validateSolutionBlockTests(queData.group, queData.queType);
   });
 });

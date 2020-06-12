@@ -247,17 +247,19 @@ class MultipleChoice extends Component {
               </Question>
 
               {advancedLink}
-
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                advancedAreOpen={advancedAreOpen}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-                multipleResponses={multipleResponses}
-                item={item}
-                {...restProps}
-              />
+              <div style={{ breakBefore : 'avoid-page', breakInside: 'avoid', pageBreakInside: 'avoid'}}>
+                <Options
+                  onChange={this.handleOptionsChange}
+                  uiStyle={uiStyle}
+                  advancedAreOpen={advancedAreOpen}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                  multipleResponses={multipleResponses}
+                  item={item}
+                  {...restProps}
+                />
+              </div>
+              
             </ContentArea>
           )}
           {view === PREVIEW && (

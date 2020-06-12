@@ -15,7 +15,7 @@ const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 export const markQuestionLabel = testItems => {
   for (let i = 0; i < testItems.length; i++) {
     const item = testItems[i];
-    if (!(item.data && item.data.questions)) {
+    if (!(item?.data && item?.data?.questions)) {
       continue;
     }
     if (item.data.questions.length === 1) {

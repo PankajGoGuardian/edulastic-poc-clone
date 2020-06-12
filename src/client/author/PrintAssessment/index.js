@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import queryString from "query-string";
+import html2Pdf from "html2pdf.js"
 
 import { withRouter } from "react-router-dom";
 import { testsApi } from "@edulastic/api";
@@ -30,8 +31,8 @@ function useTestFetch(testId, type, filterQuestions) {
         createdBy = {},
         testContentVisibility
       } = test;
-      const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
-      let { questions, answers } = getOrderedQuestionsAndAnswers(testItems, passages, type, filterQuestions);
+      const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []).filter(i => i);
+      const { questions, answers } = getOrderedQuestionsAndAnswers(testItems, passages, type, filterQuestions);
       setTestDetails({
         title,
         collections,
@@ -49,12 +50,29 @@ function useTestFetch(testId, type, filterQuestions) {
 }
 
 const PrintAssessment = ({ match, userRole, features, location }) => {
+  const containerRef = useRef(null);
   const query = queryString.parse(location.search);
   const { type, qs } = query;
   const filterQuestions = type === "custom" ? formatQuestionLists(qs) : [];
   const { testId } = match.params;
   const test = useTestFetch(testId, type, filterQuestions);
-
+  
+    
+  const printItems = () =>{
+    const opt = {
+      margin: 10,
+      pagebreak: {mode: ['css', 'legacy'], before: '.__before-break', after: '.__after-break', avoid: 'img'},
+      filename:     'myfile.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas: { dpi: 300, letterRendering: true},
+      jsPDF:        {unit: 'pt', format: 'a4', orientation: 'p'}
+    };
+    // html2pdf(containerRef.current, opt);
+    html2Pdf().set(opt).from(containerRef.current).toContainer().save();
+    console.log('Clickeddd')
+  }
+      
+  
   if (!test) {
     return <div> Loading... </div>;
   }
@@ -65,28 +83,31 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
       test?.testContentVisibility === testContentVisibilityOptions.GRADING);
 
   return (
-    <PrintAssessmentContainer>
-      <div style={{ padding: "0 20px" }}>
-        <StyledTitle>
-          <b>
-            <Color>Edu</Color>
-          </b>
-          lastic
-        </StyledTitle>
-        <Row type="flex" className="print-assessment-title-container">
-          <Col>
-            <span> {test.title}</span>
-          </Col>
-        </Row>
-        <span> Created By {test?.createdBy?.name} </span> <br />
+    <>
+      <div>
+        <button style={{ margin: 5 }} type="button" onClick={() => printItems()}>Print with html2pdf!</button>
+        <button style={{ margin: 5 }} stype="button" onClick={() => window.print()}>Print with chrome!</button>
       </div>
-      <hr />
-      {!isContentHidden ? (
-        <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-          {test.questions.map((question, index) => {
-            const questionHeight = question.type == "clozeImageDropDown" ? { minHeight: "500px" } : {};
-            return (
-              <div style={index !== 0 ? { pageBreakInside: "avoid", ...questionHeight } : questionHeight}>
+      <PrintAssessmentContainer ref={containerRef} size="A4">
+        <div style={{ padding: "0 20px" }}>
+          <StyledTitle>
+            <b>
+              <Color>Edu</Color>
+            </b>
+            lastic
+          </StyledTitle>
+          <Row type="flex" className="print-assessment-title-container">
+            <Col>
+              <span> {test.title}</span>
+            </Col>
+          </Row>
+          <span> Created By {test?.createdBy?.name} </span> <br />
+        </div>
+        <hr />
+        {!isContentHidden ? (
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            {test.questions.map((question, index) => (
+              <div className="__before-break">
                 <QuestionWrapper
                   view="preview"
                   type={question.type}
@@ -98,9 +119,8 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                 />
                 <hr />
               </div>
-            );
-          })}
-          {!!test.answers.length && features.premium && (
+            ))}
+            {!!test.answers.length && features.premium && (
             <StyledAnswerWrapper>
               <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
                 Answer Key of {test.title}
@@ -125,7 +145,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
               ))}
             </StyledAnswerWrapper>
           )}
-        </AnswerContext.Provider>
+          </AnswerContext.Provider>
       ) : (
         <div>
           <b>
@@ -134,7 +154,8 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
           </b>
         </div>
       )}
-    </PrintAssessmentContainer>
+      </PrintAssessmentContainer>
+    </>
   );
 };
 
@@ -158,10 +179,11 @@ const enhance = compose(
 export default enhance(PrintAssessment);
 
 const PrintAssessmentContainer = styled.div`
-  width: 25cm;
+  width: 21cm;
   margin: auto;
+  display: block;
+  margin: 0 auto;
   background-color: white;
-  pointer-events: none;
   * {
     -webkit-print-color-adjust: exact !important; /* Chrome, Safari */
     color-adjust: exact !important; /*Firefox*/

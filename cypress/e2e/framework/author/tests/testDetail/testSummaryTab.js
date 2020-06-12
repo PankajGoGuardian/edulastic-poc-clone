@@ -86,6 +86,7 @@ export default class TestSummayTab {
       cy.get("@TagTextBox")
         .type(element, { force: true })
         .type("{enter}", { force: true });
+      cy.wait(500);
     });
   };
 

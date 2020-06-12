@@ -1,5 +1,6 @@
 import TestHeader from "./header";
 import { CALCULATOR, attemptTypes } from "../../../constants/questionTypes";
+import CypressHelper from "../../../util/cypressHelpers";
 
 export default class TestSettings {
   constructor() {
@@ -95,6 +96,24 @@ export default class TestSettings {
     // time in mns
     this.makeAssignmentTimed();
     this.getTimeSettingTextBox().type(`{selectall}${time}`);
+  };
+
+  setTestType = testType => {
+    cy.contains("Test Type")
+      .next()
+      .find(".ant-select")
+      .click({ force: true });
+
+    cy.wait(300);
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele
+          // eslint-disable-next-line func-names
+          .filter(function() {
+            return Cypress.$(this).text() === testType;
+          })
+      ).click({ force: true });
+    });
   };
 
   removeAssignmentTime = () =>

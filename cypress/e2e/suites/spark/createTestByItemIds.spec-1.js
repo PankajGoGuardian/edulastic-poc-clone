@@ -4,7 +4,7 @@ import FileHelper from "../../framework/util/fileHelper";
 
 const { tests } = require("../../../fixtures/spark/spark_test_details.json");
 
-const testCreationLogs = "cypress/fixtures/spark/spark_test_processed_100_300.json";
+const testCreationLogs = "cypress/fixtures/spark/spark_test_processed.json";
 
 const testLibrary = new TestLibrary();
 const itemListPage = new ItemListPage();
@@ -17,9 +17,9 @@ const authToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTMyNzNkYzVmNzhjMzAwMDgzNDIwYzEiLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZTMyNzRhYzBmYjYyMjAwMDhmZTI2ZGQiLCJpYXQiOjE1OTE4NzA5MTIsImV4cCI6MTU5NDQ2MjkxMn0.pRr8gIXH0pBSljZXRuxqQd6ZOFK2vom0FuzKz3ty-TE";
  */
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
-  before(() => {
+  /*   before(() => {
     cy.writeFile(testCreationLogs, {});
-  });
+  }); */
 
   beforeEach("set routes", () => {
     cy.server();
@@ -27,7 +27,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     cy.route("POST", "**/search/tests").as("searchTest");
   });
   tests.forEach((testDetail, i) => {
-    if (i >= 100 && i < 300) {
+    if (i >= 20 && i < 100) {
       Object.keys(testDetail).map(k => (testDetail[k] = ("" + testDetail[k]).trim()));
       const {
         // authToken,

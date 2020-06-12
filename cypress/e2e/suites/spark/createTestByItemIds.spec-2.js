@@ -4,7 +4,7 @@ import FileHelper from "../../framework/util/fileHelper";
 
 const { tests } = require("../../../fixtures/spark/spark_test_details.json");
 
-const testCreationLogs = "cypress/fixtures/spark/spark_test_processed_100_300.json";
+const testCreationLogs = "cypress/fixtures/spark/spark_test_processed_300_450.json";
 
 const testLibrary = new TestLibrary();
 const itemListPage = new ItemListPage();
@@ -27,7 +27,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     cy.route("POST", "**/search/tests").as("searchTest");
   });
   tests.forEach((testDetail, i) => {
-    if (i >= 100 && i < 300) {
+    if (i >= 300) {
       Object.keys(testDetail).map(k => (testDetail[k] = ("" + testDetail[k]).trim()));
       const {
         // authToken,

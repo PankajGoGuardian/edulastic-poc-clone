@@ -62,7 +62,7 @@ export default class TestHeader {
 
   clickOnPublishButton = () => {
     cy.server();
-    cy.route("PUT", "**/test/**/publish").as("published");
+    cy.route("PUT", /\btest\b.*\bpublish\b/).as("published");
     this.clickRegradePublish();
     return cy.wait("@published").then(xhr => {
       expect(xhr.status).to.eq(200);

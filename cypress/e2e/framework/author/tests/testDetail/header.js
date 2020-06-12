@@ -9,12 +9,32 @@ export default class TestHeader {
 
   getPublishRegradeButton = () => cy.get('[data-cy="publish"]');
 
+  getEditTestButton = () => cy.get('[data-cy="edit"]');
+
+  getShareButton = () => cy.get('[data-cy="share"]');
+
+  getAssignButton = () => cy.get('[data-cy="assign"]');
+
+  getSaveBuuton = () => cy.get('[data-cy="save"]');
+
+  getPrintButton = () => cy.get('[data-cy="printTest"]');
+
+  getTestReviewHeader = () => cy.get('[data-cy="review"]');
+
+  getTestSummaryHeader = () => cy.get('[data-cy="description"]');
+
+  getTestSettingsHeader = () => cy.get('[data-cy="settings"]');
+
+  getTestAddItemHeader = () => cy.get('[data-cy="addItems"]');
+
+  getWorkSheetHeader = () => cy.get('[data-cy="edit"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   clickOnDescription = () => {
-    cy.get('[data-cy="description"]').click({ force: true });
+    this.getTestSummaryHeader().click({ force: true });
     return new TestSummayTab();
   };
 
@@ -23,19 +43,19 @@ export default class TestHeader {
     cy.route("POST", "**/search/items").as("search-items");
     cy.route("POST", "**/search/browse-standards").as("search-standards");
 
-    cy.get('[data-cy="addItems"]').click({ force: true });
+    this.getTestAddItemHeader().click({ force: true });
     return cy.wait("@search-items").then(() => new TestAddItemTab());
   };
 
   clickOnReview = () => {
-    cy.wait(2000).then(() => cy.get('[data-cy="review"]').click({ force: true }));
+    cy.wait(2000).then(() => this.getTestReviewHeader().click({ force: true }));
     return new TestReviewTab();
   };
 
-  clickOnSettings = () => cy.get('[data-cy="settings"]').click();
+  clickOnSettings = () => this.getTestSettingsHeader().click();
 
   clickOnEditButton = (confirmation = false) => {
-    cy.get('[data-cy="edit"]').click();
+    this.getEditTestButton().click();
     if (confirmation) {
       cy.contains("PROCEED").click();
       cy.wait("@saveTest");
@@ -48,7 +68,7 @@ export default class TestHeader {
     if (edited) cy.route("PUT", "**/test/**").as("saveTest");
     else cy.route("POST", "**/test").as("saveTest");
 
-    cy.get('[data-cy="save"]').click({ force: true });
+    this.getSaveBuuton().click({ force: true });
     return cy.wait("@saveTest").then(xhr => {
       expect(xhr.status).to.eq(200);
       const testId = xhr.response.body.result._id;
@@ -89,7 +109,7 @@ export default class TestHeader {
     cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
   };
 
-  clickOnShare = () => cy.get('[data-cy="share"]').click({ force: true });
+  clickOnShare = () => this.getShareButton().click({ force: true });
 
   clickOnAssign = () => {
     cy.server();
@@ -119,5 +139,30 @@ export default class TestHeader {
 
   verifyNameInTitle = name => this.getTestNameInTitle().should("contain", name);
 
+  verifyHeaders = (summary = true, addItem = true, review = true, settings = true, worksheet = false) => {
+    if (summary) this.getTestSummaryHeader().should("exist");
+    else this.getTestSummaryHeader().should("not.exist");
+    if (addItem) this.getTestAddItemHeader().should("exist");
+    else this.getTestAddItemHeader().should("not.exist");
+    if (review) this.getTestReviewHeader().should("exist");
+    else this.getTestReviewHeader().should("not.exist");
+    if (settings) this.getTestSettingsHeader().should("exist");
+    else this.getTestSettingsHeader().should("not.exist");
+    if (worksheet) this.getWorkSheetHeader().should("exist");
+    else this.getWorkSheetHeader().should("not.exist");
+  };
+
+  verifyHeaderActionButtons = (print = true, share = true, save = true, publish = true, assign = true) => {
+    if (print) this.getPrintButton().should("exist");
+    else this.getPrintButton().should("not.exist");
+    if (share) this.getShareButton().should("exist");
+    else this.getShareButton().should("not.exist");
+    if (save) this.getSaveBuuton().should("exist");
+    else this.getSaveBuuton().should("not.exist");
+    if (publish) this.getPublishRegradeButton().should("exist");
+    else this.getPublishRegradeButton().should("not.exist");
+    if (assign) this.getAssignButton().should("exist");
+    else this.getAssignButton().should("not.exist");
+  };
   // *** APPHELPERS END ***
 }

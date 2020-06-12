@@ -124,6 +124,12 @@ export default class TestLibrary {
 
   getTestlibraryTitle = () => cy.get('[title="Test Library"]');
 
+  getDescriptionOnTestCardPopUp = () => cy.get('[data-cy="testcard-description"]');
+
+  getUploadPDFInTestCreate = () => cy.get("button").contains("UPLOAD PDF");
+
+  getAnswerOnlyButton = () => cy.get("button").contains("Continue with blank");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -644,6 +650,8 @@ export default class TestLibrary {
     });
 
   verifyTestNameOnTestCardPopUp = name => this.getTestNameOnTestCardPopUp().should("contain", name);
+
+  verifyDescriptionOnTestCardPopUp = desc => this.getDescriptionOnTestCardPopUp().should("contain", desc);
 
   verifyTestCollectionOnTestCardPopUp = collection =>
     this.getTestCollectionOnTestCardPopUp().should("have.text", collection);

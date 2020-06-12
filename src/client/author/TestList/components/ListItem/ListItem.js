@@ -229,8 +229,10 @@ class ListItem extends Component {
                   </div>
 
                   <Inner>
-                    <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-                    <Description>
+                    <StyledLink data-cy="test-title" title={title}>
+                      {isPlaylist ? _source.title : title}
+                    </StyledLink>
+                    <Description data-cy="test-description">
                       <EllipsisWrapper style={{ paddingRight: "15px" }} view="list">
                         {isPlaylist ? (
                           <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: _source.description }} />

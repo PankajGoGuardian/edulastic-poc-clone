@@ -54,6 +54,8 @@ class LiveClassboardPage {
 
   getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]');
 
+  getTimewhileRedirect = () => cy.get('[data-cy="allowedTime"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -190,9 +192,13 @@ class LiveClassboardPage {
       .find(".ant-modal-close-icon")
       .click();
 
+  updateTimeWhileRedirect = time => this.getTimewhileRedirect().type(`{selectall}${time}`);
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
+
+  verifyTimeWhileRedirectIs = time => this.getTimewhileRedirect().should("have.value", `${time}`);
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
     cy.url().should("include", `/author/classboard/${assignmnetId}/${classId}`);

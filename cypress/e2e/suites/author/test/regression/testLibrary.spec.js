@@ -253,9 +253,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       testLibraryPage.searchFilters.typeInSearchBox(id);
       testLibraryPage.clickOnTestCardById(id);
     });
-    it("> verify test name and collection", () => {
-      const { name } = testData[currentTestKey];
+    it("> verify test name,description and collection", () => {
+      const { name, description } = testData[currentTestKey];
       testLibraryPage.verifyTestNameOnTestCardPopUp(name);
+      testLibraryPage.verifyDescriptionOnTestCardPopUp(description);
       testLibraryPage.verifyTestCollectionOnTestCardPopUp(COLLECTION.private);
     });
     it("> verify grade and subject", () => {

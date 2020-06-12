@@ -366,7 +366,7 @@ class ViewModal extends React.Component {
             </div>
             <AssessmentName data-cy="testcard-name">{title}</AssessmentName>
 
-            <DescriptionLabel>Description</DescriptionLabel>
+            <DescriptionLabel data-cy="testcard-description">Description</DescriptionLabel>
             <Description>{description}</Description>
 
             <Row gutter={10}>

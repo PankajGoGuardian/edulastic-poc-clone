@@ -309,7 +309,9 @@ class Item extends Component {
           }
         >
           <TestInfo isPlaylist={isPlaylist}>
-            <StyledLink title={isPlaylist ? _source?.title : title}>{isPlaylist ? _source?.title : title}</StyledLink>
+            <StyledLink data-cy="test-title" title={isPlaylist ? _source?.title : title}>
+              {isPlaylist ? _source?.title : title}
+            </StyledLink>
             {isPlaylist && <PlaylistDesc dangerouslySetInnerHTML={{ __html: _source.description }} />}
 
             <TagsWrapper data-cy="test-standards" isPlaylist={isPlaylist}>

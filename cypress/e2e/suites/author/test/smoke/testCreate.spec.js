@@ -24,8 +24,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
     testLibrary.clickOnAuthorTest();
-
+    testLibrary.header.verifyHeaders();
     // test description
+    testLibrary.header.verifyHeaderActionButtons(false, false, false, false, false);
     if (testData.name) testLibrary.testSummary.setName(testData.name);
     if (testData.grade) {
       testData.grade.forEach(grade => {
@@ -45,12 +46,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
 
     itemsInTest.forEach((itemId, index) => {
       testLibrary.testAddItem.addItemById(itemId);
-      if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+      if (index === 0) {
+        cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+        testLibrary.header.verifyHeaderActionButtons();
+      }
       cy.wait(500);
     });
 
     // verify items on review tab
     testLibrary.header.clickOnReview();
+    testLibrary.header.verifyHeaders();
+    testLibrary.header.verifyHeaderActionButtons();
 
     itemsInTest.forEach(itemId => {
       testLibrary.review.verifyQustionById(itemId);
@@ -68,7 +74,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
     testLibrary.clickOnAuthorTest();
-
+    testLibrary.header.verifyHeaders();
     // test description
     testLibrary.testSummary.setName(testData.name);
     testData.grade.forEach(grd => {
@@ -77,7 +83,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     testData.subject.forEach(subject => {
       testLibrary.testSummary.selectSubject(subject);
     });
-
+    testLibrary.header.verifyHeaderActionButtons(false, false, false, false, false);
     // create new items
     testLibrary.header.clickOnAddItems();
     testLibrary.searchFilters.routeSearch();
@@ -85,7 +91,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     cy.route("POST", "**api/test").as("createTest");
     testData.itemKeys.forEach(async (itemKey, index) => {
       itemListPage.createItem(itemKey, index, false);
-      if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+      if (index === 0) {
+        cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+        testLibrary.header.verifyHeaderActionButtons();
+      }
       // Redirect has been changed back to add-item tab in app
       /*  if (index !== testData.itemKeys.length - 1) {
         cy.contains("View as Student").should("be.visible");
@@ -96,6 +105,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
 
     // verify newly created added items on review tab
     testLibrary.header.clickOnReview();
+    testLibrary.header.verifyHeaders();
+    testLibrary.header.verifyHeaderActionButtons();
     cy.contains("View as Student");
     testData.itemKeys.forEach(itemKey => {
       testLibrary.review.verifyItemByContent(itemKey);
@@ -113,6 +124,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
     testLibrary.clickOnAuthorTest();
+    testLibrary.header.verifyHeaders();
     testLibrary.testSummary.setName(testData.name);
     testData.grade.forEach(grade => {
       testLibrary.testSummary.selectGrade(grade);
@@ -120,7 +132,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     testData.subject.forEach(subject => {
       testLibrary.testSummary.selectSubject(subject);
     });
-
+    testLibrary.header.verifyHeaderActionButtons(false, false, false, false, false);
     // add items
     testLibrary.header.clickOnAddItems();
     testLibrary.searchFilters.routeSearch();
@@ -132,8 +144,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
       // add items existing
       if (index < 2) {
         testLibrary.testAddItem.addItemByQuestionContent(itemKey);
-        if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
-        else {
+        if (index === 0) {
+          cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+          testLibrary.header.verifyHeaderActionButtons();
+        } else {
           cy.wait(500);
           testLibrary.header.clickOnSaveButton(true);
         }
@@ -152,6 +166,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
 
     // verify newly created added items on review tab
     testLibrary.header.clickOnReview();
+    testLibrary.header.verifyHeaders();
+    testLibrary.header.verifyHeaderActionButtons();
     cy.contains("View as Student");
     testData.itemKeys.forEach(itemKey => {
       testLibrary.review.verifyItemByContent(itemKey);
@@ -172,7 +188,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
 
     itemListPage.getCreateTest().should("not.be.visible");
     existingItems.forEach(item => {
-      itemListPage.checkItemById(item);
+      itemListPage.addItemById(item);
     });
     itemListPage.getCreateTest().should("be.visible");
 
@@ -181,6 +197,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     itemListPage.getCreateTest().click({ force: true });
     cy.wait("@createTest").then(xhr => {
       cy.saveTestDetailToDelete(xhr.response.body.result._id);
+      testLibrary.header.verifyHeaders();
+      testLibrary.header.verifyHeaderActionButtons();
       testLibrary.testSummary.setName(testData.name);
       testLibrary.testSummary.clearGrades();
       testLibrary.testSummary.clearSubjects();
@@ -198,6 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
       });
 
       testLibrary.header.clickOnReview();
+      testLibrary.header.verifyHeaderActionButtons();
       existingItems.forEach(item => {
         testLibrary.review.verifyQustionById(item);
       });
@@ -212,7 +231,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     // create new test
     testLibrary.sidebar.clickOnAssignment();
     testLibrary.clickOnAuthorTest(true);
-
+    testLibrary.header.verifyHeaders();
     testLibrary.testSummary.setName(testData.name);
     testData.grade.forEach(grade => {
       testLibrary.testSummary.selectGrade(grade);
@@ -220,7 +239,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     testData.subject.forEach(subject => {
       testLibrary.testSummary.selectSubject(subject);
     });
-
+    testLibrary.header.verifyHeaderActionButtons(false, false, false, false, false);
     testLibrary.header.clickOnAddItems();
     testLibrary.searchFilters.routeSearch();
     cy.route("POST", "**api/test").as("createTest");
@@ -229,11 +248,55 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     existingItems.forEach((itemId, index) => {
       // add items existing
       testLibrary.testAddItem.addItemById(itemId);
-      if (index === 0) cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+      if (index === 0) {
+        cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+        testLibrary.header.verifyHeaderActionButtons();
+      }
     });
 
     testLibrary.header.clickOnReview();
     cy.contains("View as Student");
+
+    // save
+    testLibrary.header.clickOnSaveButton(true);
+
+    // publish
+    testLibrary.header.clickOnPublishButton();
+  });
+
+  it("> doc based test-'answer only'", () => {
+    const testData = SMOKE_2;
+    const itemsInTest = [...existingItems];
+    // create new test
+    testLibrary.sidebar.clickOnTestLibrary();
+    testLibrary.getCreateNewTestButton().click();
+    testLibrary.getUploadPDFInTestCreate().click();
+    cy.route("POST", "**api/test").as("createTest");
+    testLibrary.getAnswerOnlyButton().click();
+    cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
+    testLibrary.header.verifyHeaderActionButtons();
+    testLibrary.header.verifyHeaders(true, false, true, true, true);
+    // test description
+    testLibrary.header.verifyHeaderActionButtons();
+    if (testData.name) testLibrary.testSummary.setName(testData.name);
+    if (testData.grade) {
+      testData.grade.forEach(grade => {
+        testLibrary.testSummary.selectGrade(grade);
+      });
+    }
+    if (testData.subject) {
+      testData.subject.forEach(subject => {
+        testLibrary.testSummary.selectSubject(subject);
+      });
+    }
+    // verify items on review tab
+    testLibrary.header.clickOnReview();
+    testLibrary.header.verifyHeaders();
+    testLibrary.header.verifyHeaderActionButtons();
+
+    itemsInTest.forEach(itemId => {
+      testLibrary.review.verifyQustionById(itemId);
+    });
 
     // save
     testLibrary.header.clickOnSaveButton(true);

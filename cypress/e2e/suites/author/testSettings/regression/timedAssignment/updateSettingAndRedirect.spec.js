@@ -15,6 +15,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
   const user = {
     teacher: "teacher.update.timer@snapwiz.com",
     student1: "student1.updatetime@snapwiz.com",
+    student1Name: "student1",
     student2: "student2.updatetime@snapwiz.com",
     pass: "snapwiz"
   };
@@ -112,6 +113,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
         authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
         liveClassboardPage.checkSelectAllCheckboxOfStudent();
         liveClassboardPage.clickOnRedirect();
+        liveClassboardPage.verifyTimeWhileRedirectIs(10);
         liveClassboardPage.clickOnRedirectSubmit();
       });
 
@@ -149,6 +151,74 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
         studentTestPage.clickOnNext(false, true);
         studentTestPage.submitTest();
       });
+    });
+  });
+
+  context(">assign,submit and redirect with updated time", () => {
+    before(">create test", () => {
+      cy.deleteAllAssignments("", user.teacher);
+      cy.login("teacher", user.teacher, user.pass);
+      testlibraryPage.createTest().then(id => {
+        customtestid = id;
+      });
+    });
+
+    it(">set time limit as on-'custom'", () => {
+      testlibraryPage.clickOnAssign();
+      testlibraryPage.assignPage.showOverRideSetting();
+      /* time will be 3mns and allow exit is enabled */
+      testlibraryPage.assignPage.setAssignmentTime(customtestTime);
+      testlibraryPage.assignPage.verifyTimeAssignedForTest(customtestTime);
+    });
+
+    it(">assign the test", () => {
+      testlibraryPage.assignPage.verifyInfoAboutTestTime();
+      testlibraryPage.assignPage.selectClass("Class2");
+      testlibraryPage.assignPage.clickOnAssign();
+    });
+
+    it(">verify and attempt-'student 1'", () => {
+      /* student1 will be in in progess and student2 will be in not started */
+      cy.login("student", user.student1, user.pass);
+      studentAssignmentsPage.verifyTimeAvalableForTestById(customtestid, customtestTime);
+      studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: 3 });
+
+      studentTestPage.waitWhileAttempt("00:00:10");
+      studentTestPage.verifyAndGetRemainingTime("00:02:50", 10).then(startTime => {
+        /* wait for one minute, so that time limit becomes exactly 2 mns(1 minute is used) and save and exit */
+        studentTestPage.waitWhileAttempt(`00:00:${startTime - 120}`);
+        studentTestPage.verifyAndGetRemainingTime("00:02:00", 3);
+        studentTestPage.clickOnNext(false, true);
+        studentTestPage.submitTest();
+      });
+    });
+
+    it(">login as teacher and update settings while redirect student 1", () => {
+      cy.login("teacher", user.teacher, user.pass);
+      testlibraryPage.sidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      liveClassboardPage.selectCheckBoxByStudentName(user.student1Name);
+      liveClassboardPage.clickOnRedirect();
+      liveClassboardPage.verifyTimeWhileRedirectIs(3);
+      liveClassboardPage.updateTimeWhileRedirect(updatedtime);
+      liveClassboardPage.clickOnRedirectSubmit();
+    });
+
+    it(">verify at studnet-1-'redirected'", () => {
+      cy.login("student", user.student1, user.pass);
+      studentAssignmentsPage.verifyTimeAvalableForTestById(customtestid, updatedtime);
+      studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, {
+        time: updatedtime,
+        isFirstAttempt: false
+      });
+
+      studentTestPage.waitWhileAttempt("00:00:10");
+      studentTestPage.verifyAndGetRemainingTime("00:09:50", 10);
+      /* since time is updated to 10 mns */
+
+      studentTestPage.getExitButton().should("exist");
+      studentTestPage.clickOnNext(false, true);
+      studentTestPage.submitTest();
     });
   });
 });

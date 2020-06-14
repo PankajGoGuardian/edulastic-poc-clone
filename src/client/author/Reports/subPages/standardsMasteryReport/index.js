@@ -162,8 +162,8 @@ const StandardsMasteryReportContainer = props => {
         style={showFilter ? { display: "block" } : { display: "none" }}
         extraFilter={extraFilters}
       />
+      <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
       <ReportContaner showFilter={showFilter}>
-        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
         <Route
           exact
           path="/author/reports/standards-gradebook"

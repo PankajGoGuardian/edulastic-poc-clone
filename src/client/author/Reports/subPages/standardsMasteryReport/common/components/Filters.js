@@ -366,6 +366,7 @@ const StandardsFilters = ({
           data={filtersDropDownData.assessmentType}
         />
       </SearchField> */}
+        {extraFilter}
         <SearchField>
           <FilterLabel>Standard Proficiency</FilterLabel>
           <ControlDropDown
@@ -415,7 +416,6 @@ const StandardsFilters = ({
             showPrefixOnSelected={false}
           />
         </SearchField>
-        {extraFilter}
       </PerfectScrollbar>
     </StyledFilterWrapper>
   );

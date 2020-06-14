@@ -340,6 +340,7 @@ const SingleAssessmentReportFilters = ({
             data={staticDropDownData.assessmentType}
           />
         </SearchField>
+        {extraFilter}
         {role !== "teacher" && (
           <Fragment>
             <SearchField>
@@ -421,7 +422,6 @@ const SingleAssessmentReportFilters = ({
             showPrefixOnSelected={false}
           />
         </SearchField>
-        {extraFilter}
       </PerfectScrollbar>
     </StyledFilterWrapper>
   );

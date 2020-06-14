@@ -90,8 +90,8 @@ const StudentProfileReportContainer = props => {
             "/author/reports/student-mastery-profile"
           ].find(x => window.location.pathname.startsWith(x))}
         />
+        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
         <ReportContaner showFilter={showFilter}>
-          <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
           <Route
             exact
             path="/author/reports/student-mastery-profile/student/:studentId?"

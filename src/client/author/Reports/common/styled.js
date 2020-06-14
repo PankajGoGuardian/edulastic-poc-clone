@@ -39,7 +39,6 @@ export const StyledGoButton = styled(EduButton)`
   height: 24px;
   width: 80px;
   font-size: 11px;
-  margin-left: 15px;
 `;
 
 export const FilterLabel = styled(FieldLabel)`
@@ -53,7 +52,7 @@ export const GoButtonWrapper = styled.div`
 `;
 
 export const StyledFilterWrapper = styled.div`
-  margin-right: 30px;
+  margin-right: 16px;
   width: 230px;
   flex-shrink: 0;
   height: calc(100vh - 250px);
@@ -478,7 +477,7 @@ export const HideLinkLabel = styled(StyledLabel)`
 `;
 
 export const ReportContaner = styled.div`
-  width: ${({ showFilter }) => (showFilter ? "calc(100% - 260px)" : "100%")};
+  width: ${({ showFilter }) => (showFilter ? "calc(100% - 250px)" : "100%")};
   height: calc(100vh - 170px);
   overflow: auto;
   position: relative;
@@ -489,20 +488,20 @@ export const FilterIcon = styled(IconFilter).attrs({
   width: 15,
   height: 15
 })`
-  margin-left: auto;
   cursor: pointer;
-  position: absolute;
-  left: ${({ showFilter }) => (showFilter ? -45 : -20)}px;
-  top: 4px;
-  z-index: 50;
+  margin-right: 8px;
+  margin-top: 4px;
+  margin-left: ${({ showFilter }) => (showFilter ? -55 : 0)}px;
 `;
 
 export const SearchField = styled.div`
   margin-bottom: 10px;
+  padding-right: 15px;
 `;
 
 export const ApplyFitlerLabel = styled(FieldLabel)`
   margin-bottom: 0px;
+  margin-right: 15px;
   color: #434b5d;
   font-weight: bolder;
 `;

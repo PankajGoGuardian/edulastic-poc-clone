@@ -147,8 +147,8 @@ const SingleAssessmentReportContainer = props => {
           extraFilters={extraFilters}
           style={showFilter ? { display: "block" } : { display: "none" }}
         />
+        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
         <ReportContaner showFilter={showFilter}>
-          <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
           <Route
             exact
             path="/author/reports/assessment-summary/test/:testId?"

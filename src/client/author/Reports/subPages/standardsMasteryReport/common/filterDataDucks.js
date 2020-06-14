@@ -1,9 +1,10 @@
+import { createAction, createReducer } from "redux-starter-kit";
 import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
+import { get, isEmpty, omitBy } from "lodash";
+
 import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
-import  {notification} from "@edulastic/common";
-import { createAction, createReducer } from "redux-starter-kit";
+import { notification } from "@edulastic/common";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
@@ -57,7 +58,7 @@ export const getFiltersSelector = createSelector(
 
 export const getTestIdSelector = createSelector(
   stateSelector,
-  state => state.testId
+  state => state.testIds
 );
 
 export const getPrevBrowseStandardsSelector = createSelector(
@@ -97,7 +98,7 @@ const initialState = {
     domainIds: ["All"],
     profileId: ""
   },
-  testId: ""
+  testIds: []
 };
 
 const setFiltersReducer = (state, { payload }) => {
@@ -105,11 +106,11 @@ const setFiltersReducer = (state, { payload }) => {
 };
 
 const setTestIdReducer = (state, { payload }) => {
-  state.testId = payload;
+  state.testIds = payload;
 };
 
 export const reportStandardsFilterDataReducer = createReducer(initialState, {
-  [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST]: (state, { payload }) => {
+  [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST]: state => {
     state.loading = true;
   },
   [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -121,7 +122,7 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
     state.error = payload.error;
   },
 
-  [GET_REPORTS_STANDARDS_FILTERS_REQUEST]: (state, { payload }) => {
+  [GET_REPORTS_STANDARDS_FILTERS_REQUEST]: state => {
     state.loading = true;
   },
   [GET_REPORTS_STANDARDS_FILTERS_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -134,7 +135,7 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: state => { state = initialState; },
   [SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS]: (state, { payload }) => {
     state.prevBrowseStandards = payload;
   },
@@ -158,8 +159,8 @@ function* getReportsStandardsBrowseStandardsRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch standards Please try again...";
-    notification({msg:msg});
+    const msg = "Failed to fetch standards Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_ERROR,
       payload: { error: msg }
@@ -169,15 +170,22 @@ function* getReportsStandardsBrowseStandardsRequest({ payload }) {
 
 function* getReportsStandardsFiltersRequest({ payload }) {
   try {
-    const standardsFilters = yield call(reportsApi.fetchStandardMasteryFilter, payload);
+    const { filters: filterData, ...rest } = yield call(reportsApi.fetchStandardMasteryFilter, payload);
+
+    // curate filters for standards mastery
+    const { profileId, subject, termId, grades } = filterData;
+    const domainIds = get(filterData, "domainIds", []).join(",");
+    const filters = omitBy({ profileId, subject, termId, domainIds, grades }, isEmpty);
+    const testIds = get(filterData, "testIds");
+
     yield put({
       type: GET_REPORTS_STANDARDS_FILTERS_REQUEST_SUCCESS,
-      payload: { standardsFilters }
+      payload: { standardsFilters: { filters, testIds, ...rest } }
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch standards Please try again...";
-    notification({msg:msg});
+    const msg = "Failed to fetch standards Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_STANDARDS_FILTERS_REQUEST_ERROR,
       payload: { error: msg }

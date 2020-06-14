@@ -122,7 +122,7 @@ const StandardsFilters = ({
     }
   }, []);
 
-  const scaleInfo = get(standardsFilters, "data.result.scaleInfo", []);
+  const scaleInfo = get(standardsFilters, "scaleInfo", []);
 
   const domains = useMemo(() => {
     let _domains = [{ key: "All", title: "All Domains" }];
@@ -172,8 +172,8 @@ const StandardsFilters = ({
 
   const allTestIds = useMemo(() => {
     let arr = [];
-    if (standardsFilters && !isEmpty(standardsFilters)) {
-      let tempArr = get(standardsFilters, "data.result.testData", []);
+    if (!isEmpty(standardsFilters)) {
+      let tempArr = get(standardsFilters, "testData", []);
       tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
       tempArr = tempArr.map(item => ({
         key: item.testId,
@@ -186,22 +186,24 @@ const StandardsFilters = ({
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     // allTestIds Received
-
+  
     const search = qs.parse(location.search.substring(1));
     setPrevStandardsFilters(standardsFilters);
 
+    // filters fetched on page load
+    const onLoadFilters = get(standardsFilters, "filters", []);
+    const onLoadTestIds = get(standardsFilters, "testIds");
+
     // check if testIds in url are valid (present in the array)
-
-    const urlTestIds = search.testIds || [];
-
+    const urlTestIds = onLoadTestIds || search.testIds || [];
     const validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
-
     setTestId(validTestIds);
 
     const settings = {
-      filters: { ...filters },
+      filters: { ...filters, ...onLoadFilters },
       selectedTest: validTestIds
     };
+    setFilters({...filters, ...onLoadFilters});
 
     if (standardsFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
       _onGoClick(settings);
@@ -323,6 +325,8 @@ const StandardsFilters = ({
   const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default)?._id || "", [scaleInfo]);
   const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
 
+  const domainIdsArray = typeof filters.domainIds === "string" ? filters.domainIds.split(",") : filters.domainIds;
+
   return (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
@@ -376,7 +380,7 @@ const StandardsFilters = ({
           <FilterLabel>Domain</FilterLabel>
           <AutocompleteDropDown
             prefix="Domain"
-            by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0] || domains[0]}
+            by={(domainIdsArray.length <= 1 && domainIdsArray[0]) || domains[0]}
             selectCB={updateDomainDropDownCB}
             data={domains}
           />

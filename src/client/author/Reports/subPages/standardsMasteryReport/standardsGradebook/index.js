@@ -55,7 +55,8 @@ const StandardsGradebook = ({
     if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
       const q = {
         testIds: settings.selectedTest.map(test => test.key).join(),
-        ...settings.requestFilters
+        ...settings.requestFilters,
+        grades: (settings.requestFilters.grades || []).join(",")
       };
       getStandardsGradebookRequest(q);
     }

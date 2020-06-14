@@ -44,158 +44,114 @@ const fetchSkillReport = classId =>
     })
     .then(result => result.data.result);
 
-const fetchAssignments = () => {
-  return api.callApi({ url: `/assignments` });
-};
+const fetchAssignments = () => api.callApi({ url: `/assignments` });
 
-const fetchResponseFrequency = params => {
-  return api.callApi({
+const fetchResponseFrequency = params => api.callApi({
     url: `/report/response-frequency`,
     params: { ...params.requestFilters, testId: params.testId }
   });
-};
 
-const fetchAssessmentSummaryReport = params => {
-  return api.callApi({
+const fetchAssessmentSummaryReport = params => api.callApi({
     url: `/report/assessment-summary`,
     params: { ...params.requestFilters, testId: params.testId }
   });
-};
 
-const fetchPeerPerformanceReport = params => {
-  return api.callApi({
+const fetchPeerPerformanceReport = params => api.callApi({
     url: `/report/peer-performance`,
     params: { ...params.requestFilters, testId: params.testId }
   });
-};
 
-const fetchPerformanceByStandard = params => {
-  return api.callApi({
+const fetchPerformanceByStandard = params => api.callApi({
     url: `/report/performance-by-standards`,
     params: { ...params.requestFilters, testId: params.testId }
   });
-};
 
-const fetchPerformanceByStudentsReport = params => {
-  return api.callApi({
+const fetchPerformanceByStudentsReport = params => api.callApi({
     url: `/report/performance-by-students`,
     params: { ...params.requestFilters, testId: params.testId }
   });
-};
 
-const fetchSARFilterData = params => {
-  return api.callApi({
+const fetchSARFilterData = params => api.callApi({
     url: `/report/filter/single-assessment`,
     params
   });
-};
 
-const fetchStandardsGradebookReport = params => {
-  return api.callApi({
+const fetchStandardsGradebookReport = params => api.callApi({
     url: `/report/standards-gradebook`,
-    params: params
+    params
   });
-};
 
-const fetchStandardsPerformanceSummaryReport = params => {
-  return api.callApi({
+const fetchStandardsPerformanceSummaryReport = params => api.callApi({
     url: `/report/standards-summary`,
-    params: params
+    params
   });
-};
 
-const fetchStandardMasteryFilter = params => {
-  return api.callApi({
+const fetchStandardMasteryFilter = params => api.callApi({
     url: `/report/filter/standard-mastery`,
-    params: params
-  });
-};
+    params
+  }).then(result => result.data.result);
 
-const fetchStandardMasteryBrowseStandards = params => {
-  return api.callApi({
+const fetchStandardMasteryBrowseStandards = params => api.callApi({
     url: `/search/browse-standards`,
     data: params,
     method: "POST"
   });
-};
 
-const fetchQuestionAnalysisReport = params => {
-  return api.callApi({
+const fetchQuestionAnalysisReport = params => api.callApi({
     url: `/report/question-analysis`,
     params: { ...params.requestFilters, testId: params.testId }
   });
-};
 
-const fetchMARFilterData = params => {
-  return api.callApi({
+const fetchMARFilterData = params => api.callApi({
     url: `/report/filter/multiple-assessment`,
     params
   });
-};
 
-const fetchPeerProgressAnalysisReport = params => {
-  return api.callApi({
+const fetchPeerProgressAnalysisReport = params => api.callApi({
     url: `/report/peer-progress-analysis`,
     params
   });
-};
 
-const fetchStudentProgressReport = params => {
-  return api.callApi({
+const fetchStudentProgressReport = params => api.callApi({
     url: `/report/student-progress`,
     params
   });
-};
 
-const fetchPerformanceOverTimeReport = params => {
-  return api.callApi({
+const fetchPerformanceOverTimeReport = params => api.callApi({
     url: `/report/performance-over-time`,
     params
   });
-};
 
-const fetchSPRFilterData = params => {
-  return api.callApi({
+const fetchSPRFilterData = params => api.callApi({
     url: `/report/filter/student-profile`,
     params
   });
-};
 
-const fetchStudentMasteryProfileReport = params => {
-  return api.callApi({
+const fetchStudentMasteryProfileReport = params => api.callApi({
     url: `/report/student-mastery-profile`,
     params
   });
-};
 
-const fetchStudentAssessmentProfileReport = params => {
-  return api.callApi({
+const fetchStudentAssessmentProfileReport = params => api.callApi({
     url: `/report/student-assessment-performance`,
     params
   });
-};
 
-const fetchStudentProfileSummaryReport = params => {
-  return api.callApi({
+const fetchStudentProfileSummaryReport = params => api.callApi({
     url: `/report/student-profile-summary`,
     params
   });
-};
 
-const fetchStudentList = params => {
-  return api.callApi({
+const fetchStudentList = params => api.callApi({
     url: `/report/students`,
     method: "POST",
     data: params
   });
-};
 
-const fetchStudentStandards = params => {
-  return api.callApi({
+const fetchStudentStandards = params => api.callApi({
     url: `/report/student-standard`,
     params
   });
-};
 
 const fetchStudentPerformance = params => {
   const queryString = qs.stringify(params);

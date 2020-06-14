@@ -109,8 +109,8 @@ function* getReportsStandardsGradebookRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch standards gradebook Please try again...";
-    notification({msg:msg});
+    const msg = "Failed to fetch standards gradebook Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR,
       payload: { error: msg }

@@ -56,7 +56,7 @@ const StandardsPerformance = ({
   // filter compareBy options according to role
   const compareByDataFiltered = filter(compareByData, option => !includes(option.hiddenFromRole, role));
 
-  let [dynamicDropDownData, filterInitState] = useMemo(() => getDropDownData(filterData.orgData, role), [
+  const [dynamicDropDownData, filterInitState] = useMemo(() => getDropDownData(filterData.orgData, role), [
     filterData.orgData,
     dropDownFormat.filterDropDownData,
     role
@@ -74,7 +74,7 @@ const StandardsPerformance = ({
 
   useEffect(() => {
     const { requestFilters = {} } = settings;
-    const { termId = "", domainIds = [] } = requestFilters;
+    const { termId = "", domainIds = [], grades = [], subject } = requestFilters;
     const modifiedFilter = next(ddfilter, draft => {
       Object.keys(draft).forEach(key => {
         draft[key] = draft[key].key == "All" ? "" : draft[key].key;
@@ -86,19 +86,20 @@ const StandardsPerformance = ({
         testIds: settings.selectedTest.map(test => test.key).join(),
         termId,
         domainIds,
+        grades: grades.join(","),
+        subject,
         compareBy: tableFilters.compareBy.key,
         ...modifiedFilter
       });
+      getStandardsFiltersRequestAction({ termId });
     }
-    getStandardsFiltersRequestAction();
   }, [settings, tableFilters.compareBy.key, ddfilter]);
 
   const res = get(standardsPerformanceSummary, "data.result", {});
   const overallMetricMasteryScore = getOverallMasteryScore(res.metricInfo || []);
   const overallMetricMasteryLevel = getMasteryLevel(overallMetricMasteryScore, scaleInfo);
 
-  const { domainsData, tableData } = useMemo(() => {
-    return getParsedData(
+  const { domainsData, tableData } = useMemo(() => getParsedData(
       res.metricInfo,
       maxMasteryScore,
       tableFilters,
@@ -106,8 +107,7 @@ const StandardsPerformance = ({
       rawDomainData,
       filterData,
       scaleInfo
-    );
-  }, [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]);
+    ), [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]);
 
   if (loading) {
     return <SpinLoader position="fixed" />;

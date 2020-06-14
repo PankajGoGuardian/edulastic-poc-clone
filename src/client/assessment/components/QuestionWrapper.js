@@ -249,8 +249,11 @@ class QuestionWrapper extends Component {
     main: [],
     advanced: [],
     activeTab: 0,
-    shuffledOptsOrder: []
+    shuffledOptsOrder: [],
+    page: 1
   };
+
+  setPage = page => this.setState({ page }); 
 
   handleShuffledOptions = shuffledOptsOrder => {
     this.setState({ shuffledOptsOrder });
@@ -339,7 +342,7 @@ class QuestionWrapper extends Component {
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
-    const { main, advanced, activeTab } = this.state;
+    const { main, advanced, activeTab, page } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
     const { layoutType } = this.context;
@@ -409,8 +412,10 @@ class QuestionWrapper extends Component {
               showAudioControls={showAudioControls}
               key={data.id}
               item={data}
+              page={page}
               qId={data.id}
               audioSrc={data.tts.titleAudioURL}
+              isPaginated={data.paginated_content}
               className="question-audio-controller"
             />
           ) : (
@@ -476,6 +481,8 @@ class QuestionWrapper extends Component {
                   studentReport={studentReportFeedbackVisible}
                   isPrintPreview={isPrintPreview}
                   {...userAnswerProps}
+                  page={page}
+                  setPage={this.setPage}
                 />
                 {!restProps.viewAtStudentRes && showFeedback && !isPrintPreview && (
                   <>

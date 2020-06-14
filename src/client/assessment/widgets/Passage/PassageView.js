@@ -72,10 +72,11 @@ const PassageView = ({
   clearUserWork,
   previewTab,
   passageTestItemID,
-  tabIndex
+  tabIndex,
+  page,
+  setPage
 }) => {
   const mainContentsRef = useRef();
-  const [page, setPage] = useState(1);
   const [isOpen, toggleOpen] = useState(false);
   const [selectHighlight, setSelectedHighlight] = useState(null);
   // use the userWork in author mode

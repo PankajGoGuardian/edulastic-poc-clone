@@ -3,13 +3,15 @@ import { Button } from "antd";
 import { Howl, Howler } from "howler";
 import styled from "styled-components";
 import { connect } from "react-redux";
+
+import { questionType } from "@edulastic/constants";
+import { EduButton } from "@edulastic/common";
 import { themeColor, white } from "@edulastic/colors";
 import { IconPlayFilled, IconAudioPause, IconStop, IconStopCircle, IconPlayBig } from "@edulastic/icons";
 
 import { curentPlayerDetailsSelector } from "./selectors/test";
 import { setCurrentAudioDetailsAction } from "./actions/test";
 import AppConfig from "../../../app-config";
-import { EduButton } from "@edulastic/common";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -48,12 +50,15 @@ const AudioControls = ({
   qId,
   currentPlayingDetails,
   setCurrentPlayingDetails,
-  className
+  className,
+  page
 }) => {
   const [loading, setLoading] = useState(true);
   const [stimulusHowl, setStimulusHowl] = useState({});
   const [optionHowl, setOptionHowl] = useState({});
   const [currentHowl, setCurrentHowl] = useState({});
+  const [pageHowls, setPageHowls] = useState([]);
+
   // Loading audio
   const audioLoadResolve = url =>
     new Promise((resolve, reject) => {
@@ -68,6 +73,7 @@ const AudioControls = ({
         reject({ id, e, url });
       });
     });
+
   // Playing audio
   const audioPlayResolve = _howl =>
     new Promise(resolve => {
@@ -77,6 +83,7 @@ const AudioControls = ({
       });
       setCurrentHowl(_howl);
     });
+
   // Stop all audios
   const stopAllAudios = () => {
     const findAllPlayingHowls = Howler._howls.filter(item => item.playing());
@@ -84,12 +91,13 @@ const AudioControls = ({
       findAllPlayingHowls.forEach(item => item.stop());
     }
   };
+
   useEffect(() => {
     if (!audioSrc) return;
     audioLoadResolve(audioSrc).then(sound => {
       setStimulusHowl(sound);
       setCurrentHowl(sound);
-      if (questionData.type === "multipleChoice") {
+      if (questionData.type === questionType.MULTIPLE_CHOICE) {
         const optionUrls = questionData.tts.optionUrls;
         const audioLoad = [];
         const choicePrefix = `${AppConfig.ttsChoicesPath}/choice-`;
@@ -108,6 +116,20 @@ const AudioControls = ({
         Promise.all(audioLoad).then(() => {
           setLoading(false);
         });
+      } else if (questionData.type === questionType.PASSAGE) {
+        if (!questionData.paginated_content) {
+          audioLoadResolve(questionData.tts.content.contentAudioURL).then(contentAudio => {
+            setPageHowls([contentAudio]);
+            setLoading(false);
+          });
+        } else {
+          Promise.all(questionData.tts.pages.map(p => 
+            audioLoadResolve(p.contentAudioURL)
+          )).then(contentAudios => {
+            setPageHowls(contentAudios);
+            setLoading(false);
+          });
+        }
       } else {
         setLoading(false);
       }
@@ -133,8 +155,9 @@ const AudioControls = ({
     }
     stopAllAudios();
     setCurrentPlayingDetails(qId);
-    audioPlayResolve(stimulusHowl).then(() => {
-      if (questionData.type === "multipleChoice") {
+
+    if (questionData.type === questionType.MULTIPLE_CHOICE) {
+      audioPlayResolve(stimulusHowl).then(() => {
         const { options } = questionData;
         const mapOptById = options.map(item => item.value);
         const asyncPlay = async () => {
@@ -147,10 +170,19 @@ const AudioControls = ({
           setCurrentPlayingDetails();
         };
         asyncPlay();
+      });
+    } else if (questionData.type === questionType.PASSAGE) {
+      if (page > 1) {
+        audioPlayResolve(pageHowls[page -1]).then(() => setCurrentPlayingDetails());
       } else {
-        setCurrentPlayingDetails();
+        audioPlayResolve(stimulusHowl).then(async () => {
+          await audioPlayResolve(pageHowls[page -1]);
+          setCurrentPlayingDetails();
+        });
       }
-    });
+    } else {
+      audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails());
+    }
   };
 
   const handleStopAudio = () => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -31,7 +30,7 @@ function useTestFetch(testId, type, filterQuestions) {
         testContentVisibility
       } = test;
       const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
-      let { questions, answers } = getOrderedQuestionsAndAnswers(testItems, passages, type, filterQuestions);
+      const { questions, answers } = getOrderedQuestionsAndAnswers(testItems, passages, type, filterQuestions);
       setTestDetails({
         title,
         collections,
@@ -109,16 +108,19 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                 <AnswerContainer>
                   {answer.qLabel}.
                   <div className="answer-wrapper">
-                    {answer.answers.map((ans, i) => (
-                      <div style={{ display: "flex" }}>
-                        <MathFormulaDisplay
-                          key={i}
-                          style={{ margin: "0 0 10px 10px", minHeight: "22px" }}
-                          dangerouslySetInnerHTML={{ __html: ans || "" }}
-                        />
-                        {i !== answer.answers.length - 1 && ";"}
-                      </div>
-                    ))}
+                    {answer.answers.map((ans, i) => {
+                      const stringifyContent = Array.isArray(ans) ? ans.join(", ") : ans;
+                      return (
+                        <div style={{ display: "flex" }}>
+                          <MathFormulaDisplay
+                            key={i}
+                            style={{ margin: "0 0 10px 10px", minHeight: "22px" }}
+                            dangerouslySetInnerHTML={{ __html: stringifyContent || "" }}
+                          />
+                          {i !== answer.answers.length - 1 && ";"}
+                        </div>
+                      );
+                    })}
                   </div>
                   <hr />
                 </AnswerContainer>
@@ -136,11 +138,6 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
       )}
     </PrintAssessmentContainer>
   );
-};
-
-PrintAssessment.propTypes = {
-  match: PropTypes.object,
-  userRole: PropTypes.string
 };
 
 const enhance = compose(

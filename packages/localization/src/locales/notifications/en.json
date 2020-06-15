@@ -1803,8 +1803,41 @@
     "message": "Please select one or more students to add to group",
     "description": ""
   },
+  "selectOneOrMoreStudentsToenebaleTextToSpeech": {
+    "message": "Select 1 or more students to enable text to speech",
+    "description": ""
+  },
+  "atleastOneOfSelectedStudentsIsAlreadyEnabled": {
+    "message": "Atleast one of the selected student(s) is already enabled",
+    "description": ""
+  },
+  "selectOneOrMoreStudentsToDisableTextToSpeech": {
+    "message": "Select 1 or more students to disable text to speech",
+    "description": ""
+  },
+  "selectOneOrMoreStudentsToRemove": {
+    "message": "Select 1 or more students to remove",
+    "description": ""
+  },
+  "atleastOneOfSelectedStudentsIsAlreadyDisabled": {
+    "message": "Atleast one of the selected student(s) is already disabled",
+    "description": ""
+  },
+  "SelectOneOrMoreStudentsToChangePassword": {
+    "message": "Select 1 or more students to change password",
+    "description": ""
+  },
+  "pleaseSelectAStudentToUpdate": {
+    "message": "Please select a student to update",
+    "description": ""
+  },
+  "pleaseSelectOnlyOneStudent": {
+    "message": "Please select only one student",
+  "description": ""
+  },
   "duplicationItemError": {
     "message": "Item duplication failed",
     "description": ""
   }
+  
 }

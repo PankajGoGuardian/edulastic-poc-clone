@@ -203,12 +203,14 @@ const ActionContainer = ({
     switch (key) {
       case "enableSpeech":
         if (isEmpty(selectedStudent)) {
-          return showMessage("error", "Select 1 or more students to enable text to speech");
+          notification({ messageKey: "selectOneOrMoreStudentsToenebaleTextToSpeech" });
+          return ;
         }
         if (changeTTS) {
           const isEnabled = selectedStudent.find(std => std.tts === "yes");
           if (isEnabled) {
-            return showMessage("error", "Atleast one of the selected student(s) is already enabled");
+            notification({ messageKey: "atleastOneOfSelectedStudentsIsAlreadyEnabled" });
+            return;
           }
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
@@ -216,11 +218,14 @@ const ActionContainer = ({
         break;
       case "disableSpeech": {
         if (isEmpty(selectedStudent)) {
-          return showMessage("error", "Select 1 or more students to disable text to speech");
+          notification({ messageKey: "selectOneOrMoreStudentsToDisableTextToSpeech" });
+          return;
         }
         const isDisabled = selectedStudent.find(std => std.tts === "no");
         if (isDisabled) {
-          return showMessage("error", "Atleast one of the selected student(s) is already disabled");
+          notification({ messageKey: "atleastOneOfSelectedStudentsIsAlreadyDisabled" });
+          return ;
+          
         }
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
@@ -230,22 +235,26 @@ const ActionContainer = ({
       }
       case "deleteStudent":
         if (isEmpty(selectedStudent)) {
-          return showMessage("error", "Select 1 or more students to remove");
+          notification({ messageKey: "selectOneOrMoreStudentsToRemove" });
+          return;
         }
         toggleModal("delete");
         break;
       case "resetPwd":
         if (isEmpty(selectedStudent)) {
-          return showMessage("error", "Select 1 or more students to change password");
+          notification({ messageKey: "SelectOneOrMoreStudentsToChangePassword" });
+          return;
         }
         toggleModal("resetPwd");
         break;
       case "editStudent":
         if (isEmpty(selectedStudent)) {
-          return showMessage("error", "Please select a student to update");
+          notification({ messageKey: "pleaseSelectAStudentToUpdate" });
+          return;
         }
         if (selectedStudent.length > 1) {
-          return showMessage("error", "Please select only one student");
+          notification({ messageKey: "pleaseSelectOnlyOneStudent"});
+          return; 
         }
         toggleModal("add");
         setEditStudentStatues(true);

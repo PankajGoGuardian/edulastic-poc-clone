@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
-import { StyledH3 } from "../../../../../common/styled";
+import { StyledH3, ColoredCell } from "../../../../../common/styled";
 import { downloadCSV } from "../../../../../common/util";
 import { idToName } from "../../util/transformers";
 import { StyledTable } from "../styled";
@@ -110,7 +110,7 @@ export const PeerPerformanceTable = ({
 
     const getCellContents = props => {
       const { printData, colorKey } = props;
-      return <div style={{ backgroundColor: record[colorKey] }}>{printData}</div>;
+      return <ColoredCell bgColor={record[colorKey]}>{printData}</ColoredCell>;
     };
 
     const printData = getDisplayValue(data, record, analyseBy, columnKey);

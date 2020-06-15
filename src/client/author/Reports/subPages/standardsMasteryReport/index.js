@@ -23,6 +23,8 @@ import { getReportsStandardsGradebook } from "./standardsGradebook/ducks";
 import dropDownFormat from "./standardsGradebook/static/json/dropDownFormat.json";
 import { getUserRole } from "../../../src/selectors/user";
 import { getFilterDropDownData } from "./standardsGradebook/utils/transformers";
+import { getDropDownData } from "./standardsPerformance/utils/transformers";
+import { getReportsStandardsFilters } from "./common/filterDataDucks";
 
 const StandardsMasteryReportContainer = props => {
   const {
@@ -39,7 +41,8 @@ const StandardsMasteryReportContainer = props => {
     role,
     standardsGradebook,
     onRefineResultsCB,
-    showFilter
+    showFilter,
+    standardsFilters
   } = props;
 
   const firstRender = useRef(true);
@@ -134,8 +137,23 @@ const StandardsMasteryReportContainer = props => {
     return dropDownFormat.filterDropDownData;
   }, [standardsGradebook]);
 
+  const filterData = get(standardsFilters, "data.result", []);
+  const [dynamicDropDownData, filterInitState] = useMemo(() => getDropDownData(filterData.orgData, role), [
+    filterData.orgData,
+    dropDownFormat.filterDropDownData,
+    role
+  ]);
+  const [ddfilterForPerformance, setDdFilterForPerformance] = useState(filterInitState);
+
   const filterDropDownCB = (event, selected, comData) => {
     setDdFilter({
+      ...ddfilter,
+      [comData]: selected.key
+    });
+  };
+
+  const filterDropDownCBForPerformance = (event, selected, comData) => {
+    setDdFilterForPerformance({
       ...ddfilter,
       [comData]: selected.key
     });
@@ -147,6 +165,18 @@ const StandardsMasteryReportContainer = props => {
       <SearchField key={item.key}>
         <FilterLabel>{item.title}</FilterLabel>
         <ControlDropDown selectCB={filterDropDownCB} data={item.data} comData={item.key} by={item.data[0]} />
+      </SearchField>
+    ));
+  } else if (loc === "standards-performance-summary") {
+    extraFilters = dynamicDropDownData.map(item => (
+      <SearchField key={item.key}>
+        <FilterLabel>{item.title}</FilterLabel>
+        <ControlDropDown
+          data={item.data}
+          comData={item.key}
+          by={item.data[0]}
+          selectCB={filterDropDownCBForPerformance}
+        />
       </SearchField>
     ));
   }
@@ -186,7 +216,7 @@ const StandardsMasteryReportContainer = props => {
           path="/author/reports/standards-performance-summary"
           render={_props => {
             setShowHeader(true);
-            return <StandardsPerfromance {..._props} settings={gradebookSettings} />;
+            return <StandardsPerfromance {..._props} settings={gradebookSettings} ddfilter={ddfilterForPerformance} />;
           }}
         />
       </ReportContaner>
@@ -197,6 +227,7 @@ const StandardsMasteryReportContainer = props => {
 const ConnectedStandardsMasteryReportContainer = connect(
   state => ({
     role: getUserRole(state),
+    standardsFilters: getReportsStandardsFilters(state),
     standardsGradebook: getReportsStandardsGradebook(state),
     gradebookSettings: getReportsSMRSettings(state)
   }),

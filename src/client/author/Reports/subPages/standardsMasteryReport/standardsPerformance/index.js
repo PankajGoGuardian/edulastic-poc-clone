@@ -5,7 +5,6 @@ import { filter, get, includes } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { getUserRole } from "../../../../src/selectors/user";
-import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import { DropDownContainer, StyledCard } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
@@ -25,7 +24,6 @@ import {
 } from "./ducks";
 import dropDownData from "./static/json/dropDownData.json";
 import {
-  getDropDownData,
   getMasteryLevel,
   getMasteryLevelOptions,
   getMaxMasteryScore,
@@ -39,13 +37,14 @@ const StandardsPerformance = ({
   standardsPerformanceSummary,
   browseStandards,
   standardsFilters,
-  getStandardsPerformanceSummaryRequestAction,
+  getStandardsPerformanceSummaryRequest,
   isCsvDownloading,
   settings,
   role,
   loading,
   selectedStandardProficiency,
-  filters
+  filters,
+  ddfilter
 }) => {
   const filterData = get(standardsFilters, "data.result", []);
   const scaleInfo = selectedStandardProficiency || [];
@@ -56,19 +55,11 @@ const StandardsPerformance = ({
   // filter compareBy options according to role
   const compareByDataFiltered = filter(compareByData, option => !includes(option.hiddenFromRole, role));
 
-  const [dynamicDropDownData, filterInitState] = useMemo(() => getDropDownData(filterData.orgData, role), [
-    filterData.orgData,
-    dropDownFormat.filterDropDownData,
-    role
-  ]);
-
   const [tableFilters, setTableFilters] = useState({
     masteryLevel: masteryLevelData[0],
     compareBy: compareByDataFiltered[0],
     analyseBy: analyseByData[0]
   });
-
-  const [ddfilter, setDdFilter] = useState(filterInitState);
 
   const [selectedDomains, setSelectedDomains] = useState([]);
 
@@ -82,7 +73,7 @@ const StandardsPerformance = ({
     });
 
     if (termId) {
-      getStandardsPerformanceSummaryRequestAction({
+      getStandardsPerformanceSummaryRequest({
         testIds: settings.selectedTest.map(test => test.key).join(),
         termId,
         domainIds,
@@ -145,8 +136,6 @@ const StandardsPerformance = ({
           selectedDomains={selectedDomains}
           setSelectedDomains={setSelectedDomains}
           filterValues={ddfilter}
-          filterOptions={dynamicDropDownData}
-          onFilterChange={setDdFilter}
           rawDomainData={rawDomainData}
           maxMasteryScore={maxMasteryScore}
           scaleInfo={scaleInfo}
@@ -181,7 +170,7 @@ const enhance = connect(
     selectedStandardProficiency: getSelectedStandardProficiency(state)
   }),
   {
-    getStandardsPerformanceSummaryRequestAction,
+    getStandardsPerformanceSummaryRequest: getStandardsPerformanceSummaryRequestAction,
     getStandardsFiltersRequestAction
   }
 );

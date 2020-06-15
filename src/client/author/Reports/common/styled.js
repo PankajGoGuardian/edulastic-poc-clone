@@ -362,6 +362,9 @@ export const StyledDropDownContainer = styled(Col)`
     text-overflow: ellipsis;
     width: ${props => (props.width ? props.width : "100%")};
   }
+  @media print {
+    display: none;
+  }
 `;
 
 export const StyledAutocompleteDropDownContainer = styled.div`
@@ -481,6 +484,10 @@ export const ReportContaner = styled.div`
   height: calc(100vh - 170px);
   overflow: auto;
   position: relative;
+
+  @media print {
+    overflow: hidden;
+  }
 `;
 
 export const FilterIcon = styled(IconFilter).attrs({
@@ -504,4 +511,14 @@ export const ApplyFitlerLabel = styled(FieldLabel)`
   margin-right: 15px;
   color: #434b5d;
   font-weight: bolder;
+`;
+
+export const ColoredCell = styled.div`
+  background-color: ${({ bgColor }) => bgColor};
+
+  @media print {
+    background-color: ${({ bgColor }) => bgColor};
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
 `;

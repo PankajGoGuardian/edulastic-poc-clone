@@ -107,7 +107,7 @@ const Container = props => {
     };
   });
 
-  const expandFilter = showFilter || isPrinting;
+  const expandFilter = showFilter;
 
   return (
     <PrintableScreen>

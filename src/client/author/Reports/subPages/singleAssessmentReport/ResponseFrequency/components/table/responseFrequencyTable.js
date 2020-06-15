@@ -8,6 +8,7 @@ import { ResponseTag } from "./responseTag";
 import { getHSLFromRange1, downloadCSV } from "../../../../../common/util";
 import PrintableTable from "../../../../../common/components/tables/PrintableTable";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
+import { ColoredCell } from "../../../../../common/styled";
 
 export class ResponseFrequencyTable extends Component {
   constructor(props) {
@@ -93,9 +94,9 @@ export class ResponseFrequencyTable extends Component {
         return (
           <div style={{ width: "100%", height: "100%" }}>
             {correct < _correctThreshold ? (
-              <div className="response-frequency-table-correct-td" style={{ backgroundColor: getHSLFromRange1(0) }}>
+              <ColoredCell className="response-frequency-table-correct-td" bgColor={getHSLFromRange1(0)}>
                 {correct}%
-              </div>
+              </ColoredCell>
             ) : (
               <div className="response-frequency-table-correct-td">{correct}%</div>
             )}

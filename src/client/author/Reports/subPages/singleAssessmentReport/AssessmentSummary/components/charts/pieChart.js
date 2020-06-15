@@ -3,11 +3,13 @@ import { Col, Row } from "antd";
 import { sumBy } from "lodash";
 import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
+import { connect } from "react-redux";
 import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import styled from "styled-components";
+import { getPrintingState } from "../../../../../ducks";
 import { StyledCustomChartTooltip } from "../styled";
 
-export const SimplePieChart = ({ data }) => {
+export const SimplePieChartComponent = ({ data, isPrinting }) => {
   const [activeLegend, setActiveLegend] = useState(null);
 
   const onLegendMouseEnter = ({ value }) => setActiveLegend(value);
@@ -20,7 +22,7 @@ export const SimplePieChart = ({ data }) => {
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
-      <text x={x} y={y} fill={fadedBlack} textAnchor={"middle"} dominantBaseline="central" fontSize={"11px"}>
+      <text x={x} y={y} fill={fadedBlack} textAnchor="middle" dominantBaseline="central" fontSize="11px">
         {Math.round(percent * 100) ? `${Math.round(percent * 100)}%` : ""}
       </text>
     );
@@ -29,9 +31,7 @@ export const SimplePieChart = ({ data }) => {
   const chartData = useMemo(() => {
     const arr = [];
     if (data) {
-      const sum = sumBy(data, o => {
-        return o.bandPerf;
-      });
+      const sum = sumBy(data, o => o.bandPerf);
       for (let i = 0; i < data.length; i++) {
         let fillOpacity = 1;
 
@@ -66,7 +66,7 @@ export const SimplePieChart = ({ data }) => {
   };
 
   return (
-    <ResponsiveContainer width={"100%"}>
+    <ResponsiveContainer width="100%">
       <PieChartWrapper>
         <Legend
           onMouseEnter={onLegendMouseEnter}
@@ -74,15 +74,17 @@ export const SimplePieChart = ({ data }) => {
           layout="vertical"
           align="center"
           verticalAlign="bottom"
+          isAnimationActive={!isPrinting}
         />
         <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
         <Pie
-          name={"name"}
+          name="name"
           data={chartData}
           labelLine={false}
           innerRadius={35}
           outerRadius={65}
           dataKey="bandPerf"
+          isAnimationActive={!isPrinting}
           label={renderCustomizedLabel}
         />
       </PieChartWrapper>
@@ -97,10 +99,16 @@ const performanceByBand = PropTypes.shape({
   threshold: PropTypes.number
 });
 
-SimplePieChart.propTypes = {
+SimplePieChartComponent.propTypes = {
   data: PropTypes.arrayOf(performanceByBand).isRequired
 };
 
+export const SimplePieChart = connect(
+  state => ({
+    isPrinting: getPrintingState(state)
+  }),
+  null
+)(SimplePieChartComponent);
 const PieChartWrapper = styled(PieChart)`
   margin-top: 0px;
 `;

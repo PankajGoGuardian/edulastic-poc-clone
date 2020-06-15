@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
+import React, { useState, useMemo } from "react";
 import {
   ComposedChart,
   Bar,
@@ -14,17 +15,17 @@ import {
   ReferenceLine
 } from "recharts";
 import styled from "styled-components";
+import { connect } from "react-redux";
+import { getPrintingState } from "../../../ducks";
 import { StyledCustomChartTooltip, StyledChartNavButton, CustomXAxisTickTooltipContainer } from "../../styled";
 import { CustomChartXTick, calculateXCoordinateOfXAxisToolTip } from "./chartUtils/customChartXTick";
 
-const _yTickFormatter = val => {
-  return val + "%";
-};
+const _yTickFormatter = val => `${val}%`;
 
 const LabelText = props => {
-  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, index, startIndex } = props;
+  const { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, index, startIndex } = props;
   return (
-    <g class="asd-asd" onMouseOver={onBarMouseOver()} onMouseLeave={onBarMouseLeave()}>
+    <g className="asd-asd" onMouseOver={onBarMouseOver()} onMouseLeave={onBarMouseLeave()}>
       <text x={x + width / 2} y={y + height} textAnchor="middle" dominantBaseline="text-after-edge">
         {formatter(value, index, startIndex, x, y)}
       </text>
@@ -32,7 +33,7 @@ const LabelText = props => {
   );
 };
 
-export const SimpleStackedBarChart = ({
+const SimpleStackedBarChartComponent = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
   xTickTooltipPosition = 460,
   xTickToolTipWidth = 110,
@@ -60,7 +61,8 @@ export const SimpleStackedBarChart = ({
   lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   lineYTickFormatter = _yTickFormatter,
   lineYAxisLabel = "",
-  isBarClickable = false
+  isBarClickable = false,
+  isPrinting
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -89,9 +91,7 @@ export const SimpleStackedBarChart = ({
     setCopyData(data);
   }
 
-  const chartData = useMemo(() => {
-    return [...data];
-  }, [pagination]);
+  const chartData = useMemo(() => [...data], [pagination]);
 
   const scrollLeft = () => {
     let diff;
@@ -135,7 +135,7 @@ export const SimpleStackedBarChart = ({
     setBarIndex(index);
   };
 
-  const onBarMouseLeave = index => () => {
+  const onBarMouseLeave = () => () => {
     setBarIndex(null);
   };
 
@@ -176,7 +176,7 @@ export const SimpleStackedBarChart = ({
         type="primary"
         shape="circle"
         icon="caret-left"
-        size={"large"}
+        size="large"
         className="navigator navigator-left"
         onClick={scrollLeft}
         style={{
@@ -187,7 +187,7 @@ export const SimpleStackedBarChart = ({
         type="primary"
         shape="circle"
         icon="caret-right"
-        size={"large"}
+        size="large"
         className="navigator navigator-right"
         onClick={scrollRight}
         style={{
@@ -203,7 +203,7 @@ export const SimpleStackedBarChart = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
-      <ResponsiveContainer width={"100%"} height={400}>
+      <ResponsiveContainer width={isPrinting ? 1024 : "100%"} height={400}>
         <ComposedChart width={730} height={400} data={chartData} margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
@@ -218,7 +218,7 @@ export const SimpleStackedBarChart = ({
             onMouseOut={onXAxisTickTooltipMouseOut}
           />
           <YAxis
-            type={"number"}
+            type="number"
             yAxisId="barChart"
             domain={yDomain}
             tick={constants.TICK_FILL}
@@ -233,7 +233,6 @@ export const SimpleStackedBarChart = ({
             tickMargin="6"
             style={{ transform: "translate(-25px)" }}
           />
-          />
           <Brush
             dataKey={xAxisDataKey}
             height={0}
@@ -245,7 +244,8 @@ export const SimpleStackedBarChart = ({
             dataKey={bottomStackDataKey}
             yAxisId="barChart"
             stackId="a"
-            unit={"%"}
+            unit="%"
+            isAnimationActive={!isPrinting}
             onClick={onBarClick}
             barSize={45}
             onMouseOver={onBarMouseOver(1)}
@@ -256,6 +256,7 @@ export const SimpleStackedBarChart = ({
             yAxisId="barChart"
             stackId="a"
             onClick={onBarClick}
+            isAnimationActive={!isPrinting}
             barSize={45}
             onMouseOver={onBarMouseOver(1)}
             onMouseLeave={onBarMouseLeave(null)}
@@ -276,14 +277,14 @@ export const SimpleStackedBarChart = ({
                 />
               }
             />
-            {chartData.map((entry, index) => {
-              return <Cell radius={[10, 10, 0, 0]} key={entry[xAxisDataKey]} fill={"#e5e5e5"} />;
-            })}
+            {chartData.map(entry => (
+              <Cell radius={[10, 10, 0, 0]} key={entry[xAxisDataKey]} fill="#e5e5e5" />
+            ))}
           </Bar>
           {lineChartDataKey ? (
             <YAxis
               yAxisId="lineChart"
-              domain={lineYDomain ? lineYDomain : null}
+              domain={lineYDomain || null}
               label={constants.LINE_Y_AXIS_LABEL}
               ticks={lineTicks}
               orientation="right"
@@ -300,11 +301,11 @@ export const SimpleStackedBarChart = ({
           {lineChartDataKey ? (
             <Line
               activeDot={{
-                onMouseOver: o => {
+                onMouseOver: () => {
                   setDotActive(true);
                   setBarIndex(1);
                 },
-                onMouseLeave: o => {
+                onMouseLeave: () => {
                   setDotActive(false);
                   setBarIndex(null);
                 },
@@ -313,12 +314,13 @@ export const SimpleStackedBarChart = ({
               }}
               yAxisId="lineChart"
               type="linear"
+              isAnimationActive={!isPrinting}
               dataKey={lineChartDataKey}
               dot={lineDotProps}
               {...lineProps}
             />
           ) : null}
-          {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
+          {referenceLineY > 0 ? <ReferenceLine yAxisId="barChart" y={referenceLineY} stroke="#010101" /> : null}
           <Tooltip
             cursor={typeof TooltipCursor === "boolean" ? TooltipCursor : renderToolTipCursor()}
             content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />}
@@ -328,6 +330,13 @@ export const SimpleStackedBarChart = ({
     </StyledStackedBarChartContainer>
   );
 };
+
+export const SimpleStackedBarChart = connect(
+  state => ({
+    isPrinting: getPrintingState(state)
+  }),
+  null
+)(SimpleStackedBarChartComponent);
 
 const StyledStackedBarChartContainer = styled.div`
   padding: 10px;
@@ -352,6 +361,6 @@ const StyledStackedBarChartContainer = styled.div`
     stroke-opacity: 0;
   }
   .recharts-rectangle {
-    cursor: ${({clickable}) => clickable ? "pointer" : "default"}!important;
+    cursor: ${({ clickable }) => (clickable ? "pointer" : "default")}!important;
   }
 `;

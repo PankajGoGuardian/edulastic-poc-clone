@@ -75,6 +75,11 @@ const AnalysisTable = styled(StyledTable)`
 const ScoreCell = styled.div`
   background: ${props => props.color};
   padding: 10px 8px;
+
+  @media print {
+    background-color: ${props => props.color};
+    -webkit-print-color-adjust: exact;
+  }
 `;
 
 const columnHashMap = {

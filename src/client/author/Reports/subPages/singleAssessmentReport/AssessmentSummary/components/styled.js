@@ -6,7 +6,15 @@ import { AssessmentStatisticTable } from "./table/assessmentStatisticTable";
 
 export const UpperContainer = styled(Row)`
   @media print {
-    flex-direction: column-reverse;
+    /* flex-direction: column-reverse; */
+    /* print view is 1024 resolution */
+    .district-statistics {
+      width: 724px;
+    }
+
+    .chart-container {
+      width: 250px;
+    }
   }
 
   .sub-container {
@@ -19,12 +27,6 @@ export const UpperContainer = styled(Row)`
         flex: 1;
       }
     }
-  }
-
-  .district-statistics {
-  }
-
-  .chart-container {
   }
 `;
 

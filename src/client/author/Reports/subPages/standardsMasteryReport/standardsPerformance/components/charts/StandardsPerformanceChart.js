@@ -6,7 +6,6 @@ import { getTicks, getMasteryLevel } from "../../utils/transformers";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { StyledChartContainer } from "../styled";
-import { FilterDropDownWithDropDown } from "../../../../../common/components/widgets/filterDropDownWithDropDown";
 import { StyledH3 } from "../../../../../common/styled";
 
 const _yTickFormatter = text => text;
@@ -25,11 +24,11 @@ const StandardsPerformanceChart = ({
 }) => {
   const ticks = getTicks(maxMasteryScore);
 
-  const getTooltipJSX = data => {
-    const [domain = {}] = data;
+  const getTooltipJSX = _data => {
+    const [domain = {}] = _data;
     const { payload = {} } = domain;
     const domainInfo = find(rawDomainData, d => `${d.tloId}` === `${payload.domainId}`) || {};
-    const studentCount = sumBy(payload.records, record => parseInt(record.totalStudents));
+    const studentCount = sumBy(payload.records, record => parseInt(record.totalStudents, 10));
 
     return (
       <div>
@@ -49,9 +48,9 @@ const StandardsPerformanceChart = ({
       return;
     }
 
-    let modifiedState = next(selectedDomains, draft => {
-      let index = indexOf(draft, selectedDomain.domainId);
-      if (-1 < index) {
+    const modifiedState = next(selectedDomains, draft => {
+      const index = indexOf(draft, selectedDomain.domainId);
+      if (index > -1) {
         draft.splice(index, 1);
       } else {
         draft.push(selectedDomain.domainId);
@@ -61,30 +60,20 @@ const StandardsPerformanceChart = ({
     setSelectedDomains(modifiedState);
   };
 
-  const filterDropDownCB = (_, selected, comData) => {
-    onFilterChange({
-      ...filterValues,
-      [comData]: selected
-    });
-  };
-
   return (
     <>
       <Row type="flex" justify="start">
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           <StyledH3>Mastery Level Distribution by Domain</StyledH3>
         </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
-          <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={filterOptions} values={filterValues} />
-        </Col>
       </Row>
       <Row type="flex" justify="start">
         <StyledChartContainer xs={24} sm={24} md={24} lg={24} xl={24}>
           <SimpleStackedBarChart
             margin={{ top: 10, right: 60, left: 60, bottom: 0 }}
-            xAxisDataKey={"domainName"}
-            bottomStackDataKey={"masteryScore"}
-            topStackDataKey={"diffMasteryScore"}
+            xAxisDataKey="domainName"
+            bottomStackDataKey="masteryScore"
+            topStackDataKey="diffMasteryScore"
             yAxisLabel="Avg. Mastery Score"
             yTickFormatter={_yTickFormatter}
             barsLabelFormatter={_yTickFormatter}

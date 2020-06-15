@@ -161,7 +161,6 @@ export const StyledResponseTagContainer = styled(Col)`
   flex-grow: 1;
   @media print {
     margin-bottom: 10px;
-    flex: none;
   }
 `;
 

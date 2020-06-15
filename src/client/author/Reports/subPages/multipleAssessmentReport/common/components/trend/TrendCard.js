@@ -5,13 +5,11 @@ import styled from "styled-components";
 import { trendTypes } from "../../utils/constants";
 import { StyledTrendIcon } from "../styled";
 
-const TrendCard = ({ count, type, onClick, className }) => {
-  return (
-    <div onClick={onClick} className={className}>
-      {count} <StyledTrendIcon type={type} className="fa fa-arrow-up" />
-    </div>
-  );
-};
+const TrendCard = ({ count, type, onClick, className }) => (
+  <div onClick={onClick} className={className}>
+    {count} <StyledTrendIcon type={type} className="fa fa-arrow-up" />
+  </div>
+);
 
 const StyledTrendCard = styled(TrendCard)`
   height: 63px;
@@ -23,6 +21,11 @@ const StyledTrendCard = styled(TrendCard)`
   color: #676a6c;
   background-color: ${props => trendTypes[props.type].color};
   opacity: ${props => (props.isSelected ? 1 : 0.6)};
+
+  @media print {
+    background-color: ${props => trendTypes[props.type].color};
+    -webkit-print-color-adjust: exact;
+  }
 `;
 
 StyledTrendCard.propTypes = {

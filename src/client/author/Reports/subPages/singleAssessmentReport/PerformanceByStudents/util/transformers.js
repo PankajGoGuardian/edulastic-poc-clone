@@ -2,18 +2,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 import next from "immer";
 import { max, min, filter, map, find, orderBy, ceil, groupBy, sumBy, floor, forEach, maxBy, get, round } from "lodash";
+import moment from "moment";
 import { filterData, getHSLFromRange1, filterAccordingToRole, formatDate } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
+import { ColoredCell } from "../../../../common/styled";
 import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
 import { reportLinkColor } from "../../../multipleAssessmentReport/common/utils/constants";
-import moment from "moment";
 
 export const getInterval = maxValue => min([maxValue, 9]);
 
 export const createTicks = (maxValue, interval) => {
   let maxTickRange = (ceil(maxValue / interval) || 0) * interval;
 
-  let ticks = [];
+  const ticks = [];
 
   ticks.push(maxTickRange + (ceil(maxValue / interval) || 0));
 
@@ -43,7 +44,7 @@ export const getProficiencyBandData = bandInfo => {
 const groupData = data => {
   const maxTotalScore = get(maxBy(data, "totalScore"), "totalScore", 0);
 
-  let dataToPlotHashMap = {};
+  const dataToPlotHashMap = {};
   let i = 0;
 
   while (maxTotalScore + 1 >= i) {
@@ -66,8 +67,8 @@ const groupData = data => {
   return map(dataToPlotHashMap, dataItem => dataItem);
 };
 
-export const parseData = ({ studentMetricInfo = [] }, filter) => {
-  const filteredData = filterData(studentMetricInfo, filter);
+export const parseData = ({ studentMetricInfo = [] }, _filter) => {
+  const filteredData = filterData(studentMetricInfo, _filter);
   const groupedData = groupData(filteredData);
 
   return groupedData.length ? groupedData : [{ name: 0, studentCount: 0 }];
@@ -87,7 +88,7 @@ export const getProficiency = (item, bandInfo) => {
 export const getFormattedName = name => {
   const nameArr = (name || "").trim().split(" ");
   const lName = nameArr.splice(nameArr.length - 1)[0];
-  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+  return nameArr.length ? `${lName}, ${nameArr.join(" ")}` : lName;
 };
 
 export const normaliseTableData = (rawData, data) => {
@@ -96,15 +97,9 @@ export const normaliseTableData = (rawData, data) => {
   const classes = groupBy(studentMetricInfo, "groupId");
 
   return map(data, studentMetric => {
-    const relatedGroup =
-      find(metaInfo, meta => {
-        return studentMetric.groupId === meta.groupId;
-      }) || {};
+    const relatedGroup = find(metaInfo, meta => studentMetric.groupId === meta.groupId) || {};
 
-    const relatedSchool =
-      find(schoolMetricInfo, school => {
-        return relatedGroup.schoolId === school.schoolId;
-      }) || {};
+    const relatedSchool = find(schoolMetricInfo, school => relatedGroup.schoolId === school.schoolId) || {};
 
     // progressStatus = 2 is for absent student, needs to be excluded
     const classAvg =
@@ -147,9 +142,7 @@ const filterStudents = (rawData, appliedFilters, range, selectedProficiency) => 
 
   // filter according to proficiency
   if (selectedProficiency !== "All") {
-    filteredData = filter(filteredData, item => {
-      return getProficiency(item, bandInfo) === selectedProficiency;
-    });
+    filteredData = filter(filteredData, item => getProficiency(item, bandInfo) === selectedProficiency);
   }
 
   let dataBetweenRange = filteredData;
@@ -159,9 +152,10 @@ const filterStudents = (rawData, appliedFilters, range, selectedProficiency) => 
 
   // filter according to range
   if (rangeMax && range.left !== "" && range.right !== "") {
-    dataBetweenRange = filter(filteredData, studentMetric => {
-      return rangeMax > studentMetric.totalScore && studentMetric.totalScore >= rangeMin;
-    });
+    dataBetweenRange = filter(
+      filteredData,
+      studentMetric => rangeMax > studentMetric.totalScore && studentMetric.totalScore >= rangeMin
+    );
   }
 
   return dataBetweenRange;
@@ -195,6 +189,18 @@ export const getSorter = (columnType, columnKey) => {
   }
 };
 
+// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+const getBreadCrumb = (location, pageTitle) => [
+  {
+    title: "REPORTS",
+    to: "/author/reports"
+  },
+  {
+    title: pageTitle,
+    to: `${location.pathname}${location.search}`
+  }
+];
+
 const getDisplayValue = (columnType, text) => {
   switch (columnType) {
     case "percentage":
@@ -209,7 +215,7 @@ const getCellContents = ({ printData, colorKey, ...restProps }) => {
 
   if (columnKey === "studentScore") {
     return (
-      <div style={{ backgroundColor: getHSLFromRange1(parseInt(colorKey)) }}>
+      <ColoredCell bgColor={getHSLFromRange1(parseInt(colorKey, 10))}>
         <Link
           style={{ color: reportLinkColor }}
           to={{
@@ -223,41 +229,43 @@ const getCellContents = ({ printData, colorKey, ...restProps }) => {
         >
           {printData}
         </Link>
-      </div>
+      </ColoredCell>
     );
   }
-  return <div style={{ backgroundColor: getHSLFromRange1(parseInt(colorKey)) }}>{printData}</div>;
+  return <div style={{ backgroundColor: getHSLFromRange1(parseInt(colorKey, 10)) }}>{printData}</div>;
 };
 
 const getColorCell = (columnKey, columnType, assessmentName, location = {}, pageTitle) => (text, record) => {
-  const toolTipText = record => {
+  const toolTipText = _record => {
     let lastItem = {
       title: "District: ",
-      value: `${record.districtAvg}%`
+      value: `${_record.districtAvg}%`
     };
 
     switch (columnKey) {
       case "schoolAvg":
         lastItem = {
           title: "School: ",
-          value: `${record.schoolAvg}%`
+          value: `${_record.schoolAvg}%`
         };
         break;
       case "classAvg":
         lastItem = {
           title: "Class: ",
-          value: `${record.classAvg}%`
+          value: `${_record.classAvg}%`
         };
+        break;
+      default:
         break;
     }
 
     return (
       <div>
-        <TableTooltipRow title={"Assessment Name: "} value={assessmentName} />
-        <TableTooltipRow title={"Performance: "} value={record.assessmentScore} />
-        <TableTooltipRow title={"Performance Band: "} value={record.proficiencyBand} />
-        <TableTooltipRow title={"Student Name: "} value={record.student} />
-        <TableTooltipRow title={"Class Name: "} value={record.groupName} />
+        <TableTooltipRow title="Assessment Name: " value={assessmentName} />
+        <TableTooltipRow title="Performance: " value={record.assessmentScore} />
+        <TableTooltipRow title="Performance Band: " value={record.proficiencyBand} />
+        <TableTooltipRow title="Student Name: " value={record.student} />
+        <TableTooltipRow title="Class Name: " value={record.groupName} />
         <TableTooltipRow {...lastItem} />
       </div>
     );
@@ -277,18 +285,6 @@ const getColorCell = (columnKey, columnType, assessmentName, location = {}, page
     />
   );
 };
-
-// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-const getBreadCrumb = (location, pageTitle) => [
-  {
-    title: "REPORTS",
-    to: "/author/reports"
-  },
-  {
-    title: pageTitle,
-    to: `${location.pathname}${location.search}`
-  }
-];
 
 export const getColumns = (columns, assessmentName, role, location, pageTitle) => {
   const filteredColumns = filterAccordingToRole(columns, role);

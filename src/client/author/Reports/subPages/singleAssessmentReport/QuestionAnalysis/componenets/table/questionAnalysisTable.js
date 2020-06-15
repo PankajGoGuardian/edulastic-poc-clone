@@ -8,6 +8,7 @@ import { getHSLFromRange1, downloadCSV } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { StyledTable } from "../styled";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
+import { ColoredCell } from "../../../../../common/styled";
 import columns from "../../static/json/tableColumns.json";
 
 const comparedByToToolTipLabel = {
@@ -69,7 +70,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
 
     const getCellContents = props => {
       const { printData } = props;
-      return <div style={{ backgroundColor: getHSLFromRange1(printData) }}>{`${printData}%`}</div>;
+      return <ColoredCell bgColor={getHSLFromRange1(printData)}>{`${printData}%`}</ColoredCell>;
     };
 
     return (

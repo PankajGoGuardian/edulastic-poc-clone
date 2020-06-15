@@ -14,6 +14,7 @@ const WidgetTitle = styled.h2`
   margin: ${props => props.margin || "0px -20px 20px"};
   font-weight: bold;
   min-height: 50px;
+  ${({ titleStyle }) => titleStyle};
 `;
 
 export const SubtitleText = styled.div`
@@ -53,8 +54,8 @@ export const QuestionIcon = ({ id = "", customStyle = {} }) =>
     </FlexContainer>
   ) : null;
 
-export const Subtitle = ({ id, children, textStyles = {}, showIcon = true, margin }) => (
-  <WidgetTitle margin={margin} justifyContent="flex-start" alignItems="baseline">
+export const Subtitle = ({ id, children, titleStyle = {}, textStyles = {}, showIcon = true, margin }) => (
+  <WidgetTitle titleStyle={titleStyle} margin={margin} justifyContent="flex-start" alignItems="baseline">
     <SubtitleText styles={textStyles}>{children}</SubtitleText>
     {showIcon && <QuestionIcon id={id} />}
   </WidgetTitle>

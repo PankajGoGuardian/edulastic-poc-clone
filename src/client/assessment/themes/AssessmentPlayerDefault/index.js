@@ -443,7 +443,7 @@ class AssessmentPlayerDefault extends React.Component {
        * zoom only in student side, otherwise not
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
-      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel, twoColLayout: {} }}>
+      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
         <Container scratchPadMode={scratchPadMode} data-cy="assessment-player-default-wrapper">
           <AssessmentPlayerSkinWrapper
             title={title}

@@ -6,7 +6,6 @@ import { findIndex, isUndefined, get } from "lodash";
 import { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
 import { Input, Tooltip } from "antd";
-import { ThemeProvider } from "styled-components";
 import { AnswerContext, scrollTo, EduButton } from "@edulastic/common";
 import { IconFeedback } from "@edulastic/icons";
 import { test } from "@edulastic/constants";
@@ -260,28 +259,19 @@ class StudentViewContainer extends Component {
         <div ref={this.questionsContainerRef}>
           {!loading && (
             <AnswerContext.Provider value={{ isAnswerModifiable: false, currentScreen: "live_class_board" }}>
-              <ThemeProvider
-                theme={{
-                  twoColLayout: {
-                    first: "calc(100% - 265px) !important",
-                    second: "250px !important"
-                  }
-                }}
-              >
-                <ClassQuestions
-                  currentStudent={currentStudent || {}}
-                  questionActivities={studentResponse.questionActivities || []}
-                  testActivity={studentResponse.testActivity || {}}
-                  classResponse={classResponse}
-                  testItemsOrder={testItemsOrder}
-                  studentViewFilter={filter}
-                  labels={_getquestionLabels(classResponse.testItems)}
-                  isPresentationMode={isPresentationMode}
-                  showTestletPlayer={showTestletPlayer}
-                  closeTestletPlayer={() => this.setState({ showTestletPlayer: false })}
-                  isLCBView
-                />
-              </ThemeProvider>
+              <ClassQuestions
+                currentStudent={currentStudent || {}}
+                questionActivities={studentResponse.questionActivities || []}
+                testActivity={studentResponse.testActivity || {}}
+                classResponse={classResponse}
+                testItemsOrder={testItemsOrder}
+                studentViewFilter={filter}
+                labels={_getquestionLabels(classResponse.testItems)}
+                isPresentationMode={isPresentationMode}
+                showTestletPlayer={showTestletPlayer}
+                closeTestletPlayer={() => this.setState({ showTestletPlayer: false })}
+                isLCBView
+              />
             </AnswerContext.Provider>
           )}
         </div>

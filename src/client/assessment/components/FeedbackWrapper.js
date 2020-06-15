@@ -17,7 +17,6 @@ const FeedbackWrapper = ({
   showFeedback,
   displayFeedback = false,
   isPrintPreview = false,
-  theme,
   showCollapseBtn,
   data,
   prevQActivityForQuestion = {},
@@ -72,7 +71,7 @@ const FeedbackWrapper = ({
         width:
           showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview
             ? "265px"
-            : theme?.twoColLayout?.second,
+            : "250px",
         minWidth: studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : "",
         ...dimensionProps
       }}
@@ -80,7 +79,6 @@ const FeedbackWrapper = ({
       {showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview && (
         <FeedbackRight
           data-cy="feedBackRight"
-          twoColLayout={theme?.twoColLayout}
           showCollapseBtn={showCollapseBtn}
           disabled={disabled}
           widget={data}

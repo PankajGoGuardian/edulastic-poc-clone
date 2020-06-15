@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
 import memoizeOne from "memoize-one";
-import styled, { ThemeProvider } from "styled-components";
+import styled from "styled-components";
 
 // contants
 import { mobileWidthLarge } from "@edulastic/colors";
-import AppConfig from "../../../../../../app-config";
+
 
 // components
 import { Switch } from "antd";
@@ -19,6 +19,7 @@ import {
   FlexContainer,
   toggleIntercomDisplay
 } from "@edulastic/common";
+import AppConfig from "../../../../../../app-config";
 import ScoreTable from "../ScoreTable/ScoreTable";
 import ScoreCard from "../ScoreCard/ScoreCard";
 import QuestionModal from "../QuestionModal/QuestionModal";
@@ -164,7 +165,8 @@ class ExpressGrader extends Component {
 
                 <FlexContainer justifyContent="space-between">
                   <SwitchBox>
-                    RESPONSE <Switch data-cy="response-toggle" checked={scoreMode} onChange={() => toggleScoreMode()} />{" "}
+                    RESPONSE{" "}
+                    <Switch data-cy="response-toggle" checked={scoreMode} onChange={() => toggleScoreMode()} />{" "}
                     SCORE
                   </SwitchBox>
                   <PresentationToggleSwitch groupId={classId} />
@@ -186,19 +188,17 @@ class ExpressGrader extends Component {
               {isMobile && <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />}
 
               {isVisibleModal && (
-                <ThemeProvider theme={{ twoColLayout: { first: "75% !important", second: "25% !important" } }}>
-                  <QuestionModal
-                    record={record}
-                    tableData={tableData}
-                    isVisibleModal={isVisibleModal}
-                    showQuestionModal={this.showQuestionModal}
-                    hideQuestionModal={this.hideQuestionModal}
-                    isPresentationMode={isPresentationMode}
-                    groupId={classId}
-                    windowWidth={windowWidth}
-                    scoreMode={scoreMode}
-                  />
-                </ThemeProvider>
+                <QuestionModal
+                  record={record}
+                  tableData={tableData}
+                  isVisibleModal={isVisibleModal}
+                  showQuestionModal={this.showQuestionModal}
+                  hideQuestionModal={this.hideQuestionModal}
+                  isPresentationMode={isPresentationMode}
+                  groupId={classId}
+                  windowWidth={windowWidth}
+                  scoreMode={scoreMode}
+                />
               )}
             </WithResources>
           </MainContentWrapper>

@@ -6,7 +6,6 @@ import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
-import { ThemeProvider } from "styled-components";
 import { scrollTo, AnswerContext, Legends, LegendContainer } from "@edulastic/common";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
@@ -286,28 +285,19 @@ class QuestionViewContainer extends Component {
             }
             const qActivities = classQuestion.filter(({ userId }) => userId === student.studentId);
             return (
-              <ThemeProvider
-                theme={{
-                  twoColLayout: {
-                    first: "calc(100% - 265px) !important",
-                    second: "250px !important"
-                  }
-                }}
-              >
-                <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-                  <ClassQuestions
-                    key={index}
-                    isQuestionView={isQuestionView}
-                    qIndex={qIndex}
-                    currentStudent={student}
-                    classResponse={{ testItems: filteredItems, ...others }}
-                    questionActivities={qActivities}
-                    isPresentationMode={isPresentationMode}
-                    labels={labels}
-                    isLCBView
-                  />
-                </AnswerContext.Provider>
-              </ThemeProvider>
+              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                <ClassQuestions
+                  key={index}
+                  isQuestionView={isQuestionView}
+                  qIndex={qIndex}
+                  currentStudent={student}
+                  classResponse={{ testItems: filteredItems, ...others }}
+                  questionActivities={qActivities}
+                  isPresentationMode={isPresentationMode}
+                  labels={labels}
+                  isLCBView
+                />
+              </AnswerContext.Provider>
             );
           })}
       </React.Fragment>

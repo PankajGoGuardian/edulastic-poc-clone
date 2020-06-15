@@ -252,7 +252,6 @@ class FeedbackRight extends Component {
       isPresentationMode,
       color,
       icon,
-      twoColLayout,
       showCollapseBtn,
       rubricDetails,
       user,
@@ -305,7 +304,6 @@ class FeedbackRight extends Component {
     const { isAnswerModifiable, studentResponseLoading, expressGrader } = this.context;
     return (
       <StyledCardTwo
-        twoColLayout={twoColLayout}
         bordered={isStudentName}
         disabled={disabled}
         showCollapseBtn={showCollapseBtn}

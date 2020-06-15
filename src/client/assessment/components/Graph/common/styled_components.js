@@ -7,7 +7,6 @@ import {
   greenDarkSecondary,
   secondaryTextColor,
   mobileWidthMax,
-  desktopWidth,
   themeColor,
   extraDesktopWidthMax
 } from "@edulastic/colors";
@@ -380,12 +379,10 @@ export const PaperWrapper = styled(StyledPaperWrapper)`
   padding: ${props => (props.flowLayout ? "0px" : props.isV1Multipart ? "0px 35px" : "35px")};
   min-width: ${({ style }) => style.minWidth};
   ${({ style }) => style};
+  
   @media (max-width: ${mobileWidthMax}) {
     padding: ${({ flowLayout }) => (flowLayout ? "0px" : "20px;")};
     margin-bottom: 15px;
-  }
-  @media screen and (min-width: ${desktopWidth}) {
-    width: ${({ twoColLayout }) => twoColLayout?.first};
   }
 `;
 

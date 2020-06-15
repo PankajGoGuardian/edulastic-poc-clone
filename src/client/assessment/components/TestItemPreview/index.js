@@ -292,7 +292,7 @@ class TestItemPreview extends Component {
     const isSingleQuestionView = dataSource.flatMap(col => col.widgets).length === 1;
     const { isStudentReport } = this.props;
     return (
-      <ThemeProvider theme={{ ...themes.default, twoColLayout: theme?.twoColLayout }}>
+      <ThemeProvider theme={{ ...themes.default }}>
         <div
           style={{
             ...borderProps,

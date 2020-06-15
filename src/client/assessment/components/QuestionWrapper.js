@@ -321,7 +321,6 @@ class QuestionWrapper extends Component {
       showStudentWork,
       LCBPreviewModal,
       showUserTTS,
-      showCollapseBtn = false,
       selectedTheme = "default",
       isPrintPreview = false,
       evaluation,
@@ -459,7 +458,6 @@ class QuestionWrapper extends Component {
                 border: isLCBView && !restProps.showScratchpadByDefault ? "1px solid #DADAE4" : null
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
-              twoColLayout={showCollapseBtn || showFeedback ? null : theme?.twoColLayout}
             >
               <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
                 {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}

@@ -1779,6 +1779,26 @@
     "message": "Canvas authentication Failed",
     "description": ""
   },
+  "playlistDeleteFailed": {
+    "message": "Deleting playlist failed",
+    "description": ""
+  },
+  "playlistDeleteSuccess": {
+    "message": "Deleted Playlist successfully",
+    "description": ""
+  },
+  "playlistDeleting": {
+    "message": "Deleting playlist",
+    "description": ""
+  },
+  "playlistRemoveFromUseSuccess": {
+    "message": "Playlist  removed from Favourites successfully",
+    "description": ""
+  },
+  "playlistRemoveFromUseFailed": {
+    "message": "Playlist  removed from Favourites failed",
+     "description": ""
+  },
   "selectOneOrMoreStudentsForGroup": {
     "message": "Please select one or more students to add to group",
     "description": ""

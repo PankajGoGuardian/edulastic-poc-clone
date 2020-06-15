@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import produce from "immer";
 import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
 import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
+import produce from "immer";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
 
@@ -97,10 +97,11 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
   }
 }
 
-function* receiveLastPlayListSaga() {
+export function* receiveLastPlayListSaga() {
   try {
     const result = yield call(userContextApi.getLastPlayList);
     yield put(updateLastPlayListAction(result || {}));
+    return result;
   } catch (err) {
     const errorMessage = "Receive last playslist is failing";
     notification({ msg: errorMessage });

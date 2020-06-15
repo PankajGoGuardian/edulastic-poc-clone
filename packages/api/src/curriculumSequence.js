@@ -1,25 +1,39 @@
-import API from "./utils/API";
 import qs from "qs";
+import API from "./utils/API";
 
 const api = new API();
 const prefix = "/playlists";
-const getPlaylist = id => {
-  return api
+const getPlaylist = id =>
+  api
     .callApi({
       method: "get",
       url: `${prefix}/${id}`
     })
     .then(result => result.data.result);
-};
 
-const searchDistinctPublishers = () => {
-  return api
+const delelePlaylist = id =>
+  api
+    .callApi({
+      method: "delete",
+      url: `${prefix}/${id}`
+    })
+    .then(result => result.data);
+
+const delelePlaylistFromUse = id =>
+  api
+    .callApi({
+      method: "delete",
+      url: `${prefix}/use/${id}`
+    })
+    .then(result => result.data);
+
+const searchDistinctPublishers = () =>
+  api
     .callApi({
       method: "get",
       url: `${prefix}/search/collection`
     })
     .then(result => result.data.result);
-};
 
 const updateCurriculumSequence = (id, curriculumSequence) => {
   const _curriculumSequence = { ...curriculumSequence };
@@ -115,8 +129,8 @@ const fetchPlaylistInsights = data => {
     .then(result => result.data.result);
 };
 
-const getSignedRequest = ({ playlistId, moduleId, contentId, resource }) => {
-  return api
+const getSignedRequest = ({ playlistId, moduleId, contentId, resource }) =>
+  api
     .callApi({
       method: "post",
       url: `${prefix}/${playlistId}/generate-lti-request`,
@@ -127,7 +141,6 @@ const getSignedRequest = ({ playlistId, moduleId, contentId, resource }) => {
       }
     })
     .then(result => result.data.result);
-};
 
 export default {
   getCurriculums: getPlaylist,
@@ -141,5 +154,7 @@ export default {
   duplicatePlayList,
   fetchPlaylistMetrics,
   fetchPlaylistInsights,
-  getSignedRequest
+  getSignedRequest,
+  delelePlaylist,
+  delelePlaylistFromUse
 };

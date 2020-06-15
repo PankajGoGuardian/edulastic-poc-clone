@@ -1,10 +1,13 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
+import { delay } from "redux-saga";
+import { message } from "antd";
 import { takeLatest, takeEvery, put, call, all, select, take } from "redux-saga/effects";
 import { get, flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
+import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
 import { curriculumSequencesApi, assignmentApi, userContextApi, groupApi, recommendationsApi } from "@edulastic/api";
 import produce from "immer";
@@ -18,7 +21,7 @@ import {
   RECEIVE_TEST_BY_ID_SUCCESS
 } from "../TestPage/ducks";
 import { fetchGroupMembersAction, SET_GROUP_MEMBERS, getStudentsSelector } from "../sharedDucks/groups";
-import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../Playlist/ducks";
+import { receiveLastPlayListAction, receiveRecentPlayListsAction, receiveLastPlayListSaga } from "../Playlist/ducks";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
@@ -122,6 +125,8 @@ export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub-resource 
 export const REMOVE_SUB_RESOURCE_FROM_TEST = "[playlist] remove sub-resource from test";
 export const SET_SHOW_RIGHT_SIDE_PANEL = "[playlist] set show right side panel";
 export const SET_ACTIVE_RIGHT_PANEL = "[playlist] set active right panel view";
+export const DELETE_PLAYLIST_REQUEST = "[playlist] delete request";
+export const REMOVE_PLAYLIST_FROM_USE = "[playlist] remove from use";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -183,6 +188,8 @@ export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_D
 export const setEmbeddedVideoPreviewModal = createAction(SET_VIDEO_PREVIEW_RESOURCE_MODAL);
 export const setShowRightSideAction = createAction(SET_SHOW_RIGHT_SIDE_PANEL);
 export const setActiveRightPanelViewAction = createAction(SET_ACTIVE_RIGHT_PANEL);
+export const deletePlaylistRequestAction = createAction(DELETE_PLAYLIST_REQUEST);
+export const removePlaylistFromUseAction = createAction(REMOVE_PLAYLIST_FROM_USE);
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -258,6 +265,7 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
     const items = flatten(unflattenedItems);
+    const recentPlaylists = yield select(state => state?.playlists?.recentPlayLists || []);
 
     // show notification if when user comes to playlist page and playlist has assigned assignments
     // show only notification for teacher
@@ -267,7 +275,8 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
         .reduce((acc, curr) => [...acc, ...(curr.data || [])], [])
         .flatMap(x => x?.assignments || {})
         .reduce((acc, curr) => acc + get(curr, "class.length", 0), 0);
-      if (sumOfclasse > 0) {
+      const playlistBeingUsed = idsForFetch.length === 1 && recentPlaylists.find(x => x._id === idsForFetch[0]);
+      if (sumOfclasse > 0 && playlistBeingUsed) {
         notification({ type: "info", messageKey: "playlistBeingUsed" });
       }
     }
@@ -571,7 +580,7 @@ function* createAssignmentNow({ payload }) {
   if (isEmpty(curriculumAssignment)) {
     const destinationModules = destinationCurriculumSequence.modules;
 
-    // Create misc unit if it doesn't exist
+    // Create misc unit if it doesn'tREMOVE_PLAYLIST_FROM_USE exist
     const haveMiscUnit = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc") !== -1;
 
     const lastModuleId =
@@ -1150,6 +1159,48 @@ function* moveContentToPlaylistSaga(payload) {
   }
 }
 
+/**
+ *
+ * @param  {{payload:{id:string}}}   param0
+ */
+function* deletePlaylistSaga({ payload: id }) {
+  try {
+    // this returns promise. so don't call on this
+    message.loading("", 0);
+    yield call(curriculumSequencesApi.delelePlaylist, id);
+    // at-least a second needed for this change to be reflected in elastic search
+    yield call(delay, 1000);
+    message.destroy();
+    notification({ type: "success", messageKey: "playlistDeleteSuccess" });
+    yield put(push("/author/playlists"));
+  } catch (e) {
+    console.error("delete playlist failed -e ", e);
+    notification({ messageKey: "playlistDeleteFailed" });
+    Sentry.captureException(e);
+  }
+}
+
+function* removeFromUseSaga({ payload: id }) {
+  try {
+    // this returns promise. so don't call on this
+    message.loading("", 0);
+    yield call(curriculumSequencesApi.delelePlaylistFromUse, id);
+    const lastPlaylistResult = yield call(receiveLastPlayListSaga);
+    yield put(receiveRecentPlayListsAction());
+    message.destroy();
+    notification({ type: "success", messageKey: "playlistRemoveFromUseSuccess" });
+    if (lastPlaylistResult) {
+      yield put(useThisPlayListAction({ ...lastPlaylistResult, onChange: true, isStudent: false }));
+    } else {
+      yield put(push("/author/playlists"));
+    }
+  } catch (e) {
+    console.error("delete playlist failed -e ", e);
+    notification({ messageKey: "playlistRemoveFromUseFailed" });
+    Sentry.captureException(e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -1185,7 +1236,9 @@ export function* watcherSaga() {
     yield takeLatest(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST, getSignedRequestSaga),
     yield takeLatest(DUPLICATE_MANAGE_CONTENT, duplicateManageContentSaga),
     yield takeLatest(CANCEL_PLAYLIST_CUSTOMIZE, cancelPlaylistCustomize),
-    yield takeLatest(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST, publishDraftCustomizedPlaylist)
+    yield takeLatest(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST, publishDraftCustomizedPlaylist),
+    yield takeLatest(DELETE_PLAYLIST_REQUEST, deletePlaylistSaga),
+    yield takeLatest(REMOVE_PLAYLIST_FROM_USE, removeFromUseSaga)
   ]);
 }
 

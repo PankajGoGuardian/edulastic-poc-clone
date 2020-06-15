@@ -63,6 +63,10 @@ export default enhance(MainHeader);
 const HeaderWrapper = styled.div`
   padding-top: ${props => props.height || props.theme.HeaderHeight.md}px;
 
+  .ant-dropdown {
+    /* the div hiding this has z-index 999 */
+    z-index: 1000;
+  }
   .fixed-header {
     position: fixed;
     top: 0;

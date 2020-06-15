@@ -1,12 +1,22 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { reduce, isNumber } from "lodash";
 import { roleuser } from "@edulastic/constants";
-import { Tooltip } from "antd";
+import { Tooltip, Modal, Dropdown, Menu } from "antd";
 import { FlexContainer, EduButton, MainHeader } from "@edulastic/common";
-import { smallDesktopWidth, extraDesktopWidthMax, tabletWidth } from "@edulastic/colors";
-import { IconPencilEdit, IconPlaylist, IconShare, IconSave, IconAirdrop, IconUseThis } from "@edulastic/icons";
+import { smallDesktopWidth, extraDesktopWidthMax, tabletWidth, themeColor } from "@edulastic/colors";
+import {
+  IconPencilEdit,
+  IconPlaylist,
+  IconShare,
+  IconSave,
+  IconAirdrop,
+  IconUseThis,
+  IconTrash,
+  IconMoreVertical
+} from "@edulastic/icons";
+import { IconActionButton } from "../CurriculumModuleRow";
 import StudentPlayListHeader from "../../../../student/sharedComponents/Header/PlayListHeader";
 import PlaylistPageNav from "../PlaylistPageNav";
 import SwitchPlaylist from "./SwitchPlaylist";
@@ -29,6 +39,45 @@ const HeaderButton = styled(EduButton)`
     }
   }
 `;
+/**
+ *
+ * @param {string} id
+ * @param {string} title
+ * @param {Function} deletePlaylist
+ */
+function handleConfirmForDeletePlaylist(id, title, deletePlaylist) {
+  Modal.confirm({
+    title: "Do you want to delete ?",
+    content: `Are you sure you want to Delete the Playlist "${title}"?`,
+    onOk: () => {
+      deletePlaylist(id);
+      Modal.destroyAll();
+    },
+    okText: "Continue",
+    centered: true,
+    width: 500,
+    okButtonProps: {
+      style: { background: themeColor, outline: "none" }
+    }
+  });
+}
+
+function handleConfirmForRemovePlaylistFromFavourite(id, title, removeFromUse) {
+  Modal.confirm({
+    title: "Do you want to remove ?",
+    content: `"${title}" playlist will be removed from My Playlist and it can be found in Playlist Library. Are you sure you want to proceed?`,
+    onOk: () => {
+      removeFromUse && removeFromUse(id);
+      Modal.destroyAll();
+    },
+    okText: "Continue",
+    centered: true,
+    width: 500,
+    okButtonProps: {
+      style: { background: themeColor, outline: "none" }
+    }
+  });
+}
 
 const CurriculumHeader = ({
   match,
@@ -56,9 +105,21 @@ const CurriculumHeader = ({
   showUseThisNotification,
   handleGuidePopup,
   onRejectClick,
-  windowWidth
+  windowWidth,
+  deletePlaylist,
+  removePlaylistFromUse
 }) => {
-  const { isAuthor = false, status, title, collections: _playlistCollections = [] } = destinationCurriculumSequence;
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const {
+    isAuthor = false,
+    status,
+    title,
+    collections: _playlistCollections = [],
+    _id
+  } = destinationCurriculumSequence;
+
+  // show all recent playlists in changePlaylistModal
+  const slicedRecentPlaylists = recentPlaylists || [];
   // figure out which tab contents to render || just render default playlist
   const {
     params: { cloneId = null, currentTab: cTab },
@@ -66,13 +127,13 @@ const CurriculumHeader = ({
   } = match;
   const currentTab = cTab || "playlist";
   const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
+  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection ?._id);
 
-  const sumOfclasse = reduce(summaryData, (prev, curr) => (isNumber(curr?.classes) ? prev + curr.classes : prev), 0);
+  const sumOfclasse = reduce(summaryData, (prev, curr) => (isNumber(curr ?.classes) ? prev + curr.classes : prev), 0);
   const shouldHideUseThis = (sumOfclasse > 0 && !urlHasUseThis) || status === "draft";
   const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser && sumOfclasse === 0;
 
-  const isPlaylistDetailsPage = window.location?.hash === "#review";
+  const isPlaylistDetailsPage = window.location ?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
 
   const switchPlaylist = (
@@ -92,6 +153,14 @@ const CurriculumHeader = ({
   };
   const isMobile = windowWidth < parseInt(tabletWidth, 10);
 
+  const mainPlaylistVerticalMenu = (
+    <Menu>
+      <Menu.Item onClick={() => handleConfirmForRemovePlaylistFromFavourite(_id, title, removePlaylistFromUse)}>
+        Remove from Favourite
+      </Menu.Item>
+    </Menu>
+  );
+
   if (mode !== "embedded") {
     return (
       <MainHeader
@@ -110,45 +179,90 @@ const CurriculumHeader = ({
         )}
 
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
+          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
+            !urlHasUseThis &&
+            destinationCurriculumSequence ?._id && (
+              <Tooltip placement="bottom" title="DELETE">
+                <HeaderButton
+                  loading={loadingDelete}
+                  isGhost
+                  data-cy="delete-playlist"
+                  IconBtn={!shouldHideUseThis}
+                  onClick={() => {
+                    setLoadingDelete();
+                    handleConfirmForDeletePlaylist(_id, title, deletePlaylist);
+                  }}
+                >
+                  <IconTrash />
+                  {shouldHideUseThis && "DELETE"}
+                </HeaderButton>
+              </Tooltip>
+            )}
+
           {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
             role !== roleuser.EDULASTIC_CURATOR && (
               <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
                 <IconShare />
               </HeaderButton>
-            )}
+              </Tooltip>
+        )}
 
-          {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
-            <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
-              <IconSave />
-              <span>SAVE</span>
+          {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
+          role !== roleuser.EDULASTIC_CURATOR && (
+            <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
+              <IconShare />
             </HeaderButton>
           )}
 
-          {urlHasUseThis && isTeacher && !isPublisherUser && (
+        {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
+          <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
+            <IconSave />
+            {isDesktop && "SAVE"}
+          </HeaderButton>
+        )}
+
+        {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
+          <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
+            <IconSave />
+            <span>SAVE</span>
+          </HeaderButton>
+        )}
+
+        {urlHasUseThis && isTeacher && !isPublisherUser && (
+          <>
             <HeaderButton data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
               <IconAirdrop />
-              <span>OPEN TO STUDENTS</span>
+              {isDesktop && "OPEN TO STUDENTS"}
             </HeaderButton>
-          )}
+            <Dropdown
+              overlayStyle={{ zIndex: 999, cursor: "pointer" }}
+              overlay={mainPlaylistVerticalMenu}
+              trigger={["click"]}
+            >
+              <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
+                <IconMoreVertical width={5} height={14} color={themeColor} />
+              </IconActionButton>
+            </Dropdown>
+          </>)}
 
-          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
-            <Tooltip placement="bottom" title="EDIT">
-              <HeaderButton isGhost data-cy="edit-playlist" onClick={handleEditClick} IconBtn={!shouldHideUseThis}>
-                <IconPencilEdit />
-                {shouldHideUseThis && <span>EDIT</span>}
-              </HeaderButton>
-            </Tooltip>
-          )}
-          {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
-            <HeaderButton data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
-              <IconUseThis />
-              <span>USE THIS</span>
+        {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
+          <Tooltip placement="bottom" title="EDIT">
+            <HeaderButton isGhost data-cy="edit-playlist" onClick={handleEditClick} IconBtn={!shouldHideUseThis}>
+              <IconPencilEdit />
+              {shouldHideUseThis && <span>EDIT</span>}
             </HeaderButton>
-          )}
-          {features.isCurator && (status === "inreview" || status === "rejected") && (
-            <HeaderButton onClick={onApproveClick}>APPROVE</HeaderButton>
-          )}
-          {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
+          </Tooltip>
+        )}
+        {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
+          <HeaderButton data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
+            <IconUseThis />
+            <span>USE THIS</span>
+          </HeaderButton>
+        )}
+        {features.isCurator && (status === "inreview" || status === "rejected") && (
+          <HeaderButton onClick={onApproveClick}>APPROVE</HeaderButton>
+        )}
+        {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
         </CurriculumHeaderButtons>
 
         {/* <ResolvedMobileHeaderWrapper>
@@ -160,11 +274,11 @@ const CurriculumHeader = ({
             />
           )}
         </ResolvedMobileHeaderWrapper> */}
-      </MainHeader>
+      </MainHeader >
     );
   }
 
-  return <Fragment />;
+return <Fragment />;
 };
 
 export default withRouter(CurriculumHeader);

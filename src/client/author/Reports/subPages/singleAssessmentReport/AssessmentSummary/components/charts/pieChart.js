@@ -66,7 +66,7 @@ export const SimplePieChartComponent = ({ data, isPrinting }) => {
   };
 
   return (
-    <ResponsiveContainer width="100%">
+    <ResponsiveContainer width="100%" minWidth={240} minHeight={240}>
       <PieChartWrapper>
         <Legend
           onMouseEnter={onLegendMouseEnter}

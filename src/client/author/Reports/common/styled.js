@@ -12,7 +12,7 @@ import {
 import { EduButton, Card, FieldLabel } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { Text } from "@vx/text";
-import { Button, Col, Slider, Table } from "antd";
+import { Col, Slider, Table } from "antd";
 import styled from "styled-components";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
@@ -310,15 +310,22 @@ export const StyledSlider = styled(Slider)`
   }
 `;
 
-export const StyledChartNavButton = styled(Button)`
+export const StyledChartNavButton = styled(EduButton)`
   position: absolute;
-  height: 50px;
-  width: 50px;
-  border: solid 1px #c0c0c0;
-  border-radius: 25px;
-  background-color: white;
-  color: black;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
   z-index: 1;
+
+  .ant-btn > .anticon {
+    line-height: 0.8;
+  }
+
+  @media print {
+    display: none;
+  }
 `;
 
 export const StyledAxisTickText = styled(Text)`
@@ -487,6 +494,10 @@ export const ReportContaner = styled.div`
 
   @media print {
     overflow: hidden;
+  }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: calc(100vh - 180px);
   }
 `;
 

@@ -1,6 +1,5 @@
 import React from "react";
 import next from "immer";
-import { Row, Col } from "antd";
 import { find, sumBy, indexOf } from "lodash";
 import { getTicks, getMasteryLevel } from "../../utils/transformers";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
@@ -62,32 +61,26 @@ const StandardsPerformanceChart = ({
 
   return (
     <>
-      <Row type="flex" justify="start">
-        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          <StyledH3>Mastery Level Distribution by Domain</StyledH3>
-        </Col>
-      </Row>
-      <Row type="flex" justify="start">
-        <StyledChartContainer xs={24} sm={24} md={24} lg={24} xl={24}>
-          <SimpleStackedBarChart
-            margin={{ top: 10, right: 60, left: 60, bottom: 0 }}
-            xAxisDataKey="domainName"
-            bottomStackDataKey="masteryScore"
-            topStackDataKey="diffMasteryScore"
-            yAxisLabel="Avg. Mastery Score"
-            yTickFormatter={_yTickFormatter}
-            barsLabelFormatter={_yTickFormatter}
-            onBarClickCB={onClickBarData}
-            onResetClickCB={() => setSelectedDomains([])}
-            getTooltipJSX={getTooltipJSX}
-            yDomain={[0, +maxMasteryScore + 0.1]}
-            data={data}
-            ticks={ticks}
-            filter={selectedDomains}
-            {...chartProps}
-          />
-        </StyledChartContainer>
-      </Row>
+      <StyledH3>Mastery Level Distribution by Domain</StyledH3>
+      <StyledChartContainer>
+        <SimpleStackedBarChart
+          margin={{ top: 10, right: 60, left: 60, bottom: 0 }}
+          xAxisDataKey="domainName"
+          bottomStackDataKey="masteryScore"
+          topStackDataKey="diffMasteryScore"
+          yAxisLabel="Avg. Mastery Score"
+          yTickFormatter={_yTickFormatter}
+          barsLabelFormatter={_yTickFormatter}
+          onBarClickCB={onClickBarData}
+          onResetClickCB={() => setSelectedDomains([])}
+          getTooltipJSX={getTooltipJSX}
+          yDomain={[0, +maxMasteryScore + 0.1]}
+          data={data}
+          ticks={ticks}
+          filter={selectedDomains}
+          {...chartProps}
+        />
+      </StyledChartContainer>
     </>
   );
 };

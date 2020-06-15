@@ -176,7 +176,7 @@ const SimpleStackedBarChartComponent = ({
         type="primary"
         shape="circle"
         icon="caret-left"
-        size="large"
+        IconBtn
         className="navigator navigator-left"
         onClick={scrollLeft}
         style={{
@@ -187,7 +187,7 @@ const SimpleStackedBarChartComponent = ({
         type="primary"
         shape="circle"
         icon="caret-right"
-        size="large"
+        IconBtn
         className="navigator navigator-right"
         onClick={scrollRight}
         style={{
@@ -341,19 +341,19 @@ export const SimpleStackedBarChart = connect(
 const StyledStackedBarChartContainer = styled.div`
   padding: 10px;
   overflow: hidden;
+  position: relative;
 
   .recharts-cartesian-axis-ticks {
     font-size: 12px;
   }
 
   .navigator-left {
-    left: 5px;
-    top: 50%;
+    left: 0px;
+    margin-left: 0px;
   }
 
   .navigator-right {
     right: 5px;
-    top: 50%;
   }
 
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,

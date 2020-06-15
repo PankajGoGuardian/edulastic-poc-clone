@@ -128,7 +128,7 @@ const StyledDiv = styled.div`
       }
       .anticon {
         height: 13px;
-        font-size: 13px;
+        font-size: 11px;
         transform: none;
       }
     }

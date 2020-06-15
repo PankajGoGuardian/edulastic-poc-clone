@@ -3,12 +3,13 @@ import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
 import { isEmpty } from "lodash";
+import styled from "styled-components";
 import next from "immer";
-
+import { extraDesktopWidthMax } from "@edulastic/colors";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
-import { StyledTable, StyledDropDownContainer, OnClick } from "../styled";
-import { StyledH3, StyledCard } from "../../../../../common/styled";
+import { StyledTable, StyledDropDownContainer } from "../styled";
+import { StyledH3, StyledCard, ColoredCell } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 
 import CsvTable from "../../../../../common/components/tables/CsvTable";
@@ -24,6 +25,59 @@ import {
 
 import dropDownFormat from "../../static/json/dropDownFormat.json";
 import { reportLinkColor } from "../../../../multipleAssessmentReport/common/utils/constants";
+
+const GradebookTable = styled(StyledTable)`
+  .ant-table-layout-fixed {
+    .ant-table-scroll {
+      table tbody tr td {
+        border-bottom: 1px solid #e9e9e9;
+      }
+      .ant-table-thead {
+        th {
+          white-space: nowrap;
+        }
+      }
+      .ant-table-body {
+        overflow-x: auto !important;
+      }
+    }
+    .ant-table-fixed-left {
+      .ant-table-thead {
+        th {
+          padding: 8px;
+          color: #aaafb5;
+          font-weight: 900;
+          text-transform: uppercase;
+          font-size: 10px;
+          border: 0px;
+          .ant-table-column-sorter {
+            vertical-align: top;
+          }
+        }
+      }
+      .ant-table-tbody {
+        td {
+          padding: 10px 8px;
+          font-size: 11px;
+          color: #434b5d;
+          font-weight: 600;
+          @media (min-width: ${extraDesktopWidthMax}) {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+  .ant-table-tbody {
+    td {
+      min-width: 100px;
+      padding: 0;
+      &:nth-child(1) {
+        padding: 0px 8px;
+      }
+    }
+  }
+`;
 
 export const StandardsGradebookTable = ({
   filteredDenormalizedData,
@@ -119,9 +173,10 @@ export const StandardsGradebookTable = ({
             </Col>
           ) : (
             <Col className="custom-table-tooltip-value">
-              {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}{_analyseBy === "score(%)" ? "%" : ""}
+              {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}
+              {_analyseBy === "score(%)" ? "%" : ""}
             </Col>
-            )}
+          )}
         </Row>
       </div>
     );
@@ -132,23 +187,21 @@ export const StandardsGradebookTable = ({
       standardId,
       profileId: filters.profileId
     };
-
     const getCellContents = props => {
       const { printData } = props;
       if (_compareBy === "studentId") {
         return (
-          <div style={{ backgroundColor: record.standardsInfo?.[index]?.color }}>
-            {printData === "N/A" ? (
-              printData
-            ) : (
-              <OnClick onClick={() => handleOnClickStandard(obj, standardName, record.compareByLabel)}>
-                {printData}
-              </OnClick>
-              )}
-          </div>
+          <ColoredCell
+            bgColor={record.standardsInfo?.[index]?.color}
+            onClick={
+              printData === "N/A" ? () => null : () => handleOnClickStandard(obj, standardName, record.compareByLabel)
+            }
+          >
+            {printData}
+          </ColoredCell>
         );
       }
-      return <div style={{ backgroundColor: record.standardsInfo[index].color }}>{printData}</div>;
+      return <ColoredCell bgColor={record.standardsInfo[index].color}>{printData}</ColoredCell>;
     };
 
     const printData = getDisplayValue(record.standardsInfo[index], _analyseBy, data, record);
@@ -170,6 +223,9 @@ export const StandardsGradebookTable = ({
         title: idToName[tableDdFilters.compareBy],
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
+        width: 150,
+        fixed: "left",
+        ellipsis: true,
         sorter: (a, b) => a.compareByLabel.toLowerCase().localeCompare(b.compareByLabel.toLowerCase()),
         render: (data, record) =>
           record.compareBy === "studentId" ? (
@@ -177,15 +233,15 @@ export const StandardsGradebookTable = ({
               {record.compareByLabel}
             </Link>
           ) : (
-              record.compareByLabel
-            )
+            record.compareByLabel
+          )
       },
       {
         title: "Overall",
         dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
         key: analyseByToKeyToRender[tableDdFilters.analyseBy],
-        align: "center",
-        width: 200,
+        align: "left",
+        width: 150,
         sorter: (a, b) => {
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
@@ -196,7 +252,7 @@ export const StandardsGradebookTable = ({
             to={{
               pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
                 record.testActivityId
-                }`,
+              }`,
               state: {
                 // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
                 breadCrumb: [
@@ -215,14 +271,15 @@ export const StandardsGradebookTable = ({
             {tableDdFilters.analyseBy === "score(%)"
               ? `${data}%`
               : tableDdFilters.analyseBy === "rawScore"
-                ? `${data}/${record.totalMaxScore}`
-                : data}
+              ? `${data}/${record.totalMaxScore}`
+              : data}
           </Link>
         )
       },
       {
         title: "SIS ID",
         dataIndex: "sisId",
+        width: 150,
         key: "sisId",
         visibleOn: ["csv"]
       }
@@ -316,7 +373,7 @@ export const StandardsGradebookTable = ({
             columns={columnsData}
             dataSource={filteredTableData}
             rowKey={tableDdFilters.compareBy}
-            tableToRender={StyledTable}
+            tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
             scroll={{ x: "100%" }}

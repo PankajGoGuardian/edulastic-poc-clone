@@ -47,17 +47,13 @@ const AssessmentSummary = ({
   ) : (
     <>
       <UpperContainer type="flex">
-        <Col className="sub-container district-statistics" xs={24} sm={18} md={18} lg={18} xl={18}>
-          <StyledCard>
-            <Stats name={assessmentName} data={metricInfo} role={role} user={user} />
-          </StyledCard>
-        </Col>
-        <Col className="sub-container chart-container" xs={24} sm={6} md={6} lg={6} xl={6}>
-          <StyledCard>
-            <StyledH3 textAlign="center">Students in Performance Bands (%)</StyledH3>
-            <SimplePieChart data={bandInfo} />
-          </StyledCard>
-        </Col>
+        <StyledCard className="sub-container district-statistics">
+          <Stats name={assessmentName} data={metricInfo} role={role} user={user} />
+        </StyledCard>
+        <StyledCard className="sub-container chart-container">
+          <StyledH3 textAlign="center">Students in Performance Bands (%)</StyledH3>
+          <SimplePieChart data={bandInfo} />
+        </StyledCard>
       </UpperContainer>
       <TableContainer>
         <Col>

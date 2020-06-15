@@ -12,16 +12,17 @@ export const SignedStackBarChartContainer = ({
   role,
   onBarClickCB
 }) => {
-  const chartData = useMemo(() => {
-    return getChartData(filteredDenormalizedData, masteryScale, filters, role);
-  }, [filteredDenormalizedData, masteryScale, filters, role]);
+  const chartData = useMemo(() => getChartData(filteredDenormalizedData, masteryScale, filters, role), [
+    filteredDenormalizedData,
+    masteryScale,
+    filters,
+    role
+  ]);
 
   const getChartSpecifics = () => {
     if (!isEmpty(masteryScale)) {
-      let tempArr = masteryScale.sort((a, b) => {
-        return a.score - b.score;
-      });
-      let barsData = [];
+      const tempArr = masteryScale.sort((a, b) => a.score - b.score);
+      const barsData = [];
       for (let i = 0; i < tempArr.length; i++) {
         barsData.push({
           key: tempArr[i].masteryLabel,
@@ -36,24 +37,21 @@ export const SignedStackBarChartContainer = ({
         yAxisLabel: "Student %",
         xAxisDataKey: "standard"
       };
-    } else {
-      return {
-        barsData: [],
-        yAxisLabel: "Student %",
-        xAxisDataKey: "standard"
-      };
     }
+    return {
+      barsData: [],
+      yAxisLabel: "Student %",
+      xAxisDataKey: "standard"
+    };
   };
 
-  const chartSpecifics = useMemo(() => {
-    return getChartSpecifics();
-  }, [masteryScale]);
+  const chartSpecifics = useMemo(() => getChartSpecifics(), [masteryScale]);
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      let { dataKey: masteryLabel, value: studentPercent } = payload[barIndex];
-      let { standard, standardName, masteryLabelInfo, totalStudents } = payload[barIndex].payload;
-      let masteryName = masteryLabelInfo[masteryLabel];
+      const { dataKey: masteryLabel, value: studentPercent } = payload[barIndex];
+      const { standard, standardName, masteryLabelInfo, totalStudents } = payload[barIndex].payload;
+      const masteryName = masteryLabelInfo[masteryLabel];
 
       return (
         <div>
@@ -89,25 +87,20 @@ export const SignedStackBarChartContainer = ({
 
   const _onResetClickCB = () => {};
 
-  const getXTickText = () => {};
-
-  const yTickFormatter = val => {
-    return "";
-  };
+  const yTickFormatter = () => "";
 
   const barsLabelFormatter = val => {
     if (val !== 0) {
-      return Math.abs(val) + "%";
-    } else {
-      return "";
+      return `${Math.abs(val)}%`;
     }
+    return "";
   };
 
   return (
     <SignedStackedBarChart
       data={chartData}
       barsData={chartSpecifics.barsData}
-      xAxisDataKey={"standard"}
+      xAxisDataKey="standard"
       getTooltipJSX={getTooltipJSX}
       onBarClickCB={_onBarClickCB}
       onResetClickCB={_onResetClickCB}

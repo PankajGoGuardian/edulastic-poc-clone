@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import { Row } from "antd";
+import { FlexContainer } from "@edulastic/common";
 import { fadedBlack, extraDesktopWidthMax } from "@edulastic/colors";
 import { StyledTable as Table, StyledCustomChartTooltip as CustomChartTooltip } from "../../../../common/styled";
 import { AssessmentStatisticTable } from "./table/assessmentStatisticTable";
 
-export const UpperContainer = styled(Row)`
+export const UpperContainer = styled(FlexContainer)`
   @media print {
     /* flex-direction: column-reverse; */
     /* print view is 1024 resolution */
@@ -15,6 +16,15 @@ export const UpperContainer = styled(Row)`
     .chart-container {
       width: 250px;
     }
+  }
+
+  .district-statistics {
+    width: calc(100% - 280px);
+  }
+
+  .chart-container {
+    width: 250px;
+    margin-left: 30px;
   }
 
   .sub-container {
@@ -65,7 +75,7 @@ export const StyledTable = styled(Table)`
       }
       .ant-table-thead {
         th {
-          white-space: nowrap;
+          word-break: break-word;
         }
       }
       .ant-table-body {

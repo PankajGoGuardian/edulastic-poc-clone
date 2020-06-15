@@ -17,7 +17,7 @@ import {
 } from "../../utils/transformers";
 import { StyledDropDownContainer } from "../styled";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
-import { StyledH3, StyledTable } from "../../../../../common/styled";
+import { StyledH3, StyledTable, ColoredCell } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
@@ -44,10 +44,14 @@ const getColValue = (record = {}, domainId, analyseByKey, scaleInfo) => {
 
 const getCol = (record = {}, domainId, analyseByKey, scaleInfo) => {
   const domain = record.domainData[domainId] || {};
+  const colValue = getColValue(record, domainId, analyseByKey, scaleInfo);
+  if (colValue === "N/A") {
+    return colValue;
+  }
   return (
-    <div style={{ backgroundColor: getMasteryScoreColor(domain, scaleInfo) }}>
+    <ColoredCell bgColor={getMasteryScoreColor(domain, scaleInfo)}>
       {getColValue(record, domainId, analyseByKey, scaleInfo)}
-    </div>
+    </ColoredCell>
   );
 };
 

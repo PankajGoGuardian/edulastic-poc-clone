@@ -2,13 +2,13 @@ import styled from "styled-components";
 import { Col, Row } from "antd";
 import { fadedBlack, greyishDarker1 } from "@edulastic/colors";
 
-export const StyledChartContainer = styled(Col)`
+export const StyledChartContainer = styled.div`
   .navigator-left {
-    left: -13px;
+    left: -5px;
   }
 
   .navigator-right {
-    right: -15px;
+    right: -5px;
   }
 `;
 

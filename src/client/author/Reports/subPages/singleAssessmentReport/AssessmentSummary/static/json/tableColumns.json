@@ -220,13 +220,13 @@
         "title": "Std. dev.(P) of Score",
         "dataIndex": "scoreStdDeviation",
         "key": "scoreStdDeviation",
-        "width": 130
+        "width": 78
       },
       {
         "title": "Variance (P) of Score",
         "dataIndex": "scoreVariance",
         "key": "scoreVariance",
-        "width": 130
+        "width": 85
       }
     ]
   }

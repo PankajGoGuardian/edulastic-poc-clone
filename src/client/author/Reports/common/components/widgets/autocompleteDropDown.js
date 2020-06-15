@@ -1,5 +1,4 @@
 /* eslint-disable array-callback-return */
-// @ts-check
 import React, { useState, useRef } from "react";
 import { AutoComplete, Input, Icon } from "antd";
 import styled from "styled-components";
@@ -210,6 +209,9 @@ const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
 
   .anticon {
     height: 13px;
+    font-size: 11px;
+  }
+  .ant-select-dropdown-menu-item {
     font-size: 11px;
   }
 `;

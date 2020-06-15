@@ -1,4 +1,5 @@
-import { groupBy, keyBy, isEmpty, get, values, round, sumBy, orderBy } from "lodash";
+/* eslint-disable array-callback-return */
+import { groupBy, keyBy, isEmpty, get, values, round, sumBy, orderBy, isNaN } from "lodash";
 import { white } from "@edulastic/colors";
 import { getProficiencyBand } from "../../../../common/util";
 
@@ -45,16 +46,18 @@ export const analyseByToKeyToRender = {
 const getFormattedName = name => {
   const nameArr = (name || "").trim().split(" ");
   const lName = nameArr.splice(nameArr.length - 1)[0];
-  return nameArr.length ? `${lName  }, ${  nameArr.join(" ")}` : lName;
+  return nameArr.length ? `${lName}, ${nameArr.join(" ")}` : lName;
 };
 
 export const getFilterDropDownData = (arr, role) => {
-  let schoolGrp; let teacherGrp; let groupGrp;
-  let schoolArr; let teacherArr; let groupArr;
+  let schoolGrp;
+  let teacherGrp;
+  let schoolArr;
+  let teacherArr;
   let keyArr;
   if (role !== "teacher") {
-    schoolGrp = groupBy(arr.filter(item => (!!item.schoolId)), "schoolId");
-    teacherGrp = groupBy(arr.filter(item => (!!item.teacherId)), "teacherId");
+    schoolGrp = groupBy(arr.filter(item => !!item.schoolId), "schoolId");
+    teacherGrp = groupBy(arr.filter(item => !!item.teacherId), "teacherId");
 
     keyArr = Object.keys(schoolGrp);
     schoolArr = keyArr.map(item => ({ key: item, title: schoolGrp[item][0].schoolName }));
@@ -64,15 +67,15 @@ export const getFilterDropDownData = (arr, role) => {
     });
 
     keyArr = Object.keys(teacherGrp);
-    teacherArr = keyArr.map((item, index) => ({ key: item, title: teacherGrp[item][0].teacherName }));
+    teacherArr = keyArr.map(item => ({ key: item, title: teacherGrp[item][0].teacherName }));
     teacherArr.unshift({
       key: "all",
       title: "All"
     });
   }
-  groupGrp = groupBy(arr.filter((item, index) => (!!item.groupId)), "groupId");
+  const groupGrp = groupBy(arr.filter(item => !!item.groupId), "groupId");
   keyArr = Object.keys(groupGrp);
-  groupArr = keyArr.map((item, index) => ({ key: item, title: groupGrp[item][0].className }));
+  const groupArr = keyArr.map(item => ({ key: item, title: groupGrp[item][0].className }));
   groupArr.unshift({
     key: "all",
     title: "All"
@@ -96,15 +99,14 @@ export const getFilterDropDownData = (arr, role) => {
         data: groupArr
       }
     ];
-  } 
-    return [
-      {
-        key: "groupId",
-        title: "Class",
-        data: groupArr
-      }
-    ];
-  
+  }
+  return [
+    {
+      key: "groupId",
+      title: "Class",
+      data: groupArr
+    }
+  ];
 };
 
 export const getMasteryDropDown = masteryScale => {
@@ -130,7 +132,7 @@ export const getDenormalizedData = rawData => {
   }
 
   const rawSkillinfo = get(rawData, "data.result.skillInfo", []);
-  const skillInfoMap = keyBy(rawSkillinfo.filter((item, index) => (!!item.standardId)), "standardId");
+  const skillInfoMap = keyBy(rawSkillinfo.filter(item => !!item.standardId), "standardId");
 
   const rawStudInfo = get(rawData, "data.result.studInfo", []);
   const studInfoMap = keyBy(rawStudInfo, "studentId");
@@ -138,7 +140,7 @@ export const getDenormalizedData = rawData => {
   const rawMetricInfo = get(rawData, "data.result.metricInfo", []);
   const enhancedRawMetricInfo = rawMetricInfo
     .filter(item => skillInfoMap[item.standardId])
-    .map((item, index) => {
+    .map(item => {
       let obj = {
         ...item
       };
@@ -167,8 +169,8 @@ export const getDenormalizedData = rawData => {
   const denormalizedEnhancedRawMetricInfo = [];
   enhancedRawMetricInfo
     .filter(i => i.groupIds)
-    .map((item, index) => {
-      item.groupIds.map((_item, index) => {
+    .map(item => {
+      item.groupIds.map(_item => {
         const obj = {
           ...item,
           groupId: _item
@@ -180,7 +182,7 @@ export const getDenormalizedData = rawData => {
   const rawTeacherInfo = get(rawData, "data.result.teacherInfo", []);
   const teacherInfoMap = keyBy(rawTeacherInfo, "groupId");
 
-  const finalDenormalizedData = denormalizedEnhancedRawMetricInfo.map((item, index) => {
+  const finalDenormalizedData = denormalizedEnhancedRawMetricInfo.map(item => {
     let obj = {
       ...item
     };
@@ -197,7 +199,7 @@ export const getDenormalizedData = rawData => {
 };
 
 export const getFilteredDenormalizedData = (denormalizedData, filters, role) => {
-  const filteredDenormalizedData = denormalizedData.filter((item, index) => {
+  const filteredDenormalizedData = denormalizedData.filter(item => {
     let schoolIdFlag;
     let teacherIdFlag;
     if (role !== "teacher") {
@@ -242,7 +244,7 @@ export const getFilteredDenormalizedData = (denormalizedData, filters, role) => 
     .sort((a, b) => a[idToLabel.studentId].toLowerCase().localeCompare(b[idToLabel.studentId].toLowerCase()));
 };
 
-export const getChartData = (filteredDenormalizedData, masteryScale, filters, role) => {
+export const getChartData = (filteredDenormalizedData, masteryScale, filters) => {
   if (isEmpty(filteredDenormalizedData) || isEmpty(masteryScale) || isEmpty(filters)) {
     return [];
   }
@@ -257,8 +259,7 @@ export const getChartData = (filteredDenormalizedData, masteryScale, filters, ro
   for (const item of masteryScale) {
     masteryCountHelper[item.score] = 0;
   }
-
-  const arr = keysArr.map((item, index) => {
+  const arr = keysArr.map(item => {
     const obj = {};
     const totalStudents = groupedStandardIds[item].length;
     const tempMasteryCountHelper = { ...masteryCountHelper };
@@ -278,14 +279,14 @@ export const getChartData = (filteredDenormalizedData, masteryScale, filters, ro
 
     const masteryLabelInfo = {};
 
-    Object.keys(tempMasteryCountHelper).map(item => {
-      if (masteryMap[item]) {
-        const masteryPercentage = round((tempMasteryCountHelper[item] / totalStudents) * 100);
-        masteryLabelInfo[masteryMap[item].masteryLabel] = masteryMap[item].masteryName;
-        if (item == 1) {
-          obj[masteryMap[item].masteryLabel] = -masteryPercentage;
+    Object.keys(tempMasteryCountHelper).map(_item => {
+      if (masteryMap[_item]) {
+        const masteryPercentage = round((tempMasteryCountHelper[_item] / totalStudents) * 100);
+        masteryLabelInfo[masteryMap[_item].masteryLabel] = masteryMap[_item].masteryName;
+        if (_item == 1) {
+          obj[masteryMap[_item].masteryLabel] = -masteryPercentage;
         } else {
-          obj[masteryMap[item].masteryLabel] = masteryPercentage;
+          obj[masteryMap[_item].masteryLabel] = masteryPercentage;
         }
       }
     });
@@ -302,10 +303,13 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
     let _item = groupedData[item].reduce(
       (total, currentValue) => {
         const { maxScore = 0, totalScore = 0, fm = 0 } = currentValue;
+        const totalMaxScore = total.totalMaxScore + maxScore;
+        const totalTotalScore = total.totalTotalScore + totalScore;
+        const totalFinalMastery = total.totalFinalMastery + fm;
         return {
-          totalMaxScore: (total.totalMaxScore += maxScore),
-          totalTotalScore: (total.totalTotalScore += totalScore),
-          totalFinalMastery: (total.totalFinalMastery += fm)
+          totalMaxScore,
+          totalTotalScore,
+          totalFinalMastery
         };
       },
       { totalMaxScore: 0, totalTotalScore: 0, totalFinalMastery: 0 }
@@ -326,48 +330,51 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
 
     const groupedStandardIds = groupBy(groupedData[item], "standardId");
 
-    const standardsInfo = Object.keys(groupedStandardIds).map((__item, index) => {
+    const standardsInfo = Object.keys(groupedStandardIds).map(__item => {
       let ___item = groupedStandardIds[__item].reduce(
         (total, currentValue) => {
-          const { maxScore = 0, totalScore = 0, fm = 0 } = currentValue;
+          const { maxScore = 0, totalScore = 0, fm: _fm = 0 } = currentValue;
+          const totalMaxScore = total.totalMaxScore + maxScore;
+          const totalTotalScore = total.totalTotalScore + totalScore;
+          const totalFinalMastery = total.totalFinalMastery + _fm;
           return {
-            totalMaxScore: (total.totalMaxScore += maxScore),
-            totalTotalScore: (total.totalTotalScore += totalScore),
-            totalFinalMastery: (total.totalFinalMastery += fm)
+            totalMaxScore,
+            totalTotalScore,
+            totalFinalMastery
           };
         },
         { totalMaxScore: 0, totalTotalScore: 0, totalFinalMastery: 0 }
       );
 
-      let scorePercentUnrounded = (___item.totalTotalScore / ___item.totalMaxScore) * 100;
-      scorePercentUnrounded = !isNaN(scorePercentUnrounded) ? scorePercentUnrounded : 0;
+      let _scorePercentUnrounded = (___item.totalTotalScore / ___item.totalMaxScore) * 100;
+      _scorePercentUnrounded = !isNaN(_scorePercentUnrounded) ? _scorePercentUnrounded : 0;
 
-      let rawScoreUnrounded = ___item.totalTotalScore / groupedStandardIds[__item].length;
-      rawScoreUnrounded = !isNaN(rawScoreUnrounded) ? rawScoreUnrounded : 0;
+      let _rawScoreUnrounded = ___item.totalTotalScore / groupedStandardIds[__item].length;
+      _rawScoreUnrounded = !isNaN(_rawScoreUnrounded) ? _rawScoreUnrounded : 0;
 
-      let fmUnrounded = ___item.totalFinalMastery / groupedStandardIds[__item].length;
-      fmUnrounded = !isNaN(fmUnrounded) ? fmUnrounded : 0;
-      const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0;
+      let _fmUnrounded = ___item.totalFinalMastery / groupedStandardIds[__item].length;
+      _fmUnrounded = !isNaN(_fmUnrounded) ? _fmUnrounded : 0;
+      const _fm = _fmUnrounded ? Number(_fmUnrounded.toFixed(2)) : 0;
 
-      const { masteryLevel = "N/A", masteryName = "N/A", color = white } = fm
-        ? getProficiencyBand(Math.round(fm), masteryScale, "score")
+      const { masteryLevel: _masteryLevel = "N/A", masteryName: _masteryName = "N/A", color: _color = white } = _fm
+        ? getProficiencyBand(Math.round(_fm), masteryScale, "score")
         : {};
 
       ___item = {
         ...___item,
         standardId: __item,
         standardName: groupedStandardIds[__item][0][idToLabel.standardId],
-        scorePercentUnrounded,
-        scorePercent: Math.round(Number(scorePercentUnrounded)),
+        scorePercentUnrounded: _scorePercentUnrounded,
+        scorePercent: Math.round(Number(_scorePercentUnrounded)),
 
-        rawScoreUnrounded,
-        rawScore: Number(rawScoreUnrounded.toFixed(2)),
+        rawScoreUnrounded: _rawScoreUnrounded,
+        rawScore: Number(_rawScoreUnrounded.toFixed(2)),
 
-        fmUnrounded,
-        fm,
-        masteryLevel,
-        masteryName,
-        color
+        fmUnrounded: _fmUnrounded,
+        fm: _fm,
+        masteryLevel: _masteryLevel,
+        masteryName: _masteryName,
+        color: _color
       };
 
       return ___item;
@@ -410,9 +417,8 @@ const filterByMasteryLevel = (analysedData, masteryLevel) => {
   const filteredAnalysedData = analysedData.filter(item => {
     if (item.masteryName === masteryLevel || masteryLevel === "all") {
       return true;
-    } 
-      return false;
-    
+    }
+    return false;
   });
   return filteredAnalysedData;
 };
@@ -422,11 +428,14 @@ export const getTableData = (filteredDenormalizedData, masteryScale, compareBy, 
     return [];
   }
 
-  const groupedData = groupBy(filteredDenormalizedData.filter(item => (!!item[compareBy])), compareBy);
+  const groupedData = groupBy(filteredDenormalizedData.filter(item => !!item[compareBy]), compareBy);
   const analysedData = getAnalysedData(groupedData, compareBy, masteryScale);
   const filteredData = filterByMasteryLevel(analysedData, masteryLevel);
   return filteredData;
 };
+
+export const getLeastMasteryLevel = (scaleInfo = []) =>
+  orderBy(scaleInfo, "score", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "" };
 
 export const getMasteryLevel = (score, scaleInfo) => {
   for (const obj of scaleInfo) {
@@ -436,9 +445,6 @@ export const getMasteryLevel = (score, scaleInfo) => {
   }
   return getLeastMasteryLevel(scaleInfo);
 };
-
-export const getLeastMasteryLevel = (scaleInfo = []) =>
-  orderBy(scaleInfo, "score", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "" };
 
 export const groupedByStandard = (metricInfo = [], maxScore, scaleInfo = []) => {
   const standards = groupBy(metricInfo, "standardId");

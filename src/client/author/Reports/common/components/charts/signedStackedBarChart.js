@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, { useState, useMemo } from "react";
 import {
   BarChart,
@@ -12,7 +13,7 @@ import {
   Legend,
   ReferenceLine
 } from "recharts";
-import { isEmpty } from "lodash";
+import { isEmpty, findLast, head } from "lodash";
 import styled from "styled-components";
 import { StyledCustomChartTooltip, StyledChartNavButton, CustomXAxisTickTooltipContainer } from "../../styled";
 import { CustomChartXTick, calculateXCoordinateOfXAxisToolTip } from "./chartUtils/customChartXTick";
@@ -20,16 +21,15 @@ import { YAxisLabel } from "./chartUtils/yAxisLabel";
 
 const _barsLabelFormatter = val => {
   if (val !== 0) {
-    return val + "%";
-  } else {
-    return "";
+    return `${val}%`;
   }
+  return "";
 };
 
 const LabelText = props => {
-  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, bdIndex } = props;
+  const { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, bdIndex } = props;
   return (
-    <g class="asd-asd" onMouseOver={onBarMouseOver(bdIndex)} onMouseLeave={onBarMouseLeave(bdIndex)}>
+    <g className="asd-asd" onMouseOver={onBarMouseOver(bdIndex)} onMouseLeave={onBarMouseLeave(bdIndex)}>
       <text x={x + width / 2} y={y + height / 2} textAnchor="middle" dominantBaseline="middle">
         {formatter(value)}
       </text>
@@ -52,7 +52,7 @@ export const SignedStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = val => val + "%",
+  yTickFormatter = val => `${val}%`,
   barsLabelFormatter = _barsLabelFormatter,
   referenceLine = 0,
   filter = {}
@@ -83,13 +83,12 @@ export const SignedStackedBarChart = ({
     setCopyData(data);
   }
 
-  const chartData = useMemo(() => {
-    return [...data];
-  }, [pagination]);
+  const chartData = useMemo(() => [...data], [pagination]);
 
-  const renderData = useMemo(() => {
-    return chartData.slice(pagination.startIndex, pagination.startIndex + page);
-  }, [pagination, data]);
+  const renderData = useMemo(() => chartData.slice(pagination.startIndex, pagination.startIndex + page), [
+    pagination,
+    data
+  ]);
 
   const scrollLeft = () => {
     let diff;
@@ -133,7 +132,7 @@ export const SignedStackedBarChart = ({
     setBarIndex(index);
   };
 
-  const onBarMouseLeave = index => () => {
+  const onBarMouseLeave = () => () => {
     setBarIndex(null);
   };
 
@@ -162,6 +161,13 @@ export const SignedStackedBarChart = ({
     setXAxisTickTooltipData({ visibility: "hidden", x: null, y: null, content: null });
   };
 
+  const barKeys = useMemo(() => barsData.map((bdItem, bdIndex) => ({ key: bdItem.key, idx: bdIndex })));
+  const isRoundBar = (barData, bdIndex) => {
+    const positive = barKeys.filter(ite => barData[ite.key] > 0);
+    const negative = barKeys.filter(ite => barData[ite.key] < 0);
+    return findLast(positive)?.idx === bdIndex || head(negative)?.idx === bdIndex;
+  };
+
   return (
     <StyledSignedStackedBarChartContainer>
       <a
@@ -174,7 +180,7 @@ export const SignedStackedBarChart = ({
         type="primary"
         shape="circle"
         icon="caret-left"
-        size={"large"}
+        IconBtn
         className="navigator navigator-left"
         onClick={scrollLeft}
         style={{
@@ -185,7 +191,7 @@ export const SignedStackedBarChart = ({
         type="primary"
         shape="circle"
         icon="caret-right"
-        size={"large"}
+        IconBtn
         className="navigator navigator-right"
         onClick={scrollRight}
         style={{
@@ -201,7 +207,7 @@ export const SignedStackedBarChart = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
-      <ResponsiveContainer width={"100%"} height={400}>
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart width={730} height={400} data={renderData} stackOffset="sign" margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
@@ -212,7 +218,7 @@ export const SignedStackedBarChart = ({
             onMouseOut={onXAxisTickTooltipMouseOut}
           />
           <YAxis
-            type={"number"}
+            type="number"
             domain={yDomain}
             tick={constants.TICK_FILL}
             ticks={ticks}
@@ -263,18 +269,22 @@ export const SignedStackedBarChart = ({
                     />
                   }
                 />
-                {renderData.map((cdItem, cdIndex) => {
-                  return filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
+                {renderData.map(cdItem =>
+                  filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
                     <Cell
-                      radius={[10, 10, 0, 0]}
+                      radius={isRoundBar(cdItem, bdIndex) ? [10, 10, 0, 0] : [0, 0, 0, 0]}
                       key={cdItem[xAxisDataKey]}
                       fill={bdItem.fill}
                       fillOpacity={fillOpacity}
                     />
                   ) : (
-                    <Cell radius={[10, 10, 0, 0]} key={cdItem[xAxisDataKey]} fill={"#c0c0c0"} />
-                  );
-                })}
+                    <Cell
+                      radius={isRoundBar(cdItem, bdIndex) ? [10, 10, 0, 0] : [0, 0, 0, 0]}
+                      key={cdItem[xAxisDataKey]}
+                      fill="#c0c0c0"
+                    />
+                  )
+                )}
               </Bar>
             );
           })}

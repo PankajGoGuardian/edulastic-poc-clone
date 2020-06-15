@@ -134,7 +134,8 @@ class AdvancedTable extends Component {
             toggleDeleteModal,
             userId = "",
             userRole = "",
-            assignmentTests
+            assignmentTests,
+            togglePrintModal
           } = this.props;
           const canEdit = canEditTest(row, userId);
           const assignmentTest = assignmentTests.find(at => at._id === row.testId);
@@ -152,7 +153,8 @@ class AdvancedTable extends Component {
                   userId,
                   userRole,
                   assignmentTest,
-                  canEdit
+                  canEdit,
+                  togglePrintModal
                 })}
                 placement="bottomRight"
                 trigger={["click"]}

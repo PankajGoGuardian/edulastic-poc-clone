@@ -325,6 +325,7 @@ class Assignments extends Component {
                           toggleDeleteModal={this.toggleDeleteModal}
                           showPreviewModal={this.showPreviewModal}
                           showFilter={showFilter}
+                          togglePrintModal={this.togglePrintModal}
                         />
                       ) : (
                         <TableList

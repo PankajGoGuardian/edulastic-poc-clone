@@ -304,7 +304,7 @@ class Item extends Component {
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&
                 getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
-              {showPremiumTag && <PremiumLabel>$ PREMIUM</PremiumLabel>}
+              {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>}
             </Header>
           }
         >

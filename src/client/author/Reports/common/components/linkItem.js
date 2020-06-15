@@ -14,7 +14,7 @@ export const LinkItem = ({ data, inverse, tiles, premium }) => {
     return (
       <ResolvedLink data-cy={data.key} to={data.location}>
         <ItemCard>
-          {showPremiumLabel && <PremiumLabel style={{ top: 8, right: 8 }}>$ PREMIUM</PremiumLabel>}
+          {showPremiumLabel && <PremiumLabel style={{ top: 8, right: 8 }}> PREMIUM</PremiumLabel>}
           <StyledPreviewImage src={data.thumbnail} alt={data.title} showGreenBorder={showGreenBorder} />
           <CardTitle>{data.title}</CardTitle>
           <CardDescription>{data.description}</CardDescription>

@@ -46,6 +46,7 @@ import {
 } from "./styled";
 import SubscriptionsBlock from "./SubscriptionsBlock";
 import { isPublisherUserSelector } from "../../../../../src/selectors/user";
+import Instruction from "./InstructionBlock/InstructionBlock";
 
 const {
   settingCategories,
@@ -330,7 +331,9 @@ class MainSetting extends Component {
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
-      freezeSettings = false
+      freezeSettings = false,
+      hasInstruction = false,
+      instruction=""
     } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
@@ -498,6 +501,32 @@ class MainSetting extends Component {
             ) : (
               ""
             )}
+
+            {/* Add instruction starts */}
+            <Block id="add-instruction" smallSize={isSmallSize}>
+              <Title>Add Instruction</Title>
+              <Body smallSize={isSmallSize}>
+                <CheckboxLabel
+                  disabled={!owner || !isEditable}
+                  data-cy="add-test-instruction"
+                  checked={hasInstruction}
+                  onChange={() => this.updateTestData("hasInstruction")(!hasInstruction)}
+                  mb="1rem"
+                >
+                  Instruction
+                </CheckboxLabel>
+                {hasInstruction && (
+                  <Instruction
+                    border="border"
+                    size="SM"
+                    updateTestData={this.updateTestData}
+                    instruction={instruction}
+                  />
+                )}
+              </Body>
+            </Block>
+            {/* Add instruction ends */}
+
             {availableFeatures.includes("assessmentSuperPowersMarkAsDone") ? (
               <Block id="mark-as-done" smallSize={isSmallSize}>
                 <Title>Mark as Done</Title>

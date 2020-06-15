@@ -1,6 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from "react";
 import { withRouter } from "react-router-dom";
-import { notification, useRealtimeV2 , EduButton } from "@edulastic/common";
+import { notification, useRealtimeV2 , EduButton, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -133,7 +133,9 @@ const AssignmentCard = memo(
       pauseAllowed,
       allowedTime,
       dueDate,
-      assignedBy
+      assignedBy,
+      hasInstruction=false,
+      instruction=""
     } = data;
     const topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
     useRealtimeV2(topics, {
@@ -195,8 +197,8 @@ const AssignmentCard = memo(
         return;
       }
 
-      if (!resume && timedAssignment) {
-        const content = pauseAllowed ? (
+      if (!resume && (timedAssignment ||hasInstruction)) {
+        const timedContent = pauseAllowed ? (
           <p>
             {" "}
             This is a timed assignment which should be finished within the time limit set for this assignment. The time
@@ -218,6 +220,15 @@ const AssignmentCard = memo(
             </span>{" "}
             and you can’t quit in between. Do you want to continue?
           </p>
+        );
+
+        const content = (
+          <FlexContainer flexDirection="column">
+            {timedAssignment && timedContent }
+            {hasInstruction && instruction && (
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: instruction }} style={{marginTop:"1rem"}} />
+            )}
+          </FlexContainer>
         );
 
         Modal.confirm({

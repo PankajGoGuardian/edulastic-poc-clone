@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { darkGrey, backgrounds, themeColor, white } from "@edulastic/colors";
+import { darkGrey, themeColor, white } from "@edulastic/colors";
 import CardComponent from "../../../AssignmentCreate/common/CardComponent";
 
 export const Description = styled.p`
@@ -28,7 +28,7 @@ export const Container = styled(CardComponent)`
 
 export const ButtonsContainer = styled.div`
   display: flex;
-  width: 50%;
+  width: ${props => props.width || "50%"};
   justify-content: space-evenly;
 
   .ant-upload-list {

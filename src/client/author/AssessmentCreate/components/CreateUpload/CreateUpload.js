@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { IconUpload, IconGdrive, IconCloudUpload } from "@edulastic/icons";
-import { formatBytes,notification } from "@edulastic/common";
-import { Progress, Icon, Button, message, Spin } from "antd";
+import { formatBytes, notification } from "@edulastic/common";
+import { Progress, Icon, Button, Spin } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { Container, ButtonsContainer, RoundedButton } from "../CreateBlank/styled";
 import { UploadDragger } from "../DropArea/styled";
@@ -20,7 +20,7 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
 
   const handleAuthFailed = data => {
     console.error("oth failed:", data);
-    return notification({ type: "warn", messageKey:"autheticationFailed"});
+    return notification({ type: "warn", messageKey: "autheticationFailed" });
   };
 
   const handleDriveUpload = ({ action, docs }) => {
@@ -28,7 +28,7 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
       const [doc] = docs;
       const { id, name, sizeBytes: size, mimeType } = doc;
       if (size > 1024 * 1024 * 5) {
-        notification({ messageKey:"selectedDocumentIsTooBigToUpload"});
+        notification({ messageKey: "selectedDocumentIsTooBigToUpload" });
         return;
       }
       uploadToDrive({ id, token: window.gapi.auth.getToken().access_token, name, size, mimeType });
@@ -44,7 +44,7 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
       <TextWrapper>
         Select questions from the library or <br /> author your own.
       </TextWrapper>
-      <ButtonsContainer>
+      <ButtonsContainer width="234px">
         <UploadDragger
           UploadDragger
           name="file"

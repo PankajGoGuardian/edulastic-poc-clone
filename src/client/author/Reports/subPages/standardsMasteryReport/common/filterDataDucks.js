@@ -75,7 +75,7 @@ export const getSelectedStandardProficiency = createSelector(
   getFiltersSelector,
   getReportsStandardsFilters,
   (filters, filtersData) => {
-    const scales = filtersData?.data?.result?.scaleInfo || [];
+    const scales = filtersData?.scaleInfo || [];
     return (scales.find(s => s._id === filters.profileId) || scales[0])?.scale;
   }
 );

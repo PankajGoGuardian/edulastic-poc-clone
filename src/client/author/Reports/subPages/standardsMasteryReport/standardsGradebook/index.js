@@ -80,7 +80,7 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter);
   };
 
-  const masteryScale = selectedStandardProficiency || {};
+  const masteryScale = selectedStandardProficiency || [];
   const maxMasteryScore = getMaxMasteryScore(masteryScale);
 
   const standardsData = useMemo(() => groupedByStandard(filteredDenormalizedData, maxMasteryScore, masteryScale), [

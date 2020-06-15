@@ -406,10 +406,12 @@ export default createReducer(initialState, {
   [UPDATE_POWER_TEACHER_TOOLS_REQUEST]: state => {
     state.updatingPowerTeacher = true;
   },
-  [UPDATE_POWER_TEACHER_TOOLS_SUCCESS]: state => {
-    Object.assign(state.user, {
-      isPowerTeacher: !state.user.isPowerTeacher
-    });
+  [UPDATE_POWER_TEACHER_TOOLS_SUCCESS]: (state, { payload }) => {
+    if (!payload?.usernames) {
+      Object.assign(state.user, {
+        isPowerTeacher: !state.user.isPowerTeacher
+      });
+    }
     state.updatingPowerTeacher = false;
   },
   [UPDATE_POWER_TEACHER_TOOLS_FAILED]: state => {

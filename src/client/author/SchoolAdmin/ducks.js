@@ -6,6 +6,7 @@ import { keyBy, get, omit } from "lodash";
 import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { receiveClassEnrollmentListAction } from "../ClassEnrollment/ducks";
+import { UPDATE_POWER_TEACHER_TOOLS_SUCCESS } from "../../student/Login/ducks";
 
 const RECEIVE_SCHOOLADMIN_REQUEST = "[schooladmin] receive data request";
 const RECEIVE_SCHOOLADMIN_SUCCESS = "[schooladmin] receive data success";
@@ -248,6 +249,19 @@ export const reducer = createReducer(initialState, {
   },
   [SET_TEACHERDETAIL_MODAL_VISIBLE]: (state, { payload }) => {
     state.teacherDetailsModalVisible = payload;
+  },
+  [UPDATE_POWER_TEACHER_TOOLS_SUCCESS]: (state, { payload: { usernames, enable } }) => {
+    if (state.data?.result) {
+      Object.keys(state.data.result).forEach(id => {
+        const _user = state.data.result[id];
+        const _source = _user?._source;
+
+        if (usernames.includes(_source?.email) || usernames.includes(_source?.username)) {
+          _user._source.isPowerTeacher = enable;
+        }
+        state.data.result[id] = _user; 
+      });
+    }
   }
 });
 
@@ -308,7 +322,7 @@ function* createSchoolAdminSaga({ payload }) {
       default:
         msg = "Created Successfully";
     }
-    notification({ type: "success", msg:msg});
+    notification({ type: "success", msg});
   } catch (err) {
     const errorMessage = err.data.message || "Create new user is failing";
     notification({msg:errorMessage});

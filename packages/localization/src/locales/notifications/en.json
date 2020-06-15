@@ -1833,11 +1833,18 @@
   },
   "pleaseSelectOnlyOneStudent": {
     "message": "Please select only one student",
-  "description": ""
+    "description": ""
   },
   "duplicationItemError": {
     "message": "Item duplication failed",
     "description": ""
+  },
+  "pleaseSelectUserToEnablePowerTools": {
+    "message": "Please select user to enable power tools",
+    "description": ""
+  },
+  "pleaseSelectUserToDisablePowerTools": {
+    "message": "Please select user to disable power tools",
+    "description": ""
   }
-  
 }

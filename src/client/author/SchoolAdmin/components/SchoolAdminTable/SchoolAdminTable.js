@@ -1,10 +1,10 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, StyledComponents,notification, TypeToConfirmModal } from "@edulastic/common";
+import { CheckboxLabel, notification, TypeToConfirmModal } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { GiDominoMask } from "react-icons/gi";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, Menu, message, Select } from "antd";
+import { Button, Icon, Menu, Select } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -33,7 +33,7 @@ import {
 } from "../../../../common/styled";
 import { getFullNameFromAsString } from "../../../../common/utils/helpers";
 import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
-import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
+import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
@@ -166,6 +166,23 @@ class SchoolAdminTable extends Component {
       } else {
         notification({ messageKey:"pleaseSelectSchoolsToDelete" });
       }
+    } else if (e.key === "enable power tools" || e.key === "disable power tools") {
+      const enableMode = e.key === "enable power tools";
+      if (selectedRowKeys.length > 0) {
+        const { updatePowerTeacher, adminUsersData } = this.props;
+        const selectedUsersEmailOrUsernames = selectedRowKeys.map(id => {
+          const user = adminUsersData[id]?._source;
+          if (user) {
+            return user.email || user.username;
+          }
+        }).filter(u => !!u);
+        updatePowerTeacher({
+          usernames: selectedUsersEmailOrUsernames,
+          enable: enableMode
+        });
+      } else {
+        notification({messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools`});
+      }
     }
   };
 
@@ -186,8 +203,8 @@ class SchoolAdminTable extends Component {
     createReq.role = "school-admin";
     createReq.districtId = userOrgId;
 
-    let o = {
-      createReq: createReq,
+    const o = {
+      createReq,
       listReq: this.getSearchQuery()
     };
 
@@ -237,7 +254,7 @@ class SchoolAdminTable extends Component {
       if (index === i) {
         return {
           ...item,
-          filterAdded: value ? true : false
+          filterAdded: !!value
         };
       }
       return item;
@@ -252,7 +269,7 @@ class SchoolAdminTable extends Component {
       if (index === key) {
         return {
           ...item,
-          filterAdded: event.target.value ? true : false
+          filterAdded: !!event.target.value
         };
       }
       return item;
@@ -266,7 +283,7 @@ class SchoolAdminTable extends Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== "" ? true : false
+          filterAdded: value !== ""
         };
       }
       return item;
@@ -291,7 +308,7 @@ class SchoolAdminTable extends Component {
   changeFilterColumn = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (key === index) {
-        let _item = {
+        const _item = {
           ...item,
           filtersColumn: value
         };
@@ -359,8 +376,8 @@ class SchoolAdminTable extends Component {
     const { filtersData, searchByName, currentPage } = this.state;
     let { showActive } = this.state;
 
-    let search = {};
-    for (let [index, item] of filtersData.entries()) {
+    const search = {};
+    for (const [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (filtersColumn === "status") {
@@ -375,7 +392,7 @@ class SchoolAdminTable extends Component {
       }
     }
     if (searchByName) {
-      search["name"] = searchByName;
+      search.name = searchByName;
     }
 
     const queryObj = {
@@ -389,10 +406,10 @@ class SchoolAdminTable extends Component {
       // order
     };
 
-    queryObj["status"] = 0;
+    queryObj.status = 0;
 
     if (showActive) {
-      queryObj["status"] = 1;
+      queryObj.status = 1;
     }
     return queryObj;
   };
@@ -456,7 +473,7 @@ class SchoolAdminTable extends Component {
           return next.localeCompare(prev);
         },
         render: (text, record, index) => {
-          let name = getFullNameFromAsString(record._source);
+          const name = getFullNameFromAsString(record._source);
           return name.split(" ").includes("Anonymous") || name.length === 0 ? "-" : name;
         },
         width: 200
@@ -518,6 +535,8 @@ class SchoolAdminTable extends Component {
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit user">{t("users.schooladmin.updateuser")}</Menu.Item>
         <Menu.Item key="deactivate user">{t("users.schooladmin.deactivateuser")}</Menu.Item>
+        <Menu.Item key="enable power tools">{t("users.schooladmin.enablePowerTools")}</Menu.Item>
+        <Menu.Item key="disable power tools">{t("users.schooladmin.disablePowerTools")}</Menu.Item>
       </Menu>
     );
     const breadcrumbData = [
@@ -534,7 +553,7 @@ class SchoolAdminTable extends Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -554,10 +573,10 @@ class SchoolAdminTable extends Component {
                   <StyledFilterSelect
                     placeholder={t("common.selectcolumn")}
                     onChange={e => this.changeFilterColumn(e, i)}
-                    value={filtersColumn ? filtersColumn : undefined}
+                    value={filtersColumn || undefined}
                     style={{}}
                   >
-                    <Option value="other" disabled={true}>
+                    <Option value="other" disabled>
                       {t("common.selectcolumn")}
                     </Option>
                     <Option value="username">{t("users.schooladmin.username")}</Option>
@@ -569,9 +588,9 @@ class SchoolAdminTable extends Component {
                   <StyledFilterSelect
                     placeholder={t("common.selectvalue")}
                     onChange={e => this.changeFilterValue(e, i)}
-                    value={filtersValue ? filtersValue : undefined}
+                    value={filtersValue || undefined}
                   >
-                    <Option value="" disabled={true}>
+                    <Option value="" disabled>
                       {t("common.selectvalue")}
                     </Option>
                     <Option value="eq">Equals</Option>
@@ -583,7 +602,7 @@ class SchoolAdminTable extends Component {
                       onChange={e => this.changeFilterText(e, i)}
                       onSearch={(v, e) => this.onSearchFilter(v, e, i)}
                       onBlur={e => this.onBlurFilterText(e, i)}
-                      value={filterStr ? filterStr : undefined}
+                      value={filterStr || undefined}
                       disabled={isFilterTextDisable}
                       ref={this.filterTextInputRef[i]}
                     />
@@ -662,7 +681,7 @@ class SchoolAdminTable extends Component {
             pageSize={25}
             total={totalUsers}
             onChange={page => this.setPageNo(page)}
-            hideOnSinglePage={true}
+            hideOnSinglePage
             pagination={{
               current: pageNo,
               total: totalUsers,
@@ -751,7 +770,8 @@ const enhance = compose(
       changeFilterValue: changeFilterValueAction,
       addFilter: addFilterAction,
       removeFilter: removeFilterAction,
-      setRole: setRoleAction
+      setRole: setRoleAction,
+      updatePowerTeacher: updatePowerTeacherAction
     }
   )
 );

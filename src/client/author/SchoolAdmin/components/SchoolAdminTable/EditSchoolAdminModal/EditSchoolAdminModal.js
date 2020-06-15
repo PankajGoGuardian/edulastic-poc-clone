@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Button } from "antd";
+import { Form, Input, Row, Col, Select, Checkbox } from "antd";
 import { omit, uniqBy } from "lodash";
 
-const Option = Select.Option;
-
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+
+const Option = Select.Option;
 
 class EditSchoolAdminModal extends Component {
   onSaveSchoolAdmin = () => {
@@ -170,6 +170,19 @@ class EditSchoolAdminModal extends Component {
                 >
                   {schoolsOptions}
                 </Select>
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem>
+              {getFieldDecorator("isPowerTeacher", {
+              initialValue: _source?.isPowerTeacher,
+              valuePropName: "checked"
+            })(<Checkbox>
+              {t("users.schooladmin.powertools")}
+            </Checkbox>
               )}
             </ModalFormItem>
           </Col>

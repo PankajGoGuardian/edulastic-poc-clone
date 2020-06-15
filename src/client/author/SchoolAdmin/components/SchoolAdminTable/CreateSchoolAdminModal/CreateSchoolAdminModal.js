@@ -1,11 +1,12 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Select, Spin } from "antd";
-const Option = Select.Option;
-
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+import React from "react";
+import { Form, Input, Row, Col, Select, Spin, Checkbox } from "antd";
 
 import { authApi, schoolApi } from "@edulastic/api";
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+
 import { nameValidator } from "../../../../../common/utils/helpers";
+
+const Option = Select.Option;
 
 class CreateSchoolAdminModal extends React.Component {
   constructor(props) {
@@ -15,7 +16,8 @@ class CreateSchoolAdminModal extends React.Component {
       emailValidateMsg: "",
       email: "",
       schoolList: [],
-      fetching: false
+      fetching: false,
+      isPowerTeacher: false
     };
   }
 
@@ -24,21 +26,19 @@ class CreateSchoolAdminModal extends React.Component {
     let checkUserResponse = { userExists: true };
 
     if (emailValidateStatus === "success" && email.length > 0) {
-      checkUserResponse = await authApi.checkUserExist({ email: email });
+      checkUserResponse = await authApi.checkUserExist({ email });
       if (checkUserResponse.userExists) {
         this.setState({
           emailValidateStatus: "error",
           emailValidateMsg: "Username already exists"
         });
       }
-    } else {
-      if (email.length == 0) {
+    } else if (email.length == 0) {
         this.setState({
           emailValidateStatus: "error",
           emailValidateMsg: "Please input Email"
         });
-      } else {
-        if (this.checkValidEmail(email)) {
+      } else if (this.checkValidEmail(email)) {
           this.setState({
             emailValidateStatus: "error",
             emailValidateMsg: "Username already exists"
@@ -49,8 +49,6 @@ class CreateSchoolAdminModal extends React.Component {
             emailValidateMsg: "Please input valid Email"
           });
         }
-      }
-    }
 
     this.props.form.validateFields((err, row) => {
       if (!err) {
@@ -68,12 +66,14 @@ class CreateSchoolAdminModal extends React.Component {
           institutionIds.push(row.institutionIds[i].key);
         }
 
+        const { email, isPowerTeacher } = this.state;
         const newUser = {
           firstName: firstName[0],
           lastName,
           password: row.password,
-          email: this.state.email,
-          institutionIds: institutionIds
+          email,
+          institutionIds,
+          isPowerTeacher
         };
         this.props.createSchoolAdmin(newUser);
       }
@@ -91,8 +91,7 @@ class CreateSchoolAdminModal extends React.Component {
         emailValidateMsg: "Please input Email",
         email: e.target.value
       });
-    } else {
-      if (this.checkValidEmail(e.target.value)) {
+    } else if (this.checkValidEmail(e.target.value)) {
         this.setState({
           emailValidateStatus: "success",
           emailValidateMsg: "",
@@ -105,11 +104,10 @@ class CreateSchoolAdminModal extends React.Component {
           email: e.target.value
         });
       }
-    }
   };
 
   checkValidEmail(strEmail) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(strEmail).toLowerCase());
   }
 
@@ -135,6 +133,8 @@ class CreateSchoolAdminModal extends React.Component {
     });
   };
 
+  changePowerTool = e => this.setState({ isPowerTeacher: e.target.checked });
+
   validateName = (rule, value, callback) => {
     const { t } = this.props;
     if (!nameValidator(value)) {
@@ -147,7 +147,7 @@ class CreateSchoolAdminModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible, t } = this.props;
-    const { emailValidateStatus, emailValidateMsg, fetching, schoolList } = this.state;
+    const { emailValidateStatus, emailValidateMsg, fetching, schoolList, isPowerTeacher } = this.state;
 
     return (
       <StyledModal
@@ -184,7 +184,7 @@ class CreateSchoolAdminModal extends React.Component {
               label={t("users.schooladmin.username")}
               validateStatus={emailValidateStatus}
               help={emailValidateMsg}
-              required={true}
+              required
               type="email"
             >
               <Input
@@ -244,6 +244,18 @@ class CreateSchoolAdminModal extends React.Component {
                   ))}
                 </Select>
               )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem>
+              <Checkbox
+                checked={isPowerTeacher}
+                onChange={this.changePowerTool}
+              >
+                {t("users.schooladmin.powertools")}
+              </Checkbox>
             </ModalFormItem>
           </Col>
         </Row>

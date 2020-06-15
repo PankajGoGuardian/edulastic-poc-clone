@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col } from "antd";
+import { Form, Input, Row, Col, Checkbox } from "antd";
 import { omit } from "lodash";
 
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 class EditTeacherModal extends Component {
   onSaveTeacher = () => {
-    this.props.form.validateFields((err, row = {}) => {
+    const { form } = this.props;
+    form.validateFields((err, row = {}) => {
       if (!err) {
         const { data, editTeacher, userOrgId } = this.props;
 
@@ -35,7 +36,8 @@ class EditTeacherModal extends Component {
   };
 
   onCloseModal = () => {
-    this.props.closeModal();
+    const { closeModal } = this.props;
+    closeModal();
   };
 
   render() {
@@ -127,6 +129,16 @@ class EditTeacherModal extends Component {
                   }
                 ]
               })(<Input type="password" placeholder={t("users.teacher.editteacher.enterconfirmpassword")} />)}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem>
+              {getFieldDecorator("isPowerTeacher", {
+                initialValue: _source?.isPowerTeacher,
+                valuePropName: "checked"
+              })(<Checkbox>{t("users.teacher.powertools")}</Checkbox>)}
             </ModalFormItem>
           </Col>
         </Row>

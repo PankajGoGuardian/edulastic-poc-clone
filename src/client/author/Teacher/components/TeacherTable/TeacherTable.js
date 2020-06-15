@@ -2,7 +2,7 @@ import { themeColor } from "@edulastic/colors";
 import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, Menu, message, Select } from "antd";
+import { Button, Icon, Menu, Select } from "antd";
 import { GiDominoMask } from "react-icons/gi";
 import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
@@ -58,7 +58,7 @@ import { getUserOrgId } from "../../../src/selectors/user";
 import { proxyUser } from "../../../authUtils";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import { getTeachersListSelector } from "../../ducks";
-import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
+import { isProxyUser as isProxyUserSelector, updatePowerTeacherAction } from "../../../../student/Login/ducks";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
@@ -219,8 +219,6 @@ class TeacherTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {}
-
   onProxyTeacher = id => {
     proxyUser({ userId: id });
   };
@@ -245,7 +243,7 @@ class TeacherTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
-    const { adminUsersData } = this.props;
+    const { adminUsersData, updatePowerTeacher } = this.props;
     if (e.key === "add teacher") {
       this.setState({ addTeacherModalVisible: true });
     }
@@ -277,6 +275,23 @@ class TeacherTable extends Component {
         });
       } else {
         notification({messageKey:"pleaseSelectUserToDelete"});
+      }
+    } else if (e.key === "enable power tools" || e.key === "disable power tools") {
+      const enableMode = e.key === "enable power tools";
+      if (selectedRowKeys.length > 0) {
+        const selectedUsersEmailOrUsernames = selectedRowKeys.map(id => {
+          const user = adminUsersData[id]?._source;
+          if (user) {
+            return user.email || user.username;
+          }
+          return null;
+        }).filter(u => !!u);
+        updatePowerTeacher({
+          usernames: selectedUsersEmailOrUsernames,
+          enable: enableMode
+        });
+      } else {
+        notification({messageKey: `pleaseSelectUserTo${enableMode ? "Enable" : "Disable"}PowerTools`});
       }
     }
   };
@@ -354,28 +369,24 @@ class TeacherTable extends Component {
     });
   };
 
-  setPageNo = page => {
-    this.setState({ currentPage: page }, this.loadFilteredList);
-  };
+  setPageNo = page => this.setState({ currentPage: page }, this.loadFilteredList);
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive });
+    const { refineButtonActive } = this.state;
+    this.setState({ refineButtonActive: !refineButtonActive });
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
 
-  onChangeSearch = event => {
-    this.setState({ searchByName: event.currentTarget.value });
-  };
+  onChangeSearch = event => this.setState({ searchByName: event.currentTarget.value });
 
-  handleSearchName = value => {
-    this.setState({ searchByName: value }, this.loadFilteredList);
-  };
+  handleSearchName = value => this.setState({ searchByName: value }, this.loadFilteredList);
 
   onSearchFilter = (value, event, i) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state;
+    const _filtersData = filtersData.map((item, index) => {
       if (index === i) {
         return {
           ...item,
@@ -390,7 +401,8 @@ class TeacherTable extends Component {
   };
 
   onBlurFilterText = (event, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state;
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -399,11 +411,12 @@ class TeacherTable extends Component {
       }
       return item;
     });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
   changeStatusValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state;
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -418,7 +431,8 @@ class TeacherTable extends Component {
   };
 
   changeFilterText = (e, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state;
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -431,7 +445,8 @@ class TeacherTable extends Component {
   };
 
   changeFilterColumn = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state;
+    const _filtersData = filtersData.map((item, index) => {
       if (key === index) {
         const _item = {
           ...item,
@@ -446,7 +461,8 @@ class TeacherTable extends Component {
   };
 
   changeFilterValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state;
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -462,7 +478,7 @@ class TeacherTable extends Component {
     this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
-  addFilter = (e, key) => {
+  addFilter = () => {
     const { filtersData } = this.state;
     if (filtersData.length < 3) {
       this.setState({
@@ -481,7 +497,7 @@ class TeacherTable extends Component {
   };
 
   removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
       newFiltersData.push({
@@ -501,7 +517,7 @@ class TeacherTable extends Component {
     const { filtersData, searchByName, currentPage } = this.state;
     let { showActive } = this.state;
     const search = {};
-    for (const [index, item] of filtersData.entries()) {
+    for (const [, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (filtersColumn === "status") {
@@ -546,7 +562,8 @@ class TeacherTable extends Component {
   };
 
   closeTeachersDetailModal = () => {
-    this.props.setTeachersDetailsModalVisible(false);
+    const { setTeachersDetailsModalVisible } = this.props;
+    setTeachersDetailsModalVisible(false);
   };
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
@@ -563,26 +580,17 @@ class TeacherTable extends Component {
       showMergeTeachersModal,
       filtersData,
       currentPage,
-      refineButtonActive
+      refineButtonActive,
+      showActive
     } = this.state;
 
     const {
       adminUsersData: result,
       totalUsers,
       userOrgId,
-      setShowActiveUsers,
-      showActiveUsers,
       updateAdminUser,
       pageNo,
       setPageNo,
-      filters,
-      changeFilterColumn,
-      changeFilterType,
-      changeFilterValue,
-      loadAdminData,
-      addFilter,
-      removeFilter,
-      addTeachers,
       teacherDetailsModalVisible,
       history,
       t
@@ -599,6 +607,8 @@ class TeacherTable extends Component {
         {/* TODO: Enable merge user when required */}
         {/* <Menu.Item key="merge user">{t("users.teacher.mergeuser")}</Menu.Item> */}
         <Menu.Item key="deactivate user">{t("users.teacher.deactivateuser")}</Menu.Item>
+        <Menu.Item key="enable power tools">{t("users.teacher.enablePowerTools")}</Menu.Item>
+        <Menu.Item key="disable power tools">{t("users.teacher.disablePowerTools")}</Menu.Item>
       </Menu>
     );
     const breadcrumbData = [
@@ -675,9 +685,9 @@ class TeacherTable extends Component {
                       onChange={v => this.changeStatusValue(v, i)}
                       value={filterStr !== "" ? filterStr : undefined}
                     >
-                      {filterStrDD[filtersColumn].list.map(item => (
-                        <Option key={item.title} value={item.value} disabled={item.disabled}>
-                          {item.title}
+                      {filterStrDD[filtersColumn].list.map(_item => (
+                        <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
+                          {_item.title}
                         </Option>
                       ))}
                     </StyledFilterSelect>
@@ -716,7 +726,7 @@ class TeacherTable extends Component {
 
           <RightFilterDiv width={40}>
             <CheckboxLabel
-              checked={this.state.showActive}
+              checked={showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
@@ -802,6 +812,7 @@ class TeacherTable extends Component {
             }
           />
         )}
+        {/* eslint-disabled-next-line jsx-a11y/aria-role */}
         {teacherDetailsModalVisible && (
           <StudentsDetailsModal
             modalVisible={teacherDetailsModalVisible}
@@ -855,7 +866,8 @@ const enhance = compose(
       changeFilterValue: changeFilterValueAction,
       addFilter: addFilterAction,
       removeFilter: removeFilterAction,
-      setRole: setRoleAction
+      setRole: setRoleAction,
+      updatePowerTeacher: updatePowerTeacherAction
     }
   )
 );

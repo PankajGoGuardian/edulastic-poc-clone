@@ -200,13 +200,14 @@ class ProfileBody extends React.Component {
 
   saveSettings = () => {
     const { updateDefaultSettings, user } = this.props;
-    const { defaultGrades, defaultSubjects, autoShareGCAssignment } = this.state;
+    const { defaultGrades, defaultSubjects, autoShareGCAssignment, isPowerTeacher } = this.state;
     const settingsToUpdate = {
       orgId: user._id,
       orgType: "teacher",
       defaultGrades,
       defaultSubjects,
-      autoShareGCAssignment
+      autoShareGCAssignment,
+      isPowerTeacher
     };
     updateDefaultSettings(settingsToUpdate);
     this.setState({ showDefaultSettingSave: false });
@@ -313,9 +314,15 @@ class ProfileBody extends React.Component {
     showJoinSchool();
   };
 
-  handlePowerTeacherUpdate = () => {
-    const { updatePowerTeacher } = this.props;
-    updatePowerTeacher();
+  handlePowerTeacherUpdate = checked => {
+    const { updatePowerTeacher, user } = this.props;
+    const { role, email, username } = user;
+    const params = {};
+    if ([roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(role)) {
+      params.usernames = [email || username];
+      params.enable = checked;
+    }
+    updatePowerTeacher(params);
   };
 
   checkUser = async (rule, value, callback) => {
@@ -644,28 +651,27 @@ class ProfileBody extends React.Component {
                           </Select.Option>
                         ))}
                       </SelectInputStyled>
-                      {googleClassRoomAllowed && [
-                        <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
-                        <Switch
-                          style={{ width: "30px" }}
-                          defaultChecked={autoShareGCAssignment}
-                          onChange={checked => this.onSettingChange(checked, "autoSync")}
-                        />
-                      ]}
+                      {googleClassRoomAllowed && (
+                        <SwitchWrapper>
+                          <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
+                          <Switch
+                            style={{ width: "30px" }}
+                            defaultChecked={autoShareGCAssignment}
+                            onChange={checked => this.onSettingChange(checked, "autoSync")}
+                          />
+                        </SwitchWrapper>
+                      )}
                     </>
                   )}
                   {showPowerTools && (
-                    <PowerUserWrapper style={{ justifyContent: "space-between" }}>
-                      <FieldLabel>POWER USER</FieldLabel>
-                      <PowerUserBtn
-                        onClick={this.handlePowerTeacherUpdate}
-                        type="primary"
-                        ghost
-                        isPowerUser={userInfo.isPowerTeacher}
-                      >
-                        {userInfo.isPowerTeacher ? "Opt-Out" : "Opt-In"}
-                      </PowerUserBtn>
-                    </PowerUserWrapper>
+                    <SwitchWrapper style={{ justifyContent: "space-between" }}>
+                      <FieldLabel>{t("common.title.powerUser")}</FieldLabel>
+                      <Switch
+                        style={{ width: "30px" }}
+                        defaultChecked={userInfo.isPowerTeacher}
+                        onChange={this.handlePowerTeacherUpdate}
+                      />
+                    </SwitchWrapper>
                   )}
                 </Block>
               </SchoolWrapper>
@@ -1081,18 +1087,9 @@ const AddSchoolSection = styled.div`
   float: right;
 `;
 
-const PowerUserWrapper = styled.div`
+const SwitchWrapper = styled.div`
   justify-content: space-between;
   display: flex;
   align-items: center;
   margin-top: 10px;
-`;
-
-const PowerUserBtn = styled(Button)`
-  padding: 0px 20px;
-  &:hover {
-    background: ${themeColor}!important;
-    border-color: ${themeColor}!important;
-    color: ${white}!important;
-  }
 `;

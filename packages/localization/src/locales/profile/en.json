@@ -29,7 +29,8 @@
       "emailLengthMessage": "Must less than 256 characters!",
       "interestedGrade": "Interested Grade",
       "interestedSubject": "Interested Subject",
-      "autoShareWithGC": "Auto Share Assignments with Google Classroom"
+      "autoShareWithGC": "Auto Share Assignments with Google Classroom",
+      "powerUser": "POWER USER"
     }
   }
 }

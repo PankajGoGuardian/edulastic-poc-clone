@@ -264,6 +264,12 @@ export default class StudentsReportCard {
           studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : studentResponseByAttempt;
           break;
 
+        case queTypes.CLOZE_TEXT:
+          studentResponseByAttempt = attemptData[attemptType];
+          correctResponse = correct;
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : studentResponseByAttempt;
+          break;
+
         case queTypes.CHOICE_MATRIX_STANDARD:
         case queTypes.CHOICE_MATRIX_LABEL:
         case queTypes.CHOICE_MATRIX_INLINE:

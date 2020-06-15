@@ -71,7 +71,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
         Q6: "right",
         Q7: "right",
         Q8: "right",
-        Q9: "right"
+        Q9: "right",
+        Q10: "right"
       },
       status: "Submitted"
     },
@@ -86,7 +87,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
         Q6: "right",
         Q7: "right",
         Q8: "skip",
-        Q9: "partialCorrect"
+        Q9: "partialCorrect",
+        Q10: "partialCorrect"
       },
       status: studentSide.SUBMITTED
     },
@@ -101,7 +103,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
         Q6: "skip",
         Q7: "wrong",
         Q8: "right",
-        Q9: "wrong"
+        Q9: "wrong",
+        Q10: "wrong"
       },
       status: studentSide.SUBMITTED
     }
@@ -127,7 +130,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
   before("> create test and assign", () => {
     cy.deleteAllAssignments("", teacher.username);
     cy.login("teacher", teacher.username, teacher.password);
-    testLibraryPage.assignPage.visitAssignPageById("5eab1c248c602c000868bc10");
+    testLibraryPage.assignPage.visitAssignPageById("5ee723f524bc230007360789");
     testLibraryPage.assignPage.selectClass("Class");
     testLibraryPage.assignPage.clickOnAssign();
     //   // testLibraryPage.createTest(testName).then(id => {

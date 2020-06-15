@@ -209,8 +209,12 @@ export default class PreviewItemPopup {
         break;
       }
       case questionTypeKey.CLOZE_DROP_DOWN:
-        if (isShowAnswer) this.qrp.verifyCorrectAnswerCloze(cy.get("@quecard"), right);
-        else this.qrp.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType, right);
+        if (isShowAnswer) this.qrp.verifyCorrectAnswerClozeDropDown(cy.get("@quecard"), right);
+        else this.qrp.verifyAnswerClozeDropDown(cy.get("@quecard"), attempt, attemptType, right);
+        break;
+      case questionTypeKey.CLOZE_TEXT:
+        if (isShowAnswer) this.qrp.verifyCorrectAnswerClozeText(cy.get("@quecard"), right);
+        else this.qrp.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType, right);
         break;
       default:
         break;

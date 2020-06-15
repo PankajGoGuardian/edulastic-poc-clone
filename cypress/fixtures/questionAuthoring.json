@@ -707,9 +707,18 @@
   },
   "CLOZE_TEXT": {
     "default": {
-      "quetext": ["This is CLOZE_TEXT.default qusetion.Input is ", "INPUT"],
+      "quetext": [
+        "This is CLOZE_TEXT.default question.1st ",
+        "INPUT",
+        "2nd ",
+        "INPUT",
+        "3rd ",
+        "INPUT",
+        "4th",
+        "INPUT"
+      ],
       "setAns": {
-        "correct": ["abc"],
+        "correct": ["right-1", "right-2", "right-3", "right-4"],
         "points": 2
       },
       "standards": [
@@ -721,8 +730,9 @@
         }
       ],
       "attemptData": {
-        "right": ["abc"],
-        "wrong": ["xyz"]
+        "right": ["right-1", "right-2", "right-3", "right-4"],
+        "wrong": ["wrong-1", "wrong-2", "wrong-3", "wrong-4"],
+        "partialCorrect": ["right-1", "wrong-2", "wrong-3", "right-4"]
       }
     }
   },

@@ -82,10 +82,10 @@ class ClozeWithTextPage {
     item.createNewItem(onlyItem);
     item.chooseQuestion(questionGroup.FILL_IN_BLANK, questionType.CLOZE_TEXT);
     cy.fixture("questionAuthoring").then(authoringData => {
-      const { quetext, setAns } = authoringData.TEXT_CLOZE[queKey];
+      const { quetext, setAns } = authoringData.CLOZE_TEXT[queKey];
       if (quetext) {
         this.getQuestionEditor().clear({ force: true });
-        this.getQuestionEditor().type(`Q ${queIndex + 1}`);
+        this.getQuestionEditor().type(`Q${queIndex + 1} - `);
         quetext.forEach(element => {
           if (element === "INPUT") cy.get('[data-cmd="textinput"]').click({ force: true });
           else this.getQuestionEditor().type(element, { force: true });

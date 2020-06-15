@@ -147,13 +147,14 @@ export default class QuestionResponsePage {
         break;
 
       case queTypes.CLOZE_DROP_DOWN:
+      case queTypes.CLOZE_TEXT:
         if (attemptType === attemptTypes.RIGHT) score = points;
         else if (attemptType === attemptTypes.PARTIAL_CORRECT) {
           let correctChoices = 0;
-          Object.keys(partialCorrect).forEach(ch => {
-            if (partialCorrect[ch] === right[ch]) correctChoices++;
+          partialCorrect.forEach((ch, ind) => {
+            if (ch === right[ind]) correctChoices++;
           });
-          score = Cypress._.round((correctChoices / Object.keys(right).length) * points, 2);
+          score = Cypress._.round((correctChoices / right.length) * points, 2);
         }
         break;
 
@@ -337,8 +338,65 @@ export default class QuestionResponsePage {
       });
   };
 
+  verifyCorrectAnswerClozeText = (card, right) => {
+    card
+      .contains("Correct Answer")
+      .next()
+      .find('[class^="AnswerBox"]')
+      .then(ele => {
+        right.forEach((choice, i) => {
+          cy.wrap(ele)
+            .eq(i)
+            .should("have.css", "background-color", queColor.WHITE)
+            .find('[class^="IndexBox"]')
+            .should("have.css", "background-color", queColor.GREEN_6)
+            .next()
+            .should("contain.text", choice);
+        });
+      });
+  };
+
+  verifyAnswerClozeText = (card, attempt, attemptType, right) => {
+    card
+      .find(".jsx-parser")
+      .find('[class^="AnswerBox"]')
+      .each((response, i) => {
+        cy.wrap(response).as("responseBox");
+
+        if (attemptType !== attemptTypes.SKIP) {
+          cy.get("@responseBox").should("contain.text", attempt[i]);
+
+          switch (attemptType) {
+            case attemptTypes.RIGHT:
+              cy.get("@responseBox").should("have.css", "background-color", queColor.LIGHT_GREEN);
+
+              break;
+
+            case attemptTypes.WRONG:
+              cy.get("@responseBox").should("have.css", "background-color", queColor.LIGHT_RED);
+
+              break;
+
+            case attemptTypes.PARTIAL_CORRECT:
+              cy.get("@responseBox").should(
+                "have.css",
+                "background-color",
+                right[i] === attempt[i] ? queColor.LIGHT_GREEN : queColor.LIGHT_RED
+              );
+
+              break;
+
+            default:
+              break;
+          }
+        } else {
+          cy.get("@responseBox").should("have.css", "background-color", queColor.GREY_2);
+        }
+      });
+  };
+
   // CLOZE_DROP_DOWN
-  verifyCorrectAnswerCloze = (card, right) => {
+  verifyCorrectAnswerClozeDropDown = (card, right) => {
     card
       .contains("Correct Answer")
       .next()
@@ -354,7 +412,7 @@ export default class QuestionResponsePage {
       });
   };
 
-  verifyAnswerCloze = (card, attempt, attemptType, right) => {
+  verifyAnswerClozeDropDown = (card, attempt, attemptType, right) => {
     card
       .find(".jsx-parser")
       // .find(".response-btn ")
@@ -540,10 +598,14 @@ export default class QuestionResponsePage {
       }
 
       case queTypes.CLOZE_DROP_DOWN:
-        this.verifyCorrectAnswerCloze(cy.get("@quecard"), right);
-        this.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType, right);
+        this.verifyCorrectAnswerClozeDropDown(cy.get("@quecard"), right);
+        this.verifyAnswerClozeDropDown(cy.get("@quecard"), attempt, attemptType, right);
         break;
 
+      case queTypes.CLOZE_TEXT:
+        this.verifyCorrectAnswerClozeText(cy.get("@quecard"), right);
+        this.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType, right);
+        break;
       default:
         break;
     }

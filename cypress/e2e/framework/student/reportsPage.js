@@ -301,7 +301,11 @@ class ReportsPage {
       }
 
       case queTypes.CLOZE_DROP_DOWN:
-        this.qrp.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType, right);
+        this.qrp.verifyAnswerClozeDropDown(cy.get("@quecard"), attempt, attemptType, right);
+        break;
+
+      case queTypes.CLOZE_TEXT:
+        this.qrp.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType, right);
         break;
 
       default:

@@ -82,6 +82,10 @@ class StudentTestPage {
 
   getExitButton = () => cy.get("[data-cy=finishTest]");
 
+  getAllClozeTextInput = () => cy.get('[class^="ClozeTextInput"]');
+
+  getClozeTextInputByIndex = index => this.getAllClozeTextInput().eq(index);
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -340,7 +344,7 @@ class StudentTestPage {
       .should("have.class", "ant-radio-checked");
 
   // CLOZE DROP DOWN
-  verifyAnswerCloze = (card, attempt, attemptType) => {
+  verifyAnswerClozeDropDown = (card, attempt, attemptType) => {
     card
       .find(".jsx-parser")
       .find('[data-cy="drop_down_select"]')
@@ -350,6 +354,17 @@ class StudentTestPage {
           cy.get("@responseBox").should("contain.text", attempt[i]);
         }
       });
+  };
+
+  verifyAnswerClozeText = (card, attempt, attemptType) => {
+    card.find('[class^="ClozeTextInput"]').each((box, i) => {
+      cy.wrap(box)
+        .find("input")
+        .as("responseBox");
+      if (attemptType !== attemptTypes.SKIP) {
+        cy.get("@responseBox").should("have.value", attempt[i]);
+      }
+    });
   };
 
   // CLOZE DRAGDROP TODO: refact and make it generic
@@ -467,6 +482,7 @@ class StudentTestPage {
     return this;
   };
 
+  // cloze with drop down
   checkAnsDropdown = attemptdata => {
     attemptdata.forEach((val, index) => {
       this.clickDropDownClozeByIndex(val, index);
@@ -481,6 +497,13 @@ class StudentTestPage {
       .contains(answer)
       .click({ force: true });
   };
+
+  // cloze with text
+
+  typeAnswersInClozeInput = attemptData =>
+    attemptData.forEach((val, index) => {
+      this.getClozeTextInputByIndex(index).type(`{selectall}${val}`);
+    });
 
   clickImageDropDownByIndex = (answer, index) => {
     cy.get("div.imagelabeldragdrop-droppable")
@@ -787,6 +810,10 @@ class StudentTestPage {
         case questionType.CLOZE_DROP_DOWN:
           this.checkAnsDropdown(attempts);
           break;
+        case questionType.CLOZE_TEXT:
+          this.typeAnswersInClozeInput(attempts);
+          break;
+
         case questionType.ESSAY_RICH:
           this.typeEssayRichText(attempts);
 
@@ -944,9 +971,12 @@ class StudentTestPage {
       }
 
       case questionType.CLOZE_DROP_DOWN:
-        this.verifyAnswerCloze(cy.get("@quecard"), attempt, attemptType);
+        this.verifyAnswerClozeDropDown(cy.get("@quecard"), attempt, attemptType);
         break;
 
+      case questionType.CLOZE_TEXT:
+        this.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType);
+        break;
       default:
         break;
     }

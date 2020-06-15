@@ -23,15 +23,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
 
   const { itemKeys } = STUDENT_ATTEMPT;
   const questionTypeMap = lcb.getQuestionTypeMap(itemKeys, questionData, {});
+  before("> test creation", () => {
+    cy.deleteAllAssignments(student, teacher);
+    cy.login("teacher", teacher, password);
+    // TODO : test creation to be enable
+    // testLibrary.createTest("STUDENT_ATTEMPT").then(() => {
+    // testLibrary.clickOnAssign();
+  });
 
-  context(" > Assignment attempt", () => {
+  context(" > Assignment attempt- class assignment", () => {
     before("create test and assign", () => {
-      cy.deleteAllAssignments(student, teacher);
-      cy.login("teacher", teacher, password);
-      // TODO : test creation to be enable
-      // testLibrary.createTest("STUDENT_ATTEMPT").then(() => {
-      // testLibrary.clickOnAssign();
-      cy.visit("/author/assignments/5eb05e459c6bec0008146070");
+      cy.visit("/author/assignments/5ee71329afcc8800076f0ebd");
       cy.wait(5000);
       testLibrary.assignPage.selectClass(className);
       testLibrary.assignPage.clickOnAssign();
@@ -53,7 +55,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
           const queNum = que;
           const isLastQuestion = i === itemKeys.length - 1;
           // navigate to que
-          CypressHelper.selectDropDownByAttribute("options", `Question ${i + 1}/${itemKeys.length}`);
+          studentTestPage.getQuestionByIndex(i, true);
           cy.contains(queNum).should("be.visible");
           const [queType] = questionTypeMap[queNum].queKey.split(".");
           const { attemptData } = questionTypeMap[queNum];

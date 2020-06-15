@@ -37,7 +37,7 @@ const columns = [
 
 const numOfCard = 6;
 
-const rowKey = ({ email }) => email;
+const rowKey = ({ _id }) => _id;
 
 class PrintPreviewClass extends React.Component {
   static propTypes = {
@@ -48,9 +48,14 @@ class PrintPreviewClass extends React.Component {
 
   render() {
     const appLoginUrl = `${window.location.origin}/login`;
-    const { selctedClass, students, selectedStudent } = this.props;
+    const { selctedClass, students, selectedStudent, user } = this.props;
     const { code, name: className, owners = [] } = selctedClass;
-    const teacherName = owners[0].name;
+    let teacherName = owners[0].name;
+
+    if (!teacherName && owners[0].id === user._id) {
+      const { firstName, lastName } = user;
+      teacherName = [firstName, lastName].filter(n => n).join(" ");
+    }
 
     let tableData = selectedStudent;
     if (isEmpty(tableData)) {
@@ -107,7 +112,8 @@ export default connect(
   state => ({
     students: get(state, "manageClass.studentsList", []),
     selctedClass: get(state, "manageClass.entity"),
-    selectedStudent: get(state, "manageClass.selectedStudent", [])
+    selectedStudent: get(state, "manageClass.selectedStudent", []),
+    user: get(state, "user.user")
   }),
   {}
 )(PrintPreviewClass);

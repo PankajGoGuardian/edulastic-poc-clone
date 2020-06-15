@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { keyBy as _keyBy, get, groupBy } from "lodash";
+import { keyBy as _keyBy, get } from "lodash";
 import queryString from "query-string";
+import { questionType } from "@edulastic/constants";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
 import { QuestionDiv, Content } from "./styled";
 import { formatQuestionLists } from "../../../PrintAssessment/utils";
-import { questionType } from "@edulastic/constants";
 
 const defaultManualGradedType = questionType.manuallyGradableQn;
 
@@ -22,6 +22,7 @@ function Preview({ item, passages, evaluation }) {
     questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
   }
 
+  const { itemLevelScoring, isPassageWithQuestions, multipartItem } = item;
   return (
     <Content key={item._id}>
       <TestItemPreview
@@ -35,6 +36,9 @@ function Preview({ item, passages, evaluation }) {
         style={{ width: "100%" }}
         isPrintPreview
         evaluation={evaluation}
+        isPassageWithQuestions={isPassageWithQuestions}
+        itemLevelScoring={itemLevelScoring}
+        multipartItem={multipartItem}
       />
     </Content>
   );
@@ -49,9 +53,9 @@ class StudentQuestions extends Component {
     setTimeout(() => {
       const textAreas = ReactDOM.findDOMNode(this.printpreviewRef).getElementsByTagName("textarea");
       for (let i = 0; i < textAreas.length; i++) {
-        let value = textAreas[i].value;
-        let parent = textAreas[i].parentNode;
-        $(parent).append("<div>" + value + "</div>");
+        const value = textAreas[i].value;
+        const parent = textAreas[i].parentNode;
+        $(parent).append(`<div>${value}</div>`);
       }
     }, 3000);
   }
@@ -106,30 +110,30 @@ class StudentQuestions extends Component {
       return { ...others, rows, data: { questions } };
     });
 
-    //Case Passage question type: if item don't have question, then hide the passage content also
+    // Case Passage question type: if item don't have question, then hide the passage content also
     testItems = testItems.filter(ti => !!ti.data?.questions?.length);
 
-    //If search type is 'manualGraded', then accept manual graded items only
+    // If search type is 'manualGraded', then accept manual graded items only
     if (type === "manualGraded") {
       testItems = testItems.reduce((acc, ti) => {
-        let qs = ti.data?.questions;
+        let _qs = ti.data?.questions;
         if (ti.multipartItem || ti.itemLevelScoring) {
-          qs =
-            qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false).length > 0
-              ? qs
+          _qs =
+            _qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false).length > 0
+              ? _qs
               : [];
         } else {
-          qs = qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false);
+          _qs = _qs.filter(q => defaultManualGradedType.includes(q.type) || q.validation?.automarkable === false);
         }
-        if (qs.length) {
-          ti.data.questions = qs;
+        if (_qs.length) {
+          ti.data.questions = _qs;
           return [...acc, ti];
         }
         return [...acc];
       }, []);
     }
 
-    //merge items belongs to same passage
+    // merge items belongs to same passage
     testItems = testItems.reduce((acc, item) => {
       let isItemMatched = false;
 
@@ -137,11 +141,11 @@ class StudentQuestions extends Component {
         let modifiedItems = acc.map(i => {
           const cloneItem = { ...i };
           if (cloneItem.passageId === item.passageId) {
-            //merge questions and resources
+            // merge questions and resources
             cloneItem.data.questions = get(cloneItem, "data.questions", []).concat(get(item, "data.questions", []));
             cloneItem.data.resources = get(cloneItem, "data.resources", []).concat(get(item, "data.resources", []));
 
-            //merge widgets of type 'question'
+            // merge widgets of type 'question'
             cloneItem.rows = cloneItem.rows.map(row => {
               const cloneRow = { ...row };
               const isWidgetTypeRow = get(cloneRow, "widgets.[0].widgetType", "") === "question";
@@ -167,8 +171,9 @@ class StudentQuestions extends Component {
 
   render() {
     const testItems = this.getTestItems();
-    const { passages = [] } = this.props.classResponse;
-    const evaluationStatus = this.props.questionActivities.reduce((acc, curr) => {
+    const { classResponse, questionActivities } = this.props;
+    const { passages = [] } = classResponse;
+    const evaluationStatus = questionActivities.reduce((acc, curr) => {
       if (curr.pendingEvaluation) {
         acc[curr.qid] = "pending";
       } else {
@@ -178,7 +183,7 @@ class StudentQuestions extends Component {
       return acc;
     }, {});
 
-    let testItemsRender = testItems.map(item => (
+    const testItemsRender = testItems.map(item => (
       <Preview item={item} passages={passages} evaluation={evaluationStatus} />
     ));
     return (

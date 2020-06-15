@@ -2,42 +2,28 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
-import { Popover } from "antd";
 
 import { getStemNumeration } from "../../../utils/helpers";
-
-import { AnswerBox } from "../styled/AnswerBox";
-import { IndexBox } from "../styled/IndexBox";
-import { AnswerContent } from "../styled/AnswerContent";
+import { Answer } from "./CorrectAnswer";
 
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altIndex, stemNumeration, t }) => (
-  <div className="correctanswer-box" style={{ padding: 16, fontSize, width: "100%" }}>
+  <div
+    className="correctanswer-box"
+    style={{
+      padding: 16,
+      fontSize,
+      width: "100%"
+    }}
+  >
     <CorrectAnswerTitle>
       {altIndex ? `${t("component.cloze.altAnswers")} ${altIndex}` : t("component.cloze.correctAnswer")}
     </CorrectAnswerTitle>
     <Answers>
       {userAnswers
         .sort((a, b) => a.index - b.index)
-        .map(answer => {
-          const content = (
-            <AnswerContent
-              style={{
-                whiteSpace: "normal",
-                minWidth: 70,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-              dangerouslySetInnerHTML={{ __html: answer.value }}
-            />
-          );
-          return (
-            <AnswerBox className="answer-list" key={answer.id}>
-              <IndexBox>{getStemNumeration(stemNumeration, answer.index)}</IndexBox>
-              <Popover content={content}>{content}</Popover>
-            </AnswerBox>
-          );
-        })}
+        .map(answer => (
+          <Answer answer={answer} getStemNumeration={getStemNumeration} stemNumeration={stemNumeration} />
+        ))}
     </Answers>
   </div>
 );

@@ -22,7 +22,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const { btnStyle: style, stemNumeration } = getUiStyles(id, index);
   const { disableAutoExpend, ...btnStyle } = style;
   const [boxWidth, updateBoxWidth] = useState(btnStyle.width);
-  const [boxHeight, updateBoxHeight] = useState(null);
   const [showPopover, togglePopover] = useState(false);
 
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
@@ -35,7 +34,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       if (boxWidth < width && !disableAutoExpend) {
         updateBoxWidth(width);
       }
-      updateBoxHeight(answerBoxRef.current.clientHeight);
     }
   }, [userAnswer]);
 
@@ -66,7 +64,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const indexWidth = checkAnswer ? 0 : 40;
   const totalContentWidth = boxWidth + padding + indexWidth;
   return (
-    <Popover content={popoverContent} visible={showPopover && btnStyle.width < totalContentWidth}>
+    <Popover content={popoverContent} visible={showPopover && btnStyle.width < totalContentWidth && userAnswer}>
       <AnswerBox
         ref={answerBoxRef}
         onMouseEnter={() => togglePopover(true)}

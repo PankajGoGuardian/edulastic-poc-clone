@@ -3,6 +3,7 @@ import { notification } from "@edulastic/common";
 import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { subscriptionApi, paymentApi } from "@edulastic/api";
+import * as Sentry from "@sentry/browser";
 import { fetchUserAction } from "../../student/Login/ducks";
 
 const slice = createSlice({
@@ -68,12 +69,12 @@ function* upgradeUserLicense({ payload }) {
     const apiUpgradeUserResponse = yield call(subscriptionApi.upgradeUsingLicenseKey, payload);
     if (apiUpgradeUserResponse.success) {
       yield put(slice.actions.upgradeLicenseKeySuccess(apiUpgradeUserResponse));
-      notification({ type: "success", msg:{ content: "Verified!", key: "verify-license"}});
+      notification({ type: "success", msg: { content: "Verified!", key: "verify-license" } });
       yield put(fetchUserAction({ background: true }));
     }
   } catch (err) {
     yield put(slice.actions.upgradeLicenseKeyFailure(err?.data?.message));
-    notification({messageKey:"theLisenceKeyEnteredIEitherUseOrNotValid",Key:"verify-license"});
+    notification({ messageKey: "theLisenceKeyEnteredIEitherUseOrNotValid", Key: "verify-license" });
     console.error("ERROR WHILE VERIFYING USER LICENSE KEY : ", err);
   }
 }
@@ -87,22 +88,22 @@ function* handleStripePayment({ payload }) {
       const apiPaymentResponse = yield call(paymentApi.pay, { token });
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse));
-        notification({ type: "success", msg: { content: "Payment Successful", key: "handle-payment"}});
+        notification({ type: "success", msg: { content: "Payment Successful", key: "handle-payment" } });
         yield put(fetchUserAction({ background: true }));
       } else {
-    
-        notification({msg:"API Response failed: " + error,Key:"handle-payment"});
+        notification({ msg: `API Response failed: ${error}`, Key: "handle-payment" });
         console.error("API Response failed");
       }
     } else {
-      notification({msg:"Creating token failed : " + error.message,Key:"handle-payment"});
+      notification({ msg: `Creating token failed : ${error.message}`, Key: "handle-payment" });
       yield put(slice.actions.disablePending());
       console.error("ERROR WHILE PROCESSING PAYMENT [Create Token] : ", error);
     }
   } catch (err) {
     yield put(slice.actions.stripePaymentFailure(err?.data?.message));
-    notification({msg:"Payment Failed : " + err?.data?.message,Key:"handle-payment"});
+    notification({ msg: `Payment Failed : ${err?.data?.message}`, Key: "handle-payment" });
     console.error("ERROR WHILE PROCESSING PAYMENT : ", err);
+    Sentry.captureException(err);
   }
 }
 
@@ -119,8 +120,9 @@ function* fetchUserSubscription() {
       yield put(slice.actions.updateUserSubscriptionStatus({ data, error: "" }));
     } else yield put(slice.actions.updateUserSubscriptionStatus({ data: {}, error: apiUserSubscriptionStatus.result }));
   } catch (err) {
-    yield put(slice.actions.updateUserSubscriptionStatus({ data: {}, error: apiUserSubscriptionStatus.result }));
+    yield put(slice.actions.updateUserSubscriptionStatus({ data: {}, error: err }));
     console.error("ERROR WHILE FETCHING USER SUBSCRIPTION : ", err);
+    Sentry.captureException(err);
   }
 }
 

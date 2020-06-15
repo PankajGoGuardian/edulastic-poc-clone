@@ -1,4 +1,4 @@
-import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf } from "lodash";
+import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf, keyBy } from "lodash";
 import next from "immer";
 import moment from "moment";
 import calcMethod from "./static/json/calcMethod";
@@ -30,54 +30,44 @@ export const getVariance = arr => {
   for (let i = 0; i < arr.length; i++) {
     sum += Number(arr[i]);
   }
-  let mean = sum / arr.length;
+  const mean = sum / arr.length;
 
   sum = 0;
   for (let i = 0; i < arr.length; i++) {
     sum += Math.pow(arr[i] - mean, 2);
   }
 
-  let variance = Number((sum / arr.length).toFixed(2));
+  const variance = Number((sum / arr.length).toFixed(2));
   return variance;
 };
-export const getStandardDeviation = variance => {
-  return Number(Math.sqrt(variance, 2).toFixed(2));
-};
+export const getStandardDeviation = variance => Number(Math.sqrt(variance, 2).toFixed(2));
 
-export const getHSLFromRange1 = (val, light = 79) => {
-  return `hsla(${val}, 100%, ${light}%, 1)`;
-};
+export const getHSLFromRange1 = (val, light = 79) => `hsla(${val}, 100%, ${light}%, 1)`;
 
 export const getHSLFromRange2 = (val, light = 48) => {
-  let tmp = val / 2;
+  const tmp = val / 2;
   return getHSLFromRange1(tmp, light);
 };
 
-export const isMobileScreen = () => {
-  return window.matchMedia("only screen and (max-width: 1033px) and (min-width : 1px)").matches;
-};
+export const isMobileScreen = () => window.matchMedia("only screen and (max-width: 1033px) and (min-width : 1px)").matches;
 
 export const getNavigationTabLinks = (list, id) => {
-  for (let item of list) {
+  for (const item of list) {
     item.location += id;
   }
 };
 
 export const getDropDownTestIds = arr => {
-  let sortedArr = [...arr];
-  sortedArr.sort((a, b) => {
-    return a - b;
-  });
+  const sortedArr = [...arr];
+  sortedArr.sort((a, b) => a - b);
 
-  let _arr = sortedArr.map((data, index) => {
-    return { key: data.testId, title: data.testName };
-  });
+  const _arr = sortedArr.map((data) => ({ key: data.testId, title: data.testName }));
 
   return _arr;
 };
 
 export const filterData = (data, filter) => {
-  let filteredData = data.filter((item, index) => {
+  const filteredData = data.filter((item) => {
     if (
       (item.gender.toLowerCase() === filter.gender.toLowerCase() || filter.gender === "all") &&
       (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() || filter.frlStatus === "all") &&
@@ -93,7 +83,7 @@ export const filterData = (data, filter) => {
 };
 
 export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
-  let byGroupId = groupBy(
+  const byGroupId = groupBy(
     orgDataArr.filter(item => {
       const checkForGrades =
         (item.grades || "")
@@ -111,8 +101,8 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
     }),
     "groupId"
   );
-  let classIdArr = [{ key: "All", title: "All Classes", groupType: "class" }],
-    groupIdArr = [{ key: "All", title: "All Groups", groupType: "custom" }];
+  const classIdArr = [{ key: "All", title: "All Classes", groupType: "class" }];
+    const groupIdArr = [{ key: "All", title: "All Groups", groupType: "custom" }];
   Object.keys(byGroupId).forEach(item => {
     const ele = {
       key: byGroupId[item][0].groupId,
@@ -126,9 +116,9 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
 };
 
 export const processClassAndGroupIds = orgDataArr => {
-  let byGroupId = groupBy(orgDataArr.filter(item => (item.groupId ? true : false)), "groupId");
-  let classIdArr = [{ key: "All", title: "All Classes", groupType: "class" }],
-    groupIdArr = [{ key: "All", title: "All Groups", groupType: "custom" }];
+  const byGroupId = groupBy(orgDataArr.filter(item => (!!item.groupId)), "groupId");
+  const classIdArr = [{ key: "All", title: "All Classes", groupType: "class" }];
+    const groupIdArr = [{ key: "All", title: "All Groups", groupType: "custom" }];
   Object.keys(byGroupId).forEach(item => {
     const ele = {
       key: byGroupId[item][0].groupId,
@@ -143,13 +133,11 @@ export const processClassAndGroupIds = orgDataArr => {
 };
 
 export const processSchoolIds = orgDataArr => {
-  let bySchoolId = groupBy(orgDataArr.filter((item, index) => (item.schoolId ? true : false)), "schoolId");
-  let schoolIdArr = Object.keys(bySchoolId).map((item, index) => {
-    return {
+  const bySchoolId = groupBy(orgDataArr.filter((item) => (!!item.schoolId)), "schoolId");
+  const schoolIdArr = Object.keys(bySchoolId).map((item) => ({
       key: bySchoolId[item][0].schoolId,
       title: bySchoolId[item][0].schoolName
-    };
-  });
+    }));
   schoolIdArr.unshift({
     key: "All",
     title: "All Schools"
@@ -159,13 +147,11 @@ export const processSchoolIds = orgDataArr => {
 };
 
 export const processTeacherIds = orgDataArr => {
-  let byTeacherId = groupBy(orgDataArr.filter((item, index) => (item.teacherId ? true : false)), "teacherId");
-  let teacherIdArr = Object.keys(byTeacherId).map((item, index) => {
-    return {
+  const byTeacherId = groupBy(orgDataArr.filter((item) => (!!item.teacherId)), "teacherId");
+  const teacherIdArr = Object.keys(byTeacherId).map((item,) => ({
       key: byTeacherId[item][0].teacherId,
       title: byTeacherId[item][0].teacherName
-    };
-  });
+    }));
   teacherIdArr.unshift({
     key: "All",
     title: "All Teachers"
@@ -183,33 +169,29 @@ export const getOverallScore = (metrics = []) =>
 export const filterAccordingToRole = (columns, role) =>
   filter(columns, column => !includes(column.hiddenFromRole, role));
 
-export const addColors = (data = [], selectedData, xDataKey, scoreKey = "avgScore") => {
-  return map(data, item =>
+export const addColors = (data = [], selectedData, xDataKey, scoreKey = "avgScore") => map(data, item =>
     next(item, draft => {
       draft.fill =
         includes(selectedData, item[xDataKey]) || !selectedData.length ? getHSLFromRange1(item[scoreKey]) : "#cccccc";
     })
   );
-};
 
 export const getLeastProficiencyBand = (bandInfo = []) =>
   orderBy(bandInfo, "threshold", ["desc"])[bandInfo.length - 1] || {};
 
 export const getProficiencyBand = (score, bandInfo, field = "threshold") => {
-  const bandInfoWithColor = map(orderBy(bandInfo, "threshold"), (band, index) => {
-    return {
+  const bandInfoWithColor = map(orderBy(bandInfo, "threshold"), (band, index) => ({
       ...band,
       color: band.color ? band.color : getHSLFromRange1(round((100 / (bandInfo.length - 1)) * index))
-    };
-  });
+    }));
   const orderedScaleInfo = orderBy(bandInfoWithColor, "threshold", ["desc"]);
   return find(orderedScaleInfo, info => ceil(score) >= info[field]) || getLeastProficiencyBand(orderedScaleInfo);
 };
 
 export const toggleItem = (items, item) =>
   next(items, draftState => {
-    let index = indexOf(items, item);
-    if (-1 < index) {
+    const index = indexOf(items, item);
+    if (index > -1) {
       draftState.splice(index, 1);
     } else {
       draftState.push(item);
@@ -218,15 +200,15 @@ export const toggleItem = (items, item) =>
 
 export const convertTableToCSV = refComponent => {
   const rows = refComponent.querySelectorAll("tr");
-  let csv = [];
-  let csvRawData = [];
+  const csv = [];
+  const csvRawData = [];
   for (let i = 0; i < rows.length; i++) {
-    let row = [],
-      cols = rows[i].querySelectorAll("td, th");
+    const row = [];
+      const cols = rows[i].querySelectorAll("td, th");
     for (let j = 0; j < cols.length; j++) {
       let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/(\s+)/gm, " ");
       data = data.replace(/"/g, '""');
-      row.push('"' + data + '"');
+      row.push(`"${  data  }"`);
     }
     csv.push(row.join(","));
     csvRawData.push(row);
@@ -238,10 +220,10 @@ export const convertTableToCSV = refComponent => {
 };
 
 export const downloadCSV = (filename, data) => {
-  let link = document.createElement("a");
+  const link = document.createElement("a");
   link.style.display = "none";
   link.setAttribute("target", "_blank");
-  link.setAttribute("href", "data:text/csv;charset=utf-8," + encodeURIComponent(data));
+  link.setAttribute("href", `data:text/csv;charset=utf-8,${  encodeURIComponent(data)}`);
   link.setAttribute("download", filename);
   document.body.appendChild(link);
   link.click();
@@ -251,18 +233,18 @@ export const downloadCSV = (filename, data) => {
 export const getFormattedName = name => {
   const nameArr = (name || "").trim().split(" ");
   const lName = nameArr.splice(nameArr.length - 1)[0];
-  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+  return nameArr.length ? `${lName  }, ${  nameArr.join(" ")}` : lName;
 };
 
 export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) => {
+  const scaleMap = keyBy(scaleInfo, "score");
   const assignments = studentStandardData.sort((a,b) => a.insertedAt - b.insertedAt).map(data => {
     const score = round(percentage(data.obtainedScore, data.maxScore));
-    const scale = getProficiencyBand(score, scaleInfo);
-
+    const scale = scaleMap[data.assignmentMastery] || getProficiencyBand(score, scaleInfo);
     return {
       score,
       scale,
-      standardBasedScore: `${scale.score}(${scale.masteryLabel})`,
+      standardBasedScore: `${data.assignmentMastery}(${scale.masteryLabel})`,
       assessmentName: data.testName,
       questions: data.questions,
       obtainedScore: data.obtainedScore,
@@ -293,6 +275,4 @@ export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) 
   return [...assignments, overallAssignmentDetail];
 };
 
-export const formatDate = milliseconds => {
-  return milliseconds ? moment(parseInt(milliseconds)).format("MMM DD, YYYY") : "N/A";
-};
+export const formatDate = milliseconds => milliseconds ? moment(parseInt(milliseconds)).format("MMM DD, YYYY") : "N/A";

@@ -10,6 +10,7 @@ import {
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../../../src/constants/actions";
+import { UPDATE_TEST_ITEM_LIKE_COUNT } from "../../../ItemList/ducks";
 
 const { SMART_FILTERS } = libraryFilters;
 
@@ -243,6 +244,26 @@ export const reducer = (state = initialState, { type, payload }) => {
         selectedItems: [...state.selectedItems]
       };
     }
+    case UPDATE_TEST_ITEM_LIKE_COUNT:
+      return {
+        ...state,
+        items: state.items.map(item => {
+          if (item.versionId === payload.versionId) {
+            return {
+              ...item,
+              analytics: [
+                {
+                  usage: item?.analytics?.[0]?.usage || 0,
+                  likes: payload.toggleValue
+                    ? (item?.analytics?.[0]?.likes || 0) + 1
+                    : (item?.analytics?.[0]?.likes || 1) - 1
+                }
+              ]
+            };
+          }
+          return item;
+        })
+      };
     default:
       return state;
   }

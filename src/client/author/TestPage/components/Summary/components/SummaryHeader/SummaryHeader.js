@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-
+import { IconShare, IconHeart } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
 import { Photo } from "../../../common";
@@ -14,11 +14,38 @@ import {
   ContainerRight
 } from "./styled";
 import { Block, AnalyticsContainer } from "../Sidebar/styled";
-import { IconShare, IconHeart } from "@edulastic/icons";
 import { renderAnalytics } from "../Sidebar/Sidebar";
 
-const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analytics, owner, isEditable }) => {
+const SummaryHeader = ({
+  createdBy,
+  windowWidth,
+  onChangeField,
+  thumbnail,
+  analytics,
+  owner,
+  isEditable,
+  isPlaylist = false,
+  test,
+  toggleTestLikeRequest,
+  userFavorites
+}) => {
   const avatar = createdBy && createdBy.name ? createdBy.name[0] : "E";
+
+  const isTestLiked = useMemo(() => !isPlaylist && userFavorites.some(contentId => contentId === test.versionId), [
+    userFavorites,
+    test,
+    isPlaylist
+  ]);
+  const handleTestLike = () => {
+    if (test._id) {
+      toggleTestLikeRequest({
+        contentId: test._id,
+        contentType: "TEST",
+        toggleValue: !isTestLiked,
+        versionId: test?.versionId
+      });
+    }
+  };
   return (
     <Container>
       <ContainerLeft>
@@ -52,7 +79,11 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analy
             padding="10px 10px 10px 50px"
           >
             {renderAnalytics((analytics && analytics.usage) || 0, IconShare)}
-            {renderAnalytics((analytics && analytics.likes) || 0, IconHeart)}
+            {!isPlaylist && (
+              <span onClick={handleTestLike}>
+                {renderAnalytics((analytics && analytics.likes) || 0, IconHeart, isTestLiked)}
+              </span>
+            )}
           </AnalyticsContainer>
         </Block>
       </ContainerRight>
@@ -68,6 +99,10 @@ SummaryHeader.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   onChangeField: PropTypes.func.isRequired,
   thumbnail: PropTypes.string.isRequired
+};
+
+SummaryHeader.defaultProps = {
+  owner: false
 };
 
 export default SummaryHeader;

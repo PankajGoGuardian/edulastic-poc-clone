@@ -45,7 +45,8 @@ import {
   Details,
   AddRemoveBtn,
   AddRemoveBtnPublisher,
-  AddRemoveButton
+  AddRemoveButton,
+  HeartWrapper
 } from "./styled";
 import {
   setAndSavePassageItemsAction,
@@ -57,9 +58,14 @@ import PassageConfirmationModal from "../../../TestPage/components/PassageConfir
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
-import { getCollectionsSelector, isPublisherUserSelector, getUserRole } from "../../../src/selectors/user";
-
+import {
+  getCollectionsSelector,
+  isPublisherUserSelector,
+  getUserRole,
+  getUserFavoritesByType
+} from "../../../src/selectors/user";
 import { TestStatus, DynamicIconWrapper } from "../../../TestList/components/ListItem/styled";
+import { toggleTestItemLikeAction } from "../../ducks";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants;
@@ -138,10 +144,21 @@ class Item extends Component {
     openPreviewModal();
   };
 
+  handleLike = isLiked => {
+    const { toggleTestItemLikeRequest, item } = this.props;
+    toggleTestItemLikeRequest({
+      contentId: item._id,
+      contentType: "TESTITEM",
+      toggleValue: !isLiked,
+      versionId: item.versionId
+    });
+  };
+
   renderDetails = () => {
-    const { item, windowWidth, collections, isPublisherUser } = this.props;
+    const { item, windowWidth, collections, isPublisherUser, userFavorites } = this.props;
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(_item => _item.tts).map(_item => _item.tts);
+    const isItemLiked = userFavorites.some(contentId => contentId === item.versionId);
     const details = [
       {
         name: "DOK:",
@@ -158,11 +175,20 @@ class Item extends Component {
       },
       {
         name: windowWidth > 1024 ? <ShareIcon /> : "",
-        text: windowWidth > 1024 ? "9578 (1)" : ""
+        text: windowWidth > 1024 ? item?.analytics?.[0]?.usage || "0" : ""
       },
       {
-        name: <HeartIcon />,
-        text: "9"
+        name: (
+          <HeartWrapper
+            title={isItemLiked ? "Unlike" : "Like"}
+            isEnabled={isItemLiked}
+            onClick={() => this.handleLike(isItemLiked)}
+          >
+            <HeartIcon />
+          </HeartWrapper>
+        ),
+        text: item?.analytics?.[0]?.likes || "0",
+        type: "like"
       }
     ];
     if (getAllTTS.length) {
@@ -512,11 +538,13 @@ const enhance = compose(
       features: getUserFeatures(state),
       collections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      userFavorites: getUserFavoritesByType(state, "TESTITEM")
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,
-      setPassageItems: setPassageItemsAction
+      setPassageItems: setPassageItemsAction,
+      toggleTestItemLikeRequest: toggleTestItemLikeAction
     }
   )
 );

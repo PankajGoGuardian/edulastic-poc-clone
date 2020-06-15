@@ -825,6 +825,7 @@ function* useThisPlayListSaga({ payload }) {
     const { _id, title, grades, subjects, groupId, onChange, isStudent, fromUseThis } = payload;
     yield call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects });
     yield call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects });
+    yield call(curriculumSequencesApi.usePlaylist, _id);
     yield put(receiveLastPlayListAction());
     if (!isStudent) {
       yield put(receiveRecentPlayListsAction());

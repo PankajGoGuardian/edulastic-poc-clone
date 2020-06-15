@@ -4,7 +4,7 @@ import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { push } from "connected-react-router";
-import { authApi, userApi, TokenStorage, settingsApi, segmentApi, schoolApi } from "@edulastic/api";
+import { authApi, userApi, TokenStorage, settingsApi, segmentApi, schoolApi, analyticsApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
 import * as firebase from "firebase/app";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
@@ -98,6 +98,9 @@ export const SET_SIGNUP_STATUS = "[user] set signup status";
 export const UPDATE_POWER_TEACHER_TOOLS_REQUEST = "[user] update power teacher permission request";
 export const UPDATE_POWER_TEACHER_TOOLS_SUCCESS = "[user] update power teacher permission success";
 export const UPDATE_POWER_TEACHER_TOOLS_FAILED = "[user] update power teacher permission failed";
+export const FETCH_USER_FAVORITES = "[user] fetch user favorites";
+export const UPDATE_USER_FAVORITES = "[user] update user favorites";
+export const SET_USER_FAVORITES = "[user] set user favorites";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -145,6 +148,9 @@ export const updateDefaultSettingsAction = createAction(UPDATE_DEFAULT_SETTINGS_
 export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
 export const fetchUserFailureAction = createAction(FETCH_USER_FAILURE);
 export const updatePowerTeacherAction = createAction(UPDATE_POWER_TEACHER_TOOLS_REQUEST);
+export const updateUserFavorites = createAction(UPDATE_USER_FAVORITES);
+export const fetchUserFavoritesRequestAction = createAction(FETCH_USER_FAVORITES);
+export const setUserFavoritesAction = createAction(SET_USER_FAVORITES);
 
 const initialState = {
   addAccount: false,
@@ -175,6 +181,11 @@ const setUser = (state, { payload }) => {
   set(state.user, "orgData.defaultClass", defaultClass);
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
+  const defaultUserFavorites = {
+    TEST: [],
+    TESTITEM: []
+  };
+  set(state.user, "orgData.userFavorites", defaultUserFavorites);
   let schools = payload?.orgData?.schools || [];
   schools = schools.sort((a, b) => a.name.localeCompare(b.name));
   if (payload.role === "school-admin" && schools.length) {
@@ -403,6 +414,19 @@ export default createReducer(initialState, {
   },
   [UPDATE_POWER_TEACHER_TOOLS_FAILED]: state => {
     state.updatingPowerTeacher = false;
+  },
+  [UPDATE_USER_FAVORITES]: (state, { payload }) => {
+    const { toggleValue, contentType, versionId } = payload;
+    if (toggleValue) {
+      state.user.orgData.userFavorites[contentType].push(versionId);
+    } else {
+      state.user.orgData.userFavorites[contentType] = state.user.orgData.userFavorites[contentType].filter(
+        i => i !== versionId
+      );
+    }
+  },
+  [SET_USER_FAVORITES]: (state, { payload }) => {
+    state.user.orgData.userFavorites = payload;
   }
 });
 
@@ -533,6 +557,9 @@ function* login({ payload }) {
     TokenStorage.selectAccessToken(user._id, user.role);
     TokenStorage.updateKID(user);
     yield put(setUserAction(user));
+    if (user?.role !== roleuser.STUDENT) {
+      yield put(fetchUserFavoritesRequestAction());
+    }
     yield put(
       updateInitSearchStateAction({
         grades: user?.orgData?.defaultGrades,
@@ -714,7 +741,7 @@ function* signup({ payload }) {
     if (errorCallback) {
       errorCallback(msg);
     } else {
-      notification({ msg: msg });
+      notification({ msg });
     }
   }
 }
@@ -794,6 +821,9 @@ export function* fetchUser({ payload }) {
     const searchParam = yield select(state => state.router.location.search);
     if (searchParam.includes("showCliBanner=1")) localStorage.setItem("showCLIBanner", true);
     yield put(setUserAction(user));
+    if (user?.role !== roleuser.STUDENT) {
+      yield put(fetchUserFavoritesRequestAction());
+    }
     yield put(
       updateInitSearchStateAction({
         grades: user?.orgData?.defaultGrades,
@@ -835,6 +865,9 @@ export function* fetchV1Redirect({ payload: id }) {
     const user = yield call(userApi.getUser);
     TokenStorage.updateKID(user);
     yield put(setUserAction(user));
+    if (user?.role !== roleuser.STUDENT) {
+      yield put(fetchUserFavoritesRequestAction());
+    }
     yield put(
       updateInitSearchStateAction({
         grades: user?.orgData?.defaultGrades,
@@ -1081,6 +1114,9 @@ function* getUserData({ payload: res }) {
     TokenStorage.selectAccessToken(user._id, user.role);
     TokenStorage.updateKID(user);
     yield put(setUserAction(user));
+    if (user?.role !== roleuser.STUDENT) {
+      yield put(fetchUserFavoritesRequestAction());
+    }
     yield put(receiveLastPlayListAction());
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction());
@@ -1348,13 +1384,6 @@ function* getCurrentDistrictUsersSaga({ payload }) {
   }
 }
 
-function* changeChildSaga({ payload }) {
-  try {
-  } catch (e) {
-    console.error(e);
-  }
-}
-
 function* updateDefaultSettingsSaga({ payload }) {
   try {
     yield call(settingsApi.updateInterestedStandards, payload);
@@ -1375,6 +1404,16 @@ function* updatePowerTeacher({ payload }) {
   } catch (e) {
     yield put({ type: UPDATE_POWER_TEACHER_TOOLS_FAILED });
     notification({ type: "error", messageKey: "failedToUpdatePowerTeacherTools" });
+  }
+}
+
+function* fetchUserFavoritesSaga() {
+  try {
+    const favorites = yield call(analyticsApi.getUserFavorites);
+    console.log({ favorites });
+    yield put(setUserFavoritesAction(favorites));
+  } catch (e) {
+    console.error(e);
   }
 }
 
@@ -1408,7 +1447,7 @@ export function* watcherSaga() {
   yield takeLatest(ADD_SCHOOL_REQUEST, addSchoolSaga);
   yield takeLatest(CREATE_AND_ADD_SCHOOL_REQUEST, createAndAddSchoolSaga);
   yield takeLatest(GET_CURRENT_DISTRICT_USERS_REQUEST, getCurrentDistrictUsersSaga);
-  yield takeLatest(CHANGE_CHILD, changeChildSaga);
   yield takeLatest(UPDATE_DEFAULT_SETTINGS_REQUEST, updateDefaultSettingsSaga);
   yield takeLatest(UPDATE_POWER_TEACHER_TOOLS_REQUEST, updatePowerTeacher);
+  yield takeLatest(FETCH_USER_FAVORITES, fetchUserFavoritesSaga);
 }

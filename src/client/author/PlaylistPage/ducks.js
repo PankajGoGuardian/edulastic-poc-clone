@@ -188,7 +188,12 @@ const initialPlaylistState = {
   active: 1,
   customize: false,
   bgColor: themeColor,
-  textColor: white
+  textColor: white,
+  analytics: [
+    {
+      usage: 0
+    }
+  ]
 };
 
 const initialState = {

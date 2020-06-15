@@ -1,5 +1,5 @@
 import { assignmentApi } from "@edulastic/api";
-import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
+import { cardTitleColor, darkGrey, fadedBlack, themeColor, red } from "@edulastic/colors";
 import { CheckboxLabel, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
@@ -18,7 +18,7 @@ import {
 } from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
 import { getUserRole, isPublisherUserSelector, getCollectionsSelector, getUserId } from "../../../src/selectors/user";
-import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector } from "../../ducks";
+import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector, toggleTestLikeAction } from "../../ducks";
 import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 import ViewModal from "../ViewModal";
@@ -131,6 +131,17 @@ class ListItem extends Component {
     approveOrRejectSingleTestRequest({ testId, status: "rejected" });
   };
 
+  handleLikeTest = e => {
+    e.stopPropagation();
+    const { item, toggleTestLikeRequest, isTestLiked } = this.props;
+    toggleTestLikeRequest({
+      contentId: item._id,
+      contentType: "TEST",
+      toggleValue: !isTestLiked,
+      versionId: item.versionId
+    });
+  };
+
   render() {
     const {
       item: {
@@ -164,7 +175,8 @@ class ListItem extends Component {
       userRole,
       isPublisherUser,
       orgCollections = [],
-      currentUserId
+      currentUserId,
+      isTestLiked
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -202,6 +214,8 @@ class ListItem extends Component {
           onDeletonDuplicatee={this.onDelete}
           previewLink={() => this.showPreviewModal(item._id)}
           isDynamic={isDynamic}
+          handleLikeTest={this.handleLikeTest}
+          isTestLiked={isTestLiked}
         />
 
         <TestPreviewModal
@@ -374,10 +388,12 @@ class ListItem extends Component {
                     <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
                     <IconText>{usage}</IconText>
                   </IconWrapper>
-                  <IconWrapper>
-                    <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                    <IconText>{likes}</IconText>
-                  </IconWrapper>
+                  {!isPlaylist && (
+                    <IconWrapper onClick={this.handleLikeTest}>
+                      <IconHeart color={isTestLiked ? red : darkGrey} width={14} height={14} /> &nbsp;
+                      <IconText>{likes}</IconText>
+                    </IconWrapper>
+                  )}
                 </ContentWrapper>
               </ItemInformation>
             </Footer>
@@ -398,7 +414,10 @@ const enhance = compose(
       isPublisherUser: isPublisherUserSelector(state),
       currentUserId: getUserId(state)
     }),
-    { approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction }
+    {
+      approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
+      toggleTestLikeRequest: toggleTestLikeAction
+    }
   )
 );
 

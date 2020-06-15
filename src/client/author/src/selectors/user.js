@@ -126,18 +126,16 @@ export const getCustomCollectionsSelector = createSelector(
 export const getItemBucketsSelector = createSelector(
   getCustomCollectionsSelector,
   state => {
-    const flatttenBuckets = state.flatMap(collection => {
-      return collection.buckets.map(bucket => {
-        return {
-          ...bucket,
-          _id: collection._id,
-          bucketId: bucket._id,
-          collectionStatus: collection.status,
-          collectionName: collection.name,
-          collectionDescription: collection.description
-        };
-      });
-    });
+    const flatttenBuckets = state.flatMap(collection =>
+      collection.buckets.map(bucket => ({
+        ...bucket,
+        _id: collection._id,
+        bucketId: bucket._id,
+        collectionStatus: collection.status,
+        collectionName: collection.name,
+        collectionDescription: collection.description
+      }))
+    );
     return flatttenBuckets;
   }
 );
@@ -260,3 +258,13 @@ export const getAccountSwitchDetails = createSelector(
   getUser,
   state => pick(state, ["personId", "otherAccounts"])
 );
+
+export const getUserFavorites = createSelector(
+  getOrgDataSelector,
+  state => state.userFavorites || {}
+);
+
+export const getUserFavoritesByType = (state, type) => {
+  const fav = getUserFavorites(state);
+  return fav?.[type] || [];
+};

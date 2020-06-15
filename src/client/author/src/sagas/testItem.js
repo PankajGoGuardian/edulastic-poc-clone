@@ -50,6 +50,12 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
         resources: []
       },
       itemLevelScoring: true,
+      analytics: [
+        {
+          usage: 0,
+          likes: 0
+        }
+      ],
       multipartItem: false,
       isPassageWithQuestions: false,
       canAddMultipleItems: false

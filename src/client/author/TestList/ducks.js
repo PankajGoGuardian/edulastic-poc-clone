@@ -1,13 +1,13 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { cloneDeep, keyBy } from "lodash";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
 import produce from "immer";
-import { testsApi } from "@edulastic/api";
-import { cloneDeep, keyBy } from "lodash";
+import { testsApi, analyticsApi } from "@edulastic/api";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
+import { updateDefaultGradesAction, updateDefaultSubjectAction, updateUserFavorites } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
 
@@ -38,6 +38,8 @@ export const APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST = "[tests] approve or reje
 export const APPROVE_OR_REJECT_MULTIPLE_TESTS_SUCCESS = "[tests] approve or reject multiple tests success";
 export const ADD_TEST_TO_CART = "[tests] add test to cart";
 export const REMOVE_TEST_FROM_CART = "[tests] remove test from cart";
+export const TOGGLE_TEST_LIKE = "[tests list] toggle test like";
+export const UPDATE_LIKE_COUNT = "[tests list] update like count";
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST);
@@ -54,6 +56,8 @@ export const approveOrRejectMultipleTestsRequestAction = createAction(APPROVE_OR
 export const approveOrRejectMultipleTestsSuccessAction = createAction(APPROVE_OR_REJECT_MULTIPLE_TESTS_SUCCESS);
 export const addTestToCartAction = createAction(ADD_TEST_TO_CART);
 export const removeTestFromCartAction = createAction(REMOVE_TEST_FROM_CART);
+export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE);
+export const updateLikeCountAction = createAction(UPDATE_LIKE_COUNT);
 
 // selectors
 export const stateSelector = state => state.testList;
@@ -204,13 +208,28 @@ function* approveOrRejectMultipleTestsSaga({ payload }) {
   }
 }
 
+function* toggleTestLikeSaga({ payload }) {
+  try {
+    yield call(analyticsApi.toggleLike, payload);
+    yield put(updateLikeCountAction(payload));
+    yield put(updateUserFavorites(payload));
+    if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
+    else notification({ type: "success", msg: "Successfully Unfavourite" });
+  } catch (e) {
+    console.error(e);
+    if (payload.toggleValue) notification({ msg: "Failed to mark a favourite" });
+    else notification({ msg: "Failed to Unfavourite" });
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
     yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
     yield takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
     yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga),
-    yield takeEvery(APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST, approveOrRejectMultipleTestsSaga)
+    yield takeEvery(APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST, approveOrRejectMultipleTestsSaga),
+    yield takeEvery(TOGGLE_TEST_LIKE, toggleTestLikeSaga)
   ]);
 }
 
@@ -338,6 +357,27 @@ export const reducer = (state = initialState, { type, payload }) => {
         selectedTests: []
       };
     }
+    case UPDATE_LIKE_COUNT:
+      return {
+        ...state,
+        entities: state.entities.map(test => {
+          if (test.versionId === payload.versionId) {
+            return {
+              ...test,
+              analytics: [
+                {
+                  usage: test?.analytics?.[0]?.usage || 0,
+                  likes: payload.toggleValue
+                    ? (test?.analytics?.[0].likes || 0) + 1
+                    : (test?.analytics?.[0]?.likes || 1) - 1
+                }
+              ]
+            };
+          }
+          return test;
+        })
+      };
+
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import { darkGrey, white, greyThemeDark2 } from "@edulastic/colors";
+import { darkGrey, white, greyThemeDark2, red } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import {
@@ -127,7 +127,9 @@ class ViewModal extends React.Component {
       modalView = true,
       publicAccess = false,
       isPublisherUser,
-      isDynamic
+      isDynamic,
+      handleLikeTest,
+      isTestLiked
     } = this.props;
     const {
       title = "",
@@ -396,11 +398,11 @@ class ViewModal extends React.Component {
               </FooterIcon>
               <FooterIcon rotate>
                 <IconShare color={darkGrey} width={14} height={14} />
-                {analytics && <IconText>{analytics.usage || 0} </IconText>}
+                {analytics && <IconText>{analytics[0]?.usage || 0} </IconText>}
               </FooterIcon>
-              <FooterIcon>
-                <IconHeart color={darkGrey} width={14} height={14} />
-                {analytics && <IconText>{analytics.likes || 0}</IconText>}
+              <FooterIcon onClick={handleLikeTest}>
+                <IconHeart color={isTestLiked ? red : darkGrey} width={14} height={14} />
+                {analytics && <IconText>{analytics[0]?.likes || 0}</IconText>}
               </FooterIcon>
             </Footer>
           </ModalColumn>

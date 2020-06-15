@@ -15,7 +15,15 @@ import {
   round,
   pick
 } from "lodash";
-import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
+import {
+  testsApi,
+  assignmentApi,
+  contentSharingApi,
+  tagsApi,
+  passageApi,
+  testItemsApi,
+  analyticsApi
+} from "@edulastic/api";
 import moment from "moment";
 import nanoid from "nanoid";
 import produce from "immer";
@@ -51,6 +59,7 @@ import { updateAssingnmentSettingsAction } from "../AssignTest/duck";
 import { SET_ITEM_SCORE } from "../src/ItemScore/ducks";
 import { getIsloadingAssignmentSelector } from "./components/Assign/ducks";
 import { sortTestItemQuestions } from "../dataUtils";
+import { updateUserFavorites } from "../../student/Login/ducks";
 
 // constants
 
@@ -206,6 +215,9 @@ export const SET_DEFAULT_SETTINGS_LOADING = "[test] deafult settings loading";
 export const SET_AUTOSELECT_ITEMS_FETCHING_STATUS = "[test] set autoselect items fetching status";
 export const SET_REGRADING_STATE = "[test] set regrading state";
 export const SET_EDIT_ENABLE = "[test] set enable edit state";
+export const TOGGLE_TEST_LIKE = "[test] toggle test like";
+export const UPDATE_TEST_LIKE_COUNT = "[test] update test like count";
+export const UPDATE_TEST_ITEM_LIKE_COUNT = "[test] update test review item like count";
 
 // actions
 
@@ -239,6 +251,9 @@ export const setDefaultSettingsLoadingAction = createAction(SET_DEFAULT_SETTINGS
 export const setAutoselectItemsFetchingStatusAction = createAction(SET_AUTOSELECT_ITEMS_FETCHING_STATUS);
 export const setRegradingStateAction = createAction(SET_REGRADING_STATE);
 export const setEditEnableAction = createAction(SET_EDIT_ENABLE);
+export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE);
+export const updateTestLikeCountAction = createAction(UPDATE_TEST_LIKE_COUNT);
+export const updateTestItemLikeCountAction = createAction(UPDATE_TEST_ITEM_LIKE_COUNT);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false, playlistId = undefined) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -578,8 +593,8 @@ export const createBlankTest = () => ({
   collections: [],
   analytics: [
     {
-      usage: "0",
-      likes: "0"
+      usage: 0,
+      likes: 0
     }
   ],
   passages: [],
@@ -966,6 +981,50 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         editEnable: payload
+      };
+    case UPDATE_TEST_LIKE_COUNT:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          analytics: [
+            {
+              usage: state.entity?.analytics?.[0]?.usage,
+              likes: payload.toggleValue
+                ? (state.entity?.analytics?.[0]?.likes || 0) + 1
+                : (state.entity?.analytics?.[0]?.likes || 1) - 1
+            }
+          ]
+        }
+      };
+    case UPDATE_TEST_ITEM_LIKE_COUNT:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          itemGroups: state.entity.itemGroups.map(itemGroup => {
+            const items = itemGroup.items.map(i => {
+              if (i.versionId === payload.versionId) {
+                return {
+                  ...i,
+                  analytics: [
+                    {
+                      usage: i?.analytics?.[0]?.usage || 0,
+                      likes: payload.toggleValue
+                        ? (i?.analytics?.[0]?.likes || 0) + 1
+                        : (i?.analytics?.[0]?.likes || 1) - 1
+                    }
+                  ]
+                };
+              }
+              return i;
+            });
+            return {
+              ...itemGroup,
+              items
+            };
+          })
+        }
       };
     default:
       return state;
@@ -2073,6 +2132,21 @@ export function* addAutoselectGroupItems({ payload: _test }) {
   }
 }
 
+function* toggleTestLikeSaga({ payload }) {
+  try {
+    yield call(analyticsApi.toggleLike, payload);
+    if (payload.contentType === "TEST") yield put(updateTestLikeCountAction(payload));
+    else yield put(updateTestItemLikeCountAction(payload));
+    yield put(updateUserFavorites(payload));
+    if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
+    else notification({ type: "success", msg: "Successfully Unfavourite" });
+  } catch (e) {
+    console.error(e);
+    if (payload.toggleValue) notification({ msg: "Failed to mark a favourite" });
+    else notification({ msg: "Failed to Unfavourite" });
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -2094,6 +2168,7 @@ export function* watcherSaga() {
     yield takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate),
     yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga),
     yield takeLatest(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST, addItemsToAutoselectGroupsSaga),
-    yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga)
+    yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
+    yield takeEvery(TOGGLE_TEST_LIKE, toggleTestLikeSaga)
   ]);
 }

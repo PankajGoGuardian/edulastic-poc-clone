@@ -16,14 +16,15 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
-import { getUser, getItemBucketsSelector } from "../../../../../src/selectors/user";
+import { getUser, getItemBucketsSelector, getUserFavoritesByType } from "../../../../../src/selectors/user";
 import {
   getlastUsedCollectionListSelector,
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
   getAllTagsAction,
   getAllTagsSelector,
-  addNewTagAction
+  addNewTagAction,
+  toggleTestLikeAction
 } from "../../../../ducks";
 
 const Summary = ({
@@ -55,7 +56,9 @@ const Summary = ({
   addNewTag,
   onChangeSubjects,
   isEditable = true,
-  showCancelButton
+  showCancelButton,
+  toggleTestLikeRequest,
+  userFavorites
 }) => {
   const handleChangeField = (field, value) => {
     if (field === "thumbnail") {
@@ -146,6 +149,9 @@ const Summary = ({
         isTextColorPickerVisible={isTextColorPickerVisible}
         isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
         isEditable={isEditable}
+        test={test}
+        toggleTestLikeRequest={toggleTestLikeRequest}
+        userFavorites={userFavorites}
       />
     </MainContentWrapper>
   );
@@ -190,12 +196,14 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       features: getUserFeatures(state),
       lastUsedCollections: getlastUsedCollectionListSelector(state),
-      orgCollections: getItemBucketsSelector(state)
+      orgCollections: getItemBucketsSelector(state),
+      userFavorites: getUserFavoritesByType(state, "TEST")
     }),
     {
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
-      updateDefaultThumbnail: updateDefaultThumbnailAction
+      updateDefaultThumbnail: updateDefaultThumbnailAction,
+      toggleTestLikeRequest: toggleTestLikeAction
     }
   )
 );

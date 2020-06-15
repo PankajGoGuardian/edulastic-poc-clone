@@ -1,26 +1,25 @@
-import { takeEvery, takeLatest, call, put, select, take, race } from "redux-saga/effects";
-import { message } from "antd";
-import { uniq, get } from "lodash";
+import { takeEvery, takeLatest, call, put, select } from "redux-saga/effects";
+import { uniq } from "lodash";
 import produce from "immer";
 import { test as testConstant, roleuser } from "@edulastic/constants";
 import { notification } from "@edulastic/common";
-import { setTestItemsAction, showAddPassageItemsModalAction } from "../TestPage/components/AddItems/ducks";
+import { createAction } from "redux-starter-kit";
+import { testItemsApi, attchmentApi, analyticsApi } from "@edulastic/api";
+import { setTestItemsAction } from "../TestPage/components/AddItems/ducks";
 import {
   setTestDataAction,
   createTestAction,
   getTestEntitySelector,
-  getReleaseScorePremiumSelector,
-  setPassageItemsAction
+  getReleaseScorePremiumSelector
 } from "../TestPage/ducks";
 import { getUserRole } from "../src/selectors/user";
-import { createAction } from "redux-starter-kit";
-import { testItemsApi, attchmentApi } from "@edulastic/api";
 import {
   APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../src/constants/actions";
+import { updateUserFavorites } from "../../student/Login/ducks";
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";
 export const CREATE_TEST_FROM_CART = "[item list] create test from cart";
@@ -31,6 +30,8 @@ export const PREVIEW_FEEDBACK_FAILURE = "[item list] preview item reject feedbac
 export const LOAD_ITEM_PREVIEW_FEEDBACK_REQUEST = "[item list] preview item feedback data request";
 export const LOAD_ITEM_PREVIEW_FEEDBACK_SUCCESS = "[item list] preview item feedback data success";
 export const LOAD_ITEM_PREVIEW_FEEDBACK_FAILURE = "[item list] preview item feedback data failure";
+export const TOGGLE_TEST_ITEM_LIKE = "[item list] toggle test item like";
+export const UPDATE_TEST_ITEM_LIKE_COUNT = "[item list] update test item like count";
 
 export const addItemToCartAction = item => ({
   type: ADD_ITEM_TO_CART,
@@ -50,6 +51,8 @@ export const approveOrRejectSingleItem = createAction(APPROVE_OR_REJECT_SINGLE_I
 export const approveOrRejectMultipleItem = createAction(APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST);
 export const submitReviewFeedbackAction = createAction(PREVIEW_FEEDBACK_REQUEST);
 export const loadScratchPadAction = createAction(LOAD_ITEM_PREVIEW_FEEDBACK_REQUEST);
+export const toggleTestItemLikeAction = createAction(TOGGLE_TEST_ITEM_LIKE);
+export const updateTestItemLikeCountAction = createAction(UPDATE_TEST_ITEM_LIKE_COUNT);
 
 export function* addItemToCartSaga({ payload }) {
   const { item } = payload;
@@ -66,6 +69,7 @@ export function* addItemToCartSaga({ payload }) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.push(item);
       notification({ type: "success", messageKey: "itemAddedCart" });
+      return draft;
     });
   }
   const userRole = yield select(getUserRole);
@@ -117,12 +121,12 @@ export function* createTestFromCart({ payload: { testName } }) {
 
 export function* approveOrRejectSingleItemSaga({ payload }) {
   try {
-    const result = yield call(testItemsApi.publishTestItem, payload);
-    yield put({ type: APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS, payload: payload });
-    notification({ type: "success", msg:`Item successfully ${payload.status}.`});
+    yield call(testItemsApi.publishTestItem, payload);
+    yield put({ type: APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS, payload });
+    notification({ type: "success", msg: `Item successfully ${payload.status}.` });
   } catch (e) {
     console.error(e);
-    notification({ type: "success", messageKey:"failedToUpdateStatus"});
+    notification({ type: "success", messageKey: "failedToUpdateStatus" });
   }
 }
 
@@ -152,19 +156,22 @@ export function* approveOrRejectMultipleItemSaga({ payload }) {
       const result = yield call(testItemsApi.bulkPublishTestItems, data);
       if (result.nModified === data.itemIds.length) {
         yield put({ type: APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS, payload: data });
-        notification({ type: "success", msg: `${data.itemIds.length} item(s) successfully ${payload.status}.`});
+        notification({ type: "success", msg: `${data.itemIds.length} item(s) successfully ${payload.status}.` });
       } else {
-        notification({ type: "success", msg: `${result.nModified} item(s) successfully ${payload.status}, ${data.itemIds.length -
-          result.nModified} item(s) failed`});
+        notification({
+          type: "success",
+          msg: `${result.nModified} item(s) successfully ${payload.status}, ${data.itemIds.length -
+            result.nModified} item(s) failed`
+        });
       }
     } catch (e) {
       console.error(e);
-      notification({ type: "success", messageKey:"failedToUpdateStatus"});
+      notification({ type: "success", messageKey: "failedToUpdateStatus" });
     }
   }
 }
 
-export function* submitReviewFeedbackSaga({ payload: { status, data } }) {
+export function* submitReviewFeedbackSaga({ payload: { data } }) {
   try {
     const result = yield call(attchmentApi.saveAttachment, data);
     yield put({ type: PREVIEW_FEEDBACK_SUCCESS, payload: result });
@@ -183,6 +190,20 @@ export function* loadScratchPadSaga({ attachmentId }) {
   }
 }
 
+export function* toggleTestLikeSaga({ payload }) {
+  try {
+    yield call(analyticsApi.toggleLike, payload);
+    yield put(updateTestItemLikeCountAction(payload));
+    yield put(updateUserFavorites(payload));
+    if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
+    else notification({ type: "success", msg: "Successfully Unfavourite" });
+  } catch (e) {
+    console.error(e);
+    if (payload.toggleValue) notification({ msg: "Failed to mark a favourite" });
+    else notification({ msg: "Failed to Unfavourite" });
+  }
+}
+
 export function* watcherSaga() {
   yield takeEvery(ADD_ITEM_TO_CART, addItemToCartSaga);
   yield takeLatest(CREATE_TEST_FROM_CART, createTestFromCart);
@@ -190,4 +211,5 @@ export function* watcherSaga() {
   yield takeLatest(APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST, approveOrRejectMultipleItemSaga);
   yield takeLatest(PREVIEW_FEEDBACK_REQUEST, submitReviewFeedbackSaga);
   yield takeLatest(LOAD_ITEM_PREVIEW_FEEDBACK_REQUEST, loadScratchPadSaga);
+  yield takeLatest(TOGGLE_TEST_ITEM_LIKE, toggleTestLikeSaga);
 }

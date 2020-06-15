@@ -60,8 +60,7 @@ const ReviewItems = ({
     const meta = {
       id: item._id,
       by: get(item, ["createdBy", "name"], ""),
-      shared: 0,
-      likes: 0,
+      analytics: item?.analytics || [],
       type: getQuestionType(item),
       points: scoring[item._id] || helpers.getPoints(item),
       item,

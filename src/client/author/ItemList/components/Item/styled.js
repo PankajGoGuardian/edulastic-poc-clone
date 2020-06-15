@@ -551,3 +551,13 @@ export const Details = styled.div`
     flex-wrap: wrap;
   }
 `;
+
+export const HeartWrapper = styled.span`
+  cursor: pointer;
+  > svg {
+    fill: ${({ isEnabled }) => (isEnabled ? red : themeLightGrayColor)};
+    &:hover {
+      fill: ${({ isEnabled }) => (isEnabled ? red : themeLightGrayColor)};
+    }
+  }
+`;

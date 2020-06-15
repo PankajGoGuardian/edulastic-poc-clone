@@ -6,7 +6,7 @@ import { getTestAuthorName, getPlaylistAuthorName } from "../../../dataUtils";
 import Item from "../Item/Item";
 import ListItem from "../ListItem/ListItem";
 import { CardBox } from "../Container/styled";
-import { getCollectionsSelector } from "../../../src/selectors/user";
+import { getCollectionsSelector, getUserFavoritesByType } from "../../../src/selectors/user";
 
 class CardWrapper extends Component {
   static propTypes = {
@@ -49,10 +49,13 @@ class CardWrapper extends Component {
       moduleTitle,
       onRemoveFromCart,
       onAddToCart,
-      collections
+      collections,
+      userFavorites
     } = this.props;
 
     const itemId = _id.substr(_id.length - 6);
+
+    const isTestLiked = !isPlaylist && userFavorites.some(contentId => contentId === item.versionId);
 
     if (blockStyle === "tile") {
       return (
@@ -67,6 +70,7 @@ class CardWrapper extends Component {
             isPlaylist={isPlaylist}
             windowWidth={windowWidth}
             standards={standards}
+            isTestLiked={isTestLiked}
           />
         </CardBox>
       );
@@ -93,6 +97,7 @@ class CardWrapper extends Component {
           handleCheckboxAction={handleCheckboxAction}
           onRemoveFromCart={onRemoveFromCart}
           onAddToCart={onAddToCart}
+          isTestLiked={isTestLiked}
         />
       </Col>
     );
@@ -100,6 +105,9 @@ class CardWrapper extends Component {
 }
 
 export default connect(
-  state => ({ collections: getCollectionsSelector(state) }),
+  state => ({
+    collections: getCollectionsSelector(state),
+    userFavorites: getUserFavoritesByType(state, "TEST")
+  }),
   {}
 )(CardWrapper);

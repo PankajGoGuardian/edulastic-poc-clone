@@ -142,6 +142,14 @@ const getSignedRequest = ({ playlistId, moduleId, contentId, resource }) =>
     })
     .then(result => result.data.result);
 
+const usePlaylist = id =>
+  api
+    .callApi({
+      method: "post",
+      url: `/playlist/${id}/use-this`
+    })
+    .then(result => result.data.result);
+
 export default {
   getCurriculums: getPlaylist,
   updateCurriculumSequence,
@@ -156,5 +164,6 @@ export default {
   fetchPlaylistInsights,
   getSignedRequest,
   delelePlaylist,
-  delelePlaylistFromUse
+  delelePlaylistFromUse,
+  usePlaylist
 };

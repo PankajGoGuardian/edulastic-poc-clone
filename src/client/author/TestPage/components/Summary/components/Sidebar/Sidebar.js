@@ -1,17 +1,18 @@
 import { tagsApi } from "@edulastic/api";
-import { FieldLabel, FlexContainer, SelectInputStyled, TextInputStyled,notification } from "@edulastic/common";
-import { message, Select } from "antd";
+import { FieldLabel, FlexContainer, SelectInputStyled, TextInputStyled, notification } from "@edulastic/common";
+import { red } from "@edulastic/colors";
+import { Select } from "antd";
+import { TextAreaInputStyled } from "@edulastic/common/src/components/InputStyles";
 import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
 import React, { createRef, useEffect, useMemo, useState } from "react";
 import { selectsData } from "../../../common";
 import SummaryHeader from "../SummaryHeader/SummaryHeader";
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from "./styled";
-import { TextAreaInputStyled } from "@edulastic/common/src/components/InputStyles";
 
-export const renderAnalytics = (title, Icon) => (
+export const renderAnalytics = (title, Icon, isLiked = false) => (
   <AnalyticsItem>
-    <Icon color="#bbbfc4" width={15} height={15} />
+    <Icon color={isLiked ? red : "#bbbfc4"} width={15} height={15} />
     <MetaTitle>{title}</MetaTitle>
   </AnalyticsItem>
 );
@@ -36,7 +37,10 @@ const Sidebar = ({
   addNewTag,
   allTagsData,
   windowWidth,
-  isEditable
+  isEditable,
+  test,
+  toggleTestLikeRequest,
+  userFavorites
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "_id");
   const subjectsList = selectsData.allSubjects.slice(1);
@@ -68,7 +72,7 @@ const Sidebar = ({
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "test" });
       } catch (e) {
-        notification({ messageKey:"savingTagErr"});
+        notification({ messageKey: "savingTagErr" });
       }
     } else {
       newTag = newAllTagsData.find(tag => tag._id === id);
@@ -104,6 +108,9 @@ const Sidebar = ({
           analytics={analytics}
           onChangeField={onChangeField}
           isEditable={isEditable}
+          test={test}
+          toggleTestLikeRequest={toggleTestLikeRequest}
+          userFavorites={userFavorites}
         />
         <FieldLabel>Test Name</FieldLabel>
         <TextInputStyled
@@ -205,7 +212,7 @@ const Sidebar = ({
           getPopupContainer={trigger => trigger.parentNode}
           filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
         >
-          {!!searchValue.trim() ? (
+          {searchValue?.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
               {`${searchValue} (Create new Tag)`}
             </Select.Option>
@@ -240,6 +247,12 @@ Sidebar.propTypes = {
   createdBy: PropTypes.object,
   thumbnail: PropTypes.string,
   onChangeSubjects: PropTypes.func.isRequired
+};
+
+Sidebar.defaultProps = {
+  owner: false,
+  createdBy: "",
+  thumbnail: ""
 };
 
 export default Sidebar;

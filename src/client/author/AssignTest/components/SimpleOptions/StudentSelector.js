@@ -1,68 +1,90 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import { FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { TreeSelect } from "antd";
 import PropTypes from "prop-types";
-import { Col, Select, Radio } from "antd";
-import { ColLabel, StyledRow, StyledSelect, StyledRadioGropRow, Label } from "./styled";
-import { RadioBtn, RadioGrp, SelectInputStyled, FieldLabel } from "@edulastic/common";
+import React, { useState } from "react";
+import { SelectStudentColumn, HeaderButtonsWrapper, SelectAll, UnselectAll } from "./styled";
 
 const StudentsSelector = ({
-  specificStudents,
   students = [],
   updateStudents,
-  onChange,
-  studentNames,
+  selectAllStudents,
+  unselectAllStudents,
   handleRemoveStudents
 }) => {
-  const changeRadioGrop = e => {
-    const { value } = e.target;
-    onChange("specificStudents", value);
-  };
+  const [selectedValues, setSelectedValues] = useState([]);
+
+  const SelectedStudents = students
+    .filter(({ enrollmentStatus }) => enrollmentStatus > 0)
+    .map(({ _id, firstName, lastName, groupId }) => {
+      const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
+      return {
+        title: fullName,
+        key: _id,
+        value: _id,
+        groupId
+      };
+    });
+
+  const allIds = SelectedStudents.map(({ value }) => value);
+
   return (
     <React.Fragment>
-      <StyledRadioGropRow gutter={32}>
-        <Col span={24}>
-          <RadioGrp onChange={changeRadioGrop} value={specificStudents}>
-            <RadioBtn data-cy="radioEntireClass" value={false}>
-              <Label>ENTIRE CLASS</Label>
-            </RadioBtn>
-            <RadioBtn data-cy="radioSpecificStudent" value={true}>
-              <Label>SPECIFIC STUDENT</Label>
-            </RadioBtn>
-          </RadioGrp>
-        </Col>
-      </StyledRadioGropRow>
-      {specificStudents && (
-        <React.Fragment>
-          <StyledRow gutter={32}>
-            <Col span={24}>
-              <FieldLabel>STUDENT</FieldLabel>
-              <SelectInputStyled
-                data-cy="selectStudent"
-                placeholder="Select a student to assign"
-                mode="multiple"
-                onSelect={updateStudents}
-                onDeselect={handleRemoveStudents}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                value={studentNames}
-                getPopupContainer={trigger => trigger.parentNode}
-                margin="0px 0px 15px"
-              >
-                {students
-                  .filter(({ enrollmentStatus }) => enrollmentStatus > 0)
-                  .map(({ _id, firstName, lastName, groupId }) => {
-                    const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
-                    return (
-                      //group Id is being used to track student belongs to which class.
-                      <Select.Option key={_id} value={_id} groupId={groupId}>
-                        {fullName}
-                      </Select.Option>
-                    );
-                  })}
-              </SelectInputStyled>
-            </Col>
-          </StyledRow>
-        </React.Fragment>
-      )}
+      <SelectStudentColumn span={12}>
+        <FieldLabel>STUDENT</FieldLabel>
+        <SelectInputStyled
+          as={TreeSelect}
+          placeholder="Select a student to assign"
+          treeCheckable
+          data-cy="selectStudent"
+          dropdownStyle={{ maxHeight: "300px" }}
+          onChange={ids => setSelectedValues(ids)}
+          value={selectedValues}
+          maxTagCount={2}
+          dropdownClassName="student-dropdown"
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+          maxTagPlaceholder={omittedValues => `+ ${omittedValues.length} Students ...`}
+          onSelect={updateStudents}
+          onDeselect={handleRemoveStudents}
+          disabled={SelectedStudents.length === 0}
+          treeData={[
+            {
+              title: (
+                <HeaderButtonsWrapper>
+                  {selectedValues.length === SelectedStudents.length ? (
+                    <SelectAll className="disabled">Select all</SelectAll>
+                  ) : (
+                    <SelectAll
+                      onClick={() => {
+                        setSelectedValues(allIds);
+                        selectAllStudents(SelectedStudents, selectedValues);
+                      }}
+                    >
+                      Select all
+                    </SelectAll>
+                  )}
+                  {selectedValues.length === 0 ? (
+                    <UnselectAll className="disabled">Unselect all</UnselectAll>
+                  ) : (
+                    <UnselectAll
+                      onClick={() => {
+                        setSelectedValues([]);
+                        unselectAllStudents(SelectedStudents, selectedValues);
+                      }}
+                    >
+                      Unselect all
+                    </UnselectAll>
+                  )}
+                </HeaderButtonsWrapper>
+              ),
+              value: "all",
+              disableCheckbox: true,
+              disabled: true
+            },
+            ...SelectedStudents
+          ]}
+        />
+      </SelectStudentColumn>
     </React.Fragment>
   );
 };

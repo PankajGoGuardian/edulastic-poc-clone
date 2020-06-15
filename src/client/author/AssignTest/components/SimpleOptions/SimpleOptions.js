@@ -1,25 +1,24 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { FieldLabel, notification, SelectInputStyled } from "@edulastic/common";
+import { assignmentPolicyOptions, roleuser, test as testConst } from "@edulastic/constants";
 import { Col, Icon, Row, Select } from "antd";
-import { FieldLabel, SelectInputStyled, notification } from "@edulastic/common";
-import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
-import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
+import { curry, get, groupBy, keyBy } from "lodash";
 import * as moment from "moment";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getUserRole } from "../../../src/selectors/user";
+import selectsData from "../../../TestPage/components/common/selectsData";
+import { getIsOverrideFreezeSelector, getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
+import { getListOfActiveStudents } from "../../utils";
 import ClassSelector from "./ClassSelector";
-import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
 import Settings from "./Settings";
-import { OptionConationer, InitOptions, StyledRowButton, SettingsBtn, StyledRow } from "./styled";
-import { getListOfActiveStudents } from "../../utils";
-import selectsData from "../../../TestPage/components/common/selectsData";
-import { getUserRole } from "../../../src/selectors/user";
+import StudentSelector from "./StudentSelector";
+import { InitOptions, OptionConationer, SettingsBtn, StyledRow, StyledRowButton } from "./styled";
 import TestTypeSelector from "./TestTypeSelector";
-import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
-
-import { getUserFeatures } from "../../../../student/Login/ducks";
-import { getReleaseScorePremiumSelector, getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
 
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
@@ -189,7 +188,7 @@ class SimpleOptions extends React.Component {
     const selectedStudentsById = [...studentList, studentId].map(_id => studentById[_id]);
     const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
     const classData = assignment.class.map(item => {
-      const { _id, specificStudents } = item;
+      const { _id } = item;
       if (!studentsByGroupId[_id]) return item;
       return {
         _id,
@@ -199,7 +198,7 @@ class SimpleOptions extends React.Component {
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
         termId: get(groupById, `${_id}.termId`, ""),
-        specificStudents
+        specificStudents: true
       };
     });
     this.setState(
@@ -213,16 +212,31 @@ class SimpleOptions extends React.Component {
     );
   };
 
+  selectAllStudents = (SelectedStudents, selectedValues) => {
+    console.log("selectAllStudents: ", SelectedStudents, selectedValues);
+  };
+
+  unselectAllStudents = (SelectedStudents, selectedValues) => {
+    console.log("selectAllStudents: ", SelectedStudents, selectedValues);
+  };
+
   // Always expected student Id and class Id
   handleRemoveStudents = (studentId, { props: { groupId } }) => {
-    const { assignment, updateOptions } = this.props;
+    const { assignment, group, updateOptions } = this.props;
     const nextAssignment = produce(assignment, state => {
       state.class = assignment.class.map(item => {
         if (item._id === groupId) {
+          let specificStudents = true;
+          let assignedCount = item.assignedCount - 1;
+          if (assignedCount === 0) {
+            assignedCount = keyBy(group, "_id")[groupId].studentCount;
+            specificStudents = false;
+          }
           return {
             ...item,
             students: item.students.filter(student => student !== studentId),
-            assignedCount: item.assignedCount - 1
+            assignedCount,
+            specificStudents
           };
         }
         return item;
@@ -261,22 +275,26 @@ class SimpleOptions extends React.Component {
     return (
       <OptionConationer>
         <InitOptions>
-          <ClassSelector
-            onChange={changeField("class")}
-            onDeselect={this.onDeselect}
-            fetchStudents={fetchStudents}
-            selectedGroups={classIds}
-            group={group}
-            specificStudents={specificStudents}
-          />
-          <StudentSelector
-            studentNames={studentList}
-            students={studentOfSelectedClass}
-            updateStudents={this.updateStudents}
-            handleRemoveStudents={this.handleRemoveStudents}
-            onChange={this.onChange}
-            specificStudents={specificStudents}
-          />
+          <StyledRow gutter={32}>
+            <ClassSelector
+              onChange={changeField("class")}
+              onDeselect={this.onDeselect}
+              fetchStudents={fetchStudents}
+              selectedGroups={classIds}
+              group={group}
+              specificStudents={specificStudents}
+            />
+            <StudentSelector
+              studentNames={studentList}
+              students={studentOfSelectedClass}
+              updateStudents={this.updateStudents}
+              selectAllStudents={this.selectAllStudents}
+              unselectAllStudents={this.unselectAllStudents}
+              handleRemoveStudents={this.handleRemoveStudents}
+              onChange={this.onChange}
+              specificStudents={specificStudents}
+            />
+          </StyledRow>
 
           <DateSelector
             startDate={assignment.startDate}

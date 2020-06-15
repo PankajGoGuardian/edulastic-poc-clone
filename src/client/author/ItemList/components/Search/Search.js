@@ -183,8 +183,9 @@ const Search = ({
           <FieldLabel>Subject</FieldLabel>
           <ItemBody>
             <SelectInputStyled
+              mode="multiple"
               data-cy="selectSubject"
-              onSelect={onSearchFieldChange("subject")}
+              onChange={onSearchFieldChange("subject")}
               value={subject}
               size="large"
               getPopupContainer={triggerNode => triggerNode.parentNode}

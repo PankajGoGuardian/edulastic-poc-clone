@@ -28,6 +28,7 @@ const filterData = [
     size: "large",
     title: "Subject",
     onChange: "subject",
+    mode: "multiple",
     data: [
       { value: "", text: "All Subjects" },
       { value: "Mathematics", text: "Mathematics" },

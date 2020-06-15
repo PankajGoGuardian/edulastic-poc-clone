@@ -1,7 +1,7 @@
 import { Col, Divider, Icon, Button } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
-import { white, themeColor, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { white, themeColor, mediumDesktopExactWidth, extraDesktopWidthMax, title } from "@edulastic/colors";
 
 export const SliderButton = styled(Button)`
   width: 40px;
@@ -118,4 +118,33 @@ export const ChatIcon = styled(Icon)`
   border-radius: 50%;
   align-self: end;
   margin-top: 0.5rem;
+`;
+
+export const EduCertify = styled.div`
+  position: relative;
+  span {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    font-size: 9px;
+    font-weight: bold;
+    color: ${title};
+    text-align: right;
+  }
+`;
+
+export const EduPublic = styled(EduCertify)`
+  svg {
+    g,
+    path {
+      fill: #aaafb4;
+    }
+  }
+  span {
+    text-align: center;
+    letter-spacing: 1px;
+    color: #aaafb4;
+    font-family: auto;
+  }
 `;

@@ -5,7 +5,6 @@ import {
   lightGrey9,
   someGreyColor1,
   lightGreen5,
-  tabGrey,
   borderGrey4,
   secondaryTextColor,
   white,
@@ -31,6 +30,9 @@ export const StyledPage = styled.div`
     }
     .hide-without-print {
       display: flex !important;
+    }
+    .intercom-app {
+      display: none !important;
     }
   }
   table {

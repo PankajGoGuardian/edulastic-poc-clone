@@ -942,8 +942,8 @@ class ModuleRow extends Component {
                             fontSize: "13px"
                           }}
                         >
-                          {moduleData.assignments?.[0]?.testType[0].toUpperCase() ||
-                            moduleData.testType[0].toUpperCase() ||
+                          {moduleData.assignments?.[0]?.testType?.[0]?.toUpperCase() ||
+                            moduleData?.testType?.[0]?.toUpperCase() ||
                             " P "}
                         </Avatar>
                       )}

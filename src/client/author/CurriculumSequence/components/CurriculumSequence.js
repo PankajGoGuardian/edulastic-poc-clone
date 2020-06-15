@@ -36,7 +36,8 @@ import {
   cancelPlaylistCustomizeAction,
   publishCustomizedPlaylistAction,
   toggleManageModulesVisibilityCSAction,
-  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction
+  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction,
+  setShowRightSideAction
 } from "../ducks";
 import { getSummaryData } from "../util";
 /* eslint-enable */
@@ -357,19 +358,19 @@ class CurriculumSequence extends Component {
       activeRightPanel,
       duplicateManageContent,
       role,
-      isStudent
+      isStudent,
+      setShowRightPanel
     } = this.props;
     const { authors } = destinationCurriculumSequence;
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
 
     const isManageContentActive = activeRightPanel === "manageContent";
-    this.setState({ showRightPanel: true });
+    setShowRightPanel(true);
 
     // if (isManageContentActive && manageContentDirty) {
     //   message.warn("Changes left unsaved. Please save it first");
     //   return;
     // }
-
     if (!isManageContentActive && !canEdit && !isStudent) {
       Modal.confirm({
         title: "Do you want to Customize ?",
@@ -414,8 +415,8 @@ class CurriculumSequence extends Component {
   };
 
   hideRightpanel = () => {
-    const { toggleManageContent } = this.props;
-    this.setState({ showRightPanel: false });
+    const { toggleManageContent, setShowRightPanel } = this.props;
+    setShowRightPanel(false);
     toggleManageContent("");
   };
 
@@ -447,7 +448,6 @@ class CurriculumSequence extends Component {
       dropPlaylistModalVisible,
       curatedStudentPlaylists,
       isVisibleAddModule,
-      showRightPanel,
       moduleForEdit
     } = this.state;
 
@@ -490,7 +490,8 @@ class CurriculumSequence extends Component {
       setEmbeddedVideoPreviewModal,
       isVideoResourcePreviewModal,
       fromPlaylist,
-      droppedItemId
+      droppedItemId,
+      showRightPanel
     } = this.props;
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
@@ -772,7 +773,8 @@ const enhance = compose(
       activeClasses: getFilteredClassesSelector(state),
       dateKeys: getDateKeysSelector(state),
       currentUserId: state?.user?.user?._id,
-      isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal
+      isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal,
+      showRightPanel: state.curriculumSequence?.showRightPanel
     }),
     {
       onGuideChange: changeGuideAction,
@@ -793,7 +795,8 @@ const enhance = compose(
       cancelPlaylistCustomize: cancelPlaylistCustomizeAction,
       publishCustomizedPlaylist: publishCustomizedPlaylistAction,
       toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
-      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction
+      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
+      setShowRightPanel: setShowRightSideAction
     }
   )
 );

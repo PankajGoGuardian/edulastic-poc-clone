@@ -120,6 +120,7 @@ export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized 
 export const SET_VIDEO_PREVIEW_RESOURCE_MODAL = "[playlist] set video resource modal content";
 export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub-resource to test";
 export const REMOVE_SUB_RESOURCE_FROM_TEST = "[playlist] remove sub-resource from test";
+export const SET_SHOW_RIGHT_SIDE_PANEL = "[playlist] set show right side panel";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -179,6 +180,7 @@ export const duplicateManageContentAction = createAction(DUPLICATE_MANAGE_CONTEN
 export const cancelPlaylistCustomizeAction = createAction(CANCEL_PLAYLIST_CUSTOMIZE);
 export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST);
 export const setEmbeddedVideoPreviewModal = createAction(SET_VIDEO_PREVIEW_RESOURCE_MODAL);
+export const setShowRightSideAction = createAction(SET_SHOW_RIGHT_SIDE_PANEL);
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -751,8 +753,9 @@ function* duplicateManageContentSaga({ payload }) {
 
     yield put(updateCurriculumSequenceAction(duplicatedDraftPlaylist));
     yield put(setOriginalDestinationData(payload));
-    yield put(toggleManageContentActiveAction());
-    yield put(push(`/author/playlists/customize/${originalId}/${duplicatedDraftPlaylist._id}`));
+    yield put(toggleManageContentActiveAction(true));
+    yield put(setShowRightSideAction(true));
+    yield put(push(`/author/playlists/playlist/${duplicatedDraftPlaylist._id}/use-this`));
   } catch (error) {
     console.error(error);
     notification({ messageKey: "commonErr" });
@@ -1823,6 +1826,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
     state.activeRightPanel = payload;
+    if (payload) {
+      state.activeRightPanel = "manageContent";
+    }
   },
   [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
     state.signedRequest = payload;
@@ -1842,7 +1848,7 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {};
     }
-    state.activeRightPanel = "manageContent";
+    state.activeRightPanel = "summary";
 
     state.destinationDirty = false;
   },
@@ -1850,7 +1856,7 @@ export default createReducer(initialState, {
     state.originalData = payload;
   },
   [RESET_DESTINATION_FLAGS]: state => {
-    state.activeRightPanel = "manageContent";
+    state.activeRightPanel = "summary";
     state.destinationDirty = false;
   },
   [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {
@@ -1889,5 +1895,8 @@ export default createReducer(initialState, {
   },
   [FETCH_CURRICULUM_SEQUENCES_ERROR]: state => {
     state.loading = false;
+  },
+  [SET_SHOW_RIGHT_SIDE_PANEL]: (state, { payload }) => {
+    state.showRightPanel = payload;
   }
 });

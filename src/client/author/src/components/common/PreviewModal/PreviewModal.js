@@ -364,7 +364,7 @@ class PreviewModal extends React.Component {
           </FlexContainer>
 
           <ModalTopAction>
-            {isPassage && showAddPassageItemToTestButton && (
+            {isPassage && showAddPassageItemToTestButton ? (
               <EduButton
                 style={this.getBtnStyle(this.isAddOrRemove)}
                 IconBtn
@@ -390,6 +390,19 @@ class PreviewModal extends React.Component {
                     </FlexContainer>
                   </>
                 )}
+              </EduButton>
+            ) : (
+              <EduButton
+                style={this.getBtnStyle(this.isAddOrRemove)}
+                type="primary"
+                height="32px"
+                justifyContent="space-between"
+                onClick={() => {
+                  this.handleSelection();
+                  this.closeModal();
+                }}
+              >
+                Add To Test
               </EduButton>
             )}
             <EduButton IconBtn type="primary" width="140px" height="32px" onClick={this.toggleFullModal}>

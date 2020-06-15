@@ -52,7 +52,7 @@ class CardWrapper extends Component {
       collections
     } = this.props;
 
-    const itemId = _id.substr(_id.length - 5);
+    const itemId = _id.substr(_id.length - 6);
 
     if (blockStyle === "tile") {
       return (

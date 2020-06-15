@@ -122,6 +122,9 @@ export const PlaylistId = styled(Author)`
     font-size: 16px;
     margin-right: 5px;
   }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 10px;
+  }
 `;
 
 export const StatusRow = styled.div`

@@ -138,7 +138,8 @@ const checkUser = payload => api
       params: {
         username: `${payload.username}`,
         districtId: `${payload.districtId}`,
-        classCode: `${payload.classCode}`
+        classCode: `${payload.classCode}`,
+        role: `${payload.role}`
       },
       method: "get"
     })
@@ -172,7 +173,7 @@ const validateClassCode = classCode =>
 const validateDistrictPolicy = params =>
   api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
 
-const checkClassCode = params => api.callApi({ url: `/auth/class-code/`, params }).then(result.data.data);
+const checkClassCode = params => api.callApi({ url: `/auth/class-code/`, params }).then(result =>result.data.data);
 
 const requestNewPassword = params =>
   api

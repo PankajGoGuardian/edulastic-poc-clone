@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
-import { Input } from "antd";
-import { Form } from "antd";
-import { Field } from "./styled";
+import { Input , Form } from "antd";
+
 import { userApi } from "@edulastic/api";
 import styled from "styled-components";
 import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor, boxShadowDefault } from "@edulastic/colors";
+import { Field } from "./styled";
 import { nameValidator } from "../../../../../common/utils/helpers";
+
 const BasicFields = ({
   stds,
   isEdit,
@@ -20,23 +21,17 @@ const BasicFields = ({
   getFieldDecorator,
   isUpdate,
   setIsUpdate,
-  updateStudent,
   setFounduser,
-  modalClose,
   showClassCodeField,
   fetchClassDetailsUsingCode,
   resetClassDetails = () => {},
   setFoundContactEmails,
   validatedClassDetails,
-  t,
-  classDetails,
-  ...restProps
+  classDetails
 }) => {
   const _className = get(validatedClassDetails, "groupInfo.name", "");
 
-  if (!isEmpty(stds[0])) {
-    var { email, firstName, lastName, username, googleId, canvasId, cliId, cleverId } = stds[0];
-  }
+  const { email, firstName, lastName, username, googleId, canvasId, cliId, cleverId } = stds?.[0] || [];
 
   const [userExistsInClass, setUserExistsInClass] = useState(false);
 
@@ -82,7 +77,8 @@ const BasicFields = ({
       result = await userApi.checkUser({
         username: value,
         districtId,
-        classCode: code
+        classCode: code,
+        role: "student"
       });
     } catch (error) {
       callback("Invalid input");
@@ -108,37 +104,32 @@ const BasicFields = ({
     setUserExistsInClass(false);
     let errorMsg = "";
     if (result.length > 0) {
-      let foundUser = user;
+      const foundUser = user;
       const isExistingStudent = students.find(
         student => student._id == foundUser._id && student.enrollmentStatus === "1"
       );
       if (isExistingStudent) {
         errorMsg = "User already part of this class section";
-      } else {
-        let isSameDistrict = foundUser.districtId == districtId;
-        if (isSameDistrict) {
-          if (foundUser.role === "teacher")
-            errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
-          else {
-            errorMsg = "";
-            setEnroll(true);
-            setIsUpdate(!isUpdate);
-            setFounduser(foundUser._id);
-            setFoundContactEmails(foundUser.contactEmails);
-            const firstName = foundUser.firstName ? foundUser.firstName : "";
-            const lastName = foundUser.lastName ? foundUser.lastName : "";
-            if (foundUser.contactEmails?.length > 0) {
-              setFields({ contactEmails: foundUser.contactEmails.join(",") });
-            }
-            if (foundUser.firstName)
-              setFields({
-                fullName: {
-                  value: firstName + " " + lastName
-                }
-              });
+      } else if (foundUser.role === "teacher")
+          errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
+        else {
+          errorMsg = "";
+          setEnroll(true);
+          setIsUpdate(!isUpdate);
+          setFounduser(foundUser._id);
+          setFoundContactEmails(foundUser.contactEmails);
+          const userFirstName = foundUser.firstName ? foundUser.firstName : "";
+          const userLastName = foundUser.lastName ? foundUser.lastName : "";
+          if (foundUser.contactEmails?.length > 0) {
+            setFields({ contactEmails: foundUser.contactEmails.join(",") });
           }
+          if (userFirstName)
+            setFields({
+              fullName: {
+                value: `${userFirstName  } ${  userLastName}`
+              }
+            });
         }
-      }
       if (errorMsg !== "" && !enroll) {
         callback(errorMsg);
       }
@@ -146,8 +137,8 @@ const BasicFields = ({
   };
 
   const checkFirstName = (rule, value, callback) => {
-    const firstName = value.split(" ")[0];
-    if (firstName.length < 3) {
+    const userFirstName = value.split(" ")[0];
+    if (userFirstName.length < 3) {
       callback("Name must contains atleast 3 characters");
     } else {
       callback();
@@ -226,7 +217,7 @@ const BasicFields = ({
       {showClassCodeField && (
         <Field name="role">
           <legend>Role</legend>
-          <Form.Item>{getFieldDecorator("role", { initialValue: "student" })(<Input disabled={true} />)}</Form.Item>
+          <Form.Item>{getFieldDecorator("role", { initialValue: "student" })(<Input disabled />)}</Form.Item>
         </Field>
       )}
       {!isEdit && (
@@ -359,13 +350,11 @@ const BasicFields = ({
 };
 
 BasicFields.propTypes = {
-  std: PropTypes.object,
   isEdit: PropTypes.bool
 };
 
 // eslint-disable-next-line no-unused-expressions
 BasicFields.defaultProps = {
-  std: {},
   isEdit: false
 };
 

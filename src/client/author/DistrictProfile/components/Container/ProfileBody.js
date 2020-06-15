@@ -324,7 +324,8 @@ class ProfileBody extends React.Component {
     if (value !== user.email) {
       const result = await userApi.checkUser({
         username: value,
-        districtId: user.districtId
+        districtId: user.districtId,
+        role: user.role
       });
 
       if (result.length > 0) callback(t("common.title.emailAlreadyExistsMessage"));

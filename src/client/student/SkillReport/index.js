@@ -4,6 +4,7 @@ import { Spin } from "antd";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { withNamespaces } from "react-i18next";
 import { getSPRFilterDataRequestAction } from "../../author/Reports/subPages/studentProfileReport/common/filterDataDucks";
 import StudentMasteryProfile from "../../author/Reports/subPages/studentProfileReport/StudentMasteryProfile";
 import NoDataNotification from "../../common/components/NoDataNotification";
@@ -18,20 +19,21 @@ import {
 import Header from "../sharedComponents/Header";
 import MainContainer from "../styled/mainContainer";
 import { LoaderConainer } from "./styled";
-import { withNamespaces } from "react-i18next";
+import { getUserRole } from "../../author/src/selectors/user";
 
 const getTermId = (_classes, _classId) => _classes.find(c => c._id === _classId).termId || "";
 
 const SkillReportContainer = ({
   flag,
   userId,
+  userRole,
   userName,
   classId,
   loadAllClasses,
   activeClasses,
   userClasses,
   loading,
-  resetEnrolledClassAction,
+  resetEnrolledClass,
   currentChild,
   getSPRFilterDataRequest,
   t
@@ -47,10 +49,10 @@ const SkillReportContainer = ({
     }
   });
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
-  const fallbackClassId = !!activeEnrolledClasses[0] ? activeEnrolledClasses[0]._id : "";
+  const fallbackClassId = activeEnrolledClasses[0] ? activeEnrolledClasses[0]._id : "";
 
   useEffect(() => {
-    resetEnrolledClassAction();
+    resetEnrolledClass();
     loadAllClasses();
     setInitialLoading(false);
   }, [currentChild]);
@@ -59,7 +61,11 @@ const SkillReportContainer = ({
     if (classId) {
       setSettings({
         ...settings,
-        requestFilters: { ...settings.requestFilters, termId: getTermId(userClasses, classId || fallbackClassId) }
+        requestFilters: {
+          ...settings.requestFilters,
+          termId: getTermId(userClasses, classId || fallbackClassId),
+          groupIds: [classId]
+        }
       });
     }
   }, [classId, currentChild]);
@@ -69,6 +75,19 @@ const SkillReportContainer = ({
       ...settings.requestFilters,
       studentId: userId
     };
+    // set groupId for student
+    if (classId && userRole === "student") {
+      Object.assign(q, {
+        groupIds: [classId]
+      });
+    } else if (!classId && userRole === "student" && (activeClasses || []).length) {
+      const firstActiveClassId = activeClasses?.[0]?._id;
+      if (firstActiveClassId) {
+        Object.assign(q, {
+          groupIds: [firstActiveClassId]
+        });
+      }
+    }
     if (q.termId) getSPRFilterDataRequest(q);
   }, [settings]);
 
@@ -113,11 +132,12 @@ export default withNamespaces("header")(
       userName: getUserName(state),
       userId: getUserId(state),
       currentChild: state?.user?.currentChild,
-      loading: getLoaderSelector(state)
+      loading: getLoaderSelector(state),
+      userRole: getUserRole(state)
     }),
     {
       loadAllClasses: getEnrollClassAction,
-      resetEnrolledClassAction,
+      resetEnrolledClass: resetEnrolledClassAction,
       getSPRFilterDataRequest: getSPRFilterDataRequestAction
     }
   )(SkillReportContainer)

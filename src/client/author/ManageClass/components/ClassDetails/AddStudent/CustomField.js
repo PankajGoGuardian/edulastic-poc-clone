@@ -52,7 +52,8 @@ const CustomField = ({
     });
     const result = await userApi.checkUser({
       districtId,
-      username: value
+      username: value,
+      role: "student"
     });
     let errorMsg = "";
     let isSameClass = false;

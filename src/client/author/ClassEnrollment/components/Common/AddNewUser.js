@@ -69,7 +69,8 @@ class AddNewUserForm extends React.Component {
       const res = await userApi.checkUser({
         username: value,
         districtId,
-        classCode
+        classCode,
+        role: "student"
       });
 
       const user = res[0] || {};

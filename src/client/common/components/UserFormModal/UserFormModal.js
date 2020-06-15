@@ -1,27 +1,29 @@
 import React from "react";
 import moment from "moment";
-import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
-import { Icon, Collapse, Spin, Input, Select, DatePicker, message } from "antd";
+import { get, unset, pickBy, identity, isEmpty } from "lodash";
+import { Icon, Collapse, Input, Select, DatePicker } from "antd";
 import { IconUser } from "@edulastic/icons";
 import { userApi } from "@edulastic/api";
+import { EduButton } from "@edulastic/common";
 import { isEmailValid } from "../../utils/helpers";
 
-import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
+import { StyledModal, Title, PanelHeader, Field, Form, FooterDiv } from "./styled";
 import userIcon from "../../../student/assets/user-icon.svg";
 import mailIcon from "../../../student/assets/mail-icon.svg";
 import keyIcon from "../../../student/assets/key-icon.svg";
-import { EduButton } from "@edulastic/common";
 
 const { Panel } = Collapse;
+const { Option } = Select;
 class UserForm extends React.Component {
   state = {
     keys: ["basic"]
   };
 
   onProceed = () => {
-    this.props.form.validateFields((err, row) => {
+    const {form} = this.props;
+    form.validateFields((err, row) => {
       if (!err) {
-        const { modalData, modalFunc, userOrgId: districtId } = this.props;
+        const { modalData, modalFunc, userOrgId: districtId, closeModal } = this.props;
         if (row.dob) {
           row.dob = moment(row.dob).format("x");
         }
@@ -37,13 +39,14 @@ class UserForm extends React.Component {
             districtId
           })
         });
-        this.props.closeModal();
+        closeModal();
       }
     });
   };
 
   confirmPwdCheck = (rule, value, callback) => {
-    const pwd = this.props.form.getFieldValue("password");
+    const {form} = this.props;
+    const pwd = form.getFieldValue("password");
     if (pwd !== value) {
       callback(rule.message);
     } else {
@@ -55,19 +58,21 @@ class UserForm extends React.Component {
     if (!isEmailValid(rule, value, callback, "email", "Please enter valid email")) return;
     const {
       userOrgId: districtId,
-      modalData: { _source }
+      modalData: { _source },
+      role
     } = this.props;
     const email = get(_source, "email", "");
     if (email !== value) {
       try {
         const res = await userApi.checkUser({
           username: value,
-          districtId
+          districtId,
+          role
         });
         if (!isEmpty(res)) {
           return callback("Email Already exists");
         }
-      } catch (err) {
+      } catch (error) {
         console.log(error);
       }
     }
@@ -77,10 +82,8 @@ class UserForm extends React.Component {
     const {
       form: { getFieldDecorator },
       closeModal,
-      userOrgId: districtId,
       showModal,
       formTitle,
-      role,
       showAdditionalFields,
       modalData: { _source } = {},
       buttonText,
@@ -144,7 +147,7 @@ class UserForm extends React.Component {
                       <Input
                         prefix={<img style={iconSize} src={mailIcon} alt="" />}
                         placeholder="Enter Username/email"
-                        disabled={true}
+                        disabled
                       />
                     )}
                   </Form.Item>
@@ -161,7 +164,7 @@ class UserForm extends React.Component {
                       <Input
                         prefix={<img style={iconSize} src={mailIcon} alt="" />}
                         placeholder="Enter Username/email"
-                        disabled={true}
+                        disabled
                       />
                     )}
                   </Form.Item>

@@ -344,14 +344,14 @@ class SideMenu extends Component {
             </Link>
           </Menu.Item>
           {!isPublisher && (
-            <Menu.Item key="1" className="removeSelectedBorder">
+            <Menu.Item key="2" className="removeSelectedBorder">
               <Link to="/author/subscription">
                 <IconSubscriptionHighlight /> {isCollapsed ? "" : "Subscription"}
               </Link>
             </Menu.Item>
           )}
           {get(switchDetails, "otherAccounts", []).length ? (
-            <Menu.Item key="2" className="removeSelectedBorder">
+            <Menu.Item key="3" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser /> {isCollapsed ? "" : "Switch Account"}
               </a>

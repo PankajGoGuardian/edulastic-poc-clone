@@ -1913,7 +1913,7 @@ function* setAndSavePassageItems({ payload: { passageItems, page } }) {
     }
     const testItems = yield select(getSelectedTestItemsSelector);
     newPayload.itemGroups = _test.itemGroups;
-    newPayload.itemGroups[currentGroupIndex].items = [...testItems, ...passageItems];
+    newPayload.itemGroups[currentGroupIndex].items = uniqBy([...testItems, ...passageItems], x => x._id);
     const itemIds = _uniq(newPayload.itemGroups.flatMap(itemGroup => itemGroup.items || []).map(i => i._id));
     if (!_test._id && page !== "itemList") {
       yield put(createTestAction({ ..._test, ...newPayload }));

@@ -20,7 +20,8 @@ import {
   addPassageAction,
   setPrevewItemAction,
   setQuestionsForPassageAction,
-  clearPreviewAction
+  clearPreviewAction,
+  duplicateTestItemPreviewRequestAction
 } from "./ducks";
 
 import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
@@ -39,7 +40,6 @@ import { Nav } from "../../../../../assessment/themes/common";
 import { getAssignmentsSelector } from "../../../../AssignTest/duck";
 import ScoreBlock from "../ScoreBlock";
 
-const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
   constructor(props) {
     super(props);
@@ -90,24 +90,61 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, testId, history, updateTestAndNavigate, test, match, isTest = !!testId } = this.props;
+    const { data, testId, duplicateTestItem, test, match, isTest = !!testId, passage } = this.props;
     const itemId = data.id;
-    this.closeModal();
-    const duplicatedItem = await duplicateTestItem(itemId);
     const regradeFlow = match.params.oldId && match.params.oldId !== "undefined";
-
-    if (isTest) {
-      updateTestAndNavigate({
-        pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}`,
-        fadeSidebar: true,
-        regradeFlow,
-        previousTestId: test.previousTestId,
-        testId,
-        isDuplicating: true
-      });
-    } else {
-      history.push(`/author/items/${duplicatedItem._id}/item-detail`);
+    if (!passage) {
+      return duplicateTestItem({ data, testId, test, match, isTest, itemId, regradeFlow });
     }
+    Modal.confirm({
+      title: "Clone Passage Item",
+      content: `This passage has ${
+        passage.testItems.length
+      } Items associated with it. Would you like to clone complete passage or a single item?`,
+      onOk: () => {
+        duplicateTestItem({ data, testId, test, match, isTest, itemId, regradeFlow, passage });
+        Modal.destroyAll();
+        this.closeModal();
+      },
+      onCancel: () => {
+        duplicateTestItem({
+          data,
+          testId,
+          test,
+          match,
+          isTest,
+          itemId,
+          regradeFlow,
+          passage,
+          duplicateWholePassage: true
+        });
+        Modal.destroyAll();
+        this.closeModal();
+      },
+      okText: "Current Item",
+      cancelText: "Complete Passage",
+      centered: true,
+      width: 500,
+      okButtonProps: {
+        style: { background: themeColor, outline: "none" }
+      }
+    });
+
+    // const duplicatedItem = await duplicateTestItem(itemId);
+
+    // if (isTest) {
+    //   updateTestAndNavigate({
+    //     pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}`,
+    //     fadeSidebar: true,
+    //     regradeFlow,
+    //     previousTestId: test.previousTestId,
+    //     testId,
+    //     isDuplicating: true,
+    //     passage
+    //   });
+    // } else {
+    //   history.push(`/author/items/${duplicatedItem._id}/item-detail`);
+    // }
   };
 
   // this is the one need to be modified
@@ -501,7 +538,8 @@ const enhance = compose(
       setDataAndSave: setTestDataAndUpdateAction,
       setTestItems: setTestItemsAction,
       clearItemStore: clearItemDetailAction,
-      updateTestAndNavigate: updateTestAndNavigateAction
+      updateTestAndNavigate: updateTestAndNavigateAction,
+      duplicateTestItem: duplicateTestItemPreviewRequestAction
     }
   )
 );

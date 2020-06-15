@@ -51,6 +51,7 @@ import { externalToolsSaga } from "../../ExternalTools";
 import { mergeUsersSaga } from "../../MergeUsers";
 import { gradebookSaga } from "../../Gradebook";
 import { advancedAssignmentsSaga } from "../../AssignmentAdvanced";
+import { watcherSaga as previewModalSaga } from "../components/common/PreviewModal/ducks";
 
 const authorSagas = [
   itemsSaga(),
@@ -105,6 +106,7 @@ const authorSagas = [
   externalToolsSaga(),
   mergeUsersSaga(),
   gradebookSaga(),
+  previewModalSaga(),
   advancedAssignmentsSaga()
 ];
 

@@ -1802,5 +1802,9 @@
   "selectOneOrMoreStudentsForGroup": {
     "message": "Please select one or more students to add to group",
     "description": ""
+  },
+  "duplicationItemError": {
+    "message": "Item duplication failed",
+    "description": ""
   }
 }

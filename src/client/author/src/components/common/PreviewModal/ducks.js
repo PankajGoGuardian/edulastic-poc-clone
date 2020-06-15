@@ -1,17 +1,24 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { get } from "lodash";
-import { markQuestionLabel } from "../../../../../assessment/Transformer";
+import { call, put, all, takeEvery } from "redux-saga/effects";
+import { push } from "connected-react-router";
+import { get, omit } from "lodash";
+import { testItemsApi, passageApi } from "@edulastic/api";
+import { notification } from "@edulastic/common";
+import * as Sentry from "@sentry/browser";
+import { updateTestAndNavigateAction } from "../../../../TestPage/ducks";
 
 export const SET_QUESTIONS_IN_PASSAGE = "[testItemPreview] set questions to passage";
 export const ADD_PASSAGE = "[testItemPreview] add passage to item";
 export const SET_ITEM_PREVIEW_DATA = "[testItemPreview] set data";
 export const CLEAR_ITEM_PREVIEW = "[testItemPreview] clear item preview";
+export const DUPLICATE_TESTITEM_PREVIEW_REQUEST = "[testItemPreview] duplicate request";
 
 export const setQuestionsForPassageAction = createAction(SET_QUESTIONS_IN_PASSAGE);
 export const addPassageAction = createAction(ADD_PASSAGE);
 export const clearPreviewAction = createAction(CLEAR_ITEM_PREVIEW);
 export const setPrevewItemAction = createAction(SET_ITEM_PREVIEW_DATA);
+export const duplicateTestItemPreviewRequestAction = createAction(DUPLICATE_TESTITEM_PREVIEW_REQUEST);
 
 export const stateSelector = state => state.testItemPreview;
 export const getPassageSelector = createSelector(
@@ -70,4 +77,53 @@ export function reducer(state = initialState, { type, payload }) {
     default:
       return state;
   }
+}
+
+function* duplicateItemRequestSaga({ payload }) {
+  try {
+    const { data, testId, test, isTest, regradeFlow, duplicateWholePassage } = payload;
+    const { passage } = payload;
+    const itemId = data.id;
+    let duplicatedItem = null;
+    if (passage && duplicateWholePassage) {
+      // duplicating item along with its passage
+      const { _id: oldPassageId, __v, ...dataToSend } = passage;
+      // duplicating item
+      duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId);
+      // creating a fresh passage with old content but only newly duplicated item
+      const duplicatedPassage = yield call(passageApi.create, { ...dataToSend, testItems: [duplicatedItem._id] });
+      const { _id: duplicateItemId, ...item } = duplicatedItem;
+      // updating new passageId with newly duplicated item
+      yield call(testItemsApi.update, { id: duplicateItemId, item: { ...item, passageId: duplicatedPassage._id } });
+    } else if (passage && !duplicateWholePassage) {
+      // duplicating a single item in a passage and need to add this item to the passage
+      duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId);
+      yield call(passageApi.update, { ...omit(passage, "__v"), testItems: [...passage.testItems, duplicatedItem._id] });
+    } else {
+      duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId);
+    }
+    if (isTest) {
+      yield put(
+        updateTestAndNavigateAction({
+          pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}`,
+          fadeSidebar: true,
+          regradeFlow,
+          previousTestId: test.previousTestId,
+          testId,
+          isDuplicating: true,
+          passage
+        })
+      );
+    } else {
+      yield put(push(`/author/items/${duplicatedItem._id}/item-detail`));
+    }
+  } catch (e) {
+    Sentry.captureException(e);
+    console.error("duplicateItemrequest error - ", e);
+    notification({ messageKey: "duplicationItemError" });
+  }
+}
+
+export function* watcherSaga() {
+  yield all([yield takeEvery(DUPLICATE_TESTITEM_PREVIEW_REQUEST, duplicateItemRequestSaga)]);
 }

@@ -1,6 +1,6 @@
 import { groupBy, keyBy, isEmpty, get, values, round, sumBy, orderBy } from "lodash";
-import { getProficiencyBand } from "../../../../common/util";
 import { white } from "@edulastic/colors";
+import { getProficiencyBand } from "../../../../common/util";
 
 export const idToLabel = {
   standardId: "standard",
@@ -38,47 +38,41 @@ export const analyseByToName = {
 export const analyseByToKeyToRender = {
   "score(%)": "scorePercent",
   rawScore: "rawScore",
-  masteryLevel: "masteryLevel",
+  masteryLevel: "masteryName",
   masteryScore: "fm"
 };
 
 const getFormattedName = name => {
   const nameArr = (name || "").trim().split(" ");
   const lName = nameArr.splice(nameArr.length - 1)[0];
-  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+  return nameArr.length ? `${lName  }, ${  nameArr.join(" ")}` : lName;
 };
 
 export const getFilterDropDownData = (arr, role) => {
-  let schoolGrp, teacherGrp, groupGrp;
-  let schoolArr, teacherArr, groupArr;
+  let schoolGrp; let teacherGrp; let groupGrp;
+  let schoolArr; let teacherArr; let groupArr;
   let keyArr;
   if (role !== "teacher") {
-    schoolGrp = groupBy(arr.filter(item => (item.schoolId ? true : false)), "schoolId");
-    teacherGrp = groupBy(arr.filter(item => (item.teacherId ? true : false)), "teacherId");
+    schoolGrp = groupBy(arr.filter(item => (!!item.schoolId)), "schoolId");
+    teacherGrp = groupBy(arr.filter(item => (!!item.teacherId)), "teacherId");
 
     keyArr = Object.keys(schoolGrp);
-    schoolArr = keyArr.map(item => {
-      return { key: item, title: schoolGrp[item][0].schoolName };
-    });
+    schoolArr = keyArr.map(item => ({ key: item, title: schoolGrp[item][0].schoolName }));
     schoolArr.unshift({
       key: "all",
       title: "All"
     });
 
     keyArr = Object.keys(teacherGrp);
-    teacherArr = keyArr.map((item, index) => {
-      return { key: item, title: teacherGrp[item][0].teacherName };
-    });
+    teacherArr = keyArr.map((item, index) => ({ key: item, title: teacherGrp[item][0].teacherName }));
     teacherArr.unshift({
       key: "all",
       title: "All"
     });
   }
-  groupGrp = groupBy(arr.filter((item, index) => (item.groupId ? true : false)), "groupId");
+  groupGrp = groupBy(arr.filter((item, index) => (!!item.groupId)), "groupId");
   keyArr = Object.keys(groupGrp);
-  groupArr = keyArr.map((item, index) => {
-    return { key: item, title: groupGrp[item][0].className };
-  });
+  groupArr = keyArr.map((item, index) => ({ key: item, title: groupGrp[item][0].className }));
   groupArr.unshift({
     key: "all",
     title: "All"
@@ -102,7 +96,7 @@ export const getFilterDropDownData = (arr, role) => {
         data: groupArr
       }
     ];
-  } else {
+  } 
     return [
       {
         key: "groupId",
@@ -110,13 +104,13 @@ export const getFilterDropDownData = (arr, role) => {
         data: groupArr
       }
     ];
-  }
+  
 };
 
 export const getMasteryDropDown = masteryScale => {
-  let arr = [];
+  const arr = [];
   if (Array.isArray(masteryScale)) {
-    for (let item of masteryScale) {
+    for (const item of masteryScale) {
       arr.push({
         key: item.masteryName,
         title: item.masteryName
@@ -135,14 +129,14 @@ export const getDenormalizedData = rawData => {
     return [];
   }
 
-  let rawSkillinfo = get(rawData, "data.result.skillInfo", []);
-  let skillInfoMap = keyBy(rawSkillinfo.filter((item, index) => (item.standardId ? true : false)), "standardId");
+  const rawSkillinfo = get(rawData, "data.result.skillInfo", []);
+  const skillInfoMap = keyBy(rawSkillinfo.filter((item, index) => (!!item.standardId)), "standardId");
 
-  let rawStudInfo = get(rawData, "data.result.studInfo", []);
-  let studInfoMap = keyBy(rawStudInfo, "studentId");
+  const rawStudInfo = get(rawData, "data.result.studInfo", []);
+  const studInfoMap = keyBy(rawStudInfo, "studentId");
 
-  let rawMetricInfo = get(rawData, "data.result.metricInfo", []);
-  let enhancedRawMetricInfo = rawMetricInfo
+  const rawMetricInfo = get(rawData, "data.result.metricInfo", []);
+  const enhancedRawMetricInfo = rawMetricInfo
     .filter(item => skillInfoMap[item.standardId])
     .map((item, index) => {
       let obj = {
@@ -157,8 +151,8 @@ export const getDenormalizedData = rawData => {
           ),
           groupIds: studInfoMap[item.studentId].groupIds.split(",")
         };
-        let groupIdsMap = keyBy(obj.groupIds);
-        let uniqueGroupIds = values(groupIdsMap);
+        const groupIdsMap = keyBy(obj.groupIds);
+        const uniqueGroupIds = values(groupIdsMap);
         obj.groupIds = uniqueGroupIds;
       }
       if (skillInfoMap[item.standardId]) {
@@ -170,12 +164,12 @@ export const getDenormalizedData = rawData => {
       return obj;
     });
 
-  let denormalizedEnhancedRawMetricInfo = [];
+  const denormalizedEnhancedRawMetricInfo = [];
   enhancedRawMetricInfo
     .filter(i => i.groupIds)
     .map((item, index) => {
       item.groupIds.map((_item, index) => {
-        let obj = {
+        const obj = {
           ...item,
           groupId: _item
         };
@@ -183,10 +177,10 @@ export const getDenormalizedData = rawData => {
       });
     });
 
-  let rawTeacherInfo = get(rawData, "data.result.teacherInfo", []);
-  let teacherInfoMap = keyBy(rawTeacherInfo, "groupId");
+  const rawTeacherInfo = get(rawData, "data.result.teacherInfo", []);
+  const teacherInfoMap = keyBy(rawTeacherInfo, "groupId");
 
-  let finalDenormalizedData = denormalizedEnhancedRawMetricInfo.map((item, index) => {
+  const finalDenormalizedData = denormalizedEnhancedRawMetricInfo.map((item, index) => {
     let obj = {
       ...item
     };
@@ -203,19 +197,19 @@ export const getDenormalizedData = rawData => {
 };
 
 export const getFilteredDenormalizedData = (denormalizedData, filters, role) => {
-  let filteredDenormalizedData = denormalizedData.filter((item, index) => {
+  const filteredDenormalizedData = denormalizedData.filter((item, index) => {
     let schoolIdFlag;
     let teacherIdFlag;
     if (role !== "teacher") {
-      schoolIdFlag = item.schoolId === filters.schoolId || filters.schoolId === "all" ? true : false;
-      teacherIdFlag = item.teacherId === filters.teacherId || filters.teacherId === "all" ? true : false;
+      schoolIdFlag = !!(item.schoolId === filters.schoolId || filters.schoolId === "all");
+      teacherIdFlag = !!(item.teacherId === filters.teacherId || filters.teacherId === "all");
     }
-    let groupIdFlag = item.groupId === filters.groupId || filters.groupId === "all" ? true : false;
-    let genderFlag = item.gender === filters.gender || filters.gender === "all" ? true : false;
-    let frlStatusFlag = item.frlStatus === filters.frlStatus || filters.frlStatus === "all" ? true : false;
-    let ellStatusFlag = item.ellStatus === filters.ellStatus || filters.ellStatus === "all" ? true : false;
-    let iepStatusFlag = item.iepStatus === filters.iepStatus || filters.iepStatus === "all" ? true : false;
-    let raceFlag = item.race === filters.race || filters.race === "all" ? true : false;
+    const groupIdFlag = !!(item.groupId === filters.groupId || filters.groupId === "all");
+    const genderFlag = !!(item.gender === filters.gender || filters.gender === "all");
+    const frlStatusFlag = !!(item.frlStatus === filters.frlStatus || filters.frlStatus === "all");
+    const ellStatusFlag = !!(item.ellStatus === filters.ellStatus || filters.ellStatus === "all");
+    const iepStatusFlag = !!(item.iepStatus === filters.iepStatus || filters.iepStatus === "all");
+    const raceFlag = !!(item.race === filters.race || filters.race === "all");
 
     if (
       role === "teacher" &&
@@ -253,23 +247,23 @@ export const getChartData = (filteredDenormalizedData, masteryScale, filters, ro
     return [];
   }
 
-  let groupedStandardIds = groupBy(filteredDenormalizedData, "standardId");
+  const groupedStandardIds = groupBy(filteredDenormalizedData, "standardId");
 
-  let keysArr = Object.keys(groupedStandardIds);
+  const keysArr = Object.keys(groupedStandardIds);
 
   const masteryMap = keyBy(masteryScale, "score");
   const masteryCountHelper = {};
 
-  for (let item of masteryScale) {
+  for (const item of masteryScale) {
     masteryCountHelper[item.score] = 0;
   }
 
-  let arr = keysArr.map((item, index) => {
-    let obj = {};
-    let totalStudents = groupedStandardIds[item].length;
-    let tempMasteryCountHelper = { ...masteryCountHelper };
+  const arr = keysArr.map((item, index) => {
+    const obj = {};
+    const totalStudents = groupedStandardIds[item].length;
+    const tempMasteryCountHelper = { ...masteryCountHelper };
 
-    for (let _item of groupedStandardIds[item]) {
+    for (const _item of groupedStandardIds[item]) {
       if (tempMasteryCountHelper[Math.round(_item.fm)]) {
         tempMasteryCountHelper[Math.round(_item.fm)]++;
       } else {
@@ -282,11 +276,11 @@ export const getChartData = (filteredDenormalizedData, masteryScale, filters, ro
     obj.standard = groupedStandardIds[item][0].standard;
     obj.standardName = groupedStandardIds[item][0].standardName;
 
-    let masteryLabelInfo = {};
+    const masteryLabelInfo = {};
 
     Object.keys(tempMasteryCountHelper).map(item => {
       if (masteryMap[item]) {
-        let masteryPercentage = round((tempMasteryCountHelper[item] / totalStudents) * 100);
+        const masteryPercentage = round((tempMasteryCountHelper[item] / totalStudents) * 100);
         masteryLabelInfo[masteryMap[item].masteryLabel] = masteryMap[item].masteryName;
         if (item == 1) {
           obj[masteryMap[item].masteryLabel] = -masteryPercentage;
@@ -307,7 +301,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
   const arr = Object.keys(groupedData).map(item => {
     let _item = groupedData[item].reduce(
       (total, currentValue) => {
-        let { maxScore = 0, totalScore = 0, fm = 0 } = currentValue;
+        const { maxScore = 0, totalScore = 0, fm = 0 } = currentValue;
         return {
           totalMaxScore: (total.totalMaxScore += maxScore),
           totalTotalScore: (total.totalTotalScore += totalScore),
@@ -316,26 +310,26 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       },
       { totalMaxScore: 0, totalTotalScore: 0, totalFinalMastery: 0 }
     );
-    
+
     let scorePercentUnrounded = (_item.totalTotalScore / _item.totalMaxScore) * 100;
     scorePercentUnrounded = !isNaN(scorePercentUnrounded) ? scorePercentUnrounded : 0;
 
-    let rawScoreUnrounded = _item.totalTotalScore || 0;
+    const rawScoreUnrounded = _item.totalTotalScore || 0;
 
     let fmUnrounded = _item.totalFinalMastery / groupedData[item].length;
     fmUnrounded = !isNaN(fmUnrounded) ? fmUnrounded : 0;
-    let fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0;
+    const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0;
 
     const { masteryLevel = "N/A", masteryName = "N/A", color = white } = fm
       ? getProficiencyBand(Math.round(fm), masteryScale, "score")
       : {};
 
-    let groupedStandardIds = groupBy(groupedData[item], "standardId");
+    const groupedStandardIds = groupBy(groupedData[item], "standardId");
 
-    let standardsInfo = Object.keys(groupedStandardIds).map((__item, index) => {
+    const standardsInfo = Object.keys(groupedStandardIds).map((__item, index) => {
       let ___item = groupedStandardIds[__item].reduce(
         (total, currentValue) => {
-          let { maxScore = 0, totalScore = 0, fm = 0 } = currentValue;
+          const { maxScore = 0, totalScore = 0, fm = 0 } = currentValue;
           return {
             totalMaxScore: (total.totalMaxScore += maxScore),
             totalTotalScore: (total.totalTotalScore += totalScore),
@@ -353,7 +347,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
 
       let fmUnrounded = ___item.totalFinalMastery / groupedStandardIds[__item].length;
       fmUnrounded = !isNaN(fmUnrounded) ? fmUnrounded : 0;
-      let fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0;
+      const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0;
 
       const { masteryLevel = "N/A", masteryName = "N/A", color = white } = fm
         ? getProficiencyBand(Math.round(fm), masteryScale, "score")
@@ -362,11 +356,11 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       ___item = {
         ...___item,
         standardId: __item,
-        standardName: groupedStandardIds[__item][0][idToLabel["standardId"]],
+        standardName: groupedStandardIds[__item][0][idToLabel.standardId],
         scorePercentUnrounded,
         scorePercent: Math.round(Number(scorePercentUnrounded)),
 
-        rawScoreUnrounded: rawScoreUnrounded,
+        rawScoreUnrounded,
         rawScore: Number(rawScoreUnrounded.toFixed(2)),
 
         fmUnrounded,
@@ -382,7 +376,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
     const { testActivityId, assignmentId, groupId } = groupedData[item][0];
     _item = {
       ..._item,
-      compareBy: compareBy,
+      compareBy,
       compareByLabel: groupedData[item][0][idToLabel[compareBy]],
       compareByName: idToName[compareBy],
       scorePercentUnrounded,
@@ -404,7 +398,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
     };
 
     if (_item.compareBy === "studentId") {
-      _item["studentId"] = item;
+      _item.studentId = item;
     }
 
     return _item;
@@ -413,12 +407,12 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
 };
 
 const filterByMasteryLevel = (analysedData, masteryLevel) => {
-  let filteredAnalysedData = analysedData.filter(item => {
+  const filteredAnalysedData = analysedData.filter(item => {
     if (item.masteryName === masteryLevel || masteryLevel === "all") {
       return true;
-    } else {
+    } 
       return false;
-    }
+    
   });
   return filteredAnalysedData;
 };
@@ -428,9 +422,9 @@ export const getTableData = (filteredDenormalizedData, masteryScale, compareBy, 
     return [];
   }
 
-  let groupedData = groupBy(filteredDenormalizedData.filter(item => (item[compareBy] ? true : false)), compareBy);
-  let analysedData = getAnalysedData(groupedData, compareBy, masteryScale);
-  let filteredData = filterByMasteryLevel(analysedData, masteryLevel);
+  const groupedData = groupBy(filteredDenormalizedData.filter(item => (!!item[compareBy])), compareBy);
+  const analysedData = getAnalysedData(groupedData, compareBy, masteryScale);
+  const filteredData = filterByMasteryLevel(analysedData, masteryLevel);
   return filteredData;
 };
 

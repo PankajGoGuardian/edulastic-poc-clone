@@ -92,7 +92,7 @@ export const StandardsGradebookTable = ({
     } else if (_analyseBy === "rawScore") {
       printData = `${item.totalTotalScore.toFixed(2)}/${item.totalMaxScore}`;
     } else if (_analyseBy === "masteryLevel") {
-      printData = item.masteryLevel;
+      printData = item.masteryName;
     } else if (_analyseBy === "masteryScore") {
       printData = item.fm.toFixed(2);
     }
@@ -113,24 +113,15 @@ export const StandardsGradebookTable = ({
 
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">{analyseByToName[_analyseBy]}: </Col>
-          {_analyseBy === "score(%)" ? (
-            <Col className="custom-table-tooltip-value">
-              {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}%
-            </Col>
-          ) : null}
           {_analyseBy === "rawScore" ? (
             <Col className="custom-table-tooltip-value">
               {rec.standardsInfo[index]?.totalTotalScore}/{rec.standardsInfo[index]?.totalMaxScore}
             </Col>
-          ) : null}
-          {_analyseBy === "masteryLevel" ? (
-            <Col className="custom-table-tooltip-value">{rec.standardsInfo[index]?.masteryName}</Col>
-          ) : null}
-          {_analyseBy === "masteryScore" ? (
+          ) : (
             <Col className="custom-table-tooltip-value">
-              {(rec.standardsInfo[index] || {})[analyseByToKeyToRender[_analyseBy]]}
+              {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}{_analyseBy === "score(%)" ? "%" : ""}
             </Col>
-          ) : null}
+            )}
         </Row>
       </div>
     );
@@ -153,7 +144,7 @@ export const StandardsGradebookTable = ({
               <OnClick onClick={() => handleOnClickStandard(obj, standardName, record.compareByLabel)}>
                 {printData}
               </OnClick>
-            )}
+              )}
           </div>
         );
       }
@@ -186,14 +177,15 @@ export const StandardsGradebookTable = ({
               {record.compareByLabel}
             </Link>
           ) : (
-            record.compareByLabel
-          )
+              record.compareByLabel
+            )
       },
       {
         title: "Overall",
         dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
         key: analyseByToKeyToRender[tableDdFilters.analyseBy],
-        width: 250,
+        align: "center",
+        width: 200,
         sorter: (a, b) => {
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
@@ -204,7 +196,7 @@ export const StandardsGradebookTable = ({
             to={{
               pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
                 record.testActivityId
-              }`,
+                }`,
               state: {
                 // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
                 breadCrumb: [
@@ -223,8 +215,8 @@ export const StandardsGradebookTable = ({
             {tableDdFilters.analyseBy === "score(%)"
               ? `${data}%`
               : tableDdFilters.analyseBy === "rawScore"
-              ? `${data}/${record.totalMaxScore}`
-              : data}
+                ? `${data}/${record.totalMaxScore}`
+                : data}
           </Link>
         )
       },
@@ -249,6 +241,7 @@ export const StandardsGradebookTable = ({
           ),
           dataIndex: item.standardId,
           key: item.standardId,
+          align: "center",
           width: 150,
           render: renderStandardIdColumns(
             index,

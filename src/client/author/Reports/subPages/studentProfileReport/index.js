@@ -20,12 +20,23 @@ import { resetAllReportsAction } from "../../common/reportsRedux";
 import { FilterIcon, ReportContaner } from "../../common/styled";
 
 const StudentProfileReportContainer = props => {
-  const { settings, loc, history, updateNavigation, location, match, showFilter, onRefineResultsCB } = props;
+  const {
+    settings,
+    loc,
+    history,
+    updateNavigation,
+    location,
+    match,
+    showFilter,
+    onRefineResultsCB,
+    setSPRSettings,
+    resetAllReports
+  } = props;
 
   useEffect(
     () => () => {
       console.log("Student Profile Reports Component Unmount");
-      resetAllReportsAction();
+      resetAllReports();
     },
     []
   );
@@ -60,7 +71,7 @@ const StudentProfileReportContainer = props => {
   }, [settings]);
 
   const onGoClick = _settings => {
-    setSPRSettingsAction({
+    setSPRSettings({
       requestFilters: _settings.filters,
       selectedStudent: _settings.selectedStudent
     });
@@ -118,8 +129,8 @@ const enhance = connect(
     settings: getReportsSPRSettings(state)
   }),
   {
-    setSPRSettingsAction,
-    resetAllReportsAction
+    setSPRSettings: setSPRSettingsAction,
+    resetAllReports: resetAllReportsAction
   }
 );
 

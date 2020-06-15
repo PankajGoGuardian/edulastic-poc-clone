@@ -2,7 +2,7 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
 import { message } from "antd";
-import  {notification} from "@edulastic/common";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy, get } from "lodash";
 
@@ -185,7 +185,6 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
 
 function* getReportsSPRFilterDataRequest({ payload }) {
   try {
-    // yield put({ type: RESET_REPORTS_SPR_FILTER_DATA });
     const SPRFilterData = yield call(reportsApi.fetchSPRFilterData, payload);
 
     yield put({
@@ -193,8 +192,8 @@ function* getReportsSPRFilterDataRequest({ payload }) {
       payload: { SPRFilterData }
     });
   } catch (error) {
-    let msg = "Failed to fetch filter data Please try again...";
-    notification({msg:msg});
+    const msg = "Failed to fetch filter data Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_SPR_FILTER_DATA_REQUEST_ERROR,
       payload: { error: msg }
@@ -211,7 +210,7 @@ function* receiveStudentsListSaga({ payload }) {
     });
   } catch (err) {
     const msg = "Receive Students is failing!";
-    notification({msg:msg});
+    notification({ msg });
     yield put({
       type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR,
       payload: { error: msg }

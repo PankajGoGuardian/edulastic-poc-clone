@@ -3,7 +3,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../common/reportsRedux";
 
-const SET_SPR_SETTINGS = "[SPR settings] get spr settings";
+const SET_SPR_SETTINGS = "[SPR settings] set spr settings";
 
 export const setSPRSettingsAction = createAction(SET_SPR_SETTINGS);
 
@@ -25,6 +25,9 @@ const initialState = {
 };
 
 export const reportSPRSettingsReducer = createReducer(initialState, {
-  [SET_SPR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState)
+  [SET_SPR_SETTINGS]: (state, { payload }) => { 
+    state.selectedStudent = payload.selectedStudent;
+    state.requestFilters = payload.requestFilters;
+   },
+  [RESET_ALL_REPORTS]: state => { state = initialState; }
 });

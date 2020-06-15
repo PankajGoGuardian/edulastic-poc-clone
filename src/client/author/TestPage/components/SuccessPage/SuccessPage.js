@@ -15,11 +15,11 @@ import {
   getUserListSelector as getPlayListSharedListSelector,
   receivePlaylistByIdAction
 } from "../../../PlaylistPage/ducks";
-import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
+import { receiveAssignmentByAssignmentIdAction, googleSyncAssignmentAction } from "../../../src/actions/assignments";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import ListHeader from "../../../src/components/common/ListHeader";
 import ShareModal from "../../../src/components/common/ShareModal";
-import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
+import { getCurrentAssignmentSelector, getAssignmentSyncInProgress } from "../../../src/selectors/assignments";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { getTestSelector, getUserListSelector as getTestSharedListSelector, receiveTestByIdAction } from "../../ducks";
 import {
@@ -38,7 +38,10 @@ import {
   SecondHeader,
   ShareUrlDiv,
   TitleCopy,
-  FlexWrapperUrlBox
+  FlexWrapperUrlBox,
+  FlexWrapperClassroomBox,
+  FlexTitleBox,
+  FlexShareMessage
 } from "./styled";
 
 import ImageCard from "./ImageCard";
@@ -119,6 +122,17 @@ class SuccessPage extends React.Component {
     );
   };
 
+  shareWithGoogleClassroom = () => {
+    const {
+      googleSyncAssignment,
+      match
+    } = this.props;
+    const { assignmentId } = match.params;
+    googleSyncAssignment({
+      assignmentIds: [assignmentId]
+    });
+  }
+
   get getHighPriorityShared() {
     const { isPlaylist, playListSharedUsersList, testSharedUsersList } = this.props;
     const sharedUserList = isPlaylist ? playListSharedUsersList : testSharedUsersList;
@@ -143,7 +157,8 @@ class SuccessPage extends React.Component {
       assignment = {},
       userId,
       collections,
-      published
+      published,
+      syncWithGoogleClassroomInProgress
     } = this.props;
     const { isShareModalVisible } = this.state;
     const { title, _id, status, grades, subjects, authors = [] } = isPlaylist ? playlist : test;
@@ -338,6 +353,20 @@ class SuccessPage extends React.Component {
                     </TitleCopy>
                   </FlexShareBox>
                 </FlexWrapperUrlBox>
+                <FlexWrapperClassroomBox>
+                  <FlexTitleBox>
+                    <FlexShareTitle>Share with Google Classroom</FlexShareTitle>
+                    <FlexShareMessage>Click on Google Classroom button to share the assignment</FlexShareMessage>
+                  </FlexTitleBox>
+                  <EduButton
+                    isGhost
+                    data-cy="Share with Google Classroom"
+                    onClick={this.shareWithGoogleClassroom}
+                    disabled={syncWithGoogleClassroomInProgress}
+                  >
+                    Google Classroom
+                  </EduButton>
+                </FlexWrapperClassroomBox>
               </FlexShareContainer>
             </FlexContainerWrapperRight>
           </FlexContainerWrapper>
@@ -358,13 +387,15 @@ const enhance = compose(
       playListSharedUsersList: getPlayListSharedListSelector(state),
       testSharedUsersList: getTestSharedListSelector(state),
       collections: getCollectionsSelector(state),
-      regradedAssignments: getAssignmentsSelector(state)
+      regradedAssignments: getAssignmentsSelector(state),
+      syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state)
     }),
     {
       fetchAssignmentById: receiveAssignmentByAssignmentIdAction,
       fetchAssignmentsByTestId: fetchAssignmentsAction,
       fetchPlaylistById: receivePlaylistByIdAction,
-      fetchTestByID: receiveTestByIdAction
+      fetchTestByID: receiveTestByIdAction,
+      googleSyncAssignment: googleSyncAssignmentAction
     }
   )
 );

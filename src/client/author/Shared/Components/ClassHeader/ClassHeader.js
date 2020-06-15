@@ -367,7 +367,7 @@ class ClassHeader extends Component {
         {groupGoogleId && (
           <MenuItems
             key="key7"
-            onClick={() => googleSyncAssignment({ assignmentId, groupId: classId })}
+            onClick={() => googleSyncAssignment({ assignmentIds: [assignmentId], groupId: classId })}
             disabled={syncWithGoogleClassroomInProgress}
           >
             Sync with Google Classroom

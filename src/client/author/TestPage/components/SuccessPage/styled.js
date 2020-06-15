@@ -285,3 +285,19 @@ export const FlexWrapperUrlBox = styled.div`
   background: ${backgroundGrey};
   padding: 13px 23px 23px 17px;
 `;
+
+export const FlexWrapperClassroomBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  background: ${backgroundGrey};
+  padding: 13px 23px 23px 17px;
+  margin-top: 13px;
+`;
+
+export const FlexTitleBox = styled.div`
+  flex: 1;
+`;
+
+export const FlexShareMessage = styled.div`
+  margin-top: 10px;
+`;

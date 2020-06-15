@@ -16,6 +16,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import { getTestSelector, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { lightGrey10 } from "@edulastic/colors";
+import Tags from "../../../src/components/common/Tags";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -35,7 +36,8 @@ const convertTableData = row => ({
   teacher: findTeacherName(row),
   subject: row.subject,
   grades: row.grades || "",
-  type: row.type
+  type: row.type,
+  tags: row.tags
 });
 
 class ClassList extends React.Component {
@@ -176,7 +178,8 @@ class ClassList extends React.Component {
             ) : (
               <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
             )}
-            {className}
+            <span>{className}</span>
+            <Tags data-cy="tags" tags={row.tags} show={1} key="tags" />
           </div>
         )
       },

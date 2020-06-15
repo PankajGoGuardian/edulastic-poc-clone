@@ -112,8 +112,8 @@ module.exports = {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",
     // SHOW_FONT_SIZE: "Show Font Size",
     // SHOW_ZOOM: "Show Zoom",
-    showMagnifier: "Magnifier",
-    enableScratchpad: "Scratchpad"
+    showMagnifier:"MAGNIFIER",
+    enableScratchpad:"SCRATCHPAD"
   },
   collectionDefaultFilter: [
     { text: "All Collections", value: "" },

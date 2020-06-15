@@ -77,12 +77,14 @@ export const StyledPage = styled.div`
 `;
 
 export const Container = styled(StyledCard)`
+  margin-bottom: 20px;
   box-shadow: none;
   border: solid 1px ${grey};
 `;
 
 export const PerformanceBrandWrapper = styled(StyledCard)`
   width: 100%;
+  margin-bottom: 20px;
   .top-container {
     height: 60px;
     margin-bottom: 20px;
@@ -220,6 +222,7 @@ export const PerformanceTitle = styled(Row)`
 `;
 
 export const StyledTableWrapper = styled(StyledCard)`
+  margin-bottom: 20px;
   box-shadow: none;
   border: solid 1px ${grey};
 `;

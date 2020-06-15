@@ -1,7 +1,7 @@
 import { get as _get, pick } from "lodash";
 import { createSelector } from "reselect";
-import { getSchoolsSelector as getDistrictSchoolsSelector } from "../../Schools/ducks";
 import { roleuser } from "@edulastic/constants";
+import { getSchoolsSelector as getDistrictSchoolsSelector } from "../../Schools/ducks";
 
 export const stateSelector = state => state.user;
 
@@ -61,6 +61,11 @@ export const getUserIPZipCode = createSelector(
 export const getUser = createSelector(
   stateSelector,
   state => state.user
+);
+
+export const getUserThumbnail = createSelector(
+  getUser,
+  state => state.thumbnail
 );
 
 export const getCurrentTerm = createSelector(

@@ -2,20 +2,61 @@ import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { Tooltip } from "antd";
 import { IconCheck } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { FeedbackByQIdSelector, getMaxScoreFromCurrentItem } from "../../sharedDucks/TestItem";
-import ProfileImage from "../../assets/Profile.png";
+import { getClasses } from "../../Login/ducks";
 
 // TODO user  response to show in UI
-const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuestion, style }) => {
-  const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true } = question[qId] || {};
+const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuestion, style, classList = [] }) => {
+  const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true, groupId } = question[qId] || {};
 
   let _score = skipped ? 0 : parseFloat(score.toFixed(2));
   if (!graded || isPracticeQuestion) {
     _score = "";
   }
+
+  const feedbackTeacher = {
+    thumbnail: "",
+    firstName: "",
+    lastName: ""
+  };
+  if (feedback) {
+    feedbackTeacher.thumbnail = feedback?.thumbnail;
+    const [firstName, lastName] = feedback?.teacherName.split(" ");
+    feedbackTeacher.firstName = firstName;
+    feedbackTeacher.lastName = lastName || "";
+  } else {
+    const classOwner = classList.find(({ _id }) => _id === groupId)?.owners?.[0];
+    feedbackTeacher.thumbnail = classOwner?.thumbnail;
+    feedbackTeacher.firstName = classOwner?.firstName;
+    feedbackTeacher.lastName = classOwner?.lastName || "";
+  }
+
+  const getUserName = type => {
+    let userInitials = "";
+    const { firstName = "", lastName = "" } = feedbackTeacher;
+    if (type === "initials") {
+      if (firstName) {
+        userInitials += firstName[0].toLocaleUpperCase();
+      }
+      if (lastName) {
+        userInitials += lastName[0].toLocaleUpperCase();
+      }
+    } else {
+      if (firstName) {
+        userInitials += firstName;
+      }
+
+      if (lastName) {
+        userInitials += " ";
+        userInitials += lastName;
+      }
+    }
+    return userInitials;
+  };
 
   const _maxScore = isPracticeQuestion ? "" : maxScore;
   return (
@@ -36,7 +77,14 @@ const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuesti
             <FeedbackGiven data-cy="feedback">{feedback && feedback.text}</FeedbackGiven>
           </Feedback>
         </FeedbackContainer>
-        <UserImg src={ProfileImage} />
+
+        <Tooltip placement="top" title={getUserName("fullName")}>
+          {feedbackTeacher.thumbnail ? (
+            <UserImg src={feedbackTeacher.thumbnail} />
+          ) : (
+            <UserInitials>{getUserName("initials")}</UserInitials>
+          )}
+        </Tooltip>
       </FlexContainer>
     </FeedbackWrapper>
   );
@@ -51,7 +99,8 @@ StudentFeedback.propTypes = {
 export default connect(
   state => ({
     question: FeedbackByQIdSelector(state),
-    itemMaxScore: getMaxScoreFromCurrentItem(state)
+    itemMaxScore: getMaxScoreFromCurrentItem(state),
+    classList: getClasses(state)
   }),
   null
 )(StudentFeedback);
@@ -162,4 +211,13 @@ const UserImg = styled.div`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   margin-top: 50px;
   margin-left: 16px;
+`;
+
+const UserInitials = styled(UserImg)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  background: #dddddd;
 `;

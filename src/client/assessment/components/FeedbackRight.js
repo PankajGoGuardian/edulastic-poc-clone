@@ -14,7 +14,7 @@ import PreviewRubricModal from "../../author/GradingRubric/Components/common/Pre
 import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDucks/classResponses";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
 import { getErrorResponse, getStatus } from "../../author/src/selectors/feedback";
-import { getUserSelector } from "../../author/src/selectors/user";
+import { getUserSelector, getUserThumbnail } from "../../author/src/selectors/user";
 
 const { TextArea } = Input;
 
@@ -60,7 +60,7 @@ class FeedbackRight extends Component {
     preState
   ) {
     let newState = {};
-    const { submitted, feedback, score, maxScore, changed } = preState || {};
+    const { submitted, feedback, maxScore, changed } = preState || {};
     if (submitted) {
       newState = {
         submitted: false,
@@ -69,7 +69,8 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score, maxScore: _maxScore } = activity;
+      const { score: _score } = activity;
+      let { maxScore: _maxScore } = activity;
       const _feedback = get(activity, "feedback.text", "");
       newState = { ...newState, score: _score };
 
@@ -154,7 +155,8 @@ class FeedbackRight extends Component {
       studentId,
       loadFeedbackResponses,
       widget: { id, activity = {} },
-      match
+      match,
+      userThumbnail
     } = this.props;
     const { testActivityId, groupId = match?.params?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
@@ -165,7 +167,8 @@ class FeedbackRight extends Component {
         feedback: {
           teacherId: user.user._id,
           teacherName: user.user.firstName,
-          text: feedback
+          text: feedback,
+          ...(userThumbnail ? { thumbnail: userThumbnail } : {})
         },
         groupId
       },
@@ -393,7 +396,8 @@ const enhance = compose(
       waitingResponse: getStatus(state),
       errorMessage: getErrorResponse(state),
       classBoardData: state.author_classboard_testActivity?.data,
-      allAnswers: state?.answers
+      allAnswers: state?.answers,
+      userThumbnail: getUserThumbnail(state)
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

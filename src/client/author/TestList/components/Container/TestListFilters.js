@@ -204,6 +204,7 @@ const TestListFilters = ({
       ...mappedfilterData.filter(f => !["Status", "Authored By"].includes(f.title))
     ];
   }
+  const selectedCurriculam = formattedCuriculums?.find(({ value }) => value === search?.curriculumId);
   return (
     <Container>
       {showModal ? (
@@ -212,6 +213,7 @@ const TestListFilters = ({
           showModal={showModal}
           standardIds={search.standardIds}
           handleApply={handleApply}
+          selectedCurriculam={selectedCurriculam}
         />
       ) : (
         ""

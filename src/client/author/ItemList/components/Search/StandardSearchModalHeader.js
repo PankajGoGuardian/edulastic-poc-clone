@@ -57,7 +57,7 @@ const StandardSearchModalHeader = ({ standards, selectedCurriculam }) => {
   return (
     <FiltersWrapper ref={containerRef}>
       <div ref={curriculamRef} style={{ paddingRight: "10px" }}>
-        {selectedCurriculam.text} |{" "}
+        {selectedCurriculam?.text} |{" "}
       </div>
       {getFilters()}
     </FiltersWrapper>

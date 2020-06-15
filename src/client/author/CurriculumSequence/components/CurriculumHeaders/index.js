@@ -16,7 +16,7 @@ import {
   IconTrash,
   IconMoreVertical
 } from "@edulastic/icons";
-import { IconActionButton } from "../CurriculumModuleRow";
+import { IconActionButton } from "../styled";
 import StudentPlayListHeader from "../../../../student/sharedComponents/Header/PlayListHeader";
 import PlaylistPageNav from "../PlaylistPageNav";
 import SwitchPlaylist from "./SwitchPlaylist";
@@ -204,7 +204,6 @@ const CurriculumHeader = ({
               <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
                 <IconShare />
               </HeaderButton>
-              </Tooltip>
         )}
 
           {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&

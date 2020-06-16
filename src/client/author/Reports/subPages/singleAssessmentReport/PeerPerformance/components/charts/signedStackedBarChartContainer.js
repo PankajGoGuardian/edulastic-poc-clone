@@ -11,37 +11,32 @@ export const SignedStackedBarChartContainer = ({
   filter,
   onBarClickCB,
   onResetClickCB,
-  assessmentName,
   bandInfo
 }) => {
   const aboveBelowStandard = "aboveBelowStandard";
   const proficiencyBand = "proficiencyBand";
 
   const dataParser = () => {
-    bandInfo.sort((a, b) => {
-      return a.threshold - b.threshold;
-    });
+    bandInfo.sort((a, b) => a.threshold - b.threshold);
 
-    let arr = data.map(item => {
-      if (filter[item[compareBy]] || Object.keys(filter).length === 0) {
+    const arr = data.map(item => {
+      if (filter[item[compareBy === "group" ? "groupId" : compareBy]] || Object.keys(filter).length === 0) {
         if (analyseBy === aboveBelowStandard) {
           item.fill_0 = getHSLFromRange1(100);
           item.fill_1 = getHSLFromRange1(0);
         } else if (analyseBy === proficiencyBand) {
           for (let i = 0; i < bandInfo.length; i++) {
-            item["fill_" + i] = getHSLFromRange1(Math.round((100 / (bandInfo.length - 1)) * i));
+            item[`fill_${  i}`] = getHSLFromRange1(Math.round((100 / (bandInfo.length - 1)) * i));
           }
         }
-      } else {
-        if (analyseBy === aboveBelowStandard) {
+      } else if (analyseBy === aboveBelowStandard) {
           item.fill_0 = "#cccccc";
           item.fill_1 = "#cccccc";
         } else if (analyseBy === proficiencyBand) {
           for (let i = 0; i < bandInfo.length; i++) {
-            item["fill_" + i] = "#cccccc";
+            item[`fill_${  i}`] = "#cccccc";
           }
         }
-      }
       return { ...item };
     });
 
@@ -50,12 +45,12 @@ export const SignedStackedBarChartContainer = ({
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      let { compareBy, compareBylabel } = payload[0].payload;
+      const { compareBy, compareBylabel } = payload[0].payload;
 
       return (
         <div>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
+            <Col className="tooltip-key">{`${idToName[compareBy]  }: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
           <Row type="flex" justify="start">
@@ -76,21 +71,19 @@ export const SignedStackedBarChartContainer = ({
     return false;
   };
 
-  const yTickFormatter = val => {
-    return "";
-  };
+  const yTickFormatter = () => "";
 
   const barsLabelFormatter = val => {
     if (val !== 0) {
-      return Math.abs(val) + "%";
-    } else {
+      return `${Math.abs(val)  }%`;
+    } 
       return "";
-    }
+    
   };
 
-  const getXTickText = (payload, data) => {
-    for (let item of data) {
-      if (item[compareBy] === payload.value) {
+  const getXTickText = (payload, items) => {
+    for (const item of items) {
+      if (item[compareBy === "group" ? "groupId" : compareBy] === payload.value) {
         return item.compareBylabel;
       }
     }
@@ -128,14 +121,12 @@ export const SignedStackedBarChartContainer = ({
         ],
         yAxisLabel: "Below Standard                Above Standard"
       };
-    } else if (analyseBy === proficiencyBand) {
-      bandInfo.sort((a, b) => {
-        return a.threshold - b.threshold;
-      });
-      let barsData = [];
-      for (let [index, value] of bandInfo.entries()) {
+    } if (analyseBy === proficiencyBand) {
+      bandInfo.sort((a, b) => a.threshold - b.threshold);
+      const barsData = [];
+      for (const [index, value] of bandInfo.entries()) {
         barsData.push({
-          key: value.name + "Percentage",
+          key: `${value.name  }Percentage`,
           stackId: "a",
           fill: getHSLFromRange1((100 / (bandInfo.length - 1)) * index),
           unit: "%",
@@ -143,12 +134,12 @@ export const SignedStackedBarChartContainer = ({
         });
       }
       return {
-        barsData: barsData,
+        barsData,
         yAxisLabel: "Below Standard                Above Standard"
       };
-    } else {
+    } 
       return {};
-    }
+    
   };
 
   const chartSpecifics = getChartSpecifics();
@@ -158,7 +149,7 @@ export const SignedStackedBarChartContainer = ({
       margin={{ top: 0, right: 20, left: 20, bottom: 36 }}
       data={chartData}
       barsData={chartSpecifics.barsData}
-      xAxisDataKey={compareBy}
+      xAxisDataKey={compareBy === "group" ? "groupId" : compareBy}
       getTooltipJSX={getTooltipJSX}
       onBarClickCB={_onBarClickCB}
       onResetClickCB={_onResetClickCB}

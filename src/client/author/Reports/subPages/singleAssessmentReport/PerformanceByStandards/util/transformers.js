@@ -15,6 +15,7 @@ import {
 } from "lodash";
 import next from "immer";
 import { percentage } from "../../../../common/util";
+import {transformMetricForStudentGroups} from "../../common/utils/transformers";
 
 export const viewByMode = {
   STANDARDS: "standard",
@@ -302,34 +303,6 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
 
   return [data, totalPoints];
 };
-
-const transformMetricForStudentGroups = (groups, metricInfo) => {
-  const studentGroupsMap = {};
-  groups.forEach(group => {
-    if(group.groupType === "custom") {
-      if(group.students) {
-        group.students.forEach(id => {
-          if(!studentGroupsMap[id]) {
-            studentGroupsMap[id] = []
-          }
-          studentGroupsMap[id].push({
-            groupId : group.groupId,
-            groupName : group.groupName
-          })
-        })
-      }
-    }
-  });
-
-  // filter student based on student groups and replace group info with student group info in meticInfo 
-  const metics = []
-  metricInfo.forEach(info => {
-   if(studentGroupsMap[info.studentId]) {
-     metics.push(...studentGroupsMap[info.studentId].map(({groupId, groupName}) => ({...info,groupId, groupName})))
-   }
- })
- return metics;
-}
 
 export const analysisParseData = (report, viewBy, compareBy, filters) => {
   const { studInfo, teacherInfo, skillInfo, scaleInfo, metricInfo } = report;

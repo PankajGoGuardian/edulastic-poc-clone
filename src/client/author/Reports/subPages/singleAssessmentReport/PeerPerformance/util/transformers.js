@@ -1,5 +1,6 @@
 import { groupBy, minBy, cloneDeep, countBy } from "lodash";
 import { getHSLFromRange1 } from "../../../../common/util";
+import {transformMetricForStudentGroups} from "../../common/utils/transformers";
 
 export const idToLabel = {
   schoolId: "schoolName",
@@ -15,6 +16,7 @@ export const idToLabel = {
 export const idToName = {
   schoolId: "School",
   groupId: "Class",
+  group : "Student Group",
   teacherId: "Teacher",
   race: "Race",
   gender: "Gender",
@@ -31,7 +33,7 @@ export const analyseByToName = {
 };
 
 const filterData = (data, filter) => {
-  const filteredData = data.filter((item, index) => {
+  const filteredData = data.filter((item) => {
     if (
       (item.gender.toLowerCase() === filter.gender.toLowerCase() || filter.gender === "all") &&
       (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() || filter.frlStatus === "all") &&
@@ -47,9 +49,9 @@ const filterData = (data, filter) => {
 };
 
 const analyseByScorePercent = (rawData, groupedData, compareBy) => {
-  const arr = Object.keys(groupedData).map((data, index) => {
+  const arr = Object.keys(groupedData).map((data) => {
     let item = groupedData[data].reduce(
-      (total, currentValue, currentIndex) => {
+      (total, currentValue) => {
         const { maxScore = 0, totalScore = 0, progressStatus } = currentValue;
         return {
           // progressStatus = 2 is for absent student, needs to be excluded
@@ -93,9 +95,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
 };
 
 const analyseByRawScore = (rawData, groupedData, compareBy) => {
-  const arr = Object.keys(groupedData).map((data, index) => {
+  const arr = Object.keys(groupedData).map((data) => {
     let item = groupedData[data].reduce(
-      (total, currentValue, currentIndex) => {
+      (total, currentValue) => {
         const { maxScore = 0, totalScore = 0, progressStatus } = currentValue;
         return {
           // progressStatus = 2 is for absent student, needs to be excluded
@@ -152,9 +154,9 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
     return "belowStandard";
   };
 
-  const arr = Object.keys(groupedData).map((data, index) => {
+  const arr = Object.keys(groupedData).map((data) => {
     let item = groupedData[data].reduce(
-      (total, currentValue, currentIndex) => {
+      (total, currentValue) => {
         const standard = getStandard(currentValue);
         return {
           ...total,
@@ -202,24 +204,22 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
     proficienciesDetail[o.name] = o;
   }
 
-  bandInfo.sort((a, b) => {
-    return b.threshold - a.threshold;
-  });
+  bandInfo.sort((a, b) => b.threshold - a.threshold);
 
   const bandInfoAsc = [...bandInfo];
   bandInfoAsc.reverse();
 
   const getProficiency = item => {
-    for (let obj of bandInfo) {
+    for (const obj of bandInfo) {
       if ((item.totalScore / item.maxScore) * 100 >= obj.threshold) {
         return obj.name;
       }
     }
   };
 
-  const arr = Object.keys(groupedData).map((data, index) => {
+  const arr = Object.keys(groupedData).map((data) => {
     let item = groupedData[data].reduce(
-      (total, currentValue, currentIndex) => {
+      (total, currentValue) => {
         const proficiency = getProficiency(currentValue);
         total[proficiency] += currentValue.progressStatus === 2 ? 0 : 1;
         total.total += currentValue.progressStatus === 2 ? 0 : 1;
@@ -238,11 +238,11 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       const prof = Math.round((item[o.name] / (item.total || 1)) * 100);
       const fill = Math.round((100 / (bandInfo.length - 1)) * index);
       if (proficienciesDetail[o.name].aboveStandard !== 1) {
-        proficiencyPercentages[o.name + "Percentage"] = -prof;
+        proficiencyPercentages[`${o.name  }Percentage`] = -prof;
       } else {
-        proficiencyPercentages[o.name + "Percentage"] = prof;
+        proficiencyPercentages[`${o.name  }Percentage`] = prof;
       }
-      proficiencyPercentages["fill_" + index] = getHSLFromRange1(fill);
+      proficiencyPercentages[`fill_${  index}`] = getHSLFromRange1(fill);
     });
 
     const statusCounts = countBy(groupedData[data], o => o.progressStatus);
@@ -267,17 +267,22 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
 };
 
 export const parseData = (rawData, data, filter) => {
+  let compareBy = filter.compareBy;
+  if(filter.compareBy === "group") {
+    data = transformMetricForStudentGroups(rawData.metaInfo, data);
+    compareBy = "groupId";
+  }
   const filteredData = filterData(data, filter);
-  const groupedData = groupBy(filteredData, filter.compareBy);
+  const groupedData = groupBy(filteredData, compareBy);
   let output = null;
   if (filter.analyseBy === "score(%)") {
-    output = analyseByScorePercent(rawData, groupedData, filter.compareBy);
+    output = analyseByScorePercent(rawData, groupedData, compareBy);
   } else if (filter.analyseBy === "rawScore") {
-    output = analyseByRawScore(rawData, groupedData, filter.compareBy);
+    output = analyseByRawScore(rawData, groupedData, compareBy);
   } else if (filter.analyseBy === "aboveBelowStandard") {
-    output = analyseByAboveBelowStandard(rawData, groupedData, filter.compareBy);
+    output = analyseByAboveBelowStandard(rawData, groupedData, compareBy);
   } else if (filter.analyseBy === "proficiencyBand") {
-    output = analyseByProficiencyBand(rawData, groupedData, filter.compareBy);
+    output = analyseByProficiencyBand(rawData, groupedData, compareBy);
   }
   if (output) {
     return output;

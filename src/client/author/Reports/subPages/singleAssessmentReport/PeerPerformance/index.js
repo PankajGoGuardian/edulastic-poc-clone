@@ -92,9 +92,13 @@ const PeerPerformance = ({
         tempCompareBy.splice(0, 2);
       }
     });
+  } else {
+    compareByDropDownData = next(dropDownFormat.compareByDropDownData, tempCompareBy => {
+      tempCompareBy.splice(3, 0, { "key": "group", "title": "Student Group" },)
+    });
   }
 
-  const getColumns = () => columns.columns[ddfilter.analyseBy][ddfilter.compareBy];
+  const getColumns = () => columns.columns[ddfilter.analyseBy][ddfilter.compareBy === "group" ? "groupId" : ddfilter.compareBy];
 
   const res = { ...peerPerformance, bandInfo };
 

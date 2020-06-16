@@ -16,8 +16,8 @@ export const SimpleStackedBarChartContainer = ({
   role
 }) => {
   const dataParser = () => {
-    for (let item of data) {
-      if (filter[item[compareBy]] || Object.keys(filter).length === 0) {
+    for (const item of data) {
+      if (filter[item[compareBy === "group" ? "groupId" : compareBy]] || Object.keys(filter).length === 0) {
         if (analyseBy === "score(%)") {
           item.fill = getHSLFromRange1(item.avgStudentScorePercent);
         } else if (analyseBy === "rawScore") {
@@ -32,7 +32,7 @@ export const SimpleStackedBarChartContainer = ({
 
   const getTooltipJSX = payload => {
     if (payload && payload.length) {
-      let { districtAvg, compareBy, compareBylabel, correct } = payload[0].payload;
+      const { districtAvg, compareBy, compareBylabel } = payload[0].payload;
       return (
         <div>
           <Row type="flex" justify="start">
@@ -40,12 +40,12 @@ export const SimpleStackedBarChartContainer = ({
             <Col className="tooltip-value">{assessmentName}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">{idToName[compareBy] + ": "}</Col>
+            <Col className="tooltip-key">{`${idToName[compareBy]  }: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">{"District Average: "}</Col>
-            <Col className="tooltip-value">{analyseBy === "score(%)" ? districtAvg + "%" : districtAvg}</Col>
+            <Col className="tooltip-value">{analyseBy === "score(%)" ? `${districtAvg  }%` : districtAvg}</Col>
           </Row>
         </div>
       );
@@ -53,9 +53,9 @@ export const SimpleStackedBarChartContainer = ({
     return false;
   };
 
-  const getXTickText = (payload, data) => {
-    for (let item of data) {
-      if (item[compareBy] === payload.value) {
+  const getXTickText = (payload, items) => {
+    for (const item of items) {
+      if (item[compareBy === "group" ? "groupId" : compareBy] === payload.value) {
         return item.compareBylabel;
       }
     }
@@ -85,24 +85,24 @@ export const SimpleStackedBarChartContainer = ({
       return {
         yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        formatter: val => val + "%",
-        yAxisLabel: yAxisLabel,
-        referenceLineY: referenceLineY
+        formatter: val => `${val  }%`,
+        yAxisLabel,
+        referenceLineY
       };
-    } else if (analyseBy === "rawScore" && chartData.length > 0) {
-      let maxScore = chartData[0].maxScore;
-      let arr = ticks(0, maxScore, 10);
-      let max = arr[arr.length - 1];
+    } if (analyseBy === "rawScore" && chartData.length > 0) {
+      const maxScore = chartData[0].maxScore;
+      const arr = ticks(0, maxScore, 10);
+      const max = arr[arr.length - 1];
       return {
         yDomain: [0, max + (arr[1] - arr[0])],
         ticks: arr,
         formatter: val => val,
         yAxisLabel: "Avg. Score",
-        referenceLineY: referenceLineY
+        referenceLineY
       };
-    } else {
+    } 
       return {};
-    }
+    
   };
 
   const chartSpecifics = getChartSpecifics();
@@ -114,9 +114,9 @@ export const SimpleStackedBarChartContainer = ({
       ticks={chartSpecifics.ticks}
       yTickFormatter={chartSpecifics.formatter}
       barsLabelFormatter={chartSpecifics.formatter}
-      xAxisDataKey={compareBy}
-      bottomStackDataKey={"correct"}
-      topStackDataKey={"incorrect"}
+      xAxisDataKey={compareBy === "group" ? "groupId" : compareBy}
+      bottomStackDataKey="correct"
+      topStackDataKey="incorrect"
       getTooltipJSX={getTooltipJSX}
       dataParser={dataParser}
       onBarClickCB={_onBarClickCB}

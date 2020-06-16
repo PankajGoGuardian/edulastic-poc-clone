@@ -47,6 +47,27 @@
           "width": 250
         }
       ],
+      "group": [
+        {
+          "title": "Student Group",
+          "dataIndex": "compareBylabel",
+          "key": "compareBylabel",
+          "width": 250,
+          "align": "left",
+          "fixed": "left"
+        },
+        { "title": "Teacher", "dataIndex": "teacherName", "key": "teacherName", "width": 250, "align": "left" },
+        { "title": "School", "dataIndex": "schoolName", "key": "schoolName", "width": 250, "align": "left" },
+        { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 70 },
+        { "title": "#Absent", "dataIndex": "absent", "key": "absent", "width": 70 },
+        { "title": "District(Score%)", "dataIndex": "districtAvg", "key": "districtAvg", "width": 250 },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
+          "width": 250
+        }
+      ],
       "race": [
         { "title": "Race", "dataIndex": "compareBylabel", "key": "compareBylabel", "width": 250 },
         { "title": "#Graded", "dataIndex": "graded", "key": "graded", "width": 70 },

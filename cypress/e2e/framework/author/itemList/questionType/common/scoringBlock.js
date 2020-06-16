@@ -6,6 +6,7 @@ class ScoringBlock {
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
     cy.get('[data-cy="scoringType"]')
+      .scrollIntoView()
       .should("be.visible")
       .click();
 

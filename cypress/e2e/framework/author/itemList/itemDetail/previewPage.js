@@ -1,4 +1,5 @@
 import Header from "./header";
+import { queColor } from "../../../constants/questionTypes";
 
 class PreviewItemPage {
   constructor() {
@@ -29,11 +30,31 @@ class PreviewItemPage {
 
   // *** APPHELPERS START ***
 
-  checkLabel = label => {
+  checkScore = expectedScore => {
+    const score = expectedScore.toString().split("/");
+    console.log(score, score[0], score[1]);
+    let label;
+    let color;
+    switch (+score[0]) {
+      case 0:
+        label = "Incorrect";
+        color = queColor.LIGHT_RED1;
+        break;
+      case +score[1]:
+        label = "Correct";
+        color = queColor.LIGHT_GREEN1;
+        break;
+      default:
+        label = "Partially Correct";
+        color = queColor.ORANGE_3;
+    }
     this.getCheckAnswer()
       .click()
       .then(() => {
-        this.getScore().should("have.text", label);
+        this.getScore().should("have.text", `${label} (${expectedScore})`);
+        this.getScore()
+          .parent()
+          .should("have.css", "background-color", color);
       });
 
     return this;

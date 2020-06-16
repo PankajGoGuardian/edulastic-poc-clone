@@ -3,7 +3,7 @@ import { beforeUpload, PaddingDiv, notification } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { aws, clozeImage } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { Dropdown, Input, InputNumber, message, Select, Upload } from "antd";
+import { Dropdown, InputNumber, Select, Upload } from "antd";
 import produce from "immer";
 import { get, isUndefined, maxBy } from "lodash";
 import PropTypes from "prop-types";
@@ -38,7 +38,7 @@ import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
 import { UploadButton } from "../ClozeImageDropDown/styled/UploadButton";
 import { ColorBox } from "./styled/ColorBox";
 import { ControlButton, MoveControlButton } from "./styled/ControlButton";
-import { FieldLabel, FieldWrapper } from "./styled/FieldWrapper";
+import { FieldWrapper } from "./styled/FieldWrapper";
 import { FlexContainer } from "./styled/FlexContainer";
 import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
@@ -187,7 +187,6 @@ class ComposeQuestion extends Component {
   getImageDimensions = (url, isNew) => {
     const { item, setQuestionData } = this.props;
     const { maxWidth, maxHeight } = clozeImage;
-    const { imageRndRef } = this;
     const img = new Image();
     // eslint-disable-next-line func-names
     img.addEventListener("load", function() {
@@ -241,7 +240,7 @@ class ComposeQuestion extends Component {
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef
-      notification({ msg:`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`});
+      notification({ msg: `${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.` });
     }
   };
 
@@ -737,7 +736,7 @@ class ComposeQuestion extends Component {
               </CustomStyleBtn>
             </UploadButton>
           )}
-          <Row gutter={24} type={"flex"} wrap={"wrap"} marginTop="15">
+          <Row gutter={24} type="flex" wrap="wrap" marginTop="15">
             <Col span={8}>
               <CheckboxLabel
                 data-cy="drag-drop-image-aria-check"
@@ -776,7 +775,7 @@ class ComposeQuestion extends Component {
             </Col>
             <Col span={8}>
               <CheckboxLabel
-                data-cy="drag-drop-image-border-check"
+                data-cy="drag-drop-image-snapfit-check"
                 defaultChecked={responseLayout && responseLayout.isSnapFitValues}
                 onChange={val => this.onResponsePropChange("isSnapFitValues", val.target.checked)}
               >

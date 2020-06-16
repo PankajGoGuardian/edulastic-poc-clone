@@ -90,7 +90,7 @@ class Annotations extends Component {
 
         {editable && (
           <div>
-            <CustomStyleBtn margin="0px 0px 15px" onClick={this.handleClick}>
+            <CustomStyleBtn data-cy="addAnnotation" margin="0px 0px 15px" onClick={this.handleClick}>
               {t("common.annotation.addAnnotation")}
             </CustomStyleBtn>
             {annotations.map(annotation => (

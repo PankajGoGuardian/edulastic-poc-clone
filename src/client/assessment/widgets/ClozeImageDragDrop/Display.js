@@ -432,6 +432,7 @@ class Display extends Component {
     const renderAnnotations = () => (
       <div style={{ position: "relative" }}>
         <AnnotationRnd
+          data-cy="annotation"
           style={{
             backgroundColor: "transparent",
             boxShadow: "none",
@@ -448,6 +449,7 @@ class Display extends Component {
         <img src={imageUrl} alt={imageAlterText} style={{ width: "100%" }} />
       ) : (
         <StyledPreviewImage
+          data-cy="imageInpreviewContainer"
           imageSrc={imageUrl || ""}
           width={imageWidth}
           height={imageHeight}

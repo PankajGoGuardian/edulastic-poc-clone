@@ -205,6 +205,13 @@ const TestListFilters = ({
     ];
   }
   const selectedCurriculam = formattedCuriculums?.find(({ value }) => value === search?.curriculumId);
+
+  const handleStandardsAlert = ({ title, disabled }) => {
+    if (title === "Standards" && disabled) {
+      return "Select Grades, Subject, Standard Set before selecting Standards";
+    }
+    return "";
+  };
   return (
     <Container>
       {showModal ? (
@@ -233,7 +240,7 @@ const TestListFilters = ({
         if (filterItem.title === "Authored By" && search.filter === "AUTHORED_BY_ME") return null;
         return (
           <>
-            <FilterItemWrapper key={index}>
+            <FilterItemWrapper key={index} title={handleStandardsAlert(filterItem)}>
               {filterItem.isStandardSelect && (
                 <IconExpandBoxWrapper className={filterItem.disabled && "disabled"}>
                   <IconExpandBox onClick={handleSetShowModal} />
@@ -357,5 +364,9 @@ const IconExpandBoxWrapper = styled.div`
 const SelectStyled = styled(SelectInputStyled)`
   .ant-select-selection__placeholder {
     padding-right: 18px;
+  }
+
+  .ant-select-selection {
+    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")} !important;
   }
 `;

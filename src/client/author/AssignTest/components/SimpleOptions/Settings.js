@@ -318,7 +318,8 @@ const Settings = ({
         </FeaturesSwitch>
         {/* Maximum attempt */}
 
-        {/* Require Safe Exam Browser */}
+        {/*Safe Exam Browser/Kiosk Mode*/}
+        
         <FeaturesSwitch
           inputFeatures="assessmentSuperPowersRequireSafeExamBrowser"
           actionOnInaccessible="hidden"
@@ -327,7 +328,7 @@ const Settings = ({
         >
           <StyledRowSettings gutter={16}>
             <Col span={12}>
-              <Label>REQUIRE SAFE EXAM BROWSER</Label>
+              <Label>Safe Exam Browser/Kiosk Mode</Label>
             </Col>
             <Col span={12}>
               <AlignSwitchRight
@@ -356,7 +357,7 @@ const Settings = ({
             </Col>
           </StyledRowSettings>
         </FeaturesSwitch>
-        {/* Require Safe Exam Browser */}
+        {/* Safe Exam Browser/Kiosk Mode*/}
 
         {/* Shuffle Question */
         !isDocBased && (

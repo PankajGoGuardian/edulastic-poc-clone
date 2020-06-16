@@ -572,7 +572,7 @@ class MainSetting extends Component {
             </Block>
             {availableFeatures.includes("assessmentSuperPowersRequireSafeExamBrowser") ? (
               <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
-                <Title>Require Safe Exam Browser</Title>
+                <Title>Safe Exam Browser/Kiosk Mode</Title>
                 <Body smallSize={isSmallSize}>
                   <Switch
                     disabled={!owner || !isEditable}

@@ -99,10 +99,11 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
         </Col>
       </StyledRowSettings>
 
-      {/* Require Safe Exam Browser */}
+      {/* Safe Exam Browser/Kiosk Mode */}
+      
       <StyledRowSettings gutter={16}>
         <Col span={16}>
-          <RowTitle>Require Safe Exam Browser</RowTitle>
+          <RowTitle>Safe Exam Browser/Kiosk Mode</RowTitle>
         </Col>
         <Col span={8}>
           <AlignSwitchRight defaultChecked={safeBrowser} onChange={value => overRideSettings("safeBrowser", value)} />
@@ -123,7 +124,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
           )}
         </Col>
       </StyledRowSettings>
-      {/* Require Safe Exam Browser */}
+      {/*Safe Exam Browser/Kiosk Mode */}
 
       {/* Shuffle Question */}
       <StyledRowSettings gutter={16}>

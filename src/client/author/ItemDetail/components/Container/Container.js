@@ -125,6 +125,28 @@ class Container extends Component {
     if (oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
     }
+    // State.testAuthoring ?
+    // For all test with no edit permission in some cases user can clone item and save it in their own library.
+    // For such cases preserve test ID till cloned item authoring is done and on publish navigate back to test review page.
+    if (
+      state?.testAuthoring === false &&
+      !loading &&
+      (rows.length === 0 || rows[0].widgets.length === 0) &&
+      !item.multipartItem
+    ) {
+      return history.replace({
+        pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+        state: {
+          backUrl: `/author/tests/${state.testId}/createItem/${itemId}`,
+          rowIndex: 0,
+          tabIndex: 0,
+          testItemId: match.params.id,
+          testAuthoring: false,
+          testId: state.testId
+        }
+      });
+    }
+
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && !item.multipartItem) {
       history.replace({
         pathname: isTestFlow
@@ -216,7 +238,8 @@ class Container extends Component {
       navigateToPickupQuestionType,
       isTestFlow,
       rows,
-      item
+      item,
+      location: { state }
     } = this.props;
 
     changeView("edit");
@@ -232,7 +255,21 @@ class Container extends Component {
 
     const isMultiDimensionalLayout = rows.length > 1;
     const { multipartItem: isMultipartItem } = item;
-
+    if (state?.testAuthoring === false) {
+      return history.push({
+        pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+        state: {
+          testId: state.testId,
+          testAuthoring: false,
+          rowIndex,
+          tabIndex,
+          testItemId: match.params.id,
+          columnHasResource: rows.length > 1 && rowIndex === 0 && columnHasResource,
+          isMultiDimensionalLayout,
+          isMultipartItem
+        }
+      });
+    }
     history.push({
       pathname: isTestFlow
         ? `/author/tests/${match.params.testId}/createItem/${match.params.id}/pickup-questiontype`
@@ -484,9 +521,21 @@ class Container extends Component {
   };
 
   goToItem = page => {
-    const { passage, history, match, isTestFlow } = this.props;
+    const {
+      passage,
+      history,
+      match,
+      isTestFlow,
+      location: { state }
+    } = this.props;
     const { testId } = match.params;
     const _id = passage.testItems[page - 1];
+    if (state?.testAuthoring === false) {
+      return history.push({
+        pathname: `/author/items/${_id}/item-detail`,
+        state: { resetView: false, testAuthoring: false, testId: state.testId }
+      });
+    }
     history.push({
       pathname: isTestFlow ? `/author/items/${_id}/item-detail/test/${testId}` : `/author/items/${_id}/item-detail`,
       state: { resetView: false }

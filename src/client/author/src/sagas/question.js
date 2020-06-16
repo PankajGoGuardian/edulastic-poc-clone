@@ -1,7 +1,8 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { questionsApi, testItemsApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
+import { get } from "lodash";
+import * as Sentry from "@sentry/browser";
 import { history } from "../../../configureStore";
 import {
   RECEIVE_QUESTION_REQUEST,
@@ -30,7 +31,7 @@ function* receiveQuestionSaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive question is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -93,18 +94,23 @@ function* saveQuestionSaga() {
       payload: { item }
     });
 
-    notification({ type: "success", messageKey:"itemSavedSuccess"});
+    notification({ type: "success", messageKey: "itemSavedSuccess" });
     if (itemDetail) {
+      const currentRouteState = yield select(state => get(state, "router.location.state", {}));
+      const stateToFollow =
+        currentRouteState.testAuthoring === false ? { testAuthoring: false, testId: currentRouteState.testId } : {};
       yield call(history.push, {
         pathname: `/author/items/${itemDetail._id}/item-detail`,
         state: {
           backText: "Back to item bank",
           backUrl: "/author/items",
-          itemDetail: false
+          itemDetail: false,
+          ...stateToFollow
         }
       });
     }
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     const errorMessage = "Save question is failing";
     notification({ messageKey: "saveQuestionFailing" });
@@ -130,9 +136,10 @@ function* loadQuestionSaga({ payload }) {
       }
     });
   } catch (e) {
+    Sentry.captureException(e);
     console.error(e);
     const errorMessage = "Loading Question is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 

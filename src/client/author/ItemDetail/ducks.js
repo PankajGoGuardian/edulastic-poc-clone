@@ -13,6 +13,7 @@ import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
 import { Effects, notification } from "@edulastic/common";
+import * as Sentry from "@sentry/browser";
 import {
   loadQuestionsAction,
   addItemsQuestionAction,
@@ -842,6 +843,7 @@ function* receiveItemSaga({ payload }) {
     }
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (err) {
+    Sentry.captureException(err);
     let msg = "Receive item by id is failing";
     if (err.status === 404) {
       msg = "Item not found";
@@ -849,7 +851,7 @@ function* receiveItemSaga({ payload }) {
     }
     console.log("err is", err);
 
-    notification({ msg:msg});
+    notification({ msg: msg });
     yield put({
       type: RECEIVE_ITEM_DETAIL_ERROR,
       payload: { error: msg }
@@ -877,12 +879,13 @@ export function* deleteItemSaga({ payload }) {
       yield put(push(`/author/items`));
     }
   } catch (e) {
+    Sentry.captureException(e);
     yield put(setItemDeletingAction(false));
     console.error(e);
     if (e.status === 403) {
-      return notification({ msg:e.data.message});
+      return notification({ msg: e.data.message });
     }
-    notification({ messageKey:"deletingItemFailed"});
+    notification({ messageKey: "deletingItemFailed" });
   }
 }
 
@@ -917,14 +920,13 @@ export function* updateItemSaga({ payload }) {
     if (isGradingCheckBox) {
       const currentQuestionId = yield select(state => get(state, "authorQuestions.current"));
       const currentQuestion = questions.find(q => q.id === currentQuestionId);
-      if (!currentQuestion.rubrics)
-        return notification({ messageKey:"pleaseAssociateARubric"});
+      if (!currentQuestion.rubrics) return notification({ messageKey: "pleaseAssociateARubric" });
     }
 
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
 
     if (isPassageWithQuestions && !questions.length) {
-      notification({ messageKey:"CannotSaveWithoutQuestions"});
+      notification({ messageKey: "CannotSaveWithoutQuestions" });
       return null;
     }
     questions = produce(questions, draft => {
@@ -952,7 +954,7 @@ export function* updateItemSaga({ payload }) {
     if (questions.length === 1) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
       if (isIncomplete) {
-        return notification({ msg:errMsg});
+        return notification({ msg: errMsg });
       }
     }
 
@@ -982,7 +984,7 @@ export function* updateItemSaga({ payload }) {
     if (structure) {
       const { widgets = [] } = structure;
       if (isPassageWithQuestions && !widgets.length) {
-        notification({ messageKey:"CannotSaveWithoutPasses"});
+        notification({ messageKey: "CannotSaveWithoutPasses" });
         return null;
       }
     }
@@ -1087,9 +1089,10 @@ export function* updateItemSaga({ payload }) {
       return;
     }
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     const errorMessage = "Item save is failing";
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -1137,8 +1140,9 @@ export function* updateItemDocBasedSaga({ payload }) {
     notification({ type: "success", messageKey: "itemSavedSuccess" });
     return { testId, ...item };
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = "Item save is failing";
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage }
@@ -1206,15 +1210,14 @@ function* publishTestItemSaga({ payload }) {
     if (questions.length === 1) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
       if (isIncomplete) {
-        return notification({ msg:errorMessage});
+        return notification({ msg: errorMessage });
       }
     }
     const isGradingCheckBox = yield select(getIsGradingCheckboxState);
     if (isGradingCheckBox) {
       const currentQuestionId = yield select(state => get(state, "authorQuestions.current"));
       const currentQuestion = questions.find(q => q.id === currentQuestionId);
-      if (!currentQuestion.rubrics)
-        return notification({ messageKey:"pleaseAssociateARubric"});
+      if (!currentQuestion.rubrics) return notification({ messageKey: "pleaseAssociateARubric" });
     }
 
     const testItem = yield select(state => get(state, ["itemDetail", "item"]));
@@ -1256,6 +1259,15 @@ function* publishTestItemSaga({ payload }) {
       yield put(updateTestItemStatusAction(testItemStatus));
       const redirectTestId = yield select(getRedirectTestSelector);
       yield put(changeUpdatedFlagAction(false));
+      if (payload.locationState.testAuthoring === false && payload.locationState.testId) {
+        yield put(
+          push({
+            pathname: `/author/tests/tab/review/id/${payload.locationState.testId}`,
+            state: { isAuthoredNow: true }
+          })
+        );
+        return;
+      }
       if (redirectTestId) {
         yield delay(1500);
         yield put(
@@ -1274,12 +1286,13 @@ function* publishTestItemSaga({ payload }) {
     } else {
       yield put(changeViewAction("metadata"));
       yield put(setHighlightCollectionAction(true));
-      notification({ messageKey:"itemIsNotAssociated"});
+      notification({ messageKey: "itemIsNotAssociated" });
     }
   } catch (e) {
+    Sentry.captureException(e);
     console.warn("publish error", e);
     const { message: errorMessage = "Failed to publish item" } = e.data;
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 
@@ -1303,8 +1316,9 @@ function* convertToMultipartSaga({ payload }) {
     yield put(setQuestionCategory("multiple-choice"));
     yield put(push(nextPageUrl));
   } catch (e) {
+    Sentry.captureException(e);
     console.log("error", e);
-    notification({ msg:e});
+    notification({ msg: e });
   }
 }
 
@@ -1351,8 +1365,9 @@ function* convertToPassageWithQuestions({ payload }) {
       })
     );
   } catch (e) {
+    Sentry.captureException(e);
     console.log("error", e);
-    notification({ msg:e});
+    notification({ msg: e });
   }
 }
 
@@ -1393,7 +1408,7 @@ function* savePassage({ payload }) {
       passageData.some(i => {
         const [hasEmptyFields, msg] = isIncompleteQuestion(i);
         if (hasEmptyFields) {
-          notification({ msg:msg});
+          notification({ msg: msg });
           return true;
         }
       })
@@ -1433,8 +1448,9 @@ function* savePassage({ payload }) {
     yield put(changeUpdatedFlagAction(false));
     yield put(push(url));
   } catch (e) {
+    Sentry.captureException(e);
     console.log("error: ", e);
-    notification({ msg:"errorSavingPassing"});
+    notification({ msg: "errorSavingPassing" });
   }
 }
 
@@ -1484,8 +1500,9 @@ function* addWidgetToPassage({ payload }) {
       })
     );
   } catch (e) {
+    Sentry.captureException(e);
     console.log("error:", e);
-    notification({ messageKey:"failedAddingContent"});
+    notification({ messageKey: "failedAddingContent" });
   }
 }
 
@@ -1497,8 +1514,9 @@ function* loadQuestionPreviewAttachmentsSaga({ payload }) {
       payload: result
     });
   } catch (e) {
+    Sentry.captureException(e);
     const errorMessage = "Loading audit trail logs failed";
-    notification({ msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_QUESTION_PREVIEW_ATTACHMENT_FAILURE
     });

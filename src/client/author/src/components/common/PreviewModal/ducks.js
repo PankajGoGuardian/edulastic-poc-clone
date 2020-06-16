@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { call, put, all, takeEvery } from "redux-saga/effects";
+import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { get, omit } from "lodash";
 import { testItemsApi, passageApi } from "@edulastic/api";
@@ -101,6 +101,15 @@ function* duplicateItemRequestSaga({ payload }) {
       yield call(passageApi.update, { ...omit(passage, "__v"), testItems: [...passage.testItems, duplicatedItem._id] });
     } else {
       duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId);
+    }
+    const isEditEnable = yield select(state => get(state, "tests.editEnable"));
+    if (isTest && !(test.status === "draft" || isEditEnable)) {
+      return yield put(
+        push({
+          pathname: `/author/items/${duplicatedItem._id}/item-detail`,
+          state: { testAuthoring: false, testId }
+        })
+      );
     }
     if (isTest) {
       yield put(

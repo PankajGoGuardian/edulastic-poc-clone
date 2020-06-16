@@ -75,7 +75,8 @@ const ItemDetailContainer = ({
       isCurator: userFeatures.isCurator,
       isPublisherAuthor: userFeatures.isPublisherAuthor,
       itemId,
-      status
+      status,
+      locationState: { ...location.state }
     };
     publishTestItem(obj);
     setEditable(false);

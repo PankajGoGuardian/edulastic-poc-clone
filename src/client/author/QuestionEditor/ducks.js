@@ -3,10 +3,10 @@ import { testItemsApi, evaluateApi, questionsApi } from "@edulastic/api";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { cloneDeep, values, get, omit, set, uniqBy, intersection } from "lodash";
 import produce from "immer";
-import { message } from "antd";
 import { questionType } from "@edulastic/constants";
 import { helpers, notification } from "@edulastic/common";
 import { push } from "connected-react-router";
+import * as Sentry from "@sentry/browser";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
@@ -326,7 +326,7 @@ function* receiveQuestionSaga({ payload }) {
     });
   } catch (err) {
     const errorMessage = "Receive question is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_QUESTION_ERROR,
       payload: { error: errorMessage }
@@ -384,7 +384,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
     const { itemLevelScoring = false } = itemDetail;
     const [isIncomplete, errMsg] = isIncompleteQuestion(question, itemLevelScoring);
-    if (isIncomplete) return notification({ msg:errMsg });
+    if (isIncomplete) return notification({ msg: errMsg });
 
     const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(question);
     if (hasImproperConfig) {
@@ -399,7 +399,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const isGradingCheckboxState = yield select(getIsGradingCheckboxState);
 
     if (isGradingCheckboxState && !question.rubrics) {
-      return notification({ messageKey:"pleaseAssociateARubric"});
+      return notification({ messageKey: "pleaseAssociateARubric" });
     }
 
     const locationState = yield select(state => state.router.location.state);
@@ -564,6 +564,8 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       yield put(changeViewAction("edit"));
       return;
     }
+    const stateToFollow =
+      locationState.testAuthoring === false ? { testAuthoring: false, testId: locationState.testId } : {};
     if (itemDetail) {
       yield put(
         push({
@@ -571,7 +573,8 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
           state: {
             backText: "Back to item bank",
             backUrl: "/author/items",
-            itemDetail: false
+            itemDetail: false,
+            ...stateToFollow
           }
         })
       );
@@ -665,7 +668,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
   } catch (e) {
     console.log(e, "error");
     const errorMessage = "Loading Question is failed";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 // actions
@@ -791,8 +794,9 @@ function* loadQuestionSaga({ payload }) {
     }
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (e) {
+    Sentry.captureException(e);
     const errorMessage = "Loading Question is failing";
-    notification({ msg:errorMessage });
+    notification({ msg: errorMessage });
   }
 }
 

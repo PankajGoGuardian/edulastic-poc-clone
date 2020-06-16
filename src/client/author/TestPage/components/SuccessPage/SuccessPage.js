@@ -73,11 +73,9 @@ class SuccessPage extends React.Component {
     const { id: testId, assignmentId } = match.params;
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
-    } else {
-      if (testId) {
+    } else if (testId) {
         fetchTestByID(testId);
       }
-    }
     if (isAssignSuccess) {
       fetchAssignmentById(assignmentId);
     } else if (isRegradeSuccess) {
@@ -138,7 +136,7 @@ class SuccessPage extends React.Component {
     const sharedUserList = isPlaylist ? playListSharedUsersList : testSharedUsersList;
     const mapSharedByType = sharedUserList.map(item => item.sharedType);
     let sharedWith = "Private";
-    for (let level of sharedWithPriorityOrder) {
+    for (const level of sharedWithPriorityOrder) {
       if (mapSharedByType.includes(level.toUpperCase())) {
         sharedWith = level;
         break;
@@ -158,7 +156,8 @@ class SuccessPage extends React.Component {
       userId,
       collections,
       published,
-      syncWithGoogleClassroomInProgress
+      syncWithGoogleClassroomInProgress,
+      history
     } = this.props;
     const { isShareModalVisible } = this.state;
     const { title, _id, status, grades, subjects, authors = [] } = isPlaylist ? playlist : test;
@@ -220,10 +219,25 @@ class SuccessPage extends React.Component {
       return data;
     };
 
+    const contentData = {};
+    if (isAssignSuccess && isPlaylist && history.location.state && history.location.state.playlistModuleId) {
+      const { playlistModuleId: assignedPlaylistModuleId, assignedTestId } = history.location.state || {};
+      // if test from playlist  was assigned then show test details in /assign/ page
+      if (assignedTestId) {
+        contentData.title = assignment.title;
+        const _module = playlist.modules?.find(m => m?._id === assignedPlaylistModuleId);
+        contentData.standardIdentifiers = _module?.data?.find(d => d?.contentId === assignedTestId)?.standardIdentifiers;
+      } else {  // else module was assigned then show module details
+        const _module = playlist.modules?.find(m => m?._id === assignedPlaylistModuleId);
+        contentData.title = _module.title;
+        contentData.standardIdentifiers = _module?.data?.flatMap(d => d?.standardIdentifiers);
+      }
+    }
+
     return (
       <div>
         <ShareModal
-          shareLabel={"TEST URL"}
+          shareLabel="TEST URL"
           isVisible={isShareModalVisible}
           testId={_id}
           hasPremiumQuestion={hasPremiumQuestion}
@@ -240,7 +254,7 @@ class SuccessPage extends React.Component {
           <FlexContainerWrapper isAssignSuccess={isAssignSuccess || isRegradeSuccess}>
             {(isAssignSuccess || isRegradeSuccess || published) && (
               <FlexContainerWrapperLeft>
-                <ImageCard _source={isPlaylist ? playlist : test} isPlaylist={isPlaylist} collections={collections} />
+                <ImageCard _source={isPlaylist ? playlist : test} isPlaylist={isPlaylist} collections={collections} contentData={contentData} />
               </FlexContainerWrapperLeft>
             )}
             <FlexContainerWrapperRight isAssignSuccess={isAssignSuccess || isRegradeSuccess}>
@@ -276,7 +290,7 @@ class SuccessPage extends React.Component {
                       </span>
                       &nbsp; button.
                     </FlexText>
-                  )}
+                      )}
                   <Divider />
                 </>
               )}

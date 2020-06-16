@@ -1,4 +1,7 @@
 import React from "react";
+import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
+import { cardTitleColor, secondaryTextColor } from "@edulastic/colors";
+import { keyBy } from "lodash";
 import Tags from "../../../src/components/common/Tags";
 import {
   flattenPlaylistStandards,
@@ -30,13 +33,10 @@ import {
   CollectionNameWrapper,
   ThinLine
 } from "../../../TestList/components/Item/styled.js";
-import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
-import { cardTitleColor, secondaryTextColor } from "@edulastic/colors";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 import { TestStatus } from "../../../TestList/components/ListItem/styled";
-import { keyBy } from "lodash";
 
-const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [] }) => {
+const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [], contentData = {} }) => {
   const {
     title,
     summary = {},
@@ -60,7 +60,7 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [] 
   return (
     <Container
       src={thumbnail}
-      onClick={() => {}}
+      onClick={() => { }}
       title={
         <Header src={thumbnail}>
           <Stars />
@@ -70,9 +70,9 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [] 
       }
     >
       <TestInfo style={{ textAlign: "left" }}>
-        <StyledLink title={title}>{title}</StyledLink>
+        <StyledLink title={contentData.title || title}>{contentData.title || title}</StyledLink>
         <TagsWrapper isPlaylist={isPlaylist}>
-          <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
+          <Tags show={4} tags={contentData.standardsIdentifiers || standardsIdentifiers} key="standards" isStandards margin="0px" />
           {isPlaylist && <Tags show={2} tags={tags} key="tags" />}
         </TagsWrapper>
       </TestInfo>
@@ -81,7 +81,7 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [] 
         <MidRow>
           <Collection>
             <label>COLLECTIONS</label>
-            <CollectionNameWrapper title={"Private Library"} style={{ color: secondaryTextColor }}>
+            <CollectionNameWrapper title="Private Library" style={{ color: secondaryTextColor }}>
               Private Library
             </CollectionNameWrapper>
           </Collection>

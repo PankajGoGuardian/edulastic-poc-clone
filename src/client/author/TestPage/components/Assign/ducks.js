@@ -1,6 +1,5 @@
 import * as moment from "moment";
 import { omit, get } from "lodash";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
@@ -183,10 +182,10 @@ function* saveAssignment({ payload }) {
       if (payload.testId) {
         testIds = [payload.testId];
       } else {
-        const module = playlist.modules.filter(module => module._id === payload.playlistModuleId);
+        const module = playlist.modules.filter(m => m._id === payload.playlistModuleId);
         if (!module || !(module && module.length)) {
           yield put(setAssignmentSavingAction(false));
-          notification({ messageKey:"moduleNotFoundInPlaylist"});
+          notification({ messageKey: "moduleNotFoundInPlaylist" });
           return;
         }
         module &&
@@ -197,7 +196,7 @@ function* saveAssignment({ payload }) {
           });
         if (!testIds.length) {
           yield put(setAssignmentSavingAction(false));
-          notification({ messageKey:"noTestInModule"});
+          notification({ messageKey: "noTestInModule" });
           return;
         }
       }
@@ -273,9 +272,9 @@ function* saveAssignment({ payload }) {
       allowDuplicates: !!payload.allowDuplicates
     });
     const gSyncStatus = [];
-    result.map(data => {
-      if (data.gSyncStatus) gSyncStatus.push(data.gSyncStatus);
-      delete data.gSyncStatus;
+    result.forEach(_data => {
+      if (_data.gSyncStatus) gSyncStatus.push(_data.gSyncStatus);
+      delete _data.gSyncStatus;
     });
     const assignment = result?.[0] ? formatAssignment(result[0]) : {};
     yield put({ type: SET_ASSIGNMENT, payload: assignment });
@@ -289,13 +288,13 @@ function* saveAssignment({ payload }) {
     const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
     notification({ type: "success", msg: successMessage });
     if (gSyncStatus.length) {
-      notification({ type: "warn", messageKey:"shareWithGoogleClassroomFailed"});
+      notification({ type: "warn", messageKey: "shareWithGoogleClassroomFailed" });
     }
     const isAdminRole = [roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(userRole);
     if (containsCanvasClass) {
       if (isAdminRole) {
-        notification({ type: "success", messageKey:"assignmentsWillBeSharedToCanvasINSometime"});
-      } else notification({ type: "success", messageKey:"asignmentSharedTOCanvasClassAlso"});
+        notification({ type: "success", messageKey: "assignmentsWillBeSharedToCanvasINSometime" });
+      } else notification({ type: "success", messageKey: "asignmentSharedTOCanvasClassAlso" });
     }
     if (!assignmentId && !payload.playlistModuleId) return;
 
@@ -309,8 +308,8 @@ function* saveAssignment({ payload }) {
       push({
         pathname: `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
           payload.playlistModuleId ? payload.playlistId : testIds[0]
-        }/assign/${assignmentId}`,
-        state: locationState
+          }/assign/${assignmentId}`,
+        state: { ...locationState, assignedTestId: payload.testId, playlistModuleId: payload.playlistModuleId }
       })
     );
   } catch (err) {
@@ -325,31 +324,29 @@ function* saveAssignment({ payload }) {
     }
     yield put(toggleHasCommonAssignmentsPopupAction(false));
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
-    notification({ msg:err.statusText});
+    notification({ msg: err.statusText });
   }
 }
 
 function* loadAssignments({ payload }) {
   try {
-    let testId,
-      regradeAssignments = false;
+    let testId;
+    let regradeAssignments = false;
     if (!payload) {
       const { _id } = yield select(getTestSelector);
       testId = _id;
+    } else if (typeof payload === "object") {
+      testId = payload.testId;
+      regradeAssignments = payload.regradeAssignments;
     } else {
-      if (typeof payload === "object") {
-        testId = payload.testId;
-        regradeAssignments = payload.regradeAssignments;
-      } else {
-        testId = payload;
-      }
+      testId = payload;
     }
 
     // test is not yet created!
     if (!testId) {
       return;
     }
-    //fetch assignments is for getting user assignments and regrade assignments is for getting org level assignments.
+    // fetch assignments is for getting user assignments and regrade assignments is for getting org level assignments.
     const getAssignmentsApi = regradeAssignments
       ? assignmentApi.fetchRegradeAssignments
       : assignmentApi.fetchAssignments;
@@ -368,7 +365,7 @@ function* deleteAssignment({ payload }) {
     notification({ type: "success", messageKey: "AssignmentDelete" });
   } catch (error) {
     console.log(error);
-    notification({ messageKey:"failedToDelete"});
+    notification({ messageKey: "failedToDelete" });
   }
   yield put(toggleDeleteAssignmentModalAction(false));
 }

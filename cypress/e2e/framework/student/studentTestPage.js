@@ -46,7 +46,10 @@ class StudentTestPage {
   clickOnSkipped = () => cy.get('[ data-cy="skipped"]').click();
 
   // @questionNumber = "Q1" ; "Q2"
-  clickOnReviewQuestion = questionNumber => cy.get(`[data-cy="${questionNumber}"]`).click();
+  clickOnReviewQuestion = questionNumber => {
+    cy.get(`[data-cy="${questionNumber}"]`).click();
+    cy.wait("@gettest");
+  };
 
   getScientificCalc = () => cy.get('[data-cy="SCIENTIFIC"]');
 
@@ -738,6 +741,18 @@ class StudentTestPage {
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
 
   getQuestionInPracticeByIndex = qIndex => cy.get(`[data-cy="queCircle-${qIndex + 1}"]`);
+
+  selectQuestioninPracticePlayerByIndex = (index, isSkipped = false) => {
+    cy.server();
+    cy.route("POST", "**/test-activity/**").as("saved");
+    this.getQuestionInPracticeByIndex(index).then($ele => {
+      if ($ele.css("background-color") !== queColor.GREEN_2) {
+        cy.wrap($ele).click({ force: true });
+        if (isSkipped) this.clickOnSkipOnPopUp();
+        cy.wait("@saved");
+      }
+    });
+  };
 
   verifySideBar = qIndex => {
     this.getQuestionInPracticeByIndex(qIndex).should("have.css", "background-color", queColor.GREEN_2);

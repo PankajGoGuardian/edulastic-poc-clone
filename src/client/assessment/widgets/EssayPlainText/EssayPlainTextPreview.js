@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { get, isString } from "lodash";
 
 import {
@@ -26,6 +26,8 @@ import Character from "./components/Character";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import Instructions from "../../components/Instructions";
 
+const getWordCount = val => val?.split("\n").map(line => line.split(" ")).flat().filter(i => !!i).length;
+
 const EssayPlainTextPreview = ({
   col,
   view,
@@ -38,11 +40,12 @@ const EssayPlainTextPreview = ({
   showQuestionNumber,
   testItem,
   disableResponse,
-  isReviewTab
+  isReviewTab,
+  isPrintPreview
 }) => {
   const [text, setText] = useState(isString(userAnswer) ? userAnswer : "");
 
-  const [wordCount, setWordCount] = useState(text.split(" ").filter(i => !!i).length);
+  const [wordCount, setWordCount] = useState(getWordCount(text));
 
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
@@ -66,7 +69,7 @@ const EssayPlainTextPreview = ({
     const val = e.target.value;
     if (typeof val === "string") {
       setText(val);
-      setWordCount(val.split(" ").filter(i => !!i).length);
+      setWordCount(getWordCount(val));
       saveAnswer(val);
     }
   };
@@ -176,7 +179,7 @@ const EssayPlainTextPreview = ({
               </FlexContainer>
             </Toolbar>
           )}
-          <TextAnswer
+          {!isPrintPreview && <TextAnswer
             ref={ref => {
               node = ref;
             }}
@@ -203,6 +206,12 @@ const EssayPlainTextPreview = ({
             disabled={reviewTab}
             {...getSpellCheckAttributes(item.spellcheck)}
           />
+          }
+          {isPrintPreview && (
+            <StyledPrintAnswerBox>
+              {text.split("\n").map((txt, i) => <p key={i}>{txt}</p>)}
+            </StyledPrintAnswerBox>
+          )}
 
           {!reviewTab && item.showWordCount && (
             <Toolbar borderRadiusOnlyBottom style={{ borderTop: 0 }}>
@@ -248,4 +257,10 @@ const enhance = compose(
   withTheme
 );
 
+const StyledPrintAnswerBox = styled.div`
+  min-height: 150px;
+  border-radius: 10px;
+  border: 1px solid;
+  padding-left: 6px;
+`;
 export default enhance(EssayPlainTextPreview);

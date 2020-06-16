@@ -10,14 +10,14 @@ import EditEssayPlainText from "./components/EditEssayPlainText";
 import EssayPlainTextPreview from "./EssayPlainTextPreview";
 
 const EssayPlainText = props => {
-  const { item, view } = props;
+  const { item, view, disableResponse, isPrintPreview } = props;
 
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
     <Fragment>
       {view === EDIT && <EditEssayPlainText {...props} />}
-      {view === PREVIEW && <EssayPlainTextPreview key={itemForPreview.id} {...props} item={itemForPreview} />}
+      {view === PREVIEW && <EssayPlainTextPreview key={itemForPreview.id} {...props} item={itemForPreview} disableResponse={disableResponse || isPrintPreview} />}
     </Fragment>
   );
 };

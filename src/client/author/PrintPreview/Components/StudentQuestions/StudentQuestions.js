@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { keyBy as _keyBy, get } from "lodash";
@@ -49,17 +48,6 @@ Preview.propTypes = {
 };
 
 class StudentQuestions extends Component {
-  componentDidMount() {
-    setTimeout(() => {
-      const textAreas = ReactDOM.findDOMNode(this.printpreviewRef).getElementsByTagName("textarea");
-      for (let i = 0; i < textAreas.length; i++) {
-        const value = textAreas[i].value;
-        const parent = textAreas[i].parentNode;
-        $(parent).append(`<div>${value}</div>`);
-      }
-    }, 3000);
-  }
-
   getTestItems() {
     const { currentStudent, questionActivities, location } = this.props;
     const { type, qs } = queryString.parse(location.search);

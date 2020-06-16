@@ -25,10 +25,6 @@ export const PrintPreviewContainer = styled.div`
     page-break-inside: avoid;
   }
 
-  textarea.ant-input {
-    display: none;
-  }
-
   input[type="text"] {
     pointer-events: none;
   }

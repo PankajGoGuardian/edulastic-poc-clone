@@ -1,30 +1,21 @@
-import React from "react";
-import Modal from "react-responsive-modal";
-import PropTypes from "prop-types";
-import { Button, Select, Row, Col } from "antd";
-import PerfectScrollbar from "react-perfect-scrollbar";
-
+import { CustomModalStyled, EduButton, FieldLabel, NumberInputStyled, SelectInputStyled } from "@edulastic/common";
 import {
-  SHORT_TEXT,
-  MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
-  MATH,
   ESSAY_PLAIN_TEXT,
+  MATH,
+  MULTIPLE_CHOICE,
+  SHORT_TEXT,
   TRUE_OR_FALSE
 } from "@edulastic/constants/const/questionType";
+import { Col, Row, Select } from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import { selectsData } from "../../../TestPage/components/common";
-import { ModalWrapper, ModalHeader, ModalFooter } from "../../common/Modal";
-import { FormGroup, FormLabel, FormInline, QuestionFormWrapper } from "../QuestionEditModal/common/QuestionForm";
-import { BulkTitle, NumberInput, TypeOfQuestion, TypeOfQuestionSelect, StandardSelectWrapper } from "./styled";
+import { ModalFooter, ModalWrapper } from "../../common/Modal";
+import { QuestionFormWrapper } from "../QuestionEditModal/common/QuestionForm";
 import StandardSet from "../QuestionEditModal/common/StandardSet/StandardSet";
-
-const modalStyles = {
-  modal: {
-    background: "#f8f8f8",
-    borderRadius: "4px 4px 0 0",
-    padding: "19px 28px 40px 28px"
-  }
-};
+import { StandardSelectWrapper } from "./styled";
 
 export default class AddBulkModal extends React.Component {
   static propTypes = {
@@ -40,14 +31,16 @@ export default class AddBulkModal extends React.Component {
     startingIndex: this.props.minAvailableQuestionIndex || 1,
     authorDifficulty: "",
     depthOfKnowledge: "",
-    alignment: [{
-      curriculum: "",
-      curriculumId: "",
-      domains: [],
-      grades: [],
-      standards: [],
-      subject: ""
-    }]
+    alignment: [
+      {
+        curriculum: "",
+        curriculumId: "",
+        domains: [],
+        grades: [],
+        standards: [],
+        subject: ""
+      }
+    ]
   };
 
   handleChange = field => value =>
@@ -69,21 +62,30 @@ export default class AddBulkModal extends React.Component {
     const { onCancel, visible } = this.props;
 
     return (
-      <Modal open={visible} onClose={onCancel} styles={modalStyles} center>
-        <ModalWrapper>
-          <ModalHeader>
-            <BulkTitle>Add Bulk</BulkTitle>
-          </ModalHeader>
+      <CustomModalStyled
+        visible={visible}
+        title="Add Bulk"
+        onCancel={onCancel}
+        footer={[
+          <ModalFooter marginTop="35px">
+            <EduButton isGhost onClick={onCancel}>
+              Cancel
+            </EduButton>
+            <EduButton onClick={this.handleApply}>Apply</EduButton>
+          </ModalFooter>
+        ]}
+      >
+        <ModalWrapper width="100%">
           <PerfectScrollbar>
             <QuestionFormWrapper>
-              <FormInline>
-                <FormGroup>
-                  <FormLabel>Number</FormLabel>
-                  <NumberInput min={1} value={number} onChange={this.handleChange("number")} />
-                </FormGroup>
-                <TypeOfQuestion>
-                  <FormLabel>Type of Question</FormLabel>
-                  <TypeOfQuestionSelect
+              <Row gutter={20}>
+                <Col span={6}>
+                  <FieldLabel>Number</FieldLabel>
+                  <NumberInputStyled min={1} value={number} onChange={this.handleChange("number")} />
+                </Col>
+                <Col span={18}>
+                  <FieldLabel>Type of Question</FieldLabel>
+                  <SelectInputStyled
                     value={type}
                     onChange={this.handleChange("type")}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -94,18 +96,22 @@ export default class AddBulkModal extends React.Component {
                     <Select.Option value={MATH}>Math</Select.Option>
                     <Select.Option value={ESSAY_PLAIN_TEXT}>Essay</Select.Option>
                     <Select.Option value={TRUE_OR_FALSE}>True or False</Select.Option>
-                  </TypeOfQuestionSelect>
-                </TypeOfQuestion>
-              </FormInline>
+                  </SelectInputStyled>
+                </Col>
+              </Row>
             </QuestionFormWrapper>
 
             <StandardSelectWrapper>
-              <StandardSet alignment={alignment} onUpdate={data => this.setState({ alignment: data.alignment })} isDocBased showIconBrowserBtn />
+              <StandardSet
+                alignment={alignment}
+                onUpdate={data => this.setState({ alignment: data.alignment })}
+                isDocBased
+                showIconBrowserBtn
+              />
               <Row style={{ marginTop: "10px" }}>
                 <Col md={12}>
-                  <FormLabel>DOK</FormLabel>
-                  <Select
-                    style={{ width: "95%" }}
+                  <FieldLabel>DOK</FieldLabel>
+                  <SelectInputStyled
                     placeholder="Select DOK"
                     onSelect={val => this.setState({ depthOfKnowledge: val })}
                     value={depthOfKnowledge}
@@ -122,12 +128,11 @@ export default class AddBulkModal extends React.Component {
                           </Select.Option>
                         )
                     )}
-                  </Select>
+                  </SelectInputStyled>
                 </Col>
-                <Col md={12} style={{ paddingLeft: "5%" }}>
-                  <FormLabel>Difficulty</FormLabel>
-                  <Select
-                    style={{ width: "100%" }}
+                <Col md={12}>
+                  <FieldLabel>Difficulty</FieldLabel>
+                  <SelectInputStyled
                     placeholder="Select Difficulty Level"
                     onSelect={val => this.setState({ authorDifficulty: val })}
                     value={authorDifficulty}
@@ -144,17 +149,13 @@ export default class AddBulkModal extends React.Component {
                           </Select.Option>
                         )
                     )}
-                  </Select>
+                  </SelectInputStyled>
                 </Col>
               </Row>
             </StandardSelectWrapper>
           </PerfectScrollbar>
-          <ModalFooter marginTop="35px">
-            <Button onClick={onCancel}>Cancel</Button>
-            <Button onClick={this.handleApply}>Apply</Button>
-          </ModalFooter>
         </ModalWrapper>
-      </Modal>
+      </CustomModalStyled>
     );
   }
 }

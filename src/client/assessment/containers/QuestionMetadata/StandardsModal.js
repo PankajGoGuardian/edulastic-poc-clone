@@ -1,9 +1,15 @@
-import { CheckboxLabel, EduButton, FlexContainer, MathFormulaDisplay, Paper } from "@edulastic/common";
+import {
+  CheckboxLabel,
+  EduButton,
+  FlexContainer,
+  MathFormulaDisplay,
+  Paper,
+  CustomModalStyled
+} from "@edulastic/common";
 import { Col, Row, Spin } from "antd";
 import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
 import { setDefaultInterests } from "../../../author/dataUtils";
-import { ConfirmationModal as StyledModal } from "../../../author/src/components/common/ConfirmationModal";
 import PopupRowSelect from "./PopupRowSelect";
 import { Container } from "./styled/Container";
 import { ELOList } from "./styled/ELOList";
@@ -86,12 +92,11 @@ const StandardsModal = ({
   };
 
   return (
-    <StyledModal
+    <CustomModalStyled
       title="Select Standards for This Question"
       visible={visible}
       onCancel={onCancel}
       footer={footer}
-      textAlign="left"
       modalWidth="800px"
       top="50px"
     >
@@ -149,7 +154,7 @@ const StandardsModal = ({
           </Spin>
         </Row>
       </Paper>
-    </StyledModal>
+    </CustomModalStyled>
   );
 };
 
@@ -157,7 +162,6 @@ StandardsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onApply: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
-  curriculums: PropTypes.array.isRequired,
   standard: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   subject: PropTypes.string,

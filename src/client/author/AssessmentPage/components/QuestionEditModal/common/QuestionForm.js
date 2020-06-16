@@ -6,8 +6,6 @@ import { Checkbox } from "antd";
 
 export const QuestionFormWrapper = styled(Paper)`
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
-  padding: 15px;
 
   .ant-input-number-input {
     text-align: center;

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import { extraDesktopWidthMax, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { inputBorder, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 
 const CustomTreeSelect = ({ children, title, style }) => {
@@ -35,7 +35,7 @@ const CustomTreeSelect = ({ children, title, style }) => {
     <div ref={wrapperRef}>
       <Wrapper style={style}>
         <Title onClick={() => setShow(!show)}>
-          <span>{title}</span>
+          <TextEllipsis title={title}>{title}</TextEllipsis>
           <SelectSuffixIcon type="caret-down" />
         </Title>
         {show && <Main>{children}</Main>}
@@ -59,21 +59,18 @@ export default CustomTreeSelect;
 
 const Wrapper = styled.div`
   position: relative;
-  border: 1px solid ${inputBorder};
-  &:hover {
-    border: 1px solid ${themeColor};
-  }
 `;
 
 const Title = styled.div`
-  background: #fff;
+  background: ${greyThemeLighter};
   min-height: 40px;
-  border-radius: 5px;
+  border-radius: 4px 0px 0px 4px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
+  border: 1px solid ${greyThemeLight};
 
   span {
     font-size: ${props => props.theme.smallFontSize};
@@ -82,6 +79,13 @@ const Title = styled.div`
       font-size: ${props => props.theme.widgetOptions.labelFontSize};
     }
   }
+`;
+
+const TextEllipsis = styled.span`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `;
 
 const Main = styled.div`

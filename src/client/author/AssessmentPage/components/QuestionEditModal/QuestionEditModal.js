@@ -1,29 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Button, Col, Row, Select } from "antd";
-import Modal from "react-responsive-modal";
-
+import { CustomModalStyled, EduButton, FieldLabel, SelectInputStyled } from "@edulastic/common";
 import {
-  SHORT_TEXT,
-  MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
-  MATH,
   ESSAY_PLAIN_TEXT,
+  MATH,
+  MULTIPLE_CHOICE,
+  SHORT_TEXT,
   TRUE_OR_FALSE
 } from "@edulastic/constants/const/questionType";
-
-import { QuestionNumber } from "../QuestionItem/styled";
-import { ModalWrapper, ModalTitle, ModalHeader, ModalFooter } from "../../common/Modal";
-import QuestionChoice from "./components/QuestionChoice/QuestionChoice";
-import QuestionText from "./components/QuestionText/QuestionText";
-import QuestionDropdown from "./components/QuestionDropdown/QuestionDropdown";
-import QuestionMath from "./components/QuestionMath/QuestionMath";
-import QuestionEssay from "./components/QuestionEssay/QuestionEssay";
-import StandardSet from "./common/StandardSet/StandardSet";
+import { Col, Row, Select } from "antd";
+import PropTypes from "prop-types";
+import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { FormLabel } from "./common/QuestionForm";
 import { selectsData } from "../../../TestPage/components/common";
+import { ModalFooter, ModalTitle } from "../../common/Modal";
+import { QuestionNumber } from "../QuestionItem/styled";
+import StandardSet from "./common/StandardSet/StandardSet";
 import { StandardSelectWrapper } from "./common/StandardSet/styled";
+import QuestionChoice from "./components/QuestionChoice/QuestionChoice";
+import QuestionDropdown from "./components/QuestionDropdown/QuestionDropdown";
+import QuestionEssay from "./components/QuestionEssay/QuestionEssay";
+import QuestionMath from "./components/QuestionMath/QuestionMath";
+import QuestionText from "./components/QuestionText/QuestionText";
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: "Multiple Choice",
@@ -33,17 +30,9 @@ const questionTypeTitles = {
   [SHORT_TEXT]: "Text Entry"
 };
 
-const modalStyles = {
-  modal: {
-    background: "#f8f8f8",
-    borderRadius: "4px 4px 0 0",
-    padding: "19px 10px 40px 10px"
-  }
-};
-
 export default class QuestionEditModal extends React.Component {
   static propTypes = {
-    totalQuestions: PropTypes.number,
+    totalQuestions: PropTypes.number.isRequired,
     visible: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     question: PropTypes.object,
@@ -95,78 +84,84 @@ export default class QuestionEditModal extends React.Component {
     const { id, type, qIndex, title, authorDifficulty = "", depthOfKnowledge = "" } = question;
     const index = qIndex - 1;
 
-    return (
-      <Modal open={visible} onClose={onClose} styles={modalStyles} overlayId="docBasedModalOverlay" center>
-        <ModalWrapper>
-          <ModalHeader>
-            <QuestionNumber>{qNumber}</QuestionNumber>
-            <ModalTitle>{title === "True or false" ? title : questionTypeTitles[type]}</ModalTitle>
-          </ModalHeader>
+    const QuestionTitle = (
+      <>
+        <QuestionNumber>{qNumber}</QuestionNumber>
+        <ModalTitle>{title === "True or false" ? title : questionTypeTitles[type]}</ModalTitle>
+      </>
+    );
 
-          <div style={{ maxHeight: "50vh", overflow: "hidden auto", paddingBottom: "10px" }}>
-            <PerfectScrollbar>
-              {this.renderForm(type)}
-              <StandardSelectWrapper>
-                <StandardSet qId={id} alignment={question.alignment} onUpdate={onUpdate} isDocBased />
-                <Row style={{ marginTop: "10px" }}>
-                  <Col md={12}>
-                    <FormLabel>DOK</FormLabel>
-                    <Select
-                      style={{ width: "95%" }}
-                      placeholder={"Select DOK"}
-                      onSelect={val => onUpdate({ depthOfKnowledge: val })}
-                      value={depthOfKnowledge}
-                      getPopupContainer={triggerNode => triggerNode.parentNode}
-                    >
-                      <Select.Option key={"Select DOK"} value={""}>
-                        {"Select DOK"}
-                      </Select.Option>
-                      {selectsData.allDepthOfKnowledge.map(
-                        el =>
-                          el.value && (
-                            <Select.Option key={el.value} value={el.value}>
-                              {el.text}
-                            </Select.Option>
-                          )
-                      )}
-                    </Select>
-                  </Col>
-                  <Col md={12} style={{ paddingLeft: "5%" }}>
-                    <FormLabel>Difficulty</FormLabel>
-                    <Select
-                      style={{ width: "100%" }}
-                      placeholder={"Select Difficulty Level"}
-                      onSelect={val => onUpdate({ authorDifficulty: val })}
-                      value={authorDifficulty}
-                      getPopupContainer={triggerNode => triggerNode.parentNode}
-                    >
-                      <Select.Option key={"Select Difficulty Level"} value={""}>
-                        {"Select Difficulty Level"}
-                      </Select.Option>
-                      {selectsData.allAuthorDifficulty.map(
-                        el =>
-                          el.value && (
-                            <Select.Option key={el.value} value={el.value}>
-                              {el.text}
-                            </Select.Option>
-                          )
-                      )}
-                    </Select>
-                  </Col>
-                </Row>
-              </StandardSelectWrapper>
-            </PerfectScrollbar>
-          </div>
-          <ModalFooter marginTop="20px">
-            <Button onClick={() => onCurrentChange(index - 1)("back")} disabled={index === 0}>
+    return (
+      <CustomModalStyled
+        centered
+        visible={visible}
+        title={QuestionTitle}
+        onCancel={onClose}
+        footer={[
+          <ModalFooter>
+            <EduButton isGhost onClick={() => onCurrentChange(index - 1)("back")} disabled={index === 0}>
               Previous
-            </Button>
-            <Button onClick={index === totalQuestions - 1 ? onClose : () => onCurrentChange(index + 1)("next")}>
+            </EduButton>
+            <EduButton onClick={index === totalQuestions - 1 ? onClose : () => onCurrentChange(index + 1)("next")}>
               {index === totalQuestions - 1 ? "DONE" : "NEXT"}
-            </Button>
+            </EduButton>
           </ModalFooter>
-        </ModalWrapper>
-      </Modal>
+        ]}
+        overlayId="docBasedModalOverlay"
+      >
+        <div style={{ maxHeight: "50vh", overflow: "hidden auto", paddingBottom: "10px" }}>
+          <PerfectScrollbar>
+            {this.renderForm(type)}
+            <StandardSelectWrapper>
+              <StandardSet qId={id} alignment={question.alignment} onUpdate={onUpdate} isDocBased showIconBrowserBtn />
+              <Row gutter={24} style={{ marginTop: "10px" }}>
+                <Col md={12}>
+                  <FieldLabel>DOK</FieldLabel>
+                  <SelectInputStyled
+                    placeholder="Select DOK"
+                    onSelect={val => onUpdate({ depthOfKnowledge: val })}
+                    value={depthOfKnowledge}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    <Select.Option key="Select DOK" value="">
+                      Select DOK
+                    </Select.Option>
+                    {selectsData.allDepthOfKnowledge.map(
+                      el =>
+                        el.value && (
+                          <Select.Option key={el.value} value={el.value}>
+                            {el.text}
+                          </Select.Option>
+                        )
+                    )}
+                  </SelectInputStyled>
+                </Col>
+                <Col md={12}>
+                  <FieldLabel>Difficulty</FieldLabel>
+                  <SelectInputStyled
+                    placeholder="Select Difficulty Level"
+                    onSelect={val => onUpdate({ authorDifficulty: val })}
+                    value={authorDifficulty}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    <Select.Option key="Select Difficulty Level" value="">
+                      Select Difficulty Level
+                    </Select.Option>
+                    {selectsData.allAuthorDifficulty.map(
+                      el =>
+                        el.value && (
+                          <Select.Option key={el.value} value={el.value}>
+                            {el.text}
+                          </Select.Option>
+                        )
+                    )}
+                  </SelectInputStyled>
+                </Col>
+              </Row>
+            </StandardSelectWrapper>
+          </PerfectScrollbar>
+        </div>
+      </CustomModalStyled>
     );
   }
 }

@@ -15,10 +15,9 @@ export const BrowseButton = styled(Button)`
 
 export const IconWrapper = styled.div`
   position: absolute;
-  right: 140px;
-  top: 22px;
+  right: 10px;
+  top: 33px;
   z-index: 1;
   color: ${themeColor};
   cursor: pointer;
 `;
-

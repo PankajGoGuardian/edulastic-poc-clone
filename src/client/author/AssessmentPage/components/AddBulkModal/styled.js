@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { InputNumber, Select } from "antd";
+import { InputNumber } from "antd";
 import { Paper } from "@edulastic/common";
 import { ModalTitle } from "../../common/Modal";
 import { FormGroup } from "../QuestionEditModal/common/QuestionForm";
@@ -26,13 +26,8 @@ export const StartingIndexInput = styled(InputNumber)`
   }
 `;
 
-export const TypeOfQuestionSelect = styled(Select)`
-  width: 550px;
-`;
-
 export const StandardSelectWrapper = styled(Paper)`
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
-  padding: 15px;
+  padding: 15px 0px;
   margin-top: 15px;
 `;

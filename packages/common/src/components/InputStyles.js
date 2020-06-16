@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Select, DatePicker } from "antd";
+import { Input, Select, DatePicker, InputNumber } from "antd";
 import styled from "styled-components";
 import { greyThemeLight, greyThemeLighter, themeColor, greyThemeDark2 } from "@edulastic/colors";
 
@@ -63,6 +63,22 @@ export const TextAreaInputStyled = styled(props => <Input.TextArea maxLength="20
       border: 1px solid ${greyThemeLight};
       background-color: ${greyThemeLighter};
       box-shadow: none;
+    }
+  }
+`;
+
+export const NumberInputStyled = styled(InputNumber)`
+  &.ant-input-number {
+    ${inputCommonStyle};
+    ${props => props.style};
+    &:focus,
+    &:hover {
+      border: 1px solid ${greyThemeLight};
+      background-color: ${greyThemeLighter};
+      box-shadow: none;
+    }
+    .ant-input-number-input {
+      height: 38px;
     }
   }
 `;

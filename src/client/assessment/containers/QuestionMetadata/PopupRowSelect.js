@@ -1,10 +1,10 @@
+import { FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { Col, Row, Select } from "antd";
 import React from "react";
-import { Row, Col, Select } from "antd";
 import { connect } from "react-redux";
-
-import { ItemBody } from "./styled/ItemBody";
 import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
+import { ItemBody } from "./styled/ItemBody";
 
 const PopupRowSelect = ({
   formattedCuriculums,
@@ -15,74 +15,69 @@ const PopupRowSelect = ({
   standard,
   grades,
   t
-}) => {
-  return (
-    <Row gutter={24}>
-      <Col md={8}>
-        <ItemBody>
-          <div className="select-label">{t("component.options.subject")}</div>
-          <Select
-            data-cy="subject-Select"
-            style={{ width: "100%" }}
-            value={subject}
-            onChange={handleChangeSubject}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {selectsData.allSubjects.map(({ text, value }) =>
-              value ? (
-                <Select.Option key={value} value={value}>
-                  {text}
-                </Select.Option>
-              ) : (
-                ""
-              )
-            )}
-          </Select>
-        </ItemBody>
-      </Col>
-      <Col md={8}>
-        <ItemBody>
-          <div className="select-label">{t("component.options.standardSet")}</div>
-          <Select
-            data-cy="standardSet-Select"
-            style={{ width: "100%" }}
-            showSearch
-            filterOption
-            value={standard.curriculum}
-            onChange={handleChangeStandard}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {formattedCuriculums.map(({ value, text, disabled }) => (
-              <Select.Option key={value} value={text} disabled={disabled}>
+}) => (
+  <Row gutter={24}>
+    <Col md={8}>
+      <ItemBody>
+        <FieldLabel>{t("component.options.subject")}</FieldLabel>
+        <SelectInputStyled
+          data-cy="subject-Select"
+          value={subject}
+          onChange={handleChangeSubject}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+        >
+          {selectsData.allSubjects.map(({ text, value }) =>
+            value ? (
+              <Select.Option key={value} value={value}>
                 {text}
               </Select.Option>
-            ))}
-          </Select>
-        </ItemBody>
-      </Col>
-      <Col md={8}>
-        <ItemBody>
-          <div className="select-label">{t("component.options.grade")}</div>
-          <Select
-            data-cy="grade-Select"
-            mode="multiple"
-            showSearch
-            style={{ width: "100%" }}
-            value={grades}
-            onChange={handleChangeGrades}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {selectsData.allGrades.map(({ text, value }) => (
-              <Select.Option key={text} value={value}>
-                {text}
-              </Select.Option>
-            ))}
-          </Select>
-        </ItemBody>
-      </Col>
-    </Row>
-  );
-};
+            ) : (
+              ""
+            )
+          )}
+        </SelectInputStyled>
+      </ItemBody>
+    </Col>
+    <Col md={8}>
+      <ItemBody>
+        <FieldLabel>{t("component.options.standardSet")}</FieldLabel>
+        <SelectInputStyled
+          data-cy="standardSet-Select"
+          showSearch
+          filterOption
+          value={standard.curriculum}
+          onChange={handleChangeStandard}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+        >
+          {formattedCuriculums.map(({ value, text, disabled }) => (
+            <Select.Option key={value} value={text} disabled={disabled}>
+              {text}
+            </Select.Option>
+          ))}
+        </SelectInputStyled>
+      </ItemBody>
+    </Col>
+    <Col md={8}>
+      <ItemBody>
+        <FieldLabel>{t("component.options.grade")}</FieldLabel>
+        <SelectInputStyled
+          data-cy="grade-Select"
+          mode="multiple"
+          showSearch
+          value={grades}
+          onChange={handleChangeGrades}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+        >
+          {selectsData.allGrades.map(({ text, value }) => (
+            <Select.Option key={text} value={value}>
+              {text}
+            </Select.Option>
+          ))}
+        </SelectInputStyled>
+      </ItemBody>
+    </Col>
+  </Row>
+);
 
 export default connect(
   (state, props) => ({

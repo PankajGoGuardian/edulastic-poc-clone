@@ -5,7 +5,7 @@ const StandardsWrapper = styled.div`
   display: flex;
   align-items: center;
   color: ${darkGrey1};
-  padding: ${props => (props.isDocBased ? "5px 10px" : "5px 10px 5px 5%")};
+  padding: 5px 0px;
   margin: 5px 0px;
   width: ${props => !props.isDocBased && "90%"};
 `;

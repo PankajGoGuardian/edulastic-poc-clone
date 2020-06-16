@@ -1,5 +1,5 @@
 import { removeFromLocalStorage, storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { FlexContainer } from "@edulastic/common";
+import { FieldLabel, SelectInputStyled, EduButton } from "@edulastic/common";
 import { Col, Row, Select } from "antd";
 import { get, pick as _pick } from "lodash";
 import PropTypes from "prop-types";
@@ -23,7 +23,7 @@ import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 import CustomTreeSelect from "./CustomTreeSelect";
 import RecentStandardsList from "./RecentStandardsList";
 import StandardsModal from "./StandardsModal";
-import { BrowseButton, IconWrapper } from "./styled/BrowseButton";
+import { IconWrapper } from "./styled/BrowseButton";
 import { ItemBody } from "./styled/ItemBody";
 
 const AlignmentRow = ({
@@ -262,24 +262,23 @@ const AlignmentRow = ({
           alignmentIndex={alignmentIndex}
         />
       )}
-      <Row gutter={isDocBased ? 0 : 36}>
-        <Col md={20}>
-          <Row gutter={1}>
+      <Row>
+        <FieldLabel>Standards (optional)</FieldLabel>
+        <Col md={showIconBrowserBtn ? 24 : 20}>
+          <Row>
             <Col md={12}>
               <CustomTreeSelect
                 data-cy="subjectStandardSet"
                 title={`${curriculum}${curriculum && grades.length ? " - " : ""}${grades.length ? "Grade - " : ""}${
                   grades.length ? grades : ""
-                  }`}
-                style={{ marginTop: 11 }}
+                }`}
               >
                 <Fragment>
                   <ItemBody data-cy="subjectItem">
-                    <div className="select-label">{t("component.options.subject")}</div>
-                    <Select
+                    <FieldLabel>{t("component.options.subject")}</FieldLabel>
+                    <SelectInputStyled
                       getPopupContainer={trigger => trigger.parentNode}
                       data-cy="subjectSelect"
-                      style={{ width: "100%" }}
                       value={subject}
                       onChange={setSubject}
                     >
@@ -289,16 +288,15 @@ const AlignmentRow = ({
                             {text}
                           </Select.Option>
                         ) : (
-                            ""
-                          )
+                          ""
+                        )
                       )}
-                    </Select>
+                    </SelectInputStyled>
                   </ItemBody>
                   <ItemBody data-cy="standardItem">
-                    <div className="select-label">{t("component.options.standardSet")}</div>
-                    <Select
+                    <FieldLabel>{t("component.options.standardSet")}</FieldLabel>
+                    <SelectInputStyled
                       data-cy="standardSetSelect"
-                      style={{ width: "100%" }}
                       showSearch
                       filterOption
                       value={curriculum}
@@ -310,15 +308,14 @@ const AlignmentRow = ({
                           {text}
                         </Select.Option>
                       ))}
-                    </Select>
+                    </SelectInputStyled>
                   </ItemBody>
                   <ItemBody data-cy="gradeItem">
-                    <div className="select-label">{t("component.options.grade")}</div>
-                    <Select
+                    <FieldLabel>{t("component.options.grade")}</FieldLabel>
+                    <SelectInputStyled
                       data-cy="gradeSelect"
                       mode="multiple"
                       showSearch
-                      style={{ width: "100%" }}
                       value={grades}
                       onChange={setGrades}
                       getPopupContainer={trigger => trigger.parentNode}
@@ -328,17 +325,17 @@ const AlignmentRow = ({
                           {text}
                         </Select.Option>
                       ))}
-                    </Select>
+                    </SelectInputStyled>
                   </ItemBody>
                 </Fragment>
               </CustomTreeSelect>
             </Col>
             <Col md={12}>
-              <ItemBody data-cy="searchStandardSelectItem">
-                <Select
+              <div data-cy="searchStandardSelectItem">
+                <SelectInputStyled
                   data-cy="searchStandardSelect"
                   mode="multiple"
-                  style={{ width: "90%", margin: "auto", display: "block" }}
+                  style={{ margin: "auto", display: "block" }}
                   placeholder={t("component.options.searchStandards")}
                   filterOption={false}
                   value={standardsArr}
@@ -371,8 +368,8 @@ const AlignmentRow = ({
                         </div>
                       </Select.Option>
                     ))}
-                </Select>
-              </ItemBody>
+                </SelectInputStyled>
+              </div>
               {recentStandardsList && recentStandardsList.length > 0 && !isDocBased && (
                 <RecentStandardsList
                   recentStandardsList={recentStandardsList}
@@ -383,17 +380,19 @@ const AlignmentRow = ({
             </Col>
           </Row>
         </Col>
-        {showIconBrowserBtn ?
-          (<IconWrapper>
+        {showIconBrowserBtn ? (
+          <IconWrapper>
             <IconExpandBox onClick={handleShowBrowseModal} />
-          </IconWrapper>)
-          : (<Col md={4}>
-            <ItemBody>
-              <FlexContainer>
-                <BrowseButton onClick={handleShowBrowseModal}>{t("component.options.browse")}</BrowseButton>
-              </FlexContainer>
-            </ItemBody>
-          </Col>)}
+          </IconWrapper>
+        ) : (
+          <Col md={4}>
+            <div>
+              <EduButton height="40px" isGhost onClick={handleShowBrowseModal}>
+                {t("component.options.browse")}
+              </EduButton>
+            </div>
+          </Col>
+        )}
 
         {recentStandardsList && recentStandardsList.length > 0 && isDocBased && (
           <Col xs={24}>

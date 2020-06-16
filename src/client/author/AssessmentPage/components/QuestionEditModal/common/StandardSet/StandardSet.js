@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { withNamespaces } from "react-i18next";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { ThemeProvider } from "styled-components";
 import { isEqual } from "lodash";
-
-import { themes } from "../../../../../../theme";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { withNamespaces } from "react-i18next";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { ThemeProvider } from "styled-components";
 import AlignmentRow from "../../../../../../assessment/containers/QuestionMetadata/AlignmentRow";
+import { themes } from "../../../../../../theme";
 import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from "../../../../../src/actions/dictionaries";
 import {
   getCurriculumsListSelector,
-  standardsSelector,
-  getStandardsListSelector
+  getStandardsListSelector,
+  standardsSelector
 } from "../../../../../src/selectors/dictionaries";
-import { StandardsTitle } from "./styled";
 
 const defaultAlignment = {
   standards: [],
@@ -84,31 +82,28 @@ const StandardSet = ({
     }
   };
 
-  const handleCreateGradeAndSubjects = () => { };
+  const handleCreateGradeAndSubjects = () => {};
 
   return (
-    <>
-      <StandardsTitle>Standards (optional)</StandardsTitle>
-      <ThemeProvider theme={themes.default}>
-        <AlignmentRow
-          t={t}
-          alignment={questionAlignment}
-          alignmentIndex={0}
-          qId={qId}
-          curriculums={curriculums}
-          curriculumStandardsELO={curriculumStandards.elo}
-          curriculumStandardsTLO={curriculumStandards.tlo}
-          curriculumStandardsLoading={curriculumStandardsLoading}
-          handleUpdateQuestionAlignment={handleUpdateQuestionAlignment}
-          onDelete={handleDelete}
-          getCurriculumStandards={searchCurriculumStandards}
-          editAlignment={handleEditAlignment}
-          createUniqGradeAndSubjects={handleCreateGradeAndSubjects}
-          isDocBased={isDocBased}
-          showIconBrowserBtn={showIconBrowserBtn}
-        />
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={themes.default}>
+      <AlignmentRow
+        t={t}
+        alignment={questionAlignment}
+        alignmentIndex={0}
+        qId={qId}
+        curriculums={curriculums}
+        curriculumStandardsELO={curriculumStandards.elo}
+        curriculumStandardsTLO={curriculumStandards.tlo}
+        curriculumStandardsLoading={curriculumStandardsLoading}
+        handleUpdateQuestionAlignment={handleUpdateQuestionAlignment}
+        onDelete={handleDelete}
+        getCurriculumStandards={searchCurriculumStandards}
+        editAlignment={handleEditAlignment}
+        createUniqGradeAndSubjects={handleCreateGradeAndSubjects}
+        isDocBased={isDocBased}
+        showIconBrowserBtn={showIconBrowserBtn}
+      />
+    </ThemeProvider>
   );
 };
 

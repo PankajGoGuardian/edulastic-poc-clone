@@ -24,6 +24,7 @@ export { default as CustomModalStyled } from "./src/components/CustomModalStyled
 export {
   TextInputStyled,
   SelectInputStyled,
+  NumberInputStyled,
   DatePickerStyled,
   TextAreaInputStyled,
   FieldLabel

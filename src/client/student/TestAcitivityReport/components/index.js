@@ -75,7 +75,7 @@ const ReportListContainer = ({
         history={history}
         showExit
       />
-      <MainContentWrapper padding={isDocBased ? "0px" : "20px 50px"}>
+      <MainContentWrapper padding={isDocBased ? "0px" : "20px 30px"}>
         <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
         {isDocBased ? (
           <div>

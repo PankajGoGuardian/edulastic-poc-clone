@@ -113,6 +113,7 @@ class TestItemCol extends Component {
           noPadding
           noBoxShadow
           isFlex
+          isStudentReport={isStudentReport}
           flowLayout={flowLayout}
           prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}

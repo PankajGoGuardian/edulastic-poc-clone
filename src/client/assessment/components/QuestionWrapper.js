@@ -6,8 +6,7 @@ import { questionType, test, roleuser } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, round } from "lodash";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { IconClockCircularOutline } from "@edulastic/icons";
 
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, smallDesktopWidth, borderGrey2 } from "@edulastic/colors";
@@ -142,6 +141,20 @@ export const TimeSpentWrapper = styled.p`
   margin-top: auto;
   align-items: center;
   padding-top: 10px;
+  &.student-report {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    background: #f3f3f3;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    svg {
+      margin-right: 10px;
+      fill: #6a737f;
+    }
+  }
   i {
     padding-right: 15px;
   }
@@ -446,6 +459,7 @@ class QuestionWrapper extends Component {
               className="question-wrapper"
               disabled={disabled}
               isV1Multipart={isV1Multipart}
+              isStudentReport={isStudentReport}
               borderRadius={isLCBView ? "10px" : restProps.borderRadius}
               style={{
                 width:
@@ -459,6 +473,7 @@ class QuestionWrapper extends Component {
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
             >
+              {console.log("isStudentReport:", isStudentReport)}
               <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
                 {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
                 <Question
@@ -484,7 +499,7 @@ class QuestionWrapper extends Component {
                 />
                 {!restProps.viewAtStudentRes && showFeedback && !isPrintPreview && (
                   <>
-                    <TimeSpentWrapper>
+                    <TimeSpentWrapper className={isStudentReport ? "student-report" : ""}>
                       {!!showStudentWork && (
                         <ShowUserWork
                           style={{ marginRight: "1rem" }}
@@ -503,7 +518,7 @@ class QuestionWrapper extends Component {
                       )}
                       {timeSpent && (
                         <>
-                          <FontAwesomeIcon icon={faClock} aria-hidden="true" />
+                          <IconClockCircularOutline />
                           {round(timeSpent / 1000, 1)}s
                         </>
                       )}
@@ -516,7 +531,7 @@ class QuestionWrapper extends Component {
                     <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
                   </RubricTableWrapper>
                 )}
-                {view === "preview" && !isGrade && !isPrintPreview && (
+                {view === "preview" && !isPrintPreview && (
                   <Hints
                     question={data}
                     enableMagnifier={enableMagnifier}
@@ -525,9 +540,12 @@ class QuestionWrapper extends Component {
                     itemIndex={itemIndex}
                     isLCBView={isLCBView}
                     isExpressGrader={isExpressGrader}
+                    isStudentReport={isStudentReport}
                   />
                 )}
-                {(isGrade || isLCBView || isExpressGrader) && <Explanation question={data} isGrade={isGrade} />}
+                {(isGrade || isLCBView || isExpressGrader) && (
+                  <Explanation isStudentReport={isStudentReport} question={data} isGrade={isGrade} />
+                )}
               </StyledFlexContainer>
             </PaperWrapper>
           </QuestionContainer>

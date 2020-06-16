@@ -10,7 +10,7 @@ import {
   QuestionSubLabel as SubLabel,
   MathFormulaDisplay
 } from "@edulastic/common";
-import { themeColor, mainTextColor, backgroundGrey } from "@edulastic/colors";
+import { themeColor, mainTextColor, backgroundGrey, greyThemeLighter, title } from "@edulastic/colors";
 import { getFontSize } from "../../utils/helpers";
 import { Label } from "../../styled/WidgetOptions/Label";
 
@@ -22,7 +22,8 @@ const Hints = ({
   itemIndex,
   saveHintUsage,
   isLCBView,
-  isExpressGrader
+  isExpressGrader,
+  isStudentReport
 }) => {
   const { hints = [], id } = question;
   const validHints = hints?.filter(hint => hint?.label);
@@ -92,42 +93,64 @@ const Hints = ({
   }, [id]);
 
   return (
-    hintCount > 0 && (
-      <HintCont data-cy="hint-container" className="hint-container" ref={hintContRef}>
-        {!!showCount && <QuestionLabel>Hint</QuestionLabel>}
-        {!!showCount &&
-          validHints.map(
-            ({ value, label }, index) =>
-              index + 1 <= showCount && (
-                <HintItem data-cy="hint-subcontainer" key={value}>
-                  <LabelWrapper>
-                    <HintLabel>
-                      <Label data-cy="hint-count" marginBottom="0px">{`${index + 1}/${hintCount}`}</Label>
-                    </HintLabel>
-                  </LabelWrapper>
+    <>
+      {!isStudentReport && hintCount > 0 && (
+        <HintCont data-cy="hint-container" className="hint-container" ref={hintContRef}>
+          {!!showCount && <QuestionLabel>Hint</QuestionLabel>}
+          {!!showCount &&
+            validHints.map(
+              ({ value, label }, index) =>
+                index + 1 <= showCount && (
+                  <HintItem data-cy="hint-subcontainer" key={value}>
+                    <LabelWrapper>
+                      <HintLabel>
+                        <Label data-cy="hint-count" marginBottom="0px">{`${index + 1}/${hintCount}`}</Label>
+                      </HintLabel>
+                    </LabelWrapper>
 
-                  <div style={{ width: "100%" }}>
-                    {/* stretch to full width of the container, otherwise videos and other embeds wont have width */}
-                    {/* https://snapwiz.atlassian.net/browse/EV-13446 */}
-                    <HintContent>
-                      <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: label }} />
-                    </HintContent>
-                    {index + 1 === showCount && showCount < hintCount && (
-                      <ShowMoreHint data-cy="more-hint" onClick={showMoreHints}>
-                        + Get Another Hint {`1/${hintCount}`}
-                      </ShowMoreHint>
-                    )}
-                  </div>
-                </HintItem>
-              )
+                    <div style={{ width: "100%" }}>
+                      {/* stretch to full width of the container, otherwise videos and other embeds wont have width */}
+                      {/* https://snapwiz.atlassian.net/browse/EV-13446 */}
+                      <HintContent>
+                        <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: label }} />
+                      </HintContent>
+                      {index + 1 === showCount && showCount < hintCount && (
+                        <ShowMoreHint data-cy="more-hint" onClick={showMoreHints}>
+                          + Get Another Hint {`1/${hintCount}`}
+                        </ShowMoreHint>
+                      )}
+                    </div>
+                  </HintItem>
+                )
+            )}
+          {!showCount && (
+            <ShowHint height="30px" width="110px" isGhost onClick={showHintHandler} isStudent={isStudent}>
+              Show Hint
+            </ShowHint>
           )}
-        {!showCount && (
-          <ShowHint height="30px" width="110px" isGhost onClick={showHintHandler} isStudent={isStudent}>
-            Show Hint
-          </ShowHint>
-        )}
-      </HintCont>
-    )
+        </HintCont>
+      )}
+
+      {isStudentReport && hintCount > 0 && (
+        <HintCont data-cy="hint-container" className="hint-container" ref={hintContRef} style={{ width: "63%" }}>
+          <QuestionLabel isStudentReport={isStudentReport}>
+            <span style={{ color: "#4aac8b" }}>{question.barLabel}</span> - Hint
+          </QuestionLabel>
+          {console.log("question", question)}
+          {validHints.map(({ value, label }, index) => (
+            <HintItem isStudentReport={isStudentReport} data-cy="hint-subcontainer" key={value}>
+              <HintLabel className="hint-label">
+                <div>HINT</div>
+                <span data-cy="hint-count">{`${index + 1}/${hintCount}`}</span>
+              </HintLabel>
+              <HintContent className="hint-content">
+                <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: label }} />
+              </HintContent>
+            </HintItem>
+          ))}
+        </HintCont>
+      )}
+    </>
   );
 };
 
@@ -154,9 +177,29 @@ const HintItem = styled(FlexContainer)`
   width: 100%;
   margin-top: 4px;
   margin-bottom: 8px;
-  padding-left: 34px;
+  padding-left: ${props => (props.isStudentReport ? "0px" : "34px")};
   justify-content: flex-start;
   align-items: flex-start;
+
+  .hint-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50px;
+    color: ${title};
+    font-size: 11px;
+    span {
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+  .hint-content {
+    background: ${greyThemeLighter};
+    width: calc(100% - 50px);
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+  }
 `;
 
 const HintLabel = styled(SubLabel)`
@@ -190,7 +233,7 @@ const QuestionLabel = styled.div`
   color: ${mainTextColor};
   font-weight: 700;
   font-size: 16px;
-  padding: 1rem 0 1.5rem 11px;
+  padding: ${props => (props.isStudentReport ? "1rem 0px" : "1.5rem 0 1rem 11px")};
   margin-bottom: 16px;
   border-bottom: 0.05rem solid ${backgroundGrey};
 `;

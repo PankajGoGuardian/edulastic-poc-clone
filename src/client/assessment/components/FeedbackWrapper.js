@@ -106,7 +106,8 @@ const FeedbackWrapper = ({
           isPracticeQuestion={isPracticeQuestion}
           qLabel={data.barLabel}
           qId={data.id}
-          style={{ width: "100%" }}
+          isStudentReport={isStudentReport}
+          style={{ width: isStudentReport ? "60%" : "100%" }}
         />
       )}
       {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} />}

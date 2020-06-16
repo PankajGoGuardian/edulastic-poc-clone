@@ -376,7 +376,14 @@ export const Col = styled.div`
 `;
 
 export const PaperWrapper = styled(StyledPaperWrapper)`
-  padding: ${props => (props.flowLayout ? "0px" : props.isV1Multipart ? "0px 35px" : "35px")};
+  padding: ${props =>
+    props.flowLayout
+      ? "0px"
+      : props.isV1Multipart
+      ? "0px 35px"
+      : props.isStudentReport
+      ? "20px 100px 20px 20px"
+      : "35px"};
   min-width: ${({ style }) => style.minWidth};
   ${({ style }) => style};
   

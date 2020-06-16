@@ -10,7 +10,7 @@ import { FeedbackByQIdSelector, getMaxScoreFromCurrentItem } from "../../sharedD
 import { getClasses } from "../../Login/ducks";
 
 // TODO user  response to show in UI
-const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuestion, style, classList = [] }) => {
+const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuestion, style, isStudentReport, classList = [] }) => {
   const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true, groupId } = question[qId] || {};
 
   let _score = skipped ? 0 : parseFloat(score.toFixed(2));
@@ -60,11 +60,11 @@ const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuesti
 
   const _maxScore = isPracticeQuestion ? "" : maxScore;
   return (
-    <FeedbackWrapper style={style}>
-      <FeedbackText>
+    <FeedbackWrapper isStudentReport={isStudentReport} style={style}>
+      <FeedbackText isStudentReport={isStudentReport}>
         <QuestionText>{qLabel}</QuestionText> - Teacher Feedback
       </FeedbackText>
-      <FlexContainer justifyContent="flex-start" padding="0 1rem" alignItems="flex-start">
+      <FlexContainer justifyContent="flex-start" padding={isStudentReport ? "0px" : "0 1rem"} alignItems="flex-start">
         <FeedbackContainer>
           <IconCheckWrapper>
             <IconCheck />
@@ -106,7 +106,8 @@ export default connect(
 )(StudentFeedback);
 
 const FeedbackWrapper = styled.div`
-  margin-top: 55px;
+  margin-top: ${props => (props.isStudentReport ? "20px" : "55px")};
+  padding: ${props => (props.isStudentReport ? "0px 20px" : "0px")};
   width: 25%;
   border-radius: 0.5rem;
   ${({ style }) => style};
@@ -181,7 +182,7 @@ const FeedbackText = styled.div`
   font-weight: 700;
   font-size: 16px;
   padding-bottom: 1.5rem;
-  padding-left: 11px;
+  padding-left: ${props => (props.isStudentReport ? "0px" : "11px")};
   border-bottom: 0.05rem solid #f2f2f2;
 `;
 

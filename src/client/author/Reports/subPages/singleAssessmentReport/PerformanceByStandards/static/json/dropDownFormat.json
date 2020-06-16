@@ -9,6 +9,7 @@
   "compareByDropDownData": [
     { "key": "school", "title": "School", "allowedRoles": ["district-admin", "school-admin"] },
     { "key": "teacher", "title": "Teacher", "allowedRoles": ["district-admin", "school-admin"] },
+    { "key": "group", "title": "Student Group", "allowedRoles": ["district-admin", "school-admin"] },
     { "key": "class", "title": "Class" },
     { "key": "students", "title": "Students" },
     { "key": "race", "title": "Race" },

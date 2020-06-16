@@ -179,7 +179,7 @@ class ClassList extends React.Component {
               <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
             )}
             <span>{className}</span>
-            <Tags data-cy="tags" tags={row.tags} show={1} key="tags" />
+            <Tags data-cy="tags" tags={row.tags} show={1} key="tags" isGrayTags />
           </div>
         )
       },

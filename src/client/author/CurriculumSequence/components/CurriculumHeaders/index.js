@@ -204,13 +204,6 @@ const CurriculumHeader = ({
               </HeaderButton>
             )}
 
-          {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
-            role !== roleuser.EDULASTIC_CURATOR && (
-              <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
-                <IconShare />
-              </HeaderButton>
-            )}
-
           {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
             <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />

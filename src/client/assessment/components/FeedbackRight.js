@@ -34,7 +34,8 @@ class FeedbackRight extends Component {
   constructor(props) {
     super(props);
 
-    let { score, maxScore } = props?.widget?.activity || {};
+    let { maxScore } = props?.widget?.activity || {};
+    const { score } = props?.widget?.activity || {};
 
     if (!maxScore) {
       maxScore = props?.widget?.validation?.validResponse?.score || 0;
@@ -304,14 +305,9 @@ class FeedbackRight extends Component {
       _maxScore = "";
     }
 
-    const { isAnswerModifiable, studentResponseLoading, expressGrader } = this.context;
+    const { studentResponseLoading, expressGrader } = this.context;
     return (
-      <StyledCardTwo
-        bordered={isStudentName}
-        disabled={disabled}
-        showCollapseBtn={showCollapseBtn}
-        title={title}
-      >
+      <StyledCardTwo bordered={isStudentName} disabled={disabled} showCollapseBtn={showCollapseBtn} title={title}>
         {expressGrader && (
           <ScoreInputFocusEffectComponent scoreInputRef={this.scoreInput} responseLoading={studentResponseLoading} />
         )}
@@ -322,7 +318,7 @@ class FeedbackRight extends Component {
               onChange={this.onChangeScore}
               onBlur={this.submitScore}
               value={_score}
-              disabled={isPresentationMode || isPracticeQuestion || this.context.studentResponseLoading}
+              disabled={isPresentationMode || isPracticeQuestion || studentResponseLoading}
               ref={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"
@@ -345,9 +341,9 @@ class FeedbackRight extends Component {
               onChange={this.onChangeFeedback}
               onBlur={this.preCheckSubmit}
               value={feedback}
-              style={{ flexGrow: 2 }}
               disabled={!activity || isPresentationMode}
               onKeyDown={this.onKeyDownFeedback}
+              autoSize
             />
           </Fragment>
         )}
@@ -424,10 +420,15 @@ const StyledCardTwo = styled(Card)`
     padding: 13px 0px;
   }
   .ant-card-body {
-    display: flex;
-    flex-grow: 2;
-    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
     height: calc(100% - 60px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     .ant-input-disabled {
       padding: 4px 22px;
     }
@@ -448,7 +449,7 @@ const StyledCardTwo = styled(Card)`
 
 const StyledDivSec = styled.div`
   height: 50px;
-  margin: auto;
+  margin: 0px auto;
   display: flex;
   justify-content: center;
 `;
@@ -502,11 +503,12 @@ const TitleDiv = styled.div`
 
 const FeedbackInput = styled(TextArea)`
   width: 100%;
-  height: 160px;
   border: 0;
   border-radius: 2px;
   display: inline-block;
   background: #f8f8f8;
+  min-height: 80px !important;
+  max-height: 100% !important;
 `;
 
 const UserAvatar = styled(Avatar)`

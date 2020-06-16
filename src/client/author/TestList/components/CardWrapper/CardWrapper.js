@@ -6,7 +6,7 @@ import { getTestAuthorName, getPlaylistAuthorName } from "../../../dataUtils";
 import Item from "../Item/Item";
 import ListItem from "../ListItem/ListItem";
 import { CardBox } from "../Container/styled";
-import { getCollectionsSelector, getUserFavoritesByType } from "../../../src/selectors/user";
+import { getUserFavoritesByType } from "../../../src/selectors/user";
 
 class CardWrapper extends Component {
   static propTypes = {
@@ -49,7 +49,6 @@ class CardWrapper extends Component {
       moduleTitle,
       onRemoveFromCart,
       onAddToCart,
-      collections,
       userFavorites
     } = this.props;
 
@@ -65,7 +64,7 @@ class CardWrapper extends Component {
             item={item}
             history={history}
             match={match}
-            authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item, collections)}
+            authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
             testItemId={itemId}
             isPlaylist={isPlaylist}
             windowWidth={windowWidth}
@@ -88,7 +87,7 @@ class CardWrapper extends Component {
           addTestToPlaylist={addTestToPlaylist}
           isTestAdded={isTestAdded}
           removeTestFromPlaylist={removeTestFromPlaylist}
-          authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item, collections)}
+          authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
           isPlaylist={isPlaylist}
           testItemId={itemId}
           standards={standards}
@@ -106,7 +105,6 @@ class CardWrapper extends Component {
 
 export default connect(
   state => ({
-    collections: getCollectionsSelector(state),
     userFavorites: getUserFavoritesByType(state, "TEST")
   }),
   {}

@@ -114,7 +114,7 @@ function* fetchAssignmentsByTest({ payload }) {
 
     // transform to handle redirect
     const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
-    const assignmentsProcessed = assignments.map(transformFn);
+    const assignmentsProcessed = assignments.assignments.map(transformFn);
 
     // normalize reports
     const {

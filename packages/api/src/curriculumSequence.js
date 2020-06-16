@@ -146,7 +146,7 @@ const usePlaylist = id =>
   api
     .callApi({
       method: "post",
-      url: `/playlist/${id}/use-this`
+      url: `${prefix}/${id}/use-this`
     })
     .then(result => result.data.result);
 

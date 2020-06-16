@@ -255,7 +255,7 @@ class SideMenu extends Component {
       this.toggleDropdown();
       this.toggleMenu();
     }
-    if (key === "2") {
+    if (key === "3") {
       this.setState({ showModal: true });
     }
   };

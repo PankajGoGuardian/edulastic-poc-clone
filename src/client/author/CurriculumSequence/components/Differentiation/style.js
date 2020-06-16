@@ -145,7 +145,7 @@ export const TableHeader = styled.div`
       width: 20%;
       display: flex;
       align-items: center;
-      > svg {
+      svg {
         fill: ${greyDarken};
       }
     }
@@ -266,4 +266,8 @@ export const StyledPerfectScrollbar = styled.div`
 export const StyledDescription = styled.div`
   width: 100%;
   cursor: ${({ clickable }) => clickable && "pointer"};
+`;
+
+export const StudentName = styled.div`
+  margin: 4px 0;
 `;

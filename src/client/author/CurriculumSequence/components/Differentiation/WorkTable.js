@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useDrop } from "react-dnd";
-import { message } from "antd";
+import { Popover } from "antd";
 import { groupBy, compact, isEmpty } from "lodash";
-import { EduButton, FlexContainer,notification } from "@edulastic/common"; //  ProgressBar,
+import { EduButton, FlexContainer, notification } from "@edulastic/common"; //  ProgressBar,
 import { IconUser } from "@edulastic/icons";
 // import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import {
@@ -13,7 +13,8 @@ import {
   StyledSlider,
   TableSelect,
   ActivityDropConainer,
-  StyledDescription
+  StyledDescription,
+  StudentName
 } from "./style";
 import { ResouceIcon } from "../ResourceItem/index";
 import Tags from "../../../src/components/common/Tags";
@@ -371,9 +372,8 @@ const InnerWorkTable = ({
   };
 
   const handleAdd = () => {
-    if (!selectedRows.length) return notification({ messageKey:"pleaseSelectAtleastOneStandardToAdd"});
-    if (!filteredStudentList.length)
-      return notification({ messageKey:"pleaseSelectMastery"});
+    if (!selectedRows.length) return notification({ messageKey: "pleaseSelectAtleastOneStandardToAdd" });
+    if (!filteredStudentList.length) return notification({ messageKey: "pleaseSelectMastery" });
     const recommendations = [];
     const selectedRowsData = selectedRows.map(x => data[x]);
     const groupByResources = groupBy(selectedRowsData, ({ resources }) =>
@@ -429,6 +429,30 @@ const InnerWorkTable = ({
     }
   };
 
+  const studentList = (
+    <FlexContainer flexDirection="column">
+      {filteredStudentList.map(s => (
+        <StudentName>{s.userFullName}</StudentName>
+      ))}
+    </FlexContainer>
+  );
+
+  const userCountComponent = count => (
+    <FlexContainer>
+      <IconUser data-cy="student" />
+      &nbsp;&nbsp;{count}
+    </FlexContainer>
+  );
+
+  const userCount = (count, content) =>
+    count > 0 ? (
+      <Popover content={content} placement="bottom">
+        {userCountComponent(count)}
+      </Popover>
+    ) : (
+      userCountComponent(count)
+    );
+
   return (
     <TableContainer h1ighlighted={isOver} data-cy={`table-${type}`}>
       <TableHeader>
@@ -437,10 +461,7 @@ const InnerWorkTable = ({
           <span>Mastery Range</span>
           <>{getSlider()}</>
         </span>
-        <span>
-          <IconUser data-cy="student" />
-          &nbsp;&nbsp;{filteredStudentList.length}
-        </span>
+        <span>{userCount(filteredStudentList.length, studentList)}</span>
         <span>
           {/* Hiding the button for now
           

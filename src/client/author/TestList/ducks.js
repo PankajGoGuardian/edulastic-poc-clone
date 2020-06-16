@@ -7,7 +7,7 @@ import { libraryFilters } from "@edulastic/constants";
 import produce from "immer";
 import { testsApi, analyticsApi } from "@edulastic/api";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
-import { updateDefaultGradesAction, updateDefaultSubjectAction, updateUserFavorites } from "../../student/Login/ducks";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
 
@@ -212,7 +212,6 @@ function* toggleTestLikeSaga({ payload }) {
   try {
     yield call(analyticsApi.toggleLike, payload);
     yield put(updateLikeCountAction(payload));
-    yield put(updateUserFavorites(payload));
     if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
     else notification({ type: "success", msg: "Successfully Unfavourite" });
   } catch (e) {
@@ -371,7 +370,8 @@ export const reducer = (state = initialState, { type, payload }) => {
                     ? (test?.analytics?.[0].likes || 0) + 1
                     : (test?.analytics?.[0]?.likes || 1) - 1
                 }
-              ]
+              ],
+              alreadyLiked: payload.toggleValue
             };
           }
           return test;

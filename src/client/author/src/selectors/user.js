@@ -258,13 +258,3 @@ export const getAccountSwitchDetails = createSelector(
   getUser,
   state => pick(state, ["personId", "otherAccounts"])
 );
-
-export const getUserFavorites = createSelector(
-  getOrgDataSelector,
-  state => state.userFavorites || {}
-);
-
-export const getUserFavoritesByType = (state, type) => {
-  const fav = getUserFavorites(state);
-  return fav?.[type] || [];
-};

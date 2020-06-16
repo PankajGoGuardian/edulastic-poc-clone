@@ -258,7 +258,8 @@ export const reducer = (state = initialState, { type, payload }) => {
                     ? (item?.analytics?.[0]?.likes || 0) + 1
                     : (item?.analytics?.[0]?.likes || 1) - 1
                 }
-              ]
+              ],
+              alreadyLiked: payload.toggleValue
             };
           }
           return item;

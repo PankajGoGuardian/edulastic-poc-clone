@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { IconShare, IconHeart } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
@@ -26,16 +26,11 @@ const SummaryHeader = ({
   isEditable,
   isPlaylist = false,
   test,
-  toggleTestLikeRequest,
-  userFavorites
+  toggleTestLikeRequest
 }) => {
   const avatar = createdBy && createdBy.name ? createdBy.name[0] : "E";
-
-  const isTestLiked = useMemo(() => !isPlaylist && userFavorites.some(contentId => contentId === test.versionId), [
-    userFavorites,
-    test,
-    isPlaylist
-  ]);
+  console.log({ analytics });
+  const isTestLiked = test?.alreadyLiked || false;
   const handleTestLike = () => {
     if (test._id) {
       toggleTestLikeRequest({
@@ -78,10 +73,10 @@ const SummaryHeader = ({
             style={{ marginBottom: windowWidth > 993 ? "0" : "15px" }}
             padding="10px 10px 10px 50px"
           >
-            {renderAnalytics((analytics && analytics.usage) || 0, IconShare)}
+            {renderAnalytics((analytics && analytics?.[0]?.usage) || 0, IconShare)}
             {!isPlaylist && (
               <span onClick={handleTestLike}>
-                {renderAnalytics((analytics && analytics.likes) || 0, IconHeart, isTestLiked)}
+                {renderAnalytics((analytics && analytics?.[0]?.likes) || 0, IconHeart, isTestLiked)}
               </span>
             )}
           </AnalyticsContainer>

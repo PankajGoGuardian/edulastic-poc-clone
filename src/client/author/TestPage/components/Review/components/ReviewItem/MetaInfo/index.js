@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { FlexContainer, PremiumTag } from "@edulastic/common";
 import { red } from "@edulastic/colors";
 import { IconUser, IconHash, IconVolumeUp, IconNoVolume, IconHeart, IconShare } from "@edulastic/icons";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
-import { isPublisherUserSelector, getUserFavoritesByType } from "../../../../../../src/selectors/user";
+import { isPublisherUserSelector } from "../../../../../../src/selectors/user";
 import Tags from "../../../../../../src/components/common/Tags";
 import Standards from "../../../../../../ItemList/components/Item/Standards";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
@@ -16,13 +16,9 @@ import { toggleTestLikeAction } from "../../../../../ducks";
 const MetaInfo = ({
   data: { item, type, by, id, audio = {}, isPremium = false, dok, tags, analytics },
   isPublisherUser,
-  toggleTestItemLikeRequest,
-  userFavorites
+  toggleTestItemLikeRequest
 }) => {
-  const isItemLiked = useMemo(() => userFavorites.some(contentId => contentId === item.versionId), [
-    userFavorites,
-    item
-  ]);
+  const isItemLiked = item?.alreadyLiked || false;
 
   const handleItemLike = () => {
     toggleTestItemLikeRequest({
@@ -82,8 +78,7 @@ MetaInfo.propTypes = {
 
 export default connect(
   state => ({
-    isPublisherUser: isPublisherUserSelector(state),
-    userFavorites: getUserFavoritesByType(state, "TESTITEM")
+    isPublisherUser: isPublisherUserSelector(state)
   }),
   {
     toggleTestItemLikeRequest: toggleTestLikeAction

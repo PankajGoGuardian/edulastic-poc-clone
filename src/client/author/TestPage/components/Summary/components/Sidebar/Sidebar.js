@@ -39,8 +39,7 @@ const Sidebar = ({
   windowWidth,
   isEditable,
   test,
-  toggleTestLikeRequest,
-  userFavorites
+  toggleTestLikeRequest
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "_id");
   const subjectsList = selectsData.allSubjects.slice(1);
@@ -110,7 +109,6 @@ const Sidebar = ({
           isEditable={isEditable}
           test={test}
           toggleTestLikeRequest={toggleTestLikeRequest}
-          userFavorites={userFavorites}
         />
         <FieldLabel>Test Name</FieldLabel>
         <TextInputStyled

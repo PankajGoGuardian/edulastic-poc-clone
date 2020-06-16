@@ -59,7 +59,6 @@ import { updateAssingnmentSettingsAction } from "../AssignTest/duck";
 import { SET_ITEM_SCORE } from "../src/ItemScore/ducks";
 import { getIsloadingAssignmentSelector } from "./components/Assign/ducks";
 import { sortTestItemQuestions } from "../dataUtils";
-import { updateUserFavorites } from "../../student/Login/ducks";
 
 // constants
 
@@ -994,7 +993,8 @@ export const reducer = (state = initialState, { type, payload }) => {
                 ? (state.entity?.analytics?.[0]?.likes || 0) + 1
                 : (state.entity?.analytics?.[0]?.likes || 1) - 1
             }
-          ]
+          ],
+          alreadyLiked: payload.toggleValue
         }
       };
     case UPDATE_TEST_ITEM_LIKE_COUNT:
@@ -1014,7 +1014,8 @@ export const reducer = (state = initialState, { type, payload }) => {
                         ? (i?.analytics?.[0]?.likes || 0) + 1
                         : (i?.analytics?.[0]?.likes || 1) - 1
                     }
-                  ]
+                  ],
+                  alreadyLiked: payload.toggleValue
                 };
               }
               return i;
@@ -1245,7 +1246,8 @@ function* createTest(data) {
     "passages", // not accepted by backend validator (testSchema)  EV-10685
     "isUsed",
     "currentTab", // not accepted by backend validator (testSchema) EV-10685,
-    "summary"
+    "summary",
+    "alreadyLiked"
   ];
   if (data.testType !== test.type.COMMON) {
     omitedItems.push("freezeSettings");
@@ -1298,6 +1300,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.sharedType;
     delete payload.data.currentTab;
     delete payload.data.summary;
+    delete payload.data.alreadyLiked;
     if (payload.data.testType !== test.type.COMMON) {
       delete payload.data.freezeSettings;
     }
@@ -1374,6 +1377,7 @@ function* updateTestDocBasedSaga({ payload }) {
   try {
     const assessmentQuestions = yield select(getQuestionsArraySelector);
     const [testItem] = payload.data.itemGroups[0].items;
+    delete payload.data.alreadyLiked;
     const testItemId = typeof testItem === "object" ? testItem._id : testItem;
     const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
 
@@ -1697,7 +1701,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
       });
       // summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
       // passages doesnt accepted by BE
-      const omitedItems = ["passages", "summary"];
+      const omitedItems = ["passages", "summary", "alreadyLiked"];
       if (testObj.testType !== test.type.COMMON) {
         omitedItems.push("freezeSettings");
       }
@@ -2026,6 +2030,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
       notification({ messageKey: "testNotAssociatedWithCollection" });
       return;
     }
+    payload = omit(payload, ["alreadyLiked"]);
     yield call(testsApi.updateTestStatus, payload);
     yield put(approveOrRejectSingleTestSuccessAction(payload));
     notification({
@@ -2137,7 +2142,6 @@ function* toggleTestLikeSaga({ payload }) {
     yield call(analyticsApi.toggleLike, payload);
     if (payload.contentType === "TEST") yield put(updateTestLikeCountAction(payload));
     else yield put(updateTestItemLikeCountAction(payload));
-    yield put(updateUserFavorites(payload));
     if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
     else notification({ type: "success", msg: "Successfully Unfavourite" });
   } catch (e) {

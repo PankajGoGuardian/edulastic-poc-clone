@@ -19,7 +19,6 @@ import {
   APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../src/constants/actions";
-import { updateUserFavorites } from "../../student/Login/ducks";
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";
 export const CREATE_TEST_FROM_CART = "[item list] create test from cart";
@@ -194,7 +193,6 @@ export function* toggleTestLikeSaga({ payload }) {
   try {
     yield call(analyticsApi.toggleLike, payload);
     yield put(updateTestItemLikeCountAction(payload));
-    yield put(updateUserFavorites(payload));
     if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
     else notification({ type: "success", msg: "Successfully Unfavourite" });
   } catch (e) {

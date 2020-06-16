@@ -14,15 +14,6 @@ const toggleLike = payload => {
     .then(result => result.data.result);
 };
 
-const getUserFavorites = () =>
-  api
-    .callApi({
-      url: `${prefix}/my-favorites`,
-      method: "get"
-    })
-    .then(result => result.data.result);
-
 export default {
-  toggleLike,
-  getUserFavorites
+  toggleLike
 };

@@ -16,7 +16,7 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
-import { getUser, getItemBucketsSelector, getUserFavoritesByType } from "../../../../../src/selectors/user";
+import { getUser, getItemBucketsSelector } from "../../../../../src/selectors/user";
 import {
   getlastUsedCollectionListSelector,
   getDefaultThumbnailSelector,
@@ -57,8 +57,7 @@ const Summary = ({
   onChangeSubjects,
   isEditable = true,
   showCancelButton,
-  toggleTestLikeRequest,
-  userFavorites
+  toggleTestLikeRequest
 }) => {
   const handleChangeField = (field, value) => {
     if (field === "thumbnail") {
@@ -151,7 +150,6 @@ const Summary = ({
         isEditable={isEditable}
         test={test}
         toggleTestLikeRequest={toggleTestLikeRequest}
-        userFavorites={userFavorites}
       />
     </MainContentWrapper>
   );
@@ -196,8 +194,7 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       features: getUserFeatures(state),
       lastUsedCollections: getlastUsedCollectionListSelector(state),
-      orgCollections: getItemBucketsSelector(state),
-      userFavorites: getUserFavoritesByType(state, "TEST")
+      orgCollections: getItemBucketsSelector(state)
     }),
     {
       getAllTags: getAllTagsAction,

@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { Col } from "antd";
 import { getTestAuthorName, getPlaylistAuthorName } from "../../../dataUtils";
 import Item from "../Item/Item";
 import ListItem from "../ListItem/ListItem";
 import { CardBox } from "../Container/styled";
-import { getUserFavoritesByType } from "../../../src/selectors/user";
 
 class CardWrapper extends Component {
   static propTypes = {
@@ -48,13 +46,12 @@ class CardWrapper extends Component {
       handleCheckboxAction,
       moduleTitle,
       onRemoveFromCart,
-      onAddToCart,
-      userFavorites
+      onAddToCart
     } = this.props;
 
     const itemId = _id.substr(_id.length - 6);
 
-    const isTestLiked = !isPlaylist && userFavorites.some(contentId => contentId === item.versionId);
+    const isTestLiked = (!isPlaylist && item?.alreadyLiked) || false;
 
     if (blockStyle === "tile") {
       return (
@@ -103,9 +100,4 @@ class CardWrapper extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    userFavorites: getUserFavoritesByType(state, "TEST")
-  }),
-  {}
-)(CardWrapper);
+export default CardWrapper;

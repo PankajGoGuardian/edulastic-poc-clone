@@ -58,12 +58,7 @@ import PassageConfirmationModal from "../../../TestPage/components/PassageConfir
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
-import {
-  getCollectionsSelector,
-  isPublisherUserSelector,
-  getUserRole,
-  getUserFavoritesByType
-} from "../../../src/selectors/user";
+import { getCollectionsSelector, isPublisherUserSelector, getUserRole } from "../../../src/selectors/user";
 import { TestStatus, DynamicIconWrapper } from "../../../TestList/components/ListItem/styled";
 import { toggleTestItemLikeAction } from "../../ducks";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
@@ -155,10 +150,10 @@ class Item extends Component {
   };
 
   renderDetails = () => {
-    const { item, windowWidth, collections, isPublisherUser, userFavorites } = this.props;
+    const { item, windowWidth, collections, isPublisherUser } = this.props;
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(_item => _item.tts).map(_item => _item.tts);
-    const isItemLiked = userFavorites.some(contentId => contentId === item.versionId);
+    const isItemLiked = item?.alreadyLiked || false;
     const details = [
       {
         name: "DOK:",
@@ -538,8 +533,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       collections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
-      userRole: getUserRole(state),
-      userFavorites: getUserFavoritesByType(state, "TESTITEM")
+      userRole: getUserRole(state)
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

@@ -118,8 +118,6 @@ const CurriculumHeader = ({
     _id
   } = destinationCurriculumSequence;
 
-  // show all recent playlists in changePlaylistModal
-  const slicedRecentPlaylists = recentPlaylists || [];
   // figure out which tab contents to render || just render default playlist
   const {
     params: { cloneId = null, currentTab: cTab },
@@ -127,13 +125,13 @@ const CurriculumHeader = ({
   } = match;
   const currentTab = cTab || "playlist";
   const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection ?._id);
+  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
 
-  const sumOfclasse = reduce(summaryData, (prev, curr) => (isNumber(curr ?.classes) ? prev + curr.classes : prev), 0);
+  const sumOfclasse = reduce(summaryData, (prev, curr) => (isNumber(curr?.classes) ? prev + curr.classes : prev), 0);
   const shouldHideUseThis = (sumOfclasse > 0 && !urlHasUseThis) || status === "draft";
   const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser && sumOfclasse === 0;
 
-  const isPlaylistDetailsPage = window.location ?.hash === "#review";
+  const isPlaylistDetailsPage = window.location?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
 
   const switchPlaylist = (
@@ -181,7 +179,7 @@ const CurriculumHeader = ({
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
           {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
             !urlHasUseThis &&
-            destinationCurriculumSequence ?._id && (
+            destinationCurriculumSequence?._id && (
               <Tooltip placement="bottom" title="DELETE">
                 <HeaderButton
                   loading={loadingDelete}
@@ -204,64 +202,65 @@ const CurriculumHeader = ({
               <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
                 <IconShare />
               </HeaderButton>
-        )}
+            )}
 
           {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
-          role !== roleuser.EDULASTIC_CURATOR && (
-            <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
-              <IconShare />
+            role !== roleuser.EDULASTIC_CURATOR && (
+              <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
+                <IconShare />
+              </HeaderButton>
+            )}
+
+          {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
+            <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
+              <IconSave />
+              {isDesktop && "SAVE"}
             </HeaderButton>
           )}
 
-        {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
-          <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
-            <IconSave />
-            {isDesktop && "SAVE"}
-          </HeaderButton>
-        )}
-
-        {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
-          <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
-            <IconSave />
-            <span>SAVE</span>
-          </HeaderButton>
-        )}
-
-        {urlHasUseThis && isTeacher && !isPublisherUser && (
-          <>
-            <HeaderButton data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
-              <IconAirdrop />
-              {isDesktop && "OPEN TO STUDENTS"}
+          {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
+            <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
+              <IconSave />
+              <span>SAVE</span>
             </HeaderButton>
-            <Dropdown
-              overlayStyle={{ zIndex: 999, cursor: "pointer" }}
-              overlay={mainPlaylistVerticalMenu}
-              trigger={["click"]}
-            >
-              <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
-                <IconMoreVertical width={5} height={14} color={themeColor} />
-              </IconActionButton>
-            </Dropdown>
-          </>)}
+          )}
 
-        {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
-          <Tooltip placement="bottom" title="EDIT">
-            <HeaderButton isGhost data-cy="edit-playlist" onClick={handleEditClick} IconBtn={!shouldHideUseThis}>
-              <IconPencilEdit />
-              {shouldHideUseThis && <span>EDIT</span>}
+          {urlHasUseThis && isTeacher && !isPublisherUser && (
+            <>
+              <HeaderButton data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
+                <IconAirdrop />
+                {isDesktop && "OPEN TO STUDENTS"}
+              </HeaderButton>
+              <Dropdown
+                overlayStyle={{ zIndex: 999, cursor: "pointer" }}
+                overlay={mainPlaylistVerticalMenu}
+                trigger={["click"]}
+              >
+                <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
+                  <IconMoreVertical width={5} height={14} color={themeColor} />
+                </IconActionButton>
+              </Dropdown>
+            </>
+          )}
+
+          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
+            <Tooltip placement="bottom" title="EDIT">
+              <HeaderButton isGhost data-cy="edit-playlist" onClick={handleEditClick} IconBtn={!shouldHideUseThis}>
+                <IconPencilEdit />
+                {shouldHideUseThis && <span>EDIT</span>}
+              </HeaderButton>
+            </Tooltip>
+          )}
+          {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
+            <HeaderButton data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
+              <IconUseThis />
+              <span>USE THIS</span>
             </HeaderButton>
-          </Tooltip>
-        )}
-        {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
-          <HeaderButton data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
-            <IconUseThis />
-            <span>USE THIS</span>
-          </HeaderButton>
-        )}
-        {features.isCurator && (status === "inreview" || status === "rejected") && (
-          <HeaderButton onClick={onApproveClick}>APPROVE</HeaderButton>
-        )}
-        {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
+          )}
+          {features.isCurator && (status === "inreview" || status === "rejected") && (
+            <HeaderButton onClick={onApproveClick}>APPROVE</HeaderButton>
+          )}
+          {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
         </CurriculumHeaderButtons>
 
         {/* <ResolvedMobileHeaderWrapper>
@@ -273,11 +272,11 @@ const CurriculumHeader = ({
             />
           )}
         </ResolvedMobileHeaderWrapper> */}
-      </MainHeader >
+      </MainHeader>
     );
   }
 
-return <Fragment />;
+  return <Fragment />;
 };
 
 export default withRouter(CurriculumHeader);

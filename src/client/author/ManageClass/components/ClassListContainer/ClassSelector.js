@@ -3,7 +3,7 @@ import { Menu, Icon } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { ClassSelect, ClassStatusButton, ClassStatusDropdown } from "./styled";
 
-const options = ["Active Classes", "Archive Classes"];
+const options = ["Active Classes", "Archived Classes"];
 
 const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, setFilterClass }) => {
   const handleActiveClassClick = () => {

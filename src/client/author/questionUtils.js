@@ -1,10 +1,11 @@
-import { questionType, question, customTags } from "@edulastic/constants";
+import { questionType, question, customTags, math } from "@edulastic/constants";
 import { get, isString, isEmpty } from "lodash";
 import striptags from "striptags";
 import { templateHasImage } from "@edulastic/common";
 import { displayStyles } from "../assessment/widgets/ClozeEditingTask/constants";
 
 const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT, PASSAGE, EDITING_TASK } = questionType;
+const { methods } = math;
 
 export const isRichTextFieldEmpty = text => {
   if (!text) {
@@ -393,11 +394,15 @@ const answerValidator = {
   [questionType.MATH](answers) {
     if (!answers.length) return true;
 
+    // check for empty answers
+    // if validation method is equivSyntax answer will be empty
     const hasEmpty = answers.some(answer => {
       if (Array.isArray(answer.value)) {
-        return answer.value.some(ans => isEmpty(ans) || isEmpty(ans.value));
+        return answer.value.some(ans =>
+          ans.method !== methods.EQUIV_SYNTAX ? isEmpty(ans) || isEmpty(ans.value) : false
+        );
       }
-      return answer.value.length === 0; // check for string value
+      return answer.method !== methods.EQUIV_SYNTAX ? !answer.value : false; // check for empty string value
     });
     return hasEmpty;
   },
@@ -421,8 +426,13 @@ const answerValidator = {
       const textInputsAndDropdowns = [...textInputs, ...dropdowns]; // combine text and dropdown as they can be validated together
 
       // check for empty answers
-      const hasEmptyMathAnswers = mathInputs.some(mathInput => isEmpty(mathInput) || isEmpty(mathInput.value));
-      const hasEmptyMathUnitInputs = mathUnitInputs.some(input => isEmpty(input.value) || isEmpty(input));
+      // if validation method is equivSyntax answer will be empty
+      const hasEmptyMathAnswers = mathInputs.some((mathInput = {}) =>
+        mathInput.method !== methods.EQUIV_SYNTAX ? isEmpty(mathInput) || isEmpty(mathInput.value) : false
+      );
+      const hasEmptyMathUnitInputs = mathUnitInputs.some((input = {}) =>
+        input.method !== methods.EQUIV_SYNTAX ? isEmpty(input.value) || isEmpty(input) : false
+      );
 
       /**
        * dropdown and texts have similar structure for answers as in sort list

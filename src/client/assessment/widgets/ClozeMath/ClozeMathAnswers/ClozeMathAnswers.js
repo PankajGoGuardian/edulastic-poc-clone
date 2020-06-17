@@ -346,6 +346,10 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           if (prop === "keypadMode" || prop === "customUnits") {
             draft.validation = updateValidation(draft.validation, altAnswerIndex, answerId, "unit", "");
           }
+          // Updating validation method
+          if (prop === "method") {
+            draft.validation = updateValidation(draft.validation, altAnswerIndex, answerId, prop, value);
+          }
           draft.responseIds.mathUnits = mathUnitResponses;
         }
       })

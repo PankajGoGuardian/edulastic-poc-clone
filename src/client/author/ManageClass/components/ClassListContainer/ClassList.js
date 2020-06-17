@@ -74,7 +74,7 @@ const ClassList = ({
 
   const columns = [
     {
-      title: "Class Name",
+      title: currentTab === "class" ? "Class Name" : "Group Name",
       dataIndex: "name",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.name.localeCompare(b.name),

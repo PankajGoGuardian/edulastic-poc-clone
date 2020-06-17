@@ -85,7 +85,7 @@ const MyClasses = ({
   const unSortableClasses = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
 
   const allClasses = [...sortableClasses, ...unSortableClasses];
-  const allActiveClasses = allClasses.filter(c => c.active === 1);
+  const allActiveClasses = allClasses.filter(c => c.active === 1 && c.type === 'class');
   const ClassCards = allActiveClasses.map(item => (
     <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6} key={item._id}>
       <Card data={item} />

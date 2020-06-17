@@ -11,15 +11,10 @@ import { roleuser } from "@edulastic/constants";
 import { getUser } from "../../../../../../src/selectors/user";
 import { receiveClassListAction, getClassListSelector } from "../../../../../../Classes/ducks";
 
-const ClassAutoComplete = ({
-  userDetails,
-  classList,
-  loading,
-  loadClassList,
-  selectedClass,
-  selectCB
-}) => {
-  const [searchTerms, setSearchTerms] = useState({ text: "", selectedText: "", selectedKey: "" });
+const DEFAULT_SEARCH_TERMS = { text: "", selectedText: "", selectedKey: "" };
+
+const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, selectedClass, selectCB }) => {
+  const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS);
 
   // build search query
   const { email, institutionIds, role: userRole, orgData } = userDetails;
@@ -35,9 +30,7 @@ const ClassAutoComplete = ({
     }
   };
   if (userRole === roleuser.TEACHER) {
-    query.search.teachers = [
-      { type: "eq", value: email }
-    ];
+    query.search.teachers = [{ type: "eq", value: email }];
   }
   if (userRole === roleuser.SCHOOL_ADMIN) {
     query.search.institutionIds = institutionIds;
@@ -46,15 +39,20 @@ const ClassAutoComplete = ({
   // handle autocomplete actions
   const onSearch = value => {
     setSearchTerms({ ...searchTerms, text: value });
-  }
+  };
   const onSelect = key => {
     const value = classList[key]._source.name;
     setSearchTerms({ text: value, selectedText: value, selectedKey: key });
     selectCB({ key, title: value });
-  }
+  };
   const onBlur = () => {
-    setSearchTerms({ ...searchTerms, text: searchTerms.selectedText });
-  }
+    if (searchTerms.text === "" && searchTerms.selectedText !== "") {
+      setSearchTerms(DEFAULT_SEARCH_TERMS);
+      selectCB({ key: "", title: "" });
+    } else {
+      setSearchTerms({ ...searchTerms, text: searchTerms.selectedText });
+    }
+  };
 
   // effects
   useEffect(() => {
@@ -70,15 +68,17 @@ const ClassAutoComplete = ({
   }, [searchTerms]);
 
   // build dropdown data
-  const dropdownData = searchTerms.text ? [
-    <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
-      {Object.values(classList).map(item => (
-        <AutoComplete.Option key={item._id} title={item._source.name}>
-          {item._source.name}
-        </AutoComplete.Option>
-      ))}
-    </AutoComplete.OptGroup>
-  ] : [];
+  const dropdownData = searchTerms.text
+    ? [
+        <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
+          {Object.values(classList).map(item => (
+            <AutoComplete.Option key={item._id} title={item._source.name}>
+              {item._source.name}
+            </AutoComplete.Option>
+          ))}
+        </AutoComplete.OptGroup>
+      ]
+    : [];
 
   return (
     <AutoCompleteContainer>

@@ -57,11 +57,12 @@ const fetchAssigned = (groupId = "", testId = "", pageNumber, pageSize) =>
 
 const fetchTeacherAssignments = ({
   groupId = "",
-  filters: { grades = [], subject = "", termId = "", testType = "", classId = "", status = "" }
+  filters: { grades = [], subject = "", termId = "", testType = "", classId = "", status = "" },
+  folderId = ""
 }) =>
   api
     .callApi({
-      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}`,
+      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}&folderId=${folderId}`,
       method: "get"
     })
     .then(result => result.data.result);

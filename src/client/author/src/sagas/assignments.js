@@ -97,8 +97,8 @@ function* receiveAssignmentsSaga({ payload = {} }) {
   try {
     const userRole = yield select(getUserRole);
     if (userRole === roleuser.TEACHER) {
-      const { groupId, filters = {} } = payload;
-      const entities = yield call(assignmentApi.fetchTeacherAssignments, { groupId, filters });
+      const { groupId, filters = {}, folderId } = payload;
+      const entities = yield call(assignmentApi.fetchTeacherAssignments, { groupId, filters, folderId });
       yield put({
         type: RECEIVE_ASSIGNMENTS_SUCCESS,
         payload: { entities }

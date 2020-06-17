@@ -254,6 +254,7 @@ class LeftFilter extends React.Component {
       filterState: filters,
       districtId,
       loadAssignmentsSummary,
+      loadAssignments,
       isAdvancedView
     } = this.props;
     const { visibleModal } = this.state;
@@ -263,13 +264,18 @@ class LeftFilter extends React.Component {
       this.setState({ moveFolderId: _id });
     } else if (folder) {
       await setFolder(folder);
+      const { _id } = folder;
       if (isAdvancedView) {
         loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
+      } else {
+        loadAssignments({ filters, folderId : _id });
       }
     } else {
       await clearFolder();
       if (isAdvancedView) {
         loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
+      } else {
+        loadAssignments({ filters });
       }
     }
   };

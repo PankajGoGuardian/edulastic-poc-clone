@@ -334,15 +334,15 @@ class Item extends Component {
    *  {Bool} value: user wants to select all the items?
    */
   handleResponse = value => {
-    const { setAndSavePassageItems, passageItems, page } = this.props;
+    const { setAndSavePassageItems, passageItems, page, openPreviewModal } = this.props;
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
       notification({ type: "success", messageKey: "itemAddedCart" });
       return setAndSavePassageItems({ passageItems, page });
     }
-
     // open the modal for selecting  testItems manually.
+    openPreviewModal();
   };
 
   render() {

@@ -926,5 +926,26 @@
         "tags": ["item tag 1"]
       }
     }
+  },
+  "MATH_NUMERIC": {
+    "default": {
+      "quetext": "This is MATH_NUMERIC.default question",
+      "setAns": {
+        "correct": "x+y+z",
+        "points": 2
+      },
+      "attemptData": {
+        "right": "x+y+z",
+        "wrong": "x+z"
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["4.G.A.2", "4.G.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Grade 4"
+        }
+      ]
+    }
   }
 }

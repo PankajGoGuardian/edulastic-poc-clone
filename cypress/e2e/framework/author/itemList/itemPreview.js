@@ -102,7 +102,8 @@ export default class PreviewItemPopup {
   verifyEvaluationScoreOnPreview = (attemptData, points, questionType, attemptType) => {
     const score = this.qrp.getScoreByAttempt(attemptData, points, questionType.split(".")[0], attemptType);
     // this.getEvaluationMessage()
-    cy.get('[data-cy="score"]').should("contain", `Score ${score}/${points}`);
+    const evalText = attemptType === attemptTypes.WRONG ? "Incorrect" : "Correct";
+    cy.get('[data-cy="score"]').should("contain", `${evalText} (${score}/${points})`);
   };
 
   verifyEditOption = () => {
@@ -215,6 +216,10 @@ export default class PreviewItemPopup {
       case questionTypeKey.CLOZE_TEXT:
         if (isShowAnswer) this.qrp.verifyCorrectAnswerClozeText(cy.get("@quecard"), right);
         else this.qrp.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType, right);
+        break;
+      case questionTypeKey.MATH_NUMERIC:
+        if (isShowAnswer) this.qrp.verifyCorrectAnsMathNumeric(cy.get("@quecard"), right);
+        else this.qrp.verifyResponseByAttemptMathNumeric(cy.get("@quecard"), attempt, attemptType, true);
         break;
       default:
         break;

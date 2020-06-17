@@ -49,7 +49,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     teacher: "lcb.teacher01@automation.com",
     student: students[1].email,
     assignmentName: "New Assessment LCB",
-    testId: "5ee722f09bedf00008363276",
+    testId: "5ee8795a6ee87b0007007df6",
     feedbackScoreData: [
       {
         ...students[2],
@@ -94,7 +94,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "right",
           Q7: "right",
           Q8: "right",
-          Q9: "right"
+          Q9: "right",
+          Q10: "right"
         },
         status: studentSide.SUBMITTED
       },
@@ -109,7 +110,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "skip",
           Q7: "right",
           Q8: "right",
-          Q9: "skip"
+          Q9: "skip",
+          Q10: "skip"
         },
         status: studentSide.SUBMITTED
       },
@@ -124,7 +126,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "right",
           Q7: "skip",
           Q8: "right",
-          Q9: "partialCorrect"
+          Q9: "partialCorrect",
+          Q10: "right"
         },
         status: studentSide.SUBMITTED
       },
@@ -139,7 +142,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "wrong",
           Q7: "wrong",
           Q8: "wrong",
-          Q9: "wrong"
+          Q9: "wrong",
+          Q10: "wrong"
         },
         status: studentSide.SUBMITTED
       },
@@ -154,7 +158,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "right",
           Q7: "skip",
           Q8: "skip",
-          Q9: "skip"
+          Q9: "skip",
+          Q10: "skip"
         },
         status: studentSide.IN_PROGRESS
       },
@@ -170,7 +175,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "noattempt",
           Q7: "noattempt",
           Q8: "noattempt",
-          Q9: "noattempt"
+          Q9: "noattempt",
+          Q10: "noattempt"
         }
       },
       {
@@ -184,7 +190,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "skip",
           Q7: "skip",
           Q8: "skip",
-          Q9: "skip"
+          Q9: "skip",
+          Q10: "skip"
         },
         status: studentSide.SUBMITTED
       }
@@ -227,6 +234,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const bargraph = new BarGraph();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
   const queBarData = bargraph.getQueBarData(queList, attemptsData);
+  // const getQuestionCentricQueBarData = bargraph.getQueBarDataQuestionView(attemptsData, queList);
 
   lcb.getQuestionCentricData(attemptsData, submittedQueCentric, true);
 

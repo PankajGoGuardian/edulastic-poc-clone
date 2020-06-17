@@ -281,6 +281,10 @@ export default class StudentsReportCard {
           studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : CR_Questions;
           correctResponse = CR_Questions;
           break;
+        case queTypes.MATH_NUMERIC:
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : attemptData[attemptType];
+          correctResponse = correct;
+          break;
         default:
           assert.fail(1, 2, "Qusetion type does not match while calculating question table data");
           break;

@@ -1,4 +1,6 @@
 import MathFormulaEdit from "./mathFormulaEdit";
+import EditItemPage from "../../itemDetail/editPage";
+import { questionGroup, questionType } from "../../../../constants/questionTypes";
 
 class MathFractionPage extends MathFormulaEdit {
   constructor() {
@@ -131,6 +133,23 @@ class MathFractionPage extends MathFormulaEdit {
       .get('[data-cy="template-container"]')
       .next()
       .get(".mq-root-block");
+
+  createQuestion = (queKey = "default", queIndex = 0, onlyItem = true) => {
+    const item = new EditItemPage();
+    item.createNewItem(onlyItem);
+    item.chooseQuestion(questionGroup.MATH, questionType.MATH_NUMERIC);
+    cy.fixture("questionAuthoring").then(authoringData => {
+      const { quetext, setAns } = authoringData.MATH_NUMERIC[queKey];
+
+      this.getComposeQuestionTextBox().clear({ force: true });
+      this.getComposeQuestionTextBox().type(`Q${queIndex + 1} - ${quetext}`);
+
+      this.getPointsInput()
+        .type("{selectall}")
+        .type(setAns.points);
+      this.getTemplateInput().typeWithDelay(setAns.correct);
+    });
+  };
 }
 
 export default MathFractionPage;

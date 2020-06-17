@@ -13,6 +13,7 @@ import TeacherSideBar from "../SideBarPage";
 import PreviewItemPopup from "./itemPreview";
 import EssayRichTextPage from "./questionType/writtenAndSpoken/essayRichTextPage";
 import CypressHelper from "../../util/cypressHelpers";
+import MathFractionPage from "./questionType/math/mathFractionPage";
 
 class ItemListPage {
   constructor() {
@@ -160,6 +161,9 @@ class ItemListPage {
             break;
           case queTypes.ESSAY_RICH:
             question = new EssayRichTextPage();
+            break;
+          case queTypes.MATH_NUMERIC:
+            question = new MathFractionPage();
             break;
           default:
             break;

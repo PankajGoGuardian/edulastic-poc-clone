@@ -125,7 +125,10 @@ class AssignmentsPage {
     // cy.wait("@startTest");
     // cy.wait("@gettest");
     // return cy.wait("@saved").then(() => new StudentTestPage());
-    return cy.wait("@gettest").then(() => new StudentTestPage());
+
+    return cy.wait("@gettest").then(() => {
+      cy.get('[data-cy="next"]', { timeout: 30000 }).then(() => new StudentTestPage());
+    });
   }
 
   clickOnAssigmentByTestId = (testId, options = {}) => {
@@ -157,7 +160,7 @@ class AssignmentsPage {
     }
 
     return cy.wait("@gettest").then(xhr => {
-      cy.get('[data-cy="next"]'); // waiting for page rendering
+      cy.get('[data-cy="next"]', { timeout: 30000 }); // waiting for page rendering
       // TODO: trim the return value to result, so that method can be reused
       return cy.wait(1).then(() => xhr.response.body.result.itemGroups);
     });

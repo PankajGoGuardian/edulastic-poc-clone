@@ -22,7 +22,8 @@ export const questionType = {
   PASSAGE_MULTIPART: "Passage with Multiple Parts",
   PASSAGE_QUE: "Passage with Questions",
   COMBINATION_MULTIPART: "Combination Multipart",
-  MATH: "Math, Text & Dropdown"
+  MATH: "Math, Text & Dropdown",
+  MATH_NUMERIC: "Numeric Entry"
 };
 
 export const questionTypeKey = {
@@ -36,7 +37,8 @@ export const questionTypeKey = {
   CLOZE_TEXT: "CLOZE_TEXT",
   CLOZE_DROP_DOWN: "CLOZE_DROPDOWN",
   ESSAY_RICH: "ESSAY_RICH",
-  CLOZE_DRAG_DROP: "CLOZE_DRAG_DROP"
+  CLOZE_DRAG_DROP: "CLOZE_DRAG_DROP",
+  MATH_NUMERIC: "MATH_NUMERIC"
 };
 
 export const attemptTypes = {
@@ -76,6 +78,7 @@ export const queColor = {
   GREEN_4: "rgb(222, 244, 232)",
   GREEN_5: "rgb(61, 176, 78)",
   GREEN_6: "rgb(66, 209, 132)",
+  GREEN_7: "rgb(132, 205, 54)",
   LIGHT_GREEN: "rgb(211, 254, 166)",
   LIGHT_GREEN1: "rgba(31, 227, 161, 0.118)",
   LIGHT_GREY: "rgb(211, 211, 211)",

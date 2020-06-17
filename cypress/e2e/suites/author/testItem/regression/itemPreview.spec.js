@@ -71,11 +71,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
     context("Verify Show Ans On Preivew", () => {
       before(`Go-To Item Bank and get authored by me`, () => {
         // testLibraryPage.sidebar.clickOnItemBank();
-        itemListPage.searchFilters.clearAll();
-        itemListPage.searchFilters.getAuthoredByMe();
       });
       beforeEach("close", () => {
         itemPreview.closePreiview();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Show Ans for item No:${item} ${index + 1}`, () => {
@@ -90,11 +90,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
       before(`Go-To Item Bank and get authored by me`, () => {
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.sidebar.clickOnItemBank();
-        itemListPage.searchFilters.clearAll();
-        itemListPage.searchFilters.getAuthoredByMe();
       });
       beforeEach("close", () => {
         itemPreview.closePreiview();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Right Ans for Item No:${item} ${index + 1}`, () => {
@@ -118,11 +118,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
       before(`Go-To Item Bank and get authored by me`, () => {
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.sidebar.clickOnItemBank();
-        itemListPage.searchFilters.clearAll();
-        itemListPage.searchFilters.getAuthoredByMe();
       });
       beforeEach("close", () => {
         itemPreview.closePreiview();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Wrong Ans for Item No:${item} ${index + 1}`, () => {
@@ -260,6 +260,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
       });
       beforeEach("close", () => {
         itemPreview.closePreiview();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Show Ans for Item NO:${item} ${index + 1}`, () => {
@@ -274,6 +276,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
     context("Verify Check Ans On Preivew-Right Ans", () => {
       beforeEach("close", () => {
         itemPreview.closePreiview();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Right Ans for Item No:${item} ${index + 1}`, () => {
@@ -296,6 +300,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
     context("Verify Check Ans On Preivew-Wrong Ans", () => {
       beforeEach("close", () => {
         itemPreview.closePreiview();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Wrong Ans for Item No:${item} ${index + 1}`, () => {

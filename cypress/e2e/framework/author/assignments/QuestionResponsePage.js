@@ -166,6 +166,9 @@ export default class QuestionResponsePage {
             ? Cypress._.round(points / 2, 2)
             : 0;
         break;
+      case queTypes.MATH_NUMERIC:
+        score = attemptType === attemptTypes.RIGHT ? points : 0;
+        break;
       default:
         break;
     }
@@ -462,6 +465,40 @@ export default class QuestionResponsePage {
       });
   };
 
+  verifyCorrectAnsMathNumeric = (card, right) => {
+    card
+      .contains("Correct Answer")
+      .next()
+      .find(".katex-html")
+      .first()
+      .should("contain.text", right);
+  };
+
+  verifyResponseByAttemptMathNumeric = (card, attempt, attemptType, itemPreview = false) => {
+    if (attemptType !== attemptTypes.SKIP)
+      cy.get("@quecard")
+        .find('[class^="MathInputWrapper"]')
+        .should("contain.text", attempt);
+    if (itemPreview)
+      cy.get("@quecard")
+        .find(`[class^="Icon"]`)
+        .first()
+        .find("svg")
+        .should("have.css", "fill", attemptType === attemptTypes.RIGHT ? queColor.RIGHT : queColor.RED_1);
+    else
+      cy.get("@quecard")
+        .find('[class^="MathInputWrapper"]')
+        .should(
+          "have.css",
+          "background-color",
+          attemptType === attemptTypes.RIGHT
+            ? queColor.GREEN_7
+            : attemptType === attemptTypes.WRONG
+            ? queColor.LIGHT_RED
+            : queColor.GREY_2
+        );
+  };
+
   verifyNoQuestionResponseCard = studentName => {
     cy.get('[data-cy="studentName"]')
       .contains(studentName)
@@ -605,6 +642,10 @@ export default class QuestionResponsePage {
       case queTypes.CLOZE_TEXT:
         this.verifyCorrectAnswerClozeText(cy.get("@quecard"), right);
         this.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType, right);
+        break;
+      case queTypes.MATH_NUMERIC:
+        this.verifyCorrectAnsMathNumeric(cy.get("@quecard"), right);
+        this.verifyResponseByAttemptMathNumeric(cy.get("@quecard"), attempt, attemptType);
         break;
       default:
         break;

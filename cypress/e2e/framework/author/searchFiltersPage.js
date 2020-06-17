@@ -28,7 +28,11 @@ export default class SearchFilters {
 
   getSearch = () => cy.get(".ant-input-search");
 
-  getSearchTextBox = () => cy.get('[placeholder="Search by skills and keywords"]').last();
+  getSearchTextBox = () =>
+    cy
+      .contains("Search by skills and keywords")
+      .next()
+      .find("input");
 
   getPaginationContainer = () => cy.get(".ant-pagination");
 
@@ -118,8 +122,8 @@ export default class SearchFilters {
     this.routeSearch();
     this.getSearchTextBox()
       .type("{selectall}")
-      .type(key, { force: true });
-    cy.wait(1000);
+      .type(key, { force: true })
+      .type("{enter}");
     this.waitForSearchResponse();
   };
 

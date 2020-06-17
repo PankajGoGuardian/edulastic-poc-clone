@@ -724,6 +724,8 @@ class StudentTestPage {
   // MATH : TODO: revist and make these generic
   typeFormula = answer => this.mathEditor.typeFormula(answer);
 
+  verifyTypedFormulaLength = len => this.mathEditor.checkTypedFormulaCount(len);
+
   typeFormulaWithKeyboard = answer => this.mathEditor.typeFormulaWithVirtualKeyboard(answer);
 
   checkSavedFormulaAnswer = answer => this.mathEditor.checkTypedFormulaCount(answer.length);
@@ -831,8 +833,13 @@ class StudentTestPage {
 
         case questionType.ESSAY_RICH:
           this.typeEssayRichText(attempts);
-
           break;
+
+        case questionType.MATH_NUMERIC:
+          this.typeFormula(attempts);
+          this.verifyTypedFormulaLength(attempts.length);
+          break;
+
         default:
           assert.fail(1, 2, "question type did not match while in attempt question method");
           break;

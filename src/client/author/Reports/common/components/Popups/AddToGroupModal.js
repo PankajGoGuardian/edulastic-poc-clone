@@ -131,8 +131,6 @@ const AddToGroupModal = ({
     if (studentsToAdd.length) {
       enrollStudentsToGroup({ classCode, districtId, studentIds: studentsToAdd, type: groupType, name });
       setStudentsToAdd([]);
-    } else if (checkedStudents.length) {
-      notification({ type: "success", msg: `Students enrolled to ${groupTypeText} ${name} successfully` });
     }
     // remove students
     if (studentsToRemove.length) {
@@ -144,9 +142,16 @@ const AddToGroupModal = ({
       }
       setStudentsToRemove([]);
     }
-    // warning for no action due to lack of - checked students or existing students to remove
-    if (!checkedStudents.length && !studentsToRemove.length) {
-      notification({ type: "warn", msg: `Select one or more students to add to or remove from ${groupTypeText}` });
+    // notify when right section is all ticked and left section is all unticked or empty
+    if (checkedStudents.length && !studentsToAdd.length && !studentsToRemove.length) {
+      if (studentLeftList.length) {
+        // if left section has all students unticked
+        notification({ type: "warn", msg: `Select one or more students to add to or remove from ${groupTypeText}` });
+      } else {
+        // if left side is empty
+        notification({ type: "info", msg: `Selected students are already enrolled to ${groupTypeText} ${name}` });
+        onCancel();
+      }
     } else {
       // close modal
       onCancel();

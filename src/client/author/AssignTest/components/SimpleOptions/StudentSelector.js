@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { TreeSelect } from "antd";
-import { keyBy, groupBy } from "lodash";
+import { keyBy, groupBy, sortBy } from "lodash";
 import PropTypes from "prop-types";
 import React, { useState, useMemo } from "react";
 import { SelectStudentColumn, HeaderButtonsWrapper, SelectAll, UnselectAll, SelectTextInline } from "./styled";
@@ -41,7 +41,7 @@ const StudentsSelector = ({
         disabled: true,
         value: groupName
       },
-      ...studentRows
+      ...sortBy(studentRows, x => x.title)
     ];
   });
 

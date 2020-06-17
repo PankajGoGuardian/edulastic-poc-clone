@@ -993,7 +993,7 @@ export function* updateItemSaga({ payload }) {
       call(testItemsApi.updateById, payload.id, data, payload.testId),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null
     ]);
-    if (isPassageWithQuestions && !updatedPassage) {
+    if (isPassageWithQuestions && !isEmpty(passageData) && !updatedPassage) {
       throw new Error("Error while updating passage");
     }
     /**

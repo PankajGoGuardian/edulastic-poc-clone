@@ -115,9 +115,28 @@ export function verifyTeacherSide({
   option,
   attemptData
 }) {
+  const attemptsData = [];
+  const queCentric = {};
+  assignmentStatus.forEach((sta, ind) => {
+    attemptsData.push({ stuName: students[`Student${ind + 1}`].name, attempt: {}, status: studentSide.SUBMITTED });
+  });
   assignmentStatus.forEach((status, statusIndex) => {
     context(`> for Student${statusIndex + 1},'${status}'`, () => {
       attemptType.forEach((attempt, attemptIndex) => {
+        before("> set attempt data", () => {
+          assignmentStatus.forEach((sta, ind) => {
+            attemptsData[ind].attempt.Q1 = attempt;
+          });
+          if (
+            assignmentStatus.indexOf(studentSide.SUBMITTED) !== -1 &&
+            option === regradeOptions.edited.MANUAL_POINTS
+          ) {
+            if (status === studentSide.SUBMITTED)
+              attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = attemptTypes.MANUAL_GRADE;
+            else
+              attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = attemptTypes.PARTIAL_CORRECT;
+          }
+        });
         const title = status === studentSide.SUBMITTED ? "before" : "after";
         context(`> verify edited question-'attempted as ${attempt}' ${title} regrade`, () => {
           before(">click assignments", () => {
@@ -135,6 +154,9 @@ export function verifyTeacherSide({
               .getQuestionsByIndex(0)
               .find("div")
               .should("have.length", 1);
+
+            barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, ["Q1"]);
+
             lcb.verifyQuestionCards(statusIndex, [
               option === regradeOptions.edited.MANUAL_POINTS && status === studentSide.SUBMITTED
                 ? attemptTypes.MANUAL_GRADE
@@ -153,12 +175,7 @@ export function verifyTeacherSide({
             lcb.questionResponsePage.getMaxScore().should("have.text", `${data.points}`);
 
             itemPreview.verifyQuestionResponseCard("MCQ_MULTI", attemptData, attempt);
-            barGraphs.verifyQueToolTipBasedOnAttempt(
-              0,
-              status === studentSide.SUBMITTED && option === regradeOptions.edited.MANUAL_POINTS
-                ? attemptTypes.MANUAL_GRADE
-                : attempt
-            );
+            barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData[statusIndex], ["Q1"]);
           });
 
           it("> verify Question centric view", () => {
@@ -174,14 +191,8 @@ export function verifyTeacherSide({
               .as("updatecard");
 
             itemPreview.verifyQuestionResponseCard("MCQ_MULTI", attemptData, attempt, false, statusIndex);
-
-            barGraphs.verifyQueToolTipBasedOnAttempt(
-              0,
-              status === studentSide.SUBMITTED && option === regradeOptions.edited.MANUAL_POINTS
-                ? attemptTypes.MANUAL_GRADE
-                : attempt,
-              true
-            );
+            lcb.getQuestionCentricData(attemptsData, queCentric);
+            barGraphs.verifyQueBarBasedOnQueAttemptData(queCentric.Q1);
 
             lcb.questionResponsePage
               .getScoreInput(cy.get("@updatecard"))
@@ -196,6 +207,7 @@ export function verifyTeacherSide({
               `${data.teacher[status][`${option}`][`${attempt}`]}/${data.points}`,
               _.round((data.teacher[status][`${option}`][`${attempt}`] / data.points) * 100, 2)
             );
+            expressGrader.verifyNumberOfQuestions(1);
           });
 
           if (option === regradeOptions.edited.MANUAL_POINTS && status === studentSide.SUBMITTED) {
@@ -208,19 +220,25 @@ export function verifyTeacherSide({
                   students[`Student${statusIndex + 1}`].name,
                   data.manualpoints
                 );
+                attemptsData[statusIndex].attempt.Q1 = attemptTypes.PARTIAL_CORRECT;
+
+                lcb.getQuestionCentricData(attemptsData, queCentric);
+                barGraphs.verifyQueBarBasedOnQueAttemptData(queCentric.Q1);
               });
 
               it("> verify student centric view", () => {
                 lcb.clickOnStudentsTab();
                 lcb.questionResponsePage.selectStudent(students[`Student${statusIndex + 1}`].name);
                 lcb.questionResponsePage.getTotalScore().should("have.text", data.manualpoints.toString());
-                barGraphs.verifyQueToolTipBasedOnAttempt(0, attemptTypes.PARTIAL_CORRECT);
+
+                barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData[statusIndex], ["Q1"]);
               });
 
               it(`> verify lcb card view-`, () => {
                 lcb.clickOnCardViewTab();
                 lcb.getStudentScoreByIndex(statusIndex).should("contain.text", `${data.manualpoints} / ${data.points}`);
                 lcb.verifyQuestionCards(statusIndex, [attemptTypes.PARTIAL_CORRECT]);
+                barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, ["Q1"]);
               });
             });
           }

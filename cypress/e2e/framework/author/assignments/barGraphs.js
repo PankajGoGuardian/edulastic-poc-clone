@@ -169,7 +169,7 @@ export default class BarGraph {
       "skippedNum"
     ];
     const questBarData = this.getQueBarData(questions, Array.isArray(attemptsData) ? attemptsData : [attemptsData]);
-
+    cy.wait(3000); // wait to que bars render
     Cypress._.values(questBarData).forEach((quedata, queIndex) => {
       const { correct, incorrect, partial, manual, skip } = quedata;
 
@@ -214,6 +214,7 @@ export default class BarGraph {
 
   verifyQueBarBasedOnQueAttemptData = quesData => {
     // for question view
+    cy.wait(3000); // wait to que bars render
     const [rCla, wCla, pCla, mCla, sCla] = ["correct", "wrong", "pCorrect", "manuallyGraded", "skipped"];
     Cypress._.values(quesData).forEach((attempt, studentIndex) => {
       if (attempt === attemptTypes.RIGHT)

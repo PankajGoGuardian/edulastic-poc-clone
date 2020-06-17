@@ -191,12 +191,27 @@ class PreviewModal extends React.Component {
   };
 
   goToItem = page => {
-    const { setQuestionsForPassage, setPrevewItem, item, testItemPreviewData, passage } = this.props;
+    const {
+      setQuestionsForPassage,
+      setPrevewItem,
+      item,
+      testItemPreviewData,
+      passage,
+      updateCurrentItemFromPassagePagination
+    } = this.props;
     const itemId = passage.testItems[page - 1];
     if (!(testItemPreviewData && testItemPreviewData.data)) {
       setPrevewItem(item);
     }
     testItemsApi.getById(itemId).then(response => {
+      if (response?._id && updateCurrentItemFromPassagePagination) {
+        /**
+         * Whenever we are changing the item using the navigation in the passage
+         * we need to update the state in the ItemListContainer component as well
+         * why? @see https://snapwiz.atlassian.net/browse/EV-15223 
+         */
+        updateCurrentItemFromPassagePagination(response._id);
+      }
       setQuestionsForPassage(response);
     });
   };

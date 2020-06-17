@@ -11,6 +11,7 @@ import { addItemToCartAction } from "../../ducks";
 import { getUserId, getInterestedCurriculumsSelector, getUserRole } from "../../../src/selectors/user";
 import { previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
 import PreviewModal from "../../../src/components/common/PreviewModal";
+import { resetItemScoreAction } from '../../../src/ItemScore/ducks'
 
 const ItemListContainer = ({
   items,
@@ -24,7 +25,8 @@ const ItemListContainer = ({
   showAnswer,
   interestedCurriculums,
   search,
-  userRole
+  userRole,
+  resetScore
 }) => {
   if (!items.length) {
     return (
@@ -65,6 +67,22 @@ const ItemListContainer = ({
   const checkItemAnswer = () => checkAnswer({ ...selectedItem, isItem: true });
   const showItemAnswer = () => showAnswer(selectedItem);
 
+  /**
+   * Syncs the current item returned from passage API, after paginating,
+   * with the local state used to show current item
+   * @param {string} id item id associated with passage, that is to be displayed 
+   */
+  const updateCurrentItemFromPassagePagination = id => {
+    const hasSameItemId = item => item._id === id;
+    if (id) {
+      const index = items.findIndex(hasSameItemId);
+      if (index !== -1) {
+        resetScore(); // we should reset the score block, or it retains old data
+        updateIndexForPreview(index);
+      }
+    }
+  };
+
   return (
     <>
       {selectedItem && (
@@ -84,6 +102,7 @@ const ItemListContainer = ({
           onClose={closeModal}
           checkAnswer={checkItemAnswer}
           showAnswer={showItemAnswer}
+          updateCurrentItemFromPassagePagination={updateCurrentItemFromPassagePagination}
         />
       )}
       {items.map((item, index) => (
@@ -121,7 +140,8 @@ export default compose(
     {
       addItemToCart: addItemToCartAction,
       checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction
+      showAnswer: previewShowAnswerAction,
+      resetScore: resetItemScoreAction
     }
   )
 )(ItemListContainer);

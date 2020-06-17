@@ -20,6 +20,9 @@ const createAnswerObject = answers => {
  * @param {boolean} ignoreCase  // ignore case of answer
  */
 const compareChoice = (answer, response, allowSingleLetterMistake = false, ignoreCase = false) => {
+  const attempted = response && response.length;
+  if (!attempted) return null;
+
   // trimmmm...
   answer = ignoreCase ? answer.trim().toLowerCase() : answer.trim();
   response = ignoreCase ? response.trim().toLowerCase() : response.trim();
@@ -27,7 +30,10 @@ const compareChoice = (answer, response, allowSingleLetterMistake = false, ignor
   // is single letter mistake allowed?
   // if yes, then check if "levenshtein-distance" is less than 1
   // else it should be a an exact match
-  return allowSingleLetterMistake ? levenshteinDistance(answer, response) <= 1 : answer === response;
+  if (allowSingleLetterMistake) {
+    return levenshteinDistance(answer, response) <= 1;
+  }
+  return answer === response;
 };
 
 const groupChoiceById = answers => {
@@ -63,22 +69,25 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
   for (const id of Object.keys(responses)) {
     const answerSet = answersById[id];
     const userResp = responses[id];
-    evaluation[id] = answerSet.some(item =>
-      compareChoice(item, userResp, validation.allowSingleLetterMistake, validation.ignoreCase)
-    );
+    if (!userResp) {
+      evaluation[id] = null;
+    } else {
+      evaluation[id] = answerSet.some(item =>
+        compareChoice(item, userResp, validation.allowSingleLetterMistake, validation.ignoreCase)
+      );
+    }
   }
 
   // correct and wrong answer count
   const correctAnswerCount = Object.values(evaluation).filter(identity).length;
-  const wrongAnswerCount = Object.values(evaluation).filter(i => !i).length;
-
+  const wrongAnswerCount = Object.values(evaluation).filter(val => val === false).length;
   if (validation.scoringType === "partialMatch") {
     score = (correctAnswerCount / optionCount) * questionScore;
     if (validation.penalty) {
-      const penalty = validation.penalty * wrongAnswerCount;
+      const penalty = (validation.penalty / optionCount) * wrongAnswerCount;
       score -= penalty;
     }
-    // if rounding is selected, but score achieved is not full score, then round down to nearest integer
+    // if round down, but score achieved is not full score, then round down to nearest integer
     if (validation.rounding === RoundOffTypes.ROUND_DOWN && score !== questionScore) {
       score = Math.floor(score);
     }
@@ -97,15 +106,17 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
 // normal evaluator
 const normalEvaluator = ({ userResponse, validation }) => {
   const responses = createAnswerObject(userResponse);
-
   const answers = [validation.validResponse, ...(validation.altResponses || [])];
   const evaluations = [];
   const maxScore = max(answers.map(i => i.score));
+
   for (const answer of answers) {
     const currentEvaluation = {};
     let currentScore = 0;
 
     const answerObj = createAnswerObject(answer.value);
+    const optionCount = Object.values(answerObj).length;
+
     for (const id of Object.keys(responses)) {
       currentEvaluation[id] = compareChoice(
         answerObj[id],
@@ -123,12 +134,13 @@ const normalEvaluator = ({ userResponse, validation }) => {
       currentScore = questionScore * (correctAnswerCount / answer.value.length);
       // if penalty is present
       if (validation.penalty) {
-        const wrongAnswerCount = Object.values(currentEvaluation).filter(i => !i).length;
-        const penalty = validation.penalty * wrongAnswerCount;
+        const values = Object.values(currentEvaluation);
+        const wrongAnswerCount = values.filter(val => val === false).length;
+        const penalty = (validation.penalty / optionCount) * wrongAnswerCount;
         currentScore -= penalty;
       }
 
-      // if rounding is selected, but score achieved is not full score, then round down to nearest integer
+      // if round down, but score achieved is not full score, then round down to nearest integer
       if (validation.rounding === RoundOffTypes.ROUND_DOWN && currentScore !== answer.score) {
         currentScore = Math.floor(currentScore);
       }

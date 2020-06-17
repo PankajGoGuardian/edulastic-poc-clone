@@ -67,13 +67,19 @@ var createAnswerObject = function createAnswerObject(answers) {
 var compareChoice = function compareChoice(answer, response) {
   var allowSingleLetterMistake = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var ignoreCase = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  // trimmmm...
+  var attempted = response && response.length;
+  if (!attempted) return null; // trimmmm...
+
   answer = ignoreCase ? answer.trim().toLowerCase() : answer.trim();
   response = ignoreCase ? response.trim().toLowerCase() : response.trim(); // is single letter mistake allowed?
   // if yes, then check if "levenshtein-distance" is less than 1
   // else it should be a an exact match
 
-  return allowSingleLetterMistake ? (0, _fastLevenshtein.get)(answer, response) <= 1 : answer === response;
+  if (allowSingleLetterMistake) {
+    return (0, _fastLevenshtein.get)(answer, response) <= 1;
+  }
+
+  return answer === response;
 };
 
 var groupChoiceById = function groupChoiceById(answers) {
@@ -137,9 +143,14 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
     var id = _Object$keys[_i];
     var answerSet = answersById[id];
     var userResp = responses[id];
-    evaluation[id] = answerSet.some(function (item) {
-      return compareChoice(item, userResp, validation.allowSingleLetterMistake, validation.ignoreCase);
-    });
+
+    if (!userResp) {
+      evaluation[id] = null;
+    } else {
+      evaluation[id] = answerSet.some(function (item) {
+        return compareChoice(item, userResp, validation.allowSingleLetterMistake, validation.ignoreCase);
+      });
+    }
   };
 
   for (var _i = 0, _Object$keys = Object.keys(responses); _i < _Object$keys.length; _i++) {
@@ -148,17 +159,17 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
 
 
   var correctAnswerCount = Object.values(evaluation).filter(_identity2["default"]).length;
-  var wrongAnswerCount = Object.values(evaluation).filter(function (i) {
-    return !i;
+  var wrongAnswerCount = Object.values(evaluation).filter(function (val) {
+    return val === false;
   }).length;
 
   if (validation.scoringType === "partialMatch") {
     score = correctAnswerCount / optionCount * questionScore;
 
     if (validation.penalty) {
-      var penalty = validation.penalty * wrongAnswerCount;
+      var penalty = validation.penalty / optionCount * wrongAnswerCount;
       score -= penalty;
-    } // if rounding is selected, but score achieved is not full score, then round down to nearest integer
+    } // if round down, but score achieved is not full score, then round down to nearest integer
 
 
     if (validation.rounding === _rounding.rounding.ROUND_DOWN && score !== questionScore) {
@@ -196,6 +207,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
       var currentEvaluation = {};
       var currentScore = 0;
       var answerObj = createAnswerObject(answer.value);
+      var optionCount = Object.values(answerObj).length;
 
       for (var _i2 = 0, _Object$keys2 = Object.keys(responses); _i2 < _Object$keys2.length; _i2++) {
         var id = _Object$keys2[_i2];
@@ -209,12 +221,13 @@ var normalEvaluator = function normalEvaluator(_ref2) {
         currentScore = questionScore * (correctAnswerCount / answer.value.length); // if penalty is present
 
         if (validation.penalty) {
-          var wrongAnswerCount = Object.values(currentEvaluation).filter(function (i) {
-            return !i;
+          var values = Object.values(currentEvaluation);
+          var wrongAnswerCount = values.filter(function (val) {
+            return val === false;
           }).length;
-          var penalty = validation.penalty * wrongAnswerCount;
+          var penalty = validation.penalty / optionCount * wrongAnswerCount;
           currentScore -= penalty;
-        } // if rounding is selected, but score achieved is not full score, then round down to nearest integer
+        } // if round down, but score achieved is not full score, then round down to nearest integer
 
 
         if (validation.rounding === _rounding.rounding.ROUND_DOWN && currentScore !== answer.score) {

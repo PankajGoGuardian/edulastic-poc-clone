@@ -1,6 +1,8 @@
 import { maxBy } from "lodash";
 import { get as levenshteinDistance } from "fast-levenshtein";
 
+import { rounding as RoundOffTypes } from "./const/rounding";
+
 /**
  *
  * @param {string} answer  // correct answer
@@ -9,6 +11,9 @@ import { get as levenshteinDistance } from "fast-levenshtein";
  * @param {boolean} ignoreCase  // ignore case of answer
  */
 const compareChoice = (answer, response, allowSingleLetterMistake = false, ignoreCase = false) => {
+  const attempted = response && response.length;
+  if (!attempted) return null;
+
   answer = ignoreCase ? answer.trim().toLowerCase() : answer.trim();
   response = ignoreCase ? response.trim().toLowerCase() : response.trim();
 
@@ -17,9 +22,7 @@ const compareChoice = (answer, response, allowSingleLetterMistake = false, ignor
   // else it should be a an exact match
 
   // eslint-disable-next-line max-len
-  return allowSingleLetterMistake
-    ? levenshteinDistance(answer, response) <= 1
-    : answer === response;
+  return allowSingleLetterMistake ? levenshteinDistance(answer, response) <= 1 : answer === response;
 };
 
 /**
@@ -67,15 +70,26 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
   if (validation.scoringType === "partialMatch") {
     // get partial score
     score = maxScore * (correctAnswerCount / optionCount);
+    if (validation.penalty) {
+      const { penalty: totalPenalty } = validation;
+      const wrongAnswerCount = evaluation.filter(val => val === false).length;
+      const penalty = (totalPenalty / optionCount) * wrongAnswerCount;
+      score = Math.max(0, score - penalty);
+      // if round down, but score achieved is not full score, then round down to nearest integer
+      if (validation.rounding === RoundOffTypes.ROUND_DOWN && score !== maxScore) {
+        score = Math.floor(score);
+      }
+    }
   } else if (correctAnswerCount === optionCount) {
     // exactMatch  (all correct)
-    score = Math.min(correctAnswerCount, maxScore);
+    score = maxScore;
   }
   return { score, maxScore, evaluation };
 };
 
 const normalEvaluator = ({ userResponse, validation }) => {
-  const optionCount = validation.validResponse?.value.length || 0;
+  const { validResponse: { value = [] } = {} } = validation;
+  const optionCount = value.length || 0;
   const { allowSingleLetterMistake, ignoreCase } = validation;
 
   // combining the correct answer and alternate answers
@@ -88,11 +102,21 @@ const normalEvaluator = ({ userResponse, validation }) => {
     // calculating the evaluation for every answer
     // comparing user respose with the answer
     const currentEvaluation = answer.value.map((ans, _index) =>
-      compareChoice(ans, response?.[_index] || "", allowSingleLetterMistake, ignoreCase)
+      compareChoice(ans, response[_index], allowSingleLetterMistake, ignoreCase)
     );
     const correctAnswerCount = currentEvaluation.filter(elem => elem).length;
     if (validation.scoringType === "partialMatch") {
-      currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount)).toFixed(2);
+      currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount));
+      if (validation.penalty) {
+        const { penalty: totalPenalty } = validation;
+        const wrongAnswerCount = currentEvaluation.filter(val => val === false).length;
+        const penalty = (totalPenalty / optionCount) * wrongAnswerCount;
+        currentScore = Math.max(0, currentScore - penalty);
+        // if round down, but score achieved is not full score, then round down to nearest integer
+        if (validation.rounding === RoundOffTypes.ROUND_DOWN && currentScore !== answer.score) {
+          currentScore = Math.floor(currentScore);
+        }
+      }
     } else if (correctAnswerCount === optionCount && optionCount !== 0) {
       // exact match (all correct)
       currentScore = answer.score;

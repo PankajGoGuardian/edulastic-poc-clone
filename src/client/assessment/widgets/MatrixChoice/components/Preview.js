@@ -18,7 +18,8 @@ const Preview = ({
   changePreviewTab,
   disableResponse,
   changeView,
-  evaluation
+  evaluation,
+  isPrintPreview
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
@@ -59,6 +60,7 @@ const Preview = ({
           onCheck={!disableResponse ? handleCheck : () => {}}
           evaluation={evaluation}
           smallSize={smallSize}
+          isPrintPreview={isPrintPreview}
         />
       </QuestionContent>
 

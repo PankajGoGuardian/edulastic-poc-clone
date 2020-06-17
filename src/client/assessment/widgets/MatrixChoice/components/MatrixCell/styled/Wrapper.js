@@ -20,7 +20,7 @@ export const Wrapper = styled.div`
   padding: ${props => (props.smallSize ? 1 : 15)}px;
   position: relative;
   .inline-label {
-    margin-right: 10px;
+    margin-right: ${({ isPrintPreview }) => (isPrintPreview ? "0px" : "10px")};
   }
   height: 100%;
 `;

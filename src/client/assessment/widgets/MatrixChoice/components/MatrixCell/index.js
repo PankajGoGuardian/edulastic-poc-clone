@@ -6,7 +6,7 @@ import { Checkbox, Radio } from "antd";
 import { Wrapper } from "./styled/Wrapper";
 import { InlineLabel } from "./styled/InlineLabel";
 
-const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, smallSize, children }) => {
+const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, smallSize, isPrintPreview, children }) => {
   let input;
 
   if (isMultiple) {
@@ -16,9 +16,9 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
   }
 
   return (
-    <Wrapper smallSize={smallSize} correct={checked && correct}>
+    <Wrapper smallSize={smallSize} correct={checked && correct} isPrintPreview={isPrintPreview}>
       {input}
-      {type === "inline" && <InlineLabel dangerouslySetInnerHTML={{ __html: label }} className={"inline-label"} />}
+      {type === "inline" && <InlineLabel dangerouslySetInnerHTML={{ __html: label }} className="inline-label" />}
       {children}
     </Wrapper>
   );

@@ -20,7 +20,7 @@ const MathSpan = WithMathFormula(styled.div`
 `);
 
 const Matrix = props => {
-  const { stems, options, response, isMultiple, onCheck, uiStyle, evaluation, smallSize } = props;
+  const { stems, options, response, isMultiple, onCheck, uiStyle, evaluation, smallSize, isPrintPreview } = props;
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
@@ -62,6 +62,7 @@ const Matrix = props => {
         label={options[columnIndex]}
         isMultiple={isMultiple}
         smallSize={smallSize}
+        isPrintPreview={isPrintPreview}
       >
         {evaluation && checked && (
           <IconWrapper correct={correct}>

@@ -375,7 +375,7 @@ const TestPageHeader = ({
             )}
             {showShareButton && (owner || features.isCurator) && !isEdulasticCurator && (
               <EduButton isGhost IconBtn title="Share" data-cy="share" onClick={onShare} disabled={disableButtons}>
-                <IconShare style={{ transform: "rotate(180deg)" }} />
+                <IconShare />
               </EduButton>
             )}
             {showShareButton && owner && showPublishButton && !showPublishForEC && (

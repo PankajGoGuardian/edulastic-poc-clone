@@ -822,12 +822,22 @@ function* duplicateManageContentSaga({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
-    const { _id, title, grades, subjects, groupId, onChange, isStudent, fromUseThis } = payload;
+    const {
+      _id,
+      title,
+      grades,
+      subjects,
+      groupId,
+      onChange,
+      isStudent,
+      fromUseThis,
+      fromRemovePlaylist = false
+    } = payload;
     yield call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects });
     yield call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects });
-    yield call(curriculumSequencesApi.usePlaylist, _id);
     yield put(receiveLastPlayListAction());
     if (!isStudent) {
+      if (!fromRemovePlaylist) yield call(curriculumSequencesApi.usePlaylist, _id);
       yield put(receiveRecentPlayListsAction());
     }
     yield put(getAllCurriculumSequencesAction([_id]));
@@ -1191,7 +1201,9 @@ function* removeFromUseSaga({ payload: id }) {
     message.destroy();
     notification({ type: "success", messageKey: "playlistRemoveFromUseSuccess" });
     if (lastPlaylistResult) {
-      yield put(useThisPlayListAction({ ...lastPlaylistResult, onChange: true, isStudent: false }));
+      yield put(
+        useThisPlayListAction({ ...lastPlaylistResult, onChange: true, isStudent: false, fromRemovePlaylist: true })
+      );
     } else {
       yield put(push("/author/playlists"));
     }

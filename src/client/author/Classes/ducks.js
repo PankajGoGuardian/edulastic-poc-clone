@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeLatest, takeEvery, call, put, all } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { googleApi, groupApi, userApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
@@ -195,11 +195,8 @@ export const reducer = createReducer(initialState, {
       let teacherData = {};
       teacherData = payload[i];
       teacherData.key = i;
-      if (teacherData.hasOwnProperty("_source")) {
-        const source = teacherData._source;
-        Object.keys(source).forEach(key => {
-          teacherData[key] = source[key];
-        });
+      if (teacherData._source) {
+        teacherData = { ...teacherData, ...teacherData._source };
       }
       delete teacherData._source;
       teachersList.push(teacherData);
@@ -386,7 +383,7 @@ function* updateHangoutEventSaga({ payload }) {
 }
 
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_CLASSLIST_REQUEST, receiveClassListSaga)]);
+  yield all([yield takeLatest(RECEIVE_CLASSLIST_REQUEST, receiveClassListSaga)]);
   yield all([yield takeEvery(UPDATE_CLASS_REQUEST, updateClassSaga)]);
   yield all([yield takeEvery(CREATE_CLASS_REQUEST, createClassSaga)]);
   yield all([yield takeEvery(DELETE_CLASS_REQUEST, deleteClassSaga)]);

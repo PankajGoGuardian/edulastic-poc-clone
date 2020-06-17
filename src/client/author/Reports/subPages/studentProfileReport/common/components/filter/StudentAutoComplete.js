@@ -1,5 +1,5 @@
 import { AutoComplete, Icon, Input } from "antd";
-import { debounce, isEmpty, map } from "lodash";
+import { debounce, map } from "lodash";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -12,102 +12,95 @@ const OptGroup = AutoComplete.OptGroup;
 const delay = 250;
 
 const StudentAutoComplete = ({
-  orgData,
+  userOrgData,
   studentList,
   selectCB,
   loading,
   selectedStudent,
-  getSPRStudentDataRequestAction
+  selectedClasses,
+  getSPRStudentData
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
   const [text, setText] = useState("");
   const [prevStudentList, setPrevStudentList] = useState([]);
 
-  const studentOptions = useMemo(() => {
-    return map(studentList, student => ({
-      key: student._id,
-      title: `${student.firstName || ""} ${student.lastName || ""}`
-    }));
-  }, [studentList]);
+  const studentOptions = useMemo(
+    () =>
+      map(studentList, student => ({
+        key: student._id,
+        title: `${student.firstName || ""} ${student.lastName || ""}`
+      })),
+    [studentList]
+  );
 
-  const searchUser = (searchTerm, orgData) => {
-    if (!searchTerm) {
-      return;
-    }
-
+  const searchUser = (searchTerm, groupIds, orgData) => {
     const { districtId, institutionIds } = orgData;
-
     const q = {
       page: 0,
       limit: 20,
       search: {
-        searchString: searchTerm,
-        role: ["student"]
+        role: ["student"],
+        groupIds
       },
       type: "DISTRICT",
       districtId,
       institutionIds
     };
-
-    getSPRStudentDataRequestAction(q);
+    if (searchTerm) {
+      q.search.searchString = searchTerm;
+    }
+    getSPRStudentData(q);
   };
 
   const debouncedSearchUser = useCallback(debounce(searchUser, delay), []);
 
   useEffect(() => {
-    if (isEmpty(studentList)) {
-      // FIXME shouldn't be passing dummy data "a"
-      searchUser("a", orgData);
-    }
-  }, []);
-
-  if (studentList !== prevStudentList && !isEmpty(studentList) && isEmpty(prevStudentList)) {
-    // first Render
+    searchUser("", selectedClasses, userOrgData);
     setPrevStudentList(studentList);
-    if (!selectedStudent.key) {
-      // select a default student if no student is present in url
-      setSelectedValue(studentOptions[0].title);
-      setText(studentOptions[0].title);
-      selectCB({ key: studentOptions[0].key, title: studentOptions[0].title });
-    }
+  }, [selectedClasses]);
+
+  if (studentList !== prevStudentList) {
+    setPrevStudentList(studentList);
+    const title = studentOptions[0]?.title || "";
+    const key = studentOptions[0]?.key || "";
+    setSelectedValue(title);
+    setText(title);
+    selectCB({ key , title });
   }
 
   useEffect(() => {
-    if (selectedStudent.title !== searchTerm) {
+    if (selectedStudent.title !== "") {
       setSelectedValue(selectedStudent.title);
       setText(selectedStudent.title);
     }
   }, [selectedStudent]);
 
   const buildDropDownData = datum => {
-    let arr = [
-      <OptGroup key={"group"} label={"Students [Type to find]"}>
-        {datum.map((item, index) => {
-          return (
-            <Option key={item.key} title={item.title}>
-              {item.title}
-            </Option>
-          );
-        })}
+    const arr = [
+      <OptGroup key="group" label="Students [Type to find]">
+        {datum.map(item => (
+          <Option key={item.key} title={item.title}>
+            {item.title}
+          </Option>
+        ))}
       </OptGroup>
     ];
     return arr;
   };
 
   const onSearchTermChange = value => {
-    debouncedSearchUser(value, orgData);
+    debouncedSearchUser(value, selectedClasses, userOrgData);
     setText(value);
   };
 
-  const onBlur = key => {
+  const onBlur = () => {
     setText(selectedValue);
   };
 
   const onSelect = (key, item) => {
     setSelectedValue(item.props.title);
     setText(item.props.title);
-    selectCB({ key: key, title: item.props.title });
+    selectCB({ key, title: item.props.title });
   };
 
   let options = buildDropDownData(studentOptions);
@@ -132,11 +125,11 @@ const StudentAutoComplete = ({
 const enchance = connect(
   state => ({
     studentList: getStudentsListSelector(state),
-    orgData: getOrgDataSelector(state),
+    userOrgData: getOrgDataSelector(state),
     loading: getStudentsLoading(state)
   }),
   {
-    getSPRStudentDataRequestAction
+    getSPRStudentData: getSPRStudentDataRequestAction
   }
 );
 

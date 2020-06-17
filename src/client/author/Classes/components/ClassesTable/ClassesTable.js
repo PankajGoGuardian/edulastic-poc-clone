@@ -3,7 +3,7 @@ import { CheckboxLabel, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconNotes, IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, Menu, message, Select } from "antd";
+import { Button, Icon, Menu, Select } from "antd";
 import { cloneDeep, get, isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -436,7 +436,7 @@ class ClassesTable extends Component {
     const { userOrgId, userDetails } = this.props;
     const { role, institutionIds } = userDetails;
     const { filtersData, searchByName, currentPage, showActive } = this.state;
-    const search = {};
+    const search = { type: ["class"] };
 
     if (searchByName.length > 0) {
       search.name = searchByName;

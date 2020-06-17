@@ -4,10 +4,12 @@ import { connect } from "react-redux";
 import { get, find, isEmpty } from "lodash";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import StudentAutoComplete from "./StudentAutoComplete";
+import ClassAutoComplete from "./ClassAutoComplete";
 import { getUserRole, getOrgDataSelector } from "../../../../../../src/selectors/user";
 import { receiveStudentsListAction, getStudentsListSelector } from "../../../../../../Student/ducks";
 import {
   getFiltersSelector,
+  getSelectedClassSelector,
   getStudentSelector,
   getReportsPrevSPRFilterData,
   setPrevSPRFilterDataAction,
@@ -17,6 +19,7 @@ import {
   getReportsSPRFilterData,
   setPbIdAction,
   setSpIdAction,
+  setSelectedClassAction,
   setStudentAction
 } from "../../filterDataDucks";
 import { getFilterOptions } from "../../utils/transformers";
@@ -46,7 +49,9 @@ const StudentProfileReportsFilters = ({
   setFilters,
   setStudent,
   setPerformanceBand,
-  setStandardsProficiency
+  setStandardsProficiency,
+  selectedClass,
+  setSelectedClass
 }) => {
   const firstPlot = useRef(true);
   const splittedPath = location.pathname.split("/");
@@ -68,6 +73,7 @@ const StudentProfileReportsFilters = ({
     () => find(courseOptions, course => course.key === urlCourseId) || courseOptions[0] || {},
     [courseOptions]
   );
+  const selectedClasses = useMemo(() => (selectedClass.key ? [selectedClass.key] : []), [selectedClass]);
 
   const profiles = get(SPRFilterData, "data.result.bandInfo", []);
   const scales = get(SPRFilterData, "data.result.scaleInfo", []);
@@ -166,7 +172,18 @@ const StudentProfileReportsFilters = ({
       </GoButtonWrapper>
       <SearchField>
         <FilterLabel>Student</FilterLabel>
-        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} />
+        <StudentAutoComplete
+          selectCB={onStudentSelect}
+          selectedStudent={student}
+          selectedClasses={selectedClasses}
+        />
+      </SearchField>
+      <SearchField>
+        <FilterLabel>Class</FilterLabel>
+        <ClassAutoComplete
+          selectedClass={selectedClass}
+          selectCB={setSelectedClass}
+        />
       </SearchField>
       <SearchField>
         <FilterLabel>Subject</FilterLabel>
@@ -221,6 +238,7 @@ const enhance = connect(
     SPRFilterData: getReportsSPRFilterData(state),
     filters: getFiltersSelector(state),
     student: getStudentSelector(state),
+    selectedClass: getSelectedClassSelector(state),
     role: getUserRole(state),
     prevSPRFilterData: getReportsPrevSPRFilterData(state),
     loading: getReportsSPRFilterLoadingState(state),
@@ -233,6 +251,7 @@ const enhance = connect(
     receiveStudentsListAction,
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
+    setSelectedClass: setSelectedClassAction,
     setPerformanceBand: setPbIdAction,
     setStandardsProficiency: setSpIdAction
   }

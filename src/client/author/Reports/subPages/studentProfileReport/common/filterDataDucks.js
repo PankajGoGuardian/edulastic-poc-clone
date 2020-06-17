@@ -1,10 +1,9 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
-import { groupBy, get } from "lodash";
+import { get } from "lodash";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
@@ -20,6 +19,7 @@ const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR = "[reports] get reports spr st
 
 const SET_FILTERS = "[reports] set spr filters";
 const SET_STUDENT_ID = "[reports] set spr student";
+const SET_SELECTED_CLASS = "[reports] set selected class";
 const SET_PB_ID = "[reports] set performance band id";
 const SET_SP_ID = "[reports] set standards proficiency id";
 
@@ -30,6 +30,7 @@ export const setPrevSPRFilterDataAction = createAction(SET_REPORTS_PREV_SPR_FILT
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setStudentAction = createAction(SET_STUDENT_ID);
+export const setSelectedClassAction = createAction(SET_SELECTED_CLASS);
 export const setSpIdAction = createAction(SET_SP_ID);
 export const setPbIdAction = createAction(SET_PB_ID);
 
@@ -81,6 +82,11 @@ export const getFiltersSelector = createSelector(
   state => state.filters
 );
 
+export const getSelectedClassSelector = createSelector(
+  stateSelector,
+  state => state.selectedClass
+);
+
 export const getStudentSelector = createSelector(
   stateSelector,
   state => state.student
@@ -126,19 +132,15 @@ const initialState = {
     key: "",
     title: ""
   },
+  selectedClass: {
+    key: "",
+    title: ""
+  },
   loading: false
 };
 
-const setFiltersReducer = (state, { payload }) => {
-  state.filters = { ...payload };
-};
-
-const setStudentReducer = (state, { payload }) => {
-  state.student = payload;
-};
-
 export const reportSPRFilterDataReducer = createReducer(initialState, {
-  [GET_REPORTS_SPR_FILTER_DATA_REQUEST]: (state, { payload }) => {
+  [GET_REPORTS_SPR_FILTER_DATA_REQUEST]: state => {
     state.loading = true;
   },
   [GET_REPORTS_SPR_FILTER_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -149,8 +151,15 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
     state.loading = false;
     state.error = payload.error;
   },
-  [SET_FILTERS]: setFiltersReducer,
-  [SET_STUDENT_ID]: setStudentReducer,
+  [SET_FILTERS]: (state, { payload }) => {
+    state.filters = { ...payload };
+  },
+  [SET_STUDENT_ID]: (state, { payload }) => {
+    state.student = payload;
+  },
+  [SET_SELECTED_CLASS]: (state, { payload }) => {
+    state.selectedClass = payload;
+  },
   [SET_PB_ID]: (state, { payload }) => {
     state.filters.performanceBandProfileId = payload;
   },
@@ -160,10 +169,12 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [SET_REPORTS_PREV_SPR_FILTER_DATA]: (state, { payload }) => {
     state.prevSPRFilterData = payload;
   },
-  [RESET_REPORTS_SPR_FILTER_DATA]: (state, { payload }) => {
+  [RESET_REPORTS_SPR_FILTER_DATA]: state => {
     state.SPRFilterData = {};
   },
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: state => {
+    state = initialState;
+  },
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST]: state => {
     state.loading = true;
   },

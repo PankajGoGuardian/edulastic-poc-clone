@@ -3,9 +3,9 @@ import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Menu, message } from "antd";
+import { Menu } from "antd";
 import { questionType } from "@edulastic/constants";
-import { PaddingDiv, withWindowSizes, notification} from "@edulastic/common";
+import { PaddingDiv, withWindowSizes, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -20,10 +20,10 @@ import {
   IconSelection,
   IconTarget,
   IconRulerPencil,
-  IconPlay,
   IconMultipart,
   IconRead,
-  IconWrite
+  IconWrite,
+  IconPlay
 } from "@edulastic/icons";
 import CustomPrompt from "@edulastic/common/src/components/CustomPrompt";
 import QuestionTypes from "../QuestionType/QuestionTypes";
@@ -86,7 +86,7 @@ class Container extends Component {
 
     if (isMultiDimensionalLayout) {
       if ((rowIndex === 0 && questionSelected) || (rowIndex !== 0 && resourceSelected)) {
-        notification({ type: "warn", messageKey:"pleaseAddResources"});
+        notification({ type: "warn", messageKey: "pleaseAddResources" });
         return;
       }
     }
@@ -346,10 +346,12 @@ class Container extends Component {
                     <IconMultipart />
                     Multipart
                   </Menu.Item>
-                  <Menu.Item key="instruction">
-                    <IconPlay />
-                    Instructions
-                  </Menu.Item>
+                  {multipartItem && (
+                    <Menu.Item key="instruction">
+                      <IconPlay />
+                      Instructions
+                    </Menu.Item>
+                  )}
                   <Menu.Item key="rulers-calculators">
                     <IconRulerPencil />
                     Tools
@@ -456,10 +458,12 @@ class Container extends Component {
                 <IconMultipart />
                 Multipart
               </Menu.Item>
-              <Menu.Item key="instruction" onClick={this.toggleCategories}>
-                <IconPlay />
-                Instructions
-              </Menu.Item>
+              {multipartItem && (
+                <Menu.Item key="instruction">
+                  <IconPlay />
+                  Instructions
+                </Menu.Item>
+              )}
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
                 <IconRulerPencil />
                 Tools

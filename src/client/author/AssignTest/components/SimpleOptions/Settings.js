@@ -351,7 +351,7 @@ const Settings = ({
                   size="large"
                   value={sebPassword}
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password"
+                  placeholder="Quit Password"
                 />
               )}
             </Col>

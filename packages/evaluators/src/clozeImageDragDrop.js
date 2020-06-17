@@ -17,8 +17,19 @@ const clozeImageDragDropEvaluator = ({ userResponse = [], validation }) => {
   });
 
   const modifiedValidation = produce(validation, draft => {
-    draft?.validResponse?.value.forEach(val => {
-      delete val.rect;
+    const { altResponses = [], validResponse: { value = [] } = {} } = draft;
+    value.forEach(val => {
+      if (val.rect) {
+        delete val.rect;
+      }
+    });
+    altResponses.forEach(altResponse => {
+      const { value: answer = [] } = altResponse;
+      answer.forEach(obj => {
+        if (obj.rect) {
+          delete obj.rect;
+        }
+      });
     });
   });
 

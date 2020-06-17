@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { convertTableToCSV } from "../../util";
 
 const defaultPagination = {
+  hideOnSinglePage: true,
   pageSize: 50
 };
 
@@ -24,6 +25,10 @@ const CsvTable = ({
 
   if (pagination && typeof _pagination.pageSize === "undefined") {
     _pagination.pageSize = 50;
+  }
+
+  if (pagination && typeof _pagination.hideOnSinglePage === "undefined") {
+    _pagination.hideOnSinglePage = true;
   }
 
   if (isCsvDownloading) {

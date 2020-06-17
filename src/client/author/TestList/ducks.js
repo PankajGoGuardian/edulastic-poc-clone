@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effects";
 import { cloneDeep, keyBy } from "lodash";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
@@ -210,14 +210,20 @@ function* approveOrRejectMultipleTestsSaga({ payload }) {
 
 function* toggleTestLikeSaga({ payload }) {
   try {
-    yield call(analyticsApi.toggleLike, payload);
     yield put(updateLikeCountAction(payload));
+    yield call(analyticsApi.toggleLike, payload);
+
     if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
     else notification({ type: "success", msg: "Successfully Unfavourite" });
   } catch (e) {
     console.error(e);
     if (payload.toggleValue) notification({ msg: "Failed to mark a favourite" });
     else notification({ msg: "Failed to Unfavourite" });
+    payload = {
+      ...payload,
+      toggleValue: !payload.toggleValue
+    };
+    yield put(updateLikeCountAction(payload));
   }
 }
 
@@ -228,7 +234,7 @@ export function* watcherSaga() {
     yield takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
     yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga),
     yield takeEvery(APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST, approveOrRejectMultipleTestsSaga),
-    yield takeEvery(TOGGLE_TEST_LIKE, toggleTestLikeSaga)
+    yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga)
   ]);
 }
 

@@ -191,14 +191,19 @@ export function* loadScratchPadSaga({ attachmentId }) {
 
 export function* toggleTestLikeSaga({ payload }) {
   try {
-    yield call(analyticsApi.toggleLike, payload);
     yield put(updateTestItemLikeCountAction(payload));
+    yield call(analyticsApi.toggleLike, payload);
     if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
     else notification({ type: "success", msg: "Successfully Unfavourite" });
   } catch (e) {
     console.error(e);
     if (payload.toggleValue) notification({ msg: "Failed to mark a favourite" });
     else notification({ msg: "Failed to Unfavourite" });
+    payload = {
+      ...payload,
+      toggleValue: !payload.toggleValue
+    };
+    yield put(updateTestItemLikeCountAction(payload));
   }
 }
 

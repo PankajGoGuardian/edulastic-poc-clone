@@ -2139,15 +2139,21 @@ export function* addAutoselectGroupItems({ payload: _test }) {
 
 function* toggleTestLikeSaga({ payload }) {
   try {
-    yield call(analyticsApi.toggleLike, payload);
     if (payload.contentType === "TEST") yield put(updateTestLikeCountAction(payload));
     else yield put(updateTestItemLikeCountAction(payload));
+    yield call(analyticsApi.toggleLike, payload);
     if (payload.toggleValue) notification({ type: "success", msg: "Successfully marked as favorite" });
     else notification({ type: "success", msg: "Successfully Unfavourite" });
   } catch (e) {
     console.error(e);
     if (payload.toggleValue) notification({ msg: "Failed to mark a favourite" });
     else notification({ msg: "Failed to Unfavourite" });
+    payload = {
+      ...payload,
+      toggleValue: !payload.toggleValue
+    };
+    if (payload.contentType === "TEST") yield put(updateTestLikeCountAction(payload));
+    else yield put(updateTestItemLikeCountAction(payload));
   }
 }
 
@@ -2173,6 +2179,6 @@ export function* watcherSaga() {
     yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga),
     yield takeLatest(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST, addItemsToAutoselectGroupsSaga),
     yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
-    yield takeEvery(TOGGLE_TEST_LIKE, toggleTestLikeSaga)
+    yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga)
   ]);
 }

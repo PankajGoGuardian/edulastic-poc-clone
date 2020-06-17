@@ -40,25 +40,26 @@ const CustomizedHeaderWrapper = ({
   const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
   const navMenu = isSmallDesktop
     ? navigationItems
-        .filter(ite => ite.key !== activeNavigationKey)
-        .map(ite => (
-          <ActionButton key={ite.key}>
-            <Link to={ite.location}>{ite.title}</Link>
-          </ActionButton>
-        ))
+      .filter(ite => ite.key !== activeNavigationKey)
+      .map(ite => (
+        <ActionButton key={ite.key}>
+          <Link to={ite.location}>{ite.title}</Link>
+        </ActionButton>
+      ))
     : null;
 
   const actionRightButtons = (
     <ActionButtonWrapper>
       {navMenu}
-      <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
+      {/* TODO: Uncomment and add support for sharing reports */}
+      {/* <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
         {onShareClickCB ? (
           <ActionButton isGhost IconBtn title="Share" onClick={_onShareClickCB}>
             <Icon type="share-alt" />
             {isSmallDesktop && <span>Share</span>}
           </ActionButton>
         ) : null}
-      </FeaturesSwitch>
+      </FeaturesSwitch> */}
       {onPrintClickCB ? (
         <ActionButton isGhost IconBtn title="Print" onClick={_onPrintClickCB}>
           <Icon type="printer" />

@@ -3,13 +3,14 @@ import moment from "moment";
 
 // components
 import { Tooltip } from "antd";
+import {withNamespaces} from "@edulastic/localization";
 import { StyledTable, StyledTableCell } from "./styled";
 
 // constants
 import { STATUS_LIST } from "../transformers";
 import { extraDesktopWidthMax } from "@edulastic/colors";
 
-const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, windowWidth, windowHeight }) => {
+const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, windowWidth, windowHeight, t }) => {
   const colWidth = windowWidth >= parseInt(extraDesktopWidthMax) ? 170 : 150;
   const columns = [
     {
@@ -18,7 +19,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       dataIndex: "studentName",
       fixed: "left",
       width: colWidth + 40,
-      render: data => <Tooltip title={data}>{data || "-"}</Tooltip>,
+      render: data => <Tooltip title={data}>{data || t("common.anonymous")}</Tooltip>,
       sorter: (a, b) => (a.studentName || "-").toLowerCase().localeCompare((b.studentName || "-").toLowerCase()),
       defaultSortOrder: "descend"
     },
@@ -67,4 +68,4 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
   );
 };
 
-export default GradebookTable;
+export default withNamespaces("student")(GradebookTable);

@@ -5,6 +5,8 @@ import { Row, Col } from "antd";
 import { isEmpty } from "lodash";
 import styled from "styled-components";
 import next from "immer";
+import { withNamespaces } from "@edulastic/localization";
+
 import { extraDesktopWidthMax } from "@edulastic/colors";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
@@ -79,7 +81,7 @@ const GradebookTable = styled(StyledTable)`
   }
 `;
 
-export const StandardsGradebookTable = ({
+const StandardsGradebookTableComponent = ({
   filteredDenormalizedData,
   masteryScale,
   chartFilter,
@@ -89,7 +91,8 @@ export const StandardsGradebookTable = ({
   handleOnClickStandard,
   standardsData,
   location,
-  pageTitle
+  pageTitle,
+  t
 }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: "all",
@@ -230,7 +233,7 @@ export const StandardsGradebookTable = ({
         render: (data, record) =>
           record.compareBy === "studentId" ? (
             <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>
-              {record.compareByLabel}
+              {record.compareByLabel || t("common.anonymous")}
             </Link>
           ) : (
             record.compareByLabel
@@ -383,3 +386,5 @@ export const StandardsGradebookTable = ({
     </>
   );
 };
+
+export const StandardsGradebookTable = withNamespaces("student")(StandardsGradebookTableComponent);

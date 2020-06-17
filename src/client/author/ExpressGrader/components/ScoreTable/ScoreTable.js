@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round } from "lodash";
 import { greenThird } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
 import QuestionScore from "../QuestionScore/QuestionScore";
 import { StyledCard, TableData, StyledDivMid, StyledText, TableTitle, StudentsTitle, ScoreTitle } from "./styled";
 import InfoIcon from "../../Assets/info.svg";
@@ -74,7 +75,7 @@ class ScoreTable extends Component {
   }
 
   getColumnsForTable = (length, submittedLength, showColumnsCount) => {
-    const { showQuestionModal, isPresentationMode, scoreMode } = this.props;
+    const { showQuestionModal, isPresentationMode, scoreMode, t } = this.props;
 
     const columns = [
       {
@@ -92,7 +93,7 @@ class ScoreTable extends Component {
             width: 220,
             render: record => (
               <StyledDivMid style={{ color: "#000", textAlign: "left" }} className="name-col">
-                {isPresentationMode ? record.fakeName : record.studentName}
+                {isPresentationMode ? record.fakeName : record.studentName || t("common.anonymous")}
               </StyledDivMid>
             ),
             sorter: (a, b) => (a.students.studentName.toUpperCase() > b.students.studentName.toUpperCase() ? 1 : -1)
@@ -214,4 +215,4 @@ class ScoreTable extends Component {
   }
 }
 
-export default ScoreTable;
+export default withNamespaces("student")(ScoreTable);

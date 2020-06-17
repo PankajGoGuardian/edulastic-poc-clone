@@ -6,6 +6,7 @@ import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
 import { scrollTo, AnswerContext, Legends, LegendContainer } from "@edulastic/common";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
@@ -87,7 +88,8 @@ class QuestionViewContainer extends Component {
       qIndex,
       isQuestionView = false,
       isPresentationMode,
-      labels
+      labels,
+      t
     } = this.props;
     const { loading } = this.state;
 
@@ -128,7 +130,7 @@ class QuestionViewContainer extends Component {
       data = testActivity
         .filter(student => (student.status != "notStarted" || student.redirect) && student.status != "absent")
         .map(st => {
-          const name = isPresentationMode ? st.fakeName : st.studentName;
+          const name = isPresentationMode ? st.fakeName : st.studentName || t("common.anonymous");
           const stData = {
             name,
             id: st.studentId,
@@ -306,6 +308,7 @@ class QuestionViewContainer extends Component {
 }
 
 const enhance = compose(
+  withNamespaces("student"),
   connect(
     state => ({
       classQuestion: getClassQuestionSelector(state),

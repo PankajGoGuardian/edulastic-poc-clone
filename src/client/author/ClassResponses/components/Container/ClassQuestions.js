@@ -2,10 +2,12 @@
 import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import styled from "styled-components";
 import { keyBy as _keyBy, isEmpty, get } from "lodash";
 // components
 import { AnswerContext } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 import produce from "immer";
 import { Modal, Row, Col } from "antd";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
@@ -32,7 +34,8 @@ function Preview({
   isLCBView,
   questionActivity,
   scratchpadProps,
-  userWork
+  userWork,
+  t
 }) {
   const rows = getRows(item, false);
   const questions = get(item, ["data", "questions"], []);
@@ -91,7 +94,7 @@ function Preview({
         saveHistory={() => {}}
         {...scoringProps}
         studentId={studentId}
-        studentName={studentName}
+        studentName={studentName || t("common.anonymous")}
         itemId={item._id}
       />
     </StyledFlexContainer>
@@ -468,7 +471,7 @@ class ClassQuestions extends Component {
   }
 }
 
-export default connect(
+const withConnect = connect(
   (state, ownProps) => ({
     testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
@@ -481,6 +484,11 @@ export default connect(
     loadScratchPad: loadScratchPadAction,
     clearUserWork: clearUserWorkAction
   }
+);
+
+export default compose(
+  withConnect,
+  withNamespaces("student")
 )(ClassQuestions);
 
 ClassQuestions.propTypes = {
@@ -498,7 +506,8 @@ ClassQuestions.propTypes = {
   qIndex: PropTypes.number,
   isPresentationMode: PropTypes.bool,
   studentViewFilter: PropTypes.string,
-  showTestletPlayer: PropTypes.bool
+  showTestletPlayer: PropTypes.bool,
+  t: PropTypes.func
 };
 ClassQuestions.defaultProps = {
   qIndex: null,

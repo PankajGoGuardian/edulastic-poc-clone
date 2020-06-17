@@ -286,17 +286,18 @@ const getColorCell = (columnKey, columnType, assessmentName, location = {}, page
   );
 };
 
-export const getColumns = (columns, assessmentName, role, location, pageTitle) => {
+export const getColumns = (columns, assessmentName, role, location, pageTitle, t) => {
   const filteredColumns = filterAccordingToRole(columns, role);
+  const anonymousString = t("common.anonymous");
 
   return next(filteredColumns, columnsDraft => {
     columnsDraft[1].render = (data, record) =>
       record.totalScore || record.totalScore === 0 ? (
         <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}>
-          {data}
+          {data || anonymousString}
         </Link>
       ) : (
-        data
+        data || anonymousString
       );
 
     // column 5 defined assessmentScore

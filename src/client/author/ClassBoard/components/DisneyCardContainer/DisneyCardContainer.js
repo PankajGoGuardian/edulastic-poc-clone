@@ -161,7 +161,7 @@ class DisneyCardContainer extends Component {
         }
         const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
 
-        const name = isPresentationMode ? student.fakeName : student.studentName || "-";
+        const name = isPresentationMode ? student.fakeName : student.studentName || "Anonymous";
         /**
          * for differentiating archived students
          */
@@ -217,9 +217,9 @@ class DisneyCardContainer extends Component {
                     title={isPresentationMode ? "" : student.userName}
                     onClick={e =>
                         viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
-                      }
+                    }
                   >
-                    {getAvatarName(student.studentName)}
+                    {getAvatarName(student.studentName || 'Anonymous')}
                   </CircularDiv>
                   )}
                 <StyledName>

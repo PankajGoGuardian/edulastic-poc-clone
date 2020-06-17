@@ -6,6 +6,7 @@ import { ThemeProvider, withTheme } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { white } from "@edulastic/colors";
+import { withNamespaces } from '@edulastic/localization';
 
 import { withWindowSizes, ScratchPadContext, ScrollContext, EduButton, FlexContainer } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
@@ -153,7 +154,8 @@ class TestItemPreview extends Component {
       showCollapseBtn,
       studentId,
       studentName,
-      itemId
+      itemId,
+      t
     } = this.props;
 
     const [displayFeedback, shoudlTakeDimensionsFromStore] = this.getFeedBackVisibility({
@@ -176,7 +178,7 @@ class TestItemPreview extends Component {
         isPresentationMode={isPresentationMode}
         shoudlTakeDimensionsFromStore={shoudlTakeDimensionsFromStore}
         studentId={studentId}
-        studentName={studentName}
+        studentName={studentName || t("common.anonymous")}
         itemId={itemId}
       />
     ) : null;
@@ -240,6 +242,7 @@ class TestItemPreview extends Component {
       history,
       fontFamily,
       theme,
+      t,
       ...restProps
     } = this.props;
     const { collapseDirection } = this.state;
@@ -424,7 +427,8 @@ class TestItemPreview extends Component {
 
 const enhance = compose(
   withWindowSizes,
-  withTheme
+  withTheme,
+  withNamespaces("student")
 );
 
 export default enhance(TestItemPreview);

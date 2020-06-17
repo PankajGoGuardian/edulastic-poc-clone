@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 import { questionType } from "@edulastic/constants";
+import { withNamespaces } from '@edulastic/localization';
 import { get, isEmpty, round } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
@@ -26,7 +27,8 @@ const FeedbackWrapper = ({
   shoudlTakeDimensionsFromStore,
   studentId,
   itemId,
-  studentName
+  studentName,
+  t
 }) => {
   const { rubrics: rubricDetails } = data;
   const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
@@ -83,7 +85,7 @@ const FeedbackWrapper = ({
           disabled={disabled}
           widget={data}
           studentId={userId || studentId}
-          studentName={userName || studentName}
+          studentName={userName || studentName || t("common.anonymous")}
           rubricDetails={rubricDetails}
           isPracticeQuestion={isPracticeQuestion}
           itemId={itemId}
@@ -140,7 +142,8 @@ FeedbackWrapper.propTypes = {
   showCollapseBtn: PropTypes.bool.isRequired,
   prevQActivityForQuestion: PropTypes.object.isRequired,
   isStudentReport: PropTypes.bool.isRequired,
-  isPresentationMode: PropTypes.bool
+  isPresentationMode: PropTypes.bool,
+  t: PropTypes.func.isRequired
 };
 FeedbackWrapper.defaultProps = {
   data: {},
@@ -150,6 +153,7 @@ FeedbackWrapper.defaultProps = {
 };
 
 const enhance = compose(
+  withNamespaces("student"),
   withTheme,
   connect(
     (state, ownProps) => ({

@@ -1,7 +1,9 @@
 import { EduButton } from "@edulastic/common";
 import { IconDownload } from "@edulastic/icons";
 import { Button } from "antd";
+import { compose } from "redux";
 import React, { useState } from "react";
+import { withNamespaces } from '@edulastic/localization';
 import { CSVLink } from "react-csv";
 import { connect } from "react-redux";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
@@ -18,7 +20,8 @@ const ProceedConfirmation = ({
   toggleCommonAssignmentsConfirmation,
   saveAssignment,
   assignment,
-  commonStudents
+  commonStudents,
+  t
 }) => {
   const [saving, setSavingState] = useState(false);
 
@@ -45,7 +48,7 @@ const ProceedConfirmation = ({
     return student.classes.map(clazz => {
       return {
         studentUserName: student.username,
-        studentName: student.name,
+        studentName: student.name || t("common.anonymous"),
         classId: clazz._id,
         clasName: clazz.name,
         ...clazz
@@ -93,7 +96,7 @@ const ProceedConfirmation = ({
   );
 };
 
-export default connect(
+const withConnect = connect(
   state => ({
     hasCommonStudents: getHasCommonStudensSelector(state),
     commonStudents: getCommonStudentsSelector(state)
@@ -102,4 +105,9 @@ export default connect(
     toggleCommonAssignmentsConfirmation: toggleHasCommonAssignmentsPopupAction,
     saveAssignment: saveAssignmentAction
   }
+);
+
+export default compose(
+  withConnect,
+  withNamespaces("student")
 )(ProceedConfirmation);

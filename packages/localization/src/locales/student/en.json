@@ -1,5 +1,6 @@
 {
   "common": {
+    "anonymous": "Anonymous",
     "activeModeTexts": {
       "freeDraw": {
         "title": "FreeHand Draw Tool",

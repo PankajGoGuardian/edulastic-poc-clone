@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
 import { Row, Col } from "antd";
 
 // components
@@ -44,7 +46,8 @@ const PerformanceByStudents = ({
   settings,
   location = { pathname: "" },
   pageTitle,
-  filters
+  filters,
+  t
 }) => {
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
@@ -130,7 +133,7 @@ const PerformanceByStudents = ({
 
   const onCsvConvert = data => downloadCSV(`Performance by Students.csv`, data);
 
-  const _columns = getColumns(columns, res && res.testName, role, location, pageTitle);
+  const _columns = getColumns(columns, res && res.testName, role, location, pageTitle, t);
 
   const testName = get(settings, "selectedTest.title", "");
 
@@ -244,7 +247,7 @@ PerformanceByStudents.propTypes = {
   settings: PropTypes.object.isRequired
 };
 
-const enhance = connect(
+const withConnect = connect(
   state => ({
     loading: getReportsPerformanceByStudentsLoader(state),
     isCsvDownloading: getCsvDownloadingState(state),
@@ -258,4 +261,7 @@ const enhance = connect(
   }
 );
 
-export default enhance(PerformanceByStudents);
+export default compose(
+  withConnect,
+  withNamespaces("student")
+)(PerformanceByStudents);

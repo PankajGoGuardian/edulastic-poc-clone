@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { greenThird } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
 import {
   StyledFlexContainer,
   StyledCard,
@@ -16,7 +17,7 @@ import {
 import Questions from "./Questions";
 import InfoIcon from "../../Assets/info.svg";
 
-export default class ScoreCard extends Component {
+class ScoreCard extends Component {
   static propTypes = {
     testActivity: PropTypes.object
   };
@@ -39,7 +40,7 @@ export default class ScoreCard extends Component {
   };
 
   render() {
-    const { testActivity } = this.props;
+    const { testActivity, t } = this.props;
     const questions = testActivity && testActivity.length !== 0 ? testActivity[0].questionActivities : [];
 
     return (
@@ -71,7 +72,7 @@ export default class ScoreCard extends Component {
               <StudentsCardRow>
                 <StyledDivMid>
                   <StudentsTitle>students</StudentsTitle>
-                  <StyledText>{student.studentName}</StyledText>
+                  <StyledText>{student.studentName || t("common.anonymous")}</StyledText>
                 </StyledDivMid>
                 <StyledDivMid>
                   <ScoreTitle>score</ScoreTitle>
@@ -91,3 +92,5 @@ export default class ScoreCard extends Component {
     );
   }
 }
+
+export default withNamespaces("student")(ScoreCard);

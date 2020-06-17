@@ -3,6 +3,8 @@ import { SpinLoader } from "@edulastic/common";
 import { IconCollapse2 } from "@edulastic/icons";
 import { Avatar, Button, Col, Row } from "antd";
 import { filter, get } from "lodash";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -64,7 +66,8 @@ const StudentMasteryProfile = ({
   getStudentStandardsAction,
   studentStandardData,
   selectedStudent,
-  loadingStudentStandard
+  loadingStudentStandard,
+  t
 }) => {
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(studentMasteryProfile, "data.result", {});
   const scaleInfo = selectedStandardProficiency;
@@ -114,8 +117,10 @@ const StudentMasteryProfile = ({
   const studentInformation = studInfo[0] || {};
   const studentName = getStudentName(selectedStudent, studentInformation);
 
+  const anonymousString = t("common.anonymous");
+
   const onCsvConvert = data =>
-    downloadCSV(`Standard Performance Details-${studentName}-${studentInformation.subject}.csv`, data);
+    downloadCSV(`Standard Performance Details-${studentName || anonymousString}-${studentInformation.subject}.csv`, data);
 
   const handleOnClickStandard = (params, standard) => {
     getStudentStandardsAction(params);
@@ -145,7 +150,7 @@ const StudentMasteryProfile = ({
               </Col>
               <Col xs={24} sm={24} md={12} lg={16} xl={18}>
                 <StyledP marginTop="30px">
-                  <StyledName>{studentName}</StyledName>
+                  <StyledName>{studentName || anonymousString}</StyledName>
                 </StyledP>
                 <StyledP marginTop="12px">
                   <StyledText weight="Bold"> Grade: </StyledText>
@@ -216,7 +221,7 @@ const StudentMasteryProfile = ({
           showModal={showStudentAssignmentModal}
           closeModal={closeStudentAssignmentModal}
           studentAssignmentsData={studentAssignmentsData}
-          studentName={studentName}
+          studentName={studentName || anonymousString}
           standardName={clickedStandard}
           loadingStudentStandard={loadingStudentStandard}
         />
@@ -225,7 +230,7 @@ const StudentMasteryProfile = ({
   );
 };
 
-const enhance = connect(
+const withConnect = connect(
   state => ({
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
     SPRFilterData: getReportsSPRFilterData(state),
@@ -243,7 +248,10 @@ const enhance = connect(
   }
 );
 
-export default enhance(StudentMasteryProfile);
+export default compose(
+  withConnect,
+  withNamespaces("student")
+)(StudentMasteryProfile);
 
 const StyledRow = styled(Row)``;
 

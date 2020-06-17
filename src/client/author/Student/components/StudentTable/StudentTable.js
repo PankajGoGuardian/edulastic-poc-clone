@@ -128,7 +128,7 @@ class StudentTable extends Component {
           const lastName = get(_source, "lastName", "");
           return (
             <span>
-              {firstName === "Anonymous" || isEmpty(firstName) ? "-" : firstName} {lastName}
+              {firstName === "Anonymous" || isEmpty(firstName) ? "Anonymous" : firstName} {lastName}
             </span>
           );
         },

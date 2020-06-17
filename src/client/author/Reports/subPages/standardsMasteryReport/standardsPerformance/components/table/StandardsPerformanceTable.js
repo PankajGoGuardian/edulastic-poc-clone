@@ -4,6 +4,7 @@ import { sumBy, includes, filter } from "lodash";
 import next from "immer";
 import { Row, Col } from "antd";
 import styled from "styled-components";
+import { withNamespaces } from "@edulastic/localization";
 import {
   getOptionFromKey,
   getMasteryScore,
@@ -92,7 +93,7 @@ const getOverallColSorter = (analyseKey, scaleInfo) => {
   }
 };
 
-export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selectedDomains, filters = {}) => {
+export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selectedDomains, filters = {}, t) => {
   const filteredDomains = filter(
     domains,
     domain => includes(selectedDomains, domain.domainId) || !selectedDomains.length
@@ -121,7 +122,7 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
       render: (data, record) =>
         compareBy.title === "Student" ? (
           <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>
-            {data}
+            {data || t("common.anonymous")}
           </Link>
         ) : (
           data
@@ -157,6 +158,7 @@ const StandardsPerformanceTable = ({
   selectedDomains,
   isCsvDownloading,
   filters = {},
+  t,
   ...tableProps
 }) => {
   const columns = getColumns(
@@ -165,7 +167,8 @@ const StandardsPerformanceTable = ({
     domainsData,
     scaleInfo,
     selectedDomains,
-    filters
+    filters,
+    t
   );
 
   const { analyseByData, compareByData } = tableFiltersOptions;
@@ -233,4 +236,4 @@ const StyledStandardsPerformanceTable = styled(StandardsPerformanceTable)`
   }
 `;
 
-export default StyledStandardsPerformanceTable;
+export default withNamespaces("student")(StyledStandardsPerformanceTable);

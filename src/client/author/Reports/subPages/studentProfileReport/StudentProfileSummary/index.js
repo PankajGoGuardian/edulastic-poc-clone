@@ -2,6 +2,8 @@ import { backgrounds, labelGrey, secondaryTextColor, smallDesktopWidth, tabletWi
 import { SpinLoader } from "@edulastic/common";
 import { Col, Icon, Row } from "antd";
 import { get, isEmpty } from "lodash";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
 import React, { useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -53,7 +55,8 @@ const StudentProfileSummary = ({
   selectedStandardProficiency,
   location,
   pageTitle,
-  history
+  history,
+  t
 }) => {
   const { selectedStudent } = settings;
   const bandInfo = bandInfoSelected;
@@ -123,9 +126,10 @@ const StudentProfileSummary = ({
   const studentInformation = studInfo[0] || {};
 
   const studentName = getStudentName(selectedStudent, studentInformation);
+  const anonymousString = t("common.anonymous");
 
   const onCsvConvert = data =>
-    downloadCSV(`Student Profile Report-${studentName}-${studentInformation.subject}.csv`, data);
+    downloadCSV(`Student Profile Report-${studentName || anonymousString}-${studentInformation.subject}.csv`, data);
 
   return (
     <>
@@ -137,7 +141,7 @@ const StudentProfileSummary = ({
             </IconContainer>
             <StudentDetailsContainer>
               <span>NAME</span>
-              <p>{studentName}</p>
+              <p>{studentName || anonymousString}</p>
               <span>GRADE</span>
               <p>{getGrades(studentInformation.grades)}</p>
               <span>SCHOOL</span>
@@ -176,7 +180,7 @@ const StudentProfileSummary = ({
   );
 };
 
-const enhance = connect(
+const withConnect = connect(
   state => ({
     studentProfileSummary: getReportsStudentProfileSummary(state),
     loading: getReportsStudentProfileSummaryLoader(state),
@@ -190,7 +194,10 @@ const enhance = connect(
   }
 );
 
-export default enhance(StudentProfileSummary);
+export default compose(
+  withConnect,
+  withNamespaces("student")
+)(StudentProfileSummary);
 
 const StyledIcon = styled(Icon)`
   font-size: 80px;

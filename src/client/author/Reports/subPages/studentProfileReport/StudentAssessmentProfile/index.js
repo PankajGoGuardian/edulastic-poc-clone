@@ -2,6 +2,8 @@ import { SpinLoader } from "@edulastic/common";
 import { get, isEmpty } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
 import { NoDataContainer, StyledCard, StyledH3 } from "../../../common/styled";
 import { downloadCSV, toggleItem } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
@@ -27,9 +29,11 @@ const StudentAssessmentProfile = ({
   bandInfoSelected: bandInfo,
   location,
   pageTitle,
-  history
+  history,
+  t
 }) => {
   const { selectedStudent } = settings;
+  const anonymousString = t("common.anonymous");
 
   const studentClassData = SPRFilterData?.data?.result?.studentClassData || [];
 
@@ -58,7 +62,7 @@ const StudentAssessmentProfile = ({
   const studentName = getStudentName(selectedStudent, studentInformation);
 
   const onTestSelect = (item, record) => setSelectedTests(toggleItem(selectedTests, item.uniqId));
-  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${studentName}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${studentName || anonymousString}.csv`, data);
 
   if (loading) {
     return <SpinLoader position="fixed" />;
@@ -78,7 +82,7 @@ const StudentAssessmentProfile = ({
   return (
     <>
       <StyledCard>
-        <StyledH3>Assessment Performance Details of {studentName}</StyledH3>
+        <StyledH3>Assessment Performance Details of {studentName || anonymousString}</StyledH3>
         <p>
           <b>Subject : {studentInformation.standardSet || "N/A"}</b>
         </p>
@@ -95,7 +99,7 @@ const StudentAssessmentProfile = ({
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
           data={tableData}
-          studentName={studentName}
+          studentName={studentName || anonymousString}
           selectedTests={selectedTests}
           location={location}
           pageTitle={pageTitle}
@@ -105,7 +109,7 @@ const StudentAssessmentProfile = ({
   );
 };
 
-const enhance = connect(
+const withConnect = connect(
   state => ({
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
@@ -118,4 +122,7 @@ const enhance = connect(
   }
 );
 
-export default enhance(StudentAssessmentProfile);
+export default compose(
+  withConnect,
+  withNamespaces("student")
+)(StudentAssessmentProfile);

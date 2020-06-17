@@ -203,6 +203,7 @@ var exactMatchEvaluator = /*#__PURE__*/function () {
             }
 
             answer = _step.value;
+            maxScore = Math.max(answer.score, maxScore);
             checks = getChecks(answer);
 
             if (typeof checks === "string") {
@@ -216,13 +217,13 @@ var exactMatchEvaluator = /*#__PURE__*/function () {
             corrects = getAnswerCorrectMethods(answer);
             valid = false;
             _iterator2 = _createForOfIteratorHelper(corrects);
-            _context.prev = 17;
+            _context.prev = 18;
 
             _iterator2.s();
 
-          case 19:
+          case 20:
             if ((_step2 = _iterator2.n()).done) {
-              _context.next = 31;
+              _context.next = 32;
               break;
             }
 
@@ -232,48 +233,48 @@ var exactMatchEvaluator = /*#__PURE__*/function () {
               expected: correct ? correct.replace(/\\ /g, " ") : "",
               checks: checks
             };
-            _context.next = 24;
+            _context.next = 25;
             return evaluate(data);
 
-          case 24:
+          case 25:
             _yield$evaluate = _context.sent;
             result = _yield$evaluate.result;
 
             if (!(result === "true")) {
-              _context.next = 29;
+              _context.next = 30;
               break;
             }
 
             valid = true;
-            return _context.abrupt("break", 31);
+            return _context.abrupt("break", 32);
 
-          case 29:
-            _context.next = 19;
+          case 30:
+            _context.next = 20;
             break;
 
-          case 31:
-            _context.next = 36;
+          case 32:
+            _context.next = 37;
             break;
 
-          case 33:
-            _context.prev = 33;
-            _context.t0 = _context["catch"](17);
+          case 34:
+            _context.prev = 34;
+            _context.t0 = _context["catch"](18);
 
             _iterator2.e(_context.t0);
 
-          case 36:
-            _context.prev = 36;
+          case 37:
+            _context.prev = 37;
 
             _iterator2.f();
 
-            return _context.finish(36);
+            return _context.finish(37);
 
-          case 39:
+          case 40:
+            // Below code runs successfully only when mathEngine doesn't trow error
             if (valid) {
               score = Math.max(answer.score, score);
             }
 
-            maxScore = Math.max(answer.score, maxScore);
             evaluation = [].concat((0, _toConsumableArray2["default"])(evaluation), [valid]);
 
           case 42:
@@ -311,7 +312,7 @@ var exactMatchEvaluator = /*#__PURE__*/function () {
             return _context.abrupt("return", {
               score: score,
               maxScore: maxScore,
-              evaluation: evaluation
+              evaluation: !evaluation.length ? [false] : evaluation
             });
 
           case 60:
@@ -319,7 +320,7 @@ var exactMatchEvaluator = /*#__PURE__*/function () {
             return _context.stop();
         }
       }
-    }, _callee, null, [[5, 54, 57, 60], [8, 46, 49, 52], [17, 33, 36, 39]]);
+    }, _callee, null, [[5, 54, 57, 60], [8, 46, 49, 52], [18, 34, 37, 40]]);
   }));
 
   return function exactMatchEvaluator() {

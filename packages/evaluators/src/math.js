@@ -118,6 +118,7 @@ const exactMatchEvaluator = async (userResponse = "", answers) => {
     };
     /* eslint-disable */
     for (let answer of answers) {
+      maxScore = Math.max(answer.score, maxScore);
       let checks = getChecks(answer);
       if (typeof checks === "string") {
         if (checks.includes("equivLiteral")) {
@@ -140,19 +141,23 @@ const exactMatchEvaluator = async (userResponse = "", answers) => {
           break;
         }
       }
+      // Below code runs successfully only when mathEngine doesn't trow error
       if (valid) {
         score = Math.max(answer.score, score);
       }
-      maxScore = Math.max(answer.score, maxScore);
       evaluation = [...evaluation, valid];
     }
   } catch (e) {
     console.log(e);
   } finally {
+    /** 
+     * Max score and evalution are now getting set
+     * And Handling the case when math engine thorws error
+    */
     return {
       score,
       maxScore,
-      evaluation
+      evaluation: !evaluation.length ? [false] : evaluation
     };
   }
 };

@@ -40,7 +40,8 @@ const Expanded = ({
   onSelect,
   onDelete,
   collapsRow,
-  selected
+  selected,
+  points: pointsProp
 }) => {
   /**
    * @type {{item:Object,question:Object}[]}
@@ -67,13 +68,6 @@ const Expanded = ({
   } else {
     points = get(scoring, `questionLevel.${testItem._id}`, questionLevelScoring);
   }
-
-  const getPoint = questionId => {
-    if (!testItem.itemLevelScoring && questionId) {
-      return points[questionId];
-    }
-    return points;
-  };
 
   const handleChangePoint = qid => e => {
     const questionScore = +e.target.value;
@@ -109,7 +103,7 @@ const Expanded = ({
               size="large"
               type="number"
               disabled={!owner || !isEditable || isScoringDisabled}
-              value={points}
+              value={pointsProp}
               onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
             />
           </FlexContainer>
@@ -154,7 +148,7 @@ const Expanded = ({
             </FlexContainer>
           )}
           <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
-            <div onClick={() => onPreview(metaInfoData.id)} style={{width: "100%", cursor: "pointer"}}>
+            <div onClick={() => onPreview(metaInfoData.id)} style={{ width: "100%", cursor: "pointer" }}>
               <TestItemPreview
                 style={{
                   padding: 0,
@@ -182,7 +176,7 @@ const Expanded = ({
               size="large"
               type="number"
               disabled={!owner || !isEditable || isScoringDisabled}
-              value={getPoint(get(_item, "[0].widgets[0].reference", null))}
+              value={pointsProp}
               onChange={handleChangePoint(get(_item, "[0].widgets[0].reference", null))}
             />
           </FlexContainer>

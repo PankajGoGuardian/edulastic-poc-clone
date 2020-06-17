@@ -21,6 +21,7 @@ import {
   setAssignmentFiltersAction
 } from "../../../src/actions/assignments";
 import { releaseScoreAction } from "../../../src/actions/classBoard";
+import { receiveFolderAction } from "../../../src/actions/folder";
 import TestPreviewModal from "./TestPreviewModal";
 import {
   getAssignmentsSummary,
@@ -81,7 +82,7 @@ class Assignments extends Component {
   };
 
   componentDidMount() {
-    const { loadAssignments, loadAssignmentsSummary, districtId, userRole, orgData } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, loadFolders, districtId, userRole, orgData } = this.props;
 
     const { defaultTermId, terms } = orgData;
     const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
@@ -109,7 +110,7 @@ class Assignments extends Component {
     } else {
       loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
     }
-
+    loadFolders();
     this.setState({ filterState: filters });
   }
 
@@ -407,6 +408,7 @@ const enhance = compose(
     }),
     {
       loadAssignments: receiveAssignmentsAction,
+      loadFolders: receiveFolderAction,
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       loadAssignmentById: receiveAssignmentByIdAction,
       updateReleaseScoreSettings: updateReleaseScoreSettingsAction,

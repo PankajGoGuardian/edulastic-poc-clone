@@ -4,7 +4,6 @@ daysUntilStale: 5
 daysUntilClose: 2
 # Issues with these labels will never be considered stale
 exemptLabels:
-  - wip
   - help wanted
 # Label to use when marking an issue as stale
 staleLabel: stale

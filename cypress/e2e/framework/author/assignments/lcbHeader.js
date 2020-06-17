@@ -109,5 +109,8 @@ export default class LCBHeader {
 
   verifyAssignmentStatus = status => this.getAssignmentStatus().should("contain", status);
 
+  verifyAssignmentDueDate = dueDate =>
+    this.getAssignmentStatus().should("contain", `Due on ${Cypress.moment(dueDate).format("MMM DD, YYYY")}`);
+
   // *** APPHELPERS END ***
 }

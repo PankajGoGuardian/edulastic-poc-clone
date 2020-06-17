@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { themeColorLighter, yellow, red, themeColor } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -111,7 +111,7 @@ class DisneyCardContainer extends Component {
 
     const showLoader = () => <Spin size="small" />;
     let styledCard = [];
-    const classess = detailedClasses ?.filter(({ _id }) => _id === classId);
+    const classess = detailedClasses?.filter(({ _id }) => _id === classId);
 
     if (testActivity.length > 0) {
       /**
@@ -126,9 +126,9 @@ class DisneyCardContainer extends Component {
         };
 
         let hasUsedScratchPad = false;
-        student ?.questionActivities.every(questionActivity => {
+        student?.questionActivities.every(questionActivity => {
           // check if this breaks after we find a true value.
-          if (questionActivity ?.scratchPad ?.scratchpad === true) {
+          if (questionActivity?.scratchPad?.scratchpad === true) {
             hasUsedScratchPad = true;
             return false;
           }
@@ -146,9 +146,9 @@ class DisneyCardContainer extends Component {
           status.color = yellow;
         } else if (student.status === "submitted") {
           status.status = student.status;
-          if (student ?.graded === "GRADED") {
+          if (student?.graded === "GRADED") {
             status.status = "Graded";
-          } else if (student ?.graded === "IN GRADING") {
+          } else if (student?.graded === "IN GRADING") {
             status.status = "In Grading";
           }
           status.color = themeColorLighter;
@@ -171,17 +171,17 @@ class DisneyCardContainer extends Component {
               <ExclamationMark />
             </span>
           ) : (
-              ""
-            );
+            ""
+          );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
         const pastDueTag =
           (actualDueDate || dueDate) && status.status !== "Absent"
             ? formatStudentPastDueTag({
-              status: student.status,
-              dueDate: actualDueDate || dueDate,
-              endDate: student.endDate
-            })
+                status: student.status,
+                dueDate: actualDueDate || dueDate,
+                endDate: student.endDate
+              })
             : null;
 
         const studentData = (
@@ -190,7 +190,7 @@ class DisneyCardContainer extends Component {
             bordered={false}
             key={index}
             isClickEnable={canShowResponse}
-            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => { })}
+            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
             onMouseEnter={() => this.setState({ hoverActiveStudentActive: student.studentId })}
             onMouseLeave={() => this.setState({ hoverActiveStudentActive: null })}
           >
@@ -213,15 +213,16 @@ class DisneyCardContainer extends Component {
                   </i>
                 ) : (
                   <CircularDiv
+                    data-cy="studentAvatarName"
                     isLink={viewResponseStatus.includes(status.status)}
                     title={isPresentationMode ? "" : student.userName}
                     onClick={e =>
-                        viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
                     }
                   >
-                    {getAvatarName(student.studentName || 'Anonymous')}
+                    {getAvatarName(student.studentName || "Anonymous")}
                   </CircularDiv>
-                  )}
+                )}
                 <StyledName>
                   <StyledParaF
                     isLink={viewResponseStatus.includes(status.status)}
@@ -255,7 +256,7 @@ class DisneyCardContainer extends Component {
                     </>
                   ) : (
                     <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
-                    )}
+                  )}
                 </StyledName>
                 <RightAlignedCol>
                   <Row>
@@ -347,11 +348,10 @@ class DisneyCardContainer extends Component {
                   })}
               </PaginationInfoT>
 
-              {recentAttemptsGrouped ?.[student.studentId] ?.length > 0 && hoverActiveStudentActive === student.studentId &&
-                (
+              {recentAttemptsGrouped?.[student.studentId]?.length > 0 &&
+                hoverActiveStudentActive === student.studentId && (
                   <RecentAttemptsContainer>
                     <PaginationInfoS>
-
                       <PerfomanceSection>
                         <StyledFlexDiv>
                           <StyledParaFF>Performance</StyledParaFF>
@@ -366,7 +366,7 @@ class DisneyCardContainer extends Component {
                             </StyledParaSSS>
                             <p>Attempt {recentAttemptsGrouped[student.studentId][0].number + 1}</p>
                           </AttemptDiv>
-                          {recentAttemptsGrouped ?.[student.studentId].map(attempt =>
+                          {recentAttemptsGrouped?.[student.studentId].map(attempt => (
                             <AttemptDiv key={attempt._id || attempt.id}>
                               <StyledParaSS>
                                 {round(attempt.score, 2) || 0} / {attempt.maxScore || 0}
@@ -375,11 +375,13 @@ class DisneyCardContainer extends Component {
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
                               </StyledParaSSS>
                               <p>Attempt {attempt.number}</p>
-                            </AttemptDiv>)}
+                            </AttemptDiv>
+                          ))}
                         </StyledFlexDiv>
                       </PerfomanceSection>
                     </PaginationInfoS>
-                  </RecentAttemptsContainer>)}
+                  </RecentAttemptsContainer>
+                )}
             </WithDisableMessage>
           </StyledCard>
         );
@@ -406,7 +408,7 @@ const withConnect = connect(state => ({
   isLoading: get(state, "classResponse.loading"),
   testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state),
-  recentAttemptsGrouped: state ?.author_classboard_testActivity ?.data ?.recentTestActivitiesGrouped || {}
+  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {}
 }));
 
 export default compose(
@@ -415,10 +417,10 @@ export default compose(
 )(DisneyCardContainer);
 
 const AttemptDiv = styled.div`
-  text-align:center;
-  width:33%;
+  text-align: center;
+  width: 33%;
   ${StyledParaSSS} {
-    margin-left:0;
+    margin-left: 0;
   }
 `;
 
@@ -426,17 +428,15 @@ const RecentAttemptsContainer = styled.div`
   position: absolute;
   top: 98px;
   width: 100%;
-  left: 0px; 
+  left: 0px;
   padding-left: 20px;
   box-sizing: border-box;
   padding-right: 20px;
-  height: 80px; 
+  height: 80px;
   background: #fff;
-  opacity:0;
-  transition: opacity 0.7s ;
+  opacity: 0;
+  transition: opacity 0.7s;
   ${StyledCard}:hover & {
-    opacity:1;
+    opacity: 1;
   }
 `;
-
-

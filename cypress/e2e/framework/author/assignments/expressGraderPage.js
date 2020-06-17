@@ -1,6 +1,7 @@
 import { attemptTypes, questionTypeKey as queTypes, queColor } from "../../constants/questionTypes";
 import LiveClassboardPage from "./LiveClassboardPage";
 import StudentTestPage from "../../student/studentTestPage";
+
 export default class ExpressGraderPage extends LiveClassboardPage {
   constructor() {
     super();
@@ -22,9 +23,37 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   getResponseScoreToggleSwitch = () => cy.get('[data-cy="response-toggle"]');
 
+  getPresentToggleSwitch = () => cy.get('[class^="PresentationToggleSwitch"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+
+  clickOnPresentSwitch = () => {
+    this.getPresentToggleSwitch().then($ele => {
+      if (
+        Cypress.$($ele)
+          .text()
+          .includes("PRESENT")
+      )
+        cy.wrap($ele)
+          .click({ force: true })
+          .should("contain.text", "RESET");
+    });
+  };
+
+  clickOnResetSwitch = () => {
+    this.getPresentToggleSwitch().then($ele => {
+      if (
+        Cypress.$($ele)
+          .text()
+          .includes("RESET")
+      )
+        cy.wrap($ele)
+          .click({ force: true })
+          .should("contain.text", "PRESENT");
+    });
+  };
 
   waitForStudentData = () => {
     cy.wait("@student").then(xhr => expect(xhr.status).to.eq(200));
@@ -162,7 +191,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
     Object.keys(attempt).forEach(queNo => {
       const attemptType = attempt[queNo];
-      let { queKey, attemptData, choices } = questionTypeMap[queNo];
+      const { queKey, attemptData, choices } = questionTypeMap[queNo];
       let studentResponseByAttempt;
       let studentResponse;
 
@@ -305,6 +334,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       this.verifyResponseEntryByIndexOfSelectedRow(studentResponse, questionNumber);
     });
   };
+
   verifyResponsesInGridStudentLevel = (studentName, studentAttempts, questionTypeMap, useKeyBoardKeys = false) => {
     this.routeAPIs();
     this.getGridRowByStudent(studentName);
@@ -443,6 +473,19 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
     cy.url().should("include", `author/expressgrader/${assignmnetId}/${classId}`);
+
+  getAllStudentNamesAsArray = () =>
+    cy
+      .get(".ant-table-tbody")
+      .first()
+      .find(".student-names")
+      .then($ele => {
+        const studentNames = [];
+        $ele.each((i, s) => {
+          studentNames.push(Cypress.$(s).text());
+        });
+        return studentNames;
+      });
 
   // *** APPHELPERS END ***
 }

@@ -422,7 +422,7 @@ export default class QuestionResponsePage {
       .find('[data-cy="answer-box"]')
       .each((response, i) => {
         cy.wrap(response).as("responseBox");
-        //.should("have.class", "show-answer");
+        // .should("have.class", "show-answer");
 
         if (attemptType !== attemptTypes.SKIP) {
           cy.get("@responseBox").should("contain.text", attempt[i]);
@@ -503,6 +503,12 @@ export default class QuestionResponsePage {
     cy.get('[data-cy="studentName"]')
       .contains(studentName)
       .should("not.exist");
+  };
+
+  verifyQuestionResponseCardExist = studentName => {
+    cy.get('[data-cy="studentName"]')
+      .contains(studentName)
+      .should("exist");
   };
 
   verifyQuestionResponseCard = (points, queTypeKey, attemptType, attemptData, studentCentric = true, findKey) => {
@@ -651,6 +657,24 @@ export default class QuestionResponsePage {
         break;
     }
   };
+
+  getDropDownListAsArray = () => {
+    this.getDropDown()
+      .eq(0)
+      .click({ force: true });
+    return CypressHelper.getDropDownList();
+  };
+
+  getAllStudentName = () =>
+    cy.get('[data-cy="studentName"]').then($ele => {
+      const studentNames = [];
+      $ele.each((i, s) => {
+        studentNames.push(Cypress.$(s).text());
+      });
+      console.log("studentNames", studentNames);
+      return studentNames;
+      // return studentNames.map(n => n.substr(n.indexOf(" ") + 1));
+    });
 
   // *** APPHELPERS END ***
 }

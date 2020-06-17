@@ -3,7 +3,7 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
-import { studentSide } from "../../../../framework/constants/assignmentStatus";
+import { studentSide, teacherSide } from "../../../../framework/constants/assignmentStatus";
 import ExpressGraderPage from "../../../../framework/author/assignments/expressGraderPage";
 import StandardBasedReportPage from "../../../../framework/author/assignments/standardBasedReportPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
@@ -12,6 +12,9 @@ import Helpers from "../../../../framework/util/Helpers";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import SidebarPage from "../../../../framework/student/sidebarPage";
+import CypressHelper from "../../../../framework/util/cypressHelpers";
+
+const { _ } = Cypress;
 
 const students = {
   1: {
@@ -43,6 +46,10 @@ const students = {
     stuName: "7th, Student07"
   }
 };
+
+const dueDate = new Date();
+dueDate.setDate(dueDate.getDate() + 7);
+
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
     className: "LCB Class",
@@ -50,6 +57,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     student: students[1].email,
     assignmentName: "New Assessment LCB",
     testId: "5ee8795a6ee87b0007007df6",
+    status: teacherSide.IN_PROGRESS,
+    dueDate,
     feedbackScoreData: [
       {
         ...students[2],
@@ -61,7 +70,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q5: "right",
           Q6: "right",
           Q7: "right",
-          Q8: "right"
+          Q8: "right",
+          Q9: "right",
+          Q10: "right"
         },
         status: studentSide.SUBMITTED
       }
@@ -198,7 +209,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     ]
   };
 
-  const { attemptsData, student, teacher, testId, feedbackScoreData, className } = lcbTestData;
+  const { attemptsData, student, teacher, testId, feedbackScoreData, className, status } = lcbTestData;
 
   let questionData;
   let testData;
@@ -233,7 +244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const studentSidebar = new SidebarPage();
   const bargraph = new BarGraph();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
-  const queBarData = bargraph.getQueBarData(queList, attemptsData);
+  // const queBarData = bargraph.getQueBarData(queList, attemptsData);
   // const getQuestionCentricQueBarData = bargraph.getQueBarDataQuestionView(attemptsData, queList);
 
   lcb.getQuestionCentricData(attemptsData, submittedQueCentric, true);
@@ -268,6 +279,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
         statsMap[stuName].attempt = attempt;
         statsMap[stuName].status = status;
+        statsMap[stuName].email = email;
         test.attemptAssignment(email, status, attempt, questionTypeMap);
         studentSidebar.clickOnAssignment();
       });
@@ -281,6 +293,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   });
 
   describe(" > verify LCB card view", () => {
+    it("> verify status and due date", () => {
+      lcb.header.verifyAssignmentStatus(status);
+      lcb.header.verifyAssignmentDueDate(dueDate);
+    });
+
     it(" > verify avg score", () => {
       lcb.verifyAvgScore(statsMap);
     });
@@ -294,8 +311,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
     allStudentList.forEach(studentName => {
       it(` > verify student cards for :: ${studentName}`, () => {
-        const { status, score, perf, attempt } = statsMap[studentName];
-        lcb.verifyStudentCard(studentName, status, score, perf, attempt);
+        const { status, score, perf, attempt, email } = statsMap[studentName];
+        lcb.verifyStudentCard(studentName, status, score, perf, attempt, email);
       });
     });
 
@@ -308,11 +325,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         bargraph.veryLeftYAxisScale(submittedInprogressStudentList.length);
       });
 
-      queList.forEach((que, index) => {
+      /*    queList.forEach((que, index) => {
         it(`verify bar tool tip for question ${que}`, () => {
           console.log("queBarData", queBarData);
           bargraph.verifyQueToolTip(index, queBarData[que]);
         });
+      }); */
+
+      it("verify bar graph colors and tool tip", () => {
+        bargraph.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, queList);
       });
     });
   });
@@ -330,6 +351,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       it(` > verify questions on bar x axis for student :: ${studentName}`, () => {
         bargraph.verifyXAxisTicks(queList);
       });
+
+      it(`> verify bar graph colors and tool tip for :: ${studentName}`, () => {
+        bargraph.verifyQueBarAndToolTipBasedOnAttemptData(statsMap[studentName], queList);
+      });
     });
   });
 
@@ -338,13 +363,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       lcb.clickonQuestionsTab();
     });
     queList.forEach(queNumber => {
-      it(` > verify question centric view for :: ${queNumber}`, () => {
+      it(` > verify question response view for :: ${queNumber}`, () => {
         const attempt = queCentric[queNumber];
         lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
       });
 
-      it(` > verify students on bar x axis for que :: ${queNumber}`, () => {
+      it(` > verify bar graph - x axis for que :: ${queNumber}`, () => {
         bargraph.verifyXAxisTicks(submittedInprogressStudentList.map(studentName => Helpers.getShortName(studentName)));
+      });
+      //
+      it(`>  verify bar graph - colors and tool tip for que :: ${queNumber}`, () => {
+        bargraph.verifyQueBarBasedOnQueAttemptData(queCentric[queNumber]);
       });
     });
   });
@@ -450,6 +479,67 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
+  describe("> verify present-reset toggle", () => {
+    it("enable the present from card view", () => {
+      lcb.clickOnPresent();
+    });
+
+    it("verify names are masked on card view", () => {
+      lcb.getAllStudentName().then(studentNames => {
+        expect(_.intersection(allStudentList, studentNames)).to.deep.eq([]);
+      });
+    });
+
+    it("verify names are masked on student view", () => {
+      lcb.clickOnStudentsTab();
+      lcb.questionResponsePage.getDropDownListAsArray().then(lists => {
+        expect(_.intersection(allStudentList, lists)).to.deep.eq([]);
+      });
+    });
+
+    it("verify names are masked on question view", () => {
+      lcb.clickonQuestionsTab();
+      submittedInprogressStudentList.forEach(studentName => {
+        lcb.questionResponsePage.verifyNoQuestionResponseCard(studentName);
+      });
+    });
+
+    it("verify names are masked on express grader", () => {
+      lcb.header.clickOnExpressGraderTab();
+      expressg.getAllStudentNamesAsArray().then(studentName => {
+        expect(_.intersection(submittedStudentList, studentName)).to.deep.eq([]);
+      });
+    });
+
+    it("disable the present from expresser grader", () => {
+      lcb.header.clickOnExpressGraderTab();
+      expressg.clickOnResetSwitch();
+      expressg.getAllStudentNamesAsArray().then(studentName => {
+        CypressHelper.checkObjectEquality(submittedStudentList, studentName);
+      });
+    });
+
+    it("verify names are not masked on card view", () => {
+      lcb.header.clickOnLCBTab();
+      lcb.getAllStudentName().then(studentNames => {
+        CypressHelper.checkObjectEquality(allStudentList, studentNames);
+      });
+    });
+
+    it("verify names are not masked on student view", () => {
+      lcb.clickOnStudentsTab();
+      lcb.questionResponsePage.getDropDownListAsArray().then(lists => {
+        CypressHelper.checkObjectEquality(allStudentList, lists);
+      });
+    });
+
+    it("verify names are not masked on question view", () => {
+      lcb.clickonQuestionsTab();
+      submittedInprogressStudentList.forEach(studentName => {
+        lcb.questionResponsePage.verifyQuestionResponseCardExist(studentName);
+      });
+    });
+  });
   // diabling redirect in lcb as redirect is being covered under redirectPolicy.spec.js
   /*   
   describe(" > verify redirect", () => {
@@ -572,6 +662,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   describe(" > update response and score from express grader", () => {
     before(() => {
       lcb.header.clickOnExpressGraderTab();
+      expressg.clickOnResetSwitch();
     });
 
     context(" > verify updating responses and color", () => {
@@ -641,6 +732,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   describe(" > verify score update from question centric", () => {
     before("question centric view", () => {
       lcb.header.clickOnLCBTab();
+      lcb.clickOnReset();
       lcb.clickonQuestionsTab();
     });
 

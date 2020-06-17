@@ -44,6 +44,21 @@ class LiveClassboardPage {
 
   getViewResponseByStudentName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="viewResponse"]');
 
+  getStudentNameByName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="studentName"]');
+
+  getAllStudentName = () =>
+    cy.get('[data-cy="studentName"]').then($ele => {
+      const studentNames = [];
+      $ele.each((i, s) => {
+        console.log("$student ", s);
+        studentNames.push(Cypress.$(s).text());
+      });
+      return studentNames;
+    });
+
+  getAvatarNameByStudentName = stuName =>
+    this.getStudentCardByStudentName(stuName).find('[data-cy="studentAvatarName"]');
+
   getStudentPerformanceByIndex = index => cy.get('[data-cy="studentPerformance"]').eq(index);
 
   getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
@@ -56,28 +71,63 @@ class LiveClassboardPage {
 
   getTimewhileRedirect = () => cy.get('[data-cy="allowedTime"]');
 
+  getCardViewTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "CARD VIEW");
+
+  getStudentsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "STUDENTS");
+
+  getPresentToggleSwitch = () => cy.get("[data-cy=studentnQuestionTab]").find('[class^="PresentationToggleSwitch"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickOnCardViewTab = () =>
-    cy
-      .get("[data-cy=studentnQuestionTab]")
-      .contains("a", "CARD VIEW")
-      .click({ force: true });
+  clickOnCardViewTab = () => {
+    this.getCardViewTab()
+      .click({ force: true })
+      .should("have.css", "background-color", queColor.GREEN_2);
+  };
 
   clickOnStudentsTab = () => {
-    cy.get("[data-cy=studentnQuestionTab]")
-      .contains("a", "STUDENTS")
-      .click({ force: true });
+    this.getStudentsTab()
+      .click({ force: true })
+      .should("have.css", "background-color", queColor.GREEN_2);
     cy.contains("Leave a feedback!"); // waiting for UI to render
   };
 
   clickonQuestionsTab = () => {
     cy.server();
     cy.route("GET", /\bitem\b.*\bgroup\b/).as("getFirstQuestion");
-    this.getQuestionsTab().click({ force: true });
+    this.getQuestionsTab()
+      .click({ force: true })
+      .should("have.css", "background-color", queColor.GREEN_2);
+
     return cy.wait("@getFirstQuestion").then(xhr => xhr.response.body.result[0].testItemId);
+  };
+
+  clickOnPresent = () => {
+    this.getPresentToggleSwitch().then($ele => {
+      if (
+        Cypress.$($ele)
+          .text()
+          .includes("PRESENT")
+      )
+        cy.wrap($ele)
+          .click({ force: true })
+          .should("contain.text", "RESET");
+    });
+  };
+
+  clickOnReset = () => {
+    this.getPresentToggleSwitch().then($ele => {
+      if (
+        Cypress.$($ele)
+          .text()
+          .includes("RESET")
+      )
+        cy.wrap($ele)
+          .click({ force: true })
+          .should("contain.text", "PRESENT");
+    });
   };
 
   selectCheckBoxByStudentName = student => {
@@ -275,7 +325,7 @@ class LiveClassboardPage {
 
   verifyAbsentCount = absent => this.getSubmitSummary().should("contain.text", `${absent} absent`);
 
-  verifyStudentCard(studentName, status, score, performance, queAttempt) {
+  verifyStudentCard(studentName, status, score, performance, queAttempt, email) {
     const queCards = Object.keys(queAttempt).map(queNum => queAttempt[queNum]);
     this.getCardIndex(studentName).then(index => {
       /*  // TODO : remove log once flow is commplted
@@ -283,6 +333,9 @@ class LiveClassboardPage {
         "stduent stats :: ",
         `${studentName}, ${status}, ${score}, ${performance}, ${JSON.stringify(queAttempt)} , ${queCards}`
       ); */
+
+      this.getStudentNameByName(studentName).should("have.attr", "title", email);
+      this.getAvatarNameByStudentName(studentName).should("have.attr", "title", email);
       this.verifyStudentStatusIsByIndex(index, status);
       this.getStudentScoreByIndex(index).should("have.text", score);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
@@ -402,7 +455,7 @@ class LiveClassboardPage {
     let perf;
     let perfValue;
     let stats;
-    let quePerformanceAllStudent = [];
+    const quePerformanceAllStudent = [];
     let quePerformanceScore;
     let sumAvgQuePerformance = 0;
 
@@ -532,7 +585,7 @@ class LiveClassboardPage {
 
   getNullifiedAttempts = attempts => {
     const noAttempts = {};
-    for (let key in attempts) {
+    for (const key in attempts) {
       if (attempts.hasOwnProperty(key)) {
         noAttempts[key] = attemptTypes.NO_ATTEMPT;
       }
@@ -550,6 +603,15 @@ class LiveClassboardPage {
     });
     return questionTypeMap;
   };
+
+  getAllStudentName = () =>
+    cy.get('[data-cy="studentName"]').then($ele => {
+      const studentNames = [];
+      $ele.each((i, s) => {
+        studentNames.push(Cypress.$(s).text());
+      });
+      return studentNames;
+    });
 
   // *** APPHELPERS END ***
 }

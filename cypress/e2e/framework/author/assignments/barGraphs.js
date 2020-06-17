@@ -53,7 +53,7 @@ export default class BarGraph {
       .get(`.recharts-bar.${attemptClass}`)
       .find(".recharts-bar-rectangle")
       .eq(index)
-      .find("path");
+      .find(".recharts-rectangle");
 
   getScalingLineByValue = value =>
     cy
@@ -137,22 +137,22 @@ export default class BarGraph {
       ? cy.get("@latest-selected-bar")
       : cy
           .get(".recharts-bar.correctAttemps")
-          .find("path")
+          .find(".recharts-rectangle")
           .eq(queIndex)
     )
       .trigger("mouseover", { force: true })
       .then(() => {
         this.getToolTip().then(ele => {
           cy.wrap(ele)
-            .contains("Correct Attemps")
+            .contains("Correct Attempts")
             .next()
             .should("have.text", correct.toString());
           cy.wrap(ele)
-            .contains("Incorrect Attemps")
+            .contains("Incorrect Attempts")
             .next()
             .should("have.text", incorrect.toString());
           cy.wrap(ele)
-            .contains("Partial Attemps")
+            .contains("Partial Attempts")
             .next()
             .should("have.text", partial.toString());
         });
@@ -208,7 +208,7 @@ export default class BarGraph {
           .should("have.css", "fill", queColor.SKIP);
       else this.getBarByIndexByAttemptClass(sCla, queIndex).should("have.length", 0);
 
-      this.verifyQueToolTip(queIndex, quedata);
+      this.verifyQueToolTip(queIndex, quedata, true);
     });
   };
 

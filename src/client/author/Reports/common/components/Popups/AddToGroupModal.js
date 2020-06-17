@@ -6,7 +6,7 @@ import { compose } from "redux";
 
 // components
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Modal, Row, Col, Spin, Select, message } from "antd";
+import { Modal, Row, Col, Spin, Select } from "antd";
 import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
 import { SelectInputStyled, EduButton, withWindowSizes, notification } from "@edulastic/common";
 
@@ -154,11 +154,11 @@ const AddToGroupModal = ({
   };
 
   const handleAddNew = () => {
-    if (studentsToAdd.length) {
+    if (checkedStudents.length) {
       const parentUrl = getParentUrl(match.url.split("/"));
       history.push({
         pathname: `${parentUrl}/createClass/`,
-        state: { type: groupTypeText, studentIds: studentsToAdd, exitPath: match.url }
+        state: { type: groupTypeText, studentIds: checkedStudents.map(s => s._id), exitPath: match.url }
       });
     } else {
       notification({ type: "warn", msg: `Select one or more students to add to ${groupTypeText}` });
@@ -230,6 +230,7 @@ const AddToGroupModal = ({
               cache="false"
               onChange={setSelectedGroup}
               width={selectorWidth}
+              optionFilterProp="children"
               dropdownStyle={{ zIndex: 2000 }}
               notFoundContent="No Groups Found"
               labelInValue
@@ -238,7 +239,7 @@ const AddToGroupModal = ({
                 <Select.Option key={_id} value={_id}>
                   {name}
                 </Select.Option>
-                ))}
+              ))}
             </SelectInputStyled>
 
             <StyledEduButton
@@ -296,7 +297,7 @@ const AddToGroupModal = ({
             </EduButton>
           </StyledCol>
         </Row>
-        )}
+      )}
     </StyledModal>
   );
 };

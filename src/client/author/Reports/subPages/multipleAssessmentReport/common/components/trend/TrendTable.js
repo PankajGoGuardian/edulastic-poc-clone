@@ -60,7 +60,7 @@ const StyledTable = styled(Table)`
 `;
 
 const formatText = (test, type) => {
-  if (test[type] === null || typeof test[type] === "undefined") return "N/A";
+  if (test[type] === null || typeof test[type] === "undefined") return "-";
 
   if (test.records[0].maxScore === null || test.records[0].totalScore === null) return "Absent";
 
@@ -103,14 +103,14 @@ const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, tes
   }
   return (
     <StyledCell justify="center" style={{ backgroundColor }}>
-      {text || "N/A"}
+      {text || "-"}
     </StyledCell>
   );
 };
 
 const getCellAttributes = (test = {}, analyseBy = {}) => {
-  let value = "N/A";
-  let color = "#cccccc";
+  let value = "-";
+  let color = "transparent";
 
   switch (analyseBy.key) {
     case "proficiencyBand":
@@ -131,10 +131,7 @@ const getCellAttributes = (test = {}, analyseBy = {}) => {
       break;
   }
 
-  return {
-    value,
-    color
-  };
+  return { value, color };
 };
 
 const getColumns = (
@@ -171,7 +168,7 @@ const getColumns = (
         const currentTest = tests[testId];
 
         if (!currentTest) {
-          return getCol("N/A", "#cccccc");
+          return getCol("-", "transparent");
         }
 
         const { color, value } = getCellAttributes(currentTest, analyseBy);

@@ -343,7 +343,7 @@ class Item extends Component {
                 </CollectionNameWrapper>
               </Collection>
               <Qcount>
-                <label>TOTAL ITEMS</label>
+                <label>{isDocBased ? "TOTAL QUESTIONS" : "TOTAL ITEMS"}</label>
                 {/**
                  * For doc based wee need to consider
                  *  total number questions and toal number of items

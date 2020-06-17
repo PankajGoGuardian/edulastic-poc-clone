@@ -419,7 +419,7 @@ class ViewModal extends React.Component {
                          */
                         (isDocBased ? summary.totalQuestions : summary.totalItems) || 0}
                   </SummaryCardValue>
-                  <SummaryCardLabel>Items</SummaryCardLabel>
+                  <SummaryCardLabel>{isDocBased ? "Questions" : "Items"}</SummaryCardLabel>
                 </SummaryCard>
                 <SummaryCard data-cy="testcard-total-points">
                   <SummaryCardValue>{summary.totalPoints}</SummaryCardValue>

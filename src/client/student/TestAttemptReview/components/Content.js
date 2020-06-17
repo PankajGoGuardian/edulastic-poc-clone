@@ -89,7 +89,7 @@ class SummaryTest extends Component {
     const { questionList: questionsAndOrder, t, test } = this.props;
     const { isDocBased, items } = test;
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased;
-    const { blocks: questionList, itemWiseQids } = questionsAndOrder;
+    const { blocks: questionList, itemWiseQids = [] } = questionsAndOrder;
     const itemIds = Object.keys(itemWiseQids);
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
@@ -155,35 +155,41 @@ class SummaryTest extends Component {
                   </Col>
                 </Row>
                 <QuestionBlock>
+                  {/* loop through TestItems */}
                   {itemIds.map((item, index) => {
-                    const returnObj = [];
-
-                    itemWiseQids[item].forEach((q, qIndex) => {
+                    const questionBlock = [];
+                    // loop through questions associated with TestItems
+                    itemWiseQids[item]?.forEach((q, qIndex) => {
                       const qInd = isDocBased ? qIndex + 1 : index + 1;
 
+                      // 0: Skipped, 1: Attempt, 2: Bookmarked
                       const type = questionList[q];
 
                       /**
-                       * to show only one question block per item, irrespective of item level scoring on/off.
-                       * comparing  if returnObj[0].prop.type is less than current type (by type 2,1,0).
-                       * so we can take the first question block (with the largest value of type) to show on UI.
-                       * issue: https://snapwiz.atlassian.net/browse/EV-13029
+                       * 1. to show only one question block per item, irrespective of item level scoring on/off.
+                       * 2. comparing  if questionBlock[0].prop.type is less than current type (by type 2,1,0).
+                       * 3. Based on #2 we can take the first question block (with the largest value of type) to show on UI.
+                       * ref: issue: https://snapwiz.atlassian.net/browse/EV-13029
+                       *
+                       * 4. Doc based will have only one TestItem but it can have one or more quetions
+                       * 5. For doc based questions we need segregate the questions in separate block
                        */
-                      if (!returnObj[0] || returnObj[0].props.type < type) {
-                        returnObj[0] = (
+                      if (!questionBlock[0] || questionBlock[0]?.props?.type < type || isDocBased) {
+                        // in doc based each question has own label
+                        questionBlock[isDocBased ? qIndex : 0] = (
                           <QuestionColorBlock
                             data-cy={`Q${qInd}`}
                             key={index * 100 + qIndex}
                             type={type}
-                            isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                            onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
+                            isVisible={buttonIdx === null || buttonIdx === type}
+                            onClick={this.goToQuestion(test?.testId, test?.testActivityId, q)}
                           >
                             <span> {qInd} </span>
                           </QuestionColorBlock>
                         );
                       }
                     });
-                    return returnObj;
+                    return questionBlock;
                   })}
                 </QuestionBlock>
               </Questions>

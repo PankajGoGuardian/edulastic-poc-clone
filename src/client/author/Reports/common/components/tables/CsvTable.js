@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { filter, includes } from "lodash";
-import PropTypes from "prop-types";
+import styled from "styled-components";
 import { convertTableToCSV } from "../../util";
 
 const defaultPagination = {
@@ -19,7 +19,7 @@ const CsvTable = ({
   const Component = tableToRender;
   const childrenRef = useRef(null);
 
-  let _pagination = pagination ? { ...pagination } : pagination;
+  const _pagination = pagination ? { ...pagination } : pagination;
   let _columns = [...columns];
 
   if (pagination && typeof _pagination.pageSize === "undefined") {
@@ -41,10 +41,18 @@ const CsvTable = ({
   }, [isCsvDownloading]);
 
   return (
-    <div ref={childrenRef}>
+    <StyledTableWrapper ref={childrenRef} id="student_reports_table">
       <Component {...restProps} dataSource={dataSource} pagination={_pagination} columns={_columns} />
-    </div>
+    </StyledTableWrapper>
   );
 };
+
+const StyledTableWrapper = styled.div`
+  @media print {
+    .custom-table-tooltip {
+      display: none;
+    }
+  }
+`;
 
 export default CsvTable;

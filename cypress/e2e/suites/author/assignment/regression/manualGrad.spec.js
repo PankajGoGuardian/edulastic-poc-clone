@@ -61,12 +61,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
   ];
   let OriginalTestId = "5ed51c69e3ccf00007c4ffa5";
 
-  // before("> login and create new items and test", () => {
-  //   cy.login("teacher", Teacher.email, Teacher.pass);
-  //   testLibraryPage.createTest(TEST).then(id => {
-  //     OriginalTestId = id;
-  //   });
-  // });
+  before("> login and create new items and test", () => {
+    cy.login("teacher", Teacher.email, Teacher.pass);
+    // testLibraryPage.createTest(TEST).then(id => {
+    //   OriginalTestId = id;
+    // });
+  });
 
   context("> when student 'attempts' question", () => {
     // when student attempts any one manually graded item in a test, test pocesses manual evaluation features
@@ -75,7 +75,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
       testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign().then(() => {
         testAssignPage.sidebar.clickOnAssignment();
         authorAssignmentPage.getStatus().should("have.length", 1);

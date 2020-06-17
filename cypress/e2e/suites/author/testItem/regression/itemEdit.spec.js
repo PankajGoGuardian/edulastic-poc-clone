@@ -80,7 +80,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       testLibraryPage.clickOnAssign();
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
     before("Verify Presence of Assigned Test", () => {
@@ -145,7 +145,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       testLibraryPage.clickOnAssign();
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
     before("Verify Presence of Assigned Test", () => {
@@ -214,7 +214,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       testLibraryPage.clickOnAssign();
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
     before("Verify Presence of Assigned Test", () => {

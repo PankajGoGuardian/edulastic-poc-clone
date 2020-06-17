@@ -537,11 +537,14 @@ class StudentTestPage {
 
   // Essay Type
 
-  typeEssayRichText = content =>
-    cy
-      .get(".fr-element")
+  typeEssayRichText = content => {
+    cy.server();
+    cy.route("POST", "**/test-activity/**").as("saved");
+    cy.get(".fr-element")
       .type(content)
       .then(() => cy.get("body").click());
+    cy.wait("@saved", { timeout: 45000 }); // it will trigger at interval of 30000ms
+  };
 
   // Sort List
 

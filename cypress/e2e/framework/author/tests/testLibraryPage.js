@@ -29,7 +29,7 @@ export default class TestLibrary {
 
   getShortId = testId => testId.substr(testId.length - 5);
 
-  getNameList = () => cy.get('[data-cy="name-button-pop"]');
+  getNameList = () => cy.get('[data-cy="name-button-pop"]').find("input");
 
   getPermissionButton = () => cy.get('[data-cy="permission-button-pop"]');
 
@@ -306,7 +306,7 @@ export default class TestLibrary {
     cy.server();
     cy.route("POST", "**/user/search").as("users");
     this.getNameList()
-      .type(name)
+      .type(name, { force: true })
       .then(ele => {
         cy.wait("@users").then(() => {
           if (validuser) {
@@ -452,6 +452,7 @@ export default class TestLibrary {
   // *** APPHELPERS END ***
 
   removeShare = () => {
+    this.getSchoolRadio();
     cy.server();
     cy.route("DELETE", "**/content-sharing/**").as("removeshare");
     cy.wait(1).then(() => {

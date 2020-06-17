@@ -105,7 +105,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment`, () =
           testlibraryPage.header.clickOnSettings();
         });
       });
-      it(">set time limit as on-'default'", () => {
+      it(">set time limit as on-'custom'", () => {
         testlibraryPage.testSettings.setAssignmentTime(customtestTime);
         testlibraryPage.testSettings.verifyTimeAssignedForTest(customtestTime);
         testlibraryPage.testSettings.getAllowExit().should("not.be.checked");
@@ -157,7 +157,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment`, () =
           studentTestPage.verifyAndGetRemainingTime("00:01:00", 3);
 
           studentTestPage.waitWhileAttempt(`00:00:59`);
-          studentTestPage.verifyAndGetRemainingTime("00:00:01", 3);
+          studentTestPage.verifyAndGetRemainingTime("00:00:01", 5);
 
           studentTestPage.clickOkOnTimeOutPopUp();
         });

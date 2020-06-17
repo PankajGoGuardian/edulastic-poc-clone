@@ -65,7 +65,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
 
       testAssignPage.selectClass("Item Level Evaluation Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
 
@@ -105,7 +105,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
 
       testAssignPage.selectClass("Item Level Evaluation Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
 

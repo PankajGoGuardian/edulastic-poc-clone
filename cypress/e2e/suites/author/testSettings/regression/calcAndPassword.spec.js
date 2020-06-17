@@ -45,7 +45,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
         testLibraryPage.clickOnAssign();
         testAssignPage.selectClass("Class");
         testAssignPage.selectTestType("Class Assessment");
-        testAssignPage.clickOnEntireClass();
+        // testAssignPage.clickOnEntireClass();
         testAssignPage.clickOnAssign();
       });
       it("Verifying At Student Side- No Calculator", () => {
@@ -80,7 +80,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
           testLibraryPage.clickOnAssign();
           testAssignPage.selectClass("Class");
           testAssignPage.selectTestType("Class Assessment");
-          testAssignPage.clickOnEntireClass();
+          //  testAssignPage.clickOnEntireClass();
           testAssignPage.clickOnAssign();
         });
         it(`Verifying At Student Side-${CALC}`, () => {
@@ -118,7 +118,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
         testLibraryPage.clickOnAssign();
         testAssignPage.selectClass("Class");
         testAssignPage.selectTestType("Class Assessment");
-        testAssignPage.clickOnEntireClass();
+        //  testAssignPage.clickOnEntireClass();
         testAssignPage.clickOnAssign();
       });
       it("Verifying At Student Side- Static Password", () => {
@@ -151,7 +151,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
         testLibraryPage.clickOnAssign();
         testAssignPage.selectClass("Class");
         testAssignPage.selectTestType("Class Assessment");
-        testAssignPage.clickOnEntireClass();
+        //  testAssignPage.clickOnEntireClass();
         testAssignPage.clickOnAssign();
       });
       it("Get Password", () => {

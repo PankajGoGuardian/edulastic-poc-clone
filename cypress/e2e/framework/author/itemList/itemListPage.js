@@ -213,7 +213,7 @@ class ItemListPage {
   verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>
     this.testReviewTab.verifyQuestionResponseCard(questype, attempt, attemptType, showans);
 
-  verifyNoOfQuestionsInUI = count => this.getTotalNoOfItemsInUI().should("have.text", `${count} Questions Found`);
+  verifyNoOfQuestionsInUI = count => this.getTotalNoOfItemsInUI().should("have.text", `${count} Items Found`);
 
   verifyNoOfItemsInContainer = count => this.getAllItemsInListContainer().should("have.length", count);
 

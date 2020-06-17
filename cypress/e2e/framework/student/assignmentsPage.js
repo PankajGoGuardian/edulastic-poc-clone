@@ -64,7 +64,9 @@ class AssignmentsPage {
 
   getReviewButtonById = id => this.getAssignmentByTestId(id).find('[data-cy="reviewButton"]');
 
-  getStatusByPosition = pos => cy.get('[data-cy="status"]').eq(pos);
+  getStatus = () => cy.get('[data-cy="status"]');
+
+  getStatusByPosition = pos => this.getStatus().eq(pos);
 
   getTimeAvailableForAssignmentById = testid =>
     this.getAssignmentByTestId(testid)
@@ -258,6 +260,16 @@ class AssignmentsPage {
     this.getTimeAvailableForAssignmentById(testid).should("contain.text", `${time} minutes`);
 
   verifyAssignTypeByTestId = (id, aType) => this.getTestTypeByTestId(id).should("have.text", aType);
+
+  verifyStatusOfAssignment = status => {
+    // TODO:
+    const statuses = [];
+    this.getStatus().each(ele => {
+      console.log(ele.text());
+      statuses.push(ele.text().trim());
+    });
+    cy.wait(1).then(() => status.forEach(sta => expect(sta).to.be.oneOf(statuses)));
+  };
 
   // *** APPHELPERS END ***
 }

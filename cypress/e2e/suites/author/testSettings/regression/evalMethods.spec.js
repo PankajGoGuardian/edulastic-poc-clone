@@ -85,7 +85,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
         testLibraryPage.clickOnAssign();
         testAssignPage.selectClass("Class");
         testAssignPage.selectTestType("Class Assessment");
-        testAssignPage.clickOnEntireClass();
+        //  testAssignPage.clickOnEntireClass();
         testAssignPage.clickOnAssign();
       });
       it(`Login As Student And Attempt Questions`, () => {

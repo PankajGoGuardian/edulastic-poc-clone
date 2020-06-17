@@ -82,7 +82,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
     testLibraryPage.clickOnAssign();
     testAssignPage.selectClass("Class");
     testAssignPage.selectTestType("Class Assessment");
-    testAssignPage.clickOnEntireClass();
+    // testAssignPage.clickOnEntireClass();
     testAssignPage.clickOnAssign();
   });
   before(">attempt the test by 2 students", () => {

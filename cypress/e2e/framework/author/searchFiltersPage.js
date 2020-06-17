@@ -121,9 +121,8 @@ export default class SearchFilters {
   typeInSearchBox = key => {
     this.routeSearch();
     this.getSearchTextBox()
-      .type("{selectall}")
-      .type(key, { force: true })
-      .type("{enter}");
+      .type("{selectall}", { force: true })
+      .type(`${key}{enter}`, { force: true });
     this.waitForSearchResponse();
   };
 
@@ -143,6 +142,22 @@ export default class SearchFilters {
     this.getPaginationButtonByPageIndex(pageNo).click({ force: true });
     this.waitForSearchResponse();
   };
+
+  clearMultipleSelectionDropDown = attr => {
+    cy.get(`[data-cy="${attr}"]`).then($ele => {
+      if (Cypress.$($ele).find(".anticon-close").length > 0)
+        cy.wrap($ele)
+          .find(".anticon-close")
+          .each(element => {
+            element.click();
+            this.waitForSearchResponse();
+          });
+
+      cy.wrap(Cypress.$($ele))
+        .find(".ant-select-selection__choice__content")
+        .should("have.length", 0);
+    });
+  };
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -161,6 +176,7 @@ export default class SearchFilters {
           CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.grades, grade, true);
         });
       if (standards.subject) {
+        this.clearMultipleSelectionDropDown(dataCyAttributes.subject);
         CypressHelper.selectDropDownByAttribute(dataCyAttributes.subject, standards.subject);
         this.waitForSearchResponse();
         CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.subject, standards.subject);

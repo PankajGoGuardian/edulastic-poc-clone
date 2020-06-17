@@ -87,7 +87,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       testLibraryPage.clickOnAssign();
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.selectOpenPolicy(openPolicyTypes.AUTO);
       testAssignPage.clickOnAssign();
     });

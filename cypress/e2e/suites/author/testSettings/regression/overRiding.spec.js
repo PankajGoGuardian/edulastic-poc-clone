@@ -115,7 +115,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
     it(">assign the test", () => {
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
-      testAssignPage.clickOnEntireClass();
+      // testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
     context(">verifying at student side- over ridden settings", () => {
@@ -177,7 +177,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
         testAssignPage.selectAnswerOnPaper();
         testAssignPage.selectClass("Class");
         testAssignPage.selectTestType("Class Assessment");
-        testAssignPage.clickOnEntireClass();
+        // testAssignPage.clickOnEntireClass();
         testAssignPage.clickOnAssign();
       });
       it(">navigate to lcb and verfy student status after closing the test", () => {

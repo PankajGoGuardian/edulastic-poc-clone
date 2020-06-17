@@ -487,5 +487,12 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         return studentNames;
       });
 
+  verifyNumberOfQuestions = count =>
+    cy
+      .get(".ant-table-thead > tr")
+      .eq(0)
+      .find(".ant-table-column-has-actions")
+      .should("have.length", count);
+
   // *** APPHELPERS END ***
 }

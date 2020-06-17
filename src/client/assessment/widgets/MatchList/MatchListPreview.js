@@ -388,7 +388,7 @@ const MatchListPreview = ({
 
   if (isPrintPreview) {
     stemColStyle.maxWidth = stemColStyle.width;
-    stemColStyle.width = "auto";
+    stemColStyle.width = "100%";
   }
 
   const correctAnswerBoxStyle = {

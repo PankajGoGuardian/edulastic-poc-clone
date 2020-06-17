@@ -1,9 +1,10 @@
 import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { assignmentApi } from "@edulastic/api";
-import { message } from "antd";
 import { omit, get, set, unset, pickBy, identity } from "lodash";
 import { notification } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import * as Sentry from "@sentry/browser";
 
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
@@ -42,8 +43,9 @@ function* receiveAssignmentClassList({ payload = {} }) {
       yield put(push("/author/assignments"));
     }
   } catch (error) {
+    Sentry.captureException(error);
     const errorMessage = "Receive class list failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
       payload: { error: errorMessage }
@@ -81,6 +83,7 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       }
     }
   } catch (error) {
+    Sentry.captureException(error);
     const errorMessage = "Receive tests is failing";
     notification({ messageKey: "receiveTestFailing" });
     yield put({
@@ -92,13 +95,17 @@ function* receiveAssignmentsSummary({ payload = {} }) {
 
 function* receiveAssignmentsSaga({ payload = {} }) {
   try {
-    const { groupId, filters = {} } = payload;
-    const entities = yield call(assignmentApi.fetchTeacherAssignments, { groupId, filters });
-    yield put({
-      type: RECEIVE_ASSIGNMENTS_SUCCESS,
-      payload: { entities }
-    });
+    const userRole = yield select(getUserRole);
+    if (userRole === roleuser.TEACHER) {
+      const { groupId, filters = {} } = payload;
+      const entities = yield call(assignmentApi.fetchTeacherAssignments, { groupId, filters });
+      yield put({
+        type: RECEIVE_ASSIGNMENTS_SUCCESS,
+        payload: { entities }
+      });
+    }
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = "Receive tests is failing";
     notification({ messageKey: "receiveTestFailing" });
     yield put({
@@ -121,6 +128,7 @@ function* receiveAssignmentByIdSaga({ payload }) {
       payload: true
     });
   } catch (e) {
+    Sentry.captureException(e);
     yield put({
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
       payload: {}
@@ -137,6 +145,7 @@ function* receiveAssignmentByAssignmentIdSaga({ payload }) {
       payload: data
     });
   } catch (e) {
+    Sentry.captureException(e);
     yield put({
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
       payload: {}
@@ -164,33 +173,35 @@ function* updateAssignmetSaga({ payload }) {
       payload: data
     });
     const successMessage = "Successfully updated release score settings";
-    notification({ type: "success", msg:successMessage});
+    notification({ type: "success", msg: successMessage });
   } catch (e) {
+    Sentry.captureException(e);
     const errorMessage = "Update release score settings is failing";
     yield put({
       type: TOGGLE_RELEASE_GRADE_SETTINGS,
       payload: false
     });
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     console.error(e);
   }
 }
 
 function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
-    notification({ type: "success", messageKey:"sharedAssignmentInProgress"});
+    notification({ type: "success", messageKey: "sharedAssignmentInProgress" });
     yield call(assignmentApi.syncWithGoogleClassroom, payload);
     yield put({
       type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS
     });
-    notification({ type: "success", messageKey:"assignmentSharedWithGoggleCLassroom"});
+    notification({ type: "success", messageKey: "assignmentSharedWithGoggleCLassroom" });
   } catch (error) {
+    Sentry.captureException(error);
     const errorMessage =
       error?.data?.message || "Assignment failed to share with google classroom. Please try after sometime.";
     yield put({
       type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
     });
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
   }
 }
 

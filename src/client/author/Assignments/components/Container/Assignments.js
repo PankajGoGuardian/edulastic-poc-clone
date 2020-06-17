@@ -105,7 +105,7 @@ class Assignments extends Component {
     if (!defaultTermId) {
       filters.termId = storedFilters.termId || "";
     }
-    if (userRole == roleuser.TEACHER) {
+    if (userRole === roleuser.TEACHER) {
       loadAssignments({ filters });
     } else {
       loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });

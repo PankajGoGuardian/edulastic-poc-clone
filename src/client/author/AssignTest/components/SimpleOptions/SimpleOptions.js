@@ -180,12 +180,13 @@ class SimpleOptions extends React.Component {
     updateOptions(nextAssignment);
   };
 
-  updateStudents = studentId => {
+  updateStudents = selected => {
     const { group, students, assignment, updateOptions } = this.props;
     const { studentList } = this.state;
+    const selectedStudents = Array.isArray(selected) ? selected : [selected];
     const groupById = keyBy(group, "_id");
     const studentById = keyBy(students, "_id");
-    const selectedStudentsById = [...studentList, studentId].map(_id => studentById[_id]);
+    const selectedStudentsById = [...studentList, ...selectedStudents].map(_id => studentById[_id]);
     const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
     const classData = assignment.class.map(item => {
       const { _id } = item;
@@ -202,7 +203,7 @@ class SimpleOptions extends React.Component {
       };
     });
     this.setState(
-      prev => ({ studentList: [...prev.studentList, studentId] }),
+      prev => ({ studentList: [...prev.studentList, ...selectedStudents] }),
       () => {
         const nextAssignment = produce(assignment, state => {
           state.class = classData;
@@ -212,12 +213,12 @@ class SimpleOptions extends React.Component {
     );
   };
 
-  selectAllStudents = (SelectedStudents, selectedValues) => {
-    console.log("selectAllStudents: ", SelectedStudents, selectedValues);
+  selectAllStudents = selectedStudents => {
+    this.updateStudents(selectedStudents.filter(x => !x.disabled).map(x => x.value));
   };
 
-  unselectAllStudents = (SelectedStudents, selectedValues) => {
-    console.log("selectAllStudents: ", SelectedStudents, selectedValues);
+  unselectAllStudents = () => {
+    this.handleRemoveAllStudents();
   };
 
   // Always expected student Id and class Id
@@ -234,7 +235,7 @@ class SimpleOptions extends React.Component {
           }
           return {
             ...item,
-            students: item.students.filter(student => student !== studentId),
+            students: (item.students || []).filter(student => student !== studentId),
             assignedCount,
             specificStudents
           };
@@ -243,6 +244,20 @@ class SimpleOptions extends React.Component {
       });
     });
     this.setState(prev => ({ studentList: prev.studentList.filter(item => item !== studentId) }));
+    updateOptions(nextAssignment);
+  };
+
+  handleRemoveAllStudents = () => {
+    const { assignment, updateOptions } = this.props;
+    const nextAssignment = produce(assignment, state => {
+      state.class = assignment.class.map(item => ({
+        ...item,
+        students: [],
+        assignedCount: 0,
+        specificStudents: false
+      }));
+    });
+    this.setState({ studentList: [] });
     updateOptions(nextAssignment);
   };
 
@@ -287,6 +302,7 @@ class SimpleOptions extends React.Component {
             <StudentSelector
               studentNames={studentList}
               students={studentOfSelectedClass}
+              groups={group}
               updateStudents={this.updateStudents}
               selectAllStudents={this.selectAllStudents}
               unselectAllStudents={this.unselectAllStudents}

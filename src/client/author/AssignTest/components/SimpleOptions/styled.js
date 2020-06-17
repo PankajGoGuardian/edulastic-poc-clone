@@ -1,4 +1,5 @@
 import {
+  greyThemeLight,
   greyThemeLighter,
   largeDesktopWidth,
   linkColor1,
@@ -7,9 +8,8 @@ import {
   secondaryTextColor,
   themeColor,
   themeColorLight,
-  white,
   title,
-  greyThemeLight
+  white
 } from "@edulastic/colors";
 import { Button, Col, DatePicker, Input, Radio, Row, Select, Switch, Table } from "antd";
 import styled from "styled-components";
@@ -410,11 +410,14 @@ export const SelectStudentColumn = styled(Col)`
     .ant-select-tree {
       padding: 0px;
       li .ant-select-tree-node-content-wrapper {
-        padding: 0px;
+        padding: 0px 10px;
       }
     }
     .ant-select-tree-checkbox.ant-select-tree-checkbox-disabled {
       display: none;
+      & + .ant-select-tree-node-content-wrapper {
+        padding: 0px;
+      }
     }
   }
 `;
@@ -435,5 +438,14 @@ export const SelectAll = styled.div`
     color: ${greyThemeLight};
     cursor: not-allowed;
   }
+`;
+
+export const SelectTextInline = styled.div`
+  display: inline-block;
+  color: ${title};
+  cursor: pointer;
+  margin-right: 15px;
+  font-weight: 600;
+  font-size: 12px;
 `;
 export const UnselectAll = styled(SelectAll)``;

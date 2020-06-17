@@ -1,15 +1,13 @@
-import styled from "styled-components";
 import {
-  tabletWidth,
-  secondaryTextColor,
-  title,
-  themeColor,
-  smallDesktopWidth,
   greyThemeLight,
+  greyThemeLighter,
   mainBgColor,
-  greyThemeDark2,
-  greyThemeLighter
+  secondaryTextColor,
+  tabletWidth,
+  themeColor,
+  title
 } from "@edulastic/colors";
+import styled from "styled-components";
 
 export const MainContainer = styled.div`
   .ant-layout {
@@ -206,6 +204,27 @@ export const MainContainer = styled.div`
           border-color: ${greyThemeLight};
           background: ${greyThemeLight};
         }
+      }
+    }
+  }
+
+  .ant-select-tree-checkbox {
+    .ant-select-tree-checkbox-inner {
+      border-color: ${greyThemeLight};
+      background: ${greyThemeLighter};
+      width: 18px;
+      height: 18px;
+      &:after {
+        left: 28%;
+      }
+    }
+    &.ant-select-tree-checkbox-checked {
+      &:after {
+        border-color: ${themeColor};
+      }
+      .ant-select-tree-checkbox-inner {
+        border-color: ${themeColor};
+        background: ${themeColor};
       }
     }
   }

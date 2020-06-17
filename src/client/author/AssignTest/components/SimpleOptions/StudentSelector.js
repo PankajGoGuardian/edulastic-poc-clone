@@ -1,37 +1,56 @@
 /* eslint-disable react/prop-types */
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { TreeSelect } from "antd";
+import { keyBy, groupBy } from "lodash";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
-import { SelectStudentColumn, HeaderButtonsWrapper, SelectAll, UnselectAll } from "./styled";
+import React, { useState, useMemo } from "react";
+import { SelectStudentColumn, HeaderButtonsWrapper, SelectAll, UnselectAll, SelectTextInline } from "./styled";
 
 const StudentsSelector = ({
   students = [],
   updateStudents,
   selectAllStudents,
   unselectAllStudents,
-  handleRemoveStudents
+  handleRemoveStudents,
+  groups
 }) => {
   const [selectedValues, setSelectedValues] = useState([]);
+  const groupKeyed = useMemo(() => keyBy(groups, "_id"), [groups]);
+  const studentsGroupedByGroupId = useMemo(
+    () => groupBy(students.filter(({ enrollmentStatus }) => enrollmentStatus > 0), "groupId"),
+    [students]
+  );
 
-  const SelectedStudents = students
-    .filter(({ enrollmentStatus }) => enrollmentStatus > 0)
-    .map(({ _id, firstName, lastName, groupId }) => {
-      const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
-      return {
-        title: fullName,
-        key: _id,
-        value: _id,
-        groupId
-      };
-    });
+  const SelectedStudents = Object.keys(studentsGroupedByGroupId).flatMap(groupId => {
+    const groupName = groupKeyed[groupId].name;
+    const studentRows = (studentsGroupedByGroupId[groupId] || []).map(
+      ({ _id, firstName, lastName, groupId: _groupId }) => {
+        const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
+        return {
+          title: fullName,
+          key: _id,
+          value: _id,
+          groupId: _groupId
+        };
+      }
+    );
+    return [
+      {
+        title: <SelectTextInline>{groupName}</SelectTextInline>,
+        disableCheckbox: true,
+        disabled: true,
+        value: groupName
+      },
+      ...studentRows
+    ];
+  });
 
-  const allIds = SelectedStudents.map(({ value }) => value);
+  const allIds = SelectedStudents.filter(x => !x.disabled).map(({ value }) => value);
 
   return (
     <React.Fragment>
       <SelectStudentColumn span={12}>
-        <FieldLabel>STUDENT</FieldLabel>
+        <FieldLabel>STUDENTS</FieldLabel>
         <SelectInputStyled
           as={TreeSelect}
           placeholder="Select a student to assign"
@@ -91,12 +110,7 @@ const StudentsSelector = ({
 
 StudentsSelector.propTypes = {
   students: PropTypes.array.isRequired,
-  updateStudents: PropTypes.func.isRequired,
-  studentNames: PropTypes.array
-};
-
-StudentsSelector.defaultProps = {
-  studentNames: []
+  updateStudents: PropTypes.func.isRequired
 };
 
 export default StudentsSelector;

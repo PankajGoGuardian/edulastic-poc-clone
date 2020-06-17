@@ -116,6 +116,13 @@ const Search = ({
     </Item>
   );
 
+  const handleStandardsAlert = () => {
+    if (isStandardsDisabled) {
+      return "Select Grades, Subject, Standard Set before selecting Standards";
+    }
+    return "";
+  };
+
   const selectedCurriculam = formattedCuriculums.find(fc => fc.value === curriculumId);
 
   return (
@@ -229,7 +236,7 @@ const Search = ({
                 </SelectInputStyled>
               </ItemBody>
             </Item>
-            <ItemRelative>
+            <ItemRelative title={handleStandardsAlert()}>
               <IconWrapper className={isStandardsDisabled && "disabled"}>
                 <IconExpandBox onClick={() => setShowModal(true)} />
               </IconWrapper>
@@ -390,5 +397,9 @@ export default connect(
 const StandardSelectStyled = styled(SelectInputStyled)`
   .ant-select-selection__placeholder {
     padding-right: 18px;
+  }
+
+  .ant-select-selection {
+    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")} !important;
   }
 `;

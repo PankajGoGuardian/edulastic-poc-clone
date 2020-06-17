@@ -62,13 +62,18 @@ export function* addItemToCartSaga({ payload }) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.filter(x => x._id !== item._id);
       notification({ type: "success", messageKey: "itemRemovedCart" });
+      /**
+       * returning because no mutation happened
+       */
       return draft;
     });
   } else {
     updatedTestItems = produce(testItems, draft => {
-      draft = draft.push(item);
+      draft.push(item);
+      /**
+       * not returning here because, muation happened above. that is enough
+       */
       notification({ type: "success", messageKey: "itemAddedCart" });
-      return draft;
     });
   }
   const userRole = yield select(getUserRole);

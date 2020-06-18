@@ -147,10 +147,11 @@ class Display extends Component {
       imageOptions,
       isExpressGrader,
       isReviewTab,
-      isPrint,
-      isPrintPreview,
+      isPrint = false,
+      isPrintPreview = false,
       view
     } = this.props;
+
     const { shuffleOptions } = configureOptions;
     const { maxHeight, maxWidth } = clozeImage;
     let newOptions;

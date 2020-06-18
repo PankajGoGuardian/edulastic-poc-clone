@@ -21,7 +21,8 @@ export const PreviewItem = ({
   style,
   correct,
   stemNumeration,
-  showAnswer
+  showAnswer,
+  isPrintPreview = false
 }) => {
   const content = (
     <Text
@@ -38,7 +39,13 @@ export const PreviewItem = ({
   const { width } = measureText(question, style);
   const showPopover = style.maxWidth < width;
   return (
-    <Container columns={columns} id={`order-list-${cIndex}`} style={style} correct={correct}>
+    <Container
+      columns={columns}
+      id={`order-list-${cIndex}`}
+      style={style}
+      correct={correct}
+      isPrintPreview={isPrintPreview}
+    >
       {correct === undefined && showDragHandle && (
         <StyledDragHandle styleType={styleType} smallSize={smallSize}>
           <DragHandle smallSize={smallSize} />
@@ -52,7 +59,7 @@ export const PreviewItem = ({
 
       {showPopover ? <Popover content={content}>{content}</Popover> : content}
 
-      {correct !== undefined && <IconWrapper correct={correct} />}
+      {correct !== undefined && <IconWrapper correct={correct} isPrintPreview={isPrintPreview} />}
     </Container>
   );
 };

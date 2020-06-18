@@ -16,7 +16,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
     onInnerClick,
     uiStyles = {},
     showIndex,
-    disableResponse
+    disableResponse,
+    isPrintPreview
   } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
   const {
@@ -45,6 +46,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
       item={item}
       type="inputs"
       onInnerClick={onInnerClick}
+      isPrintPreview={isPrintPreview}
     />
   ) : (
     <InputDiv>

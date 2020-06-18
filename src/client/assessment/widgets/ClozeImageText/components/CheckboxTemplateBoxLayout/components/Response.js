@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Popover } from "antd";
 import { measureText } from "@edulastic/common";
 import { response } from "@edulastic/constants";
+import { white } from "@edulastic/colors";
 import { Pointer } from "../../../../../styled/Pointer";
 import { Point } from "../../../../../styled/Point";
 import { Triangle } from "../../../../../styled/Triangle";
@@ -22,7 +23,8 @@ const Response = ({
   dropTargetIndex,
   indexStr,
   lessMinWidth,
-  isExpressGrader
+  isExpressGrader,
+  isPrintPreview
 }) => {
   const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle); // returns number
 
@@ -68,7 +70,10 @@ const Response = ({
       <span className="index index-box" style={{ display: checkAnswer || lessMinWidth ? "none" : "flex" }}>
         {indexStr}
       </span>
-      <div className="text container" style={{ padding: lessMinWidth ? "0 0 0 4px" : null }}>
+      <div
+        className="text container"
+        style={{ padding: lessMinWidth ? "0 0 0 4px" : null, background: isPrintPreview && white }}
+      >
         <div className="clipText">{userSelections[dropTargetIndex]}</div>
         {(checkAnswer || showAnswer) && (
           <div>

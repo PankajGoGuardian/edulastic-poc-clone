@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Input, Popover } from "antd";
+import { Popover } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get, isEmpty } from "lodash";
@@ -39,7 +39,8 @@ const ShortTextPreview = ({
   theme,
   disableResponse,
   showQuestionNumber,
-  evaluation
+  evaluation,
+  isPrintPreview
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
@@ -99,7 +100,7 @@ const ShortTextPreview = ({
     minHeight: 40,
     height: "auto",
     fontSize: theme.fontSize || getFontSize(get(item, "uiStyle.fontsize")),
-    background
+    background: isPrintPreview ? "transparent" : background
   };
 
   const isCharacterMap = Array.isArray(item.characterMap) && !!item.characterMap.length;

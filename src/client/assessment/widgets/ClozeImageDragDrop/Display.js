@@ -374,8 +374,8 @@ class Display extends Component {
       setQuestionData,
       studentReport,
       getHeading,
-      isPrint,
-      isPrintPreview,
+      isPrint = false,
+      isPrintPreview = false,
       view,
       viewComponent
     } = this.props;
@@ -587,6 +587,7 @@ class Display extends Component {
             imageHeight={this.getCalculatedHeight(maxHeight, canvasHeight)}
             imageWidth={previewContainerWidth}
             fontSize={fontSize}
+            isPrintPreview={isPrintPreview || isPrint}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>

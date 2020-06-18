@@ -2,12 +2,14 @@ import styled from "styled-components";
 
 export const IconWrapper = styled.div`
   width: 40px;
-  background: ${({ checkStyle, correct, theme }) =>
-    checkStyle
+  background: ${({ checkStyle, correct, theme, isPrintPreview }) => {
+    if (isPrintPreview) return "transparent";
+    return checkStyle
       ? correct
         ? `${theme.widgets.sortList.dragItemCorrectTextBgColor}`
         : `${theme.widgets.sortList.dragItemIncorrectTextBgColor}`
-      : "none"};
+      : "none";
+  }};
   position: absolute;
   right: 0px;
   height: 100%;

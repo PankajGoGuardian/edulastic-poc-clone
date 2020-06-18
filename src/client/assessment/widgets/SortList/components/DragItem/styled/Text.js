@@ -4,12 +4,14 @@ export const Text = styled.div`
   width: ${({ showDragHandle, smallSize }) =>
     showDragHandle ? (smallSize ? "calc(100% - 30px)" : "calc(100% - 50px)") : "100%"};
 
-  background: ${({ checkStyle, correct, theme }) =>
-    checkStyle
+  background: ${({ checkStyle, correct, theme, isPrintPreview }) => {
+    if (isPrintPreview) return "transparent";
+    return checkStyle
       ? correct
         ? `${theme.widgets.sortList.dragItemCorrectTextBgColor}`
         : `${theme.widgets.sortList.dragItemIncorrectTextBgColor}`
-      : "none"};
+      : "none";
+  }};
   display: flex;
   position: relative;
   /**

@@ -214,6 +214,7 @@ const ClozeMathPreview = ({
           altDropDowns={_getAltDropDownAnswers()}
           altInputs={_getAltInputsAnswers()}
           altMathUnitAnswers={_getAltMathUintAnswers()}
+          isPrintPreview={isPrintPreview}
         />
       )}
     </QuestionWrapper>

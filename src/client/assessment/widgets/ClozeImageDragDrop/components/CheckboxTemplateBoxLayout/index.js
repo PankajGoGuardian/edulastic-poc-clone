@@ -37,8 +37,9 @@ const CheckboxTemplateBox = ({
   lessMinWidth,
   imageWidth,
   imageHeight,
-  isPrintMode,
-  fontSize
+  isPrintMode = false,
+  fontSize,
+  isPrintPreview = false
 }) => {
   const { height: respHeight, width: respWidth, left: respLeft, top: respTop } = responseContainer;
 
@@ -139,7 +140,11 @@ const CheckboxTemplateBox = ({
         width: isPrintMode ? "" : respWidth,
         height: isPrintMode ? "" : respHeight
       }
-    : { width: isPrintMode ? "" : respWidth, height: isPrintMode ? "" : respHeight };
+    : {
+        width: isPrintMode ? "" : respWidth,
+        height: isPrintMode ? "" : respHeight,
+        background: (isPrintMode || isPrintPreview) && "transparent"
+      };
 
   const userAnswer = userSelections[index]?.value?.join(" ") || "";
 

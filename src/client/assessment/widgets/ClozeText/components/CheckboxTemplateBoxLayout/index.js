@@ -16,7 +16,16 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     return null;
   }
   const answerBoxRef = useRef();
-  const { evaluation, checkAnswer, userSelections, responseIds, previewTab, getUiStyles, changePreviewTab } = resprops;
+  const {
+    evaluation,
+    checkAnswer,
+    userSelections,
+    responseIds,
+    previewTab,
+    getUiStyles,
+    changePreviewTab,
+    isPrintPreview
+  } = resprops;
 
   const { id: choiceId, index } = find(responseIds, res => res.id === id);
   const { btnStyle: style, stemNumeration } = getUiStyles(id, index);
@@ -44,6 +53,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       style={{ ...btnStyle, whiteSpace: "normal", wordBreak: "break-all", width: "unset", height: "auto" }}
       correct={evaluation[choiceId]}
       onClick={handleClick}
+      isPrintPreview={isPrintPreview}
     >
       {!checkAnswer && (
         <IndexBox checked={!!userAnswer} correct={evaluation[choiceId]}>
@@ -73,6 +83,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         checked={attempt}
         correct={evaluation[choiceId]}
         onClick={handleClick}
+        isPrintPreview={isPrintPreview}
       >
         {!checkAnswer && (
           <IndexBox checked={!!userAnswer} correct={evaluation[choiceId]}>

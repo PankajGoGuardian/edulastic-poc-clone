@@ -280,6 +280,7 @@ const ClassificationPreview = ({
     dragHandle: showDragHandle,
     isTransparent: transparentPossibleResponses,
     padding: choiceMinWidth < 35 ? "0px 0px 0px 5px" : "0px 0px 0px 10px",
+    isPrintPreview,
     ...dragItemSize
   };
 

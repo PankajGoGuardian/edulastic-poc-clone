@@ -33,7 +33,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
     onDropHandler = () => {},
     responseIDs,
     globalSettings,
-    disableResponse
+    disableResponse,
+    isPrintPreview
   } = resprops;
   const { index: dropTargetIndex } = (responseIDs && responseIDs.find(response => response.id === id)) || {};
   const status =
@@ -118,6 +119,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
       style={btnStyle}
       checked={choiceAttempted}
       correct={correct}
+      isPrintPreview={isPrintPreview}
     >
       {!checkAnswer && (
         <IndexBox checked={choiceAttempted} correct={correct}>

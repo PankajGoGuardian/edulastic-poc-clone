@@ -65,7 +65,7 @@ const Matrix = props => {
         isPrintPreview={isPrintPreview}
       >
         {evaluation && checked && (
-          <IconWrapper correct={correct}>
+          <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>
             {correct === true && <IconCheck />}
             {correct === "incorrect" && <IconClose />}
           </IconWrapper>

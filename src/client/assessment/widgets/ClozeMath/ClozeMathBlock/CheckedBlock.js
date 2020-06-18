@@ -51,7 +51,19 @@ CheckBoxedMathBox.propTypes = {
   style: PropTypes.object.isRequired
 };
 
-const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick, showIndex }) => {
+const CheckedBlock = ({
+  item,
+  evaluation,
+  userAnswer,
+  id,
+  type,
+  isMath,
+  width,
+  height,
+  onInnerClick,
+  showIndex,
+  isPrintPreview = false
+}) => {
   const { responseIds } = item;
   const { index } = find(responseIds[type], res => res.id === id);
   let { unit = "" } = userAnswer || {};
@@ -84,7 +96,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
 
   const popoverContent = isPopover => (
     <CheckBox
-      className={checkBoxClass}
+      className={!isPrintPreview && checkBoxClass}
       key={`input_${index}`}
       onClick={onInnerClick}
       style={{

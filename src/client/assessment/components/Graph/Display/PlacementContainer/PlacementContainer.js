@@ -607,6 +607,7 @@ class PlacementContainer extends PureComponent {
                 className="jxgbox"
                 margin={margin}
                 showBorder={!hasAnnotation}
+                isPrintPreview={isPrintPreview}
               />
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
             </JSXBoxWrapper>

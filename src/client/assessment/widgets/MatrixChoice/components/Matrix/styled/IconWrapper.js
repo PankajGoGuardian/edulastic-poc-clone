@@ -13,7 +13,7 @@ const getCellColor = (correct, theme) => {
 
 export const IconWrapper = styled.div`
   height: 100%;
-  background: ${props => getCellColor(props.correct, props.theme)};
+  background: ${props => !props.isPrintPreview && getCellColor(props.correct, props.theme)};
   position: relative;
   display: flex;
   align-items: center;

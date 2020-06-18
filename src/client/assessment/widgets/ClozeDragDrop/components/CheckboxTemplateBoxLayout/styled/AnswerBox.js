@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { white } from "@edulastic/colors";
 
 export const AnswerBox = styled.div`
   position: relative;
@@ -7,7 +8,8 @@ export const AnswerBox = styled.div`
   vertical-align: middle;
   cursor: pointer;
   border-radius: 4px;
-  background: ${({ theme, checked, correct }) => {
+  background: ${({ theme, checked, correct, isPrintPreview }) => {
+    if (isPrintPreview) return white;
     if (!checked && !correct) {
       return theme.widgets.clozeText.boxNoAnswerBgColor;
     }

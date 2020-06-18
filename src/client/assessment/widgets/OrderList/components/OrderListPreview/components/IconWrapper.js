@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 
-export const IconWrapper = ({ correct }) => (
-  <Wrapper correct={correct}>
+export const IconWrapper = ({ correct, isPrintPreview }) => (
+  <Wrapper correct={correct} isPrintPreview={isPrintPreview}>
     {correct && <IconCheck />}
     {!correct && <IconClose />}
   </Wrapper>
@@ -17,8 +17,12 @@ const Wrapper = styled.div`
   height: 100%;
   position: absolute;
 
-  background: ${({ correct, theme }) =>
-    correct ? theme.widgets.orderList.correctContainerBgColor : theme.widgets.orderList.incorrectContainerBgColor};
+  background: ${({ correct, theme, isPrintPreview }) =>
+    isPrintPreview
+      ? "transparent"
+      : correct
+      ? theme.widgets.orderList.correctContainerBgColor
+      : theme.widgets.orderList.incorrectContainerBgColor};
 
   svg {
     position: absolute;

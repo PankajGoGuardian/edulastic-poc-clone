@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { white } from "@edulastic/colors";
 import { MultiChoiceContent, MultipleChoiceLabelContainer } from "./MultiChoiceContent";
 
 export const Label = styled.label`
@@ -56,7 +57,8 @@ export const Label = styled.label`
     (props.styleType === "primary"
       ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
       : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
-  background-color: ${({ styleType, color, selected, uiStyle, theme }) => {
+  background-color: ${({ styleType, color, selected, uiStyle, theme, isPrintPreview }) => {
+    if (isPrintPreview) return white;
     if (styleType === "primary" && uiStyle.type !== "block") {
       return theme.widgets.multipleChoice.labelIconCheckColor;
       // eslint-disable-next-line no-else-return
@@ -85,12 +87,12 @@ export const Label = styled.label`
     border-bottom-right-radius: 8px;
   }
   &.right {
-    background-color: ${props => props.theme.widgets.multipleChoice.labelRightBgColor};
+    background-color: ${props => !props.isPrintPreview && props.theme.widgets.multipleChoice.labelRightBgColor};
     border-radius: 8px;
     padding-right: 50px;
   }
   &.wrong {
-    background-color: ${props => props.theme.widgets.multipleChoice.labelWrongBgColor};
+    background-color: ${props => !props.isPrintPreview && props.theme.widgets.multipleChoice.labelWrongBgColor};
     border-radius: 8px;
     padding-right: 50px;
   }

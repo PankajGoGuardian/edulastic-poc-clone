@@ -35,7 +35,8 @@ const Option = props => {
     setCrossAction,
     qId,
     crossAction,
-    fontSize
+    fontSize,
+    isPrintPreview
   } = props;
   let className = "";
   let correctAnswers = [];
@@ -175,6 +176,7 @@ const Option = props => {
       selected={isSelected}
       checkAnswer={checkAnswer}
       userSelect={!!setCrossAction}
+      isPrintPreview={isPrintPreview}
       onMouseEnter={() => {
         if (setCrossAction) {
           toggleHover(true);

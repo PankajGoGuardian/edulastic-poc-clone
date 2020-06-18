@@ -125,6 +125,7 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       type="mathUnits"
       isMath
       onInnerClick={onInnerClick}
+      isPrintPreview={resprops.isPrintPreview}
     />
   ) : (
     <ClozeMathWithUnit resprops={{ ...resprops, height, width }} id={id} />

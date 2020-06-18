@@ -34,7 +34,8 @@ const CheckboxTemplateBoxLayout = ({
   isExpressGrader,
   theme: {
     answerBox: { borderWidth, borderStyle, borderColor, borderRadius }
-  }
+  },
+  isPrintPreview
 }) => (
   <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
     <StyledPreviewContainer data-cy="image-text-preview-board" width={canvasWidth} height={canvasHeight}>
@@ -80,6 +81,7 @@ const CheckboxTemplateBoxLayout = ({
             lessMinWidth={lessMinWidth}
             checkAnswer={checkAnswer}
             isExpressGrader={isExpressGrader}
+            isPrintPreview={isPrintPreview}
           />
         );
       })}

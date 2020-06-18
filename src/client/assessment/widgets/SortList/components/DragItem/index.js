@@ -55,7 +55,8 @@ const DragItem = ({
   isReviewTab,
   stemNumeration,
   items,
-  style
+  style,
+  isPrintPreview
 }) => {
   const showPreview = previewTab === CHECK || previewTab === SHOW;
 
@@ -83,6 +84,7 @@ const DragItem = ({
             smallSize={smallSize}
             index={index}
             stemNumeration={stemNumeration}
+            isPrintPreview={isPrintPreview}
           />
         </DragPreview>
       )}
@@ -108,6 +110,7 @@ const DragItem = ({
               showPreview={showPreview}
               stemNumeration={stemNumeration}
               smallSize={smallSize}
+              isPrintPreview={isPrintPreview}
             />
           </div>
         )

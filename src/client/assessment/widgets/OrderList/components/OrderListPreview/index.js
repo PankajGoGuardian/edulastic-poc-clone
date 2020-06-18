@@ -26,7 +26,8 @@ class OrderListPreview extends Component {
       uiStyle,
       evaluation,
       getStemNumeration,
-      showAnswer
+      showAnswer,
+      isPrintPreview
     } = this.props;
 
     const listItemMinWidth = get(uiStyle, "choiceMinWidth", defaultMinW);
@@ -69,7 +70,8 @@ class OrderListPreview extends Component {
                 cIndex: i,
                 style: listItemStyle,
                 showAnswer,
-                stemNumeration: getStemNumeration(uiStyle.validationStemNumeration, i)
+                stemNumeration: getStemNumeration(uiStyle.validationStemNumeration, i),
+                isPrintPreview
               };
               return showAnswer ? (
                 <PreviewItem {...itemProps} />

@@ -179,7 +179,7 @@ export const JSXBox = styled.div`
       width: calc(100% - 18px);
     }
 
-    background-color: ${props => props.theme.widgets.graphPlacement.rightBgColor};
+    background-color: ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.rightBgColor};
     color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
 
     .drag-drop-icon {
@@ -194,7 +194,7 @@ export const JSXBox = styled.div`
       width: calc(100% - 18px);
     }
 
-    background-color: ${props => props.theme.widgets.graphPlacement.wrongBgColor};
+    background-color: ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
     color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
 
     .drag-drop-icon {

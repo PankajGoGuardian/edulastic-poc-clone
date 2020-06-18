@@ -177,8 +177,10 @@ class Display extends Component {
       imageOptions,
       isExpressGrader,
       view,
-      hideInternalOverflow
+      hideInternalOverflow,
+      isPrintPreview
     } = this.props;
+
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers } = this.state;
     // Layout Options
@@ -305,6 +307,7 @@ class Display extends Component {
         uiStyle={uiStyle}
         onClickHandler={this.onClickCheckboxHandler}
         isExpressGrader={isExpressGrader}
+        isPrintPreview={isPrintPreview}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

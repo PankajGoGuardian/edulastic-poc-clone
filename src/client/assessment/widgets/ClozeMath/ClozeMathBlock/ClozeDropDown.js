@@ -84,6 +84,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       evaluation={evaluation}
       type="dropDowns"
       onInnerClick={onInnerClick}
+      isPrintPreview={isPrintPreview}
     />
   ) : (
     <DropdownWrapper

@@ -335,7 +335,8 @@ class ClozeDragDropDisplay extends Component {
       onDrop: !disableResponse ? this.onDrop : () => {},
       onDropHandler: !disableResponse ? this.onDrop : () => {},
       cAnswers: get(item, "validation.validResponse.value", []),
-      isExpressGrader
+      isExpressGrader,
+      isPrintPreview
     };
 
     const templateBoxLayoutContainer = (

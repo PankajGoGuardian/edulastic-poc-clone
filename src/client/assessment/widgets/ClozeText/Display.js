@@ -148,8 +148,9 @@ class ClozeTextDisplay extends Component {
       isReviewTab,
       isExpressGrader,
       view,
-      isPrint,
-      isV1Migrated
+      isPrint = false,
+      isV1Migrated,
+      isPrintPreview = false
     } = this.props;
 
     const { parsedTemplate } = this.state;
@@ -169,8 +170,8 @@ class ClozeTextDisplay extends Component {
       previewTab,
       changePreviewTab,
       isV1Migrated,
-      cAnswers: get(item, "validation.validResponse.value", [])
-      // isExpressGrader
+      cAnswers: get(item, "validation.validResponse.value", []),
+      isPrintPreview
     };
 
     const QuestionContent = (

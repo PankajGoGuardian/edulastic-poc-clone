@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { MathFormulaDisplay } from "@edulastic/common";
+import { white } from "@edulastic/colors";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
@@ -27,7 +28,8 @@ const Container = styled.div`
   vertical-align: ${({ isDragStyle }) => (isDragStyle ? "middle" : "bottom")};
   cursor: pointer;
   border-radius: 4px;
-  background: ${({ theme, checked, correct }) => {
+  background: ${({ theme, checked, correct, isPrintPreview }) => {
+    if (isPrintPreview) return white;
     if (!checked) {
       return theme.widgets.clozeDropDown.boxNoAnswerBgColor;
     }

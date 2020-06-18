@@ -22,7 +22,8 @@ export const DragItemContent = ({
   index,
   style,
   isReviewTab,
-  stemNumeration
+  stemNumeration,
+  isPrintPreview
 }) => {
   const [show, toggleShow] = useState(true);
 
@@ -34,9 +35,7 @@ export const DragItemContent = ({
     toggleShow(true);
   };
 
-  const popoverContent = (
-    <MathFormulaDisplay onMouseEnter={hidePopover} dangerouslySetInnerHTML={{ __html: obj }} />
-  );
+  const popoverContent = <MathFormulaDisplay onMouseEnter={hidePopover} dangerouslySetInnerHTML={{ __html: obj }} />;
   const { scrollWidth } = measureText(obj, style);
   /**
    * 10 will be ellipsis width at other parts,
@@ -56,6 +55,7 @@ export const DragItemContent = ({
       checkStyle={checkStyle}
       correct={correct}
       style={style}
+      isPrintPreview={isPrintPreview}
     >
       {!showPreview && (
         <StyledDragHandle smallSize={smallSize}>
@@ -63,7 +63,7 @@ export const DragItemContent = ({
         </StyledDragHandle>
       )}
 
-      <Text checkStyle={checkStyle} correct={correct} smallSize={smallSize}>
+      <Text checkStyle={checkStyle} correct={correct} smallSize={smallSize} isPrintPreview={isPrintPreview}>
         {showPreview && (
           <WithIndex checkStyle={checkStyle} correct={correct}>
             {getStemNumeration(stemNumeration, index)}
@@ -71,7 +71,7 @@ export const DragItemContent = ({
         )}
         <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />
         {showPreview && checkStyle && (
-          <IconWrapper checkStyle={checkStyle} correct={correct}>
+          <IconWrapper checkStyle={checkStyle} correct={correct} isPrintPreview={isPrintPreview}>
             {correct && <IconCheck />}
             {!correct && <IconClose />}
           </IconWrapper>

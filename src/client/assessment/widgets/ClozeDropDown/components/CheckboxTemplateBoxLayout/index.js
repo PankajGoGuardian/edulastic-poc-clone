@@ -20,14 +20,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responseBtnStyle,
     stemNumeration,
     showAnswer,
-    isPrint,
+    isPrint = false,
     userSelections,
     evaluation,
     changePreviewTab,
     previewTab,
     disableResponse,
     item: { responseIds },
-    isPrintPreview
+    isPrintPreview = false
   } = resprops;
   const { index, id: answerId } = find(responseIds, _response => _response.id === id);
   const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
@@ -64,6 +64,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       lessMinWidth={lessMinWidth}
       showIndex={(showAnswer || isPrint || isPrintPreview) && !lessMinWidth}
       indexStr={indexStr}
+      isPrintPreview={isPrintPreview || isPrint}
     />
   );
 

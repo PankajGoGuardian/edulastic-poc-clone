@@ -11,7 +11,20 @@ export const InnerWrapper = styled.div`
   position: relative;
   padding: 8px;
 
-  ${({ theme, valid, preview, transparent, dragging, maxWidth, minWidth, minHeight, maxHeight, width, showIcon }) => {
+  ${({
+    theme,
+    valid,
+    preview,
+    transparent,
+    dragging,
+    maxWidth,
+    minWidth,
+    minHeight,
+    maxHeight,
+    width,
+    showIcon,
+    isPrintPreview
+  }) => {
     let bgColor = theme.widgets.classification.dragItemBgColor;
     let borderColor = theme.widgets.classification.dragItemBorderColor;
 
@@ -26,6 +39,10 @@ export const InnerWrapper = styled.div`
     }
 
     if (!preview && transparent) {
+      bgColor = "transparent";
+    }
+
+    if (isPrintPreview && bgColor !== "#FFFFFF") {
       bgColor = "transparent";
     }
 

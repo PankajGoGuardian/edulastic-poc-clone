@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 import { Popover } from "antd";
+import { white } from "@edulastic/colors";
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
 import AppConfig from "../../../../../app-config";
@@ -17,7 +18,8 @@ const StaticMath = ({
   innerValues,
   restrictKeys,
   customKeys,
-  alwaysShowKeyboard
+  alwaysShowKeyboard,
+  isPrintPreview
 }) => {
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
@@ -209,7 +211,7 @@ const StaticMath = ({
     minWidth: style.width,
     minHeight: style.height,
     fontSize: style.fontSize ? style.fontSize : "inherit",
-    background: style.background
+    background: isPrintPreview ? white : style.background
   };
 
   return (

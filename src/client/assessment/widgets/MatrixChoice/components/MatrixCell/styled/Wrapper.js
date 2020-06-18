@@ -16,7 +16,7 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${props => getCellColor(props.correct, props.theme)};
+  background: ${props => !props.isPrintPreview && getCellColor(props.correct, props.theme)};
   padding: ${props => (props.smallSize ? 1 : 15)}px;
   position: relative;
   .inline-label {

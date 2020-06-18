@@ -86,7 +86,8 @@ const OrderList = ({
   t,
   changePreviewTab,
   advancedLink,
-  isReviewTab
+  isReviewTab,
+  isPrintPreview
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
   const answerContext = useContext(AnswerContext);
@@ -243,7 +244,8 @@ const OrderList = ({
     lockToContainerEdges: true,
     lockOffset: ["10%", "10%"],
     lockAxis: uiStyle.type === "inline" ? "x" : "y",
-    getContainer: uiStyle.type === "inline" && scrollContainer ? null : () => scrollContainer
+    getContainer: uiStyle.type === "inline" && scrollContainer ? null : () => scrollContainer,
+    isPrintPreview
   };
 
   return (

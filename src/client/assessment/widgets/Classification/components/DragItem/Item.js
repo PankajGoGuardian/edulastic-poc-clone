@@ -25,7 +25,8 @@ const Item = ({
   maxWidth,
   minWidth,
   minHeight,
-  maxHeight
+  maxHeight,
+  isPrintPreview
 }) => {
   const { questionId } = useContext(QuestionContext);
 
@@ -54,6 +55,7 @@ const Item = ({
         minWidth={minWidth}
         minHeight={minHeight}
         maxHeight={inPopover ? null : maxHeight}
+        isPrintPreview={isPrintPreview}
       >
         {dragHandle && <FontAwesomeIcon icon={faArrowsAlt} style={{ fontSize: 12 }} />}
         <AnswerBox

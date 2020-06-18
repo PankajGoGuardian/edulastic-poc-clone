@@ -300,6 +300,7 @@ const SortListPreview = ({
                       style={dragItemStyle}
                       disableResponse={disableResponse || !isAnswerModifiable}
                       stemNumeration={stemNumeration}
+                      isPrintPreview={isPrintPreview}
                     />
                   </DropContainer>
                 ))}
@@ -353,6 +354,7 @@ const SortListPreview = ({
                       disableResponse={disableResponse || !isAnswerModifiable}
                       changePreviewTab={changePreviewTab}
                       stemNumeration={stemNumeration}
+                      isPrintPreview={isPrintPreview}
                     />
                   </DropContainer>
                 ))}

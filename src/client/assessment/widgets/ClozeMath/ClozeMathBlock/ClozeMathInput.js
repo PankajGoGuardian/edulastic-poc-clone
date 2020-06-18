@@ -6,7 +6,16 @@ import CheckedBlock from "./CheckedBlock";
 import { MathInputWrapper } from "./styled/MathInputWrapper";
 
 const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
-  const { responseContainers, item, answers = {}, checked, save, disableResponse = false, uiStyles } = resprops;
+  const {
+    responseContainers,
+    item,
+    answers = {},
+    checked,
+    save,
+    disableResponse = false,
+    uiStyles,
+    isPrintPreview
+  } = resprops;
   const { maths: userAnswers = [] } = answers;
   const response = find(responseContainers, cont => cont.id === id);
   const {
@@ -56,7 +65,16 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
   );
 
   return checked ? (
-    <CheckedBlock {...resprops} width={width} height={height} userAnswer={userAnswer} id={id} type="maths" isMath />
+    <CheckedBlock
+      {...resprops}
+      width={width}
+      height={height}
+      userAnswer={userAnswer}
+      id={id}
+      type="maths"
+      isPrintPreview={isPrintPreview}
+      isMath
+    />
   ) : (
     <MathInputWrapper width={width} disableResponse={disableResponse} height={height} fontSize={uiStyles?.fontSize}>
       {staticOrMathInput}

@@ -2,6 +2,7 @@ import React from "react";
 import Proptypes from "prop-types";
 import { Popover } from "antd";
 import { measureText, MathSpan } from "@edulastic/common";
+import { white } from "@edulastic/colors";
 import { Pointer } from "../../../../../styled/Pointer";
 import { Point } from "../../../../../styled/Point";
 import { Triangle } from "../../../../../styled/Triangle";
@@ -30,7 +31,8 @@ const Response = ({
     minwidth: "100%",
     padding: lessMinWidth ? "0 1px" : null,
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
+    background: isPrintPreview && white
   };
 
   const answered = userSelections[dropTargetIndex];
@@ -41,7 +43,7 @@ const Response = ({
   const indexBoxWidth = showAnswer ? 40 : 0;
   const isOverContent = btnStyle.width < contentWidth + textPadding + indexBoxWidth;
 
-  let modifiedDimesion = {};
+  const modifiedDimesion = {};
   if (isPrintPreview) {
     modifiedDimesion.width = `${(btnStyle.width / imageWidth) * 100}%`;
     modifiedDimesion.height = `${(btnStyle.height / imageHeight) * 100}%`;

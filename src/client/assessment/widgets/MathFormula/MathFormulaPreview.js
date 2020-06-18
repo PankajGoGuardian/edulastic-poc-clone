@@ -16,6 +16,7 @@ import {
   QuestionContentWrapper
 } from "@edulastic/common";
 
+import { greyThemeLight, white } from "@edulastic/colors";
 import { SHOW, CHECK, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 
 import CorrectAnswerBox from "./components/CorrectAnswerBox/index";
@@ -29,7 +30,6 @@ import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 import Instructions from "../../components/Instructions";
 import Spinner from "./components/Spinner";
-import { greyThemeLight } from "@edulastic/colors";
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -230,7 +230,8 @@ class MathFormulaPreview extends Component {
       disableResponse,
       answerContextConfig,
       showCalculatingSpinner,
-      view
+      view,
+      isPrintPreview
     } = this.props;
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
     const { innerValues } = this.state;
@@ -326,7 +327,10 @@ class MathFormulaPreview extends Component {
                 justifyContent="flex-start"
                 style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
               >
-                <MathInputWrapper width={cssStyles.width} style={{ background: statusColor, borderRadius: "5px" }}>
+                <MathInputWrapper
+                  width={cssStyles.width}
+                  style={{ background: isPrintPreview ? white : statusColor, borderRadius: "5px" }}
+                >
                   {this.isStatic() && !disableResponse && (
                     <StaticMath
                       symbols={item.symbols}
@@ -341,10 +345,11 @@ class MathFormulaPreview extends Component {
                       latex={studentTemplate}
                       innerValues={innerValues}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
+                      isPrintPreview={isPrintPreview}
                     />
                   )}
                   {this.isStatic() && disableResponse && (
-                    <MathInputSpan style={{ background: statusColor }}>
+                    <MathInputSpan style={{ background: isPrintPreview ? white : statusColor }}>
                       <MathSpanWrapper latex={userAnswer || ""} />
                     </MathInputSpan>
                   )}
@@ -361,11 +366,11 @@ class MathFormulaPreview extends Component {
                       onBlur={latexv => this.onBlur(latexv)}
                       disabled={evaluation && !evaluation.some(ie => ie)}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
-                      style={{ background: statusColor, ...cssStyles }}
+                      style={{ background: isPrintPreview ? white : statusColor, ...cssStyles }}
                     />
                   )}
                   {!this.isStatic() && disableResponse && (
-                    <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
+                    <MathInputSpan style={{ background: isPrintPreview ? white : statusColor, ...cssStyles }}>
                       <MathSpanWrapper
                         latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                       />

@@ -171,6 +171,7 @@
       "title": "Title",
       "label": "Label",
       "depthOfKnowledge": "Depth Of Knowledge",
+      "blooomTaxonomy": "Bloom's Taxonomy",
       "selectDOK": "Select DOK",
       "selectStandards": "Select Standards",
       "searchStandards": "Search standard(s)",

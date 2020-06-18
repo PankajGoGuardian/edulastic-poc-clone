@@ -210,6 +210,7 @@ const QuestionMetadata = ({
           highlightCollection={highlightCollection}
           recentCollectionsList={recentCollectionsList}
           orgCollections={orgCollections}
+          bloomsTaxonomy={questionData.bloomsTaxonomy}
         />
       </div>
     </ThemeProvider>

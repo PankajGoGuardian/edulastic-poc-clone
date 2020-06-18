@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Input, Row, Icon, Col, Button, Modal } from "antd";
-import { themeColor, lightGrey3, white, boxShadowDefault, lightGrey4, fadedBlack } from "@edulastic/colors";
+import { themeColor, lightGrey3, white, boxShadowDefault, lightGrey4, fadedBlack, black } from "@edulastic/colors";
 
 const { TextArea } = Input;
 const Search = Input.Search;
@@ -69,6 +69,11 @@ export const Text = styled.h3`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+
+export const ItemText = styled(Text)`
+  color: ${black};
+`;
+
 export const IconWrapper = styled(Icon)`
   color: green;
   font-size: 20px;

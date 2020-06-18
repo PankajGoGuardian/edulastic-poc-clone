@@ -25,6 +25,7 @@ import {
   AddMultipleStudentsTabButton,
   CancelButton,
   OkButton,
+  ItemText,
   ButtonsContainer,
   AddBulkUserPrimaryTextContainer,
   IconSwap
@@ -36,14 +37,18 @@ const Item = ({ item, moveItem, isEnrolled }) => {
     moveItem(item);
   };
 
+  const {_source: source} = item;
+  const {username, firstName, lastName} = source;
+  const fullName = (`${firstName ? `${firstName} ` : ""}${lastName || ''}`) || 'Anonymous';
+
   return (
     <ItemDiv style={{ cursor: !isEnrolled && "pointer" }} onClick={!isEnrolled ? handleClick : null}>
-      <Text>
-        {item.firstName} {item.lastName}
-      </Text>
+      <ItemText>
+        {fullName}
+      </ItemText>
       <Row type="flex" align="middle">
         <Col span={18}>
-          <Text>{item._source.email}</Text>
+          <Text>{username}</Text>
         </Col>
         <Col span={6}> {isEnrolled && <IconCorrect />}</Col>
       </Row>

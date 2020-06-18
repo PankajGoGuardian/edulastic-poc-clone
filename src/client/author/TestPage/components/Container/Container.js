@@ -614,7 +614,8 @@ class Container extends PureComponent {
       updateLastUsedCollectionList,
       history,
       testAssignments,
-      userRole
+      userRole,
+      userFeatures
     } = this.props;
     if (!test?.title?.trim()?.length) {
       notification({ messageKey: "nameFieldRequired" });
@@ -636,7 +637,8 @@ class Container extends PureComponent {
       if (
         (history.location.state?.editAssigned || testAssignments.length) &&
         test.isUsed &&
-        userRole !== roleuser.EDULASTIC_CURATOR
+        userRole !== roleuser.EDULASTIC_CURATOR &&
+        !userFeatures.isCurator
       ) {
         newTest.isInEditAndRegrade = true;
       }

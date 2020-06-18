@@ -35,6 +35,7 @@ import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks"
 import TestPageNav from "../TestPageNav/TestPageNav";
 import { MobileHeaderFilterIcon, RightFlexContainer, RightWrapper, ShareIcon, TestStatus } from "./styled";
 import PrintTestModal from "../../../src/components/common/PrintTestModal";
+import { getIsCurator } from "../../../src/selectors/user";
 
 const { statusConstants, testContentVisibility: testContentVisibilityOptions } = testConstants;
 
@@ -143,7 +144,8 @@ const TestPageHeader = ({
   isTestLoading,
   validateTest,
   setDisableAlert,
-  playlistHasDraftTests
+  playlistHasDraftTests,
+  isCurator
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -297,16 +299,26 @@ const TestPageHeader = ({
   const headingSubContent = (
     <TestStatus
       data-cy="status"
-      className={(isPlaylist || editEnable) && !isEdulasticCurator ? "draft" : isPlaylist ? playlistStatus : testStatus}
+      className={
+        (isPlaylist || editEnable) && !isEdulasticCurator && !isCurator
+          ? "draft"
+          : isPlaylist
+          ? playlistStatus
+          : testStatus
+      }
     >
-      {(isPlaylist || editEnable) && !isEdulasticCurator
+      {(isPlaylist || editEnable) && !isEdulasticCurator && !isCurator
         ? "DRAFT"
         : getStatus(isPlaylist ? playlistStatus : testStatus)}
     </TestStatus>
   );
 
   const isRegradeFlow =
-    test.isUsed && !!testAssignments.length && !isEdulasticCurator && (testStatus === "draft" || editEnable);
+    test.isUsed &&
+    !!testAssignments.length &&
+    !isEdulasticCurator &&
+    !isCurator &&
+    (testStatus === "draft" || editEnable);
   // if edit assigned there should be assignments to enable the buttons
   const disableButtons =
     isLoadingData || (history.location.state?.editAssigned && !testAssignments.length && !test.isInEditAndRegrade);
@@ -440,7 +452,7 @@ const TestPageHeader = ({
                 title="Edit Test"
                 disabled={editEnable || disableButtons}
                 data-cy="edit"
-                onClick={() => (isEdulasticCurator ? onEnableEdit() : setOpenEditPopup(true))}
+                onClick={() => (isEdulasticCurator || isCurator ? onEnableEdit() : setOpenEditPopup(true))}
               >
                 <IconPencilEdit />
               </EduButton>
@@ -468,6 +480,7 @@ const TestPageHeader = ({
               isDirectOwner &&
               !isPlaylist &&
               editEnable &&
+              ((isCurator && testStatus !== statusConstants.PUBLISHED) || !isCurator) &&
               !isRegradeFlow && (
                 <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={disableButtons}>
                   PUBLISH
@@ -596,7 +609,8 @@ const enhance = compose(
       userRole: getUserRole(state),
       creating: getTestsCreatingSelector(state),
       isLoadingData: shouldDisableSelector(state),
-      testItems: getTestItemsSelector(state)
+      testItems: getTestItemsSelector(state),
+      isCurator: getIsCurator(state)
     }),
     {
       publishForRegrade: publishForRegradeAction,

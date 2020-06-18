@@ -31,6 +31,22 @@ const Container = props => {
   const [dynamicBreadcrumb, setDynamicBreadcrumb] = useState("");
 
   useEffect(() => {
+    window.onbeforeprint = () => {
+      // set 1 so that `isPrinting` dependant useEffect logic doesn't executed
+      if (!isPrinting) props.setPrintingStateAction(1);
+    };
+
+    window.onafterprint = () => {
+      props.setPrintingStateAction(false);
+    };
+
+    return () => {
+      window.onbeforeprint = () => {};
+      window.onafterprint = () => {};
+    };
+  }, []);
+
+  useEffect(() => {
     if (reportType === "standard-reports" || reportType === "custom-reports") {
       setNavigationItems(navigation.navigation[groupName]);
     }
@@ -61,9 +77,9 @@ const Container = props => {
   }, [isCsvDownloading]);
 
   useEffect(() => {
-    if (isPrinting) {
+    // `isPrinting` possible values (1,true,false)
+    if (isPrinting === true) {
       window.print();
-      props.setPrintingStateAction(false);
     }
   }, [isPrinting]);
 

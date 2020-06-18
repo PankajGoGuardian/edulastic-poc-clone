@@ -115,8 +115,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
     password,
     submitStudent,
     absentStudent,
-    removeStudent,
-    addStudent
+    removeStudent
   } = lcbTestData;
   let stuCount = attemptsData.length;
   const statsMap = {};
@@ -135,7 +134,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       testLibrary.clickOnAssign();
       // assign to specific students
       testLibrary.assignPage.selectClass(className);
-      testLibrary.assignPage.clickOnSpecificStudent();
+      // testLibrary.assignPage.clickOnSpecificStudent();
       testLibrary.assignPage.selectStudent(studentAssignList);
       testLibrary.assignPage.clickOnAssign();
     });
@@ -314,14 +313,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
-      //Verify student card status
+      // Verify student card status
       lcb.verifyStudentCard(absentStudent[1].stuName, studentSide.ABSENT, "0 / 2", "0%", {
         Q1: "noattempt"
       });
       // select the absent student and remove
       lcb.selectCheckBoxByStudentName(absentStudent[1].stuName);
       lcb.clickOnRemove();
-      //Verifiy student card not visible once removed
+      // Verifiy student card not visible once removed
       lcb
         .getStudentCardByStudentName(absentStudent[1].stuName)
         .should("not.be.visible", "after removing the student, student card should not be present");
@@ -335,7 +334,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
           "after remove 'Absent' student total student count should change"
         );
 
-      //verify student login and assignment should not be visible
+      // verify student login and assignment should not be visible
       cy.login("student", absentStudent[1].email, password);
       test.assignmentPage.getAssignmentButton().should("not.be.visible");
     });
@@ -353,7 +352,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       testLibrary.header.clickOnAssign();
       // assign to specific students
       testLibrary.assignPage.selectClass(className);
-      testLibrary.assignPage.clickOnSpecificStudent();
+      // testLibrary.assignPage.clickOnSpecificStudent();
       testLibrary.assignPage.selectStudent(students[1].stuName);
       testLibrary.assignPage.selectOpenPolicy(openPolicyTypes.MANUAL);
       testLibrary.assignPage.clickOnAssign();

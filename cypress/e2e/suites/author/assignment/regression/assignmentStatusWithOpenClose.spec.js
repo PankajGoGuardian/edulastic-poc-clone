@@ -52,7 +52,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
       cy.wait(2000);
       // assign to specific students
       testLibrary.assignPage.selectClass(className);
-      testLibrary.assignPage.clickOnSpecificStudent();
+      // testLibrary.assignPage.clickOnSpecificStudent();
       testLibrary.assignPage.selectStudent(students[1].stuName);
       testLibrary.assignPage.clickOnAssign();
       cy.contains("Success!");
@@ -163,10 +163,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
       cy.wait(2000).then(() => {
         // assign to specific students
         testLibrary.assignPage.selectClass(className);
-        testLibrary.assignPage.clickOnSpecificStudent();
+        // testLibrary.assignPage.clickOnSpecificStudent();
         testLibrary.assignPage.selectStudent(students[1].stuName);
 
-        let start = new Date();
+        const start = new Date();
         start.setMinutes(start.getMinutes() + 10);
         testLibrary.assignPage.setStartDate(start);
         testLibrary.assignPage.clickOnAssign();
@@ -221,7 +221,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
       cy.wait(2000);
       // assign to specific students
       testLibrary.assignPage.selectClass(className);
-      testLibrary.assignPage.clickOnSpecificStudent();
+      // testLibrary.assignPage.clickOnSpecificStudent();
       testLibrary.assignPage.selectStudent(students[1].stuName);
       testLibrary.assignPage.showOverRideSetting();
       testLibrary.assignPage.setMarkAsDoneToManual();

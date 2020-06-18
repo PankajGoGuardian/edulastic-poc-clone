@@ -63,14 +63,20 @@ export default class TestAssignPage {
   };
 
   selectStudent = students => {
-    cy.get('[data-cy="selectStudent"]').click();
+    // cy.get('[data-cy="selectStudent"]').click();
+    cy.contains("label", "STUDENTS")
+      .next()
+      .should("not.have.class", "ant-select-disabled")
+      .click();
     cy.wait(1000);
     if (Cypress._.isArray(students)) {
       students.forEach(student => {
-        this.clickOnDropDownOptionByText(student);
+        // this.clickOnDropDownOptionByText(student);
+        cy.get(`[title="${student}"]`).click({ force: true });
       });
     } else {
-      this.clickOnDropDownOptionByText(students);
+      // this.clickOnDropDownOptionByText(students);
+      cy.get(`[title="${students}"]`).click({ force: true });
     }
     cy.focused().blur();
   };
@@ -189,7 +195,7 @@ export default class TestAssignPage {
   };
 
   clickOnAssign = (duplicate = {}) => {
-    let assignmentIdObj = {};
+    const assignmentIdObj = {};
     cy.wait(1000);
     cy.server();
     cy.route("POST", "**/assignments").as("assigned");
@@ -212,8 +218,10 @@ export default class TestAssignPage {
       });
       if (!(duplicate === {} && typeof duplicate.duplicate !== "undefined")) {
         return cy.contains("Success!").then(() => assignmentIdObj);
-      } else return cy.wait(1).then(() => assignmentIdObj);
-    } else return cy.wait(1);
+      }
+      return cy.wait(1).then(() => assignmentIdObj);
+    }
+    return cy.wait(1);
   };
 
   // OVER RIDE TEST SETTING

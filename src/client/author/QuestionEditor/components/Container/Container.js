@@ -328,6 +328,7 @@ class Container extends Component {
         view={view}
         previewTab={preview}
         showPublishButton={showPublishButton}
+        showSettingsButton={false}
       />
     );
   };

@@ -105,11 +105,12 @@ class Assignments extends Component {
     if (!defaultTermId) {
       filters.termId = storedFilters.termId || "";
     }
-
-    loadAssignments({ filters });
-
+    if (userRole === roleuser.TEACHER) {
+      loadAssignments({ filters });
+    } else {
+      loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
+    }
     loadFolders();
-    loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
     this.setState({ filterState: filters });
   }
 
@@ -246,7 +247,7 @@ class Assignments extends Component {
           onOk={this.onEnableEdit}
         />
         {toggleDeleteAssignmentModalState ? (
-          <DeleteAssignmentModal testId={currentTestId} testName={currentTest?.title} />
+          <DeleteAssignmentModal testId={currentTestId} testName={currentTest ?.title} />
         ) : null}
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -323,7 +324,7 @@ class Assignments extends Component {
                           status={filterState.status}
                           togglePrintModal={this.togglePrintModal}
                         />
-                      )}
+                        )}
                     </StyledCard>
                   </TableWrapper>
                 </>
@@ -333,7 +334,7 @@ class Assignments extends Component {
                   tests={tests}
                   onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                 />
-              )}
+                )}
             </Main>
           </FlexContainer>
         </Container>

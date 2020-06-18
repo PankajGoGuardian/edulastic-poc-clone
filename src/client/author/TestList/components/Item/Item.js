@@ -191,7 +191,6 @@ class Item extends Component {
       item: {
         title,
         tags = [],
-        analytics,
         _source = {},
         thumbnail,
         status,
@@ -215,6 +214,7 @@ class Item extends Component {
       currentUserId,
       isTestLiked
     } = this.props;
+    const { analytics = [] } = isPlaylist ? _source : item;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;

@@ -144,16 +144,7 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: {
-        title,
-        analytics = [],
-        tags = [],
-        _source = {},
-        status: testStatus,
-        description,
-        thumbnail,
-        collections = []
-      },
+      item: { title, tags = [], _source = {}, status: testStatus, description, thumbnail, collections = [] },
       item,
       authorName,
       owner: isOwner = false,
@@ -178,6 +169,7 @@ class ListItem extends Component {
       currentUserId,
       isTestLiked
     } = this.props;
+    const { analytics = [] } = isPlaylist ? _source : item;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
     const standardsIdentifiers = isPlaylist

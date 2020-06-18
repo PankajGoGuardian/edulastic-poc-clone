@@ -1,6 +1,5 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
-import { delay } from "redux-saga";
 import { message } from "antd";
 import { takeLatest, takeEvery, put, call, all, select, take } from "redux-saga/effects";
 import { get, flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy } from "lodash";
@@ -9,7 +8,7 @@ import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
 import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
-import { curriculumSequencesApi, assignmentApi, userContextApi, groupApi, recommendationsApi } from "@edulastic/api";
+import { curriculumSequencesApi, assignmentApi, userContextApi, groupApi, recommendationsApi, TokenStorage as Storage } from "@edulastic/api";
 import produce from "immer";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
 import { getUserSelector, getUserId } from "../src/selectors/user";
@@ -265,15 +264,15 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
     const items = flatten(unflattenedItems);
-    const recentPlaylists = yield select(state => state?.playlists?.recentPlayLists || []);
+    const recentPlaylists = yield select(state => state ?.playlists ?.recentPlayLists || []);
 
     // show notification if when user comes to playlist page and playlist has assigned assignments
     // show only notification for teacher
     if (showNotification) {
-      const modules = items?.reduce((acc, curr) => [...acc, ...(curr?.modules || [])], []);
+      const modules = items ?.reduce((acc, curr) => [...acc, ...(curr ?.modules || [])], []);
       const sumOfclasse = modules
         .reduce((acc, curr) => [...acc, ...(curr.data || [])], [])
-        .flatMap(x => x?.assignments || {})
+        .flatMap(x => x ?.assignments || {})
         .reduce((acc, curr) => acc + get(curr, "class.length", 0), 0);
       const playlistBeingUsed = idsForFetch.length === 1 && recentPlaylists.find(x => x._id === idsForFetch[0]);
       if (sumOfclasse > 0 && playlistBeingUsed) {
@@ -531,7 +530,7 @@ function* saveCurriculumSequence({ payload }) {
   delete destinationCurriculumSequence._id;
 
   yield putCurriculumSequence({
-    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload?.isPlaylist }
+    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload ?.isPlaylist }
   });
 }
 
@@ -889,7 +888,7 @@ function* fetchClassListByDistrictId() {
       fetchClassListSuccess({ classList: classList.map(x => ({ id: x.classId, name: x.className, type: "class" })) })
     );
   } catch (error) {
-    notification({ msg: error?.data?.message });
+    notification({ msg: error ?.data ?.message });
     console.error(error);
   }
 }
@@ -905,14 +904,14 @@ function* fetchStudentListByGroupId({ payload }) {
       fetchStudentListSuccess({
         studentList: studentList.map(x => ({
           id: x.studentId,
-          name: `${x?.firstName || ""} ${x?.lastName || ""}`,
+          name: `${x ?.firstName || ""} ${x ?.lastName || ""}`,
           type: "student",
           classId: payload.classId
         }))
       })
     );
   } catch (error) {
-    notification({ msg: error?.data?.message });
+    notification({ msg: error ?.data ?.message });
     console.error(error);
   }
 }
@@ -934,8 +933,8 @@ function* fetchPlaylistAccessList({ payload }) {
       const result = yield call(groupApi.fetchPlaylistAccess, playlistId);
       if (result) {
         yield put(updateDroppedAccessList(result));
-        const classIds = [...result?.classList?.map(x => x?._id), ...result?.studentList?.map(x => x?.groupId)];
-        if (classIds?.length) {
+        const classIds = [...result ?.classList ?.map(x => x ?._id), ...result ?.studentList ?.map(x => x ?.groupId)];
+        if (classIds ?.length) {
           yield all(classIds.map(classId => put(fetchStudentListAction({ districtId, classId }))));
         }
       }
@@ -1179,12 +1178,12 @@ function* deletePlaylistSaga({ payload: id }) {
     // this returns promise. so don't call on this
     message.loading("", 0);
     yield call(curriculumSequencesApi.delelePlaylist, id);
-    // at-least a second needed for this change to be reflected in elastic search
-    yield call(delay, 1000);
+    yield call(Storage.addPlaylistIdToDeleted, id);
     message.destroy();
     notification({ type: "success", messageKey: "playlistDeleteSuccess" });
     yield put(push("/author/playlists"));
   } catch (e) {
+    message.destroy();
     console.error("delete playlist failed -e ", e);
     notification({ messageKey: "playlistDeleteFailed" });
     Sentry.captureException(e);
@@ -1435,9 +1434,9 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
  */
 const updateCurriculumSequenceReducer = (state, { payload }) => {
   const curriculumSequence = payload;
-  const id = (curriculumSequence?.[0] && curriculumSequence[0]._id) || curriculumSequence._id;
+  const id = (curriculumSequence ?.[0] && curriculumSequence[0]._id) || curriculumSequence._id;
 
-  state.byId[id] = curriculumSequence?.[0] || curriculumSequence;
+  state.byId[id] = curriculumSequence ?.[0] || curriculumSequence;
   // if (curriculumSequence.type === "guide") {
   state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
   state.originalData = state.destinationCurriculumSequence;
@@ -1723,7 +1722,7 @@ function updateStudentList(state, { payload }) {
       ...state.dropPlaylistSource,
       searchSource: {
         ...state.dropPlaylistSource.searchSource,
-        studentList: uniqBy(state?.dropPlaylistSource?.searchSource?.studentList.concat(payload.studentList), "id")
+        studentList: uniqBy(state ?.dropPlaylistSource ?.searchSource ?.studentList.concat(payload.studentList), "id")
       }
     },
     studentListFetching: false
@@ -1813,18 +1812,18 @@ export default createReducer(initialState, {
   [TOGGLE_MANAGE_MODULE]: toggleManageModuleHandler,
   [ADD_MODULE]: (state, { payload }) => {
     const newModule = createNewModuleState(
-      payload?.title || payload?.moduleName,
-      payload?.description,
+      payload ?.title || payload ?.moduleName,
+      payload ?.description,
       payload.moduleId,
       payload.moduleGroupName
     );
     if (!state.destinationCurriculumSequence.modules) {
       state.destinationCurriculumSequence.modules = [];
     }
-    if (payload?.afterModuleIndex !== undefined) {
-      state.destinationCurriculumSequence?.modules?.splice(payload.afterModuleIndex, 0, newModule);
+    if (payload ?.afterModuleIndex !== undefined) {
+      state.destinationCurriculumSequence ?.modules ?.splice(payload.afterModuleIndex, 0, newModule);
     } else {
-      state.destinationCurriculumSequence?.modules?.push(newModule);
+      state.destinationCurriculumSequence ?.modules ?.push(newModule);
     }
     return state;
   },
@@ -1840,14 +1839,14 @@ export default createReducer(initialState, {
   },
   [DELETE_MODULE]: (state, { payload }) => {
     if (payload !== undefined) {
-      state.destinationCurriculumSequence?.modules?.splice(payload, 1);
+      state.destinationCurriculumSequence ?.modules ?.splice(payload, 1);
     }
     return state;
   },
   [ORDER_MODULES]: (state, { payload }) => {
     const { oldIndex, newIndex } = payload;
-    const obj = state.destinationCurriculumSequence?.modules?.splice(oldIndex, 1);
-    state.destinationCurriculumSequence?.modules?.splice(newIndex, 0, obj[0]);
+    const obj = state.destinationCurriculumSequence ?.modules ?.splice(oldIndex, 1);
+    state.destinationCurriculumSequence ?.modules ?.splice(newIndex, 0, obj[0]);
     return state;
   },
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
@@ -1857,8 +1856,8 @@ export default createReducer(initialState, {
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload;
     const alreadyPresent = Object.keys(state.differentiationWork)
-      .flatMap(x => state.differentiationWork?.[x] || [])
-      .find(x => x?.testId === testId);
+      .flatMap(x => state.differentiationWork ?.[x] || [])
+      .find(x => x ?.testId === testId);
     if (!alreadyPresent) {
       state.differentiationWork[type].push({
         testId,
@@ -1872,7 +1871,7 @@ export default createReducer(initialState, {
   [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, contentId, masteryRange, contentTitle, contentType, contentUrl } = payload;
     const alreadyPresent = Object.keys(state.differentiationWork)
-      .flatMap(x => state.differentiationWork?.[x] || [])
+      .flatMap(x => state.differentiationWork ?.[x] || [])
       .find(x => x.contentId === contentId);
     if (!alreadyPresent) {
       state.differentiationWork[type].push({
@@ -1934,7 +1933,7 @@ export default createReducer(initialState, {
   },
   [REMOVE_TEST_FROM_MODULE_PLAYLIST]: (state, { payload }) => {
     const { moduleIndex, itemId } = payload;
-    if (state?.destinationCurriculumSequence?.modules?.[moduleIndex]?.data?.find(x => x.contentId === itemId)) {
+    if (state ?.destinationCurriculumSequence ?.modules ?.[moduleIndex] ?.data ?.find(x => x.contentId === itemId)) {
       state.destinationCurriculumSequence.modules[moduleIndex].data = state.destinationCurriculumSequence.modules[
         moduleIndex
       ].data.filter(x => x.contentId !== itemId);
@@ -1948,7 +1947,7 @@ export default createReducer(initialState, {
     state.signedRequest = payload;
   },
   [TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID]: (state, { payload }) => {
-    if (payload?.id) {
+    if (payload ?.id) {
       state.playlistTestDetailsModal.isVisible = true;
       state.playlistTestDetailsModal.currentTestId = payload.id;
     } else {

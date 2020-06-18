@@ -1,6 +1,7 @@
 // @ts-check
 import uuid from "uuid/v4";
 import { configureScope } from "@sentry/browser";
+import { uniq } from 'lodash';
 import AppConfig from "../../../../app-config";
 
 const tokenKey = (userId, role) => `user:${userId}:role:${role}`;
@@ -14,7 +15,7 @@ export const updateSentryScope = (user) => {
   if (AppConfig.sentryURI) {
     // for authenticated users user will be passed
     if (user && user._id) {
-      const {_id, role, districtId, kid} = user;
+      const { _id, role, districtId, kid } = user;
       configureScope(scope => {
         scope.setUser({ id: _id });
         scope.setTags({
@@ -74,10 +75,10 @@ export const initKID = () => {
  * and sets the same to sentry scope
  * @param {*} user 
  */
-export const updateKID = ({_id, role, districtId, kid}) => {
+export const updateKID = ({ _id, role, districtId, kid }) => {
   if (window.sessionStorage) {
     window.sessionStorage.kid = kid;
-    updateSentryScope({_id, role, districtId, kid});
+    updateSentryScope({ _id, role, districtId, kid });
   }
 };
 
@@ -131,10 +132,22 @@ export function getProxyParent(roles = []) {
     const proxyParent = JSON.parse(getFromLocalStorage("proxyParent"));
     if ((!roles.length || roles.includes(proxyParent.role)) && proxyParent.role) {
       return proxyParent;
-    } 
-      return null;
-    
+    }
+    return null;
+
   } catch (e) {
     return null;
   }
+}
+
+
+export function addPlaylistIdToDeleted(id) {
+  if (window && window.sessionStorage) {
+    const { deletedPlaylists = "[]" } = window.sessionStorage;
+    window.sessionStorage.deletedPlaylists = JSON.stringify(uniq([...JSON.parse(deletedPlaylists), id]));
+  }
+}
+
+export function getDeletedPlaylistIds() {
+  return JSON.parse(getFromSessionStorage("deletedPlaylists") || "[]");
 }

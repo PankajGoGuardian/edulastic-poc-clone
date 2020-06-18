@@ -3,7 +3,7 @@ import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
-import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
+import { curriculumSequencesApi, userContextApi, TokenStorage as Storage } from "@edulastic/api";
 import produce from "immer";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
 import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
@@ -80,11 +80,17 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
       page,
       limit
     });
-
+    const deletedPlaylistIds = new Set(yield call(Storage.getDeletedPlaylistIds));
+    /**
+     * deleted playlists won't sometimes sync right away to elastic search. 
+     * they are tracked by sessionStorage of the user who deleted them
+     * TODO: Take care of sessionStorage cleanup if ever the bloat becomes too big and causes issue to any user
+     */
+    const results = result.hits.hits.filter(x => !deletedPlaylistIds.has(x));
     yield put(
       receivePlaylistSuccessAction({
-        entities: result.hits.hits,
-        count: result.hits.total,
+        entities: results,
+        count: result.hits.total - (result.hits.hits.length - results.length),
         page,
         limit
       })

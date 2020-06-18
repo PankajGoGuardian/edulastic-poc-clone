@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useRef } from "react";
-import { AutoComplete, Input, Icon } from "antd";
+import { AutoComplete, Input, Icon, Empty } from "antd";
 import styled from "styled-components";
 
 import { black, lightGreySecondary, themeColor } from "@edulastic/colors";
@@ -154,6 +154,7 @@ const AutocompleteDropDown = ({
         onChange={onChange}
         value={text}
         ref={autoRef}
+        notFoundContent={<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ textAlign: "left", margin: "10px 0" }} />}
       >
         <Input
           title={title}

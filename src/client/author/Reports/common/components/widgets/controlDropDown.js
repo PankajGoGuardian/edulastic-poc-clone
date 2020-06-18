@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useCallback } from "react";
-import { Button, Dropdown, Menu, Icon } from "antd";
+import { Button, Dropdown, Menu, Icon, Empty } from "antd";
 import styled from "styled-components";
 import { partial } from "lodash";
 import { fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
@@ -10,7 +10,11 @@ import { useInternalEffect } from "../../hooks/useInternalEffect";
 const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
   <Menu selectedKeys={[selected.key]} className={`${className}`} onClick={handleMenuClick}>
     <Menu.Item key="0" disabled>
-      {prefix}
+      {data.length ? (
+        prefix
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ textAlign: "left", margin: "10px 0" }} />
+      )}
     </Menu.Item>
     {data.map(item => (
       <Menu.Item key={item.key} title={item.title}>

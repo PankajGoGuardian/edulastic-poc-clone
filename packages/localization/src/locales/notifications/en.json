@@ -995,6 +995,10 @@
     "message": "Default settings updated successfully.",
     "description": ""
   },
+  "settingsUpdatedSuccessfully": {
+    "message": "Settings updated successfully",
+    "description": ""
+  },
   "powerTeacherToolsUpdatedSuccessfully": {
     "message": "Power tools updated successfully",
     "description": ""
@@ -1797,7 +1801,7 @@
   },
   "playlistRemoveFromUseFailed": {
     "message": "Playlist  removed from Favourites failed",
-     "description": ""
+    "description": ""
   },
   "selectOneOrMoreStudentsForGroup": {
     "message": "Please select one or more students to add to group",

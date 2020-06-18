@@ -191,7 +191,7 @@ class MainSetting extends Component {
             freezeSettings: false
           });
         } else {
-          setMaxAttempts(3);
+          setMaxAttempts(1);
           setTestData({
             releaseScore: releaseGradeLabels.WITH_ANSWERS,
             maxAnswerChecks: 3,

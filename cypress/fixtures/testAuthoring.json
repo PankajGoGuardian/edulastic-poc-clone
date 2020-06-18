@@ -144,6 +144,12 @@
     "subject": ["Math"],
     "itemKeys": ["MCQ_MULTI.3", "CHOICE_STD.2"]
   },
+  "TEST_SETTING_3": {
+    "name": "Test Assessment",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.1", "MCQ_TF.1"]
+  },
   "TEST_SETTING_OVERRIDE": {
     "name": "Test Assessment",
     "grade": ["Kindergarten"],

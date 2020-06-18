@@ -333,7 +333,7 @@ class MainSetting extends Component {
       enableScratchpad = true,
       freezeSettings = false,
       hasInstruction = false,
-      instruction=""
+      instruction = ""
     } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
@@ -674,6 +674,7 @@ class MainSetting extends Component {
                     disabled={!owner || !isEditable || disableAnswerOnPaper}
                     defaultChecked={answerOnPaper}
                     onChange={this.updateTestData("answerOnPaper")}
+                    data-cy="answer-on-paper"
                   />
                   <Description>
                     Use this opinion if you are administering this assessment on paper. If you use this opinion, you

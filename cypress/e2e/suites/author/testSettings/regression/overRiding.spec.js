@@ -1,19 +1,14 @@
 /* eslint-disable prefer-const */
-import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
-import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-import StudentTestPage from "../../../../framework/student/studentTestPage";
+import TestReviewTab from "../../../../framework/author/tests/testDetail/testReviewTab";
 import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
-import { CALCULATOR, attemptTypes } from "../../../../framework/constants/questionTypes";
-import FileHelper from "../../../../framework/util/fileHelper";
+import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
+import { releaseGradeTypesDropDown as releaseType } from "../../../../framework/constants/assignmentStatus";
+import { attemptTypes, CALCULATOR } from "../../../../framework/constants/questionTypes";
+import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
-import {
-  studentSide,
-  releaseGradeTypesDropDown as releaseType
-} from "../../../../framework/constants/assignmentStatus";
-import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
-import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
+import StudentTestPage from "../../../../framework/student/studentTestPage";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 const testData = require("../../../../../fixtures/testAuthoring");
 
@@ -28,8 +23,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
   const testAssignPage = new TestAssignPage();
   const testSettings = new TestSettings();
   const reportsPage = new ReportsPage();
-  const authorAssignmentPage = new AuthorAssignmentPage();
-  const liveClassBoardPage = new LiveClassboardPage();
 
   const Teacher = {
     email: "teacher.overiding@snapwiz.com",
@@ -166,42 +159,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
         reportsPage.sidebar.clickOnAssignment();
         cy.contains("Assignments");
         assignmentsPage.verifyAbsenceOfTest(OriginalTestId);
-      });
-    });
-    context(">verify answer on paper", () => {
-      it(">assign test with answer on paper", () => {
-        cy.deleteAllAssignments("", Teacher.email);
-        cy.login("teacher", Teacher.email, Teacher.pass);
-        testAssignPage.visitAssignPageById(OriginalTestId);
-        testAssignPage.showOverRideSetting();
-        testAssignPage.selectAnswerOnPaper();
-        testAssignPage.selectClass("Class");
-        testAssignPage.selectTestType("Class Assessment");
-        // testAssignPage.clickOnEntireClass();
-        testAssignPage.clickOnAssign();
-      });
-      it(">navigate to lcb and verfy student status after closing the test", () => {
-        testAssignPage.sidebar.clickOnAssignment();
-        authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
-        liveClassBoardPage.header.clickOnClose();
-        liveClassBoardPage.getSubmitSummary().should("contain.text", `4 out of 4 Submitted`);
-        liveClassBoardPage.getAllStudentStatus().each(ele => {
-          cy.wrap(ele).should("contain.text", studentSide.IN_GRADING);
-        });
-      });
-      it(">verify performance after giving the score", () => {
-        liveClassBoardPage.clickonQuestionsTab();
-        itemsInTest.forEach((element, i) => {
-          liveClassBoardPage.questionResponsePage.selectQuestion(`Q${i + 1}`);
-          liveClassBoardPage.questionResponsePage.getQuestionContainerByStudent(Student1.name).as("studentQuesCard");
-          liveClassBoardPage.questionResponsePage
-            .getScoreInput(cy.get("@studentQuesCard"))
-            .should("have.attr", "value", ``);
-          liveClassBoardPage.questionResponsePage.updateScoreAndFeedbackForStudent(Student1.name, "2");
-        });
-        liveClassBoardPage.clickOnCardViewTab();
-        liveClassBoardPage.getStudentPerformanceByIndex(0).should("have.text", `100%`);
-        liveClassBoardPage.getStudentScoreByIndex(0).should("have.text", `4 / 4`);
       });
     });
   });

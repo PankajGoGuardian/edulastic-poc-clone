@@ -1,5 +1,4 @@
 import TestHeader from "./header";
-import { CALCULATOR, attemptTypes } from "../../../constants/questionTypes";
 
 export default class TestSettings {
   constructor() {
@@ -23,6 +22,8 @@ export default class TestSettings {
   getCheckAnswer = () => cy.get("#check-answer-tries-per-question").find("input");
 
   getTimeSettingSwitch = () => cy.get('[data-cy="assignment-time-switch"]');
+
+  getAnsOnPaperSwitch = () => cy.get('[data-cy="answer-on-paper"]');
 
   getTimeSettingTextBox = () => cy.get('[data-cy="assignment-time"]');
 
@@ -116,6 +117,24 @@ export default class TestSettings {
       expect($ele, "Time switch should be enabled first").to.not.have.class("ant-switch-checked");
       this.getAllowExit().uncheck();
     });
+
+  // answer on paper
+  enableAnswerOnPaper = () =>
+    this.getAnsOnPaperSwitch().then($ele => {
+      if (!$ele.hasClass("ant-switch-checked"))
+        cy.wrap($ele)
+          .click()
+          .should("have.class", "ant-switch-checked");
+    });
+
+  disableAnswerOnPaper = () =>
+    this.getAnsOnPaperSwitch().then($ele => {
+      if ($ele.hasClass("ant-switch-checked"))
+        cy.wrap($ele)
+          .click()
+          .should("not.have.class", "ant-switch-checked");
+    });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

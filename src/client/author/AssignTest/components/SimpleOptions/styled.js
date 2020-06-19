@@ -294,6 +294,7 @@ export const DivBlock = styled.div`
 `;
 
 export const Label = styled.label`
+  display:flex;
   font-size: ${props => props.theme.linkFontSize};
   font-weight: 600;
   text-transform: uppercase;

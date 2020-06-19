@@ -612,7 +612,12 @@ const Settings = ({
         >
           <StyledRowSettings gutter={16} height="40">
             <Col span={12}>
-              <Label>TIMED TEST</Label>
+              <Label><span>TIMED TEST</span>
+                <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
+                  <IconInfo color={lightGrey9} style={{ cursor: "pointer",marginLeft:"15px"}} />
+                </Tooltip>
+              </Label>
+        
             </Col>
             <Col span={10} style={{ display: "flex", flexDirection: "column" }}>
               <Row style={{ display: "flex", alignItems: "center" }}>
@@ -660,11 +665,6 @@ const Settings = ({
                   </CheckBoxWrapper>
                 )}
               </Row>
-            </Col>
-            <Col span={2} justify="end" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-              <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                <IconInfo color={lightGrey9} style={{ cursor: "pointer" }} />
-              </Tooltip>
             </Col>
           </StyledRowSettings>
         </FeaturesSwitch>

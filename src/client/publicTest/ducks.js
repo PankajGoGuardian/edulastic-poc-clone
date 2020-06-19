@@ -1,18 +1,17 @@
 import { createReducer, createAction, createSelector as createSelectorator } from "redux-starter-kit";
 import { takeLatest, put, call, all, select } from "redux-saga/effects";
-import { values, groupBy, get, partial, maxBy as _maxBy } from "lodash";
+import { values, groupBy, get, partial } from "lodash";
 import { normalize } from "normalizr";
 import { createSelector } from "reselect";
+import { assignmentApi, reportsApi, testsApi } from "@edulastic/api";
+import { notification } from "@edulastic/common";
+import { push } from "connected-react-router";
 import { getCurrentGroup, getClassIds } from "../student/Reports/ducks";
 import { getUserId } from "../student/Login/ducks";
-import { assignmentApi, reportsApi, testsApi } from "@edulastic/api";
 import { transformAssignmentForRedirect } from "../student/Assignments/ducks";
 import { assignmentSchema } from "../student/sharedDucks/AssignmentModule/ducks";
 
 import { reportSchema } from "../student/sharedDucks/ReportsModule/ducks";
-import { message } from "antd";
-import { notification } from "@edulastic/common";
-import { push } from "connected-react-router";
 
 const FETCH_PUBLIC_TEST = "[test] fetch publicly shared test";
 const FETCH_PUBLIC_TEST_SUCCESS = "[test] success fetch publicly shared test";
@@ -23,12 +22,12 @@ const FETCH_ASSIGNMENTS_DATA_BY_TEST_SUCCESS = "[studentAssignments] fetch assig
 export const fetchTestAction = createAction(FETCH_PUBLIC_TEST);
 export const fetchAssignmentsByTestAction = createAction(FETCH_ASSIGNMENTS_DATA_BY_TEST);
 
-//selector
+// selector
 const getCurrentUserId = createSelectorator(["user.user._id"], r => r);
 const reportsSelector = state => get(state, "publicTest.assignments.reportsObj", {});
 export const assignmentsSelector = state => get(state, "publicTest.assignments.assignmentObj", {});
 
-//create separate assignment for each class belongs to current student
+// create separate assignment for each class belongs to current student
 export const getAllAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
@@ -68,7 +67,7 @@ const initialState = {
   loading: false
 };
 
-//reducers
+// reducers
 export const publicTestReducer = createReducer(initialState, {
   [FETCH_PUBLIC_TEST]: state => {
     state.loading = true;
@@ -101,7 +100,7 @@ function* fetchPublicTest({ payload }) {
   }
 }
 
-//fetch all assignments for specific test assigned to a student
+// fetch all assignments for specific test assigned to a student
 function* fetchAssignmentsByTest({ payload }) {
   try {
     const { testId } = payload;
@@ -115,7 +114,7 @@ function* fetchAssignmentsByTest({ payload }) {
 
     // transform to handle redirect
     const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
-    const assignmentsProcessed = assignments.assignments.map(transformFn);
+    const assignmentsProcessed = assignments.map(transformFn);
 
     // normalize reports
     const {

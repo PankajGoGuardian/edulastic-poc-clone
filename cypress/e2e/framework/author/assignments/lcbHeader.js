@@ -87,7 +87,7 @@ export default class LCBHeader {
 
   clickOnViewPassword = () => {
     this.getDropDown().click({ force: true });
-    cy.get('[data-cy="viewPassword"]').click();
+    cy.get('[data-cy="viewPassword"]').click({ force: true });
   };
 
   clickLCBSettings = () => {

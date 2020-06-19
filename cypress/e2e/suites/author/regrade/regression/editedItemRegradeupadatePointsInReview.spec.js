@@ -81,7 +81,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
     }
   };
 
-  const attemptType = [attemptTypes.RIGHT];
+  const attemptType = [attemptTypes.RIGHT, attemptTypes.PARTIAL_CORRECT];
   const assignmentStatus = [studentSide.SUBMITTED, studentSide.IN_PROGRESS];
   const regrade_Options = _.values(regradeOptions.edited);
   const assignedtestids = [];

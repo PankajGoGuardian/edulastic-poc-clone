@@ -128,6 +128,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
         assignmentsPage.clickOnAssigmentByTestId(newTestId);
         studentTestPage.verifyNoOfQuestions(itemsInTest.length);
+        studentTestPage.getQuestionByIndex(0, true);
         studentTestPage.attemptQuestionsByQueType(questionType, attempt);
         studentTestPage.submitTest();
         reportsPage.validateStats(1, "1/1", "4/4", 100);

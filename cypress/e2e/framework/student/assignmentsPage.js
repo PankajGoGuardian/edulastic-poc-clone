@@ -16,7 +16,7 @@ class AssignmentsPage {
   }
 
   getAssignmentByTestId(testId) {
-    return cy.get(`[data-cy="test-${testId}"]`);
+    return cy.get(`[data-cy="test-${testId}"]`, { timeout: 30000 });
   }
 
   getReviewButton() {
@@ -262,10 +262,8 @@ class AssignmentsPage {
   verifyAssignTypeByTestId = (id, aType) => this.getTestTypeByTestId(id).should("have.text", aType);
 
   verifyStatusOfAssignment = status => {
-    // TODO:
     const statuses = [];
     this.getStatus().each(ele => {
-      console.log(ele.text());
       statuses.push(ele.text().trim());
     });
     cy.wait(1).then(() => status.forEach(sta => expect(sta).to.be.oneOf(statuses)));

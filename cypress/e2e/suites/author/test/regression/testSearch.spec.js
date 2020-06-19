@@ -73,10 +73,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       // Searched Draft Tests should Be visible in Authored By Me
       it(">search by standards", () => {
         techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
         Object.keys(standardToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           standardToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -84,10 +83,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
       it(">search by tags", () => {
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
         Object.keys(tagsToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           tagsToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -98,7 +96,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
-          searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
           testLibrary.getTestCardById(id).should("be.visible");
         });
@@ -107,7 +104,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
-          searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.getTestCardById(id).should("be.visible");
         });
@@ -116,9 +112,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
     context(">searching in 'entire library'", () => {
       // Searched Draft Tests should Not Be visible in Entire Library
       it(">search by standards in draft-state", () => {
-        searchFilters.clearAll();
         Object.keys(standardToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           standardToTest[ele].forEach(id => {
             testLibrary.checkforNonExistanceOfTest(id);
@@ -127,9 +123,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       });
       it(">search by tags", () => {
         // techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
         Object.keys(tagsToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           tagsToTest[ele].forEach(id => {
             testLibrary.checkforNonExistanceOfTest(id);
@@ -139,7 +135,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       it(">search by name", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
-          searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
           testLibrary.checkforNonExistanceOfTest(id);
         });
@@ -147,7 +142,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       it(">search by id", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
-          searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.checkforNonExistanceOfTest(id);
         });
@@ -167,9 +161,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
 
       it(">search by standards", () => {
         techersidebar.clickOnTestLibrary();
-        searchFilters.clearAll();
         Object.keys(standardToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           standardToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -177,9 +171,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
       it(">search by tags", () => {
-        searchFilters.clearAll();
         Object.keys(tagsToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           tagsToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -189,7 +183,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       it(">search by name", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
-          searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(testNames[i]);
           testLibrary.getTestCardById(id).should("be.visible");
         });
@@ -198,7 +191,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
-          searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.getTestCardById(id).should("be.visible");
         });
@@ -207,10 +199,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
     context(">searching in 'authored by me'", () => {
       // Searched Draft Tests should Be visible in Authored By Me
       it(">search by standards", () => {
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
         Object.keys(standardToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           standardToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -218,10 +209,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
       it(">search by tags in", () => {
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
         Object.keys(tagsToTest).forEach(ele => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           tagsToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -229,10 +219,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
       it(">search by name", () => {
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
         test_ids.forEach((id, i) => {
-          searchFilters.getSearchTextBox().clear({ force: true });
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(testNames[i]);
           testLibrary.getTestCardById(id).should("be.visible");
         });
@@ -241,7 +230,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         test_ids.forEach(id => {
-          searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.getTestCardById(id).should("be.visible");
         });

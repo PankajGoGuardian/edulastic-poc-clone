@@ -214,6 +214,11 @@ export default class ExpressGraderPage extends LiveClassboardPage {
           studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : studentResponseByAttempt;
           break;
 
+        case queTypes.CLOZE_TEXT:
+          studentResponseByAttempt = attemptData[attemptType];
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : studentResponseByAttempt;
+          break;
+
         case queTypes.CHOICE_MATRIX_STANDARD:
         case queTypes.CHOICE_MATRIX_LABEL:
         case queTypes.CHOICE_MATRIX_INLINE:
@@ -224,6 +229,9 @@ export default class ExpressGraderPage extends LiveClassboardPage {
           studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : CR_Questions;
           break;
 
+        case queTypes.MATH_NUMERIC:
+          studentResponse = attemptType === attemptTypes.SKIP ? skippedResponse : attemptData[attemptType];
+          break;
         default:
           assert.fail(1, 2, "Qusetion type does not match while calculating question table data");
           break;

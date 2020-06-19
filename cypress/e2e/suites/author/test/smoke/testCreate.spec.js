@@ -270,9 +270,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
     testLibrary.getCreateNewTestButton().click();
-    testLibrary.getUploadPDFInTestCreate().click();
+    testLibrary.getUploadPDFInTestCreate().click({ force: true });
     cy.route("POST", "**api/test").as("createTest");
-    testLibrary.getAnswerOnlyButton().click();
+    testLibrary.getAnswerOnlyButton().click({ force: true });
     cy.wait("@createTest").then(xhr => testLibrary.saveTestId(xhr));
     testLibrary.header.verifyHeaderActionButtons();
     testLibrary.header.verifyHeaders(true, false, true, true, true);

@@ -90,10 +90,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
     });
     it("Edit Points of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
-      itemListPage.searchFilters.getAuthoredByMe();
-      itemListPage.searchFilters.clearAll();
+
       itemIds.forEach((ele, i) => {
-        itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
         itemListPage.searchFilters.typeInSearchBox(ele);
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();
@@ -155,9 +155,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
     });
     it("Edit question text of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
-      itemListPage.searchFilters.clearAll();
+
       itemIds.forEach((ele, i) => {
-        itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
         itemListPage.searchFilters.typeInSearchBox(ele);
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();
@@ -226,7 +227,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       testLibraryPage.sidebar.clickOnItemBank();
       itemListPage.searchFilters.clearAll();
       itemIds.forEach((ele, i) => {
-        itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
         itemListPage.searchFilters.typeInSearchBox(ele);
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();
@@ -278,9 +280,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
 
     it("Edit question text of each item", () => {
       testLibraryPage.sidebar.clickOnItemBank();
-      itemListPage.searchFilters.clearAll();
       itemIds.forEach((ele, i) => {
-        itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
         itemListPage.searchFilters.typeInSearchBox(ele);
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();

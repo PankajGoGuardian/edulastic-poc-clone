@@ -101,7 +101,7 @@ class StudentTestPage {
 
     this.getCheckAns().click();
 
-    if (isExhausted) this.getEvaluationMessage().should("contain.text", "Check answer limit exceeded for the item");
+    if (isExhausted) CypressHelper.verifyAntMesssage("Check answer limit exceeded for the item");
     else
       cy.wait("@evaluation").then(xhr =>
         expect(
@@ -209,18 +209,17 @@ class StudentTestPage {
 
   checkAnsValidateAsWrong = (maxPoints = 1) => {
     this.clickOnCheckAns();
-    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
-    return this;
+    CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
   };
 
   checkAnsValidateAsRight = (maxPoints = 1) => {
     this.clickOnCheckAns();
-    this.getEvaluationMessage().should("contain.text", `score: ${maxPoints}/${maxPoints}`);
+    CypressHelper.verifyAntMesssage(`score: ${maxPoints}/${maxPoints}`);
   };
 
   checkAnsValidateAsNoPoint = (maxPoints = 1) => {
     this.clickOnCheckAns();
-    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
+    CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
     return this;
   };
 

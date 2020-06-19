@@ -124,7 +124,7 @@ export default class TestLibrary {
 
   getTestlibraryTitle = () => cy.get('[title="Test Library"]');
 
-  getDescriptionOnTestCardPopUp = () => cy.get('[data-cy="testcard-description"]');
+  getDescriptionOnTestCardPopUp = () => cy.get('[data-cy="testcard-description"]').next();
 
   getUploadPDFInTestCreate = () => cy.get("button").contains("UPLOAD PDF");
 

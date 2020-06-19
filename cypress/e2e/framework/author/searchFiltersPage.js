@@ -179,7 +179,7 @@ export default class SearchFilters {
         this.clearMultipleSelectionDropDown(dataCyAttributes.subject);
         CypressHelper.selectDropDownByAttribute(dataCyAttributes.subject, standards.subject);
         this.waitForSearchResponse();
-        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.subject, standards.subject);
+        CypressHelper.verifySelectedOptionInDropDownByAttr(dataCyAttributes.subject, standards.subject, true);
       }
       if (standards.standardSet) {
         CypressHelper.selectDropDownByAttribute(dataCyAttributes.standardSet, standards.standardSet);

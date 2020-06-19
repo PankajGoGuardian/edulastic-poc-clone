@@ -123,22 +123,22 @@ export function verifyTeacherSide({
   assignmentStatus.forEach((status, statusIndex) => {
     context(`> for Student${statusIndex + 1},'${status}'`, () => {
       attemptType.forEach((attempt, attemptIndex) => {
-        before("> set attempt data", () => {
-          assignmentStatus.forEach((sta, ind) => {
-            attemptsData[ind].attempt.Q1 = attempt;
-          });
-          if (
-            assignmentStatus.indexOf(studentSide.SUBMITTED) !== -1 &&
-            option === regradeOptions.edited.MANUAL_POINTS
-          ) {
-            if (status === studentSide.SUBMITTED)
-              attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = attemptTypes.MANUAL_GRADE;
-            else
-              attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = attemptTypes.PARTIAL_CORRECT;
-          }
-        });
         const title = status === studentSide.SUBMITTED ? "before" : "after";
         context(`> verify edited question-'attempted as ${attempt}' ${title} regrade`, () => {
+          before("> set attempt data", () => {
+            assignmentStatus.forEach((sta, ind) => {
+              attemptsData[ind].attempt.Q1 = attempt;
+            });
+            if (
+              assignmentStatus.indexOf(studentSide.SUBMITTED) !== -1 &&
+              option === regradeOptions.edited.MANUAL_POINTS
+            ) {
+              if (status === studentSide.SUBMITTED)
+                attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = attemptTypes.MANUAL_GRADE;
+              else
+                attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = attemptTypes.PARTIAL_CORRECT;
+            }
+          });
           before(">click assignments", () => {
             optionsIndex = _.values(regradeOptions.edited).indexOf(option);
             testLibraryPage.sidebar.clickOnAssignment();

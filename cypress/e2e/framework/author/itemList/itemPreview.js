@@ -14,7 +14,7 @@ export default class PreviewItemPopup {
   // Edit and Copy buuton on preview
   getEditOnPreview = () => cy.get('[title="Edit item"]');
 
-  getCopyOnPreview = () => cy.get('[title="CLONE"]');
+  getCopyOnPreview = () => cy.get('[title="Clone"]');
 
   // text in edit item page
   getTextInEditItem = () =>

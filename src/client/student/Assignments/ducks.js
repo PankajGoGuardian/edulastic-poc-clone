@@ -216,6 +216,7 @@ export const getAllAssignmentsSelector = createSelector(
          */
         const allClassess = assignment.class.filter(
           clazz =>
+            clazz.redirect !== true &&
             (!currentGroup || currentGroup === clazz._id) &&
             ((classIds.includes(clazz._id) && !clazz.specificStudents) ||
               (clazz.specificStudents && clazz.students.includes(currentUserId)))

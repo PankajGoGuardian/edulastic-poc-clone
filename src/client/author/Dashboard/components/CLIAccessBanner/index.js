@@ -80,7 +80,7 @@ const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClo
       </StyledSignOut>
       <StyledLogo src={CLILogo} />
       <StyledText margin="50px auto 20px auto">
-        Welcome <HighlightedText>{`${firstName} ${lastName}`}!</HighlightedText>
+        Welcome <HighlightedText>{firstName || lastName ? `${firstName} ${lastName}` : "Anonymous"}!</HighlightedText>
       </StyledText>
       <StyledText fontSize="16px">
         You now have access to <br /> CLI collection.

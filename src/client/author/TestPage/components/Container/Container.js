@@ -464,7 +464,8 @@ class Container extends PureComponent {
       updated,
       currentTab,
       userRole,
-      editEnable
+      editEnable,
+      userFeatures
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
@@ -475,7 +476,10 @@ class Container extends PureComponent {
     const current = currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const isOwner =
-      (authors && authors.some(x => x._id === userId)) || !params.id || userRole === roleuser.EDULASTIC_CURATOR;
+      (authors && authors.some(x => x._id === userId)) ||
+      !params.id ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      userFeatures.isCurator;
     const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
 
     const props = {
@@ -768,9 +772,10 @@ class Container extends PureComponent {
   };
 
   onEnableEdit = onRegrade => {
-    const { test, userId, duplicateTest, currentTab, userRole, setEditEnable } = this.props;
+    const { test, userId, duplicateTest, currentTab, userRole, setEditEnable, userFeatures } = this.props;
     const { _id: testId, authors, title, isUsed } = test;
-    const canEdit = (authors && authors.some(x => x._id === userId)) || userRole === roleuser.EDULASTIC_CURATOR;
+    const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
+    const canEdit = (authors && authors.some(x => x._id === userId)) || isCurator;
     setEditEnable(true);
     if (canEdit) {
       return this.handleSave();

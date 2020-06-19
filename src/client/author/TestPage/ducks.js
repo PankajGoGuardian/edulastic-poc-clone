@@ -1948,8 +1948,8 @@ function* duplicateTestSaga({ payload }) {
     yield put(setTestsLoadingAction(false));
     console.warn("error", e, e.stack);
     Sentry.captureException(e);
+    yield put(setEditEnableAction(false));
     if (onRegrade === true && e?.status === 403) {
-      yield put(setEditEnableAction(false));
       yield put(setTestDataAction({ isUsed: false }));
       yield put(setCreateSuccessAction());
       return notification({ msg: "Duplicating the test permission denied and failed to regrade" });

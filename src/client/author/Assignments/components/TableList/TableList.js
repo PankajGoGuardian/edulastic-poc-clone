@@ -159,8 +159,9 @@ const TableList = ({
                 )}
             {row.timedAssignment && (
               <TimedTestIndicator data-cy="type" type="p">
-                <TimerIcon />
-                <IndicatorText>{row.timedAssignment / (60 * 1000)}min</IndicatorText>
+                <Tooltip title={<IndicatorText>{row.timedAssignment / (60 * 1000)}min</IndicatorText>} placement="right">
+                  <TimerIcon />
+                </Tooltip>
               </TimedTestIndicator>
             )}
           </TypeWrapper>

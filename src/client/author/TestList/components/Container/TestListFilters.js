@@ -114,7 +114,7 @@ const TestListFilters = ({
       ];
     }
 
-    const { curriculumId = "", subject = "" } = search;
+    const { curriculumId = "", subject = [] } = search;
     const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,
       text: item.identifier
@@ -131,7 +131,7 @@ const TestListFilters = ({
       return filterData1;
     }
     let curriculumsList = [];
-    if (subject) curriculumsList = [...formattedCuriculums];
+    if (subject.length) curriculumsList = [...formattedCuriculums];
     filterData1.splice(
       2,
       0,

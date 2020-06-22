@@ -195,6 +195,7 @@ const Search = ({
               onChange={onSearchFieldChange("subject")}
               value={subject}
               size="large"
+              placeholder="All Subjects"
               getPopupContainer={triggerNode => triggerNode.parentNode}
             >
               {selectsData.allSubjects.map(el => (
@@ -226,7 +227,7 @@ const Search = ({
                   <Select.Option key="" value="">
                     All Standard set
                   </Select.Option>
-                  {subject !== ""
+                  {subject?.length > 0
                     ? formattedCuriculums.map(el => (
                         <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
                           {el.text}

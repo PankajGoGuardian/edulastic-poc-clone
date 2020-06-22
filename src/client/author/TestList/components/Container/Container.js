@@ -8,7 +8,7 @@ import { compose } from "redux";
 import moment from "moment";
 import { Button, Row, Spin, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
-import { withWindowSizes, FlexContainer, TextInputStyled, notification } from "@edulastic/common";
+import { withWindowSizes, FlexContainer, notification } from "@edulastic/common";
 import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
 import { white, greyLight1, greyThemeLight } from "@edulastic/colors";
 import { storeInLocalStorage, getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
@@ -211,7 +211,7 @@ class TestList extends Component {
       interestedCurriculums: [firstCurriculum]
     } = this.props;
     const {
-      subject = interestedSubjects?.[0] || "",
+      subject = interestedSubjects || [],
       grades = interestedGrades || [],
       curriculumId = firstCurriculum && firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum._id : ""
     } = getDefaultInterests();
@@ -419,7 +419,7 @@ class TestList extends Component {
   handleClearFilter = () => {
     const { history, mode, limit, receiveTests } = this.props;
     this.updateFilterState(emptyFilters, true);
-    setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
+    setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
     if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
     receiveTests({ page: 1, limit, search: emptyFilters });
   };

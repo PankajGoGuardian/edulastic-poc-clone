@@ -114,7 +114,7 @@ export const updateInitSearchStateAction = payload => ({
 // reducer
 
 export const initalSearchState = {
-  subject: "",
+  subject: [],
   curriculumId: "",
   standardIds: [],
   questionType: "",

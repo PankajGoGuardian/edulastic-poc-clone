@@ -28,9 +28,9 @@ const filterData = [
     size: "large",
     title: "Subject",
     onChange: "subject",
+    placeholder: "All Subjects",
     mode: "multiple",
     data: [
-      { value: "", text: "All Subjects" },
       { value: "Mathematics", text: "Mathematics" },
       { value: "ELA", text: "ELA" },
       { value: "Science", text: "Science" },

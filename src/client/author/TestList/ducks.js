@@ -247,7 +247,7 @@ export const emptyFilters = {
   status: "",
   standardIds: [],
   grades: [],
-  subject: "",
+  subject: [],
   tags: [],
   searchString: [],
   filter: "ENTIRE_LIBRARY",

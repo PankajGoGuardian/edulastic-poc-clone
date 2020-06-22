@@ -145,7 +145,7 @@ class TestList extends Component {
       interestedSubjects,
       interestedGrades
     } = this.props;
-    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades || [] } = getDefaultInterests();
+    const { subject = interestedSubjects || [], grades = interestedGrades || [] } = getDefaultInterests();
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[playList]")) || {};
     const searchFilters = {
       ...playListFilters,

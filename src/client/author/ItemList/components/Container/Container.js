@@ -97,7 +97,7 @@ class Contaier extends Component {
       interestedCurriculums: [firstCurriculum]
     } = this.props;
     const {
-      subject = interestedSubjects?.[0] || "",
+      subject = interestedSubjects || [],
       grades = interestedGrades || [],
       curriculumId = firstCurriculum && firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum._id : ""
     } = getDefaultInterests();
@@ -180,7 +180,7 @@ class Contaier extends Component {
 
     this.updateFilterState(initalSearchState);
     receiveItems(initalSearchState, 1, limit);
-    setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
+    setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
   };
 
   handleSearchFieldChangeCurriculumId = value => {

@@ -135,7 +135,7 @@ export function* watcherSaga() {
 
 export const emptyFilters = {
   grades: [],
-  subject: "",
+  subject: [],
   filter: filterMenuItems[0].filter,
   searchString: [],
   type: "",

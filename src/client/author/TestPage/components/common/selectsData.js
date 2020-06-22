@@ -1,4 +1,5 @@
 import { test } from "@edulastic/constants";
+
 const { ASSESSMENT, PRACTICE, COMMON } = test.type;
 const allGrades = [
   { value: "K", text: "Kindergarten" },
@@ -18,7 +19,6 @@ const allGrades = [
 ];
 
 const allSubjects = [
-  { value: "", text: "All Subjects" },
   { value: "Mathematics", text: "Mathematics" },
   { value: "ELA", text: "ELA" },
   { value: "Science", text: "Science" },

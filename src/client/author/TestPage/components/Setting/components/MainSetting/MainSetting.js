@@ -22,7 +22,8 @@ import {
   getReleaseScorePremiumSelector,
   getTestEntitySelector,
   setTestDataAction,
-  testTypeAsProfileNameType
+  testTypeAsProfileNameType,
+  resetUpdatedStateAction
 } from "../../../../ducks";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import PeformanceBand from "./PeformanceBand";
@@ -120,12 +121,15 @@ class MainSetting extends Component {
   }
 
   componentDidMount = () => {
-    const { entity, isAuthorPublisher } = this.props;
+    const { entity, isAuthorPublisher, resetUpdatedState, editEnable } = this.props;
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData("scoringType")(PARTIAL_CREDIT_IGNORE_INCORRECT);
     }
     if (isAuthorPublisher) {
       this.updateTestData("testType")(ASSESSMENT);
+    }
+    if (entity?.status === "published" && !editEnable) {
+      resetUpdatedState();
     }
   };
 
@@ -1185,11 +1189,13 @@ export default connect(
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions
       : state?.tests?.entity?.summary?.totalItems,
-    isAuthorPublisher: isPublisherUserSelector(state)
+    isAuthorPublisher: isPublisherUserSelector(state),
+    editEnable: state.tests?.editEnable
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,
     setSafePassword: setSafeBroswePassword,
-    setTestData: setTestDataAction
+    setTestData: setTestDataAction,
+    resetUpdatedState: resetUpdatedStateAction
   }
 )(withWindowScroll(MainSetting));

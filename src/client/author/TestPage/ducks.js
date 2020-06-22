@@ -217,6 +217,7 @@ export const SET_EDIT_ENABLE = "[test] set enable edit state";
 export const TOGGLE_TEST_LIKE = "[test] toggle test like";
 export const UPDATE_TEST_LIKE_COUNT = "[test] update test like count";
 export const UPDATE_TEST_ITEM_LIKE_COUNT = "[test] update test review item like count";
+export const RESET_UPDATED_TEST_STATE = "[test] reset test updated state";
 
 // actions
 
@@ -253,6 +254,7 @@ export const setEditEnableAction = createAction(SET_EDIT_ENABLE);
 export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE);
 export const updateTestLikeCountAction = createAction(UPDATE_TEST_LIKE_COUNT);
 export const updateTestItemLikeCountAction = createAction(UPDATE_TEST_ITEM_LIKE_COUNT);
+export const resetUpdatedStateAction = createAction(RESET_UPDATED_TEST_STATE);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false, playlistId = undefined) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -1026,6 +1028,11 @@ export const reducer = (state = initialState, { type, payload }) => {
             };
           })
         }
+      };
+    case RESET_UPDATED_TEST_STATE:
+      return {
+        ...state,
+        updated: false
       };
     default:
       return state;

@@ -30,6 +30,7 @@ function* receiveQuestionSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Receive question is failing";
     notification({ msg: errorMessage });
     yield put({
@@ -110,8 +111,8 @@ function* saveQuestionSaga() {
       });
     }
   } catch (err) {
-    Sentry.captureException(err);
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Save question is failing";
     notification({ messageKey: "saveQuestionFailing" });
     yield put({
@@ -136,8 +137,8 @@ function* loadQuestionSaga({ payload }) {
       }
     });
   } catch (e) {
-    Sentry.captureException(e);
     console.error(e);
+    Sentry.captureException(e);
     const errorMessage = "Loading Question is failing";
     notification({ msg: errorMessage });
   }

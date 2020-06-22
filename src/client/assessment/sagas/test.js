@@ -1,8 +1,8 @@
 import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
-import { Modal, message } from "antd";
+import { Modal } from "antd";
 import { notification } from "@edulastic/common";
-import * as Sentry from '@sentry/browser';
+import * as Sentry from "@sentry/browser";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from "lodash";
 import produce from "immer";
@@ -405,18 +405,19 @@ function* loadTest({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     yield put({
       type: SET_TEST_LOADING_ERROR,
       payload: err
     });
     if (err.status === 403) {
       if (preview) {
-        notification({ messageKey:"youCanNoLongerUse"});
+        notification({ messageKey: "youCanNoLongerUse" });
         return Modal.destroyAll();
       }
       const userRole = yield select(getUserRole);
       if (userRole === roleuser.STUDENT) {
-        notification({ msg:err.data.message || "Failed loading the test"});
+        notification({ msg: err.data.message || "Failed loading the test" });
         return yield put(push("/home/assignments"));
       }
     }
@@ -433,6 +434,7 @@ function* loadPreviousResponses(payload) {
     });
   } catch (err) {
     console.log(err);
+    Sentry.captureException(err);
   }
 }
 
@@ -478,17 +480,16 @@ function* submitTest({ payload }) {
       Sentry.captureException(err);
       if (err?.data?.message === "assignment already submitted") {
         return yield put(push("/home/grades"));
-      } 
-        yield put(push("/home/assignments"));
-        yield put({
-          type: SET_TEST_ACTIVITY_ID,
-          payload: { testActivityId: "" }
-        });
-        notification({ msg:err.data});
       }
+      yield put(push("/home/assignments"));
+      yield put({
+        type: SET_TEST_ACTIVITY_ID,
+        payload: { testActivityId: "" }
+      });
+      notification({ msg: err.data });
     }
   }
-
+}
 
 export default function* watcherSaga() {
   yield all([

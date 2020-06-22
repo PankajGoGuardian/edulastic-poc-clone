@@ -1,4 +1,5 @@
 import { takeLatest, put, all } from "redux-saga/effects";
+import * as Sentry from "@sentry/browser";
 
 import { START_ASSESSMENT, RESET_CURRENT_TEST_ITEM, REMOVE_ANSWERS } from "../constants/actions";
 
@@ -11,6 +12,7 @@ function* startAssessment() {
       type: REMOVE_ANSWERS
     });
   } catch (e) {
+    Sentry.captureException(e);
     console.log("error", e);
   }
 }

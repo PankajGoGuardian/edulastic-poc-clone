@@ -1,7 +1,8 @@
 import { takeLatest, takeEvery, call, put, all } from "redux-saga/effects";
 import { dictionariesApi } from "@edulastic/api";
-import { message } from "antd";
-import  {notification} from "@edulastic/common";
+import * as Sentry from "@sentry/browser";
+import { notification } from "@edulastic/common";
+import _ from "lodash";
 import {
   RECEIVE_DICT_CURRICULUMS_REQUEST,
   RECEIVE_DICT_CURRICULUMS_SUCCESS,
@@ -15,7 +16,6 @@ import {
   REMOVE_DICT_ALINMENT
 } from "../constants/actions";
 import { ADD_ALIGNMENT, REMOVE_ALIGNMENT } from "../../sharedDucks/questions";
-import _ from "lodash";
 
 function* receiveCurriculumsSaga() {
   try {
@@ -27,8 +27,9 @@ function* receiveCurriculumsSaga() {
     });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Receive curriculums is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_DICT_CURRICULUMS_ERROR,
       payload: { error: errorMessage }
@@ -52,8 +53,9 @@ function* receiveStandardsSaga({ payload }) {
     }
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Receive standards is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_DICT_STANDARDS_ERROR,
       payload: { error: errorMessage }

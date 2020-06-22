@@ -1,6 +1,6 @@
 import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { itemsApi } from "@edulastic/api";
-import { message } from "antd";
+import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
 
 import {
@@ -24,6 +24,7 @@ export function* receiveItemsSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Receive items is failing";
     notification({ messageKey: "receiveItemFailing" });
     yield put({
@@ -43,8 +44,9 @@ export function* receiveItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Receive item by id is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_ITEM_ERROR,
       payload: { error: errorMessage }
@@ -61,8 +63,9 @@ export function* createItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Create item is failed";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_ITEM_ERROR,
       payload: { error: errorMessage }
@@ -79,8 +82,9 @@ export function* updateItemSaga({ payload }) {
     });
   } catch (err) {
     console.error(err);
+    Sentry.captureException(err);
     const errorMessage = "Update item is failed";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_ITEM_ERROR,
       payload: { error: errorMessage }

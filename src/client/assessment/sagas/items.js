@@ -1,7 +1,6 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
-import * as Sentry from '@sentry/browser';
-import { message } from "antd";
+import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
 import { maxBy } from "lodash";
 import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
@@ -33,6 +32,7 @@ function* receiveItemsSaga() {
       payload: { items }
     });
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     yield put({
       type: RECEIVE_ITEMS_ERROR,
@@ -50,6 +50,7 @@ function* receiveItemSaga({ payload }) {
       payload: { item }
     });
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     yield put({
       type: RECEIVE_ITEM_ERROR,
@@ -85,7 +86,7 @@ function* saveUserResponse({ payload }) {
       }
     }
     if (endDate && endDate < Date.now()) {
-      notification({ messageKey:"testTimeEnded"});
+      notification({ messageKey: "testTimeEnded" });
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       return yield put(push("/home/assignments"));
     }
@@ -195,9 +196,9 @@ function* saveUserResponse({ payload }) {
       const { isPlaylist = false } = payload;
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       yield put(push("/home/assignments"));
-      notification({ msg:err.data});
+      notification({ msg: err.data });
     } else {
-      notification({ messageKey:"failedSavingAnswer"});
+      notification({ messageKey: "failedSavingAnswer" });
     }
     // yield call(message.error, "Failed saving the Answer");
   }
@@ -216,7 +217,8 @@ function* loadUserResponse({ payload }) {
       }
     });
   } catch (e) {
-    notification({ messageKey:"failedLoadingAnswer"});
+    Sentry.captureException(e);
+    notification({ messageKey: "failedLoadingAnswer" });
   }
 }
 

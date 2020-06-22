@@ -1,7 +1,7 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { folderApi } from "@edulastic/api";
 import { get, omit } from "lodash";
-import { message } from "antd";
+import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
 import {
   RECEIVE_FOLDER_REQUEST,
@@ -29,8 +29,9 @@ function* receiveGetFoldersRequest() {
       payload: { entities }
     });
   } catch (error) {
+    Sentry.captureException(error);
     const errorMessage = "Receive folder list failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_FOLDER_ERROR,
       payload: { error: errorMessage }
@@ -43,14 +44,15 @@ function* receiveCreateFolderRequest({ payload }) {
     const { folderName } = payload;
     const entity = yield call(folderApi.createFolder, payload);
     const successMsg = `${folderName} created successfully`;
-    notification({ type: "success", msg:successMsg});
+    notification({ type: "success", msg: successMsg });
     yield put({
       type: RECEIVE_FOLDER_CREATE_SUCCESS,
       payload: { entity }
     });
   } catch (error) {
+    Sentry.captureException(error);
     const errorMessage = "Create folder failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put({
       type: RECEIVE_FOLDER_CREATE_ERROR,
       payload: { error: errorMessage }
@@ -74,6 +76,7 @@ function* receiveAddMoveFolderRequest({ payload }) {
     const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
     notification({ type: "success", msg: successMsg }); // TODO:Can't be moved to message file since dynamic values wont be supported.
   } catch (error) {
+    Sentry.captureException(error);
     const errorMessage = "Add or Move content to folder failing";
     notification({ msg: errorMessage });
     yield put({
@@ -95,6 +98,7 @@ function* receiveDeleteFolderRequest({ payload }) {
       payload: { folderId }
     });
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = "Delete a folder failing";
     yield put({
       type: DELETE_FOLDER_ERROR,
@@ -114,6 +118,7 @@ function* receiveRenameFolderRequest({ payload }) {
       payload: get(success, "data.result", null)
     });
   } catch (error) {
+    Sentry.captureException(error);
     const errorMessage = "Rename folder failing";
     notification({ msg: errorMessage });
     yield put({

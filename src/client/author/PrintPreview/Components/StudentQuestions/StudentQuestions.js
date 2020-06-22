@@ -174,15 +174,7 @@ class StudentQuestions extends Component {
     const testItemsRender = testItems.map(item => (
       <Preview item={item} passages={passages} evaluation={evaluationStatus} />
     ));
-    return (
-      <QuestionDiv
-        ref={ref => {
-          this.printpreviewRef = ref;
-        }}
-      >
-        {testItemsRender}
-      </QuestionDiv>
-    );
+    return <QuestionDiv>{testItemsRender}</QuestionDiv>;
   }
 }
 

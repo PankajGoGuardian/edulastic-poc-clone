@@ -429,13 +429,13 @@ class Container extends PureComponent {
     setDefaultInterests({ subject: subjects[0] || "" });
   };
 
-  onChangeSkillIdentifiers = (identifiers) => {
+  onChangeSkillIdentifiers = identifiers => {
     const { setData, test } = this.props;
-    if(!isEmpty(identifiers)) {
-      const metadata = {...test.metadata, skillIdentifiers : _uniq(identifiers.split(","))}
-      setData({ ...test,  metadata});
+    if (!isEmpty(identifiers)) {
+      const metadata = { ...test.metadata, skillIdentifiers: _uniq(identifiers.split(",")) };
+      setData({ ...test, metadata });
     }
-  }
+  };
 
   handleSaveTestId = () => {
     const { test, saveCurrentEditingTestId } = this.props;
@@ -456,7 +456,8 @@ class Container extends PureComponent {
       history,
       updated,
       currentTab,
-      userRole
+      userRole,
+      userFeatures
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
@@ -467,7 +468,10 @@ class Container extends PureComponent {
     const current = currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const isOwner =
-      (authors && authors.some(x => x._id === userId)) || !params.id || userRole === roleuser.EDULASTIC_CURATOR;
+      (authors && authors.some(x => x._id === userId)) ||
+      !params.id ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      userFeatures.isCurator;
     const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
 
     const props = {
@@ -758,7 +762,8 @@ class Container extends PureComponent {
   onEnableEdit = () => {
     const { test, userId, duplicateTest, currentTab, userRole } = this.props;
     const { _id: testId, authors, title, isUsed } = test;
-    const canEdit = (authors && authors.some(x => x._id === userId)) || userRole === roleuser.EDULASTIC_CURATOR;
+    const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
+    const canEdit = (authors && authors.some(x => x._id === userId)) || isCurator;
     this.setState({ editEnable: true });
     if (canEdit) {
       return this.handleSave();

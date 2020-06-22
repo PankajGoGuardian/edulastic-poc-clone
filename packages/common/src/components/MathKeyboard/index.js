@@ -112,11 +112,11 @@ class MathKeyboard extends React.PureComponent {
   }
 
   render() {
-    const { onInput, showResponse, showDropdown } = this.props;
+    const { onInput, showResponse, showDropdown, docBasedKeypadStyles } = this.props;
     const { type } = this.state;
 
     return (
-      <MathKeyboardContainer>
+      <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
         <KeyboardHeader
           options={this.selectOptions}
           showResponse={showResponse}
@@ -142,4 +142,5 @@ const MathKeyboardContainer = styled.div`
   min-width: 180px;
   max-width: 400px;
   width: max-content;
+  ${({ docBasedKeypadStyles }) => docBasedKeypadStyles};
 `;

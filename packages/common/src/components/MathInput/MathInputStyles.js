@@ -153,6 +153,10 @@ export const MathInputStyles = styled.div`
       flex-direction: column;
     }
   }
+
+  .math-keyboard-popover {
+    animation: ${({ isDocbasedSection }) => isDocbasedSection && "none"};
+  }
 `;
 
 export default MathInputStyles;

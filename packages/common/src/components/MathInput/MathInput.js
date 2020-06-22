@@ -245,7 +245,8 @@ class MathInput extends React.PureComponent {
       restrictKeys,
       customKeys,
       hideKeypad,
-      onInnerFieldClick
+      onInnerFieldClick,
+      isDocbasedSection = false
     } = this.props;
 
     const { mathFieldFocus: showKeyboard, nativeKeyboard } = this.state;
@@ -273,6 +274,7 @@ class MathInput extends React.PureComponent {
         showDropdown={showDropdown}
         onChangeKeypad={onChangeKeypad}
         onInput={(key, command) => this.onInput(key, command)}
+        docBasedKeypadStyles={isDocbasedSection && `position: fixed; right: 30px;`}
       />
     );
     const visibleKeypad = !alwaysHideKeyboard && !alwaysShowKeyboard && mathKeyboardVisible;
@@ -283,6 +285,7 @@ class MathInput extends React.PureComponent {
         fontStyle={symbols[0] === "units_si" || symbols[0] === "units_us" ? "normal" : "italic"}
         width={style.width}
         fontSize={style.fontSize}
+        isDocbasedSection={isDocbasedSection}
         ref={this.containerRef}
       >
         <Popover

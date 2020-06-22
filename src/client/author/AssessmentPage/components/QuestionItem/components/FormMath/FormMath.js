@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ThemeProvider } from "styled-components";
 
+import { MathSpan } from "@edulastic/common";
 import { themes } from "../../../../../../theme";
 import { QuestionText } from "../../common/Form";
 import { MathAnswer } from "./styled";
-import { MathSpan } from "@edulastic/common";
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -71,6 +71,7 @@ export default class FormMath extends React.Component {
           ref={el => highlighted && el?.setFocus()}
           top={boundingRect.bottom + 10}
           right={20}
+          isDocbasedSection
         />
       </ThemeProvider>
     );

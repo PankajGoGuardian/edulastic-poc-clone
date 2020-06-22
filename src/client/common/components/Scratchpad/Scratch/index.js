@@ -12,6 +12,13 @@ import ZwibblerContext from "../common/ZwibblerContext";
 
 import AppConfig from "../../../../../../app-config";
 
+const lineTypes = [
+  drawTools.FREE_DRAW,
+  drawTools.DRAW_SIMPLE_LINE,
+  drawTools.DRAW_BREAKING_LINE,
+  drawTools.DRAW_CURVE_LINE
+];
+
 const Scratchpad = ({
   activeMode,
   deleteMode,
@@ -49,9 +56,10 @@ const Scratchpad = ({
     }
   }, [scrollContainerHeight, scrollContainerWidth]);
 
+  const isLineMode = lineTypes.includes(activeMode);
   const useTool = () => {
     if (zwibbler) {
-      const options = { lineWidth, strokeStyle: lineColor, fillStyle: fillColor };
+      const options = { lineWidth, strokeStyle: lineColor, fillStyle: isLineMode ? lineColor : fillColor };
       const fontOps = { fontSize, fontName: fontFamily, fillStyle: fontColor };
 
       switch (activeMode) {
@@ -95,6 +103,14 @@ const Scratchpad = ({
       zwibbler.setToolProperty("fillStyle", fillColor);
       zwibbler.setToolProperty("fontName", fontFamily);
       zwibbler.setNodeProperty(zwibbler.getSelectedNodes(), "fontSize", fontSize);
+      if (
+        activeMode === drawTools.FREE_DRAW ||
+        activeMode === drawTools.DRAW_SIMPLE_LINE ||
+        activeMode === drawTools.DRAW_BREAKING_LINE ||
+        activeMode === drawTools.DRAW_CURVE_LINE
+      ) {
+        zwibbler.setToolProperty("fillStyle", lineColor);
+      }
     }
   }, [lineWidth, lineColor, fillColor, fontFamily, fontSize]);
 
@@ -106,7 +122,18 @@ const Scratchpad = ({
 
   const onClickHandler = () => {
     if (zwibbler && !deleteMode) {
-      setSelectedNodes(zwibbler.getSelectedNodes().map(id => zwibbler.getNodeObject(id).type));
+      setSelectedNodes(
+        zwibbler.getSelectedNodes().map(id => {
+          const {
+            type,
+            props: { closed }
+          } = zwibbler.getNodeObject(id);
+          if (type === "PathNode" && !closed) {
+            return "BrushNode";
+          }
+          return type;
+        })
+      );
       if (
         activeMode &&
         activeMode !== drawTools.FREE_DRAW &&
@@ -156,6 +183,7 @@ const Scratchpad = ({
   useEffect(() => {
     if (clearClicked && zwibbler) {
       zwibbler.newDocument();
+      resetScratchPad();
     }
   }, [clearClicked]);
 

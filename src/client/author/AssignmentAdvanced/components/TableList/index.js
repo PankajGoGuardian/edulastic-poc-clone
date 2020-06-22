@@ -22,9 +22,12 @@ import {
   ActionsWrapper,
   BulkActionsWrapper,
   BulkActionsButtonContainer,
-  MoreOption
+  MoreOption,
+  AssessmentTypeWrapper
 } from "./styled";
 import { Container as MoreOptionsContainer } from "../../../Assignments/components/ActionMenu/styled";
+import { TimedTestIndicator, IndicatorText } from "../../../Assignments/components/TableList/styled";
+import { ReactComponent as TimerIcon } from "../../../Assignments/components/TableList/assets/timer.svg";
 
 export const testTypeToolTip = {
   assessment: "Class Assessment",
@@ -48,10 +51,18 @@ const columns = [
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => a.type.localeCompare(b.type, "en", { ignorePunctuation: true }),
     width: "6%",
-    render: (text = test.type.ASSESSMENT) => (
-      <Tooltip placement="bottom" title={testTypeToolTip[text]}>
-        <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
-      </Tooltip>
+    render: (text = test.type.ASSESSMENT, row) => (
+      <AssessmentTypeWrapper>
+        <Tooltip placement="bottom" title={testTypeToolTip[text]}>
+          <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
+        </Tooltip>
+        {row.timedAssignment && (
+          <TimedTestIndicator data-cy="type" type="p">
+            <TimerIcon />
+            <IndicatorText>{row.allowedTime / (60 * 1000)}min</IndicatorText>
+          </TimedTestIndicator>
+        )}
+      </AssessmentTypeWrapper>
     )
   },
   {
@@ -128,6 +139,7 @@ const TableList = ({
   bulkActionStatus,
   isHeaderAction
 }) => {
+  console.log({ classList });
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
   const convertRowData = (data, index) => ({
@@ -140,7 +152,9 @@ const TableList = ({
     action: "",
     assignmentId: data.assignmentId,
     classId: data._id,
-    key: index
+    key: index,
+    timedAssignment: data.timedAssignment,
+    allowedTime: data.allowedTime
   });
   const rowData = useMemo(
     () =>

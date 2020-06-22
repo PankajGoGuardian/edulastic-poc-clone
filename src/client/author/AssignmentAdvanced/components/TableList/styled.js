@@ -212,3 +212,7 @@ export const MoreOption = styled.div`
     background: ${themeColor};
   }
 `;
+
+export const AssessmentTypeWrapper = styled.div`
+  display: flex;
+`;

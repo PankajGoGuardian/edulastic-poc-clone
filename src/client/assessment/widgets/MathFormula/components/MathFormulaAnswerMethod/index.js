@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select, message } from "antd";
+import { Select } from "antd";
 import { produce } from "immer";
 import { get } from "lodash";
-import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic,notification } from "@edulastic/common";
+import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic, notification } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -72,6 +72,10 @@ const MathFormulaAnswerMethod = ({
   isClozeMathWithUnit = false,
   t
 }) => {
+  // Initial value of allowNumbericOnly is null
+  // Setting allowNumericOnly when the value is null and method is equivSymbolic
+  const _allowNumericOnly = (method === methodsConst.EQUIV_SYMBOLIC && allowNumericOnly === null) || allowNumericOnly;
+
   const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {
     let flag = false;
     let warningMsg = "";
@@ -109,7 +113,7 @@ const MathFormulaAnswerMethod = ({
     }
     const [error, errorMsg] = hasMutuallyExclusiveOptions(newOptions);
     if (error) {
-      notification({ type: "warn", msg:errorMsg});
+      notification({ type: "warn", msg: errorMsg });
       return false;
     }
     onChange("options", newOptions);
@@ -331,7 +335,7 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={{ allowNumericOnly }}
+              options={{ allowNumericOnly: _allowNumericOnly }}
               onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
@@ -454,7 +458,6 @@ const MathFormulaAnswerMethod = ({
   };
 
   const renderMethodsOptionsGrouped = () => {
-    console.log({method:methodOptionsGrouped[method]})
     const groupedMethodOptions = methodOptionsGrouped[method];
     if (groupedMethodOptions) {
       return Object.keys(groupedMethodOptions).map(key => {
@@ -488,7 +491,7 @@ const MathFormulaAnswerMethod = ({
     hideKeypad: item.showDropdown,
     symbols: isShowDropdown ? ["basic"] : item.symbols,
     restrictKeys: isShowDropdown ? [] : restrictKeys,
-    allowNumericOnly: allowNumericOnly || false,
+    allowNumericOnly: _allowNumericOnly,
     customKeys: isShowDropdown ? [] : customKeys,
     showResponse: useTemplate,
     numberPad: item.numberPad,

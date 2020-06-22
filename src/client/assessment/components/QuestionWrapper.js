@@ -266,7 +266,7 @@ class QuestionWrapper extends Component {
     page: 1
   };
 
-  setPage = page => this.setState({ page }); 
+  setPage = page => this.setState({ page });
 
   handleShuffledOptions = shuffledOptsOrder => {
     this.setState({ shuffledOptsOrder });
@@ -473,7 +473,6 @@ class QuestionWrapper extends Component {
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
             >
-              {console.log("isStudentReport:", isStudentReport)}
               <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
                 {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
                 <Question

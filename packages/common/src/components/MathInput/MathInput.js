@@ -311,7 +311,8 @@ class MathInput extends React.PureComponent {
                 minHeight: style.height,
                 fontSize: style.fontSize ? style.fontSize : "inherit",
                 background: greyThemeLighter,
-                border: `1px solid ${greyThemeLight}`
+                border: `1px solid ${greyThemeLight}`,
+                paddingRight: "25px"
               }}
               data-cy="answer-math-input-field"
             >

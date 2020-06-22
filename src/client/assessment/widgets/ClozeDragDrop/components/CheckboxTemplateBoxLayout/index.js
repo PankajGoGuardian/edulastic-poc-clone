@@ -130,6 +130,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
         style={{ width: "auto" }}
         showIndex={!checkAnswer}
         dangerouslySetInnerHTML={{ __html: label || "" }}
+        isPrintPreview={isPrintPreview}
       />
       {choiceAttempted && <CheckMark correct={correct} />}
     </AnswerBox>

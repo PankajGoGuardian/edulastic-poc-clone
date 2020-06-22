@@ -6,7 +6,7 @@ import Container from "./styled/Container";
 import AnswerContent from "./TextContent";
 
 const { DragItem } = DragDrop;
-const TextContainer = ({ dropTargetIndex, userSelections, isSnapFitValues, style, isChecked }) => (
+const TextContainer = ({ dropTargetIndex, userSelections, isSnapFitValues, style, isChecked, isPrintPreview }) => (
   <div
     className="text-wrapper"
     style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", width: "100%" }}
@@ -31,6 +31,7 @@ const TextContainer = ({ dropTargetIndex, userSelections, isSnapFitValues, style
                 height={style.height}
                 width={style.width}
                 isChecked={isChecked}
+                isPrintPreview={isPrintPreview}
               />
             </Container>
           </DragItem>

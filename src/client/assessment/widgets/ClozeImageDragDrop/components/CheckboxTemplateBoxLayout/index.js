@@ -95,7 +95,8 @@ const CheckboxTemplateBox = ({
     minWidth: lessMinWidth ? parseInt(respWidth, 10) + 4 : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
     background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null,
-    border: `${borderWidth} ${borderStyle} ${borderColor}`
+    border: `${borderWidth} ${borderStyle} ${borderColor}`,
+    paddingRight: "25px"
   };
 
   let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
@@ -169,7 +170,7 @@ const CheckboxTemplateBox = ({
         {responseBoxIndex}
         <div
           className="text container"
-          style={showAnswer || checkAnswer ? { ...textContainerStyle, padding: "0px" } : {}}
+          style={showAnswer || checkAnswer ? { ...textContainerStyle, padding: !isPrintPreview && "0px" } : {}}
         >
           <TextContainer
             dropTargetIndex={index}
@@ -196,6 +197,7 @@ const CheckboxTemplateBox = ({
                   }
             }
             isExpressGrader={isExpressGrader}
+            isPrintPreview={isPrintPreview}
           />
         </div>
         {isSnapFitValues && icons}

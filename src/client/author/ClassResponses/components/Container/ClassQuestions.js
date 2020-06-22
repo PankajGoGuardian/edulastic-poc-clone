@@ -91,7 +91,7 @@ function Preview({
         {...scratchpadProps}
         previouscratchPadDimensions={previouscratchPadDimensions}
         history={history}
-        saveHistory={() => {}}
+        saveHistory={() => { }}
         {...scoringProps}
         studentId={studentId}
         studentName={studentName || t("common.anonymous")}
@@ -398,12 +398,12 @@ class ClassQuestions extends Component {
     });
     const test = showTestletPlayer
       ? {
-          testType: classResponse.testType,
-          title: classResponse.title,
-          testletConfig: classResponse.testletConfig,
-          testletState: get(testActivity, "userWork.testletState"),
-          itemGroups: [{ items: [selectedTestItem] }]
-        }
+        testType: classResponse.testType,
+        title: classResponse.title,
+        testletConfig: classResponse.testletConfig,
+        testletState: get(testActivity, "userWork.testletState"),
+        itemGroups: [{ items: [selectedTestItem] }]
+      }
       : { itemGroups: [{ items: [selectedTestItem] }] };
 
     let docBasedProps = {};
@@ -453,11 +453,11 @@ class ClassQuestions extends Component {
             onCancel={() => this.setState({ showDocBasedPlayer: false })}
             footer={null}
           >
-            <Row>
-              <Col span={2} offset={21}>
+            <Row className="exit-btn-row">
+              <Col>
                 <ThemeButton
                   onClick={() => this.setState({ showDocBasedPlayer: false })}
-                  style={{ color: "#fff", width: "100%" }}
+                  style={{ color: "#fff", width: "110px", marginLeft: "auto", marginRight: 20 }}
                 >
                   Exit
                 </ThemeButton>
@@ -518,8 +518,9 @@ ClassQuestions.defaultProps = {
 };
 
 const StyledModal = styled(Modal)`
-  width: 98% !important;
-  height: 98% !important;
+  width: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
 
   .ant-modal-close-x {
     display: none;
@@ -528,9 +529,10 @@ const StyledModal = styled(Modal)`
     display: none;
   }
   .ant-modal-content {
-    top: 10px;
+    height: 100vh;
     padding-top: 20px;
     bottom: auto;
+    border-radius: 0;
   }
   .ant-modal-body {
     padding: 0px;
@@ -540,5 +542,10 @@ const StyledModal = styled(Modal)`
         height: 100%;
       }
     }
+  }
+
+  .exit-btn-row{
+    margin-top: -10px;
+    margin-bottom: 10px;
   }
 `;

@@ -135,8 +135,8 @@ export const FeatureDescription = styled.p`
 `;
 
 export const Img = styled.img`
-  width: 60px;
-  height: 50px;
+  width: 33px;
+  height: 29px;
 `;
 
 export const StyledParagraph = styled.p`

@@ -5,7 +5,13 @@ import { Link } from "react-router-dom";
 import IMG1 from "../../static/1.png";
 import IMG2 from "../../static/2.png";
 import IMG3 from "../../static/3.png";
-import IMG4 from "../../static/4.png";
+import IMG4 from "../../static/analysis.png";
+import IMG5 from "../../static/speaker.png";
+import IMG6 from "../../static/teamwork.png";
+import IMG7 from "../../static/sheet.png";
+import IMG8 from "../../static/list.png";
+import IMG9 from "../../static/presentation.png";
+
 import { ActionsWrapper, Container, Description, Title } from "../styled/commonStyled";
 import {
   AvailablePlansContainer,
@@ -83,26 +89,32 @@ const availablePlans = [
 
 const featuresData = [
   {
+    imgSrc:IMG4,
     title: "In-depth Reporting",
     description: "Show student growth over time. Analyze answer distractor. See complete student mastery profile."
   },
   {
+    imgSrc:IMG5,
     title: "Read Aloud",
     description: "Choose students to have questions and answer choices read to them."
   },
   {
+    imgSrc:IMG6,
     title: "Collaboration",
     description: "Work on assessment as a team before they're published."
   },
   {
+    imgSrc:IMG7,
     title: "Advanced Assessment Options",
     description: "Shuffle question order for each student. Show student actions but hide correct answers."
   },
   {
+    imgSrc:IMG8,
     title: "Rubric Scoring",
     description: "Create and share rubrics school or district wide."
   },
   {
+    imgSrc:IMG9,
     title: "Presentation Mode",
     description: "Review answers and common mistake with the class without showing names."
   }
@@ -195,13 +207,13 @@ const SubscriptionMain = props => {
               )}
 
               <GridContainer>
-                {featuresData.map(({ title, description }) => (
+                {featuresData.map(({ title, description },index) => (
                   <FlexCard>
                     <InnerWrapper>
-                      <Img src={IMG4} />
-                      <h3 style={{ fontWeight: 700, paddingLeft: 20 }}>{title}</h3>
+                      <Img src={featuresData[index].imgSrc} />
+                      <h3 style={{ fontWeight: 700, paddingLeft: 20 }}>{featuresData[index].title}</h3>
                     </InnerWrapper>
-                    <FeatureDescription>{description}</FeatureDescription>
+                    <FeatureDescription>{featuresData[index].description}</FeatureDescription>
                   </FlexCard>
                 ))}
               </GridContainer>

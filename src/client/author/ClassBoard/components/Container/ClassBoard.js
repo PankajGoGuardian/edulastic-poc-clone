@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper, CheckboxLabel,notification } from "@edulastic/common";
+import { MainContentWrapper, CheckboxLabel, notification } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,
@@ -144,7 +144,7 @@ class ClassBoard extends Component {
   };
 
   confirm = () => {
-    notification({ type: "success", messageKey:"nextStep"});
+    notification({ type: "success", messageKey: "nextStep" });
   };
 
   cancel = () => {
@@ -153,7 +153,7 @@ class ClassBoard extends Component {
 
   handleScroll = () => {
     const { hasStickyHeader } = this.state;
-    const elementTop = this.disneyCardsContainerRef.current?.getBoundingClientRect().top || 0;
+    const elementTop = this.disneyCardsContainerRef.current ?.getBoundingClientRect().top || 0;
     if (elementTop < 100 && !hasStickyHeader) {
       this.setState({ hasStickyHeader: true });
     } else if (elementTop > 100 && hasStickyHeader) {
@@ -176,7 +176,7 @@ class ClassBoard extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { assignmentId, classId } = match.params;
-    const filterCriteria = activity => activity?.testActivityId;
+    const filterCriteria = activity => activity ?.testActivityId;
     if (additionalData.testId !== prevState.testId || !prevProps.testActivity.length) {
       const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       if (firstStudentId)
@@ -306,7 +306,8 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     this.setState({
       selectedTab: name,
-      selectedStudentId
+      selectedStudentId,
+      hasStickyHeader: false
     });
 
     if (name === "Both") {
@@ -341,12 +342,12 @@ class ClassBoard extends Component {
     );
 
     if (notStartedStudents.length > 0) {
-      notification({ type: "warn", messageKey:"youCanRedirectOnly"});
+      notification({ type: "warn", messageKey: "youCanRedirectOnly" });
       return;
     }
     const selectedStudentIds = Object.keys(selectedStudents);
     if (selectedStudentIds.some(item => enrollmentStatus[item] === "0"))
-      return notification({ type: "warn", messageKey:"youCantRedirect"});
+      return notification({ type: "warn", messageKey: "youCantRedirect" });
     this.setState({ redirectPopup: true });
   };
 
@@ -398,36 +399,38 @@ class ClassBoard extends Component {
   handleShowMarkAsSubmittedModal = () => {
     const { selectedStudents, testActivity, assignmentStatus } = this.props;
     if (assignmentStatus.toLowerCase() === "not open") {
-      return notification({ type: "warn", messageKey:"assignmentIsNotOpenedYet"});
+      return notification({ type: "warn", messageKey: "assignmentIsNotOpenedYet" });
     }
 
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return notification({ type: "warn", messageKey:"atleastOneStudent"});
+      return notification({ type: "warn", messageKey: "atleastOneStudent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedSubmittedStudents = selectedStudentKeys.filter(
       item => mapTestActivityByStudId[item].status === "submitted" || mapTestActivityByStudId[item].status === "graded"
     );
     if (selectedSubmittedStudents.length) {
-      return   notification({ type: "warn", msg:`${
-        selectedSubmittedStudents.length
-      } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`});
+      return notification({
+        type: "warn", msg: `${
+          selectedSubmittedStudents.length
+          } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`
+      });
     }
 
-    
+
     this.setState({ showMarkSubmittedPopup: true, modalInputVal: "" });
   };
 
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
     if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
-      return notification({ type: "warn", messageKey:"assignmentIsNotOpenedYet"});
+      return notification({ type: "warn", messageKey: "assignmentIsNotOpenedYet" });
     }
 
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return notification({ type: "warn", messageKey:"atleastOneStudentToMarkAbsent"});
+      return notification({ type: "warn", messageKey: "atleastOneStudentToMarkAbsent" });
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
@@ -436,7 +439,7 @@ class ClassBoard extends Component {
     );
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
-      return notification({ type: "warn", msg:`${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`});
+      return notification({ type: "warn", msg: `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.` });
     }
     this.setState({ showMarkAbsentPopup: true, selectedNotStartedStudents, modalInputVal: "" });
   };
@@ -445,12 +448,12 @@ class ClassBoard extends Component {
     const { selectedStudents, testActivity } = this.props;
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return notification({ type: "warn", messageKey:"atleastOneStudentToRemove"});
+      return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
     }
     const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
     const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
     if (isAnyBodyGraded) {
-      return notification({ type: "warn", messageKey:"youWillNotAbleToRemove"});
+      return notification({ type: "warn", messageKey: "youWillNotAbleToRemove" });
     }
     this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
   };
@@ -468,7 +471,7 @@ class ClassBoard extends Component {
     const { selectedNotStartedStudents } = this.state;
     const { markAbsent, match, studentUnselectAll } = this.props;
     const { assignmentId, classId } = match.params;
-    if (!selectedNotStartedStudents.length) return notification({ type: "warn", messageKey:"noStudentsSelected"});
+    if (!selectedNotStartedStudents.length) return notification({ type: "warn", messageKey: "noStudentsSelected" });
     markAbsent(assignmentId, classId, selectedNotStartedStudents);
     studentUnselectAll();
     this.setState({ showMarkAbsentPopup: false });
@@ -478,7 +481,7 @@ class ClassBoard extends Component {
     const { markSubmitted, match, studentUnselectAll, selectedStudents } = this.props;
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length) return notification({ type: "warn", messageKey:"noStudentsSelected"});
+    if (!selectedStudentKeys.length) return notification({ type: "warn", messageKey: "noStudentsSelected" });
     markSubmitted(assignmentId, classId, selectedStudentKeys);
     studentUnselectAll();
     this.setState({ showMarkSubmittedPopup: false });
@@ -488,7 +491,7 @@ class ClassBoard extends Component {
     const { additionalData, testActivity } = this.props;
     // total count represents total students count in the class
     if (additionalData.totalCount <= testActivity.length) {
-      return notification({ type: "warn", messageKey:"assessmentAlreadyAssignedToAllStudents"});
+      return notification({ type: "warn", messageKey: "assessmentAlreadyAssignedToAllStudents" });
     }
 
     this.setState({ showAddStudentsPopup: true });
@@ -519,7 +522,7 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
-      return notification({ type: "warn", messageKey:"aleastOneStudentToDownloadGrades"});
+      return notification({ type: "warn", messageKey: "aleastOneStudentToDownloadGrades" });
     }
     downloadGradesResponse(assignmentId, classId, selectedStudentKeys, isResponseRequired);
   };
@@ -542,7 +545,7 @@ class ClassBoard extends Component {
     if (isPrintable && selectedStudentsKeys.length) {
       this.setState({ openPrintModal: true });
     } else if (!selectedStudentsKeys.length) {
-      notification({ messageKey: "atleastOneStudentShouldBeSelectedToPrintResponse"});
+      notification({ messageKey: "atleastOneStudentShouldBeSelectedToPrintResponse" });
     } else {
       notification({ messageKey: "youCanOnlyPrintAfterAssignmentBeenSubmited" });
     }
@@ -558,7 +561,7 @@ class ClassBoard extends Component {
     const selectedStudentsStr = selectedStudentsKeys.join(",");
     window.open(
       `/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}&type=${type}&qs=${
-        type === "custom" ? customValue : ""
+      type === "custom" ? customValue : ""
       }`
     );
     this.closePrintModal();
@@ -740,7 +743,7 @@ class ClassBoard extends Component {
         />
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb} />
+            <ClassBreadBrumb breadCrumb={location ?.state ?.breadCrumb} />
             <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton
@@ -756,7 +759,7 @@ class ClassBoard extends Component {
                   disabled={!firstStudentId || !isItemsVisible || isLoading}
                   active={selectedTab === "Student"}
                   onClick={e => {
-                    const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
+                    const _testActivityId = testActivity ?.find(x => x.studentId === firstStudentId) ?.testActivityId;
                     setCurrentTestActivityId(_testActivityId);
                     if (!isItemsVisible) {
                       return;
@@ -953,7 +956,7 @@ class ClassBoard extends Component {
                   />
                 ) : (
                   <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
-                )}
+                  )}
               </div>
 
               {redirectPopup && (
@@ -1049,7 +1052,7 @@ class ClassBoard extends Component {
                             >
                               {`Attempt ${allTestActivitiesForStudent.length - index} ${
                                 testActivityId.status === 2 ? " (Absent)" : ""
-                              }`}
+                                }`}
                             </Select.Option>
                           ))}
                         </Select>
@@ -1111,10 +1114,10 @@ class ClassBoard extends Component {
                           {studentTestActivity.status === 2
                             ? "Absent"
                             : studentTestActivity.status === 1
-                            ? studentTestActivity.graded === "GRADED"
-                              ? "Graded"
-                              : "Submitted"
-                            : "In Progress" || ""}
+                              ? studentTestActivity.graded === "GRADED"
+                                ? "Graded"
+                                : "Submitted"
+                              : "In Progress" || ""}
                         </span>
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
@@ -1206,7 +1209,7 @@ const enhance = compose(
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isItemsVisible: isItemVisibiltySelector(state),
       removedStudents: removedStudentsSelector(state),
-      studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
+      studentViewFilter: state ?.author_classboard_testActivity ?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state)
     }),

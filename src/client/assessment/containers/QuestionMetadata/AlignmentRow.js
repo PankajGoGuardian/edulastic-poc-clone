@@ -34,7 +34,6 @@ const AlignmentRow = ({
   alignment,
   alignmentIndex,
   qId,
-  onDelete,
   handleUpdateQuestionAlignment,
   curriculumStandardsLoading,
   editAlignment,
@@ -52,7 +51,7 @@ const AlignmentRow = ({
   recentStandardsList = [],
   isDocBased = false
 }) => {
-  let {
+  const {
     subject = "Mathematics",
     curriculumId = 212,
     curriculum = "Math - Common Core",
@@ -77,19 +76,33 @@ const AlignmentRow = ({
     setDefaultInterests({ grades: val });
   };
 
-  const handleChangeStandard = (curriculum, event) => {
-    const curriculumId = event.key;
-    storeInLocalStorage("defaultCurriculumId", curriculumId);
-    storeInLocalStorage("defaultCurriculumName", curriculum);
-    updateDefaultCurriculum({ defaultCurriculumId: curriculumId, defaultCurriculumName: curriculum });
-    editAlignment(alignmentIndex, { curriculumId, curriculum });
-    setDefaultInterests({ curriculumId });
+  const handleChangeStandard = (_curriculum, event) => {
+    const _curriculumId = event.key;
+    storeInLocalStorage("defaultCurriculumId", _curriculumId);
+    storeInLocalStorage("defaultCurriculumName", _curriculum);
+    updateDefaultCurriculum({ defaultCurriculumId: _curriculumId, defaultCurriculumName: _curriculum });
+    editAlignment(alignmentIndex, { curriculumId: _curriculumId, curriculum: _curriculum });
+    setDefaultInterests({ curriculumId: _curriculumId });
   };
 
   const standardsArr = standards.map(el => el.identifier);
 
   const handleSearchStandard = searchStr => {
     getCurriculumStandards({ id: curriculumId, grades, searchStr });
+  };
+
+  const handleAddStandard = newStandard => {
+    let newStandards = standards.some(standard => standard._id === newStandard._id);
+    if (newStandards) {
+      newStandards = standards.filter(standard => standard._id !== newStandard._id);
+    } else {
+      newStandards = [...standards, newStandard];
+    }
+    const standardsGrades = newStandards.flatMap(standard => standard.grades);
+    createUniqGradeAndSubjects([...grades, ...standardsGrades], subject);
+    editAlignment(alignmentIndex, {
+      standards: newStandards
+    });
   };
 
   const handleStandardSelect = (chosenStandardsArr, option) => {
@@ -117,12 +130,12 @@ const AlignmentRow = ({
 
   const handleApply = data => {
     const gradesFromElo = data.eloStandards.flatMap(elo => elo.grades);
-    let { subject } = data;
-    if (!subject) {
+    let { subject: _subject } = data;
+    if (!_subject) {
       const curriculumFromStandard = data.standard.id
-        ? formattedCuriculums.find(curriculum => curriculum.value === data.standard.id)
+        ? formattedCuriculums.find(c => c.value === data.standard.id)
         : {};
-      subject = curriculumFromStandard.subject;
+      _subject = curriculumFromStandard.subject;
     }
     createUniqGradeAndSubjects([...data.grades, ...gradesFromElo], subject);
     editAlignment(alignmentIndex, {
@@ -134,22 +147,6 @@ const AlignmentRow = ({
     });
 
     setShowModal(false);
-  };
-
-  const handleAddStandard = newStandard => {
-    let newStandards = standards.some(standard => {
-      return standard._id === newStandard._id;
-    });
-    if (newStandards) {
-      newStandards = standards.filter(standard => standard._id !== newStandard._id);
-    } else {
-      newStandards = [...standards, newStandard];
-    }
-    const standardsGrades = newStandards.flatMap(standard => standard.grades);
-    createUniqGradeAndSubjects([...grades, ...standardsGrades], subject);
-    editAlignment(alignmentIndex, {
-      standards: newStandards
-    });
   };
 
   const handleStandardFocus = () => {
@@ -172,14 +169,15 @@ const AlignmentRow = ({
   }, [alignment]);
 
   useEffect(() => {
-    const { grades: alGrades, subject: alSubject, curriculum: alCurriculum, curriculumId: alCurriculumId } = alignment;
+    const { curriculumId: alCurriculumId } = alignment;
     const defaultInterests = getDefaultInterests();
     if (!alCurriculumId) {
       if (defaultInterests.subject || defaultInterests.grades?.length || defaultInterests.curriculumId) {
         editAlignment(alignmentIndex, {
           subject: defaultInterests.subject || "",
-          curriculum: curriculums.find(item => item._id === parseInt(defaultInterests.curriculumId))?.curriculum || "",
-          curriculumId: parseInt(defaultInterests.curriculumId) || "",
+          curriculum:
+            curriculums.find(item => item._id === parseInt(defaultInterests.curriculumId, 10))?.curriculum || "",
+          curriculumId: parseInt(defaultInterests.curriculumId, 10) || "",
           grades: defaultInterests.grades?.length ? defaultInterests.grades : []
         });
       } else if (defaultSubject && defaultCurriculumId) {
@@ -190,7 +188,6 @@ const AlignmentRow = ({
           grades: defaultGrades || interestedGrades || []
         });
       } else if (interestedCurriculums && interestedCurriculums.length > 0) {
-        console.log({ defaultGrades });
         editAlignment(alignmentIndex, {
           subject: interestedCurriculums[0].subject,
           curriculum: interestedCurriculums[0].name,
@@ -209,15 +206,6 @@ const AlignmentRow = ({
     }
   }, [qId]);
 
-  useEffect(() => {
-    if (!isDocBased) {
-      return () => {
-        editAlignment(alignmentIndex, {
-          curriculumId: ""
-        });
-      };
-    }
-  }, []);
   return (
     <Fragment>
       {showModal && (
@@ -386,7 +374,6 @@ const AlignmentRow = ({
 AlignmentRow.propTypes = {
   t: PropTypes.func.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
   curriculums: PropTypes.array.isRequired,
   curriculumStandardsELO: PropTypes.array.isRequired,
   curriculumStandardsTLO: PropTypes.array.isRequired,

@@ -2,13 +2,13 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
-import produce from "immer"
+import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
-import { hexToRGB, withWindowSizes, notification } from "@edulastic/common";
+import { withWindowSizes, notification } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, Button } from "antd";
@@ -18,8 +18,6 @@ import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
 import { WorksheetWrapper, MinimizeButton } from "./styled";
-import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
-import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 import { loadQuestionsAction } from "../../../sharedDucks/questions";
 
 import { saveUserWorkAction } from "../../../../assessment/actions/userWork";
@@ -99,22 +97,13 @@ class WorksheetComponent extends React.Component {
   state = {
     currentPage: 0,
     highlightedQuestion: undefined,
-    currentColor: "#ff0000",
-    fillColor: "#ff0000",
-    currentFont: "",
-    activeMode: "",
     history: 0,
     selected: 0,
     uploadModal: false,
     isAddPdf: false,
-    creating: false,
     deleteConfirmation: false,
-    deleteMode: false,
     minimized: false,
-    lineWidth: 6,
-    isToolBarVisible: true,
-    fromFreeFormNotes: {},
-    pageZoom: 1
+    isToolBarVisible: true
   };
 
   componentDidMount() {
@@ -132,23 +121,6 @@ class WorksheetComponent extends React.Component {
         }
       }
       saveUserWork({ [itemDetail._id]: { scratchpad: freeFormNotes || {} } });
-      this.setState({ fromFreeFormNotes });
-    }
-  }
-
-  static getDerivedStateFromProps(props, prevState) {
-    let data;
-    // TODO: data is assigned values but never used ??? Remove this if not required 
-    if (prevState.uploadModal && prevState.creating && !props.creating) {
-      data = {
-        uploadModal: false,
-        creating: false,
-        isAddPdf: false
-      };
-    } else if (!prevState.creating && props.creating) {
-      data = {
-        creating: true
-      };
     }
   }
 
@@ -352,8 +324,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -396,8 +368,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -444,83 +416,8 @@ class WorksheetComponent extends React.Component {
     this.setState({ uploadModal: true, isAddPdf: true });
   };
 
-  // Set up for scratchpad
-  onFillColorChange = obj => {
-    this.setState({
-      fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
-
-  handleToolChange = value => () => {
-    const { activeMode } = this.state;
-
-    if (value === "deleteMode") {
-      this.setState(prevState => ({ deleteMode: !prevState.deleteMode }));
-    } else if (activeMode === value) {
-      this.setState({ activeMode: "" });
-    } else {
-      this.setState({ activeMode: value, deleteMode: false });
-      if (value === "drawBreakingLine") {
-        notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing" });
-      }
-    }
-  };
-
-  handleChangeFont = font => this.setState({ currentFont: font });
-
-  handleUndo = () => {
-    const { undoScratchPad } = this.props;
-    const { history } = this.state;
-    if (history > 0) {
-      this.setState(
-        state => ({ history: state.history - 1 }),
-        () => {
-          undoScratchPad();
-        }
-      );
-    }
-  };
-
-  // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
-  // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
-  saveHistory = data => {
-    const { currentPage } = this.state;
-    const { saveUserWork, itemDetail, scratchPad = {}, userWork, setTestData } = this.props;
-    const id = itemDetail?._id;
-
-    if (id) {
-      this.setState(({ history }) => ({ history: history + 1 }));
-
-      saveUserWork({
-        [id]: { ...userWork, scratchpad: { ...(scratchPad || {}), [currentPage]: data } }
-      });
-
-      setTestData({ freeFormNotes: { ...(scratchPad || {}), [currentPage]: data } });
-    }
-  };
-
-  handleRedo = () => {
-    const { redoScratchPad } = this.props;
-
-    this.setState(
-      state => ({ history: state.history + 1 }),
-      () => {
-        redoScratchPad();
-      }
-    );
-  };
-
-  handleColorChange = obj => {
-    this.setState({
-      currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
-
-  handleChangeLineWidth = size => this.setState({ lineWidth: size });
-
   onDragStart = questionId => {
     this.handleHighlightQuestion(questionId, true);
-    this.setState({ activeMode: "" });
   };
 
   setDeleteConfirmation = (deleteConfirmation, selected = 0) => {
@@ -590,7 +487,9 @@ class WorksheetComponent extends React.Component {
     setQuestionsById(newQuestionsById);
 
     const questionIdsMap = {};
-    Object.values(newQuestionsById).forEach(q => { questionIdsMap[q?.id] = q?.qIndex });
+    Object.values(newQuestionsById).forEach(q => {
+      questionIdsMap[(q?.id)] = q?.qIndex;
+    });
 
     // Update the corresponding annotations
     setTestData({
@@ -601,8 +500,6 @@ class WorksheetComponent extends React.Component {
       })
     });
   };
-
-  setZoom = zoom => this.setState({ pageZoom: zoom });
 
   // setup for scratchpad ends
   render() {
@@ -617,36 +514,28 @@ class WorksheetComponent extends React.Component {
       percentageUploaded,
       fileInfo,
       pageStructure,
-      scratchPad = {},
-      freeFormNotes = {},
       windowWidth,
       test: { isDocBased },
       testMode = false,
       studentWorkAnswersById,
       studentWork,
-      isAssessmentPlayer,
       extraPaddingTop,
       onPageChange,
-      uploadToDrive
+      uploadToDrive,
+      currentPage: _currentPageInProps
     } = this.props;
 
     const {
       uploadModal,
       highlightedQuestion,
-      currentColor,
-      currentFont,
-      fillColor,
-      activeMode,
       deleteConfirmation,
-      deleteMode,
       isAddPdf,
       selected,
       minimized,
-      lineWidth,
       isToolBarVisible,
-      fromFreeFormNotes
+      currentPage: _currentPageInState
     } = this.state;
-    const currentPage = onPageChange ? this.props.currentPage : this.state.currentPage;
+    const currentPage = onPageChange ? _currentPageInProps : _currentPageInState;
 
     let { answersById } = this.props;
     if (studentWorkAnswersById) {
@@ -654,24 +543,6 @@ class WorksheetComponent extends React.Component {
     }
 
     const selectedPage = pageStructure[currentPage] || defaultPage;
-    const userHistory = review ? freeFormNotes[currentPage] : scratchPad && scratchPad[currentPage];
-
-    const svgContainer = (
-      <SvgDraw
-        activeMode={activeMode}
-        scratchPadMode
-        lineColor={currentColor}
-        deleteMode={deleteMode}
-        lineWidth={lineWidth}
-        fillColor={fillColor}
-        saveHistory={this.saveHistory}
-        history={userHistory}
-        zoom={this.state.pageZoom}
-        position="absolute"
-        fontFamily={currentFont}
-        fromFreeFormNotes={isAssessmentPlayer ? fromFreeFormNotes : {}}
-      />
-    );
 
     // LEFT THUMBNAILS AREA 200+(15 extra space) IS THE THUMBNAILS AREA
     // WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
@@ -774,7 +645,6 @@ class WorksheetComponent extends React.Component {
               questions={questions}
               questionsById={questionsById}
               answersById={answersById}
-              renderExtra={svgContainer}
               setZoom={this.setZoom}
               viewMode={viewMode}
               reportMode={reportMode}
@@ -788,28 +658,6 @@ class WorksheetComponent extends React.Component {
               forwardedRef={this.pdfRef}
               review={review}
             />
-            {viewMode !== "report" && !testMode && isToolBarVisible && (
-              <Tools
-                isWorksheet
-                onFillColorChange={this.onFillColorChange}
-                fillColor={fillColor}
-                deleteMode={deleteMode}
-                currentColor={currentColor}
-                onToolChange={this.handleToolChange}
-                onChangeFont={this.handleChangeFont}
-                currentFont={currentFont}
-                activeMode={activeMode}
-                undo={this.handleUndo}
-                redo={this.handleRedo}
-                onColorChange={this.handleColorChange}
-                testMode={testMode}
-                review={review}
-                lineWidth={lineWidth}
-                onChangeSize={this.handleChangeLineWidth}
-                isToolBarVisible={isToolBarVisible}
-                isDocBased={isDocBased}
-              />
-            )}
           </div>
         </Fragment>
         <Questions
@@ -857,7 +705,7 @@ const enhance = compose(
       scratchPad: get(
         state,
         `userWork.present[${
-        ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
+          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
         }].scratchpad`,
         null
       ),

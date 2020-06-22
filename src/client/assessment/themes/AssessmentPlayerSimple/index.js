@@ -6,10 +6,9 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
-import { message } from "antd";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { hexToRGB, withWindowSizes,notification } from "@edulastic/common";
+import { hexToRGB, withWindowSizes, notification } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
@@ -25,7 +24,6 @@ import assessmentPlayerTheme from "./themeStyle.json";
 import { unansweredQuestionCountSelector } from "../../../student/TestAttemptReview/ducks";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
-import Tools from "../AssessmentPlayerDefault/Tools";
 import { saveUserWorkAction } from "../../actions/userWork";
 import { changePreviewAction } from "../../../author/src/actions/view";
 
@@ -108,7 +106,7 @@ class AssessmentPlayerSimple extends React.Component {
   changeTabItemState = value => {
     const { checkAnswer, answerChecksUsedForItem, settings, groupId } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
-      return notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem"});
+      return notification({ type: "warn", messageKey: "checkAnswerLimitExceededForItem" });
     checkAnswer(groupId);
     this.setState({ testItemState: value });
   };
@@ -297,21 +295,6 @@ class AssessmentPlayerSimple extends React.Component {
             utaId={utaId}
             groupId={groupId}
           >
-            {scratchPadMode && !previewPlayer && (
-              <Tools
-                onFillColorChange={this.onFillColorChange}
-                fillColor={fillColor}
-                deleteMode={deleteMode}
-                currentColor={currentColor}
-                onToolChange={this.handleToolChange}
-                activeMode={activeMode}
-                undo={this.handleUndo}
-                redo={this.handleRedo}
-                onColorChange={this.handleColorChange}
-                className="scratchpad-tools"
-              />
-            )}
-
             {toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
               <CalculatorContainer
                 calculateMode={`${settings.calcType}_${settings.calcProvider}`}

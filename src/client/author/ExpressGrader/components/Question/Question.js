@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 import { isEqual } from "lodash";
+import { AnswerContext } from "@edulastic/common";
 import { receiveStudentQuestionAction } from "../../../src/actions/classBoard";
 import {
   getAssignmentClassIdSelector,
@@ -12,7 +13,6 @@ import {
   getTestItemsDataSelector
 } from "../../../ClassBoard/ducks";
 import ClassQuestions from "../../../ClassResponses/components/Container/ClassQuestions";
-import { AnswerContext, ScratchPadContext } from "@edulastic/common";
 import { getTeacherEditedScoreSelector } from "../../ducks";
 
 class Question extends Component {

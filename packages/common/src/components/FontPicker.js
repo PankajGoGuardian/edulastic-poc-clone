@@ -9,6 +9,7 @@ import { IconSearch } from "@edulastic/icons";
 const { Item } = List;
 
 export const fonts = [
+  { fontFamily: "Open Sans", name: "Open Sans" },
   { fontFamily: "'Roboto', sans-serif", name: "Roboto" },
   { fontFamily: "'Roboto Mono', monospace", name: "Roboto Mono" },
   { fontFamily: "'Roboto Slab', serif", name: "Roboto Slab" },
@@ -51,7 +52,7 @@ export const fonts = [
   { fontFamily: "'Anton', sans-serif", name: "Anton" }
 ];
 
-const FontPicker = ({ onChange, currentFont, style }) => {
+const FontPicker = ({ onChange, currentFont, style, hideLabel, placeholder, className }) => {
   const [open, toggleOpen] = useState(false);
   const [activeItem, setActiveItem] = useState({});
   const [fontName, setFontName] = useState("");
@@ -76,7 +77,7 @@ const FontPicker = ({ onChange, currentFont, style }) => {
 
   const fitlerd = fonts.filter(item => item.name.search(new RegExp(fontName, "gi")) !== -1);
 
-  const buttonLabel = activeItem?.name?.charAt(0) || "t";
+  const buttonLabel = activeItem?.name || placeholder;
 
   const handleKeyUp = e => {
     if (e.key === "Enter") {
@@ -120,8 +121,8 @@ const FontPicker = ({ onChange, currentFont, style }) => {
   }, [currentFont]);
 
   return (
-    <Block style={style}>
-      <Label>Font</Label>
+    <Block style={style} className={className}>
+      {!hideLabel && <Label>Font</Label>}
       <PopoverContainer ref={containerRef}>
         <Popover
           placement="rightTop"
@@ -143,7 +144,12 @@ const FontPicker = ({ onChange, currentFont, style }) => {
 
 FontPicker.propTypes = {
   onChange: PropTypes.func.isRequired,
-  currentFont: PropTypes.string.isRequired
+  currentFont: PropTypes.string.isRequired,
+  placeholder: PropTypes.string
+};
+
+FontPicker.defaultProps = {
+  placeholder: "T"
 };
 
 export default FontPicker;
@@ -161,17 +167,17 @@ const PopoverContainer = styled.div`
 `;
 
 const FontButton = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 100%;
+  height: 100%;
   border-radius: 4px;
   background-color: ${white};
   font-weight: 600;
-  font-size: large;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-transform: uppercase;
   cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  justify-content: flex-start;
+  padding: 0px 4px;
 `;
 
 const FontPickerContent = styled.div`
@@ -207,6 +213,9 @@ const FontList = styled(List)`
 
 const Block = styled.div`
   margin-bottom: 4px;
+  font-size: large;
+  width: 30px;
+  height: 30px;
 `;
 
 const Label = styled.div`

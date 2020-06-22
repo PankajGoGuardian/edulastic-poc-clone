@@ -5,7 +5,6 @@ import { compose } from "redux";
 import {
   Stimulus,
   withWindowSizes,
-  ScratchPadContext,
   QuestionNumberLabel,
   FlexContainer,
   QuestionLabelWrapper,
@@ -17,11 +16,11 @@ import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW } from "../../constants/constantsForQuestions";
-import Scratch from "../../components/Scratch";
 import { PreviewContainer } from "./styled/PreviewContainer";
 import DEFAULT_IMAGE from "../../assets/highlightImageBackground.svg";
 import { s3ImageBucketPath } from "../../../config";
 import Instructions from "../../components/Instructions";
+import { Scratchpad, ScratchpadTool } from "../../../common/components/Scratchpad";
 
 const HighlightImagePreview = ({
   view,
@@ -50,18 +49,16 @@ const HighlightImagePreview = ({
 
   const showDrawing = viewComponent === "editQuestion";
 
-  const ResolvedWrapper = showDrawing ? ScratchPadContext.Provider : React.Fragment;
-
   return (
-    <ResolvedWrapper value={{ getContainer: () => containerRef.current }}>
+    <React.Fragment value={{ getContainer: () => containerRef.current }}>
+      {showDrawing && <ScratchpadTool />}
       <PreviewContainer
         hideInternalOverflow={hideInternalOverflow || viewComponent === "authorPreviewPopup"}
         padding={smallSize}
         ref={containerRef}
         boxShadow={smallSize ? "none" : ""}
       >
-        {showDrawing && <Scratch viewComponent={viewComponent} clearClicked={clearClicked} />}
-
+        {showDrawing && <Scratchpad clearClicked={clearClicked} hideTools />}
         <FlexContainer justifyContent="flex-start" alignItems="baseline">
           <QuestionLabelWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -74,7 +71,7 @@ const HighlightImagePreview = ({
         </FlexContainer>
       </PreviewContainer>
       <Instructions item={item} />
-    </ResolvedWrapper>
+    </React.Fragment>
   );
 };
 

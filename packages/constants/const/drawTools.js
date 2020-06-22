@@ -15,6 +15,11 @@ const PASTE = "paste";
 const CUT = "cut";
 const MOVE_BEHIND = "moveBehind";
 const MOVE_FORWARD = "moveForward";
+const COMMENT = "commentTool";
+const EDITING_TOOL = "EditingTools";
+const UNDO_TOOL = "undoTool";
+const REDO_TOOL = "redoTool";
+const DELETE_TOOL = "deleteTool";
 
 module.exports = {
   MOVE_ITEM,
@@ -33,5 +38,10 @@ module.exports = {
   PASTE,
   CUT,
   MOVE_BEHIND,
-  MOVE_FORWARD
+  MOVE_FORWARD,
+  COMMENT,
+  EDITING_TOOL,
+  UNDO_TOOL,
+  REDO_TOOL,
+  DELETE_TOOL
 };

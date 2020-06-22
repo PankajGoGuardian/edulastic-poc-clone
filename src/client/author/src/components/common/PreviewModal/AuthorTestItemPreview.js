@@ -5,13 +5,13 @@ import { Pagination, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, red } from "@edulastic/colors";
 import { questionType, roleuser } from "@edulastic/constants";
-import { Tabs, EduButton, withWindowSizes, ScrollContext, ScratchPadContext, notification } from "@edulastic/common";
+import { Tabs, EduButton, withWindowSizes, ScrollContext, notification } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
-import Scratch from "../../../../../assessment/components/Scratch";
+import { Scratchpad, ScratchpadTool } from "../../../../../common/components/Scratchpad";
 
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
 
@@ -62,7 +62,8 @@ class AuthorTestItemPreview extends Component {
     this.state = {
       value: 0,
       collapseDirection: "",
-      isRejectMode: false
+      isRejectMode: false,
+      isEnableScratchpad: false
     };
   }
 
@@ -259,7 +260,7 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  renderLeftButtons = () => {
+  renderLeftButtons = showScratch => {
     const {
       allowDuplicate,
       handleDuplicateTestItem,
@@ -276,7 +277,7 @@ class AuthorTestItemPreview extends Component {
       userRole
     } = this.props;
 
-    const { isRejectMode } = this.state;
+    const { isRejectMode, isEnableScratchpad } = this.state;
     const isOwner = item?.createdBy?._id === userId || userRole === roleuser.EDULASTIC_CURATOR;
     const isDisableEdit = !(isEditable && userRole !== roleuser.EDULASTIC_CURATOR);
     const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
@@ -366,6 +367,15 @@ class AuthorTestItemPreview extends Component {
                 ) : null}
               </>
             </FeaturesSwitch>
+            {showScratch && (
+              <EduButton
+                isGhost
+                height="28px"
+                onClick={() => this.setState({ isEnableScratchpad: !isEnableScratchpad })}
+              >
+                {isEnableScratchpad ? "Hide Scratchpad" : "Show Scratchpad"}
+              </EduButton>
+            )}
           </ButtonsWrapper>
           {cols.length === 1 && this.renderRightButtons()}
         </ButtonsContainer>
@@ -431,7 +441,7 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  getScrollContainerProps = fromContainer => {
+  getScrollContainerProps = showScratch => {
     const { page, fullModal, viewComponent } = this.props;
     const commonProps = {
       style: {
@@ -440,25 +450,27 @@ class AuthorTestItemPreview extends Component {
       ref: this.scrollContainer,
       "data-cy": "scroll-conteianer"
     };
+
     // item preview popup
-    if (viewComponent === "authorPreviewPopup" && !fromContainer) {
-      commonProps.style.height = fullModal ? "87vh" : "70vh";
+    // 90px is scratchpad toolbox height
+    if (viewComponent === "authorPreviewPopup") {
+      const tempHeight = fullModal ? "87vh" : "70vh";
+      commonProps.style.height = showScratch ? `calc(${tempHeight} - 90px)` : tempHeight;
       return commonProps;
     }
 
     // item detail preview
-    if (page === "itemAuthoring" && fromContainer) {
-      commonProps.style.height = "calc(100vh - 132px)";
+    if (page === "itemAuthoring") {
+      commonProps.style.height = showScratch ? "calc(100vh - 272px)" : "calc(100vh - 182px)";
       return commonProps;
     }
     return {};
   };
 
-  renderColumns(col, colIndex, sectionQue, resourceCount) {
+  renderColumns(col, colIndex, sectionQue, resourceCount, showScratch) {
     const { style, windowWidth, onlySratchpad, viewComponent, fullModal, ...restProps } = this.props;
-    const { value, isRejectMode } = this.state;
-    // will show scratch only in multipart and item preview modal
-    const showScratch = col.widgets.some(w => w.type === questionType.HIGHLIGHT_IMAGE);
+    const { value, isRejectMode, isEnableScratchpad } = this.state;
+
     let subCount = 0;
     const columns = (
       <>
@@ -488,8 +500,9 @@ class AuthorTestItemPreview extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer alignItems="flex-start" {...this.getScrollContainerProps(false)}>
-          {showScratch && <Scratch viewComponent={viewComponent} fullModal={fullModal} />}
+        {showScratch && isEnableScratchpad && <ScratchpadTool />}
+        <WidgetContainer alignItems="flex-start" {...this.getScrollContainerProps(showScratch)}>
+          {showScratch && isEnableScratchpad && <Scratchpad hideTools />}
           {col.widgets.map((widget, i) => (
             <React.Fragment key={i}>
               {col.tabs &&
@@ -595,21 +608,20 @@ class AuthorTestItemPreview extends Component {
         {cols.map((col, i) => {
           const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
+          // will show scratch only in multipart and item preview modal
+          const showScratch = col.widgets.some(w => w.type === questionType.HIGHLIGHT_IMAGE);
+
           return (
             // width of divider 25px
-            <Container
-              width={!collapseDirection ? col.dimension : "100%"}
-              {...rest}
-              {...this.getScrollContainerProps(true)}
-            >
+            <Container width={!collapseDirection ? col.dimension : "100%"} {...rest}>
               {collapseButtonShouldRernder(i) && this.renderCollapseButtons(i)}
               <ColumnContentArea
                 hide={hideColumn}
                 width={collapseButtonShouldRernder(i) ? `calc(100% - 25px)` : null}
                 style={onlySratchpad ? { boxShadow: "none" } : {}}
               >
-                {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                {this.renderColumns(col, i, sectionQue, resourceCount)}
+                {i === 0 ? this.renderLeftButtons(showScratch) : this.renderRightButtons()}
+                {this.renderColumns(col, i, sectionQue, resourceCount, showScratch)}
               </ColumnContentArea>
               {collapseDirection === "right" && this.renderCollapseButtons(i)}
             </Container>
@@ -645,11 +657,9 @@ class AuthorTestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
-          <ScratchPadContext.Provider value={{ getContainer: () => this.scrollContainer.current }}>
-            {isRejectMode || onlySratchpad
-              ? this.renderColumnContentAreaWithScratchpad(sectionQue, resourceCount)
-              : this.renderColumnsContentArea({ sectionQue, resourceCount })}
-          </ScratchPadContext.Provider>
+          {isRejectMode || onlySratchpad
+            ? this.renderColumnContentAreaWithScratchpad(sectionQue, resourceCount)
+            : this.renderColumnsContentArea({ sectionQue, resourceCount })}
         </ScrollContext.Provider>
       </ThemeProvider>
     );

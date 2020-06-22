@@ -208,7 +208,7 @@ const MainContent = styled.div`
 
 const MainWrapper = styled.div`
   position: relative;
-  width: 100%;
+  width: calc(100% - 80px);
   margin-top: 60px;
   height: calc(100vh - 150px);
   display: flex;

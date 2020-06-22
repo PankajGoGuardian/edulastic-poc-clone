@@ -1297,6 +1297,7 @@ span.token.active-word {
 
 .rc-color-picker-wrap {
   display: block !important;
+  position: relative;
   width: 40px !important;
   height: 40px !important;
 }

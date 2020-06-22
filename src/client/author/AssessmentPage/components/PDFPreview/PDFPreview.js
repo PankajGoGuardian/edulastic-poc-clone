@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { Droppable } from "react-drag-and-drop";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { withRouter } from "react-router";
-import { ScratchPadContext } from "@edulastic/common";
 
 import Styled from "styled-components";
 import { getPreviewSelector } from "../../../src/selectors/view";
@@ -130,20 +129,18 @@ const PDFPreview = ({
           style={{ top: 0, display: "block" }}
         >
           <Preview onClick={handleRemoveHighlight} ref={previewContainer}>
-            <ScratchPadContext.Provider value={{ getContainer: () => previewContainer.current }}>
-              {page.URL !== "blank" && (
-                <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
-                  <Page
-                    pageNumber={page.pageNo}
-                    scale={pdfScale}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                    width={pdfWidth}
-                  />
-                </Document>
-              )}
-              {renderExtra}
-            </ScratchPadContext.Provider>
+            {page.URL !== "blank" && (
+              <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
+                <Page
+                  pageNumber={page.pageNo}
+                  scale={pdfScale}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                  width={pdfWidth}
+                />
+              </Document>
+            )}
+            {renderExtra}
           </Preview>
           <AnnotationsContainer className="annotations-container" zoom={pdfScale}>
             {annotations

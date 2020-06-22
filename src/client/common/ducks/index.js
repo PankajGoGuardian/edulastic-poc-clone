@@ -1,4 +1,4 @@
-import { scratchpad } from "./scratchpad";
+import { scratchpad } from "../components/Scratchpad/duck";
 
 export default {
   scratchpad

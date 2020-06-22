@@ -4,9 +4,8 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { ActionCreators } from "redux-undo";
 import { get, keyBy } from "lodash";
-import { withWindowSizes, hexToRGB, notification } from "@edulastic/common";
+import { withWindowSizes, notification } from "@edulastic/common";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 
 import { themes } from "../../../theme";
@@ -24,7 +23,6 @@ import TestItemPreview from "../../components/TestItemPreview";
 import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
-import Tools from "./Tools";
 import { saveUserWorkAction, clearUserWorkAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
@@ -73,8 +71,6 @@ class AssessmentPlayerDefault extends React.Component {
     history: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     questions: PropTypes.object.isRequired,
-    undoScratchPad: PropTypes.func.isRequired,
-    redoScratchPad: PropTypes.func.isRequired,
     userWork: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     answerChecksUsedForItem: PropTypes.number.isRequired,
@@ -153,51 +149,10 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
-  onFillColorChange = obj => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({ fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
-  };
-
   handleModeCaculate = calculateMode => {
     this.setState({
       calculateMode
     });
-  };
-
-  handleScratchToolChange = value => () => {
-    const { scratchpadData, updateScratchPad } = this.props;
-    const { activeMode, deleteMode } = scratchpadData;
-    const data = {};
-
-    if (value === "deleteMode") {
-      data.deleteMode = !deleteMode;
-    } else if (activeMode === value) {
-      data.activeMode = "";
-    } else {
-      data.activeMode = value;
-      data.deleteMode = false;
-    }
-    if (value === "drawBreakingLine") {
-      notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing" });
-    }
-    updateScratchPad(data);
-  };
-
-  handleColorChange = obj => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({
-      currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
-
-  handleChangeFont = font => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({ currentFont: font });
-  };
-
-  handleLineWidthChange = size => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({ lineWidth: size });
   };
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
@@ -228,30 +183,6 @@ class AssessmentPlayerDefault extends React.Component {
       itemId: items[currentItem]?._id,
       hintUsage
     });
-  };
-
-  handleUndo = () => {
-    const { undoScratchPad } = this.props;
-    const { history } = this.state;
-    if (history > 0) {
-      this.setState(
-        state => ({ history: state.history - 1 }),
-        () => {
-          undoScratchPad();
-        }
-      );
-    }
-  };
-
-  handleRedo = () => {
-    const { redoScratchPad } = this.props;
-
-    this.setState(
-      state => ({ history: state.history + 1 }),
-      () => {
-        redoScratchPad();
-      }
-    );
   };
 
   static getDerivedStateFromProps(next, prevState) {
@@ -323,9 +254,7 @@ class AssessmentPlayerDefault extends React.Component {
       zoomLevel: _zoomLevel,
       selectedTheme = "default",
       closeTestPreviewModal,
-      showTools = true,
       showScratchPad,
-      scratchpadData: { currentColor, currentFont, deleteMode, lineWidth, fillColor, activeMode },
       passage,
       defaultAP,
       playerSkinType,
@@ -492,25 +421,6 @@ class AssessmentPlayerDefault extends React.Component {
             utaId={utaId}
             groupId={groupId}
           >
-            {scratchPadMode && (!previewPlayer || showTools) && (
-              <Tools
-                onFillColorChange={this.onFillColorChange}
-                fillColor={fillColor}
-                deleteMode={deleteMode}
-                currentColor={currentColor}
-                onToolChange={this.handleScratchToolChange}
-                activeMode={activeMode}
-                undo={this.handleUndo}
-                redo={this.handleRedo}
-                lineWidth={lineWidth}
-                onChangeSize={this.handleLineWidthChange}
-                onColorChange={this.handleColorChange}
-                onChangeFont={this.handleChangeFont}
-                currentFont={currentFont}
-                className="scratchpad-tools"
-              />
-            )}
-
             <FeaturesSwitch
               inputFeatures="studentSettings"
               actionOnInaccessible="hidden"
@@ -574,13 +484,7 @@ class AssessmentPlayerDefault extends React.Component {
                     viewComponent="studentPlayer"
                     setHighlights={this.saveHistory("resourceId")}
                     setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
-                    activeMode={activeMode}
                     scratchPadMode={scratchPadMode}
-                    lineColor={currentColor}
-                    deleteMode={deleteMode}
-                    lineWidth={lineWidth}
-                    fillColor={fillColor}
-                    fontFamily={currentFont}
                     saveHistory={this.saveHistory("scratchpad")}
                     history={LCBPreviewModal ? scratchpadActivity.data : scratchPad}
                     previouscratchPadDimensions={LCBPreviewModal ? scratchpadActivity.dimensions : null}
@@ -610,13 +514,7 @@ class AssessmentPlayerDefault extends React.Component {
                     viewComponent="studentPlayer"
                     setHighlights={this.saveHistory("resourceId")} // this needs only for passage type
                     setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
-                    activeMode={activeMode}
                     scratchPadMode={scratchPadMode}
-                    lineColor={currentColor}
-                    deleteMode={deleteMode}
-                    lineWidth={lineWidth}
-                    fillColor={fillColor}
-                    fontFamily={currentFont}
                     saveHistory={this.saveHistory("scratchpad")}
                     history={scratchPad}
                     saveHintUsage={this.saveHintUsage}
@@ -703,8 +601,6 @@ const enhance = compose(
     {
       changePreview: changePreviewAction,
       saveUserWork: saveUserWorkAction,
-      undoScratchPad: ActionCreators.undo,
-      redoScratchPad: ActionCreators.redo,
       toggleBookmark: toggleBookmarkAction,
       checkAnswer: checkAnswerEvaluation,
       setUserAnswer: setUserAnswerAction,

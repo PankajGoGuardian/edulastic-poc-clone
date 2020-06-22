@@ -301,14 +301,14 @@ class Container extends PureComponent {
         getDefaultTestSettings(test);
       }
     } else if (userRole === roleuser.STUDENT) {
-        if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
-          // this is to call redirectToStudentPage once, even if multiple props update happend
-          if (!this.state.studentRedirected) {
-            redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment);
-            this.setState({ studentRedirected: true });
-          }
+      if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
+        // this is to call redirectToStudentPage once, even if multiple props update happend
+        if (!this.state.studentRedirected) {
+          redirectToStudentPage(studentAssignments, history, startAssignment, resumeAssignment);
+          this.setState({ studentRedirected: true });
         }
       }
+    }
   }
 
   // Make use of the router Prompt Component. No custom beforeunload method is required.
@@ -760,7 +760,7 @@ class Container extends PureComponent {
   };
 
   onEnableEdit = () => {
-    const { test, userId, duplicateTest, currentTab, userRole } = this.props;
+    const { test, userId, duplicateTest, currentTab, userRole, userFeatures } = this.props;
     const { _id: testId, authors, title, isUsed } = test;
     const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
     const canEdit = (authors && authors.some(x => x._id === userId)) || isCurator;

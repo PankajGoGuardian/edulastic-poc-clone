@@ -291,7 +291,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
     }
     // verify items on review tab
     testLibrary.header.clickOnReview();
-    testLibrary.header.verifyHeaders();
+    testLibrary.header.verifyHeaders(true, false, true, true, true);
     testLibrary.header.verifyHeaderActionButtons();
 
     itemsInTest.forEach(itemId => {

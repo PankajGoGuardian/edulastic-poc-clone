@@ -332,9 +332,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         });
       }); */
 
-      it("verify bar graph colors and tool tip", () => {
+      /*  it("verify bar graph colors and tool tip", () => {
         bargraph.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, queList);
-      });
+      }); */
     });
   });
 
@@ -352,9 +352,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         bargraph.verifyXAxisTicks(queList);
       });
 
-      it(`> verify bar graph colors and tool tip for :: ${studentName}`, () => {
+      /*  it(`> verify bar graph colors and tool tip for :: ${studentName}`, () => {
         bargraph.verifyQueBarAndToolTipBasedOnAttemptData(statsMap[studentName], queList);
-      });
+      }); */
     });
   });
 
@@ -372,9 +372,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         bargraph.verifyXAxisTicks(submittedInprogressStudentList.map(studentName => Helpers.getShortName(studentName)));
       });
       //
-      it(`>  verify bar graph - colors and tool tip for que :: ${queNumber}`, () => {
+      /*  it(`>  verify bar graph - colors and tool tip for que :: ${queNumber}`, () => {
         bargraph.verifyQueBarBasedOnQueAttemptData(queCentric[queNumber]);
-      });
+      }); */
     });
   });
 

@@ -112,6 +112,8 @@ const SingleAssessmentReportFilters = ({
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
+    // select common assessment as default if assessment type is not set
+    search.assessmentType = get(SARFilterData, "data.result.reportFilters.assessmentType", "common assessment");
     dropDownData = getDropDownData(SARFilterData, user);
 
     const defaultTermId = get(user, "orgData.defaultTermId", "");

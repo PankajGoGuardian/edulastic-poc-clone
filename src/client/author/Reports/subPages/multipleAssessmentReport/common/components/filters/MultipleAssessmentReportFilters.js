@@ -81,6 +81,8 @@ const SingleAssessmentReportFilters = ({
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
     const search = queryString.parse(location.search, { arrayFormat: "index" });
+    // select common assessment as default if assessment type is not set
+    search.assessmentType = get(MARFilterData, "data.result.reportFilters.assessmentType", "common assessment");
 
     dropDownData = getDropDownData(MARFilterData, user);
     const defaultTermId = get(user, "orgData.defaultTermId", "");

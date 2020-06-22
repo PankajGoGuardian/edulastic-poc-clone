@@ -220,6 +220,9 @@ class Review extends PureComponent {
     const { test, setData, currentGroupIndex } = this.props;
     setData(
       produce(test, draft => {
+        draft.itemGroups[currentGroupIndex].items = draft.itemGroups[currentGroupIndex].items.map(
+          ({ selected, ...item }) => ({ ...item })
+        );
         const [removed] = draft.itemGroups[currentGroupIndex].items.splice(oldIndex, 1);
         draft.itemGroups[currentGroupIndex].items.splice(newIndex, 0, removed);
       })

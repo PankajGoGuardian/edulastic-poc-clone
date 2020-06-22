@@ -424,13 +424,26 @@ class Item extends Component {
                   {this.isAddOrRemove ? "" : <Icon type="close" />}
                 </AddRemoveBtnPublisher>
               ) : (
-                <AddRemoveBtn
-                  loading={selectedId === item._id}
-                  onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
-                  isAddOrRemove={this.isAddOrRemove}
-                >
-                  {this.isAddOrRemove ? "ADD" : "REMOVE"}
-                </AddRemoveBtn>
+                <>
+                  <EduButton
+                    width="30px"
+                    height="30px"
+                    isGhost
+                    iconBtn
+                    onClick={openPreviewModal}
+                    style={{ marginTop: 17, marginRight: 3 }}
+                  >
+                    {/* found 17,3 values by trial & error */}
+                    <IconEye />
+                  </EduButton>
+                  <AddRemoveBtn
+                    loading={selectedId === item._id}
+                    onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
+                    isAddOrRemove={this.isAddOrRemove}
+                  >
+                    {this.isAddOrRemove ? "ADD" : "REMOVE"}
+                  </AddRemoveBtn>
+                </>
               ))}
           </Question>
           <Row type="flex" align="center">

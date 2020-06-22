@@ -49,7 +49,7 @@ const ReviewSummary = ({
   hasRandomQuestions,
   isPublishers
 }) => {
-  let subjectsList = [...selectsData.allSubjects];
+  const subjectsList = [...selectsData.allSubjects];
   subjectsList.splice(0, 1);
   const questionsCount = summary?.totalItems || 0;
   const totalPoints = summary?.totalPoints || 0;
@@ -58,7 +58,7 @@ const ReviewSummary = ({
     orgCollections
   ]);
 
-  const skillIdentifiers = (metadata?.skillIdentifiers || []).join(",")
+  const skillIdentifiers = (metadata?.skillIdentifiers || []).join(",");
   return (
     <Container>
       <FlexBoxOne>
@@ -114,7 +114,7 @@ const ReviewSummary = ({
               placeholder="Please select"
               value={filteredCollections.flatMap(c => c.bucketIds)}
               onChange={onChangeCollection}
-              filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+              filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
               margin="0px 0px 15px"
             >
               {orgCollections?.map(o => (
@@ -184,7 +184,7 @@ const ReviewSummary = ({
                 )
             )}
           {summary?.noStandards?.totalQuestions > 0 && (
-            <TableBodyRow key={"noStandard"}>
+            <TableBodyRow key="noStandard">
               <TableBodyCol span={12}>
                 <Standard>NO STANDARD</Standard>
               </TableBodyCol>
@@ -194,7 +194,11 @@ const ReviewSummary = ({
           )}
         </FlexBoxFour>
       )}
-      <Input style={{display: "none"}} defaultValue={skillIdentifiers} onChange={e => onChangeSkillIdentifiers(e.currentTarget.value)}/>
+      <Input
+        style={{ display: "none" }}
+        defaultValue={skillIdentifiers}
+        onChange={e => onChangeSkillIdentifiers(e.currentTarget.value)}
+      />
     </Container>
   );
 };

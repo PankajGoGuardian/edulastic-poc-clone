@@ -261,24 +261,26 @@ export const TypeIcon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
+  float:right;
   width: 18px;
   height: 18px;
   max-width: 18px;
   background: ${props =>
-    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
+  props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
   color: ${white};
   border-radius: 50%;
   font-weight: 600;
   font-size: ${props => props.theme.bodyFontSize};
+  align-self:center;
 `;
 
 export const TypeWrapper = styled.span`
   width: ${props => props.width || "90px"};
   display: flex;
-  float: ${props => props.float || "right"};
   align-items: center;
-  justify-content: ${props => props.justify || "flex-start"};
-
+  justify-content: ${props => props.justify || "center"};
+  margin:auto;
+  padding-left:25px;
   @media (min-width: ${mediumDesktopExactWidth}) {
     width: ${props => props.width || "110px"};
   }
@@ -288,22 +290,12 @@ export const TypeWrapper = styled.span`
 `;
 
 export const TimedTestIndicator = styled.span`
-  height: 18px;
-  max-width: 65px;
-  min-width: 65px;
-  text-align: left;
-  font-weight: 600;
-  margin-left: 8px;
-  display: flex;
-  align-items: center;
-  svg {
-    margin-right: 6px;
-  }
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    max-width: 80px;
-    min-width: 80px;
-  }
-`;
+width:30px;
+margin-right:-10px;
+padding-left:5px;
+display:flex;
+align-items:center;
+`
 
 export const IndicatorText = styled.div`
   display: inline-block;

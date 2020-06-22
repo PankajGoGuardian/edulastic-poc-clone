@@ -5,7 +5,7 @@ import ReactOutsideEvent from "react-outside-event";
 import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { get, pick } from "lodash";
+import { get } from "lodash";
 import styled, { withTheme } from "styled-components";
 import { Layout, Menu as AntMenu, Row, Icon as AntIcon, Dropdown } from "antd";
 import {
@@ -17,8 +17,7 @@ import {
   IconQuestion,
   IconProfileHighlight,
   IconSignoutHighlight,
-  IconPlaylist,
-  IconSwitchUser
+  IconPlaylist
 } from "@edulastic/icons";
 import { withWindowSizes, OnDarkBgLogo } from "@edulastic/common";
 import {
@@ -33,8 +32,6 @@ import {
   mobileWidthLarge
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
-import SwitchUserModal from "../../common/components/SwtichUserModal/SwitchUserModal";
-import { switchUser } from "../../author/authUtils";
 import { logoutAction, isProxyUser as isProxyUserSelector } from "../Login/ducks";
 
 const menuItems = [
@@ -86,7 +83,6 @@ class SideMenu extends Component {
     super(props);
 
     this.state = {
-      showModal: false,
       isVisible: false
     };
 
@@ -143,9 +139,6 @@ class SideMenu extends Component {
       this.toggleDropdown();
       this.toggleMenu();
     }
-    if (key === "2") {
-      this.setState({ showModal: true });
-    }
   };
 
   onOutsideEvent = event => {
@@ -165,10 +158,8 @@ class SideMenu extends Component {
   };
 
   render() {
-    const { broken, isVisible, showModal } = this.state;
+    const { broken, isVisible } = this.state;
     const {
-      userId,
-      switchDetails,
       windowWidth,
       currentPath,
       firstName,
@@ -200,19 +191,6 @@ class SideMenu extends Component {
               <span>{isSidebarCollapsed ? "" : t("common.myProfileText")}</span>
             </Link>
           </Menu.Item>
-          {get(switchDetails, "otherAccounts", []).length ? (
-            <Menu.Item key="2" className="removeSelectedBorder">
-              <a>
-                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Switch Account"}
-              </a>
-            </Menu.Item>
-          ) : (
-            <Menu.Item key="3" className="removeSelectedBorder">
-              <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
-                <IconSwitchUser /> {isSidebarCollapsed ? "" : "Add Account"}
-              </Link>
-            </Menu.Item>
-          )}
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight />
@@ -225,14 +203,6 @@ class SideMenu extends Component {
 
     return (
       <>
-        <SwitchUserModal
-          userId={userId}
-          switchUser={switchUser}
-          showModal={showModal}
-          closeModal={() => this.setState({ showModal: false })}
-          otherAccounts={get(switchDetails, "otherAccounts", [])}
-          personId={get(switchDetails, "personId")}
-        />
         <FixedSidebar
           className={`${!isSidebarCollapsed ? "full" : ""}`}
           onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
@@ -374,12 +344,10 @@ const enhance = compose(
       firstName: user?.user?.firstName || "",
       middleName: get(user, "user.middleName", ""),
       lastName: get(user, "user.lastName", ""),
-      userId: get(user, "user._id", ""),
       isSidebarCollapsed: ui.isSidebarCollapsed,
       zoomLevel: ui.zoomLevel,
       profileThumbnail: get(user, "user.thumbnail"),
       role: user?.user?.role,
-      switchDetails: pick(user?.user, ["personId", "otherAccounts"]),
       features: user?.user?.features,
       isProxyUser: isProxyUserSelector({ user })
     }),

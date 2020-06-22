@@ -34,7 +34,7 @@ import { loadQuestionsAction, getQuestionsArraySelector, UPDATE_QUESTION } from 
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
-import { getUserRole, getUserOrgData, getUserIdSelector, getUserId } from "../src/selectors/user";
+import { getUserRole, getUserOrgData, getUserIdSelector, getUserId, getIsCurator } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
 import {
@@ -1268,6 +1268,7 @@ function* updateTestSaga({ payload }) {
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     const userRole = yield select(getUserRole);
+    const isCurator = yield select(getIsCurator);
     if (oldId !== newId && newId) {
       if (!payload.assignFlow) {
         notification({ type: "success", messageKey: "testVersioned" });
@@ -1284,7 +1285,8 @@ function* updateTestSaga({ payload }) {
         );
       }
     } else if (!payload.assignFlow) {
-      if (userRole === roleuser.EDULASTIC_CURATOR) notification({ type: "success", messageKey: "testSaved" });
+      if (userRole === roleuser.EDULASTIC_CURATOR || isCurator)
+        notification({ type: "success", messageKey: "testSaved" });
       else notification({ type: "success", messageKey: "testSavedAsDraft" });
     }
     yield put(setTestsLoadingAction(false));

@@ -300,8 +300,7 @@ class Container extends PureComponent {
       if (userRole === roleuser.EDULASTIC_CURATOR && prevProps?.test?._id !== test?._id) {
         getDefaultTestSettings(test);
       }
-    } else {
-      if (userRole === roleuser.STUDENT) {
+    } else if (userRole === roleuser.STUDENT) {
         if (!prevProps.loadingAssignments && !loadingAssignments && studentAssignments) {
           // this is to call redirectToStudentPage once, even if multiple props update happend
           if (!this.state.studentRedirected) {
@@ -310,7 +309,6 @@ class Container extends PureComponent {
           }
         }
       }
-    }
   }
 
   // Make use of the router Prompt Component. No custom beforeunload method is required.
@@ -610,7 +608,8 @@ class Container extends PureComponent {
       updateLastUsedCollectionList,
       history,
       testAssignments,
-      userRole
+      userRole,
+      userFeatures
     } = this.props;
     if (!test?.title?.trim()?.length) {
       return message.error("Name field is required");
@@ -630,7 +629,8 @@ class Container extends PureComponent {
       if (
         (history.location.state?.editAssigned || testAssignments.length) &&
         test.isUsed &&
-        userRole !== roleuser.EDULASTIC_CURATOR
+        userRole !== roleuser.EDULASTIC_CURATOR &&
+        !userFeatures.isCurator
       ) {
         newTest.isInEditAndRegrade = true;
       }
@@ -867,7 +867,7 @@ class Container extends PureComponent {
         />
         {this.renderModal()}
         <ShareModal
-          shareLabel={"TEST URL"}
+          shareLabel="TEST URL"
           isVisible={showShareModal}
           testId={testId}
           hasPremiumQuestion={hasPremiumQuestion}

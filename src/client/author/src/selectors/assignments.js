@@ -80,9 +80,13 @@ export const getToggleStudentReportCardStateSelector = createSelector(
   state => state.toggleStudentReportCardSettings
 );
 
+/**
+ * This districtId selector is meant for all role except student
+ * @type {OutputSelector<unknown, number, (res: *) => number>}
+ */
 export const getDistrictIdSelector = createSelector(
   userSelector,
-  state => state.user.orgData.districtId
+  state => state.user.orgData?.districtIds?.[0]
 );
 
 export const getAssignmentViewSelector = createSelector(

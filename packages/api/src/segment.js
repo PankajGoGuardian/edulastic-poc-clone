@@ -10,26 +10,29 @@ const getUserDetails = ({
   userName: username,
   role,
   orgData,
-  districtId,
   clever = false,
   clever_district = false,
   gm = false,
-  orgData: { districtName: district = "", districtState: state = "" }
-}) => ({
-  domain: window.document.domain,
-  email,
-  username,
-  role,
-  clever,
-  clever_district,
-  gm,
-  groupId: districtId,
-  schoolId: get(orgData, "schools[0]._id", ""),
-  school: get(orgData, "schools[0].name", ""),
-  districtId,
-  district,
-  state
-});
+  orgData: { districts = [] }
+}) => {
+  // setting first district details for student other user role will have only one district
+  const { districtId = "", districtName: district="", districtState: state=""} = districts?.[0] || {};
+  return {
+    domain: window.document.domain,
+    email,
+    username,
+    role,
+    clever,
+    clever_district,
+    gm,
+    groupId: districtId,
+    schoolId: get(orgData, "schools[0]._id", ""),
+    school: get(orgData, "schools[0].name", ""),
+    districtId,
+    district,
+    state
+  }
+};
 
 const analyticsIdentify = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {

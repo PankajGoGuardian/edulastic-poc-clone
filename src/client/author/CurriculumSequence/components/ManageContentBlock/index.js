@@ -4,7 +4,7 @@ import { themeColor, white } from "@edulastic/colors";
 import { FlexContainer,notification } from "@edulastic/common";
 import { test as testsConstants } from "@edulastic/constants";
 import { IconFilter, IconPlus } from "@edulastic/icons";
-import { Dropdown, Empty, Menu, message, Spin } from "antd";
+import { Dropdown, Empty, Menu, Spin } from "antd";
 import { pick, uniq } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -379,7 +379,7 @@ export default connect(
     externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
     collections: state.user?.user?.orgData?.itemBanks,
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
-    districtId: state?.user?.user?.orgData?.districtId,
+    districtId: state?.user?.user?.orgData?.districtIds?.[0],
     userFeatures: state?.user?.user?.features,
     searchResourceBy: state.playlistTestBox?.searchResourceBy,
     resources: state.playlistTestBox?.resources

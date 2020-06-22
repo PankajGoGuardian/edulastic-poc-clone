@@ -11,7 +11,7 @@ const Collections = props => {
   const { className, getCollectionsData, user, collectionsData = {} } = props;
 
   useEffect(() => {
-    getCollectionsData(user.districtId);
+    getCollectionsData(user?.districtIds?.[0]);
   }, []);
 
   const { collections = [] } = collectionsData;

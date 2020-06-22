@@ -4,12 +4,13 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
-import { Upload, Spin, message } from "antd";
+import { Upload, Spin } from "antd";
 import { themeColor, white, greyishDarker2, largeDesktopWidth } from "@edulastic/colors";
-import { uploadToS3 } from "../../../author/src/utils/upload";
 import { beforeUpload,notification } from "@edulastic/common";
+import { uploadToS3 } from "../../../author/src/utils/upload";
 import ProfileImage from "../../assets/Profile.png";
 import { updateProfileImageAction } from "../../Login/ducks";
+
 const defaultImage = ProfileImage;
 
 class Photo extends React.Component {
@@ -26,16 +27,18 @@ class Photo extends React.Component {
         notification({ messageKey:"pleaseUploadFileInImageFormat"});
         this.setState({ loading: false });
         return;
-      } else if (!beforeUpload(file)) {
+      } if (!beforeUpload(file)) {
         this.setState({ loading: false });
         return;
       }
       const imageUrl = await uploadToS3(file, `${aws.s3Folders.USER}`, `${user._id}`);
+      // for student to updated profile image any one districtId is fine to pass
+      // any district id will be enough to find the user
       updateProfileImagePath({
         data: {
           thumbnail: imageUrl,
           email: user.email,
-          districtId: user.districtId
+          districtId: user.districtIds?.[0]
         },
         userId: user._id
       });
@@ -52,7 +55,7 @@ class Photo extends React.Component {
   };
 
   render() {
-    const { height = 250, windowWidth = 250, imageUrl, size = "", mode = "" } = this.props;
+    const { height = 250, windowWidth = 250, imageUrl, mode = "" } = this.props;
     const uploadButton = (
       <Container height={height} width={windowWidth}>
         <Image alt="Profile">
@@ -160,7 +163,7 @@ const ImageLoading = styled(Spin)`
 
 const Image = styled.div`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? props.height + "px" : "100%")};
+  height: ${props => (props.windowWidth > 993 ? `${props.height  }px` : "100%")};
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;

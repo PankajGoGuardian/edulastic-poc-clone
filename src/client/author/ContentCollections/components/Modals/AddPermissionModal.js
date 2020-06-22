@@ -1,7 +1,7 @@
 import { backgroundGrey2, themeColor } from "@edulastic/colors";
 import { CheckBoxGrp, CheckboxLabel,notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { Button, DatePicker, Input, message, Select, Spin } from "antd";
+import { Button, DatePicker, Input, Select, Spin } from "antd";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -35,9 +35,10 @@ const AddPermissionModal = ({
   isEditPermission,
   isFetchingOrganization
 }) => {
+  // for any role except student will have only one Object in districts
   const [fieldData, setFieldData] = useState({
-    districtId: user.role === "edulastic-admin" ? "" : user.districtId,
-    districtName: user.role === "edulastic-admin" ? "" : user.orgData.districtName,
+    districtId: user.role === "edulastic-admin" ? "" : user?.orgData?.districts?.[0]?.districtId,
+    districtName: user.role === "edulastic-admin" ? "" : user?.orgData?.districts?.[0]?.districtName,
     orgType: "",
     orgDetails: [],
     role: [],

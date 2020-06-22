@@ -1,6 +1,6 @@
 import { OnWhiteBgLogo,notification } from "@edulastic/common";
 import { IconCanvasBook } from "@edulastic/icons";
-import { message, Select } from "antd";
+import { Select } from "antd";
 import { get, groupBy } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
@@ -47,7 +47,7 @@ const CanvasBulkAddClass = ({
 
   useEffect(() => {
     getDictCurriculums();
-    receiveSearchCourse({ districtId: user.districtId });
+    receiveSearchCourse({ districtId: user?.districtIds?.[0] });
     getCanvasCourseListRequest(institutionId);
   }, []);
 
@@ -73,7 +73,7 @@ const CanvasBulkAddClass = ({
         const sectionClasses = sectionList.map(s => {
           const thumbnail = getThumbnail();
           return {
-            districtId: user.districtId,
+            districtId: user?.districtIds?.[0],
             grades: [],
             institutionId: user.institutionIds[0],
             name: s.name,

@@ -1,7 +1,6 @@
 import {
   backgrounds,
   desktopWidth,
-  extraDesktopWidth,
   largeDesktopWidth,
   mobileWidthMax,
   themeColor,
@@ -189,12 +188,13 @@ function ChildrenTable({ childs }) {
       key: "schools",
       render: orgData => orgData?.schools.map(x => <Tag key={x._id}> {x.name}</Tag>)
     },
-
     {
       title: "District",
       dataIndex: "orgData",
       key: "district",
-      render: orgData => orgData?.districtName
+      // In case of parent role table will be displayed and
+      // for parent we can user first district to get the name
+      render: orgData => orgData?.districts?.[0].districtName || ""
     }
   ];
 

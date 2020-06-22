@@ -1,7 +1,7 @@
+import { greyThemeDark2, greyThemeLight, greyThemeLighter, themeColor } from "@edulastic/colors";
+import { DatePicker, Input, InputNumber, Select } from "antd";
 import React from "react";
-import { Input, Select, DatePicker, InputNumber } from "antd";
 import styled from "styled-components";
-import { greyThemeLight, greyThemeLighter, themeColor, greyThemeDark2 } from "@edulastic/colors";
 
 export const FieldLabel = styled.label`
   font-size: 11px;
@@ -109,6 +109,17 @@ export const SelectInputStyled = styled(Select)`
         cursor: not-allowed;
       }
     }
+    &.ant-select-open {
+      .ant-select-selection {
+        &.ant-select-selection--multiple {
+          &:after {
+            top: 18px;
+            transform: rotate(225deg);
+            transition: 0.2s;
+          }
+        }
+      }
+    }
     .ant-select-selection {
       display: flex;
       align-items: center;
@@ -147,6 +158,21 @@ export const SelectInputStyled = styled(Select)`
         }
       }
       &.ant-select-selection--multiple {
+        padding-right: 25px;
+        &:after {
+          content: "";
+          position: absolute;
+          right: 14px;
+          top: 14px;
+          width: 9px;
+          height: 9px;
+          border: 1px solid ${themeColor};
+          border-top: none;
+          border-left: none;
+          cursor: pointer;
+          transform: rotate(45deg);
+          transition: 0.2s;
+        }
         .ant-select-selection__rendered {
           width: 100%;
           height: auto;

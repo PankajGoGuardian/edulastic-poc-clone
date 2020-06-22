@@ -2,27 +2,28 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import DropDownPage from "../../../../framework/author/itemList/questionType/fillInBlank/dropDownPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
+import ScoringBlock from "../../../../framework/author/itemList/questionType/common/scoringBlock";
+import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image with Drop Down" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
     queType: "Label Image with Drop Down",
     queText: "Indian state known as garden spice is:",
-    choices: ["ChoiceARes1", "ChoiceBRes1"],
-    answerRes1: "ChoiceARes1",
-    answerRes2: "ChoiceARes2",
-    answerRes3: "ChoiceARes3",
-    alterate: ["KL"],
-    extlink: "www.testdomain.com",
+    choices: ["Choice A", "Choice B"],
+    ScoringChoices: ["Scoring Choice A", "Scoring Choice B"],
     formattext: "formattedtext",
-    formula: "s=ar^2",
     points: "2",
     imageWidth: "500",
+    imageHeight: "400",
+    imagePosLeft: "100",
+    imagePosTop: "50",
     imageAlternate: "Background",
-    testColor: "#d49c9c",
-    maxRes: "1"
+    testColor: "#d49c9c"
   };
 
+  const scoringBlock = new ScoringBlock();
   const question = new DropDownPage();
   const editItem = new EditItemPage();
   const itemList = new ItemListPage();
@@ -42,61 +43,47 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
     context(" > [Tc_384]:Tc_2 => Upload image", () => {
       it(" > Upload image to server", () => {
-        /*   cy.fixture("testImages/sample.jpg").then(logo => {
-          Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
-            cy.uploadImage(blob).then(result => {
-              // update uploaded image link to store
-              const imageUrl = result.response.body.result.fileUri;
-              const currentQuestion = question.getCurrentStoreQuestion();
-              currentQuestion.imageUrl = imageUrl;
-              cy.window()
-                .its("store")
-                .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-              cy.get('[data-cy="drag-drop-image-panel"] img').should("have.attr", "src", imageUrl);
-            });
-          });
-        }); */
-
         cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
           cy.wait(3000); // wait to image render
         });
-
-        // test with local image
-        // const testImageUrl = 'https://edureact-dev.s3.amazonaws.com/1551154644960_blob';
-        // const currentQuestion = question.getCurrentStoreQuestion()
-        // currentQuestion.imageUrl = testImageUrl;
-        // cy.window()
-        //   .its('store')
-        //   .invoke('dispatch', { type: '[author questions] update questions', payload: currentQuestion });
-        // cy.get('[data-cy="drag-drop-image-panel"] img').should('have.attr', 'src', testImageUrl);
       });
 
       it(" > Width(px)", () => {
+        question
+          .clickOnKeepAspectRation()
+          .find("input")
+          .should("not.be.checked");
         question.changeImageWidth(queData.imageWidth);
         question.getImageWidth().should("have.css", "width", `${queData.imageWidth}px`);
+        question.getImageInPreviewContainer().should("have.css", "width", `${queData.imageWidth}px`);
       });
 
-      /* it(" > Image alternative text", () => {
-        question.inputImageAlternate(queData.imageAlternate);
-        question.checkImageAlternate(queData.imageAlternate);
+      it(" > Height(px)", () => {
+        question.changeImageHeight(queData.imageHeight);
+        question.getImageHeight().should("have.css", "height", `${queData.imageHeight}px`);
+        question.getImageInPreviewContainer().should("have.css", "height", `${queData.imageHeight}px`);
       });
- */
+
+      it(" > Left(px)", () => {
+        question.changeImagePositionLeft(queData.imagePosLeft);
+        question.getImageInPreviewContainer().should("have.css", "left", `${queData.imagePosLeft}px`);
+      });
+
+      it(" > Top(px)", () => {
+        question.changeImagePositionTop(queData.imagePosTop);
+        question.getImageInPreviewContainer().should("have.css", "top", `${queData.imagePosTop}px`);
+      });
+
       it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
-        question.getAllInputPanel().each($el => {
-          cy.wrap($el).should("have.attr", "background", queData.testColor);
-        });
+        question.verifyFillColor(queData.testColor);
+        for (let i = 0; i < 2; i++) {
+          question.verifyFillColorInPreviewContainer(i, queData.testColor);
+        }
       });
+    });
 
-      it(" > Maximum responses per container", () => {
-        question
-          .getMaxResponseInput()
-          .click()
-          .clear()
-          .type(queData.maxRes)
-          .should("have.value", queData.maxRes);
-      });
-
+    context(" > [Tc_371]:Tc_2 => verify additional options", () => {
       it(" > Edit ARIA labels", () => {
         question
           .getAriaLabelCheck()
@@ -162,10 +149,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     context(" > [Tc_386]:Tc_4 => Set Correct Answer(s)", () => {
       it(" > Update points", () => {
         question
-          .getPointsEditor()
-          .clear()
-          .type(`{selectall}${queData.points}`)
-          .should("have.value", queData.points)
+          .updatePoints(queData.points)
           .type("{uparrow}")
           .type("{uparrow}")
           .should("have.value", `${Number(queData.points) + 1}`)
@@ -187,17 +171,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question
           .getShuffleDropDown()
           .check({ force: true })
-
           .should("be.checked");
-
         question.getDropDownByRes(0).click();
-
         queData.choices.forEach(ch => {
           question.checkShuffled(0, ch);
         });
-
         question.getDropDownByRes(0).click();
-
         question
           .getShuffleDropDown()
           .uncheck({ force: true })
@@ -213,14 +192,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     });
 
     context(" > [Tc_388]:Tc_6 => Preview items", () => {
-      it(" > Click on Preview, CheckAnswer", () => {
+      it(" > Check correct answer in preview", () => {
         const preview = editItem.header.preview();
-
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
         question.setAnswerOnBoard(2, 0);
-
         preview.checkScore("3/3");
+        for (let i = 0; i < 3; i++) {
+          question.VerifyAnswerBoxColorByIndex(i, "correct");
+        }
+      });
+
+      it(" > Check incorrect answer in preview", () => {
+        const preview = editItem.header.preview();
+        preview.getClear().click();
+        question.setAnswerOnBoard(0, 1);
+        question.setAnswerOnBoard(1, 1);
+        question.setAnswerOnBoard(2, 1);
+        preview.checkScore("0/3");
+        for (let i = 0; i < 3; i++) {
+          question.VerifyAnswerBoxColorByIndex(i, "wrong");
+        }
       });
 
       it(" > Click on ShowAnswer", () => {
@@ -253,6 +245,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
+      for (let i = 0; i < 2; i++) {
+        queData.ScoringChoices.forEach((ch, index) => {
+          question
+            .getChoiceByIndexRes(i, index)
+            .clear()
+            .type(ch)
+            .should("have.value", ch);
+          question.checkAddedAnswersRes(i, ch);
+        });
+      }
+      question.setAnswerOnBoard(0, 0);
+      question.setAnswerOnBoard(1, 0);
       question.header.saveAndgetId().then(id => {
         cy.saveItemDetailToDelete(id);
         cy.server();
@@ -260,7 +264,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         cy.get('[data-cy="publishItem"]').click();
         cy.contains("span", "PROCEED").click({ force: true });
         cy.wait("@publish");
-
         // edit
         itemList.searchFilters.clearAll();
         itemList.searchFilters.getAuthoredByMe();
@@ -269,64 +272,49 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         testItemId = id;
       });
     });
-
-    context(" > [Tc_390]:Tc_2 => Upload image", () => {
+    context(" > [Tc_384]:Tc_2 => Upload image", () => {
       it(" > Upload image to server", () => {
-        /* cy.fixture("testImages/sample.jpg").then(logo => {
-          Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
-            cy.uploadImage(blob).then(result => {
-              // update uploaded image link to store
-              const imageUrl = result.response.body.result.fileUri;
-              const currentQuestion = question.getCurrentStoreQuestion();
-              currentQuestion.imageUrl = imageUrl;
-              cy.window()
-                .its("store")
-                .invoke("dispatch", { type: "[author questions] update questions", payload: currentQuestion });
-              cy.get('[data-cy="drag-drop-image-panel"] img').should("have.attr", "src", imageUrl);
-            });
-          });
-        }); */
-
         cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
           cy.wait(3000); // wait to image render
         });
-
-        // test with local image
-        // const testImageUrl = 'https://edureact-dev.s3.amazonaws.com/1551154644960_blob';
-        // const currentQuestion = question.getCurrentStoreQuestion()
-        // currentQuestion.imageUrl = testImageUrl;
-        // cy.window()
-        //   .its('store')
-        //   .invoke('dispatch', { type: '[author questions] update questions', payload: currentQuestion });
-        // cy.get('[data-cy="drag-drop-image-panel"] img').should('have.attr', 'src', testImageUrl);
       });
 
       it(" > Width(px)", () => {
+        question
+          .clickOnKeepAspectRation()
+          .find("input")
+          .should("not.be.checked");
         question.changeImageWidth(queData.imageWidth);
         question.getImageWidth().should("have.css", "width", `${queData.imageWidth}px`);
+        question.getImageInPreviewContainer().should("have.css", "width", `${queData.imageWidth}px`);
       });
 
-      /*  it(" > Image alternative text", () => {
-        question.inputImageAlternate(queData.imageAlternate);
-        question.checkImageAlternate(queData.imageAlternate);
-      }); */
+      it(" > Height(px)", () => {
+        question.changeImageHeight(queData.imageHeight);
+        question.getImageHeight().should("have.css", "height", `${queData.imageHeight}px`);
+        question.getImageInPreviewContainer().should("have.css", "height", `${queData.imageHeight}px`);
+      });
+
+      it(" > Left(px)", () => {
+        question.changeImagePositionLeft(queData.imagePosLeft);
+        question.getImageInPreviewContainer().should("have.css", "left", `${queData.imagePosLeft}px`);
+      });
+
+      it(" > Top(px)", () => {
+        question.changeImagePositionTop(queData.imagePosTop);
+        question.getImageInPreviewContainer().should("have.css", "top", `${queData.imagePosTop}px`);
+      });
 
       it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
-        question.getAllInputPanel().each($el => {
-          cy.wrap($el).should("have.attr", "background", queData.testColor);
-        });
+        question.verifyFillColor(queData.testColor);
+        for (let i = 0; i < 2; i++) {
+          question.verifyFillColorInPreviewContainer(i, queData.testColor);
+        }
       });
+    });
 
-      it(" > Maximum responses per container", () => {
-        question
-          .getMaxResponseInput()
-          .click()
-          .clear()
-          .type(queData.maxRes)
-          .should("have.value", queData.maxRes);
-      });
-
+    context(" > [Tc_371]:Tc_2 => verify additional options", () => {
       it(" > Edit ARIA labels", () => {
         question
           .getAriaLabelCheck()
@@ -350,7 +338,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
     });
 
-    context(" > [Tc_391]:Tc_3 => Edit Response", () => {
+    context(" > [Tc_385]:Tc_3 => Response", () => {
       it(" > Edit default text", () => {
         question
           .addNewChoiceOnResponse(0)
@@ -389,13 +377,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       }
     });
 
-    context(" > [Tc_392]:Tc_4 => Set Correct Answer(s)", () => {
+    context(" > [Tc_386]:Tc_4 => Set Correct Answer(s)", () => {
       it(" > Update points", () => {
         question
-          .getPointsEditor()
-
-          .type(`{selectall}${queData.points}`)
-          .should("have.value", queData.points)
+          .updatePoints(queData.points)
           .type("{uparrow}")
           .type("{uparrow}")
           .should("have.value", `${Number(queData.points) + 1}`)
@@ -417,17 +402,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question
           .getShuffleDropDown()
           .check({ force: true })
-
           .should("be.checked");
-
         question.getDropDownByRes(0).click();
-
         queData.choices.forEach(ch => {
           question.checkShuffled(0, ch);
         });
-
         question.getDropDownByRes(0).click();
-
         question
           .getShuffleDropDown()
           .uncheck({ force: true })
@@ -435,22 +415,34 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
     });
 
-    context(" > [Tc_393]:Tc_5 => Save questions", () => {
+    context(" > [Tc_387]:Tc_5 => Save Question", () => {
       it(" > Click on save button", () => {
-        question.header.save(true);
-        cy.url().should("contain", "item-detail");
+        question.header.getSaveButton().click();
       });
     });
 
-    context(" > [Tc_394]:Tc_6 => Preview items", () => {
-      it(" > Click on Preview, CheckAnswer", () => {
+    context(" > [Tc_388]:Tc_6 => Preview items", () => {
+      it(" > Check correct answer in preview", () => {
         const preview = editItem.header.preview();
-
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
         question.setAnswerOnBoard(2, 0);
-
         preview.checkScore("3/3");
+        for (let i = 0; i < 3; i++) {
+          question.VerifyAnswerBoxColorByIndex(i, "correct");
+        }
+      });
+
+      it(" > Check incorrect answer in preview", () => {
+        const preview = editItem.header.preview();
+        preview.getClear().click();
+        question.setAnswerOnBoard(0, 1);
+        question.setAnswerOnBoard(1, 1);
+        question.setAnswerOnBoard(2, 1);
+        preview.checkScore("0/3");
+        for (let i = 0; i < 3; i++) {
+          question.VerifyAnswerBoxColorByIndex(i, "wrong");
+        }
       });
 
       it(" > Click on ShowAnswer", () => {
@@ -465,28 +457,125 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
               .should("be.visible")
               .next()
               .contains("span", queData.choices[0])
-              .should("be.visible");
+              .should("exist");
           });
       });
 
       it(" > Click on Clear, Edit", () => {
         const preview = editItem.header.preview();
         preview.getClear().click();
+
         preview.header.edit();
       });
     });
+
     context(" > [Tc_395]:Tc_1 => Delete option", () => {
-      before(" > Click on delete button in Item Details page", () => {
+      before(" > Navigate to Item Details page", () => {
         itemList.sidebar.clickOnItemBank();
         itemList.searchFilters.clearAll();
         itemList.searchFilters.getAuthoredByMe();
       });
+
       it(" > Click on delete button in Item Details page", () => {
         itemList.clickOnViewItemById(testItemId);
         itemList.itemPreview.clickOnDeleteOnPreview();
         itemList.itemPreview.closePreiview();
-        itemList.verifyAbsenceOfitemById(testItemId);
+        cy.get(`[data-cy=${testItemId}]`).should("not.exist");
       });
     });
   });
+
+  context(" > [Tc_376]: Scoring block tests", () => {
+    before("Create question and set correct answer", () => {
+      editItem.sideBar.clickOnTestLibrary();
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
+      cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
+        cy.wait(3000);
+      });
+      for (let i = 0; i < 2; i++) {
+        queData.ScoringChoices.forEach((ch, index) => {
+          question
+            .getChoiceByIndexRes(i, index)
+            .clear()
+            .type(ch)
+            .should("have.value", ch);
+          question.checkAddedAnswersRes(i, ch);
+        });
+      }
+      question.setAnswerOnBoard(0, 0);
+      question.setAnswerOnBoard(1, 0);
+    });
+
+    it(" > test score with partial match", () => {
+      const preview = editItem.header.preview();
+      preview.header.edit();
+      question.updatePoints(4);
+      question.clickOnAdvancedOptions();
+      scoringBlock.selectScoringType(SCORING_TYPE.PARTIAL);
+      preview.header.preview();
+      question.setAnswerOnBoard(0, 0);
+      question.setAnswerOnBoard(1, 1);
+      preview.checkScore("2/4");
+      question.VerifyAnswerBoxColorByIndex(0, "correct");
+      question.VerifyAnswerBoxColorByIndex(1, "wrong");
+    });
+
+    it(" > test score with partial match and penality", () => {
+      const preview = editItem.header.preview();
+      preview.header.edit();
+      question.updatePoints(4);
+      question.clickOnAdvancedOptions();
+      scoringBlock.selectScoringType(SCORING_TYPE.PARTIAL);
+      scoringBlock.getPanalty().type("{selectall}1");
+      preview.header.preview();
+      question.setAnswerOnBoard(0, 0);
+      question.setAnswerOnBoard(1, 1);
+      preview.checkScore("1.5/4");
+      question.VerifyAnswerBoxColorByIndex(0, "correct");
+      question.VerifyAnswerBoxColorByIndex(1, "wrong");
+    });
+
+    it(" > test score with partial match ,penality and Rounding, ", () => {
+      const preview = editItem.header.preview();
+      preview.header.edit();
+      question.updatePoints(5);
+      question.clickOnAdvancedOptions();
+      scoringBlock.selectScoringType(SCORING_TYPE.PARTIAL);
+      scoringBlock.getPanalty().type("{selectall}0.5");
+      question.selectRoundingType("None");
+      preview.header.preview();
+      question.setAnswerOnBoard(0, 0);
+      question.setAnswerOnBoard(1, 1);
+      preview.checkScore("2.25/5");
+      preview.header.edit();
+      question.selectRoundingType("Round down");
+      preview.header.preview();
+      question.setAnswerOnBoard(0, 0);
+      question.setAnswerOnBoard(1, 1);
+      preview.checkScore("2/5");
+      question.VerifyAnswerBoxColorByIndex(0, "correct");
+      question.VerifyAnswerBoxColorByIndex(1, "wrong");
+    });
+
+    it(" > test score with alternate answer", () => {
+      const preview = editItem.header.preview();
+      preview.header.edit();
+      question.addAlternate();
+      question.updatePoints(4);
+      scoringBlock.selectScoringType(SCORING_TYPE.EXACT);
+      question.setAnswerOnBoard(0, 1);
+      question.setAnswerOnBoard(1, 1);
+      preview.header.preview();
+      question.setAnswerOnBoard(0, 1);
+      question.setAnswerOnBoard(1, 1);
+      preview.checkScore("4/5");
+      question.VerifyAnswerBoxColorByIndex(0, "correct");
+      question.VerifyAnswerBoxColorByIndex(1, "correct");
+    });
+  });
+
+  validateSolutionBlockTests(queData.group, queData.queType);
 });
+// TODO - Verification of Pointers and keep aspect ratio options

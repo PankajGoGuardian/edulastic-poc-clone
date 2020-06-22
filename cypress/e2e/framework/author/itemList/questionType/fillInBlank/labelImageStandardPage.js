@@ -1,5 +1,6 @@
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
+import { queColor } from "../../../../constants/questionTypes";
 
 class LabelImageStandardPage {
   constructor() {
@@ -230,7 +231,11 @@ class LabelImageStandardPage {
       .should("have.length", 0);
   };
 
+  getAnswerBoxInPreviewByIndex = index => cy.get('[class="text container"]').eq(index);
+
   getEditChoiceByindex = index => this.getChoiceByIndex(index).find("p");
+
+  clickOnKeepAspectRation = () => cy.get('[data-cy="keep-aspect-ratio"]').click({ force: true });
 
   updateChoiceByIndex = (index, ch) => {
     this.getChoiceByIndex(index).type(`{selectall}${ch}`);
@@ -315,6 +320,14 @@ class LabelImageStandardPage {
       .get('[data-cy="annotation"]')
       .find('[data-cy="styled-wrapped-component"]')
       .should("contain.text", value);
+
+  VerifyAnswerBoxColorByIndex = (index, attempt) => {
+    if (attempt == "correct") {
+      this.getAnswerBoxInPreviewByIndex(index).should("have.css", "background-color", queColor.LIGHT_GREEN);
+    } else if (attempt == "wrong") {
+      this.getAnswerBoxInPreviewByIndex(index).should("have.css", "background-color", queColor.LIGHT_RED);
+    }
+  };
 
   selectPointerStyle = value => {
     this.getPointers()

@@ -52,13 +52,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
 
       it(" > Width(px)", () => {
+        question
+          .clickOnKeepAspectRation()
+          .find("input")
+          .should("not.be.checked");
         question.changeImageWidth(queData.imageWidth);
         question.getImageWidth().should("have.css", "width", `${queData.imageWidth}px`);
+        question.getImageInPreviewContainer().should("have.css", "width", `${queData.imageWidth}px`);
       });
 
       it(" > Height(px)", () => {
         question.changeImageHeight(queData.imageHeight);
         question.getImageHeight().should("have.css", "height", `${queData.imageHeight}px`);
+        question.getImageInPreviewContainer().should("have.css", "height", `${queData.imageHeight}px`);
       });
 
       it(" > Left(px)", () => {
@@ -74,6 +80,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
         question.verifyFillColor(queData.testColor);
+        for (let i = 0; i < 3; i++) {
+          question.verifyFillColorInPreviewContainer(i, queData.testColor);
+        }
       });
     });
 
@@ -345,13 +354,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
 
       it(" > Width(px)", () => {
+        question
+          .clickOnKeepAspectRation()
+          .find("input")
+          .should("not.be.checked");
         question.changeImageWidth(queData.imageWidth);
         question.getImageWidth().should("have.css", "width", `${queData.imageWidth}px`);
+        question.getImageInPreviewContainer().should("have.css", "width", `${queData.imageWidth}px`);
       });
 
       it(" > Height(px)", () => {
         question.changeImageHeight(queData.imageHeight);
         question.getImageHeight().should("have.css", "height", `${queData.imageHeight}px`);
+        question.getImageInPreviewContainer().should("have.css", "height", `${queData.imageHeight}px`);
       });
 
       it(" > Left(px)", () => {
@@ -367,6 +382,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
         question.verifyFillColor(queData.testColor);
+        for (let i = 0; i < 3; i++) {
+          question.verifyFillColorInPreviewContainer(i, queData.testColor);
+        }
       });
     });
     context(" > [Tc_371]:Tc_2 => verify additional options", () => {
@@ -633,6 +651,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.dragAndDropResponseToBoard(0);
       question.dragAndDropResponseToBoard(2);
     });
+
     it(" > test score with partial match", () => {
       const preview = editItem.header.preview();
       preview.header.edit();
@@ -643,6 +662,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.dragAndDropResponseToBoard(1);
       question.dragAndDropResponseToBoard(0);
       preview.checkScore("1.67/2.5");
+      for (let i = 0; i < 2; i++) {
+        question.VerifyAnswerBoxColorByIndex(i, "correct");
+      }
     });
 
     it(" > test score with partial match and penality", () => {
@@ -656,6 +678,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.dragAndDropResponseToBoard(1);
       question.dragAndDropResponseToBoard(2);
       preview.checkScore("0.17/2.5");
+      question.VerifyAnswerBoxColorByIndex(1, "correct");
+      question.VerifyAnswerBoxColorByIndex(2, "wrong");
     });
 
     it(" > test score with partial match ,penality and Rounding, ", () => {
@@ -676,6 +700,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.dragAndDropResponseToBoard(1);
       question.dragAndDropResponseToBoard(2);
       preview.checkScore("0/2.5");
+      question.VerifyAnswerBoxColorByIndex(1, "correct");
+      question.VerifyAnswerBoxColorByIndex(2, "wrong");
     });
 
     it(" > test score with alternate answer", () => {
@@ -691,6 +717,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.dragAndDropResponseToBoard(1);
       question.dragAndDropResponseToBoard(2);
       preview.checkScore("2/2.5");
+      for (let i = 0; i < 3; i++) {
+        question.VerifyAnswerBoxColorByIndex(i, "correct");
+      }
     });
   });
 

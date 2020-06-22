@@ -222,6 +222,7 @@ class Display extends Component {
         >
           {!isPrintPreview ? (
             <StyledPreviewImage
+              data-cy="imageInpreviewContainer"
               imageSrc={imageUrl || ""}
               width={this.getWidth()}
               height={this.getHeight()}

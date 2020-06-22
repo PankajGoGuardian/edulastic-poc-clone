@@ -94,11 +94,12 @@ const PeerPerformance = ({
     });
   } else {
     compareByDropDownData = next(dropDownFormat.compareByDropDownData, tempCompareBy => {
-      tempCompareBy.splice(3, 0, { "key": "group", "title": "Student Group" },)
+      tempCompareBy.splice(3, 0, { key: "group", title: "Student Group" });
     });
   }
 
-  const getColumns = () => columns.columns[ddfilter.analyseBy][ddfilter.compareBy === "group" ? "groupId" : ddfilter.compareBy];
+  const getColumns = () =>
+    columns.columns[ddfilter.analyseBy][ddfilter.compareBy === "group" ? "groupId" : ddfilter.compareBy];
 
   const res = { ...peerPerformance, bandInfo };
 
@@ -174,6 +175,7 @@ const PeerPerformance = ({
                 </Row>
                 <div>
                   {ddfilter.analyseBy === "score(%)" || ddfilter.analyseBy === "rawScore" ? (
+                    // simple stacked bar-chart
                     <SimpleStackedBarChartContainer
                       data={parsedData.data}
                       analyseBy={ddfilter.analyseBy}
@@ -186,6 +188,7 @@ const PeerPerformance = ({
                       role={role}
                     />
                   ) : (
+                    // signed stacked bar-chart
                     <SignedStackedBarChartContainer
                       data={parsedData.data}
                       analyseBy={ddfilter.analyseBy}

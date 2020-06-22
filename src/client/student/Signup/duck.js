@@ -1,5 +1,6 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { get, pick } from "lodash";
+import { message } from "antd";
 import { notification } from "@edulastic/common";
 import mqtt from "mqtt";
 import produce from "immer";
@@ -440,11 +441,9 @@ function* saveSubjectGradeSaga({ payload }) {
   try {
     if (isSaveSubjectGradeSuccessful) {
       const user = yield select(getUser);
-      // this is meant for teacher flow to save grade subject
-      // so we can directly get districtId by districtIds[0]
       const data = {
         email: user.email,
-        districtId: user.orgData?.districtIds?.[0],
+        districtId: user.orgData.districtId,
         currentSignUpState: "DONE",
         institutionIds: user.orgData.institutionIds
       };

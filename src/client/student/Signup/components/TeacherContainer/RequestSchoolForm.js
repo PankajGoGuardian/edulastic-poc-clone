@@ -4,7 +4,7 @@ import { get, debounce } from "lodash";
 import styled from "styled-components";
 import { Form, Input, Select, Row, Col } from "antd";
 import { userApi, countryApi } from "@edulastic/api";
-import { mobileWidthLarge } from "@edulastic/colors";
+import { themeColor, mobileWidthLarge, boxShadowDefault } from "@edulastic/colors";
 
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { searchDistrictsRequestAction } from "../../duck";
@@ -100,7 +100,7 @@ class RequestSchoolForm extends React.Component {
         {fromUserProfile ? (
           <Form.Item label="District">
             {getFieldDecorator("districtId", {
-              initialValue: userInfo.orgData.districts?.[0].districtName
+              initialValue: userInfo.orgData.districtName
             })(<Input data-cy="district" disabled />)}
           </Form.Item>
         ) : (
@@ -139,6 +139,7 @@ class RequestSchoolForm extends React.Component {
                         type: userInfo.role,
                         signOnMethod
                       };
+                      const policyCheckResult = await userApi.validateDistrictPolicy(checkDistrictPolicyPayload);
                       callback();
                       return;
                     } catch (error) {

@@ -4,6 +4,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 // components
+import { message } from "antd";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom, IconClever } from "@edulastic/icons";
 import { canvasApi } from "@edulastic/api";
@@ -38,7 +39,7 @@ const Header = ({
     try {
       const result = await canvasApi.getCanvasAuthURI(institutionId);
       if (!result.userAuthenticated) {
-        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${user._id}_${user.username || user.email || ""}`;
+        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username || user.email || ""}`;
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
           .then(res => {
             syncCanvasModal(res);

@@ -92,23 +92,15 @@ export const getInterestedSubjectsSelector = createSelector(
   getOrgDataSelector,
   state => _get(state, "defaultSubjects", [])
 );
-/**
- * this selector shouldn't be used for students
- * student can be part of multiple district
- * @type {OutputSelector<unknown, number, (res: *) => number>}
- */
+
 export const getUserOrgId = createSelector(
   stateSelector,
-  state => state.user.districtIds?.[0]
+  state => _get(state, "user.orgData.districtId")
 );
-/**
- * this selector shouldn't be used for students
- * student can be part of multiple district
- * @type {OutputSelector<unknown, number, (res: *) => number>}
- */
+
 export const getUserOrgName = createSelector(
   stateSelector,
-  state => state.user.orgData?.districts?.[0].districtName
+  state => _get(state, "user.orgData.districtName")
 );
 
 export const getUserFeatures = createSelector(
@@ -190,7 +182,7 @@ export const getSchoolsByUserRoleSelector = createSelector(
 export const isOrganizationDistrictSelector = createSelector(
   getUser,
   state => {
-    if (state.role === roleuser.DISTRICT_ADMIN && state.orgData?.districts?.[0]?.districtPermissions.includes("publisher")) {
+    if (state.role === roleuser.DISTRICT_ADMIN && state.orgData.districtPermissions.includes("publisher")) {
       return true;
     }
     return false;

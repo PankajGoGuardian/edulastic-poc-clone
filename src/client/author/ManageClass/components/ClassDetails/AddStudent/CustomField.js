@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get, includes } from "lodash";
+import { get } from "lodash";
 import { Form } from "antd";
 import { userApi } from "@edulastic/api";
 import { Field } from "./styled";
@@ -67,7 +67,7 @@ const CustomField = ({
       if (isSameClass) {
         errorMsg = "User already part of this class section";
       } else {
-        const isSameDistrict = includes(foundUser.districtIds || [], districtId);
+        const isSameDistrict = foundUser.districtId == districtId;
         if (isSameDistrict) {
           if (foundUser.role == "teacher")
             errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
@@ -162,8 +162,7 @@ CustomField.defaultProps = {
   isEdit: false
 };
 
-// This component for author account so get first Id from districtIds
 export default connect(state => ({
   students: get(state, "manageClass.studentsList", []),
-  districtId: get(state, "user.user.orgData.districtIds[0]", "")
+  districtId: get(state, "user.user.orgData.districtId", "")
 }))(CustomField);

@@ -60,5 +60,5 @@ const TestTypeSelector = ({
 };
 
 export default connect(state => ({
-  districtPermissions: state?.user?.user?.orgData?.districts?.[0]?.districtPermissions
+  districtPermissions: state?.user?.user?.orgData.districtPermissions
 }))(TestTypeSelector);

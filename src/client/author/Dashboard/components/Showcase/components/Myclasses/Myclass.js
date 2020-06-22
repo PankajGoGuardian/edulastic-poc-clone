@@ -7,7 +7,6 @@ import { get } from "lodash";
 // components
 import { Col, Row, Spin } from "antd";
 import { MainContentWrapper } from "@edulastic/common";
-import { title } from "@edulastic/colors";
 import { TextWrapper } from "../../../styledComponents";
 import { CardBox } from "./styled";
 import CardImage from "./components/CardImage/cardImage";
@@ -17,6 +16,7 @@ import Launch from "../../../LaunchHangout/Launch";
 import ClassSelectModal from "../../../../../ManageClass/components/ClassListContainer/ClassSelectModal";
 
 // static data
+import { title } from "@edulastic/colors";
 
 // ducks
 import { getDictCurriculumsAction } from "../../../../../src/actions/dictionaries";
@@ -135,7 +135,7 @@ export default compose(
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
-      districtId: state.user.user.orgData.districtIds[0],
+      districtId: get(state, "user.user.orgData.districtId"),
       loading: state.dashboardTeacher.loading,
       courseList: get(state, "coursesReducer.searchResult"),
       cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),

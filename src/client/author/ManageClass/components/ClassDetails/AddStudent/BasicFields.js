@@ -360,7 +360,7 @@ BasicFields.defaultProps = {
 
 export default connect(state => ({
   students: get(state, "manageClass.studentsList", []),
-  districtId: state.user.user.orgData.districtIds[0],
+  districtId: get(state, "user.user.orgData.districtId", ""),
   classDetails: get(state, "manageClass.entity", {})
 }))(BasicFields);
 

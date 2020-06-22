@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Select } from "antd";
+import { Button, Select, message } from "antd";
 import { EduButton,notification } from "@edulastic/common";
 import styled from "styled-components";
 import { backgroundGrey2, green, themeColorTagsBg } from "@edulastic/colors";
@@ -62,7 +62,7 @@ const CanvasSyncModal = ({
       sectionId,
       sectionName,
       institutionId,
-      districtId: user?.districtIds?.[0]
+      districtId: user.districtId
     };
     syncClassWithCanvas(data);
   };
@@ -71,9 +71,9 @@ const CanvasSyncModal = ({
   const Footer = [
     ...(!!canvasCode && !!canvasCourseSectionCode
       ? [
-        <Button disabled={syncClassLoading} onClick={() => setIsDisabled(false)}>
-          Change deatils
-        </Button>
+          <Button disabled={syncClassLoading} onClick={() => setIsDisabled(false)}>
+            Change deatils
+          </Button>
         ]
       : []),
     <EduButton disabled={syncClassLoading} isGhost onClick={handleCancel}>

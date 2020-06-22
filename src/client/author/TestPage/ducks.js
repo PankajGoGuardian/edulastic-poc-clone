@@ -1870,13 +1870,13 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     const role = yield select(getUserRole);
     const orgData = yield select(getUserOrgData);
     let payload = {
-      orgId: orgData?.districtIds?.[0],
+      orgId: orgData.districtId,
       params: { orgType: "district" }
     };
 
     if (role !== roleuser.DISTRICT_ADMIN && orgData.institutionIds.length) {
       payload = {
-        orgId: orgData.institutionIds[0] || orgData?.districtIds?.[0],
+        orgId: orgData.institutionIds[0] || orgData.districtId,
         params: {
           orgType: "institution"
         }

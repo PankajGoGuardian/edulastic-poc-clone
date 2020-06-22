@@ -118,9 +118,9 @@ class ProfileBody extends React.Component {
     } = this.props;
     const { showChangePassword, isEditProfile } = this.state;
     const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
-    // in case of author only one districtId will exist
+
     const data = {
-      districtId: user?.districtIds?.[0],
+      districtId: user.districtId,
       email: isEditProfile && !isnotNormalLogin ? getFieldValue("email") : user.email,
       firstName: isEditProfile ? getFieldValue("firstName") : user.firstName,
       lastName: isEditProfile ? getFieldValue("lastName") : user.lastName,
@@ -331,7 +331,7 @@ class ProfileBody extends React.Component {
     if (value !== user.email) {
       const result = await userApi.checkUser({
         username: value,
-        districtId: user?.districtIds?.[0],
+        districtId: user.districtId,
         role: user.role
       });
 
@@ -446,7 +446,7 @@ class ProfileBody extends React.Component {
       (institutionPolicies.length
         ? !!institutionPolicies.filter(p => p.allowGoogleClassroom).length
         : get(user, "orgData.policies.district.allowGoogleClassroom", false)) ||
-      (user.orgData?.districts?.[0]?.districtStatus === 2 && !!user.orgData.classList.filter(c => !!c.googleId).length);
+      (user.orgData.districtStatus === 2 && !!user.orgData.classList.filter(c => !!c.googleId).length);
     const subjectsList = selectsData.allSubjects.slice(1);
     const interestedStaData = {
       curriculums: user.orgData.interestedCurriculums

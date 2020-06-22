@@ -1,6 +1,6 @@
 import { backgroundGrey2 } from "@edulastic/colors";
 import { EduButton,notification } from "@edulastic/common";
-import { Input, Switch } from "antd";
+import { Input, message, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -28,7 +28,7 @@ const AddCollectionModal = ({
   const [fieldData, setFieldData] = useState({
     name: "",
     owner: "",
-    districtId: user?.districtIds?.[0],
+    districtId: user.districtId,
     description: "",
     status: 1
   });
@@ -43,6 +43,22 @@ const AddCollectionModal = ({
       setFieldData(collectionData);
     }
   }, []);
+
+  const Footer = [
+    <EduButton isGhost onClick={handleResponse} disabled={isCreating}>
+      CANCEL
+    </EduButton>,
+    <EduButton onClick={() => handleCreate()} loading={isCreating}>
+      {isEditCollection ? "SAVE" : "CREATE"}
+    </EduButton>
+  ];
+
+  const Title = [<Heading>{isEditCollection ? "Edit Collection" : "Add Collection"}</Heading>];
+
+  const handleFieldChange = (fieldName, value) => {
+    const updatedFieldData = { ...fieldData, [fieldName]: value };
+    setFieldData(updatedFieldData);
+  };
 
   const handleCreate = () => {
     if (!fieldData.name) {
@@ -62,22 +78,6 @@ const AddCollectionModal = ({
       createCollectionRequest(payload);
     }
     handleResponse();
-  };
-
-  const Footer = [
-    <EduButton isGhost onClick={handleResponse} disabled={isCreating}>
-      CANCEL
-    </EduButton>,
-    <EduButton onClick={() => handleCreate()} loading={isCreating}>
-      {isEditCollection ? "SAVE" : "CREATE"}
-    </EduButton>
-  ];
-
-  const Title = [<Heading>{isEditCollection ? "Edit Collection" : "Add Collection"}</Heading>];
-
-  const handleFieldChange = (fieldName, value) => {
-    const updatedFieldData = { ...fieldData, [fieldName]: value };
-    setFieldData(updatedFieldData);
   };
 
   return (

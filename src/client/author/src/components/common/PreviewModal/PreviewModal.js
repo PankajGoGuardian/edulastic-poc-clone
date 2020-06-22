@@ -54,17 +54,33 @@ class PreviewModal extends React.Component {
   }
 
   componentDidMount() {
-    const { item, addPassage } = this.props;
+    const { item } = this.props;
     if (item.passageId) {
-      this.setState({ passageLoading: true });
-      try {
-        passageApi.getById(item.passageId).then(response => {
-          addPassage(response);
-          this.setState({ passageLoading: false });
-        });
-      } catch (e) {
+      this.loadPassage(item.passageId);
+    }
+  }
+
+  loadPassage(id) {
+    /**
+     * FIXME: move this to redux-saga
+     */
+    const { addPassage } = this.props;
+    this.setState({ passageLoading: true });
+    try {
+      passageApi.getById(id).then(response => {
+        addPassage(response);
         this.setState({ passageLoading: false });
-      }
+      });
+    } catch (e) {
+      this.setState({ passageLoading: false });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { item: newItem } = this.props;
+    const { item: oldItem } = prevProps;
+    if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
+      this.loadPassage(newItem.passageId);
     }
   }
 
@@ -208,7 +224,7 @@ class PreviewModal extends React.Component {
         /**
          * Whenever we are changing the item using the navigation in the passage
          * we need to update the state in the ItemListContainer component as well
-         * why? @see https://snapwiz.atlassian.net/browse/EV-15223 
+         * why? @see https://snapwiz.atlassian.net/browse/EV-15223
          */
         updateCurrentItemFromPassagePagination(response._id);
       }

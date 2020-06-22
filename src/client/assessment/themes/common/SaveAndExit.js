@@ -1,5 +1,5 @@
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
-import { FireBaseService as Fbs, FlexContainer } from "@edulastic/common";
+import { FireBaseService as Fbs, FlexContainer,EduButton } from "@edulastic/common";
 import { IconAccessibility, IconCircleLogout, IconSend } from "@edulastic/icons";
 import { Button } from "antd";
 import PropTypes from "prop-types";
@@ -48,13 +48,13 @@ const SaveAndExit = ({
         ) : (
           <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
             <IconCircleLogout />
-            SAVE & EXIT
           </SaveAndExitButton>
         ))}
       {onSubmit && (
-        <StyledButton onClick={onSubmit}>
+        <EduButton isGhost onClick={onSubmit}>
           <IconSend />
-        </StyledButton>
+          SUBMIT
+        </EduButton>
       )}
     </FlexContainer>
   );

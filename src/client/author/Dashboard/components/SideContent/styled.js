@@ -49,13 +49,13 @@ export const SideContentWrapper = styled.div`
 `;
 
 export const ScrollbarContainer = styled(PerfectScrollbar)`
-  max-height: calc(100vh - 500px);
+  max-height: calc(100vh - 430px);
   overflow-x: hidden;
   width: calc(100% + 15px);
   padding-right: 15px;
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    max-height: calc(100vh - 535px);
+    max-height: calc(100vh - 465px);
   }
 `;
 
@@ -65,6 +65,8 @@ export const ColWrapper = styled(Col)`
   border-radius: 5px;
   text-align: center;
   line-height: 1rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
@@ -135,16 +137,8 @@ export const EduCertify = styled.div`
 `;
 
 export const EduPublic = styled(EduCertify)`
-  svg {
-    g,
-    path {
-      fill: #aaafb4;
-    }
-  }
   span {
-    text-align: center;
-    letter-spacing: 1px;
-    color: #aaafb4;
-    font-family: auto;
+    text-align: right;
+    color: ${title};
   }
 `;

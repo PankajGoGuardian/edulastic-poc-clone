@@ -1,31 +1,30 @@
-import React, { useState } from "react";
-import { Row, Col, Icon } from "antd";
-import { IconPlayFilled } from "@edulastic/icons";
-import { white, themeColor } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { OnWhiteBgLogo } from "@edulastic/common";
+import { IconPlayFilled } from "@edulastic/icons";
+import { Col, Icon, Row } from "antd";
+import React, { useState } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
-import { TextWrapper, LinkWrapper } from "../styledComponents";
+import videoImg from "../../assets/images/videoImage.png";
+import { LinkWrapper, TextWrapper } from "../styledComponents";
 import {
-  SideContentContainer,
-  SliderButton,
-  ScrollbarContainer,
-  SideContentWrapper,
   ColWrapper,
   ContentWrapper,
-  Hdivider,
-  VideoSection,
-  VideoPlayer,
-  VideoOverlay,
-  ChatIconContainer,
-  ChatIcon,
   EduCertify,
-  EduPublic
+  EduPublic,
+  Hdivider,
+  ScrollbarContainer,
+  SideContentContainer,
+  SideContentWrapper,
+  SliderButton,
+  VideoOverlay,
+  VideoPlayer,
+  VideoSection
 } from "./styled";
-import videoImg from "../../assets/images/videoImage.png";
 
 const Qbank = props => {
-  const { bg, title, svg, color, num } = props;
+  const { bg, title, svg, color, num, subtext } = props;
 
   return (
     <Row type="flex" align="middle">
@@ -39,7 +38,7 @@ const Qbank = props => {
           {num} K
         </TextWrapper>
         <TextWrapper size="11px" rfs="11px" fw="bold" color={color}>
-          QUESTIONS
+          {subtext || "QUESTIONS"}
         </TextWrapper>
       </ColWrapper>
     </Row>
@@ -62,12 +61,12 @@ const EduCertifyTitle = (
 
 const QuestionBanks = () => (
   <>
+    <Qbank title={EduPublicTitle} num="229.2" color="#5EB500" bg="#F8F8F8" />
+    <Hdivider />
+    <Qbank title={EduCertifyTitle} num="46.9" subtext="ITEMS" color="#FFFFFF" bg="#5EB500" />
+    {/* <Hdivider />
     <Qbank title="PROGRESS BANK" num="40.8" color="#FFFFFF" bg="#FFA200" />
-    <Hdivider />
-    <Qbank title={EduCertifyTitle} num="40.8" color="#FFFFFF" bg="#5EB500" />
-    <Hdivider />
-    <Qbank title={EduPublicTitle} num="134" color="#5EB500" bg="#F8F8F8" />
-    <Hdivider />
+    <Hdivider /> */}
   </>
 );
 
@@ -111,12 +110,10 @@ const SideContent = props => {
             </ScrollbarContainer>
             <div>
               <ContentWrapper margin="1rem" textalign="center">
-                <LinkWrapper color={themeColor}>VIEW ALL QUESTIONS</LinkWrapper>
+                <LinkWrapper color={themeColor}>
+                  <Link to="/author/items">VIEW ALL QUESTIONS</Link>
+                </LinkWrapper>
               </ContentWrapper>
-
-              <ChatIconContainer>
-                <ChatIcon type="message" />
-              </ChatIconContainer>
             </div>
           </Col>
         </Row>

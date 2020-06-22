@@ -134,7 +134,7 @@ const initialState = {
   error: null,
   loading: false,
   page: 1,
-  limit: 10,
+  limit: 25,
   count: 0,
   selectedItems: [],
   itemsSubjectAndGrade: {

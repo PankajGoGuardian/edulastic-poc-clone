@@ -5,9 +5,10 @@ import { Icon } from "antd";
 import { PremiumLabel } from "@edulastic/common";
 import { themeColorLight } from "@edulastic/colors";
 
+const nonPremiumReports = ["standardsGradebook"];
 export const LinkItem = ({ data, inverse, tiles, premium }) => {
-  const showPremiumLabel = !premium && data.key !== "assessmentSummary";
-  const showGreenBorder = !premium && data.key === "assessmentSummary";
+  const showPremiumLabel = !premium && !nonPremiumReports.includes(data.key);
+  const showGreenBorder = !premium && nonPremiumReports.includes(data.key);
   const ResolvedLink = showPremiumLabel ? Fragment : Link;
 
   if (tiles) {

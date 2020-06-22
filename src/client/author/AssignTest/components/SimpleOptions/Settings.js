@@ -318,8 +318,8 @@ const Settings = ({
         </FeaturesSwitch>
         {/* Maximum attempt */}
 
-        {/*Safe Exam Browser/Kiosk Mode*/}
-        
+        {/* Safe Exam Browser/Kiosk Mode */}
+
         <FeaturesSwitch
           inputFeatures="assessmentSuperPowersRequireSafeExamBrowser"
           actionOnInaccessible="hidden"
@@ -328,7 +328,19 @@ const Settings = ({
         >
           <StyledRowSettings gutter={16}>
             <Col span={12}>
-              <Label>Safe Exam Browser/Kiosk Mode</Label>
+              <Label style={{ display: "flex" }}>
+                Safe Exam Browser/Kiosk Mode
+                <Tooltip
+                  title="Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to 
+                  lockdown the student's device. To use this feature, Safe Exam Browser (on Windows/Mac/iPad) must 
+                  be installed on the student device. On Chromebook, Edulastic Kiosk Mode 2.1 must be installed.
+                    The quit password can be used by teacher or proctor to safely exit Safe Exam Browser in the middle 
+                  of an assessment. The quit password should not be revealed to the students. The quit password cannot 
+                  be used to exit Chromebook Kiosk mode."
+                >
+                  <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "10px" }} />
+                </Tooltip>
+              </Label>
             </Col>
             <Col span={12}>
               <AlignSwitchRight
@@ -357,7 +369,7 @@ const Settings = ({
             </Col>
           </StyledRowSettings>
         </FeaturesSwitch>
-        {/* Safe Exam Browser/Kiosk Mode*/}
+        {/* Safe Exam Browser/Kiosk Mode */}
 
         {/* Shuffle Question */
         !isDocBased && (
@@ -714,10 +726,12 @@ const Settings = ({
             setSettingsData={val => overRideSettings("standardGradingScale", val)}
           />
         </DivBlock>
-        {premium && <AdvancedButton onClick={advancedHandler} show={showAdvancedOption}>
-          {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-          <IconCaretDown color={themeColor} width={11} height={6} />
-        </AdvancedButton>}
+        {premium && (
+          <AdvancedButton onClick={advancedHandler} show={showAdvancedOption}>
+            {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
+            <IconCaretDown color={themeColor} width={11} height={6} />
+          </AdvancedButton>
+        )}
         {showAdvancedOption && (
           <div>
             <Block id="accessibility">
@@ -750,8 +764,7 @@ const Settings = ({
                   )}
                 </>
               )}
-              {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased &&
-              (
+              {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
                 <FeaturesSwitch
                   inputFeatures="selectPlayerSkinType"
                   actionOnInaccessible="hidden"

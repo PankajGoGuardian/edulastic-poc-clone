@@ -455,8 +455,9 @@ class ProfileBody extends React.Component {
     let showPowerTools = false;
 
     if (
-      ((role === roleuser.TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
-        [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role)) &&
+      [roleuser.TEACHER, roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) &&
+      !features.isPublisherAuthor &&
+      !features.isCurator &&
       features.premium
     ) {
       showPowerTools = true;

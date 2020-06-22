@@ -42,7 +42,7 @@ class TestItemPreview extends Component {
   };
 
   state = {
-    collapseDirection: "",
+    collapseDirection: this.props.isPassageWithQuestions && this.props.inLCB ? "left" : "",
     value: 0,
     dimensions: { height: 0, width: 0 }
   };

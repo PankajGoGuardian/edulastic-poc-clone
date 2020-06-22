@@ -95,6 +95,7 @@ function Preview({
         {...scoringProps}
         studentId={studentId}
         studentName={studentName || t("common.anonymous")}
+        inLCB
         itemId={item._id}
       />
     </StyledFlexContainer>

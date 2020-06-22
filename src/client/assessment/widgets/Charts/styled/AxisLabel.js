@@ -18,5 +18,9 @@ export const AxisLabel = styled.div`
       margin-bottom: 20px;
       justify-content: center;
     `;
-  }}
+  }};
+
+  @media print {
+    margin-bottom: ${({ axis }) => axis === "y" && "-70%"};
+  }
 `;

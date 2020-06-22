@@ -312,7 +312,7 @@ class App extends Component {
     const { showAppUpdate, canShowCliBanner } = this.state;
     return (
       <div>
-        <CheckRoutePatternsEffectContainer role={userRole} location={location} history={history} />
+        {userRole && <CheckRoutePatternsEffectContainer role={userRole} location={location} history={history} />}
         <AppUpdateModal visible={showAppUpdate} onRefresh={this.handleOk} />
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}

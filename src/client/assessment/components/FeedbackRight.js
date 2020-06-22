@@ -15,6 +15,7 @@ import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDuc
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
 import { getErrorResponse, getStatus } from "../../author/src/selectors/feedback";
 import { getUserSelector, getUserThumbnail } from "../../author/src/selectors/user";
+import { getAvatarName } from '../../author/ClassBoard/Transformer';
 
 const { TextArea } = Input;
 
@@ -34,11 +35,11 @@ class FeedbackRight extends Component {
   constructor(props) {
     super(props);
 
-    let { maxScore } = props?.widget?.activity || {};
-    const { score } = props?.widget?.activity || {};
+    let { maxScore } = props ?.widget ?.activity || {};
+    const { score } = props ?.widget ?.activity || {};
 
     if (!maxScore) {
-      maxScore = props?.widget?.validation?.validResponse?.score || 0;
+      maxScore = props ?.widget ?.validation ?.validResponse ?.score || 0;
     }
 
     this.state = { score, maxScore, showPreviewRubric: false };
@@ -49,8 +50,8 @@ class FeedbackRight extends Component {
   static contextType = AnswerContext;
 
   componentDidMount() {
-    if (this.context?.expressGrader === true) {
-      this.scoreInput?.current?.focus();
+    if (this.context ?.expressGrader === true) {
+      this.scoreInput ?.current ?.focus();
     }
   }
 
@@ -76,7 +77,7 @@ class FeedbackRight extends Component {
       newState = { ...newState, score: _score };
 
       if (!_maxScore) {
-        _maxScore = validation?.validResponse?.score || 0;
+        _maxScore = validation ?.validResponse ?.score || 0;
       }
 
       if (_maxScore !== maxScore) {
@@ -94,7 +95,7 @@ class FeedbackRight extends Component {
 
   getTestActivityId() {
     const { studentId, classBoardData } = this.props;
-    const testActivity = classBoardData?.testActivities?.find(x => x?.userId === studentId) || {};
+    const testActivity = classBoardData ?.testActivities ?.find(x => x ?.userId === studentId) || {};
     return testActivity._id;
   }
 
@@ -120,7 +121,7 @@ class FeedbackRight extends Component {
       return;
     }
 
-    const { testActivityId, groupId = this.props?.match?.params?.classId, testItemId } = activity;
+    const { testActivityId, groupId = this.props ?.match ?.params ?.classId, testItemId } = activity;
 
     if (!id || !user || !user.user) {
       return;
@@ -159,7 +160,7 @@ class FeedbackRight extends Component {
       match,
       userThumbnail
     } = this.props;
-    const { testActivityId, groupId = match?.params?.classId, testItemId } = activity;
+    const { testActivityId, groupId = match ?.params ?.classId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
@@ -213,7 +214,7 @@ class FeedbackRight extends Component {
     /**
      * arrow keys or escape key
      */
-    if (this.context?.expressGrader && this.context?.studentResponseLoading) {
+    if (this.context ?.expressGrader && this.context ?.studentResponseLoading) {
       return;
     }
     if ((keyCode >= 37 && keyCode <= 40) || keyCode === 27) {
@@ -269,7 +270,7 @@ class FeedbackRight extends Component {
     const isError = rubricDetails ? rubricMaxScore < score : maxScore < score;
     const isStudentName = studentName !== undefined && studentName.length !== 0;
     let title;
-    const showGradingRubricButton = user.user?.features?.gradingrubrics && !!rubricDetails;
+    const showGradingRubricButton = user.user ?.features ?.gradingrubrics && !!rubricDetails;
 
     if (isStudentName) {
       title = (
@@ -277,8 +278,8 @@ class FeedbackRight extends Component {
           {isPresentationMode ? (
             <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
           ) : (
-            <UserAvatar>{studentName.charAt(0)}</UserAvatar>
-          )}
+              <UserAvatar>{getAvatarName(studentName)}</UserAvatar>
+            )}
           &nbsp;
           {studentName}
         </TitleDiv>
@@ -391,8 +392,8 @@ const enhance = compose(
       user: getUserSelector(state),
       waitingResponse: getStatus(state),
       errorMessage: getErrorResponse(state),
-      classBoardData: state.author_classboard_testActivity?.data,
-      allAnswers: state?.answers,
+      classBoardData: state.author_classboard_testActivity ?.data,
+      allAnswers: state ?.answers,
       userThumbnail: getUserThumbnail(state)
     }),
     {
@@ -435,7 +436,7 @@ const StyledCardTwo = styled(Card)`
   }
 
   @media screen and (min-width: ${desktopWidth}) {
-    width: ${({ twoColLayout, showCollapseBtn }) => (showCollapseBtn ? "auto" : twoColLayout?.second || "250px")};
+    width: ${({ twoColLayout, showCollapseBtn }) => (showCollapseBtn ? "auto" : twoColLayout ?.second || "250px")};
     min-width: 250px;
   }
   @media (max-width: ${mobileWidthMax}) {

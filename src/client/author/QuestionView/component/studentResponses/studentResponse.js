@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { testActivity } from "@edulastic/constants";
 import { CircularDiv, ResponseCard, StyledFlexContainer, ResponseCardTitle } from "../../styled";
+import { getAvatarName } from '../../../ClassBoard/Transformer';
 
 const { SUBMITTED, IN_PROGRESS } = testActivity.status;
 
@@ -17,7 +18,7 @@ const StudentResponse = ({ testActivity: _testActivity, onClick, isPresentationM
             .filter(({ status }) => [SUBMITTED, IN_PROGRESS].includes(status))
             .map((student, index) => (
               <CircularDiv onClick={() => onClick(student.studentId)} key={index}>
-                {isPresentationMode ? showFakeUser(student) : student.studentName.toUpperCase().substr(0, 2)}
+                {isPresentationMode ? showFakeUser(student) : getAvatarName(student.studentName)}
               </CircularDiv>
             ))}
         </ResponseCard>

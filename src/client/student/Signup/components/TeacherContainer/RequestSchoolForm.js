@@ -1,11 +1,10 @@
+import { countryApi, userApi } from "@edulastic/api";
+import { SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row, Select } from "antd";
+import { debounce, get } from "lodash";
 import React from "react";
 import { connect } from "react-redux";
-import { get, debounce } from "lodash";
 import styled from "styled-components";
-import { Form, Input, Select, Row, Col } from "antd";
-import { userApi, countryApi } from "@edulastic/api";
-import { themeColor, mobileWidthLarge, boxShadowDefault } from "@edulastic/colors";
-
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { searchDistrictsRequestAction } from "../../duck";
 import { states } from "./constants";
@@ -65,12 +64,10 @@ class RequestSchoolForm extends React.Component {
     const country = form.getFieldValue("country");
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 }
+        xs: { span: 24 }
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 }
+        xs: { span: 24 }
       }
     };
 
@@ -95,13 +92,13 @@ class RequestSchoolForm extends React.Component {
               { transform: this.transformInput },
               { required: true, message: "Please provide a valid school name." }
             ]
-          })(<Input data-cy="school" placeholder="Enter your school name" />)}
+          })(<TextInputStyled data-cy="school" placeholder="Enter your school name" />)}
         </Form.Item>
         {fromUserProfile ? (
           <Form.Item label="District">
             {getFieldDecorator("districtId", {
               initialValue: userInfo.orgData.districtName
-            })(<Input data-cy="district" disabled />)}
+            })(<TextInputStyled data-cy="district" disabled />)}
           </Form.Item>
         ) : (
           <Form.Item label="District">
@@ -160,6 +157,7 @@ class RequestSchoolForm extends React.Component {
                 existingLabel="Districts"
                 placeholder="Enter your district name"
                 isLoading={isSearching}
+                isModalOpen
               />
             )}
           </Form.Item>
@@ -167,67 +165,72 @@ class RequestSchoolForm extends React.Component {
         <Form.Item label="Address">
           {getFieldDecorator("address", {
             rules: [{ required: false, message: "Please provide a valid school address." }]
-          })(<Input data-cy="address" placeholder="Enter your school address" />)}
+          })(<TextInputStyled data-cy="address" placeholder="Enter your school address" />)}
         </Form.Item>
-        <Form.Item label="City">
-          {getFieldDecorator("city", {
-            rules: [{ required: false, message: "Please provide a valid city." }]
-          })(<Input data-cy="city" placeholder="Enter your school city" />)}
-        </Form.Item>
-        <FlexItems type="flex">
-          <CustomColumn xs={24} sm={4} noMargin>
-            <Label>Zip</Label>
-          </CustomColumn>
-          <CustomColumn xs={24} sm={10}>
-            <Form.Item style={{ width: "100%" }}>
+        <Row gutter={24}>
+          <Col xs={24} sm={12}>
+            <Form.Item label="City">
+              {getFieldDecorator("city", {
+                rules: [{ required: false, message: "Please provide a valid city." }]
+              })(<TextInputStyled data-cy="city" placeholder="Enter your school city" />)}
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item label="Zip" style={{ width: "100%" }}>
               {getFieldDecorator("zip", {
                 validateTrigger: ["onChange", "onBlur"],
                 rules: [
                   { transform: this.transformInput },
                   { required: true, message: "Please provide a valid zip code." }
                 ]
-              })(<Input data-cy="zip" placeholder="Enter Zip Code" />)}
+              })(<TextInputStyled data-cy="zip" placeholder="Enter Zip Code" />)}
             </Form.Item>
-          </CustomColumn>
-          <CustomColumn xs={24} sm={10}>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col xs={24} sm={12}>
             <Form.Item label="State" style={{ width: "100%" }}>
               {getFieldDecorator("state", {
                 rules: [{ required: false, message: "Please provide a valid state." }],
                 initialValue: states[0]
               })(
                 country === "US" ? (
-                  <Select
+                  <SelectInputStyled
                     showSearch
                     placeholder="Select state"
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     {stateOptions}
-                  </Select>
+                  </SelectInputStyled>
                 ) : (
-                  <Input data-cy="state" placeholder="Enter state" />
+                  <TextInputStyled data-cy="state" placeholder="Enter state" />
                 )
               )}
             </Form.Item>
-          </CustomColumn>
-        </FlexItems>
-        <Form.Item label="Country">
-          {getFieldDecorator("country", {
-            rules: [{ required: true, message: "Please provide a valid country." }],
-            initialValue: "United States"
-          })(
-            <Select
-              data-cy="country"
-              showSearch
-              placeholder="Select a country"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              onChange={value => this.changeCountryHandler(value)}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              {countryOptions}
-            </Select>
-          )}
-        </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item label="Country">
+              {getFieldDecorator("country", {
+                rules: [{ required: true, message: "Please provide a valid country." }],
+                initialValue: "United States"
+              })(
+                <SelectInputStyled
+                  data-cy="country"
+                  showSearch
+                  placeholder="Select a country"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  onChange={value => this.changeCountryHandler(value)}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  {countryOptions}
+                </SelectInputStyled>
+              )}
+            </Form.Item>
+          </Col>
+        </Row>
       </FormWrapper>
     );
   }
@@ -243,41 +246,22 @@ export default connect(
   }
 )(RequestSchoolForm);
 
-const Label = styled.div`
-  font-weight: 600;
-  text-align: right;
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 16px;
-  margin-right: 8px;
-  padding-top: 5px;
-
-  @media (max-width: ${mobileWidthLarge}) {
-    text-align: left;
-  }
-`;
-
 const FormWrapper = styled(Form)`
   .ant-row .ant-form-item-label {
     line-height: normal;
-  }
-  @media (max-width: ${mobileWidthLarge}) {
-    .ant-row {
-      flex-direction: column;
-      .ant-form-item-label {
-        text-align: left;
-        padding: 0px;
-      }
+    text-align: left;
+    padding: 0px;
+    label {
+      font-size: 11px;
+      text-transform: uppercase;
     }
   }
-`;
-
-const FlexItems = styled(Row)`
-  margin-bottom: 0;
-`;
-
-const CustomColumn = styled(Col)`
-  margin-bottom: 24px;
-  @media (max-width: ${mobileWidthLarge}) {
-    margin-bottom: ${({ noMargin }) => (noMargin ? "0px" : "15px")};
+  .ant-form-item-control {
+    .ant-form-explain {
+      font-size: 11px;
+    }
+  }
+  .ant-row.ant-form-item {
+    margin-bottom: 15px;
   }
 `;

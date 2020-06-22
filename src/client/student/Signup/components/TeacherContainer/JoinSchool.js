@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { get, debounce, find } from "lodash";
 import { Row, Col, Breadcrumb, Icon } from "antd";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClose } from "@edulastic/icons";
 import {
@@ -45,21 +45,21 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
   return (
     <OptionBody>
       <SchoolInfo>
-        <span>{school.schoolName || school.name}</span>
-        <div>
+        <span className="school-name">{school.schoolName || school.name}</span>
+        <div className="school-address">
           {`${schoolLocation.city ? `${schoolLocation.city}, ` : ""} ${
             schoolLocation.state ? `${schoolLocation.state}, ` : ""
           } ${schoolLocation.zip ? schoolLocation.zip : ""}`}
         </div>
+        {school.districtName ? (
+          <DistrictInfo className="district-name">
+            <span>District: </span>
+            {school.districtName}
+          </DistrictInfo>
+        ) : (
+          ""
+        )}
       </SchoolInfo>
-      {school.districtName ? (
-        <DistrictInfo>
-          <span>District: </span>
-          {school.districtName}
-        </DistrictInfo>
-      ) : (
-        ""
-      )}
     </OptionBody>
   );
 };
@@ -328,6 +328,7 @@ const JoinSchool = ({
                 <RequestSchoolSection userInfo={userInfo} />
               ) : (
                 <SelectForm>
+                  <label>SEARCH SCHOOL</label>
                   {selected ? (
                     <SchoolSelected>
                       <SelectedTag>
@@ -344,7 +345,7 @@ const JoinSchool = ({
                       rotateIcon={false}
                       placeholder={t("component.signup.teacher.searchschool")}
                       ItemTemplate={SchoolDropDownItemTemplate}
-                      minHeight="70px"
+                      minHeight="50px"
                       selectCB={changeSchool}
                       filterKeys={["title", "zip", "city"]}
                       isLoading={isSearching}
@@ -353,13 +354,13 @@ const JoinSchool = ({
                     />
                   )}
                   <Actions>
-                    {!allowCanvas && !fromUserProfile ? (
-                      <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>
-                    ) : null}
                     {(!isSignupUsingDaURL && !districtId) || fromUserProfile ? (
                       <AnchorBtn onClick={fromUserProfile ? showRequestForm : toggleModal}>
-                        {t("component.signup.teacher.requestnewschool")}
+                        {t("component.signup.teacher.requestnewschool")} »
                       </AnchorBtn>
+                    ) : null}
+                    {!allowCanvas && !fromUserProfile ? (
+                      <AnchorBtn onClick={onClickHomeSchool}> I WANT TO HOMESCHOOL »</AnchorBtn>
                     ) : null}
                     {selected && selected.districtName ? (
                       <DistrictName data-cy="districtName">
@@ -372,7 +373,7 @@ const JoinSchool = ({
                   </Actions>
 
                   {selected && (
-                    <>
+                    <div style={{ textAlign: "center" }}>
                       {schoolTeachers.length > 0 ? <TeacherCarousel teachers={schoolTeachers} /> : null}
                       <ProceedBtn
                         data-cy="proceed"
@@ -383,7 +384,7 @@ const JoinSchool = ({
                       >
                         {t(!allowCanvas ? "common.proceed" : "common.importCanvasClasses")}
                       </ProceedBtn>
-                    </>
+                    </div>
                   )}
                 </SelectForm>
               )}
@@ -391,9 +392,7 @@ const JoinSchool = ({
           </FlexWrapper>
         </Col>
       </JoinSchoolBody>
-      {showModal ? (
-        <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} />
-      ) : null}
+      {showModal ? <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} /> : null}
     </>
   );
 };
@@ -475,13 +474,13 @@ const FlexWrapper = styled(Row)`
 `;
 
 const BannerText = styled(Col)`
-  text-align: ${props => (props.fromUserProfile ? "left" : "center")};
+  text-align: left;
   h3 {
-    font-size: 36px;
-    font-weight: 600;
+    font-size: 45px;
+    font-weight: bold;
     color: ${title};
-    line-height: 1.3;
-    letter-spacing: -2px;
+    line-height: 1;
+    letter-spacing: -2.25px;
     margin-top: 0px;
     margin-bottom: 15px;
   }
@@ -507,19 +506,46 @@ const BannerText = styled(Col)`
   }
 `;
 
+const selectStyle = css`
+  .ant-select-selection {
+    min-height: 45px;
+    .ant-select-selection__rendered {
+      line-height: 45px;
+      .ant-input-affix-wrapper .ant-input {
+        min-height: 43px;
+        box-shadow: none;
+        border: none;
+        font-size: 20px;
+      }
+      .ant-input-affix-wrapper:hover .ant-input,
+      .ant-input:hover {
+        box-shadow: none;
+        border: none;
+      }
+    }
+  }
+`;
+
 const SelectForm = styled.div`
   max-width: 640px;
   margin: 0px auto;
-  padding: 32px;
-  background: ${cardBg};
+  padding: 25px;
+  background: ${white};
   border-radius: 8px;
-  text-align: center;
   .remote-autocomplete-dropdown {
-    box-shadow: 2px 2px 2px 2px rgba(201, 208, 219, 0.5);
+    border-bottom: 1px solid #a0a0a0;
     background: ${white};
+    margin: 0px;
+    ${selectStyle};
   }
   .ant-select-auto-complete.ant-select .ant-input {
     border: none;
+  }
+
+  label {
+    font-size: 11px;
+    margin-bottom: 10px;
+    display: inline-block;
   }
 `;
 
@@ -533,17 +559,16 @@ const DistrictName = styled.div`
 
 const Actions = styled.div`
   display: flex;
-  flex-direction: row-reverse;
-  margin: 16px 0px 0px;
+  justify-content: flex-start;
+  padding: 25px 0px 15px;
 `;
 
 const AnchorBtn = styled.div`
   text-transform: uppercase;
-  border-bottom: 2px ${themeColor} solid;
   font-weight: 600;
-  padding-bottom: 2px;
   font-size: 11px;
-  margin-left: 16px;
+  color: ${themeColor};
+  margin-right: 25px;
   user-select: none;
   cursor: pointer;
 `;
@@ -556,37 +581,41 @@ const SchoolIcon = styled.img`
 const SchoolSelected = styled.div`
   width: 100%;
   background: ${white};
-  border-radius: 2px;
-  box-shadow: 2px 2px 2px 2px rgba(201, 208, 219, 0.5);
+  border-bottom: 1px solid #a0a0a0;
+  margin: 0px;
   display: flex;
   align-items: center;
-  padding: 5px 15px;
-  border-radius: 2px;
+  padding: 5px;
+  min-height: 45px;
 `;
 
 const SelectedTag = styled.div`
-  background: ${fadedGreen};
-  border-radius: 8px;
+  background: #e3e3e3;
+  border-radius: 20px;
   display: flex;
   padding: 2px 15px;
-  height: auto;
+  height: 30px;
   color: ${themeColor};
   align-items: center;
   span {
     margin-right: 10px;
+    font-size: 11px;
+    color: #434b5d;
+    text-transform: uppercase;
   }
   svg {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     cursor: pointer;
+    fill: #434b5d !important;
   }
 `;
 
 const ProceedBtn = styled(Button)`
   background: ${themeColor};
-  min-width: 60%;
+  min-width: 180px;
   color: ${white};
-  margin-top: 32px;
+  margin: 20px auto 20px;
   text-transform: uppercase;
   text-align: center;
   &:hover {
@@ -603,12 +632,22 @@ const OptionBody = styled.div`
 `;
 
 const SchoolInfo = styled.div`
-  width: 50%;
-  span {
+  width: 100%;
+  color: ${title};
+  display: flex;
+  flex-wrap: wrap;
+  .school-name {
+    width: 100%;
+    font-size: 16px;
     font-weight: 600;
   }
-  @media (max-width: ${mobileWidthLarge}) {
-    width: 100%;
+  .school-address {
+    width: 50%;
+    font-size: 11px;
+  }
+  .district-name {
+    width: 50%;
+    font-size: 11px;
   }
 `;
 

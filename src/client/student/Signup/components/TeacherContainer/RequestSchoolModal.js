@@ -8,7 +8,7 @@ import {
   smallDesktopWidth,
   themeColor
 } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { EduButton, CustomModalStyled } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { Form, Modal } from "antd";
 import { find, get } from "lodash";
@@ -98,9 +98,9 @@ class RequestSchool extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel} centered>
+      <CustomModalStyled width="700px" title={title} visible={isOpen} footer={footer} onCancel={handleCancel} centered>
         <RequestSchoolForm form={form} t={t} handleSubmit={this.handleSubmit} userInfo={userInfo} />
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

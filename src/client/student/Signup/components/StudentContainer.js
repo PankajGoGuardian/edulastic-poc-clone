@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { trim, isEmpty } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
-import { withWindowSizes, OnDarkBgLogo,notification } from "@edulastic/common";
+import { withWindowSizes, OnDarkBgLogo, notification } from "@edulastic/common";
 import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor, white } from "@edulastic/colors";
 import {
@@ -178,14 +178,14 @@ class StudentSignup extends React.Component {
       }));
     } else if (error.askPassword) {
       if (error.passwordMatch === false) {
-        notification({ messageKey:"passwordIsIncorrect"});
+        notification({ messageKey: "passwordIsIncorrect" });
       }
       this.setState({
         showModal: true,
         existingUser: error
       });
     } else {
-      notification({ msg:error});
+      notification({ msg: error });
     }
   };
 

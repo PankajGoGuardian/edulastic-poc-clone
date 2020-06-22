@@ -1,34 +1,21 @@
-import React from "react";
+import { extraDesktopWidthMax, mobileWidthMax, themeColor, title, white } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Col, Form, Row, Select } from "antd";
+import { find, get, isEmpty, map, mapKeys, pick } from "lodash";
 import PropTypes from "prop-types";
+import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { isEmpty, filter, map, pick, find, mapKeys, get } from "lodash";
-import { Row, Col, Select, Form, Button } from "antd";
 import styled from "styled-components";
-import { IconHeader } from "@edulastic/icons";
-import {
-  themeColor,
-  white,
-  title,
-  fadedGrey,
-  mobileWidthMax,
-  extraDesktopWidthMax,
-  boxShadowDefault
-} from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import selectsData from "../../../../author/TestPage/components/common/selectsData";
 // actions
 import { getDictCurriculumsAction } from "../../../../author/src/actions/dictionaries";
-import { saveSubjectGradeAction, saveSubjectGradeloadingSelector } from "../../duck";
 // selectors
-import {
-  getCurriculumsListSelector,
-  getFormattedCurriculumsSelector,
-  getFormattedCurriculums
-} from "../../../../author/src/selectors/dictionaries";
+import { getCurriculumsListSelector, getFormattedCurriculums } from "../../../../author/src/selectors/dictionaries";
 import { getInterestedCurriculumsSelector } from "../../../../author/src/selectors/user";
+import selectsData from "../../../../author/TestPage/components/common/selectsData";
+import { saveSubjectGradeAction, saveSubjectGradeloadingSelector } from "../../duck";
 
-const { allGrades, allSubjects, defaultStandards } = selectsData;
+const { allGrades, allSubjects } = selectsData;
 
 const { Option } = Select;
 const schoolIcon = "//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png";
@@ -91,7 +78,7 @@ class SubjectGrade extends React.Component {
 
         map(values.standard, id => {
           const filterData = find(curriculums, el => el._id === id);
-          let newCurriculum = mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
+          const newCurriculum = mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
             if (key === "curriculum") key = "name";
             return key;
           });
@@ -251,15 +238,15 @@ const FlexWrapper = styled(Row)`
 `;
 
 const BannerText = styled(Col)`
-  text-align: center;
+  text-align: left;
   h3 {
-    font-size: 40px;
-    line-height: 1.3;
-    letter-spacing: -2px;
-    font-weight: 600;
+    font-size: 45px;
+    font-weight: bold;
+    color: ${title};
+    line-height: 1;
+    letter-spacing: -2.25px;
     margin-top: 0px;
     margin-bottom: 15px;
-    color: ${title};
   }
   h5 {
     font-size: 13px;
@@ -286,25 +273,17 @@ const BannerText = styled(Col)`
 const SelectForm = styled(Form)`
   max-width: 640px;
   margin: 0px auto;
-  padding: 32px;
-  background: ${fadedGrey};
-  border-radius: 8px;
+  padding: 25px;
   text-align: center;
 
   .ant-form-item {
     text-align: left;
 
     label {
-      font-weight: 800;
-      font-size: 16px;
-      @media (min-width: ${extraDesktopWidthMax}) {
-        font-size: 18px;
-      }
-    }
-    .ant-select {
-      @media (min-width: ${extraDesktopWidthMax}) {
-        font-size: 14px;
-      }
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #434b5d;
     }
 
     .ant-select-arrow {
@@ -322,10 +301,46 @@ const SelectForm = styled(Form)`
   .ant-form-explain {
     padding-top: 8px;
   }
-  .ant-select-selection,
-  .ant-input {
+  .ant-select-selection {
     border: none;
-    box-shadow: ${boxShadowDefault};
+    border-bottom: 1px solid #a0a0a0;
+    border-radius: 0;
+    min-height: 45px;
+    box-shadow: none !important;
+    .ant-select-selection__rendered {
+      line-height: 45px;
+      .ant-input {
+        min-height: 43px;
+        box-shadow: none;
+        border: none;
+        font-size: 20px;
+        &:hover {
+          box-shadow: none;
+          border: none;
+        }
+      }
+      .ant-select-selection__choice {
+        background: #e3e3e3;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 20px;
+        padding: 0px 15px;
+        .ant-select-selection__choice__content {
+          font-size: 11px;
+          color: ${title};
+          text-transform: uppercase;
+          margin-right: 5px;
+          svg {
+            width: 8px;
+            height: 8px;
+            fill: ${title};
+          }
+        }
+        .ant-select-selection__choice__remove {
+          right: 5px;
+        }
+      }
+    }
   }
 `;
 
@@ -340,7 +355,7 @@ const GradeSelect = styled(Select)`
 
 const ProceedBtn = styled(Button)`
   background: ${themeColor};
-  min-width: 60%;
+  min-width: 100%;
   color: ${white};
   text-transform: uppercase;
   text-align: center;

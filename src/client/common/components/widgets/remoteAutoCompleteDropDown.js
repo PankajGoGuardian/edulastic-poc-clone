@@ -1,17 +1,14 @@
-//@ts-check
-import React, { useState, useRef, useImperativeHandle, forwardRef } from "react";
-import { AutoComplete, Input, Icon, Menu } from "antd";
-import styled from "styled-components";
+// @ts-check
+import { black, themeColor, white } from "@edulastic/colors";
+import { AutoComplete, Icon, Input } from "antd";
 import { some } from "lodash";
-
+import React, { useImperativeHandle, useRef, useState } from "react";
+import styled from "styled-components";
 import { useInternalEffect } from "../../../author/Reports/common/hooks/useInternalEffect";
-
-import { black, themeColor } from "@edulastic/colors";
+import { TextInputStyled } from "@edulastic/common";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
-
-const _wipeSelected = {};
 
 // IMPORTANT:
 // onChange props is passed by ant design to support Ant design Form items as it requires onChange Callback
@@ -41,7 +38,8 @@ const RemoteAutocompleteDropDown = ({
   setSelectedOnDataChange = false,
   isLoading = false,
   _ref,
-  disabled = false
+  disabled = false,
+  isModalOpen
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -61,7 +59,7 @@ const RemoteAutocompleteDropDown = ({
     let item = null;
     if (setSelectedOnDataChange) {
       if (data.length) {
-        item = data.find((item, index) => {
+        item = data.find(item => {
           if (item.key === selected.key) {
             return true;
           }
@@ -84,7 +82,7 @@ const RemoteAutocompleteDropDown = ({
   }, [data]);
 
   useInternalEffect(() => {
-    let item = data.find((item, index) => {
+    let item = data.find(item => {
       if (typeof by === "string" && item.key === by) {
         return true;
       }
@@ -124,8 +122,8 @@ const RemoteAutocompleteDropDown = ({
       searchedDatum = datum.filter(item => {
         return some(filterKeys, fKey => {
           let test = item[fKey] || item.title;
-          test = (test + "").toLocaleLowerCase();
-          return test.includes((text + "").toLocaleLowerCase());
+          test = `${test}`.toLocaleLowerCase();
+          return test.includes(`${text}`.toLocaleLowerCase());
         });
       });
     } else {
@@ -134,16 +132,14 @@ const RemoteAutocompleteDropDown = ({
 
     let arr;
     if (addCreateNewOption && text && text.trim() && text.length >= 3 && !isLoading) {
-      let existingArr = searchedDatum.map((item, index) => {
-        return (
-          // cleverId is required to validate district
-          <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
-            {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
-          </Option>
-        );
-      });
+      const existingArr = searchedDatum.map(item => (
+        // cleverId is required to validate district
+        <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
+          {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
+        </Option>
+      ));
       arr = [
-        <OptGroup key={"Create New"} label={createNewLabel}>
+        <OptGroup key="Create New" label={createNewLabel}>
           {[
             <Option key="Add New" title={text}>
               <p data-title={text} style={{ width: "100%", height: "100%" }}>
@@ -152,19 +148,17 @@ const RemoteAutocompleteDropDown = ({
             </Option>
           ]}
         </OptGroup>,
-        <OptGroup key={"Existing"} label={existingLabel}>
+        <OptGroup key="Existing" label={existingLabel}>
           {[...existingArr]}
         </OptGroup>
       ];
     } else {
-      arr = searchedDatum.map((item, index) => {
-        return (
-          // cleverId is required to validate district
-          <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
-            {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
-          </Option>
-        );
-      });
+      arr = searchedDatum.map(item => (
+        // cleverId is required to validate district
+        <Option key={item.key} title={item.title} cleverId={item.cleverId || ""}>
+          {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
+        </Option>
+      ));
     }
 
     return arr;
@@ -200,7 +194,15 @@ const RemoteAutocompleteDropDown = ({
     onSearchTextChange(value);
   };
 
-  const onBlur = title => {
+  const triggerChange = changedValue => {
+    if (onChange) {
+      onChange({
+        ...changedValue
+      });
+    }
+  };
+
+  const onBlur = () => {
     setText(selected.title);
     triggerChange(selected);
 
@@ -208,7 +210,7 @@ const RemoteAutocompleteDropDown = ({
   };
 
   const onSelect = (key, item) => {
-    let obj = { key: key, title: item.props.title, cleverId: item.props.cleverId };
+    const obj = { key, title: item.props.title, cleverId: item.props.cleverId };
     setSelected(obj);
     setText(obj.title);
     selectCB(obj, comData);
@@ -219,7 +221,7 @@ const RemoteAutocompleteDropDown = ({
     textChangeStatusRef.current = false;
   };
 
-  const _onChange = value => {
+  const _onChange = () => {
     if (textChangeStatusRef.current !== true) {
       autoRef.current.blur();
     }
@@ -237,25 +239,17 @@ const RemoteAutocompleteDropDown = ({
     setIsDropDownVisible(open);
   };
 
-  const triggerChange = changedValue => {
-    if (onChange) {
-      onChange({
-        ...changedValue
-      });
-    }
-  };
-
   const dataSource = buildDropDownData(dropDownData);
   isFirstRender.current = false;
   return (
-    <StyledDiv className={`${containerClassName} remote-autocomplete-dropdown`}>
+    <StyledDiv isModalOpen={isModalOpen} className={`${containerClassName} remote-autocomplete-dropdown`}>
       <AutoComplete
-        getPopupContainer={triggerNode => triggerNode.parentNode}
         dataSource={dataSource}
         dropdownClassName={className}
         className={className}
         onSearch={onSearch}
         onBlur={onBlur}
+        getPopupContainer={triggerNode => triggerNode.parentNode}
         onFocus={onFocus}
         onSelect={onSelect}
         onChange={_onChange}
@@ -264,7 +258,7 @@ const RemoteAutocompleteDropDown = ({
         onDropdownVisibleChange={onDropdownVisibleChange}
         disabled={disabled}
       >
-        <Input
+        <TextInputStyled
           data-cy={selected.title ? selected.title : placeholder}
           suffix={
             <Icon
@@ -281,13 +275,25 @@ const RemoteAutocompleteDropDown = ({
 };
 
 const StyledDiv = styled.div`
-  margin: 0px 5px;
+  margin: ${props => (props.isModalOpen ? "0px" : "0px 5px")};
   overflow: hidden;
 
   .ant-input-suffix i {
     transition-duration: 0.25s;
   }
-
+  .ant-select-selection {
+    .ant-select-selection__rendered {
+      .ant-input {
+        ${props =>
+          props.isModalOpen && {
+            border: "1px solid #b9b9b9 !important",
+            height: "40px",
+            background: "#f8f8f8 !important",
+            borderRadius: "2px"
+          }}
+      }
+    }
+  }
   .ant-input-suffix-icon-rotate-up {
     transform: rotate(180deg);
     transition-duration: 0.25s;
@@ -305,7 +311,12 @@ const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
       min-height: ${props => (props.minHeight ? props.minHeight : "30px")};
       &-active,
       &:hover {
-        background-color: ${themeColor}33;
+        background-color: ${themeColor};
+        .school-name,
+        .school-address,
+        .district-name {
+          color: ${white};
+        }
       }
     }
 

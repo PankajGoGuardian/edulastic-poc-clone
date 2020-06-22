@@ -1,6 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from "react";
 import { withRouter } from "react-router-dom";
-import { notification, useRealtimeV2 , EduButton, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
+import { notification, useRealtimeV2, EduButton, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -134,8 +134,8 @@ const AssignmentCard = memo(
       allowedTime,
       dueDate,
       assignedBy,
-      hasInstruction=false,
-      instruction=""
+      hasInstruction = false,
+      instruction = ""
     } = data;
     const topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
     useRealtimeV2(topics, {
@@ -197,7 +197,7 @@ const AssignmentCard = memo(
         return;
       }
 
-      if (!resume && (timedAssignment ||hasInstruction)) {
+      if (!resume && (timedAssignment || hasInstruction)) {
         const timedContent = pauseAllowed ? (
           <p>
             {" "}
@@ -224,9 +224,9 @@ const AssignmentCard = memo(
 
         const content = (
           <FlexContainer flexDirection="column">
-            {timedAssignment && timedContent }
+            {timedAssignment && timedContent}
             {hasInstruction && instruction && (
-              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: instruction }} style={{marginTop:"1rem"}} />
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: instruction }} style={{ marginTop: "1rem" }} />
             )}
           </FlexContainer>
         );
@@ -430,18 +430,24 @@ const AssignmentCard = memo(
               <AttemptDetails isValidAttempt={isValidAttempt}>
                 {isValidAttempt && (
                   <React.Fragment>
-                    <Attempts xs={selectedColSize} onClick={toggleAttemptsView}>
-                      {attemptCount > 1 && (
-                        <span data-cy="attemptsCount">
-                          {" "}
-                          {attemptCount}/{maxAttempts}{" "}
-                        </span>
-                      )}
-                      {attemptCount > 1 && (
-                        <AttemptsTitle data-cy="attemptClick">
-                          {" "}
-                          {arrow} &nbsp; &nbsp; {t("common.attemps")}{" "}
-                        </AttemptsTitle>
+                    <Attempts
+                      xs={selectedColSize}
+                      onClick={() => {
+                        if (maxAttempts > 1) {
+                          toggleAttemptsView();
+                        }
+                        
+                      }}
+                    >
+                      {maxAttempts > 1 && (
+                        <>
+                          <span data-cy="attemptsCount">
+                            {attemptCount}/{maxAttempts}
+                          </span>
+                          <AttemptsTitle data-cy="attemptClick">
+                            {arrow} &nbsp; &nbsp; {t("common.attemps")}
+                          </AttemptsTitle>
+                        </>
                       )}
                     </Attempts>
                     {type !== "assignment" && releaseScore !== releaseGradeLabels.DONT_RELEASE && ScoreDetail}

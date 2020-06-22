@@ -6,13 +6,13 @@ import { normalize } from "normalizr";
 import { assignmentApi, reportsApi } from "@edulastic/api";
 
 // external actions
+import { testActivity as testActivityConstants } from "@edulastic/constants";
 import {
   assignmentSchema,
   setAssignmentsAction,
   setAssignmentsLoadingAction
 } from "../sharedDucks/AssignmentModule/ducks";
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
-import { testActivity as testActivityConstants } from "@edulastic/constants";
 
 // constants
 export const getCurrentGroup = createSelectorator(["user.user.orgData.defaultClass"], r => r);
@@ -91,7 +91,7 @@ const isReport = (assignment, classIds) => {
     }
   }
   const isExpired = maxAttempts <= attempts || new Date(endDate) < new Date();
-  return isExpired;
+  return isExpired || attempts > 0;
 };
 
 const statusFilter = filterType => assignment => {
@@ -122,7 +122,7 @@ export const getAllAssignmentsSelector = createSelector(
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
-        //no redirected classes and no class filter or class ID match the filter and student belongs to the class
+        // no redirected classes and no class filter or class ID match the filter and student belongs to the class
         const allClassess = assignment.class.filter(
           clazz =>
             clazz.redirect !== true && (!currentGroup || currentGroup === clazz._id) && classIds.includes(clazz._id)
@@ -153,9 +153,9 @@ export const getAssignmentsSelector = createSelector(
 export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
   assignments => {
-    let MISSED = 0,
-      SUBMITTED = 0,
-      GRADED = 0;
+    let MISSED = 0;
+      let SUBMITTED = 0;
+      let GRADED = 0;
     assignments.forEach(assignment => {
       const lastAttempt = last(assignment.reports) || {};
       const isSubmitted =

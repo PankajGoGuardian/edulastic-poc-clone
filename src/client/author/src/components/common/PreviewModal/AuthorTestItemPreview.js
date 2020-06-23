@@ -517,8 +517,7 @@ class AuthorTestItemPreview extends Component {
                   subCount: subCount++,
                   resourceCount
                 })}
-              {col.tabs &&
-                !col.tabs.length &&
+              {((col.tabs && !col.tabs.length) || !col.tabs) &&
                 this.renderTabContent({
                   widget,
                   flowLayout: col.flowLayout,

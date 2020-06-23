@@ -7,14 +7,19 @@ import { get } from "lodash";
 import {
   getCleverClassListSelector,
   fetchCleverClassListRequestAction,
-  syncClassesWithCleverAction
+  syncClassesWithCleverAction,
+  getCanvasCourseListRequestAction,
+  getCanvasSectionListRequestAction
 } from "../../ducks";
+import { fetchGroupsAction } from "../../../sharedDucks/groups";
+import { getUserDetails } from "../../../../student/Login/ducks";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 
 // components
 import ClassList from "./ClassList";
 import ClassSelectModal from "./ClassSelectModal";
 import ShowSyncDetailsModal from "./ShowSyncDetailsModal";
+import CanvasClassSelectModal from "./CanvasClassSelectModal";
 
 // eslint-disable-next-line max-len
 const ClassListContainer = ({
@@ -39,9 +44,18 @@ const ClassListContainer = ({
   syncCleverClassList,
   getStandardsListBySubject,
   defaultGrades = [],
-  defaultSubjects = []
+  defaultSubjects = [],
+  user,
+  getCanvasCourseListRequest,
+  getCanvasSectionListRequest,
+  canvasCourseList,
+  canvasSectionList,
+  institutionIds,
+  bulkSyncCanvasStatus,
+  fetchGroups
 }) => {
   const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
+  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false);
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -49,6 +63,10 @@ const ClassListContainer = ({
       fetchCleverClassList();
     }
   }, [showCleverSyncModal]);
+
+  useEffect(() => {
+    if (bulkSyncCanvasStatus === "SUCCESS") fetchGroups();
+  }, [bulkSyncCanvasStatus]);
 
   const syncedGoogleClassroomIds = groups.filter(g => !!g.googleCode).map(g => g.googleCode);
   const syncedCleverIds = groups.filter(g => !!g.cleverId).map(g => g.cleverId);
@@ -86,6 +104,16 @@ const ClassListContainer = ({
         defaultGrades={defaultGrades}
         defaultSubjects={defaultSubjects}
       />
+      <CanvasClassSelectModal
+        visible={showCanvasSyncModal}
+        onCancel={() => setShowCanvasSyncModal(false)}
+        user={user}
+        getCanvasCourseListRequest={getCanvasCourseListRequest}
+        getCanvasSectionListRequest={getCanvasSectionListRequest}
+        canvasCourseList={canvasCourseList}
+        canvasSectionList={canvasSectionList}
+        institutionId={institutionIds[0]}
+      />
       <ShowSyncDetailsModal
         syncClassResponse={syncClassResponse}
         visible={showDetails}
@@ -98,6 +126,7 @@ const ClassListContainer = ({
         syncClassLoading={syncClassLoading}
         showBanner={showBanner}
         setShowCleverSyncModal={setShowCleverSyncModal}
+        handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
       />
     </React.Fragment>
   );
@@ -117,10 +146,18 @@ export default connect(
   state => ({
     loadingCleverClassList: get(state, "manageClass.loadingCleverClassList"),
     cleverClassList: getCleverClassListSelector(state),
-    getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject })
+    getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject }),
+    user: getUserDetails(state),
+    canvasCourseList: get(state, "manageClass.canvasCourseList", []),
+    canvasSectionList: get(state, "manageClass.canvasSectionList", []),
+    institutionIds: get(state, "user.user.institutionIds", []),
+    bulkSyncCanvasStatus: get(state, "signup.bulkSyncCanvasStatus", false)
   }),
   {
     fetchCleverClassList: fetchCleverClassListRequestAction,
-    syncCleverClassList: syncClassesWithCleverAction
+    syncCleverClassList: syncClassesWithCleverAction,
+    getCanvasCourseListRequest: getCanvasCourseListRequestAction,
+    getCanvasSectionListRequest: getCanvasSectionListRequestAction,
+    fetchGroups: fetchGroupsAction
   }
 )(ClassListContainer);

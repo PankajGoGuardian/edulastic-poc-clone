@@ -28,7 +28,7 @@ export const HeadingWrapper = styled.div`
 
 export const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ justifyContent }) => justifyContent || "space-between"};
   width: 100%;
 `;
 

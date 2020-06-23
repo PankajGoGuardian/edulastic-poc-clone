@@ -3,14 +3,16 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { withNamespaces } from "react-i18next";
 import { GoogleLogin } from "react-google-login";
+import * as Sentry from "@sentry/browser";
 
 // components
-import { EduButton, MainHeader, HeaderTabs } from "@edulastic/common";
+import { EduButton, MainHeader, HeaderTabs, notification } from "@edulastic/common";
+import { canvasApi } from "@edulastic/api";
 import { IconGoogleClassroom, IconManage, IconPlusCircle, IconClass, IconGroup, IconClever } from "@edulastic/icons";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { ButtonsWrapper } from "./styled";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-
+import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 import { scopes } from "./ClassCreatePage";
 
 const Header = ({
@@ -22,7 +24,10 @@ const Header = ({
   currentTab,
   onClickHandler,
   enableCleverSync,
-  isCleverDistrictUser
+  isCleverDistrictUser,
+  canvasAllowedInstitution,
+  user,
+  handleCanvasBulkSync
 }) => {
   const handleLoginSucess = data => {
     fetchGoogleClassList({ data });
@@ -30,6 +35,29 @@ const Header = ({
 
   const handleError = err => {
     console.log("error", err);
+  };
+
+  const handleSyncWithCanvas = async () => {
+    try {
+      const result = await canvasApi.getCanvasAuthURI(canvasAllowedInstitution?.[0]?.institutionId);
+      if (!result.userAuthenticated) {
+        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username || user.email || ""}`;
+        authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
+          .then(res => {
+            handleCanvasBulkSync(res);
+          })
+          .catch(err => {
+            console.error("Error while authorizing", err);
+            Sentry.captureException(err);
+            notification({ messageKey: "errorOccuredWhileAuthorizing" });
+          });
+      } else {
+        handleCanvasBulkSync();
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+      notification({ messageKey: "errorWhileGettingAuthUri" });
+    }
   };
 
   const pageNavButtons = [
@@ -85,6 +113,17 @@ const Header = ({
             prompt={isUserGoogleLoggedIn ? "" : "consent"}
             responseType="code"
           />
+        )}
+        {canvasAllowedInstitution.length > 0 && (
+          <EduButton isGhost onClick={() => handleSyncWithCanvas()}>
+            <img
+              alt="Canvas"
+              src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+              width={18}
+              height={18}
+            />
+            <span>SYNC WITH CANVAS</span>
+          </EduButton>
         )}
         <Link to={{ pathname: "/author/manageClass/createClass", state: { type: currentTab } }} data-cy="createClass">
           <EduButton>

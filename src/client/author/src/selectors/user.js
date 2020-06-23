@@ -236,6 +236,11 @@ export const getGoogleAllowedInstitionPoliciesSelector = createSelector(
   state => state.filter(s => !!s.allowGoogleClassroom)
 );
 
+export const getCanvasAllowedInstitutionPoliciesSelector = createSelector(
+  getInstitutionPoliciesSelector,
+  state => state.filter(s => !!s.allowCanvas)
+);
+
 export const getCleverDistrictUserSelector = createSelector(
   getOrgDataSelector,
   orgData => !!orgData.isCleverDistrict

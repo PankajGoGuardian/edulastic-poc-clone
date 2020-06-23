@@ -1,6 +1,6 @@
-import { OnWhiteBgLogo,notification } from "@edulastic/common";
+import { OnWhiteBgLogo, notification } from "@edulastic/common";
 import { IconCanvasBook } from "@edulastic/icons";
-import { message, Select } from "antd";
+import { Select } from "antd";
 import { get, groupBy } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
@@ -11,6 +11,8 @@ import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/d
 import selectsData from "../../../author/TestPage/components/common/selectsData";
 import { setSignUpStatusAction, signupSuccessAction } from "../../../student/Login/ducks";
 import { bulkSyncCanvasClassAction, joinSchoolFailedAction } from "../../../student/Signup/duck";
+import { getCanvasAllowedInstitutionPoliciesSelector } from "../../../author/src/selectors/user";
+import { StyledSelect } from "../../../author/ManageClass/components/ClassListContainer/styled";
 import {
   Button,
   ButtonContainer,
@@ -38,23 +40,37 @@ const CanvasBulkAddClass = ({
   signupSuccess,
   institutionId,
   setSignUpStatus,
-  joinSchoolFailed
+  joinSchoolFailed,
+  fromManageClass,
+  canvasAllowedInstitutions,
+  onCancel = () => {}
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [classes, setClasses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [institution, setInstitution] = useState();
 
   useEffect(() => {
     getDictCurriculums();
     receiveSearchCourse({ districtId: user.districtId });
-    getCanvasCourseListRequest(institutionId);
+    if (!fromManageClass) {
+      setInstitution(institutionId);
+    } else {
+      setInstitution(canvasAllowedInstitutions[0].institutionId);
+    }
   }, []);
+
+  useEffect(() => {
+    if (institution) {
+      getCanvasCourseListRequest(institution);
+    }
+  }, [institution]);
 
   useEffect(() => {
     if (canvasCourseList.length) {
       const allCourseIds = canvasCourseList.map(c => c.id);
-      getCanvasSectionListRequest({ allCourseIds, institutionId });
+      getCanvasSectionListRequest({ allCourseIds, institution });
     }
   }, [canvasCourseList]);
 
@@ -75,7 +91,7 @@ const CanvasBulkAddClass = ({
           return {
             districtId: user.districtId,
             grades: [],
-            institutionId: user.institutionIds[0],
+            institutionId: institution,
             name: s.name,
             owners: [user._id],
             parent: { id: user._id },
@@ -87,7 +103,8 @@ const CanvasBulkAddClass = ({
             canvasCode: course.id,
             canvasCourseName: course.name,
             canvasCourseSectionCode: s.id,
-            canvasCourseSectionName: s.name
+            canvasCourseSectionName: s.name,
+            ...(s.alreadySynced ? { alreadySynced: true } : {})
           };
         });
         return sectionClasses;
@@ -95,7 +112,9 @@ const CanvasBulkAddClass = ({
       setClasses(allClasses);
 
       // setting all the table rows as checked by default
-      const allClassKeys = allClasses.map(c => `${c.canvasCode}_${c.canvasCourseSectionCode}`);
+      const allClassKeys = allClasses
+        .filter(c => !c.alreadySynced)
+        .map(c => `${c.canvasCode}_${c.canvasCourseSectionCode}`);
       setSelectedRows(allClassKeys);
 
       setIsLoading(false);
@@ -130,13 +149,14 @@ const CanvasBulkAddClass = ({
       setSelectedRows(rows);
     },
     getCheckboxProps: record => ({
-      name: record.name
+      name: record.name,
+      disabled: !!record.alreadySynced
     })
   };
 
   const handleFinish = () => {
     if (!selectedRows.length) {
-      notification({ messageKey:"pleaseSelectAtleastOneCanvasCourseSectionToSync"});
+      notification({ messageKey: "pleaseSelectAtleastOneCanvasCourseSectionToSync" });
       return;
     }
     let selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
@@ -149,8 +169,11 @@ const CanvasBulkAddClass = ({
   };
 
   const handleClose = () => {
-    const { currentSignUpState, ...rest } = user;
     setShowModal(false);
+    if (fromManageClass) {
+      return onCancel();
+    }
+    const { currentSignUpState, ...rest } = user;
     signupSuccess(rest);
   };
 
@@ -186,6 +209,7 @@ const CanvasBulkAddClass = ({
           placeholder="Select Grades"
           onChange={val => handleChange(index, "grades", val)}
           getPopupContainer={triggerNode => triggerNode.parentNode}
+          disabled={!!row.alreadySynced}
         >
           {selectsData.allGrades.map(allGrade => (
             <Select.Option value={allGrade.value} key={allGrade.value}>
@@ -210,6 +234,7 @@ const CanvasBulkAddClass = ({
             handleChange(ind, "subject", val);
           }}
           getPopupContainer={triggerNode => triggerNode.parentNode}
+          disabled={!!row.alreadySynced}
         >
           {selectsData.allSubjects.map(
             allSubject =>
@@ -244,6 +269,7 @@ const CanvasBulkAddClass = ({
               handleStandardsChange(ind, "standardSets", val, options);
             }}
             getPopupContainer={triggerNode => triggerNode.parentNode}
+            disabled={!!row.alreadySynced}
           >
             {standardsList.map(standard => (
               <Select.Option value={standard.value} key={standard.value} disabled={standard.disabled}>
@@ -271,11 +297,12 @@ const CanvasBulkAddClass = ({
           placeholder="Select Course"
           onChange={val => handleChange(ind, "courseId", val)}
           getPopupContainer={triggerNode => triggerNode.parentNode}
+          disabled={!!row.alreadySynced}
         >
           {activeCourseList &&
             activeCourseList.map(course => (
               <Select.Option value={course._id} key={course._id}>
-                {course.name}
+                {course.name}institution
               </Select.Option>
             ))}
         </Select>
@@ -284,7 +311,7 @@ const CanvasBulkAddClass = ({
   ];
 
   return (
-    <Container>
+    <Container fromManageClass={fromManageClass}>
       <LogoWrapper>
         <OnWhiteBgLogo />
       </LogoWrapper>
@@ -299,6 +326,29 @@ const CanvasBulkAddClass = ({
           Following classes are imported from your canvas account. Please select Course to create class in Edulastic.
         </p>
       </div>
+      {canvasAllowedInstitutions.length > 1 && (
+        <div>
+          <label>
+            We found the account is linked to multiple Institutions. Please select the one for synced
+            classes.&nbsp;&nbsp;
+          </label>
+          <StyledSelect
+            width="170px"
+            showSearch
+            filterOption={(input, option) =>
+              option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            placeholder="Select Institution"
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+            value={institution}
+            onChange={value => setInstitution(value)}
+          >
+            {canvasAllowedInstitutions.map(i => (
+              <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
+            ))}
+          </StyledSelect>
+        </div>
+      )}
       <CanvasClassTable
         rowKey={record => `${record.canvasCode}_${record.canvasCourseSectionCode}`}
         columns={columns}
@@ -308,11 +358,17 @@ const CanvasBulkAddClass = ({
         bordered
         loading={isFetchingCanvasData || isLoading}
       />
-      <ButtonContainer>
-        <Button onClick={handleGoBack} back>
-          Back
-        </Button>
-        <Button onClick={handleFinish}>Finish</Button>
+      <ButtonContainer justifyContent="space-around">
+        {fromManageClass ? (
+          <Button onClick={handleFinish}>Sync</Button>
+        ) : (
+          <>
+            <Button onClick={handleGoBack} back>
+              Back
+            </Button>
+            <Button onClick={handleFinish}>Finish</Button>
+          </>
+        )}
       </ButtonContainer>
       {showModal && (
         <StyledModal
@@ -338,7 +394,8 @@ export default connect(
     state,
     courseList: get(state, "coursesReducer.searchResult"),
     bulkSyncCanvasStatus: get(state, "signup.bulkSyncCanvasStatus", false),
-    isFetchingCanvasData: get(state, "manageClass.isFetchingCanvasData", false)
+    isFetchingCanvasData: get(state, "manageClass.isFetchingCanvasData", false),
+    canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(state)
   }),
   {
     getDictCurriculums: getDictCurriculumsAction,

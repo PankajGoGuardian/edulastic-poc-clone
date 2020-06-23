@@ -20,7 +20,8 @@ import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import {
   getGoogleAllowedInstitionPoliciesSelector,
   getCleverDistrictUserSelector,
-  getCleverSyncEnabledInstitutionPoliciesSelector
+  getCleverSyncEnabledInstitutionPoliciesSelector,
+  getCanvasAllowedInstitutionPoliciesSelector
 } from "../../../src/selectors/user";
 
 const { allGrades, allSubjects } = selectsData;
@@ -41,7 +42,9 @@ const ClassList = ({
   googleAllowedInstitutions,
   setShowCleverSyncModal,
   isCleverDistrictUser,
-  cleverSyncEnabledInstitutions
+  cleverSyncEnabledInstitutions,
+  canvasAllowedInstitution,
+  handleCanvasBulkSync
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
@@ -216,10 +219,13 @@ const ClassList = ({
         onClickHandler={onClickHandler}
         isUserGoogleLoggedIn={isUserGoogleLoggedIn}
         googleAllowedInstitutions={googleAllowedInstitutions}
+        canvasAllowedInstitution={canvasAllowedInstitution}
         fetchGoogleClassList={fetchClassList}
         setShowCleverSyncModal={setShowCleverSyncModal}
         enableCleverSync={cleverSyncEnabledInstitutions.length > 0}
         isCleverDistrictUser={isCleverDistrictUser}
+        user={user}
+        handleCanvasBulkSync={handleCanvasBulkSync}
       />
       <MainContentWrapper>
         <SubHeader>
@@ -258,7 +264,7 @@ const ClassList = ({
                   fetchClassList={fetchClassList}
                   googleAllowedInstitutions={googleAllowedInstitutions}
                 />
-                )}
+              )}
             </>
           )}
 
@@ -293,7 +299,8 @@ const enhance = compose(
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       isCleverDistrictUser: getCleverDistrictUserSelector(state),
-      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state)
+      cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
+      canvasAllowedInstitution: getCanvasAllowedInstitutionPoliciesSelector(state)
     }),
     {
       fetchClassList: fetchClassListAction,

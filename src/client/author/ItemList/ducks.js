@@ -101,9 +101,19 @@ export function* addItemToCartSaga({ payload }) {
 export function* createTestFromCart({ payload: { testName } }) {
   const test = yield select(getTestEntitySelector);
   const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
-  const questionGrades = testItems
-    .flatMap(item => (item.data && item.data.questions) || [])
-    .flatMap(question => question.grades || []);
+  let questionGrades = uniq(
+    testItems
+      .flatMap(x => x.data.questions)
+      .flatMap(x => x.alignment || [])
+      .flatMap(x => x.domains)
+      .flatMap(x => x.standards)
+      .flatMap(x => x.grades)
+  );
+  if (questionGrades.length === 0) {
+    questionGrades = testItems
+      .flatMap(item => (item.data && item.data.questions) || [])
+      .flatMap(question => question.grades || []);
+  }
   const questionSubjects = testItems
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.subjects || []);

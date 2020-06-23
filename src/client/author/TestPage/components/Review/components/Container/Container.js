@@ -32,7 +32,7 @@ import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader, ReviewSummaryWrapper, ReviewContentWrapper, ReviewLeftContainer } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
-import { getUserFeatures } from "../../../../../src/selectors/user";
+import { getUserFeatures, getUserRole, getIsPowerPremiumAccount } from "../../../../../src/selectors/user";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 import ReviewItems from "../ReviewItems";
 import { resetItemScoreAction } from "../../../../../src/ItemScore/ducks";
@@ -384,7 +384,9 @@ class Review extends PureComponent {
       userFeatures,
       testItems,
       isPlaylistTestReview = false,
-      isFetchingAutoselectItems = false
+      isFetchingAutoselectItems = false,
+      userRole,
+      isPowerPremiumAccount
     } = this.props;
     const {
       isCollapse,
@@ -484,6 +486,8 @@ class Review extends PureComponent {
                 itemGroups={test.itemGroups}
                 isPublishers={isPublishers}
                 isFetchingAutoselectItems={isFetchingAutoselectItems}
+                userRole={userRole}
+                isPowerPremiumAccount={isPowerPremiumAccount}
               />
             </Paper>
           </ReviewLeftContainer>
@@ -552,7 +556,9 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       currentGroupIndex: getCurrentGroupIndexSelector(state),
       testItems: getTestItemsSelector(state),
-      isFetchingAutoselectItems: getAutoSelectItemsLoadingStatusSelector(state)
+      isFetchingAutoselectItems: getAutoSelectItemsLoadingStatusSelector(state),
+      userRole: getUserRole(state),
+      isPowerPremiumAccount: getIsPowerPremiumAccount(state)
     }),
     {
       setData: setTestDataAction,

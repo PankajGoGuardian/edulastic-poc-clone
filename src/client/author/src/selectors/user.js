@@ -263,3 +263,8 @@ export const getAccountSwitchDetails = createSelector(
   getUser,
   state => pick(state, ["personId", "otherAccounts"])
 );
+
+export const getIsPowerPremiumAccount = createSelector(
+  getUser,
+  state => state.isPowerTeacher && state.features.premium
+);

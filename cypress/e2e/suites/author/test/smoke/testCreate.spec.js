@@ -266,7 +266,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
 
   it("> doc based test-'answer only'", () => {
     const testData = SMOKE_2;
-    const itemsInTest = [...existingItems];
     // create new test
     testLibrary.sidebar.clickOnTestLibrary();
     testLibrary.getCreateNewTestButton().click();
@@ -289,19 +288,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, ()
         testLibrary.testSummary.selectSubject(subject);
       });
     }
+    // work sheet
+    testLibrary.header.getWorkSheetHeader().click({ force: true });
+    testLibrary.clickAddEssayTypeQueInDoc();
+    testLibrary.clickDoneAddingQueInDoc();
+
     // verify items on review tab
     testLibrary.header.clickOnReview();
     testLibrary.header.verifyHeaders(true, false, true, true, true);
     testLibrary.header.verifyHeaderActionButtons();
 
-    itemsInTest.forEach(itemId => {
-      testLibrary.review.verifyQustionById(itemId);
-    });
-
-    // save
-    testLibrary.header.clickOnSaveButton(true);
-
     // publish
-    testLibrary.header.clickOnPublishButton();
+    testLibrary.header.getPublishRegradeButton().click({ force: true });
+    cy.wait(1000);
+    testLibrary.clickProceedWithoutStandard();
+    cy.contains("Share With Others", { timeout: 20000 });
   });
 });

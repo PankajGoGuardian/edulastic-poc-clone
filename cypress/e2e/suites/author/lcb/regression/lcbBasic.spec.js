@@ -748,10 +748,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         lcb.clickOnCardViewTab();
       });
       feedbackScoreData.forEach(feedback => {
-        const { stuName, status, attempt } = feedback;
+        const { stuName, status, attempt, email } = feedback;
         it(` > verify student card for :${stuName}`, () => {
           const { score, perf } = lcb.getScoreAndPerformance(attempt, questionTypeMap);
-          lcb.verifyStudentCard(stuName, status, score, perf, attempt);
+          lcb.verifyStudentCard(stuName, status, score, perf, attempt, email);
         });
       });
     });

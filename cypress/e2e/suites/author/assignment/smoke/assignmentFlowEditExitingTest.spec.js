@@ -89,10 +89,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
 
     before("calculate student scores", () => {
       attemptsData.forEach(attempts => {
-        const { attempt, stuName, status } = attempts;
+        const { attempt, stuName, status, email } = attempts;
         statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
         statsMap[stuName].attempt = attempt;
         statsMap[stuName].status = status;
+        statsMap[stuName].email = email;
       });
     });
 

@@ -166,9 +166,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       lcb.verifyAbsentCount(1);
 
       // verify student card
-      lcb.verifyStudentCard(absentStudent[1].stuName, studentSide.ABSENT, "0 / 2", "0%", {
-        Q1: "noattempt"
-      });
+      lcb.verifyStudentCard(
+        absentStudent[1].stuName,
+        studentSide.ABSENT,
+        "0 / 2",
+        "0%",
+        {
+          Q1: "noattempt"
+        },
+        absentStudent[1].email
+      );
       // verify student side assignment entry
       cy.login("student", submitStudent[1].email, password);
       test.assignmentPage.getAssignmentButton().should("not.be.visible");
@@ -204,9 +211,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
         stuCount
       );
       // verify student card after submit
-      lcb.verifyStudentCard(submitStudent[1].stuName, studentSide.GRADED, "0 / 2", "0%", {
-        Q1: "skip"
-      });
+      lcb.verifyStudentCard(
+        submitStudent[1].stuName,
+        studentSide.GRADED,
+        "0 / 2",
+        "0%",
+        {
+          Q1: "skip"
+        },
+        submitStudent[1].email
+      );
 
       // verify student side assignment entry
       cy.login("student", submitStudent[1].email, password);
@@ -224,9 +238,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
         stuCount
       );
       // verify student card after submit
-      lcb.verifyStudentCard(submitStudent[2].stuName, studentSide.GRADED, "0 / 2", "0%", {
-        Q1: "wrong"
-      });
+      lcb.verifyStudentCard(
+        submitStudent[2].stuName,
+        studentSide.GRADED,
+        "0 / 2",
+        "0%",
+        {
+          Q1: "wrong"
+        },
+        submitStudent[2].email
+      );
 
       // verify student side assignment entry
       cy.login("student", submitStudent[2].email, password);
@@ -314,9 +335,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       // Verify student card status
-      lcb.verifyStudentCard(absentStudent[1].stuName, studentSide.ABSENT, "0 / 2", "0%", {
-        Q1: "noattempt"
-      });
+      lcb.verifyStudentCard(
+        absentStudent[1].stuName,
+        studentSide.ABSENT,
+        "0 / 2",
+        "0%",
+        {
+          Q1: "noattempt"
+        },
+        absentStudent[1].email
+      );
       // select the absent student and remove
       lcb.selectCheckBoxByStudentName(absentStudent[1].stuName);
       lcb.clickOnRemove();

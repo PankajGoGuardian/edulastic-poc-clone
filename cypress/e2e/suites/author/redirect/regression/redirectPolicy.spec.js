@@ -194,7 +194,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.verifyStudentsOnRedirectPopUp(email);
       lcb.clickOnRedirectSubmit();
       const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
-      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt, email);
       lcb.verifyRedirectIcon(stuName);
     });
 
@@ -344,7 +344,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.redirectPopup.selectRedirectPolicy(redirectType.SCORE_AND_FEEDBACK);
       lcb.clickOnRedirectSubmit();
       const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
-      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt, email);
       lcb.verifyRedirectIcon(stuName);
     });
 
@@ -441,7 +441,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.clickOnRedirectSubmit();
 
       const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
-      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt, email);
       lcb.verifyRedirectIcon(stuName);
     });
 
@@ -539,7 +539,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.clickOnRedirectSubmit();
 
       const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
-      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt, email);
       lcb.verifyRedirectIcon(stuName);
     });
 
@@ -634,7 +634,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       // select redirect policy
       lcb.clickOnRedirectSubmit();
       const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
-      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+      lcb.verifyStudentCard(stuName, teacherSide.REDIRECTED, score, perf, noattempt, email);
       lcb.verifyRedirectIcon(stuName);
     });
 
@@ -682,7 +682,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.clickOnRedirectSubmit();
       const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
       attemptsData.forEach(user => {
-        lcb.verifyStudentCard(user.stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+        lcb.verifyStudentCard(user.stuName, teacherSide.REDIRECTED, score, perf, noattempt, user.email);
         lcb.verifyRedirectIcon(user.stuName);
       });
       lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
@@ -720,7 +720,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.clickOnRedirectSubmit();
       const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
       attemptsData.forEach(user => {
-        lcb.verifyStudentCard(user.stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+        lcb.verifyStudentCard(user.stuName, teacherSide.REDIRECTED, score, perf, noattempt, user.email);
         lcb.verifyRedirectIcon(user.stuName);
       });
       lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);

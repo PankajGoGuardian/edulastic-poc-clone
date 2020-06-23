@@ -203,9 +203,8 @@ export default class QuestionResponsePage {
     this.getScoreInput(cy.get("@updatecard")).as("scoreinputbox");
 
     if (!(typeof score === "undefined" || score === "")) {
-      cy.get("@scoreinputbox")
-        .type("{selectall}{del}", { force: score })
-        .type(score, { force: true });
+      cy.get("@scoreinputbox").type("{selectall}{del}", { force: score });
+      cy.get("@scoreinputbox").type(score, { force: true });
 
       this.getFeedbackArea(cy.get("@updatecard"))
         .click()

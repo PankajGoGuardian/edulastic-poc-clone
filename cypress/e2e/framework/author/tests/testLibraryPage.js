@@ -130,9 +130,21 @@ export default class TestLibrary {
 
   getAnswerOnlyButton = () => cy.get("button").contains("Continue with blank");
 
+  getAddEssayTypeInDocBased = () => cy.get('[class^="styled__AddQuestionIcon"]').last();
+
+  getDoneButtonInAddingQuestion = () => cy.get("button").contains("DONE");
+
+  getProceedButton = () => cy.get("button").contains("PROCEED");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+
+  clickAddEssayTypeQueInDoc = () => this.getAddEssayTypeInDocBased().click({ force: true });
+
+  clickDoneAddingQueInDoc = () => this.getDoneButtonInAddingQuestion().click({ force: true });
+
+  clickProceedWithoutStandard = () => this.getProceedButton().click({ force: true });
 
   clickOnTileView = () => {
     this.getTileViewButton()

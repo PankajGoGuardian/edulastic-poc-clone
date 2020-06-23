@@ -1209,9 +1209,14 @@ function* removeFromUseSaga({ payload: id }) {
     yield put(receiveRecentPlayListsAction());
     message.destroy();
     notification({ type: "success", messageKey: "playlistRemoveFromUseSuccess" });
-    if (lastPlaylistResult) {
+    if (lastPlaylistResult?.value) {
       yield put(
-        useThisPlayListAction({ ...lastPlaylistResult, onChange: true, isStudent: false, fromRemovePlaylist: true })
+        useThisPlayListAction({
+          ...lastPlaylistResult.value,
+          onChange: true,
+          isStudent: false,
+          fromRemovePlaylist: true
+        })
       );
     } else {
       yield put(push("/author/playlists"));

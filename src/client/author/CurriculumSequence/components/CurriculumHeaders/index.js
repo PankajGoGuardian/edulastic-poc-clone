@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { reduce, isNumber } from "lodash";
 import { roleuser } from "@edulastic/constants";
 import { Tooltip, Modal, Dropdown, Menu } from "antd";
 import { FlexContainer, EduButton, MainHeader } from "@edulastic/common";
@@ -86,7 +85,6 @@ const CurriculumHeader = ({
   features,
   isStudent,
   isTeacher,
-  summaryData,
   isManageContentActive,
   isPublisherUser,
   isDesktop,
@@ -127,9 +125,8 @@ const CurriculumHeader = ({
   const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
   const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
 
-  const sumOfclasse = reduce(summaryData, (prev, curr) => (isNumber(curr?.classes) ? prev + curr.classes : prev), 0);
-  const shouldHideUseThis = (sumOfclasse > 0 && !urlHasUseThis) || status === "draft";
-  const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser && sumOfclasse === 0;
+  const shouldHideUseThis = status === "draft";
+  const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
 
   const isPlaylistDetailsPage = window.location?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;

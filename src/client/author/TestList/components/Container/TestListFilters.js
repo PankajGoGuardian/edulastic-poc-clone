@@ -95,6 +95,8 @@ const TestListFilters = ({
           title: "Collections",
           placeholder: "All Collections",
           size: "large",
+          filterOption: searchFilterOption,
+          optionFilterProp: "children",
           data: [
             ...collectionDefaultFilter.filter(c => c.value),
             ...collections.map(o => ({ value: o._id, text: o.name }))
@@ -163,6 +165,8 @@ const TestListFilters = ({
           title: "Collections",
           placeholder: "All Collections",
           size: "large",
+          filterOption: searchFilterOption,
+          optionFilterProp: "children",
           data: [
             ...collectionDefaultFilter.filter(c => c.value),
             ...collections.map(o => ({ value: o._id, text: o.name }))

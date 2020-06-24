@@ -275,6 +275,7 @@ const Search = ({
                   placeholder="All Collections"
                   onChange={onSearchFieldChange("collections")}
                   value={_collections}
+                  optionFilterProp="children"
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {collectionData.map(el => (

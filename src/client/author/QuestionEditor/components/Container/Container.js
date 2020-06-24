@@ -42,6 +42,7 @@ import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink, QuestionContentWrapper } from "./styled";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
+import { clearAnswersAction } from "../../../src/actions/answers";
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const questions = get(item, "data.questions", []);
@@ -173,6 +174,15 @@ class Container extends Component {
       this.setState({ clearClicked: true }, () => this.setState({ clearClicked: false }));
     }
   };
+
+  componentWillUnmount() {
+    // evaluation mode: check/show/clear
+    const { clearAnswers, previewMode, changePreview } = this.props;
+    if (["check", "show"].includes(previewMode)) {
+      changePreview("clear");
+      clearAnswers();
+    }
+  }
 
   renderQuestion = () => {
     const { view, question, preview, itemFromState, showCalculatingSpinner } = this.props;
@@ -536,7 +546,8 @@ const enhance = compose(
       authorQuestions: getCurrentQuestionSelector(state),
       hasUnsavedChanges: state?.authorQuestions?.updated || false,
       showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
-      showCalculatingSpinner: getCalculatingSelector(state)
+      showCalculatingSpinner: getCalculatingSelector(state),
+      previewMode: getPreviewSelector(state)
     }),
     {
       changeView: changeViewAction,
@@ -550,7 +561,8 @@ const enhance = compose(
       toggleModalAction: toggleCreateItemModalAction,
       onSaveScrollTop: saveScrollTop,
       savePassage: savePassageAction,
-      changeQuestionUpdateFlag: changeUpdatedFlagAction
+      changeQuestionUpdateFlag: changeUpdatedFlagAction,
+      clearAnswers: clearAnswersAction
     }
   )
 );

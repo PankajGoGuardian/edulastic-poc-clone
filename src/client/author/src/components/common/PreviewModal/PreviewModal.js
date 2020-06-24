@@ -433,7 +433,7 @@ class PreviewModal extends React.Component {
                   this.closeModal();
                 }}
               >
-                Add To Test
+                {this.isAddOrRemove ? "Add To Test" : "Remove from Test"}
               </EduButton>
             )}
             <EduButton IconBtn type="primary" width="140px" height="32px" onClick={this.toggleFullModal}>

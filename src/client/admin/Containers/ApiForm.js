@@ -45,7 +45,7 @@ const ApiForm = () => {
           );
         })}
       </Select>
-      {id && <ApiFormsMain fields={option.fields} name={option.name} handleOnSave={handleOnSave} />}
+      {id && <ApiFormsMain fields={option.fields} name={option.name} handleOnSave={handleOnSave} note={option.note} />}
     </div>
   );
 };

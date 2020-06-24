@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from "react";
+import styled from "styled-components";
 import { Alert, Button, Form } from "antd";
 import Field from "./Field";
 import { FirstDiv, H2, OuterDiv } from "../../Common/StyledComponents";
 
-const ApiFormsMain = ({ fields, name, handleOnSave }) => {
+const ApiFormsMain = ({ fields, name, handleOnSave, note = {} }) => {
   const [data, setData] = useState({});
   const [errors, setErrors] = useState([]);
   const onChange = (value, type) => {
@@ -36,8 +37,10 @@ const ApiFormsMain = ({ fields, name, handleOnSave }) => {
     handleOnSave(formatData);
   };
 
+  const { text, align, parentField } = note;
+
   return (
-    <div>
+    <FormMainWrapper>
       <OuterDiv>
         <H2>{name}</H2>
         <FirstDiv>
@@ -51,16 +54,32 @@ const ApiFormsMain = ({ fields, name, handleOnSave }) => {
               />
             )}
             {fields.map(field => (
-              <Field {...field} onChange={onChange} />
+              <Field {...field} onChange={onChange} note={note}/>
             ))}
-            <Button type="primary" htmlType="submit" onClick={onSave}>
-              Submit
-            </Button>
+            <ActionWrapper>
+              <Button type="primary" htmlType="submit" onClick={onSave}>
+                Submit
+              </Button>
+            {!!text && !parentField && <span className="note" style={align === "left" ? { justifyContent: "flex-start" } : {}}>{text}</span> }
+            </ActionWrapper>
           </Form>
         </FirstDiv>
       </OuterDiv>
-    </div>
+    </FormMainWrapper>
   );
 };
+
+const FormMainWrapper = styled.div`
+  .note {
+    color: red;
+    font-size: 16px;
+  }
+`;
+
+const ActionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 export default ApiFormsMain;

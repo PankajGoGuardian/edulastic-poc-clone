@@ -4,7 +4,7 @@ import { get } from "lodash";
 import React, { useEffect, useState } from "react";
 import { doValidate } from "./apis";
 
-const Field = ({ displayName, type, validate, onChange, message, ...rest }) => {
+const Field = ({ displayName, type, validate, onChange, message, note = {}, ...rest }) => {
   const [response, setResponse] = useState();
   const [value, setValue] = useState();
   useEffect(() => {
@@ -130,6 +130,8 @@ const Field = ({ displayName, type, validate, onChange, message, ...rest }) => {
     }
   };
 
+  const { text, parentField, position, align } = note;
+
   return (
     <div
       style={{
@@ -145,7 +147,9 @@ const Field = ({ displayName, type, validate, onChange, message, ...rest }) => {
       >
         {displayName}
       </div>
+      {rest.name === parentField && position === "top" && <span className="note" style={{float: align}}>{text}</span>}
       {renderElement()}
+      {rest.name === parentField && position === "bottom" && <span className="note" style={{float: align}}>{text}</span>}
       {renderIfNeedsToValidate()}
       {renderResponse()}
     </div>

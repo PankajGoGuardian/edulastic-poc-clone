@@ -176,9 +176,15 @@ export const apiForms = [
   },
   {
     id: "power-tools",
-    name: "Enable Power Tools For Teacher",
+    name: "Enable Power Tools For Users",
     endPoint: "user/power-teacher",
     method: "post",
+    note: {
+      text: "**Power tools can be enabled for DA, SA and Teachers",
+      parentField: "usernames",
+      position: "bottom",
+      align: "right"
+    },
     fields: [
       {
         name: "usernames",

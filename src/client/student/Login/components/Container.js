@@ -57,7 +57,8 @@ class LoginContainer extends React.Component {
     this.setState({ confirmDirty });
   };
 
-  onForgotPasswordClick = () => {
+  onForgotPasswordClick = e => {
+    e.preventDefault();
     this.setState(state => ({
       ...state,
       forgotPasswordVisible: true
@@ -104,15 +105,18 @@ class LoginContainer extends React.Component {
 
     return (
       <LoginContentWrapper imageSrc={isSignupUsingDaURL && generalSettings && generalSettings.pageBackground}>
-        <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
-          <RegistrationBody type="flex" justify={Partners.position}>
-            <Col xs={24} sm={18} md={14} lg={9} xl={9}>
-              <FormWrapper>
-                <FormHead>
-                  {isSignupUsingDaURL && generalSettings && generalSettings.logo ? (
-                    <DistrictLogo src={generalSettings.logo} />
-                  ) : null}
-                  {!isSignupUsingDaURL ? (
+        <Row type="flex" justify="space-around" align="middle">
+          {isSignupUsingDaURL && generalSettings && generalSettings.logo && (
+            <Col xs={{ span: 20 }} lg={{ span: 6, offset: 2 }}>
+              <DistrictLogo src={generalSettings.logo} />
+            </Col>
+          )}
+
+          <Col xs={{ span: 20 }} lg={{ span: 14 }}>
+            <RegistrationBody type="flex" justify={Partners.position}>
+              <Col xs={24} sm={22} md={20} lg={14} xl={12}>
+                <FormWrapper>
+                  <FormHead>
                     <h3 align="center">
                       {Partners.boxTitle === "Login" ? (
                         <b>{Partners.boxTitle}</b>
@@ -120,109 +124,106 @@ class LoginContainer extends React.Component {
                         <PartnerBoxTitle src={Partners.boxTitle} alt={Partners.name} />
                       )}
                     </h3>
-                  ) : null}
-                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
+
+                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
+                    !isSignupUsingDaURL ? (
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                          googleLogin();
+                        }}
+                      >
+                        <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
+                      </ThirdPartyLoginBtn>
+                    ) : null}
+                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") ||
+                    !isSignupUsingDaURL ? (
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                          msoLogin();
+                        }}
+                      >
+                        <img src={icon365} alt="" />
+                        {t("common.office365signinbtn")}
+                      </ThirdPartyLoginBtn>
+                    ) : null}
+                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
+                    !isSignupUsingDaURL ? (
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                          cleverLogin("teacher");
+                        }}
+                      >
+                        <img src={cleverIcon} alt="" />
+                        {t("common.cleversigninbtn")}
+                      </ThirdPartyLoginBtn>
+                    ) : null}
+                  </FormHead>
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
                   !isSignupUsingDaURL ? (
-                    <ThirdPartyLoginBtn
-                      span={20}
-                      offset={2}
-                      onClick={() => {
-                        googleLogin();
-                      }}
-                    >
-                      <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
-                    </ThirdPartyLoginBtn>
+                    <FormBody>
+                      <Col span={20} offset={2}>
+                        <h5 align="center">{t("common.formboxheading")}</h5>
+                        <Form onSubmit={this.handleSubmit}>
+                          <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
+                            {getFieldDecorator("email", {
+                              validateFirst: true,
+                              initialValue: "",
+                              rules: [
+                                {
+                                  transform: value => trim(value)
+                                },
+                                {
+                                  required: true,
+                                  message: t("common.validation.emptyemailid")
+                                },
+                                {
+                                  type: "string",
+                                  message: t("common.validation.validemail")
+                                },
+                                {
+                                  validator: (rule, value, callback) =>
+                                    isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
+                                }
+                              ]
+                            })(<Input data-cy="email" prefix={<IconMail color={themeColor} />} />)}
+                          </FormItem>
+                          <FormItem {...formItemLayout} label={t("common.loginpasswordinputlabel")}>
+                            {getFieldDecorator("password", {
+                              rules: [
+                                {
+                                  required: true,
+                                  message: t("common.validation.emptypassword")
+                                }
+                              ]
+                            })(<Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" />)}
+                          </FormItem>
+                          <FormItem>
+                            {getFieldDecorator("remember", {
+                              valuePropName: "checked",
+                              initialValue: true
+                            })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
+                            <ForgetPassword style={{ marginTop: 1 }} onClick={this.onForgotPasswordClick}>
+                              <span>{t("common.forgotpasswordtext")}</span>
+                            </ForgetPassword>
+                            <LoginButton data-cy="login" type="primary" htmlType="submit">
+                              {t("common.signinbtn")}
+                            </LoginButton>
+                          </FormItem>
+                        </Form>
+                      </Col>
+                    </FormBody>
                   ) : null}
-                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") ||
-                  !isSignupUsingDaURL ? (
-                    <ThirdPartyLoginBtn
-                      span={20}
-                      offset={2}
-                      onClick={() => {
-                        msoLogin();
-                      }}
-                    >
-                      <img src={icon365} alt="" />
-                      {t("common.office365signinbtn")}
-                    </ThirdPartyLoginBtn>
-                  ) : null}
-                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
-                  !isSignupUsingDaURL ? (
-                    <ThirdPartyLoginBtn
-                      span={20}
-                      offset={2}
-                      onClick={() => {
-                        cleverLogin("teacher");
-                      }}
-                    >
-                      <img src={cleverIcon} alt="" />
-                      {t("common.cleversigninbtn")}
-                    </ThirdPartyLoginBtn>
-                  ) : null}
-                </FormHead>
-                {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                !isSignupUsingDaURL ? (
-                  <FormBody>
-                    <Col span={20} offset={2}>
-                      <h5 align="center">{t("common.formboxheading")}</h5>
-                      <Form onSubmit={this.handleSubmit}>
-                        <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
-                          {getFieldDecorator("email", {
-                            validateFirst: true,
-                            initialValue: "",
-                            rules: [
-                              {
-                                transform: value => trim(value)
-                              },
-                              {
-                                required: true,
-                                message: t("common.validation.emptyemailid")
-                              },
-                              {
-                                type: "string",
-                                message: t("common.validation.validemail")
-                              },
-                              {
-                                validator: (rule, value, callback) =>
-                                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
-                              }
-                            ]
-                          })(<Input data-cy="email" prefix={<IconMail color={themeColor} />} />)}
-                        </FormItem>
-                        <FormItem {...formItemLayout} label={t("common.loginpasswordinputlabel")}>
-                          {getFieldDecorator("password", {
-                            rules: [
-                              {
-                                required: true,
-                                message: t("common.validation.emptypassword")
-                              }
-                            ]
-                          })(<Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" />)}
-                        </FormItem>
-                        <FormItem>
-                          {getFieldDecorator("remember", {
-                            valuePropName: "checked",
-                            initialValue: true
-                          })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
-                          <ForgetPassword
-                            href="javascript:void(0);"
-                            style={{ marginTop: 1 }}
-                            onClick={this.onForgotPasswordClick}
-                          >
-                            <span>{t("common.forgotpasswordtext")}</span>
-                          </ForgetPassword>
-                          <LoginButton data-cy="login" type="primary" htmlType="submit">
-                            {t("common.signinbtn")}
-                          </LoginButton>
-                        </FormItem>
-                      </Form>
-                    </Col>
-                  </FormBody>
-                ) : null}
-              </FormWrapper>
-            </Col>
-          </RegistrationBody>
-        </Col>
+                </FormWrapper>
+              </Col>
+            </RegistrationBody>
+          </Col>
+        </Row>
         <Copyright>
           <Col span={24}>{t("common.copyright")}</Col>
         </Copyright>
@@ -260,6 +261,10 @@ const LoginContentWrapper = styled(Row)`
   background-image: ${({ imageSrc }) => (imageSrc ? `url("${imageSrc}")` : "unset")};
   background-repeat: no-repeat;
   background-size: cover;
+  height: calc(100vh - 74.5px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const RegistrationBody = styled(Row)`
@@ -271,7 +276,6 @@ const Copyright = styled(Row)`
   color: ${grey};
   text-align: center;
   margin: 25px 0px;
-  position: absolute;
   left: 0;
   right: 0;
   bottom: 0;

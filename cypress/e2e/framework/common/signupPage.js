@@ -4,9 +4,9 @@ import CypressHelper from "../util/cypressHelpers";
 class SignupPage {
   // *** ELEMENTS START ***
 
-  getSchoolSearch = () => cy.get('[placeholder="Search school by Zip, name or City"]');
+  getSchoolSearch = () => cy.get('[data-cy="Search by Zip, Name or City"]');
 
-  getHomeSchool = () => cy.contains("I want to homeschool");
+  getHomeSchool = () => cy.contains(" I WANT TO HOMESCHOOL »");
 
   // *** ELEMENTS END ***
 
@@ -122,7 +122,7 @@ class SignupPage {
     cy.wait("@user").then(xhr => expect(xhr.status).to.eq(200));
   };
 
-  clickOnRequestNewSchoolLink = () => cy.contains("Request a new School").click();
+  clickOnRequestNewSchoolLink = () => cy.contains("REQUEST A NEW SCHOOL").click();
 
   setSchoolName = school =>
     cy

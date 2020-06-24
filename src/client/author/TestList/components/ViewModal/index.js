@@ -136,7 +136,7 @@ class ViewModal extends React.Component {
       description = "",
       tags = [],
       grades = [],
-      subjects = [],
+      subjects: _subjects,
       thumbnail = "",
       analytics = [],
       itemGroups = [],
@@ -179,7 +179,8 @@ class ViewModal extends React.Component {
       O: "Other"
     };
 
-    const selectedGrades = grades.map(grade => gradesMap[grade]);
+    const selectedGrades = grades.map(grade => gradesMap[grade]).filter(g => !!g);
+    const subjects = _subjects ? _subjects.filter(f => !!f) : [];
 
     const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
 

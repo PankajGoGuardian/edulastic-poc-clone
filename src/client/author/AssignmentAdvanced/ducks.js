@@ -93,10 +93,11 @@ function* bulkUnassignAssignmentSaga({ payload }) {
   try {
     yield put(setAssignmentBulkActionStatus(true));
     yield call(classBoardApi.bulkUnassignAssignment, payload);
-    notification({ type: "info", msg: "Starting Bulk Action Request" });
+    if (!payload.fromHomePage) notification({ type: "info", msg: "Starting Bulk Action Request" });
   } catch (err) {
     console.error(err);
-    const errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    let errorMessage = err.data?.message || "Failed to start Bulk Action request";
+    if (payload.fromHomePage) errorMessage = "Failed to Unassign the assignments.";
     notification({ msg: errorMessage });
     yield put(setAssignmentBulkActionStatus(false));
   }

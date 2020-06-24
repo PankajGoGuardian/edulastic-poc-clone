@@ -47,7 +47,8 @@ const DeleteAssignmentModal = ({
         bulkUnassignAssignmentRequest({
           data: {},
           testId,
-          testType
+          testType,
+          fromHomePage: true
         });
         return toggleDeleteAssignmentModal(false);
       }

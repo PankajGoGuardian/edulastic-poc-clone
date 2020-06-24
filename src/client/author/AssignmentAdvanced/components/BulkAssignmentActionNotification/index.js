@@ -105,7 +105,7 @@ const NotificationListener = ({
           statusCode == 200;
 
         if (isAssignmentsHomePage) {
-          history.push("author/assignments");
+          setTimeout(() => history.push("author/assignments"), 3000);
         }
         setBulkActionStatus(false);
       }

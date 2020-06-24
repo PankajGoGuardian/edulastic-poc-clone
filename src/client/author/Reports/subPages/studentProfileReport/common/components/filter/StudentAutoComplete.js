@@ -1,118 +1,112 @@
-import { AutoComplete, Icon, Input } from "antd";
-import { debounce, map } from "lodash";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { isEmpty } from "lodash";
+
+// components
+import { AutoComplete, Input, Icon } from "antd";
+
+// ducks
 import { getOrgDataSelector } from "../../../../../../src/selectors/user";
 import { getSPRStudentDataRequestAction, getStudentsListSelector, getStudentsLoading } from "../../filterDataDucks";
 
-const Option = AutoComplete.Option;
-const OptGroup = AutoComplete.OptGroup;
+const getFullName = s => `${s.firstName || ""} ${s.lastName || ""}`;
 
-const delay = 250;
+const DEFAULT_SEARCH_TERMS = { text: "", selectedText: "", selectedKey: "" };
 
 const StudentAutoComplete = ({
   userOrgData,
   studentList,
-  selectCB,
   loading,
+  loadStudentList,
   selectedStudent,
   selectedClasses,
-  getSPRStudentData
+  selectCB
 }) => {
-  const [selectedValue, setSelectedValue] = useState("");
-  const [text, setText] = useState("");
-  const [prevStudentList, setPrevStudentList] = useState([]);
+  const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS);
 
-  const studentOptions = useMemo(
-    () =>
-      map(studentList, student => ({
-        key: student._id,
-        title: `${student.firstName || ""} ${student.lastName || ""}`
-      })),
-    [studentList]
-  );
-
-  const searchUser = (searchTerm, groupIds, orgData) => {
-    const { districtId, institutionIds } = orgData;
+  // build search query
+  const query = useMemo(() => {
+    const { districtId, institutionIds } = userOrgData;
     const q = {
-      page: 0,
       limit: 20,
-      search: {
-        role: ["student"],
-        groupIds
-      },
-      type: "DISTRICT",
+      page: 0,
       districtId,
-      institutionIds
+      search: {
+        role: ["student"]
+      },
+      type: "DISTRICT"
     };
-    if (searchTerm) {
-      q.search.searchString = searchTerm;
+    if (searchTerms.text) {
+      q.search.searchString = searchTerms.text;
     }
-    getSPRStudentData(q);
+    if (!isEmpty(selectedClasses)) {
+      q.search.groupIds = selectedClasses;
+    }
+    if (!isEmpty(institutionIds)) {
+      q.institutionIds = institutionIds;
+    }
+    return q;
+  }, [searchTerms.text, selectedClasses]);
+
+  // handle autocomplete actions
+  const onSearch = value => {
+    setSearchTerms({ ...searchTerms, text: value });
+  };
+  const onSelect = key => {
+    const value = getFullName(studentList.find(s => s._id === key));
+    console.log(key);
+    setSearchTerms({ text: value, selectedText: value, selectedKey: key });
+    selectCB({ key, title: value });
+  };
+  const onBlur = () => {
+    setSearchTerms({ ...searchTerms, text: searchTerms.selectedText });
   };
 
-  const debouncedSearchUser = useCallback(debounce(searchUser, delay), []);
-
+  // effects
   useEffect(() => {
-    searchUser("", selectedClasses, userOrgData);
-    setPrevStudentList(studentList);
+    if (!isEmpty(selectedStudent)) {
+      const { key, title } = selectedStudent;
+      setSearchTerms({ text: title, selectedText: title, selectedKey: key });
+    }
+  }, []);
+  useEffect(() => {
+    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+      loadStudentList(query);
+    }
+  }, [searchTerms]);
+  useEffect(() => {
+    if (!searchTerms.selectedText && studentList[0]) {
+      onSelect(studentList[0]._id);
+    }
+  }, [studentList]);
+  useEffect(() => {
+    if (searchTerms.selectedText) {
+      setSearchTerms({ ...DEFAULT_SEARCH_TERMS });
+    }
+    loadStudentList(query);
   }, [selectedClasses]);
 
-  if (studentList !== prevStudentList) {
-    setPrevStudentList(studentList);
-    const title = studentOptions[0]?.title || "";
-    const key = studentOptions[0]?.key || "";
-    setSelectedValue(title);
-    setText(title);
-    selectCB({ key , title });
-  }
-
-  useEffect(() => {
-    if (selectedStudent.title !== "") {
-      setSelectedValue(selectedStudent.title);
-      setText(selectedStudent.title);
-    }
-  }, [selectedStudent]);
-
-  const buildDropDownData = datum => {
-    const arr = [
-      <OptGroup key="group" label="Students [Type to find]">
-        {datum.map(item => (
-          <Option key={item.key} title={item.title}>
-            {item.title}
-          </Option>
-        ))}
-      </OptGroup>
-    ];
-    return arr;
-  };
-
-  const onSearchTermChange = value => {
-    debouncedSearchUser(value, selectedClasses, userOrgData);
-    setText(value);
-  };
-
-  const onBlur = () => {
-    setText(selectedValue);
-  };
-
-  const onSelect = (key, item) => {
-    setSelectedValue(item.props.title);
-    setText(item.props.title);
-    selectCB({ key, title: item.props.title });
-  };
-
-  let options = buildDropDownData(studentOptions);
-  options = options.length ? options : [selectedStudent];
+  // build dropdown data
+  const dropdownData = searchTerms.text
+    ? [
+        <AutoComplete.OptGroup key="studentList" label="Students [Type to search]">
+          {studentList.map(item => (
+            <AutoComplete.Option key={item._id} title={getFullName(item)}>
+              {getFullName(item)}
+            </AutoComplete.Option>
+          ))}
+        </AutoComplete.OptGroup>
+      ]
+    : [];
 
   return (
     <AutoCompleteContainer>
       <AutoComplete
         getPopupContainer={trigger => trigger.parentNode}
-        value={text}
-        onSearch={onSearchTermChange}
-        dataSource={options}
+        value={searchTerms.text}
+        onSearch={onSearch}
+        dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
       >
@@ -122,18 +116,16 @@ const StudentAutoComplete = ({
   );
 };
 
-const enchance = connect(
+export default connect(
   state => ({
-    studentList: getStudentsListSelector(state),
     userOrgData: getOrgDataSelector(state),
+    studentList: getStudentsListSelector(state),
     loading: getStudentsLoading(state)
   }),
   {
-    getSPRStudentData: getSPRStudentDataRequestAction
+    loadStudentList: getSPRStudentDataRequestAction
   }
-);
-
-export default enchance(StudentAutoComplete);
+)(StudentAutoComplete);
 
 const AutoCompleteContainer = styled.div`
   .ant-select-auto-complete {

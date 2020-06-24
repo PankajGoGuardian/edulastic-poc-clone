@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { get, isEmpty } from "lodash";
@@ -17,24 +17,27 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS);
 
   // build search query
-  const { email, institutionIds, role: userRole, orgData } = userDetails;
-  const { districtId } = orgData;
-  const query = {
-    limit: 25,
-    page: 1,
-    districtId,
-    search: {
-      name: searchTerms.text,
-      active: [1],
-      type: ["class"]
+  const query = useMemo(() => {
+    const { email, institutionIds, role: userRole, orgData } = userDetails;
+    const { districtId } = orgData;
+    const q = {
+      limit: 25,
+      page: 1,
+      districtId,
+      search: {
+        name: searchTerms.text,
+        active: [1],
+        type: ["class"]
+      }
+    };
+    if (userRole === roleuser.TEACHER) {
+      q.search.teachers = [{ type: "eq", value: email }];
     }
-  };
-  if (userRole === roleuser.TEACHER) {
-    query.search.teachers = [{ type: "eq", value: email }];
-  }
-  if (userRole === roleuser.SCHOOL_ADMIN) {
-    query.search.institutionIds = institutionIds;
-  }
+    if (userRole === roleuser.SCHOOL_ADMIN) {
+      q.search.institutionIds = institutionIds;
+    }
+    return q;
+  }, [searchTerms.text]);
 
   // handle autocomplete actions
   const onSearch = value => {

@@ -127,13 +127,10 @@ const StudentProfileReportsFilters = ({
   const onStudentSelect = item => {
     if (item && item.key) {
       setStudent(item);
-
-      const q = {
+      getSPRFilterDataRequest({
         termId: filters.termId,
         studentId: item.key
-      };
-      getSPRFilterDataRequest(q);
-
+      });
       _onGoClick({ filters: { ...filters }, selectedStudent: item });
     }
   };
@@ -172,18 +169,11 @@ const StudentProfileReportsFilters = ({
       </GoButtonWrapper>
       <SearchField>
         <FilterLabel>Student</FilterLabel>
-        <StudentAutoComplete
-          selectCB={onStudentSelect}
-          selectedStudent={student}
-          selectedClasses={selectedClasses}
-        />
+        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} selectedClasses={selectedClasses} />
       </SearchField>
       <SearchField>
         <FilterLabel>Class</FilterLabel>
-        <ClassAutoComplete
-          selectedClass={selectedClass}
-          selectCB={setSelectedClass}
-        />
+        <ClassAutoComplete selectedClass={selectedClass} selectCB={setSelectedClass} />
       </SearchField>
       <SearchField>
         <FilterLabel>Subject</FilterLabel>

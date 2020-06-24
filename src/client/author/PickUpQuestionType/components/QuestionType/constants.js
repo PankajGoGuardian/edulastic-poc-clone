@@ -87,8 +87,8 @@ import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
 
 export const getCards = (onSelectQuestionType, isPassage = false) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math;
-  // use it for ids of MCQ
-  const uuids = [uuid(), uuid(), uuid(), uuid()];
+  // use it for ids of MCQ, Orderlist, and Choice Matrix
+  const uuids = [uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid()];
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
@@ -1232,11 +1232,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
         options: ["True", "False"],
+        responseIds: [[uuids[0], uuids[1]], [uuids[2], uuids[3]], [uuids[4], uuids[5]], [uuids[6], uuids[7]]],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [[], [], [], []]
+            value: {}
           },
           altResponses: []
         },
@@ -1253,6 +1254,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
+        responseIds: [[uuids[0], uuids[1]], [uuids[2], uuids[3]], [uuids[4], uuids[5]], [uuids[6], uuids[7]]],
         stimulus: "",
         type: questionType.CHOICE_MATRIX,
         uiStyle: {
@@ -1263,7 +1265,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [[], [], [], []]
+            value: {}
           },
           altResponses: []
         },
@@ -1279,6 +1281,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
+        responseIds: [[uuids[0], uuids[1]], [uuids[2], uuids[3]], [uuids[4], uuids[5]], [uuids[6], uuids[7]]],
         stimulus: "",
         type: questionType.CHOICE_MATRIX,
         uiStyle: {
@@ -1290,7 +1293,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [[], [], [], []]
+            value: {}
           },
           altResponses: []
         },

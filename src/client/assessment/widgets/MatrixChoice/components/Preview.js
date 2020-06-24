@@ -27,23 +27,19 @@ const Preview = ({
       changePreviewTab(CLEAR);
       changeView(CLEAR);
     }
-    let value = newAnswer.value[rowIndex];
-    let findIndex;
 
-    if (value) {
-      findIndex = value.findIndex(i => i === columnIndex);
+    const { responseIds } = item;
+    const rowIds = responseIds[rowIndex];
+    const responseId = rowIds[columnIndex];
+    newAnswer.value[responseId] = checked;
+
+    if (!item.multipleResponses) {
+      rowIds.forEach(id => {
+        if (id !== responseId) {
+          delete newAnswer.value[id];
+        }
+      });
     }
-
-    if (!checked && value) {
-      value.splice(findIndex, 1);
-    } else if (!value || !item.multipleResponses) {
-      value = [];
-      value.push(columnIndex);
-    } else {
-      value.push(columnIndex);
-    }
-
-    newAnswer.value[rowIndex] = value;
 
     saveAnswer(newAnswer);
   };
@@ -56,6 +52,7 @@ const Preview = ({
           options={item.options}
           uiStyle={item.uiStyle}
           response={userAnswer}
+          responseIds={item.responseIds}
           isMultiple={item.multipleResponses}
           onCheck={!disableResponse ? handleCheck : () => {}}
           evaluation={evaluation}

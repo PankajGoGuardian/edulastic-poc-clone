@@ -44,36 +44,32 @@ class Answers extends Component {
     const handleCheck = (field, altIndex) => ({ rowIndex, columnIndex, checked }) => {
       setQuestionData(
         produce(item, draft => {
-          let findIndex;
           let value;
+          const rowIds = draft.responseIds[rowIndex];
 
           if (field === "validResponse") {
-            value = draft.validation.validResponse.value[rowIndex];
+            value = draft.validation.validResponse.value;
           }
 
           if (field === "altResponses") {
-            value = draft.validation.altResponses[altIndex].value[rowIndex];
+            value = draft.validation.altResponses[altIndex].value;
           }
-
-          if (value) {
-            findIndex = value.findIndex(i => i === columnIndex);
-          }
-
-          if (!checked) {
-            value.splice(findIndex, 1);
-          } else if (!value || !draft.multipleResponses) {
-            value = [];
-            value.push(columnIndex);
-          } else {
-            value.push(columnIndex);
+          const selectedId = rowIds[columnIndex];
+          value[selectedId] = checked;
+          if (!draft.multipleResponses) {
+            rowIds.forEach(id => {
+              if (id !== selectedId) {
+                delete value[id];
+              }
+            });
           }
 
           if (field === "validResponse") {
-            draft.validation.validResponse.value[rowIndex] = value;
+            draft.validation.validResponse.value = value;
           }
 
           if (field === "altResponses") {
-            draft.validation.altResponses[altIndex].value[rowIndex] = value;
+            draft.validation.altResponses[altIndex].value = value;
           }
         })
       );
@@ -95,15 +91,6 @@ class Answers extends Component {
       );
     };
 
-    const reduceResponse = value =>
-      value.map(val => {
-        if (!val) return val;
-        if (val.length) {
-          val = [val[val.length - 1]];
-        }
-        return val;
-      });
-
     const handleChangeMultiple = e => {
       const { checked } = e.target;
       setQuestionData(
@@ -111,11 +98,11 @@ class Answers extends Component {
           draft.multipleResponses = checked;
 
           if (!checked) {
-            draft.validation.validResponse.value = reduceResponse(draft.validation.validResponse.value);
+            draft.validation.validResponse.value = {};
 
             if (draft.validation.altResponses && draft.validation.altResponses.length) {
               draft.validation.altResponses.map(res => {
-                res.value = reduceResponse(res.value);
+                res.value = {};
                 return res;
               });
             }
@@ -168,6 +155,7 @@ class Answers extends Component {
                   options={item.options}
                   uiStyle={item.uiStyle}
                   response={item.validation.validResponse}
+                  responseIds={item.responseIds}
                   isMultiple={item.multipleResponses}
                   onCheck={handleCheck("validResponse")}
                   points={item.validation.validResponse.score}
@@ -188,6 +176,7 @@ class Answers extends Component {
                       options={item.options}
                       uiStyle={item.uiStyle}
                       response={item.validation.altResponses[i]}
+                      responseIds={item.responseIds}
                       isMultiple={item.multipleResponses}
                       onCheck={handleCheck("altResponses", i)}
                       points={item.validation.altResponses[i].score}

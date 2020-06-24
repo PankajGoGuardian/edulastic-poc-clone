@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
 import { arrayMove } from "react-sortable-hoc";
+import uuid from "uuid/v4";
+import { flattenDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -27,6 +29,7 @@ class MultipleChoiceOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.stems = arrayMove(item.stems, oldIndex, newIndex);
+          draft.responseIds = arrayMove(draft.responseIds, oldIndex, newIndex);
         })
       );
     };
@@ -35,11 +38,16 @@ class MultipleChoiceOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.stems.splice(index, 1);
-          draft.validation.validResponse.value.splice(index, 1);
+          const removed = draft.responseIds.splice(index, 1);
 
-          draft.validation.altResponses = draft.validation.altResponses.map(ans => {
-            ans.value.splice(index, 1);
-            return ans;
+          flattenDeep(removed).forEach(id => {
+            delete draft.validation.validResponse.value[id];
+            if (draft.validation.altResponses && draft.validation.altResponses.length) {
+              draft.validation.altResponses.map(res => {
+                delete res.value[id];
+                return res;
+              });
+            }
           });
         })
       );
@@ -58,12 +66,7 @@ class MultipleChoiceOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.stems.push("");
-          draft.validation.validResponse.value.push(null);
-
-          draft.validation.altResponses = draft.validation.altResponses.map(ans => {
-            ans.value.push(null);
-            return ans;
-          });
+          draft.responseIds.push(draft.options.map(() => uuid()));
         })
       );
     };

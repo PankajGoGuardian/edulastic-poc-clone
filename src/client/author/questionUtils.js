@@ -326,11 +326,13 @@ const answerValidator = {
      * but, some rows can be empty
      * @see  https://snapwiz.atlassian.net/browse/EV-13694
      */
-    const hasEmpty = answers.some(answer => {
-      const { value = [] } = answer;
-      return isEmpty(value) || value.every(row => isEmpty(row));
-    });
-    return hasEmpty;
+    const hasEmpty = answers.some(answer => isEmpty(answer.value));
+    // const hasEmpty = answers.some(answer => {
+    //   const { value = [] } = answer;
+    //   return isEmpty(value) || value.every(row => isEmpty(row));
+    // });
+    // return hasEmpty;
+    return isEmpty(answers) || hasEmpty;
   },
   [questionType.MULTIPLE_CHOICE](answers) {
     // able to save giving empty value as options from UI (fixed)

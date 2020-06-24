@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import produce from "immer";
 import { arrayMove } from "react-sortable-hoc";
 import { withRouter } from "react-router-dom";
+import uuid from "uuid/v4";
+import { flattenDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -34,31 +36,25 @@ class Steams extends Component {
       );
     };
 
-    const reduceResponseValue = (val, index) => {
-      if (!val) return val;
-
-      val = val.filter(i => i !== index);
-      if (!val.length) {
-        return null;
-      }
-
-      return val;
-    };
-
     const handleRemoveOption = index => {
       setQuestionData(
         produce(item, draft => {
           draft.options.splice(index, 1);
-          draft.validation.validResponse.value = draft.validation.validResponse.value.map(val =>
-            reduceResponseValue(val, index)
-          );
+          const removed = [];
+          draft.responseIds = draft.responseIds.map(ite => {
+            removed.push(ite.splice(index, 1));
+            return ite;
+          });
 
-          if (draft.validation.altResponses && draft.validation.altResponses.length) {
-            draft.validation.altResponses.map(res => {
-              res.value = res.value.map(val => reduceResponseValue(val, index));
-              return res;
-            });
-          }
+          flattenDeep(removed).forEach(id => {
+            delete draft.validation.validResponse.value[id];
+            if (draft.validation.altResponses && draft.validation.altResponses.length) {
+              draft.validation.altResponses.map(res => {
+                delete res.value[id];
+                return res;
+              });
+            }
+          });
           updateVariables(draft);
         })
       );
@@ -68,6 +64,7 @@ class Steams extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.options.push("");
+          draft.responseIds = draft.responseIds.map(ite => [...ite, uuid()]);
         })
       );
     };
@@ -76,6 +73,7 @@ class Steams extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.options = arrayMove(item.options, oldIndex, newIndex);
+          draft.responseIds = draft.responseIds.map(ite => arrayMove(ite, oldIndex, newIndex));
         })
       );
     };

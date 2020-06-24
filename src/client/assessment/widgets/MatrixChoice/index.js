@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 import { withRouter } from "react-router-dom";
+import { isEmpty } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -77,16 +78,12 @@ const MatrixChoice = ({
 
   if (!userAnswer && item && item.stems) {
     answer = {
-      value: item.stems.map(() => null)
-    };
-  } else if (Array.isArray(userAnswer)) {
-    answer = {
-      value: userAnswer
+      value: {}
     };
   }
 
   const _checkAnswer = () => {
-    if (!userAnswer || (Array.isArray(userAnswer) && !userAnswer.length)) {
+    if (isEmpty(userAnswer)) {
       return;
     }
 
@@ -98,17 +95,6 @@ const MatrixChoice = ({
 
   const validResponse = item.validation?.validResponse;
   const altResponses = item.validation?.altResponses;
-
-  const transformAnswer = (answers = []) =>
-    answers.map(row => {
-      const _row = [];
-      if (row) {
-        row.forEach(col => {
-          _row[col] = true;
-        });
-      }
-      return _row;
-    });
 
   return (
     <Fragment>
@@ -209,7 +195,7 @@ const MatrixChoice = ({
                   previewTab={previewTab}
                   disableResponse
                   changeView={() => {}}
-                  evaluation={transformAnswer(validResponse.value)}
+                  evaluation={validResponse.value}
                   {...restProps}
                 />
               </CorrectAnswersContainer>
@@ -226,7 +212,7 @@ const MatrixChoice = ({
                       previewTab={previewTab}
                       disableResponse
                       changeView={() => {}}
-                      evaluation={transformAnswer(altAnswer.value)}
+                      evaluation={altAnswer.value}
                       {...restProps}
                     />
                   </CorrectAnswersContainer>

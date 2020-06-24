@@ -12,15 +12,19 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { IconCheck } from "./styled/IconCheck";
 import { IconClose } from "./styled/IconClose";
 
-const MathSpan = WithMathFormula(styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`);
-
 const Matrix = props => {
-  const { stems, options, response, isMultiple, onCheck, uiStyle, evaluation, smallSize, isPrintPreview } = props;
+  const {
+    stems,
+    options,
+    response,
+    responseIds,
+    isMultiple,
+    onCheck,
+    uiStyle,
+    evaluation,
+    smallSize,
+    isPrintPreview
+  } = props;
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
@@ -31,16 +35,14 @@ const Matrix = props => {
     let checked = false;
     let correct = false;
     const rowIndex = data.index;
+    const responseId = responseIds[rowIndex][columnIndex];
 
-    if (evaluation && evaluation.length > 0) {
-      correct = evaluation[rowIndex][columnIndex] ? true : "incorrect";
-    }
-    if (!Array.isArray(response.value[rowIndex])) {
-      correct = false;
+    if (evaluation) {
+      correct = evaluation[responseId] ? true : "incorrect";
     }
 
-    if (data && data.value && data.value.length) {
-      checked = data.value.includes(columnIndex);
+    if (response && response.value) {
+      checked = response.value[responseId];
     }
 
     const handleChange = e => {
@@ -123,14 +125,12 @@ const Matrix = props => {
 
     options.forEach((o, index) => {
       result[index] = {
-        value: response.value[i],
         index: i
       };
     });
 
     if (evaluation && evaluation.length > 0) {
       result[options.length] = {
-        value: evaluation[i],
         index: i
       };
     }
@@ -185,3 +185,10 @@ Matrix.defaultProps = {
 };
 
 export default Matrix;
+
+const MathSpan = WithMathFormula(styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`);

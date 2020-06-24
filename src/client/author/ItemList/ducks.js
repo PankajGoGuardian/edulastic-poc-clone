@@ -122,6 +122,7 @@ export function* createTestFromCart({ payload: { testName } }) {
   const userRole = yield select(getUserRole);
   if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
     test.testType = testConstant.type.COMMON;
+    test.freezeSettings = true;
   }
   const updatedTest = {
     ...test,

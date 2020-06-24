@@ -41,6 +41,10 @@ const Preview = ({
       });
     }
 
+    if (!newAnswer.value[responseId]) {
+      delete newAnswer.value[responseId];
+    }
+
     saveAnswer(newAnswer);
   };
 

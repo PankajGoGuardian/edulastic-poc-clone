@@ -64,6 +64,10 @@ class Answers extends Component {
             });
           }
 
+          if (!value[selectedId]) {
+            delete value[selectedId];
+          }
+
           if (field === "validResponse") {
             draft.validation.validResponse.value = value;
           }

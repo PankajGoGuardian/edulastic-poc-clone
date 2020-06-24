@@ -1,7 +1,7 @@
 import { secondaryTextColor, themeColor, themeColorLighter } from "@edulastic/colors";
-import { SpinLoader } from "@edulastic/common";
+import { SpinLoader, FlexContainer } from "@edulastic/common";
 import { IconCollapse2 } from "@edulastic/icons";
-import { Avatar, Button, Col, Row } from "antd";
+import { Avatar, Button } from "antd";
 import { filter, get } from "lodash";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -34,13 +34,9 @@ import {
   getStudentStandardsAction
 } from "./ducks";
 
-const usefilterRecords = (records, domain) => {
+const usefilterRecords = (records, domain) =>
   // Note: record.domainId could be integer or string
-  return useMemo(() => filter(records, record => domain === "All" || String(record.domainId) === domain), [
-    records,
-    domain
-  ]);
-};
+  useMemo(() => filter(records, record => domain === "All" || String(record.domainId) === domain), [records, domain]);
 
 const getTooltip = payload => {
   if (payload && payload.length) {
@@ -60,10 +56,10 @@ const StudentMasteryProfile = ({
   SPRFilterData,
   isCsvDownloading,
   studentMasteryProfile,
-  getStudentMasteryProfileRequestAction,
+  getStudentMasteryProfileRequest,
   selectedStandardProficiency,
   filters,
-  getStudentStandardsAction,
+  getStudentStandards,
   studentStandardData,
   selectedStudent,
   loadingStudentStandard,
@@ -94,11 +90,11 @@ const StudentMasteryProfile = ({
   const [clickedStandard, setClickedStandard] = useState(undefined);
 
   useEffect(() => {
-    const { selectedStudent, requestFilters } = settings;
-    if (selectedStudent.key && requestFilters.termId) {
-      getStudentMasteryProfileRequestAction({
+    const { selectedStudent: _selectedStudent, requestFilters } = settings;
+    if (_selectedStudent.key && requestFilters.termId) {
+      getStudentMasteryProfileRequest({
         ...requestFilters,
-        studentId: selectedStudent.key
+        studentId: _selectedStudent.key
       });
     }
   }, [settings]);
@@ -120,10 +116,13 @@ const StudentMasteryProfile = ({
   const anonymousString = t("common.anonymous");
 
   const onCsvConvert = data =>
-    downloadCSV(`Standard Performance Details-${studentName || anonymousString}-${studentInformation.subject}.csv`, data);
+    downloadCSV(
+      `Standard Performance Details-${studentName || anonymousString}-${studentInformation.subject}.csv`,
+      data
+    );
 
   const handleOnClickStandard = (params, standard) => {
-    getStudentStandardsAction(params);
+    getStudentStandards(params);
     setClickedStandard(standard);
     setStudentAssignmentModal(true);
   };
@@ -135,86 +134,74 @@ const StudentMasteryProfile = ({
 
   return (
     <>
-      <StyledRow type="flex" gutter={16}>
-        <StyledCol xs={24} sm={24} md={12} lg={14} xl={16}>
-          <ReStyledCard>
-            <Row type="flex">
-              <Col xs={24} sm={24} md={12} lg={8} xl={6}>
-                <StyledRow type="flex" justify="center" marginTop="20px">
-                  {studentInformation.thumbnail ? (
-                    <Avatar size={150} src={studentInformation.thumbnail} />
-                  ) : (
-                    <Avatar size={150} icon="user" />
-                  )}
-                </StyledRow>
-              </Col>
-              <Col xs={24} sm={24} md={12} lg={16} xl={18}>
-                <StyledP marginTop="30px">
-                  <StyledName>{studentName || anonymousString}</StyledName>
-                </StyledP>
-                <StyledP marginTop="12px">
-                  <StyledText weight="Bold"> Grade: </StyledText>
-                  <StyledText>{getGrades(studentInformation.grades)}</StyledText>
-                </StyledP>
-                <StyledP>
-                  <StyledText weight="Bold"> Subject: </StyledText>
-                  <StyledText>{studentClassInformation.standardSet}</StyledText>
-                </StyledP>
-              </Col>
-            </Row>
-          </ReStyledCard>
-        </StyledCol>
-        <StyledCol xs={24} sm={24} md={12} lg={10} xl={8}>
-          <ReStyledCard>
-            <StudentPerformancePie
-              selectedMastery={selectedMastery}
-              data={filteredStandards}
-              scaleInfo={scaleInfo}
-              onSectionClick={onSectionClick}
-              getTooltip={getTooltip}
-            />
-          </ReStyledCard>
-        </StyledCol>
-      </StyledRow>
+      <FlexContainer alignItems="stretch" marginBottom="20px">
+        <ReStyledCard flex={1}>
+          <FlexContainer justifyContent="flex-start">
+            <FlexContainer justifyContent="center" mt="20px" width="180px">
+              {studentInformation.thumbnail ? (
+                <StyledAatar size={150} src={studentInformation.thumbnail} />
+              ) : (
+                <StyledAatar size={150} icon="user" />
+              )}
+            </FlexContainer>
+            <FlexContainer flexDirection="column" alignItems="flex-start">
+              <StyledP marginTop="30px">
+                <StyledName>{studentName || anonymousString}</StyledName>
+              </StyledP>
+              <StyledP marginTop="12px">
+                <StyledText weight="Bold"> Grade: </StyledText>
+                <StyledText>{getGrades(studentInformation.grades)}</StyledText>
+              </StyledP>
+              <StyledP>
+                <StyledText weight="Bold"> Subject: </StyledText>
+                <StyledText>{studentClassInformation.standardSet}</StyledText>
+              </StyledP>
+            </FlexContainer>
+          </FlexContainer>
+        </ReStyledCard>
+        <ReStyledCard maxW="300px" ml="20px">
+          <StudentPerformancePie
+            selectedMastery={selectedMastery}
+            data={filteredStandards}
+            scaleInfo={scaleInfo}
+            onSectionClick={onSectionClick}
+            getTooltip={getTooltip}
+          />
+        </ReStyledCard>
+      </FlexContainer>
 
-      <StyledRow type="flex">
-        <StyledCol span={24}>
-          <ReStyledCard>
-            <Row type="flex" justify="space-between">
-              <DropdownContainer xs={12} sm={10} md={8} lg={6} xl={4}>
-                <ControlDropDown
-                  showPrefixOnSelected={false}
-                  by={selectedDomain}
-                  selectCB={onDomainSelect}
-                  data={domainOptions}
-                  prefix="Domain(s)"
-                />
-              </DropdownContainer>
-              <StyledCol xs={12} sm={10} md={8} lg={6} xl={4}>
-                <StyledButton onClick={() => setExpandRows(!expandRows)}>
-                  <IconCollapse2 color={themeColor} width={12} height={12} />
-                  <span className="button-label">{expandRows ? "COLLAPSE" : "EXPAND"} ROWS</span>
-                </StyledButton>
-              </StyledCol>
-            </Row>
-            <StudentPerformanceSummary
-              data={filteredDomains}
-              selectedMastery={selectedMastery}
-              expandedRowProps={{
-                onCsvConvert,
-                isCsvDownloading,
-                data: filteredStandards,
-                selectedMastery,
-                handleOnClickStandard,
-                filters,
-                termId: settings.requestFilters.termId
-              }}
-              expandAllRows={expandRows}
-              setExpandAllRows={flag => setExpandRows(flag)}
+      <ReStyledCard>
+        <FilterRow justifyContent="space-between">
+          <DropdownContainer>
+            <ControlDropDown
+              showPrefixOnSelected={false}
+              by={selectedDomain}
+              selectCB={onDomainSelect}
+              data={domainOptions}
+              prefix="Domain(s)"
             />
-          </ReStyledCard>
-        </StyledCol>
-      </StyledRow>
+          </DropdownContainer>
+          <StyledButton onClick={() => setExpandRows(!expandRows)}>
+            <IconCollapse2 color={themeColor} width={12} height={12} />
+            <span className="button-label">{expandRows ? "COLLAPSE" : "EXPAND"} ROWS</span>
+          </StyledButton>
+        </FilterRow>
+        <StudentPerformanceSummary
+          data={filteredDomains}
+          selectedMastery={selectedMastery}
+          expandedRowProps={{
+            onCsvConvert,
+            isCsvDownloading,
+            data: filteredStandards,
+            selectedMastery,
+            handleOnClickStandard,
+            filters,
+            termId: settings.requestFilters.termId
+          }}
+          expandAllRows={expandRows}
+          setExpandAllRows={flag => setExpandRows(flag)}
+        />
+      </ReStyledCard>
 
       {showStudentAssignmentModal && (
         <StudentAssignmentModal
@@ -243,8 +230,8 @@ const withConnect = connect(
     loadingStudentStandard: getStudentStandardLoader(state)
   }),
   {
-    getStudentMasteryProfileRequestAction,
-    getStudentStandardsAction
+    getStudentMasteryProfileRequest: getStudentMasteryProfileRequestAction,
+    getStudentStandards: getStudentStandardsAction
   }
 );
 
@@ -253,17 +240,26 @@ export default compose(
   withNamespaces("student")
 )(StudentMasteryProfile);
 
-const StyledRow = styled(Row)``;
+const StyledAatar = styled(Avatar)`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+`;
 
-const StyledCol = styled(Col)`
-  padding-bottom: 16px;
+const FilterRow = styled(FlexContainer)`
+  @media print {
+    display: none;
+  }
 `;
 
 const ReStyledCard = styled(StyledCard)`
-  height: 100%;
   margin: 0px;
   padding: 20px;
   border: 1px solid #dadae4;
+  max-width: ${({ maxW }) => maxW};
+  flex: ${({ flex }) => flex};
+  margin-left: ${({ ml }) => ml};
 `;
 
 const StyledP = styled.p`
@@ -288,7 +284,7 @@ const StyledName = styled.span`
   font: Bold 18px/24px Open Sans;
 `;
 
-const DropdownContainer = styled(StyledCol)`
+const DropdownContainer = styled.div`
   .control-dropdown {
     .ant-btn {
       width: 100%;
@@ -307,10 +303,10 @@ const StyledButton = styled(Button)`
   letter-spacing: 0.2px;
   color: ${themeColor};
   border-color: ${themeColor};
-  &: hover {
+  &:hover {
     color: ${themeColor};
   }
-  &: focus {
+  &:focus {
     color: ${themeColor};
   }
   .button-label {

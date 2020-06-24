@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import next from "immer";
 import { round, includes, map } from "lodash";
 import { PieChart, Pie, Cell, Tooltip, Label, ResponsiveContainer } from "recharts";
+import { themeColorLighter, title as pieTitle } from "@edulastic/colors";
 import { getStudentPerformancePieData, getOverallMasteryPercentage, getMaxScale } from "../../utils/transformers";
 import { StyledCustomChartTooltip as CustomChartTooltip } from "../../../../../common/styled";
-import { themeColorLighter, title as pieTitle } from "@edulastic/colors";
 import ScaleInfoLabels from "./ScaleInfoLabels";
 
 const fillColors = (data, selectedMastery) => {
@@ -14,16 +14,19 @@ const fillColors = (data, selectedMastery) => {
     return data;
   }
 
-  return map(data, item => {
-    return next(item, draftItem => {
+  return map(data, item =>
+    next(item, draftItem => {
       draftItem.color = includes(selectedMastery, item.masteryLabel) ? item.color : "#cccccc";
-    });
-  });
+    })
+  );
 };
 
 const renderCustomizedInnerLabel = props => {
-  const { masteryPercentage } = props;
-  const { cx, cy } = props.viewBox;
+  const {
+    masteryPercentage,
+    viewBox: { cx, cy }
+  } = props;
+
   return (
     <>
       <StyledText
@@ -32,7 +35,7 @@ const renderCustomizedInnerLabel = props => {
         fill={themeColorLighter}
         textAnchor="middle"
         dominantBaseline="central"
-        customFont={"35px/47px Open Sans"}
+        customFont="35px/47px Open Sans"
       >
         {masteryPercentage}%
       </StyledText>
@@ -41,9 +44,9 @@ const renderCustomizedInnerLabel = props => {
         y={cy + 18}
         textAnchor="middle"
         dominantBaseline="central"
-        customFont={"11px/15px Open Sans"}
+        customFont="11px/15px Open Sans"
         weight={600}
-        spacing={"0.2px"}
+        spacing="0.2px"
       >
         IN MASTERY
       </StyledText>
@@ -75,7 +78,7 @@ const StudentPerformancePie = ({ data, scaleInfo, onSectionClick, selectedMaster
   return (
     <>
       <StyledTitle>{title}</StyledTitle>
-      <ResponsiveContainer width={"100%"} height={200}>
+      <ResponsiveContainer width="100%" height={200}>
         <PieChart width={100} height={100}>
           <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltip} />} />
           <Pie

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { round, intersection, filter, map } from "lodash";
 import { Row, Col } from "antd";
+import { greyThemeDark1 } from "@edulastic/colors";
 import { StyledTable, StyledSpan } from "../../styled";
 import { TooltipTag, TooltipTagContainer } from "./TooltipTag";
 import { StyledTag } from "../../../../../../common/styled";
-import { greyThemeDark1 } from "@edulastic/colors";
 import StudentMasteryTable from "./StudentMasteryTable";
 
 const columns = [
@@ -14,7 +14,7 @@ const columns = [
     key: "name",
     dataIndex: "name",
     render: name => (
-      <StyledTag padding="0px 20px" fontWeight={"Bold"}>
+      <StyledTag padding="0px 20px" fontWeight="Bold">
         {name}
       </StyledTag>
     ),
@@ -26,7 +26,7 @@ const columns = [
     align: "center",
     dataIndex: "standards",
     render: standards => {
-      let displayCount = 3;
+      const displayCount = 3;
       return (
         <Row type="flex" justify="center">
           {[
@@ -39,9 +39,8 @@ const columns = [
     sorter: (a, b) => {
       if (a.standards.length !== b.standards.length) {
         return a.standards.length - b.standards.length;
-      } else {
-        return a.name.localeCompare(b.name);
       }
+      return a.name.localeCompare(b.name);
     }
   },
   {
@@ -61,9 +60,8 @@ const columns = [
     sorter: (a, b) => {
       if (a.masteryScore !== b.masteryScore) {
         return a.masteryScore - b.masteryScore;
-      } else {
-        return a.name.localeCompare(b.name);
       }
+      return a.name.localeCompare(b.name);
     }
   },
   {
@@ -74,12 +72,12 @@ const columns = [
     render: ({ masteryName, color }) => (
       <Row type="flex" justify="center">
         <StyledTag
-          width={"200px"}
-          height={"34px"}
+          width="200px"
+          height="34px"
           bgColor={color}
           textColor={greyThemeDark1}
-          fontStyle={"11px/15px Open Sans"}
-          fontWeight={"Bold"}
+          fontStyle="11px/15px Open Sans"
+          fontWeight="Bold"
         >
           {masteryName}
         </StyledTag>
@@ -88,11 +86,11 @@ const columns = [
     sorter: (a, b) => {
       if (a.masterySummary.masteryName !== b.masterySummary.masteryName) {
         return a.masterySummary.masteryName.localeCompare(b.masterySummary.masteryName);
-      } else if (a.masteryScore !== b.masteryScore) {
-        return a.masteryScore - b.masteryScore;
-      } else {
-        return a.name.localeCompare(b.name);
       }
+      if (a.masteryScore !== b.masteryScore) {
+        return a.masteryScore - b.masteryScore;
+      }
+      return a.name.localeCompare(b.name);
     }
   }
 ];
@@ -145,7 +143,7 @@ const StudentPerformanceSummary = ({ data, selectedMastery, expandedRowProps, ex
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
           expandedRowRender={() => <StudentMasteryTable {...expandedRowProps} />}
-          expandRowByClick={true}
+          expandRowByClick
           onRow={record => ({
             onClick: () => handleExpandedRowsChange(record.rowIndex, filteredDomains.length)
           })}

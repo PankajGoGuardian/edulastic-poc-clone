@@ -1,23 +1,20 @@
 import React from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 import { textColor } from "@edulastic/colors";
 
-const ScaleInfoLabels = ({ scaleInfo = [] }) => {
-  return (
-    <StyledDiv>
-      {scaleInfo.map(item => (
-        <StyledDiv2>
-          <StyledColorSpan color={item.color} />
-          <StyledLabel>{item.masteryName}</StyledLabel>
-          <StyledLabel weight="Bold" alignment="right" leftMargin="auto">
-            {item.percentage}%
-          </StyledLabel>
-        </StyledDiv2>
-      ))}
-    </StyledDiv>
-  );
-};
+const ScaleInfoLabels = ({ scaleInfo = [] }) => (
+  <StyledDiv>
+    {scaleInfo.map(item => (
+      <StyledDiv2>
+        <StyledColorSpan color={item.color} />
+        <StyledLabel>{item.masteryName}</StyledLabel>
+        <StyledLabel weight="Bold" alignment="right" leftMargin="auto">
+          {item.percentage}%
+        </StyledLabel>
+      </StyledDiv2>
+    ))}
+  </StyledDiv>
+);
 
 export default ScaleInfoLabels;
 
@@ -37,6 +34,12 @@ const StyledColorSpan = styled.span`
   width: 12px;
   height: 12px;
   background-color: ${props => props.color};
+
+  @media print {
+    background-color: ${({ color }) => color};
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
 `;
 
 const StyledDiv = styled.div`

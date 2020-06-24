@@ -23,6 +23,11 @@ export const StyledCell = styled.div`
   display: flex;
   align-items: center;
   justify-content: ${props => props.justify || "flex-end"};
+
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
 `;
 
 export const PrintablePrefix = styled.b`
@@ -455,6 +460,11 @@ export const StyledTag = styled.div`
     height: ${props => props.height || "24px"};
     font: ${props => props.fontStyle || "10px/14px Open Sans"};
   }
+
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
 `;
 
 export const StyledLabel = styled.div`
@@ -510,6 +520,10 @@ export const FilterIcon = styled(IconFilter).attrs({
   margin-right: 8px;
   margin-top: 4px;
   margin-left: ${({ showFilter }) => (showFilter ? -55 : 0)}px;
+
+  @media print {
+    display: none;
+  }
 `;
 
 export const SearchField = styled.div`

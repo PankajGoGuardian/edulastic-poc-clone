@@ -7,6 +7,7 @@ import * as moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
+import { IconAssignment } from "@edulastic/icons";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
@@ -286,6 +287,7 @@ class AssignTest extends React.Component {
         <ListHeader
           title={`Assign ${title || ""}`}
           midTitle="PICK CLASSES, GROUPS OR STUDENTS"
+          titleIcon={IconAssignment}
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}
         />

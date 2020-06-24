@@ -1177,12 +1177,20 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         ],
         type: questionType.MATCH_LIST,
         stimulus: "",
-        list: ["Stem 1", "Stem 2", "Stem 3"],
+        list: [
+          { value: uuids[0], label: "Stem 1" },
+          { value: uuids[1], label: "Stem 2" },
+          { value: uuids[2], label: "Stem 3" }
+        ],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [null, null, null]
+            value: {
+              [uuids[0]]: null,
+              [uuids[1]]: null,
+              [uuids[2]]: null
+            }
           },
           altResponses: []
         },

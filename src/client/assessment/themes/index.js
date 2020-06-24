@@ -195,7 +195,7 @@ const AssessmentContainer = ({
         }
         case questionType.SORT_LIST:
         case questionType.MATCH_LIST:
-          return (qAnswers || []).every(d => isNull(d));
+          return Object.values(qAnswers || {}).every(d => isNull(d));
         case questionType.ORDER_LIST: {
           const prevOrder = [...Array(q.list.length).keys()];
           return qAnswers ? isEqual(prevOrder, qAnswers) : true;

@@ -263,7 +263,7 @@ const emptyFieldsValidator = {
     if (groupPossibleResponses && !possibleResponseGroups.length) {
       return [true, "Response Groups cannot be empty"];
     }
-    const hasEmptyListField = list.some(option => isRichTextFieldEmpty(option));
+    const hasEmptyListField = list.some(option => isRichTextFieldEmpty(option.label));
     if (hasEmptyListField) {
       return [true, "List has empty values"];
     }
@@ -374,7 +374,7 @@ const answerValidator = {
     return hasEmpty;
   },
   [questionType.MATCH_LIST](answers) {
-    const hasEmpty = this.generalValidator(answers);
+    const hasEmpty = answers.some(ans => isEmpty(ans) || Object.values(ans.value).some(a => isEmpty(a)));
     return hasEmpty;
   },
   [questionType.ORDER_LIST](answers) {

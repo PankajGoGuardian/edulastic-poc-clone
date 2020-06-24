@@ -1,19 +1,25 @@
 import { identity, zip } from "lodash";
 import { ScoringType } from "./const/scoring";
 
-const exactMatchEvaluator = (answers = [], userResponse = []) => {
+const exactMatchEvaluator = (rawAnswers = [], rawUserResponse = {}) => {
+  const listKeys = Object.keys(rawAnswers[0].value);
+  const answers = rawAnswers.map(ans => ({
+    score: ans.score,
+    value: listKeys.map(l => ans.value[l] || null)
+  }));
+  const userResponse = listKeys.map(l => rawUserResponse[l] || null);
   let evaluation = [];
   let score = 0;
   let maxScore = 0;
 
   for (const validAnswer of answers) {
-    let { value: answer, score: possibleMaxScore } = validAnswer;
+    const { value: answer, score: possibleMaxScore } = validAnswer;
     if (!Array.isArray(answer)) continue;
 
     maxScore = Math.max(possibleMaxScore || 0, maxScore);
 
-    let currentEvaluation = answer.map((item, index) => {
-      let resp = userResponse?.[index];
+    const currentEvaluation = answer.map((item, index) => {
+      const resp = userResponse?.[index];
       if (!item && !resp) return true;
       return item === resp;
     });
@@ -31,27 +37,36 @@ const exactMatchEvaluator = (answers = [], userResponse = []) => {
     });
   }
 
+  const evaluationMap = {};
+  listKeys.forEach((l, ind) => evaluationMap[l] = evaluation[ind]);
+
   return {
     score,
     maxScore,
-    evaluation
+    evaluation: evaluationMap
   };
 };
 
-const partialMatchEvaluator = (answers = [], userResponse = []) => {
+const partialMatchEvaluator = (rawAnswers = [], rawUserResponse = {}) => {
+  const listKeys = Object.keys(rawAnswers[0].value);
+  const answers = rawAnswers.map(ans => ({ 
+    score: ans.score,
+    value: listKeys.map(l => ans.value[l] || null)
+  }));
+  const userResponse = listKeys.map(l => rawUserResponse[l] || null);
   let evaluation = [];
   let score = 0;
   let maxScore = 0;
 
   for (const validAnswer of answers) {
-    let { value: answer, score: possibleMaxScore } = validAnswer;
+    const { value: answer, score: possibleMaxScore } = validAnswer;
     if (!Array.isArray(answer)) continue;
 
     maxScore = Math.max(possibleMaxScore || 0, maxScore);
 
     const answerLength = answer.filter(identity).length;
-    let currentEvaluation = answer.map((item, index) => {
-      let resp = userResponse?.[index];
+    const currentEvaluation = answer.map((item, index) => {
+      const resp = userResponse?.[index];
       if (!resp) return null;
       return item === resp;
     });
@@ -73,10 +88,13 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
     });
   }
 
+  const evaluationMap = {};
+  listKeys.forEach((l, ind) => evaluationMap[l] = evaluation[ind]);
+
   return {
     score,
     maxScore,
-    evaluation
+    evaluation: evaluationMap
   };
 };
 /**

@@ -10,8 +10,9 @@ import { isEmpty, values } from "lodash";
  */
 export const hasValidAnswers = (type, answer) => {
   switch (type) {
-    case questionType.SORT_LIST:
     case questionType.MATCH_LIST:
+      return !isEmpty(Object.values(answer || {}).filter(ans => ans?.toString()));
+    case questionType.SORT_LIST:
     case questionType.CLOZE_IMAGE_TEXT:
     case questionType.CLOZE_DRAG_DROP:
     case questionType.HOTSPOT:

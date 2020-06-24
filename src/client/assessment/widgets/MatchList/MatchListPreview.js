@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import styled, { withTheme } from "styled-components";
 import { connect } from "react-redux";
-import { cloneDeep, isEqual, get, shuffle, identity, keyBy } from "lodash";
+import { cloneDeep, isEqual, get, shuffle, keyBy, isEmpty } from "lodash";
 import { compose } from "redux";
 import {
   FlexContainer,
@@ -57,6 +57,12 @@ const styles = {
   listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 }
 };
 
+const getInitialAnswer = (list) => {
+  const ans = {};
+  list.forEach(l => ans[l.value] = null);
+  return ans;
+}
+
 /**
  * TODO
  * refactor the matchListPreview component
@@ -88,7 +94,6 @@ const MatchListPreview = ({
     groupPossibleResponses,
     stimulus,
     list,
-    validation,
     shuffleOptions,
     duplicatedResponses = false
   } = item;
@@ -97,8 +102,8 @@ const MatchListPreview = ({
   const { isStudentAttempt } = assessmentPlayerContext;
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
 
-  const validArray = get(item, "validation.validResponse.value", []);
-  const altArray = get(item, "validation.altResponses", []);
+  const validResponse = get(item, "validation.validResponse.value", {});
+  const alternateResponses = get(item, "validation.altResponses", []);
   const stemNumeration = get(item, "uiStyle.validationStemNumeration", "");
   const dragItemMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
   const dragItemMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
@@ -107,7 +112,6 @@ const MatchListPreview = ({
     if (!groupPossibleResponses) {
       return shuffleOptions ? [...shuffle(posResponses)] : [...posResponses];
     }
-
     let groupArrays = [];
     possibleResponseGroups.forEach((group, groupIndex) => {
       let responses = shuffleOptions ? shuffle(group.responses) : group.responses;
@@ -117,11 +121,7 @@ const MatchListPreview = ({
     return groupArrays;
   };
 
-  const [ans, setAns] = useState(
-    Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
-      ? userAnswer
-      : Array.from({ length: list.length }).fill(null)
-  );
+  const [ans, setAns] = useState(getInitialAnswer(list));
 
   function getInitialDragItems() {
     if (optionsFromStore) {
@@ -130,7 +130,7 @@ const MatchListPreview = ({
     if (duplicatedResponses) {
       return getPossibleResponses();
     }
-    return getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value));
+    return getPossibleResponses().filter(answer => typeof userAnswer === "object" && !Object.values(userAnswer).includes(answer.value));
   }
 
   const [dragItems, setDragItems] = useState(getInitialDragItems());
@@ -187,15 +187,12 @@ const MatchListPreview = ({
   );
 
   useEffect(() => {
-    setAns(
-      Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
-        ? userAnswer
-        : Array.from({ length: list.length }).fill(null)
-    );
+    if (!isEmpty(userAnswer)) {
+      setAns(userAnswer);
+    }
     let newDragItems = duplicatedResponses
       ? getPossibleResponses()
-      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.some(i => i === answer.value));
-
+      : getPossibleResponses().filter(answer => typeof userAnswer === "object" && !Object.values(userAnswer).some(i => i === answer.value));
     /**
      * at student side, if shuffle is on and if user comes back to this question
      * for subsequent renders, show the preserved order maintained in redux store
@@ -218,7 +215,6 @@ const MatchListPreview = ({
 
   const onDrop = (itemCurrent, itemTo) => {
     const answers = cloneDeep(ans);
-    const answerIds = answers.map(i => i).filter(identity);
     const dItems = cloneDeep(dragItems);
     const { item: _item, sourceFlag, sourceIndex } = itemCurrent;
 
@@ -226,32 +222,29 @@ const MatchListPreview = ({
       userAttemptRef.current = true;
     }
 
+    // when item is set/unset (if/else) as an answer
     if (itemTo.flag === "ans") {
       if (dItems.includes(_item)) {
+        // when moved out from dragItems
         dItems.splice(dItems.indexOf(_item), 1);
       }
-      if (answers[itemTo.index] && answers[itemTo.index] !== _item) {
-        dItems.push(ans[itemTo.index]);
-      }
       if (sourceFlag === "ans") {
-        answers[sourceIndex] = null;
-      } else if (!duplicatedResponses && answers.includes(_item)) {
-        answers[answers.indexOf(_item)] = null;
+        // when moved from one row to another
+        answers[list[sourceIndex].value] = null;
       }
-      answers[itemTo.index] = _item.value;
-    } else if (answerIds.includes(_item.value)) {
-      answers[sourceIndex] = null;
-      dItems.push(itemCurrent.item);
+      answers[list[itemTo.index].value] = _item.value;
+    }
+    else if (Object.values(answers).includes(_item.value)) {
+      answers[list[sourceIndex].value] = null;
+      dItems.push(_item);
     }
 
     if (!isEqual(ans, answers)) {
       setAns(answers);
     }
-
     if (!isEqual(dItems, dragItems)) {
       setDragItems(dItems);
     }
-
     if (preview) {
       changePreview(CLEAR);
     }
@@ -274,36 +267,17 @@ const MatchListPreview = ({
     );
   };
 
-  const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
-
-  let altAnswers = [...validAnswers];
-
-  altArray.forEach(ite => {
-    let res = [];
-
-    res = ans.filter((an, i) => ite.value[i] === an);
-
-    if (res.length > altAnswers.length) {
-      altAnswers = res;
-    }
-  });
-
   const allItemsById = keyBy(getPossibleResponses(), "value");
 
   const alternateAnswers = {};
-  if (altArray.length > 0) {
-    const { altResponses } = validation;
-    altResponses.forEach(altAnswer => {
-      altAnswer.value.forEach((alt, index) => {
-        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
-        const altResp = allItemsById[alt];
-        if (altResp && altResp.label) {
-          alternateAnswers[index + 1].push(altResp.label);
-        }
+  if (alternateResponses.length > 0) {
+    list.forEach(l => {
+      alternateAnswers[l.value] = [];
+      alternateResponses.forEach(alt => {
+        alternateAnswers[l.value].push(allItemsById?.[alt.value[l.value]]?.label || "");
       });
     });
   }
-
   const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
 
   /**
@@ -435,12 +409,12 @@ const MatchListPreview = ({
                   childMarginRight={smallSize ? 13 : 45}
                 >
                   <ListItem smallSize={smallSize} style={stemColStyle}>
-                    <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                    <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite.label }} />
                   </ListItem>
                   <Separator smallSize={smallSize} />
                   <DropContainer
-                    noBorder={!!ans[i]}
-                    borderNone={showEvaluate && !!ans[i]}
+                    noBorder={!!ans[list[i].value]}
+                    borderNone={showEvaluate && !!ans[list[i].value]}
                     index={i}
                     drop={drop}
                     flag="ans"
@@ -448,12 +422,12 @@ const MatchListPreview = ({
                   >
                     <DragItem
                       preview={showEvaluate}
-                      correct={evaluation[i]}
+                      correct={evaluation[list[i].value]}
                       flag="ans"
                       renderIndex={i}
                       displayIndex={getStemNumeration(stemNumeration, i)}
                       onDrop={onDrop}
-                      item={(ans[i] && allItemsById[ans[i]]) || null}
+                      item={(ans[list[i].value] && allItemsById[ans[list[i].value]]) || null}
                       width="100%"
                       centerContent
                       getStyles={getStyles}
@@ -580,7 +554,7 @@ const MatchListPreview = ({
                 {list.map((ite, i) => (
                   <FlexContainer key={i} marginBottom="10px" alignItems="center">
                     <CorTitle>
-                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite.label }} />
                     </CorTitle>
                     <Separator smallSize={smallSize} correctAnswer />
                     <CorItem>
@@ -590,7 +564,7 @@ const MatchListPreview = ({
                       <MathFormulaDisplay
                         choice
                         dangerouslySetInnerHTML={{
-                          __html: allItemsById?.[validArray?.[i]]?.label || ""
+                          __html: allItemsById?.[validResponse[list[i].value]]?.label || ""
                         }}
                       />
                     </CorItem>
@@ -603,17 +577,17 @@ const MatchListPreview = ({
                   title={t("component.matchList.alternateAnswers")}
                   style={correctAnswerBoxStyle}
                 >
-                  {Object.keys(alternateAnswers).map((key, i) => (
+                  {list.map((ite, i) => (
                     <FlexContainer key={i} marginBottom="10px" alignItems="center">
                       <CorTitle>
-                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: list[i] }} />
+                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite.label }} />
                       </CorTitle>
                       <Separator smallSize={smallSize} correctAnswer />
                       <CorItem>
                         <Index preview correctAnswer>
                           {getStemNumeration(stemNumeration, i)}
                         </Index>
-                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
+                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[ite.value].join(", ") }} />
                       </CorItem>
                     </FlexContainer>
                   ))}
@@ -642,7 +616,7 @@ MatchListPreview.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   changePreview: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
-  evaluation: PropTypes.array,
+  evaluation: PropTypes.object,
   isReviewTab: PropTypes.bool
 };
 
@@ -650,7 +624,7 @@ MatchListPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   userAnswer: [],
-  evaluation: [],
+  evaluation: {},
   showQuestionNumber: false,
   disableResponse: false,
   isReviewTab: false

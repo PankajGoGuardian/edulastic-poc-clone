@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { IconSettings, IconEye, IconCheck, IconClear } from "@edulastic/icons";
-import { darkGrey, themeColor, white } from "@edulastic/colors";
+import { darkGrey, themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes, EduButton } from "@edulastic/common";
 import { connect } from "react-redux";
@@ -10,7 +10,6 @@ import { compose } from "redux";
 
 import { clearAnswersAction } from "../../../actions/answers";
 import { Container, PreviewBar, HeaderActionButton, LabelText, RightActionButton } from "./styled_components";
-import { ButtonLink } from "..";
 import ScoreBlock from "../ScoreBlock";
 
 class ButtonAction extends Component {

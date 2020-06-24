@@ -46,17 +46,18 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
   const handleRemoveResp = index => {
     _setQuestionData(
       produce(item, draft => {
-        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponses[index]);
-        if (i > -1) {
-          draft.validation.validResponse.value[i] = null;
-        }
-        draft.validation.altResponses.forEach(ite => {
-          const j = ite.value.indexOf(draft.possibleResponses[index]);
-          if (j > -1) {
-            ite.value[j] = null;
+        item.list.forEach(l => {
+          if (draft.validation.validResponse.value[l.value] === draft.possibleResponses[index].value) {
+            draft.validation.validResponse.value[l.value] = null;
           }
         });
-
+        draft.validation.altResponses.forEach(ite => {
+          item.list.forEach(l => {
+            if (ite.value[l.value] === draft.possibleResponses[index].value) {
+              ite.value[l.value] = null;
+            }
+          });
+        });
         draft.possibleResponses.splice(index, 1);
       })
     );
@@ -73,17 +74,6 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
   const handleChangeResp = (index, value) => {
     _setQuestionData(
       produce(item, draft => {
-        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponses[index]);
-        if (i > -1) {
-          draft.validation.validResponse.value[i] = value;
-        }
-        draft.validation.altResponses.forEach(ite => {
-          const j = ite.value.indexOf(draft.possibleResponses[index]);
-          if (j > -1) {
-            ite.value[j] = value;
-          }
-        });
-
         draft.possibleResponses[index].label = value;
       })
     );
@@ -95,11 +85,11 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
         if (!draft.validation.altResponses) {
           draft.validation.altResponses = [];
         }
+        const value = {};
+        item.list.forEach(l => value[l.value] = null); 
         draft.validation.altResponses.push({
           score: 1,
-          value: Array.from({
-            length: item.validation.validResponse.value.length
-          }).fill(null)
+          value
         });
       })
     );
@@ -144,15 +134,11 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
     _setQuestionData(
       produce(item, draft => {
         draft.groupPossibleResponses = e.target.checked;
-
-        draft.validation.validResponse.value = Array.from({
-          length: item.validation.validResponse.value.length
-        }).fill(null);
-
+        const value = {};
+        item.list.forEach(l => value[l.value] = null);
+        draft.validation.validResponse.value = {...value};
         draft.validation.altResponses.forEach(ite => {
-          ite.value = Array.from({
-            length: item.validation.validResponse.value.length
-          }).fill(null);
+          ite.value = {...value};
         });
       })
     );
@@ -193,17 +179,18 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
   const onRemoveInner = ind => index => {
     _setQuestionData(
       produce(item, draft => {
-        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
-        if (i > -1) {
-          draft.validation.validResponse.value[i] = null;
-        }
-        draft.validation.altResponses.forEach(ite => {
-          const j = ite.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
-          if (j > -1) {
-            ite.value[j] = null;
+        item.list.forEach(l => {
+          if (draft.validation.validResponse.value[l.value] === draft.possibleResponseGroups[ind].responses[index].value) {
+            draft.validation.validResponse.value[l.value] = null;
           }
         });
-
+        draft.validation.altResponses.forEach(ite => {
+          item.list.forEach(l => {
+            if (ite.value[l.value] === draft.possibleResponses[ind].responses[index].value) {
+              ite.value[l.value] = null;
+            }
+          });
+        });
         draft.possibleResponseGroups[ind].responses.splice(index, 1);
       })
     );
@@ -221,18 +208,20 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
     _setQuestionData(
       produce(item, draft => {
         draft.possibleResponseGroups[index].responses.forEach(respValue => {
-          const i = draft.validation.validResponse.value.indexOf(respValue);
-          if (i > -1) {
-            draft.validation.validResponse.value[i] = null;
-          }
-          draft.validation.altResponses.forEach(ite => {
-            const j = ite.value.indexOf(respValue);
-            if (j > -1) {
-              ite.value[j] = null;
+          item.list.forEach(l => {
+            if (draft.validation.validResponse.value[l.value] === respValue.value) {
+              draft.validation.validResponse.value[l.value] = null;
             }
           });
-        });
 
+          draft.validation.altResponses.forEach(ite => {
+            item.list.forEach(l => {
+              if (ite.value[l.value] === respValue.value) {
+                ite.value[l.value] = null;
+              }
+            });
+          });
+        });
         draft.possibleResponseGroups.splice(index, 1);
       })
     );
@@ -253,17 +242,6 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
   const handleGroupChange = ind => (index, value) => {
     _setQuestionData(
       produce(item, draft => {
-        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
-        if (i > -1) {
-          draft.validation.validResponse.value[i] = value;
-        }
-        draft.validation.altResponses.forEach(ite => {
-          const j = ite.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
-          if (j > -1) {
-            ite.value[j] = value;
-          }
-        });
-
         draft.possibleResponseGroups[ind].responses[index].label = value;
       })
     );

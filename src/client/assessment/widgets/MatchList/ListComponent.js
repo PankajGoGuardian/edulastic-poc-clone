@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
+import uuid from "uuid/v4";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
@@ -24,12 +25,13 @@ class ListComponent extends Component {
     const handleAdd = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.list.push(null);
-          draft.validation.validResponse.value.push(null);
+          const value = uuid();
+          draft.list.push({ value, label: null });
+          draft.validation.validResponse.value[value] = null;
 
           if (draft.validation.altResponses.length > 0) {
             draft.validation.altResponses.forEach(altResponse => {
-              altResponse.value.push(null);
+              altResponse.value[value] = null;
             });
           }
 
@@ -41,20 +43,21 @@ class ListComponent extends Component {
     const handleRemove = index => {
       setQuestionData(
         produce(item, draft => {
+          const value = item.list[index].value;
           draft.list.splice(index, 1);
-
-          draft.validation.validResponse.value.splice(index, 1);
+          delete draft.validation.validResponse.value[value];
 
           if (draft.validation.altResponses.length > 0) {
             draft.validation.altResponses.forEach(altResponse => {
-              altResponse.value.splice(index, 1);
+              delete altResponse.value[value];
             });
           }
-
+          
           updateVariables(draft);
         })
       );
     };
+
     const handleSortEnd = ({ oldIndex, newIndex }) => {
       setQuestionData(
         produce(item, draft => {
@@ -64,10 +67,10 @@ class ListComponent extends Component {
       );
     };
 
-    const handleChange = (index, value) => {
+    const handleChange = (index, text) => {
       setQuestionData(
         produce(item, draft => {
-          draft.list[index] = value;
+          draft.list[index].label = text;
           updateVariables(draft);
         })
       );
@@ -86,7 +89,7 @@ class ListComponent extends Component {
         <ListContainer>
           <List
             buttonText={t("component.matchList.addNew")}
-            items={item.list}
+            items={item.list.map(l => l.label)}
             onAdd={handleAdd}
             firstFocus={item.firstMount}
             onSortEnd={handleSortEnd}

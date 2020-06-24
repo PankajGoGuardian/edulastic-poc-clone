@@ -1196,13 +1196,21 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       data: {
         title: "Order List",
         type: questionType.ORDER_LIST,
-        stimulus: "",
-        list: ["Item A", "Item B", "Item C"],
+        stimulus: "Simple Question",
+        list: {
+          [uuids[0]]: "Item A",
+          [uuids[1]]: "Item B",
+          [uuids[2]]: "Item C"
+        },
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [0, 1, 2]
+            value: {
+              [uuids[0]]: 2,
+              [uuids[1]]: 0,
+              [uuids[2]]: 1
+            }
           },
           altResponses: []
         },

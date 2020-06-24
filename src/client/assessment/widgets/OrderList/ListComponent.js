@@ -4,8 +4,8 @@ import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-import { cloneDeep, get } from "lodash";
-
+import { cloneDeep, get, keys } from "lodash";
+import uuid from "uuid/v4";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuillSortableList from "../../components/QuillSortableList";
@@ -19,24 +19,27 @@ import Question from "../../components/Question";
 
 const List = withAddButton(QuillSortableList);
 
+const convertArrToObj = arr => arr.reduce((acc, curr) => ({ ...acc, [curr.id]: curr.value }), {});
+
 class ListComponent extends Component {
   render() {
     const { item, t, setQuestionData, fillSections, cleanSections, getContainer } = this.props;
 
     const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
+    const list = get(item, "list", {});
+    const listToShow = keys(list).map(key => ({ id: key, value: list[key] }));
 
     const onSortOrderListEnd = ({ oldIndex, newIndex }) => {
       const newData = cloneDeep(item);
-
-      newData.list = arrayMove(item.list, oldIndex, newIndex);
-
+      newData.list = convertArrToObj(arrayMove(listToShow, oldIndex, newIndex));
       setQuestionData(newData);
     };
 
-    const handleQuestionsChange = (value, index) => {
+    const handleQuestionsChange = (index, value) => {
+      const editedOption = { ...listToShow[index], value };
+      listToShow.splice(index, 1, editedOption);
       const newData = cloneDeep(item);
-
-      newData.list[value] = index;
+      newData.list = convertArrToObj(listToShow);
       updateVariables(newData);
       setQuestionData(newData);
     };
@@ -44,14 +47,14 @@ class ListComponent extends Component {
     const handleDeleteQuestion = index => {
       setQuestionData(
         produce(item, draft => {
-          draft.list = draft.list.filter((q, i) => i !== index);
+          listToShow.splice(index, 1);
+          draft.list = convertArrToObj(listToShow);
 
-          const indexList = draft.list.map((val, i) => i);
-
-          draft.validation.validResponse.value = indexList;
+          const validRes = keys(draft.list).reduce((acc, curr, currIndex) => ({ ...acc, [curr]: currIndex }), {});
+          draft.validation.validResponse.value = validRes;
 
           draft.validation.altResponses = draft.validation.altResponses.map(res => {
-            res.value = indexList;
+            res.value = validRes;
             return res;
           });
 
@@ -63,15 +66,19 @@ class ListComponent extends Component {
     const handleAddQuestion = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.list = [...item.list, ""];
-          draft.validation.validResponse.value = [
+          const newId = uuid();
+          draft.list = { ...draft.list, [newId]: "" };
+          draft.validation.validResponse.value = {
             ...draft.validation.validResponse.value,
-            draft.validation.validResponse.value.length
-          ];
+            [newId]: keys(draft.list).length - 1
+          };
 
           if (draft.validation.altResponses.length) {
             draft.validation.altResponses = draft.validation.altResponses.map(res => {
-              res.value.push(res.value.length);
+              res.value = {
+                ...res.value,
+                [newId]: keys(draft.list).length - 1
+              };
               return res;
             });
           }
@@ -94,7 +101,7 @@ class ListComponent extends Component {
         <List
           fontSize={fontSize}
           onAdd={handleAddQuestion}
-          items={item.list}
+          items={listToShow.map(ite => ite.value)}
           onSortEnd={onSortOrderListEnd}
           useDragHandle
           styleType="button"

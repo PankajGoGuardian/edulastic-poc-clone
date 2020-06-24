@@ -22,28 +22,24 @@ var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMat
 // exact-match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
   var _ref$userResponse = _ref.userResponse,
-    userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse,
-    answers = _ref.answers;
+      userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse,
+      answers = _ref.answers;
   var score = 0;
   var maxScore = 0;
   var evaluation = [];
-  var userAnswer = userResponse
-    .filter(function(ans) {
+  var userAnswer = userResponse.filter(function (ans) {
+    return ans.selected;
+  }).map(function (ans) {
+    return ans.index;
+  });
+  answers.forEach(function (_ref2) {
+    var totalScore = _ref2.score,
+        answer = _ref2.value;
+    var currentAnswer = answer.filter(function (ans) {
       return ans.selected;
-    })
-    .map(function(ans) {
+    }).map(function (ans) {
       return ans.index;
     });
-  answers.forEach(function(_ref2) {
-    var totalScore = _ref2.score,
-      answer = _ref2.value;
-    var currentAnswer = answer
-      .filter(function(ans) {
-        return ans.selected;
-      })
-      .map(function(ans) {
-        return ans.index;
-      });
 
     if (currentAnswer.length && (0, _isEqual2["default"])(currentAnswer, userAnswer)) {
       score = Math.max(score, totalScore);
@@ -71,30 +67,26 @@ var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
 
 var partialMatchEvaluator = function partialMatchEvaluator(_ref3) {
   var _ref3$userResponse = _ref3.userResponse,
-    userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse,
-    answers = _ref3.answers;
+      userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse,
+      answers = _ref3.answers;
   var score = 0;
   var maxScore = 1;
   var rightLen = 0;
   var evaluation = [];
-  var userAnswer = userResponse
-    .filter(function(ans) {
+  var userAnswer = userResponse.filter(function (ans) {
+    return ans.selected;
+  }).map(function (ans) {
+    return ans.index;
+  });
+  var validAnswer = [];
+  answers.forEach(function (_ref4) {
+    var totalScore = _ref4.score,
+        answer = _ref4.value;
+    var currentAnswer = answer.filter(function (ans) {
       return ans.selected;
-    })
-    .map(function(ans) {
+    }).map(function (ans) {
       return ans.index;
     });
-  var validAnswer = [];
-  answers.forEach(function(_ref4) {
-    var totalScore = _ref4.score,
-      answer = _ref4.value;
-    var currentAnswer = answer
-      .filter(function(ans) {
-        return ans.selected;
-      })
-      .map(function(ans) {
-        return ans.index;
-      });
     var scorePerResponse = totalScore / currentAnswer.length;
     var currentScore = scorePerResponse * (0, _intersection2["default"])(userAnswer, currentAnswer).length;
     score = Math.max(currentScore, score);
@@ -105,7 +97,7 @@ var partialMatchEvaluator = function partialMatchEvaluator(_ref3) {
       validAnswer = currentAnswer;
     }
   });
-  evaluation = userAnswer.map(function(ans) {
+  evaluation = userAnswer.map(function (ans) {
     return validAnswer.includes(ans);
   });
   return {
@@ -118,10 +110,10 @@ var partialMatchEvaluator = function partialMatchEvaluator(_ref3) {
 
 var evaluator = function evaluator(_ref5) {
   var userResponse = _ref5.userResponse,
-    validation = _ref5.validation;
+      validation = _ref5.validation;
   var validResponse = validation.validResponse,
-    altResponses = validation.altResponses,
-    scoringType = validation.scoringType;
+      altResponses = validation.altResponses,
+      scoringType = validation.scoringType;
   var answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
 
   switch (scoringType) {

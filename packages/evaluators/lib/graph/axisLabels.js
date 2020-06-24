@@ -14,17 +14,15 @@ var _scoring = require("../const/scoring");
 var checkAnswer = function checkAnswer(answer, userResponse) {
   var result = [];
   var trueAnswerValue = answer.value;
-  userResponse.forEach(function(testLabel) {
+  userResponse.forEach(function (testLabel) {
     var resultForLabel = {
       label: testLabel,
       result: false
     };
 
-    if (
-      trueAnswerValue.findIndex(function(item) {
-        return item.point === testLabel.point && item.position === testLabel.position;
-      }) > -1
-    ) {
+    if (trueAnswerValue.findIndex(function (item) {
+      return item.point === testLabel.point && item.position === testLabel.position;
+    }) > -1) {
       resultForLabel.result = true;
     }
 
@@ -37,13 +35,13 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, answers) {
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
-  answers.forEach(function(answer, index) {
+  answers.forEach(function (answer, index) {
     var answerResult = {
       result: false,
       details: checkAnswer(answer, userResponse),
       score: 0
     };
-    var trueLabelsCount = answerResult.details.filter(function(item) {
+    var trueLabelsCount = answerResult.details.filter(function (item) {
       return item.result;
     }).length;
     var allIsTrue = trueLabelsCount === answerResult.details.length;
@@ -68,13 +66,13 @@ var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
-  answers.forEach(function(answer, index) {
+  answers.forEach(function (answer, index) {
     var answerResult = {
       result: false,
       details: checkAnswer(answer, userResponse),
       score: 0
     };
-    var trueLabelsCount = answerResult.details.filter(function(item) {
+    var trueLabelsCount = answerResult.details.filter(function (item) {
       return item.result;
     }).length;
     var penaltyScore = (answerResult.details.length - trueLabelsCount) * penalty;
@@ -96,22 +94,20 @@ var partialMatchEvaluator = function partialMatchEvaluator(userResponse, answers
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
-  answers.forEach(function(answer, index) {
+  answers.forEach(function (answer, index) {
     var answerResult = {
       result: false,
       details: checkAnswer(answer, userResponse),
       score: 0
     };
-    var trueLabelsCount = answerResult.details.filter(function(item) {
+    var trueLabelsCount = answerResult.details.filter(function (item) {
       return item.result;
     }).length;
     var penaltyScore = (answerResult.details.length - trueLabelsCount) * penalty;
     var allIsTrue = trueLabelsCount === answerResult.details.length;
     answerResult.result = answer.value.length === userResponse.length && allIsTrue;
     var pointsPerOneLabel = answer.value.length ? answer.score / answer.value.length : 0;
-    answerResult.score = roundingIsNone
-      ? pointsPerOneLabel * trueLabelsCount
-      : Math.floor(pointsPerOneLabel * trueLabelsCount);
+    answerResult.score = roundingIsNone ? pointsPerOneLabel * trueLabelsCount : Math.floor(pointsPerOneLabel * trueLabelsCount);
     answerResult.score -= penaltyScore;
     score = Math.max(answerResult.score, score);
     maxScore = Math.max(answer.score, maxScore);
@@ -126,14 +122,14 @@ var partialMatchEvaluator = function partialMatchEvaluator(userResponse, answers
 
 var evaluator = function evaluator(_ref) {
   var userResponse = _ref.userResponse,
-    validation = _ref.validation;
+      validation = _ref.validation;
   var validResponse = validation.validResponse,
-    altResponses = validation.altResponses,
-    scoringType = validation.scoringType,
-    _validation$rounding = validation.rounding,
-    rounding = _validation$rounding === void 0 ? "none" : _validation$rounding,
-    _validation$penalty = validation.penalty,
-    penalty = _validation$penalty === void 0 ? 0 : _validation$penalty;
+      altResponses = validation.altResponses,
+      scoringType = validation.scoringType,
+      _validation$rounding = validation.rounding,
+      rounding = _validation$rounding === void 0 ? "none" : _validation$rounding,
+      _validation$penalty = validation.penalty,
+      penalty = _validation$penalty === void 0 ? 0 : _validation$penalty;
   var answers = [validResponse];
 
   if (altResponses) {

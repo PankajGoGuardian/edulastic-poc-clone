@@ -24,7 +24,7 @@ var isLessThanOneMistake = function isLessThanOneMistake(userAnswer, validAnswer
 exports.isLessThanOneMistake = isLessThanOneMistake;
 
 var getClozeTextMatches = function getClozeTextMatches(response, answer, restOptions) {
-  return response.filter(function(resp, index) {
+  return response.filter(function (resp, index) {
     resp = (resp || "").trim();
     var ans = (answer[index] || "").trim();
 
@@ -33,10 +33,7 @@ var getClozeTextMatches = function getClozeTextMatches(response, answer, restOpt
     }
 
     if (restOptions.ignoreCase) {
-      return (0, _isEqual2["default"])(
-        answer[index].trim() ? answer[index].trim().toLowerCase() : null,
-        resp.trim() ? resp.trim().toLowerCase() : undefined
-      );
+      return (0, _isEqual2["default"])(answer[index].trim() ? answer[index].trim().toLowerCase() : null, resp.trim() ? resp.trim().toLowerCase() : undefined);
     }
 
     return (0, _isEqual2["default"])(answer[index].trim(), resp.trim());
@@ -46,7 +43,7 @@ var getClozeTextMatches = function getClozeTextMatches(response, answer, restOpt
 exports.getClozeTextMatches = getClozeTextMatches;
 
 var getClozeTextEvaluation = function getClozeTextEvaluation(response, answer, restOptions) {
-  return response.map(function(resp, index) {
+  return response.map(function (resp, index) {
     resp = (resp || "").trim();
     var ans = (answer[index] || "").trim();
 
@@ -55,10 +52,7 @@ var getClozeTextEvaluation = function getClozeTextEvaluation(response, answer, r
     }
 
     if (restOptions.ignoreCase) {
-      return (0, _isEqual2["default"])(
-        answer[index].trim() ? answer[index].trim().toLowerCase() : null,
-        resp.trim() ? resp.trim().toLowerCase() : undefined
-      );
+      return (0, _isEqual2["default"])(answer[index].trim() ? answer[index].trim().toLowerCase() : null, resp.trim() ? resp.trim().toLowerCase() : undefined);
     }
 
     return (0, _isEqual2["default"])(answer[index].trim(), resp.trim());

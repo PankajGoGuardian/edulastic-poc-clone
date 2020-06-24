@@ -1,5 +1,5 @@
 import { questionType, question, customTags, math } from "@edulastic/constants";
-import { get, isString, isEmpty } from "lodash";
+import { get, isString, isEmpty, keys } from "lodash";
 import striptags from "striptags";
 import { templateHasImage } from "@edulastic/common";
 import { displayStyles } from "../assessment/widgets/ClozeEditingTask/constants";
@@ -300,7 +300,7 @@ const emptyFieldsValidator = {
   },
   [questionType.ORDER_LIST](item) {
     const { list } = item;
-    const hasEmpty = list.some(val => isRichTextFieldEmpty(val));
+    const hasEmpty = keys(list).some(id => isRichTextFieldEmpty(list[id]));
     if (hasEmpty) {
       return [true, "List items cannot have empty values"];
     }

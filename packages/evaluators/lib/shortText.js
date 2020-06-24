@@ -10,13 +10,13 @@ var _scoring = require("./const/scoring");
 // exact-match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator(userResponse, validAnswer, altAnswers, _ref) {
   var automarkable = _ref.automarkable,
-    minScoreIfAttempted = _ref.minScoreIfAttempted,
-    maxScore = _ref.maxScore;
+      minScoreIfAttempted = _ref.minScoreIfAttempted,
+      maxScore = _ref.maxScore;
   var score = 0;
   var text = userResponse;
   var validValue = validAnswer.value,
-    validScore = validAnswer.score,
-    matchingRule = validAnswer.matchingRule;
+      validScore = validAnswer.score,
+      matchingRule = validAnswer.matchingRule;
   var mScore = validScore;
   var evaluation = false;
 
@@ -33,10 +33,10 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, validAnswer
     }
   }
 
-  altAnswers.forEach(function(ite) {
+  altAnswers.forEach(function (ite) {
     var altValue = ite.value,
-      altScore = ite.score,
-      altMatch = ite.matchingRule;
+        altScore = ite.score,
+        altMatch = ite.matchingRule;
 
     if ((altValue || "").trim() === (text || "").trim()) {
       evaluation = true;
@@ -75,10 +75,10 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, validAnswer
 
 var evaluator = function evaluator(_ref2) {
   var userResponse = _ref2.userResponse,
-    validation = _ref2.validation;
+      validation = _ref2.validation;
   var validResponse = validation.validResponse,
-    altResponses = validation.altResponses,
-    scoringType = validation.scoringType;
+      altResponses = validation.altResponses,
+      scoringType = validation.scoringType;
 
   switch (scoringType) {
     case _scoring.ScoringType.EXACT_MATCH:

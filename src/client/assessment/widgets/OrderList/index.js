@@ -1,10 +1,9 @@
-/* eslint-disable react/prop-types */
 import React, { Fragment, useMemo, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-import { get, isEmpty } from "lodash";
+import { get, isEmpty, sortBy, keys } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
@@ -67,6 +66,14 @@ const OptionsContainer = styled.div`
 
 const OptionsList = withPoints(QuillSortableList);
 
+const convertArrToObj = arr => arr.reduce((acc, curr, currIndex) => ({ ...acc, [curr]: currIndex }), {});
+
+const convertObjToArr = obj => {
+  let arr = keys(obj).map(key => ({ id: key, index: obj[key] }));
+  arr = sortBy(arr, ite => ite.index);
+  return arr;
+};
+
 const OrderList = ({
   qIndex,
   view,
@@ -94,37 +101,44 @@ const OrderList = ({
   const scrollContext = useContext(ScrollContext);
   const scrollContainer = scrollContext.getScrollElement();
 
-  const userAnswer = !isEmpty(_userAnswer) ? _userAnswer : get(item, "list", []).map((_, i) => i);
-
+  const options = get(item, "list", {});
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
   const uiStyle = get(item, "uiStyle", {});
   const styleType = get(item, "uiStyle.type", "button");
   const axis = styleType === "inline" ? "x" : "y";
   const columns = styleType === "inline" ? 3 : 1;
-  const validResponse = get(item, "validation.validResponse", { value: [] });
+  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
+
+  const validResponse = get(item, "validation.validResponse", { value: {} });
   const altResponses = get(item, `validation.altResponses[${correctTab - 1}]`, { value: [] });
+  let answersToEdit = correctTab === 0 ? validResponse.value : altResponses.value;
+  answersToEdit = convertObjToArr(answersToEdit);
 
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
+    let newCorrectAnswer = arrayMove(answersToEdit, oldIndex, newIndex);
+    newCorrectAnswer = newCorrectAnswer.reduce((acc, curr, currIndex) => ({ ...acc, [curr.id]: currIndex }), {});
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.validResponse.value = arrayMove(draft.validation.validResponse.value, oldIndex, newIndex);
+          draft.validation.validResponse.value = newCorrectAnswer;
         } else {
-          draft.validation.altResponses[correctTab - 1].value = arrayMove(
-            draft.validation.altResponses[correctTab - 1].value,
-            oldIndex,
-            newIndex
-          );
+          draft.validation.altResponses[correctTab - 1].value = newCorrectAnswer;
         }
       })
     );
   };
 
-  const onSortPreviewEnd = ({ oldIndex, newIndex }) => {
-    const newPreviewList = arrayMove(userAnswer, oldIndex, newIndex);
-    changePreviewTab();
-
-    saveAnswer(newPreviewList);
+  const handleUpdatePoints = points => {
+    setQuestionData(
+      produce(item, draft => {
+        if (correctTab === 0) {
+          draft.validation.validResponse.score = points;
+        } else {
+          draft.validation.altResponses[correctTab - 1].score = points;
+        }
+        updateVariables(draft);
+      })
+    );
   };
 
   const handleAddAltResponse = () => {
@@ -132,7 +146,7 @@ const OrderList = ({
       produce(item, draft => {
         draft.validation.altResponses.push({
           score: 1,
-          value: draft.list.map((q, i) => i)
+          value: keys(draft.list).reduce((acc, curr, currIndex) => ({ ...acc, [curr]: currIndex }), {})
         });
 
         setCorrectTab(correctTab + 1);
@@ -151,18 +165,6 @@ const OrderList = ({
     );
   };
 
-  const handleUpdatePoints = points => {
-    setQuestionData(
-      produce(item, draft => {
-        if (correctTab === 0) {
-          draft.validation.validResponse.score = points;
-        } else {
-          draft.validation.altResponses[correctTab - 1].score = points;
-        }
-        updateVariables(draft);
-      })
-    );
-  };
   // providing props width with value 230px same as min-width provided in PointsInput
   // fixes the issue with PointsInput taking full width
   const renderOptions = view === EDIT && scrollContainer && (
@@ -175,11 +177,7 @@ const OrderList = ({
         data-cy="match-option-list"
         prefix="options2"
         readOnly
-        items={
-          correctTab === 0
-            ? validResponse.value.map(ind => item.list[ind])
-            : altResponses.value.map(ind => item.list[ind])
-        }
+        items={answersToEdit.map(ite => options[ite.id])}
         onSortEnd={handleCorrectSortEnd}
         useDragHandle
         columns={columns}
@@ -201,31 +199,35 @@ const OrderList = ({
   };
 
   if (!item) return null;
-
+  // ------------------ Item Preivew Start ------------------ //
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
-  const correctAnswers = get(itemForPreview, "validation.validResponse.value", []);
+  const correctAnswers = get(itemForPreview, "validation.validResponse.value", {});
   const hasAltAnswers = get(itemForPreview, "validation.altResponses", []).length > 0;
-  const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
-
   const alternateAnswers = {};
+
+  let userAnswer = correctAnswers;
+  if (!answerContext.expressGrader) {
+    userAnswer = !isEmpty(_userAnswer) ? _userAnswer : convertArrToObj(keys(get(item, "list", {})));
+  }
+  const userAnswerToShow = keys(userAnswer);
+  const correctAnswersToShow = convertObjToArr(correctAnswers).map(ans => itemForPreview.list[ans.id]);
+
+  const onSortPreviewEnd = ({ oldIndex, newIndex }) => {
+    const newUserAnswer = convertArrToObj(arrayMove(userAnswerToShow, oldIndex, newIndex));
+    changePreviewTab();
+    saveAnswer(newUserAnswer);
+  };
 
   if (hasAltAnswers) {
     const altAnswers = itemForPreview.validation.altResponses;
     altAnswers.forEach(altAnswer => {
-      altAnswer.value.forEach((alt, index) => {
+      convertObjToArr(altAnswer.value).forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         if (alt !== "") {
-          alternateAnswers[index + 1].push(itemForPreview.list[alt]);
+          alternateAnswers[index + 1].push(itemForPreview.list[alt.id]);
         }
       });
     });
-  }
-
-  let initialAnswers = [];
-  if (answerContext.expressGrader) {
-    initialAnswers = disableResponse ? correctAnswers : userAnswer;
-  } else {
-    initialAnswers = userAnswer.length > 0 ? userAnswer : get(itemForPreview, "list", []).map((q, i) => i);
   }
 
   const evaluationForCheckAnswer = evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
@@ -244,9 +246,11 @@ const OrderList = ({
     lockToContainerEdges: true,
     lockOffset: ["10%", "10%"],
     lockAxis: uiStyle.type === "inline" ? "x" : "y",
+    options: itemForPreview.list || {},
     getContainer: uiStyle.type === "inline" && scrollContainer ? null : () => scrollContainer,
     isPrintPreview
   };
+  // ------------------ Item Preivew End ------------------ //
 
   return (
     <Fragment>
@@ -305,18 +309,13 @@ const OrderList = ({
                   dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
                 />
               </QuestionTitleWrapper>
-              {previewTab === CLEAR && (
-                <OrderListPreview
-                  {...previewProps}
-                  questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
-                />
-              )}
+              {previewTab === CLEAR && <OrderListPreview {...previewProps} questions={userAnswerToShow} />}
 
               {(previewTab === CHECK || previewTab === SHOW) && (
                 <OrderListPreview
                   {...previewProps}
                   evaluation={evaluationForCheckAnswer}
-                  questions={userAnswer.map(index => itemForPreview.list[index])}
+                  questions={userAnswerToShow}
                 />
               )}
 
@@ -324,11 +323,7 @@ const OrderList = ({
               {previewTab === SHOW || isReviewTab ? (
                 <Fragment>
                   <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
-                    <OrderListPreview
-                      {...previewProps}
-                      showAnswer
-                      questions={correctAnswers.map(index => itemForPreview.list[index])}
-                    />
+                    <OrderListPreview {...previewProps} showAnswer questions={correctAnswersToShow} />
                   </CorrectAnswersContainer>
 
                   {hasAltAnswers && (

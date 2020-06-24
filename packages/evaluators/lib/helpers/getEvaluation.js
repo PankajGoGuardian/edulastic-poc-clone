@@ -25,36 +25,11 @@ var _constants = require("@edulastic/constants");
 
 var _clozeTextHelpers = require("./clozeTextHelpers");
 
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly)
-      symbols = symbols.filter(function(sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-    keys.push.apply(keys, symbols);
-  }
-  return keys;
-}
+var _orderlistHelpers = require("./orderlistHelpers");
 
-function _objectSpread(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function(key) {
-        (0, _defineProperty2["default"])(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function(key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-  return target;
-}
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2["default"])(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var getEvaluation = function getEvaluation(response, answers, rightIndex, compareFunction) {
   var restOptions = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
@@ -62,27 +37,24 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
 
   if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
     evaluation = (0, _clozeTextHelpers.getClozeTextEvaluation)(response, answers[rightIndex].value, restOptions);
+  } else if ((0, _isObject2["default"])(response)) {
+    return (0, _orderlistHelpers.getOrderlitEvaluation)(response, answers, rightIndex);
   } else {
-    response.forEach(function(item, i) {
+    response.forEach(function (item, i) {
       var ans = answers[rightIndex].value[i];
 
       switch (compareFunction) {
         case _constants.evaluatorTypes.INNER_DIFFERENCE:
-          evaluation[i] =
-            (0, _difference2["default"])(answers[rightIndex].value[i], item).length === 0 &&
-            (0, _difference2["default"])(item, answers[rightIndex].value[i]).length === 0;
+          evaluation[i] = (0, _difference2["default"])(answers[rightIndex].value[i], item).length === 0 && (0, _difference2["default"])(item, answers[rightIndex].value[i]).length === 0;
           break;
 
         case _constants.evaluatorTypes.IS_EQUAL:
           if (ans && (0, _isObject2["default"])(ans) && ans.y) {
-            evaluation[i] = (0, _isEqual2["default"])(
-              _objectSpread({}, ans, {
-                y: +ans.y.toFixed(5)
-              }),
-              _objectSpread({}, item, {
-                y: +item.y.toFixed(5)
-              })
-            );
+            evaluation[i] = (0, _isEqual2["default"])(_objectSpread({}, ans, {
+              y: +ans.y.toFixed(5)
+            }), _objectSpread({}, item, {
+              y: +item.y.toFixed(5)
+            }));
           } else {
             ans = (0, _isString2["default"])(ans) ? ans.trim() : ans;
             item = (0, _isString2["default"])(item) ? item.trim() : item;
@@ -99,7 +71,7 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
     });
   }
 
-  return evaluation.filter(function(item) {
+  return evaluation.filter(function (item) {
     return (0, _isBoolean2["default"])(item);
   });
 };

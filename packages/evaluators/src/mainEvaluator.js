@@ -4,7 +4,7 @@ import partialMatchTemplate from "./helpers/partialMatchTemplate";
 import exactMatchTemplate from "./helpers/exactMatchTemplate";
 import countExactMatchScores from "./helpers/countExactMatchScores";
 
-const evaluator = evaluatorType => ({ userResponse = [], validation }) => {
+const evaluator = (evaluatorType, qType = "") => ({ userResponse = [], validation }) => {
   const { validResponse, altResponses, scoringType } = validation;
   const answers = [validResponse, ...altResponses];
   switch (scoringType) {
@@ -12,7 +12,8 @@ const evaluator = evaluatorType => ({ userResponse = [], validation }) => {
       return exactMatchTemplate(countExactMatchScores(evaluatorType), {
         userResponse,
         answers,
-        validation
+        validation,
+        qType
       });
     case ScoringType.PARTIAL_MATCH:
     case ScoringType.PARTIAL_MATCH_V2:
@@ -20,7 +21,8 @@ const evaluator = evaluatorType => ({ userResponse = [], validation }) => {
       return partialMatchTemplate(countPartialMatchScores(evaluatorType), {
         userResponse,
         answers,
-        validation
+        validation,
+        qType
       });
   }
 };

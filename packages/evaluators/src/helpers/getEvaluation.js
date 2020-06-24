@@ -1,12 +1,15 @@
 import { isEqual, includes, difference, isBoolean, isString, isObject } from "lodash";
 import { evaluatorTypes } from "@edulastic/constants";
 import { getClozeTextEvaluation } from "./clozeTextHelpers";
+import { getOrderlitEvaluation } from "./orderlistHelpers";
 
 const getEvaluation = (response, answers, rightIndex, compareFunction, restOptions = {}) => {
   let evaluation = [];
 
   if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
     evaluation = getClozeTextEvaluation(response, answers[rightIndex].value, restOptions);
+  } else if (isObject(response)) {
+    return getOrderlitEvaluation(response, answers, rightIndex);
   } else {
     response.forEach((item, i) => {
       let ans = answers[rightIndex].value[i];

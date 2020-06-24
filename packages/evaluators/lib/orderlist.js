@@ -11,6 +11,6 @@ var _constants = require("@edulastic/constants");
 
 var _mainEvaluator = _interopRequireDefault(require("./mainEvaluator"));
 
-var evaluator = (0, _mainEvaluator["default"])(_constants.evaluatorTypes.IS_EQUAL);
+var evaluator = (0, _mainEvaluator["default"])(_constants.evaluatorTypes.IS_EQUAL, _constants.questionType.ORDER_LIST);
 var _default = evaluator;
 exports["default"] = _default;

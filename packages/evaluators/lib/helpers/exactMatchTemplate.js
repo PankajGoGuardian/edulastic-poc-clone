@@ -11,20 +11,20 @@ var _getCalculateScores2 = _interopRequireDefault(require("./getCalculateScores"
 
 var exactMatchTemplate = function exactMatchTemplate(mainFunction, mainArguments) {
   var _mainArguments$valida = mainArguments.validation,
-    ignoreCase = _mainArguments$valida.ignoreCase,
-    allowSingleLetterMistake = _mainArguments$valida.allowSingleLetterMistake; // eslint-disable-next-line prefer-const
+      ignoreCase = _mainArguments$valida.ignoreCase,
+      allowSingleLetterMistake = _mainArguments$valida.allowSingleLetterMistake;
 
   var _mainFunction = mainFunction(mainArguments, {
-      ignoreCase: ignoreCase,
-      allowSingleLetterMistake: allowSingleLetterMistake
-    }),
-    score = _mainFunction.score,
-    maxScore = _mainFunction.maxScore,
-    evaluation = _mainFunction.evaluation;
+    ignoreCase: ignoreCase,
+    allowSingleLetterMistake: allowSingleLetterMistake
+  }),
+      score = _mainFunction.score,
+      maxScore = _mainFunction.maxScore,
+      evaluation = _mainFunction.evaluation;
 
   var _getCalculateScores = (0, _getCalculateScores2["default"])(score, maxScore, mainArguments.validation),
-    newScore = _getCalculateScores.newScore,
-    newMaxScore = _getCalculateScores.newMaxScore;
+      newScore = _getCalculateScores.newScore,
+      newMaxScore = _getCalculateScores.newMaxScore;
 
   return {
     score: newScore,

@@ -13,7 +13,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 var _constants = require("./constants");
 
-var LogarithmFunction = /*#__PURE__*/ (function() {
+var LogarithmFunction = /*#__PURE__*/function () {
   function LogarithmFunction(points) {
     (0, _classCallCheck2["default"])(this, LogarithmFunction);
     this.startX = +points.startX;
@@ -22,18 +22,16 @@ var LogarithmFunction = /*#__PURE__*/ (function() {
     this.endY = +points.endY;
   }
 
-  (0, _createClass2["default"])(LogarithmFunction, [
-    {
-      key: "getBC",
-      value: function getBC() {
-        var b = this.endY - this.startY;
-        var c = this.endX - this.startX >= 0 ? this.endX - this.startX : 1 / (this.startX - this.endX);
-        return (b / c).toFixed(_constants.FractionDigits);
-      }
+  (0, _createClass2["default"])(LogarithmFunction, [{
+    key: "getBC",
+    value: function getBC() {
+      var b = this.endY - this.startY;
+      var c = this.endX - this.startX >= 0 ? this.endX - this.startX : 1 / (this.startX - this.endX);
+      return (b / c).toFixed(_constants.FractionDigits);
     }
-  ]);
+  }]);
   return LogarithmFunction;
-})();
+}();
 
 var _default = LogarithmFunction;
 exports["default"] = _default;

@@ -27,7 +27,8 @@ class OrderListPreview extends Component {
       evaluation,
       getStemNumeration,
       showAnswer,
-      isPrintPreview
+      isPrintPreview,
+      options
     } = this.props;
 
     const listItemMinWidth = get(uiStyle, "choiceMinWidth", defaultMinW);
@@ -62,14 +63,14 @@ class OrderListPreview extends Component {
             questions.map((q, i) => {
               const itemProps = {
                 key: i,
-                question: q,
-                showDragHandle: false,
                 smallSize,
                 columns,
                 styleType,
                 cIndex: i,
-                style: listItemStyle,
                 showAnswer,
+                style: listItemStyle,
+                showDragHandle: false,
+                question: showAnswer ? q : options[q],
                 stemNumeration: getStemNumeration(uiStyle.validationStemNumeration, i),
                 isPrintPreview
               };
@@ -83,7 +84,7 @@ class OrderListPreview extends Component {
                   showAnswer={false}
                   disabled={disableResponse}
                   checked={!isEmpty(evaluation)}
-                  correct={evaluation[i]}
+                  correct={evaluation[q]}
                 />
               );
             })}
@@ -109,7 +110,7 @@ const OrderListWrapper = styled.div`
 OrderListPreview.propTypes = {
   listStyle: PropTypes.object.isRequired,
   uiStyle: PropTypes.object.isRequired,
-  evaluation: PropTypes.array,
+  evaluation: PropTypes.object,
   getStemNumeration: PropTypes.func.isRequired,
   questions: PropTypes.array,
   showAnswer: PropTypes.bool,

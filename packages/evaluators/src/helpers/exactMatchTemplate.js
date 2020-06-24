@@ -4,8 +4,7 @@ const exactMatchTemplate = (mainFunction, mainArguments) => {
   const {
     validation: { ignoreCase, allowSingleLetterMistake }
   } = mainArguments;
-  // eslint-disable-next-line prefer-const
-  let { score, maxScore, evaluation } = mainFunction(mainArguments, { ignoreCase, allowSingleLetterMistake });
+  const { score, maxScore, evaluation } = mainFunction(mainArguments, { ignoreCase, allowSingleLetterMistake });
 
   const { newScore, newMaxScore } = getCalculateScores(score, maxScore, mainArguments.validation);
 

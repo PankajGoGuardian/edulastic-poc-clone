@@ -1,11 +1,14 @@
-import { cloneDeep } from "lodash";
+import { questionType } from "@edulastic/constants";
+import { cloneDeep, isEmpty, keys } from "lodash";
 import getMatches from "./getMatches";
 import getEvaluation from "./getEvaluation";
 import { getClozeTextMatches } from "./clozeTextHelpers";
+import { getOrderlistMatchs } from "./orderlistHelpers";
 
-const countPartialMatchScores = compareFunction => ({ answers, userResponse = [] }, restOptions = {}) => {
+const countPartialMatchScores = compareFunction => ({ answers, userResponse = [], qType }, restOptions = {}) => {
+  const isOrderlist = qType === questionType.ORDER_LIST;
   let existingResponse = cloneDeep(userResponse);
-  if (!Array.isArray(userResponse)) {
+  if (!isOrderlist && !Array.isArray(userResponse)) {
     existingResponse = cloneDeep(userResponse.value);
   }
 
@@ -16,13 +19,19 @@ const countPartialMatchScores = compareFunction => ({ answers, userResponse = []
   let rightIndex = 0;
 
   answers.forEach(({ value: answer, score: totalScore }, ind) => {
-    if (!answer || !answer.length) {
+    if (isEmpty(answer)) {
       return;
     }
+    let numOfanswer = answer.length;
+    let matches = 0;
 
-    const scorePerAnswer = totalScore / answer.length;
-
-    let matches = getMatches(existingResponse, answer, compareFunction);
+    if (isOrderlist) {
+      matches = getOrderlistMatchs(existingResponse, answer);
+      numOfanswer = keys(answer).length;
+    } else {
+      matches = getMatches(existingResponse, answer, compareFunction);
+    }
+    const scorePerAnswer = totalScore / numOfanswer;
 
     if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
       matches = getClozeTextMatches(existingResponse, answer, restOptions);
@@ -34,7 +43,7 @@ const countPartialMatchScores = compareFunction => ({ answers, userResponse = []
     maxScore = Math.max(maxScore, totalScore);
 
     if (currentScore === score) {
-      rightLen = answer.length;
+      rightLen = numOfanswer;
       rightIndex = ind;
     }
   });

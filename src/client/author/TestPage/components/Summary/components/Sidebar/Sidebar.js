@@ -42,7 +42,7 @@ const Sidebar = ({
   toggleTestLikeRequest
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "_id");
-  const subjectsList = selectsData.allSubjects.slice(1);
+  const subjectsList = selectsData.allSubjects;
   const [searchValue, setSearchValue] = useState("");
   const testTitleInput = createRef();
   const isPublishers = !!(features.isPublisherAuthor || features.isCurator);

@@ -62,7 +62,8 @@ const SimpleStackedBarChartComponent = ({
   lineYTickFormatter = _yTickFormatter,
   lineYAxisLabel = "",
   isBarClickable = false,
-  isPrinting
+  isPrinting,
+  printWidth
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -203,7 +204,7 @@ const SimpleStackedBarChartComponent = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
-      <ResponsiveContainer width={isPrinting ? 1024 : "100%"} height={400}>
+      <ResponsiveContainer width={isPrinting ? printWidth || 1024 : "100%"} height={400}>
         <ComposedChart width={730} height={400} data={chartData} margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis

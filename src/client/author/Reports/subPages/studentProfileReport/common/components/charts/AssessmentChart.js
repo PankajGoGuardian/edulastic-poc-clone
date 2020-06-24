@@ -12,7 +12,8 @@ const AssessmentChart = ({
   onResetClickCB,
   studentInformation = {},
   xTickTooltipPosition = 460,
-  isBarClickable = false
+  isBarClickable = false,
+  printWidth
 }) => {
   const xDataKey = "uniqId";
 
@@ -20,8 +21,8 @@ const AssessmentChart = ({
 
   const barsLabelFormatter = value => `${round(value || 0)}%`;
 
-  const getXTickText = (payload, data) => {
-    const currentBarData = find(data, item => item[xDataKey] === payload.value) || {};
+  const getXTickText = (payload, _data) => {
+    const currentBarData = find(_data, item => item[xDataKey] === payload.value) || {};
     return currentBarData.testName || "";
   };
 
@@ -52,9 +53,9 @@ const AssessmentChart = ({
       xTickTooltipPosition={xTickTooltipPosition}
       data={dataWithColors}
       xAxisDataKey={xDataKey}
-      bottomStackDataKey={"score"}
-      topStackDataKey={"diffScore"}
-      yAxisLabel={"Assessment Performance"}
+      bottomStackDataKey="score"
+      topStackDataKey="diffScore"
+      yAxisLabel="Assessment Performance"
       getTooltipJSX={getTooltipJSX}
       getXTickText={getXTickText}
       barsLabelFormatter={barsLabelFormatter}
@@ -62,6 +63,7 @@ const AssessmentChart = ({
       onResetClickCB={onResetClickCB}
       filter={selectedTests}
       isBarClickable={isBarClickable}
+      printWidth={printWidth}
     />
   );
 };

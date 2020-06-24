@@ -1,6 +1,6 @@
-import { backgrounds, labelGrey, secondaryTextColor, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
-import { SpinLoader } from "@edulastic/common";
-import { Col, Icon, Row } from "antd";
+import { backgrounds, labelGrey, secondaryTextColor } from "@edulastic/colors";
+import { SpinLoader, FlexContainer } from "@edulastic/common";
+import { Icon } from "antd";
 import { get, isEmpty } from "lodash";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -44,13 +44,12 @@ const getTooltip = payload => {
 };
 
 const StudentProfileSummary = ({
-  match,
   loading,
   settings,
   isCsvDownloading,
   SPRFilterData,
   studentProfileSummary,
-  getStudentProfileSummaryRequestAction,
+  getStudentProfileSummaryRequest,
   bandInfoSelected,
   selectedStandardProficiency,
   location,
@@ -81,11 +80,11 @@ const StudentProfileSummary = ({
   const domainsWithMastery = augmentDomainStandardMasteryData(domains, scaleInfo);
 
   useEffect(() => {
-    const { selectedStudent, requestFilters } = settings;
-    if (selectedStudent.key && requestFilters.termId) {
-      getStudentProfileSummaryRequestAction({
+    const { selectedStudent: _selectedStudent, requestFilters } = settings;
+    if (_selectedStudent.key && requestFilters.termId) {
+      getStudentProfileSummaryRequest({
         ...requestFilters,
-        studentId: selectedStudent.key
+        studentId: _selectedStudent.key
       });
     }
   }, [settings]);
@@ -128,54 +127,55 @@ const StudentProfileSummary = ({
   const studentName = getStudentName(selectedStudent, studentInformation);
   const anonymousString = t("common.anonymous");
 
-  const onCsvConvert = data =>
-    downloadCSV(`Student Profile Report-${studentName || anonymousString}-${studentInformation.subject}.csv`, data);
+  const onCsvConvert = _data =>
+    downloadCSV(`Student Profile Report-${studentName || anonymousString}-${studentInformation.subject}.csv`, _data);
 
   return (
     <>
-      <StyledCard>
-        <Row>
-          <StyledCol xs={24} sm={24} md={6} lg={6} xl={5}>
-            <IconContainer>
+      <FlexContainer marginBottom="20px" alignItems="stretch">
+        <StudentDetailsCard width="280px" mr="20px">
+          <IconContainer>
+            <UserIconWrapper>
               <StyledIcon type="user" />
-            </IconContainer>
-            <StudentDetailsContainer>
-              <span>NAME</span>
-              <p>{studentName || anonymousString}</p>
-              <span>GRADE</span>
-              <p>{getGrades(studentInformation.grades)}</p>
-              <span>SCHOOL</span>
-              <p>{studentClassInfo.schoolName || "N/A"}</p>
-              <span>SUBJECT</span>
-              <p>{studentClassInfo.standardSet || "N/A"}</p>
-            </StudentDetailsContainer>
-          </StyledCol>
-          <Col xs={24} sm={24} md={18} lg={18} xl={19}>
-            <AssessmentChart
-              data={data}
-              studentInformation={studentClassInfo}
-              xTickTooltipPosition={400}
-              onBarClickCB={_onBarClickCB}
-              isBarClickable
-            />
-          </Col>
-        </Row>
-      </StyledCard>
-      <StyledCard>
+            </UserIconWrapper>
+          </IconContainer>
+          <StudentDetailsContainer>
+            <span>NAME</span>
+            <p>{studentName || anonymousString}</p>
+            <span>GRADE</span>
+            <p>{getGrades(studentInformation.grades)}</p>
+            <span>SCHOOL</span>
+            <p>{studentClassInfo.schoolName || "N/A"}</p>
+            <span>SUBJECT</span>
+            <p>{studentClassInfo.standardSet || "N/A"}</p>
+          </StudentDetailsContainer>
+        </StudentDetailsCard>
+        <Card width="calc(100% - 300px)">
+          <AssessmentChart
+            data={data}
+            studentInformation={studentClassInfo}
+            xTickTooltipPosition={400}
+            onBarClickCB={_onBarClickCB}
+            isBarClickable
+            printWidth={700}
+          />
+        </Card>
+      </FlexContainer>
+      <div>
         <StyledH3>Standard Mastery Detail by Student</StyledH3>
-        <Row>
-          <Col xs={24} sm={24} md={8} lg={11} xl={8}>
+        <FlexContainer alignItems="stretch">
+          <Card width="280px" mr="20px">
             <StudentPerformancePie data={standards} scaleInfo={scaleInfo} getTooltip={getTooltip} title="" />
-          </Col>
-          <Col xs={24} sm={24} md={16} lg={13} xl={16}>
+          </Card>
+          <Card width="calc(100% - 300px)">
             <StandardMasteryDetailsTable
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}
               data={domainsWithMastery}
             />
-          </Col>
-        </Row>
-      </StyledCard>
+          </Card>
+        </FlexContainer>
+      </div>
     </>
   );
 };
@@ -190,7 +190,7 @@ const withConnect = connect(
     selectedStandardProficiency: getSelectedStandardProficiency(state)
   }),
   {
-    getStudentProfileSummaryRequestAction
+    getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction
   }
 );
 
@@ -199,28 +199,50 @@ export default compose(
   withNamespaces("student")
 )(StudentProfileSummary);
 
+const Card = styled(StyledCard)`
+  width: ${({ width }) => width};
+  margin-right: ${({ mr }) => mr};
+`;
+
 const StyledIcon = styled(Icon)`
   font-size: 80px;
 `;
 
 const IconContainer = styled.div`
+  width: 100%;
+  height: 90px;
+  background: white;
+  position: relative;
+  border-radius: 10px 10px 0px 0px;
+`;
+
+const UserIconWrapper = styled.div`
   width: 138px;
   height: 138px;
+  background: white;
   border-radius: 50%;
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 5px;
-  background: white;
+`;
+
+const StudentDetailsCard = styled(Card)`
+  background: ${backgrounds.default};
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
 `;
 
 const StudentDetailsContainer = styled.div`
-  width: 251px;
-  margin-top: 69px;
-  background: ${backgrounds.default};
+  width: 100%;
   border-radius: 10px;
-  padding: 69px 10px 10px 10px;
+  margin-top: 50px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -232,22 +254,5 @@ const StudentDetailsContainer = styled.div`
   p {
     color: ${secondaryTextColor};
     margin-bottom: 15px;
-  }
-  @media (max-width: ${smallDesktopWidth}) {
-    width: 180px;
-  }
-  @media (max-width: ${tabletWidth}) {
-    width: 95%;
-  }
-`;
-
-const StyledCol = styled(Col)`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  padding: 15px 46px;
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 15px 0px;
   }
 `;

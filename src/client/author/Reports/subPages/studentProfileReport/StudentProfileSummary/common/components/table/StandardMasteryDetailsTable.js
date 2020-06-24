@@ -89,26 +89,26 @@ const columns = [
     key: "name",
     dataIndex: "name",
     fixed: "left",
-    width: 180
+    width: 90
   },
   {
     title: "Domain Description",
     key: "description",
     dataIndex: "description",
-    width: 300
+    width: "calc(33% - 30px)"
   },
   {
     title: "Mastered Standards",
     key: "masteredCount",
     dataIndex: "masteredCount",
-    width: 180,
+    width: "calc(33% - 30px)",
     render: (masteredCount, record) => `${masteredCount} out of ${record.standards.length}`
   },
   {
     title: "Avg. Score(%)",
     key: "score",
     dataIndex: "score",
-    width: 180,
+    width: "calc(33% - 30px)",
     sorter: (a, b) => a.score - b.score,
     render: renderToolTipColumn
   }

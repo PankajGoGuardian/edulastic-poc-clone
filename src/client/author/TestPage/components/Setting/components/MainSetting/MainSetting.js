@@ -600,7 +600,7 @@ class MainSetting extends Component {
                           size="large"
                           value={sebPassword}
                           type={showPassword ? "text" : "password"}
-                          placeholder="Password"
+                          placeholder="Quit Password"
                         />
                       )}
                     </Col>

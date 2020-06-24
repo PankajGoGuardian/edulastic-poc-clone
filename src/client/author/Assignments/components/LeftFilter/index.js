@@ -13,7 +13,7 @@ import {
 } from "@edulastic/icons";
 import { faArchive } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, Icon, Input, message, Select } from "antd";
+import { Dropdown, Icon, Input, Select } from "antd";
 import { find, get, identity, lowerCase, orderBy, pickBy } from "lodash";
 import PropTypes from "prop-types";
 import React, { useLayoutEffect, useRef } from "react";
@@ -268,7 +268,7 @@ class LeftFilter extends React.Component {
       if (isAdvancedView) {
         loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
       } else {
-        loadAssignments({ filters, folderId : _id });
+        loadAssignments({ filters, folderId: _id });
       }
     } else {
       await clearFolder();
@@ -344,7 +344,7 @@ class LeftFilter extends React.Component {
   };
 
   render() {
-    const { termsData, selectedRows, folders, filterState, isAdvancedView, userRole, classList } = this.props;
+    const { termsData, selectedRows, folders, filterState, userRole, classList } = this.props;
     const { visibleModal, folderName, selectedFolder } = this.state;
     const { subject, grades, termId, testType, classId, status } = filterState;
     const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
@@ -484,6 +484,9 @@ class LeftFilter extends React.Component {
               getPopupContainer={triggerNode => triggerNode.parentNode}
               margin="0px 0px 15px"
             >
+              <Select.Option key="all" value="">
+                All subjects
+              </Select.Option>
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
                   {text}
@@ -585,9 +588,9 @@ class LeftFilter extends React.Component {
                   <Select.Option key="all" value="">
                     Select Status
                   </Select.Option>
-                  {Object.keys(AssignmentStatus).map(status => (
-                    <Select.Option key={status} value={AssignmentStatus[status]}>
-                      {AssignmentStatus[status]}
+                  {Object.keys(AssignmentStatus).map(_status => (
+                    <Select.Option key={_status} value={AssignmentStatus[_status]}>
+                      {AssignmentStatus[_status]}
                     </Select.Option>
                   ))}
                 </SelectInputStyled>

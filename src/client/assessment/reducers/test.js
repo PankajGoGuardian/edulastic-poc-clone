@@ -16,7 +16,8 @@ import {
   SAVE_USER_RESPONSE_SUCCESS,
   SAVE_USER_RESPONSE_ERROR,
   SHOW_HINTS,
-  Hide_HINTS
+  Hide_HINTS,
+  SET_SAVE_USER_RESPONSE
 } from "../constants/actions";
 
 const initialState = {
@@ -153,6 +154,8 @@ const test = (state = initialState, { payload, type }) => {
       return { ...state, showHints: true };
     case Hide_HINTS:
       return { ...state, showHints: false };
+    case SET_SAVE_USER_RESPONSE:
+      return { ...state, savingResponse: payload };
     default:
       return state;
   }

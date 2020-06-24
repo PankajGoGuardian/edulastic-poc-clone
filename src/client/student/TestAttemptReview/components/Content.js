@@ -11,8 +11,6 @@ import { get } from "lodash";
 import { test as testTypes } from "@edulastic/constants";
 import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge } from "@edulastic/colors";
 import { themes } from "../../../theme";
-
-import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
 import { loadTestAction } from "../../../assessment/actions/test";
@@ -22,8 +20,7 @@ class SummaryTest extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonIdx: null,
-      isShowConfirmationModal: false
+      buttonIdx: null
     };
   }
 
@@ -42,16 +39,6 @@ class SummaryTest extends Component {
 
   handlerButton = buttonIdx => {
     this.setState({ buttonIdx });
-  };
-
-  handlerConfirmationModal = () => {
-    this.setState(prevState => ({
-      isShowConfirmationModal: !prevState.isShowConfirmationModal
-    }));
-  };
-
-  closeConfirmationModal = () => {
-    this.setState({ isShowConfirmationModal: false });
   };
 
   goToQuestion = (testId, testActivityId, q) => () => {
@@ -86,21 +73,15 @@ class SummaryTest extends Component {
   };
 
   render() {
-    const { questionList: questionsAndOrder, t, test } = this.props;
+    const { questionList: questionsAndOrder, t, test, finishTest, savingResponse } = this.props;
     const { isDocBased, items } = test;
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased;
     const { blocks: questionList, itemWiseQids = [] } = questionsAndOrder;
     const itemIds = Object.keys(itemWiseQids);
-    const { finishTest } = this.props;
-    const { buttonIdx, isShowConfirmationModal } = this.state;
+    const { buttonIdx } = this.state;
     return (
       <ThemeProvider theme={themes.default}>
         <AssignmentContentWrapperSummary>
-          <Confirmation
-            isVisible={isShowConfirmationModal}
-            onClose={this.closeConfirmationModal}
-            finishTest={finishTest}
-          />
           <Container>
             <Header>
               <Title>{t("common.headingText")}</Title>
@@ -196,7 +177,7 @@ class SummaryTest extends Component {
             </MainContent>
             <Footer>
               <ShortDescription>{t("common.nextStep")}</ShortDescription>
-              <SubmitButton type="primary" onClick={this.handlerConfirmationModal}>
+              <SubmitButton type="primary" onClick={finishTest} loading={savingResponse}>
                 {t("default:submit")}
               </SubmitButton>
             </Footer>
@@ -230,7 +211,8 @@ const enhance = compose(
       test: state.test,
       items: state.test.items,
       assignmentId: get(state, "author_classboard_testActivity.assignmentId", ""),
-      classId: get(state, "author_classboard_testActivity.classId", "")
+      classId: get(state, "author_classboard_testActivity.classId", ""),
+      savingResponse: state?.test?.savingResponse
     }),
     {
       loadTest: loadTestAction

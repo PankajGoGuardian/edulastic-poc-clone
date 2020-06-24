@@ -28,7 +28,8 @@ import {
   ADD_ITEM_EVALUATION,
   LOAD_PREVIOUS_RESPONSES_REQUEST,
   REMOVE_PREVIOUS_ANSWERS,
-  CLEAR_USER_WORK
+  CLEAR_USER_WORK,
+  SET_SAVE_USER_RESPONSE
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
 import { loadBookmarkAction } from "../sharedDucks/bookmark";
@@ -440,6 +441,10 @@ function* loadPreviousResponses(payload) {
 
 function* submitTest({ payload }) {
   try {
+    yield put({
+      type: SET_SAVE_USER_RESPONSE,
+      payload: true
+    });
     const [classId, preventRouteChange] =
       typeof payload === "string" ? [payload] : [payload.groupId, payload.preventRouteChange];
     const testActivityId = yield select(state => state.test && state.test.testActivityId) || payload.testActivityId;
@@ -488,6 +493,11 @@ function* submitTest({ payload }) {
       });
       notification({ msg: err.data });
     }
+  } finally {
+    yield put({
+      type: SET_SAVE_USER_RESPONSE,
+      payload: false
+    });
   }
 }
 

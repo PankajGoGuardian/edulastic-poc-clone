@@ -22,11 +22,17 @@ const SnapItemContainers = ({
   showAnswer,
   checkAnswer,
   backgroundColor,
-  onDrop
+  onDrop, 
+  options
 }) => (
   <DropContainer index={0} drop={onDrop} data-cy="drop-container" style={{ height: "100%" }}>
     {userAnswers.map((userAnswer, index) =>
-      get(userAnswer, "value", []).map((answer, answerIndex) => {
+      get(userAnswer, "optionIds", []).map((optionId, answerIndex) => {
+        let answer = "";
+        const option = options.find(_option => _option.id === optionId);
+        if(option) {
+          answer = option.value;
+        }
         const title = striptags(answer) || null;
         const { rect } = userAnswer;
         const status = evaluation[index];
@@ -36,12 +42,13 @@ const SnapItemContainers = ({
           position: "absolute",
           zIndex: 40
         };
+        
         return (
           <DragItem
             key={answerIndex}
             title={title}
             style={itemStyle}
-            data={{ option: answer, fromContainerIndex: index, fromRespIndex: index }}
+            data={{ option: { id: optionId, value: answer }, fromContainerIndex: index, fromRespIndex: index }}
             size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
           >
             <ChoiceItem

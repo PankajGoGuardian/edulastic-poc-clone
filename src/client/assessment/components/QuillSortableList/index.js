@@ -1,5 +1,7 @@
 import React, { memo } from "react";
+
 import { SortableContainer } from "react-sortable-hoc";
+import isObject from "lodash/isObject";
 import { withNamespaces } from "@edulastic/localization";
 
 import QuillSortableItem from "./components/QuillSortableItem";
@@ -28,7 +30,7 @@ const QuillSortableList = SortableContainer(
     className
   }) => (
     <SortableListContainer data-cy="sortable-list-container" className={className}>
-      {items.map((value, index) => (
+      {items.map((item, index) => (
         <QuillSortableItem
           fontSize={fontSize}
           key={index}
@@ -37,14 +39,14 @@ const QuillSortableList = SortableContainer(
           label={defaultLabel === false ? "" : label ? `${label} ${index + 1}` : ""}
           indx={prefix + index}
           placeholder={placeholder || `${t("component.multiplechoice.optionPlaceholder")} #${index + 1}`}
-          value={value}
+          value={isObject(item) ? item.value : item}
           firstFocus={firstFocus}
           rOnly={readOnly}
           canDelete={canDelete}
           columns={columns}
           styleType={styleType}
-          onRemove={() => onRemove(index)}
-          onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}
+          onRemove={() => onRemove(index, item?.id)}
+          onChange={val => (typeof onChange === "function" ? onChange(index, val, item?.id) : () => {})}
           toolbarSize={toolbarSize}
           imageDefaultWidth={imageDefaultWidth}
         />

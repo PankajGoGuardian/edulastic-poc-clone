@@ -102,21 +102,11 @@ const getInitialResponses = ({ options, userSelections, configureOptions }) => {
   let possibleResps = [];
   possibleResps = cloneDeep(options);
   userSelections = flattenDeep(userSelections);
+
   if (!isDuplicated) {
     // remove all the options that are chosen from the available options
-    const _userSelections = userSelections.reduce((acc, opts) => acc.concat(opts?.value || []), []);
-    possibleResps = possibleResps.filter(resp => {
-      const i = _userSelections.indexOf(resp);
-      if (i !== -1) {
-        /**
-         * i is first index of choice at _userselections
-         * we need to remove it from _userSelection
-         * becasue there are duplicated choices
-         */
-        _userSelections.splice(i, 1);
-      }
-      return i === -1;
-    });
+    const _userSelections = userSelections.reduce((acc, opts) => acc.concat(opts?.optionIds || []), []);
+    possibleResps = possibleResps.filter(resp => _userSelections.indexOf(resp.id) === -1);
   }
   return possibleResps;
 };
@@ -183,10 +173,11 @@ class Display extends Component {
     const newResponses = cloneDeep(possibleResponses);
 
     const answerRect = this.getAnswerRect(itemRect);
-    const data = Array.isArray(sourceData) ? sourceData : [sourceData];
+    // const data = Array.isArray(sourceData) ? sourceData : [sourceData];
+    const data = [sourceData.id];
 
     if (fromContainerIndex !== fromRespIndex) {
-      newAnswers.push({ value: data, rect: answerRect });
+      newAnswers.push({ optionIds: data, rect: answerRect });
       newResponses.splice(fromRespIndex, 1);
     } else if (typeof fromContainerIndex === "number") {
       newAnswers[fromContainerIndex].rect = answerRect;
@@ -223,12 +214,15 @@ class Display extends Component {
           res => res && res.responseBoxID === newAnswers[i].responseBoxID
         );
         if (duplicated.length > 1) {
-          newAnswers[i].value = data;
+          newAnswers[i].optionIds = data;
         }
       }
-      if (maxRespCount && newAnswers[i] && newAnswers[i].value.length > maxRespCount) {
-        const last = newAnswers[i].value.splice(newAnswers[i].value.length - 2, 1)[0];
-        newResponses.push(last);
+      if (maxRespCount && newAnswers[i] && newAnswers[i]?.optionIds.length > maxRespCount) {
+        // will remove the first added response in the container, back to possible responses
+        const firstAdded = newAnswers[i].optionIds?.shift();
+        if (firstAdded) {
+          newResponses.push(firstAdded);
+        }
       }
     }
     const _arr1 = newAnswers.filter(res => res && !res.responseBoxID);
@@ -271,26 +265,40 @@ class Display extends Component {
     const newAnswers = cloneDeep(userAnswers);
     const newResponses = cloneDeep(possibleResponses);
 
-    const data = Array.isArray(option) ? option : [option];
+    // const data = Array.isArray(option) ? option : [option.id];
+    const data = [option.id];
 
-    newAnswers[index] = {
-      responseBoxID: responseContainers[index] && responseContainers[index].id,
-      value: [...(newAnswers[index] ? newAnswers[index].value || [] : []), ...data],
-      containerIndex: index,
-      rect: this.getAnswerRect(itemRect)
-    };
-
-    if (maxRespCount && newAnswers[index].value.length > maxRespCount) {
-      const last = newAnswers[index].value.splice(newAnswers[index].value.length - 2, 1)[0];
-      newResponses.push(last);
-    }
-
-    if (typeof fromContainerIndex === "number") {
-      newAnswers[fromContainerIndex] = {
-        responseBoxID: responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
-        value: newAnswers[fromContainerIndex].value.filter((_, i) => i !== fromRespIndex),
-        containerIndex: index
+    if (index !== null) {
+      newAnswers[index] = {
+        responseBoxID: responseContainers[index] && responseContainers[index].id,
+        optionIds: [...(newAnswers[index] ? newAnswers[index].optionIds || [] : []), ...data],
+        containerIndex: index,
+        rect: this.getAnswerRect(itemRect)
       };
+      /**
+       * if the number of responses dropped, is greater than max limit
+       * we need to remove the first added response
+       * and keep the last added.
+       */
+      if (maxRespCount && newAnswers[index]?.optionIds.length > maxRespCount) {
+        // will remove the first added response in the container, back to possible responses
+        newAnswers[index].optionIds.shift();
+      }
+
+      /**
+       * if response was dropped from another response
+       * we need to filter out the id which was present in that response bpx. (option.id)
+       */
+      if (typeof fromContainerIndex === "number") {
+        newAnswers[fromContainerIndex] = {
+          responseBoxID: responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
+          // value: newAnswers[fromContainerIndex].value.filter((_, i) => i !== fromRespIndex),
+          optionIds: newAnswers[fromContainerIndex].optionIds.filter(id => id !== option.id),
+          containerIndex: index || fromContainerIndex
+        };
+      }
+    } else {
+      newAnswers[fromContainerIndex] = {};
     }
 
     onChange(newAnswers);
@@ -340,11 +348,36 @@ class Display extends Component {
   };
 
   getMaxWidthOfChoices() {
+    const { options = [] } = this.props;
     const { userAnswers, possibleResponses } = this.state;
-    const allResponses = userAnswers.map(ans => ans?.value?.join("")).concat(possibleResponses);
+    const userResponses = userAnswers
+      .map((ans = {}) => {
+        // get the value using the id and mapping it over the object
+        const { optionIds = [] } = ans;
+        const allOptions = optionIds.map(id => {
+          const option = options.find(_option => _option.id === id);
+          if (option) {
+            return option.value || "";
+          }
+          return "";
+        });
+        return allOptions.join(" ");
+      })
+      .reduce((acc, arr) => acc.concat(arr), []);
+    const possibleResps = possibleResponses.map(resp => resp.value || "");
+    const allResponses = userResponses.concat(possibleResps);
     const widthArr = allResponses.map(option => measureText(option || ""));
     const maxWidth = maxBy(widthArr, obj => obj?.width);
     return maxWidth?.width;
+  }
+
+  get mapIdAndValue() {
+    const idValueMap = {};
+    const { options = [] } = this.props;
+    options.forEach(option => {
+      idValueMap[option.id] = option.value;
+    });
+    return idValueMap;
   }
 
   render() {
@@ -516,6 +549,7 @@ class Display extends Component {
           backgroundColor={backgroundColor}
           onDrop={this.onDrop}
           choiceStyle={choiceStyle}
+          options={options}
         />
       );
 
@@ -551,6 +585,7 @@ class Display extends Component {
               isPrintMode={isPrintMode}
               imageWidth={imageWidth}
               imageHeight={imageHeight}
+              options={options}
             />
           )}
 
@@ -588,6 +623,7 @@ class Display extends Component {
             imageWidth={previewContainerWidth}
             fontSize={fontSize}
             isPrintPreview={isPrintPreview || isPrint}
+            options={options}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
@@ -613,6 +649,8 @@ class Display extends Component {
     const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
 
+    const idValueMap = this.mapIdAndValue;
+
     const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
@@ -620,6 +658,7 @@ class Display extends Component {
         userAnswers={answers}
         answersIndex={answersIndex}
         stemNumeration={stemNumeration}
+        idValueMap={idValueMap}
       />
     ));
 

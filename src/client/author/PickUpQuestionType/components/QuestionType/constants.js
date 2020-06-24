@@ -1429,7 +1429,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         imageWidth: 0,
         imageUrl: "https://cdn2.edulastic.com/default/1558946005996_transparent.png",
         maxRespCount: 1,
-        options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
+        options: [
+          { id: uuidsForFill[0], value: defaultOptions[0] },
+          { id: uuidsForFill[1], value: defaultOptions[1] },
+          { id: uuidsForFill[2], value: defaultOptions[2] }
+        ],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {

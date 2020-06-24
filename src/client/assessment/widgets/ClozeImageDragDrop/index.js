@@ -82,9 +82,10 @@ class ClozeImageDragDrop extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
+        const numberOfResponses = draft.responses?.length || 0; // responses cannot be empty, there is validator which checks that
         const response = {
           score: 1,
-          value: []
+          value: new Array(numberOfResponses).fill({})
         };
 
         if (draft.validation.altResponses && draft.validation.altResponses.length) {

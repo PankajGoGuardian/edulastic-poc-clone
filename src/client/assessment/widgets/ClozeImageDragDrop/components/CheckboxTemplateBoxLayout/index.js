@@ -39,7 +39,8 @@ const CheckboxTemplateBox = ({
   imageHeight,
   isPrintMode = false,
   fontSize,
-  isPrintPreview = false
+  isPrintPreview = false,
+  options
 }) => {
   const { height: respHeight, width: respWidth, left: respLeft, top: respTop } = responseContainer;
 
@@ -47,7 +48,7 @@ const CheckboxTemplateBox = ({
 
   const isChecked =
     get(userSelections, `[${index}].responseBoxID`, false) &&
-    !!get(userSelections, `[${index}].value`, []).length &&
+    !!get(userSelections, `[${index}].optionIds`, []).length &&
     evaluation[index] !== undefined;
 
   const btnStyle = {
@@ -148,7 +149,6 @@ const CheckboxTemplateBox = ({
       };
 
   const userAnswer = userSelections[index]?.value?.join(" ") || "";
-
   return (
     <WithPopover
       fontSize={fontSize}
@@ -173,6 +173,7 @@ const CheckboxTemplateBox = ({
           style={showAnswer || checkAnswer ? { ...textContainerStyle, padding: !isPrintPreview && "0px" } : {}}
         >
           <TextContainer
+            options={options}
             dropTargetIndex={index}
             userSelections={userSelections}
             isSnapFitValues={isSnapFitValues}

@@ -7,6 +7,8 @@ import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { withTheme } from "styled-components";
+import uuid from "uuid/v4";
+
 
 import "react-quill/dist/quill.snow.css";
 
@@ -53,70 +55,78 @@ class PossibleResponses extends Component {
     );
   };
 
-  remove = index => {
+  remove = (index, id) => {
     const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation.validResponse.value.forEach(arr => {
-          if (arr.value.includes(draft.options[index])) {
-            arr.value.splice(arr.value.indexOf(draft.options[index]), 1);
-          }
-        });
-
-        draft.validation.altResponses.forEach(overArr => {
-          overArr.value.forEach(arr => {
-            if (arr.value.includes(draft.options[index])) {
-              arr.value.splice(arr.value.indexOf(draft.options[index]), 1);
+    const optionIndex = item.options.findIndex(option => option.id === id);
+    if(optionIndex !== -1) {
+      setQuestionData(
+        produce(item, draft => {
+          draft.validation.validResponse.value.forEach((arr) => {
+            if (arr?.optionIds.includes(id)) {
+              arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
             }
           });
-        });
-
-        draft.options.splice(index, 1);
-        updateVariables(draft);
-      })
-    );
-  };
-
-  editOptions = (index, value) => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation.validResponse.value.forEach(arr => {
-          // arr is null for indices 0 and 1 if we drop answer on 3rd directly
-          // so adding optional chaining will prevent page crash
-          if (arr?.value.includes(draft.options[index])) {
-            arr.value.splice(arr.value.indexOf(draft.options[index]), 1);
-          }
-        });
-
-        draft.validation.altResponses.forEach(overArr => {
-          if (overArr) {
-            overArr.value.forEach(arr => {
-              if (arr?.value.includes(draft.options[index])) {
-                arr.value.splice(arr.value.indexOf(draft.options[index]), 1, value);
+  
+          draft.validation.altResponses.forEach(altResponse => {
+            altResponse.value.forEach(arr => {
+              if (arr?.optionIds.includes(id)) {
+                arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
               }
             });
-          }
-        });
+          });
+  
+          draft.options.splice(optionIndex, 1);
+          updateVariables(draft);
+        })
+      );
+    }
+  };
 
-        draft.options[index] = value;
-        updateVariables(draft);
-      })
-    );
+  editOptions = (index, value, id) => {
+    const { item, setQuestionData } = this.props;
+    const optionIndex = item.options.findIndex(option => option.id === id);
+    if (optionIndex !== -1) {
+      setQuestionData(
+        produce(item, draft => {
+          draft.validation.validResponse.value.forEach(arr => {
+            // arr is null for indices 0 and 1 if we drop answer on 3rd directly
+            // so adding optional chaining will prevent page crash
+            if (arr?.optionIds.includes(id)) {
+              arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
+            }
+          });
+  
+          draft.validation.altResponses.forEach(altResponse => {
+            if (altResponse) {
+              altResponse.value.forEach(arr => {
+                if (arr?.optionIds.includes(id)) {
+                  arr.optionIds.splice(arr.optionIds.indexOf(id), 1);
+                }
+              });
+            }
+          });
+  
+         
+            draft.options[optionIndex].value = value;
+            updateVariables(draft);
+        })
+      );
+    }
   };
 
   addNewChoiceBtn = () => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options.push("");
+        draft.options.push({ id: uuid(), value: "" });
       })
     );
   };
 
   render() {
     const { t, item, fillSections, cleanSections } = this.props;
-
+    
+    // const options = (item.options || []).map(option => option.value);
     return (
       <Question
         dataCy="possibleResponses"

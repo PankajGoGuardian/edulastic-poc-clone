@@ -234,9 +234,9 @@ const emptyFieldsValidator = {
     if (!options.length) {
       return [true, `options cannot be empty`];
     }
-    const hasEmptyKey = options.some(k => isRichTextFieldEmpty(k));
-    if (hasEmptyKey) {
-      return [true, `options have empty values`];
+    const hasEmptyOption = options.some(k => isRichTextFieldEmpty(k.value));
+    if (hasEmptyOption) {
+      return [true, `options cannot have empty values`];
     }
     return [false, ""];
   },
@@ -361,9 +361,7 @@ const answerValidator = {
   },
   [questionType.CLOZE_IMAGE_DRAG_DROP](answers) {
     const hasEmpty = answers.some(
-      answer =>
-        isEmpty(answer.value) ||
-        answer.value.some(ans => isEmpty(ans) || isEmpty(ans.value) || ans.value.some(a => isEmpty(a)))
+      answer => isEmpty(answer.value) || answer.value.some(ans => isEmpty(ans) || isEmpty(ans.optionIds))
     );
     return hasEmpty;
   },
@@ -522,7 +520,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
   }
 
   // check for empty correct answers
-  if (hasEmptyAnswers(item)) return [true, "Correct Answers should be set"];
+  if (hasEmptyAnswers(item)) return [true, "Correct/Alternate answers should be set"];
 
   return [false];
 };

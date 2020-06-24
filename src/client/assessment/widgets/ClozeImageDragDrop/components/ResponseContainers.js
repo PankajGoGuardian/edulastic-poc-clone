@@ -26,7 +26,8 @@ const ResponseContainers = ({
   fontSize,
   isPrintMode,
   imageWidth,
-  imageHeight
+  imageHeight,
+  options
 }) => {
   const getContainerStyle = container => {
     const responseContainerLeft = smallSize ? container.left / 2 : container.left;
@@ -55,7 +56,16 @@ const ResponseContainers = ({
   };
 
   return responseContainers.map((container, index) => {
-    const answers = get(userAnswers, `[${index}].value`, []).join(" ");
+    const userAnswer = userAnswers.find(ans => ans?.responseBoxID === container.id) || {};
+    const { optionIds = [] } = userAnswer;  
+    const answers = optionIds.reduce((acc, id) => {
+      const option = options.find(opt => opt.id === id);
+      if(option) {
+        acc.push(option);
+      }
+      return acc;
+    }, []);
+    
     return (
       <div style={{ position: "relative" }}>
         <DropContainer key={container.id} style={getContainerStyle(container)} drop={onDrop} index={index}>
@@ -69,9 +79,9 @@ const ResponseContainers = ({
             index={index}
             height={container.height}
             width={container.width}
-            answers={answers}
+            answers={answers.map(answer => answer.value).join(" ")}
           >
-            {get(userAnswers, `[${index}].value`, []).map((answer, item_index) => (
+            {answers.map((answer, item_index) => (
               <DragItem
                 style={dragItemStyle}
                 key={item_index}
@@ -82,7 +92,7 @@ const ResponseContainers = ({
                   width={container.width || "auto"}
                   isWrapText={isWrapText}
                   fontSize={fontSize}
-                  answer={answer}
+                  answer={answer.value}
                 />
               </DragItem>
             ))}

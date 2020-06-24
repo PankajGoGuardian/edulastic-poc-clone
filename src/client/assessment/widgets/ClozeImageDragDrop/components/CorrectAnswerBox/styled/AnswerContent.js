@@ -10,4 +10,8 @@ export const AnswerContent = styled.div`
   align-items: center;
   overflow: hidden;
   position: relative;
+
+  p {
+    display: inline-flex;
+   }
 `;

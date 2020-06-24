@@ -29,7 +29,7 @@ const ResponseBoxLayout = ({
     height: horizontallyAligned && "100%",
     padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16
   };
-
+  
   return (
     <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%", border: "none" }}>
       <StyledResponseDiv className="responses_box" data-cy="responses-box" style={containerStyle}>
@@ -53,7 +53,7 @@ const ResponseBoxLayout = ({
                     className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
                   >
                     {dragHandler && <DragHandler />}
-                    <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
+                    <MathSpan dangerouslySetInnerHTML={{ __html: option.value }} />
                   </ChoiceItem>
                 </DragItem>
               ))}

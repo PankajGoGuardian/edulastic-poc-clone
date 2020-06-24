@@ -158,7 +158,7 @@ const StudentsList = ({
   };
 
   return (
-    <div style={{ textAlign: "end" }}>
+    <div>
       {!loaded || updating ? (
         <Spin />
       ) : empty ? (

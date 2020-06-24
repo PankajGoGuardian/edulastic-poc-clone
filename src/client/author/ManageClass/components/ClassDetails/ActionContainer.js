@@ -365,6 +365,11 @@ const ActionContainer = ({
               ADD STUDENT
             </EduButton>
           )}
+          {checkForAddStudent && (
+            <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+              ADD MULTIPLE STUDENTS
+            </EduButton>
+          )}
           <EduButton
             height="30px"
             isGhost
@@ -407,15 +412,14 @@ const ActionContainer = ({
                     <span>Edit Student</span>
                   </MenuItems>
                 )}
-                <MenuItems key="addCoTeacher">
-                  <IconPlus />
-                  <span>Add a Co-Teacher</span>
-                </MenuItems>
-                {type === "class" && enableStudentGroups && (
-                  <MenuItems key="addToGroup">
-                    <IconPlus />
-                    <span>Add To Group</span>
-                  </MenuItems>
+                {type === "class" && (
+                  <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
+                    <MenuItems key="addToGroup">
+                      <IconPlus />
+                      <span>Add To Group</span>
+                    </MenuItems>
+                  </FeaturesSwitch>
+
                 )}
                 {type === "class" && (
                   <MenuItems key="mergeStudents">
@@ -431,12 +435,6 @@ const ActionContainer = ({
               ACTIONS
             </EduButton>
           </Dropdown>
-
-          {checkForAddStudent && (
-            <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
-              ADD MULTIPLE STUDENTS
-            </EduButton>
-          )}
 
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal

@@ -59,6 +59,7 @@ const ClassDetails = ({
   setClassNotFoundError,
   unarchiveClass
 }) => {
+  
   const { editPath, exitPath } = location?.state || {};
   const { name, type, cleverId, institutionId } = selectedClass;
   const typeText = type !== "class" ? "group" : "class";
@@ -224,6 +225,8 @@ const ClassDetails = ({
             isUserGoogleLoggedIn={isUserGoogleLoggedIn}
             enableCleverSync={enableCleverSync}
             syncClassesWithClever={syncClassesWithClever}
+            archiveClass={archiveClass}
+            entity={selectedClass}
           />
           <MainContentWrapper>
             <BreadCrumb ellipsis="calc(100% - 200px)" data={getBreadCrumbData()} style={{ position: "unset" }} />

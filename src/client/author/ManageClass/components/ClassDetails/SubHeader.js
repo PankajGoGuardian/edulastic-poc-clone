@@ -10,9 +10,10 @@ import { TypeToConfirmModal, SimpleConfirmModal, notification } from "@edulastic
 import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
-import { ContainerHeader, RightContent, ClassCode, IconArchiveClass, ClassLink } from "./styled";
+import { ContainerHeader, RightContent, ClassCode, IconArchiveClass, ClassLink,Studentscount, CodeWrapper } from "./styled";
 import { Tooltip } from "../../../../common/utils/helpers";
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
+
 
 const SubHeader = ({
   name,
@@ -20,22 +21,20 @@ const SubHeader = ({
   _id,
   type,
   active,
-  districtId,
   syncGCModal,
   allowGoogleLogin,
   fetchClassList,
   isUserGoogleLoggedIn,
-  archiveClass,
   cleverId,
-  setAssignmentFilters,
-  history,
   location,
   allowCanvasLogin,
   syncCanvasModal,
   user,
   institutionId,
-  unarchiveClass
+  unarchiveClass,
+  studentCount
 }) => {
+
   const [showModal, setShowModal] = useState(false);
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
   const { exitPath } = location?.state || {};
@@ -50,13 +49,6 @@ const SubHeader = ({
     console.log("error", err);
   };
 
-  const handleArchiveClass = () => {
-    archiveClass({ _id, districtId, exitPath, isGroup: type !== "class" });
-    setShowModal(false);
-  };
-  const handleArchiveClassCancel = () => {
-    setShowModal(false);
-  };
 
   const handleUnarchiveClass = () => {
     unarchiveClass({ groupId: _id, exitPath, isGroup: type !== "class" });
@@ -66,17 +58,6 @@ const SubHeader = ({
     setShowUnarchiveModal(false);
   };
 
-  // get assignments related to class
-  const getAssignmentsByClass = (classId = "") => event => {
-    event.stopPropagation();
-    const filter = {
-      classId,
-      testType: "",
-      termId: ""
-    };
-    history.push("/author/assignments");
-    setAssignmentFilters(filter);
-  };
 
   const handleSyncWithCanvas = async () => {
     try {
@@ -98,11 +79,20 @@ const SubHeader = ({
       notification({ messageKey: "errorWhileGettingAuthUri" });
     }
   };
-
+  
   return (
     <ContainerHeader>
+      {type === "class" && (
+        <CodeWrapper>
+          <ClassCode lg={6} span={12}>
+            Class Code <span>{code}</span>
+          </ClassCode>
+          <Studentscount lg={6} span={12}>
+            TOTAL STUDENTS <span>{studentCount || 0 }</span>
+          </Studentscount>
+        </CodeWrapper>
+      )}
       <RightContent>
-        <ClassLink onClick={getAssignmentsByClass(_id)}>VIEW ASSIGNMENT</ClassLink>
         {type === "class" && (
           <>
             {allowGoogleLogin !== false &&
@@ -154,29 +144,6 @@ const SubHeader = ({
             {/* <StyledIcon type="user" fill={greenDark} /> */}
           </>
         )}
-        {active === 1 && !cleverId && (
-          <Tooltip placement="top" title={`Archive ${typeText}`}>
-            <span onClick={() => setShowModal(true)}>
-              <IconArchiveClass data-cy="archive-class" width={20} height={20} />
-            </span>
-          </Tooltip>
-        )}
-        {showModal && (
-          <TypeToConfirmModal
-            modalVisible={showModal}
-            title={`Archive ${typeText}`}
-            handleOnOkClick={handleArchiveClass}
-            wordToBeTyped="ARCHIVE"
-            primaryLabel={`Are you sure you want to archive the following ${typeText.toLowerCase()}?`}
-            secondaryLabel={
-              <p style={{ margin: "5px 0" }}>
-                <LightGreenSpan>{name}</LightGreenSpan>
-              </p>
-            }
-            closeModal={handleArchiveClassCancel}
-            okButtonText="Archive"
-          />
-        )}
         {active !== 1 && <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>}
         {showUnarchiveModal && (
           <SimpleConfirmModal
@@ -192,12 +159,8 @@ const SubHeader = ({
             onCancel={handleUnarchiveClassCancel}
           />
         )}
+        
       </RightContent>
-      {type === "class" && (
-        <ClassCode>
-          Class Code <span>{code}</span>
-        </ClassCode>
-      )}
     </ContainerHeader>
   );
 };

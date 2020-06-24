@@ -1,15 +1,28 @@
-import { MainHeader, EduButton,notification } from "@edulastic/common";
+import { MainHeader, EduButton,TypeToConfirmModal, SimpleConfirmModal,notification } from "@edulastic/common";
+import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
-import React from "react";
+import withRouter from "react-router-dom/withRouter";
+import React,{useState} from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+
 // components
-import { message } from "antd";
+import { Dropdown,message } from "antd";
+
 import GoogleLogin from "react-google-login";
-import { IconGoogleClassroom, IconClever } from "@edulastic/icons";
+import { IconGoogleClassroom, IconClever,IconPlusCircle,IconPencilEdit,IconRemove,IconAssignment} from "@edulastic/icons";
+import IconArchive from "@edulastic/icons/src/IconArchive";
 import { canvasApi } from "@edulastic/api";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import {  DropMenu,MenuItems,CaretUp} from "./styled";
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
+import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
+import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
+
+
+const modalStatus = {};
 
 const Header = ({
   user,
@@ -22,9 +35,18 @@ const Header = ({
   syncGCModal,
   isUserGoogleLoggedIn,
   enableCleverSync,
-  syncClassesWithClever
+  syncClassesWithClever,
+  added,
+  archiveClass,
+  location,
+  setAssignmentFilters,
+  history,
+  unarchiveClass,
+  entity
+  
 }) => {
-  const { name, type, institutionId, institutionName = "", districtName = "", cleverId, active } = selectedClass;
+
+
 
   const handleLoginSuccess = data => {
     fetchClassList({ data, showModal: false });
@@ -34,6 +56,47 @@ const Header = ({
     notification({ messageKey: "googleLoginFailed" });
     console.log("error", err);
   };
+
+  const{_id, districtId}=entity;
+  const [showModal, setShowModal] = useState(false);
+  const { name, type, institutionId, institutionName = "", districtName = "", cleverId, active } = selectedClass;
+  const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
+  const { exitPath } = location?.state || {};
+
+
+  const typeText = type !== "class" ? "Group" : "Class";
+
+  const [isOpen, setModalStatus] = useState(modalStatus);
+  const [sentReq, setReqStatus] = useState(false);
+  const [isEdit, setEditStudentStatues] = useState(false);
+
+  const toggleModal = key => {
+    setModalStatus({ [key]: !isOpen[key] });
+    setEditStudentStatues(false);
+  };
+
+  if (added && sentReq) {
+    setReqStatus(false);
+    setModalStatus(false);
+  }
+
+  const handleActionMenuClick = () => {
+    toggleModal("addCoTeacher");
+  }
+  
+
+  const handleArchiveClass = () => {
+
+    archiveClass({ _id, districtId, exitPath, isGroup: type !== "class" });
+  
+    setShowModal(false);
+  };
+  const handleArchiveClassCancel = () => {
+    setShowModal(false);
+  };
+
+
+
 
   const handleSyncWithCanvas = async () => {
     try {
@@ -67,6 +130,17 @@ const Header = ({
     const classList = [{ ...selectedClass, course: selectedClass?.course?.id }];
     syncClassesWithClever({ classList });
   };
+
+  const getAssignmentsByClass = (classId = "") => event => {
+    const filter = {
+      classId,
+      testType: "",
+      termId: ""
+    };
+    history.push("/author/assignments");
+    setAssignmentFilters(filter);
+  };
+  
 
   const showSyncButtons = type === "class" && cleverId && active === 1;
 
@@ -116,11 +190,73 @@ const Header = ({
           </EduButton>
         )}
         {active === 1 && (
-          <EduButton onClick={onEdit} data-cy="editClass">
-            Edit {type === "class" ? "Class" : "Group"}
+          <EduButton onClick={handleActionMenuClick}>
+            <IconPlusCircle />Add Co-Teacher
           </EduButton>
         )}
+        {active === 1 && (
+          <Dropdown 
+            
+            overlay={
+              <DropMenu>
+                <CaretUp className="fa fa-caret-up" />
+               
+                <MenuItems onClick={onEdit} >
+                  <IconPencilEdit />
+                  <span>Edit Class</span>
+                </MenuItems>
+
+                <MenuItems onClick={() => setShowModal(true)}>
+                  <IconArchive />
+                  <span>Archive Class</span>
+                </MenuItems>
+               
+                <MenuItems onClick={handleActionMenuClick}>
+                  <IconPlusCircle />
+                  <span>Add a Co-Teacher</span>
+                </MenuItems>
+
+                <MenuItems>
+                  <IconRemove />
+                  <span>Remove a Co-Teacher</span>
+                </MenuItems>
+                <MenuItems onClick={getAssignmentsByClass(_id)}>
+                  <IconAssignment  />
+                  <span>View Assignments</span>
+                </MenuItems>
+              </DropMenu>
+           }
+            placement="bottomRight"
+          >
+           
+            <EduButton data-cy="headerDropDown" IconBtn>
+              <FontAwesomeIcon icon={faEllipsisV} />
+            </EduButton>
+          </Dropdown>
+        )}
       </div>
+      <AddCoTeacher
+        isOpen={isOpen.addCoTeacher}
+        type={type}
+        selectedClass={selectedClass}
+        handleCancel={() => toggleModal("addCoTeacher")}
+      />
+        {showModal && (
+          <TypeToConfirmModal
+            modalVisible={showModal}
+            title={`Archive ${typeText}`}
+            handleOnOkClick={handleArchiveClass}
+            wordToBeTyped="ARCHIVE"
+            primaryLabel={`Are you sure you want to archive the following ${typeText.toLowerCase()}?`}
+            secondaryLabel={
+              <p style={{ margin: "5px 0" }}>
+                <LightGreenSpan>{name}</LightGreenSpan>
+              </p>
+            }
+            closeModal={handleArchiveClassCancel}
+            okButtonText="Archive"
+          />
+        )}
     </MainHeader>
   );
 };
@@ -134,11 +270,15 @@ Header.defaultProps = {
 };
 
 const enhance = compose(
+  withRouter,
   connect(
     state => ({
       user: state?.user?.user
     }),
-    {}
+    {setAssignmentFilters: setAssignmentFiltersAction}
+    
   )
+
+  
 );
 export default enhance(Header);

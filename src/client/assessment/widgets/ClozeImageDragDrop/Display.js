@@ -353,7 +353,7 @@ class Display extends Component {
     const userResponses = userAnswers
       .map((ans = {}) => {
         // get the value using the id and mapping it over the object
-        const { optionIds = [] } = ans;
+        const { optionIds = [] } = ans || {}; // answers can be null explicitly, default values wont work
         const allOptions = optionIds.map(id => {
           const option = options.find(_option => _option.id === id);
           if (option) {

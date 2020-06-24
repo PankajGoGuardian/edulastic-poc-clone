@@ -26,7 +26,8 @@ const evaluator = function evaluator(evaluatorType) {
         const userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
         const validation = _ref.validation;
     const validResponse = validation.validResponse;
-        const altResponses = validation.altResponses;
+        const _validation$altRespon = validation.altResponses;
+        const altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon;
         const scoringType = validation.scoringType;
     const answers = [validResponse].concat((0, _toConsumableArray2.default)(altResponses));
 

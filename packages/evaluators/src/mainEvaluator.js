@@ -5,7 +5,7 @@ import exactMatchTemplate from "./helpers/exactMatchTemplate";
 import countExactMatchScores from "./helpers/countExactMatchScores";
 
 const evaluator = (evaluatorType, qType = "") => ({ userResponse = [], validation }) => {
-  const { validResponse, altResponses, scoringType } = validation;
+  const { validResponse, altResponses = [], scoringType } = validation;
   const answers = [validResponse, ...altResponses];
   switch (scoringType) {
     case ScoringType.EXACT_MATCH:

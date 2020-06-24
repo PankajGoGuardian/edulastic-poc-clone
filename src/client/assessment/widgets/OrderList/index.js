@@ -144,6 +144,9 @@ const OrderList = ({
   const handleAddAltResponse = () => {
     setQuestionData(
       produce(item, draft => {
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
+        }
         draft.validation.altResponses.push({
           score: 1,
           value: keys(draft.list).reduce((acc, curr, currIndex) => ({ ...acc, [curr]: currIndex }), {})

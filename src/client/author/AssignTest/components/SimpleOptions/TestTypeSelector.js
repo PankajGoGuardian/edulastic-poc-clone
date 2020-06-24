@@ -24,7 +24,7 @@ const TestTypeSelector = ({
   };
 
   const SelectOption = (
-    <StyledSelect data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
+    <StyledSelect style={{textTransform:"capitalize"}} data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
       {isAdmin && !districtPermissions.includes("publisher") && (
         <Select.Option key={COMMON} value={COMMON}>
           Common Assessment

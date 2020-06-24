@@ -325,7 +325,7 @@ export const removeIndexFromTemplate = tmpl => {
   return $(parsedHTML).html();
 };
 
-export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png"];
+export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
 
 export const beforeUpload = file => {
   const isAllowedType = allowedFileTypes.includes(file.type);

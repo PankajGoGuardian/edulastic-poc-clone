@@ -188,6 +188,9 @@ class ButtonBar extends Component {
                         <IconSaveNew />
                         SAVE
                       </EduButton>
+                      <EduButton disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
+                        PUBLISH
+                      </EduButton>
                     </>
                   ))}
                 {showPublishButton && itemStatus === "draft" && !isTestFlow && userRole !== roleuser.EDULASTIC_CURATOR && (

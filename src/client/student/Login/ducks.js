@@ -101,6 +101,7 @@ export const UPDATE_POWER_TEACHER_TOOLS_FAILED = "[user] update power teacher pe
 export const FETCH_USER_FAVORITES = "[user] fetch user favorites";
 export const UPDATE_USER_FAVORITES = "[user] update user favorites";
 export const SET_USER_FAVORITES = "[user] set user favorites";
+export const ADD_CLASS_TO_USER = "[user] add class to user";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -148,6 +149,7 @@ export const updateDefaultSettingsAction = createAction(UPDATE_DEFAULT_SETTINGS_
 export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
 export const fetchUserFailureAction = createAction(FETCH_USER_FAILURE);
 export const updatePowerTeacherAction = createAction(UPDATE_POWER_TEACHER_TOOLS_REQUEST);
+export const addClassToUserAction = createAction(ADD_CLASS_TO_USER);
 
 const initialState = {
   addAccount: false,
@@ -408,6 +410,9 @@ export default createReducer(initialState, {
   },
   [UPDATE_POWER_TEACHER_TOOLS_FAILED]: state => {
     state.updatingPowerTeacher = false;
+  },
+  [ADD_CLASS_TO_USER]: (state, { payload }) => {
+    state.user.orgData.classList.push(payload);
   }
 });
 

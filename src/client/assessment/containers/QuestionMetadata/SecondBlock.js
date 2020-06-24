@@ -11,7 +11,7 @@ import { selectsData } from "../../../author/TestPage/components/common";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 import RecentCollectionsList from "./RecentCollectionsList";
 
-const bloomsTaxonomyOptions = ["Understand", "Apply", "Analyze", "Evaluate", "Create"];
+const bloomsTaxonomyOptions = ["Understand", "Apply", "Analyze", "Evaluate", "Create","Remember"];
 
 const SecondBlock = ({
   t,

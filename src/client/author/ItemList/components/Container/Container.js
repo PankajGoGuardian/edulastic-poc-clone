@@ -288,7 +288,7 @@ class Contaier extends Component {
         simple={false}
         showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
         onChange={this.handlePaginationChange}
-        defaultPageSize={10}
+        defaultPageSize={25}
         total={count}
         current={page}
       />

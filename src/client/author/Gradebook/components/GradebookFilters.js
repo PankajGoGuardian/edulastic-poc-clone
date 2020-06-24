@@ -13,7 +13,6 @@ const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
   <Col span={24}>
     <FieldLabel>{label}</FieldLabel>
     <SelectInputStyled
-      showArrow
       data-cy={dataCy}
       placeholder={`All ${label}`}
       mode={mode}

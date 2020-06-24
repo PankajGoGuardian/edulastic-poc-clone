@@ -931,12 +931,12 @@
     "default": {
       "quetext": "This is MATH_NUMERIC.default question",
       "setAns": {
-        "correct": "x+y+z",
+        "correct": "1+2+3",
         "points": 2
       },
       "attemptData": {
-        "right": "x+y+z",
-        "wrong": "x+z"
+        "right": "1+2+3",
+        "wrong": "1+2"
       },
       "standards": [
         {

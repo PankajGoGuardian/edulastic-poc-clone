@@ -178,8 +178,8 @@ export function testRunner(assignmentName, aType, statsMap, questionTypeMap, tes
 
       allStudentList.forEach(studentName => {
         it(`> verify student cards for :: ${studentName}`, () => {
-          const { status: sts, score, perf, attempt: atmpt } = statsMap[studentName];
-          lcb.verifyStudentCard(studentName, sts, score, perf, atmpt);
+          const { status: sts, score, perf, attempt: atmpt, email } = statsMap[studentName];
+          lcb.verifyStudentCard(studentName, sts, score, perf, atmpt, email);
         });
       });
 

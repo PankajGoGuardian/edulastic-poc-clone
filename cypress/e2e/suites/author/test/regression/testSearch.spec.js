@@ -104,7 +104,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
-          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
+          searchFilters.typeInSearchBox(id);
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
@@ -142,7 +142,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       it(">search by id", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
-          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
+          searchFilters.typeInSearchBox(id);
           testLibrary.checkforNonExistanceOfTest(id);
         });
       });
@@ -191,7 +191,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
-          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
+          searchFilters.typeInSearchBox(id);
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
@@ -230,11 +230,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         test_ids.forEach(id => {
-          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
+          searchFilters.typeInSearchBox(id);
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
     });
-    // TODO: Searching with Keywords
   });
 });

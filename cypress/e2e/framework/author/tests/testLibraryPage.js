@@ -381,7 +381,7 @@ export default class TestLibrary {
       .click()
       .then(() => {
         // pop up that comes up when we try to edit a published test
-        this.getProceedButton().click();
+        this.getProceedButton().click({ force: true });
         cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
       });
     cy.wait(5000);
@@ -518,7 +518,7 @@ export default class TestLibrary {
       .click()
       .then(() => {
         // pop up that comes up when we try to edit a published test
-        this.getProceedButton().click();
+        this.getProceedButton().click({ force: true });
         cy.wait("@newVersion").then(() => {
           cy.wait("@testdrafted").then(xhr => {
             assert(xhr.status === 200, "Test versioned");

@@ -133,7 +133,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> student report card`, ()
   before("> create test and assign", () => {
     cy.deleteAllAssignments("", teacher.username);
     cy.login("teacher", teacher.username, teacher.password);
-    testLibraryPage.assignPage.visitAssignPageById("5ee87f508b042f00088620e7");
+    testLibraryPage.assignPage.visitAssignPageById("5ef34a8862d86e000823329e");
     testLibraryPage.assignPage.selectClass("Class");
     testLibraryPage.assignPage.clickOnAssign();
     //   // testLibraryPage.createTest(testName).then(id => {

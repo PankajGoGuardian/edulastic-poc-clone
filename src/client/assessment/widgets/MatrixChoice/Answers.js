@@ -19,7 +19,7 @@ class Answers extends Component {
   };
 
   setCorrectTab = tabNumber => {
-    this.setState({ correctTab: tabNumber });
+    this.setState({ correctTab: tabNumber < 0 ? 0 : tabNumber });
   };
 
   render() {

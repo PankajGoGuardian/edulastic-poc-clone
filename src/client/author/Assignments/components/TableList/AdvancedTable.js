@@ -12,7 +12,7 @@ import { compose } from "redux";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 import { getAssignmentsSummary, getAssignmentTestsSelector } from "../../../src/selectors/assignments";
-import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
+import { getUserIdSelector, getUserRole, getGroupList } from "../../../src/selectors/user";
 import { canEditTest } from "../../utils";
 import ActionMenu from "../ActionMenu/ActionMenu";
 import { ActionDiv, AssignmentTD, Container, TableData, TestThumbnail, TypeIcon, TypeWrapper } from "./styled";
@@ -135,7 +135,8 @@ class AdvancedTable extends Component {
             userId = "",
             userRole = "",
             assignmentTests,
-            togglePrintModal
+            togglePrintModal,
+            userClassList
           } = this.props;
           const canEdit = canEditTest(row, userId);
           const assignmentTest = assignmentTests.find(at => at._id === row.testId);
@@ -154,7 +155,8 @@ class AdvancedTable extends Component {
                   userRole,
                   assignmentTest,
                   canEdit,
-                  togglePrintModal
+                  togglePrintModal,
+                  userClassList
                 })}
                 placement="bottomRight"
                 trigger={["click"]}
@@ -300,7 +302,8 @@ const enhance = compose(
       loading: get(state, "author_assignments.loading"),
       userId: getUserIdSelector(state),
       userRole: getUserRole(state),
-      assignmentTests: getAssignmentTestsSelector(state)
+      assignmentTests: getAssignmentTestsSelector(state),
+      userClassList: getGroupList(state)
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction

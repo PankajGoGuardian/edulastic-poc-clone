@@ -55,7 +55,7 @@ import {
   bulkDownloadGradesAndResponsesAction
 } from "../../ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
-import { getUserId, getUserRole } from "../../../src/selectors/user";
+import { getUserId, getUserRole, getGroupList } from "../../../src/selectors/user";
 import { canEditTest } from "../../../Assignments/utils";
 import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 
@@ -180,7 +180,8 @@ class AssignmentAdvanced extends Component {
       test,
       isLoadingAssignments,
       bulkActionStatus,
-      userRole
+      userRole,
+      userClassList
     } = this.props;
     const { testId } = match.params;
     const { filterStatus, openEditPopup, isPreviewModalVisible, isHeaderAction } = this.state;
@@ -220,7 +221,8 @@ class AssignmentAdvanced extends Component {
                 toggleDeleteModal: () => {
                   this.setState({ isHeaderAction: true });
                   toggleDeleteAssignmentModal(true);
-                }
+                },
+                userClassList
               })}
               placement="bottomLeft"
               trigger={["hover"]}
@@ -298,7 +300,8 @@ const enhance = compose(
       userId: getUserId(state),
       isLoadingAssignments: getAssignmentsLoadingSelector(state),
       bulkActionStatus: getBulkActionStatusSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      userClassList: getGroupList(state)
     }),
     {
       setReleaseScore: releaseScoreAction,

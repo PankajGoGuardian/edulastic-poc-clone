@@ -39,7 +39,7 @@ import {
 } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
-import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
+import { getUserIdSelector, getUserRole, getGroupList } from "../../../src/selectors/user";
 import { getAssignmentTestsSelector } from "../../../src/selectors/assignments";
 import { ReactComponent as TimerIcon } from "./assets/timer.svg";
 import { canEditTest } from "../../utils";
@@ -58,7 +58,7 @@ const convertTableData = (data, assignments = [], index, userId) => ({
     .reduce((t, c) => t + c, 0) || 0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c, 0)}`,
   graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c, 0) || 0}`,
   action: "",
-  classId: assignments[0] ?.classId,
+  classId: assignments[0]?.classId,
   currentAssignment: assignments[0],
   testType: data.testType,
   hasAutoSelectGroups: data.hasAutoSelectGroups,
@@ -110,7 +110,8 @@ const TableList = ({
   status = "",
   assignmentTests,
   togglePrintModal,
-  userRole
+  userRole,
+  userClassList
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -156,14 +157,17 @@ const TableList = ({
               <TypeIcon data-cy="type" type="c">
                 C
               </TypeIcon>
-                )}
-                 <TimedTestIndicator data-cy="type" type="p">
-            {row.timedAssignment && (
-                <Tooltip title={<IndicatorText>{row.timedAssignment / (60 * 1000)}min</IndicatorText>} placement="right">
+            )}
+            <TimedTestIndicator data-cy="type" type="p">
+              {row.timedAssignment && (
+                <Tooltip
+                  title={<IndicatorText>{row.timedAssignment / (60 * 1000)}min</IndicatorText>}
+                  placement="right"
+                >
                   <TimerIcon />
                 </Tooltip>
-            )}
-             </TimedTestIndicator>
+              )}
+            </TimedTestIndicator>
           </TypeWrapper>
         )
       },
@@ -195,8 +199,8 @@ const TableList = ({
               {text}
             </StatusLabel>
           ) : (
-              ""
-            )
+            ""
+          )
       },
       {
         dataIndex: "submitted",
@@ -260,7 +264,7 @@ const TableList = ({
       }
     ];
     const expandTableList = [];
-    let filterData = assignmentsByTestId ?.[parentData.testId] || [];
+    let filterData = assignmentsByTestId?.[parentData.testId] || [];
     let getInfo;
     if (status) {
       filterData = filterData.filter(assignment => assignment.status === status);
@@ -386,7 +390,7 @@ const TableList = ({
             <Dropdown
               overlay={ActionMenu({
                 onOpenReleaseScoreSettings,
-                currentAssignment: row ?.currentAssignment || {},
+                currentAssignment: row?.currentAssignment || {},
                 history,
                 showPreviewModal,
                 toggleEditModal,
@@ -395,7 +399,8 @@ const TableList = ({
                 userId,
                 assignmentTest,
                 togglePrintModal,
-                canEdit: row.canEdit && !(row.hasAdminAssignments && userRole === roleuser.TEACHER)
+                canEdit: row.canEdit && !(row.hasAdminAssignments && userRole === roleuser.TEACHER),
+                userClassList
               })}
               placement="bottomRight"
               trigger={["click"]}
@@ -492,14 +497,14 @@ TableList.propTypes = {
 };
 
 TableList.defaultProps = {
-  onOpenReleaseScoreSettings: () => { },
-  renderFilter: () => { },
-  onSelectRow: () => { },
-  showPreviewModal: () => { },
+  onOpenReleaseScoreSettings: () => {},
+  renderFilter: () => {},
+  onSelectRow: () => {},
+  showPreviewModal: () => {},
   history: {},
   tests: [],
   showFilter: false,
-  togglePrintModal: () => { }
+  togglePrintModal: () => {}
 };
 
 const enhance = compose(
@@ -512,7 +517,8 @@ const enhance = compose(
       folderData: getFolderSelector(state),
       userId: getUserIdSelector(state),
       assignmentTests: getAssignmentTestsSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      userClassList: getGroupList(state)
     }),
     {}
   )

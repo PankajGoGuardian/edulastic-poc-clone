@@ -29,7 +29,8 @@ const ActionMenu = ({
   userId = "",
   userRole = "",
   assignmentTest = {},
-  canEdit = true
+  canEdit = true,
+  userClassList
 }) => {
   const getAssignmentDetails = () => (!Object.keys(currentAssignment).length ? row : currentAssignment);
   const assignmentDetails = getAssignmentDetails();
@@ -75,7 +76,7 @@ const ActionMenu = ({
 
   // current user and assignment owner is same: true
   const isAssignmentOwner = (userId && userId === assignmentOwnerId) || false;
-
+  const isCoAuthor = userClassList?.some(c => c?._id === assignmentDetails?.classId) || false;
   const isAdmin = roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole;
 
   return (
@@ -156,7 +157,7 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {(isAssignmentOwner || isAdmin) && (
+        {(isAssignmentOwner || isCoAuthor || isAdmin) && (
           <Menu.Item
             data-cy="delete-Assignment"
             key="delete-Assignment"

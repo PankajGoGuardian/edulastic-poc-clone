@@ -30,7 +30,7 @@ const MergeUsersModal = ({
     if (userIds.length > 1 && visible) {
       fetchUserDetails({ type, userIds });
     }
-  }, [userIds, visible]);
+  }, [visible]);
 
   useEffect(() => {
     setPrimaryUserId(userDetails[0]?._id);

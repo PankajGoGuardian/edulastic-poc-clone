@@ -4,6 +4,12 @@ export const PrintPreviewBack = styled.div`
   width: 100%;
   background-color: #cccccc;
   display: block;
+  .__print-feedback-wrapper {
+    width: 120px!important;
+  }
+  .__print-question-wrapper-fixed-width {
+    width: 21cm !important;
+  }
 `;
 
 export const PrintPreviewContainer = styled.div`

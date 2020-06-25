@@ -77,6 +77,7 @@ const FeedbackWrapper = ({
         minWidth: studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : "",
         ...dimensionProps
       }}
+      className="__print-feedback-wrapper"
     >
       {showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview && (
         <FeedbackRight

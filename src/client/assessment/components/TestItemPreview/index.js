@@ -307,6 +307,7 @@ class TestItemPreview extends Component {
             background: isExpressGrader && showScratchpadByDefault ? white : null,
             "margin-bottom": showScratchpadByDefault && "10px"
           }}
+          className="__print-question-wrapper-fixed-width"
         >
           <Container
             width={windowWidth}

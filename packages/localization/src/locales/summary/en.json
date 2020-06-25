@@ -1,7 +1,7 @@
 {
   "common": {
-    "headingText": "Congratulations, You have finished!",
-    "message": "If you need to review your answers, select the question number you wish to review.",
+    "headingText": "Review and Submit",
+    "message": "If you need to review your answers, select the question number you wish to review. A flag icon appears for any questions that you marked for review.",
     "markedQuestionLineOne": "You have answered these questions.",
     "skippedQues": "Please review your skipped questions before submitting the test",
     "markedForReview": "You have bookmarked these questions. Review them before submitting the test.",

@@ -3,12 +3,12 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
+import { IconLogoCompact} from "@edulastic/icons";
 import styled, { ThemeProvider } from "styled-components";
+import { themeColor } from "@edulastic/colors";
 import { themes } from "../../../theme";
-
 import SummaryHeader from "./Header";
 import SummaryTest from "./Content";
-
 import { finishTestAcitivityAction } from "../../../assessment/actions/test";
 import SubmitConfirmation from "../../../assessment/themes/common/SubmitConfirmation";
 import { clearUserWorkAction } from "../../../assessment/actions/userWork";
@@ -20,20 +20,14 @@ const SummaryContainer = props => {
     setShowConfirmationModal(true);
   };
 
-  const closeConfirmationModal = () => {
-    setShowConfirmationModal(false);
-  };
-
-  const closeTest = () => {
-    clearUserWork();
-    history.push("/home/assignments");
-  };
 
   const groupId = match.params.groupId;
   return (
     <ThemeProvider theme={themes.default}>
+      <Header>
+        <IconLogoCompact style={{fill:themeColor,marginLeft:"21px"}} />
+      </Header>
       <MainContainer>
-        <SubmitConfirmation isVisible={showConfirmationModal} onClose={closeConfirmationModal} finishTest={closeTest} />
         <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
         <SummaryTest finishTest={() => finishTest(groupId)} />
       </MainContainer>
@@ -65,4 +59,13 @@ const MainContainer = styled.div`
     display: flex;
     flex-direction: column;
   }
+`;
+
+const Header=styled.div`
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ height: 53px;
+ border: 1px solid #DADAE4;
+ opacity: 1;
 `;

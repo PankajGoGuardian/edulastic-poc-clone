@@ -8,8 +8,9 @@ import { withNamespaces } from "@edulastic/localization";
 import { Row, Col, Button } from "antd";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
+import { IconSend} from "@edulastic/icons"
 import { test as testTypes } from "@edulastic/constants";
-import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge } from "@edulastic/colors";
+import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge,mainBgColor,lightGrey9 } from "@edulastic/colors";
 import { themes } from "../../../theme";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
@@ -178,7 +179,7 @@ class SummaryTest extends Component {
             <Footer>
               <ShortDescription>{t("common.nextStep")}</ShortDescription>
               <SubmitButton type="primary" onClick={finishTest} loading={savingResponse}>
-                {t("default:submit")}
+                <IconSend /> <span>{t("default:SUBMIT TEST")}</span>
               </SubmitButton>
             </Footer>
           </Container>
@@ -224,13 +225,14 @@ export default enhance(SummaryTest);
 
 const ShareWrapperCss = css`
   border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   padding: 0px 80px;
   background: ${props => props.theme.assignment.cardContainerBgColor};
-  margin-bottom: 1rem;
+ 
 `;
 const AssignmentContentWrapper = styled.div`
   ${ShareWrapperCss};
+  position:absolute;
+  bottom:20px !important;
   @media (max-width: 767px) {
     padding: 0px 15px;
   }
@@ -279,7 +281,7 @@ const Title = styled.div`
 
 const TitleDescription = styled.div`
   font-size: ${props => props.theme.attemptReview.titleDescriptionTextSize};
-  color: ${props => props.theme.attemptReview.titleDescriptionTextColor};
+  color: ${lightGrey9};
   margin-top: 13px;
   font-weight: 600;
   text-align: center;
@@ -489,32 +491,19 @@ const ShortDescription = styled.div`
 `;
 
 const SubmitButton = styled(Button)`
-  margin: 60px 0px 44px 0px;
-  width: 200px;
-  height: 40px;
+  display:flex;
+  justify-content:space-evenly;
+  align-items:center;
+  position:fixed !important;
+  right:20px;
+  top:10px;
+  height: 32px;
   border-radius: 4px;
-  background-color: ${props => props.theme.attemptReview.submitButtonBgColor};
-  border-color: ${props => props.theme.attemptReview.submitButtonBgColor};
-  span {
-    font-size: ${props => props.theme.attemptReview.submitButtonTextSize};
-    color: ${props => props.theme.attemptReview.submitButtonTextColor};
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    @media (max-width: ${smallDesktopWidth}) {
-      font-size: ${props => props.theme.smallLinkFontSize};
-    }
-  }
-  &:hover,
-  &:focus {
-    border-color: ${props => props.theme.attemptReview.submitButtonBgColor};
-    background-color: ${props => props.theme.attemptReview.submitButtonBgColor};
-  }
-  @media (max-width: ${smallDesktopWidth}) {
-    margin: 30px 0px;
-    width: 160px;
-    height: 36px;
-  }
-  @media (max-width: ${tabletWidth}) {
-    margin: 20px 0px;
+  background-color:#1A73E8;
+  font-size: 10px;
+  font-weight:600;
+  svg {
+    fill:${mainBgColor};
+    margin-right:10px;
   }
 `;

@@ -6,7 +6,7 @@ import { subOptions } from "../../constants";
 
 const TextEntry = ({ styles, userAnswer, onChange, displayStyleOption }) => {
   const [localValue, setlocalValue] = useState("");
-  const answer = userAnswer?.value || "";
+  const answer = userAnswer || "";
   const isDahsline = subOptions.DASHED_LINE === displayStyleOption;
 
   const handleChange = ({ target: { value } }) => setlocalValue(value);

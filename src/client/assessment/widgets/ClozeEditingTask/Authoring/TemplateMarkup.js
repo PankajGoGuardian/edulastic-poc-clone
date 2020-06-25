@@ -2,7 +2,7 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { find, cloneDeep, last, isArray } from "lodash";
+import { find, cloneDeep, isArray } from "lodash";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
 import { FroalaEditor, getFormattedAttrId } from "@edulastic/common";
@@ -45,49 +45,24 @@ class TemplateMarkup extends Component {
       return newResponseIds;
     };
 
-    const reudceValidations = (responseIds, validation) => {
+    const reduceValidations = (responseIds, validation) => {
       const _validation = cloneDeep(validation);
       const _responseIds = cloneDeep(responseIds);
-      const validResponses = _validation.validResponse.value;
-
-      // remove deleted dropdown answer
-      validResponses.map((answer, i) => {
-        const { id } = answer;
-        if (!id) {
-          validResponses.splice(i, 1);
-        }
-        const isExist = find(_responseIds, response => response.id === id);
-        if (!isExist) {
-          validResponses.splice(i, 1);
-        }
+      // update valid responses
+      const validResponses = {};
+      _responseIds.forEach(r => {
+        validResponses[r.id] = _validation.validResponse.value[r.id] || "";
       });
-
-      // add new correct answers with response id
-      _responseIds.map(response => {
-        const { id } = response;
-        const valid = find(validResponses, answer => answer.id === id);
-        if (!valid) {
-          validResponses.push({ id, value: "" });
-        } else {
-          valid.index = response.index;
-        }
-      });
-      validResponses.sort((a, b) => a.index - b.index);
       _validation.validResponse.value = validResponses;
 
-      // reduce alternate answers
+      // update alternative responses
       if (isArray(_validation.altResponses)) {
-        _validation.altResponses.map(altAnswers => {
-          if (_validation.validResponse.value.length > altAnswers.value.length) {
-            altAnswers.value.push(last(_validation.validResponse.value));
-          }
-          altAnswers.value.map((altAnswer, index) => {
-            const isExist = find(_responseIds, response => response.id === altAnswer.id);
-            if (!isExist) {
-              altAnswers.value.splice(index, 1);
-            }
+        _validation.altResponses.map(altAnswer => {
+          const newAnswers = {};
+          _responseIds.forEach(r => {
+            newAnswers[r.id] = altAnswer[r.id] || "";
           });
-          altAnswers.value.sort((a, b) => a.index - b.index);
+          altAnswer.value = newAnswers;
         });
       }
 
@@ -113,7 +88,7 @@ class TemplateMarkup extends Component {
       produce(item, draft => {
         draft.stimulus = stimulus;
         draft.responseIds = reduceResponseIds(stimulus);
-        draft.validation = reudceValidations(draft.responseIds, draft.validation);
+        draft.validation = reduceValidations(draft.responseIds, draft.validation);
         draft.options = reduceOptions(draft.responseIds, draft.options);
         updateVariables(draft);
       })

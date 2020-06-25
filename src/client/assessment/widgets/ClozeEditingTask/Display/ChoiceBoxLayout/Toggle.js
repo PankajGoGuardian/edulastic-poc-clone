@@ -7,7 +7,7 @@ import { RadioLabel, RadioLabelGroup } from "../../../../styled/RadioWithLabel";
 import { subOptions } from "../../constants";
 
 const Toggle = ({ styles, options, userAnswer, disableResponse, onChange, displayStyleOption }) => {
-  const answer = userAnswer?.value;
+  const answer = userAnswer;
   const answeredIndex = fineIndex(options, op => op === answer);
   const isDashedline = subOptions.DASHED_LINE === displayStyleOption;
   // * 10 is toggle button width and +30 is padding

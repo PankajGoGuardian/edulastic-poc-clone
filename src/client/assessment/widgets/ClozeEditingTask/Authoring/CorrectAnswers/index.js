@@ -29,10 +29,9 @@ class CorrectAnswers extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        const validAnswers = get(draft, "validation.validResponse.value", []);
-        validAnswers.map(answer => {
-          answer.value = "";
-          return answer;
+        const validAnswers = get(draft, "validation.validResponse.value", {});
+        Object.keys(validAnswers).forEach(k => {
+          validAnswers[k] = "";
         });
         if (!draft.validation.altResponses) {
           draft.validation.altResponses = [];

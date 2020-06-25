@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import produce from "immer";
-import { isUndefined, mapValues, cloneDeep, findIndex, find, orderBy } from "lodash";
+import { isUndefined, mapValues, cloneDeep, orderBy } from "lodash";
 import { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
@@ -47,25 +46,10 @@ class EditingTypeDisplay extends Component {
   }
 
   selectChange = (value, index, id) => {
-    const {
-      onChange: changeAnswers,
-      userSelections,
-      item: { responseIds }
-    } = this.props;
-    changeAnswers(
-      produce(userSelections, draft => {
-        // answers are null for all the lower indices if a higher index is answered
-        // TODO fix the way answers are stored
-        const changedIndex = findIndex(draft, (answer = {}) => answer?.id === id);
-        draft[index] = value;
-        if (changedIndex !== -1) {
-          draft[changedIndex] = { value, index, id };
-        } else {
-          const response = find(responseIds, res => res.id === id);
-          draft[response.index] = { value, index, id };
-        }
-      })
-    );
+    const { onChange: changeAnswers, userSelections } = this.props;
+    const newAnswers = cloneDeep(userSelections);
+    newAnswers[id] = value;
+    changeAnswers(newAnswers);
   };
 
   shuffle = arr => {
@@ -238,7 +222,7 @@ EditingTypeDisplay.propTypes = {
   onChange: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
-  userSelections: PropTypes.array,
+  userSelections: PropTypes.object,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   isPrint: PropTypes.bool,
@@ -266,7 +250,7 @@ EditingTypeDisplay.defaultProps = {
   showAnswer: false,
   evaluation: [],
   checkAnswer: false,
-  userSelections: [],
+  userSelections: {},
   isPrint: false,
   stimulus: "",
   disableResponse: false,

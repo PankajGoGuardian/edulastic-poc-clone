@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
-import { find, cloneDeep, forEach } from "lodash";
 import produce from "immer";
 import { getFormattedAttrId } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -52,15 +51,7 @@ class ChoicesForResponse extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[responseId].splice(itemIndex, 1);
-
-        const validAnswers = cloneDeep(draft.validation.validResponse.value);
-        forEach(validAnswers, answer => {
-          if (answer.id === responseId) {
-            answer.value = "";
-          }
-        });
-
-        draft.validation.validResponse.value = validAnswers;
+        draft.validation.validResponse.value[responseId] = "";
         updateVariables(draft);
       })
     );
@@ -72,12 +63,11 @@ class ChoicesForResponse extends Component {
       produce(item, draft => {
         if (draft.options[responseId] === undefined) draft.options[responseId] = [];
 
-        const correctAnswer = find(draft.validation.validResponse.value, answer => answer.id === responseId);
-        if (correctAnswer && correctAnswer.value === draft.options[responseId][itemIndex]) {
-          correctAnswer.value = e.target.value;
+        if (draft.validation.validResponse.value[responseId] === draft.options[responseId][itemIndex]) {
+          draft.validation.validResponse.value[responseId] = e.target.value;
         }
-
         draft.options[responseId][itemIndex] = e.target.value;
+        
         let maxLength = 0;
         Object.keys(draft.options).forEach(option => {
           draft.options[option].forEach(opt => {

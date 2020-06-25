@@ -14,7 +14,7 @@ const TextDropdown = ({ styles, options, placeholder, userAnswer, disableRespons
     <SelectWrapper style={{ ...styles, minWidth: styles.minWidthpx }}>
       <Select
         isDahsline={isDahsline}
-        value={userAnswer?.value}
+        value={userAnswer}
         placeholder={placeholder}
         disabled={disableResponse}
         onChange={onChange}

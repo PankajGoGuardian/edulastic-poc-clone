@@ -105,7 +105,7 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
 
 // normal evaluator
 const normalEvaluator = ({ userResponse, validation }) => {
-  const responses = createAnswerObject(userResponse);
+  const responses = Array.isArray(userResponse) ? createAnswerObject(userResponse) : userResponse;
   const answers = [validation.validResponse, ...(validation.altResponses || [])];
   const evaluations = [];
   const maxScore = max(answers.map(i => i.score));
@@ -114,7 +114,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
     const currentEvaluation = {};
     let currentScore = 0;
 
-    const answerObj = createAnswerObject(answer.value);
+    const answerObj = Array.isArray(answer.value) ? createAnswerObject(answer.value) : answer.value;
     const optionCount = Object.values(answerObj).length;
 
     for (const id of Object.keys(responses)) {
@@ -131,7 +131,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
     // if scoring type is "partialMatch", calculate the partial score
     if (validation.scoringType === "partialMatch") {
       const questionScore = answer.score;
-      currentScore = questionScore * (correctAnswerCount / answer.value.length);
+      currentScore = questionScore * (correctAnswerCount / optionCount);
       // if penalty is present
       if (validation.penalty) {
         const values = Object.values(currentEvaluation);
@@ -147,7 +147,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
 
       // if less than 0, round it to 0
       currentScore = currentScore > 0 ? currentScore : 0;
-    } else if (correctAnswerCount === answer.value.length) {
+    } else if (correctAnswerCount === optionCount) {
       // in case of exact match
       currentScore = answer.score;
     }
@@ -173,7 +173,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
 
 // cloze text evaluator
 const evaluator = ({
-  userResponse = [], // user submitted response
+  userResponse = [], // user submitted response (can be either an array or an object)
   validation = {} // validation object from the question data
 }) =>
   validation.mixAndMatch

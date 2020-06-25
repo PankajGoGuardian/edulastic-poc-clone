@@ -22,6 +22,7 @@ const getRenderData = (templateItem, history, view) => {
 
   const locationState = history.location.state;
   const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
+  // keep this in check
   const previewDisplayOptions = item.hasGroupResponses ? item.groupResponses : item.options;
   let previewStimulus;
   let itemForEdit;
@@ -91,9 +92,10 @@ const EditingTask = ({
       displayStyle?.option !== subOptions.EMPTY &&
       displayStyle.type !== displayStyles.TEXT_INPUT
     ) {
-      const initialAnswers = responseIds.map(response => {
+      const initialAnswers = {};
+      responseIds.forEach(response => {
         const opts = previewDisplayOptions?.[response.id] || [];
-        return { value: opts[0] || "", ...response };
+        initialAnswers[response.id] = opts[0] || "";
       });
       handleAddAnswer(initialAnswers);
     }
@@ -147,7 +149,7 @@ EditingTask.propTypes = {
   history: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.any,
+  userAnswer: PropTypes.object,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any.isRequired,
@@ -162,7 +164,7 @@ EditingTask.defaultProps = {
   item: { options: [] },
   smallSize: false,
   history: {},
-  userAnswer: [],
+  userAnswer: {},
   testItem: false,
   advancedAreOpen: false,
   advancedLink: null,

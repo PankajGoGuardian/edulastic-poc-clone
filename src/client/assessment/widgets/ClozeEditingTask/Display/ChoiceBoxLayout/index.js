@@ -36,16 +36,16 @@ const ChoicesBox = ({ resprops, id }) => {
 
   if (!id) return null;
   // get user's answer
-  const cAnswers = get(item, "validation.validResponse.value", []);
-  let userAnswer = find(userSelections, answer => (answer ? answer.id : "") === id);
+  const cAnswers = get(item, "validation.validResponse.value", {});
+  let userAnswer = userSelections[id];
   if (isReviewTab) {
-    userAnswer = find(cAnswers, answer => (answer ? answer.id : "") === id);
+    userAnswer = cAnswers[id];
   }
 
   const { responseIds, displayStyle } = item;
   const { placeholder, responsecontainerindividuals } = uiStyle;
   const { index } = find(responseIds, response => response.id === id);
-  const { heightpx, widthpx, placeholder: iPlaceholder } = responsecontainerindividuals[index] || {};
+  const { heightpx, widthpx, placeholder: iPlaceholder } = responsecontainerindividuals?.[index] || {};
 
   const optionsById = get(options, `[${id}]`, []);
   const maxW = maxBy(optionsById.map(op => measureText(op)), d => d.width) || {};

@@ -10,15 +10,11 @@ import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseIds = [], t, stemNumeration }) => {
   const getLabel = id => {
     if (isEmpty(altResponses)) {
-      const correctAnswer = userAnswers.find(answer => (answer ? answer.id : "") === id);
-      return correctAnswer ? correctAnswer.value : "";
+      return userAnswers[id];
     }
     const altLabels = [];
     altResponses.forEach(altAnswer => {
-      const answer = altAnswer.value.find(alt => (alt ? alt.id : "") === id);
-      if (answer && answer.value) {
-        altLabels.push(answer.value);
-      }
+      altLabels.push(altAnswer.value[id] || "");
     });
     return altLabels.toString();
   };
@@ -46,7 +42,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseI
 CorrectAnswerBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   altResponses: PropTypes.array,
-  userAnswers: PropTypes.array,
+  userAnswers: PropTypes.object,
   stemNumeration: PropTypes.string.isRequired,
   responseIds: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired
@@ -55,7 +51,7 @@ CorrectAnswerBoxLayout.propTypes = {
 CorrectAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
   altResponses: [],
-  userAnswers: []
+  userAnswers: {}
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));

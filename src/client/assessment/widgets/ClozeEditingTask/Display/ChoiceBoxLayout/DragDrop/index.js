@@ -4,7 +4,7 @@ import { DragDrop, MathFormulaDisplay } from "@edulastic/common";
 const { DropContainer } = DragDrop;
 
 const EditingDragDrop = ({ onChange, userAnswer, styles }) => {
-  const answer = userAnswer?.value;
+  const answer = userAnswer;
   const containerStyle = {
     borderRadius: 2,
     display: "inline-flex",

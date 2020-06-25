@@ -18,6 +18,7 @@ export const hasValidAnswers = (type, answer) => {
     case questionType.HOTSPOT:
       return !isEmpty(answer?.filter(ans => ans?.toString()));
     case questionType.EDITING_TASK:
+      return !isEmpty(Object.values(answer || {}).filter(ans => !isEmpty(ans)));
     case questionType.CLOZE_TEXT:
       return !isEmpty(answer?.filter(ans => ans?.value));
     case questionType.CLOZE_IMAGE_DRAG_DROP:

@@ -453,9 +453,7 @@ const answerValidator = {
   [questionType.EDITING_TASK](answers) {
     // when there is no response box
     return answers.some(
-      ({ value = [] }) =>
-        isEmpty(value) ||
-        value.some(({ value: _value = "" }) => (typeof _value === "string" ? !_value.trim() : isEmpty(_value)))
+      ({ value }) => isEmpty(value) || Object.values(value).some(v => (typeof v === "string" ? !v.trim() : isEmpty(v)))
     );
   }
 };

@@ -191,7 +191,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
 var normalEvaluator = function normalEvaluator(_ref2) {
   var userResponse = _ref2.userResponse,
       validation = _ref2.validation;
-  var responses = createAnswerObject(userResponse);
+  var responses = Array.isArray(userResponse) ? createAnswerObject(userResponse) : userResponse;
   var answers = [validation.validResponse].concat((0, _toConsumableArray2["default"])(validation.altResponses || []));
   var evaluations = [];
   var maxScore = (0, _max2["default"])(answers.map(function (i) {
@@ -206,7 +206,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
       var answer = _step4.value;
       var currentEvaluation = {};
       var currentScore = 0;
-      var answerObj = createAnswerObject(answer.value);
+      var answerObj = Array.isArray(answer.value) ? createAnswerObject(answer.value) : answer.value;
       var optionCount = Object.values(answerObj).length;
 
       for (var _i2 = 0, _Object$keys2 = Object.keys(responses); _i2 < _Object$keys2.length; _i2++) {
@@ -218,7 +218,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
 
       if (validation.scoringType === "partialMatch") {
         var questionScore = answer.score;
-        currentScore = questionScore * (correctAnswerCount / answer.value.length); // if penalty is present
+        currentScore = questionScore * (correctAnswerCount / optionCount); // if penalty is present
 
         if (validation.penalty) {
           var values = Object.values(currentEvaluation);
@@ -236,7 +236,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
 
 
         currentScore = currentScore > 0 ? currentScore : 0;
-      } else if (correctAnswerCount === answer.value.length) {
+      } else if (correctAnswerCount === optionCount) {
         // in case of exact match
         currentScore = answer.score;
       }

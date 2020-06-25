@@ -30,11 +30,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     isPrintPreview = false
   } = resprops;
   const { index, id: answerId } = find(responseIds, _response => _response.id === id);
-  const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
+  const userSelection = userSelections[id];
   const { responsecontainerindividuals, stemNumeration } = uiStyle;
   const indexStr = getStemNumeration(isPrint || isPrintPreview ? "lowercase" : stemNumeration, index);
   const userAttempted =
-    userSelections.length > 0 && evaluation[answerId] !== undefined ? !!userSelections[index] : null;
+    Object.keys(userSelections).length > 0 && evaluation[answerId] !== undefined ? !!userSelections[answerId] : null;
 
   const _btnStyle = find(responsecontainerindividuals, resp => resp.id === answerId) || btnStyle;
   const handleClick = () => {
@@ -50,7 +50,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     <AnswerBox
       onClick={handleClick}
       checked={userAttempted}
-      userAnswer={userSelection?.value}
+      userAnswer={userSelection}
       correct={evaluation && evaluation[answerId]}
       style={inPopover ? { maxWidth: response.maxWidth } : _btnStyle}
       inPopover={inPopover}
@@ -62,7 +62,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     />
   );
 
-  const { scrollWidth } = measureText(userSelection?.value || "", _btnStyle);
+  const { scrollWidth } = measureText(userSelection || "", _btnStyle);
   let contentWidth = scrollWidth + 65; // +65 is padding and margin and ellipsis width
   if (showAnswer) {
     contentWidth += lessMinWidth ? response.indexSizeSmallBox : 35; // index box size

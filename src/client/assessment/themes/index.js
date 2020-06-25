@@ -288,7 +288,7 @@ const AssessmentContainer = ({
         const timeSpent = Date.now() - lastTime.current;
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
           urlToGo: `${url}/${"test-summary"}`,
-          locState: history?.location?.state
+          locState: { ...history?.location?.state, fromSummary: true }
         });
       } else {
         setUnansweredPopupSetting({

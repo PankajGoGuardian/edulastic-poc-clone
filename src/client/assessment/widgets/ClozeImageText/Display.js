@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { withTheme } from "styled-components";
 import { isUndefined, get, maxBy } from "lodash";
 import {
-  helpers,
   Stimulus,
   QuestionNumberLabel,
   AnswerContext,
@@ -14,12 +13,10 @@ import {
 } from "@edulastic/common";
 
 import { clozeImage } from "@edulastic/constants";
-// import { QuestionHeader } from "../../styled/QuestionHeader";
-
-// import { FaSellcast } from "react-icons/fa";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
+import TextInput from "./components/TextInput";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
 import { StyledPreviewImage } from "./styled/StyledPreviewImage";
@@ -27,7 +24,6 @@ import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { getFontSize } from "../../utils/helpers";
-import ClozeTextInput from "../../components/ClozeTextInput";
 import Instructions from "../../components/Instructions";
 import { Pointer } from "../../styled/Pointer";
 import { Triangle } from "../../styled/Triangle";
@@ -35,55 +31,18 @@ import { Point } from "../../styled/Point";
 import { EDIT } from "../../constants/constantsForQuestions";
 
 class Display extends Component {
-  constructor(props) {
-    super(props);
-    const userAnswers = new Array(props.responseContainers.length).fill("");
-    // eslint-disable-next-line no-unused-expressions
-    props.userSelections &&
-      props.userSelections.length &&
-      props.userSelections.map((userSelection, index) => {
-        userAnswers[index] = userSelection;
-        return 0;
-      });
-
-    this.state = {
-      userAnswers
-    };
-  }
-
   static contextType = AnswerContext;
 
-  componentWillReceiveProps(nextProps) {
-    if (this.state !== undefined) {
-      this.setState({
-        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : []
-      });
-    }
-  }
-
-  getEmWidth = () => {
-    const { uiStyle, imageWidth } = this.props;
-    const fontSize = parseInt(getFontSize(uiStyle.fontsize), 10);
-    return `${imageWidth / 14 + (fontSize - 14)}em`;
-  };
-
-  selectChange = (value, index) => {
-    // TODO: stop using state and store fo answers
+  onChangeHandler = (value, id) => {
     const { isAnswerModifiable } = this.context;
     if (!isAnswerModifiable) return;
-    const { userAnswers: newAnswers } = this.state;
     const { onChange: changeAnswers } = this.props;
-    newAnswers[index] = value;
-    this.setState({ userAnswers: newAnswers });
-    changeAnswers(newAnswers);
-  };
-
-  shuffle = arr => {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+    let { userAnswers: newAnswers } = this.props;
+    if (!newAnswers) {
+      newAnswers = {};
     }
-    return arr;
+    newAnswers[id] = value;
+    changeAnswers(newAnswers);
   };
 
   getWidth = () => {
@@ -178,20 +137,14 @@ class Display extends Component {
       isExpressGrader,
       view,
       hideInternalOverflow,
-      isPrintPreview
+      isPrintPreview,
+      userAnswers = {}
     } = this.props;
 
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
-    const { userAnswers } = this.state;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { height, wordwrap, validationStemNumeration: stemNumeration } = uiStyle;
-
-    const responseBtnStyle = {
-      width: uiStyle.width !== 0 ? uiStyle.width : "auto",
-      height: height !== 0 ? height : "auto",
-      whiteSpace: wordwrap ? "inherit" : "nowrap"
-    };
+    const { validationStemNumeration: stemNumeration } = uiStyle;
 
     const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
@@ -226,9 +179,7 @@ class Display extends Component {
               left: imageOptions.x || 0
             }}
           />
-          {responseContainers.map((responseContainer, index) => {
-            const dropTargetIndex = index;
-
+          {responseContainers.map(responseContainer => {
             const btnStyle = {
               fontSize,
               width: responseContainer.width || uiStyle.widthpx || "auto",
@@ -245,39 +196,25 @@ class Display extends Component {
               borderRadius: 5,
               display: "inline-flex"
             };
-            const indexNumber = helpers.getNumeration(dropTargetIndex, stemNumeration);
             const responseWidth = parseInt(responseContainer.width, 10);
+
             return (
-              <div
-                title={
-                  userAnswers[dropTargetIndex]
-                    ? userAnswers[dropTargetIndex].length > 0
-                      ? userAnswers[dropTargetIndex]
-                      : null
-                    : null
-                }
-                style={{ ...btnStyle }}
-              >
+              <div style={btnStyle} key={responseContainer.id}>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />
                 </Pointer>
-                <ClozeTextInput
-                  index={dropTargetIndex}
+                <TextInput
                   disabled={disableResponse}
                   noIndent={responseWidth < 30}
                   lessPadding={responseWidth <= 43}
-                  resprops={{
-                    btnStyle: { border: btnStyle.border },
-                    item,
-                    onChange: ({ value }) => this.selectChange(value, dropTargetIndex),
-                    placeholder: responseContainer.placeholder || uiStyle.placeholder,
-                    type: uiStyle.inputtype,
-                    showIndex: false,
-                    indexNumber,
-                    style: { width: "100%", height: "100%", margin: 0, fontSize },
-                    userAnswers
-                  }}
+                  isMultiple={item.multiple_line}
+                  characterMap={item.characterMap}
+                  background={item.background}
+                  onChange={value => this.onChangeHandler(value, responseContainer.id)}
+                  placeholder={responseContainer.placeholder || uiStyle.placeholder}
+                  type={uiStyle.inputtype}
+                  value={userAnswers[responseContainer.id]}
                 />
               </div>
             );
@@ -289,7 +226,6 @@ class Display extends Component {
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
         responseContainers={responseContainers}
-        responseBtnStyle={responseBtnStyle}
         backgroundColor={item.background}
         imageUrl={imageUrl || ""}
         imageWidth={this.getWidth()}
@@ -302,7 +238,7 @@ class Display extends Component {
         imageOptions={imageOptions}
         showAnswer={showAnswer}
         checkAnswer={checkAnswer}
-        userSelections={userAnswers}
+        userAnswers={userAnswers}
         evaluation={evaluation}
         uiStyle={uiStyle}
         onClickHandler={this.onClickCheckboxHandler}
@@ -359,12 +295,12 @@ Display.propTypes = {
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
   responseContainers: PropTypes.array,
-  userSelections: PropTypes.array,
+  userAnswers: PropTypes.object,
   checkAnswer: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
   validation: PropTypes.object,
-  evaluation: PropTypes.array,
+  evaluation: PropTypes.object,
   backgroundColor: PropTypes.string,
   uiStyle: PropTypes.object,
   imageUrl: PropTypes.string,
@@ -384,9 +320,9 @@ Display.defaultProps = {
   changePreview: () => {},
   onChange: () => {},
   showAnswer: false,
-  evaluation: [],
+  evaluation: {},
   checkAnswer: false,
-  userSelections: [],
+  userAnswers: {},
   responseContainers: [],
   disableResponse: false,
   showDashedBorder: false,

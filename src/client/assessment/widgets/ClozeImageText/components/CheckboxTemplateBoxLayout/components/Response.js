@@ -17,16 +17,16 @@ const Response = ({
   checkAnswer,
   responseContainer,
   btnStyle,
-  userSelections,
+  hasAnswered,
+  userAnswer,
   onClickHandler,
   status,
-  dropTargetIndex,
   indexStr,
   lessMinWidth,
   isExpressGrader,
   isPrintPreview
 }) => {
-  const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle); // returns number
+  const { width: contentWidth } = measureText(userAnswer, btnStyle); // returns number
 
   const padding = lessMinWidth ? 4 : 30;
   const indexWidth = showAnswer ? 40 : 0;
@@ -39,7 +39,6 @@ const Response = ({
    *
    */
   const isOverConent = boxWidth < contentWidth + padding + indexWidth;
-  const hasAnswered = userSelections?.[dropTargetIndex];
 
   const className = `imagelabeldragdrop-droppable active ${
     hasAnswered ? "check-answer" : "noAnswer"
@@ -47,13 +46,11 @@ const Response = ({
 
   const popoverContent = (
     <PopoverContent
-      // stemNumeration={stemNumeration}
-      index={dropTargetIndex}
-      // fontSize={fontSize}
-      userSelections={userSelections}
+      indexStr={indexStr}
+      userAnswer={userAnswer}
+      hasAnswered={hasAnswered}
       status={status}
       btnStyle={{ ...btnStyle, position: "unset" }}
-      // textContainerStyle={textContainerStyle}
       checkAnswer={checkAnswer}
       className={className}
       isExpressGrader={isExpressGrader}
@@ -62,7 +59,7 @@ const Response = ({
 
   const content = (
     <div
-      key={dropTargetIndex}
+      key={indexStr}
       style={{ ...btnStyle, minHeight: `${response.minHeight}px` }}
       className={className}
       onClick={onClickHandler}
@@ -74,7 +71,7 @@ const Response = ({
         className="text container"
         style={{ padding: lessMinWidth ? "0 0 0 4px" : null, background: isPrintPreview && white }}
       >
-        <div className="clipText">{userSelections[dropTargetIndex]}</div>
+        <div className="clipText">{userAnswer}</div>
         {(checkAnswer || showAnswer) && (
           <div>
             {hasAnswered && (
@@ -106,10 +103,9 @@ Response.propTypes = {
   checkAnswer: PropTypes.bool.isRequired,
   responseContainer: PropTypes.object.isRequired,
   btnStyle: PropTypes.object,
-  userSelections: PropTypes.array.isRequired,
+  userAnswer: PropTypes.string.isRequired,
   onClickHandler: PropTypes.func.isRequired,
   status: PropTypes.string,
-  dropTargetIndex: PropTypes.number.isRequired,
   indexStr: PropTypes.string,
   lessMinWidth: PropTypes.bool,
   isExpressGrader: PropTypes.bool.isRequired

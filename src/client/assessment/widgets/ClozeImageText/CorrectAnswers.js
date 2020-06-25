@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep } from "lodash";
+import { cloneDeep, keys } from "lodash";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
@@ -17,21 +17,21 @@ import { AddAlternative } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
   state = {
-    value: 0
+    currentTab: 0
   };
 
-  handleTabChange = value => {
-    this.setState({ value });
+  handleTabChange = currentTab => {
+    this.setState({ currentTab });
   };
 
   handleRemoveAltResponses = (event, deletedTabIndex) => {
     event?.stopPropagation();
-    const { value } = this.state;
+    const { currentTab } = this.state;
     const { onRemoveAltResponses } = this.props;
 
-    if (value === deletedTabIndex + 1) {
+    if (currentTab === deletedTabIndex + 1) {
       this.setState({
-        value: deletedTabIndex
+        currentTab: deletedTabIndex
       });
     }
 
@@ -72,13 +72,15 @@ class CorrectAnswers extends Component {
 
   updateResponseBoxWidth = newData => {
     let maxLength = 0;
-    newData.validation.validResponse.value.forEach(resp => {
-      maxLength = Math.max(maxLength, resp ? resp.length : 0);
+    const { vlaue: correctAnswers } = newData.validation.validResponse;
+    keys(correctAnswers).forEach(id => {
+      maxLength = Math.max(maxLength, correctAnswers[id] ? correctAnswers[id].length : 0);
     });
 
     newData.validation.altResponses.forEach(arr => {
-      arr.value.forEach(resp => {
-        maxLength = Math.max(maxLength, resp ? resp.length : 0);
+      const { value: altCorrectAnswers } = arr;
+      keys(altCorrectAnswers).forEach(id => {
+        maxLength = Math.max(maxLength, altCorrectAnswers[id] ? altCorrectAnswers[id].length : 0);
       });
     });
     const finalWidth = 40 + maxLength * 7;
@@ -155,7 +157,7 @@ class CorrectAnswers extends Component {
       imageOptions,
       item
     } = this.props;
-    const { value } = this.state;
+    const { currentTab } = this.state;
     return (
       <div>
         <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
@@ -163,12 +165,12 @@ class CorrectAnswers extends Component {
         </Subtitle>
         <AddAlternative>
           {this.renderPlusButton()}
-          <Tabs value={value} onChange={this.handleTabChange} style={{ marginBottom: 10, marginTop: 20 }}>
+          <Tabs value={currentTab} onChange={this.handleTabChange} style={{ marginBottom: 10, marginTop: 20 }}>
             <Tab label={t("component.correctanswers.correct")} type="primary" IconPosition="right" />
             {this.renderAltResponses()}
           </Tabs>
         </AddAlternative>
-        {value === 0 && (
+        {currentTab === 0 && (
           <TabContainer>
             <CorrectAnswer
               key={options}
@@ -193,7 +195,7 @@ class CorrectAnswers extends Component {
         {validation.altResponses &&
           !!validation.altResponses.length &&
           validation.altResponses.map((alter, i) => {
-            if (i + 1 === value) {
+            if (i + 1 === currentTab) {
               return (
                 <TabContainer key={i}>
                   <CorrectAnswer

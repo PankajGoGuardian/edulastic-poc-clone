@@ -72,7 +72,7 @@ class ClozeImageText extends Component {
       produce(item, draft => {
         const response = {
           score: 1,
-          value: []
+          value: {}
         };
 
         if (draft.validation.altResponses && draft.validation.altResponses.length) {
@@ -275,7 +275,7 @@ class ClozeImageText extends Component {
                 uiStyle={uiStyle}
                 item={itemForPreview}
                 templateMarkUp={itemForPreview.templateMarkUp}
-                userSelections={userAnswer}
+                userAnswers={userAnswer}
                 onChange={this.handleAddAnswer}
                 configureOptions={{
                   duplicatedResponses,
@@ -315,7 +315,7 @@ ClozeImageText.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   qIndex: PropTypes.number.isRequired,
-  userAnswer: PropTypes.array,
+  userAnswer: PropTypes.object,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
@@ -331,9 +331,9 @@ ClozeImageText.defaultProps = {
     opttions: []
   },
   history: {},
-  userAnswer: [],
+  userAnswer: {},
   testItem: false,
-  evaluation: [],
+  evaluation: {},
   advancedLink: null,
   advancedAreOpen: false,
   fillSections: () => {},

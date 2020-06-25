@@ -1,11 +1,7 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
-
 import { helpers } from "@edulastic/common";
-
 import { response } from "@edulastic/constants";
-
 import { withTheme } from "styled-components";
 import { compose } from "redux";
 import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
@@ -19,7 +15,7 @@ const CheckboxTemplateBoxLayout = ({
   checkAnswer,
   responseContainers,
   imageAlterText,
-  userSelections,
+  userAnswers,
   stemNumeration,
   evaluation,
   fontSize,
@@ -52,7 +48,7 @@ const CheckboxTemplateBoxLayout = ({
         }}
       />
       {responseContainers.map((responseContainer, index) => {
-        const dropTargetIndex = index;
+        const responseBoxId = responseContainer.id;
         const btnStyle = {
           width: responseContainer.width,
           top: responseContainer.top,
@@ -64,19 +60,23 @@ const CheckboxTemplateBoxLayout = ({
           borderRadius
         };
 
-        const indexStr = helpers.getNumeration(dropTargetIndex, stemNumeration);
-        const status =
-          evaluation[dropTargetIndex] !== undefined ? (evaluation[dropTargetIndex] ? "right" : "wrong") : "";
+        const indexStr = helpers.getNumeration(index, stemNumeration);
+        const status = evaluation[responseBoxId] !== undefined ? (evaluation[responseBoxId] ? "right" : "wrong") : "";
         const lessMinWidth = parseInt(responseContainer.width, 10) < response.minWidthShowAnswer;
+
+        const userAnswer = userAnswers[responseContainer.id];
+        const hasAnswered = !!userAnswer;
+
         return (
           <Response
             showAnswer={showAnswer}
             responseContainer={responseContainer}
             btnStyle={btnStyle}
-            userSelections={userSelections}
+            userAnswer={userAnswer}
+            hasAnswered={hasAnswered}
+            userAnswers={userAnswers}
             onClickHandler={onClickHandler}
             status={status}
-            dropTargetIndex={dropTargetIndex}
             indexStr={indexStr}
             lessMinWidth={lessMinWidth}
             checkAnswer={checkAnswer}
@@ -92,7 +92,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   fontSize: PropTypes.string.isRequired,
   responseContainers: PropTypes.array.isRequired,
   imageOptions: PropTypes.object.isRequired,
-  userSelections: PropTypes.array.isRequired,
+  userAnswers: PropTypes.object.isRequired,
   stemNumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool.isRequired,

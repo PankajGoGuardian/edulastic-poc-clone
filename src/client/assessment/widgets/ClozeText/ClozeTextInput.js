@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { find } from "lodash";
 import { AutoExpandInput } from "@edulastic/common";
 import { math } from "@edulastic/constants";
+import { greyThemeLighter, greyThemeLight } from "@edulastic/colors";
 import NumberPad from "../../components/NumberPad";
 import { getInputSelection } from "../../utils/helpers";
-import { greyThemeLighter, greyThemeLight } from "@edulastic/colors";
 
 const { characterMapButtons } = math;
 

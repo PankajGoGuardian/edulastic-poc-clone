@@ -31,27 +31,15 @@ class CorrectAnswer extends Component {
 
   static contextType = ItemLevelContext;
 
-  constructor(props) {
-    super(props);
-    const userSelections = Array(props.options.length).fill(false);
-    props.response.value.forEach(answer => {
-      userSelections[answer] = true;
-    });
-    this.state = {
-      responseScore: props.response.score
-    };
-  }
-
   updateScore = e => {
     const { onUpdatePoints } = this.props;
     if (!(e.target.value > 0)) {
       return;
     }
-    this.setState({ responseScore: e.target.value });
     onUpdatePoints(parseFloat(e.target.value, 10));
   };
 
-  handleMultiSelect = answers => {
+  onChangeAnswers = answers => {
     const { onUpdateValidationValue } = this.props;
     onUpdateValidationValue(answers);
   };
@@ -73,7 +61,7 @@ class CorrectAnswer extends Component {
       maxRespCount,
       item
     } = this.props;
-    const { responseScore } = this.state;
+
     return (
       <div>
         {this.context || (
@@ -82,7 +70,7 @@ class CorrectAnswer extends Component {
             <PointsInput
               id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
               type="number"
-              value={responseScore}
+              value={response.score}
               onChange={this.updateScore}
               onBlur={this.updateScore}
               disabled={false}
@@ -105,11 +93,11 @@ class CorrectAnswer extends Component {
           maxRespCount={maxRespCount}
           imageUrl={imageUrl}
           backgroundColor={backgroundColor}
-          userSelections={response.value}
+          userAnswers={response.value}
           imageAlterText={imageAlterText}
           imageWidth={imageWidth}
           configureOptions={configureOptions}
-          onChange={this.handleMultiSelect}
+          onChange={this.onChangeAnswers}
           imageOptions={item.imageOptions}
         />
       </div>

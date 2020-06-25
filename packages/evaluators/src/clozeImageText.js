@@ -1,4 +1,4 @@
-import { maxBy } from "lodash";
+import { maxBy, keys } from "lodash";
 import { get as levenshteinDistance } from "fast-levenshtein";
 
 import { rounding as RoundOffTypes } from "./const/rounding";
@@ -33,46 +33,49 @@ const compareChoice = (answer, response, allowSingleLetterMistake = false, ignor
 const groupChoiceByIndex = (answers, validation) => {
   // grouping the answers at particular index together
   // [[a11, a12], [a21, a22]] => [[a11, a21], a[12, a22]]
-  const responses = validation.validResponse?.value || [];
+  const responses = validation.validResponse?.value || {};
   const answerSet = [];
-  responses.forEach((response, index) => {
+  keys(responses).forEach(id => {
     answers.forEach(answer => {
-      answerSet[index] = answerSet[index] || new Set([]);
-      answerSet[index].add(answer.value[index]);
+      answerSet[id] = answerSet[id] || new Set([]);
+      answerSet[id].add(answer.value[id]);
     });
   });
   return answerSet;
 };
 
 const mixAndMatchEvaluator = ({ userResponse, validation }) => {
-  const response = [...userResponse];
+  const response = userResponse;
   const { allowSingleLetterMistake, ignoreCase } = validation;
 
   // combining validAnswer and alternate answers
   const answers = [{ ...validation.validResponse }, ...(validation.altResponses || [])];
-  const optionCount = validation.validResponse?.value.length || 0;
+  const optionCount = keys(validation.validResponse?.value).length || 0;
   const maxScore = answers.reduce((_maxScore, answer) => Math.max(_maxScore, answer.score), 0);
   let score = 0;
 
   // grouping all the responses at particular index together
   const answerSet = groupChoiceByIndex(answers, validation);
-  const evaluation = response.map((resp, index) => {
-    const answersByIndex = answerSet[index].values();
+
+  const evaluation = {};
+  keys(response).forEach(id => {
+    const answersById = answerSet[id].values();
     let found = false;
-    for (const answer of answersByIndex) {
-      found = compareChoice(answer, resp, allowSingleLetterMistake, ignoreCase);
+    for (const answer of answersById) {
+      found = compareChoice(answer, response[id], allowSingleLetterMistake, ignoreCase);
       if (found) break;
     }
-    return found;
+    evaluation[id] = found;
   });
 
-  const correctAnswerCount = evaluation.filter(elem => elem).length;
+  const correctAnswerCount = keys(evaluation).filter(id => evaluation[id]).length;
+
   if (validation.scoringType === "partialMatch") {
     // get partial score
     score = maxScore * (correctAnswerCount / optionCount);
     if (validation.penalty) {
       const { penalty: totalPenalty } = validation;
-      const wrongAnswerCount = evaluation.filter(val => val === false).length;
+      const wrongAnswerCount = keys(evaluation).filter(id => evaluation[id] === false).length;
       const penalty = (totalPenalty / optionCount) * wrongAnswerCount;
       score = Math.max(0, score - penalty);
       // if round down, but score achieved is not full score, then round down to nearest integer
@@ -88,28 +91,32 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
 };
 
 const normalEvaluator = ({ userResponse, validation }) => {
-  const { validResponse: { value = [] } = {} } = validation;
-  const optionCount = value.length || 0;
+  const { validResponse: { value = {} } = {} } = validation;
+  const optionCount = keys(value).length || 0;
   const { allowSingleLetterMistake, ignoreCase } = validation;
 
   // combining the correct answer and alternate answers
   const answers = [{ ...validation.validResponse }, ...(validation.altResponses || [])];
+
   const maxScore = answers.reduce((_maxScore, answer) => Math.max(_maxScore, answer.score), 0);
   const evaluations = [];
-  const response = [...userResponse];
+  const response = userResponse;
+
   answers.forEach(answer => {
     let currentScore = 0;
     // calculating the evaluation for every answer
     // comparing user respose with the answer
-    const currentEvaluation = answer.value.map((ans, _index) =>
-      compareChoice(ans, response[_index], allowSingleLetterMistake, ignoreCase)
-    );
-    const correctAnswerCount = currentEvaluation.filter(elem => elem).length;
+    const evaluation = {};
+    keys(answer.value).forEach(id => {
+      evaluation[id] = compareChoice(answer.value[id], response[id], allowSingleLetterMistake, ignoreCase);
+    });
+
+    const correctAnswerCount = keys(evaluation).filter(id => evaluation[id]).length;
     if (validation.scoringType === "partialMatch") {
       currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount));
       if (validation.penalty) {
         const { penalty: totalPenalty } = validation;
-        const wrongAnswerCount = currentEvaluation.filter(val => val === false).length;
+        const wrongAnswerCount = keys(evaluation).filter(id => evaluation[id] === false).length;
         const penalty = (totalPenalty / optionCount) * wrongAnswerCount;
         currentScore = Math.max(0, currentScore - penalty);
         // if round down, but score achieved is not full score, then round down to nearest integer
@@ -123,7 +130,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
     }
     evaluations.push({
       score: currentScore,
-      evaluation: currentEvaluation
+      evaluation
     });
   });
 
@@ -139,7 +146,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
  * @param {Array} userResponse
  * @param {Object} validation
  */
-const evaluator = ({ userResponse = [], validation = {} }) =>
+const evaluator = ({ userResponse = {}, validation = {} }) =>
   validation.mixAndMatch
     ? mixAndMatchEvaluator({ userResponse, validation })
     : normalEvaluator({ userResponse, validation });

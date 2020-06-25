@@ -344,7 +344,9 @@ const answerValidator = {
     return hasEmpty;
   },
   [questionType.CLOZE_IMAGE_TEXT](answers) {
-    const hasEmpty = this.generalValidator(answers);
+    const hasEmpty = answers.some(
+      answer => isEmpty(answer.value) || keys(answer.value).some(id => isEmpty(answer.value[id]))
+    );
     return hasEmpty;
   },
   [questionType.CLOZE_DROP_DOWN](answers) {

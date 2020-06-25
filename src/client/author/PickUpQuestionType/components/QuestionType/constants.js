@@ -1538,7 +1538,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           mixAndMatch: true,
           validResponse: {
             score: 1,
-            value: ["", "", ""]
+            value: { [uuids[0]]: "", [uuids[1]]: "", [uuids[2]]: "" }
           },
           altResponses: []
         },

@@ -1,6 +1,6 @@
 import React from "react";
 import produce from "immer";
-import { get, findIndex } from "lodash";
+import { get, findIndex, isObject } from "lodash";
 import PropTypes from "prop-types";
 import { helpers } from "@edulastic/common";
 import { response as responseConst, clozeImage } from "@edulastic/constants";
@@ -41,9 +41,22 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
       setQuestionData(
         produce(item, draft => {
           draft.responses.splice(deletedIndex, 1);
-          draft.validation.validResponse.value.splice(deletedIndex, 1);
+
+          /**
+           * correct answer will be an object for clozeImageText and clozeImageDropdown
+           */
+          if (isObject(draft.validation.validResponse.value)) {
+            delete draft.validation.validResponse.value[id];
+          } else {
+            draft.validation.validResponse.value.splice(deletedIndex, 1);
+          }
+
           draft.validation.altResponses = draft.validation.altResponses.map(resp => {
-            resp.value.splice(deletedIndex, 1);
+            if (isObject(resp.value)) {
+              delete resp.value[id];
+            } else {
+              resp.value.splice(deletedIndex, 1);
+            }
             return resp;
           });
           if (draft.options && isDropDown) {
@@ -126,8 +139,8 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
   const { uiStyle: uiStyles = {} } = item;
 
   return item.responses.map((response, i) => {
-    let responseHeight = response.height || uiStyles.heightpx || "auto";
-    let responseWidth = response.width || uiStyles.widthpx || "auto";
+    const responseHeight = response.height || uiStyles.heightpx || "auto";
+    const responseWidth = response.width || uiStyles.widthpx || "auto";
 
     return (
       <Draggable

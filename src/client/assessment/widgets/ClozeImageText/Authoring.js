@@ -5,7 +5,7 @@ import { beforeUpload, PaddingDiv, notification } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { aws, clozeImage } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { Dropdown, message, Select, Upload } from "antd";
+import { Dropdown, Select, Upload } from "antd";
 import produce from "immer";
 import { get, isUndefined, maxBy } from "lodash";
 import PropTypes from "prop-types";
@@ -230,7 +230,6 @@ class Authoring extends Component {
   getImageDimensions = (url, isNew) => {
     const { item, setQuestionData } = this.props;
     const { maxWidth, maxHeight } = clozeImage;
-    const { imageRndRef } = this;
     const img = new Image();
 
     img.addEventListener("load", function() {
@@ -357,7 +356,7 @@ class Authoring extends Component {
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef
-      notification({ msg:`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`});
+      notification({ msg: `${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.` });
     }
   };
 
@@ -498,17 +497,17 @@ class Authoring extends Component {
 
         draft.responses.push(newResponseContainer);
 
-        draft.validation.validResponse.value = draft.validation.validResponse.value || [];
-        /**
-         * since new response box is added
-         * need to add dummy value in validation to keep in sync
-         * user can change the value later by typing in values
-         */
-        draft.validation.validResponse.value.push("");
+        if (!draft.validation.validResponse.value) {
+          draft.validation.validResponse.value = {};
+        }
+
+        draft.validation.validResponse.value[newResponseContainer.id] = "";
 
         draft.validation.altResponses.forEach(resp => {
-          resp.value = resp.value || [];
-          resp.value.push("");
+          if (!resp.value) {
+            resp.value = {};
+          }
+          resp.value[newResponseContainer.id] = "";
         });
 
         updateVariables(draft);

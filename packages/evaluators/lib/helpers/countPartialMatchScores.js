@@ -30,10 +30,10 @@ const countPartialMatchScores = function countPartialMatchScores(compareFunction
         const userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
         const qType = _ref.qType;
     const restOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    const isOrderlist = qType === _constants.questionType.ORDER_LIST;
+    const isObjectAnswers = qType === _constants.questionType.ORDER_LIST || qType === _constants.questionType.CLOZE_IMAGE_DROP_DOWN;
     let existingResponse = (0, _cloneDeep2.default)(userResponse);
 
-    if (!isOrderlist && !Array.isArray(userResponse)) {
+    if (!isObjectAnswers && !Array.isArray(userResponse)) {
       existingResponse = (0, _cloneDeep2.default)(userResponse.value);
     }
 
@@ -52,7 +52,7 @@ const countPartialMatchScores = function countPartialMatchScores(compareFunction
       let numOfanswer = answer.length;
       let matches = 0;
 
-      if (isOrderlist) {
+      if (isObjectAnswers) {
         matches = (0, _orderlistHelpers.getOrderlistMatchs)(existingResponse, answer);
         numOfanswer = (0, _keys2.default)(answer).length;
       } else {

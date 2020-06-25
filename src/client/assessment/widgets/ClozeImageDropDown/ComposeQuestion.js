@@ -1,10 +1,9 @@
 import { themeColor } from "@edulastic/colors";
-// import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { beforeUpload, PaddingDiv, notification } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { aws, clozeImage } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { Dropdown, message, Select, Upload } from "antd";
+import { Dropdown, Select, Upload } from "antd";
 import produce from "immer";
 import { get, isUndefined, maxBy } from "lodash";
 import PropTypes from "prop-types";
@@ -14,7 +13,6 @@ import "react-quill/dist/quill.snow.css";
 import { connect } from "react-redux";
 import { Rnd } from "react-rnd";
 import { withRouter } from "react-router-dom";
-import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import uuidv4 from "uuid/v4";
@@ -93,25 +91,6 @@ class ComposeQuestion extends Component {
     );
   };
 
-  onSortEnd = (index, { oldIndex, newIndex }) => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.options[index] = arrayMove(draft.options[index], oldIndex, newIndex);
-      })
-    );
-  };
-
-  remove = (index, itemIndex) => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.options[index].splice(itemIndex, 1);
-        updateVariables(draft);
-      })
-    );
-  };
-
   onItemPropChange = (prop, value) => {
     const { item, setQuestionData } = this.props;
 
@@ -135,18 +114,6 @@ class ComposeQuestion extends Component {
 
         newItem[prop] = value;
         updateVariables(newItem);
-      })
-    );
-  };
-
-  onResponsePropChange = (prop, value) => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.responseLayout = draft.responseLayout || {};
-        draft.responseLayout[prop] = value;
-
-        updateVariables(draft);
       })
     );
   };
@@ -243,7 +210,7 @@ class ComposeQuestion extends Component {
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef
-      notification({ msg:`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`});
+      notification({ msg: `${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.` });
     }
   };
 
@@ -510,16 +477,16 @@ class ComposeQuestion extends Component {
           return res;
         });
 
-        /**
-         * since new response box is added
-         * need to add dummy value in validation to keep in sync
-         * user can change the value later by typing in values
-         */
-        draft.validation.validResponse.value?.push("");
+        if (!draft.validation.validResponse.value) {
+          draft.validation.validResponse.value = {};
+        }
+        draft.validation.validResponse.value[newResponseContainer.id] = "";
 
         draft.validation.altResponses.forEach(ans => {
-          ans.value = ans.value || [];
-          ans.value.push("");
+          if (!ans.value) {
+            ans.value = {};
+          }
+          ans.value[newResponseContainer.id] = "";
         });
 
         draft.responses.push(newResponseContainer);
@@ -532,15 +499,7 @@ class ComposeQuestion extends Component {
 
   render() {
     const { t, item, theme, setQuestionData, fillSections, cleanSections } = this.props;
-    const {
-      background,
-      imageAlterText,
-      isEditAriaLabels,
-      responses,
-      keepAspectRatio,
-      responseLayout,
-      imageOptions = {}
-    } = item;
+    const { background, imageAlterText, isEditAriaLabels, responses, keepAspectRatio, imageOptions = {} } = item;
     const { isEditableResizeMove } = this.state;
 
     const { toggleIsMoveResizeEditable, handleDragStop } = this;

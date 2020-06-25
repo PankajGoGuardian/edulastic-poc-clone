@@ -6,9 +6,9 @@ import { getClozeTextMatches } from "./clozeTextHelpers";
 import { getOrderlistMatchs } from "./orderlistHelpers";
 
 const countPartialMatchScores = compareFunction => ({ answers, userResponse = [], qType }, restOptions = {}) => {
-  const isOrderlist = qType === questionType.ORDER_LIST;
+  const isObjectAnswers = qType === questionType.ORDER_LIST || qType === questionType.CLOZE_IMAGE_DROP_DOWN;
   let existingResponse = cloneDeep(userResponse);
-  if (!isOrderlist && !Array.isArray(userResponse)) {
+  if (!isObjectAnswers && !Array.isArray(userResponse)) {
     existingResponse = cloneDeep(userResponse.value);
   }
 
@@ -25,7 +25,7 @@ const countPartialMatchScores = compareFunction => ({ answers, userResponse = []
     let numOfanswer = answer.length;
     let matches = 0;
 
-    if (isOrderlist) {
+    if (isObjectAnswers) {
       matches = getOrderlistMatchs(existingResponse, answer);
       numOfanswer = keys(answer).length;
     } else {

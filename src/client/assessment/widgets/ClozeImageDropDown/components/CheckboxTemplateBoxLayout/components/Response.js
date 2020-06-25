@@ -17,11 +17,10 @@ const Response = ({
   checkAnswer,
   btnStyle,
   responseContainer,
-  userSelections,
   status,
   onClickHandler,
   indexStr,
-  dropTargetIndex,
+  answered,
   isExpressGrader,
   isPrintPreview,
   imageHeight,
@@ -35,10 +34,9 @@ const Response = ({
     background: isPrintPreview && white
   };
 
-  const answered = userSelections[dropTargetIndex];
   const classNames = `imagelabeldragdrop-droppable active ${answered ? "check-answer" : "noAnswer"} ${status}`;
 
-  const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
+  const { width: contentWidth } = measureText(answered, btnStyle);
   const textPadding = lessMinWidth ? 2 : 30;
   const indexBoxWidth = showAnswer ? 40 : 0;
   const isOverContent = btnStyle.width < contentWidth + textPadding + indexBoxWidth;
@@ -51,8 +49,8 @@ const Response = ({
 
   const popoverContent = (
     <PopoverContent
-      index={dropTargetIndex}
-      userSelections={userSelections}
+      indexStr={indexStr}
+      answered={answered}
       status={status}
       isExpressGrader={isExpressGrader}
       checkAnswer={checkAnswer}
@@ -69,7 +67,7 @@ const Response = ({
       </span>
       <div className="text container" style={textContainerStyle}>
         <div className="clipText">
-          <MathSpan dangerouslySetInnerHTML={{ __html: userSelections[dropTargetIndex] }} />
+          <MathSpan dangerouslySetInnerHTML={{ __html: answered || "" }} />
         </div>
         <div
           style={{
@@ -97,11 +95,9 @@ Response.propTypes = {
   checkAnswer: Proptypes.bool,
   btnStyle: Proptypes.object,
   responseContainer: Proptypes.object.isRequired,
-  userSelections: Proptypes.array.isRequired,
   status: Proptypes.string.isRequired,
   onClickHandler: Proptypes.func.isRequired,
   indexStr: Proptypes.string.isRequired,
-  dropTargetIndex: Proptypes.number.isRequired,
   isExpressGrader: Proptypes.bool.isRequired
 };
 

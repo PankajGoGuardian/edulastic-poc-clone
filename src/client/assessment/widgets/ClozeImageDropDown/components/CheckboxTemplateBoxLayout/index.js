@@ -20,7 +20,7 @@ const CheckboxTemplateBoxLayout = ({
   imageHeight,
   imageAlterText,
   fontSize,
-  userSelections = [],
+  userSelections = {},
   stemNumeration,
   evaluation,
   maxHeight,
@@ -64,6 +64,7 @@ const CheckboxTemplateBoxLayout = ({
         )}
         {responseContainers.map((responseContainer, index) => {
           const dropTargetIndex = index;
+          const responseId = responseContainer.id;
           const top = widthGreaterThanWindowWidth ? responseContainer.top : responseContainer.top - imageOptions.y;
           const left = widthGreaterThanWindowWidth ? responseContainer.left : responseContainer.left - imageOptions.x;
           const btnStyle = {
@@ -89,8 +90,9 @@ const CheckboxTemplateBoxLayout = ({
               indexStr = dropTargetIndex + 1;
           }
           let status = "";
-          if (userSelections[dropTargetIndex] && evaluation[dropTargetIndex] !== undefined) {
-            status = evaluation[dropTargetIndex] ? "right" : "wrong";
+          const userAnswer = userSelections[responseId];
+          if (userAnswer && evaluation[responseId] !== undefined) {
+            status = evaluation[responseId] ? "right" : "wrong";
           }
           const lessMinWidth = parseInt(responseContainer.width, 10) < minWidthShowAnswer;
           return (
@@ -100,11 +102,10 @@ const CheckboxTemplateBoxLayout = ({
               checkAnswer={checkAnswer}
               btnStyle={btnStyle}
               responseContainer={responseContainer}
-              userSelections={userSelections}
+              answered={userAnswer}
               status={status}
               onClickHandler={onClickHandler}
               indexStr={indexStr}
-              dropTargetIndex={dropTargetIndex}
               isExpressGrader={isExpressGrader}
               item={item}
               isPrintPreview={isPrintPreview}
@@ -121,7 +122,7 @@ const CheckboxTemplateBoxLayout = ({
 CheckboxTemplateBoxLayout.propTypes = {
   fontSize: PropTypes.string.isRequired,
   responseContainers: PropTypes.array.isRequired,
-  userSelections: PropTypes.array.isRequired,
+  userSelections: PropTypes.object.isRequired,
   stemNumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool.isRequired,

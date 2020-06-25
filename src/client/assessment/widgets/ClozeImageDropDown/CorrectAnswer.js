@@ -42,10 +42,6 @@ class CorrectAnswer extends Component {
 
   constructor(props) {
     super(props);
-    const userSelections = Array(props.options.length).fill(false);
-    props.response.value.forEach(answer => {
-      userSelections[answer] = true;
-    });
     this.state = {
       responseScore: props.response.score
     };

@@ -98,10 +98,10 @@ class ClozeImageDropDown extends Component {
       produce(item, draft => {
         const response = {
           score: 1,
-          value: new Array(draft.responses.length).fill("")
+          value: {}
         };
 
-        draft.validation.altResponses = draft.validation.altResponses || [];
+        draft.validation.altResponses = draft.validation.altResponses || {};
         draft.validation.altResponses.push(response);
       })
     );
@@ -314,10 +314,10 @@ ClozeImageDropDown.propTypes = {
   history: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.array,
+  userAnswer: PropTypes.object,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any,
+  evaluation: PropTypes.object,
   advancedLink: PropTypes.any,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
@@ -331,10 +331,10 @@ ClozeImageDropDown.defaultProps = {
   },
   smallSize: false,
   history: {},
-  userAnswer: [],
+  userAnswer: {},
   testItem: false,
   advancedAreOpen: false,
-  evaluation: [],
+  evaluation: {},
   advancedLink: null,
   fillSections: () => {},
   cleanSections: () => {}

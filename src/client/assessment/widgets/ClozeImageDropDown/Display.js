@@ -33,11 +33,11 @@ import { EDIT } from "../../constants/constantsForQuestions";
 class Display extends Component {
   containerRef = React.createRef();
 
-  selectChange = (value, index) => {
+  selectChange = (value, id) => {
     const { onChange: changeAnswers, userSelections } = this.props;
     changeAnswers(
       produce(userSelections, draft => {
-        draft[index] = value;
+        draft[id] = value;
       })
     );
   };
@@ -267,6 +267,7 @@ class Display extends Component {
                 position: "absolute",
                 borderRadius: "4px"
               };
+              const responseId = responseContainer.id;
 
               return (
                 <div
@@ -293,8 +294,8 @@ class Display extends Component {
                         value: op,
                         label: op
                       }))}
-                      onChange={value => this.selectChange(value, dropTargetIndex)}
-                      defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelectedAnswers[dropTargetIndex]}
+                      onChange={value => this.selectChange(value, responseId)}
+                      defaultValue={isReviewTab ? cAnswers[responseId] : userSelectedAnswers[responseId]}
                       isPrintPreview={isPrint || isPrintPreview}
                     />
                   )}

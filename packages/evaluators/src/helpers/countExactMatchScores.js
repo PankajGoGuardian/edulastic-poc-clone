@@ -7,9 +7,9 @@ import { getClozeTextMatches } from "./clozeTextHelpers";
 import { getOrderlistMatchs } from "./orderlistHelpers";
 
 const countExactMatchScores = compareFunction => ({ answers, userResponse = [], qType }, restOptions = {}) => {
-  const isOrderlist = qType === questionType.ORDER_LIST;
+  const isObjectAnswers = qType === questionType.ORDER_LIST || qType === questionType.CLOZE_IMAGE_DROP_DOWN;
   let existingResponse = cloneDeep(userResponse);
-  if (!isOrderlist && !Array.isArray(userResponse)) {
+  if (!isObjectAnswers && !Array.isArray(userResponse)) {
     existingResponse = cloneDeep(userResponse.value);
   }
 
@@ -29,7 +29,7 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [], 
     let numOfanswer = answer.length;
     let numOfResponse = existingResponse.length;
 
-    if (isOrderlist) {
+    if (isObjectAnswers) {
       currentMatchCount = getOrderlistMatchs(existingResponse, answer);
       numOfanswer = keys(answer).length;
       numOfResponse = keys(existingResponse).length;

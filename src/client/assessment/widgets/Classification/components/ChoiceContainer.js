@@ -13,7 +13,7 @@ const ChoiceContainer = ({ title, children, direction, choiceWidth }) => {
 
   useLayoutEffect(() => {
     setTimeout(() => {
-      if (ContainerRef) {
+      if (ContainerRef.current) {
         const { height } = ContainerRef.current.getBoundingClientRect();
         setContainerHeight(height);
       }

@@ -104,5 +104,11 @@ export default class CypressHelper {
     parseInt(hours.split(":")[1].trim()) * 60 +
     parseInt(hours.split(":")[2].trim());
 
-  static verifyAntMesssage = msg => cy.get(".ant-notification-notice-message").should("contain", msg);
+  static verifyAntMesssage = msg =>
+    cy
+      .get(".ant-notification-notice-message")
+      .should("contain", msg)
+      .then($ele => {
+        $ele.detach();
+      });
 }

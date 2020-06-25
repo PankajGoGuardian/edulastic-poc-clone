@@ -74,6 +74,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
         studentTest.getQuestionByIndex(i);
         // if (i !== 0) cy.wait("@test-activity");
         cy.wait(500); // allow questions to render
+        // no attempt
+        studentTest.checkAnsValidateAsNoPoint(points);
 
         studentTest.attemptQuestion(queType, attemptTypes.RIGHT, attemptData);
         studentTest.checkAnsValidateAsRight(points);

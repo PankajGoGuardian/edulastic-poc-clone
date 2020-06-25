@@ -87,7 +87,7 @@ class ReportsPage {
   verifyStatusIs = status => this.getStatus().should("have.text", status);
 
   validateStats(attemptNum, attempt, score, percent, totalAttempt) {
-    this.getAttemptCount().should("have.text", attempt);
+    if (attempt.split("/")[1] !== "1") this.getAttemptCount().should("have.text", attempt);
     if (score) {
       console.log("score here", score);
       this.getScore().should(

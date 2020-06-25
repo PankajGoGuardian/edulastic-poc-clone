@@ -60,9 +60,20 @@ export default class TeacherManageClassPage {
 
   getToEnrollStudents = () => cy.get('[data-cy="students-to-enroll"]');
 
+  getDropDownInHeader = () => cy.get('[data-cy="headerDropDown"]');
+
+  getEditClassInDropDown = () => cy.get("li").contains("Edit Class");
+
+  getArchiveClassInDropDown = () => cy.get("li").contains("Archive Class");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+
+  clickHeaderDropDown = () =>
+    this.getDropDownInHeader()
+      .click({ force: true })
+      .then(() => cy.wait(500));
 
   clickOnActionButton = () => {
     cy.get('[data-cy="actions"]').click();
@@ -82,7 +93,10 @@ export default class TeacherManageClassPage {
 
   clickOnCreateClass = () => cy.get('[data-cy="createClass"]').click({});
 
-  clickOnEditClass = () => cy.get("[data-cy='editClass']").click();
+  clickOnEditClass = () => {
+    this.clickHeaderDropDown();
+    this.getEditClassInDropDown().click({ force: true });
+  };
 
   clickOnUpdateClass = () => {
     cy.server();
@@ -295,7 +309,8 @@ export default class TeacherManageClassPage {
   archieveClass = () => {
     cy.server();
     cy.route("DELETE", "**/group/**").as("archieveClass");
-    cy.get('[data-cy="archive-class"]').click();
+    this.clickHeaderDropDown();
+    this.getArchiveClassInDropDown().click({ force: true });
     cy.get("input").type("ARCHIVE");
     cy.contains("Yes, Archive").click();
     cy.wait("@archieveClass")

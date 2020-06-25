@@ -163,13 +163,11 @@ class StudentTestPage {
       .as("submit")
       .should("be.visible")
       .click();
-    /* this.clickOnCancel();
 
-    cy.get("@submit").click(); */
-    cy.get("[data-cy=submit]")
+    /* cy.get("[data-cy=submit]")
       .should("be.visible")
-      .click();
-    // cy.wait("@saved");
+      .click(); */
+
     cy.wait("@testactivity");
   };
 
@@ -209,17 +207,20 @@ class StudentTestPage {
 
   checkAnsValidateAsWrong = (maxPoints = 1) => {
     this.clickOnCheckAns();
-    CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
+    // CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
+    CypressHelper.verifyAntMesssage(`Incorrect`);
   };
 
   checkAnsValidateAsRight = (maxPoints = 1) => {
     this.clickOnCheckAns();
-    CypressHelper.verifyAntMesssage(`score: ${maxPoints}/${maxPoints}`);
+    // CypressHelper.verifyAntMesssage(`score: ${maxPoints}/${maxPoints}`);
+    CypressHelper.verifyAntMesssage(`Correct`);
   };
 
   checkAnsValidateAsNoPoint = (maxPoints = 1) => {
-    this.clickOnCheckAns();
-    CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
+    this.getCheckAns().click();
+    // CypressHelper.verifyAntMesssage(`score: 0/${maxPoints}`);
+    CypressHelper.verifyAntMesssage(`Attempt the question to check answer`);
     return this;
   };
 

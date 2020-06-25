@@ -63,6 +63,8 @@ import Explanation from "./Common/Explanation";
 import { EDIT } from "../constants/constantsForQuestions";
 import ShowUserWork from "./Common/ShowUserWork";
 import { playerSkinTypeSelector } from "../selectors/test";
+import { isItemVisibiltySelector } from "../../author/ClassBoard/ducks";
+import ItemInvisible from "../../author/ExpressGrader/components/Question/ItemInvisible";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -350,14 +352,19 @@ class QuestionWrapper extends Component {
       isPowerTeacher = false,
       isPremiumUser = false,
       features,
+      isItemsVisible,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab, page } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
-    const Question = getQuestion(type);
     const { layoutType } = this.context;
+    const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO, questionType.TEXT].includes(data.type);
+    const Question =
+      isExpressGrader && !isItemsVisible
+        ? () => <ItemInvisible qLabel={data.qLabel} showQuestionNumber={!isPassageOrVideoType && data.qLabel} />
+        : getQuestion(type);
 
     const isV1Multipart = get(this.props, "col.isV1Multipart", false);
     const userAnswerProps = {};
@@ -377,8 +384,6 @@ class QuestionWrapper extends Component {
       data.tts.taskStatus === "COMPLETED";
 
     const showAudioControls = userRole === "teacher" && !!LCBPreviewModal;
-
-    const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO, questionType.TEXT].includes(data.type);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
 
@@ -622,7 +627,8 @@ const enhance = compose(
       playerSkinType: playerSkinTypeSelector(state),
       isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
       isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      isItemsVisible: isItemVisibiltySelector(state)
     }),
     {
       setQuestionData: setQuestionDataAction,

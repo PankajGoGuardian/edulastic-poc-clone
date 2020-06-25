@@ -4,7 +4,8 @@ import {
   secondaryTextColor,
   themeColor,
   themeColorLight,
-  white
+  white,
+  backgrounds
 } from "@edulastic/colors";
 import { DatePicker, Row, Select, Table } from "antd";
 import styled from "styled-components";
@@ -115,9 +116,12 @@ export const StyledDatePicker = styled(DatePicker)`
   }
 `;
 
-export const StyledTable = styled(Table)`
-  flex: 2;
+export const TableContainer = styled.div`
   margin-left: 70px;
+  flex: 2;
+`;
+
+export const StyledTable = styled(Table)`
   .ant-table {
     color: #434b5d;
     font-weight: 600;
@@ -241,6 +245,32 @@ export const ClassListFilter = styled.div`
     font-size: 14px;
     svg {
       fill: ${themeColor};
+    }
+  }
+`;
+
+export const InfoSection = styled.div`
+  display: flex;
+  justify-content: space-around;
+  height: 76px;
+  margin-bottom: 10px;
+  > div {
+    flex: 1;
+    margin-right: 10px;
+    border-radius: 10px;
+    background: ${backgrounds.default};
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    font-weight: 500;
+    &:last-child {
+      margin-right: 0px;
+    }
+    > span:last-child {
+      color: ${themeColor};
+      font-weight: 600;
+      font-size: 16px;
     }
   }
 `;

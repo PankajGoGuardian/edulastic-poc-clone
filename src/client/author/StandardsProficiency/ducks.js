@@ -96,8 +96,9 @@ export const reducer = createReducer(initialState, {
         state.data.push({
           _id: "",
           name: "Standard Proficiency",
-          calcType: "MOST_RECENT",
-          calcDecayingAttr: 65,
+          calcType: "DECAYING_AVERAGE",
+          calcDecayingAttr: 60,
+          decay: 60,
           calcMovingAvrAttr: 5,
           scale: [
             { key: 0, color: "#3DB04E", score: 4, masteryLevel: "Exceeds Mastery", shortName: "E", threshold: 90 },

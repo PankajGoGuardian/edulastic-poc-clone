@@ -111,7 +111,7 @@ const enhance = compose(
       isLoading: groupsLoadingSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       courseList: get(state, "coursesReducer.searchResult"),
-      districtId: get(state, "user.user.orgData.districtId"),
+      districtId: state.user.user.orgData.districtIds[0],
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       syncClassResponse: get(state, "manageClass.syncClassResponse", {}),
       syncClassLoading: get(state, "manageClass.syncClassLoading", false),

@@ -161,9 +161,10 @@ const ActionContainer = ({
             const tempName = split(fullName, " ");
             const firstName = tempName[0];
             const lastName = tempName[1];
+            const {districtIds: [userDistrictId]} = orgData;
             values.classCode = selectedClass.code;
             values.role = "student";
-            values.districtId = orgData.districtId;
+            values.districtId = userDistrictId;
             values.institutionIds = orgData.institutionIds;
             values.firstName = firstName;
             values.lastName = lastName;
@@ -192,10 +193,6 @@ const ActionContainer = ({
 
   const saveFormRef = node => {
     formRef = node;
-  };
-
-  const showMessage = (msgType, msg) => {
-    message.open({ type: msgType, content: msg });
   };
 
   const handleActionMenuClick = ({ key }) => {

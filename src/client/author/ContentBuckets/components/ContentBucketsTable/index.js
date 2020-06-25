@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { get, isEmpty, debounce } from "lodash";
 import { Button, Tooltip } from "antd";
 import { roleuser } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
 import { StyledFilterDiv } from "../../../../admin/Common/StyledComponents";
 
 import {
@@ -27,7 +28,7 @@ import { fetchCollectionListRequestAction, getCollectionListSelector } from "../
 import Breadcrumb from "../../../src/components/Breadcrumb";
 
 import ContentSubHeader from "../../../src/components/common/AdminSubHeader/ContentSubHeader";
-import { withNamespaces } from "@edulastic/localization";
+
 const menuActive = { mainMenu: "Content", subMenu: "Buckets" };
 const breadcrumbData = [
   {
@@ -60,11 +61,6 @@ const ContentBucketsTable = ({
     loadBuckets();
   }, []);
 
-  const onEditBucket = key => {
-    setEditableBucketId(key);
-    toggleCreateBucketModal();
-  };
-
   const toggleCreateBucketModal = () => {
     if (!upsertModalVisibility) {
       fetchCollectionListRequest({
@@ -77,6 +73,16 @@ const ContentBucketsTable = ({
     }
     setUpsertModalVisibility(!upsertModalVisibility);
   };
+
+  const onEditBucket = key => {
+    setEditableBucketId(key);
+    toggleCreateBucketModal();
+  };
+
+  const editableBucket = useMemo(() => buckets.find(bucket => bucket._id === editableBucketId), [
+    buckets,
+    editableBucketId
+  ]);
 
   const handleCreateBucket = data => {
     if (data._id) {
@@ -91,7 +97,7 @@ const ContentBucketsTable = ({
 
   const handleSearchName = value => setSearchName(value.trim());
   const filteredBuckets = () => {
-    if (!!searchName) {
+    if (searchName) {
       return buckets.filter(bucket => bucket.name.toLowerCase().includes(searchName.toLowerCase()));
     }
     return buckets;
@@ -110,9 +116,7 @@ const ContentBucketsTable = ({
     {
       title: t("content.buckets.tableHeader.name"),
       dataIndex: "name",
-      render: name => {
-        return <span>{name === "Anonymous" || isEmpty(name) ? "-" : name}</span>;
-      },
+      render: name => <span>{name === "Anonymous" || isEmpty(name) ? "-" : name}</span>,
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const prev = get(a, "name", "");
@@ -140,9 +144,7 @@ const ContentBucketsTable = ({
     {
       title: t("content.buckets.tableHeader.collectionName"),
       dataIndex: "collection.name",
-      render: (collectionName, { _source }) => {
-        return <span>{collectionName === "Anonymous" || isEmpty(collectionName) ? "-" : collectionName}</span>;
-      },
+      render: (collectionName) => <span>{collectionName === "Anonymous" || isEmpty(collectionName) ? "-" : collectionName}</span>,
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const prev = `${get(a, "name", "")}${get(a, "name", "")}`;
@@ -202,7 +204,6 @@ const ContentBucketsTable = ({
         return next - prev;
       }
     },
-    ,
     {
       title: t("content.buckets.tableHeader.clonePlaylist"),
       dataIndex: "canDuplicatePlayList",
@@ -296,19 +297,14 @@ const ContentBucketsTable = ({
     {
       dataIndex: "_id",
       render: (id, record) => {
-        if (record.collection.districtId === user.districtId && user.role !== roleuser.EDULASTIC_ADMIN)
+        if (record.collection.districtId === user?.districtIds?.[0] && user.role !== roleuser.EDULASTIC_ADMIN)
           return <StyledIconPencilEdit color={theme.themeColor} onClick={() => onEditBucket(id)} />;
         return null;
       }
     }
   ];
 
-  const editableBucket = useMemo(() => buckets.find(bucket => bucket._id === editableBucketId), [
-    buckets,
-    editableBucketId
-  ]);
-
-  let filteredCollections = collections;
+  const filteredCollections = collections;
   if (editableBucket && !filteredCollections.find(fc => fc._id === editableBucket.collection._id)) {
     filteredCollections.push(editableBucket.collection);
   }

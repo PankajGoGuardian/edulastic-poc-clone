@@ -4,7 +4,7 @@ export const userPickFields = [
   "_id",
   "cleverId",
   "currentSignUpState",
-  "districtId",
+  "districtIds",
   "email",
   "features",
   "firstName",

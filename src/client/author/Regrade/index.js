@@ -13,8 +13,8 @@ const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, dis
   const { oldTestId, newTestId } = match.params;
   const { state: _locationState } = history.location;
   const settings = {
-    newTestId: newTestId,
-    oldTestId: oldTestId,
+    newTestId,
+    oldTestId,
     assignmentList: [],
     districtId,
     applyChangesChoice: "ALL",
@@ -94,7 +94,7 @@ export default withRouter(
   connect(
     state => ({
       title: get(state, ["authorTestAssignments", "assignments", 0, "title"], ""),
-      districtId: get(state, ["user", "user", "orgData", "districtId"]),
+      districtId: get(state, ["user", "user", "orgData", "districtIds", 0]),
       isRegrading: getRegradingSelector(state)
     }),
     {

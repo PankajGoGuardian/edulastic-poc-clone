@@ -4,17 +4,15 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
-import { Upload, Spin, message } from "antd";
+import { Upload, Spin } from "antd";
 import {
   themeColor,
   white,
   greyishDarker2,
-  extraDesktopWidth,
-  largeDesktopWidth,
-  desktopWidth
+  largeDesktopWidth
 } from "@edulastic/colors";
-import { uploadToS3 } from "../../../src/utils/upload";
 import { beforeUpload,notification } from "@edulastic/common";
+import { uploadToS3 } from "../../../src/utils/upload";
 import { updateProfileImageAction } from "../../../../student/Login/ducks";
 
 class Photo extends React.Component {
@@ -31,7 +29,7 @@ class Photo extends React.Component {
         notification({ messageKey:"pleaseUploadFilesInImageFormat"});
         this.setState({ loading: false });
         return;
-      } else if (!beforeUpload(file)) {
+      } if (!beforeUpload(file)) {
         this.setState({ loading: false });
         return;
       }
@@ -40,7 +38,7 @@ class Photo extends React.Component {
         data: {
           thumbnail: imageUrl,
           email: user.email,
-          districtId: user.districtId
+          districtId: user?.districtIds?.[0]
         },
         userId: user._id
       });
@@ -159,7 +157,7 @@ const ImageLoading = styled(Spin)`
 
 const Image = styled.div`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? props.height + "px" : "100%")};
+  height: ${props => (props.windowWidth > 993 ? `${props.height  }px` : "100%")};
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;

@@ -216,8 +216,10 @@ class ShareModal extends React.Component {
 
   getUserName(data) {
     const {
-      userOrgData: { districtName }
+      userOrgData: { districts }
     } = this.props;
+    // share modal is not for student so we can get
+    const [{districtName=""}] = districts;
     if (data.sharedType === "PUBLIC") {
       return "EVERYONE";
     }
@@ -269,7 +271,9 @@ class ShareModal extends React.Component {
     const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
       currentUser.email ? currentUser.email : ""
       }`;
-    const { districtName, schools } = userOrgData;
+    const { districts, schools } = userOrgData;
+    // share modal is not for student so we can get
+    const [{ districtName="" }] = districts;
     const isDA = userRole === roleuser.DISTRICT_ADMIN;
     let sharedTypeMessage = "The entire Edulastic Community";
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;

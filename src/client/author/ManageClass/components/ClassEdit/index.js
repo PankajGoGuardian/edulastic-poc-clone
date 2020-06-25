@@ -71,7 +71,7 @@ class ClassEdit extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const { form, userId, userOrgData, allTagsData } = this.props;
-    const { districtId } = userOrgData;
+    const { districtIds: [districtId] } = userOrgData;
     form.validateFields((err, values) => {
       if (!err) {
         const { updateClass, curriculums, selctedClass } = this.props;
@@ -110,7 +110,7 @@ class ClassEdit extends React.Component {
 
   searchCourse = keyword => {
     const { searchCourseList, userOrgData } = this.props;
-    const { districtId } = userOrgData;
+    const { districtIds: [districtId] } = userOrgData;
     const key = keyword.trim();
     const searchTerms = {
       districtId

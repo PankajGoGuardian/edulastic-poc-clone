@@ -1,10 +1,11 @@
-import { countryApi, userApi } from "@edulastic/api";
-import { SelectInputStyled, TextInputStyled } from "@edulastic/common";
-import { Col, Form, Row, Select } from "antd";
-import { debounce, get } from "lodash";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { Form, Input, Select, Row, Col } from "antd";
+import { mobileWidthLarge } from "@edulastic/colors";
+import { SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { countryApi, userApi } from "@edulastic/api";
+import { debounce, get } from "lodash";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { searchDistrictsRequestAction } from "../../duck";
 import { states } from "./constants";
@@ -97,7 +98,7 @@ class RequestSchoolForm extends React.Component {
         {fromUserProfile ? (
           <Form.Item label="District">
             {getFieldDecorator("districtId", {
-              initialValue: userInfo.orgData.districtName
+              initialValue: userInfo.orgData.districts?.[0].districtName
             })(<TextInputStyled data-cy="district" disabled />)}
           </Form.Item>
         ) : (
@@ -136,7 +137,6 @@ class RequestSchoolForm extends React.Component {
                         type: userInfo.role,
                         signOnMethod
                       };
-                      const policyCheckResult = await userApi.validateDistrictPolicy(checkDistrictPolicyPayload);
                       callback();
                       return;
                     } catch (error) {

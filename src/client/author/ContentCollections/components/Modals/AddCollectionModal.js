@@ -1,6 +1,6 @@
 import { backgroundGrey2 } from "@edulastic/colors";
 import { EduButton,notification } from "@edulastic/common";
-import { Input, message, Switch } from "antd";
+import { Input, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -25,10 +25,11 @@ const AddCollectionModal = ({
   editCollectionRequest,
   searchValue
 }) => {
+  const {districtIds: [userDistrictId]} = user;
   const [fieldData, setFieldData] = useState({
     name: "",
     owner: "",
-    districtId: user.districtId,
+    districtId: userDistrictId,
     description: "",
     status: 1
   });
@@ -43,22 +44,6 @@ const AddCollectionModal = ({
       setFieldData(collectionData);
     }
   }, []);
-
-  const Footer = [
-    <EduButton isGhost onClick={handleResponse} disabled={isCreating}>
-      CANCEL
-    </EduButton>,
-    <EduButton onClick={() => handleCreate()} loading={isCreating}>
-      {isEditCollection ? "SAVE" : "CREATE"}
-    </EduButton>
-  ];
-
-  const Title = [<Heading>{isEditCollection ? "Edit Collection" : "Add Collection"}</Heading>];
-
-  const handleFieldChange = (fieldName, value) => {
-    const updatedFieldData = { ...fieldData, [fieldName]: value };
-    setFieldData(updatedFieldData);
-  };
 
   const handleCreate = () => {
     if (!fieldData.name) {
@@ -78,6 +63,22 @@ const AddCollectionModal = ({
       createCollectionRequest(payload);
     }
     handleResponse();
+  };
+
+  const Footer = [
+    <EduButton isGhost onClick={handleResponse} disabled={isCreating}>
+      CANCEL
+    </EduButton>,
+    <EduButton onClick={() => handleCreate()} loading={isCreating}>
+      {isEditCollection ? "SAVE" : "CREATE"}
+    </EduButton>
+  ];
+
+  const Title = [<Heading>{isEditCollection ? "Edit Collection" : "Add Collection"}</Heading>];
+
+  const handleFieldChange = (fieldName, value) => {
+    const updatedFieldData = { ...fieldData, [fieldName]: value };
+    setFieldData(updatedFieldData);
   };
 
   return (

@@ -53,7 +53,7 @@ const CanvasBulkAddClass = ({
 
   useEffect(() => {
     getDictCurriculums();
-    receiveSearchCourse({ districtId: user.districtId });
+    receiveSearchCourse({ districtId: user?.districtIds?.[0] });
     if (!fromManageClass) {
       setInstitution(institutionId);
     } else {
@@ -89,7 +89,7 @@ const CanvasBulkAddClass = ({
         const sectionClasses = sectionList.map(s => {
           const thumbnail = getThumbnail();
           return {
-            districtId: user.districtId,
+            districtId: user?.districtIds?.[0],
             grades: [],
             institutionId: institution,
             name: s.name,

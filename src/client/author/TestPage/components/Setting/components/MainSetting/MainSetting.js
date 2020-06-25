@@ -1184,7 +1184,7 @@ export default connect(
     performanceBandsData: get(state, ["performanceBandReducer", "profiles"], []),
     isReleaseScorePremium: getReleaseScorePremiumSelector(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-    districtPermissions: state?.user?.user?.orgData.districtPermissions,
+    districtPermissions: state?.user?.user?.orgData?.districts?.[0]?.districtPermissions,
     premium: state?.user?.user?.features?.premium,
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions

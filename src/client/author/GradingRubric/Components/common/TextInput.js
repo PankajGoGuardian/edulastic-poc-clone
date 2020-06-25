@@ -1,11 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Input } from "antd";
-import { getCurrentRubricDataSelector, updateRubricDataAction } from "../../ducks";
 import produce from "immer";
 import styled from "styled-components";
-import { white, backgroundGrey } from "@edulastic/colors";
+import { backgroundGrey } from "@edulastic/colors";
+import { getCurrentRubricDataSelector, updateRubricDataAction } from "../../ducks";
 import DescriptionTextArea from "../../../../assessment/components/QuestionTextArea";
+
+const normalizeHtml = htmlText => {
+  if (htmlText && typeof htmlText === "string") {
+    const normalized = htmlText.replace(/<.*?>/g, "").trim();
+    return normalized ? `<p>${normalized}</p>` : normalized;
+  }
+  return htmlText;
+}
 
 const TextInput = ({
   id,
@@ -13,7 +21,7 @@ const TextInput = ({
   isEditable,
   textType,
   componentFor,
-  value,
+  value: currentValue,
   currentRubricData,
   updateRubricData
 }) => {
@@ -48,9 +56,10 @@ const TextInput = ({
   if (isEditable) {
     if (componentFor === "Criteria") {
       placeholder = "Enter a criteria name";
+    } else if (textType === "number") {
+      placeholder = "0";
     } else {
-      if (textType === "number") placeholder = "0";
-      else placeholder = "Label";
+      placeholder = "Label";
     }
   }
 
@@ -64,16 +73,16 @@ const TextInput = ({
     if (isEditable)
       return (
         <DescriptionTextArea
-          value={value}
+          value={currentValue}
           placeholder={isEditable ? "Enter Description" : ""}
           toolbarId={`rubric-rating-description-${id}`}
-          onChange={value => handleChange(value)}
+          onChange={value => handleChange(normalizeHtml(value))}
           readOnly={false}
           toolbarSize="SM"
           buttons={["bold", "italic", "underline", "formatUL"]}
         />
       );
-    else if (!isEditable) return <TextArea dangerouslySetInnerHTML={{ __html: value }} />;
+    if (!isEditable) return <TextArea dangerouslySetInnerHTML={{ __html: currentValue }} />;
   } else
     return (
       <StyledInput
@@ -81,7 +90,7 @@ const TextInput = ({
         type={textType}
         {...extraProps}
         disabled={!isEditable || false}
-        value={value}
+        value={currentValue}
         onChange={e => handleChange(e.target.value)}
       />
     );

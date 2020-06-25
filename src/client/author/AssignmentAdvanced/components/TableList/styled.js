@@ -215,4 +215,5 @@ export const MoreOption = styled.div`
 
 export const AssessmentTypeWrapper = styled.div`
   display: flex;
+  justify-content: center;
 `;

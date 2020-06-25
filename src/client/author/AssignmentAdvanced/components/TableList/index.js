@@ -26,7 +26,7 @@ import {
   AssessmentTypeWrapper
 } from "./styled";
 import { Container as MoreOptionsContainer } from "../../../Assignments/components/ActionMenu/styled";
-import { TimedTestIndicator, IndicatorText } from "../../../Assignments/components/TableList/styled";
+import { TimedTestIndicator } from "../../../Assignments/components/TableList/styled";
 import { ReactComponent as TimerIcon } from "../../../Assignments/components/TableList/assets/timer.svg";
 
 export const testTypeToolTip = {
@@ -57,10 +57,11 @@ const columns = [
           <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
         </Tooltip>
         {row.timedAssignment && (
-          <TimedTestIndicator data-cy="type" type="p">
-            <TimerIcon />
-            <IndicatorText>{row.allowedTime / (60 * 1000)}min</IndicatorText>
-          </TimedTestIndicator>
+          <Tooltip placement="right" title={`${row.allowedTime / (60 * 1000)} min`}>
+            <TimedTestIndicator data-cy="type" type="p">
+              <TimerIcon />
+            </TimedTestIndicator>
+          </Tooltip>
         )}
       </AssessmentTypeWrapper>
     )

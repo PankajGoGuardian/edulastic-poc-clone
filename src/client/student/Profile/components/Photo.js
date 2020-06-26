@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { Upload, Spin } from "antd";
-import { themeColor, white, greyishDarker2, largeDesktopWidth } from "@edulastic/colors";
+import { white, greyishDarker2, largeDesktopWidth,themeColorBlue } from "@edulastic/colors";
 import { beforeUpload,notification } from "@edulastic/common";
 import { uploadToS3 } from "../../../author/src/utils/upload";
 import ProfileImage from "../../assets/Profile.png";
@@ -180,7 +180,7 @@ const Backdrop = styled.div`
 `;
 
 const Camera = styled.div`
-  background: ${themeColor};
+  background: ${themeColorBlue};
   border-radius: 50%;
   width: 40px;
   height: 40px;

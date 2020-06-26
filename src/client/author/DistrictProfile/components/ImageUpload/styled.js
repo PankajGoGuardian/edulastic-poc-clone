@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Icon, Button } from "antd";
 
-import { themeColor, largeDesktopWidth } from "@edulastic/colors";
+import {  largeDesktopWidth,themeColorBlue } from "@edulastic/colors";
 
 export const StyledUploadContainer = styled.div`
   display: flex;
@@ -94,7 +94,7 @@ export const StyledIcon = styled(Icon)`
 `;
 
 export const Camera = styled.div`
-  background: ${themeColor};
+  background: ${themeColorBlue};
   border-radius: 50%;
   width: 40px;
   height: 40px;

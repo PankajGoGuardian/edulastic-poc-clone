@@ -6,7 +6,7 @@ import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { Upload, Spin } from "antd";
 import {
-  themeColor,
+  themeColorBlue,
   white,
   greyishDarker2,
   largeDesktopWidth
@@ -174,7 +174,7 @@ const Backdrop = styled.div`
 `;
 
 const Camera = styled.div`
-  background: ${themeColor};
+  background: ${themeColorBlue};
   border-radius: 50%;
   width: 40px;
   height: 40px;

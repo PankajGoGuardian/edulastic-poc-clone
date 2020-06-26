@@ -15,11 +15,11 @@ import {
 
 const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName, generalSettings, orgType }) => (
   <RegistrationHeader type="flex" align="middle">
-    <Col span={12}>
+    <Col span={12} style={{ display: "flex" }}>
       <OnDarkBgLogo height="30px" />
       {Partners.name !== "login" && <PartnerLogo Partners={Partners} src={Partners.headerLogo} alt={Partners.name} />}
       {isSignupUsingDaURL ? (
-        <div className="district-name-and-announcement">
+        <div className="district-name-and-announcement" style={{ paddingLeft: "15px" }}>
           <Row type="flex">
             <Col className="district-name">{generalSettings.name}</Col>
             <Col>

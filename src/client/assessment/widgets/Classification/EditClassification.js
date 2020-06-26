@@ -14,7 +14,7 @@ import uuid from "uuid/v4";
 import { Paper, FlexContainer, beforeUpload, notification } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { message, Upload } from "antd";
+import { Upload } from "antd";
 import { aws, clozeImage } from "@edulastic/constants";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import CorrectAnswers from "../../components/CorrectAnswers";
@@ -55,8 +55,6 @@ const Enable = {
   top: true
 };
 
-const { Dragger } = Upload;
-
 const actions = {
   ADD: "ADD",
   REMOVE: "REMOVE",
@@ -81,7 +79,8 @@ const EditClassification = ({
     transparentBackgroundImage = true,
     duplicateResponses,
     imageOptions,
-    uiStyle: { showDragHandle }
+    uiStyle: { showDragHandle },
+    classifications
   } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
@@ -143,18 +142,22 @@ const EditClassification = ({
     img.src = url;
   };
 
-  const handleItemChangeChange = (prop, uiStyle) => {
+  const getInitalAnswerMap = () => {
+    const initalAnswerMap = {};
+    classifications.forEach(classification => {
+      initalAnswerMap[classification.id] = initalAnswerMap[classification.id] || [];
+    });
+    return initalAnswerMap;
+  };
+
+  const handleItemChangeChange = (key, val) => {
     setQuestionData(
       produce(item, draft => {
-        draft[prop] = uiStyle;
-        if (prop === "duplicateResponses" && uiStyle === false) {
-          const colCount = draft.uiStyle.columnCount;
-          const { rowCount } = draft.uiStyle;
-          const initialLength = (colCount || 2) * (rowCount || 1);
-          draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
-
-          draft.validation.altResponses.forEach(ite => {
-            ite.value = Array(...Array(initialLength)).map(() => []);
+        draft[key] = val;
+        if (key === "duplicateResponses") {
+          draft.validation.validResponse.value = getInitalAnswerMap();
+          draft.validation.altResponses.forEach(altResponse => {
+            altResponse.value = getInitalAnswerMap();
           });
         }
         updateVariables(draft);
@@ -176,14 +179,10 @@ const EditClassification = ({
     setQuestionData(
       produce(item, draft => {
         draft.groupPossibleResponses = e.target.checked;
-        const colCount = draft.uiStyle.columnCount;
-        const { rowCount } = draft.uiStyle;
-
-        const initialLength = (colCount || 2) * (rowCount || 1);
-        draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
+        draft.validation.validResponse.value = getInitalAnswerMap();
 
         draft.validation.altResponses.forEach(ite => {
-          ite.value = Array(...Array(initialLength)).map(() => []);
+          ite.value = getInitalAnswerMap();
         });
         updateVariables(draft);
       })
@@ -193,7 +192,7 @@ const EditClassification = ({
   const handleGroupAdd = () => {
     setQuestionData(
       produce(item, draft => {
-        draft.possibleResponseGroups.push({ title: "", responses: [] });
+        draft.possibleResponseGroups.push({ id: uuid(), title: "", responses: [] });
         updateVariables(draft);
       })
     );
@@ -204,11 +203,17 @@ const EditClassification = ({
       produce(item, draft => {
         const responses = draft.possibleResponseGroups[index].responses.flatMap(resp => resp.id);
         responses.forEach(responseID => {
-          draft.validation.validResponse.value = draft.validation.validResponse.value.map(arr =>
-            arr.filter(respID => respID !== responseID)
-          );
+          const validResponse = draft.validation.validResponse.value;
+          const validResponseKeys = Object.keys(validResponse);
+          validResponseKeys.forEach(key => {
+            validResponse[key] = validResponse[key].filter(respID => respID !== responseID);
+          });
           draft.validation.altResponses.forEach(alt_response => {
-            alt_response.value = alt_response.value.map(arr => arr.filter(respID => respID !== responseID));
+            const value = alt_response.value;
+            const altAnsKeys = Object.keys(value);
+            altAnsKeys.forEach(key => {
+              value[key] = value[key].filter(respID => respID !== responseID);
+            });
           });
         });
         draft.possibleResponseGroups.splice(index, 1);
@@ -231,21 +236,26 @@ const EditClassification = ({
       produce(item, draft => {
         const response = get(draft, `possibleResponseGroups[${groupIndex}][responses][${respIndex}]`);
         if (response) {
-          draft.validation.validResponse.value = draft.validation.validResponse.value.map(resp => {
-            if (resp.includes(response.id)) {
-              resp.splice(resp.indexOf(response.id), 1);
+          const validResponse = draft.validation.validResponse.value;
+          const validResponseKeys = Object.keys(validResponse);
+          validResponseKeys.forEach(key => {
+            const optionIndex = validResponse[key].indexOf(response.id);
+            if (optionIndex !== -1) {
+              validResponse[key].splice(optionIndex, 1);
             }
-            return resp;
           });
-          draft.validation.altResponses = draft.validation.altResponses.map(alt_response => {
-            alt_response.value = alt_response.value.map(resp => {
-              if (resp.includes(response.id)) {
-                resp.splice(resp.indexOf(response.id), 1);
+
+          draft.validation.altResponses.forEach(altResponse => {
+            const altAnswer = altResponse.value;
+            const altAnswerKeys = Object.keys(altAnswer);
+            altAnswerKeys.forEach(key => {
+              const optionIndex = altAnswer[key].indexOf(response.id);
+              if (optionIndex !== -1) {
+                altAnswer[key].splice(optionIndex, 1);
               }
-              return resp;
             });
-            return alt_response;
           });
+
           draft.possibleResponseGroups[groupIndex].responses.splice(respIndex, 1);
           updateVariables(draft);
         }
@@ -295,15 +305,20 @@ const EditClassification = ({
           case actions.REMOVE:
             // eslint-disable-next-line no-case-declarations
             const respID = get(draft, `possibleResponses[${restProp}].id`, "");
-            draft.validation.validResponse.value.forEach(arr => {
-              if (arr.includes(respID)) {
-                arr.splice(arr.indexOf(respID), 1);
+
+            Object.values(get(draft, `validation.validResponse.value`, [])).forEach((value = []) => {
+              const optionIndex = value.indexOf(respID);
+              if (optionIndex !== -1) {
+                value.splice(optionIndex, 1);
               }
             });
-            draft.validation.altResponses.forEach(alt_response => {
-              alt_response.value.forEach(arr => {
-                if (arr.includes(respID)) {
-                  arr.splice(arr.indexOf(respID), 1);
+
+            draft.validation.altResponses.forEach(altResponse => {
+              const { value = {} } = altResponse;
+              Object.values(value).forEach(arr => {
+                const optionIndex = arr.indexOf(respID);
+                if (optionIndex !== -1) {
+                  arr.splice(optionIndex, 1);
                 }
               });
             });
@@ -339,7 +354,7 @@ const EditClassification = ({
         }
         draft.validation.altResponses.push({
           score: 1,
-          value: []
+          value: getInitalAnswerMap()
         });
 
         updateVariables(draft);
@@ -386,21 +401,17 @@ const EditClassification = ({
     );
   };
 
+  // need to update validation here if used (currently not in use)
   const onUiChange = prop => val => {
     setQuestionData(
       produce(item, draft => {
         draft.uiStyle[prop] = val;
 
-        const colCount = draft.uiStyle.columnCount;
-        const { rowCount } = draft.uiStyle;
-
-        const initialLength = (colCount || 2) * (rowCount || 1);
-
         if (prop === "columnCount" || prop === "rowCount") {
-          draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
+          draft.validation.validResponse.value = getInitalAnswerMap();
 
           draft.validation.altResponses.forEach(ite => {
-            ite.value = Array(...Array(initialLength)).map(() => []);
+            ite.value = getInitalAnswerMap();
           });
         }
 
@@ -461,7 +472,7 @@ const EditClassification = ({
     try {
       const { file } = info;
       if (!file.type.match(/image/g)) {
-        notification({ messageKey:"pleaseUploadFileInImageFormat"});
+        notification({ messageKey: "pleaseUploadFileInImageFormat" });
         return;
       }
       const canUpload = beforeUpload(file);
@@ -477,7 +488,7 @@ const EditClassification = ({
       });
     } catch (e) {
       console.log(e);
-      notification({ msg:`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`});
+      notification({ msg: `${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.` });
     }
   };
 

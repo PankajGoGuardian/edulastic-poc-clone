@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { Select } from "antd";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
+import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -36,6 +37,30 @@ class RowColumn extends Component {
   render() {
     const { item, setQuestionData, t, toolbarSize, fillSections, cleanSections } = this.props;
     const { uiStyle, firstMount } = item;
+
+    const getClassifications = (rowCount, colCount) => {
+      const arr = [];
+      let index = 0;
+      for (let i = 0; i < rowCount; i++) {
+        for (let j = 0; j < colCount; j++) {
+          arr[index] = {
+            id: uuid(),
+            rowIndex: i,
+            columnIndex: j
+          };
+          index++;
+        }
+      }
+      return arr;
+    };
+
+    const getAnswerMap = classifications => {
+      const initalAnswerMap = {};
+      classifications.forEach(classification => {
+        initalAnswerMap[classification.id] = initalAnswerMap[classification.id] || [];
+      });
+      return initalAnswerMap;
+    };
 
     const handleMain = (action, prop) => restProp => {
       setQuestionData(
@@ -68,27 +93,26 @@ class RowColumn extends Component {
 
             case actions.REMOVE:
               draft.uiStyle[prop].splice(restProp, 1);
-              if (prop === "columnTitles" && draft.uiStyle.columnCount !== 1) {
+              if (prop === "columnTitles") {
                 draft.uiStyle.columnCount = draft?.uiStyle?.columnTitles?.length || 1;
-                /**
-                 * validResponse has one entry for each column/container
-                 * lets say we have 5 containers/columns
-                 * we will have 5 values in validation.validResponse.value
-                 *
-                 * in case column/container is deleted
-                 * we need to splice that many values from the validResponse.value
-                 * we need to splice that many values from the alternateResponse.value
-                 */
-                draft.validation.validResponse.value.splice(-1, draft.uiStyle.columnCount);
+                const { columnCount = 1, rowCount = 1 } = draft.uiStyle;
+                const classifications = getClassifications(rowCount, columnCount);
+                draft.classifications = classifications;
+                const answerMap = getAnswerMap(classifications);
 
-                draft.validation.altResponses.forEach(valid => {
-                  valid.value.splice(-1, draft.uiStyle.columnCount);
+                draft.validation.validResponse.value = answerMap;
+                draft.validation.altResponses.forEach(altResponse => {
+                  altResponse.value = answerMap;
                 });
-              } else if (prop === "rowTitles" && draft.uiStyle.rowCount !== 1) {
+              } else if (prop === "rowTitles") {
                 draft.uiStyle.rowCount = draft?.uiStyle?.rowTitles?.length || 1;
-                draft.validation.validResponse.value.splice(-1, draft.uiStyle.rowCount * draft.uiStyle.columnCount);
-                draft.validation.altResponses.forEach(valid => {
-                  valid.value.splice(-1, draft.uiStyle.rowCount * draft.uiStyle.columnCount);
+                const { columnCount = 1, rowCount = 1 } = draft.uiStyle;
+                const classifications = getClassifications(rowCount, columnCount);
+                draft.classifications = classifications;
+                const answerMap = getAnswerMap(classifications);
+                draft.validation.validResponse.value = answerMap;
+                draft.validation.altResponses.forEach(altResponse => {
+                  altResponse.value = answerMap;
                 });
               }
               break;
@@ -125,14 +149,7 @@ class RowColumn extends Component {
           const colCount = draft.uiStyle.columnCount;
           const rowCount = draft.uiStyle.rowCount;
 
-          const initialLength = (colCount || 2) * (rowCount || 1);
-
           if (prop === "columnCount" || prop === "rowCount") {
-            draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
-
-            draft.validation.altResponses.forEach(ite => {
-              ite.value = Array(...Array(initialLength)).map(() => []);
-            });
             if (prop === "columnCount" && Array.isArray(draft.uiStyle.columnTitles)) {
               const oldColumnCount = draft.uiStyle.columnTitles.length;
               const newColumnCount = val - oldColumnCount;
@@ -145,6 +162,12 @@ class RowColumn extends Component {
               } else {
                 draft.uiStyle.columnTitles.splice(oldColumnCount - Math.abs(newColumnCount), Math.abs(newColumnCount));
               }
+              const classifications = getClassifications(rowCount, val);
+              draft.classifications = classifications;
+              draft.validation.validResponse.value = getAnswerMap(classifications);
+              draft.validation.altResponses.forEach(altResponse => {
+                altResponse.value = getAnswerMap(classifications);
+              });
             } else if (prop === "rowCount" && Array.isArray(draft.uiStyle.rowTitles)) {
               const oldRowCount = draft.uiStyle.rowTitles.length;
               const newRowCount = val - oldRowCount;
@@ -157,10 +180,15 @@ class RowColumn extends Component {
               } else {
                 draft.uiStyle.rowTitles.splice(oldRowCount - Math.abs(newRowCount), Math.abs(newRowCount));
               }
+              const classifications = getClassifications(val, colCount);
+              draft.classifications = classifications;
+              draft.validation.validResponse.value = getAnswerMap(classifications);
+              draft.validation.altResponses.forEach(altResponse => {
+                altResponse.value = getAnswerMap(classifications);
+              });
             }
           }
-          draft.responseOptions = draft.responseOptions || [];
-          draft.responseOptions = draft.responseOptions.map(() => null);
+
           updateVariables(draft);
         })
       );

@@ -1141,11 +1141,15 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           rowCount: 1,
           rowTitles: ["ROW1"]
         },
+        classifications: [
+          { id: uuidsForFill[0], rowIndex: 0, columnIndex: 0 },
+          { id: uuidsForFill[1], rowIndex: 0, columnIndex: 1 }
+        ],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [[], []]
+            value: { [uuidsForFill[0]]: [], [uuidsForFill[1]]: [] }
           },
           altResponses: []
         },

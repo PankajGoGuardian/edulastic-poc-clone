@@ -15,7 +15,6 @@ import { EDIT } from "../../../constants/constantsForQuestions";
 import { IndexBox } from "./DragItem/styled/IndexBox";
 
 const TableRow = ({
-  startIndex,
   colCount,
   rowTitles,
   colTitles,
@@ -23,7 +22,7 @@ const TableRow = ({
   answers,
   preview,
   onDrop,
-  validArray,
+  evaluation,
   dragHandle,
   isTransparent,
   isBackgroundImageTransparent,
@@ -112,30 +111,31 @@ const TableRow = ({
     );
   }
 
-  for (let index = startIndex; index < startIndex + colCount; index++) {
+  const columns = item.classifications.length;
+
+  for (let index = 0; index < columns; index++) {
     const hasRowTitle = rowTitles.length > 0;
-    if (hasRowTitle && rowTitles[index / colCount]) {
+    if (hasRowTitle && rowTitles[index]?.trim() !== "") {
       cols.push(
         <Rnd position={{ x: rndX, y: rndY }} disableDragging={view !== EDIT} onDragStop={handleRowTitleDragStop}>
-          <RowTitleCol key={index + startIndex + colCount} colCount={colCount} justifyContent="center" width="100%">
-            {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
-              <MathFormulaDisplay
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  wordWrap: "break-word",
-                  width: get(item, "uiStyle.rowTitlesWidth", "100px"),
-                  height: get(item, "uiStyle.rowMinHeight", "auto")
-                }}
-                dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
-              />
-            ) : null}
+          <RowTitleCol key={index + columns} justifyContent="center" width="100%">
+            <MathFormulaDisplay
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                wordWrap: "break-word",
+                width: get(item, "uiStyle.rowTitlesWidth", "100px"),
+                height: get(item, "uiStyle.rowMinHeight", "auto")
+              }}
+              dangerouslySetInnerHTML={{ __html: rowTitles[index] }}
+            />
           </RowTitleCol>
         </Rnd>
       );
     }
     const renderIndex = getStemNumeration(uiStyle.validationStemNumeration, index);
-    const hasAnswer = Array.isArray(answers) && Array.isArray(answers[index]) && answers[index].length > 0;
+    const column = item.classifications?.[index] || {};
+    const hasAnswer = Array.isArray(answers?.[column.id]) && answers[column.id].length > 0;
 
     cols.push(
       <ResponseRnd
@@ -144,14 +144,15 @@ const TableRow = ({
         index={index}
         isResizable={isResizable}
         showIndex={showIndex}
+        columnId={column.id}
         {...dragItemSize}
       >
-        {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
-          <ColumnHeader>
-            {showIndex && hasAnswer && <IndexBox>{renderIndex}</IndexBox>}
-            <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
-          </ColumnHeader>
-        ) : null}
+        {/* {colTitles[index % colCount] || colTitles[index % colCount] === "" ? ( */}
+        <ColumnHeader>
+          {showIndex && hasAnswer && <IndexBox>{renderIndex}</IndexBox>}
+          <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index] || "" }} />
+        </ColumnHeader>
+        {/* ) : null} */}
         <DropContainer
           style={{
             ...styles.columnContainerStyle,
@@ -161,11 +162,12 @@ const TableRow = ({
           drop={drop}
           index={index}
           flag="column"
+          columnId={item.classifications?.[index]?.id || ""}
         >
           {hasAnswer &&
-            answers[index].map((answerValue, answerIndex) => {
-              const resp = (responses.length && responses.find(_resp => _resp.id === answerValue)) || {};
-              const valid = get(validArray, [index, answerIndex], undefined);
+            answers[column.id]?.map((responseId, answerIndex) => {
+              const resp = (responses.length && responses.find(_resp => _resp.id === responseId)) || {};
+              const valid = get(evaluation, [column.id, responseId], undefined);
               return (
                 <DragItem
                   isTransparent={isTransparent}
@@ -197,7 +199,6 @@ const TableRow = ({
 
 TableRow.propTypes = {
   height: PropTypes.any.isRequired,
-  startIndex: PropTypes.number.isRequired,
   colCount: PropTypes.number.isRequired,
   dragHandle: PropTypes.any.isRequired,
   colTitles: PropTypes.array.isRequired,
@@ -209,7 +210,7 @@ TableRow.propTypes = {
   preview: PropTypes.bool.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   onDrop: PropTypes.func.isRequired,
-  validArray: PropTypes.array.isRequired,
+  evaluation: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   isReviewTab: PropTypes.bool.isRequired,
   disableResponse: PropTypes.bool.isRequired,

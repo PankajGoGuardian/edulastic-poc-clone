@@ -20,25 +20,26 @@ const ResponseRnd = props => {
     hasRowTitle = true,
     width,
     maxWidth,
-    showIndex
+    showIndex,
+    columnId
   } = props;
 
   const { questionId } = useContext(QuestionContext);
 
-  const [minHeight, setMinHeight] = useState(get(question, `responseOptions[${index}].height`, 0));
+  const targetIndex = get(question, "classifications", []).findIndex(obj => obj.id === columnId);
+
+  const [minHeight, setMinHeight] = useState(get(question, `classifications[${targetIndex}].height`, 0));
 
   const handleResponseDragStop = (evt, d) => {
     setQuestionData(
       produce(question, draft => {
-        if (!draft.responseOptions) {
-          draft.responseOptions = [];
+        if (targetIndex !== -1) {
+          draft.classifications[targetIndex] = {
+            ...draft.classifications[targetIndex],
+            x: d.x < 0 ? 0 : d.x,
+            y: d.y < 0 ? 0 : d.y
+          };
         }
-
-        draft.responseOptions[index] = {
-          ...draft.responseOptions[index],
-          x: d.x < 0 ? 0 : d.x,
-          y: d.y < 0 ? 0 : d.y
-        };
       })
     );
   };
@@ -51,17 +52,14 @@ const ResponseRnd = props => {
     // Update question
     setQuestionData(
       produce(question, draft => {
-        if (!draft.responseOptions) {
-          draft.responseOptions = [];
-        }
-
-        draft.responseOptions[index] = {
-          ...draft.responseOptions[index],
-          x: position.x,
-          y: position.y,
-          width: rect.width,
-          height: rect.height
-        };
+        if (targetIndex !== -1)
+          draft.classifications[targetIndex] = {
+            ...draft.classifications[targetIndex],
+            x: position.x,
+            y: position.y,
+            width: rect.width,
+            height: rect.height
+          };
       })
     );
   };
@@ -83,15 +81,21 @@ const ResponseRnd = props => {
    * +100 will be width of rowTitle
    * TODO: need to get width of rowTitle, if it is not set
    */
-  const rndX = get(question, `responseOptions[${index}].x`, hasRowTitle ? index * offsetX + 100 : index * offsetX);
-  const rndY = get(question, `responseOptions[${index}].y`, 0);
-  const rndWidth = get(question, `responseOptions[${index}].width`, offsetX);
+  const rndX = get(
+    question,
+    `classifications[${targetIndex}].x`,
+    hasRowTitle ? index * offsetX + 100 : index * offsetX
+  );
+  const rndY = get(question, `classifications[${targetIndex}].y`, 0);
+  const rndWidth = get(question, `classifications[${targetIndex}].width`, offsetX);
+
   return (
-    <RndWrapper isResizable={isResizable} translateProps={`${rndX}px, ${rndY}px`}>
+    <RndWrapper minHeight={minHeight} isResizable={isResizable} translateProps={`${rndX}px, ${rndY}px`}>
       <Rnd
         style={{
           padding: "2px",
-          border: `1px solid ${lightGrey}`
+          border: `1px solid ${lightGrey}`,
+          minHeight: `${minHeight}px`
         }}
         isResizable={isResizable}
         size={{ width: rndWidth, height: "auto" }}
@@ -104,7 +108,8 @@ const ResponseRnd = props => {
         minHeight={minHeight}
         className={`answer-draggable-wrapper-${questionId}`}
       >
-        {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
+        {children}
+        {/* {React.Children.map(children, child => (child ? React.cloneElement(child) : null))} */}
       </Rnd>
     </RndWrapper>
   );

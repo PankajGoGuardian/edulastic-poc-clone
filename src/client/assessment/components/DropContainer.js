@@ -8,7 +8,6 @@ const specTarget = {
     if (monitor.didDrop()) {
       return;
     }
-
     return props.drop(props, monitor.getItem());
   }
 };

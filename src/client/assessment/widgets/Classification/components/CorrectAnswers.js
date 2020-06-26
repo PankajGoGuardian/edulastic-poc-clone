@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import produce from "immer";
+
 import { Subtitle } from "@edulastic/common";
+
 import DragItem from "./DragItem";
 import { getStemNumeration } from "../../../utils/helpers";
 import { IndexBox } from "./DragItem/styled/IndexBox";
@@ -12,25 +15,28 @@ const CorrectAnswers = ({
   columnTitles,
   stemNumeration,
   dragItemProps,
-  colCount,
   possibleResponse,
   multiRow,
   title
 }) => {
-  const transformArray = Arr => {
-    const len = colCount || 2;
-    const res = multiRow ? [] : Array(...Array(len)).map(() => []);
-    Arr.forEach((arr, i) => {
-      if (multiRow) {
-        res[i] = arr.map(id => possibleResponse.find(_resp => _resp.id === id));
-      } else {
-        res[i % len] = res[i % len].concat(arr.map(id => possibleResponse.find(_resp => _resp.id === id)));
-      }
+  const replaceIdWithValue = answers => {
+    const res = produce(answers, draft => {
+      Object.keys(draft).forEach(key => {
+        const responseIds = draft[key];
+        const responses = responseIds.map(id => {
+          const option = possibleResponse.find(resp => resp.id === id);
+          if (option) {
+            return option.value;
+          }
+          return "";
+        });
+        draft[key] = responses;
+      });
     });
     return res;
   };
 
-  const arrayOfCols = transformArray(answersArr);
+  const containers = replaceIdWithValue(answersArr);
 
   const boxWidth = dragItemProps.width;
 
@@ -38,7 +44,7 @@ const CorrectAnswers = ({
     <>
       <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{title}</Subtitle>
       <ColWrapper multiRow={multiRow}>
-        {arrayOfCols.map((answers, i) => (
+        {Object.keys(containers).map((key, i) => (
           <CorrectAnswerContainer multiRow={multiRow} minWidth={boxWidth}>
             {multiRow && <IndexBox style={{ margin: 5 }}>{getStemNumeration(stemNumeration, i)}</IndexBox>}
             {!multiRow && (
@@ -48,14 +54,8 @@ const CorrectAnswers = ({
               </ColumnHeader>
             )}
             <AnswersContainer>
-              {answers.map((res, index) => (
-                <DragItem
-                  {...dragItemProps}
-                  dragHandle={false}
-                  disableDrag
-                  item={(res && res.value) || ""}
-                  key={`answer-${index}`}
-                />
+              {containers[key].map((res, index) => (
+                <DragItem {...dragItemProps} dragHandle={false} disableDrag item={res || ""} key={`answer-${index}`} />
               ))}
             </AnswersContainer>
           </CorrectAnswerContainer>

@@ -103,7 +103,8 @@ const ClassificationPreview = ({
       rowCount,
       rowTitles: rowTitles = [],
       showDragHandle
-    }
+    },
+    classifications
   } = item;
 
   const validArray = get(item, "validation.validResponse.value", []);
@@ -133,11 +134,18 @@ const ClassificationPreview = ({
     2. Refactoring code for better readability of conditions.
  */
   const getInitialUserAnswers = () => {
+    if (!disableResponse && Object.keys(editCorrectAnswers).length > 0) {
+      return editCorrectAnswers;
+    }
     // it is called only in previewMode
-    if (userAnswer && userAnswer.some(arr => arr.length !== 0)) {
+    if (userAnswer && Object.keys(userAnswer)?.some(key => userAnswer[key]?.length !== 0)) {
       return userAnswer;
     }
-    return createEmptyArrayOfArrays();
+    const initalAnswerMap = {};
+    classifications.forEach(classification => {
+      initalAnswerMap[classification.id] = initalAnswerMap[classification.id] || [];
+    });
+    return initalAnswerMap;
   };
 
   /**
@@ -149,19 +157,32 @@ const ClassificationPreview = ({
    * getInitialUserAnswers() is called to get answers
    * it also follows similar schema as of validation.value
    */
-  const initialAnswers =
-    !disableResponse && editCorrectAnswers.length > 0 ? editCorrectAnswers : getInitialUserAnswers();
+  const initialAnswers = getInitialUserAnswers();
+
+  function getPossiblResponses() {
+    const allAnswers = Object.values(initialAnswers).reduce((acc, curr) => {
+      acc = acc.concat(curr);
+      return acc;
+    }, []);
+    function notSelected(obj) {
+      if (obj) {
+        return !allAnswers.includes(obj.id);
+      }
+    }
+    const res = possibleResponses.filter(notSelected);
+    return res;
+  }
 
   const [answers, setAnswers] = useState(initialAnswers);
   const [dragItems, setDragItems] = useState(possibleResponses);
-
+  console.log("intially", { answers, dragItems, classifications });
   /**
    * it is used to filter out responses from the bottom container and place in correct boxes
    * it also used to clear out responses when clear is pressed
    */
   const updateDragItems = () => {
     setAnswers(initialAnswers);
-    setDragItems(possibleResponses.filter(resp => initialAnswers.every(arr => !arr.includes(resp.id))));
+    setDragItems(getPossiblResponses());
   };
 
   useEffect(() => {
@@ -174,6 +195,8 @@ const ClassificationPreview = ({
     }
   }, [userAnswer, possibleResponses]);
 
+  useEffect(updateDragItems, [classifications, editCorrectAnswers]);
+
   useEffect(updateDragItems, []);
 
   const boxes = createEmptyArrayOfArrays();
@@ -181,43 +204,55 @@ const ClassificationPreview = ({
   const onDrop = (itemCurrent, itemTo, from) => {
     const columnCount = get(item, "maxResponsePerCell", "");
     const dItems = cloneDeep(dragItems);
-    const ansArrays = cloneDeep(answers);
-    if (columnCount && ansArrays[itemTo.index] && ansArrays[itemTo.index].length >= columnCount) {
+    const userAnswers = cloneDeep(answers);
+    if (columnCount && userAnswers[itemTo.index] && userAnswers[itemTo.index].length >= columnCount) {
       return;
     }
 
     // this is called when responses are dragged back to the container from the columns
     if (itemTo.flag === "dragItems") {
-      ansArrays.forEach(arr => {
-        const obj = posResp.find(ite => ite.value === itemCurrent.item);
-        if (obj && arr.includes(obj.id)) {
-          arr.splice(arr.indexOf(obj.id), 1);
-        }
-      });
-
-      if (!dItems.flatMap(ite => ite.value).includes(itemCurrent.item)) {
-        dItems.push(posResponses.find(resp => resp.value === itemCurrent.item));
-        setDragItems(dItems);
-      }
-    }
-
-    // this is called when responses are dragged from bottom container to columns
-    else if (itemTo.flag === "column") {
       const obj = posResp.find(ite => ite.value === itemCurrent.item);
       if (obj) {
-        ansArrays.forEach((arr, i) => {
+        Object.keys(userAnswers).forEach(key => {
+          const arr = userAnswers[key] || [];
+          const optionIndex = arr.indexOf(obj.id);
+          if (optionIndex !== -1) {
+            arr.splice(optionIndex, 1);
+          }
+        });
+        if (!dItems.flatMap(ite => ite.value).includes(itemCurrent.item)) {
+          dItems.push(posResponses.find(resp => resp.value === itemCurrent.item));
+          setDragItems(dItems);
+        }
+      }
+    } else if (itemTo.flag === "column") {
+      /**
+       * this is called when
+       * responses are dragged from container to columns
+       * or, from one column to another
+       */
+      const obj = posResp.find(ite => ite.value === itemCurrent.item);
+      if (obj) {
+        Object.keys(userAnswers).forEach(key => {
+          const arr = userAnswers[key] || [];
           if (!duplicateResponses && arr.includes(obj.id)) {
             arr.splice(arr.indexOf(obj.id), 1);
           } else if (from === "column" && arr.includes(obj.id)) {
+            /**
+             * when going from one column1 to column2
+             * remove it from the column1
+             */
             arr.splice(arr.indexOf(obj.id), 1);
           }
-
-          if (i === itemTo.index) {
+          if (key === itemTo.columnId) {
             arr.push(obj.id);
           }
         });
       }
-
+      /**
+       * this is to filter out responses when options are dropped
+       * get a new list of possible responses
+       */
       if (!duplicateResponses) {
         const includes = posResp.flatMap(_obj => _obj.value).includes(itemCurrent.item);
         if (includes) {
@@ -225,14 +260,17 @@ const ClassificationPreview = ({
           setDragItems(dItems);
         }
       }
-      if (!isEqual(ansArrays, answers)) {
-        setAnswers(ansArrays);
-      }
     }
-    saveAnswer(ansArrays);
+    /**
+     * just a check to verify if actually anything has changed
+     */
+    if (!isEqual(userAnswers, answers)) {
+      setAnswers(userAnswers);
+    }
+    saveAnswer(userAnswers);
   };
 
-  const drop = ({ flag, index }) => ({ flag, index });
+  const drop = ({ flag, index, columnId }) => ({ flag, index, columnId });
 
   const preview = previewTab === CHECK || previewTab === SHOW;
 
@@ -252,7 +290,7 @@ const ClassificationPreview = ({
    * It is in case of group_possbile_responses
    * This takes care of filtering out draggable responses from the bottom container
    */
-  const flattenAnswers = answers.flat();
+  const flattenAnswers = Object.values(answers).flatMap(arr => arr);
   const verifiedGroupDragItems = duplicateResponses
     ? possibleResponseGroups.map(group => (shuffleOptions ? shuffle(group.responses) : group.responses))
     : possibleResponseGroups.map(group => {
@@ -284,39 +322,34 @@ const ClassificationPreview = ({
     ...dragItemSize
   };
 
-  const dragLayout = boxes.map(
-    (n, ind) =>
-      arrayOfRows.has(ind) && (
-        <TableRow
-          colTitles={colTitles}
-          key={ind}
-          isBackgroundImageTransparent={transparentBackgroundImage}
-          isTransparent={transparentPossibleResponses}
-          startIndex={ind}
-          width={get(item, "uiStyle.rowTitlesWidth", "max-content")}
-          height={get(item, "uiStyle.rowMinHeight", "65px")}
-          colCount={colCount}
-          arrayOfRows={arrayOfRows}
-          rowTitles={rowTitles}
-          drop={drop}
-          dragHandle={showDragHandle}
-          answers={answers}
-          validArray={evaluation}
-          preview={preview}
-          previewTab={previewTab}
-          possibleResponses={possibleResponses}
-          onDrop={onDrop}
-          isResizable={view === EDIT}
-          item={item}
-          disableResponse={disableResponse}
-          isReviewTab={isReviewTab}
-          view={view}
-          setQuestionData={setQuestionData}
-          rowHeader={rowHeader}
-          dragItemSize={dragItemProps}
-          showIndex={previewTab === SHOW}
-        />
-      )
+  const dragLayout = (
+    <TableRow
+      colTitles={colTitles}
+      isBackgroundImageTransparent={transparentBackgroundImage}
+      isTransparent={transparentPossibleResponses}
+      width={get(item, "uiStyle.rowTitlesWidth", "max-content")}
+      height={get(item, "uiStyle.rowMinHeight", "65px")}
+      colCount={colCount}
+      arrayOfRows={arrayOfRows}
+      rowTitles={rowTitles}
+      drop={drop}
+      dragHandle={showDragHandle}
+      answers={answers}
+      evaluation={evaluation}
+      preview={preview}
+      previewTab={previewTab}
+      possibleResponses={possibleResponses}
+      onDrop={onDrop}
+      isResizable={view === EDIT}
+      item={item}
+      disableResponse={disableResponse}
+      isReviewTab={isReviewTab}
+      view={view}
+      setQuestionData={setQuestionData}
+      rowHeader={rowHeader}
+      dragItemSize={dragItemProps}
+      showIndex={previewTab === SHOW}
+    />
   );
 
   const tableLayout = (
@@ -335,7 +368,7 @@ const ClassificationPreview = ({
       dragHandle={showDragHandle}
       item={item}
       isReviewTab={isReviewTab}
-      validArray={evaluation}
+      evaluation={evaluation}
       preview={preview}
       onDrop={onDrop}
       disableResponse={disableResponse}

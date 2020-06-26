@@ -2,7 +2,7 @@
 import React from "react";
 import { CenteredText } from "@edulastic/common";
 import { withTheme } from "styled-components";
-import { get } from "lodash";
+import { get, groupBy } from "lodash";
 import { Table, TH, TD, TR } from "../styled/TableLayout";
 
 import DropContainer from "../../../components/DropContainer";
@@ -24,7 +24,7 @@ const TableLayout = ({
   drop,
   item,
   isReviewTab,
-  validArray,
+  evaluation,
   preview,
   onDrop,
   minWidth,
@@ -34,6 +34,8 @@ const TableLayout = ({
   showIndex
 }) => {
   const uiStyle = get(item, "uiStyle", {});
+  const classifications = get(item, ["classifications"], []);
+  const classificationsGrouped = groupBy(classifications, obj => obj.rowIndex);
 
   let validIndex = -1;
   const styles = {
@@ -59,24 +61,27 @@ const TableLayout = ({
       </TH>
     );
   }
+
   const rows = [];
-  for (let index = 0; index < rowCount; index++) {
+
+  for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
     const arr = [];
     arr.push(
       <TD center>
-        <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: rowTitles[index] }} />
+        <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: rowTitles[rowIndex] }} />
       </TD>
     );
-    for (let innnerIndex = 0; innnerIndex < colCount; innnerIndex++) {
+    for (let columnIndex = 0; columnIndex < colCount; columnIndex++) {
       validIndex++;
-      const hasAnswer = Array.isArray(answers) && Array.isArray(answers[validIndex]);
       const renderIndex = getStemNumeration(uiStyle.validationStemNumeration, validIndex);
-
+      const column = classificationsGrouped?.[rowIndex]?.[columnIndex] || {};
+      const hasAnswer = Array.isArray(answers[column.id]) && answers[column.id].length > 0;
       arr.push(
         <TD>
           <DropContainer
             drop={drop}
             index={validIndex}
+            columnId={column.id}
             flag="column"
             style={{
               display: "flex",
@@ -94,9 +99,9 @@ const TableLayout = ({
             >
               {hasAnswer &&
                 // eslint-disable-next-line no-loop-func
-                answers[validIndex].map((ansId, answerIndex) => {
-                  const resp = responses.find(res => res.id === ansId);
-                  const valid = get(validArray, [validIndex, answerIndex], undefined);
+                answers[column.id].map((responseId, answerIndex) => {
+                  const resp = responses.find(res => res.id === responseId);
+                  const valid = get(evaluation, [column.id, responseId], undefined);
                   return (
                     <DragItem
                       isTransparent={isTransparent}
@@ -119,6 +124,7 @@ const TableLayout = ({
     }
     rows.push(<TR className="table-layout">{arr}</TR>);
   }
+
   return (
     <Table>
       <TR className="table-layout">

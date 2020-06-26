@@ -7,7 +7,7 @@ export const RowTitleCol = styled.span`
   display: flex;
   align-items: center;
   min-width: 90px;
-  width: ${({ width, colCount }) => width || `${100 / colCount / 5}%`};
+  /* width: ${({ width, colCount }) => width || `${100 / colCount / 5}%`}; */
   justify-content: ${({ justifyContent }) => justifyContent || "auto"};
   max-width: ${dimensions.maxWidth}px;
 `;

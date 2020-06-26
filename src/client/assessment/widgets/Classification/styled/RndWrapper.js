@@ -8,6 +8,7 @@ export const RndWrapper = styled.div`
   */
   .answer-draggable-wrapper {
     transform: ${({ isResizable, translateProps }) => !isResizable && `translate(${translateProps}) !important`};
+    min-height: ${({ minHeight }) => `${minHeight}px`};
   }
 `;
 

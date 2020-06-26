@@ -182,7 +182,6 @@ export const AddRemoveBtn = styled(ButtonStyle)`
     margin-top: 15px;
     justify-content: center;
     width: 120px;
-
     @media (max-width: ${tabletWidth}) {
       margin: 0px;
       width: auto;

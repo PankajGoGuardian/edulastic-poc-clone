@@ -427,6 +427,7 @@ class Item extends Component {
                 <>
                   <EduButton
                     width="40px"
+                    height="35px"
                     isGhost
                     iconBtn
                     onClick={openPreviewModal}
@@ -436,7 +437,7 @@ class Item extends Component {
                     <IconEye />
                   </EduButton>
                   <AddRemoveBtn
-                    style={{ width: "70px" }}
+                    style={{width:"70px",height:"35px"}}
                     loading={selectedId === item._id}
                     onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                     isAddOrRemove={this.isAddOrRemove}

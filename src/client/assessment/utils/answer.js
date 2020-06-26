@@ -13,7 +13,6 @@ export const hasValidAnswers = (type, answer) => {
     case questionType.MATCH_LIST:
       return !isEmpty(Object.values(answer || {}).filter(ans => ans?.toString()));
     case questionType.SORT_LIST:
-    case questionType.CLOZE_IMAGE_TEXT:
     case questionType.CLOZE_DRAG_DROP:
     case questionType.HOTSPOT:
       return !isEmpty(answer?.filter(ans => ans?.toString()));
@@ -37,6 +36,14 @@ export const hasValidAnswers = (type, answer) => {
         .reduce((sum, current) => sum?.concat(values(current)), [])
         .filter(ans => ans?.value || ans?.unit);
       return !isEmpty(filtered);
+    }
+    case questionType.CLOZE_IMAGE_TEXT:
+    case questionType.CLOZE_IMAGE_DROP_DOWN:
+    case questionType.ORDER_LIST: {
+      if (!isObject(answer) || isEmpty(answer)) {
+        return false;
+      }
+      return keys(answer).every(key => !!answer[key]);
     }
     default:
       return !isEmpty(answer);

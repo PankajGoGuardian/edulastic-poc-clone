@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { get } from "lodash";
+import { get, keys, isNaN, isObject } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
@@ -17,8 +17,6 @@ import Question from "../../../components/Question";
 import {
   FontSizeOption,
   StemNumerationOption,
-  VerticalTopOption,
-  ImageScaleOption,
   BrowserSpellcheckOption,
   MultipleLineOption
 } from "../../../containers/WidgetOptions/components";
@@ -38,8 +36,6 @@ class Layout extends Component {
       responses
     } = this.props;
 
-    const mapValues = val => (Number.isNaN(+val) ? "" : val);
-
     const changeUiStyle = (prop, value) => {
       setQuestionData(
         produce(item, draft => {
@@ -47,12 +43,22 @@ class Layout extends Component {
             draft.uiStyle = {};
           }
 
-          if (prop === "inputtype") {
-            draft.validation.validResponse.value = draft.validation.validResponse.value.map(mapValues);
+          if (prop === "inputtype" && value === "number") {
+            if (isObject(draft.validation.validResponse.value)) {
+              keys(draft.validation.validResponse.value).forEach(key => {
+                const val = draft.validation.validResponse.value[key];
+                draft.validation.validResponse.value[key] = isNaN(+val) ? "" : val;
+              });
+            }
 
             if (Array.isArray(draft.validation.altResponses)) {
               draft.validation.altResponses = draft.validation.altResponses.map(res => {
-                res.value = res.value.map(mapValues);
+                if (isObject(res.value)) {
+                  keys(res.value).forEach(key => {
+                    const alt = res.value[key];
+                    res.value[key] = isNaN(+alt) ? "" : alt;
+                  });
+                }
                 return res;
               });
             }

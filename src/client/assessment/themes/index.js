@@ -223,8 +223,7 @@ const AssessmentContainer = ({
           }
           return !isAnswered;
         }
-        case questionType.CLOZE_TEXT:
-        case questionType.CLOZE_IMAGE_TEXT: {
+        case questionType.CLOZE_TEXT: {
           return (qAnswers || []).every(d => {
             if (typeof d === "string") {
               return isEmpty(d);
@@ -241,6 +240,14 @@ const AssessmentContainer = ({
           }
           const keys = Object.keys(qAnswers);
           return keys.length === 0 || keys.some(key => isEmpty(qAnswers[key]));
+        }
+        case questionType.CLOZE_IMAGE_DROP_DOWN:
+        case questionType.CLOZE_IMAGE_TEXT: {
+          if (!isObject(qAnswers)) {
+            return true;
+          }
+          const keys = Object.keys(qAnswers);
+          return keys.some(key => !qAnswers[key]);
         }
         default:
           return isEmpty(answersById[q.id]);

@@ -57,7 +57,7 @@ import {
   getToggleReleaseGradeStateSelector,
   getToggleStudentReportCardStateSelector
 } from "../../../src/selectors/assignments";
-import { getGroupList, getOrgDataSelector } from "../../../src/selectors/user";
+import { getGroupList, getCanvasAllowedInstitutionPoliciesSelector } from "../../../src/selectors/user";
 import {
   CaretUp,
   ClassDropMenu,
@@ -251,7 +251,6 @@ class ClassHeader extends Component {
       isViewPassword,
       hasRandomQuestions,
       orgClasses,
-      orgData,
       canvasSyncGrades,
       googleSyncAssignment,
       syncWithGoogleClassroomInProgress,
@@ -259,7 +258,8 @@ class ClassHeader extends Component {
       toggleStudentReportCardPopUp,
       userId,
       assignedById,
-      windowWidth
+      windowWidth,
+      canvasAllowedInstitutions
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -287,7 +287,7 @@ class ClassHeader extends Component {
         : assignmentStatus;
     const { canvasCode, canvasCourseSectionCode, googleId: groupGoogleId } =
       orgClasses.find(({ _id }) => _id === classId) || {};
-    const showSyncGradesWithCanvasOption = canvasCode && canvasCourseSectionCode && orgData.allowCanvas;
+    const showSyncGradesWithCanvasOption = canvasCode && canvasCourseSectionCode && canvasAllowedInstitutions.length;
 
     // hiding seeting tab if assignment assigned by either DA/SA
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
@@ -604,7 +604,7 @@ const enhance = compose(
       isViewPassword: getViewPasswordSelector(state),
       hasRandomQuestions: getHasRandomQuestionselector(state),
       orgClasses: getGroupList(state),
-      orgData: getOrgDataSelector(state),
+      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(state),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(state),
       assignedById: state?.author_classboard_testActivity?.additionalData?.assignedBy?._id,

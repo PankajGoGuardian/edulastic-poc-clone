@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 import { compose } from "redux";
@@ -44,7 +44,9 @@ const TokenHighlightPreview = ({
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
   const isExpressGrader = previewTab === SHOW && expressGrader;
 
-  const initialArray = (item.templeWithTokens || []).map((el, i) => ({
+  const templeWithTokens = useMemo(() => item.templeWithTokens || [], [item.templeWithTokens]);
+
+  const initialArray = templeWithTokens.map((el, i) => ({
     value: el.value,
     index: i,
     selected: !!smallSize
@@ -61,18 +63,18 @@ const TokenHighlightPreview = ({
 
   const [isCheck, setIsCheck] = useState(false);
 
-  const [mergedTokens, setMergedTokens] = useState(item.templeWithTokens);
+  const [mergedTokens, setMergedTokens] = useState(templeWithTokens);
 
   useEffect(() => {
     if (view === EDIT) {
-      if (item.templeWithTokens.length === editCorrectAnswers.length) {
+      if (templeWithTokens.length === editCorrectAnswers.length) {
         setAnswers(editCorrectAnswers);
       } else {
         saveAnswer(initialArray);
       }
     }
-    const _mergedTokens = item.templeWithTokens.reduce((acc, currItem, currentIndex) => {
-      const tokens = item.templeWithTokens;
+    const _mergedTokens = templeWithTokens.reduce((acc, currItem, currentIndex) => {
+      const tokens = templeWithTokens;
       const prevIndex = currentIndex - 1;
       const currentAccIndex = acc.length - 1;
       const lastAccItem = acc[currentAccIndex];
@@ -121,7 +123,7 @@ const TokenHighlightPreview = ({
     }, []);
 
     setMergedTokens(_mergedTokens);
-  }, [item.templeWithTokens, editCorrectAnswers]);
+  }, [templeWithTokens, editCorrectAnswers]);
 
   useEffect(() => {
     if (previewTab === SHOW || disableResponse) {
@@ -212,7 +214,7 @@ const TokenHighlightPreview = ({
     return resultStyle;
   };
 
-  const tokenList = mode === "custom" ? mergedTokens : item.templeWithTokens;
+  const tokenList = mode === "custom" ? mergedTokens : templeWithTokens;
   let allCorrectAnswers = [];
 
   if (item.validation) {

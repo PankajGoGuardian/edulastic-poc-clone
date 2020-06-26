@@ -85,7 +85,7 @@ const Bars = ({
             width={step * 0.8}
             height={getBarHeight(dot.y)}
           />
-          {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
+          {((view !== EDIT && !data[index]?.notInteractive) || view === EDIT) && (
             <ActiveBar
               // onClick={deleteMode ? () => saveAnswer(index) : () => { }}
               onMouseEnter={handleMouse(index)}

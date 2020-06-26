@@ -36,7 +36,6 @@ const AssignmentSubHeader = ({ t, setFilter, filter, selectedTheme, assignmentsC
 
   return (
     <BreadcrumbWrapper>
-      <Breadcrumb data={breadcrumbData} />
       <StatusBtnsContainer>
         {filterItems.map((value, i) => (
           <Filter key={i} index={i} value={value} />

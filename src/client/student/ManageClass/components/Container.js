@@ -14,7 +14,6 @@ import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
 import { StudentSlectCommon } from "../../sharedComponents/ClassSelector";
 import { NoDataBox } from "../../styled";
 import ClassCard from "./CardContainer";
-import ManageClassSubHeader from "./SubHeader";
 import NoDataIcon from "../../assets/nodata.svg";
 
 // constants
@@ -100,9 +99,6 @@ const ManageClassContainer = ({
       <MainContentWrapper>
         <SubHeaderWrapper>
           <Col span={12}>
-            <ManageClassSubHeader />
-          </Col>
-          <Col span={12}>
             {showActiveClass && (
               <ShowActiveClass
                 t={t}
@@ -166,7 +162,7 @@ const SubHeaderWrapper = styled(Row)`
   display: flex;
   flex-direction: row;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: flex-end;
 `;
 const JoinClassBtn = styled(Button)`
   background: ${white};

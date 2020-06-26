@@ -229,7 +229,6 @@ const ClassList = ({
       />
       <MainContentWrapper>
         <SubHeader>
-          <BreadCrumb data={getBreadCrumbData()} style={{ position: "unset" }} />
           {currentTab === "class" && (
             <ClassSelector
               groups={groups}

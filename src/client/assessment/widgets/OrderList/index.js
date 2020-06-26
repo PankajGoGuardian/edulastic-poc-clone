@@ -213,7 +213,7 @@ const OrderList = ({
     userAnswer = !isEmpty(_userAnswer) ? _userAnswer : convertArrToObj(keys(get(item, "list", {})));
   }
   const userAnswerToShow = keys(userAnswer);
-  const correctAnswersToShow = convertObjToArr(correctAnswers).map(ans => itemForPreview.list[ans.id]);
+  const correctAnswersToShow = convertObjToArr(correctAnswers).map(ans => get(itemForPreview, `list[${ans.id}]`, ""));
 
   const onSortPreviewEnd = ({ oldIndex, newIndex }) => {
     const newUserAnswer = convertArrToObj(arrayMove(userAnswerToShow, oldIndex, newIndex));

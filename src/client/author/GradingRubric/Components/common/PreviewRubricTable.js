@@ -36,7 +36,7 @@ const PreviewRubricTable = ({
       {criteria.ratings.map(rating => (
         <RatingSection
           onClick={() => !isDisabled && handleRatingSelection(criteria.id, rating.id)}
-          selected={selectedRatings[criteria.id] == rating.id ? true : false}
+          selected={selectedRatings[criteria.id] == rating.id}
           isDisabled={isDisabled}
         >
           <div>
@@ -49,25 +49,20 @@ const PreviewRubricTable = ({
     </RatingScrollContainer>
   );
 
-  const getContent = () => {
-    return data?.criteria?.map(c => {
-      return (
-        <CriteriaWrapper
-          key={c?.id}
-          showError={!Object.keys(selectedRatings).includes(c?.id) && validateRubricResponse}
-        >
-          {getCriteria(c)}
-          {getRatings(c)}
-        </CriteriaWrapper>
-      );
-    });
-  };
+  const getContent = () => data?.criteria?.map(c => (
+    <CriteriaWrapper
+      key={c?.id}
+      showError={!Object.keys(selectedRatings).includes(c?.id) && validateRubricResponse}
+    >
+      {getCriteria(c)}
+      {getRatings(c)}
+    </CriteriaWrapper>
+  ));
 
   const handleRatingSelection = (criteriaId, ratingId) => {
-    let selectedData = { ...selectedRatings };
+    const selectedData = { ...selectedRatings };
     selectedData[criteriaId] = ratingId;
     setSelectedRatings(selectedData);
-
     handleChange({ score: calculateScore(selectedData), rubricFeedback: selectedData });
   };
 

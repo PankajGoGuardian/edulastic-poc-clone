@@ -1,16 +1,16 @@
 import React, { useState, useMemo } from "react";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { ModalBody, Heading } from "./ConfirmModal";
 import styled from "styled-components";
-import PreviewRubricTable from "./PreviewRubricTable";
 import { white, title, themeColorLighter } from "@edulastic/colors";
 import { sumBy, maxBy } from "lodash";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
+import PreviewRubricTable from "./PreviewRubricTable";
+import { ModalBody } from "./ConfirmModal";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 const PreviewRubricModal = ({
   visible,
   toggleModal,
+  onRubricResponseUpdate,
   currentRubricData,
   maxScore,
   rubricFeedback,
@@ -39,6 +39,7 @@ const PreviewRubricModal = ({
     setObtained(response.score);
     setRubricResponse(response);
     setValidateRubricResponse(false);
+    onRubricResponseUpdate(response);
   };
 
   const handleCloseRubric = () => {
@@ -50,7 +51,7 @@ const PreviewRubricModal = ({
       setValidateRubricResponse(false);
       toggleModal(rubricResponse);
     } else {
-     notification({ messageKey:"pleaseSelectRatingFromEachCriteria"});
+      notification({ messageKey: "pleaseSelectRatingFromEachCriteria" });
       setValidateRubricResponse(true);
     }
   };
@@ -63,7 +64,7 @@ const PreviewRubricModal = ({
       visible={visible}
       footer={null}
       onCancel={() => handleCloseRubric()}
-      width={"800px"}
+      width="800px"
     >
       <StyledModalBody>
         <PreviewRubricTable

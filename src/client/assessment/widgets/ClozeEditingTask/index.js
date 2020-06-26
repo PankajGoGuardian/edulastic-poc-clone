@@ -90,7 +90,7 @@ const EditingTask = ({
       !isPrint &&
       !isPrintPreview &&
       displayStyle?.option !== subOptions.EMPTY &&
-      displayStyle.type !== displayStyles.TEXT_INPUT
+      displayStyle?.type !== displayStyles.TEXT_INPUT
     ) {
       const initialAnswers = {};
       responseIds.forEach(response => {

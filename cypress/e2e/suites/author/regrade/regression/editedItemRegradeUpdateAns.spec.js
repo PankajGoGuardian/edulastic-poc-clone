@@ -91,9 +91,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   const testname = "REGRADE_EDITED_ITEM";
   const oldCorrectAns = MCQ_MULTI["5"].setAns.correct;
   const newCorrectAns = MCQ_MULTI["6"].setAns.correct;
-
-  let attemptData = MCQ_MULTI["5"].attemptData;
-  let updatedAttempData = MCQ_MULTI["6"].attemptData;
+  const attemptData = MCQ_MULTI["5"].attemptData;
+  const updatedAttempData = MCQ_MULTI["6"].attemptData;
   let itemId;
   let testid;
 
@@ -147,16 +146,31 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
         });
 
         context("> verify student side", () => {
-          attemptData = updatedAttempData;
-          verifyStudentSide({ data, assignmentStatus, attemptType, students, versionedtestids, option, attemptData });
+          verifyStudentSide({
+            data,
+            assignmentStatus,
+            attemptType,
+            students,
+            versionedtestids,
+            option,
+            attemptData: updatedAttempData
+          });
         });
 
         context("> verify teacher side", () => {
           before("> login and go to assignments", () => {
             cy.login("teacher", Teacher.username, Teacher.password);
-            attemptData = updatedAttempData;
           });
-          verifyTeacherSide({ data, assignmentStatus, attemptType, students, versionedtestids, option, attemptData });
+          verifyTeacherSide({
+            data,
+            assignmentStatus,
+            attemptType,
+            students,
+            versionedtestids,
+            option,
+            attemptData: updatedAttempData,
+            updatedCorrectAns: true
+          });
         });
       });
     });

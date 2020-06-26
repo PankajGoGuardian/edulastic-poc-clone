@@ -36,7 +36,6 @@ export function duplicateAndAssignTests({ regrade_Options, testid, assignedtesti
       testLibraryPage.clickOnDuplicate();
       testLibraryPage.testSummary.setName(`${regOption}-${attType}`);
       testLibraryPage.header.clickOnPublishButton().then(id => {
-        cy.saveTestDetailToDelete(id);
         assignedtestids[ind].push(id);
         testLibraryPage.clickOnAssign();
         testLibraryPage.assignPage.selectClass("Class");
@@ -113,10 +112,12 @@ export function verifyTeacherSide({
   students,
   versionedtestids,
   option,
-  attemptData
+  attemptData,
+  updatedCorrectAns = false
 }) {
   const attemptsData = [];
   const queCentric = {};
+  let updatedAttempt;
   assignmentStatus.forEach((sta, ind) => {
     attemptsData.push({ stuName: students[`Student${ind + 1}`].name, attempt: {}, status: studentSide.SUBMITTED });
   });
@@ -138,6 +139,13 @@ export function verifyTeacherSide({
               else
                 attemptsData[assignmentStatus.indexOf(studentSide.SUBMITTED)].attempt.Q1 = attemptTypes.PARTIAL_CORRECT;
             }
+            updatedAttempt = attempt;
+            if (updatedCorrectAns) {
+              if (status == studentSide.SUBMITTED) {
+                if (attempt !== attemptTypes.PARTIAL_CORRECT && attempt !== attemptTypes.SKIP)
+                  updatedAttempt = attempt === attemptTypes.RIGHT ? attemptTypes.WRONG : attemptTypes.RIGHT;
+              }
+            }
           });
           before(">click assignments", () => {
             optionsIndex = _.values(regradeOptions.edited).indexOf(option);
@@ -146,6 +154,7 @@ export function verifyTeacherSide({
           });
 
           it(`> verif lcb card view-`, () => {
+            cy.wait(3000);
             lcb
               .getStudentScoreByIndex(statusIndex)
               .should("contain.text", `${data.teacher[status][`${option}`][`${attempt}`]} / ${data.points}`);
@@ -166,6 +175,7 @@ export function verifyTeacherSide({
 
           it("> verify student centric view", () => {
             lcb.clickOnStudentsTab();
+            cy.wait(3000);
             lcb.questionResponsePage.selectStudent(students[`Student${statusIndex + 1}`].name);
 
             lcb.questionResponsePage
@@ -174,12 +184,13 @@ export function verifyTeacherSide({
 
             lcb.questionResponsePage.getMaxScore().should("have.text", `${data.points}`);
 
-            itemPreview.verifyQuestionResponseCard("MCQ_MULTI", attemptData, attempt);
+            itemPreview.verifyQuestionResponseCard("MCQ_MULTI", attemptData, updatedAttempt);
             barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData[statusIndex], ["Q1"]);
           });
 
           it("> verify Question centric view", () => {
             lcb.clickonQuestionsTab();
+            cy.wait(3000);
             lcb.questionResponsePage.getDropDown().click({ force: true });
 
             CypressHelper.getDropDownList().then(questions => {
@@ -190,7 +201,7 @@ export function verifyTeacherSide({
               .getQuestionContainerByStudent(students[`Student${statusIndex + 1}`].name)
               .as("updatecard");
 
-            itemPreview.verifyQuestionResponseCard("MCQ_MULTI", attemptData, attempt, false, statusIndex);
+            itemPreview.verifyQuestionResponseCard("MCQ_MULTI", attemptData, updatedAttempt, false, statusIndex);
             lcb.getQuestionCentricData(attemptsData, queCentric);
             barGraphs.verifyQueBarBasedOnQueAttemptData(queCentric.Q1);
 
@@ -221,13 +232,14 @@ export function verifyTeacherSide({
                   data.manualpoints
                 );
                 attemptsData[statusIndex].attempt.Q1 = attemptTypes.PARTIAL_CORRECT;
-
+                cy.wait(3000);
                 lcb.getQuestionCentricData(attemptsData, queCentric);
                 barGraphs.verifyQueBarBasedOnQueAttemptData(queCentric.Q1);
               });
 
               it("> verify student centric view", () => {
                 lcb.clickOnStudentsTab();
+                cy.wait(3000);
                 lcb.questionResponsePage.selectStudent(students[`Student${statusIndex + 1}`].name);
                 lcb.questionResponsePage.getTotalScore().should("have.text", data.manualpoints.toString());
 
@@ -236,6 +248,7 @@ export function verifyTeacherSide({
 
               it(`> verify lcb card view-`, () => {
                 lcb.clickOnCardViewTab();
+                cy.wait(3000);
                 lcb.getStudentScoreByIndex(statusIndex).should("contain.text", `${data.manualpoints} / ${data.points}`);
                 lcb.verifyQuestionCards(statusIndex, [attemptTypes.PARTIAL_CORRECT]);
                 barGraphs.verifyQueBarAndToolTipBasedOnAttemptData(attemptsData, ["Q1"]);

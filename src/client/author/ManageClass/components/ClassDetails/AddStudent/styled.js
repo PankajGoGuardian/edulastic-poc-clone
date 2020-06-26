@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Form } from "antd";
-import { title, themeColor, boxShadowDefault } from "@edulastic/colors";
+import { title, themeColor, boxShadowDefault,greyThemeLight,greyThemeLighter ,lightGreySecondary} from "@edulastic/colors";
 import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 
 export const StyledModal = styled(ConfirmationModal)`
@@ -87,8 +87,9 @@ export const AddForm = styled(Form)`
   .ant-collapse {
     border: none;
     background: white;
-    box-shadow: ${boxShadowDefault};
     border-radius: 2px;
+    background-color:${lightGreySecondary};
+    border: 1px solid ${greyThemeLight};
     & > .ant-collapse-item {
       border: none;
       width: 100%;

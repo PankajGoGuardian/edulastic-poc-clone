@@ -368,7 +368,6 @@ const FormBody = styled.div`
   background: white;
   padding: 2rem 2rem 1.2rem 2rem;
   margin-bottom: 20px;
-  box-shadow: ${boxShadowDefault};
   border-radius: 2px;
   .ant-input-affix-wrapper {
     .ant-input-prefix {

@@ -6,7 +6,7 @@ import { Form } from "antd";
 import { resetPasswordRequestAction } from "../../../ducks";
 import { getUserOrgData } from "../../../../src/selectors/user";
 import { StyledModal, Title, ActionButton, StyledInput } from "./styled";
-import { EduButton } from "@edulastic/common";
+import { EduButton ,CustomModalStyled } from "@edulastic/common";
 
 class ResetPwd extends React.Component {
   static propTypes = {
@@ -76,27 +76,27 @@ class ResetPwd extends React.Component {
     );
 
     return (
-      <StyledModal
+      <CustomModalStyled
         title={title}
         visible={isOpen}
         onCancel={handleCancel}
         footer={footer}
         destroyOnClose={true}
-        textAlign="left"
+        textAlign="center"
       >
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Item>
+        <Form onSubmit={this.handleSubmit} style={{display:"flex",flexDirection:"column",justifyContent:"center"}}>
+          <Form.Item style={{textAlign:"center"}}>
             {getFieldDecorator("password", {
               rules: [{ required: true, message: "Please input your Password!" }]
-            })(<StyledInput type="password" placeholder="Enter Password" />)}
+            })(<StyledInput  type="password" placeholder="Enter Password" />)}
           </Form.Item>
-          <Form.Item>
+          <Form.Item style={{textAlign:"center"}} >
             {getFieldDecorator("confirmPwd", {
               rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
             })(<StyledInput type="password" placeholder="Confirm Password" />)}
           </Form.Item>
         </Form>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

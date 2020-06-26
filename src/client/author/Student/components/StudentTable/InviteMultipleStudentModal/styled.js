@@ -20,7 +20,6 @@ export const StyledTextArea = styled(TextArea)`
   margin-top: 10px;
   min-height: 120px !important;
   background-color: ${lightGrey3};
-  box-shadow: ${boxShadowDefault};
   border-radius: 5px;
 `;
 
@@ -115,13 +114,11 @@ export const SearchViewContainer = styled.div`
   text-align: start;
   min-height: 200px;
   font-weight: 550;
-  box-shadow: ${boxShadowDefault};
 `;
 
 export const AddBulkStudentsViewContainer = styled.div`
   background: ${white};
   padding: 1.5rem 1rem;
-  box-shadow: ${boxShadowDefault};
 `;
 
 export const SearchTabButton = styled(Button)`

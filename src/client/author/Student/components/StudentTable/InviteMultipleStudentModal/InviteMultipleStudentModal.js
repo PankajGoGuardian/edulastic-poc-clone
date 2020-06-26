@@ -8,7 +8,7 @@ import { roleuser } from "@edulastic/constants";
 import { IconClose, IconCorrect } from "@edulastic/icons";
 import { withNamespaces } from "react-i18next";
 import { compose } from "redux";
-import { EduButton } from "@edulastic/common";
+import { EduButton,CustomModalStyled } from "@edulastic/common";
 import {
   StyledTextArea,
   PlaceHolderText,
@@ -309,7 +309,7 @@ class InviteMultipleStudentModal extends Component {
     }
     const defaultSchoolId = schools.length ? schools[0]._id : "";
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         onOk={this.onInviteStudents}
         onCancel={this.onCloseModal}
@@ -462,7 +462,7 @@ class InviteMultipleStudentModal extends Component {
             <span>{t("users.student.invitestudents.addtoclass")}</span>
           </EduButton>
         </ButtonsContainer>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

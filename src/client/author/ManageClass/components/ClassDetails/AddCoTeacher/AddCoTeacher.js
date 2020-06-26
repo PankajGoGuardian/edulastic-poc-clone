@@ -8,7 +8,7 @@ import { receiveTeachersListAction } from "../../../../Teacher/ducks";
 import { getUserOrgId, getUserIdSelector } from "../../../../src/selectors/user";
 import { groupApi } from "@edulastic/api";
 import { setClassAction } from "../../../../ManageClass/ducks";
-import { EduButton ,notification } from "@edulastic/common";
+import { EduButton ,notification,CustomModalStyled } from "@edulastic/common";
 
 class AddCoTeacher extends React.Component {
   static propTypes = {
@@ -104,7 +104,7 @@ class AddCoTeacher extends React.Component {
     );
 
     return (
-      <StyledModal
+      <CustomModalStyled
         title={title}
         visible={isOpen}
         footer={footer}
@@ -126,6 +126,7 @@ class AddCoTeacher extends React.Component {
           notFoundContent={notFoundText}
           onSearch={this.onSearchHandler}
           getPopupContainer={triggerNode => triggerNode.parentNode}
+          style={{width:"100%",marginTop:"10px"}}
         >
           {coTeachers.map((el, index) => (
             <Select.Option key={index} value={el._id}>
@@ -136,7 +137,7 @@ class AddCoTeacher extends React.Component {
             </Select.Option>
           ))}
         </Select>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

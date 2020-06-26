@@ -24,6 +24,7 @@ export const StyledInput = styled(Input)`
 `;
 
 export const StyledP = styled.p`
+  text-align:center;
   margin-bottom: 0px;
 `;
 

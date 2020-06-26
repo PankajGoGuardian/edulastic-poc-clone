@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import { Form, Icon, Collapse, Spin, message } from "antd";
+import { EduButton,notification ,CustomModalStyled} from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
 
 import { enrollmentApi } from "@edulastic/api";
@@ -12,7 +13,7 @@ import { StyledModal, Title, ActionButton, PanelHeader, AddForm } from "./styled
 import { getUserOrgData } from "../../../../src/selectors/user";
 import { fetchStudentsByIdAction } from "../../../ducks";
 import { getValidatedClassDetails } from "../../../../Student/ducks";
-import { EduButton,notification } from "@edulastic/common";
+
 
 const { Panel } = Collapse;
 class AddStudentModal extends React.Component {
@@ -132,7 +133,7 @@ class AddStudentModal extends React.Component {
     );
 
     return (
-      <StyledModal
+      <CustomModalStyled
         centered
         title={title}
         visible={isOpen}
@@ -140,7 +141,6 @@ class AddStudentModal extends React.Component {
         footer={footer}
         textAlign="left"
         padding="0px"
-        centered
       >
         <Spin spinning={submitted}>
           <AddForm>
@@ -179,7 +179,7 @@ class AddStudentModal extends React.Component {
             </Collapse>
           </AddForm>
         </Spin>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

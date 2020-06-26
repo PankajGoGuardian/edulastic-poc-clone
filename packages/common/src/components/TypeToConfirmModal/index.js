@@ -11,7 +11,7 @@ import {
   ErrorMessage,
   CancelButton
 } from "./styled";
-import { EduButton } from "@edulastic/common";
+import { EduButton ,CustomModalStyled} from "@edulastic/common";
 
 class TypeToConfirmModal extends Component {
   state = {
@@ -60,7 +60,7 @@ class TypeToConfirmModal extends Component {
     const btnText = "Yes, " + (okButtonText ? okButtonText : title);
 
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={title}
         onOk={handleOnOkClick}
@@ -79,7 +79,7 @@ class TypeToConfirmModal extends Component {
         <Row>
           <Col span={24}>
             <StyledP>{primaryLabel}</StyledP>
-            {secondaryLabel}
+            <StyledP>{secondaryLabel}</StyledP>
             <StyledP>
               If Yes, please type <LightGreenSpan>{wordToBeTyped}</LightGreenSpan> in the space below to proceed.
             </StyledP>
@@ -97,7 +97,7 @@ class TypeToConfirmModal extends Component {
           </StyledCol>
         </Row>
         {errorMsg ? <ErrorMessage>{errorMsg}</ErrorMessage> : null}
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

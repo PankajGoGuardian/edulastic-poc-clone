@@ -167,7 +167,7 @@
       "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
       "attemptData": {
         "right": ["right-1", "right-2"],
-        "wrong": "wrong-1",
+        "wrong": ["wrong-1", "wrong-2"],
         "partialCorrect": ["right-2", "wrong-1"]
       },
       "standards": [
@@ -185,7 +185,7 @@
       "setAns": { "correct": ["wrong-1", "wrong-2"], "points": 2, "evaluation": "Partial match" },
       "attemptData": {
         "right": ["wrong-1", "wrong-2"],
-        "wrong": "right-1",
+        "wrong": ["right-1", "right-2"],
         "partialCorrect": ["right-2", "wrong-1"]
       },
       "standards": [

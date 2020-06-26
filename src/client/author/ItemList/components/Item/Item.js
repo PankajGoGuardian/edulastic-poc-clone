@@ -369,7 +369,7 @@ class Item extends Component {
         : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
     const hideAddRemove = userRole === roleuser.EDULASTIC_CURATOR;
 
-    const isDynamicItem = item.data.questions.some(q => q?.variable?.enabled);
+    const isDynamicItem = item.data?.questions?.some(q => q?.variable?.enabled);
 
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
@@ -436,7 +436,7 @@ class Item extends Component {
                     <IconEye />
                   </EduButton>
                   <AddRemoveBtn
-                    style={{width:"70px"}}
+                    style={{ width: "70px" }}
                     loading={selectedId === item._id}
                     onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                     isAddOrRemove={this.isAddOrRemove}

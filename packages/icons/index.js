@@ -247,3 +247,4 @@ export { default as IconDynamic } from "./src/IconDynamic";
 export { default as IconEconomic } from "./src/IconEconomic";
 export { default as IconMother } from "./src/IconMother";
 export { default as IconWrench } from "./src/IconWrench";
+export { default as IconEduLogo } from "./src/IconEduLogo";

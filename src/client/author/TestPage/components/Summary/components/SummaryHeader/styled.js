@@ -24,27 +24,7 @@ export const Avatar = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  background: ${themeColor};
-  color: ${white};
-  font-size: 24px;
-  font-weight: 700;
-  padding-right: 0px;
   margin-right: 24px;
-
-  &:after {
-    display: block;
-    position: absolute;
-    top: 18px;
-    right: 9px;
-    content: "";
-    width: 4px;
-    height: 4px;
-    border-radius: 4px;
-    background: ${white};
-  }
 `;
 
 export const CreatedByTitle = styled.div`

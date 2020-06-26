@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { IconShare, IconHeart } from "@edulastic/icons";
+import { IconShare, IconHeart ,IconEduLogo} from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
 import { Photo } from "../../../common";
@@ -28,7 +28,7 @@ const SummaryHeader = ({
   test,
   toggleTestLikeRequest
 }) => {
-  const avatar = createdBy && createdBy.name ? createdBy.name[0] : "E";
+  const avatar = createdBy && createdBy.name ? createdBy.name[0] : <IconEduLogo />;
   console.log({ analytics });
   const isTestLiked = test?.alreadyLiked || false;
   const handleTestLike = () => {

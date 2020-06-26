@@ -9,6 +9,8 @@ exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
+var _flatMap2 = _interopRequireDefault(require("lodash/flatMap"));
+
 var _identity2 = _interopRequireDefault(require("lodash/identity"));
 
 var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
@@ -30,7 +32,7 @@ function getEvaluations() {
     var correctAnswerResponseIds = correctAnswer[containerId] || [];
     userAttemptedResponseIds.forEach(function (responseId) {
       evaluation[containerId] = evaluation[containerId] || {};
-      evaluation[containerId][[responseId]] = correctAnswerResponseIds.includes(responseId);
+      evaluation[containerId][responseId] = correctAnswerResponseIds.includes(responseId);
     });
   });
   return evaluation;
@@ -130,7 +132,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
           possibleMaxScore = answer.score;
       maxScore = Math.max(maxScore, possibleMaxScore || 0);
       var currentEvalution = getEvaluations(currentAnswer, userResponse);
-      var answersCount = Object.values(currentAnswer).flatMap(_identity2["default"]).length;
+      var answersCount = (0, _flatMap2["default"])(Object.values(currentAnswer), _identity2["default"]).length;
       var correctCount = Object.values(currentEvalution).reduce(function (acc, obj) {
         var correct = Object.values(obj).filter(_identity2["default"]).length;
         acc += correct;

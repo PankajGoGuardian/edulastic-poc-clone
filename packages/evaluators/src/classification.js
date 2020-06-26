@@ -1,4 +1,4 @@
-import { isEqual, identity } from "lodash";
+import { isEqual, identity, flatMap } from "lodash";
 import { ScoringType } from "./const/scoring";
 
 function getEvaluations(correctAnswer = {}, userAnswer = {}) {
@@ -8,7 +8,7 @@ function getEvaluations(correctAnswer = {}, userAnswer = {}) {
     const correctAnswerResponseIds = correctAnswer[containerId] || [];
     userAttemptedResponseIds.forEach(responseId => {
       evaluation[containerId] = evaluation[containerId] || {};
-      evaluation[containerId][[responseId]] = correctAnswerResponseIds.includes(responseId);
+      evaluation[containerId][responseId] = correctAnswerResponseIds.includes(responseId);
     });
   });
   return evaluation;
@@ -82,14 +82,14 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
     const { value: currentAnswer, score: possibleMaxScore } = answer;
     maxScore = Math.max(maxScore, possibleMaxScore || 0);
     const currentEvalution = getEvaluations(currentAnswer, userResponse);
-    const answersCount = Object.values(currentAnswer).flatMap(identity).length;
+    const answersCount = flatMap(Object.values(currentAnswer), identity).length;
     const correctCount = Object.values(currentEvalution).reduce((acc, obj) => {
       const correct = Object.values(obj).filter(identity).length;
       acc += correct;
       return acc;
     }, 0);
-
     const currentScore = (possibleMaxScore * correctCount) / answersCount;
+
     if (currentScore > score) {
       [score, evaluation] = [currentScore, currentEvalution];
     } else {

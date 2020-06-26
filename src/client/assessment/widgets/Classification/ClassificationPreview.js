@@ -175,7 +175,6 @@ const ClassificationPreview = ({
 
   const [answers, setAnswers] = useState(initialAnswers);
   const [dragItems, setDragItems] = useState(possibleResponses);
-  console.log("intially", { answers, dragItems, classifications });
   /**
    * it is used to filter out responses from the bottom container and place in correct boxes
    * it also used to clear out responses when clear is pressed

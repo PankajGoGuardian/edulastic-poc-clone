@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Spin, message, Modal, Button } from "antd";
-import { isUndefined, get, isEmpty, isNull, isEqual } from "lodash";
+import { isUndefined, get, isEmpty, isNull, isEqual, isObject } from "lodash";
 import useInterval from "@use-it/interval";
 
 import { test as testTypes, assignmentPolicyOptions, questionType } from "@edulastic/constants";
@@ -224,7 +224,6 @@ const AssessmentContainer = ({
           return !isAnswered;
         }
         case questionType.CLOZE_TEXT:
-        case questionType.CLASSIFICATION:
         case questionType.CLOZE_IMAGE_TEXT: {
           return (qAnswers || []).every(d => {
             if (typeof d === "string") {
@@ -235,6 +234,13 @@ const AssessmentContainer = ({
             }
             return isEmpty(d.value);
           });
+        }
+        case questionType.CLASSIFICATION: {
+          if (!isObject(qAnswers)) {
+            return true;
+          }
+          const keys = Object.keys(qAnswers);
+          return keys.length === 0 || keys.some(key => isEmpty(qAnswers[key]));
         }
         default:
           return isEmpty(answersById[q.id]);

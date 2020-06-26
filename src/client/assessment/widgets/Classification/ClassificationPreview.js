@@ -104,7 +104,7 @@ const ClassificationPreview = ({
       rowTitles: rowTitles = [],
       showDragHandle
     },
-    classifications
+    classifications = []
   } = item;
 
   const validArray = get(item, "validation.validResponse.value", []);
@@ -195,7 +195,11 @@ const ClassificationPreview = ({
     }
   }, [userAnswer, possibleResponses]);
 
-  useEffect(updateDragItems, [classifications, editCorrectAnswers]);
+  useEffect(() => {
+    if (view === EDIT) {
+      updateDragItems();
+    }
+  }, [classifications, editCorrectAnswers]);
 
   useEffect(updateDragItems, []);
 

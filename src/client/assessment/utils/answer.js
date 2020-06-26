@@ -1,5 +1,5 @@
 import { questionType } from "@edulastic/constants";
-import { isEmpty, values } from "lodash";
+import { isEmpty, isObject, values, keys } from "lodash";
 
 /**
  * check the user attempted question or not.
@@ -24,7 +24,10 @@ export const hasValidAnswers = (type, answer) => {
     case questionType.CLOZE_IMAGE_DRAG_DROP:
       return !isEmpty(answer?.filter(ans => !isEmpty(ans?.value)));
     case questionType.CLASSIFICATION:
-      return !isEmpty(answer?.filter(ans => !isEmpty(ans)));
+      if (!isObject(answer)) {
+        return false;
+      }
+      return keys(answer).length > 0 && keys(answer).every(key => !isEmpty(answer[key]));
     case questionType.TOKEN_HIGHLIGHT:
       return !isEmpty(answer?.filter(ans => ans?.selected));
     case questionType.FORMULA_ESSAY:

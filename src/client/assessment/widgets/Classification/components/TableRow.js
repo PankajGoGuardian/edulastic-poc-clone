@@ -111,7 +111,7 @@ const TableRow = ({
     );
   }
 
-  const columns = item.classifications.length;
+  const columns = item.classifications?.length || 0;
 
   for (let index = 0; index < columns; index++) {
     const hasRowTitle = rowTitles.length > 0;

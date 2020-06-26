@@ -295,7 +295,6 @@ class ViewModal extends React.Component {
                 height="40px"
                 width="100%"
                 isGhost
-                noHover
                 justifyContent="center"
                 data-cy="preview-button"
                 onClick={previewLink}

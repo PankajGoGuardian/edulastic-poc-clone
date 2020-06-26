@@ -311,12 +311,6 @@ class PreviewModal extends React.Component {
     );
   };
 
-  getBtnStyle = addedToTest => ({
-    backgroundColor: !addedToTest ? "#fff" : themeColor,
-    color: !addedToTest ? themeColor : "#fff",
-    borderColor: !addedToTest ? themeColor : ""
-  });
-
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -397,10 +391,8 @@ class PreviewModal extends React.Component {
           <ModalTopAction>
             {isPassage && showAddPassageItemToTestButton ? (
               <EduButton
-                style={this.getBtnStyle(this.isAddOrRemove)}
-                IconBtn
+                isGhost={!this.isAddOrRemove}
                 type="primary"
-                width="210px" // default width is 32px
                 height="32px"
                 justifyContent="space-between"
                 onClick={this.handleSelection}
@@ -424,7 +416,7 @@ class PreviewModal extends React.Component {
               </EduButton>
             ) : (
               <EduButton
-                style={this.getBtnStyle(this.isAddOrRemove)}
+                isGhost={!this.isAddOrRemove}
                 type="primary"
                 height="32px"
                 justifyContent="space-between"

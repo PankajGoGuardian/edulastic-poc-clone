@@ -1,7 +1,15 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { white, themeColor, grey, black, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
+import {
+  white,
+  themeColor,
+  grey,
+  black,
+  extraDesktopWidthMax,
+  smallDesktopWidth,
+  themeColorBlue
+} from "@edulastic/colors";
 import PropTypes from "prop-types";
 
 const EduButton = ({ children, ...restProps }) => (
@@ -82,10 +90,6 @@ const StyledButton = styled(Button)`
     opacity: 0.3;
   }
 
-  &:first-child {
-    margin-left: 0px;
-  }
-
   svg {
     fill: ${getColor};
     margin-left: 5px;
@@ -111,8 +115,8 @@ const StyledButton = styled(Button)`
   &:focus,
   &:hover {
     &.ant-btn.ant-btn-primary {
-      background-color: ${({ btnType, noHover }) => getBgColor({ btnType, isGhost: noHover || false })};
-      border-color: ${({ btnType, noHover }) => getBorderColor({ btnType, isGhost: noHover || false })};
+      background-color: ${({ noHover }) => (noHover ? getBgColor({ isGhost: noHover }) : themeColorBlue)};
+      border-color: ${({ noHover }) => (noHover ? getBgColor({ isGhost: noHover }) : themeColorBlue)};
       color: ${({ btnType, noHover }) => getColor({ btnType, isGhost: noHover || false })};
     }
 

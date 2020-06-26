@@ -2,14 +2,13 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import { isNumber } from "lodash";
 import styled from "styled-components";
-import { MathFormulaDisplay } from "@edulastic/common";
+import { MathFormulaDisplay, EduButton } from "@edulastic/common";
 import {
   mobileWidthLarge,
   desktopWidth,
   lightGrey6,
   smallDesktopWidth,
   tabletWidth,
-  themeColor,
   titleColor,
   mediumDesktopExactWidth,
   extraDesktopWidthMax
@@ -102,6 +101,7 @@ const CurriculumSubHeader = ({
               {enableCustomize && isManageContentActive && cloneId && (
                 <DraftModeActionsWrapper>
                   <StyledButton
+                    isGhost
                     width="100px"
                     data-cy="cancel-customize"
                     onClick={() => cancelPlaylistCustomize({ parentId })}
@@ -109,6 +109,7 @@ const CurriculumSubHeader = ({
                     Cancel
                   </StyledButton>
                   <StyledButton
+                    isGhost
                     width="100px"
                     data-cy="publish-customized-playlist"
                     onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
@@ -119,10 +120,14 @@ const CurriculumSubHeader = ({
                 </DraftModeActionsWrapper>
               )}
               {(!isManageContentActive || !showRightPanel) && !shouldHidCustomizeButton && (
-                <CustomizeButton onClick={toggleManageContentClick("manageContent")}>Customize Content</CustomizeButton>
+                <CustomizeButton isGhost onClick={toggleManageContentClick("manageContent")}>
+                  Customize Content
+                </CustomizeButton>
               )}
               {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && (
-                <StyledButton onClick={toggleManageContentClick("summary")}>View Summary</StyledButton>
+                <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
+                  View Summary
+                </StyledButton>
               )}
             </ButtonWrapper>
           </RightColumn>
@@ -356,36 +361,16 @@ const DraftModeActionsWrapper = styled.div`
   margin-left: 15px;
 `;
 
-const StyledButton = styled.div`
+const StyledButton = styled(EduButton)`
   margin: ${props => props.margin || "0px"};
   margin-left: 30px;
   margin-right: 8px;
-  height: ${props => props.height || "40px"};
-  min-width: ${props => props.width || "auto"};
-  color: ${themeColor};
-  display: flex;
-  font: 11px/15px Open Sans;
-  font-weight: 600;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  border: 1px solid ${themeColor};
-  cursor: pointer;
-  text-transform: uppercase;
   user-select: none;
   -webkit-transition: background 300ms ease;
   -ms-transition: background 300ms ease;
   transition: background 300ms ease;
   svg {
     margin: auto;
-  }
-  &:hover {
-    background: ${themeColor};
-    color: white;
-    box-shadow: 0px 0px 1px ${themeColor};
-    svg {
-      fill: white;
-    }
   }
 
   &:last-child {

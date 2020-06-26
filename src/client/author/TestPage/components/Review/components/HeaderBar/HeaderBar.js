@@ -1,13 +1,11 @@
 import { themeColor, white } from "@edulastic/colors";
-import { CheckboxLabel, notification } from "@edulastic/common";
+import { CheckboxLabel, EduButton, notification } from "@edulastic/common";
 import { test as testContatns } from "@edulastic/constants";
-import { IconClose, IconCollapse, IconDescription, IconEye, IconMoveTo } from "@edulastic/icons";
-import { message } from "antd";
+import { IconClose, IconCollapse, IconDescription, IconExpand, IconEye, IconMoveTo } from "@edulastic/icons";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { ButtonLink } from "../../../../../src/components/common";
 import Prompt from "../Prompt/Prompt";
-import { ActionButton, Container, Item, MobileButtomContainer } from "./styled";
+import { Container, Item, MobileButtomContainer } from "./styled";
 
 const { ITEM_GROUP_TYPES } = testContatns;
 const HeaderBar = ({
@@ -65,72 +63,78 @@ const HeaderBar = ({
         // alignment issues when there is no select all button exists. dont remove it.
         <span />
       )}
-      <MobileButtomContainer>
-        <ActionButton data-cy="viewAsStudent">
-          <ButtonLink
-            onClick={onShowTestPreview}
-            color="primary"
-            icon={<IconEye color={themeColor} width={12} height={12} />}
-          >
-            {windowWidth > 767 && <span>View as Student</span>}
-          </ButtonLink>
-        </ActionButton>
+      <MobileButtomContainer style={{ display: "flex" }}>
+        <EduButton height="32px" data-cy="viewAsStudent" isGhost onClick={onShowTestPreview} color="primary">
+          <IconEye color={themeColor} width={12} height={12} />
+          {windowWidth > 767 && <span>View as Student</span>}
+        </EduButton>
         {owner && isEditable && (
-          <ActionButton data-cy="removeSelected" disabled={disableRMbtns}>
-            <ButtonLink
-              onClick={!disableRMbtns ? onRemoveSelected : () => null}
-              color="primary"
-              icon={<IconClose color={themeColor} width={12} height={12} />}
-            >
-              {windowWidth > 767 && <span>Remove Selected</span>}
-            </ButtonLink>
-          </ActionButton>
+          <EduButton
+            height="32px"
+            isGhost
+            data-cy="removeSelected"
+            disabled={disableRMbtns}
+            onClick={!disableRMbtns ? onRemoveSelected : () => null}
+            color="primary"
+          >
+            <IconClose color={themeColor} width={12} height={12} />
+            {windowWidth > 767 && <span>Remove Selected</span>}
+          </EduButton>
         )}
         {owner && isEditable && (
-          <ActionButton data-cy="moveto" disabled={disableRMbtns}>
-            <ButtonLink
+          <div style={{ position: "relative", marginLeft: "5px" }}>
+            <EduButton
+              data-cy="moveto"
+              disabled={disableRMbtns}
+              height="32px"
+              isGhost
               onClick={!disableRMbtns ? handleMoveTo : () => null}
               color="primary"
-              icon={<IconMoveTo color={themeColor} width={12} height={12} />}
             >
+              <IconMoveTo color={themeColor} width={12} height={12} />
               {windowWidth > 767 && <span>Move to</span>}
-            </ButtonLink>
+            </EduButton>
             {showPrompt && (
               <Prompt
-                style={{ position: "absolute", left: 0, top: 25, zIndex: 1 }}
+                style={{ position: "absolute", left: 0, top: 32, zIndex: 2 }}
                 maxValue={itemTotal}
                 onSuccess={handleSuccess}
                 setShowPrompt={setShowPrompt}
               />
             )}
-          </ActionButton>
+          </div>
         )}
-        <ActionButton data-cy={setCollapse ? "expand-rows" : "collapse-rows"}>
-          <ButtonLink
-            onClick={onCollapse}
-            color="primary"
-            icon={<IconCollapse color={themeColor} width={12} height={12} />}
-          >
-            {windowWidth > 767 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
-          </ButtonLink>
-        </ActionButton>
+        <EduButton
+          data-cy={setCollapse ? "expand-rows" : "collapse-rows"}
+          height="32px"
+          isGhost
+          onClick={onCollapse}
+          color="primary"
+        >
+          {setCollapse ? (
+            <IconExpand color={themeColor} width={12} height={12} />
+          ) : (
+            <IconCollapse color={themeColor} width={12} height={12} />
+          )}
+          {windowWidth > 767 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
+        </EduButton>
 
         {windowWidth < 1200 && (
-          <ActionButton>
-            <ButtonLink
-              style={{
-                background: !isShowSummary ? themeColor : "",
-                color: !isShowSummary ? white : "",
-                borderRadius: "4px",
-                maxHeight: "32px"
-              }}
-              onClick={toggleSummary}
-              color="primary"
-              icon={<IconDescription color={isShowSummary ? themeColor : white} width={13} height={13} />}
-            >
-              {windowWidth > 767 && <span>{isShowSummary ? "Show Summary" : "Hide Summary"}</span>}
-            </ButtonLink>
-          </ActionButton>
+          <EduButton
+            height="32px"
+            isGhost
+            style={{
+              background: !isShowSummary ? themeColor : "",
+              color: !isShowSummary ? white : "",
+              borderRadius: "4px",
+              maxHeight: "32px"
+            }}
+            onClick={toggleSummary}
+            color="primary"
+          >
+            <IconDescription color={isShowSummary ? themeColor : white} width={13} height={13} />
+            {windowWidth > 767 && <span>{isShowSummary ? "Show Summary" : "Hide Summary"}</span>}
+          </EduButton>
         )}
       </MobileButtomContainer>
     </Container>

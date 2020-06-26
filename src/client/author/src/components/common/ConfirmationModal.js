@@ -77,12 +77,6 @@ export const ConfirmationModal = styled(Modal)`
             color: ${themeColor};
           }
         }
-        &:hover,
-        &:focus {
-          background: ${themeColor};
-          border-color: ${themeColor};
-          color: ${white};
-        }
       }
     }
   }

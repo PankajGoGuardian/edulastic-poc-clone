@@ -195,7 +195,7 @@ const ClassSelectModal = ({
               onChange={standards => {
                 const classList = [...classListData];
                 classList[index].standards = standards;
-                classList[index].standardsList = standardsList
+                classList[index].standardSets = standardsList
                   .filter(s => standards.includes(s.value))
                   .map(({ value, text }) => ({ _id: value, name: text }));
                 setClassListData(classList);

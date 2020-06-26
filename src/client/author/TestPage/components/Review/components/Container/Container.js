@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
+import qs from "qs";
 import { Paper, withWindowSizes, notification, MainContentWrapper } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
@@ -103,6 +104,16 @@ class Review extends PureComponent {
     const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
     if (hasAutoSelectItems) {
       addItemsToAutoselectGroupsRequest(test);
+    }
+
+    // url = http://localhost:3001/author/tests/tab/review/id/testId/
+    // ?token=value&firebaseToken=value&userId=value&role=teacher&itemBank=cli&showCLIBanner=1
+    // &showAssingmentPreview=1
+    const { showAssignmentPreview } = qs.parse(window.location.search);
+    if (showAssignmentPreview) {
+      this.setState({
+        isTestPreviewModalVisible: true
+      });
     }
   }
 

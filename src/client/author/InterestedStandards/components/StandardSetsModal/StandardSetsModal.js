@@ -32,9 +32,7 @@ class StandardSetsModal extends Component {
       interestedStaData.curriculums.length > 0 &&
       !updatedPrevStandards
     ) {
-      selectedStandards = interestedStaData.curriculums.map(row => {
-        return row.name;
-      });
+      selectedStandards = interestedStaData.curriculums.map(row => row.name);
       return { selectedStandards, updatedPrevStandards: true };
     }
   }
@@ -76,12 +74,10 @@ class StandardSetsModal extends Component {
     );
     const selectedStandardById = keyBy(interestedStaData.curriculums, "_id");
 
-    const standardsSetNames = filteredStandardList.map(row => {
-      return {
+    const standardsSetNames = filteredStandardList.map(row => ({
         name: row.curriculum,
         _id: row._id
-      };
-    });
+      }));
 
     return (
       <Modal
@@ -107,6 +103,7 @@ class StandardSetsModal extends Component {
               <Option value="ELA">ELA</Option>
               <Option value="Science">Science</Option>
               <Option value="Social Studies">Social Studies</Option>
+              <Option value="Computer Science">Computer Science</Option>
               <Option value="Other Subjects">Other Subjects</Option>
             </SubjectSelect>
           </Col>
@@ -125,7 +122,7 @@ class StandardSetsModal extends Component {
                     onChange={() => this.changeStandards(standard.name)}
                     checked={selectedStandards.includes(standard.name)}
                     key={standard.name}
-                    disabled={selectedStandardById[standard._id]?.orgType === "district" && role === "school-admin"}
+                    disabled={selectedStandardById[standard._id] ?.orgType === "district" && role === "school-admin"}
                   >
                     {standard.name}
                   </CheckboxLabel>

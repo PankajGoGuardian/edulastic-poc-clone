@@ -34,6 +34,7 @@ const filterData = [
       { value: "ELA", text: "ELA" },
       { value: "Science", text: "Science" },
       { value: "Social Studies", text: "Social Studies" },
+      { value: "Computer Science", text: "Computer Science" },
       { value: "Other Subjects", text: "Other Subjects" }
     ]
   },

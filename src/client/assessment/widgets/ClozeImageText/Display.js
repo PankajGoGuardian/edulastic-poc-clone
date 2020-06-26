@@ -138,7 +138,7 @@ class Display extends Component {
       view,
       hideInternalOverflow,
       isPrintPreview,
-      userAnswers = {}
+      userAnswers
     } = this.props;
 
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
@@ -295,7 +295,7 @@ Display.propTypes = {
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
   responseContainers: PropTypes.array,
-  userAnswers: PropTypes.object,
+  userAnswers: PropTypes.object.isRequired,
   checkAnswer: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
@@ -322,7 +322,6 @@ Display.defaultProps = {
   showAnswer: false,
   evaluation: {},
   checkAnswer: false,
-  userAnswers: {},
   responseContainers: [],
   disableResponse: false,
   showDashedBorder: false,

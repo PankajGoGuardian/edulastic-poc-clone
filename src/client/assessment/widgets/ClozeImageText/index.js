@@ -148,13 +148,13 @@ class ClozeImageText extends Component {
       view,
       previewTab,
       item,
-      userAnswer,
       t,
       testItem,
       evaluation,
       advancedLink,
       advancedAreOpen,
       fillSections,
+      userAnswer = {},
       cleanSections,
       ...restProps
     } = this.props;
@@ -315,7 +315,7 @@ ClozeImageText.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   qIndex: PropTypes.number.isRequired,
-  userAnswer: PropTypes.object,
+  userAnswer: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
@@ -331,7 +331,6 @@ ClozeImageText.defaultProps = {
     opttions: []
   },
   history: {},
-  userAnswer: {},
   testItem: false,
   evaluation: {},
   advancedLink: null,

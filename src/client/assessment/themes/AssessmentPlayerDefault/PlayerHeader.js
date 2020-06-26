@@ -96,7 +96,7 @@ const PlayerHeader = ({
                         icon="left"
                         disabled={disabled}
                         onClick={e => {
-                          moveToPrev();
+                          moveToPrev(null, true);
                           e.target.blur();
                         }}
                       />

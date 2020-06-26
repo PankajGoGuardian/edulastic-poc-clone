@@ -268,7 +268,7 @@ const AssessmentContainer = ({
       setCurrentItem(index);
     } else {
       const unansweredQs = getUnAnsweredQuestions();
-      if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
+      if ((unansweredQs.length && needsToProceed) || !unansweredQs.length || index < currentItem) {
         const previewTab = getPreviewTab(index);
         saveCurrentAnswer({
           urlToGo: `${url}/qid/${index}`,

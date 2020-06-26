@@ -326,6 +326,9 @@ class SideMenu extends Component {
       _userRole = "Author";
     }
 
+    const otherAccounts = get(switchDetails, "otherAccounts", []);
+    const users = otherAccounts.filter(acc => acc._id !== userId);
+
     const footerDropdownMenu = (
       <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
         <Menu onClick={this.onClickFooterDropDownMenu} style={{ height: "auto" }}>
@@ -341,7 +344,7 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          {get(switchDetails, "otherAccounts", []).length ? (
+          {users.length ? (
             <Menu.Item key="2" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser /> {isCollapsed ? "" : "Switch Account"}

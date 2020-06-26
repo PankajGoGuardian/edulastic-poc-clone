@@ -61,9 +61,9 @@ const EduCertifyTitle = (
 
 const QuestionBanks = () => (
   <>
-    <Qbank title={EduPublicTitle} num="229.2" color="#5EB500" bg="#F8F8F8" />
+    <Qbank title={EduPublicTitle} num="230" color="#5EB500" bg="#F8F8F8" />
     <Hdivider />
-    <Qbank title={EduCertifyTitle} num="46.9" subtext="ITEMS" color="#FFFFFF" bg="#5EB500" />
+    <Qbank title={EduCertifyTitle} num="61.4" subtext="ITEMS" color="#FFFFFF" bg="#5EB500" />
     {/* <Hdivider />
     <Qbank title="PROGRESS BANK" num="40.8" color="#FFFFFF" bg="#FFA200" />
     <Hdivider /> */}

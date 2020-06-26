@@ -360,6 +360,7 @@
         "science": "Science",
         "ela": "ELA",
         "socialstudies": "Social Studies",
+        "computerScience": "Computer Science",
         "othersubjects": "Other Subjects",
         "selectsubject": "Select subject",
         "selectgrade": "Select Grades",

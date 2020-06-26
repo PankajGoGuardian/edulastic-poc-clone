@@ -161,7 +161,15 @@ export const GRADES_LIST = [
   }
 ];
 
-export const SUBJECTS_LIST = ["All", "Science", "Other Subjects", "Mathematics", "Social Studies", "ELA"];
+export const SUBJECTS_LIST = [
+  "All",
+  "Science",
+  "Other Subjects",
+  "Mathematics",
+  "Social Studies",
+  "ELA",
+  "Computer Science"
+];
 
 export const SUBSCRIPTION_TYPE_CONFIG = {
   free: {

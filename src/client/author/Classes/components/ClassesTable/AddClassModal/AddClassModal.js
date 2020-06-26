@@ -3,13 +3,13 @@ import { get, debounce, uniq } from "lodash";
 import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
 import { notification } from "@edulastic/common";
 import { schoolApi, userApi, tagsApi, courseApi } from "@edulastic/api";
+import { connect } from "react-redux";
 import selectsData from "../../../../TestPage/components/common/selectsData";
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
-import { connect } from "react-redux";
 import { getCourseLoading, getCoursesForDistrictSelector } from "../../../../Courses/ducks";
 
 const { Option } = Select;
-const { allGrades } = selectsData;
+const { allGrades, allSubjects } = selectsData;
 
 class AddClassModal extends Component {
   constructor(props) {
@@ -25,6 +25,7 @@ class AddClassModal extends Component {
     this.fetchTeacher = debounce(this._fetchTeacher, 1000);
     this.fetchCoursesForDistrict = debounce(this.fetchCoursesForDistrict, 1000);
   }
+
   selectTeacherRef = React.createRef();
 
   onAddClass = () => {
@@ -38,11 +39,11 @@ class AddClassModal extends Component {
           type: "class",
           owners: [teacher.key],
           institutionId: institutionId.key,
-          subject: subject ? subject : "Other Subjects",
+          subject: subject || "Other Subjects",
           tags: tags && tags.map(t => allTagsData.find(o => o._id === t)),
           courseId,
           // here multiple grades has to be sent as a comma separated string
-          grades: grades,
+          grades,
           // not implemented in add model so sending empty
           standardSets: []
         };
@@ -122,7 +123,7 @@ class AddClassModal extends Component {
   handleTeacherChange = value => {
     // this code was commented out since the form handles setting of fields automatically, and
     // there is no need to manually set fields
-    //this.props.form.setFieldsValue({ teacher: value });
+    // this.props.form.setFieldsValue({ teacher: value });
     this.setState({
       teacherList: [],
       fetchingTeacher: false
@@ -143,7 +144,7 @@ class AddClassModal extends Component {
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
-        notification({ messageKey:"savingTagFailed"});
+        notification({ messageKey: "savingTagFailed" });
       }
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
@@ -212,11 +213,11 @@ class AddClassModal extends Component {
                   placeholder={t("class.components.addclass.selectsubject")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
-                  <Option value="Mathematics">{t("class.components.addclass.mathematics")}</Option>
-                  <Option value="ELA">{t("class.components.addclass.ela")}</Option>
-                  <Option value="Science">{t("class.components.addclass.science")}</Option>
-                  <Option value="Social Studies">{t("class.components.addclass.socialstudies")}</Option>
-                  <Option value="Other Subjects">{t("class.components.addclass.othersubjects")}</Option>
+                  {allSubjects.map(el => (
+                    <Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Option>
+                  ))}
                 </Select>
               )}
             </ModalFormItem>
@@ -280,7 +281,7 @@ class AddClassModal extends Component {
                   }
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
-                  {!!searchValue.trim() ? (
+                  {searchValue.trim() ? (
                     <Select.Option key={0} value={searchValue} title={searchValue}>
                       {`${searchValue} (Create new Tag)`}
                     </Select.Option>

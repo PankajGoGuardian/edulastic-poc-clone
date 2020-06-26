@@ -7,6 +7,7 @@ import { FlexContainer } from "../../../../assessment/themes/common";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 import { MyStandardInput, StyledRow, SubjectContainer, SubjectSelect } from "./styled";
 import { getUserRole } from "../../../src/selectors/user";
+import { selectsData } from "../../../TestPage/components/common";
 
 const Option = Select.Option;
 
@@ -32,9 +33,7 @@ class StandardSetsModal extends Component {
       interestedStaData.curriculums.length > 0 &&
       !updatedPrevStandards
     ) {
-      selectedStandards = interestedStaData.curriculums.map(row => {
-        return row.name;
-      });
+      selectedStandards = interestedStaData.curriculums.map(row => row.name);
       return { selectedStandards, updatedPrevStandards: true };
     }
   }
@@ -76,12 +75,10 @@ class StandardSetsModal extends Component {
     );
     const selectedStandardById = keyBy(interestedStaData.curriculums, "_id");
 
-    const standardsSetNames = filteredStandardList.map(row => {
-      return {
-        name: row.curriculum,
-        _id: row._id
-      };
-    });
+    const standardsSetNames = filteredStandardList.map(row => ({
+      name: row.curriculum,
+      _id: row._id
+    }));
 
     return (
       <Modal
@@ -103,11 +100,11 @@ class StandardSetsModal extends Component {
               onChange={this.changeSubject}
               getPopupContainer={triggerNode => triggerNode.parentNode}
             >
-              <Option value="Mathematics">Mathematics</Option>
-              <Option value="ELA">ELA</Option>
-              <Option value="Science">Science</Option>
-              <Option value="Social Studies">Social Studies</Option>
-              <Option value="Other Subjects">Other Subjects</Option>
+              {selectsData.allSubjects.map(el => (
+                <Option key={el.value} value={el.value}>
+                  {el.text}
+                </Option>
+              ))}
             </SubjectSelect>
           </Col>
         </StyledRow>

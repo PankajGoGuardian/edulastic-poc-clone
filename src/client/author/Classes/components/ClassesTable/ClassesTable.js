@@ -59,7 +59,7 @@ const { Option } = Select;
 
 const gradeOptions = [];
 gradeOptions.push({ title: "Kindergarten", value: "K", disabled: false });
-for (let i = 1; i <= 12; i++) gradeOptions.push({ title: `Grade ${i}`, value: `${i  }`, disabled: false });
+for (let i = 1; i <= 12; i++) gradeOptions.push({ title: `Grade ${i}`, value: `${i}`, disabled: false });
 gradeOptions.push({ title: "Other", value: "O", disabled: false });
 
 const filterStrDD = {
@@ -70,6 +70,7 @@ const filterStrDD = {
       { title: "ELA", value: "ELA", disabled: false },
       { title: "Science", value: "Science", disabled: false },
       { title: "Social Studies", value: "Social Studies", disabled: false },
+      { title: "Computer Science", value: "Computer Science", disabled: false },
       { title: "Other Subjects", value: "Other Subjects", disabled: false }
     ],
     placeholder: "Select a subject"
@@ -220,18 +221,18 @@ class ClassesTable extends Component {
     const { t } = this.props;
     if (e.key === "edit class") {
       if (selectedRowKeys.length == 0) {
-        notification({ msg:t("class.validations.editclass")});
+        notification({ msg: t("class.validations.editclass") });
       } else if (selectedRowKeys.length == 1) {
         this.onEditClass(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        notification({ msg:t("class.validations.singleeditclass")});
+        notification({ msg: t("class.validations.singleeditclass") });
       }
     } else if (e.key === "archive selected class") {
       if (selectedRowKeys.length > 0) this.onArchiveClass();
-      else notification({ msg:t("class.validations.archiveclass")});
+      else notification({ msg: t("class.validations.archiveclass") });
     } else if (e.key === "bulk edit") {
       if (!selectedRowKeys.length) {
-        notification({ type: "warn", msg: t("class.validations.selectclass")});
+        notification({ type: "warn", msg: t("class.validations.selectclass") });
       } else {
         const { setBulkEditVisibility } = this.props;
         setBulkEditVisibility(true);
@@ -462,10 +463,10 @@ class ClassesTable extends Component {
             search[filtersColumn].push(filterStr);
           }
         } else if (!search[filtersColumn]) {
-            search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
-          } else {
-            search[filtersColumn].push({ type: filtersValue, value: filterStr });
-          }
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
+        } else {
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
+        }
       }
     }
     if (role === "school-admin") {
@@ -637,7 +638,7 @@ class ClassesTable extends Component {
               <IconNotes color={themeColor} />
             </StyledTableButton>
           </div>
-          )
+        )
       }
     ];
     const breadcrumbData = [

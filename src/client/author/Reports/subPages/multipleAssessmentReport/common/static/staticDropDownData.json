@@ -25,6 +25,7 @@
     { "key": "ELA", "title": "ELA" },
     { "key": "Science", "title": "Science" },
     { "key": "Social Studies", "title": "Social Studies" },
+    { "key": "Computer Science", "title": "Computer Science" },
     { "key": "Other Subjects", "title": "Other Subjects" }
   ],
   "grades": [

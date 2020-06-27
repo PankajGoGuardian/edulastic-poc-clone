@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   align-self: stretch;
   align-items: center;
   height: 28px;
-  padding: 0px 24px 0px 10px;
+  padding: 0px 14px 0px 10px;
   position: absolute;
   left: 0%;
   top: 50%;

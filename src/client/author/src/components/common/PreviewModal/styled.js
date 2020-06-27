@@ -23,6 +23,13 @@ export const Container = styled.div`
     }
   }
 `;
+
+export const ReportIssueBtn = styled(EduButton)`
+  background: ${red} !important;
+  color: ${white} !important;
+  border-color: ${red} !important;
+`;
+
 export const WidgetContainer = styled.div`
   position: relative;
   width: 100%;
@@ -77,11 +84,12 @@ export const ButtonsWrapper = styled.div`
   justify-content: ${props => props.justifyContent};
   margin: 0;
   padding: ${props => props.padding || "0px"};
+  flex-wrap: ${props => props.wrap || "wrap"};
   ${({ style }) => style};
+
   .ant-btn {
     margin-bottom: ${props => props.mb || "0px"};
   }
-  flex-wrap: wrap;
 `;
 
 export const ColumnContentArea = styled.div`
@@ -129,7 +137,7 @@ export const PassageNavigation = styled.div`
   align-items: center;
   justify-content: flex-end;
   white-space: nowrap;
-  margin: 20px 0px 0px;
+  margin: 10px 0px;
   padding: 0 5px;
   font-size: 11px;
   color: ${linkColor};

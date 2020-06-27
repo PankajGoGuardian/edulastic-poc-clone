@@ -1,43 +1,39 @@
+import { EduButton, ScrollContext, Tabs, withWindowSizes } from "@edulastic/common";
+import { questionType } from "@edulastic/constants";
+import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Pagination } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Pagination, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
-import { themeColor, red } from "@edulastic/colors";
-import { questionType, roleuser } from "@edulastic/constants";
-import { Tabs, EduButton, withWindowSizes, ScrollContext, notification } from "@edulastic/common";
-import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
-import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
-import { Scratchpad, ScratchpadTool } from "../../../../../common/components/Scratchpad";
-
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
-
-import {
-  Container,
-  ButtonsContainer,
-  ColumnContentArea,
-  PassageNavigation,
-  Divider,
-  CollapseBtn,
-  ButtonsWrapper,
-  WidgetContainer,
-  IconArrow,
-  MobileLeftSide,
-  MobileRightSide,
-  RejectButton
-} from "./styled";
+import { Scratchpad, ScratchpadTool } from "../../../../../common/components/Scratchpad";
+import { themes } from "../../../../../theme";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import {
   approveOrRejectSingleItem as approveOrRejectSingleItemAction,
-  submitReviewFeedbackAction,
-  loadScratchPadAction
+  loadScratchPadAction,
+  submitReviewFeedbackAction
 } from "../../../../ItemList/ducks";
-import { getUserId, getUserFeatures, getUserSelector, getUserRole } from "../../../selectors/user";
-import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+import { getUserFeatures, getUserId, getUserRole, getUserSelector } from "../../../selectors/user";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
+import {
+  ButtonsContainer,
+  ButtonsWrapper,
+  CollapseBtn,
+  ColumnContentArea,
+  Container,
+  Divider,
+  IconArrow,
+  MobileLeftSide,
+  MobileRightSide,
+  PassageNavigation,
+  WidgetContainer,
+  ReportIssueBtn
+} from "./styled";
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -78,31 +74,6 @@ class AuthorTestItemPreview extends Component {
       value
     });
   };
-
-  handleDeleteItem = () => {
-    const {
-      item: { _id },
-      deleteItem,
-      isEditable,
-      page,
-      closeModal
-    } = this.props;
-    if (!isEditable) {
-      notification({ messageKey: "dontHaveWritePermission" });
-      return;
-    }
-    if (closeModal) closeModal();
-    return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });
-  };
-
-  handleApproveOrRejectSingleItem = value => {
-    const { approveOrRejectSingleItem: _approveOrRejectSingleItem, item } = this.props;
-    if (item?._id) {
-      _approveOrRejectSingleItem({ itemId: item._id, status: value });
-    }
-  };
-
-  handleReject = () => this.setState({ isRejectMode: true });
 
   submitReviewFeedback = (note, scratchpad) => {
     const { submitReviewFeedback, item, approveOrRejectSingleItem: _approveOrRejectSingleItem } = this.props;
@@ -251,113 +222,14 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderLeftButtons = showScratch => {
-    const {
-      allowDuplicate,
-      handleDuplicateTestItem,
-      isEditable,
-      editTestItem,
-      cols,
-      item,
-      userId,
-      page,
-      userFeatures,
-      onlySratchpad,
-      deleting,
-      isTestInRegrade,
-      userRole
-    } = this.props;
+    const { onlySratchpad, toggleReportIssue } = this.props;
 
-    const { isRejectMode, isEnableScratchpad } = this.state;
-    const isOwner = item?.createdBy?._id === userId || userRole === roleuser.EDULASTIC_CURATOR;
-    const isDisableEdit = !(isEditable && userRole !== roleuser.EDULASTIC_CURATOR);
-    const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
-    const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
+    const { isEnableScratchpad } = this.state;
     return (
       <>
-        <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
-          <ButtonsWrapper justifyContent="flex-start">
-            <EduButton
-              IconBtn
-              isGhost
-              width="28px"
-              height="28px"
-              title={isDisableDuplicate ? "Clone permission is restricted by the author" : "Clone"}
-              noHover={isDisableDuplicate}
-              disabled={isDisableDuplicate}
-              onClick={handleDuplicateTestItem}
-            >
-              <IconCopy color={themeColor} />
-            </EduButton>
-            {disableEdit && userRole !== roleuser.EDULASTIC_CURATOR ? (
-              <EduButton
-                IconBtn
-                noHover
-                isGhost
-                disabled
-                height="28px"
-                width="28px"
-                title="Editing the question with dynamic parameters is disabled during the Test edit and regrade."
-              >
-                <IconPencilEdit color={themeColor} />
-              </EduButton>
-            ) : (
-              <EduButton
-                IconBtn
-                isGhost
-                height="28px"
-                width="28px"
-                title={isDisableEdit ? "Edit permission is restricted by the author" : "Edit item"}
-                noHover={isDisableEdit}
-                disabled={isDisableEdit}
-                onClick={editTestItem}
-              >
-                <IconPencilEdit color={themeColor} title="Edit item" />
-              </EduButton>
-            )}
-            {isOwner &&
-              !(userFeatures?.isPublisherAuthor && item.status === "published") &&
-              (page === "addItems" || page === "itemList") && (
-                <EduButton
-                  IconBtn
-                  title="Delete item"
-                  isGhost
-                  height="28px"
-                  width="28px"
-                  onClick={this.handleDeleteItem}
-                  disabled={deleting}
-                >
-                  <IconTrash title="Delete item" />
-                  {/* <span>delete</span> */}
-                </EduButton>
-              )}
-            <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
-              <>
-                {item.status === "inreview" ? (
-                  <RejectButton
-                    title="Reject"
-                    isGhost
-                    height="28px"
-                    onClick={this.handleReject}
-                    disabled={isRejectMode}
-                  >
-                    <Icon type="stop" color={red} />
-                    <span>Reject</span>
-                  </RejectButton>
-                ) : null}
-                {item.status === "inreview" || item.status === "rejected" ? (
-                  <EduButton
-                    title="Approve"
-                    isGhost
-                    height="28px"
-                    onClick={() => this.handleApproveOrRejectSingleItem("published")}
-                  >
-                    <Icon type="check" color={themeColor} />
-                    <span>Approve</span>
-                  </EduButton>
-                ) : null}
-              </>
-            </FeaturesSwitch>
-            {showScratch && (
+        {showScratch && (
+          <ButtonsContainer style={onlySratchpad ? { display: "none" } : {}}>
+            <ButtonsWrapper justifyContent="flex-start">
               <EduButton
                 isGhost
                 height="28px"
@@ -365,28 +237,20 @@ class AuthorTestItemPreview extends Component {
               >
                 {isEnableScratchpad ? "Hide Scratchpad" : "Show Scratchpad"}
               </EduButton>
-            )}
-          </ButtonsWrapper>
-          {cols.length === 1 && this.renderRightButtons()}
-        </ButtonsContainer>
+            </ButtonsWrapper>
+          </ButtonsContainer>
+        )}
+        <div style={{ position: "absolute", right: "40px", bottom: "10px", zIndex: "1" }}>
+          <ReportIssueBtn title="Report Issue" height="28px" width="30px" IconBtn isGhost onClick={toggleReportIssue}>
+            <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
+          </ReportIssueBtn>
+        </div>
       </>
     );
   };
 
   renderRightButtons = () => {
-    const {
-      isAnswerBtnVisible,
-      handleCheckAnswer,
-      handleShowAnswer,
-      isPassage,
-      item,
-      goToItem,
-      passageTestItems,
-      clearView,
-      page,
-      toggleReportIssue,
-      onlySratchpad
-    } = this.props;
+    const { isPassage, item, goToItem, passageTestItems, page } = this.props;
 
     return (
       <>
@@ -401,32 +265,6 @@ class AuthorTestItemPreview extends Component {
             />
           </PassageNavigation>
         )}
-        <ButtonsWrapper
-          padding={isPassage ? "15px 15px 0px 45px" : "0px"}
-          mb={isPassage ? "5px" : "0px"}
-          justifyContent="flex-end"
-          style={onlySratchpad ? { visibility: "hidden", position: "relative" } : { position: "relative" }}
-        >
-          {isAnswerBtnVisible && (
-            <>
-              <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={handleCheckAnswer}>
-                CHECK ANSWER
-              </EduButton>
-              <EduButton isGhost height="28px" data-cy="show-answers-btn" onClick={handleShowAnswer}>
-                SHOW ANSWER
-              </EduButton>
-            </>
-          )}
-          {page !== "itemAuthoring" && (
-            <EduButton isGhost height="28px" data-cy="clear-btn" onClick={clearView}>
-              CLEAR
-            </EduButton>
-          )}
-
-          <EduButton title="Report Issue" height="28px" width="28px" IconBtn isGhost onClick={toggleReportIssue}>
-            <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
-          </EduButton>
-        </ButtonsWrapper>
       </>
     );
   };

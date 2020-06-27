@@ -1,44 +1,47 @@
 /* eslint-disable react/prop-types */
+import { passageApi, testItemsApi } from "@edulastic/api";
+import { red, themeColor, white, title } from "@edulastic/colors";
+import { EduButton, FlexContainer, notification, withWindowSizes } from "@edulastic/common";
+import { questionType, roleuser } from "@edulastic/constants";
+import { IconClose, IconCollapse, IconCopy, IconExpand, IconPencilEdit, IconTrash, IconClear } from "@edulastic/icons";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Icon, Modal, Spin } from "antd";
+import { get, intersection, keyBy, uniq } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
-import { compose } from "redux";
 import { connect } from "react-redux";
-import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Modal } from "antd";
-import styled, { css } from "styled-components";
 import { withRouter } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { withWindowSizes, EduButton, FlexContainer, notification } from "@edulastic/common";
-import { questionType, roleuser } from "@edulastic/constants";
-import { testItemsApi, passageApi } from "@edulastic/api";
-import { themeColor, white } from "@edulastic/colors";
-import { IconClose, IconExpand, IconCollapse } from "@edulastic/icons";
+import { compose } from "redux";
+import styled, { css } from "styled-components";
+import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
+import { Nav } from "../../../../../assessment/themes/common";
+import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+import { getAssignmentsSelector } from "../../../../AssignTest/duck";
+import { clearItemDetailAction, deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import {
+  addItemToCartAction,
+  approveOrRejectSingleItem as approveOrRejectSingleItemAction
+} from "../../../../ItemList/ducks";
+import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
+import { getTestSelector, setTestDataAndUpdateAction, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
+import { clearAnswersAction } from "../../../actions/answers";
+import { changePreviewAction, changeViewAction } from "../../../actions/view";
+import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
+import { allowDuplicateCheck } from "../../../utils/permissionCheck";
+import ScoreBlock from "../ScoreBlock";
+import AuthorTestItemPreview from "./AuthorTestItemPreview";
+import {
+  addPassageAction,
+  clearPreviewAction,
+  duplicateTestItemPreviewRequestAction,
   getItemDetailSelectorForPreview,
   getPassageSelector,
-  addPassageAction,
   setPrevewItemAction,
-  setQuestionsForPassageAction,
-  clearPreviewAction,
-  duplicateTestItemPreviewRequestAction
+  setQuestionsForPassageAction
 } from "./ducks";
-
-import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
-import { changePreviewAction, changeViewAction } from "../../../actions/view";
-import { clearAnswersAction } from "../../../actions/answers";
-import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
-import { setTestDataAndUpdateAction, getTestSelector, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
-import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
-import { addItemToCartAction } from "../../../../ItemList/ducks";
-import AuthorTestItemPreview from "./AuthorTestItemPreview";
-import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
 import ReportIssue from "./ReportIssue";
-import { allowDuplicateCheck } from "../../../utils/permissionCheck";
-
-import { Nav } from "../../../../../assessment/themes/common";
-import { getAssignmentsSelector } from "../../../../AssignTest/duck";
-import ScoreBlock from "../ScoreBlock";
+import { ButtonsWrapper, RejectButton } from "./styled";
 
 class PreviewModal extends React.Component {
   constructor(props) {
@@ -49,7 +52,8 @@ class PreviewModal extends React.Component {
       passageLoading: false,
       showHints: false,
       showReportIssueField: false,
-      fullModal: false
+      fullModal: false,
+      isRejectMode: false
     };
   }
 
@@ -311,6 +315,37 @@ class PreviewModal extends React.Component {
     );
   };
 
+  getBtnStyle = addedToTest => ({
+    backgroundColor: !addedToTest ? "#fff" : themeColor,
+    color: !addedToTest ? themeColor : "#fff",
+    borderColor: !addedToTest ? themeColor : ""
+  });
+
+  handleDeleteItem = () => {
+    const {
+      item: { _id },
+      deleteItem,
+      isEditable,
+      page,
+      closeModal
+    } = this.props;
+    if (!isEditable) {
+      notification({ messageKey: "dontHaveWritePermission" });
+      return;
+    }
+    if (closeModal) closeModal();
+    return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });
+  };
+
+  handleApproveOrRejectSingleItem = value => {
+    const { approveOrRejectSingleItem: _approveOrRejectSingleItem, item } = this.props;
+    if (item?._id) {
+      _approveOrRejectSingleItem({ itemId: item._id, status: value });
+    }
+  };
+
+  handleReject = () => this.setState({ isRejectMode: true });
+
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -333,10 +368,11 @@ class PreviewModal extends React.Component {
       changePreviewMode,
       test,
       testAssignments,
-      userRole
+      userRole,
+      deleting
     } = this.props;
 
-    const { passageLoading, showHints, showReportIssueField, fullModal } = this.state;
+    const { passageLoading, showHints, showReportIssueField, fullModal, isRejectMode } = this.state;
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
@@ -358,11 +394,15 @@ class PreviewModal extends React.Component {
     const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH;
 
     const isTestInRegrade = !!test?._id && (testAssignments.length && test.isUsed);
+    const isDisableEdit = !(isEditable && userRole !== roleuser.EDULASTIC_CURATOR);
+    const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
+    const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
+
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 0 }}
         isSmallSize={isSmallSize}
-        width={isSmallSize || fullModal ? "100%" : "70%"}
+        width={isSmallSize || fullModal ? "100%" : "75%"}
         height={isSmallSize || fullModal ? "100%" : null}
         visible={isVisible}
         closable={false}
@@ -392,34 +432,17 @@ class PreviewModal extends React.Component {
             {isPassage && showAddPassageItemToTestButton ? (
               <EduButton
                 isGhost={!this.isAddOrRemove}
-                type="primary"
-                height="32px"
-                justifyContent="space-between"
+                height="28px"
+                justifyContent="center"
                 onClick={this.handleSelection}
               >
-                {this.isAddOrRemove ? (
-                  <>
-                    <PlusIcon>+</PlusIcon>
-                    {/* 100% - icon width(20) - icon margin(20) */}
-                    <FlexContainer width="calc(100% - 40px)" justifyContent="center">
-                      ADD PASSAGE TO TEST
-                    </FlexContainer>
-                  </>
-                ) : (
-                  <>
-                    <PlusIcon>-</PlusIcon>
-                    <FlexContainer width="calc(100% - 40px)" justifyContent="center">
-                      REMOVE
-                    </FlexContainer>
-                  </>
-                )}
+                {this.isAddOrRemove ? "ADD PASSAGE TO TEST" : "REMOVE"}
               </EduButton>
             ) : (
               <EduButton
                 isGhost={!this.isAddOrRemove}
-                type="primary"
-                height="32px"
-                justifyContent="space-between"
+                height="28px"
+                justifyContent="center"
                 onClick={() => {
                   this.handleSelection();
                   this.closeModal();
@@ -428,29 +451,140 @@ class PreviewModal extends React.Component {
                 {this.isAddOrRemove ? "Add To Test" : "Remove from Test"}
               </EduButton>
             )}
-            <EduButton IconBtn type="primary" width="140px" height="32px" onClick={this.toggleFullModal}>
-              {fullModal ? (
+            <ButtonsWrapper
+              justifyContent="flex-end"
+              wrap="nowrap"
+              style={{ visibility: onlySratchpad && "hidden", position: "relative", marginLeft: "5px" }}
+            >
+              {isAnswerBtnVisible && (
                 <>
-                  <IconCollapse />
-                  COLLAPSE
-                </>
-              ) : (
-                <>
-                  <IconExpand />
-                  EXPAND
+                  <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={checkAnswer}>
+                    CHECK ANSWER
+                  </EduButton>
+                  <EduButton isGhost height="28px" data-cy="show-answers-btn" onClick={showAnswer}>
+                    SHOW ANSWER
+                  </EduButton>
                 </>
               )}
+              {page !== "itemAuthoring" && (
+                <EduButton
+                  title="Clear"
+                  IconBtn
+                  isGhost
+                  width="28px"
+                  height="28px"
+                  data-cy="clear-btn"
+                  onClick={this.clearView}
+                >
+                  <IconClear width="15" height="15" color={themeColor} />
+                </EduButton>
+              )}
+              {disableEdit && userRole !== roleuser.EDULASTIC_CURATOR ? (
+                <EduButton
+                  IconBtn
+                  noHover
+                  isGhost
+                  disabled
+                  height="28px"
+                  width="28px"
+                  title="Editing the question with dynamic parameters is disabled during the Test edit and regrade."
+                >
+                  <IconPencilEdit color={themeColor} />
+                </EduButton>
+              ) : (
+                <EduButton
+                  IconBtn
+                  isGhost
+                  height="28px"
+                  width="28px"
+                  title={isDisableEdit ? "Edit permission is restricted by the author" : "Edit item"}
+                  noHover={isDisableEdit}
+                  disabled={isDisableEdit}
+                  onClick={this.editTestItem}
+                >
+                  <IconPencilEdit color={themeColor} title="Edit item" />
+                </EduButton>
+              )}
+              <EduButton
+                IconBtn
+                isGhost
+                width="28px"
+                height="28px"
+                title={isDisableDuplicate ? "Clone permission is restricted by the author" : "Clone"}
+                noHover={isDisableDuplicate}
+                disabled={isDisableDuplicate}
+                onClick={this.handleDuplicateTestItem}
+              >
+                <IconCopy color={themeColor} />
+              </EduButton>
+              {isOwner &&
+                !(userFeatures?.isPublisherAuthor && item.status === "published") &&
+                (page === "addItems" || page === "itemList") && (
+                  <EduButton
+                    IconBtn
+                    title="Delete item"
+                    isGhost
+                    height="28px"
+                    width="28px"
+                    onClick={this.handleDeleteItem}
+                    disabled={deleting}
+                  >
+                    <IconTrash title="Delete item" />
+                    {/* <span>delete</span> */}
+                  </EduButton>
+                )}
+              <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+                <>
+                  {item.status === "inreview" ? (
+                    <RejectButton
+                      title="Reject"
+                      isGhost
+                      height="28px"
+                      onClick={this.handleReject}
+                      disabled={isRejectMode}
+                    >
+                      <Icon type="stop" color={red} />
+                      <span>Reject</span>
+                    </RejectButton>
+                  ) : null}
+                  {item.status === "inreview" || item.status === "rejected" ? (
+                    <EduButton
+                      title="Approve"
+                      isGhost
+                      height="28px"
+                      onClick={() => this.handleApproveOrRejectSingleItem("published")}
+                    >
+                      <Icon type="check" color={themeColor} />
+                      <span>Approve</span>
+                    </EduButton>
+                  ) : null}
+                </>
+              </FeaturesSwitch>
+            </ButtonsWrapper>
+
+            <EduButton
+              IconBtn
+              isGhost
+              type="primary"
+              width="28px"
+              height="28px"
+              onClick={this.toggleFullModal}
+              title={fullModal ? "Collapse" : "Expand"}
+            >
+              {fullModal ? <IconCollapse /> : <IconExpand />}
             </EduButton>
             <EduButton
               data-cy="close-preview"
               IconBtn
               isGhost
-              width="32px"
-              height="32px"
+              width="28px"
+              height="28px"
               onClick={this.closeModal}
               title="Close"
+              noHover
+              style={{ border: "none", boxShadow: "none" }}
             >
-              <IconClose />
+              <IconClose width={10} height={10} color={`${title} !important`} />
             </EduButton>
           </ModalTopAction>
         </HeadingWrapper>
@@ -559,7 +693,8 @@ const enhance = compose(
         selectedRows: getSelectedItemSelector(state),
         test: getTestSelector(state),
         testAssignments: getAssignmentsSelector(state),
-        userFeatures: getUserFeatures(state)
+        userFeatures: getUserFeatures(state),
+        deleting: getItemDeletingSelector(state)
       };
     },
     {
@@ -575,7 +710,9 @@ const enhance = compose(
       setTestItems: setTestItemsAction,
       clearItemStore: clearItemDetailAction,
       updateTestAndNavigate: updateTestAndNavigateAction,
-      duplicateTestItem: duplicateTestItemPreviewRequestAction
+      duplicateTestItem: duplicateTestItemPreviewRequestAction,
+      deleteItem: deleteItemAction,
+      approveOrRejectSingleItem: approveOrRejectSingleItemAction
     }
   )
 );
@@ -660,17 +797,17 @@ const Title = styled.div`
   user-select: none;
 `;
 
-export const PlusIcon = styled.span`
+export const PlusIcon = styled.div`
   position: relative;
   width: 20px;
   height: 20px;
   background: #fff;
   border-radius: 50%;
-  margin: 0 0 0 20px !important;
   border: 1px solid ${themeColor};
   color: ${themeColor};
   font-size: 18px;
   line-height: 1;
+  margin-right: 10px;
 `;
 
 const QuestionWrapper = styled.div`

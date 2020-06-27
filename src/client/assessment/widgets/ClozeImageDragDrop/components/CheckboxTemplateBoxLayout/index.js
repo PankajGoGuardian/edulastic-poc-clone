@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
@@ -40,11 +40,18 @@ const CheckboxTemplateBox = ({
   isPrintMode = false,
   fontSize,
   isPrintPreview = false,
-  options
+  options = [],
+  idValueMap = {}
 }) => {
   const { height: respHeight, width: respWidth, left: respLeft, top: respTop } = responseContainer;
 
   const status = evaluation[index] ? "right" : "wrong";
+
+  const userAnswer = useMemo(() => {
+    const answersIds = userSelections[index]?.optionIds || [];
+    const answerValues = answersIds.map(id => idValueMap[id]);
+    return answerValues.join(" ");
+  }, [index, options]);
 
   const isChecked =
     get(userSelections, `[${index}].responseBoxID`, false) &&
@@ -96,8 +103,7 @@ const CheckboxTemplateBox = ({
     minWidth: lessMinWidth ? parseInt(respWidth, 10) + 4 : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
     background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null,
-    border: `${borderWidth} ${borderStyle} ${borderColor}`,
-    paddingRight: "25px"
+    border: `${borderWidth} ${borderStyle} ${borderColor}`
   };
 
   let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
@@ -148,7 +154,6 @@ const CheckboxTemplateBox = ({
         background: (isPrintMode || isPrintPreview) && "transparent"
       };
 
-  const userAnswer = userSelections[index]?.value?.join(" ") || "";
   return (
     <WithPopover
       fontSize={fontSize}

@@ -264,7 +264,6 @@ class Display extends Component {
 
     const newAnswers = cloneDeep(userAnswers);
     const newResponses = cloneDeep(possibleResponses);
-
     // const data = Array.isArray(option) ? option : [option.id];
     const data = [option.id];
 
@@ -526,6 +525,8 @@ class Display extends Component {
     const responseposition = smallSize ? "right" : responsecontainerposition;
 
     const responseBoxWidth = choiceMaxWidth;
+    const idValueMap = this.mapIdAndValue;
+
 
     const containerStyle = {
       margin: "auto",
@@ -624,6 +625,7 @@ class Display extends Component {
             fontSize={fontSize}
             isPrintPreview={isPrintPreview || isPrint}
             options={options}
+            idValueMap={idValueMap}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
@@ -649,7 +651,6 @@ class Display extends Component {
     const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
 
-    const idValueMap = this.mapIdAndValue;
 
     const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
       <CorrectAnswerBoxLayout

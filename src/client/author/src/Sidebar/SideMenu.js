@@ -336,7 +336,7 @@ class SideMenu extends Component {
     }
 
     const otherAccounts = get(switchDetails, "otherAccounts", []);
-    const users = otherAccounts.filter((acc) => acc._id !== userId);
+    const users = otherAccounts.filter(acc => acc._id !== userId);
 
     const footerDropdownMenu = (
       <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
@@ -360,7 +360,7 @@ class SideMenu extends Component {
               </a>
             </Menu.Item>
           ) : (
-            <Menu.Item key="3" className="removeSelectedBorder">
+            <Menu.Item key="4" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser /> {isCollapsed ? "" : "Add Account"}
               </Link>

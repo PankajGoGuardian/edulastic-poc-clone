@@ -162,7 +162,7 @@ export default class SearchFilters {
 
   // *** APPHELPERS START ***
 
-  getTotalNoOfItemsInBank = () => this.getTotalPagesInPagination().then(count => count * 10);
+  getTotalNoOfItemsInBank = () => this.getTotalPagesInPagination().then(count => count * 25);
 
   setFilters = ({ standards, queType, dok, difficulty, collection, status, tags }, isItemBank = true) => {
     const dataCyAttributes = isItemBank ? this.itemBankFilterAttrs : this.testLibaryFilterAttrs;

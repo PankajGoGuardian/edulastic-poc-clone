@@ -158,7 +158,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
         lcb.header.clickOnOpen();
-        lcb.header.clickOnViewPassword();
+        // lcb.header.clickOnViewPassword();
         lcb.copyPassword().then(pass => {
           dynamicPassword = pass;
         });

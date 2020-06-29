@@ -227,8 +227,8 @@ class ItemListPage {
       this.getTotalNoOfItemsInUI()
         .invoke("text")
         .then(txt => {
-          expect(parseInt(txt, 10)).to.be.greaterThan(count - 10);
-          expect(parseInt(txt, 10)).to.be.lessThan(count + 10);
+          expect(parseInt(txt, 10)).to.be.greaterThan(count - 25);
+          expect(parseInt(txt, 10)).to.be.lessThan(count + 25);
         })
     );
 

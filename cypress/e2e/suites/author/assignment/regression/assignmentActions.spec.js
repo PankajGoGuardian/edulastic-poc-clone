@@ -103,7 +103,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
     });
     context("> verify navigation based on assignment ids(class)", () => {
       it("> verify navigations into lcb, eg and sbr- one assignment", () => {
-        cy.deleteAllAssignments("", Teacher.email);
+        cy.deleteAllAssignments("", Teacher.email, Teacher.pass, [daTestId]);
         testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
         testAssignPage.selectClass("Class Assignment Actions");
         testAssignPage.clickOnAssign().then(assignObj => {
@@ -144,7 +144,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
 
     context("> test libary page and lcb navigation in assign success page", () => {
       before("> assign test", () => {
-        cy.deleteAllAssignments("", Teacher.email);
+        cy.deleteAllAssignments("", Teacher.email, Teacher.pass, [daTestId]);
         testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
         testAssignPage.selectClass("Class Assignment Actions");
         testAssignPage.clickOnAssign().then(assignObj => {
@@ -163,7 +163,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
 
     context("> verify actions button in author side assignments page", () => {
       before("> assign test", () => {
-        cy.deleteAllAssignments("", Teacher.email);
+        cy.deleteAllAssignments("", Teacher.email, Teacher.pass, [daTestId]);
         testLibraryPage.assignPage.visitAssignPageById(OriginalTestId);
         testAssignPage.selectClass("Class Assignment Actions");
         testAssignPage.clickOnAssign();
@@ -287,7 +287,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         });
         it("> verify after edit-regrade", () => {
           cy.login("student", Student1.email, Student1.pass);
-          assignmentsPage.clickOnAssignmentButton(newTestId);
+          assignmentsPage.clickOnAssigmentByTestId(newTestId);
           studentTestPage.verifyNoOfQuestions(itemIds.length);
           studentTestPage.clickOnExitTest();
         });
@@ -342,6 +342,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
   });
 
   context("> navigations in 'NEW ASSIGNMENT BUTTON' using existing playlists", () => {
+    before("login as teacher", () => {
+      cy.login("teacher", Teacher.email, Teacher.pass);
+    });
     beforeEach("> click 'NEW ASSIGNMENT BUTTON'", () => {
       testLibraryPage.sidebar.clickOnDashboard();
       testLibraryPage.sidebar.clickOnAssignment();

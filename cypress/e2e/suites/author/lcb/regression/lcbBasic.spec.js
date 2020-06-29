@@ -56,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     teacher: "lcb.teacher01@automation.com",
     student: students[1].email,
     assignmentName: "New Assessment LCB",
-    testId: "5ef349481e50e000082efb5c",
+    testId: "5ef5fdc13c365700079ee918",
     status: teacherSide.IN_PROGRESS,
     dueDate,
     feedbackScoreData: [

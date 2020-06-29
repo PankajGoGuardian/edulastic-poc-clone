@@ -100,7 +100,8 @@ class ReportsPage {
     } else this.getScore().should("not.be.visible");
     if (percent) this.getPercent().should("have.text", `${Math.round(percent)}%`);
     else this.getPercent().should("not.be.visible");
-    this.validateAttemptLinkStats(totalAttempt || attemptNum, attemptNum, score, percent);
+    if (attempt.split("/")[1] !== "1")
+      this.validateAttemptLinkStats(totalAttempt || attemptNum, attemptNum, score, percent);
   }
 
   validateAttemptLinkStats(totalAttempt, attemptNum, score, percent) {

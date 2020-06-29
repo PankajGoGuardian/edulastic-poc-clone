@@ -78,7 +78,7 @@ export default class SmartFilters {
     this.getGrades()
       .find("input")
       .type("{backspace}".repeat(3));
-    this.setSubject("All Subjects");
+    this.setSubject("All subjects");
     this.setYear("All years");
     this.setTesttype("All");
     this.setClass("All classes");

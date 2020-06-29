@@ -415,6 +415,7 @@ class Container extends Component {
             style={{ width: "100%" }}
             questions={_questions}
             item={item}
+            isMultipart={item.multipartItem}
             isAnswerBtnVisible={false}
             page="itemAuthoring"
           />
@@ -767,6 +768,7 @@ class Container extends Component {
             reference={match.params._id}
             windowWidth={windowWidth}
             toggleSideBar={toggleSideBar}
+            style={{ marginTop: "10px" }}
           >
             <ButtonBar
               onShowSource={this.handleShowSource}

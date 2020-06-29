@@ -160,6 +160,7 @@ class AuthorTestItemPreview extends Component {
       handleShowAnswer,
       item,
       cols,
+      isMultipart,
       ...restProps
     } = this.props;
     // const questionCount = get(item, ["data", "questions"], []).length;

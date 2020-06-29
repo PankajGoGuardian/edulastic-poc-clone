@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Back, LeftSide, RightSide } from "./styled";
 
-const ItemHeader = ({ title, children, link }) => {
+const ItemHeader = ({ title, children, link, style }) => {
   const renderIcon = () => {
     if (link) {
       return (
@@ -18,7 +18,7 @@ const ItemHeader = ({ title, children, link }) => {
 
   return (
     <MainHeader type="standard" headingText={title}>
-      <RightSide>{children}</RightSide>
+      <RightSide style={style}>{children}</RightSide>
       <LeftSide>{renderIcon()}</LeftSide>
     </MainHeader>
   );

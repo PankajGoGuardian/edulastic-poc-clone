@@ -101,6 +101,7 @@ export const ColumnContentArea = styled.div`
   flex-direction: column;
   flex-basis: 100%;
   ${({ style }) => style};
+  padding: 20px 0px;
 `;
 
 export const EvaluateButton = styled(Button)`

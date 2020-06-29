@@ -1,25 +1,22 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import { black, extraDesktopWidthMax, mediumDesktopExactWidth, mobileWidthMax, themeColor } from "@edulastic/colors";
+import { OnDarkBgLogo } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { compose } from "redux";
-import { Row, Col, Tooltip, Button } from "antd";
+import { Button, Col, Row, Tooltip } from "antd";
+import PropTypes from "prop-types";
+import React from "react";
 import { Link } from "react-router-dom";
-import { themeColor, black, mobileWidthMax, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { compose } from "redux";
+import styled from "styled-components";
 import {
-  getPartnerGetStartedUrl,
   getDistrictGetStartedUrl,
+  getPartnerGetStartedUrl,
   isDistrictPolicyAllowed
 } from "../../../common/utils/helpers";
 
 const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName, generalSettings, orgType }) => (
   <RegistrationHeader type="flex" align="middle">
     <Col span={12}>
-      <img
-        src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png"
-        alt="Edulastic"
-        className="edulastic-banner"
-      />
+      <OnDarkBgLogo height="30px" />
       {Partners.name !== "login" && <PartnerLogo Partners={Partners} src={Partners.headerLogo} alt={Partners.name} />}
       {isSignupUsingDaURL ? (
         <div className="district-name-and-announcement">
@@ -68,8 +65,7 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName,
 
 Header.propTypes = {
   t: PropTypes.func.isRequired,
-  partnerCheck: PropTypes.any,
-  Partners: PropTypes.object
+  Partners: PropTypes.object.isRequired
 };
 
 const enhance = compose(withNamespaces("login"));
@@ -79,10 +75,6 @@ export default enhance(Header);
 const RegistrationHeader = styled(Row)`
   padding: 16px 24px;
   color: white;
-
-  .edulastic-banner {
-    margin-right: 10px;
-  }
 
   .district-name-and-announcement {
     display: inline-block;
@@ -149,7 +141,7 @@ const PartnerLogo = styled.img`
 `;
 
 const CustomTooltip = props => {
-  let { className, children, ...attrs } = props;
+  const { className, children, ...attrs } = props;
 
   return (
     <Tooltip {...attrs} overlayClassName={`${className}`}>

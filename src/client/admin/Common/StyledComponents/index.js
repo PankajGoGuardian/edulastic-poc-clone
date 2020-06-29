@@ -1,15 +1,11 @@
-import { IconHeader, IconLogoCompact } from "@edulastic/icons";
+import { extraDesktopWidthMax, lightGrey, mobileWidthMax } from "@edulastic/colors";
+import { IconLogoCompact } from "@edulastic/icons";
+import { Button as AntdButton, Dropdown, Input, Layout, Pagination, Select, Spin } from "antd";
 import styled from "styled-components";
-import { Select, Button as AntdButton, Input, Dropdown, Pagination, Layout, Spin } from "antd";
 import { StyledTable as AntdTable } from "../../../common/styled";
-import { white, boxShadowDefault, lightGrey, mobileWidthMax, extraDesktopWidthMax } from "@edulastic/colors";
+
 const { Search } = Input;
 const { Content } = Layout;
-
-export const Logo = styled(IconHeader)`
-  width: 119px;
-  height: 21px;
-`;
 
 export const LogoCompact = styled(IconLogoCompact)`
   width: 22px;

@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { Layout, Menu, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
-import { ErrorHandler } from "@edulastic/common";
+import { ErrorHandler, OnWhiteBgLogo } from "@edulastic/common";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { themes } from "../theme";
 import Sider from "./Common/Sider";
-import { LogoCompact, Logo, Button, MainDiv } from "./Common/StyledComponents";
+import { LogoCompact, Button, MainDiv } from "./Common/StyledComponents";
 import CleverSearch from "./Containers/CleverSearch";
 import ProxyUser from "./Components/ProxyUser";
 import UpgradeUser from "./Containers/UpgradeUser";
@@ -65,7 +65,7 @@ function Admin({ match, history, logoutAction, location }) {
                   noStyle
                   style={{ minHeight: "60px" }}
                 >
-                  {state ? <LogoCompact /> : <Logo />}
+                  {state ? <LogoCompact /> : <OnWhiteBgLogo />}
                 </Button>
                 <Menu theme="light" defaultSelectedKeys={[location.pathname]} mode="inline">
                   {siderMenuData.map(item => (

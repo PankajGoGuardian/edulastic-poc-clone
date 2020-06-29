@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { IconHeader, IconClose, IconChevronLeft, IconLogoCompact } from "@edulastic/icons";
+import { IconClose, IconChevronLeft, IconLogoCompact, IconOnWhiteLogo } from "@edulastic/icons";
 
 import Help from "./help";
 import Navigation from "./navigation";
@@ -82,9 +82,9 @@ const HeaderWrapper = styled.div`
   }
 `;
 
-const Icon = styled(IconHeader)`
-  width: 119px;
-  height: 20px;
+const Icon = styled(IconOnWhiteLogo)`
+  width: 120px;
+  height: 25px;
 `;
 
 const IconCompact = styled(IconLogoCompact)`

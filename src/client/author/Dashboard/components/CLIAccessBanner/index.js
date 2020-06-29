@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Modal from "react-responsive-modal";
 import CLILogo from "../../assets/svgs/cli-logo.svg";
-import { EduLogo, StyledLogo, StyledText, HighlightedText, Button, BaseText } from "./styled";
+import { BaseText, Button, EduLogo, HighlightedText, StyledLogo, StyledText } from "./styled";
 
 const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClose }) => {
   const [bannerVisible, showBanner] = useState(visible);
@@ -32,7 +32,7 @@ const CLIAccessBanner = ({ visible = false, firstName = "", lastName = "", onClo
         }
       }}
     >
-      <EduLogo src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
+      <EduLogo />
       <StyledLogo src={CLILogo} />
       <StyledText margin="50px auto 20px auto">
         Welcome <HighlightedText>{`${firstName} ${lastName}`}!</HighlightedText>

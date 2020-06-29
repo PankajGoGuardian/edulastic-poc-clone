@@ -27,6 +27,7 @@ export {
   TextAreaInputStyled,
   FieldLabel
 } from "./src/components/InputStyles";
+export { OnWhiteBgLogo, OnDarkBgLogo, WhiteLogo, DarkLogo } from "./src/components/EduLogo";
 export { default as Card } from "./src/components/Card";
 export { default as MainContentWrapper } from "./src/components/MainContentWrapper";
 export { default as HeaderTabs } from "./src/components/HeaderTabs";

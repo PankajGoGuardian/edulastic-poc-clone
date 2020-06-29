@@ -1,8 +1,8 @@
+import { eastBaycolor, lightGrey4, mainTextColor, white } from "@edulastic/colors";
+import { OnWhiteBgLogo } from "@edulastic/common";
+import { Col, Dropdown, Icon as AntIcon, Menu, Row } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Row, Col, Dropdown, Menu, Icon as AntIcon } from "antd";
-import { IconHeader } from "@edulastic/icons";
-import { lightGrey4, white, eastBaycolor, mainTextColor } from "@edulastic/colors";
 import Profile from "../../../assets/Profile.png";
 
 const menu = (
@@ -19,7 +19,7 @@ const Header = () => {
   return (
     <HeaderWrapper type="flex" align="middle">
       <Col span={12}>
-        <Logo />
+        <OnWhiteBgLogo />
       </Col>
       <Col span={12} align="right">
         <UserInfoButton className="userinfoBtn">
@@ -58,10 +58,6 @@ const HeaderWrapper = styled(Row)`
     font-size: 12px;
     margin-right: 20px;
   }
-`;
-const Logo = styled(IconHeader)`
-  width: 119px;
-  height: 21px;
 `;
 
 const UserInfoButton = styled.div`

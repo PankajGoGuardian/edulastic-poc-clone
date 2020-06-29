@@ -406,7 +406,10 @@ class Item extends Component {
                   </EduButton>
                   {!hideAddRemove && (
                     <AddRemoveButton
+                      isGhost
+                      IconBtn
                       selectedToCart={selectedToCart}
+                      width="60px"
                       height="36px"
                       onClick={this.handleToggleItemToCart(item)}
                     >
@@ -437,7 +440,7 @@ class Item extends Component {
                     <IconEye />
                   </EduButton>
                   <AddRemoveBtn
-                    style={{width:"70px",height:"35px"}}
+                    style={{ width: "70px", height: "35px" }}
                     loading={selectedId === item._id}
                     onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                     isAddOrRemove={this.isAddOrRemove}

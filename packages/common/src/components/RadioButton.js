@@ -1,18 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import { greyThemeLighter, themeColor, greyThemeLight, white, extraDesktopWidthMax } from "@edulastic/colors";
+import { greyThemeLighter, themeColorBlue, greyThemeLight, white, extraDesktopWidthMax } from "@edulastic/colors";
 import { Radio } from "antd";
 
 export const RadioGrp = Radio.Group;
 
-export const RadioBtn = ({ children, ...props }) => {
-  return <StyledRadioBtn {...props}>{children}</StyledRadioBtn>;
-};
+export const RadioBtn = ({ children, ...props }) => <StyledRadioBtn {...props}>{children}</StyledRadioBtn>;
 
 const StyledRadioBtn = styled(Radio)`
   margin-bottom: ${({ mb }) => mb || "0px"};
   font-size: ${props => props.theme.smallFontSize};
   text-align: left;
+  position: relative;
   &.ant-radio-wrapper {
     & + .ant-radio-wrapper {
       margin-left: 0px;
@@ -39,11 +38,14 @@ const StyledRadioBtn = styled(Radio)`
       }
       &.ant-radio-checked {
         &:after {
-          border-color: ${themeColor};
+          border-color: ${themeColorBlue};
         }
         .ant-radio-inner {
-          border-color: ${themeColor};
+          border-color: ${themeColorBlue};
           background: ${greyThemeLighter};
+          &:after {
+            background-color: ${themeColorBlue};
+          }
         }
       }
       &.ant-radio-disabled {

@@ -1,11 +1,11 @@
-import { themeColor, white } from "@edulastic/colors";
-import { CheckboxLabel } from "@edulastic/common";
-import { Select, Table } from "antd";
+import { themeColor } from "@edulastic/colors";
+import { CheckboxLabel, SelectInputStyled } from "@edulastic/common";
+import { Select } from "antd";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { performanceBandSelector } from "../../../../../AssignTest/duck";
-import { Title } from "./styled";
+import { StyledTable, Title } from "./styled";
 
 const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBand = {}, disabled = false }) => {
   const handleProfileChange = val => {
@@ -23,13 +23,12 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
       dataIndex: "name",
       width: "25%",
       className: "name",
-      render: (text, record) => {
-        return (
-          <NameColumn>
-            <StyledBox color={record.color} /> <StyleTextWrapper>{text}</StyleTextWrapper>
-          </NameColumn>
-        );
-      }
+      align: "left",
+      render: (text, record) => (
+        <NameColumn>
+          <StyledBox color={record.color} /> <StyleTextWrapper>{text}</StyleTextWrapper>
+        </NameColumn>
+      )
     },
     {
       title: "ABOVE OR AT STANDARD",
@@ -55,22 +54,20 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
   ];
   return (
     <>
-      <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+      <Title style={{ justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Performance Bands</span>
-        <Select
+        <SelectInputStyled
           style={{ width: "250px" }}
           value={selectedBandsData._id}
           onChange={val => handleProfileChange(val)}
           disabled={disabled}
         >
-          {performanceBandsData.map(bandsData => {
-            return (
-              <Select.Option key={bandsData._id} value={bandsData._id}>
-                {bandsData.name}
-              </Select.Option>
-            );
-          })}
-        </Select>
+          {performanceBandsData.map(bandsData => (
+            <Select.Option key={bandsData._id} value={bandsData._id}>
+              {bandsData.name}
+            </Select.Option>
+          ))}
+        </SelectInputStyled>
       </Title>
       {performanceBands && !!performanceBands.length && (
         <StyledTable dataSource={performanceBands} columns={columns} pagination={false} />
@@ -85,40 +82,6 @@ export default connect(
   }),
   null
 )(PerformanceBands);
-
-export const StyledTable = styled(Table)`
-  margin-left: ${({ isAdvanced }) => (isAdvanced ? "20px" : "0px")};
-  .ant-table {
-    color: #434b5d;
-    font-size: 12px;
-    font-weight: 600;
-
-    .ant-table-thead > tr > th {
-      border-bottom: 0px;
-      background: ${white};
-      color: #aaafb5;
-      font-weight: bold;
-      text-transform: uppercase;
-      text-align: center;
-      font-size: ${({ isAdvanced }) => (isAdvanced ? "10px" : "12px")};
-      padding: 8px;
-      &.name {
-        text-align: left;
-      }
-    }
-    .ant-table-tbody > tr > td {
-      border-bottom: 15px;
-      border-bottom-color: ${white};
-      border-bottom-style: solid;
-      background: #f8f8f8;
-      text-align: center;
-      padding: 8px;
-      &.name {
-        text-align: left;
-      }
-    }
-  }
-`;
 
 const NameColumn = styled.div`
   display: flex;

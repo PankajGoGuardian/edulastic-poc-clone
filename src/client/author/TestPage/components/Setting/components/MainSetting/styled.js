@@ -9,10 +9,11 @@ import {
   themeColor,
   titleColor,
   white,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  greyThemeLighter
 } from "@edulastic/colors";
 import { Paper } from "@edulastic/common";
-import { Anchor, Button, Col, Input, Radio, Select } from "antd";
+import { Anchor, Button, Col, Input, Radio, Select, Table } from "antd";
 import styled from "styled-components";
 
 export const Container = styled(Paper)`
@@ -99,28 +100,34 @@ export const StyledAnchor = styled(Anchor)`
 `;
 
 export const Block = styled.div`
-  margin-bottom: 30px;
-  padding: ${props => (props.smallSize ? "15px" : "29px 30px 30px 30px")};
-  background: ${props => (props.smallSize ? white : "#f8f8fb")};
+  margin-bottom: 20px;
+  padding: ${props => (props.smallSize ? "15px" : "0")};
+  background: ${white};
   border-radius: 4px;
 `;
 
 export const Title = styled.div`
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: bold;
   letter-spacing: 0.3px;
   color: ${secondaryTextColor};
+  display: flex;
+  align-items: center;
+  .ant-switch {
+    margin-left: 25px;
+  }
 `;
 
 export const Body = styled.div`
-  margin-top: 29px;
   background: ${white};
-  padding: ${props => (props.smallSize ? "0" : "31px 22px")};
+  padding: ${props => (props.smallSize ? "0" : "20px 0px")};
   border-radius: 4px;
   .sebPassword {
-    width: 40%;
-    margin-left: 30px;
-    margin-right: 10px;
+    margin-bottom: 10px;
+    .ant-input {
+      width: 40%;
+      padding-left: 50px;
+    }
   }
   .dirty .ant-input:focus {
     border-color: ${red};
@@ -134,10 +141,9 @@ export const FlexBody = styled.div`
 `;
 
 export const Description = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   line-height: 22px;
-  color: #444444;
-  margin-top: 34px;
+  color: #6a737f;
 `;
 
 export const StyledRadioGroup = styled(Radio.Group)`
@@ -151,15 +157,63 @@ export const StyledRadioGroup = styled(Radio.Group)`
     color: #434b5d;
   }
 
-  .ant-radio {
-    margin-right: 25px;
+  &.ant-radio-group {
+    .ant-radio-wrapper {
+      .ant-radio {
+        margin-right: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        & + span {
+          display: inline-block;
+          padding-left: 35px;
+        }
+      }
+    }
   }
 
   .ant-radio-wrapper {
     margin-bottom: 18px;
     white-space: normal;
+    &:last-child {
+      margin-bottom: 0px;
+    }
   }
 `;
+
+export const StyledTable = styled(Table)`
+  margin-left: ${({ isAdvanced }) => (isAdvanced ? "20px" : "0px")};
+  .ant-table {
+    color: #434b5d;
+    font-size: 12px;
+    font-weight: 600;
+
+    .ant-table-thead > tr > th {
+      border-bottom: 0px;
+      color: #aaafb5;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: 10px;
+      padding: 8px 8px 20px;
+      background: white;
+    }
+    .ant-table-tbody > tr {
+      & > td {
+        border: none;
+        background: none;
+        text-align: center;
+        padding: 8px;
+        border-bottom: 1px solid #dddddd;
+      }
+      &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+      &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+        background: ${greyThemeLighter};
+      }
+    }
+  }
+`;
+
 export const CompletionTypeRadio = styled(Radio)`
   text-transform: capitalize;
 `;
@@ -185,8 +239,8 @@ export const StyledSelect = styled(Select)``;
 export const MaxAttempts = styled(Input)``;
 
 export const BlueText = styled.span`
-  color: ${linkColor1};
-  font-weight: 700;
+  color: ${secondaryTextColor};
+  font-weight: bold;
 `;
 
 export const BandsText = styled.span`

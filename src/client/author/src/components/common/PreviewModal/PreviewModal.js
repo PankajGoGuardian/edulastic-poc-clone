@@ -431,6 +431,7 @@ class PreviewModal extends React.Component {
           <ModalTopAction>
             {isPassage && showAddPassageItemToTestButton ? (
               <EduButton
+                isBlue
                 isGhost={!this.isAddOrRemove}
                 height="28px"
                 justifyContent="center"
@@ -440,6 +441,7 @@ class PreviewModal extends React.Component {
               </EduButton>
             ) : (
               <EduButton
+                isBlue
                 isGhost={!this.isAddOrRemove}
                 height="28px"
                 justifyContent="center"

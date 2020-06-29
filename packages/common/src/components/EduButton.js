@@ -8,7 +8,8 @@ import {
   black,
   extraDesktopWidthMax,
   smallDesktopWidth,
-  themeColorBlue
+  themeColorBlue,
+  themeColorHoverBlue
 } from "@edulastic/colors";
 import PropTypes from "prop-types";
 
@@ -115,8 +116,8 @@ const StyledButton = styled(Button)`
   &:focus,
   &:hover {
     &.ant-btn.ant-btn-primary {
-      background-color: ${({ noHover }) => (noHover ? getBgColor({ isGhost: noHover }) : themeColorBlue)};
-      border-color: ${({ noHover }) => (noHover ? getBgColor({ isGhost: noHover }) : themeColorBlue)};
+      background-color: ${({ noHover }) => (noHover ? getBgColor({ isGhost: noHover }) : themeColorHoverBlue)};
+      border-color: ${({ noHover }) => (noHover ? getBgColor({ isGhost: noHover }) : themeColorHoverBlue)};
       color: ${({ btnType, noHover }) => getColor({ btnType, isGhost: noHover || false })};
     }
 

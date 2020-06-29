@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Table, Select } from "antd";
-import { connect } from "react-redux";
+import { themeColor } from "@edulastic/colors";
+import { SelectInputStyled } from "@edulastic/common";
+import { Select } from "antd";
 import { get } from "lodash";
-import { Title } from "./styled";
-import { white, themeColor } from "@edulastic/colors";
+import React from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
+import { StyledTable, Title } from "./styled";
 
 const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGradingScale = {}, disabled = false }) => {
   const handleProfileChange = val => {
@@ -22,19 +23,19 @@ const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGrad
       width: "25%",
       key: "score",
       className: "score-column",
-      render: (text, record) => {
-        return (
-          <NameColumn>
-            <StyledBox color={record.color} /> <StyleTextWrapper>{text}</StyleTextWrapper>
-          </NameColumn>
-        );
-      }
+      align: "left",
+      render: (text, record) => (
+        <NameColumn>
+          <StyledBox color={record.color} /> <StyleTextWrapper>{text}</StyleTextWrapper>
+        </NameColumn>
+      )
     },
     {
       title: "Mastery Level",
       dataIndex: "masteryLevel",
       width: "25%",
       key: "masteryLevel",
+      align: "left",
       className: "mastery-level-column"
     },
     {
@@ -55,20 +56,18 @@ const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGrad
     <>
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Standard based grading scale</span>
-        <Select
+        <SelectInputStyled
           style={{ width: "250px" }}
           value={selectedStandardData._id}
           onChange={val => handleProfileChange(val)}
           disabled={disabled}
         >
-          {standardsData.map(standardData => {
-            return (
-              <Select.Option key={standardData._id} value={standardData._id}>
-                {standardData.name}
-              </Select.Option>
-            );
-          })}
-        </Select>
+          {standardsData.map(standardData => (
+            <Select.Option key={standardData._id} value={standardData._id}>
+              {standardData.name}
+            </Select.Option>
+          ))}
+        </SelectInputStyled>
       </Title>
       <StyledTable dataSource={standardsProficiency} columns={columns} pagination={false} />
     </>
@@ -81,40 +80,6 @@ export default connect(
   }),
   null
 )(StandardProficiencyTable);
-
-export const StyledTable = styled(Table)`
-  margin-left: ${({ isAdvanced }) => (isAdvanced ? "20px" : "0px")};
-  .ant-table {
-    color: #434b5d;
-    font-size: 12px;
-    font-weight: 600;
-
-    .ant-table-thead > tr > th {
-      border-bottom: 0px;
-      color: #aaafb5;
-      font-weight: bold;
-      text-transform: uppercase;
-      text-align: center;
-      font-size: ${({ isAdvanced }) => (isAdvanced ? "10px" : "12px")};
-      padding: 8px;
-      &.score-column {
-        text-align: left;
-      }
-    }
-    .ant-table-tbody > tr > td {
-      border-bottom: 15px;
-      border-bottom-color: ${white};
-      border-bottom-style: solid;
-      background: #f8f8f8;
-      text-align: center;
-      padding: 8px;
-
-      &.score-column {
-        text-align: left;
-      }
-    }
-  }
-`;
 
 const NameColumn = styled.div`
   display: flex;

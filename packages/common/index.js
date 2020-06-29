@@ -29,6 +29,7 @@ export {
   TextAreaInputStyled,
   FieldLabel
 } from "./src/components/InputStyles";
+export { EduSwitchStyled } from "./src/components/EduSwitchStyled";
 export { OnWhiteBgLogo, OnDarkBgLogo, WhiteLogo, DarkLogo } from "./src/components/EduLogo";
 export { default as Card } from "./src/components/Card";
 export { default as MainContentWrapper } from "./src/components/MainContentWrapper";

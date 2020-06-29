@@ -1,25 +1,26 @@
 import {
+  backgroundGrey,
+  greenPrimary,
+  greyDarken,
+  labelGrey2,
+  lightGrey,
+  lightGreySecondary,
+  red,
   smallDesktopWidth,
-  white,
   tabletWidth,
   textColor,
-  lightGrey,
-  greyDarken,
-  greenPrimary,
-  themeLightGrayColor,
-  themeLightGrayBgColor,
-  themeColorTagsBg,
   themeColor,
-  red,
-  lightGreySecondary,
-  backgroundGrey,
-  labelGrey2,
+  themeColorTagsBg,
+  themeLightGrayBgColor,
+  themeLightGrayColor,
   title,
-  mediumDesktopExactWidth
+  white,
+  themeColorBlue
 } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
+import { IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
+import { Tag } from "antd";
 import styled, { css } from "styled-components";
-import { Button, Tag } from "antd";
-import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 const Style = css`
   background: transparent !important;
@@ -135,30 +136,7 @@ export const ViewButton = styled.div`
   }
 `;
 
-const ButtonStyle = styled(Button)`
-  height: 30px;
-  border-radius: 4px;
-  box-shadow: 0px 1px 1px 1px ${themeColor}05;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  svg {
-    width: 18px;
-    height: 18px;
-    fill: ${themeColor};
-    &:hover {
-      fill: ${themeColor};
-    }
-  }
-
-  @media (min-width: ${smallDesktopWidth}) {
-    height: 36px;
-  }
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: 40px;
-  }
+const ButtonStyle = styled(EduButton)`
   @media (max-width: ${tabletWidth}) {
     &.ant-btn {
       justify-content: center;
@@ -177,11 +155,15 @@ const ButtonStyle = styled(Button)`
 
 export const AddRemoveBtn = styled(ButtonStyle)`
   &.ant-btn {
-    border: 1px solid ${props => (props.isAddOrRemove ? themeColor : red)} !important;
-    color: ${props => (props.isAddOrRemove ? themeColor : red)};
+    color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : red)} !important;
+    border-color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColor : red)} !important;
+    background: white !important;
     margin-top: 15px;
-    justify-content: center;
-    width: 120px;
+    &:hover {
+      border-color: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColorBlue : red)} !important;
+      background: ${({ isAddOrRemove }) => (isAddOrRemove ? themeColorBlue : white)} !important;
+      color: ${({ isAddOrRemove }) => (isAddOrRemove ? white : red)} !important;
+    }
     @media (max-width: ${tabletWidth}) {
       margin: 0px;
       width: auto;
@@ -274,19 +256,25 @@ export const AddButtonStyled = styled(ButtonStyle)`
 `;
 
 export const AddRemoveButton = styled(ButtonStyle)`
-  margin-left: 10px;
-  color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
-  border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
-  svg {
-    fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
-  }
-  &:hover,
-  &:focus {
-    background: ${lightGrey};
+  &.ant-btn {
+    margin-left: 10px;
     color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
     border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+    background: white !important;
+    &:hover {
+      border-color: ${({ selectedToCart }) => (selectedToCart ? white : themeColorBlue)} !important;
+    }
     svg {
-      fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+      fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+    }
+    &:hover,
+    &:focus {
+      background: ${lightGrey};
+      color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+      border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+      svg {
+        fill: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+      }
     }
   }
 `;

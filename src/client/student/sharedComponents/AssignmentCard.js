@@ -38,18 +38,7 @@ import { updateTestIdRealTimeAction } from "../sharedDucks/AssignmentModule/duck
 
 const isSEB = () => window.navigator.userAgent.includes("SEB");
 
-const SafeBrowserButton = ({
-  testId,
-  testType,
-  assignmentId,
-  testActivityId,
-  startDate,
-  t,
-  startTest,
-  attempted,
-  resume,
-  classId
-}) => {
+const SafeBrowserButton = ({ testId, testType, assignmentId, testActivityId, t, attempted, resume, classId }) => {
   const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
 
   const token = TokenStorage.getAccessToken();
@@ -113,30 +102,25 @@ const AssignmentCard = memo(
       }
     }, [highlightMode]);
 
-    let {
+    const {
       test = {},
       reports = [],
-      endDate,
       testId,
-      startDate,
-      open = false,
-      close = false,
       _id: assignmentId,
       safeBrowser,
-      isPaused = false,
       testType,
       class: clazz = [],
-      maxAttempts = 1,
       title,
       thumbnail,
       timedAssignment,
       pauseAllowed,
       allowedTime,
-      dueDate,
       assignedBy,
       hasInstruction = false,
       instruction = ""
     } = data;
+
+    let { endDate, startDate, open = false, close = false, isPaused = false, maxAttempts = 1, dueDate } = data;
     const topics = [`student_assessment:user:${userId}`, `student_assessment:test:${testId}`];
     useRealtimeV2(topics, {
       regradedAssignment: payload => updateTestIdRealTime({ assignmentId, ...payload })
@@ -162,8 +146,8 @@ const AssignmentCard = memo(
       isPaused = maxCurrentClass.isPaused;
     }
     if (!endDate && close) {
-      endDate = (currentClass && currentClass.length > 0
-        ? maxBy(currentClass, "closedDate") || currentClass[currentClass.length - 1]
+      endDate = (currentClassList && currentClassList.length > 0
+        ? maxBy(currentClassList, "closedDate") || currentClassList[currentClassList.length - 1]
         : {}
       ).closedDate;
     }
@@ -328,7 +312,7 @@ const AssignmentCard = memo(
 
     const isValidAttempt = attempted;
 
-    const getColSize = type => {
+    const getColSize = () => {
       let colsCount = 1;
 
       if (isValidAttempt) {
@@ -351,26 +335,23 @@ const AssignmentCard = memo(
     const selectedColSize = 24 / getColSize(type);
     let btnWrapperSize = 24;
     if (type !== "assignment") {
-      btnWrapperSize =
-        releaseScore === releaseGradeLabels.DONT_RELEASE
-          ? 18
-          : releaseScore === releaseGradeLabels.WITH_ANSWERS
-          ? 6
-          : 12;
+      btnWrapperSize = releaseScore === releaseGradeLabels.DONT_RELEASE ? 18 : 6;
     } else if (isValidAttempt) {
       btnWrapperSize = 12;
     }
 
     const ScoreDetail = (
       <React.Fragment>
-        {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
-          <AnswerAndScore xs={selectedColSize}>
-            <span data-cy="score">
-              {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
-            </span>
-            <Title>{t("common.correctAnswer")}</Title>
-          </AnswerAndScore>
-        )}
+        <AnswerAndScore xs={selectedColSize}>
+          {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
+            <>
+              <span data-cy="score">
+                {Math.round(score * 100) / 100}/{Math.round(maxScore * 100) / 100}
+              </span>
+              <Title>{t("common.correctAnswer")}</Title>
+            </>
+          )}
+        </AnswerAndScore>
         <AnswerAndScore xs={selectedColSize}>
           <span data-cy="percent">{Math.round(scorePercentage)}%</span>
           <Title>{t("common.score")}</Title>
@@ -418,15 +399,17 @@ const AssignmentCard = memo(
             lastAttempt={lastAttempt}
             isDueDate={!!dueDate}
           />
-          {timedAssignment && (
-            <TimeIndicator>
-              <Icon className="timerIcon" color={black} type={theme.assignment.cardTimeIconType} />
-              <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
-            </TimeIndicator>
-          )}
+          <TimeIndicator type={type}>
+            {timedAssignment && (
+              <>
+                <Icon className="timerIcon" color={black} type={theme.assignment.cardTimeIconType} />
+                <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
+              </>
+            )}
+          </TimeIndicator>
 
           <ButtonAndDetail>
-            <DetailContainer>
+            <DetailContainer type={type}>
               <AttemptDetails isValidAttempt={isValidAttempt}>
                 {isValidAttempt && (
                   <React.Fragment>
@@ -436,7 +419,6 @@ const AssignmentCard = memo(
                         if (maxAttempts > 1) {
                           toggleAttemptsView();
                         }
-                        
                       }}
                     >
                       {maxAttempts > 1 && (
@@ -513,7 +495,7 @@ AssignmentCard.propTypes = {
   startAssignment: PropTypes.func.isRequired,
   resumeAssignment: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  highlightMode: PropTypes.bool
+  highlightMode: PropTypes.bool.isRequired
 };
 
 const CardWrapper = styled(Row)`
@@ -621,6 +603,7 @@ const DetailContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  padding-top: ${props => props.type === "reports" && "25px"};
 
   @media screen and (max-width: ${mobileWidthMax}) {
     flex-direction: column;
@@ -650,6 +633,7 @@ const Title = styled.div`
 const TimeIndicator = styled.div`
   width: 125px;
   margin: auto;
+  padding-top: ${props => props.type === "reports" && "25px"};
 
   .timerIcon {
     transform: scale(1.2);

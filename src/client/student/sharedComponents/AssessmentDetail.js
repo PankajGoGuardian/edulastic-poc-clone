@@ -209,16 +209,13 @@ const Thumbnail = React.memo(styled.img`
 
 const AssignmentTitle = React.memo(styled.span`
   font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
-  max-width: 60vw;
+  max-width: 70vw;
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   @media (max-width: ${largeDesktopWidth}) {
     max-width: 55vw;
-  }
-  @media (min-width: ${extraDesktopWidth}) {
-    max-width: 65vw;
   }
 `);
 

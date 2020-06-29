@@ -231,6 +231,11 @@ const ClassSelectModal = ({
         render: (data, row, index) => (
           <StyledSelect
             showSearch
+            style={{
+              width: "100%",
+              maxWidth: "170px",
+              minWidth: "75px"
+            }}
             labelInValue
             filterOption={(input, option) =>
               option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0

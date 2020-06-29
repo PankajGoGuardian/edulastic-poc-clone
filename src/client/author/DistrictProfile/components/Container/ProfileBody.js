@@ -462,7 +462,10 @@ class ProfileBody extends React.Component {
     ) {
       showPowerTools = true;
     }
-
+    const showStandardsSelection =
+      [roleuser.TEACHER, roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) &&
+      !features.isPublisherAuthor &&
+      !features.isCurator;
     return (
       <MainContentWrapper padding="30px" flag={flag}>
         <ProfileWrapper display="flex" boxShadow="none" minHeight="max-content">
@@ -587,7 +590,7 @@ class ProfileBody extends React.Component {
                 </AddSchoolSection>
               </SchoolWrapper>
             )}
-            {showPowerTools && (
+            {showStandardsSelection && (
               <SchoolWrapper>
                 <StandardSetsLabel>Standard Sets</StandardSetsLabel>
                 <StandardSetsList>{this.getStandardSets()}</StandardSetsList>

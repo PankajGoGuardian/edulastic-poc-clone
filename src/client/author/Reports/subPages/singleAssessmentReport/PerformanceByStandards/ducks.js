@@ -1,8 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeLatest, call, put } from "redux-saga/effects";
 import { createSelector } from "reselect";
-import { message } from "antd";
-import  {notification} from "@edulastic/common";
+import { notification } from "@edulastic/common";
 import { isEmpty } from "lodash";
 
 import { reportsApi } from "@edulastic/api";
@@ -30,7 +29,7 @@ export const defaultReport = {
 
 const initialState = {
   performanceByStandards: defaultReport,
-  loading: true,
+  loading: false,
   error: undefined
 };
 
@@ -88,7 +87,7 @@ function* getPerformanceByStandardsSaga({ payload }) {
 
     yield put(getPerformanceByStandardsSuccessAction({ report }));
   } catch (error) {
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(getPerformanceByStandardsErrorAction({ error: errorMessage }));
   }
 }

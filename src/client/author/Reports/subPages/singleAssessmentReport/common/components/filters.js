@@ -4,15 +4,25 @@ import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 import qs from "qs";
+
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
-import PerfectScrollbar from "react-perfect-scrollbar";
 
+import PerfectScrollbar from "react-perfect-scrollbar";
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
+import {
+  StyledFilterWrapper,
+  StyledGoButton,
+  GoButtonWrapper,
+  SearchField,
+  ApplyFitlerLabel,
+  FilterLabel
+} from "../../../../common/styled";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../utils/transformers";
+
 import {
   getSARFilterDataRequestAction,
   getReportsSARFilterData,
@@ -32,14 +42,6 @@ import { receivePerformanceBandAction } from "../../../../../PerformanceBand/duc
 import { receiveStandardsProficiencyAction } from "../../../../../StandardsProficiency/ducks";
 
 import staticDropDownData from "../static/staticDropDownData.json";
-import {
-  StyledFilterWrapper,
-  StyledGoButton,
-  GoButtonWrapper,
-  SearchField,
-  ApplyFitlerLabel,
-  FilterLabel
-} from "../../../../common/styled";
 
 const getTestIdFromURL = url => {
   if (url.length > 16) {
@@ -112,8 +114,12 @@ const SingleAssessmentReportFilters = ({
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
-    // select common assessment as default if assessment type is not set
-    search.assessmentType = get(SARFilterData, "data.result.reportFilters.assessmentType", "common assessment");
+    // get assessment type from filter data
+    search.assessmentType = get(SARFilterData, "data.result.reportFilters.assessmentType");
+    // select common assessment as default if assessment type is not set for admins
+    if (user.role === roleuser.DISTRICT_ADMIN || user.role === roleuser.SCHOOL_ADMIN) {
+      search.assessmentType = search.assessmentType || "common assessment";
+    }
     dropDownData = getDropDownData(SARFilterData, user);
 
     const defaultTermId = get(user, "orgData.defaultTermId", "");

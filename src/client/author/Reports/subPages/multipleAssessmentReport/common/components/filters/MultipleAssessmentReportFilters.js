@@ -3,15 +3,27 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { find, get, isEmpty, map } from "lodash";
 import queryString from "query-string";
+
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
+import { roleuser } from "@edulastic/constants";
+
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
 import { MultipleSelect } from "../../../../../common/components/widgets/MultipleSelect";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
+import {
+  StyledFilterWrapper,
+  StyledGoButton,
+  GoButtonWrapper,
+  SearchField,
+  ApplyFitlerLabel,
+  FilterLabel
+} from "../../../../../common/styled";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../../utils/transformers";
 import { toggleItem } from "../../../../../common/util";
+
 import {
   getMARFilterDataRequestAction,
   getReportsMARFilterData,
@@ -26,14 +38,6 @@ import {
 import { getUserRole, getUser } from "../../../../../../src/selectors/user";
 
 import staticDropDownData from "../../static/staticDropDownData.json";
-import {
-  StyledFilterWrapper,
-  StyledGoButton,
-  GoButtonWrapper,
-  SearchField,
-  ApplyFitlerLabel,
-  FilterLabel
-} from "../../../../../common/styled";
 
 const SingleAssessmentReportFilters = ({
   MARFilterData,
@@ -81,9 +85,12 @@ const SingleAssessmentReportFilters = ({
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
     const search = queryString.parse(location.search, { arrayFormat: "index" });
-    // select common assessment as default if assessment type is not set
-    search.assessmentType = get(MARFilterData, "data.result.reportFilters.assessmentType", "common assessment");
-
+    // get assessment type from filter data
+    search.assessmentType = get(MARFilterData, "data.result.reportFilters.assessmentType");
+    // select common assessment as default if assessment type is not set for admins
+    if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
+      search.assessmentType = search.assessmentType || "common assessment";
+    }
     dropDownData = getDropDownData(MARFilterData, user);
     const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
@@ -112,7 +119,7 @@ const SingleAssessmentReportFilters = ({
     };
     let urlSchoolId = { key: "All", title: "All Schools" };
     let urlTeacherId = { key: "All", title: "All Teachers" };
-    if (role !== "teacher") {
+    if (role !== roleuser.TEACHER) {
       urlSchoolId = dropDownData.schools.find(item => item.key === search.schoolId) || {
         key: "All",
         title: "All Schools"
@@ -152,7 +159,7 @@ const SingleAssessmentReportFilters = ({
 
     const urlParams = { ...obtainedFilters };
 
-    if (role === "teacher") {
+    if (role === roleuser.TEACHER) {
       delete urlParams.schoolId;
       delete urlParams.teacherId;
     }
@@ -343,7 +350,7 @@ const SingleAssessmentReportFilters = ({
           />
         </SearchField>
         {extraFilter}
-        {role !== "teacher" && (
+        {role !== roleuser.TEACHER && (
           <Fragment>
             <SearchField>
               <FilterLabel>School</FilterLabel>

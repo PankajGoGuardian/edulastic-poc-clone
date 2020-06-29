@@ -2,7 +2,6 @@ import { isEmpty } from "lodash";
 import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
@@ -54,7 +53,7 @@ export const defaultReport = {
 
 const initialState = {
   peerPerformance: defaultReport,
-  loading: true
+  loading: false
 };
 
 export const reportPeerPerformanceReducer = createReducer(initialState, {
@@ -95,8 +94,8 @@ function* getReportsPeerPerformanceRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch sub-group performance. Please try again...";
-    notification({msg:msg});
+    const msg = "Failed to fetch sub-group performance. Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR,
       payload: { error: msg }

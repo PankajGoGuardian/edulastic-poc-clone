@@ -2,8 +2,7 @@ import { isEmpty } from "lodash";
 import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
-import  {notification} from "@edulastic/common";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
@@ -57,7 +56,7 @@ export const defaultReport = {
 
 const initialState = {
   performanceByStudents: defaultReport,
-  loading: true
+  loading: false
 };
 
 export const reportPerformanceByStudentsReducer = createReducer(initialState, {
@@ -98,9 +97,9 @@ function* getReportsPerformanceByStudentsRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch performance by students Please try again...";
+    const msg = "Failed to fetch performance by students Please try again...";
 
-    notification({msg:msg});
+    notification({ msg });
     yield put({
       type: GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR,
       payload: { error: msg }

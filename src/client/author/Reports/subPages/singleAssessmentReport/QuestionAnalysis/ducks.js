@@ -2,8 +2,7 @@ import { takeLatest, call, put, all } from "redux-saga/effects";
 import { isEmpty } from "lodash";
 import { createSelector } from "reselect";
 import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
-import  {notification} from "@edulastic/common";
+import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
@@ -53,7 +52,7 @@ export const defaultReport = {
 
 const initialState = {
   questionAnalysis: defaultReport,
-  loading: true
+  loading: false
 };
 
 export const reportQuestionAnalysisReducer = createReducer(initialState, {
@@ -94,8 +93,8 @@ function* getReportsQuestionAnalysisRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch question analysis Please try again...";
-    notification({msg:msg});
+    const msg = "Failed to fetch question analysis Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR,
       payload: { error: msg }

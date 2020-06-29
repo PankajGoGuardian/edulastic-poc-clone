@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Modal, Button, Form as AntdForm } from "antd";
-import { lightGrey3, title, themeColor, white } from "@edulastic/colors";
+import { lightGrey3, title, themeColor, white, red } from "@edulastic/colors";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content,
@@ -21,6 +21,10 @@ export const Title = styled.div`
   svg {
     fill: ${themeColor};
   }
+`;
+
+export const InputMessage = styled.span`
+  color: ${red};
 `;
 
 export const ActionButton = styled(Button)`

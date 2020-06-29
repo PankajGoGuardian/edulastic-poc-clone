@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
-import { Input , Form } from "antd";
+import { Input, Form } from "antd";
 
 import { userApi } from "@edulastic/api";
 import styled from "styled-components";
 import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
-import { themeColor, boxShadowDefault } from "@edulastic/colors";
+import { themeColor, red } from "@edulastic/colors";
 import { Field } from "./styled";
 import { nameValidator } from "../../../../../common/utils/helpers";
 
@@ -111,25 +111,25 @@ const BasicFields = ({
       if (isExistingStudent) {
         errorMsg = "User already part of this class section";
       } else if (foundUser.role === "teacher")
-          errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
-        else {
-          errorMsg = "";
-          setEnroll(true);
-          setIsUpdate(!isUpdate);
-          setFounduser(foundUser._id);
-          setFoundContactEmails(foundUser.contactEmails);
-          const userFirstName = foundUser.firstName ? foundUser.firstName : "";
-          const userLastName = foundUser.lastName ? foundUser.lastName : "";
-          if (foundUser.contactEmails?.length > 0) {
-            setFields({ contactEmails: foundUser.contactEmails.join(",") });
-          }
-          if (userFirstName)
-            setFields({
-              fullName: {
-                value: `${userFirstName  } ${  userLastName}`
-              }
-            });
+        errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
+      else {
+        errorMsg = "";
+        setEnroll(true);
+        setIsUpdate(!isUpdate);
+        setFounduser(foundUser._id);
+        setFoundContactEmails(foundUser.contactEmails);
+        const userFirstName = foundUser.firstName ? foundUser.firstName : "";
+        const userLastName = foundUser.lastName ? foundUser.lastName : "";
+        if (foundUser.contactEmails?.length > 0) {
+          setFields({ contactEmails: foundUser.contactEmails.join(",") });
         }
+        if (userFirstName)
+          setFields({
+            fullName: {
+              value: `${userFirstName} ${userLastName}`
+            }
+          });
+      }
       if (errorMsg !== "" && !enroll) {
         callback(errorMsg);
       }
@@ -193,7 +193,7 @@ const BasicFields = ({
               validateTrigger: ["onBlur"],
               rules: [{ validator: checkUser }, ...commonEmailValidations]
             })(<Input data-cy="username" prefix={<IconMail color={themeColor} />} placeholder="Enter Username" />)}
-            {enroll && "user exists and will be enrolled"}
+            {enroll && <InputMessage>User exists and will be enrolled.</InputMessage>}
           </Form.Item>
         </Field>
       ) : (
@@ -374,4 +374,8 @@ const FormBody = styled.div`
       width: 15px;
     }
   }
+`;
+
+const InputMessage = styled.span`
+  color: ${red};
 `;

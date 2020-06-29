@@ -6,7 +6,7 @@ import { Collapse, DatePicker, Icon, Input, Select, Spin } from "antd";
 import { EduButton } from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
 import { schoolApi, userApi } from "@edulastic/api";
-import { Field, FooterDiv, Form, PanelHeader, StyledModal, Title } from "./styled";
+import { Field, FooterDiv, Form, PanelHeader, StyledModal, Title, InputMessage } from "./styled";
 import { isEmailValid, nameValidator } from "../../../../common/utils/helpers";
 
 import keyIcon from "../../../../student/assets/key-icon.svg";
@@ -346,7 +346,7 @@ class AddNewUserForm extends React.Component {
                       disabled={!isValidClassCode}
                     />
                   )}
-                  {isUserExists && !userExistsInClass && "User exists and will be enrolled."}
+                  {isUserExists && !userExistsInClass && <InputMessage>User exists and will be enrolled.</InputMessage>}
                 </Form.Item>
               </Field>
               <Field name="role">

@@ -44,11 +44,22 @@ class EditableLabel extends React.Component {
   };
 
   validateFields = (rule, value, callback) => {
-    const { requiredStatus, valueName } = this.props;
+    const { requiredStatus, valueName, maxLength, type } = this.props;
+    const isnum = /^(?=.*\d)[\d ]+$/.test(value);
     if (requiredStatus && !value) {
       this.setState({
         validateStatus: "error",
         validateMsg: `Please input your ${valueName}`
+      });
+    } else if (value.length > maxLength) {
+      this.setState({
+        validateStatus: "error",
+        validateMsg: `${valueName} should be less than ${maxLength}`
+      });
+    } else if (type === "number" && !isnum) {
+      this.setState({
+        validateStatus: "error",
+        validateMsg: "Please input number"
       });
     } else {
       this.setState({
@@ -90,44 +101,18 @@ class EditableLabel extends React.Component {
   };
 
   handleChange = e => {
-    const { valueName, maxLength, requiredStatus, type, isSpaceEnable } = this.props;
-    let validateStatus = "success";
-    let validateMsg = "";
-
-    if (e.target.value.length == 0 && requiredStatus) {
-      validateStatus = "error";
-      validateMsg = `Please input your ${valueName}`;
-    }
-
-    if (e.target.value.length > maxLength) {
-      validateStatus = "error";
-      validateMsg = `${valueName} should be less than ${maxLength}`;
-    }
-
-    if (type === "number") {
-      var isnum = /^(?=.*\d)[\d ]+$/.test(e.target.value);
-      if (!isnum) {
-        validateStatus = "error";
-        validateMsg = "Please input number";
-      }
-    }
-
-    this.setState({
-      value: e.target.value,
-      validateStatus,
-      validateMsg
-    });
+    const { valueName, isSpaceEnable, setProfileValue } = this.props;
 
     if (typeof e.target.value === "string") {
       if (isSpaceEnable)
-        this.props.setProfileValue(
+        setProfileValue(
           valueName,
           e.target.value
             .toString()
             .replace(/\s\s+/g, " ")
             .trim()
         );
-      else this.props.setProfileValue(valueName, e.target.value.toString().replace(/\s/g, ""));
+      else setProfileValue(valueName, e.target.value.toString().replace(/\s/g, ""));
     }
   };
 

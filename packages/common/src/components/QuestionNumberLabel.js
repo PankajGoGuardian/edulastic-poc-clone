@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { white } from "@edulastic/colors";
+import { white,greyThemeDark4 } from "@edulastic/colors";
 
 const QuestionNumberLabel = styled.section`
-  background: ${({ theme }) => theme.questionLabelColor};
+  background: ${greyThemeDark4};
   color: ${white};
   font-size: ${({ fontSize, theme }) => fontSize || (theme.fontSize && `${theme.fontSize}px`) || `1rem`};
   font-weight: 700;

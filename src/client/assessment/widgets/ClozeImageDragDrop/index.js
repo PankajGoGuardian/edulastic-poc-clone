@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
+import { cloneDeep, get } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
@@ -103,6 +103,15 @@ class ClozeImageDragDrop extends Component {
       produce(item, draft => {
         draft[name] = value;
         updateVariables(draft);
+
+        /**
+         * Resetting correct answer on changing duplictae response option
+         */
+        if (name === "duplicatedResponses" && !value) {
+          const answers = get(item, "validation.validResponse.value", []);
+          const emptyAnswers = [...answers].map(() => ({}));
+          draft.validation.validResponse.value = emptyAnswers;
+        }
       })
     );
 

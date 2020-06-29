@@ -26,19 +26,20 @@ class CorrectAnswers extends Component {
   addAltResponses = () => {
     const { item, setQuestionData, validation } = this.props;
     this.handleTabChange(validation.altResponses.length + 1);
+
+    const validAnswers = get(item, "validation.validResponse.value", {});
+
+    // storing alternate anwer based on valid answer
+    const alternateAnswers = {};
+    Object.keys(validAnswers).forEach(key => {
+      alternateAnswers[key] = "";
+    });
+
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.altResponses) {
-          draft.validation.altResponses = [];
-        }
-        const responseIds = get(item, "responseIds", []);
-        const answers = {};
-        responseIds.forEach(r => {
-          answers[r.id] = "";
-        });
         draft.validation.altResponses.push({
           score: 1,
-          value: answers
+          value: alternateAnswers
         });
       })
     );

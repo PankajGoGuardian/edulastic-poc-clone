@@ -57,12 +57,12 @@ class TemplateMarkup extends Component {
 
       // update alternative responses
       if (isArray(_validation.altResponses)) {
-        _validation.altResponses.map(altAnswer => {
+        _validation.altResponses.forEach(({ value = {} }) => {
           const newAnswers = {};
-          _responseIds.forEach(r => {
-            newAnswers[r.id] = altAnswer[r.id] || "";
+          _responseIds.forEach(({ id = "" }) => {
+            newAnswers[id] = value[id] || "";
           });
-          altAnswer.value = newAnswers;
+          value = newAnswers;
         });
       }
 

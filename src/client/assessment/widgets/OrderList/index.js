@@ -10,7 +10,6 @@ import { withNamespaces } from "@edulastic/localization";
 import {
   CorrectAnswersContainer,
   QuestionNumberLabel,
-  AnswerContext,
   ScrollContext,
   FlexContainer,
   QuestionLabelWrapper,
@@ -97,7 +96,6 @@ const OrderList = ({
   isPrintPreview
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
-  const answerContext = useContext(AnswerContext);
   const scrollContext = useContext(ScrollContext);
   const scrollContainer = scrollContext.getScrollElement();
 
@@ -208,10 +206,11 @@ const OrderList = ({
   const hasAltAnswers = get(itemForPreview, "validation.altResponses", []).length > 0;
   const alternateAnswers = {};
 
-  let userAnswer = correctAnswers;
-  if (!answerContext.expressGrader) {
-    userAnswer = !isEmpty(_userAnswer) ? _userAnswer : convertArrToObj(keys(get(item, "list", {})));
-  }
+  /**
+   * _userAnswer contains user response and else part will run when there is no response
+   * else part is required to show order list if in LCB or Preview tab
+   * */
+  const userAnswer = !isEmpty(_userAnswer) ? _userAnswer : convertArrToObj(keys(get(item, "list", {})));
   const userAnswerToShow = keys(userAnswer);
   const correctAnswersToShow = convertObjToArr(correctAnswers).map(ans => get(itemForPreview, `list[${ans.id}]`, ""));
 

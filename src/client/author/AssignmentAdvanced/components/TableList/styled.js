@@ -122,10 +122,6 @@ export const TableData = styled(Table)`
   }
 
   @media (max-width: 1300px) and (min-width: 980px) {
-    .ant-table-thead > tr > th,
-    .ant-table-tbody > tr > td {
-      max-width: 100px;
-    }
     .ant-table-thead > tr > th .ant-table-column-sorters {
       padding-left: 0px;
       padding-right: 0px;

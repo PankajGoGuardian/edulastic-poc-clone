@@ -38,12 +38,10 @@ const MathEssayInputLine = ({
     isText ? text : `<p><span class="input__math" data-latex="${text}"></span>&nbsp;</p>`;
 
   useEffect(() => {
-    if (active && inputRef.current) {
+    if (active) {
       setTimeout(() => {
-        if (!isText) {
+        if (!isText && inputRef.current) {
           inputRef.current.setFocus();
-        } else {
-          console.log(inputRef);
         }
       }, 30);
     }

@@ -89,6 +89,12 @@ export function* receiveTestActivitySaga({ payload }) {
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
+    if(!additionalData.recentTestActivitiesGrouped){
+      /**
+       * resetting attempts data if not recieved from response
+       */
+      additionalData.recentTestActivitiesGrouped = {};
+    }
     const classResponse = yield call(classResponseApi.classResponse, { ...payload, testId: additionalData.testId });
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,

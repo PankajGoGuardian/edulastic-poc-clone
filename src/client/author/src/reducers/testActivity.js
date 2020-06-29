@@ -1,6 +1,6 @@
 import { createAction } from "redux-starter-kit";
 import { uniqBy, keyBy, cloneDeep } from "lodash";
-import { produce } from "immer";
+import { produce, original } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
@@ -131,7 +131,8 @@ const reducer = (state = initialState, { type, payload }) => {
           if (_st.entities[index].testActivityId) {
             _st.currentTestActivityId = _st.entities[index].testActivityId;
           }
-          if (_st.entities[index].testActivityId != entity.testActivityId) {
+          if (_st.entities[index].testActivityId != entity.testActivityId && _st.entities[index].testActivityId) {
+
             // a new attempt being added through realtime
             // handling for showing recent attempts
             const { studentId } = entity;

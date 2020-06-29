@@ -7,16 +7,16 @@ const sharedBtnStyle = css`
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;
-  font-size: 40px;
+  font-size: 26px;
   cursor: pointer;
-  color: #000;
-  border-radius: 50%;
+  border-radius: ${props => props.borderRadius || "50%"};
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #878a91;
 
   @media (min-width: 1025px) {
-    width: 40px;
+    width: ${props => props.width || "40"}px;
     height: 40px;
     &:hover {
       background-color: ${themeColor};
@@ -30,12 +30,14 @@ const sharedBtnStyle = css`
 `;
 const BackArrow = styled.nav`
   ${sharedBtnStyle}
-  left: 4px;
+  left: ${props => props.left || "4px"};
+  width: ${props => props.width || "40"}px;
 `;
 
 const NextArrow = styled.nav`
   ${sharedBtnStyle}
-  right: 4px;
+  right: ${props => props.right || "4px"};
+  width: ${props => props.width || "40"}px;
 `;
 
 export default { NextArrow, BackArrow };

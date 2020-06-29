@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { test, questionType } from "@edulastic/constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FlexContainer } from "@edulastic/common";
 import PracticePlayerHeader from "./AssessmentPlayerSimple/PlayerHeader";
 import DocBasedPlayerHeader from "./AssessmentPlayerDocBased/PlayerHeader";
 import DefaultAssessmentPlayerHeader from "./AssessmentPlayerDefault/PlayerHeader";
 import ParccHeader from "./skins/Parcc/PlayerHeader";
 import SidebarQuestionList from "./AssessmentPlayerSimple/PlayerSideBar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { IPAD_LANDSCAPE_WIDTH } from "../constants/others";
-import { FlexContainer } from "@edulastic/common";
 import { Nav } from "./common";
-import { isUndefined } from "lodash";
 import SbacHeader from "./skins/Sbac/PlayerHeader";
 import Magnifier from "../../common/components/Magnifier";
 
@@ -20,7 +19,6 @@ const AssessmentPlayerSkinWrapper = ({
   defaultAP,
   docUrl,
   playerSkinType = test.playerSkinValues.edulastic,
-  showMagnifier = true,
   handleMagnifier,
   qId,
   enableMagnifier = false,
@@ -52,6 +50,9 @@ const AssessmentPlayerSkinWrapper = ({
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
+
+  const isDocBased = !!docUrl;
+
   const header = () => {
     if (playerSkinType === "parcc") {
       return (
@@ -59,25 +60,28 @@ const AssessmentPlayerSkinWrapper = ({
           {...restProps}
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
-          isDocbased={!isUndefined(docUrl)}
+          isDocbased={isDocBased}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
         />
       );
-    } else if (playerSkinType == "sbac") {
+    }
+    if (playerSkinType == "sbac") {
       return (
         <SbacHeader
           {...restProps}
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
-          isDocbased={!isUndefined(docUrl)}
+          isDocbased={isDocBased}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
         />
       );
-    } else if (!isUndefined(docUrl)) {
+    }
+    if (docUrl) {
       return <DocBasedPlayerHeader {...restProps} handleMagnifier={handleMagnifier} />;
-    } else if (defaultAP) {
+    }
+    if (defaultAP) {
       return (
         <DefaultAssessmentPlayerHeader
           {...restProps}
@@ -85,17 +89,12 @@ const AssessmentPlayerSkinWrapper = ({
           enableMagnifier={enableMagnifier}
         />
       );
-    } else {
-      return (
-        <PracticePlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />
-      );
     }
+    return <PracticePlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />;
   };
 
-  const isDocbased = !isUndefined(docUrl);
-
   const leftSideBar = () => {
-    if (!defaultAP && !isDocbased) {
+    if (!defaultAP && !isDocBased) {
       return (
         <Sidebar isVisible={isSidebarVisible}>
           <SidebarQuestionList
@@ -114,21 +113,22 @@ const AssessmentPlayerSkinWrapper = ({
 
   const getMainContainerStyle = () => {
     if (playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase()) {
-      if (!isUndefined(docUrl) || defaultAP) {
+      if (isDocBased || defaultAP) {
         return { width: "100%" };
-      } else {
-        return {
-          margin: "40px 40px 0 40px",
-          width: "100%"
-        };
       }
-    } else if (playerSkinType.toLowerCase() === test.playerSkinValues.parcc.toLowerCase()) {
+      return {
+        margin: "40px 40px 0 40px",
+        width: "100%"
+      };
+    }
+    if (playerSkinType.toLowerCase() === test.playerSkinValues.parcc.toLowerCase()) {
       return {
         paddingLeft: 0,
         paddingRight: 0,
         marginTop: defaultAP ? "82px" : "47px"
       };
-    } else if (playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()) {
+    }
+    if (playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()) {
       return {
         paddingLeft: 0,
         paddingRight: 0,
@@ -140,15 +140,15 @@ const AssessmentPlayerSkinWrapper = ({
 
   const getStyle = () => {
     if (playerSkinType.toLowerCase() === test.playerSkinValues.edulastic.toLowerCase()) {
-      if (!isUndefined(docUrl) || defaultAP) {
+      if (isDocBased || defaultAP) {
         return { width: "100%" };
-      } else {
-        return {
-          width: isSidebarVisible ? "calc(100% - 220px)" : "calc(100%)",
-          background: restProps.theme.widgets.assessmentPlayers.mainBgColor
-        };
       }
-    } else if (
+      return {
+        width: isSidebarVisible ? "calc(100% - 220px)" : "calc(100%)",
+        background: restProps.theme.widgets.assessmentPlayers.mainBgColor
+      };
+    }
+    if (
       playerSkinType.toLowerCase() === test.playerSkinValues.parcc.toLowerCase() ||
       playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
     ) {
@@ -159,27 +159,24 @@ const AssessmentPlayerSkinWrapper = ({
     return {};
   };
 
-  const navigationBtns = () => {
-    return (
-      <>
-        {currentItem > 0 && (
-          <Nav.BackArrow onClick={moveToPrev}>
-            <FontAwesomeIcon icon={faAngleLeft} />
-          </Nav.BackArrow>
-        )}
-        <Nav.NextArrow onClick={moveToNext}>
-          <FontAwesomeIcon icon={faAngleRight} />
-        </Nav.NextArrow>
-      </>
-    );
-  };
+  const navigationBtns = () => (
+    <>
+      {currentItem > 0 && (
+        <Nav.BackArrow left="0px" borderRadius="0px" width="30" onClick={moveToPrev}>
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </Nav.BackArrow>
+      )}
+      <Nav.NextArrow right="0px" borderRadius="0px" width="30" onClick={moveToNext}>
+        <FontAwesomeIcon icon={faAngleRight} />
+      </Nav.NextArrow>
+    </>
+  );
 
   const getTopOffset = () => {
     if (playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()) {
       return { top: 120, left: 0 };
-    } else {
-      return { top: 63, left: 0 };
     }
+    return { top: 63, left: 0 };
   };
 
   return (

@@ -464,6 +464,7 @@ class AssessmentPlayerDefault extends React.Component {
               zoomLevel={zoomLevel}
               headerHeight={headerHeight}
               ref={this.scrollContainer}
+              padding="0px 30px"
             >
               <SettingsModal />
               <MainWrapper

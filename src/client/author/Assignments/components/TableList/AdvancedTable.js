@@ -136,10 +136,11 @@ class AdvancedTable extends Component {
             userRole = "",
             assignmentTests,
             togglePrintModal,
-            userClassList
+            userClassList,
+            assignmentsSummary
           } = this.props;
           const canEdit = canEditTest(row, userId);
-          const assignmentTest = assignmentTests.find(at => at._id === row.testId);
+          const assignmentTest = assignmentsSummary.find(at => at.testId === row.testId);
           return (
             <ActionDiv data-cy="testActions">
               <Dropdown

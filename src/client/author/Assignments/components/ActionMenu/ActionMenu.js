@@ -119,13 +119,13 @@ const ActionMenu = ({
             View Test Details
           </Link>
         </Menu.Item>
-        <Menu.Item data-cy="print-assignment" key="print-assignment" onClick={handlePrintTest}>
-          <Link to="#" rel="noopener noreferrer">
+        {!assignmentTest?.isDocBased && <Menu.Item data-cy="print-assignment" key="print-assignment" onClick={handlePrintTest}>
+          <StyledLink target="_blank" rel="noopener noreferrer">
             <IconPrint />
             <SpaceElement />
             Print Test
-          </Link>
-        </Menu.Item>
+          </StyledLink>
+        </Menu.Item>}
         <Menu.Item
           data-cy="release-grades"
           key="release-grades"

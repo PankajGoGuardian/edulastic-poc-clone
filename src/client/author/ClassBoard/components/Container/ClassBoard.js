@@ -836,7 +836,7 @@ class ClassBoard extends Component {
                   {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
                 </CheckboxLabel>
                 <ClassBoardFeats>
-                  <RedirectButton
+                  {!classResponse?.isDocBased && <RedirectButton
                     disabled={!isItemsVisible}
                     first
                     data-cy="printButton"
@@ -847,7 +847,7 @@ class ClassBoard extends Component {
                       <IconPrint />
                     </ButtonIconWrap>
                     PRINT
-                  </RedirectButton>
+                  </RedirectButton>}
                   <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
                     <ButtonIconWrap>
                       <IconRedirect />

@@ -58,6 +58,7 @@ import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignme
 import { getUserId, getUserRole, getGroupList } from "../../../src/selectors/user";
 import { canEditTest } from "../../../Assignments/utils";
 import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
+import PrintTestModal from "../../../src/components/common/PrintTestModal";
 
 const { assignmentStatusBg } = authorAssignment;
 
@@ -66,7 +67,8 @@ class AssignmentAdvanced extends Component {
     openEditPopup: false,
     isPreviewModalVisible: false,
     filterStatus: "",
-    isHeaderAction: false
+    isHeaderAction: false,
+    openPrintModal: false
   };
 
   componentDidMount() {
@@ -158,6 +160,23 @@ class AssignmentAdvanced extends Component {
     toggleReleaseGradePopUp(false);
   };
 
+  togglePrintModal = () => {
+    const { openPrintModal } = this.state;
+    this.setState({ openPrintModal: !openPrintModal });
+  };
+
+  gotoPrintView = data => {
+    const { type, customValue } = data;
+    const { match } = this.props;
+    const { testId } = match.params;
+
+    window.open(
+      `/author/printAssessment/${testId}?type=${type}&qs=${type === "custom" ? customValue : ""}`,
+      "_blank"
+    );
+    this.togglePrintModal();
+  };
+
   render() {
     const {
       classList,
@@ -184,7 +203,8 @@ class AssignmentAdvanced extends Component {
       userClassList
     } = this.props;
     const { testId } = match.params;
-    const { filterStatus, openEditPopup, isPreviewModalVisible, isHeaderAction } = this.state;
+    const { filterStatus, openEditPopup, isPreviewModalVisible, isHeaderAction, openPrintModal } = this.state;
+    console.log(openPrintModal)
     const assingment = find(assignmentsSummary, item => item.testId === testId) || {};
     const { testType = "" } = qs.parse(location.search);
     return (
@@ -204,6 +224,14 @@ class AssignmentAdvanced extends Component {
           closeTestPreviewModal={() => this.toggleTestPreviewModal(false)}
         />
 
+        {openPrintModal && (
+          <PrintTestModal
+            onProceed={this.gotoPrintView}
+            onCancel={this.togglePrintModal}
+            currentTestId={testId}
+          />
+        )}
+
         <ListHeader
           title={assingment.title || "Loading..."}
           hasButton={false}
@@ -222,7 +250,9 @@ class AssignmentAdvanced extends Component {
                   this.setState({ isHeaderAction: true });
                   toggleDeleteAssignmentModal(true);
                 },
-                userClassList
+                userClassList,
+                togglePrintModal: this.togglePrintModal,
+                assignmentTest: assingment
               })}
               placement="bottomLeft"
               trigger={["hover"]}

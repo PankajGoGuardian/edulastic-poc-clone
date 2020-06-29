@@ -46,6 +46,7 @@ export const attemptTypes = {
   WRONG: "wrong",
   SKIP: "skip",
   PARTIAL_CORRECT: "partialCorrect",
+  ALTERNATE: "alternate",
   NO_ATTEMPT: "noattempt",
   MANUAL_GRADE: "manualGrade"
 };

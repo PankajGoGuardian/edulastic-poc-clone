@@ -2,8 +2,7 @@
 import Header from "../../itemDetail/header";
 import Helpers from "../../../../util/Helpers";
 import EditItemPage from "../../itemDetail/editPage";
-import { questionType, questionGroup, questionTypeKey } from "../../../../constants/questionTypes";
-import CypressHelper from "../../../../util/cypressHelpers";
+import { questionType, questionGroup } from "../../../../constants/questionTypes";
 
 class ChoiceMatrixStandardPage {
   constructor() {
@@ -35,6 +34,8 @@ class ChoiceMatrixStandardPage {
     };
 
     this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
+
+    this.roundingType = { "Round down": "roundDown", None: "none" };
   }
 
   // question content
@@ -57,6 +58,11 @@ class ChoiceMatrixStandardPage {
         .click({ force: true });
     });
   };
+
+  selectAnswerChoice = opt =>
+    opt.forEach((element, index) => {
+      this.markAnswerInput(index, element + 1, "input");
+    });
 
   // choices
   getChoiceByIndex(index) {
@@ -339,7 +345,7 @@ class ChoiceMatrixStandardPage {
         });
     } else {
       this.getMatrixTable()
-        .find("tbody td")
+        .find("tbody tr")
         .each($el => {
           cy.wrap($el)
             .should("have.css", "border-top-width")
@@ -435,12 +441,29 @@ class ChoiceMatrixStandardPage {
     return Helpers.getElement("dividersCheckbox");
   }
 
-  createQuestion(queType, queKey = "default", queIndex = 0, onlyItem = true) {
+  selectRoundingType(option) {
+    const selectOp = `[data-cy="${this.roundingType[option]}"]`;
+    cy.get('[data-cy="rounding"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="rounding"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  createQuestion(qShortKey, queKey = "default", queIndex = 0, onlyItem = true) {
     const item = new EditItemPage();
     item.createNewItem(onlyItem);
-    item.chooseQuestion(questionGroup.MCQ, questionType[queType]);
+    item.chooseQuestion(questionGroup.MCQ, questionType[`${qShortKey}`]);
     cy.fixture("questionAuthoring").then(authoringData => {
-      const { quetext, choices, setAns, steams } = authoringData[queType][queKey];
+      const { quetext, choices, setAns, steams } = authoringData[qShortKey][queKey];
 
       if (quetext) {
         const text = `Q${queIndex + 1} - ${quetext}`;

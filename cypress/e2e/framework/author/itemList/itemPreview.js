@@ -1,6 +1,6 @@
 /* eslint-disable default-case */
 import QuestionResponsePage from "../assignments/QuestionResponsePage";
-import { questionType, attemptTypes, queColor, questionTypeKey } from "../../constants/questionTypes";
+import { attemptTypes, queColor, questionTypeKey } from "../../constants/questionTypes";
 
 export default class PreviewItemPopup {
   constructor() {
@@ -33,8 +33,7 @@ export default class PreviewItemPopup {
   // *** ACTIONS START ***
 
   closePreiview = () => {
-    cy.wait(500);
-    let eleCount = Cypress.$('[data-cy="close-preview"]').length;
+    const eleCount = Cypress.$('[data-cy="close-preview"]').length;
     if (eleCount === 1) Cypress.$('[data-cy="close-preview"]').click();
   };
 
@@ -116,16 +115,25 @@ export default class PreviewItemPopup {
     this.getCopyOnPreview().should("be.visible");
   };
 
-  verifyQuestionResponseCard = (queTypeKey, attemptData, attemptType, isShowAnswer = false, queIndex = 0) => {
-    const { right, wrong, partialCorrect, item } = attemptData;
+  verifyQuestionResponseCard = (
+    queTypeKey,
+    attemptData,
+    attemptType,
+    isShowAnswer = false,
+    queIndex = 0,
+    alternateAnswer = false
+  ) => {
+    const { right, wrong, partialCorrect, alternate, item } = attemptData;
     const attempt =
       attemptType === attemptTypes.RIGHT
         ? right
         : attemptType === attemptTypes.WRONG
-        ? wrong
-        : attemptType === attemptTypes.PARTIAL_CORRECT
-        ? partialCorrect
-        : undefined;
+          ? wrong
+          : attemptType === attemptTypes.PARTIAL_CORRECT
+            ? partialCorrect
+            : attemptType === attemptTypes.ALTERNATE
+              ? alternate
+              : undefined;
     const quest = queTypeKey.split(".")[0];
     if (!item)
       cy.get('[data-cy="question-container"]')
@@ -189,6 +197,9 @@ export default class PreviewItemPopup {
         const { steams } = attemptData;
         if (isShowAnswer) {
           this.qrp.verifyCorrectAnseredMatrix(cy.get("@quecard"), right, steams);
+          if (alternateAnswer) {
+            this.qrp.verifyAlternateAnswredMatrix(cy.get("@quecard"), alternate, steams);
+          }
         } else {
           switch (attemptType) {
             case attemptTypes.RIGHT:
@@ -201,6 +212,10 @@ export default class PreviewItemPopup {
 
             case attemptTypes.PARTIAL_CORRECT:
               this.qrp.verifyAnseredMatrix(cy.get("@quecard"), partialCorrect, steams, attemptType);
+              break;
+
+            case attemptTypes.ALTERNATE:
+              this.qrp.verifyAnseredMatrix(cy.get("@quecard"), alternate, steams, attemptType);
               break;
 
             default:

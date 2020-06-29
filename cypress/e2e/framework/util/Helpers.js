@@ -6,7 +6,7 @@ class Helpers {
       case "small":
         return withRem ? "0.8rem" : "11px";
       case "normal":
-        return withRem ? "1rem" : "16px";
+        return withRem ? "1rem" : "14px";
       case "large":
         return withRem ? "1.2rem" : "17px";
       case "xlarge":
@@ -18,9 +18,7 @@ class Helpers {
     }
   };
 
-  static stringTypes = () => {
-    return { ALPHA: "Alphabetical", ALPHA_NUM: "Alpha Numreric", NUMERIC: "Numeric" };
-  };
+  static stringTypes = () => ({ ALPHA: "Alphabetical", ALPHA_NUM: "Alpha Numreric", NUMERIC: "Numeric" });
 
   static getElement(element) {
     return cy.get(`[data-cy="${element}"]`);

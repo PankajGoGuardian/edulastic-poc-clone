@@ -163,8 +163,8 @@ export default class QuestionResponsePage {
           attemptType === attemptTypes.RIGHT
             ? points
             : attemptType === attemptTypes.PARTIAL_CORRECT
-            ? Cypress._.round(points / 2, 2)
-            : 0;
+              ? Cypress._.round(points / 2, 2)
+              : 0;
         break;
       case queTypes.MATH_NUMERIC:
         score = attemptType === attemptTypes.RIGHT ? points : 0;
@@ -303,12 +303,14 @@ export default class QuestionResponsePage {
                 attemptType === attemptTypes.RIGHT
                   ? queColor.LIGHT_GREEN
                   : attemptType === attemptTypes.WRONG
-                  ? queColor.LIGHT_RED
-                  : attemptType === attemptTypes.PARTIAL_CORRECT
-                  ? answer[chKey] === right[chKey]
-                    ? queColor.LIGHT_GREEN
-                    : queColor.LIGHT_RED
-                  : queColor.CLEAR_DAY
+                    ? queColor.LIGHT_RED
+                    : attemptType === attemptTypes.ALTERNATE
+                      ? queColor.LIGHT_GREEN
+                      : attemptType === attemptTypes.PARTIAL_CORRECT
+                        ? answer[chKey] === right[chKey]
+                          ? queColor.LIGHT_GREEN
+                          : queColor.LIGHT_RED
+                        : queColor.CLEAR_DAY
               );
           });
       });
@@ -332,6 +334,31 @@ export default class QuestionResponsePage {
               cy.wrap(row)
                 .find("input")
                 .eq(steams.indexOf(correct[chKey]))
+                .should("be.checked")
+                .closest("div")
+                .should("have.css", "background-color", queColor.LIGHT_GREEN);
+            });
+        });
+      });
+  };
+
+  verifyAlternateAnswredMatrix = (card, alternate, steams) => {
+    // TODO : optimise below logic
+    card
+      .contains("Alternate Answer 1")
+      .next()
+      .find('[data-cy="matrixTable"]')
+      .children()
+      .find("tr.ant-table-row")
+      .then(ele => {
+        Object.keys(alternate).forEach(chKey => {
+          cy.wrap(ele)
+            .contains(chKey)
+            .closest("tr")
+            .then(row => {
+              cy.wrap(row)
+                .find("input")
+                .eq(steams.indexOf(alternate[chKey]))
                 .should("be.checked")
                 .closest("div")
                 .should("have.css", "background-color", queColor.LIGHT_GREEN);
@@ -493,8 +520,8 @@ export default class QuestionResponsePage {
           attemptType === attemptTypes.RIGHT
             ? queColor.GREEN_7
             : attemptType === attemptTypes.WRONG
-            ? queColor.LIGHT_RED
-            : queColor.GREY_2
+              ? queColor.LIGHT_RED
+              : queColor.GREY_2
         );
   };
 
@@ -520,10 +547,10 @@ export default class QuestionResponsePage {
       attemptType === attemptTypes.RIGHT
         ? right
         : attemptType === attemptTypes.WRONG
-        ? wrong
-        : attemptType === attemptTypes.PARTIAL_CORRECT
-        ? partialCorrect
-        : undefined;
+          ? wrong
+          : attemptType === attemptTypes.PARTIAL_CORRECT
+            ? partialCorrect
+            : undefined;
 
     const questionType = queTypeKey.split(".")[0];
 

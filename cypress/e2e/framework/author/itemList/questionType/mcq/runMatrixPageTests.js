@@ -1,13 +1,14 @@
 import Helpers from "../../../../util/Helpers";
 import ChoiceMatrixPage from "./choiceMatrixPage";
 import EditItemPage from "../../itemDetail/editPage";
-import ItemListPage from "../../itemListPage";
+import { SCORING_TYPE } from "../../../../constants/questionAuthoring";
+import PreviewItemPopup from "../../itemPreview";
+import { attemptTypes } from "../../../../constants/questionTypes";
 
 const runMatrixPageTests = queData => {
   const editItem = new EditItemPage();
   const question = new ChoiceMatrixPage();
-  const itemList = new ItemListPage();
-  let cont = 0;
+  const itemPreview = new PreviewItemPopup();
 
   before(() => {
     cy.login();
@@ -390,162 +391,16 @@ const runMatrixPageTests = queData => {
     });
   });
 
-  context("Scoring Block test", () => {
-    beforeEach("visit items page and select question type", () => {
-      editItem.createNewItem();
-      // add new question
-      editItem.chooseQuestion(queData.group, queData.queType);
-    });
-
-    afterEach(() => {
-      const preview = question.header.preview();
-
-      preview
-        .getClear()
-        .click()
-        .then(() => {
-          question.header.edit();
-
-          // question.clickOnAdvancedOptions();
-        });
-    });
-
-    it("test score with alternate answer", () => {
-      // question.clickOnAdvancedOptions();
-
-      queData.forScoringCorrectAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "input");
-      });
-
-      question
-        .getPoints()
-        .clear()
-        .type("8{del}");
-
-      question.addAlternate();
-
-      queData.forScoringAltAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "input");
-      });
-
-      question
-        .getPoints()
-        .clear()
-        .type("16{del}");
-
-      const preview = question.header.preview();
-
-      queData.forScoringAltAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "input");
-      });
-
-      preview.checkScore("16/16");
-
-      preview.getClear().click();
-
-      queData.forScoringCorrectAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "input");
-      });
-
-      preview.checkScore("16/16");
-    });
-
-    /*  it("test score with min score if attempted", () => {
-      question.getEnableAutoScoring().click();
-
-      question
-        .getMinScore()
-        .clear()
-        .type(1);
-
-      const preview = question.header.preview();
-
-      queData.forScoringCorrectAns.forEach((element, index) => {
-        question.markAnswerInput(index, element, "input");
-      });
-
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/16");
-        });
-    }); */
-
-    it("test score with partial match and penalty", () => {
-      // question.getMinScore().clear();
-      queData.forScoringCorrectAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "input");
-      });
-      question.selectScoringType("Partial match");
-      question.getPoints().type("{selectall}8");
-      question
-        .getPenalty()
-        .clear()
-        .type("{selectall}4");
-      const preview = question.header.preview();
-      queData.forScoringAltAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "label");
-      });
-
-      preview.checkScore("2/8");
-    });
-    it("test score multiple responses", () => {
-      // question.getMinScore().clear();
-      question.clickOnAdvancedOptions();
-      question.getPoints().type("{selectall}5");
-
-      queData.forScoringCorrectAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "input");
-      });
-
-      cy.contains("Multiple responses").click();
-
-      [0, 0].forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "input");
-      });
-
-      const preview = question.header.preview();
-
-      queData.forScoringCorrectAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "label");
-      });
-
-      preview.checkScore("0/5");
-    });
-
-    /* it("test score with max score", () => {
-      question.getPenalty().clear();
-
-      question.selectScoringType("Exact match");
-
-      question.getEnableAutoScoring().click();
-
-      question
-        .getMaxScore()
-        .clear()
-        .type(2);
-
-      const preview = question.header.preview();
-
-      queData.forScoringCorrectAns.forEach((element, index) => {
-        question.markAnswerInput(index, element + 1, "label");
-      });
-
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/20");
-        });
-    }); */
-  });
-
   context("[sanity-test] => create basic question and validate", () => {
     before("visit items page and select question type", () => {
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
+      question
+        .getChoiceByIndex(0)
+        .clear()
+        .type(queData.formattext)
+        .should("contain", queData.formattext);
     });
     it("[choice_std_s1] => create basic question and save", () => {
       // question
@@ -630,6 +485,143 @@ const runMatrixPageTests = queData => {
       preview.getCheckAnswer().click({ force: true });
 
       preview.checkScore("0/1");
+    });
+  });
+
+  context("Scoring Block test", () => {
+    before("visit items page and select question type", () => {
+      // add new question
+      question.createQuestion(queData.qShortKey);
+
+      question.getPoints().type("{selectall}8");
+    });
+
+    /*  afterEach(() => {
+       const preview = question.header.preview();
+ 
+       preview
+         .getClear()
+         .click()
+         .then(() => {
+           question.header.edit();
+ 
+           // question.clickOnAdvancedOptions();
+         });
+     }); */
+
+    it("test with exact score", () => {
+      question.header.edit();
+
+      question.selectScoringType(SCORING_TYPE.EXACT);
+
+      const preview = editItem.header.preview();
+
+      preview.checkOnShowAnswer();
+      itemPreview.verifyQuestionResponseCard(queData.qShortKey, queData.attemptData, attemptTypes.RIGHT, true);
+
+      question.selectAnswerChoice(queData.forScoringCorrectAns);
+
+      preview.checkOnCheckAnswer();
+      itemPreview.verifyQuestionResponseCard(queData.qShortKey, queData.attemptData, attemptTypes.RIGHT);
+
+      preview.checkScore("8/8");
+
+      preview.clickOnClear();
+
+      question.selectAnswerChoice(queData.inCorrectAns);
+
+      preview.checkOnCheckAnswer();
+
+      itemPreview.verifyQuestionResponseCard(queData.qShortKey, queData.attemptData, attemptTypes.WRONG);
+
+      preview.checkScore("0/8");
+    });
+
+    it("test with partial score", () => {
+      question.header.edit();
+
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+
+      const preview = editItem.header.preview();
+
+      question.selectAnswerChoice(queData.CorrectPartialAns);
+
+      preview.checkOnCheckAnswer();
+      itemPreview.verifyQuestionResponseCard(queData.qShortKey, queData.attemptData, attemptTypes.PARTIAL);
+
+      preview.checkScore("4/8");
+    });
+
+    it("verify penalty", () => {
+      question.header.edit();
+      question.clickOnAdvancedOptions();
+      question.getPenalty().type("{selectAll}2");
+
+      const preview = editItem.header.preview();
+
+      question.selectAnswerChoice(queData.forPenaltyScoring);
+
+      preview.checkScore("3.5/8");
+    });
+
+    it("Score with rounding and penalty", () => {
+      const preview = editItem.header.preview();
+
+      question.header.edit();
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+
+      question.selectRoundingType("Round down");
+
+      question.header.preview();
+
+      question.selectAnswerChoice(queData.forPenaltyScoring);
+      preview.checkScore("3/8");
+    });
+    it("score without rounding and penalty", () => {
+      const preview = editItem.header.preview();
+
+      question.header.edit();
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
+
+      question.selectRoundingType("None");
+
+      question.header.preview();
+
+      question.selectAnswerChoice(queData.forPenaltyScoring);
+
+      preview.checkScore("3.5/8");
+    });
+
+    it("test score with alternate answer", () => {
+      // question.clickOnAdvancedOptions();
+
+      question.header.edit();
+
+      question.addAlternate();
+
+      question.selectAnswerChoice(queData.forScoringAltAns);
+
+      question.getPoints().type("{selectall}16");
+
+      const preview = question.header.preview();
+
+      preview.checkOnShowAnswer();
+
+      itemPreview.verifyQuestionResponseCard(
+        queData.qShortKey,
+        queData.attemptData,
+        attemptTypes.ALTERNATE,
+        true,
+        0,
+        true
+      );
+
+      question.selectAnswerChoice(queData.forScoringAltAns);
+
+      preview.checkOnCheckAnswer();
+      itemPreview.verifyQuestionResponseCard(queData.qShortKey, queData.attemptData, attemptTypes.ALTERNATE);
+
+      preview.checkScore("16/16");
     });
   });
 };

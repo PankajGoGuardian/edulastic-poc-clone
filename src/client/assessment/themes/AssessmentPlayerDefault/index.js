@@ -229,6 +229,7 @@ class AssessmentPlayerDefault extends React.Component {
       theme,
       items,
       isFirst,
+      isLast,
       currentItem,
       itemRows,
       evaluation,
@@ -389,6 +390,7 @@ class AssessmentPlayerDefault extends React.Component {
             zoomLevel={headerZoom}
             overlayStyle={navZoomStyle}
             disabled={isFirst()}
+            isLast={isLast()}
             moveToPrev={moveToPrev}
             moveToNext={moveToNext}
             showSettingIcon={showSettingIcon}

@@ -1,4 +1,5 @@
 import React from "react";
+import { IconSend } from "@edulastic/icons";
 import { Tooltip } from "../../../common/utils/helpers";
 import {
   ControlBtn,
@@ -30,6 +31,7 @@ const PlayerHeader = ({
   zoomLevel,
   overlayStyle,
   disabled,
+  isLast,
   moveToPrev,
   moveToNext,
   showSettingIcon,
@@ -107,13 +109,14 @@ const PlayerHeader = ({
                         skin
                         type="primary"
                         data-cy="next"
-                        icon="right"
+                        icon={isLast ? null : "right"}
                         onClick={e => {
                           moveToNext();
                           e.target.blur();
                         }}
                       >
-                        Next
+                        {isLast && <IconSend />}
+                        {isLast ? "SUBMIT" : "NEXT"}
                       </ControlBtn.Next>
                     </Tooltip>
                   </>

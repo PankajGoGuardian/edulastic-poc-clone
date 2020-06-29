@@ -142,11 +142,20 @@ const Next = styled(Button)`
   height: 40px;
   width: 100px;
   margin-left: 5px;
+  display: flex;
+  align-items: center;
+  svg {
+    fill: ${({ theme }) => theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+    margin-right: 5px;
+  }
   &:hover,
   &:focus {
     background: ${({ theme }) => theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
     color: ${({ theme }) => theme.widgets.assessmentPlayers.mainContentBgColor};
     border: ${({ theme }) => `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
+    svg {
+      fill: ${({ theme }) => theme.widgets.assessmentPlayers.mainContentBgColor};
+    }
   }
 `;
 export default {

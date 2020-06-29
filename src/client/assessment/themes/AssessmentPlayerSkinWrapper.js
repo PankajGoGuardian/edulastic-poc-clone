@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { test, questionType } from "@edulastic/constants";
+import { FlexContainer } from "@edulastic/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { FlexContainer } from "@edulastic/common";
 import PracticePlayerHeader from "./AssessmentPlayerSimple/PlayerHeader";
 import DocBasedPlayerHeader from "./AssessmentPlayerDocBased/PlayerHeader";
 import DefaultAssessmentPlayerHeader from "./AssessmentPlayerDefault/PlayerHeader";

@@ -51,7 +51,12 @@ class AdminSubHeader extends Component {
             ) : null}
             <StyledTabPane tab="Test Settings" key="Test Settings" />
             <StyledTabPane tab="Term" key="Term" />
-            <StyledTabPane tab="Interested Standards" key="Interested Standards" />
+            {role === "district-admin" ?
+            <StyledTabPane tab="District Standards" key="Interested Standards" />
+            : null}
+            {role === "school-admin" ?
+            <StyledTabPane tab="School Standards" key="Interested Standards" />
+            : null}
             <StyledTabPane tab="Performance Bands" key="Performance Bands" />
             <StyledTabPane tab="Standards Proficiency" key="Standards Proficiency" />
           </StyledSubMenu>

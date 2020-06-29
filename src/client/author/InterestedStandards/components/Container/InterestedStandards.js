@@ -215,14 +215,14 @@ class InterestedStandards extends Component {
             <Row>
               <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
                 <StyledCheckbox onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
-                  Show all standards to the users
+                  Allow teachers to view and use other standards
                 </StyledCheckbox>
                 <StyledCheckbox
                   onChange={this.updatePreferences}
                   name="includeOtherStandards"
                   checked={includeOtherStandards}
                 >
-                  Include other standards opted by the users
+                  Make the teacher-selected standards visible to all
                 </StyledCheckbox>
                 <Button
                   style={{ width: "260px" }}

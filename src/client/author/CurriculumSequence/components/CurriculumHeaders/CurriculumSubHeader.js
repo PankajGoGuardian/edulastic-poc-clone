@@ -10,7 +10,6 @@ import {
   smallDesktopWidth,
   tabletWidth,
   titleColor,
-  mediumDesktopExactWidth,
   extraDesktopWidthMax
 } from "@edulastic/colors";
 import { IconBook, IconGraduationCap } from "@edulastic/icons";
@@ -389,13 +388,8 @@ const StyledButton = styled(EduButton)`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 9px;
     width: 128px;
-    height: 32px;
-    font-weight: 600;
-  }
-
-  @media (max-width: ${mediumDesktopExactWidth}) {
-    font-size: 9px;
     height: ${props => props.height || "32px"};
+    font-weight: 600;
   }
 
   @media (max-width: ${smallDesktopWidth}) {
@@ -446,7 +440,7 @@ const SubHeaderInfoCard = styled.div`
     margin-left: 0px;
   }
 
-  @media (max-width: ${mediumDesktopExactWidth}) {
+  @media (max-width: ${extraDesktopWidthMax}) {
     svg {
       width: 12px;
       height: 12px;

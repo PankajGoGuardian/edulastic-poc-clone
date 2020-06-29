@@ -2,7 +2,7 @@ import { lightGrey5, testTypeColor, themeColor, white } from "@edulastic/colors"
 import { FlexContainer, notification } from "@edulastic/common";
 import { testActivityStatus, roleuser } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
-import { Avatar, Button, Dropdown, Menu } from "antd";
+import { Avatar, Button, Dropdown, Menu, Col } from "antd";
 import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
@@ -42,7 +42,6 @@ import {
   AssignmentRowContainer,
   DragHandle,
   ModalWrapper,
-  FirstColumn,
   IconActionButton,
   LastColumn,
   CustomIcon,
@@ -853,7 +852,7 @@ class ModuleRow extends Component {
                             )}
                             {isTestType && (
                               <Fragment>
-                                <FirstColumn
+                                <Col
                                   data-cy="assigment-row-first"
                                   urlHasUseThis={urlHasUseThis}
                                   style={{
@@ -876,7 +875,7 @@ class ModuleRow extends Component {
                                     </ModuleDataName>
                                     {isDesktop && testTags}
                                   </ModuleDataWrapper>
-                                </FirstColumn>
+                                </Col>
                                 {assessmentColums}
                               </Fragment>
                             )}

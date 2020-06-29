@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Dropdown, Icon, Menu } from "antd";
+import { Dropdown, Icon, Menu, Col } from "antd";
 import { IconMoreVertical, IconVerified } from "@edulastic/icons";
 import { lightGrey5, themeColor, themeColorLighter } from "@edulastic/colors";
 import { StyledLabel, StyledTag } from "../../../Reports/common/styled";
@@ -10,7 +10,6 @@ import {
   ModuleHeader,
   ModuleID,
   ModuleHeaderData,
-  FirstColumn,
   ModuleTitleWrapper,
   ModuleTitle,
   ModuleTitlePrefix,
@@ -131,7 +130,7 @@ const ModuleRowView = props => {
         <span>{moduleId || moduleIndex + 1}</span>
       </ModuleID>
       <ModuleHeaderData>
-        <FirstColumn
+        <Col
           urlHasUseThis={urlHasUseThis}
           style={{
             ...moduleInlineStyle,
@@ -163,7 +162,7 @@ const ModuleRowView = props => {
               dangerouslySetInnerHTML={{ __html: collapsed ? toPreviewDescription : description }}
             />
           )}
-        </FirstColumn>
+        </Col>
         <ProgressBars
           isDesktop={isDesktop}
           isStudent={isStudent}

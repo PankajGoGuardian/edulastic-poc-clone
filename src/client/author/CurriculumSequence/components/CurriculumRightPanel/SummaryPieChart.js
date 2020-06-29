@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import moment from "moment";
 import styled from "styled-components";
-import { extraDesktopWidthMax, themeColorLighter, greyThemeDark1, titleColor } from "@edulastic/colors";
+import { themeColorLighter, greyThemeDark1, titleColor } from "@edulastic/colors";
 import { PieChart, Pie, Sector, Cell } from "recharts";
 import {
   StyledProgressDiv,
@@ -136,17 +136,15 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
 export default SummaryPieChart;
 
 const ChartContainer = styled(StyledProgressDiv)`
-  @media (max-width: ${extraDesktopWidthMax}) {
-    & .recharts-layer tspan {
-      font-size: 10px;
-    }
+  & .recharts-layer tspan {
+    font-size: 10px;
+  }
 
-    & .hour-text {
-      font-size: 29px;
-    }
+  & .hour-text {
+    font-size: 29px;
+  }
 
-    & .min-text {
-      font-size: 10px;
-    }
+  & .min-text {
+    font-size: 10px;
   }
 `;

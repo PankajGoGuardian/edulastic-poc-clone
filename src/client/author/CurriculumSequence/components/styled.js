@@ -11,7 +11,6 @@ import {
   tabletWidth,
   themeColor,
   white,
-  mediumDesktopExactWidth,
   extraDesktopWidthMax,
   smallDesktopWidth,
   mobileWidthLarge
@@ -86,13 +85,6 @@ export const StyledCol = styled(Col)`
   padding-right: ${({ paddingRight }) => (paddingRight ? `${paddingRight} !important` : "")};
   width: ${({ width }) => width};
   margin-left: ${({ marginLeft }) => marginLeft};
-`;
-
-export const FirstColumn = styled(Col)`
-/* width: ${props => (props.urlHasUseThis ? "calc(100% - 550px)" : props.reviewWidth)};
-@media (max-width: ${mediumDesktopExactWidth}) {
-  width: ${props => (props.urlHasUseThis ? "calc(100% - 500px)" : props.reviewWidth)};
-} */
 `;
 
 export const InfoColumnsMobile = styled(StyledCol)`

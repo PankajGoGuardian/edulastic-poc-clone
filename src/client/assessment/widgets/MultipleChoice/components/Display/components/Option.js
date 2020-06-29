@@ -63,7 +63,8 @@ const Option = props => {
   if (showAnswer) {
     let validAnswers = [];
     if (!isEmpty(validation)) {
-      validAnswers = flatten([validation.validResponse, ...validation.altResponses].map(_item => _item.value));
+      const { validResponse = {}, altResponses = [] } = validation;
+      validAnswers = flatten([validResponse, ...altResponses].map(_item => _item.value));
     }
 
     if (validAnswers.includes(item.value)) {

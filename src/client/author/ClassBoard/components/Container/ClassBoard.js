@@ -153,7 +153,7 @@ class ClassBoard extends Component {
 
   handleScroll = () => {
     const { hasStickyHeader } = this.state;
-    const elementTop = this.disneyCardsContainerRef.current ?.getBoundingClientRect().top || 0;
+    const elementTop = this.disneyCardsContainerRef.current?.getBoundingClientRect().top || 0;
     if (elementTop < 100 && !hasStickyHeader) {
       this.setState({ hasStickyHeader: true });
     } else if (elementTop > 100 && hasStickyHeader) {
@@ -176,7 +176,7 @@ class ClassBoard extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { assignmentId, classId } = match.params;
-    const filterCriteria = activity => activity ?.testActivityId;
+    const filterCriteria = activity => activity?.testActivityId;
     if (additionalData.testId !== prevState.testId || !prevProps.testActivity.length) {
       const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       if (firstStudentId)
@@ -743,7 +743,7 @@ class ClassBoard extends Component {
         />
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb breadCrumb={location ?.state ?.breadCrumb} />
+            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb} />
             <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton
@@ -759,7 +759,7 @@ class ClassBoard extends Component {
                   disabled={!firstStudentId || !isItemsVisible || isLoading}
                   active={selectedTab === "Student"}
                   onClick={e => {
-                    const _testActivityId = testActivity ?.find(x => x.studentId === firstStudentId) ?.testActivityId;
+                    const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
                     setCurrentTestActivityId(_testActivityId);
                     if (!isItemsVisible) {
                       return;
@@ -955,7 +955,7 @@ class ClassBoard extends Component {
                     enrollmentStatus={enrollmentStatus}
                   />
                 ) : (
-                  <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
+                    <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
                   )}
               </div>
 
@@ -1123,7 +1123,7 @@ class ClassBoard extends Component {
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         SUBMITTED ON :
                         <span style={{ color: black }}>
-                          {moment(studentTestActivity.endDate).format("MMM DD, YYYY")}
+                          {moment(studentTestActivity.endDate).format("MMM DD, YYYY HH:mm")}
                         </span>
                       </ScoreHeader>
                     </InfoWrapper>
@@ -1209,7 +1209,7 @@ const enhance = compose(
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       isItemsVisible: isItemVisibiltySelector(state),
       removedStudents: removedStudentsSelector(state),
-      studentViewFilter: state ?.author_classboard_testActivity ?.studentViewFilter,
+      studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state)
     }),

@@ -327,7 +327,7 @@ export const GraphWrapper = styled.div`
 `;
 
 export const InfoWrapper = styled.div`
-  min-width: 200px;
+  min-width: 205px;
   @media (max-width: ${mobileWidthMax}) {
     display: flex;
     flex-direction: column;

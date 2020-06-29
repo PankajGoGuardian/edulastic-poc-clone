@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Icon, Radio, Button, message, Row } from "antd";
-import { EduButton,notification} from "@edulastic/common";
+import { EduButton,notification, RadioBtn } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -29,7 +29,7 @@ import {
   RadioWrap
 } from "./styled";
 import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
-import { RadioBtn } from "@edulastic/common";
+
 
 import {
   updateStandardsProficiencyAction,
@@ -113,7 +113,7 @@ class StandardsProficiencyTable extends React.Component {
       masteryLevel: "Proficiency 1",
       shortName: "P1",
       threshold: 0,
-      color: "#ebdd54"
+      color: "#a1c3ea"
     };
 
     data.map(row => {

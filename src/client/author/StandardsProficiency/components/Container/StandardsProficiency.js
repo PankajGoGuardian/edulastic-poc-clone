@@ -51,28 +51,28 @@ const defaultData = {
       shortName: "E",
       threshold: 90,
       masteryLevel: "Exceeds Mastery",
-      color: "#3db04e"
+      color: "#F7C200"
     },
     {
       score: 3,
       shortName: "M",
       threshold: 80,
       masteryLevel: "Mastered",
-      color: "#74e27a"
+      color: "#C8EB9B"
     },
     {
       score: 2,
       shortName: "A",
       threshold: 70,
       masteryLevel: "Almost Mastered",
-      color: "#ebdd54"
+      color: "#F7EF2D"
     },
     {
       score: 1,
       shortName: "N",
       threshold: 0,
       masteryLevel: "Not Mastered",
-      color: "#fec571"
+      color: "#F2BCBD"
     }
   ]
 };
@@ -413,7 +413,7 @@ const enhance = connect(
     setEditingIndex: setEditingIndexAction,
     setName: setStandardsProficiencyProfileNameAction,
     setEditable: setEDitableAction,
-    setConflitAction: setConflitAction
+    setConflitAction
   }
 );
 

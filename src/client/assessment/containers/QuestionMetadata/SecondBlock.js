@@ -126,7 +126,61 @@ const SecondBlock = ({
         </Col>
         <Col md={6}>
           <ItemBody>
-            <Label>{t("component.options.tags")}</Label>
+          <Label>{t("component.options.blooomTaxonomy")}</Label>
+            <Select
+              data-cy="bloomsTaxonomy"
+              style={{ width: "100%" }}
+              placeholder={t("component.options.blooomTaxonomy")}
+              onSelect={onQuestionDataSelect("bloomsTaxonomy")}
+              value={bloomsTaxonomy}
+              suffixIcon={<SelectSuffixIcon type="caret-down" />}
+            >
+              <Select.Option key={"Select Bloom's Taxonomy"} value="">
+                Select Bloom's Taxonomy
+              </Select.Option>
+              {bloomsTaxonomyOptions.map(x => (<Select.Option key={x.toLowerCase()} value={x.toLowerCase()}>
+                {x}
+              </Select.Option>))}
+
+            </Select>
+              
+          </ItemBody>
+        </Col>
+        {(userFeatures.isPublisherAuthor || userFeatures.isCurator) && (
+          <Col md={6}>
+            <ItemBody>
+              <Label>Collections</Label>
+              <Select
+                mode="multiple"
+                className="tagsSelect"
+                data-cy="collectionsSelect"
+                style={{ marginBottom: 0, width: "100%" }}
+                placeholder="Please select"
+                value={filteredCollections.flatMap(c => c.bucketIds)}
+                onChange={(value, options) => handleCollectionsSelect(value, options)}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                suffixIcon={<SelectSuffixIcon type="caret-down" />}
+                autoFocus={highlightCollection}
+              >
+                {orgCollections.map(o => (
+                  <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                    {`${o.collectionName} - ${o.name}`}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ItemBody>
+            {recentCollectionsList ?.length > 0 && (
+              <RecentCollectionsList
+                recentCollectionsList={recentCollectionsList}
+                collections={collections || []}
+                handleCollectionsSelect={handleRecentCollectionsSelect}
+              />
+            )}
+          </Col>
+        )}
+        <Col md={6}>
+          <ItemBody>
+          <Label>{t("component.options.tags")}</Label>
             {searchValue.length && !searchValue.trim().length ? (
               <Select
                 mode="multiple"
@@ -169,59 +223,6 @@ const SecondBlock = ({
                   ))}
               </Select>
               )}
-          </ItemBody>
-        </Col>
-        {(userFeatures.isPublisherAuthor || userFeatures.isCurator) && (
-          <Col md={6}>
-            <ItemBody>
-              <Label>Collections</Label>
-              <Select
-                mode="multiple"
-                className="tagsSelect"
-                data-cy="collectionsSelect"
-                style={{ marginBottom: 0, width: "100%" }}
-                placeholder="Please select"
-                value={filteredCollections.flatMap(c => c.bucketIds)}
-                onChange={(value, options) => handleCollectionsSelect(value, options)}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                suffixIcon={<SelectSuffixIcon type="caret-down" />}
-                autoFocus={highlightCollection}
-              >
-                {orgCollections.map(o => (
-                  <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
-                    {`${o.collectionName} - ${o.name}`}
-                  </Select.Option>
-                ))}
-              </Select>
-            </ItemBody>
-            {recentCollectionsList ?.length > 0 && (
-              <RecentCollectionsList
-                recentCollectionsList={recentCollectionsList}
-                collections={collections || []}
-                handleCollectionsSelect={handleRecentCollectionsSelect}
-              />
-            )}
-          </Col>
-        )}
-        <Col md={6}>
-          <ItemBody>
-            <Label>{t("component.options.blooomTaxonomy")}</Label>
-            <Select
-              data-cy="bloomsTaxonomy"
-              style={{ width: "100%" }}
-              placeholder={t("component.options.blooomTaxonomy")}
-              onSelect={onQuestionDataSelect("bloomsTaxonomy")}
-              value={bloomsTaxonomy}
-              suffixIcon={<SelectSuffixIcon type="caret-down" />}
-            >
-              <Select.Option key={"Select Bloom's Taxonomy"} value="">
-                Select Bloom's Taxonomy
-              </Select.Option>
-              {bloomsTaxonomyOptions.map(x => (<Select.Option key={x.toLowerCase()} value={x.toLowerCase()}>
-                {x}
-              </Select.Option>))}
-
-            </Select>
           </ItemBody>
         </Col>
       </Row>

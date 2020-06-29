@@ -34,6 +34,10 @@ if (window.location?.search?.includes("showCLIBanner=1") && !sessionStorage?.cli
   sessionStorage.cliBannerVisible = true;
 }
 
+if (window.NodeList && !NodeList.prototype.forEach) {
+  NodeList.prototype.forEach = Array.prototype.forEach;
+}
+
 window.isMobileDevice = isMobileDevice();
 window.isIOS = isIOS();
 

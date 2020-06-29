@@ -4,7 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
-import { Col, message } from "antd";
+import { Col } from "antd";
 import { notification } from "@edulastic/common";
 import { canvasApi } from "@edulastic/api";
 import Header from "./Header";
@@ -49,7 +49,7 @@ const Container = ({
   const handleAuthorization = async () => {
     const result = await canvasApi.getCanvasAuthURI(school?.schoolId || institutionIds[0]);
     if (!result.userAuthenticated) {
-      const subscriptionTopic = `canvas:${userInfo.districtId}_${userInfo._id}_${userInfo.username ||
+      const subscriptionTopic = `canvas:${userInfo.districtIds[0]}_${userInfo._id}_${userInfo.username ||
         userInfo.email ||
         ""}`;
       authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
@@ -57,7 +57,7 @@ const Container = ({
           setIsAuthorized(true);
         })
         .catch(() => {
-          notification({ msg:"canvasAuthenticationFailed"});
+          notification({ msg: "canvasAuthenticationFailed" });
         });
     } else {
       setIsAuthorized(true);

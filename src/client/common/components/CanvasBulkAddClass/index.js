@@ -358,7 +358,7 @@ const CanvasBulkAddClass = ({
         bordered
         loading={isFetchingCanvasData || isLoading}
       />
-      <ButtonContainer justifyContent="space-around">
+      <ButtonContainer justifyContent={fromManageClass ? "space-around" : "space-between"}>
         {fromManageClass ? (
           <Button onClick={handleFinish}>Sync</Button>
         ) : (

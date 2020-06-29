@@ -149,7 +149,7 @@ class SimpleOptions extends React.Component {
             state.maxAttempts = 1;
           } else {
             state.releaseScore = releaseGradeLabels.WITH_ANSWERS;
-            state.maxAttempts = 3;
+            state.maxAttempts = 1;
           }
           break;
         }

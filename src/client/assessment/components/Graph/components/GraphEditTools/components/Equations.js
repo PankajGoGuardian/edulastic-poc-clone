@@ -159,6 +159,10 @@ class Equations extends Component {
     this.setApiLatex(eqs[index], index);
   };
 
+  componentWillUnmount() {
+    this.handleAddEquation();
+  }
+
   render() {
     const { t } = this.props;
     const { showMathModal, selectedEqIndex, eqs, changedEqs, newEquation } = this.state;

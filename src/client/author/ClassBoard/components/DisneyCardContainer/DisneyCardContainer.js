@@ -111,7 +111,7 @@ class DisneyCardContainer extends Component {
 
     const showLoader = () => <Spin size="small" />;
     let styledCard = [];
-    const classess = detailedClasses?.filter(({ _id }) => _id === classId);
+    const classess = detailedClasses ?.filter(({ _id }) => _id === classId);
 
     if (testActivity.length > 0) {
       /**
@@ -126,9 +126,9 @@ class DisneyCardContainer extends Component {
         };
 
         let hasUsedScratchPad = false;
-        student?.questionActivities.every(questionActivity => {
+        student ?.questionActivities.every(questionActivity => {
           // check if this breaks after we find a true value.
-          if (questionActivity?.scratchPad?.scratchpad === true) {
+          if (questionActivity ?.scratchPad ?.scratchpad === true) {
             hasUsedScratchPad = true;
             return false;
           }
@@ -146,9 +146,9 @@ class DisneyCardContainer extends Component {
           status.color = yellow;
         } else if (student.status === "submitted") {
           status.status = student.status;
-          if (student?.graded === "GRADED") {
+          if (student ?.graded === "GRADED") {
             status.status = "Graded";
-          } else if (student?.graded === "IN GRADING") {
+          } else if (student ?.graded === "IN GRADING") {
             status.status = "In Grading";
           }
           status.color = themeColorLighter;
@@ -171,17 +171,17 @@ class DisneyCardContainer extends Component {
               <ExclamationMark />
             </span>
           ) : (
-            ""
-          );
+              ""
+            );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
         const pastDueTag =
           (actualDueDate || dueDate) && status.status !== "Absent"
             ? formatStudentPastDueTag({
-                status: student.status,
-                dueDate: actualDueDate || dueDate,
-                endDate: student.endDate
-              })
+              status: student.status,
+              dueDate: actualDueDate || dueDate,
+              endDate: student.endDate
+            })
             : null;
 
         const studentData = (
@@ -190,8 +190,7 @@ class DisneyCardContainer extends Component {
             bordered={false}
             key={index}
             isClickEnable={canShowResponse}
-            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
-            onMouseEnter={() => this.setState({ hoverActiveStudentActive: student.studentId })}
+            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => { })}
             onMouseLeave={() => this.setState({ hoverActiveStudentActive: null })}
           >
             <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
@@ -217,12 +216,12 @@ class DisneyCardContainer extends Component {
                     isLink={viewResponseStatus.includes(status.status)}
                     title={isPresentationMode ? "" : student.userName}
                     onClick={e =>
-                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
-                    }
+                        viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                      }
                   >
                     {getAvatarName(student.studentName || "Anonymous")}
                   </CircularDiv>
-                )}
+                  )}
                 <StyledName>
                   <StyledParaF
                     isLink={viewResponseStatus.includes(status.status)}
@@ -256,7 +255,7 @@ class DisneyCardContainer extends Component {
                     </>
                   ) : (
                     <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
-                  )}
+                    )}
                 </StyledName>
                 <RightAlignedCol>
                   <Row>
@@ -294,61 +293,61 @@ class DisneyCardContainer extends Component {
                   </Row>
                 </RightAlignedCol>
               </PaginationInfoF>
-
-              <PaginationInfoS>
-                <PerfomanceSection>
-                  <StyledFlexDiv>
-                    <StyledParaFF>Performance</StyledParaFF>
-                    <StyledParaSSS data-cy="studentPerformance">
-                      {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
-                    </StyledParaSSS>
-                  </StyledFlexDiv>
-                  <StyledFlexDiv>
-                    <StyledParaSS data-cy="studentScore">
-                      {round(student.score, 2) || 0} / {student.maxScore || 0}
-                    </StyledParaSS>
-                    {student.testActivityId && status.status !== "Absent" && (
-                      <PagInfo
-                        data-cy="viewResponse"
-                        disabled={!isItemsVisible}
-                        onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
-                      >
-                        {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
-                        VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-                        {/* </Link> */}
-                      </PagInfo>
-                    )}
-                  </StyledFlexDiv>
-                </PerfomanceSection>
-              </PaginationInfoS>
-              <PaginationInfoT data-cy="questions">
-                {student.questionActivities
-                  .filter(x => !x.disabled)
-                  .map((questionAct, questionIndex) => {
-                    const weight = questionAct.weight;
-                    if (questionAct.notStarted) {
-                      return <SquareColorDisabled key={questionIndex} />;
-                    }
-                    if (questionAct.skipped && questionAct.score === 0) {
-                      return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
-                    }
-                    if (questionAct.graded === false || questionAct.pendingEvaluation) {
-                      return <SquareColorBlue key={questionIndex} />;
-                    }
-                    if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
-                      return <SquareColorDivGreen key={questionIndex} />;
-                    }
-                    if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
-                      return <SquareColorDivYellow key={questionIndex} />;
-                    }
-                    if (questionAct.score === 0) {
-                      return <SquareColorDivPink key={questionIndex} />;
-                    }
-                    return null;
-                  })}
-              </PaginationInfoT>
-
-              {recentAttemptsGrouped?.[student.studentId]?.length > 0 &&
+              <div onMouseEnter={() => this.setState({ hoverActiveStudentActive: student.studentId })}>
+                <PaginationInfoS>
+                  <PerfomanceSection>
+                    <StyledFlexDiv>
+                      <StyledParaFF>Performance</StyledParaFF>
+                      <StyledParaSSS data-cy="studentPerformance">
+                        {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
+                      </StyledParaSSS>
+                    </StyledFlexDiv>
+                    <StyledFlexDiv>
+                      <StyledParaSS data-cy="studentScore">
+                        {round(student.score, 2) || 0} / {student.maxScore || 0}
+                      </StyledParaSS>
+                      {student.testActivityId && status.status !== "Absent" && (
+                        <PagInfo
+                          data-cy="viewResponse"
+                          disabled={!isItemsVisible}
+                          onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
+                        >
+                          {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
+                          VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+                          {/* </Link> */}
+                        </PagInfo>
+                      )}
+                    </StyledFlexDiv>
+                  </PerfomanceSection>
+                </PaginationInfoS>
+                <PaginationInfoT data-cy="questions">
+                  {student.questionActivities
+                    .filter(x => !x.disabled)
+                    .map((questionAct, questionIndex) => {
+                      const weight = questionAct.weight;
+                      if (questionAct.notStarted) {
+                        return <SquareColorDisabled key={questionIndex} />;
+                      }
+                      if (questionAct.skipped && questionAct.score === 0) {
+                        return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
+                      }
+                      if (questionAct.graded === false || questionAct.pendingEvaluation) {
+                        return <SquareColorBlue key={questionIndex} />;
+                      }
+                      if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
+                        return <SquareColorDivGreen key={questionIndex} />;
+                      }
+                      if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
+                        return <SquareColorDivYellow key={questionIndex} />;
+                      }
+                      if (questionAct.score === 0) {
+                        return <SquareColorDivPink key={questionIndex} />;
+                      }
+                      return null;
+                    })}
+                </PaginationInfoT>
+              </div>
+              {recentAttemptsGrouped ?.[student.studentId] ?.length > 0 &&
                 hoverActiveStudentActive === student.studentId && (
                   <RecentAttemptsContainer>
                     <PaginationInfoS>
@@ -366,7 +365,7 @@ class DisneyCardContainer extends Component {
                             </StyledParaSSS>
                             <p>Attempt {recentAttemptsGrouped[student.studentId][0].number + 1}</p>
                           </AttemptDiv>
-                          {recentAttemptsGrouped?.[student.studentId].map(attempt => (
+                          {recentAttemptsGrouped ?.[student.studentId].map(attempt => (
                             <AttemptDiv key={attempt._id || attempt.id}>
                               <StyledParaSS>
                                 {round(attempt.score, 2) || 0} / {attempt.maxScore || 0}
@@ -408,7 +407,7 @@ const withConnect = connect(state => ({
   isLoading: get(state, "classResponse.loading"),
   testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state),
-  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {}
+  recentAttemptsGrouped: state ?.author_classboard_testActivity ?.data ?.recentTestActivitiesGrouped || {}
 }));
 
 export default compose(

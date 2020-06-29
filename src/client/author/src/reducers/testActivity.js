@@ -95,9 +95,9 @@ const reducer = (state = initialState, { type, payload }) => {
             return x;
           } if (state ?.data ?.status === "DONE" || state ?.additionalData ?.endDate < Date.now()) {
             return { ...x, status: "absent", present: false };
-          } 
-            return x;
-          
+          }
+          return x;
+
         }),
         /**
          * justified use of cloneDeep because,
@@ -127,8 +127,7 @@ const reducer = (state = initialState, { type, payload }) => {
 
         const index = _st.entities.findIndex(x => x.studentId === entity.studentId);
         if (index != -1) {
-          _st.entities[index].status = "inProgress";
-          _st.entities[index].score = 0;
+
           if (_st.entities[index].testActivityId) {
             _st.currentTestActivityId = _st.entities[index].testActivityId;
           }
@@ -146,9 +145,20 @@ const reducer = (state = initialState, { type, payload }) => {
             _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId] || [];
             _st.data.recentTestActivitiesGrouped[studentId].unshift(oldAttempt);
             _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId].slice(0, 2);
+            _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(x => ({
+              _id: x._id,
+              weight: x.weight,
+              notStarted: true,
+              disabled: x.disabled,
+              testItemId: x.testItemId,
+              qids: x.qids,
+              qLabel: x.qLabel,
+              barLabel: x.barLabel
+            }));
           }
           _st.entities[index].testActivityId = entity.testActivityId;
-
+          _st.entities[index].status = "inProgress";
+          _st.entities[index].score = 0;
           const isAutoselectItems = _st.entities[index].questionActivities.some(a => !a._id);
           if (isAutoselectItems) {
             const allItems = entity.itemsToDeliverInGroup
@@ -188,9 +198,9 @@ const reducer = (state = initialState, { type, payload }) => {
             return x;
           } if (_state ?.data ?.status === "DONE" || _state ?.additionalData ?.endDate < Date.now()) {
             return { ...x, status: "absent", present: false };
-          } 
-            return x;
-          
+          }
+          return x;
+
         });
       });
 
@@ -254,27 +264,27 @@ const reducer = (state = initialState, { type, payload }) => {
             if (itemIndex == -1) {
               _st.entities[entityIndex].questionActivities.push(questionItem);
             } else if (!maxScore && (score || score === 0)) {
-                delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
-                const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
-                _st.entities[entityIndex].questionActivities[itemIndex] = { ...oldQAct, ...questionItem, score };
-              } else {
-                delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
-                const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
-                if (oldQAct.timeSpent) {
-                  questionItem.timeSpent = (questionItem.timeSpent || 0) + oldQAct.timeSpent;
-                }
-                _st.entities[entityIndex].questionActivities[itemIndex] = {
-                  ...oldQAct,
-                  ...questionItem,
-                  score,
-                  maxScore,
-                  responseToDisplay: getResponseTobeDisplayed(
-                    _st.data.testItemsDataKeyed[questionItem.testItemId],
-                    questionItem.userResponse,
-                    questionItem._id
-                  )
-                };
+              delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
+              const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
+              _st.entities[entityIndex].questionActivities[itemIndex] = { ...oldQAct, ...questionItem, score };
+            } else {
+              delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
+              const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
+              if (oldQAct.timeSpent) {
+                questionItem.timeSpent = (questionItem.timeSpent || 0) + oldQAct.timeSpent;
               }
+              _st.entities[entityIndex].questionActivities[itemIndex] = {
+                ...oldQAct,
+                ...questionItem,
+                score,
+                maxScore,
+                responseToDisplay: getResponseTobeDisplayed(
+                  _st.data.testItemsDataKeyed[questionItem.testItemId],
+                  questionItem.userResponse,
+                  questionItem._id
+                )
+              };
+            }
             if (score || score === 0) {
               _st.entities[entityIndex].score = _st.entities[entityIndex].questionActivities.reduce(
                 (acc, x) => acc + (x.score || 0),
@@ -297,12 +307,6 @@ const reducer = (state = initialState, { type, payload }) => {
           for (const index of studentIndexes) {
             _st.entities[index].status = "redirected";
             _st.entities[index].redirected = true;
-            _st.entities[index].score = 0;
-            _st.entities[index].testActivityId = undefined;
-            _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(({ _id }) => ({
-              _id,
-              notStarted: true
-            }));
           }
         }
       });

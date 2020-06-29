@@ -253,33 +253,33 @@ export function stripHtml(html) {
 
 const extractFunctions = {
   [questionType.MULTIPLE_CHOICE]: (question = {}, userResponse = []) => userResponse
-      .map(r => question ?.options ?.findIndex(x => x ?.value === r))
-      .map(x => alphabets[x] ?.toUpperCase())
-      .join(","),
+    .map(r => question ?.options ?.findIndex(x => x ?.value === r))
+    .map(x => alphabets[x] ?.toUpperCase())
+    .join(","),
   [questionType.CLOZE_DRAG_DROP]: (question = {}, userResponse = []) => typeof userResponse === "object"
-      ? userResponse
-        .filter(x => x)
-        .map(r => question ?.options ?.find(x => x ?.value === r) ?.label)
-        .map(x => stripHtml(x || ""))
-        .filter(x => x)
-        .join(",")
-      : userResponse,
+    ? userResponse
+      .filter(x => x)
+      .map(r => question ?.options ?.find(x => x ?.value === r) ?.label)
+      .map(x => stripHtml(x || ""))
+      .filter(x => x)
+      .join(",")
+    : userResponse,
   [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) => typeof userResponse === "object"
-      ? userResponse
-        .filter(x => x)
-        .map(x => x ?.value)
-        .map(x => stripHtml(x || ""))
-        .filter(x => x)
-        .join(",")
-      : userResponse,
+    ? userResponse
+      .filter(x => x)
+      .map(x => x ?.value)
+      .map(x => stripHtml(x || ""))
+      .filter(x => x)
+      .join(",")
+    : userResponse,
   [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) => typeof userResponse === "object"
-      ? userResponse
-        .filter(x => x)
-        .map(x => x ?.value)
-        .map(x => stripHtml(x || ""))
-        .filter(x => x)
-        .join(",")
-      : userResponse,
+    ? userResponse
+      .filter(x => x)
+      .map(x => x ?.value)
+      .map(x => stripHtml(x || ""))
+      .filter(x => x)
+      .join(",")
+    : userResponse,
   [questionType.MATH]: (question, userResponse = "") => {
     const restrictedMathTypes = ["Matrices", "Complete the Equation", "Formula Essay"];
     if (restrictedMathTypes.includes(question.title)) return "TEI";
@@ -305,9 +305,9 @@ export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId
     return "TEI";
   } if (extractFunctions[qType]) {
     return extractFunctions[qType](question, userResponse);
-  } 
-    return userResponse ? "TEI" : "";
-  
+  }
+  return userResponse ? "TEI" : "";
+
 }
 
 export const transformGradeBookResponse = (
@@ -412,24 +412,7 @@ export const transformGradeBookResponse = (
           };
         }
         const testActivity = studentTestActivities[studentId];
-        if (testActivity.redirect && !studentResponse) {
-          return {
-            studentId,
-            studentName: fullName,
-            userName,
-            email,
-            fakeName,
-            icon,
-            color: fakeFirstName,
-            present: true,
-            status: "redirected",
-            redirected: true,
-            maxScore: testMaxScore,
-            _score: testActivity.score,
-            number: testActivity.number,
-            questionActivities: emptyQuestionActivities.map(x => ({ ...x, userId: studentId }))
-          };
-        }
+        
 
         // TODO: for now always present
         const present = true;
@@ -545,7 +528,7 @@ export const transformGradeBookResponse = (
           fakeName,
           icon,
           color: fakeFirstName,
-          status: displayStatus,
+          status: testActivity.redirect && !studentResponse ? "redirected" : displayStatus,
           present,
           check: false,
           graded,

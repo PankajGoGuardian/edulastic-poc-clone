@@ -22,10 +22,10 @@ function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges, disableField
     form.setFieldsValue({
       studentDeltaMergeEnabled: rosterSyncConfig.studentDeltaMergeEnabled,
       studentFullMergeEnabled: rosterSyncConfig.studentFullMergeEnabled,
-      studentMergeAttribute: rosterSyncConfig.studentMergeAttribute,
+      studentMergeAttribute: rosterSyncConfig.studentMergeAttribute || "email",
       teacherDeltaMergeEnabled: rosterSyncConfig.teacherDeltaMergeEnabled,
       teacherFullMergeEnabled: rosterSyncConfig.teacherFullMergeEnabled,
-      teacherMergeAttribute: rosterSyncConfig.teacherMergeAttribute
+      teacherMergeAttribute: rosterSyncConfig.teacherMergeAttribute || "email"
     });
   };
   useEffect(() => {

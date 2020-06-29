@@ -120,6 +120,7 @@ export const Widget = styled.div`
     font-size: inherit;
     font-weight: 600;
     color: ${selectColor};
+    padding-top: 5px;
   }
 
   .ql-container,

@@ -37,31 +37,32 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName,
       ) : null}
     </Col>
     <Col span={12} align="right">
-      {/* Hiding for production */}
-      {/* {isSignupUsingDaURL &&
+      {isSignupUsingDaURL &&
       (!isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") &&
         !isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")) ? (
-        <div className="teacher-student-restricted-message">
-          {`${t("common.policyviolation").split(".")[0]}.`}
-          <br />
-          {`${t("common.policyviolation").split(".")[1]}.`}
-        </div>
+          <div className="teacher-student-restricted-message">
+            {`${t("common.policyviolation").split(".")[0]}.`}
+            <br />
+            {`${t("common.policyviolation").split(".")[1]}.`}
+          </div>
       ) : (
-        <>
-          <DontHaveAccountText>{t("common.donthaveanaccount")}</DontHaveAccountText>
-          <Link
-            to={
-              isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
-              isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")
-                ? getDistrictGetStartedUrl(orgShortName, orgType)
-                : getPartnerGetStartedUrl(Partners)
-            }
-          >
-            {t("common.signupbtn")}
-          </Link>
-        </>
+        // Remove this check to enable it on /login page.
+        isSignupUsingDaURL && (
+          <>
+            <DontHaveAccountText>{t("common.donthaveanaccount")}</DontHaveAccountText>
+            <Link
+              to={
+                isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
+                isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")
+                  ? getDistrictGetStartedUrl(orgShortName, orgType)
+                  : getPartnerGetStartedUrl(Partners)
+              }
+            >
+              {t("common.signupbtn")}
+            </Link>
+          </>
+        )
       )}
-      */}
     </Col>
   </RegistrationHeader>
 );
@@ -149,7 +150,7 @@ const PartnerLogo = styled.img`
 `;
 
 const CustomTooltip = props => {
-  let { className, children, ...attrs } = props;
+  const { className, children, ...attrs } = props;
 
   return (
     <Tooltip {...attrs} overlayClassName={`${className}`}>

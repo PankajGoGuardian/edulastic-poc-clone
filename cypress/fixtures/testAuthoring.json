@@ -123,7 +123,8 @@
       "CHOICE_LABEL.default",
       "CLOZE_DROPDOWN.default",
       "CLOZE_TEXT.default",
-      "MATH_NUMERIC.default"
+      "MATH_NUMERIC.default",
+      "ESSAY_RICH.default"
     ]
   },
   "TEST_SETTING": {

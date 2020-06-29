@@ -370,6 +370,10 @@ class StudentTestPage {
     });
   };
 
+  verifyEssayText = (card, attempt, attemptType) => {
+    if (attemptType != attemptTypes.SKIP) card.find(".fr-element").should("have.text", attempt);
+  };
+
   // CLOZE DRAGDROP TODO: refact and make it generic
   dragAndDropByIndex = (answer, questionIndex) => {
     this.getAnswerBox()
@@ -1002,6 +1006,11 @@ class StudentTestPage {
       case questionType.CLOZE_TEXT:
         this.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType);
         break;
+
+      case questionType.ESSAY_RICH:
+        this.verifyEssayText(cy.get("@quecard"), attempt, attemptType);
+        break;
+
       default:
         break;
     }

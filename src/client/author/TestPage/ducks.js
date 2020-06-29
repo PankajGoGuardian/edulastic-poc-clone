@@ -1191,10 +1191,10 @@ function* receiveTestByIdSaga({ payload }) {
     const userRole = yield select(getUserRole);
 
     const testType = entity?.testType;
-    const { ASSESSMENT, COMMON } = testConst.type;
+    const { ASSESSMENT, COMMON, PRACTICE } = testConst.type;
 
     const isAdmin = userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN;
-    const testTypeDefault = isAdmin ? COMMON : testType || ASSESSMENT;
+    const testTypeDefault = isAdmin ? (testType === PRACTICE ? PRACTICE : COMMON) : testType || ASSESSMENT;
     let updateForTimedAssignment = { timedAssignment: entity?.timedAssignment };
     if (entity?.timedAssignment) {
       updateForTimedAssignment = {

@@ -1,16 +1,6 @@
 import styled from "styled-components";
 import { Card, Table, Tag } from "antd";
-import {
-  secondaryTextColor,
-  smallDesktopWidth,
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  greenDark,
-  lightGreen,
-  green,
-  title,
-  white
-} from "@edulastic/colors";
+import { secondaryTextColor, smallDesktopWidth, greenDark, lightGreen, green, title, white } from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
   margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
@@ -93,6 +83,9 @@ export const TableData = styled(Table)`
     font-size: 14px;
   }
   .ant-table-thead > tr > th {
+    &:first-child {
+      min-width: 200px;
+    }
     text-align: center;
     &.main-heading {
       text-align: left;

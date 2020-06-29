@@ -21,7 +21,7 @@ export const hasValidAnswers = (type, answer) => {
     case questionType.CLOZE_TEXT:
       return !isEmpty(answer?.filter(ans => ans?.value));
     case questionType.CLOZE_IMAGE_DRAG_DROP:
-      return !isEmpty(answer?.filter(ans => !isEmpty(ans?.value)));
+      return !isEmpty(answer?.filter(ans => !isEmpty(ans)));
     case questionType.CLASSIFICATION:
       if (!isObject(answer)) {
         return false;

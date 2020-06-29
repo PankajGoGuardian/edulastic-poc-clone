@@ -788,13 +788,14 @@ class StudentTestPage {
           this.verifyQuestionLeft(index, att.length);
         }
         this.attemptQuestion(queType, attempt[queNum], attemptData);
-        this.clickOnNext(false, attempt[queNum] === attemptTypes.SKIP);
+        if (status === studentSide.IN_PROGRESS && index + 1 === Object.keys(attempt).length) this.clickOnExitTest();
+        else this.clickOnNext(false, attempt[queNum] === attemptTypes.SKIP);
       });
 
-      if (status === studentSide.IN_PROGRESS) {
+      /*  if (status === studentSide.IN_PROGRESS) {
         cy.get("svg:nth-child(2)").click({ force: true }); // TODO: remove work around solution
         this.clickOnProceed();
-      }
+      } */
       if (status === studentSide.SUBMITTED || status === studentSide.GRADED) {
         this.submitTest();
         cy.contains("Grades").should("be.visible");

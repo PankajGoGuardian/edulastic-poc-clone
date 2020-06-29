@@ -172,7 +172,10 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   indexToOption = ind => String.fromCharCode(ind + 65);
 
-  getScoreforQueNum = queNum => this.getCellforQueNum(queNum).find("span");
+  getScoreforQueNum = queNum =>
+    this.getCellforQueNum(queNum)
+      .find("span")
+      .first();
 
   getCellforQueNum = queNum => {
     const queIndex = Number(queNum.slice(1)) - 1;
@@ -401,7 +404,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.routeAPIs();
     // start with 1st student always
     this.getGridRowByStudent(studentList[0]);
-    this.getScoreforQueNum(queNum).click();
+    this.getScoreforQueNum(queNum).click({ force: true });
     this.waitForStudentData();
 
     studentList.forEach((studentName, index, item) => {

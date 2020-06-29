@@ -481,6 +481,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
   describe("> verify present-reset toggle", () => {
     it("enable the present from card view", () => {
+      lcb.header.clickOnLCBTab();
       lcb.clickOnPresent();
     });
 
@@ -673,7 +674,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           expressg.routeAPIs();
           expressg.clickOnExit();
           expressg.getGridRowByStudent(updatingResponseStudent);
-          expressg.getScoreforQueNum(queNum).click();
+          expressg.getScoreforQueNum(queNum).click({ force: true }); // force due to Q10
           // expressg.getEditResponseToggle().click(); // be default should be enabled as express grid is set to response
           expressg.waitForStudentData();
           expressg.updateResponse(

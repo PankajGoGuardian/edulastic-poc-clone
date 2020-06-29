@@ -179,7 +179,7 @@ class SummaryTest extends Component {
             <Footer>
               <ShortDescription>{t("common.nextStep")}</ShortDescription>
               <SubmitButton type="primary" onClick={finishTest} loading={savingResponse}>
-                <IconSend /> <span>{t("default:SUBMIT TEST")}</span>
+                <IconSend /> <span>{t("default:SUBMIT")}</span>
               </SubmitButton>
             </Footer>
           </Container>

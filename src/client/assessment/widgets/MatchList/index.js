@@ -13,7 +13,7 @@ const MatchList = props => {
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
   return (
     <Fragment>
-      {view === PREVIEW && itemForPreview && itemForPreview.possibleResponseGroups && (
+      {view === PREVIEW && itemForPreview  && (
         <MatchListPreview {...props} showBorder item={itemForPreview} />
       )}
       {view === EDIT && <MatchListEdit {...props} />}

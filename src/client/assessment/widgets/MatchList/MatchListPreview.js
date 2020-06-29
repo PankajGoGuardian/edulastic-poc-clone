@@ -90,7 +90,7 @@ const MatchListPreview = ({
 }) => {
   const {
     possibleResponses: posResponses,
-    possibleResponseGroups,
+    possibleResponseGroups = [],
     groupPossibleResponses,
     stimulus,
     list,

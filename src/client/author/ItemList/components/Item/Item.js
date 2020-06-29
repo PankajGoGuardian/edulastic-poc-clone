@@ -400,14 +400,14 @@ class Item extends Component {
             {windowWidth > MAX_TAB_WIDTH &&
               (page === "itemList" ? (
                 <ViewButton>
-                  <EduButton width="100px" height="40px" isGhost onClick={openPreviewModal}>
+                  <EduButton width="100px" height="36px" isGhost onClick={openPreviewModal}>
                     <IconEye />
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
                   {!hideAddRemove && (
                     <AddRemoveButton
                       selectedToCart={selectedToCart}
-                      height="40px"
+                      height="36px"
                       onClick={this.handleToggleItemToCart(item)}
                     >
                       {selectedToCart ? <IconClose /> : <IconPlus />}

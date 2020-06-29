@@ -1,5 +1,5 @@
 import { debounce, get } from "lodash";
-import { themeColor, white } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 import { HeaderTabs, withWindowSizes, EduButton } from "@edulastic/common";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
@@ -16,13 +16,11 @@ import {
 } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
-import { Button } from "antd";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { ButtonLink } from "..";
 import { clearEvaluationAction } from "../../../../../assessment/actions/evaluation";
 import { Tooltip } from "../../../../../common/utils/helpers";
 import { getCurrentQuestionSelector } from "../../../../sharedDucks/questions";
@@ -154,13 +152,14 @@ class ButtonBar extends Component {
                   (itemStatus === "draft" ? (
                     <>
                       {isTestFlow && (
-                        <EduButton data-cy="saveCancel" onClick={onCancel}>
+                        <EduButton isBlue data-cy="saveCancel" onClick={onCancel}>
                           <IconClose />
                           CANCEL
                         </EduButton>
                       )}
                       <Tooltip title="Save">
                         <EduButton
+                          isBlue
                           id={getFormattedAttrId(`${qTitle}-save`)}
                           disabled={disableSave}
                           data-cy="saveButton"
@@ -174,12 +173,13 @@ class ButtonBar extends Component {
                   ) : (
                     <>
                       {isTestFlow && (
-                        <EduButton onClick={onCancel}>
+                        <EduButton isBlue onClick={onCancel}>
                           <IconClose />
                           CANCEL
                         </EduButton>
                       )}
                       <EduButton
+                        isBlue
                         disabled={disableSave}
                         data-cy="saveButton"
                         onClick={onSave}
@@ -188,18 +188,18 @@ class ButtonBar extends Component {
                         <IconSaveNew />
                         SAVE
                       </EduButton>
-                      <EduButton disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
+                      <EduButton isBlue disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
                         PUBLISH
                       </EduButton>
                     </>
                   ))}
                 {showPublishButton && itemStatus === "draft" && !isTestFlow && userRole !== roleuser.EDULASTIC_CURATOR && (
-                  <EduButton disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
+                  <EduButton isBlue disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
                     PUBLISH
                   </EduButton>
                 )}
                 {!(showPublishButton || showPublishButton === undefined) && (
-                  <EduButton data-cy="editItem" onClick={onEnableEdit} width="120px">
+                  <EduButton isBlue data-cy="editItem" onClick={onEnableEdit} width="120px">
                     EDIT
                   </EduButton>
                 )}
@@ -261,54 +261,18 @@ class ButtonBar extends Component {
             </MobileBottom>
             {view === "preview" && (
               <MobileSecondContainer>
-                <Button
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0
-                  }}
-                  onClick={() => changePreviewTab("check")}
-                >
-                  <ButtonLink
-                    color="primary"
-                    icon={<IconCheck color={white} width={16} height={16} />}
-                    style={{ color: white }}
-                  >
-                    {t("component.questioneditor.buttonbar.checkanswer")}
-                  </ButtonLink>
-                </Button>
-                <Button
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0
-                  }}
-                  onClick={() => changePreviewTab("show")}
-                >
-                  <ButtonLink
-                    color="primary"
-                    style={{ color: white }}
-                    icon={<IconEye color={white} width={16} height={16} />}
-                  >
-                    {t("component.questioneditor.buttonbar.showanswers")}
-                  </ButtonLink>
-                </Button>
-                <Button
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0
-                  }}
-                  onClick={() => this.setClearPreviewTab()}
-                >
-                  <ButtonLink
-                    color="primary"
-                    style={{ color: white }}
-                    icon={<IconEraseText color={white} width={16} height={16} />}
-                  >
-                    {t("component.questioneditor.buttonbar.clear")}
-                  </ButtonLink>
-                </Button>
+                <EduButton height="32px" isGhost onClick={() => changePreviewTab("check")}>
+                  <IconCheck color={white} width={16} height={16} />
+                  {t("component.questioneditor.buttonbar.checkanswer")}
+                </EduButton>
+                <EduButton height="32px" isGhost onClick={() => changePreviewTab("show")}>
+                  <IconEye color={white} width={16} height={16} />
+                  {t("component.questioneditor.buttonbar.showanswers")}
+                </EduButton>
+                <EduButton height="32px" isGhost onClick={() => this.setClearPreviewTab()}>
+                  <IconEraseText color={white} width={16} height={16} />
+                  {t("component.questioneditor.buttonbar.clear")}
+                </EduButton>
               </MobileSecondContainer>
             )}
           </MobileContainer>

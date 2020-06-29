@@ -1,11 +1,11 @@
 import { testItemsApi } from "@edulastic/api";
-import { CheckboxLabel, RadioBtn, RadioGrp,notification } from "@edulastic/common";
+import { CheckboxLabel, EduButton, notification, RadioBtn, RadioGrp } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import { IconPencilEdit } from "@edulastic/icons";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Collapse, Icon, Input, message, Select } from "antd";
+import { Collapse, Icon, Input, Select } from "antd";
 import { isEqual, keyBy, maxBy, pick } from "lodash";
 import nanoid from "nanoid";
 import React, { useEffect, useState } from "react";
@@ -25,9 +25,9 @@ import {
 } from "../../../src/selectors/dictionaries";
 import {
   getCollectionsSelector,
+  getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
-  getInterestedCurriculumsSelector
+  getInterestedSubjectsSelector
 } from "../../../src/selectors/user";
 import {
   addNewGroupAction,
@@ -43,14 +43,11 @@ import {
 import { removeTestItemsAction } from "../AddItems/ducks";
 import selectsData from "../common/selectsData";
 import {
-  AddGroupButton,
   AutoSelectFields,
   BreadcrumbContainer,
-  BrowseButton,
   Container,
   ContentBody,
   CreateGroupWrapper,
-  DoneButton,
   Footer,
   GroupField,
   Heading,
@@ -61,8 +58,6 @@ import {
   QuestionTagsContainer,
   QuestionTagsWrapper,
   RadioMessage,
-  SaveButton,
-  SelectItemsButton,
   SelectWrapper,
   StandardNameSection
 } from "./styled";
@@ -129,9 +124,7 @@ const GroupItems = ({
     }
   ];
 
-  const switchToAddItems = () => {
-    return history.push(goBackUrl);
-  };
+  const switchToAddItems = () => history.push(goBackUrl);
   const collectionData = collections.map(o => ({ text: o.name, value: o._id }));
 
   useEffect(() => {
@@ -158,11 +151,11 @@ const GroupItems = ({
       };
     } else if (fieldName === "deliverItemsCount") {
       if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC && value >= updatedGroupData.items.length) {
-        notification({ messageKey:"totalItemsToBeDelivered"});
+        notification({ messageKey: "totalItemsToBeDelivered" });
         return;
       }
       if (updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT && value > 100) {
-        notification({ messageKey:"totalItemsToBeDeliveredCannotBeMOreThan100"});
+        notification({ messageKey: "totalItemsToBeDeliveredCannotBeMOreThan100" });
         return;
       }
       updatedGroupData = {
@@ -175,7 +168,7 @@ const GroupItems = ({
         value === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         updatedGroupData.items.length < 2
       ) {
-        notification({ messageKey:"pleaseSelectAtleastTwoItems"});
+        notification({ messageKey: "pleaseSelectAtleastTwoItems" });
         return;
       }
       updatedGroupData = {
@@ -259,7 +252,7 @@ const GroupItems = ({
 
   const handleAddGroup = () => {
     if (test.itemGroups.length === 15) {
-      notification({ type: "warn", messageKey:"cantCreateMoreThan15Groups"});
+      notification({ type: "warn", messageKey: "cantCreateMoreThan15Groups" });
       return;
     }
     const { index } = maxBy(test.itemGroups, "index");
@@ -281,7 +274,7 @@ const GroupItems = ({
         g.standardDetails?.standardId === standardId
     );
     if (duplicateGroup) {
-      notification({ type: "warn", msg:`The combination already exists in ${duplicateGroup.groupName}`});
+      notification({ type: "warn", msg: `The combination already exists in ${duplicateGroup.groupName}` });
       return true;
     }
     return false;
@@ -289,7 +282,7 @@ const GroupItems = ({
 
   const handleApply = data => {
     if (!data?.eloStandards?.length) {
-      return notification({ type: "warn", messageKey:"pleaseSelectStantdardBeforeApplying"});
+      return notification({ type: "warn", messageKey: "pleaseSelectStantdardBeforeApplying" });
     }
     const { subject, eloStandards } = data;
     const grades = data.grades.length ? data.grades : eloStandards[0]?.grades || [];
@@ -308,7 +301,7 @@ const GroupItems = ({
     handleChange("standardDetails", standardDetails);
   };
 
-  const handleCollectionChange = (collectionId, index) => {
+  const handleCollectionChange = collectionId => {
     const { value: _id, text: name } = collectionData.find(d => d.value === collectionId);
     const { standardDetails } = editGroupDetail;
     if (standardDetails) {
@@ -327,10 +320,10 @@ const GroupItems = ({
 
   const validateGroups = () => {
     if (currentGroupIndex !== null) {
-      return notification({ messageKey:"pleaseSaveTheChangesMadeToGroupFirst"});
+      return notification({ messageKey: "pleaseSaveTheChangesMadeToGroupFirst" });
     }
-    let staticGroups = [];
-    let autoSelectGroups = [];
+    const staticGroups = [];
+    const autoSelectGroups = [];
     let isValid = true;
 
     test.itemGroups.forEach(group => {
@@ -341,12 +334,12 @@ const GroupItems = ({
     for (let i = 0; i < staticGroups.length; i++) {
       const { items, deliveryType, deliverItemsCount } = staticGroups[i];
       if (items.length === 0) {
-        notification({ messageKey:"eachStaticGroupShouldContainAtleastOneItems"});
+        notification({ messageKey: "eachStaticGroupShouldContainAtleastOneItems" });
         isValid = false;
         break;
       }
       if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
-        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
+        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
         isValid = false;
         break;
       }
@@ -355,12 +348,12 @@ const GroupItems = ({
     for (let i = 0; i < autoSelectGroups.length; i++) {
       const { collectionDetails, standardDetails, deliverItemsCount } = autoSelectGroups[i];
       if (!collectionDetails || !standardDetails) {
-        notification({ messageKey:"eachAutoselectGroupShouldHaveAStandardAndCollection"});
+        notification({ messageKey: "eachAutoselectGroupShouldHaveAStandardAndCollection" });
         isValid = false;
         break;
       }
       if (!deliverItemsCount) {
-        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
+        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
         isValid = false;
         break;
       }
@@ -382,17 +375,17 @@ const GroupItems = ({
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
       const { deliveryType, deliverItemsCount } = editGroupDetail;
       if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
-        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
+        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
         isValid = false;
       }
     } else {
       const { collectionDetails, standardDetails, deliverItemsCount } = editGroupDetail;
       if (!collectionDetails || !standardDetails) {
-        notification({ messageKey:"eachAutoselectGroupShouldHaveAStandardAndCollection"});
+        notification({ messageKey: "eachAutoselectGroupShouldHaveAStandardAndCollection" });
         isValid = false;
       }
       if (isValid && !deliverItemsCount) {
-        notification({ messageKey:"pleaseEnterTotalNumberOfItems"});
+        notification({ messageKey: "pleaseEnterTotalNumberOfItems" });
         isValid = false;
       }
     }
@@ -422,7 +415,7 @@ const GroupItems = ({
       }
     };
     if (data.limit > 100) {
-      notification({ messageKey:"maximum100Questions"});
+      notification({ messageKey: "maximum100Questions" });
       return;
     }
     setFetchingItems(true);
@@ -433,17 +426,17 @@ const GroupItems = ({
       .then(res => {
         const { items, total } = res;
         if (items.length === 0) {
-          notification({ messageKey:"noItemsFoundForCurrentCombination"});
+          notification({ messageKey: "noItemsFoundForCurrentCombination" });
           return;
         }
         if (total < data.limit) {
-          return  notification({ msg:`There are only ${total} items that meet the search criteria`});
+          return notification({ msg: `There are only ${total} items that meet the search criteria` });
         }
         const testItems = items.map(i => ({ ...i, autoselectedItem: true }));
         saveGroupToTest(testItems);
       })
       .catch(err => {
-        notification({ msg:err.message || "Failed to fetch test items"});
+        notification({ msg: err.message || "Failed to fetch test items" });
       });
     setFetchingItems(false);
   };
@@ -461,7 +454,7 @@ const GroupItems = ({
       updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
       updatedGroupData.items.some(item => item.itemLevelScoring === false)
     ) {
-      notification({ type: "warn", messageKey:"allItemsInsideLimited"});
+      notification({ type: "warn", messageKey: "allItemsInsideLimited" });
       return;
     }
     const disableAnswerOnPaper =
@@ -469,7 +462,7 @@ const GroupItems = ({
       updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT;
     if (test.answerOnPaper && disableAnswerOnPaper) {
       setTestData({ answerOnPaper: false });
-      notification({ type: "warn", messageKey:"answerOnPaperIsNotSupportedForAutoselecteGroup"});
+      notification({ type: "warn", messageKey: "answerOnPaperIsNotSupportedForAutoselecteGroup" });
     }
     updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex });
     setCurrentGroupIndex(null);
@@ -579,7 +572,9 @@ const GroupItems = ({
                               <ItemTag>{id}</ItemTag>
                             ))}
                         </QuestionTagsContainer>
-                        <SelectItemsButton onClick={switchToAddItems}>Select Items</SelectItemsButton>
+                        <EduButton height="40px" isGhost onClick={switchToAddItems}>
+                          Select Items
+                        </EduButton>
                       </QuestionTagsWrapper>
                     </GroupField>
                   ) : (
@@ -629,7 +624,8 @@ const GroupItems = ({
                             </span>
                           </StandardNameSection>
                         ) : (
-                          <BrowseButton
+                          <EduButton
+                            isGhost
                             data-cy={`standard-${itemGroup.groupName}`}
                             onClick={() => {
                               if (currentGroupIndex === index) {
@@ -639,7 +635,7 @@ const GroupItems = ({
                             }}
                           >
                             Browse
-                          </BrowseButton>
+                          </EduButton>
                         )}
                       </SelectWrapper>
                       <SelectWrapper width="200px">
@@ -764,10 +760,10 @@ const GroupItems = ({
                       </RadioBtn>
                     </RadioGrp>
                   </GroupField>
-                  <GroupField marginBottom="5px">
+                  <GroupField style={{ display: "flex" }} marginBottom="5px">
                     {currentGroupIndex === index && (
                       <>
-                        <SaveButton
+                        <EduButton
                           loading={fetchingItems}
                           data-cy={`save-${itemGroup.groupName}`}
                           onClick={e => {
@@ -776,8 +772,9 @@ const GroupItems = ({
                           }}
                         >
                           Save
-                        </SaveButton>
-                        <SaveButton
+                        </EduButton>
+                        <EduButton
+                          isGhost
                           loading={fetchingItems}
                           onClick={e => {
                             handleCancel();
@@ -785,7 +782,7 @@ const GroupItems = ({
                           }}
                         >
                           Cancel
-                        </SaveButton>
+                        </EduButton>
                       </>
                     )}
                   </GroupField>
@@ -794,17 +791,17 @@ const GroupItems = ({
             );
           })}
         </Collapse>
-        <GroupField>
+        <GroupField style={{ marginTop: "10px" }}>
           {currentGroupIndex === null && (
-            <AddGroupButton data-cy="add-group" onClick={handleAddGroup}>
+            <EduButton data-cy="add-group" onClick={handleAddGroup}>
               Add Group
-            </AddGroupButton>
+            </EduButton>
           )}
         </GroupField>
         <Footer>
-          <DoneButton data-cy="done" onClick={validateGroups}>
+          <EduButton data-cy="done" onClick={validateGroups}>
             Done
-          </DoneButton>
+          </EduButton>
         </Footer>
       </CreateGroupWrapper>
     </Container>

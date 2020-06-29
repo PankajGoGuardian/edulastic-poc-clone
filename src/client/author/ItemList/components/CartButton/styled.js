@@ -1,4 +1,4 @@
-import { mediumDesktopExactWidth, mobileWidthLarge, themeColor, white } from "@edulastic/colors";
+import { mediumDesktopExactWidth, mobileWidthLarge, white, themeColorBlue } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -20,7 +20,7 @@ export const ItemsAmount = styled.span`
   margin-left: 17px;
   text-align: center;
   border-radius: 50%;
-  background: ${themeColor};
+  background: ${themeColorBlue};
   color: ${white};
   font-size: 14px;
   line-height: 22px;

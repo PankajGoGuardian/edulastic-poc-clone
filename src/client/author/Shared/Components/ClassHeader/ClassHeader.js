@@ -297,13 +297,14 @@ class ClassHeader extends Component {
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
-          <EduButton isGhost data-cy="openButton" onClick={this.handleOpenAssignment}>
+          <EduButton isBlue isGhost data-cy="openButton" onClick={this.handleOpenAssignment}>
             OPEN
           </EduButton>
         ) : (
           assignmentStatusForDisplay !== "DONE" &&
           canPause && (
             <EduButton
+              isBlue
               isGhost
               data-cy="openPauseButton"
               onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
@@ -313,7 +314,7 @@ class ClassHeader extends Component {
           )
         )}
         {canClose ? (
-          <EduButton isGhost data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
+          <EduButton isBlue isGhost data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
             CLOSE
           </EduButton>
         ) : (
@@ -486,7 +487,7 @@ class ClassHeader extends Component {
             overlay={actionsMenu}
             placement="bottomRight"
           >
-            <EduButton data-cy="headerDropDown" IconBtn>
+            <EduButton isBlue data-cy="headerDropDown" IconBtn>
               <FontAwesomeIcon icon={faEllipsisV} />
             </EduButton>
           </Dropdown>

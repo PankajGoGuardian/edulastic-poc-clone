@@ -376,6 +376,7 @@ const TestPageHeader = ({
             {showShareButton && !isPlaylist && (
               <EduButton
                 title="Print"
+                isBlue
                 isGhost
                 IconBtn
                 data-cy="printTest"
@@ -386,12 +387,21 @@ const TestPageHeader = ({
               </EduButton>
             )}
             {showShareButton && (owner || features.isCurator) && !isEdulasticCurator && (
-              <EduButton isGhost IconBtn title="Share" data-cy="share" onClick={onShare} disabled={disableButtons}>
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title="Share"
+                data-cy="share"
+                onClick={onShare}
+                disabled={disableButtons}
+              >
                 <IconShare />
               </EduButton>
             )}
             {showShareButton && owner && showPublishButton && !showPublishForEC && (
               <EduButton
+                isBlue
                 isGhost
                 IconBtn
                 title="Save as Draft"
@@ -404,13 +414,20 @@ const TestPageHeader = ({
             )}
             {showShareButton && owner && (showPublishButton && !isEdulasticCurator) && isDirectOwner ? (
               isPlaylist ? (
-                <EduButton title="Publish Playlist" data-cy="publish" onClick={handlePublish} disabled={disableButtons}>
+                <EduButton
+                  isBlue
+                  title="Publish Playlist"
+                  data-cy="publish"
+                  onClick={handlePublish}
+                  disabled={disableButtons}
+                >
                   PUBLISH
                 </EduButton>
               ) : (
                 !editEnable &&
                 !isRegradeFlow && (
                   <EduButton
+                    isBlue
                     isGhost
                     IconBtn={!isPublishers}
                     title="Publish Test"
@@ -426,6 +443,7 @@ const TestPageHeader = ({
             ) : null}
             {features.isCurator && testStatus === "inreview" && (
               <EduButton
+                isBlue
                 title={isPlaylist ? "Reject Playlist" : "Reject Test"}
                 data-cy="publish"
                 onClick={onClickCuratorReject}
@@ -437,6 +455,7 @@ const TestPageHeader = ({
 
             {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
               <EduButton
+                isBlue
                 title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}
                 data-cy="approve"
                 onClick={onClickCuratorApprove}
@@ -447,6 +466,7 @@ const TestPageHeader = ({
             )}
             {showEditButton && (
               <EduButton
+                isBlue
                 isGhost
                 IconBtn
                 title="Edit Test"
@@ -459,6 +479,7 @@ const TestPageHeader = ({
             )}
             {showDuplicateButton && !isEdulasticCurator && (
               <EduButton
+                isBlue
                 isGhost
                 IconBtn
                 title="Duplicate Test"
@@ -470,7 +491,7 @@ const TestPageHeader = ({
               </EduButton>
             )}
             {showCancelButton && (
-              <EduButton data-cy="assign" onClick={() => setCancelState(true)}>
+              <EduButton isBlue data-cy="assign" onClick={() => setCancelState(true)}>
                 CANCEL
               </EduButton>
             )}
@@ -482,7 +503,13 @@ const TestPageHeader = ({
               editEnable &&
               ((isCurator && testStatus !== statusConstants.PUBLISHED) || !isCurator) &&
               !isRegradeFlow && (
-                <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={disableButtons}>
+                <EduButton
+                  isBlue
+                  title="Publish Test"
+                  data-cy="publish"
+                  onClick={handlePublish}
+                  disabled={disableButtons}
+                >
                   PUBLISH
                 </EduButton>
               )}
@@ -492,12 +519,18 @@ const TestPageHeader = ({
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton data-cy="assign" disabled={disableButtons} onClick={handleAssign}>
+                <EduButton isBlue data-cy="assign" disabled={disableButtons} onClick={handleAssign}>
                   ASSIGN
                 </EduButton>
               )}
             {isRegradeFlow && !showEditButton && !showDuplicateButton && !isPlaylist && (
-              <EduButton title="Regrade Test" data-cy="publish" onClick={handleRegrade} disabled={disableButtons}>
+              <EduButton
+                isBlue
+                title="Regrade Test"
+                data-cy="publish"
+                onClick={handleRegrade}
+                disabled={disableButtons}
+              >
                 REGRADE
               </EduButton>
             )}
@@ -512,13 +545,14 @@ const TestPageHeader = ({
               </MobileHeaderFilterIcon>
             )}
             {(owner || features.isCurator) && !isEdulasticCurator && (
-              <EduButton isGhost IconBtn data-cy="share" disabled={disableButtons} onClick={onShare}>
+              <EduButton isBlue isGhost IconBtn data-cy="share" disabled={disableButtons} onClick={onShare}>
                 <ShareIcon />
               </EduButton>
             )}
 
             {owner && !showPublishForEC && (
               <EduButton
+                isBlue
                 isGhost
                 IconBtn
                 title="Save as Draft"
@@ -531,11 +565,18 @@ const TestPageHeader = ({
             )}
             {showShareButton && owner && (showPublishButton && !isEdulasticCurator) && isDirectOwner ? (
               isPlaylist ? (
-                <EduButton title="Publish Playlist" data-cy="publish" onClick={handlePublish} disabled={disableButtons}>
+                <EduButton
+                  isBlue
+                  title="Publish Playlist"
+                  data-cy="publish"
+                  onClick={handlePublish}
+                  disabled={disableButtons}
+                >
                   PUBLISH
                 </EduButton>
               ) : (
                 <EduButton
+                  isBlue
                   isGhost
                   IconBtn
                   title="Publish Test"
@@ -549,6 +590,7 @@ const TestPageHeader = ({
             ) : null}
             {features.isCurator && testStatus === "inreview" && (
               <EduButton
+                isBlue
                 title={isPlaylist ? "Reject Playlist" : "Reject Test"}
                 data-cy="publish"
                 onClick={onClickCuratorReject}
@@ -559,6 +601,7 @@ const TestPageHeader = ({
             )}
             {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
               <EduButton
+                isBlue
                 title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}
                 data-cy="approve"
                 onClick={onClickCuratorApprove}
@@ -573,7 +616,7 @@ const TestPageHeader = ({
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton disabled={disableButtons} data-cy="assign" onClick={handleAssign}>
+                <EduButton isBlue disabled={disableButtons} data-cy="assign" onClick={handleAssign}>
                   ASSIGN
                 </EduButton>
               )}

@@ -92,7 +92,7 @@ const Header = ({
       </FeaturesSwitch>
       <ButtonsWrapper>
         {enableCleverSync && (
-          <EduButton isGhost onClick={() => setShowCleverSyncModal(true)}>
+          <EduButton isBlue isGhost onClick={() => setShowCleverSyncModal(true)}>
             <IconClever width={18} height={18} />
             <span>SYNC NOW WITH CLEVER</span>
           </EduButton>
@@ -102,7 +102,7 @@ const Header = ({
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"
             render={renderProps => (
-              <EduButton isGhost onClick={renderProps.onClick}>
+              <EduButton isBlue isGhost onClick={renderProps.onClick}>
                 <IconGoogleClassroom />
                 <span>SYNC WITH GOOGLE CLASSROOM</span>
               </EduButton>
@@ -115,7 +115,7 @@ const Header = ({
           />
         )}
         {canvasAllowedInstitution.length > 0 && (
-          <EduButton isGhost onClick={() => handleSyncWithCanvas()}>
+          <EduButton isBlue isGhost onClick={() => handleSyncWithCanvas()}>
             <img
               alt="Canvas"
               src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
@@ -126,7 +126,7 @@ const Header = ({
           </EduButton>
         )}
         <Link to={{ pathname: "/author/manageClass/createClass", state: { type: currentTab } }} data-cy="createClass">
-          <EduButton>
+          <EduButton isBlue>
             <IconPlusCircle />
             <span>Create {currentTab}</span>
           </EduButton>

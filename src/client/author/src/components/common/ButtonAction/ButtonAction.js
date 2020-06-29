@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 
 import { clearAnswersAction } from "../../../actions/answers";
-import { Container, PreviewBar, HeaderActionButton, LabelText, RightActionButton } from "./styled_components";
+import { Container, PreviewBar, HeaderActionButton, LabelText } from "./styled_components";
 import ScoreBlock from "../ScoreBlock";
 
 class ButtonAction extends Component {
@@ -77,27 +77,29 @@ class ButtonAction extends Component {
               <LabelText style={showHints ? { color: white } : null}>HINTS</LabelText>
             </RightActionButton> */}
             {showCheckButton && (
-              <RightActionButton onClick={this.handleCheckClick} data-cy="check-answer-btn">
-                <IconCheck width={16} height={12} />
+              <EduButton height="28px" isGhost onClick={this.handleCheckClick} data-cy="check-answer-btn">
+                <IconCheck width={12} height={12} />
                 <LabelText style={{ color: attempts >= allowedAttempts ? darkGrey : null }}>CHECK ANSWER</LabelText>
-              </RightActionButton>
+              </EduButton>
             )}
             {isShowAnswerVisible && (
-              <RightActionButton onClick={() => changePreviewTab("show")} data-cy="show-answers-btn">
-                <IconEye width={22} height={14} />
+              <EduButton height="28px" isGhost onClick={() => changePreviewTab("show")} data-cy="show-answers-btn">
+                <IconEye width={12} height={12} />
                 <LabelText>SHOW ANSWER</LabelText>
-              </RightActionButton>
+              </EduButton>
             )}
-            <RightActionButton
+            <EduButton
+              height="28px"
+              isGhost
               onClick={() => {
                 clearAnswers();
                 changePreviewTab("clear");
               }}
               data-cy="clear-btn"
             >
-              <IconClear width={17} height={20} />
+              <IconClear width={12} height={12} />
               <LabelText>CLEAR</LabelText>
-            </RightActionButton>
+            </EduButton>
           </PreviewBar>
         )}
       </Container>

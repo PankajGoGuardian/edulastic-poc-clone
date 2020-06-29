@@ -1,16 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-
+import { EduButton } from "@edulastic/common";
 import { IconNewFile } from "@edulastic/icons";
-
+import PropTypes from "prop-types";
+import React from "react";
 import CardComponent from "../../../AssignmentCreate/common/CardComponent";
-import ButtonComponent from "../../../AssignmentCreate/common/ButtonComponent";
-import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
-import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
 import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
+import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
+import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
 
 const handleDrop = event => {
-  //TODO handle drop here
+  // TODO handle drop here
   event.preventDefault();
 };
 
@@ -21,9 +19,9 @@ const CreateBlank = ({ onCreate, loading }) => (
     </IconWrapper>
     <TitleWrapper>Answer Only Assessment</TitleWrapper>
     <TextWrapper style={{ padding: "0 40px" }}>Want to create an assessment with no content?</TextWrapper>
-    <ButtonComponent type="primary" disabled={loading} onClick={onCreate} block>
+    <EduButton type="primary" width="234px" height="45px" disabled={loading} onClick={onCreate}>
       Continue with blank
-    </ButtonComponent>
+    </EduButton>
   </CardComponent>
 );
 

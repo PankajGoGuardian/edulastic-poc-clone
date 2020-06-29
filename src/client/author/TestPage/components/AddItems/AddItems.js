@@ -6,11 +6,11 @@ import { withRouter } from "react-router-dom";
 import { debounce, uniq, get } from "lodash";
 import { Pagination, Spin } from "antd";
 import { roleuser } from "@edulastic/constants";
-import { withWindowSizes, FlexContainer, notification } from "@edulastic/common";
+import { withWindowSizes, FlexContainer, notification, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-import { StyledButton, ItemsPagination, Selected } from "./styled";
+import { ItemsPagination, Selected } from "./styled";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
@@ -473,22 +473,16 @@ class AddItems extends PureComponent {
                     {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
                   </Selected>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
-                    <StyledButton
-                      data-cy="createNewItem"
-                      type="secondary"
-                      size="large"
-                      onClick={this.handleCreateNewItem}
-                      noHover
-                    >
-                      <IconPlusCircle color={themeColor} width={15} height={15} />
+                    <EduButton height="28px" isGhost data-cy="createNewItem" onClick={this.handleCreateNewItem}>
+                      <IconPlusCircle color={themeColor} width={12} height={12} />
                       <span>Create new Item</span>
-                    </StyledButton>
+                    </EduButton>
                   )}
                   {showGroupItemsBtn && (
-                    <StyledButton data-cy="groupItem" type="secondary" size="large" onClick={gotoGroupItems}>
-                      <IconItemGroup color={themeColor} width={15} height={15} />
+                    <EduButton height="28px" isGhost data-cy="groupItem" onClick={gotoGroupItems}>
+                      <IconItemGroup color={themeColor} width={12} height={12} />
                       <span>Group Items</span>
-                    </StyledButton>
+                    </EduButton>
                   )}
                 </FlexContainer>
               </ItemsMenu>

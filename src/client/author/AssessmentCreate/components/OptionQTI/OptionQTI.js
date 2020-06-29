@@ -1,15 +1,13 @@
-import React from "react";
+import { EduButton } from "@edulastic/common";
 import { IconUpload } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
+import React from "react";
 import { withRouter } from "react-router";
-
 import CardComponent from "../../../AssignmentCreate/common/CardComponent";
 import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
-import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
 import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
-import ButtonComponent from "../../../AssignmentCreate/common/ButtonComponent";
-import { EduButton } from "@edulastic/common";
+import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
 
 const OptionQti = ({ t, history: { push } }) => {
   //   const customRequest = ({ file, onSuccess }) => {

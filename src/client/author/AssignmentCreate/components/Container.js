@@ -1,27 +1,26 @@
-import React, { Component } from "react";
+import { EduButton, MainContentWrapper, MainHeader } from "@edulastic/common";
+import { IconPlaylist, IconTestBank } from "@edulastic/icons";
 import PropTypes from "prop-types";
-import { Link, withRouter } from "react-router-dom";
+import React, { Component } from "react";
+import { withNamespaces } from "react-i18next";
 import { connect } from "react-redux";
+import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { IconTestBank, IconPlaylist } from "@edulastic/icons";
-import { MainHeader, MainContentWrapper, EduButton } from "@edulastic/common";
-import { AlignMiddle } from "../common/Title";
-import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
+import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
+import { getLastPlayListSelector } from "../../Playlist/ducks";
 import BreadCrumb from "../../src/components/Breadcrumb";
+import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import BodyWrapper from "../common/BodyWrapper";
 import CardComponent from "../common/CardComponent";
-import TitleWrapper from "../common/TitleWrapper";
+import CountWrapper from "../common/CountWrapper";
+import Divider from "../common/Divider";
+import FlexWrapper from "../common/FlexWrapper";
 import IconWrapper from "../common/IconWrapper";
+import LinkWrapper from "../common/LinkWrapper";
 import TextWrapper from "../common/TextWrapper";
 import TextWrapperBold from "../common/TextWrapperBold";
-import ButtonComponent from "../common/ButtonComponent";
-import Divider from "../common/Divider";
-import CountWrapper from "../common/CountWrapper";
-import LinkWrapper from "../common/LinkWrapper";
-import FlexWrapper from "../common/FlexWrapper";
-import { getLastPlayListSelector } from "../../Playlist/ducks";
-import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
-import { withNamespaces } from "react-i18next";
+import { AlignMiddle } from "../common/Title";
+import TitleWrapper from "../common/TitleWrapper";
 
 class Container extends Component {
   render() {

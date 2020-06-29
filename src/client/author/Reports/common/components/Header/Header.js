@@ -40,12 +40,12 @@ const CustomizedHeaderWrapper = ({
   const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
   const navMenu = isSmallDesktop
     ? navigationItems
-      .filter(ite => ite.key !== activeNavigationKey)
-      .map(ite => (
-        <ActionButton key={ite.key}>
-          <Link to={ite.location}>{ite.title}</Link>
-        </ActionButton>
-      ))
+        .filter(ite => ite.key !== activeNavigationKey)
+        .map(ite => (
+          <ActionButton key={ite.key}>
+            <Link to={ite.location}>{ite.title}</Link>
+          </ActionButton>
+        ))
     : null;
 
   const actionRightButtons = (
@@ -61,21 +61,21 @@ const CustomizedHeaderWrapper = ({
         ) : null}
       </FeaturesSwitch> */}
       {onPrintClickCB ? (
-        <ActionButton isGhost IconBtn title="Print" onClick={_onPrintClickCB}>
+        <ActionButton isBlue isGhost IconBtn title="Print" onClick={_onPrintClickCB}>
           <Icon type="printer" />
           {isSmallDesktop && <span>Print</span>}
         </ActionButton>
       ) : null}
       <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
         {onDownloadCSVClickCB ? (
-          <ActionButton isGhost IconBtn title="Download CSV" onClick={_onDownloadCSVClickCB}>
+          <ActionButton isBlue isGhost IconBtn title="Download CSV" onClick={_onDownloadCSVClickCB}>
             <Icon type="download" />
             {isSmallDesktop && <span>Download CSV</span>}
           </ActionButton>
         ) : null}
       </FeaturesSwitch>
       {activeNavigationKey === "standard-reports" && (
-        <ActionButton>
+        <ActionButton isBlue>
           <IconQuestionCircle />
           <span>HOW TO USE INSIGHTS</span>
         </ActionButton>

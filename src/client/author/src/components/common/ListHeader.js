@@ -2,13 +2,12 @@
 import {
   desktopWidth,
   mediumDesktopExactWidth,
-  mobileWidth,
   mobileWidthLarge,
   mobileWidthMax,
   themeColor,
   white
 } from "@edulastic/colors";
-import { Button, EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
+import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
 // constants
 import { roleuser } from "@edulastic/constants";
 import { IconMoreVertical, IconPlusCircle } from "@edulastic/icons";
@@ -90,14 +89,14 @@ const ListHeader = ({
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                   overlayClassName="mobile-buttons-dropdown"
                 >
-                  <EduButton IconBtn isGhost onClick={e => e.preventDefault()}>
+                  <EduButton IconBtn isGhost isBlue onClick={e => e.preventDefault()}>
                     <IconMoreVertical />
                   </EduButton>
                 </Dropdown>
               )}
             </>
           ) : userRole === roleuser.EDULASTIC_CURATOR ? null : (
-            <EduButton data-cy="createNew" onClick={onCreate}>
+            <EduButton data-cy="createNew" onClick={onCreate} isBlue>
               <IconPlusStyled />
               {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
             </EduButton>
@@ -106,18 +105,18 @@ const ListHeader = ({
         {createAssignment && (
           <>
             {userRole && userRole === roleuser.DISTRICT_ADMIN && (
-              <EduButton isGhost onClick={toggleInviteTeacherModal}>
+              <EduButton isGhost onClick={toggleInviteTeacherModal} isBlue>
                 <FontAwesomeIcon icon={faUsers} aria-hidden="true" />
                 INVITE TEACHERS
               </EduButton>
             )}
             {userFeatures.gradebook && (
-              <EduButton isGhost>
+              <EduButton isGhost isBlue>
                 <Link to="/author/gradebook">VIEW GRADEBOOK </Link>
               </EduButton>
             )}
 
-            <EduButton data-cy="createNew">
+            <EduButton data-cy="createNew" isBlue>
               <Link to="/author/assignments/select">
                 <IconPlusStyled />
                 NEW ASSIGNMENT
@@ -194,54 +193,6 @@ const enhance = compose(
   )
 );
 export default enhance(ListHeader);
-
-export const TestButton = styled(Button)`
-  height: 36px;
-  color: ${themeColor};
-  border-radius: 3px;
-  margin-left: 25px;
-  background: ${white};
-  padding: 5px 15px;
-  border-color: ${props => props.theme.themeColor};
-  &:hover,
-  &:focus,
-  &:active {
-    color: ${props => props.theme.themeColor};
-    border-color: ${props => props.theme.themeColor};
-    outline-color: ${props => props.theme.themeColor};
-  }
-  span {
-    margin-left: 15px;
-  }
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: 45px;
-    padding: 5px 30px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    width: 44px;
-    height: 44px;
-    min-height: 44px;
-    padding: 0;
-    min-width: 0 !important;
-
-    span {
-      display: none;
-    }
-
-    svg {
-      position: static;
-    }
-  }
-
-  @media (max-width: ${mobileWidth}) {
-    width: 45px;
-    height: 40px;
-    min-height: 40px;
-    margin-left: 5px;
-  }
-`;
 
 const IconPlusStyled = styled(IconPlusCircle)`
   position: relative;

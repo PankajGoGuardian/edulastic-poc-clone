@@ -1,14 +1,14 @@
-import { MainHeader, EduButton } from "@edulastic/common";
+import { EduButton, MainHeader } from "@edulastic/common";
+import { IconManage } from "@edulastic/icons";
 import React from "react";
+import { withNamespaces } from "react-i18next";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
-import { IconManage } from "@edulastic/icons";
 // ducks
 import { fetchClassListAction } from "../../ducks";
 // components
 import { ButtonsWrapper } from "./styled";
-import { withNamespaces } from "react-i18next";
 
 const Header = ({ t, type, exitPath }) => (
   <MainHeader
@@ -17,11 +17,11 @@ const Header = ({ t, type, exitPath }) => (
   >
     <ButtonsWrapper>
       <Link to={exitPath || "/author/manageClass"}>
-        <EduButton isGhost data-cy="cancel">
+        <EduButton isBlue isGhost data-cy="cancel">
           Cancel
         </EduButton>
       </Link>
-      <EduButton data-cy="saveClass" htmlType="submit">
+      <EduButton isBlue data-cy="saveClass" htmlType="submit">
         Save {type === "group" ? "" : "Class"}
       </EduButton>
     </ButtonsWrapper>

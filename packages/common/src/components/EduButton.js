@@ -48,29 +48,29 @@ const getStyle = ({ height, width, justifyContent, fontSize, IconBtn, ml, style 
   return Object.assign({}, defaultStyle, style);
 };
 
-const getBgColor = ({ btnType, isGhost }) => {
+const getBgColor = ({ btnType, isGhost, isBlue }) => {
   let bgColor;
   if (btnType == "primary") {
-    bgColor = isGhost ? white : themeColor;
+    bgColor = isBlue && isGhost ? white : isBlue ? themeColorBlue : isGhost ? white : themeColor;
   } else if (btnType == "secondary") {
     bgColor = isGhost ? white : grey;
   }
   return bgColor;
 };
 
-const getColor = ({ btnType, isGhost }) => {
+const getColor = ({ btnType, isGhost, isBlue }) => {
   let color;
   if (btnType == "primary") {
-    color = isGhost ? themeColor : white;
+    color = isBlue && isGhost ? themeColorBlue : isBlue ? white : isGhost ? themeColor : white;
   } else if (btnType == "secondary") {
     color = black;
   }
   return color;
 };
 
-const getBorderColor = ({ btnType }) => {
+const getBorderColor = ({ btnType, isBlue }) => {
   if (btnType == "primary") {
-    return themeColor;
+    return isBlue ? themeColorBlue : themeColor;
   }
   if (btnType == "secondary") {
     return grey;

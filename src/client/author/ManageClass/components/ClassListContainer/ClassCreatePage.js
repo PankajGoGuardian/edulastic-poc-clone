@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ClassCreateContainer, ButtonsContainer, ThemeButton, SyncImg } from "./styled";
 import { IconGoogleClassroom } from "@edulastic/icons";
-import NoClassNotification from "../NoClassNotification";
 import GoogleLogin from "react-google-login";
 import { EduButton } from "@edulastic/common";
+import NoClassNotification from "../NoClassNotification";
+import { ClassCreateContainer, ButtonsContainer } from "./styled";
 
 export const scopes = [
   "https://www.googleapis.com/auth/classroom.courses.readonly",
@@ -44,13 +44,13 @@ const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassLi
             />
             <ButtonsContainer>
               <Link to="/author/manageClass/createClass">
-                <EduButton>CREATE NEW CLASS</EduButton>
+                <EduButton isBlue>CREATE NEW CLASS</EduButton>
               </Link>
               {googleAllowedInstitutions.length > 0 && (
                 <GoogleLogin
                   clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                   render={renderProps => (
-                    <EduButton onClick={renderProps.onClick}>
+                    <EduButton isBlue onClick={renderProps.onClick}>
                       <IconGoogleClassroom />
                       <span>SYNC WITH GOOGLE CLASSROOM</span>
                     </EduButton>

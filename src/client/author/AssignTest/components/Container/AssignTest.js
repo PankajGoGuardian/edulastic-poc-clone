@@ -175,7 +175,7 @@ class AssignTest extends React.Component {
   renderHeaderButton = () => {
     const { isAssigning } = this.props;
     return (
-      <EduButton data-cy="assignButton" onClick={this.handleAssign} disabled={isAssigning}>
+      <EduButton isBlue data-cy="assignButton" onClick={this.handleAssign} disabled={isAssigning}>
         ASSIGN
       </EduButton>
     );

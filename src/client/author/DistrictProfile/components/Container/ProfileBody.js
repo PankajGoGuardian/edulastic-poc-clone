@@ -13,9 +13,9 @@ import {
   white,
   extraDesktopWidthMax
 } from "@edulastic/colors";
-import { FieldLabel, MainContentWrapper, SelectInputStyled } from "@edulastic/common";
+import { FieldLabel, MainContentWrapper, SelectInputStyled, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Form, Icon, Input, Select, Tag, Modal } from "antd";
+import { Form, Icon, Input, Select, Tag, Modal } from "antd";
 import produce from "immer";
 import { isEqual, map, omit, get } from "lodash";
 import PropTypes from "prop-types";
@@ -486,6 +486,8 @@ class ProfileBody extends React.Component {
                         {t("common.title.editProfile")}
                       </EditProfileButton>
                       <DeleteAccountButton
+                        isGhost
+                        noHover
                         onClick={() => {
                           this.setState({ showModal: true });
                         }}
@@ -563,12 +565,12 @@ class ProfileBody extends React.Component {
               {(isEditProfile || showChangePassword) && (
                 <FormButtonWrapper>
                   <FormItem>
-                    <SaveButton type="primary" onClick={this.handleSubmit}>
+                    <EduButton width="100px" type="primary" onClick={this.handleSubmit}>
                       {t("common.title.save")}
-                    </SaveButton>
-                    <CancelButton type="primary" ghost onClick={this.handleCancel}>
+                    </EduButton>
+                    <EduButton width="100px" isGhost type="primary" onClick={this.handleCancel}>
                       {t("common.title.cancel")}
-                    </CancelButton>
+                    </EduButton>
                   </FormItem>
                 </FormButtonWrapper>
               )}
@@ -1002,15 +1004,14 @@ const FormButtonWrapper = styled.div`
   text-align: center;
   float: right;
   padding-right: 20px;
+  .ant-form-item-children {
+    display: flex;
+  }
 `;
 
-const EditProfileButton = styled(Button)`
+const EditProfileButton = styled(EduButton)`
   margin-left: 15px;
-  background: ${themeColor};
-  border-color: ${themeColor};
   font-size: 11px;
-  color: ${white};
-  text-transform: uppercase;
   float: right;
   font-weight: 600;
   height: 36px;
@@ -1019,9 +1020,6 @@ const EditProfileButton = styled(Button)`
     font-size: 14px;
   }
 
-  @media (min-width: ${largeDesktopWidth}) {
-    padding: 0px 20px;
-  }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: 40px;
     padding: 0px 30px;
@@ -1033,27 +1031,17 @@ const EditProfileButton = styled(Button)`
 `;
 
 const DeleteAccountButton = styled(EditProfileButton)`
-  background: ${white};
+  background: ${white} !important;
   border: 1px solid ${red} !important;
-  color: ${red};
-  &:hover,
-  &:focus {
-    color: ${red} !important;
+  color: ${red} !important;
+  svg {
+    fill: ${red};
   }
-`;
-
-const SaveButton = styled(EditProfileButton)`
-  background: ${themeColor};
-  border-color: ${themeColor};
-  color: ${white};
-  width: 130px;
-`;
-
-const CancelButton = styled(EditProfileButton)`
-  background: ${white};
-  color: ${themeColor};
-  border: 1px solid ${themeColor};
-  width: 130px;
+  &:hover {
+    svg {
+      fill: ${red} !important;
+    }
+  }
 `;
 
 const SelectSetsButton = styled(EditProfileButton)`

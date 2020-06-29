@@ -1,16 +1,14 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { IconNewFile } from "@edulastic/icons";
-
-import CardComponent from "../../../AssignmentCreate/common/CardComponent";
-import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
-import ButtonComponent from "../../../AssignmentCreate/common/ButtonComponent";
-import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
-import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
-import { clearTestDataAction, clearCreatedItemsAction } from "../../../TestPage/ducks";
-import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
 import { EduButton } from "@edulastic/common";
+import { IconNewFile } from "@edulastic/icons";
+import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import CardComponent from "../../../AssignmentCreate/common/CardComponent";
+import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
+import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
+import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
+import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
+import { clearCreatedItemsAction, clearTestDataAction } from "../../../TestPage/ducks";
 
 const descriptionBottom = (
   <>

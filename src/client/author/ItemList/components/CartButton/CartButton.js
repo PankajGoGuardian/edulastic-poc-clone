@@ -13,7 +13,7 @@ const CartButton = ({ selectedItems, onClick, buttonText, numberChecker, tests }
   }
   return (
     <Container data-cy={buttonText} onClick={onClick} disabled={!numberOfSelectedItems}>
-      <EduButton isGhost>
+      <EduButton isBlue isGhost>
         <span>{buttonText}</span>
         <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
       </EduButton>

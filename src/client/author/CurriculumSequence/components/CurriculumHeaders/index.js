@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { roleuser } from "@edulastic/constants";
 import { Tooltip, Modal, Dropdown, Menu } from "antd";
 import { FlexContainer, EduButton, MainHeader } from "@edulastic/common";
-import { smallDesktopWidth, extraDesktopWidthMax, tabletWidth, themeColor } from "@edulastic/colors";
+import { smallDesktopWidth, extraDesktopWidthMax, tabletWidth, themeColor, themeColorBlue } from "@edulastic/colors";
 import {
   IconPencilEdit,
   IconPlaylist,
@@ -181,6 +181,7 @@ const CurriculumHeader = ({
                 <HeaderButton
                   loading={loadingDelete}
                   isGhost
+                  isBlue
                   data-cy="delete-playlist"
                   IconBtn={!shouldHideUseThis}
                   onClick={() => {
@@ -196,20 +197,20 @@ const CurriculumHeader = ({
 
           {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
             role !== roleuser.EDULASTIC_CURATOR && (
-              <HeaderButton isGhost data-cy="share" onClick={onShareClick} IconBtn>
+              <HeaderButton isBlue isGhost data-cy="share" onClick={onShareClick} IconBtn>
                 <IconShare />
               </HeaderButton>
             )}
 
           {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
-            <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
+            <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               {isDesktop && "SAVE"}
             </HeaderButton>
           )}
 
           {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
-            <HeaderButton data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
+            <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               <span>SAVE</span>
             </HeaderButton>
@@ -217,7 +218,7 @@ const CurriculumHeader = ({
 
           {urlHasUseThis && isTeacher && !isPublisherUser && (
             <>
-              <HeaderButton data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
+              <HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
                 <IconAirdrop />
                 {isDesktop && "OPEN TO STUDENTS"}
               </HeaderButton>
@@ -227,7 +228,7 @@ const CurriculumHeader = ({
                 trigger={["click"]}
               >
                 <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
-                  <IconMoreVertical width={5} height={14} color={themeColor} />
+                  <IconMoreVertical width={5} height={14} color={themeColorBlue} />
                 </IconActionButton>
               </Dropdown>
             </>
@@ -235,20 +236,28 @@ const CurriculumHeader = ({
 
           {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
             <Tooltip placement="bottom" title="EDIT">
-              <HeaderButton isGhost data-cy="edit-playlist" onClick={handleEditClick} IconBtn={!shouldHideUseThis}>
+              <HeaderButton
+                isBlue
+                isGhost
+                data-cy="edit-playlist"
+                onClick={handleEditClick}
+                IconBtn={!shouldHideUseThis}
+              >
                 <IconPencilEdit />
                 {shouldHideUseThis && <span>EDIT</span>}
               </HeaderButton>
             </Tooltip>
           )}
           {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
-            <HeaderButton data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
+            <HeaderButton isBlue data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
               <IconUseThis />
               <span>USE THIS</span>
             </HeaderButton>
           )}
           {features.isCurator && (status === "inreview" || status === "rejected") && (
-            <HeaderButton onClick={onApproveClick}>APPROVE</HeaderButton>
+            <HeaderButton isBlue onClick={onApproveClick}>
+              APPROVE
+            </HeaderButton>
           )}
           {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
         </CurriculumHeaderButtons>

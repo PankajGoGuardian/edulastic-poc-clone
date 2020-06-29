@@ -18,11 +18,11 @@ const Header = ({ t, classId, type, exitPath }) => (
   >
     <ButtonsWrapper>
       <Link to={exitPath || `/author/manageClass/${classId}`}>
-        <EduButton height="40px" isGhost data-cy="cancel">
+        <EduButton isBlue height="40px" isGhost data-cy="cancel">
           Cancel
         </EduButton>
       </Link>
-      <EduButton height="40px" data-cy="updateClass" htmlType="submit">
+      <EduButton isBlue height="40px" data-cy="updateClass" htmlType="submit">
         Update {type === "custom" ? "" : "Class"}
       </EduButton>
     </ButtonsWrapper>

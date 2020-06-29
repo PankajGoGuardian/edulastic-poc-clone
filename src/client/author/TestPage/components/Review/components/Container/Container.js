@@ -22,7 +22,8 @@ import {
   getCurrentGroupIndexSelector,
   getTestItemsSelector,
   addItemsToAutoselectGroupsRequestAction,
-  getAutoSelectItemsLoadingStatusSelector
+  getAutoSelectItemsLoadingStatusSelector,
+  showGroupsPanelSelector
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { clearEvaluationAction } from "../../../../../../assessment/actions/evaluation";
@@ -397,7 +398,8 @@ class Review extends PureComponent {
       isPlaylistTestReview = false,
       isFetchingAutoselectItems = false,
       userRole,
-      isPowerPremiumAccount
+      isPowerPremiumAccount,
+      showGroupsPanel
     } = this.props;
     const {
       isCollapse,
@@ -499,6 +501,7 @@ class Review extends PureComponent {
                 isFetchingAutoselectItems={isFetchingAutoselectItems}
                 userRole={userRole}
                 isPowerPremiumAccount={isPowerPremiumAccount}
+                showGroupsPanel={showGroupsPanel}
               />
             </Paper>
           </ReviewLeftContainer>
@@ -569,7 +572,8 @@ const enhance = compose(
       testItems: getTestItemsSelector(state),
       isFetchingAutoselectItems: getAutoSelectItemsLoadingStatusSelector(state),
       userRole: getUserRole(state),
-      isPowerPremiumAccount: getIsPowerPremiumAccount(state)
+      isPowerPremiumAccount: getIsPowerPremiumAccount(state),
+      showGroupsPanel: showGroupsPanelSelector(state)
     }),
     {
       setData: setTestDataAction,

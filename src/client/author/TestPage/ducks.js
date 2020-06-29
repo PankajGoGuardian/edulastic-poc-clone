@@ -484,6 +484,20 @@ export const getRegradingSelector = createSelector(
   state => state.regrading
 );
 
+export const showGroupsPanelSelector = createSelector(
+  getTestEntitySelector,
+  ({ itemGroups }) => {
+    if (!itemGroups.length) {
+      return false;
+    }
+    return (
+      itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT ||
+      itemGroups[0].deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
+      itemGroups.length > 1
+    );
+  }
+);
+
 export const getUserListSelector = createSelector(
   stateSelector,
   state => {

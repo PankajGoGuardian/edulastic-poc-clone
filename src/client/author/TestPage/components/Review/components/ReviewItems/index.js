@@ -29,7 +29,8 @@ const ReviewItems = ({
   isPublishers,
   isFetchingAutoselectItems = false,
   userRole,
-  isPowerPremiumAccount
+  isPowerPremiumAccount,
+  showGroupsPanel
 }) => {
   const container = getContainer();
   if (!container) return null;
@@ -119,6 +120,7 @@ const ReviewItems = ({
         isPublishers={isPublishers}
         userRole={userRole}
         isPowerPremiumAccount={isPowerPremiumAccount}
+        showGroupsPanel={showGroupsPanel}
       />
 
       {isFetchingAutoselectItems && (

@@ -83,6 +83,7 @@ const HangoutsModal = ({
                   <EduButton
                     height="40px"
                     width="200px"
+                    disabled={!selected}
                     onClick={renderProps.onClick}
                     style={{ "margin-left": "20px" }}
                   >

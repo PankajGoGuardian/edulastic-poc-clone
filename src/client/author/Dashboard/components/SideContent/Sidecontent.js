@@ -1,5 +1,5 @@
 import { themeColor, white } from "@edulastic/colors";
-import { OnWhiteBgLogo } from "@edulastic/common";
+import { OnWhiteBgLogo, CustomModalStyled } from "@edulastic/common";
 import { IconPlayFilled } from "@edulastic/icons";
 import { Col, Icon, Row } from "antd";
 import React, { useState } from "react";
@@ -71,6 +71,7 @@ const QuestionBanks = () => (
 );
 
 const SideContent = props => {
+  const [isVideoModalVisible, setVideoModalVisible] = useState(false);
   const [showSideContent, toggleSideContent] = useState(false);
   const { isProxyUser } = props;
   return (
@@ -86,7 +87,7 @@ const SideContent = props => {
         <TextWrapper fw="600" mb="5px" color="#5EB500">
           Introduction to Edulastic
         </TextWrapper>
-        <VideoSection>
+        <VideoSection onClick={() => setVideoModalVisible(true)}>
           <VideoPlayer>
             <img src={videoImg} alt="" />
           </VideoPlayer>
@@ -95,6 +96,25 @@ const SideContent = props => {
           </VideoOverlay>
           <VideoOverlay />
         </VideoSection>
+        <CustomModalStyled
+          title="Introduction to Edulastic"
+          visible={isVideoModalVisible}
+          onCancel={() => setVideoModalVisible(false)}
+          footer={null}
+          destroyOnClose
+          width="768px"
+          centered
+        >
+          <iframe
+            title="Welcome to Edulastic 2020"
+            width="100%"
+            height="400px"
+            src="https://www.youtube.com/embed/0BvRwAkxs1Q?autoplay=1"
+            frameBorder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </CustomModalStyled>
         <Row>
           <Col>
             <ContentWrapper mt="0.3rem" mb="1rem">

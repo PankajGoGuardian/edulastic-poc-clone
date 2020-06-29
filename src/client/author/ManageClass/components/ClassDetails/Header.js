@@ -133,21 +133,23 @@ const Header = ({
     setAssignmentFilters(filter);
   };
 
-  const showSyncButtons = type === "class" && cleverId && active === 1;
+  const showSyncButtons = type === "class" && active === 1;
+  const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId;
+  const showGoogleSyncButton = showSyncButtons && !cleverId && (allowGoogleLogin !== false);
+  const showCanvasSyncButton = showSyncButtons && !cleverId && allowCanvasLogin;
 
   return (
     <MainHeader headingText={name} headingSubContent={headingSubContent} flexDirection="column" alignItems="flex-start">
       <div style={{ display: "flex", alignItems: "right" }}>
-        {showSyncButtons && enableCleverSync && (
+        {showCleverSyncButton && (
           <EduButton isBlue isGhost onClick={handleCleverSync}>
             <IconClever width={18} height={18} />
             <span>SYNC NOW WITH CLEVER</span>
           </EduButton>
         )}
-        {showSyncButtons &&
-          allowGoogleLogin !== false &&
+        {showGoogleSyncButton &&
           (isUserGoogleLoggedIn ? (
-            <EduButton isBlue isghost onClick={syncGCModal}>
+            <EduButton isBlue isGhost onClick={syncGCModal}>
               <IconGoogleClassroom />
               <span>SYNC WITH GOOGLE CLASSROOM</span>
             </EduButton>
@@ -168,7 +170,7 @@ const Header = ({
               responseType="code"
             />
           ))}
-        {showSyncButtons && allowCanvasLogin && (
+        {showCanvasSyncButton && (
           <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
             <img
               alt="Canvas"

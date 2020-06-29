@@ -72,6 +72,7 @@ const MathModal = ({
       {isEditable && (
         <MathInput
           ref={mathInputRef}
+          fullWidth
           alwaysShowKeyboard
           defaultFocus
           symbols={symbols}

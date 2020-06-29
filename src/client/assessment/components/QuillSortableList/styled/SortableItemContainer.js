@@ -38,6 +38,7 @@ export const SortableItemContainer = styled.div.attrs({
     background: ${greyThemeLighter};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     margin-right: 0;
+    max-width: 100%;
   }
   & div.main i.fa-align-justify {
     color: ${props => props.theme.sortableList.dragIconColor};
@@ -51,6 +52,10 @@ export const SortableItemContainer = styled.div.attrs({
   }
   input {
     border-color: transparent;
+  }
+
+  .froala-wrapper {
+    width: calc(100% - 65px); /* 65px is the combined width of hamburger and delete icons  */
   }
 `;
 

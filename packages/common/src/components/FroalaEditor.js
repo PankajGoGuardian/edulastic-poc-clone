@@ -266,7 +266,19 @@ const BackgroundStyleWrapper = styled.div.attrs({
             width: 100%;
             min-height: 100%;
             padding: 20px 23px;
+            overflow: auto;
           }
+        }
+      `;
+    } else {
+    /**
+     * need to show scroll if math content overflows
+     * @see https://snapwiz.atlassian.net/browse/EV-10575
+     */
+      return `
+      .fr-box {
+          max-width: 100%;
+          overflow: auto;
         }
       `;
     }

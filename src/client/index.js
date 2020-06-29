@@ -43,10 +43,6 @@ window.isIOS = isIOS();
 
 smoothscroll.polyfill();
 
-Object.defineProperty(MouseEvent.prototype, 'pageY', {
-  writable: true
-});
-
 !(function() {
   const analytics = (window.analytics = window.analytics || []);
   if (!analytics.initialize)

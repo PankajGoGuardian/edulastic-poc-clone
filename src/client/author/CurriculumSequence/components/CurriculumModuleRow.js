@@ -112,13 +112,13 @@ function OuterDropContainer({ children }) {
 }
 
 const SortableElement = sortableElement(props => {
-  const { onDrop, index, moduleIndex, isTestType, fromPlaylist } = props;
+  const { onDrop, id, moduleIndex, isTestType, fromPlaylist } = props;
   return (
     <OuterDropContainer>
       <ResourceActivity {...props} />
       <AddResourceToPlaylist
         onDrop={onDrop}
-        index={index}
+        index={id}
         moduleIndex={moduleIndex}
         isTestType={isTestType}
         fromPlaylist={fromPlaylist}

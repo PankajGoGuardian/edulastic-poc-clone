@@ -28,7 +28,8 @@ const CurriculumSubHeader = ({
   cancelPlaylistCustomize,
   toggleManageContentClick,
   publishCustomizedPlaylist,
-  shouldHidCustomizeButton
+  shouldHidCustomizeButton,
+  isAuthoringFlowReview
 }) => {
   const { id: parentId = null, cloneId = null } = match.params;
   const { description, subjects = [], grades = [] } = destinationCurriculumSequence;
@@ -123,11 +124,13 @@ const CurriculumSubHeader = ({
                   Customize Content
                 </CustomizeButton>
               )}
-              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && (
+
+              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && !isAuthoringFlowReview && (
                 <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
                   View Summary
                 </StyledButton>
               )}
+
             </ButtonWrapper>
           </RightColumn>
         </CurriculumSubHeaderRow>

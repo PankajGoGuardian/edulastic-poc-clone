@@ -183,7 +183,7 @@ class CurriculumSequence extends Component {
         res.groupIds.push(ele.groupId);
         return res;
       });
-      if (!classId && mappedStudentPlaylists[playlistId] ?.groupIds.includes(classId)) {
+      if (!classId && mappedStudentPlaylists[playlistId]?.groupIds.includes(classId)) {
         mappedStudentPlaylists[playlistId].groupId = classId;
       }
     });
@@ -348,7 +348,7 @@ class CurriculumSequence extends Component {
 
   handleNavChange = value => () => {
     const { history, match } = this.props;
-    const url = `/author/playlists/${value}/${match ?.params ?.id}/use-this`;
+    const url = `/author/playlists/${value}/${match?.params?.id}/use-this`;
     // this.handleSave();
     history.push(url);
   };
@@ -365,7 +365,7 @@ class CurriculumSequence extends Component {
       current
     } = this.props;
     const { authors } = destinationCurriculumSequence;
-    const canEdit = authors ?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
+    const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
 
     const isManageContentActive = activeRightPanel === "manageContent";
     setShowRightPanel(true);
@@ -392,7 +392,7 @@ class CurriculumSequence extends Component {
         }
       });
     } else {
-      this.props ?.toggleManageContent(contentName);
+      this.props?.toggleManageContent(contentName);
     }
   };
 
@@ -408,7 +408,7 @@ class CurriculumSequence extends Component {
     try {
       const signedRequest = await curriculumSequencesApi.getSignedRequest({
         playlistId,
-        moduleId: module ?._id,
+        moduleId: module?._id,
         contentId,
         resource
       });
@@ -453,9 +453,9 @@ class CurriculumSequence extends Component {
 
   checkWritePermission = () => {
     const { destinationCurriculumSequence, currentUserId } = this.props;
-    // Plsylist is being authored - editFlow
+    // Playlist is being authored - editFlow
     if (!destinationCurriculumSequence.authors) return true;
-    return !!destinationCurriculumSequence.authors ?.find(x => x ?._id === currentUserId);
+    return !!destinationCurriculumSequence.authors?.find(x => x?._id === currentUserId);
   };
 
   render() {
@@ -523,7 +523,7 @@ class CurriculumSequence extends Component {
     const isNotStudentOrParent = !(role === "student" || role === "parent");
 
     // figure out which tab contents to render || just render default playlist
-    const currentTab = match ?.params ?.currentTab || "playlist";
+    const currentTab = match?.params?.currentTab || "playlist";
 
     // get active classes for student playlists
     const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
@@ -535,9 +535,9 @@ class CurriculumSequence extends Component {
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
-        value: module.id,
-        label: module.name
-      }))
+          value: module.id,
+          label: module.name
+        }))
       : [];
 
     // TODO: change options2 to something more meaningful
@@ -545,11 +545,11 @@ class CurriculumSequence extends Component {
 
     const { status, customize = true, modules, collections: _playlistCollections = [] } = destinationCurriculumSequence;
     const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-    const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection ?._id);
+    const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
 
     const getplaylistMetrics = () => {
       const temp = {};
-      modules ?.forEach(({ _id: moduleId }) => {
+      modules?.forEach(({ _id: moduleId }) => {
         temp[moduleId] = playlistMetricsList.filter(x => x.playlistModuleId === moduleId);
       });
       return temp;
@@ -562,28 +562,28 @@ class CurriculumSequence extends Component {
     // Module progress
     const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules
-        .filter(m => {
-          if (m.data.length === 0) {
-            return false;
-          }
-          for (const test of m.data) {
-            if (!test.assignments || test.assignments.length === 0) {
+          .filter(m => {
+            if (m.data.length === 0) {
               return false;
             }
-            for (const assignment of test.assignments) {
-              if (!assignment.class || assignment.class.length === 0) {
+            for (const test of m.data) {
+              if (!test.assignments || test.assignments.length === 0) {
                 return false;
               }
-              for (const cs of assignment.class) {
-                if (cs.status !== "DONE") {
+              for (const assignment of test.assignments) {
+                if (!assignment.class || assignment.class.length === 0) {
                   return false;
+                }
+                for (const cs of assignment.class) {
+                  if (cs.status !== "DONE") {
+                    return false;
+                  }
                 }
               }
             }
-          }
-          return true;
-        })
-        .map(x => x._id)
+            return true;
+          })
+          .map(x => x._id)
       : [];
 
     const isAuthoringFlowReview = current === "review";
@@ -602,7 +602,7 @@ class CurriculumSequence extends Component {
     const isDesktop = windowWidth >= parseInt(smallDesktopWidth, 10);
     const isMobile = windowWidth <= parseInt(mobileWidthLarge, 10);
 
-    const isPlaylistDetailsPage = window.location ?.hash === "#review";
+    const isPlaylistDetailsPage = window.location?.hash === "#review";
     const showBreadCrumb = (currentTab === "playlist" || isPlaylistDetailsPage) && !urlHasUseThis;
     const shouldHidCustomizeButton =
       (isPlaylistDetailsPage || urlHasUseThis) &&
@@ -611,7 +611,7 @@ class CurriculumSequence extends Component {
 
     const playlistsToSwitch = isStudent ? curatedStudentPlaylists : slicedRecentPlaylists;
     // should show useThis Notification only two times
-    const showUseThisNotification = location.state ?.fromUseThis && !loading && playlistsToSwitch ?.length <= 3;
+    const showUseThisNotification = location.state?.fromUseThis && !loading && playlistsToSwitch?.length <= 3;
 
     return (
       <>
@@ -704,6 +704,7 @@ class CurriculumSequence extends Component {
                     toggleManageContentClick={this.toggleManageContentClick}
                     publishCustomizedPlaylist={publishCustomizedPlaylist}
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
+                    isAuthoringFlowReview={current === "review"}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
@@ -783,7 +784,7 @@ const enhance = compose(
   connect(
     state => ({
       curriculumGuides: state.curriculumSequence.guides,
-      isManageModulesVisible: state.curriculumSequence ?.isManageModulesVisible,
+      isManageModulesVisible: state.curriculumSequence?.isManageModulesVisible,
       guide: state.curriculumSequence.selectedGuide,
       isContentExpanded: state.curriculumSequence.isContentExpanded,
       activeRightPanel: state.curriculumSequence.activeRightPanel,
@@ -797,14 +798,14 @@ const enhance = compose(
       isStudent: getUserRole(state) === "student",
       isTeacher: getUserRole(state) === "teacher",
       role: getUserRole(state),
-      playlistMetricsList: state ?.curriculumSequence ?.playlistMetrics,
-      studentPlaylists: state ?.studentPlaylist ?.playlists,
+      playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
+      studentPlaylists: state?.studentPlaylist?.playlists,
       classId: getCurrentGroup(state),
       activeClasses: getFilteredClassesSelector(state),
       dateKeys: getDateKeysSelector(state),
-      currentUserId: state ?.user ?.user ?._id,
-      isVideoResourcePreviewModal: state.curriculumSequence ?.isVideoResourcePreviewModal,
-      showRightPanel: state.curriculumSequence ?.showRightPanel
+      currentUserId: state?.user?.user?._id,
+      isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal,
+      showRightPanel: state.curriculumSequence?.showRightPanel
     }),
     {
       onGuideChange: changeGuideAction,
@@ -907,14 +908,14 @@ export const ContentContainer = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 240px)" : "100%")};
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
-    if (isDifferentiationTab) {
-      return "calc(100vh - 175px)";
-    }
-    if (showBreadCrumb) {
-      return "calc(100vh - 138px)";
-    }
-    return "calc(100vh - 102px)";
-  }};
+      if (isDifferentiationTab) {
+        return "calc(100vh - 175px)";
+      }
+      if (showBreadCrumb) {
+        return "calc(100vh - 138px)";
+      }
+      return "calc(100vh - 102px)";
+    }};
   }
 
   @media (max-width: ${desktopWidth}) {

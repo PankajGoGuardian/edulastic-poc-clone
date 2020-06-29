@@ -32,6 +32,7 @@ const CurriculumRightPanel = ({
       (urlHasUseThis && isManageContentActive)) &&
     !isStudent;
   const showSummaryBlock = !isManageContentActive || isStudent;
+
   return (
     <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative" }}>
       {(showManageContent || showSummaryBlock) && (

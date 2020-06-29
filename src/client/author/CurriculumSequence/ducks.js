@@ -1989,7 +1989,7 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {};
     }
-    state.activeRightPanel = "summary";
+    state.activeRightPanel = "manageContent";
 
     state.destinationDirty = false;
   },

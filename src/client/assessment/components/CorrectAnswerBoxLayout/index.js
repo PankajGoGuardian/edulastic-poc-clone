@@ -72,8 +72,7 @@ const CorrectAnswerBoxLayout = ({
                       className="response-btn check-answer showanswer"
                       style={{
                         ...btnStyle,
-                        minHeight: height,
-                        height: "auto",
+                        height,
                         overflow: inPopover && "auto",
                         maxWidth: inPopover ? response.popoverMaxWidth : response.maxWidth
                       }}
@@ -107,8 +106,7 @@ const CorrectAnswerBoxLayout = ({
                   className="response-btn check-answer showanswer"
                   style={{
                     ...btnStyle,
-                    minHeight: height,
-                    height: "auto",
+                    height,
                     overflow: inPopover && "auto",
                     maxWidth: inPopover ? response.popoverMaxWidth : response.maxWidth
                   }}

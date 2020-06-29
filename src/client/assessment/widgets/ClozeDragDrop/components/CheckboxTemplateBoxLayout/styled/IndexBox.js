@@ -5,9 +5,10 @@ export const IndexBox = styled.div`
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   display: flex;
-  align-self: stretch;
   justify-content: center;
   align-items: center;
+  align-self: stretch;
+  flex-shrink: 0;
   ${({ theme, checked, correct }) => `
     background: ${
       !checked && !correct

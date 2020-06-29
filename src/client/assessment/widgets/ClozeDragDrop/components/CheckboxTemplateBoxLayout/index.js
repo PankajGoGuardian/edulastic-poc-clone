@@ -49,8 +49,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
   const heightpx = (response && response.heightpx) || btnStyle.heightpx;
   const widthpx = (response && response.widthpx) || btnStyle.widthpx;
   btnStyle.minWidth = !globalSettings ? (widthpx ? `${widthpx}px` : "auto") : "auto";
-  btnStyle.height = "auto";
+  btnStyle.maxHeight = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
   btnStyle.minHeight = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
+
+  // Removing maxWidth
 
   const getFormulaLabel = () => {
     let formulaLabel = "";
@@ -111,12 +113,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
   };
 
   const correct = status === "right";
-
-  const content = (
+  const getContent = (maxHeight = "") => (
     <AnswerBox
       onMouseEnter={handleHover}
       onMouseLeave={handleHover}
-      style={btnStyle}
+      style={{ ...btnStyle, maxHeight }}
       checked={choiceAttempted}
       correct={correct}
       isPrintPreview={isPrintPreview}
@@ -177,13 +178,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
         index={dropTargetIndex}
         style={{ border: `${borderWidth} ${borderStyle} ${borderColor}`, borderRadius }}
       >
-        <DragItem disableResponse={disableResponse} data={itemData}>
+        <DragItem disableResponse={disableResponse} data={itemData} style={{ overflow: "hidden" }}>
           {choiceAttempted && showPopover ? (
-            <Popover placement="bottomLeft" overlayClassName="customTooltip" content={content}>
-              {content}
+            <Popover placement="bottomLeft" overlayClassName="customTooltip" content={getContent()}>
+              {getContent(btnStyle.maxHeight)}
             </Popover>
           ) : (
-            content
+            getContent()
           )}
         </DragItem>
       </DropContainer>

@@ -32,6 +32,7 @@ const TemplateBox = ({ resprops, id }) => {
   const style = {
     ...responseBtnStyle,
     minHeight: response ? height : "auto",
+    maxHeight: response ? height : "auto",
     minWidth: response ? width : "auto",
     maxWidth: maxWidth || "auto",
     padding: "5px"
@@ -72,7 +73,8 @@ const TemplateBox = ({ resprops, id }) => {
 
   const boxHeight = response ? height : responseBtnStyle.heightpx;
   const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureText(label, style);
-  const getContent = (inPopover = false) => {
+
+  const getContent = (inPopover = false, maxHeight = "") => {
     const overflowProps = {};
     /**
      * if in popover and,
@@ -87,7 +89,7 @@ const TemplateBox = ({ resprops, id }) => {
       overflowProps.overflowX = "auto";
     }
     return (
-      <div style={overflowProps}>
+      <div style={{ ...overflowProps, maxHeight }}>
         <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
       </div>
     );
@@ -106,16 +108,18 @@ const TemplateBox = ({ resprops, id }) => {
     verticalAlign: "middle",
     borderRadius: 2,
     border: "1px dashed #b9b9b9",
-    background: "#f8f8f8"
+    background: "#f8f8f8",
+    minHeight: style.height,
+    padding: style.padding
   };
 
   return (
-    <DropContainer style={containerStyle} index={dropTargetIndex} drop={onDrop}>
-      <DragItem data={itemData}>
-        <ResponseContainer style={style}>
+    <DropContainer style={{ ...containerStyle, ...style }} index={dropTargetIndex} drop={onDrop}>
+      <DragItem data={itemData} style={{ overflow: "hidden" }}>
+        <ResponseContainer>
           {showPopover && (
             <Popover placement="bottomLeft" content={getContent(true)}>
-              {getContent(true)}
+              {getContent(true, style.maxHeight)}
             </Popover>
           )}
           {!showPopover && getContent()}

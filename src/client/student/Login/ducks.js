@@ -824,8 +824,10 @@ export function* fetchV1Redirect({ payload: id }) {
         subject: user?.orgData?.defaultSubjects
       })
     );
-    const redirectUrl = role === "student" ? "/home/assignments" : "/author/dashboard";
-    yield put(push(redirectUrl));
+    /**
+     * redirect to base url, would handle redirects according to role & other logics
+     */
+    yield put(push("/"));
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");

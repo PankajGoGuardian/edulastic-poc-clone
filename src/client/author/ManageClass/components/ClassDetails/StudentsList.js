@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get, isEmpty, pullAt } from "lodash";
+import * as moment from "moment";
 
 // components
 import { Spin, Switch, Tooltip } from "antd";
@@ -71,7 +72,7 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       sorter: (a, b) => a.username > b.username,
       render: username => <span>{username}</span>,
-      width: '40%'
+      width: "40%"
     },
     {
       title: "TTS Enabled",
@@ -129,7 +130,13 @@ const StudentsList = ({
       align: "center",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
-      render: enrollmentStatus => <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>
+      render: (enrollmentStatus, { lastModified }) => (
+        <span>
+          {enrollmentStatus && enrollmentStatus == 1
+            ? "Active"
+            : `Student not enrolled${lastModified ? ` after ${moment(lastModified).format("MMM DD, YYYY")}` : ""}`}
+        </span>
+      )
     },
     {
       render: (_, { _id, enrollmentStatus }) =>

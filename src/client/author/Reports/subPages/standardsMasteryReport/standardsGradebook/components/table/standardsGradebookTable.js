@@ -204,7 +204,7 @@ const StandardsGradebookTableComponent = ({
           </ColoredCell>
         );
       }
-      return <ColoredCell bgColor={record.standardsInfo[index].color}>{printData}</ColoredCell>;
+      return <ColoredCell bgColor={record.standardsInfo?.[index]?.color}>{printData}</ColoredCell>;
     };
 
     const printData = getDisplayValue(record.standardsInfo[index], _analyseBy, data, record);

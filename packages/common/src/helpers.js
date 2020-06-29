@@ -280,12 +280,16 @@ export const sanitizeForReview = stimulus => {
     });
   });
   // to remove any text after ...
+  // Hiding video and replacing with text [video]
   jqueryEl.find("p").each(function() {
     const elem = $(this);
     const hasMath = elem.find(".input__math").length > 0;
-    const text = elem.text().trim();
-    if ((!text && !hasMath) || text === "...") {
+    const text = elem.text().trim().length > 0;
+    const video = elem.html().includes("fr-video");
+    if ((!text && !hasMath && !video) || text === "...") {
       elem.remove();
+    } else if (video) {
+      elem.replaceWith("[video]");
     }
   });
   let splitJquery = jqueryEl.html();

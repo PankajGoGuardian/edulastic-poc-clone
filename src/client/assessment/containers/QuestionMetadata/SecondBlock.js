@@ -11,7 +11,7 @@ import { selectsData } from "../../../author/TestPage/components/common";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 import RecentCollectionsList from "./RecentCollectionsList";
 
-const bloomsTaxonomyOptions = ["Understand", "Apply", "Analyze", "Evaluate", "Create","Remember"];
+const bloomsTaxonomyOptions = ["Remember", "Understand", "Apply", "Analyze", "Evaluate", "Create"];
 
 const SecondBlock = ({
   t,
@@ -126,7 +126,7 @@ const SecondBlock = ({
         </Col>
         <Col md={6}>
           <ItemBody>
-          <Label>{t("component.options.blooomTaxonomy")}</Label>
+            <Label>{t("component.options.blooomTaxonomy")}</Label>
             <Select
               data-cy="bloomsTaxonomy"
               style={{ width: "100%" }}
@@ -143,7 +143,7 @@ const SecondBlock = ({
               </Select.Option>))}
 
             </Select>
-              
+
           </ItemBody>
         </Col>
         {(userFeatures.isPublisherAuthor || userFeatures.isCurator) && (
@@ -169,7 +169,7 @@ const SecondBlock = ({
                 ))}
               </Select>
             </ItemBody>
-            {recentCollectionsList ?.length > 0 && (
+            {recentCollectionsList?.length > 0 && (
               <RecentCollectionsList
                 recentCollectionsList={recentCollectionsList}
                 collections={collections || []}
@@ -180,7 +180,7 @@ const SecondBlock = ({
         )}
         <Col md={6}>
           <ItemBody>
-          <Label>{t("component.options.tags")}</Label>
+            <Label>{t("component.options.tags")}</Label>
             {searchValue.length && !searchValue.trim().length ? (
               <Select
                 mode="multiple"
@@ -196,32 +196,32 @@ const SecondBlock = ({
                 </Select.Option>
               </Select>
             ) : (
-              <Select
-                data-cy="tagsSelect"
-                mode="multiple"
-                className="tagsSelect"
-                style={{ marginBottom: 0, width: "100%" }}
-                optionLabelProp="title"
-                placeholder="Please select"
-                value={tags.map(t => t._id)}
-                onSearch={searchTags}
-                onSelect={selectTags}
-                onDeselect={deselectTags}
-                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
-              >
-                {searchValue.trim() ? (
-                  <Select.Option data-cy={`dok-select-${searchValue}`} key={0} value={searchValue} title={searchValue}>
-                    {`${searchValue} (Create new Tag)`}
-                  </Select.Option>
+                <Select
+                  data-cy="tagsSelect"
+                  mode="multiple"
+                  className="tagsSelect"
+                  style={{ marginBottom: 0, width: "100%" }}
+                  optionLabelProp="title"
+                  placeholder="Please select"
+                  value={tags.map(x => x._id)}
+                  onSearch={searchTags}
+                  onSelect={selectTags}
+                  onDeselect={deselectTags}
+                  filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                >
+                  {searchValue.trim() ? (
+                    <Select.Option data-cy={`dok-select-${searchValue}`} key={0} value={searchValue} title={searchValue}>
+                      {`${searchValue} (Create new Tag)`}
+                    </Select.Option>
                   ) : (
                       ""
                     )}
-                {newAllTagsData.map(({ tagName, _id }, index) => (
-                  <Select.Option data-cy={`tags-select-${tagName}`} key={_id} value={_id} title={tagName}>
-                    {tagName}
-                  </Select.Option>
+                  {newAllTagsData.map(({ tagName, _id }) => (
+                    <Select.Option data-cy={`tags-select-${tagName}`} key={_id} value={_id} title={tagName}>
+                      {tagName}
+                    </Select.Option>
                   ))}
-              </Select>
+                </Select>
               )}
           </ItemBody>
         </Col>

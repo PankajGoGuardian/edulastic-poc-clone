@@ -170,7 +170,7 @@ function* getReportsStandardsBrowseStandardsRequest({ payload }) {
 
 function* getReportsStandardsFiltersRequest({ payload }) {
   try {
-    const { filters: filterData, ...rest } = yield call(reportsApi.fetchStandardMasteryFilter, payload);
+    const { filters: filterData = {}, ...rest } = yield call(reportsApi.fetchStandardMasteryFilter, payload);
 
     // curate filters for standards mastery
     const { profileId, subject, termId, grades } = filterData;

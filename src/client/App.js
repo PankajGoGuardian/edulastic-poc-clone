@@ -88,7 +88,10 @@ const { search, pathname } = window.location;
 if (search) {
   const { errorDescription, ...rest } = qs.parse(search, { ignoreQueryPrefix: true });
   if (errorDescription) {
-    let errorMessage = errorDescription.split("_").join(" ");
+    let errorMessage =
+      errorDescription === "assignment_is_marked_as_absent"
+        ? "You have been marked ABSENT. Please contact your teacher."
+        : errorDescription.split("_").join(" ");
     errorMessage = `${errorMessage[0].toUpperCase()}${errorMessage.substr(1, errorMessage.length)}`;
     sessionStorage.setItem("errorMessage", errorMessage);
     if (!pathname.split("/").includes("login")) {

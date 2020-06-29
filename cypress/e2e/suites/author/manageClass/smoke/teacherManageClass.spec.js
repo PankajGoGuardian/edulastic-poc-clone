@@ -46,6 +46,7 @@ const subjectStdMap = {
   ELA: "ELA - Common Core",
   Science: "Science - NGSS",
   "Social Studies": "Social Studies",
+  "Computer Science": "2016 Massachusetts Digital Literacy and Computer Science",
   "Other Subjects": "ACARA Dance"
 };
 

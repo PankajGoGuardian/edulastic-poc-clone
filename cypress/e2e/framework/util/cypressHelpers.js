@@ -45,6 +45,7 @@ export default class CypressHelper {
     const options = [];
     return cy
       .get(".ant-select-dropdown-menu-item")
+      .should("not.contain", "No Data")
       .each(ele => {
         options.push(ele.text());
       })

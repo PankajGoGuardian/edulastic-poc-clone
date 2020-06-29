@@ -40,12 +40,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
     "ESSAY_RICH.5"
   ];
   const allItemIds = [
-    "5edf6757216e5c000873b58a",
-    "5edf67751f39910007b25e74",
-    "5edf6799216e5c000873b58e",
-    "5edf67c4b620ec0007ecd546",
-    "5edf67e380e8250008f4f6e5",
-    "5edf67f9216e5c000873b592"
+    "5ef9e0cbbdb4670008918fcc",
+    "5ef9e0f5001ccf00089aa924",
+    "5ef9e11ebdb4670008918fd1",
+    "5ef9e14bdd76ba0007172288",
+    "5ef9e1827defa0000735450a",
+    "5ef9e1c4fa583c000763bdc9"
   ];
 
   const alltags = ["test-tag-1", "test-tag-2", "test-tag-3", "test-tag-4", "test-tag-5"];
@@ -59,7 +59,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ["ESSAY_RICH.default", "ESSAY_RICH.2", "ESSAY_RICH.5"],
       name: "test_1",
       description: "This is test_1",
-      id: "5edf683f1f39910007b25e78"
+      id: "5ef9e308dd76ba000717229b"
     },
     test_2: {
       subjects: ["ELA", "Mathematics"],
@@ -68,7 +68,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ["ESSAY_RICH.1", "ESSAY_RICH.3", "ESSAY_RICH.5"],
       name: "test_2",
       description: "This is test_2",
-      id: "5edf6888216e5c000873b594"
+      id: "5ef9e327dd76ba00071722a0"
     },
     test_3: {
       subjects: ["ELA", "Mathematics"],
@@ -77,7 +77,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ["ESSAY_RICH.default", "ESSAY_RICH.2", "ESSAY_RICH.3"],
       name: "test_3",
       description: "This is test_3",
-      id: "5edf68ddb620ec0007ecd54b"
+      id: "5ef9e34b7defa0000735450f"
     },
     test_4: {
       subjects: ["ELA", "Mathematics"],
@@ -86,7 +86,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ["ESSAY_RICH.2", "ESSAY_RICH.4", "ESSAY_RICH.1"],
       name: "test_4",
       description: "This is test_4",
-      id: "5edf69391bdcd70008ca4021"
+      id: "5ef9e3717defa00007354515"
     },
     test_5: {
       subjects: ["ELA", "Mathematics"],
@@ -95,7 +95,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ["ESSAY_RICH.default", "ESSAY_RICH.3", "ESSAY_RICH.1"],
       name: "test_5",
       description: "This is test_5",
-      id: "5edf69a6e0b8770008ff3364"
+      id: "5ef9e3aec0931b00085c59ea"
     },
     test_6: {
       subjects: ["ELA", "Mathematics"],
@@ -104,7 +104,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       items: ["ESSAY_RICH.1", "ESSAY_RICH.2", "ESSAY_RICH.3"],
       name: "test_6",
       description: "This is test_6",
-      id: "5edf69ffe0b8770008ff3366"
+      id: "5ef9e3e3c0931b00085c59ef"
     }
   };
 
@@ -122,18 +122,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
         name: entry[0],
         grade: entry[1].grades,
         subject: entry[1].subjects,
-        tags: entry[1].tags
-        description:entry[1].description,
+        tags: entry[1].tags,
+        description: entry[1].description
       });
       testLibraryPage.header.clickOnAddItems();
       testLibraryPage.testAddItem.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe()
+      testLibraryPage.searchFilters.getAuthoredByMe();
 
       cy.server();
       cy.route("POST", "**api/test").as("create-test");
       entry[1].items.forEach((item, ind) => {
         const itemToAdd = allItemIds[allItems.indexOf(item)];
-       // testLibraryPage.testAddItem.searchFilters.typeInSearchBox(itemToAdd);
+        // testLibraryPage.testAddItem.searchFilters.typeInSearchBox(itemToAdd);
         testLibraryPage.testAddItem.addItemById(itemToAdd);
         if (ind === 0)
           cy.wait("@create-test").then(xhr => {

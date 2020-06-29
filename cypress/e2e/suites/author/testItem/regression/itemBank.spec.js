@@ -25,7 +25,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 3"],
-      id: "5ed60c179b0c340007b33ecb",
+      id: "5ef9e96a7a986800076ade20",
       queType: "ESSAY_RICH"
     },
     {
@@ -38,7 +38,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Extended Thinking",
       difficulty: "Hard",
       tags: ["item tag 1"],
-      id: "5ed60c3f99cd5200070b046b",
+      id: "5ef9e98e75d5e70008726fdc",
       queType: "ESSAY_RICH"
     },
     {
@@ -51,7 +51,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Strategic Thinking",
       difficulty: "Easy",
       tags: ["item tag 1"],
-      id: "5ed60c769b0c340007b33ecd",
+      id: "5ef9e9baf25c6f0007d4d20f",
       queType: "ESSAY_RICH"
     },
     {
@@ -64,7 +64,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 2"],
-      id: "5ed60cb2e49b9a0008109805",
+      id: "5ef9e9f4f25c6f0007d4d215",
       queType: "ESSAY_RICH"
     },
     {
@@ -77,7 +77,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Hard",
       tags: ["item tag 1"],
-      id: "5ed60cfbe49b9a0008109807",
+      id: "5ef9ea37cc70540007dd41a7",
       queType: "ESSAY_RICH"
     },
     {
@@ -90,7 +90,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> item bank`, () => {
       dok: "Skill/Concept",
       difficulty: "Easy",
       tags: ["item tag 2"],
-      id: "5ed60d5ce49b9a0008109809",
+      id: "5ef9ea99c0931b00085c59f9",
       queType: "MCQ_MULTI"
     }
   ];

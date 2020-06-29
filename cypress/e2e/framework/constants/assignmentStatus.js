@@ -62,6 +62,7 @@ export const subject = {
   ELA: "ELA",
   SCIENCE: "Science",
   SOCIAL_STUDIES: "Social Studies",
+  CS: "Computer Science",
   OTHER: "Other Subjects"
 };
 

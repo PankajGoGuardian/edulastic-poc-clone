@@ -576,32 +576,33 @@ class ProfileBody extends React.Component {
               )}
             </ProfileContentWrapper>
 
-            {user.role.toUpperCase() === "TEACHER" && (
-              <>
-                <SchoolWrapper>
-                  <SchoolLabel>My Schools</SchoolLabel>
-                  <SchoolListWrapper>{this.getSchoolList()}</SchoolListWrapper>
-                  <AddSchoolSection>
-                    <AddSchoolBtn onClick={this.handleAddSchool} type="primary">
-                      Add School
-                    </AddSchoolBtn>
-                  </AddSchoolSection>
-                </SchoolWrapper>
-                <SchoolWrapper>
-                  <StandardSetsLabel>Standard Sets</StandardSetsLabel>
-                  <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
-                  <StandardSetsButtons>
-                    {showSaveStandSetsBtn && (
-                      <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
-                    )}
-                    <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
-                      Select your standard sets
-                    </SelectSetsButton>
-                  </StandardSetsButtons>
-                </SchoolWrapper>
-              </>
+            {user.role.toUpperCase() === roleuser.TEACHER && (
+              <SchoolWrapper>
+                <SchoolLabel>My Schools</SchoolLabel>
+                <SchoolListWrapper>{this.getSchoolList()}</SchoolListWrapper>
+                <AddSchoolSection>
+                  <AddSchoolBtn onClick={this.handleAddSchool} type="primary">
+                    Add School
+                  </AddSchoolBtn>
+                </AddSchoolSection>
+              </SchoolWrapper>
             )}
-            {(user.role.toUpperCase() === "TEACHER" || showPowerTools) && (
+            {showPowerTools && (
+              <SchoolWrapper>
+                <StandardSetsLabel>Standard Sets</StandardSetsLabel>
+                <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
+                <StandardSetsButtons>
+                  {showSaveStandSetsBtn && (
+                    <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
+                  )}
+                  <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
+                    Select your standard sets
+                  </SelectSetsButton>
+                </StandardSetsButtons>
+              </SchoolWrapper>
+            )}
+
+            {(user.role.toUpperCase() === roleuser.TEACHER || showPowerTools) && (
               <SchoolWrapper>
                 <Block>
                   <StyledDiv>
@@ -610,61 +611,57 @@ class ProfileBody extends React.Component {
                       <SaveDefaultSettingsBtn onClick={this.saveSettings}>SAVE</SaveDefaultSettingsBtn>
                     )}
                   </StyledDiv>
-                  {user.role.toUpperCase() === "TEACHER" && (
-                    <>
-                      <FieldLabel>{t("common.title.interestedGrade")}</FieldLabel>
-                      <SelectInputStyled
-                        data-cy="gradeSelect"
-                        mode="multiple"
-                        size="large"
-                        placeholder="Please select"
-                        defaultValue={defaultGrades}
-                        onChange={value => this.onSettingChange(value, "grade")}
-                        optionFilterProp="children"
-                        getPopupContainer={trigger => trigger.parentNode}
-                        margin="0px 0px 15px"
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {selectsData.allGrades.map(({ value, text }) => (
-                          <Select.Option key={value} value={value}>
-                            {text}
-                          </Select.Option>
-                        ))}
-                      </SelectInputStyled>
-                      <FieldLabel>{t("common.title.interestedSubject")}</FieldLabel>
-                      <SelectInputStyled
-                        data-cy="subjectSelect"
-                        mode="multiple"
-                        size="large"
-                        margin="0px 0px 15px"
-                        placeholder="Please select"
-                        defaultValue={defaultSubjects}
-                        onChange={value => this.onSettingChange(value, "subject")}
-                        optionFilterProp="children"
-                        getPopupContainer={trigger => trigger.parentNode}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        {subjectsList.map(({ value, text }) => (
-                          <Select.Option key={value} value={value}>
-                            {text}
-                          </Select.Option>
-                        ))}
-                      </SelectInputStyled>
-                      {googleClassRoomAllowed && (
-                        <SwitchWrapper>
-                          <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
-                          <Switch
-                            style={{ width: "30px" }}
-                            defaultChecked={autoShareGCAssignment}
-                            onChange={checked => this.onSettingChange(checked, "autoSync")}
-                          />
-                        </SwitchWrapper>
-                      )}
-                    </>
+                  <FieldLabel>{t("common.title.interestedGrade")}</FieldLabel>
+                  <SelectInputStyled
+                    data-cy="gradeSelect"
+                    mode="multiple"
+                    size="large"
+                    placeholder="Please select"
+                    defaultValue={defaultGrades}
+                    onChange={value => this.onSettingChange(value, "grade")}
+                    optionFilterProp="children"
+                    getPopupContainer={trigger => trigger.parentNode}
+                    margin="0px 0px 15px"
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {selectsData.allGrades.map(({ value, text }) => (
+                      <Select.Option key={value} value={value}>
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                  <FieldLabel>{t("common.title.interestedSubject")}</FieldLabel>
+                  <SelectInputStyled
+                    data-cy="subjectSelect"
+                    mode="multiple"
+                    size="large"
+                    margin="0px 0px 15px"
+                    placeholder="Please select"
+                    defaultValue={defaultSubjects}
+                    onChange={value => this.onSettingChange(value, "subject")}
+                    optionFilterProp="children"
+                    getPopupContainer={trigger => trigger.parentNode}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {subjectsList.map(({ value, text }) => (
+                      <Select.Option key={value} value={value}>
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                  {user.role.toUpperCase() === roleuser.TEACHER && googleClassRoomAllowed && (
+                    <SwitchWrapper>
+                      <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
+                      <Switch
+                        style={{ width: "30px" }}
+                        defaultChecked={autoShareGCAssignment}
+                        onChange={checked => this.onSettingChange(checked, "autoSync")}
+                      />
+                    </SwitchWrapper>
                   )}
                   {showPowerTools && (
                     <SwitchWrapper style={{ justifyContent: "space-between" }}>

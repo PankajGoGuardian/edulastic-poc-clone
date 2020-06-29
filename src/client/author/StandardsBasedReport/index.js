@@ -17,7 +17,6 @@ import {
   getQLabelsSelector
 } from "../ClassBoard/ducks";
 import { StyledFlexContainer, DivWrapper } from "./components/styled";
-import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 import ClassBreadBrumb from "../Shared/Components/ClassBreadCrumb";
 
 class StandardsBasedReport extends Component {
@@ -53,39 +52,33 @@ class StandardsBasedReport extends Component {
     const testActivityId = this.getTestActivity(testActivity);
 
     return (
-      <FeaturesSwitch
-        inputFeatures="standardBasedReport"
-        actionOnInaccessible="hidden"
-        groupId={classId}
-      >
-        <React.Fragment>
-          <ClassHeader
-            classId={classId}
-            active="standard_report"
-            creating={creating}
-            assignmentId={assignmentId}
-            additionalData={additionalData || {}}
-            testActivityId={testActivityId}
-            testActivity={testActivity}
-          />
-          <HooksContainer classId={classId} assignmentId={assignmentId} />
-          <MainContentWrapper>
-            <StyledFlexContainer justifyContent="space-between">
-              <ClassBreadBrumb />
-              <PresentationToggleSwitch groupId={classId} />
-            </StyledFlexContainer>
+      <React.Fragment>
+        <ClassHeader
+          classId={classId}
+          active="standard_report"
+          creating={creating}
+          assignmentId={assignmentId}
+          additionalData={additionalData || {}}
+          testActivityId={testActivityId}
+          testActivity={testActivity}
+        />
+        <HooksContainer classId={classId} assignmentId={assignmentId} />
+        <MainContentWrapper>
+          <StyledFlexContainer justifyContent="space-between">
+            <ClassBreadBrumb />
+            <PresentationToggleSwitch groupId={classId} />
+          </StyledFlexContainer>
 
-            <DivWrapper>
-              <TableDisplay
-                testActivities={testActivity}
-                labels={labels}
-                additionalData={additionalData}
-                qids={testQIds}
-              />
-            </DivWrapper>
-          </MainContentWrapper>
-        </React.Fragment>
-      </FeaturesSwitch>
+          <DivWrapper>
+            <TableDisplay
+              testActivities={testActivity}
+              labels={labels}
+              additionalData={additionalData}
+              qids={testQIds}
+            />
+          </DivWrapper>
+        </MainContentWrapper>
+      </React.Fragment>
     );
   }
 }

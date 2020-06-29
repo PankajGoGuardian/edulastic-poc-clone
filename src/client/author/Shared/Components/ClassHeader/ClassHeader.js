@@ -457,18 +457,16 @@ class ClassHeader extends Component {
               </WithDisableMessage>
             </FeaturesSwitch>
 
-            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
-              <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
-                <HeaderTabs
-                  to={`/author/standardsBasedReport/${assignmentId}/${classId}`}
-                  disabled={!isItemsVisible}
-                  dataCy="StandardsBasedReport"
-                  isActive={active === "standard_report"}
-                  icon={<IconNotes left={0} />}
-                  linkLabel={t("common.standardBasedReports")}
-                />
-              </WithDisableMessage>
-            </FeaturesSwitch>
+            <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+              <HeaderTabs
+                to={`/author/standardsBasedReport/${assignmentId}/${classId}`}
+                disabled={!isItemsVisible}
+                dataCy="StandardsBasedReport"
+                isActive={active === "standard_report"}
+                icon={<IconNotes left={0} />}
+                linkLabel={t("common.standardBasedReports")}
+              />
+            </WithDisableMessage>
             {showSettingTab && (
               <HeaderTabs
                 to={`/author/lcb/settings/${assignmentId}/${classId}`}

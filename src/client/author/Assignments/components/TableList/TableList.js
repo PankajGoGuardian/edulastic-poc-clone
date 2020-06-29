@@ -252,13 +252,11 @@ const TableList = ({
                 </Tooltip>
               </WithDisableMessage>
             </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={row.classId}>
-              <Tooltip placement="bottom" title="Standard Based Report">
-                <Link data-cy="sbr" to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-                  <Icon src={piechartIcon} alt="Images" />
-                </Link>
-              </Tooltip>
-            </FeaturesSwitch>
+            <Tooltip placement="bottom" title="Standard Based Report">
+              <Link data-cy="sbr" to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
+                <Icon src={piechartIcon} alt="Images" />
+              </Link>
+            </Tooltip>
           </ActionsWrapper>
         )
       }

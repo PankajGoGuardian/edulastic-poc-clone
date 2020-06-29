@@ -238,6 +238,7 @@ class MathInput extends React.PureComponent {
       style,
       onFocus,
       onKeyDown,
+      onKeyUp,
       symbols,
       numberPad,
       fullWidth,
@@ -287,6 +288,7 @@ class MathInput extends React.PureComponent {
         fontSize={style.fontSize}
         isDocbasedSection={isDocbasedSection}
         ref={this.containerRef}
+        onKeyUp={onKeyUp}
       >
         <Popover
           content={keypad}

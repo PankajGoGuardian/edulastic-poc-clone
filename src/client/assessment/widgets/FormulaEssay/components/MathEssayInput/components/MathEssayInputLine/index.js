@@ -53,7 +53,7 @@ const MathEssayInputLine = ({
     <Buttons>
       {isEmpty && <Button activated={!isText} onClick={changeType("math")} label="M" title="Math" />}
       {isEmpty && <Button activated={isText} onClick={changeType("text")} label="T" title="Text" />}
-      {!isEmpty && <Button onClick={onAddNewLine} label={<Icon type="enter" />} title="New line" />}
+      {!isEmpty && <Button onClick={onAddNewLine} id="add-new-line" label={<Icon type="enter" />} title="New line" />}
     </Buttons>
   );
 
@@ -76,6 +76,16 @@ const MathEssayInputLine = ({
         }
   );
 
+  const handleKeyUp = input => e => {
+    // on pressing enter triggering new line button
+    if (e?.keyCode === 13 && !!input) {
+      const addNewLineButton = document.getElementById("add-new-line");
+      if (addNewLineButton) {
+        addNewLineButton.click();
+      }
+    }
+  };
+
   const ResolvedComponent = isText ? CustomTextInput : MathInput;
 
   return (
@@ -83,7 +93,13 @@ const MathEssayInputLine = ({
       {disableResponse ? (
         <MathSpan dangerouslySetInnerHTML={{ __html: renderMathText(line.text) }} />
       ) : (
-        <ResolvedComponent ref={inputRef} value={line.text} onFocus={handleFocus} {...inputProps} />
+        <ResolvedComponent
+          ref={inputRef}
+          value={line.text}
+          onFocus={handleFocus}
+          {...inputProps}
+          onKeyUp={e => handleKeyUp(line.text)(e)}
+        />
       )}
       {actionButtons}
     </Wrapper>

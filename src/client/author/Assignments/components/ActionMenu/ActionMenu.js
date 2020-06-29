@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 import { get } from "lodash";
 import { notification } from "@edulastic/common";
+import * as Sentry from "@sentry/browser";
 import { IconPrint, IconTrashAlt, IconBarChart } from "@edulastic/icons";
 import { roleuser, test } from "@edulastic/constants";
 import classIcon from "../../assets/manage-class.svg";
@@ -11,7 +12,6 @@ import copyItem from "../../assets/copy-item.svg";
 import viewIcon from "../../assets/view.svg";
 import infomationIcon from "../../assets/information.svg";
 import responsiveIcon from "../../assets/responses.svg";
-
 import { Container, StyledMenu, StyledLink, SpaceElement } from "./styled";
 
 const { duplicateAssignment } = assignmentApi;
@@ -55,10 +55,15 @@ const ActionMenu = ({
   };
 
   const createDuplicateAssignment = () => {
-    duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title }).then(testItem => {
-      const duplicateTestId = testItem._id;
-      history.push(`/author/tests/${duplicateTestId}`);
-    });
+    duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title })
+      .then(testItem => {
+        const duplicateTestId = testItem._id;
+        history.push(`/author/tests/${duplicateTestId}`);
+      })
+      .catch(e => {
+        notification({ msg: e?.data?.message || "User does not have duplicate permission." });
+        Sentry.captureException(e);
+      });
   };
 
   const handlePrintTest = () => {
@@ -119,13 +124,15 @@ const ActionMenu = ({
             View Test Details
           </Link>
         </Menu.Item>
-        {!assignmentTest?.isDocBased && <Menu.Item data-cy="print-assignment" key="print-assignment" onClick={handlePrintTest}>
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <IconPrint />
-            <SpaceElement />
-            Print Test
-          </StyledLink>
-        </Menu.Item>}
+        {!assignmentTest?.isDocBased && (
+          <Menu.Item data-cy="print-assignment" key="print-assignment" onClick={handlePrintTest}>
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <IconPrint />
+              <SpaceElement />
+              Print Test
+            </StyledLink>
+          </Menu.Item>
+        )}
         <Menu.Item
           data-cy="release-grades"
           key="release-grades"

@@ -702,6 +702,13 @@ function* signup({ payload }) {
 
       TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
       TokenStorage.selectAccessToken(user._id, user.role);
+      const firebaseUser = yield call(getCurrentFirebaseUser);
+      if (
+        (!firebaseUser && result.firebaseAuthToken) ||
+        (firebaseUser && firebaseUser !== user._id && result.firebaseAuthToken)
+      ) {
+        yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
+      }
       yield put(signupSuccessAction(result));
       localStorage.removeItem("loginRedirectUrl");
 

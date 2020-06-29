@@ -139,7 +139,7 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
         title="Created Date"
         dataIndex="_source.createdAt"
         key="createdDate"
-        render={timeStamp => new Date(timeStamp).toLocaleDateString()}
+        render={timeStamp => timeStamp ? new Date(timeStamp).toLocaleDateString() : '-'}
       />
       <Column title="Status" dataIndex="_source.status" key="status" render={status => DISTRICT_STATUS[status]} />
       <Column

@@ -11,6 +11,7 @@ import {
   IconGroup,
   IconClass
 } from "@edulastic/icons";
+import { roleuser } from "@edulastic/constants";
 import { faArchive } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown, Icon, Input, Select } from "antd";
@@ -28,7 +29,11 @@ import {
   setFolderAction
 } from "../../../src/actions/folder";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { getDistrictIdSelector } from "../../../src/selectors/assignments";
+import {
+  getDistrictIdSelector,
+  getAssignmentTeacherList,
+  getAssignmentTestList
+} from "../../../src/selectors/assignments";
 import { getFolderSelector, getFoldersSelector } from "../../../src/selectors/folder";
 import { getGroupList, getUserRole } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
@@ -241,7 +246,13 @@ class LeftFilter extends React.Component {
     if (!isAdvancedView) {
       loadAssignments({ filters });
     } else {
-      filters = { ...filters, pageNo: 1 };
+      if (!["testId", "assignedBy"].includes(key)) {
+        filters = { ...filters, pageNo: 1, assignedBy: "", testId: "" };
+      } else if (key !== "testId") {
+        filters = { ...filters, pageNo: 1, testId: "" };
+      } else {
+        filters = { ...filters, pageNo: 1 };
+      }
       loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
     }
     onSetFilter(filters);
@@ -344,9 +355,18 @@ class LeftFilter extends React.Component {
   };
 
   render() {
-    const { termsData, selectedRows, folders, filterState, userRole, classList } = this.props;
+    const {
+      termsData,
+      selectedRows,
+      folders,
+      filterState,
+      userRole,
+      classList,
+      teacherList,
+      assignmentTestList
+    } = this.props;
     const { visibleModal, folderName, selectedFolder } = this.state;
-    const { subject, grades, termId, testType, classId, status } = filterState;
+    const { subject, grades, termId, testType, classId, status, testId, assignedBy } = filterState;
     const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
     const oldFolderName = selectedFolder ? folders.find(folder => selectedFolder === folder._id).folderName : "";
     const classListByTerm = classList.filter(item => item.termId === termId || !termId);
@@ -531,6 +551,57 @@ class LeftFilter extends React.Component {
               ))}
             </SelectInputStyled>
 
+            {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
+              <>
+                <FieldLabel>Teachers</FieldLabel>
+                <SelectInputStyled
+                  data-cy="filter-teachers"
+                  mode="default"
+                  showSearch
+                  placeholder="All Teacher(s)"
+                  value={assignedBy}
+                  onChange={this.handleChange("assignedBy")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  margin="0px 0px 15px"
+                >
+                  <Select.Option key="" value="">
+                    All Teacher(s)
+                  </Select.Option>
+                  {teacherList?.map(({ _id, name }, index) => (
+                    <Select.Option key={index} value={_id}>
+                      {name}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+                <FieldLabel>Test Name</FieldLabel>
+                <SelectInputStyled
+                  data-cy="filter-test-name"
+                  mode="default"
+                  showSearch
+                  placeholder="All Tests"
+                  value={testId}
+                  onChange={this.handleChange("testId")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  margin="0px 0px 15px"
+                >
+                  <Select.Option key={0} value="">
+                    All Tests
+                  </Select.Option>
+                  {assignmentTestList?.map(({ testId: _id, title }, index) => (
+                    <Select.Option key={index} value={_id}>
+                      {title}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </>
+            )}
+
             {userRole === "teacher" && (
               <>
                 <FieldLabel>Class</FieldLabel>
@@ -650,7 +721,9 @@ export default connect(
     termsData: get(state, "user.user.orgData.terms", []),
     folderData: getFolderSelector(state),
     userRole: getUserRole(state),
-    classList: getGroupList(state)
+    classList: getGroupList(state),
+    teacherList: getAssignmentTeacherList(state),
+    assignmentTestList: getAssignmentTestList(state)
   }),
   {
     loadAssignments: receiveAssignmentsAction,

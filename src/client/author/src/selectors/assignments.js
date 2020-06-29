@@ -26,6 +26,16 @@ export const getAssignmentsSummary = createSelector(
   state => state.summaryEntities
 );
 
+export const getAssignmentTeacherList = createSelector(
+  stateSelector,
+  state => state.teacherList
+);
+
+export const getAssignmentTestList = createSelector(
+  stateSelector,
+  state => state.testsList
+);
+
 export const getAssignmentClassList = createSelector(
   stateSelector,
   state => state.assignmentClassList

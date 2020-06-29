@@ -69,6 +69,8 @@ const initialFilterState = {
   testType: "",
   folderId: "",
   classId: "",
+  testId: "",
+  assignedBy: "",
   showFilter: false
 };
 class Assignments extends Component {

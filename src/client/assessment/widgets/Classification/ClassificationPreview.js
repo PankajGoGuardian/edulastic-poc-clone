@@ -204,7 +204,7 @@ const ClassificationPreview = ({
 
   const boxes = createEmptyArrayOfArrays();
 
-  const onDrop = (itemCurrent, itemTo, from) => {
+  const onDrop = (itemCurrent, itemTo, from, fromColumnId) => {
     const columnCount = get(item, "maxResponsePerCell", "");
     const dItems = cloneDeep(dragItems);
     const userAnswers = cloneDeep(answers);
@@ -240,12 +240,15 @@ const ClassificationPreview = ({
           const arr = userAnswers[key] || [];
           if (!duplicateResponses && arr.includes(obj.id)) {
             arr.splice(arr.indexOf(obj.id), 1);
-          } else if (from === "column" && arr.includes(obj.id)) {
+          } else if (from === "column" && key === fromColumnId) {
             /**
              * when going from one column1 to column2
              * remove it from the column1
              */
-            arr.splice(arr.indexOf(obj.id), 1);
+            const optionIndex = arr.indexOf(obj.id);
+            if (optionIndex !== -1) {
+              arr.splice(optionIndex, 1);
+            }
           }
           if (key === itemTo.columnId) {
             arr.push(obj.id);

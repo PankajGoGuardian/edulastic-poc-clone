@@ -25,11 +25,12 @@ const specSource = {
       return;
     }
 
+    const { fromColumnId } = props;
     const itemCurrent = monitor.getItem();
 
     const itemTo = monitor.getDropResult();
 
-    props.onDrop(itemCurrent, itemTo, props.from);
+    props.onDrop(itemCurrent, itemTo, props.from, fromColumnId);
   },
   canDrag(props) {
     return props.disableResponse !== true;

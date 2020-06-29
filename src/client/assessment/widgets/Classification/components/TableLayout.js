@@ -114,6 +114,8 @@ const TableLayout = ({
                       disableResponse={disableResponse}
                       {...dragItemSize}
                       isResetOffset
+                      from="column"
+                      fromColumnId={column.id}
                     />
                   );
                 })}

@@ -180,8 +180,9 @@ const TableRow = ({
                   disableResponse={disableResponse}
                   isResetOffset
                   noPadding
-                  from="column"
                   {...dragItemSize}
+                  from="column"
+                  fromColumnId={column.id}
                 />
               );
             })}

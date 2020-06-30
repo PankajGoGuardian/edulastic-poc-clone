@@ -119,7 +119,7 @@ const CurriculumSubHeader = ({
                   </StyledButton>
                 </DraftModeActionsWrapper>
               )}
-              {(!isManageContentActive || !showRightPanel) && !shouldHidCustomizeButton && (
+              {(!isManageContentActive || !showRightPanel) && enableCustomize && !shouldHidCustomizeButton && (
                 <CustomizeButton isGhost onClick={toggleManageContentClick("manageContent")}>
                   Customize Content
                 </CustomizeButton>
@@ -130,7 +130,6 @@ const CurriculumSubHeader = ({
                   View Summary
                 </StyledButton>
               )}
-
             </ButtonWrapper>
           </RightColumn>
         </CurriculumSubHeaderRow>

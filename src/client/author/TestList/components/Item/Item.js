@@ -251,7 +251,13 @@ class Item extends Component {
     const allowDuplicate =
       allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
 
-    const isDynamic = !isPlaylist && item.itemGroups.some(group => group.type === test.ITEM_GROUP_TYPES.AUTOSELECT);
+    const isDynamic =
+      !isPlaylist &&
+      item.itemGroups.some(
+        group =>
+          group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
+          group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+      );
     return (
       <>
         <ViewModal

@@ -186,7 +186,13 @@ class ListItem extends Component {
       !isPublisherUser &&
       !(_source?.createdBy?._id === currentUserId);
 
-    const isDynamic = !isPlaylist && item.itemGroups.some(group => group.type === test.ITEM_GROUP_TYPES.AUTOSELECT);
+    const isDynamic =
+      !isPlaylist &&
+      item.itemGroups.some(
+        group =>
+          group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
+          group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+      );
 
     return (
       <>

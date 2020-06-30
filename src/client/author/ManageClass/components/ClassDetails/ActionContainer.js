@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import * as moment from "moment";
 import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
-import { Dropdown, message } from "antd";
+import { Dropdown } from "antd";
 
 import { enrollmentApi } from "@edulastic/api";
 import {
@@ -409,14 +409,11 @@ const ActionContainer = ({
                     <span>Edit Student</span>
                   </MenuItems>
                 )}
-                {type === "class" && (
-                  <FeaturesSwitch inputFeatures="studentGroups" actionOnInaccessible="hidden">
-                    <MenuItems key="addToGroup">
-                      <IconPlus />
-                      <span>Add To Group</span>
-                    </MenuItems>
-                  </FeaturesSwitch>
-
+                {type === "class" && enableStudentGroups && (
+                  <MenuItems key="addToGroup">
+                    <IconPlus />
+                    <span>Add To Group</span>
+                  </MenuItems>
                 )}
                 {type === "class" && (
                   <MenuItems key="mergeStudents">

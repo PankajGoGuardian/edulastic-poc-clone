@@ -1,61 +1,59 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { trim, isEmpty } from "lodash";
+import { themeColor, white } from "@edulastic/colors";
+import { OnDarkBgLogo, withWindowSizes } from "@edulastic/common";
+import { IconLock, IconMail, IconUser } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
 import { Col, Form, Input, message } from "antd";
+import { isEmpty, trim } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { connect } from "react-redux";
+import { LARGE_DESKTOP_WIDTH, MAX_TAB_WIDTH } from "../../../../author/src/constants/others";
 import {
-  RegistrationWrapper,
-  FlexWrapper,
-  RegistrationHeader,
-  BannerText,
-  LinkDiv,
-  RegistrationBody,
-  Copyright,
-  FormWrapper,
-  FormHead,
-  ThirdPartyLoginBtn,
-  InfoBox,
-  InfoIcon,
-  FormBody,
-  RegisterButton,
-  CircleDiv,
-  AlreadyhaveAccount,
-  MobileViewLinks,
-  DesktopVieLinks,
-  DesktopViewCopyright
-} from "../../styled";
-import {
-  loginAction,
-  signupAction,
-  googleLoginAction,
-  cleverLoginAction,
-  msoLoginAction,
-  setInviteDetailsAction
-} from "../../../Login/ducks";
-import {
-  getPartnerKeyFromUrl,
-  validatePartnerUrl,
-  getPartnerLoginUrl,
-  getPartnerStudentSignupUrl,
-  getPartnerDASignupUrl,
-  isDistrictPolicyAllowed,
   getDistrictLoginUrl,
   getDistrictStudentSignupUrl,
   getFullNameFromString,
-  isEmailValid
+  getPartnerDASignupUrl,
+  getPartnerKeyFromUrl,
+  getPartnerLoginUrl,
+  getPartnerStudentSignupUrl,
+  isDistrictPolicyAllowed,
+  isEmailValid,
+  validatePartnerUrl
 } from "../../../../common/utils/helpers";
 import { Partners } from "../../../../common/utils/static/partnerData";
-
+import cleverIcon from "../../../assets/clever-icon.svg";
 import googleIcon from "../../../assets/google-btn.svg";
 import icon365 from "../../../assets/icons8-office-365.svg";
-import cleverIcon from "../../../assets/clever-icon.svg";
-import { withWindowSizes } from "@edulastic/common";
-import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../../author/src/constants/others";
-import { IconLock, IconUser, IconMail } from "@edulastic/icons";
-import { themeColor, white } from "@edulastic/colors";
+import {
+  cleverLoginAction,
+  googleLoginAction,
+  msoLoginAction,
+  setInviteDetailsAction,
+  signupAction
+} from "../../../Login/ducks";
+import {
+  AlreadyhaveAccount,
+  BannerText,
+  CircleDiv,
+  Copyright,
+  DesktopVieLinks,
+  DesktopViewCopyright,
+  FlexWrapper,
+  FormBody,
+  FormHead,
+  FormWrapper,
+  InfoBox,
+  InfoIcon,
+  LinkDiv,
+  MobileViewLinks,
+  RegisterButton,
+  RegistrationBody,
+  RegistrationHeader,
+  RegistrationWrapper,
+  ThirdPartyLoginBtn
+} from "../../styled";
 import PasswordPopup from "../PasswordPopup";
 
 const FormItem = Form.Item;
@@ -79,6 +77,7 @@ class Signup extends React.Component {
       showModal: false
     });
   };
+
   regExp = new RegExp("^[A-Za-z0-9 ]+$");
 
   handleSubmit = e => {
@@ -232,7 +231,7 @@ class Signup extends React.Component {
         <RegistrationWrapper image={image}>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
-              <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
+              <OnDarkBgLogo height="30px" />
             </Col>
             <Col span={12} align="right">
               <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>

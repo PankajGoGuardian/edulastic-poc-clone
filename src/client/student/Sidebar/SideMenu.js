@@ -11,7 +11,6 @@ import { get, pick } from "lodash";
 import styled, { withTheme } from "styled-components";
 import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown } from "antd";
 import {
-  IconHeader,
   IconLogoCompact,
   IconClockDashboard,
   IconBarChart,
@@ -23,7 +22,7 @@ import {
   IconPlaylist,
   IconSwitchUser
 } from "@edulastic/icons";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, OnDarkBgLogo } from "@edulastic/common";
 import {
   white,
   tabletWidth,
@@ -272,7 +271,7 @@ class SideMenu extends Component {
                     </Col>
                   ) : null}
                   <Col span={24} style={{ textAlign: isSidebarCollapsed ? "center" : "left" }}>
-                    {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
+                    {isSidebarCollapsed ? <LogoCompact /> : <OnDarkBgLogo />}
                   </Col>
                 </LogoWrapper>
               )}
@@ -976,14 +975,6 @@ const DropdownBtn = styled(Dropdown)`
     padding: 0px;
     margin: 0px;
     max-height: 50px;
-  }
-`;
-
-const Logo = styled(IconHeader)`
-  width: auto;
-  height: 25px;
-  path.b {
-    fill: ${white};
   }
 `;
 

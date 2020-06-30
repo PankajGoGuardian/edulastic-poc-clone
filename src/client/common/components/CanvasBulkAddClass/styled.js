@@ -1,6 +1,5 @@
 import { Table, Row, Modal } from "antd";
 import styled from "styled-components";
-import { IconHeader } from "@edulastic/icons";
 import { themeColor, white, backgroundGrey2 } from "@edulastic/colors";
 
 export const CanvasClassTable = styled(Table)`
@@ -16,11 +15,6 @@ export const Container = styled(Row)`
   > div {
     margin-bottom: 10px;
   }
-`;
-
-export const Logo = styled(IconHeader)`
-  width: ${({ width }) => width || "119px"};
-  height: ${({ height }) => height || "21px"};
 `;
 
 export const LogoWrapper = styled.div`

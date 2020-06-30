@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { themeColor } from "@edulastic/colors";
+import { OnDarkBgLogo } from "@edulastic/common";
 
-export const EduLogo = styled.img`
+export const EduLogo = styled(OnDarkBgLogo)`
   position: fixed;
   top: 20px;
   left: 20px;

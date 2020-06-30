@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { trim, isEmpty } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, OnDarkBgLogo } from "@edulastic/common";
 import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor, white } from "@edulastic/colors";
 import {
@@ -404,7 +404,7 @@ class StudentSignup extends React.Component {
         >
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
-              <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
+              <OnDarkBgLogo height="30px" />
             </Col>
             <Col span={12} align="right">
               <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>

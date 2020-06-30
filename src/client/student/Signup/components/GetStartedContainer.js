@@ -1,36 +1,36 @@
-import React from "react";
-import { Row, Col, Form } from "antd";
+import {
+  extraDesktopWidthMax,
+  greyGraphstroke,
+  mainTextColor,
+  mobileWidthMax,
+  tabletWidth,
+  themeColor
+} from "@edulastic/colors";
+import { OnDarkBgLogo } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { Col, Form, Row } from "antd";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import React from "react";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
+import styled from "styled-components";
 import {
-  themeColor,
-  mainTextColor,
-  greyGraphstroke,
-  tabletWidth,
-  mobileWidthMax,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
-import { RegistrationHeader, RegistrationBody, Copyright, CircleDiv, AlreadyhaveAccount } from "../styled";
-import {
+  getDistrictLoginUrl,
+  getDistrictStudentSignupUrl,
+  getDistrictTeacherSignupUrl,
+  getPartnerDASignupUrl,
   getPartnerKeyFromUrl,
-  validatePartnerUrl,
   getPartnerLoginUrl,
   getPartnerStudentSignupUrl,
   getPartnerTeacherSignupUrl,
-  getPartnerDASignupUrl,
   isDistrictPolicyAllowed,
-  getDistrictLoginUrl,
-  getDistrictStudentSignupUrl,
-  getDistrictTeacherSignupUrl
+  validatePartnerUrl
 } from "../../../common/utils/helpers";
 import { Partners } from "../../../common/utils/static/partnerData";
-
+import adminBg from "../../assets/small-bg-adm.png";
 import studentBg from "../../assets/small-bg-student.png";
 import teacherBg from "../../assets/small-bg-teacher.png";
-import adminBg from "../../assets/small-bg-adm.png";
+import { AlreadyhaveAccount, Copyright, RegistrationBody, RegistrationHeader } from "../styled";
 
 const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType }) => {
   const partnerKey = getPartnerKeyFromUrl(location.pathname);
@@ -41,7 +41,7 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, or
       <RegistrationBg src={generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : ""} alt="bg" />
       <RegistrationHeader type="flex" align="middle">
         <Col span={12}>
-          <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
+          <OnDarkBgLogo height="30px" />
         </Col>
         <Col span={12} align="right">
           <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>

@@ -17,7 +17,6 @@ import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
 import styled from "styled-components";
 import {
-  IconHeader,
   IconLogoCompact,
   IconClockDashboard,
   IconAssignment,
@@ -35,7 +34,7 @@ import {
   IconInterface,
   IconSwitchUser
 } from "@edulastic/icons";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, OnDarkBgLogo } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
@@ -409,7 +408,7 @@ class SideMenu extends Component {
                 </Col>
               ) : null}
               <Col span={24} style={{ textAlign: isSidebarCollapsed ? "center" : "left" }}>
-                {isCollapsed ? <LogoCompact /> : <Logo />}
+                {isCollapsed ? <LogoCompact /> : <OnDarkBgLogo />}
               </Col>
             </LogoWrapper>
           )}
@@ -1125,14 +1124,6 @@ const PseudoDiv = styled.div`
   text-align: center;
   text-transform: uppercase;
   margin: ${({ isCollapsed }) => (isCollapsed ? "0px auto" : "10px 10px 15px 20px")};
-`;
-
-const Logo = styled(IconHeader)`
-  width: auto;
-  height: 25px;
-  path.b {
-    fill: ${white};
-  }
 `;
 
 const LogoCompact = styled(IconLogoCompact)`

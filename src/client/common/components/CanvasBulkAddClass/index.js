@@ -1,26 +1,26 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { connect } from "react-redux";
-import { Select, message } from "antd";
-import { get, groupBy } from "lodash";
+import { OnWhiteBgLogo } from "@edulastic/common";
 import { IconCanvasBook } from "@edulastic/icons";
-import {
-  CanvasClassTable,
-  Logo,
-  Container,
-  LogoWrapper,
-  HeadingWrapper,
-  ButtonContainer,
-  Button,
-  StyledModal,
-  ClassNameWrapper
-} from "./styled";
-import selectsData from "../../../author/TestPage/components/common/selectsData";
-import { getDictCurriculumsAction } from "../../../author/src/actions/dictionaries";
-import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
+import { message, Select } from "antd";
+import { get, groupBy } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
 import { receiveSearchCourseAction } from "../../../author/Courses/ducks";
 import { getThumbnail } from "../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade";
+import { getDictCurriculumsAction } from "../../../author/src/actions/dictionaries";
+import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
+import selectsData from "../../../author/TestPage/components/common/selectsData";
+import { setSignUpStatusAction, signupSuccessAction } from "../../../student/Login/ducks";
 import { bulkSyncCanvasClassAction, joinSchoolFailedAction } from "../../../student/Signup/duck";
-import { signupSuccessAction, setSignUpStatusAction } from "../../../student/Login/ducks";
+import {
+  Button,
+  ButtonContainer,
+  CanvasClassTable,
+  ClassNameWrapper,
+  Container,
+  HeadingWrapper,
+  LogoWrapper,
+  StyledModal
+} from "./styled";
 
 const CanvasBulkAddClass = ({
   receiveSearchCourse,
@@ -285,7 +285,7 @@ const CanvasBulkAddClass = ({
   return (
     <Container>
       <LogoWrapper>
-        <Logo height="28px" width="155px" />
+        <OnWhiteBgLogo />
       </LogoWrapper>
       <LogoWrapper>
         <IconCanvasBook height="75px" width="75px" />

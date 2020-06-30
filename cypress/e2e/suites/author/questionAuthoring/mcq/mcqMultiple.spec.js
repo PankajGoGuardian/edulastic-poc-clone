@@ -11,13 +11,14 @@ import {
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
+import { questionType } from "../../../../framework/constants/questionTypes.js";
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
 )} >> Author "Multiple choice - multiple response" type question`, () => {
   const queData = {
     group: "Multiple Choice",
-    queType: "Multiple choice - multiple response",
+    queType: questionType.MCQ_MULTI,
     queText: "Indian state known as garden spice is:",
     choices: ["choice a", "choice b", "choice c", "choice d", "choice e"],
     correct: ["choice a", "choice b"],

@@ -11,11 +11,12 @@ import {
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
+import { questionType } from "../../../../framework/constants/questionTypes.js";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false" type question`, () => {
   const queData = {
     group: "Multiple Choice",
-    queType: "True or false",
+    queType: questionType.MCQ_TF,
     queText: "Which is following option is true :",
     choices: ["TrueOption", "FalseOption"],
     correct: ["TrueOption"],

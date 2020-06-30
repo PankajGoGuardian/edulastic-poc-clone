@@ -10,11 +10,12 @@ import {
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
+import { questionType } from "../../../../framework/constants/questionTypes.js";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choice - standard" type question`, () => {
   const queData = {
     group: "Multiple Choice",
-    queType: "Multiple choice - standard",
+    queType: questionType.MCQ_STD,
     queText: "Indian state known as garden spice is:",
     choices: ["Karnataka", "West Bengal", "Kerala", "Delhi", "KL"],
     correct: ["Kerala"],

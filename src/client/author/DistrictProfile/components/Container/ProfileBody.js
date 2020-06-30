@@ -462,7 +462,7 @@ class ProfileBody extends React.Component {
     ) {
       showPowerTools = true;
     }
-    const showStandardsSelection =
+    const showDefaultSettings =
       [roleuser.TEACHER, roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) &&
       !features.isPublisherAuthor &&
       !features.isCurator;
@@ -590,7 +590,7 @@ class ProfileBody extends React.Component {
                 </AddSchoolSection>
               </SchoolWrapper>
             )}
-            {showStandardsSelection && (
+            {showDefaultSettings && (
               <SchoolWrapper>
                 <StandardSetsLabel>Standard Sets</StandardSetsLabel>
                 <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
@@ -605,7 +605,7 @@ class ProfileBody extends React.Component {
               </SchoolWrapper>
             )}
 
-            {(user.role.toUpperCase() === roleuser.TEACHER || showPowerTools) && (
+            {showDefaultSettings && (
               <SchoolWrapper>
                 <Block>
                   <StyledDiv>

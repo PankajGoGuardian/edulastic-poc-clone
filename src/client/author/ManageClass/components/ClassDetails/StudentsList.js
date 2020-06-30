@@ -7,9 +7,17 @@ import * as moment from "moment";
 // components
 import { Spin, Switch, Tooltip } from "antd";
 import { GiDominoMask } from "react-icons/gi";
-import { IconClose, IconCorrect } from "@edulastic/icons";
+import { IconClose, IconCorrect, IconExclamationMark } from "@edulastic/icons";
 import { lightBlue3 } from "@edulastic/colors";
-import { NoStudents, NoConentDesc, StyledIcon, StudentsTable, TableWrapper, SwitchBox } from "./styled";
+import {
+  NoStudents,
+  NoConentDesc,
+  StyledIcon,
+  StudentsTable,
+  TableWrapper,
+  SwitchBox,
+  NotEnrolledMessage
+} from "./styled";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
 // ducks
@@ -129,12 +137,20 @@ const StudentsList = ({
       dataIndex: "enrollmentStatus",
       align: "center",
       defaultSortOrder: "descend",
+      width: "20%",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
       render: (enrollmentStatus, { lastModified }) => (
         <span>
-          {enrollmentStatus && enrollmentStatus == 1
-            ? "Active"
-            : `Student not enrolled${lastModified ? ` after ${moment(lastModified).format("MMM DD, YYYY")}` : ""}`}
+          {enrollmentStatus && enrollmentStatus == 1 ? (
+            "Active"
+          ) : (
+            <NotEnrolledMessage>
+              <IconExclamationMark />
+              <div>{`Student not enrolled${
+                lastModified ? ` after ${moment(lastModified).format("MMM DD, YYYY")}` : ""
+              }`}</div>
+            </NotEnrolledMessage>
+          )}
         </span>
       )
     },

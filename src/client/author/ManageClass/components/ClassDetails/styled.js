@@ -19,7 +19,7 @@ import {
 import { Paper } from "@edulastic/common";
 import { IconManage } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
-import { Button, Divider, Icon, Menu, Modal, Table,Row,Col } from "antd";
+import { Button, Divider, Icon, Menu, Modal, Table, Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -268,13 +268,13 @@ export const ClassLink = styled.span`
   cursor: pointer;
 `;
 
-export const CodeWrapper =styled(Row)`
-width:100%;
-justify-content:space-between;
+export const CodeWrapper = styled(Row)`
+  width: 100%;
+  justify-content: space-between;
 `;
 
 export const ClassCode = styled(Col)`
-  white-space:nowrap;
+  white-space: nowrap;
   font-size: 12px;
   font-weight: 700;
   color: ${secondaryTextColor};
@@ -282,16 +282,16 @@ export const ClassCode = styled(Col)`
   span {
     font-size: 18px;
     color: ${themeColorLighter};
-    position:relative;
-    top:2px;
-    margin-left:10px;
+    position: relative;
+    top: 2px;
+    margin-left: 10px;
   }
   @media (max-width: ${desktopWidth}) {
     padding-right: 0px;
   }
 `;
 export const Studentscount = styled(Col)`
-white-space:nowrap;
+  white-space: nowrap;
   font-size: 12px;
   font-weight: 700;
   color: ${secondaryTextColor};
@@ -299,9 +299,9 @@ white-space:nowrap;
   span {
     font-size: 18px;
     color: ${themeColorLighter};
-    position:relative;
-    top:2px;
-    margin-left:10px;
+    position: relative;
+    top: 2px;
+    margin-left: 10px;
   }
   @media (max-width: ${desktopWidth}) {
     padding-right: 0px;
@@ -311,7 +311,7 @@ white-space:nowrap;
 export const MainContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  height:auto;
+  height: auto;
   padding: 20px 0px;
   background: white;
   border-radius: 10px;
@@ -346,10 +346,9 @@ export const Image = styled.img`
 `;
 
 export const MidWrapper = styled(Row)`
-width:100%;
-margin-top:10px;
+  width: 100%;
+  margin-top: 10px;
 `;
-
 
 export const RightWrapper = styled.div`
   text-align: start;
@@ -360,26 +359,26 @@ export const RightWrapper = styled.div`
 `;
 
 export const FieldValue = styled.div`
-  display:flex;
+  display: flex;
   font-weight: 550;
   color: ${cardTitleColor};
-  margin-top:5px;
+  margin-top: 5px;
   display: flex;
   font-size: 14px;
   div {
-    min-width:80px;
+    min-width: 80px;
     text-transform: uppercase;
     font-size: 12px;
-    margin-top:10px;
+    margin-top: 10px;
   }
 
   &:first-child {
     margin-top: 0px;
   }
   span {
-    margin-top:7px;
+    margin-top: 7px;
     margin-left: 5px;
-    margin-right:5px;
+    margin-right: 5px;
     color: ${secondaryTextColor};
   }
 
@@ -574,9 +573,9 @@ export const ImageContainer = styled.div`
 
 export const ClassInfoContainer = styled.div`
   width: calc(100% - 250px);
-  height:auto;
+  height: auto;
   padding: 0 1.2rem;
-  margin-top:10px;
+  margin-top: 10px;
 
   @media (min-width: ${extraDesktopWidthMax}) {
     padding: 0 30px;
@@ -585,14 +584,14 @@ export const ClassInfoContainer = styled.div`
 `;
 
 export const FlexDiv = styled.div`
-  width:100%;
+  width: 100%;
   display: flex;
 `;
 
 export const SwitchBox = styled.span`
   font-size: 10px;
   padding-bottom: 10px;
-  margin-left:21px;
+  margin-left: 21px;
   .ant-switch {
     min-width: 32px;
     height: 16px;
@@ -626,5 +625,13 @@ export const GoogleClassSyncModal = styled(Modal)`
   .ant-modal-footer {
     border: none;
     padding: 20px 24px;
+  }
+`;
+
+export const NotEnrolledMessage = styled.div`
+  display: flex;
+  svg {
+    margin-top: 4px;
+    margin-right: 5px;
   }
 `;

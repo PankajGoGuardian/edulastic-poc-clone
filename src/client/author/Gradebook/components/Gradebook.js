@@ -51,6 +51,14 @@ const Gradebook = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [pseudoPageDetail, setPseudoPageDetail] = useState({ ...PAGE_DETAIL });
 
+  const pagination = filters.status ? pseudoPageDetail : pageDetail;
+  const curatedFiltersData = curateFiltersData(filtersData, filters);
+  const { curatedData, assessmentsData, studentsCount, assignmentsCount } = curateGradebookData(
+    gradebookData,
+    pagination,
+    filters.status
+  );
+
   const setInitialFilters = () => setFilters({ ...INITIAL_FILTERS, termId });
 
   const handlePagination = paginationData =>
@@ -80,7 +88,7 @@ const Gradebook = ({
 
   useEffect(() => {
     if (!onComponentLoad) {
-      const assessmentIds = filtersData.assessments
+      const assessmentIds = curatedFiltersData.assessments
         .filter(a => filters.assessmentIds.includes(a.id))
         .flatMap(a => a.assessmentIds);
       fetchGradebookData({ filters: { ...filters, assessmentIds }, pageDetail });
@@ -89,14 +97,6 @@ const Gradebook = ({
   }, [pageDetail]);
 
   useEffect(() => setLoading(false), [gradebookData]);
-
-  const pagination = filters.status ? pseudoPageDetail : pageDetail;
-  const curatedFiltersData = curateFiltersData(filtersData, filters);
-  const { curatedData, assessmentsData, studentsCount, assignmentsCount } = curateGradebookData(
-    gradebookData,
-    pagination,
-    filters.status
-  );
 
   // select unique students for AddToGroupModal
   const { students = [] } = gradebookData;

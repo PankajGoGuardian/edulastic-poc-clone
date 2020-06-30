@@ -1,4 +1,3 @@
-import { message } from "antd";
 import { createSlice } from "redux-starter-kit";
 import { notification } from "@edulastic/common";
 import { takeLatest, call, put, select } from "redux-saga/effects";
@@ -9,7 +8,7 @@ import { getUserOrgData } from "../src/selectors/user";
 import selectsData from "../TestPage/components/common/selectsData";
 
 // transformers & constants
-import { getUniqAssessments, STATUS_LIST, PAGE_DETAIL } from "./transformers";
+import { STATUS_LIST, PAGE_DETAIL } from "./transformers";
 
 // slice
 const slice = createSlice({
@@ -95,8 +94,7 @@ function* fetchGradebookFiltersSaga() {
     // testTypes
     const testTypes = tTypes.map(({ value, text }) => ({ id: value, name: text }));
     // assessments
-    const { assignments } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
-    const assessments = getUniqAssessments(assignments);
+    const { assignments: assessments } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
     // classes & groups
     const classList = yield call(groupApi.fetchMyGroups);
     const classes = [];

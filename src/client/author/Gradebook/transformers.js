@@ -90,14 +90,15 @@ export const curateFiltersData = (filtersData, filters) => {
   const { termId } = filters;
   // TODO: raise query for filtering based on subjects, grades, or classIds in PRD
   const filteredAssessments = assessments.filter(a => !termId || a.termId === termId);
-  return { ...filtersData, assessments: filteredAssessments };
+  const uniqAssessments = getUniqAssessments(filteredAssessments);
+  return { ...filtersData, assessments: uniqAssessments };
 };
 
 // curate percentScore, status & lastActivityDAte for testActivity
 const getCuratedTestActivity = taGroup => {
   const ta = taGroup[taGroup.length - 1];
   const { status, graded, startDate, endDate, score = 0, maxScore = 1 } = ta;
-  const laDate = endDate || startDate;
+  const laDate = endDate || startDate || 0;
   if (status === testActivityStatus.START) {
     // TODO: check if partial score, can be returned, else query in PRD
     return { laDate, status: "START" };
@@ -185,11 +186,15 @@ export const curateGradebookData = (gradebookData, pagination, status) => {
     });
     return assignment;
   });
+
   // re-curate student data for the grouped assignments
   curatedData.forEach(d => {
     const assessments = {};
     Object.entries(d.assessments).forEach(([k, v]) => {
-      assessments[assignmentsMap[k]] = v;
+      // store the latest test activity
+      const prevLaDate = assessments[assignmentsMap[k]]?.laDate;
+      const selectPrev = prevLaDate && prevLaDate > v.laDate;
+      assessments[assignmentsMap[k]] = selectPrev ? assessments[assignmentsMap[k]] : v;
     });
     d.assessments = assessments;
   });

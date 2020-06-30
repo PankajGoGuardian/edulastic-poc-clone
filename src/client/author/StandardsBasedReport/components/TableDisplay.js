@@ -1,10 +1,11 @@
 // @ts-check
 import { smallDesktopWidth } from "@edulastic/colors";
-import { round, sum, values } from "lodash";
+import { round, sum, values, isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { getHasRandomQuestionselector } from "../../ClassBoard/ducks";
 import ArrowLeftIcon from "../Assets/left-arrow.svg";
 import ArrowRightIcon from "../Assets/right-arrow.svg";
@@ -24,6 +25,7 @@ import {
   StyledCard,
   TableData
 } from "./styled";
+import NoDataNotification from "../../../common/components/NoDataNotification";
 
 const getMastery = (assignmentMasteryArray, performancePercentage) => {
   performancePercentage = performancePercentage || 0;
@@ -212,6 +214,13 @@ class TableDisplay extends Component {
     });
 
     const isMobile = this.isMobile();
+
+    if(isEmpty(standards)) {
+      return <NoDataNotification 
+        heading="Standard based report not available" 
+        description={<>Standard Based Report can be generated based on the Interested Standards. To setup please go to <Link to="/author/profile">My Profile</Link> and select your Interested Standards.</>}
+      />
+    }
 
     return (
       <React.Fragment>

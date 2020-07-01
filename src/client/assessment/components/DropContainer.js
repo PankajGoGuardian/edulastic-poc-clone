@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DropTarget } from "react-dnd";
 import { withTheme } from "styled-components";
+import { themeColorBlue, greyThemeLight } from "@edulastic/colors";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -38,8 +39,8 @@ const DropContainer = ({
   const border = `${
     !noBorder
       ? isOver
-        ? `1px dashed ${theme.dropContainer.isOverBorderColor}`
-        : `1px dashed ${isPlaylist ? "transparent" : theme.dropContainer.isNotOverBorderColor}`
+        ? `2px dashed ${themeColorBlue}`
+        : `2px dashed ${isPlaylist ? "transparent" : greyThemeLight}`
       : isOver
       ? `1px solid ${theme.dropContainer.isOverBorderColor}`
       : `1px solid ${theme.dropContainer.isNotOverBorderColor}`

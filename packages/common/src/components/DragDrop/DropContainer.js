@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { isObject } from "lodash";
 import { useDrop } from "react-dnd";
+import { themeColorBlue, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 
 const DropContainer = ({ style, drop, children, index, ...rest }) => {
   const [{ isOver }, dropRef] = useDrop({
@@ -26,8 +27,8 @@ const DropContainer = ({ style, drop, children, index, ...rest }) => {
   });
 
   const overrideStyle = {
-    border: isOver ? "1px dashed #75b4dd" : style.border || "1px dashed #b9b9b9",
-    background: style.background || "#f8f8f8f"
+    border: isOver ? `2px dashed ${themeColorBlue}` : style.border || `2px dashed ${greyThemeLight}`,
+    background: style.background || greyThemeLighter
   };
 
   const mergedStyle = {

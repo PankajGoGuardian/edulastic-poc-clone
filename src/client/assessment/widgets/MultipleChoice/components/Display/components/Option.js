@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { isEmpty, flatten } from "lodash";
-import produce from "immer";
+import { themeColorBlue, white } from "@edulastic/colors";
 import { MathFormulaDisplay } from "@edulastic/common";
+import produce from "immer";
+import { flatten, isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { themeColor, white, grey } from "@edulastic/colors";
 import { ALPHABET } from "../../../constants/alphabet";
 import { CheckboxContainer } from "../styled/CheckboxContainer";
-import { MultiChoiceContent } from "../styled/MultiChoiceContent";
-import { Label } from "../styled/Label";
-import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
+import { IconWrapper } from "../styled/IconWrapper";
+import { Label } from "../styled/Label";
+import { MultiChoiceContent } from "../styled/MultiChoiceContent";
 import Cross from "./Cross";
 
 const Option = props => {
@@ -219,10 +219,10 @@ const StyledOptionsContainer = styled.div`
     font-size: ${({ theme, uiStyleType }) =>
       uiStyleType === "radioBelow" ? "0px" : theme.widgets.multipleChoice.labelOptionFontSize || "20px"};
     font-weight: 600;
-    color: ${props => (props.isSelected ? white : themeColor)};
-    background: ${props => (props.isSelected ? themeColor : white)};
+    color: ${props => (props.isSelected ? white : "#111111")};
+    background: ${props => (props.isSelected ? themeColorBlue : white)};
 
-    border: 1px solid ${grey};
+    border: 1px solid ${props => (props.isSelected ? themeColorBlue : "#2F4151")};
     border-radius: ${({ multipleResponses, uiStyleType }) =>
       uiStyleType === "block" ? "4px 0px 0px 4px" : multipleResponses ? "0px" : "50%"};
 

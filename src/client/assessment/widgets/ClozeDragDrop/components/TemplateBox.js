@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-
-import { MathSpan, measureText, DragDrop } from "@edulastic/common";
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import { DragDrop, MathSpan, measureText } from "@edulastic/common";
 import { response as Dimensions } from "@edulastic/constants";
 import { Popover } from "antd";
-import { ResponseContainer } from "../styled/ResponseContainer";
+import PropTypes from "prop-types";
+import React from "react";
 import getImageDimensionsHook from "../../../hooks/imageDimensions";
+import { ResponseContainer } from "../styled/ResponseContainer";
 
 const { DropContainer, DragItem } = DragDrop;
 
@@ -107,8 +107,8 @@ const TemplateBox = ({ resprops, id }) => {
     display: "inline-flex",
     verticalAlign: "middle",
     borderRadius: 2,
-    border: "1px dashed #b9b9b9",
-    background: "#f8f8f8",
+    border: `2px dashed ${greyThemeLight}`,
+    background: greyThemeLighter,
     minHeight: style.height,
     padding: style.padding
   };

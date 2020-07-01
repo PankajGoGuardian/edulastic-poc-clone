@@ -1,7 +1,6 @@
+import { greyThemeLight, greyThemeLighter, largeDesktopWidth, themeColorBlue } from "@edulastic/colors";
+import { Button, Icon } from "antd";
 import styled from "styled-components";
-import { Icon, Button } from "antd";
-
-import {  largeDesktopWidth,themeColorBlue } from "@edulastic/colors";
 
 export const StyledUploadContainer = styled.div`
   display: flex;
@@ -14,12 +13,12 @@ export const StyledUpload = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: #fafafa;
+  background-color: ${greyThemeLighter};
   width: ${({ keyName, width }) => (keyName === "pageBackground" ? "100%" : width || "")};
   height: ${props => props.height};
   overflow: hidden;
   cursor: pointer;
-  border: ${props => (props.isVisible ? "1px dashed #d9d9d9" : "none")};
+  border: ${props => (props.isVisible ? `1px dashed ${greyThemeLight}` : "none")};
   input {
     display: none !important;
   }

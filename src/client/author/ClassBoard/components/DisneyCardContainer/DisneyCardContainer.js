@@ -111,7 +111,7 @@ class DisneyCardContainer extends Component {
 
     const showLoader = () => <Spin size="small" />;
     let styledCard = [];
-    const classess = detailedClasses ?.filter(({ _id }) => _id === classId);
+    const classess = detailedClasses?.filter(({ _id }) => _id === classId);
 
     if (testActivity.length > 0) {
       /**
@@ -126,9 +126,9 @@ class DisneyCardContainer extends Component {
         };
 
         let hasUsedScratchPad = false;
-        student ?.questionActivities.every(questionActivity => {
+        student?.questionActivities.every(questionActivity => {
           // check if this breaks after we find a true value.
-          if (questionActivity ?.scratchPad ?.scratchpad === true) {
+          if (questionActivity?.scratchPad?.scratchpad === true) {
             hasUsedScratchPad = true;
             return false;
           }
@@ -145,12 +145,7 @@ class DisneyCardContainer extends Component {
           status.status = "In Progress";
           status.color = yellow;
         } else if (student.status === "submitted") {
-          status.status = student.status;
-          if (student ?.graded === "GRADED") {
-            status.status = "Graded";
-          } else if (student ?.graded === "IN GRADING") {
-            status.status = "In Grading";
-          }
+          status.status = student?.graded === "GRADED" ? "Graded" : student.status;
           status.color = themeColorLighter;
         } else if (student.status === "redirected") {
           status.status = "Redirected";
@@ -211,16 +206,16 @@ class DisneyCardContainer extends Component {
                     {" "}
                   </i>
                 ) : (
-                  <CircularDiv
-                    data-cy="studentAvatarName"
-                    isLink={viewResponseStatus.includes(status.status)}
-                    title={isPresentationMode ? "" : student.userName}
-                    onClick={e =>
+                    <CircularDiv
+                      data-cy="studentAvatarName"
+                      isLink={viewResponseStatus.includes(status.status)}
+                      title={isPresentationMode ? "" : student.userName}
+                      onClick={e =>
                         viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
                       }
-                  >
-                    {getAvatarName(student.studentName || "Anonymous")}
-                  </CircularDiv>
+                    >
+                      {getAvatarName(student.studentName || "Anonymous")}
+                    </CircularDiv>
                   )}
                 <StyledName>
                   <StyledParaF
@@ -254,7 +249,7 @@ class DisneyCardContainer extends Component {
                       )}
                     </>
                   ) : (
-                    <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
+                      <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
                     )}
                 </StyledName>
                 <RightAlignedCol>
@@ -347,7 +342,7 @@ class DisneyCardContainer extends Component {
                     })}
                 </PaginationInfoT>
               </div>
-              {recentAttemptsGrouped ?.[student.studentId] ?.length > 0 &&
+              {recentAttemptsGrouped?.[student.studentId]?.length > 0 &&
                 hoverActiveStudentActive === student.studentId && (
                   <RecentAttemptsContainer>
                     <PaginationInfoS>
@@ -365,7 +360,7 @@ class DisneyCardContainer extends Component {
                             </StyledParaSSS>
                             <p>Attempt {recentAttemptsGrouped[student.studentId][0].number + 1}</p>
                           </AttemptDiv>
-                          {recentAttemptsGrouped ?.[student.studentId].map(attempt => (
+                          {recentAttemptsGrouped?.[student.studentId].map(attempt => (
                             <AttemptDiv key={attempt._id || attempt.id}>
                               <StyledParaSS>
                                 {round(attempt.score, 2) || 0} / {attempt.maxScore || 0}
@@ -407,7 +402,7 @@ const withConnect = connect(state => ({
   isLoading: get(state, "classResponse.loading"),
   testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state),
-  recentAttemptsGrouped: state ?.author_classboard_testActivity ?.data ?.recentTestActivitiesGrouped || {}
+  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {}
 }));
 
 export default compose(

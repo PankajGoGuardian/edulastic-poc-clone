@@ -10,7 +10,7 @@ import {
   white,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
-import { Button } from "@edulastic/common";
+import { Button,CustomModalStyled } from "@edulastic/common";
 import { Menu, Modal } from "antd";
 import styled from "styled-components";
 
@@ -144,47 +144,7 @@ export const ModalFooterButton = styled(Button)`
   min-height: 30px;
 `;
 
-export const FooterCancelButton = styled(ModalFooterButton)`
-  color: ${themeColor};
-  margin-right: 10px;
-  &:hover,
-  &:focus {
-    color: ${themeColor};
-    background: ${white};
-    outline: none;
-  }
-`;
-
-export const FolderActionModal = styled(Modal)`
-  .ant-modal-content {
-    background: ${lightGreySecondary};
-    .ant-modal-close {
-      svg {
-        fill: ${title};
-        width: 14px;
-      }
-    }
-    .ant-modal-header {
-      background: transparent;
-      border-bottom: 0px;
-      padding: 20px 24px 0px;
-    }
-    .ant-modal-footer {
-      border-top: 0px;
-      display: flex;
-      justify-content: flex-end;
-      padding: 0px 24px 20px;
-    }
-    .ant-modal-body {
-      .ant-input {
-        border: none;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.07);
-      }
-    }
-  }
-`;
-
-export const MoveFolderActionModal = styled(FolderActionModal)`
+export const MoveFolderActionModal = styled(CustomModalStyled)`
   min-width: 560px;
   .ant-modal-body {
     padding: 20px 0px;
@@ -196,7 +156,6 @@ export const MoveFolderActionModal = styled(FolderActionModal)`
         height: 56px;
         display: flex;
         align-items: center;
-        background: ${lightGreySecondary};
         &:hover {
           background: rgba(0, 173, 80, 0.15);
         }

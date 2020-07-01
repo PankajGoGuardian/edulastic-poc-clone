@@ -1,5 +1,5 @@
 import { themeColor, lightGrey10 } from "@edulastic/colors";
-import { EduButton, FieldLabel, SelectInputStyled, notification } from "@edulastic/common";
+import { EduButton, FieldLabel, SelectInputStyled, notification ,CustomModalStyled} from "@edulastic/common";
 import {
   IconFolderAll,
   IconFolderDeactive,
@@ -28,7 +28,6 @@ import {
   receiveRenameFolderAction,
   setFolderAction
 } from "../../../src/actions/folder";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import {
   getDistrictIdSelector,
   getAssignmentTeacherList,
@@ -42,14 +41,11 @@ import {
   DropMenu,
   FilterContainer,
   FolderActionButton,
-  FolderActionModal,
-  FolderButton,
   FolderListItem,
   FolderListItemTitle,
   FoldersListWrapper,
-  FooterCancelButton,
+  FolderButton,
   MenuItems,
-  ModalFooterButton,
   ModalTitle,
   MoreButton,
   MoveFolderActionModal,
@@ -374,7 +370,7 @@ class LeftFilter extends React.Component {
     const classListArchive = classListByTerm.filter(item => item.active === 0);
     return (
       <FilterContainer>
-        <FolderActionModal
+        <CustomModalStyled
           centered
           title={
             !visibleModal.createFolder && <ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>
@@ -382,15 +378,16 @@ class LeftFilter extends React.Component {
           visible={visibleModal.newFolder || visibleModal.createFolder}
           onCancel={() => this.hideModal(visibleModal.createFolder ? "createFolder" : "newFolder")}
           footer={[
-            <FooterCancelButton
+            <EduButton
+              isGhost
               data-cy="cancel"
               key="back"
               variant="create"
               onClick={() => this.hideModal(visibleModal.createFolder ? "createFolder" : "newFolder")}
             >
               Cancel
-            </FooterCancelButton>,
-            <ModalFooterButton
+            </EduButton>,
+            <EduButton
               data-cy="submit"
               key="submit"
               color="primary"
@@ -403,7 +400,7 @@ class LeftFilter extends React.Component {
               }
             >
               {visibleModal.createFolder ? "Create New Folder" : selectedFolder ? "Update" : "Create"}
-            </ModalFooterButton>
+            </EduButton>
           ]}
         >
           {visibleModal.createFolder ? (
@@ -416,9 +413,9 @@ class LeftFilter extends React.Component {
               onKeyUp={this.handleCreateOnKeyPress}
             />
           )}
-        </FolderActionModal>
+        </CustomModalStyled>
 
-        <ConfirmationModal
+        <CustomModalStyled
           title="Delete Folder"
           visible={visibleModal.delFolder}
           onCancel={() => this.hideModal("delFolder")}
@@ -431,10 +428,10 @@ class LeftFilter extends React.Component {
             </EduButton>
           ]}
         >
-          <p>
+          <p style={{textAlign:"center"}}>
             Are you sure? <br /> This will delete the folder but all the tests will remain untouched.
           </p>
-        </ConfirmationModal>
+        </CustomModalStyled>
 
         <MoveFolderActionModal
           centered
@@ -442,17 +439,18 @@ class LeftFilter extends React.Component {
           visible={visibleModal.moveFolder}
           onCancel={() => this.hideModal("moveFolder")}
           footer={[
-            <FooterCancelButton
+            <EduButton
+              isGhost
               data-cy="cancel"
               key="back"
               variant="create"
               onClick={() => this.hideModal("moveFolder")}
             >
               Cancel
-            </FooterCancelButton>,
-            <ModalFooterButton data-cy="submit" key="submit" color="primary" variant="create" onClick={this.moveFolder}>
+            </EduButton>,
+            <EduButton data-cy="submit" key="submit" color="primary" variant="create" onClick={this.moveFolder}>
               Move
-            </ModalFooterButton>
+            </EduButton>
           ]}
         >
           <FoldersListWrapper>{this.renderFolders()}</FoldersListWrapper>

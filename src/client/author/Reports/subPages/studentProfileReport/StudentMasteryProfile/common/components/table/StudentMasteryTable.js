@@ -156,6 +156,7 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
 };
 
 const StudentMasteryTable = ({
+  parentRow,
   data,
   selectedMastery,
   isCsvDownloading,
@@ -166,7 +167,9 @@ const StudentMasteryTable = ({
 }) => {
   const filteredStandards = filter(
     data,
-    standard => !selectedMastery.length || intersection([standard.scale.masteryLabel], selectedMastery).length
+    standard =>
+      (!selectedMastery.length || intersection([standard.scale.masteryLabel], selectedMastery).length) &&
+      (!parentRow || String(parentRow.domainId) === String(standard.domainId))
   );
 
   const _columns = getColumns(handleOnClickStandard, filters, termId);

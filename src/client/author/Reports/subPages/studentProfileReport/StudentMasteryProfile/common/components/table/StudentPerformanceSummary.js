@@ -142,7 +142,7 @@ const StudentPerformanceSummary = ({ data, selectedMastery, expandedRowProps, ex
           pagination={false}
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
-          expandedRowRender={() => <StudentMasteryTable {...expandedRowProps} />}
+          expandedRowRender={record => <StudentMasteryTable parentRow={record} {...expandedRowProps} />}
           expandRowByClick
           onRow={record => ({
             onClick: () => handleExpandedRowsChange(record.rowIndex, filteredDomains.length)

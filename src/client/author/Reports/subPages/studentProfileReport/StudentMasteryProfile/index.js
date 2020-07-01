@@ -36,8 +36,10 @@ import {
 
 const usefilterRecords = (records, domain) =>
   // Note: record.domainId could be integer or string
-  useMemo(() => filter(records, record => domain === "All" || String(record.domainId) === domain), [records, domain]);
-
+  useMemo(() => filter(records, record => domain === "All" || String(record.domainId) === String(domain)), [
+    records,
+    domain
+  ]);
 const getTooltip = payload => {
   if (payload && payload.length) {
     const { masteryName = "", percentage = 0 } = payload[0].payload;

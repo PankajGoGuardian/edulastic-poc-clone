@@ -168,7 +168,6 @@ class LoginContainer extends React.Component {
                   !isSignupUsingDaURL ? (
                     <FormBody>
                       <Col span={20} offset={2}>
-                        <h5 align="center">{t("common.formboxheading")}</h5>
                         <Form onSubmit={this.handleSubmit}>
                           <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
                             {getFieldDecorator("email", {

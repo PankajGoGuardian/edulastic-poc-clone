@@ -4,6 +4,7 @@ import { WithMathFormula } from "@edulastic/common";
 export const Container = styled.div`
   position: relative;
   width: ${({ width }) => width};
+  text-align: ${({ isHorizontal }) => (isHorizontal ? "" : "center")};
   background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
 `;
 

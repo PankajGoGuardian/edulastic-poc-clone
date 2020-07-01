@@ -32,6 +32,8 @@ const v1Dimenstions = {
   v1Width: 740
 };
 
+export const defaultTitleWidth = 150;
+
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     const { details } = compareResult;
@@ -119,10 +121,21 @@ class AxisLabelsContainer extends PureComponent {
     return this.axisLabelsContainerRef?.current?.clientWidth - 2 || 0;
   }
 
+  get isHorizontal() {
+    const {
+      numberlineAxis: { responseBoxPosition }
+    } = this.props;
+
+    return responseBoxPosition === "top" || responseBoxPosition === "bottom";
+  }
+
   get choiceMaxWidth() {
     const { list } = this.props;
     const { maxWidth } = response;
     const maxContentWidth = Math.min(max(list.map(value => measureText(value.text).width)), maxWidth);
+    if (!this.isHorizontal && defaultTitleWidth > maxContentWidth) {
+      return defaultTitleWidth;
+    }
     return maxContentWidth;
   }
 
@@ -408,10 +421,10 @@ class AxisLabelsContainer extends PureComponent {
         }
       });
     }
-    const isHorizontal = responseBoxPosition === "top" || responseBoxPosition === "bottom";
+
     // +20 is padding between container and choices
-    const responseBoxWidth = isHorizontal ? "100%" : `${this.choiceMaxWidth}px`;
-    const graphContainerWidth = isHorizontal ? "100%" : `calc(100% - ${responseBoxWidth}px)`;
+    const responseBoxWidth = this.isHorizontal ? "100%" : `${this.choiceMaxWidth + 20}px`;
+    const graphContainerWidth = this.isHorizontal ? "100%" : `calc(100% - ${responseBoxWidth}px)`;
 
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef} style={{ width: "100%" }}>

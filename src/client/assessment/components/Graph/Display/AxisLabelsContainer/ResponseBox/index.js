@@ -6,10 +6,7 @@ import { Tooltip } from "antd";
 import { WithResources } from "@edulastic/common";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import AppConfig from "../../../../../../../../app-config";
-
 import { Container, Title, MarkContainer, DraggableOptionsContainer } from "./styled";
-
-export const defaultTitleWidth = 150;
 
 class ResponseBox extends Component {
   state = {
@@ -79,7 +76,8 @@ class ResponseBox extends Component {
     } = this.props;
 
     const { draggingMark, resourcesLoaded } = this.state;
-    const width = position === "top" || position === "bottom" ? minWidth : choiceWidth;
+    const isHorizontal = position === "top" || position === "bottom";
+    const width = isHorizontal ? minWidth : choiceWidth;
 
     const markCountInLine = Math.floor((width - separationDistanceX) / (markWidth + separationDistanceX));
     const linesCount = Math.ceil(markCount / markCountInLine);
@@ -93,7 +91,7 @@ class ResponseBox extends Component {
         onLoaded={this.resourcesOnLoaded}
       >
         {!resourcesLoaded ? null : (
-          <Container width={responseBoxWidth}>
+          <Container width={responseBoxWidth} isHorizontal={isHorizontal}>
             <Title ref={this.titleRef}>DRAG DROP VALUES</Title>
             <DraggableOptionsContainer className="draggable-options-container" height={height} width={width}>
               {values.map((value, i) => {

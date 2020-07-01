@@ -284,7 +284,7 @@ class FeedbackRight extends Component {
           {isPresentationMode ? (
             <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
           ) : (
-            <UserAvatar>{getAvatarName(studentName)}</UserAvatar>
+              <UserAvatar>{getAvatarName(studentName)}</UserAvatar>
             )}
           &nbsp;
           {studentName}
@@ -428,8 +428,8 @@ const StyledCardTwo = styled(Card)`
     padding: 13px 0px;
   }
   .ant-card-body {
-    position: absolute;
-    top: 60px;
+    position: relative;
+    top: 0px;
     bottom: 0px;
     left: 0px;
     right: 0px;

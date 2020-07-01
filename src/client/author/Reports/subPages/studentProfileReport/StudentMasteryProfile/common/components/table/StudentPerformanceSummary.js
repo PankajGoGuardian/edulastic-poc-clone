@@ -137,6 +137,7 @@ const StudentPerformanceSummary = ({ data, selectedMastery, expandedRowProps, ex
     <Row>
       <Col>
         <StyledTable
+          id="student_reports_table"
           dataSource={filteredDomains}
           columns={columns}
           pagination={false}

@@ -1,7 +1,6 @@
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
-import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import { releaseGradeTypes } from "../../../../framework/constants/assignmentStatus";
@@ -11,7 +10,6 @@ import TestAssignPage from "../../../../framework/author/tests/testDetail/testAs
 const lcb = new LiveClassboardPage();
 const testLibrary = new TestLibrary();
 const settings = new TestSettings();
-const studentAssignment = new AssignmentsPage();
 const report = new ReportsPage();
 const test = new StudentTestPage();
 const testAssign = new TestAssignPage();
@@ -23,30 +21,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
       teacher: "teacher.release.policy@snapwiz.com",
       student: "student1.release.policy@snapwiz.com",
       password: "snapwiz",
-      assignmentName: `Smoke Test 1`,
+      assignmentName: `Test Review Flow`,
       attemptsData: [
         {
           email: "student1.release.policy@snapwiz.com",
           stuName: "Student1",
-          attempt: { Q1: "right", Q2: "right" },
+          attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right" },
           status: "Submitted"
         },
         {
           email: "student2.release.policy@snapwiz.com",
           stuName: "Student2",
-          attempt: { Q1: "right", Q2: "wrong" },
+          attempt: { Q1: "partialCorrect", Q2: "partialCorrect", Q3: "right", Q4: "right", Q5: "wrong" },
           status: "Submitted"
         },
         {
           email: "student3.item.edit@snapwiz.com",
           stuName: "Student3",
-          attempt: { Q1: "right", Q2: "wrong" },
+          attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "partialCorrect", Q5: "right" },
           status: "Submitted"
         },
         {
           email: "student4.item.edit@snapwiz.com",
           stuName: "Student4",
-          attempt: { Q1: "right", Q2: "wrong" },
+          attempt: { Q1: "wrong", Q2: "wrong", Q3: "right", Q4: "right", Q5: "right" },
           status: "Submitted"
         }
       ]
@@ -64,8 +62,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
         questionData = queData;
       });
 
-      cy.fixture("testAuthoring").then(({ SMOKE_1 }) => {
-        testData = SMOKE_1;
+      cy.fixture("testAuthoring").then(({ TEST_PREVIEW }) => {
+        testData = TEST_PREVIEW;
         const { itemKeys } = testData;
         itemKeys.forEach((queKey, index) => {
           const [queType, questionKey] = queKey.split(".");
@@ -90,7 +88,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
       before("delete old assignment and assigned new", () => {
         cy.deleteAllAssignments(student, teacher, password);
         cy.login("teacher", teacher, password);
-        testLibrary.createTest("SMOKE_1").then(id => {
+        testLibrary.createTest("TEST_PREVIEW").then(id => {
           testId = id;
           testLibrary.clickOnAssign();
           testLibrary.assignPage.selectClass(className);
@@ -149,7 +147,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
             testLibrary.header.clickOnSettings();
             settings.setRealeasePolicy(releaseGradeTypes.SCORE_ONLY);
             settings.header.clickOnPublishButton();
-            cy.contains("Share With Others");
             testLibrary.clickOnAssign();
             testAssign.selectClass("Class");
             testAssign.clickOnAssign();

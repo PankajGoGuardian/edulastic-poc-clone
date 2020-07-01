@@ -83,9 +83,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     });
     before("> attempt test", () => {
       cy.login("student", Student1Class1.email, Student1Class1.pass);
-      assignmentsPage.verifyPresenceOfTest(OriginalTestId);
-      assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", 1);
-      assignmentsPage.clickOnAssignmentButton();
+      assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
       itemKeys.forEach((item, i) => {
         studentTestPage.attemptQuestion(item.split(".")[0], attemptTypes[i], attemptData);
         studentTestPage.clickOnNext();
@@ -100,6 +98,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
       itemKeys.forEach((item, i) => {
         reportsPage.selectQuestion(`Q${i + 1}`);
         reportsPage.getAchievedScore().should("contain.text", ``);
+        reportsPage.verifyQuestionResponseCard(undefined, item.split(".")[0], attemptTypes[i], attemptData);
       });
     });
     it("> verify author side card view(before manual evaluation)", () => {
@@ -108,6 +107,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
 
       // status is submitted in other cases it will be graded
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      cy.wait(3000);
       lcb.verifyStudentStatusIsByIndex(0, studentSide.SUBMITTED.toLowerCase(), true);
 
       // marks should be '0' and que bars should reflect manually graded colors
@@ -117,16 +117,36 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     it("> verify author side student view(before manual evaluation)", () => {
       // que bars should reflect manually graded colors
       lcb.clickOnStudentsTab();
+      cy.wait(3000);
+      itemKeys.forEach((item, i) => {
+        lcb.questionResponsePage.verifyQuestionResponseCard(
+          undefined,
+          item.split(".")[0],
+          attemptTypes[i],
+          attemptData,
+          true,
+          i
+        );
+      });
       barGraph.verifyQueBarAndToolTipBasedOnAttemptData(attemptTypeData, Cypress._.keys(attemptTypeData.attempt));
     });
     it("> verify author side question view(before manual evaluation)", () => {
       // que bars should reflect manually graded colors
       lcb.clickonQuestionsTab();
+      cy.wait(3000);
       const queCentric = {};
       lcb.getQuestionCentricData(attemptTypeData, queCentric);
-      Cypress._.keys(attemptTypeData[0].attempt).forEach(que => {
-        lcb.questionResponsePage.selectQuestion(que);
-        barGraph.verifyQueBarBasedOnQueAttemptData(queCentric[que]);
+      itemKeys.forEach((item, i) => {
+        lcb.questionResponsePage.selectQuestion(`Q${i + 1}`);
+        lcb.questionResponsePage.verifyQuestionResponseCard(
+          undefined,
+          item.split(".")[0],
+          attemptTypes[i],
+          attemptData,
+          false,
+          Student1Class1.name
+        );
+        barGraph.verifyQueBarBasedOnQueAttemptData(queCentric[`Q${i + 1}`]);
       });
     });
     it("> verify status and try closing", () => {
@@ -150,6 +170,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     it("> verify author side student view(after manual evaluation)", () => {
       // verify ques bars parallelly according to assigned marks and total marks
       lcb.clickOnStudentsTab();
+      cy.wait(3000);
       itemKeys.forEach((item, i) => {
         lcb.questionResponsePage.getQuestionContainer(i).as("studentQuesCard");
         lcb.questionResponsePage.getScoreInput(cy.get("@studentQuesCard")).should("have.attr", "value", `${score[i]}`);
@@ -160,6 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     it("> verify author side card view(after manual evaluation)", () => {
       // verify ques bars parallelly according to assigned marks and total marks
       lcb.clickOnCardViewTab();
+      cy.wait(3000);
       lcb.verifyStudentStatusIsByIndex(0, studentSide.GRADED);
       lcb.getStudentScoreByIndex(0).should("contain.text", "3 / 6");
       lcb.verifyQuestionCards(0, attemptTypes);
@@ -178,7 +200,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
         grader.verifyScoreAndPerformanceForQueNum(`Q${i + 1}`, `${Cypress._.round(score[i] / 2, 2)}/1`, percent[i]);
       });
     });
-    it("> verify student side reports(before manual evaluation)", () => {
+    it("> verify student side reports(after manual evaluation)", () => {
       // status should be graded now
       cy.login("student", Student1Class1.email, Student1Class1.pass);
       assignmentsPage.sidebar.clickOnGrades();
@@ -188,6 +210,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
       itemKeys.forEach((item, i) => {
         reportsPage.selectQuestion(`Q${i + 1}`);
         reportsPage.getAchievedScore().should("contain.text", score[i]);
+        reportsPage.verifyQuestionResponseCard(undefined, item.split(".")[0], attemptTypes[i], attemptData);
       });
     });
   });

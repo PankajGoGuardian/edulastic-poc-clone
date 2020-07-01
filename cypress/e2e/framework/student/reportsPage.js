@@ -302,11 +302,23 @@ class ReportsPage {
       }
 
       case queTypes.CLOZE_DROP_DOWN:
+        if (correcAns) this.qrp.verifyCorrectAnswerClozeDropDown(cy.get("@quecard"), right);
         this.qrp.verifyAnswerClozeDropDown(cy.get("@quecard"), attempt, attemptType, right);
         break;
 
       case queTypes.CLOZE_TEXT:
+        if (correcAns) this.qrp.verifyCorrectAnswerClozeText(cy.get("@quecard"), right);
         this.qrp.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType, right);
+        break;
+
+      case queTypes.MATH_NUMERIC:
+        if (correcAns) this.qrp.verifyCorrectAnsMathNumeric(cy.get("@quecard"), right);
+        this.qrp.verifyResponseByAttemptMathNumeric(cy.get("@quecard"), attempt, attemptType);
+        break;
+
+      case queTypes.ESSAY_RICH:
+        if (correcAns) this.qrp.verifyNoCorrectAnsEssayType(cy.get("@quecard"));
+        this.qrp.verifyResponseEssayRich(cy.get("@quecard"), attempt);
         break;
 
       default:

@@ -163,8 +163,8 @@ export default class QuestionResponsePage {
           attemptType === attemptTypes.RIGHT
             ? points
             : attemptType === attemptTypes.PARTIAL_CORRECT
-              ? Cypress._.round(points / 2, 2)
-              : 0;
+            ? Cypress._.round(points / 2, 2)
+            : 0;
         break;
       case queTypes.MATH_NUMERIC:
         score = attemptType === attemptTypes.RIGHT ? points : 0;
@@ -303,14 +303,14 @@ export default class QuestionResponsePage {
                 attemptType === attemptTypes.RIGHT
                   ? queColor.LIGHT_GREEN
                   : attemptType === attemptTypes.WRONG
-                    ? queColor.LIGHT_RED
-                    : attemptType === attemptTypes.ALTERNATE
-                      ? queColor.LIGHT_GREEN
-                      : attemptType === attemptTypes.PARTIAL_CORRECT
-                        ? answer[chKey] === right[chKey]
-                          ? queColor.LIGHT_GREEN
-                          : queColor.LIGHT_RED
-                        : queColor.CLEAR_DAY
+                  ? queColor.LIGHT_RED
+                  : attemptType === attemptTypes.ALTERNATE
+                  ? queColor.LIGHT_GREEN
+                  : attemptType === attemptTypes.PARTIAL_CORRECT
+                  ? answer[chKey] === right[chKey]
+                    ? queColor.LIGHT_GREEN
+                    : queColor.LIGHT_RED
+                  : queColor.CLEAR_DAY
               );
           });
       });
@@ -520,10 +520,16 @@ export default class QuestionResponsePage {
           attemptType === attemptTypes.RIGHT
             ? queColor.GREEN_7
             : attemptType === attemptTypes.WRONG
-              ? queColor.LIGHT_RED
-              : queColor.GREY_2
+            ? queColor.LIGHT_RED
+            : queColor.GREY_2
         );
   };
+
+  verifyResponseEssayRich = (card, attempt, attemptType) => {
+    if (attemptType !== attemptTypes.SKIP) card.find(".math-formula-display").should("have.text", attempt);
+  };
+
+  verifyNoCorrectAnsEssayType = card => card.should("not.contain", "Correct Answer");
 
   verifyNoQuestionResponseCard = studentName => {
     cy.get('[data-cy="studentName"]')
@@ -547,14 +553,14 @@ export default class QuestionResponsePage {
       attemptType === attemptTypes.RIGHT
         ? right
         : attemptType === attemptTypes.WRONG
-          ? wrong
-          : attemptType === attemptTypes.PARTIAL_CORRECT
-            ? partialCorrect
-            : undefined;
+        ? wrong
+        : attemptType === attemptTypes.PARTIAL_CORRECT
+        ? partialCorrect
+        : undefined;
 
     const questionType = queTypeKey.split(".")[0];
 
-    this.verifyScore(cy.get("@quecard"), points, attemptData, attemptType, questionType);
+    if (points) this.verifyScore(cy.get("@quecard"), points, attemptData, attemptType, questionType);
 
     switch (questionType) {
       case queTypes.MULTIPLE_CHOICE_STANDARD:
@@ -675,9 +681,15 @@ export default class QuestionResponsePage {
         this.verifyCorrectAnswerClozeText(cy.get("@quecard"), right);
         this.verifyAnswerClozeText(cy.get("@quecard"), attempt, attemptType, right);
         break;
+
       case queTypes.MATH_NUMERIC:
         this.verifyCorrectAnsMathNumeric(cy.get("@quecard"), right);
         this.verifyResponseByAttemptMathNumeric(cy.get("@quecard"), attempt, attemptType);
+        break;
+
+      case queTypes.ESSAY_RICH:
+        this.verifyResponseEssayRich(cy.get("@quecard"), attempt, attemptType);
+        this.verifyNoCorrectAnsEssayType(cy.get("@quecard"));
         break;
       default:
         break;

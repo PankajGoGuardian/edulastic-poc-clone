@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Select } from "antd";
-import { EduButton,notification } from "@edulastic/common";
+import { Button, Select, Spin } from "antd";
+import { EduButton, notification } from "@edulastic/common";
 import styled from "styled-components";
 import { backgroundGrey2, green, themeColorTagsBg } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
@@ -18,11 +18,14 @@ const CanvasSyncModal = ({
   canvasCourseSectionCode,
   user,
   groupId,
-  institutionId
+  institutionId,
+  isFetchingCanvasData
 }) => {
   const [course, setCourse] = useState(canvasCode);
   const [section, setSection] = useState(canvasCourseSectionCode);
   const [idDisabled, setIsDisabled] = useState(!!canvasCode && !!canvasCourseSectionCode);
+
+  const isSyncDisabled = isFetchingCanvasData || !canvasCourseList?.length || !canvasSectionList?.length;
 
   useEffect(() => {
     getCanvasCourseListRequest(institutionId);
@@ -47,7 +50,7 @@ const CanvasSyncModal = ({
 
   const handleSync = () => {
     if (!course || !section) {
-      return notification({ msg: "bothCourseandSectionRequired"});
+      return notification({ msg: "bothCourseandSectionRequired" });
     }
 
     const { id: canvasCourseCode, name: canvasCourseName } = canvasCourseList.find(({ id }) => id === course);
@@ -71,21 +74,23 @@ const CanvasSyncModal = ({
   const Footer = [
     ...(!!canvasCode && !!canvasCourseSectionCode
       ? [
-        <Button disabled={syncClassLoading} onClick={() => setIsDisabled(false)}>
-          Change deatils
-        </Button>
+          // eslint-disable-next-line react/jsx-indent
+          <Button disabled={syncClassLoading} onClick={() => setIsDisabled(false)}>
+            Change deatils
+          </Button>
         ]
       : []),
     <EduButton disabled={syncClassLoading} isGhost onClick={handleCancel}>
       Cancel
     </EduButton>,
-    <EduButton type="primary" loading={syncClassLoading} onClick={handleSync}>
+    <EduButton type="primary" disabled={isSyncDisabled} loading={syncClassLoading} onClick={handleSync}>
       {syncClassLoading ? "Syncing..." : "Sync"}
     </EduButton>
   ];
 
   return (
     <StyledModal visible={visible} title={Title} footer={Footer} centered onCancel={handleCancel}>
+      {isFetchingCanvasData && <Spin />}
       <FieldWrapper>
         <label>Course</label>
         <Select

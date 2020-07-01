@@ -7,8 +7,8 @@ import { get } from "lodash";
 import { red } from "@edulastic/colors";
 
 // components
-import { Input, message, Spin } from "antd";
-import { MainContentWrapper, EduButton,notification } from "@edulastic/common";
+import { Input, Spin } from "antd";
+import { MainContentWrapper, EduButton, notification } from "@edulastic/common";
 import Header from "./Header";
 import MainInfo from "./MainInfo";
 import StudentsList from "./StudentsList";
@@ -30,7 +30,8 @@ import {
   syncClassesWithCleverAction,
   getClassNotFoundError,
   setClassNotFoundErrorAction,
-  unarchiveClassAction
+  unarchiveClassAction,
+  getCanvasFetchingStateSelector
 } from "../../ducks";
 import { getCleverSyncEnabledInstitutionPoliciesSelector } from "../../../src/selectors/user";
 
@@ -57,9 +58,9 @@ const ClassDetails = ({
   cleverSyncEnabledInstitutions,
   classCodeError = false,
   setClassNotFoundError,
-  unarchiveClass
+  unarchiveClass,
+  isFetchingCanvasData
 }) => {
-  
   const { editPath, exitPath } = location?.state || {};
   const { name, type, cleverId, institutionId } = selectedClass;
   const typeText = type !== "class" ? "group" : "class";
@@ -130,9 +131,9 @@ const ClassDetails = ({
       title: `${name}`,
       to: match.url,
       state: { type: typeText, exitPath, editPath }
-    }
+    };
     // pathList[2] determines the origin of the ClassDetails component
-    switch(pathList[2]) {
+    switch (pathList[2]) {
       case "groups":
         breadCrumbData = [
           {
@@ -148,11 +149,15 @@ const ClassDetails = ({
             title: "MANAGE CLASS",
             to: "/author/manageClass"
           },
-          ...(type !== "class" ? [{
-            title: "GROUPS",
-            to: "/author/manageClass",
-            state: { currentTab: "group" }
-          }] : [])
+          ...(type !== "class"
+            ? [
+                {
+                  title: "GROUPS",
+                  to: "/author/manageClass",
+                  state: { currentTab: "group" }
+                }
+              ]
+            : [])
         ];
     }
     return [...breadCrumbData, classBreadCrumb];
@@ -212,6 +217,7 @@ const ClassDetails = ({
               user={user}
               groupId={selectedClass._id}
               institutionId={institutionId}
+              isFetchingCanvasData={isFetchingCanvasData}
             />
           )}
           <Header
@@ -283,7 +289,8 @@ const enhance = compose(
       canvasSectionList: get(state, "manageClass.canvasSectionList", []),
       user: get(state, "user.user", {}),
       cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
-      classCodeError: getClassNotFoundError(state)
+      classCodeError: getClassNotFoundError(state),
+      isFetchingCanvasData: getCanvasFetchingStateSelector(state)
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,

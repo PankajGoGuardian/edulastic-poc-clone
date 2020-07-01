@@ -42,6 +42,11 @@ export const getClassNotFoundError = createSelector(
   manageClassSelector,
   state => state.classNotFoundError
 );
+
+export const getCanvasFetchingStateSelector = createSelector(
+  manageClassSelector,
+  state => state.isFetchingCanvasData
+);
 // action types
 
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";

@@ -272,7 +272,8 @@ class ClassHeader extends Component {
       closed,
       canCloseClass,
       dueDate,
-      assignedBy = {}
+      assignedBy = {},
+      answerOnPaper
     } = additionalData;
     const dueOn = dueDate || endDate;
     const dueOnDate = Number.isNaN(dueOn) ? new Date(dueOn) : new Date(parseInt(dueOn, 10));
@@ -314,7 +315,12 @@ class ClassHeader extends Component {
           )
         )}
         {canClose ? (
-          <EduButton isBlue isGhost data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
+          <EduButton
+            isBlue
+            isGhost
+            data-cy="closeButton"
+            onClick={() => (answerOnPaper ? this.handleCloseAssignment() : this.toggleCloseModal(true))}
+          >
             CLOSE
           </EduButton>
         ) : (

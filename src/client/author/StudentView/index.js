@@ -219,7 +219,7 @@ class StudentViewContainer extends Component {
                 CORRECT ({correctNumber})
               </CorrectButton>
               <WrongButton active={filter === "wrong"} onClick={() => this.onClickTab("wrong")}>
-                WRONG ({wrongNumber})
+                INCORRECT ({wrongNumber})
               </WrongButton>
               <WrongButton active={filter === "partial"} onClick={() => this.onClickTab("partial")}>
                 PARTIALLY CORRECT ({partiallyCorrectNumber})

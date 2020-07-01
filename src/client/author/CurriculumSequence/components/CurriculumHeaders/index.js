@@ -209,13 +209,6 @@ const CurriculumHeader = ({
             </HeaderButton>
           )}
 
-          {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
-            <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
-              <IconSave />
-              <span>SAVE</span>
-            </HeaderButton>
-          )}
-
           {urlHasUseThis && isTeacher && !isPublisherUser && (
             <>
               <HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>

@@ -145,7 +145,7 @@ class SubjectGrade extends React.Component {
                     )}
                   </Form.Item>
 
-                  <Form.Item label="Subject">
+                  <Form.Item label="Subjects">
                     {getFieldDecorator("subjects", {
                       rules: [
                         {

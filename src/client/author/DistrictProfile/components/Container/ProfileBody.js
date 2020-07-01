@@ -579,7 +579,7 @@ class ProfileBody extends React.Component {
               )}
             </ProfileContentWrapper>
 
-            {user.role.toUpperCase() === roleuser.TEACHER && (
+            {user.role === roleuser.TEACHER && (
               <SchoolWrapper>
                 <SchoolLabel>My Schools</SchoolLabel>
                 <SchoolListWrapper>{this.getSchoolList()}</SchoolListWrapper>
@@ -604,7 +604,6 @@ class ProfileBody extends React.Component {
                 </StandardSetsButtons>
               </SchoolWrapper>
             )}
-
             {showDefaultSettings && (
               <SchoolWrapper>
                 <Block>
@@ -656,7 +655,7 @@ class ProfileBody extends React.Component {
                       </Select.Option>
                     ))}
                   </SelectInputStyled>
-                  {user.role.toUpperCase() === roleuser.TEACHER && googleClassRoomAllowed && (
+                  {user.role === roleuser.TEACHER && googleClassRoomAllowed && (
                     <SwitchWrapper>
                       <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
                       <Switch

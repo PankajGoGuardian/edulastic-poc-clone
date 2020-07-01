@@ -141,7 +141,7 @@ class ClozeDropDownDisplay extends Component {
     }
     // Layout Options
     const fontSize = theme.fontSize || getFontSize(uiStyle.fontsize, true);
-    const { placeholder, responsecontainerindividuals, stemNumeration } = uiStyle;
+    const { placeholder, responsecontainerindividuals = [], stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;

@@ -5,13 +5,13 @@ import { createBrowserHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createLogger } from "redux-logger";
 import * as Sentry from "@sentry/browser";
-
 import reduxReset from "redux-reset";
+import { getUserConfirmation } from "./common/utils/helpers";
 
 import rootReducer from "./reducers";
 import rootSaga from "./sagas";
 
-export const history = createBrowserHistory();
+export const history = createBrowserHistory({ getUserConfirmation });
 
 const sagaMiddleware = createSagaMiddleware({
   onError(error) {

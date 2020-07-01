@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { isUndefined, last, get, isEmpty } from "lodash";
-import { message as AntMessage, Tooltip as AntDTooltip } from "antd";
+import { Tooltip as AntDTooltip, Modal } from "antd";
 import { notification } from "@edulastic/common";
+import { themeColor } from "@edulastic/colors";
 import { signUpState, test as testConst } from "@edulastic/constants";
 import { Partners } from "./static/partnerData";
 import { smallestZoomLevel } from "./static/zoom";
@@ -287,3 +288,28 @@ export const getTypeAndMsgBasedOnScore = (score, maxScore) => {
   }
   return returnValue;
 };
+
+/**
+ * Make confirmation popup native to app
+ * call router dom prompt as usual with appropriate message
+ * resolve callback as per user's decision
+ *  */
+export const getUserConfirmation = (message, callback) =>
+  Modal.confirm({
+    title: "Alert",
+    content: message,
+    onOk: () => {
+      callback(true);
+      Modal.destroyAll();
+    },
+    okText: "Yes, Continue",
+    onCancel: () => {
+      callback(false);
+      Modal.destroyAll();
+    },
+    centered: true,
+    width: 500,
+    okButtonProps: {
+      style: { background: themeColor }
+    }
+  });

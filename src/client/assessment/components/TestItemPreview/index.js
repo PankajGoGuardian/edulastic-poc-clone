@@ -6,7 +6,7 @@ import { ThemeProvider, withTheme } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { white } from "@edulastic/colors";
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 
 import { withWindowSizes, ScrollContext, EduButton, FlexContainer } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
@@ -231,6 +231,7 @@ class TestItemPreview extends Component {
       evaluation,
       previewTab,
       LCBPreviewModal,
+      isStudentReport,
       showCollapseBtn = false,
       activeMode,
       scratchPadMode,
@@ -292,7 +293,7 @@ class TestItemPreview extends Component {
       dataSource = dataSource.filter(col => (col.widgets || []).length > 0);
     }
     const isSingleQuestionView = dataSource.flatMap(col => col.widgets).length === 1;
-    const { isStudentReport } = this.props;
+    const hideScratchpadToolbar = isStudentReport || isLCBView || LCBPreviewModal || isExpressGrader;
     return (
       <ThemeProvider theme={{ ...themes.default }}>
         <div
@@ -378,7 +379,7 @@ class TestItemPreview extends Component {
                 })}
               </div>
               {(showScratchpadByDefault || scratchPadMode) && (
-                <Scratchpad saveData={saveHistory} data={history} readOnly={LCBPreviewModal} />
+                <Scratchpad saveData={saveHistory} data={history} readOnly={hideScratchpadToolbar} />
               )}
             </ScrollContext.Provider>
           </Container>

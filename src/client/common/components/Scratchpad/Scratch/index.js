@@ -7,7 +7,7 @@ import { drawTools } from "@edulastic/constants";
 import { WithResources, ScrollContext } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
 import ToolBox from "../Tools";
-import { resetScratchPadDataAction, setSelectedNodesAction } from "../duck";
+import { resetScratchPadDataAction, setSelectedNodesAction, updateScratchpadAction } from "../duck";
 import ZwibblerContext from "../common/ZwibblerContext";
 
 import AppConfig from "../../../../../../app-config";
@@ -34,11 +34,12 @@ const Scratchpad = ({
   data,
   readOnly,
   hideTools,
-  clearClicked // this is from highlight image
+  clearClicked // this is from highlight image,
 }) => {
   const [zwibbler, setZwibbler] = useState();
   const isDeleteMode = useRef();
   const zwibblerContainer = useRef();
+  const zwibblerRef = useRef();
   isDeleteMode.current = deleteMode;
   const hideToolBar = readOnly || hideTools;
 
@@ -146,9 +147,9 @@ const Scratchpad = ({
   };
 
   useEffect(() => {
-    if (window.$ && window.Zwibbler) {
+    if (window.$ && window.Zwibbler && zwibblerRef.current) {
       // initialize Zwibbler
-      const newZwibbler = window.Zwibbler.create("zwibbler-main", {
+      const newZwibbler = window.Zwibbler.create(zwibblerRef.current, {
         showToolbar: false,
         showColourPanel: false,
         showHints: false,
@@ -168,10 +169,9 @@ const Scratchpad = ({
 
       newZwibbler.on("document-changed", () => {
         if (newZwibbler.dirty()) {
-          saveData(newZwibbler.save());
+          saveData(newZwibbler.save("zwibbler3"));
         }
       });
-
       setZwibbler(newZwibbler);
     }
     return () => {
@@ -194,6 +194,7 @@ const Scratchpad = ({
         <ZwibblerMain
           deleteMode={deleteMode}
           id="zwibbler-main"
+          ref={zwibblerRef}
           onClick={onClickHandler}
           hideToolBar={hideToolBar}
           readOnly={readOnly}
@@ -217,7 +218,8 @@ const EnhancedComponent = compose(
     }),
     {
       resetScratchPad: resetScratchPadDataAction,
-      setSelectedNodes: setSelectedNodesAction
+      setSelectedNodes: setSelectedNodesAction,
+      updateScratchPad: updateScratchpadAction
     }
   )
 )(Scratchpad);

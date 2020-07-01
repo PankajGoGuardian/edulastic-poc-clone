@@ -76,7 +76,7 @@ const MatrixChoice = ({
 
   let answer = userAnswer;
 
-  if (!userAnswer && item && item.stems) {
+  if (isEmpty(userAnswer) && item && item.stems) {
     answer = {
       value: {}
     };

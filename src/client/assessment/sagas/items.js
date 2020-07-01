@@ -2,7 +2,7 @@ import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
-import { maxBy } from "lodash";
+import { maxBy, isEmpty } from "lodash";
 import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { assignmentPolicyOptions } from "@edulastic/constants";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -10,8 +10,6 @@ import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
   RECEIVE_ITEM_ERROR,
-  RECEIVE_ITEMS_SUCCESS,
-  RECEIVE_ITEMS_ERROR,
   SAVE_USER_RESPONSE,
   SAVE_USER_RESPONSE_SUCCESS,
   SAVE_USER_RESPONSE_ERROR,
@@ -22,24 +20,6 @@ import {
 } from "../constants/actions";
 import { getPreviousAnswersListSelector } from "../selectors/answers";
 import { redirectPolicySelector } from "../selectors/test";
-
-function* receiveItemsSaga() {
-  try {
-    const items = yield call(itemsApi.receiveItems);
-
-    yield put({
-      type: RECEIVE_ITEMS_SUCCESS,
-      payload: { items }
-    });
-  } catch (err) {
-    Sentry.captureException(err);
-    console.error(err);
-    yield put({
-      type: RECEIVE_ITEMS_ERROR,
-      payload: { error: "Receive items is failing" }
-    });
-  }
-}
 
 function* receiveItemSaga({ payload }) {
   try {
@@ -78,6 +58,7 @@ function* saveUserResponse({ payload }) {
     const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
     const groupId = payload.groupId || (yield select(getCurrentGroupWithAllClasses));
+    // eslint-disable-next-line prefer-const
     let { endDate, class: clazz = [] } = assignmentsByIds[assignmentId] || {};
     if (!endDate && clazz.length) {
       endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "endDate") || {}).endDate;
@@ -125,7 +106,7 @@ function* saveUserResponse({ payload }) {
 
     const testItemId = currentItem._id;
     const _userWork = yield select(({ userWork }) => userWork.present[testItemId]);
-    const userInteractions = yield select(({ userInteractions }) => userInteractions[testItemId]);
+    const userInteractions = yield select(({ userInteractions: _userInteractions }) => _userInteractions[testItemId]);
     const activity = {
       answers: itemAnswers,
       testItemId,
@@ -139,11 +120,9 @@ function* saveUserResponse({ payload }) {
     };
 
     let userWorkData = { ..._userWork, scratchpad: false };
-    let scratchPadUsed = false;
     let shouldSaveOrUpdateAttachment = false;
-    if (_userWork?.scratchpad) {
-      scratchPadUsed = Object.keys(_userWork.scratchpad).some(key => _userWork.scratchpad[key].length > 0);
-    }
+    const scratchPadUsed = !isEmpty(_userWork?.scratchpad);
+
     if (scratchPadUsed) {
       const { height, width } = yield select(state => state.scratchpad);
       userWorkData = { ...userWorkData, scratchpad: true, dimensions: { height, width } };

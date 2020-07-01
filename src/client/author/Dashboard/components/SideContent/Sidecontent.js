@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Icon } from "antd";
 import { IconPlayFilled } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
+import { OnWhiteBgLogo } from "@edulastic/common";
 import { connect } from "react-redux";
 import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
 import { TextWrapper, LinkWrapper } from "../styledComponents";
@@ -17,26 +18,27 @@ import {
   VideoPlayer,
   VideoOverlay,
   ChatIconContainer,
-  ChatIcon
+  ChatIcon,
+  EduCertify,
+  EduPublic
 } from "./styled";
-import edulasticPublicBank from "../../assets/svgs/edulastic-public-bank.svg";
-import edulasticCertified from "../../assets/svgs/edulastic-certified.svg";
 import videoImg from "../../assets/images/videoImage.png";
 
 const Qbank = props => {
-  const bg = props.bg;
+  const { bg, title, svg, color, num } = props;
+
   return (
     <Row type="flex" align="middle">
       <Col span={13}>
         <TextWrapper size="12px" rfs="12px" fw="bold" color="#7C848E">
-          {props.title ? props.title : <img src={props.svg} alt="" />}
+          {title || <img src={svg} alt="" />}
         </TextWrapper>
       </Col>
       <ColWrapper span={11} bg={bg}>
-        <TextWrapper size="30px" rfs="24px" fw="bold" lh="24px" color={props.color}>
-          {props.num} K
+        <TextWrapper size="30px" rfs="24px" fw="bold" lh="24px" color={color}>
+          {num} K
         </TextWrapper>
-        <TextWrapper size="11px" rfs="11px" fw="bold" color={props.color}>
+        <TextWrapper size="11px" rfs="11px" fw="bold" color={color}>
           QUESTIONS
         </TextWrapper>
       </ColWrapper>
@@ -44,18 +46,30 @@ const Qbank = props => {
   );
 };
 
-const QuestionBanks = () => {
-  return (
-    <>
-      <Qbank title="PROGRESS BANK" num="40.8" color="#FFFFFF" bg="#FFA200" />
-      <Hdivider />
-      <Qbank svg={edulasticCertified} num="40.8" color="#FFFFFF" bg="#5EB500" />
-      <Hdivider />
-      <Qbank svg={edulasticPublicBank} num="134" color="#5EB500" bg="#F8F8F8" />
-      <Hdivider />
-    </>
-  );
-};
+const EduPublicTitle = (
+  <EduPublic>
+    <OnWhiteBgLogo height={35} style={{ paddingBottom: "10px" }} />
+    <span>PUBLIC BANK</span>
+  </EduPublic>
+);
+
+const EduCertifyTitle = (
+  <EduCertify>
+    <OnWhiteBgLogo height={35} style={{ paddingBottom: "10px" }} />
+    <span>CERTIFIED</span>
+  </EduCertify>
+);
+
+const QuestionBanks = () => (
+  <>
+    <Qbank title="PROGRESS BANK" num="40.8" color="#FFFFFF" bg="#FFA200" />
+    <Hdivider />
+    <Qbank title={EduCertifyTitle} num="40.8" color="#FFFFFF" bg="#5EB500" />
+    <Hdivider />
+    <Qbank title={EduPublicTitle} num="134" color="#5EB500" bg="#F8F8F8" />
+    <Hdivider />
+  </>
+);
 
 const SideContent = props => {
   const [showSideContent, toggleSideContent] = useState(false);

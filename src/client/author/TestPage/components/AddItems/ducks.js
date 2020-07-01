@@ -1,7 +1,9 @@
 import { createSelector } from "reselect";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
+import { createAction } from 'redux-starter-kit';
 import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effects";
+import { push, replace } from "connected-react-router";
 import { testItemsApi, contentErrorApi } from "@edulastic/api";
 import { keyBy } from "lodash";
 import { getAllTagsSelector } from "../../ducks";
@@ -38,6 +40,7 @@ export const REPORT_CONTENT_ERROR_REQUEST = "[addItems] report content error req
 export const SET_SEARCH_FILTER_STATE = "[addItems] update search filter state";
 export const CLEAR_SEARCH_FILTER_STATE = "[addItems] clear search filter state";
 export const UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN = "[addItems] update init search state on login";
+export const RESET_PAGE_STATE_ADD_ITEMS = "[addItems] reset page state";
 export const SHOW_ADD_PASSAGE_ITEM_MODAL = "[addItems] toggle show add passage item modal";
 // actions
 
@@ -110,6 +113,8 @@ export const updateInitSearchStateAction = payload => ({
   type: UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN,
   payload
 });
+
+export const resetPageStateAction = createAction(RESET_PAGE_STATE_ADD_ITEMS);
 
 // reducer
 
@@ -244,6 +249,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         selectedItems: [...state.selectedItems]
       };
     }
+    case RESET_PAGE_STATE_ADD_ITEMS:
+      return {
+        ...state,
+        page: 1
+      };
     case UPDATE_TEST_ITEM_LIKE_COUNT:
       return {
         ...state,
@@ -253,10 +263,10 @@ export const reducer = (state = initialState, { type, payload }) => {
               ...item,
               analytics: [
                 {
-                  usage: item?.analytics?.[0]?.usage || 0,
+                  usage: item ?.analytics ?.[0] ?.usage || 0,
                   likes: payload.toggleValue
-                    ? (item?.analytics?.[0]?.likes || 0) + 1
-                    : (item?.analytics?.[0]?.likes || 1) - 1
+                    ? (item ?.analytics ?.[0] ?.likes || 0) + 1
+                    : (item ?.analytics ?.[0] ?.likes || 1) - 1
                 }
               ],
               alreadyLiked: payload.toggleValue
@@ -274,6 +284,8 @@ export const reducer = (state = initialState, { type, payload }) => {
 
 function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
+    const currentLocation = yield select(state => state.router.location.pathname);
+    yield put(push(`${currentLocation}?page=${page}`));
     const allTagsData = yield select(state => getAllTagsSelector(state, "testitem"));
     const allTagsKeyById = keyBy(allTagsData, "_id");
     const { tags = [] } = search;

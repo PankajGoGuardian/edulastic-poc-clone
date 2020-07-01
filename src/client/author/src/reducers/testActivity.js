@@ -35,6 +35,7 @@ export const REALTIME_GRADEBOOK_REDIRECT = "[gradebook] realtime assignment redi
 
 export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT = "[gradebook] realtime close assignment";
 export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT = "[gradebook] realtime gradebook update assignment";
+export const SET_PROGRESS_STATUS = "[gradebook] set progress status";
 /**
  * force rerendering the components that depends on
  * additional data thus checking
@@ -58,6 +59,7 @@ export const realtimeUpdateAssignmentAction = createAction(REALTIME_GRADEBOOK_UP
 export const recalculateAdditionalDataAction = createAction(RECALCULATE_ADDITIONAL_DATA);
 
 export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER);
+export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS);
 
 const initialState = {
   entities: [],
@@ -93,11 +95,11 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: state.entities.map(x => {
           if (x.status != "notStarted") {
             return x;
-          } if (state ?.data ?.status === "DONE" || state ?.additionalData ?.endDate < Date.now()) {
+          }
+          if (state?.data?.status === "DONE" || state?.additionalData?.endDate < Date.now()) {
             return { ...x, status: "absent", present: false };
           }
           return x;
-
         }),
         /**
          * justified use of cloneDeep because,
@@ -127,12 +129,10 @@ const reducer = (state = initialState, { type, payload }) => {
 
         const index = _st.entities.findIndex(x => x.studentId === entity.studentId);
         if (index != -1) {
-
           if (_st.entities[index].testActivityId) {
             _st.currentTestActivityId = _st.entities[index].testActivityId;
           }
           if (_st.entities[index].testActivityId != entity.testActivityId && _st.entities[index].testActivityId) {
-
             // a new attempt being added through realtime
             // handling for showing recent attempts
             const { studentId } = entity;
@@ -145,7 +145,10 @@ const reducer = (state = initialState, { type, payload }) => {
             };
             _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId] || [];
             _st.data.recentTestActivitiesGrouped[studentId].unshift(oldAttempt);
-            _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId].slice(0, 2);
+            _st.data.recentTestActivitiesGrouped[studentId] = _st.data.recentTestActivitiesGrouped[studentId].slice(
+              0,
+              2
+            );
             _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(x => ({
               _id: x._id,
               weight: x.weight,
@@ -197,11 +200,11 @@ const reducer = (state = initialState, { type, payload }) => {
         _state.entities = state.entities.map(x => {
           if (x.status != "notStarted") {
             return x;
-          } if (_state ?.data ?.status === "DONE" || _state ?.additionalData ?.endDate < Date.now()) {
+          }
+          if (_state?.data?.status === "DONE" || _state?.additionalData?.endDate < Date.now()) {
             return { ...x, status: "absent", present: false };
           }
           return x;
-
         });
       });
 
@@ -335,9 +338,9 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     case UPDATE_PASSWORD_DETAILS:
       const {
-        assignmentPassword = state ?.additionalData ?.assignmentPassword,
-        passwordExpireTime = state ?.additionalData ?.passwordExpireTime,
-        passwordExpireIn = state ?.additionalData ?.passwordExpireIn
+        assignmentPassword = state?.additionalData?.assignmentPassword,
+        passwordExpireTime = state?.additionalData?.passwordExpireTime,
+        passwordExpireIn = state?.additionalData?.passwordExpireIn
       } = payload;
       return {
         ...state,
@@ -492,6 +495,11 @@ const reducer = (state = initialState, { type, payload }) => {
           }
           return entity;
         })
+      };
+    case SET_PROGRESS_STATUS:
+      return {
+        ...state,
+        loading: payload
       };
     default:
       return state;

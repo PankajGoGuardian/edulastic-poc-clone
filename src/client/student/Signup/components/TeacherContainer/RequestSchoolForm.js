@@ -1,11 +1,10 @@
+import { countryApi } from "@edulastic/api";
+import { SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row, Select } from "antd";
+import { debounce, get } from "lodash";
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Form, Input, Select, Row, Col } from "antd";
-import { mobileWidthLarge } from "@edulastic/colors";
-import { SelectInputStyled, TextInputStyled } from "@edulastic/common";
-import { countryApi, userApi } from "@edulastic/api";
-import { debounce, get } from "lodash";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { searchDistrictsRequestAction } from "../../duck";
 import { states } from "./constants";
@@ -155,7 +154,7 @@ class RequestSchoolForm extends React.Component {
                 createNew
                 createNewLabel="Create New District"
                 existingLabel="Districts"
-                placeholder="Enter your district name"
+                placeholder="Enter your school district name"
                 isLoading={isSearching}
                 isModalOpen
               />
@@ -183,7 +182,7 @@ class RequestSchoolForm extends React.Component {
                   { transform: this.transformInput },
                   { required: true, message: "Please provide a valid zip code." }
                 ]
-              })(<TextInputStyled data-cy="zip" placeholder="Enter Zip Code" />)}
+              })(<TextInputStyled data-cy="zip" placeholder="Enter your zip code" />)}
             </Form.Item>
           </Col>
         </Row>
@@ -194,16 +193,22 @@ class RequestSchoolForm extends React.Component {
                 rules: [{ required: false, message: "Please provide a valid state." }],
                 initialValue: states[0]
               })(
-                country === "US" ? (
-                  <SelectInputStyled
-                    showSearch
-                    placeholder="Select state"
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                  >
-                    {stateOptions}
-                  </SelectInputStyled>
+                country === "US" || country === "United States" ? (
+                  <>
+                    {console.log("countrySelect: ", country)}
+                    <SelectInputStyled
+                      showSearch
+                      placeholder="Select your state"
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
+                    >
+                      {stateOptions}
+                    </SelectInputStyled>
+                  </>
                 ) : (
-                  <TextInputStyled data-cy="state" placeholder="Enter state" />
+                  <>
+                    {console.log("country: ", country)}
+                    <TextInputStyled data-cy="state" placeholder="Enter your state" />
+                  </>
                 )
               )}
             </Form.Item>
@@ -217,7 +222,7 @@ class RequestSchoolForm extends React.Component {
                 <SelectInputStyled
                   data-cy="country"
                   showSearch
-                  placeholder="Select a country"
+                  placeholder="Select your country"
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -254,6 +259,9 @@ const FormWrapper = styled(Form)`
     label {
       font-size: 11px;
       text-transform: uppercase;
+      &:after {
+        display: none;
+      }
     }
   }
   .ant-form-item-control {

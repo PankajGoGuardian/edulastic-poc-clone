@@ -57,11 +57,13 @@ const styles = {
   listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 }
 };
 
-const getInitialAnswer = (list) => {
+const getInitialAnswer = list => {
   const ans = {};
-  list.forEach(l => ans[l.value] = null);
+  list.forEach(l => {
+    ans[l.value] = null;
+  });
   return ans;
-}
+};
 
 /**
  * TODO
@@ -130,7 +132,9 @@ const MatchListPreview = ({
     if (duplicatedResponses) {
       return getPossibleResponses();
     }
-    return getPossibleResponses().filter(answer => typeof userAnswer === "object" && !Object.values(userAnswer).includes(answer.value));
+    return getPossibleResponses().filter(
+      answer => typeof userAnswer === "object" && !Object.values(userAnswer).includes(answer.value)
+    );
   }
 
   const [dragItems, setDragItems] = useState(getInitialDragItems());
@@ -192,7 +196,9 @@ const MatchListPreview = ({
     }
     let newDragItems = duplicatedResponses
       ? getPossibleResponses()
-      : getPossibleResponses().filter(answer => typeof userAnswer === "object" && !Object.values(userAnswer).some(i => i === answer.value));
+      : getPossibleResponses().filter(
+          answer => typeof userAnswer === "object" && !Object.values(userAnswer).some(i => i === answer.value)
+        );
     /**
      * at student side, if shuffle is on and if user comes back to this question
      * for subsequent renders, show the preserved order maintained in redux store
@@ -206,7 +212,9 @@ const MatchListPreview = ({
       }
       dragItemsRef.current = newDragItems;
     }
-    setDragItems(newDragItems);
+    if (!isEqual(dragItems, newDragItems)) {
+      setDragItems(newDragItems);
+    }
   }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses]);
 
   const preview = previewTab === CHECK || previewTab === SHOW;
@@ -233,8 +241,7 @@ const MatchListPreview = ({
         answers[list[sourceIndex].value] = null;
       }
       answers[list[itemTo.index].value] = _item.value;
-    }
-    else if (Object.values(answers).includes(_item.value)) {
+    } else if (Object.values(answers).includes(_item.value)) {
       answers[list[sourceIndex].value] = null;
       dItems.push(_item);
     }
@@ -587,7 +594,9 @@ const MatchListPreview = ({
                         <Index preview correctAnswer>
                           {getStemNumeration(stemNumeration, i)}
                         </Index>
-                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[ite.value].join(", ") }} />
+                        <MathFormulaDisplay
+                          dangerouslySetInnerHTML={{ __html: alternateAnswers[ite.value].join(", ") }}
+                        />
                       </CorItem>
                     </FlexContainer>
                   ))}

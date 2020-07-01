@@ -42,7 +42,18 @@ const StandardsModal = ({
     if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id);
   }, [curriculumStandardsTLO]);
 
-  const filteredELO = curriculumStandardsELO.filter(c => c.tloId === selectedTLO);
+  const filteredELO = curriculumStandardsELO
+    .filter(c => c.tloId === selectedTLO)
+    .sort((a, b) => {
+      // if tloIdentifier dont match fallback to ascending order sort
+      if (a.tloIdentifier !== b.tloIdentifier) return a.identifier - b.identifier;
+
+      // extract numeric substring from identifier
+      const aSubIdentifier = a.identifier.substring(a.tloIdentifier.length + 1);
+      const bSubIdentifier = b.identifier.substring(b.tloIdentifier.length + 1);
+
+      return parseInt(aSubIdentifier, 10) - parseInt(bSubIdentifier, 10);
+    });
 
   const footer = (
     <FlexContainer>

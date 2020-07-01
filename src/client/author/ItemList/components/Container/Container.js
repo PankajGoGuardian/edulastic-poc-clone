@@ -334,7 +334,7 @@ class Contaier extends Component {
 
     return (
       <>
-        <CartButton onClick={this.onClickNewTest} buttonText="New Test" />
+       
         <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
           <CartButton
             onClick={() => approveOrRejectMultipleItem({ status: "rejected" })}
@@ -378,6 +378,7 @@ class Contaier extends Component {
           titleIcon={IconItemLibrary}
           renderExtra={this.renderCartButton}
           renderFilterIcon={this.renderFilterIcon}
+          newTest={this.onClickNewTest}
         />
         <Container>
           {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (

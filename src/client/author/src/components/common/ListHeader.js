@@ -18,6 +18,7 @@ import { Dropdown } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
+import CartButton from "../../../ItemList/components/CartButton/CartButton";
 import { connect } from "react-redux";
 // components
 import { Link } from "react-router-dom";
@@ -49,7 +50,8 @@ const ListHeader = ({
   userRole = "",
   windowWidth,
   titleIcon,
-  userFeatures
+  userFeatures,
+  newTest
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
 
@@ -96,12 +98,15 @@ const ListHeader = ({
               )}
             </>
           ) : userRole === roleuser.EDULASTIC_CURATOR ? null : (
-            <EduButton data-cy="createNew" onClick={onCreate} isBlue>
-              <IconPlusStyled />
-              {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
-            </EduButton>
+            <div style={{display:"flex"}}>
+              {btnTitle && btnTitle.length ? null : <CartButton onClick={newTest} buttonText="New Test"  />}
+              <EduButton data-cy="createNew" onClick={onCreate} isBlue>
+                <IconPlusStyled /> 
+                {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
+              </EduButton>
+            </div>
           ))}
-
+      
         {createAssignment && (
           <>
             {userRole && userRole === roleuser.DISTRICT_ADMIN && (

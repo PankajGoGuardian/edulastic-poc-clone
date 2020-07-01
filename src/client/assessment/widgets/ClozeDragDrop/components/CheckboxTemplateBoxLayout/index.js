@@ -29,25 +29,23 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
     cAnswers,
     isReviewTab,
     stemNumeration = "numerical",
-    evaluation = [],
+    evaluation = {},
     onDropHandler = () => {},
     responseIDs,
     globalSettings,
     disableResponse,
     isPrintPreview
   } = resprops;
+
   const { index: dropTargetIndex } = (responseIDs && responseIDs.find(response => response.id === id)) || {};
-  const status =
-    userSelections.length > 0 && evaluation.length > 0 ? (evaluation[dropTargetIndex] ? "right" : "wrong") : null;
-
-  const choiceAttempted = userSelections.length > 0 ? !!userSelections[dropTargetIndex] : null;
-
+  const choiceAttempted = userSelections.length > 0 && !!userSelections[dropTargetIndex];
+  const status = choiceAttempted ? (evaluation[dropTargetIndex] ? "right" : "wrong") : null;
   const indexStr = getStemNumeration(stemNumeration, dropTargetIndex);
-
   const btnStyle = { ...responseBtnStyle };
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
   const heightpx = (response && response.heightpx) || btnStyle.heightpx;
   const widthpx = (response && response.widthpx) || btnStyle.widthpx;
+
   btnStyle.minWidth = !globalSettings ? (widthpx ? `${widthpx}px` : "auto") : "auto";
   btnStyle.maxHeight = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
   btnStyle.minHeight = !globalSettings ? (heightpx ? `${heightpx}px` : "auto") : "auto";
@@ -113,6 +111,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
   };
 
   const correct = status === "right";
+
   const getContent = (maxHeight = "") => (
     <AnswerBox
       onMouseEnter={handleHover}

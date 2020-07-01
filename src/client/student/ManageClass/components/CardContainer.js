@@ -61,7 +61,7 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
             </Col>
             <Col span={12}>
               <Row type="flex" justify="end" align="center">
-                <EllipsisContainer>
+                <EllipsisContainer style={{paddingRight:"0px"}}>
                   <InstitutionInfo>
                     {institutionName}, {districtName}
                   </InstitutionInfo>
@@ -183,7 +183,7 @@ const CollapsibleCard = styled(Collapse)`
 `;
 
 const EllipsisContainer = styled.div`
-  padding-right: ${props => (props.status ? (props.status === 1 ? "100px" : "140px") : "0px")};
+  padding-right: ${props => (props.status ? (props.status === 1 ? "100px" : "140px") : "140px")};
   display: inline-flex;
   align-items: center;
   position: relative;

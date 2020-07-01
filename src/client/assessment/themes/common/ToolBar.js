@@ -23,7 +23,7 @@ const ActionButton = ({ title, icon, ...rest }) => (
   </Tooltip>
 );
 
-const ToolBar = ({ settings, tool, qType, handleMagnifier, enableMagnifier, changeTool }) => {
+const ToolBar = ({ settings, tool = [], qType, handleMagnifier, enableMagnifier, changeTool }) => {
   const { calcType, showMagnifier, enableScratchpad } = settings;
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
@@ -128,8 +128,8 @@ export const ButtonWithStyle = styled(Button)`
   `}
 
 ${({ theme, active }) =>
-  window.isIOS
-    ? `
+    window.isIOS
+      ? `
       &:focus, &:hover{
             background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
             svg{
@@ -137,7 +137,7 @@ ${({ theme, active }) =>
             }
           }
       `
-    : `
+      : `
       &:focus{
       background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
       svg{

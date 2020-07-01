@@ -9,7 +9,7 @@ import SelectContainer from "./SelectContainer";
 
 const QuestionSelectDropdown = ({
   gotoQuestion,
-  options,
+  options = [],
   currentItem,
   skinb,
   t,
@@ -44,8 +44,8 @@ const QuestionSelectDropdown = ({
             ) : skipped[index] ? (
               <SkippedIcon className="fa fa-exclamation-circle" />
             ) : (
-              ""
-            )}
+                  ""
+                )}
           </Select.Option>
         ))}
       </Select>

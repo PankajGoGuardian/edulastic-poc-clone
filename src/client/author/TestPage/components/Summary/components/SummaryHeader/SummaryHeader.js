@@ -28,8 +28,7 @@ const SummaryHeader = ({
   test,
   toggleTestLikeRequest
 }) => {
-  const avatar = createdBy && createdBy.name ? createdBy.name[0] : <IconEduLogo />;
-  console.log({ analytics });
+  
   const isTestLiked = test?.alreadyLiked || false;
   const handleTestLike = () => {
     if (test._id) {
@@ -56,7 +55,7 @@ const SummaryHeader = ({
       <ContainerRight>
         <AvatarContainer>
           <FlexContainer justifyContent="flex-start" alignItems="center">
-            <Avatar>{avatar}</Avatar>
+            <Avatar> <IconEduLogo /></Avatar>  {/* Default Icon */}
             <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-start">
               <CreatedByTitle style={{ marginRight: 0 }}>Created by:</CreatedByTitle>
               <CreatedByValue>

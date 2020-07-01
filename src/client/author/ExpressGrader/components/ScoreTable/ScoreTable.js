@@ -5,7 +5,6 @@ import { greenThird } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import QuestionScore from "../QuestionScore/QuestionScore";
 import { StyledCard, TableData, StyledDivMid, StyledText, TableTitle, StudentsTitle, ScoreTitle } from "./styled";
-import InfoIcon from "../../Assets/info.svg";
 
 function getDataForTable(data) {
   let dataSource;

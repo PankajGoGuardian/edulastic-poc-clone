@@ -247,6 +247,12 @@ const temporalDivElement = document.createElement("div");
 export function stripHtml(html) {
   // Set the HTML content with the providen
   temporalDivElement.innerHTML = html;
+  // retrieve the text format for math expressions
+  const mathTag = temporalDivElement.getElementsByTagName("math")[0];
+  if (mathTag) {
+    const annotationTag = mathTag.getElementsByTagName("annotation")[0];
+    return annotationTag?.textContent || annotationTag?.innerHTML || "";
+  }
   // Retrieve the text property of the element (cross-browser support)
   return temporalDivElement.textContent || temporalDivElement.innerText || "";
 }

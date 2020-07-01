@@ -5,7 +5,7 @@ const filterData = [
     mode: "multiple",
     size: "large",
     title: "Grades",
-    placeholder: "Please select",
+    placeholder: "All Grades",
     onChange: "grades",
     data: [
       { value: "K", text: "Kindergarten" },

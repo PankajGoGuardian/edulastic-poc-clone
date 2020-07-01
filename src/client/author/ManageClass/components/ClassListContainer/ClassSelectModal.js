@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { capitalize } from "lodash";
+import { upperFirst } from "lodash";
 
 // components
 import { Spin, Select, Input } from "antd";
@@ -156,7 +156,7 @@ const ClassSelectModal = ({
             disabled={row.disabled}
             onChange={subject => {
               const classList = [...classListData];
-              classList[index].subject = capitalize(subject);
+              classList[index].subject = upperFirst(subject);
               classList[index].standards = [];
               classList[index].standardSets = [];
               setClassListData(classList);

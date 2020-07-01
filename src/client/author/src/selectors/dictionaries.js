@@ -30,18 +30,18 @@ export const getFormattedCurriculums = (interestedCurriculums = [], allCurriculu
   if (isEmpty(subject)) {
     return [];
   }
-  subject = typeof subject === "string" ? [subject] : subject;
+  subject = typeof subject === "string" ? [subject.toLowerCase()] : subject.map(e => e.toLowerCase());
   const defaultStandard = [];
   const interestedCurriculumsForUser = [];
   const otherCurriculumsForUser = [];
   const defaultCurriculumsMap = {};
   forEach(defaultStandards, (val, key) => {
-    if (subject.includes(key)) {
+    if (subject.includes(key.toLowerCase())) {
       defaultCurriculumsMap[val] = key;
     }
   });
   const interestedCurriculumsMap = interestedCurriculums.reduce((map, o) => {
-    if (subject.includes(o.subject)) {
+    if (subject.includes(o.subject.toLowerCase())) {
       map[o.name] = o;
     }
     return map;
@@ -58,7 +58,7 @@ export const getFormattedCurriculums = (interestedCurriculums = [], allCurriculu
         interestedCurriculumsForUser.push(formattedData);
       } else if (isEmpty(interestedCurriculumsMap) && defaultCurriculumsMap[el.curriculum]) {
         defaultStandard.push(formattedData);
-      } else if (subject.includes(el.subject)) {
+      } else if (subject.includes(el.subject.toLowerCase())) {
         otherCurriculumsForUser.push(formattedData);
       }
     });

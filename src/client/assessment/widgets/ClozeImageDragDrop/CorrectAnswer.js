@@ -5,6 +5,7 @@ import { getFormattedAttrId, ItemLevelContext } from "@edulastic/common";
 import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
+import { EDIT } from "../../constants/constantsForQuestions";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -105,6 +106,7 @@ class CorrectAnswer extends Component {
         )}
         <Display
           preview={false}
+          view={EDIT}
           setAnswers
           dragHandler
           options={options}

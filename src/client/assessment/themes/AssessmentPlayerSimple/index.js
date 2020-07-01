@@ -249,6 +249,7 @@ class AssessmentPlayerSimple extends React.Component {
       showHints,
       timedAssignment = false,
       groupId,
+      highlights,
       utaId
     } = this.props;
     const { showExitPopup, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
@@ -310,6 +311,7 @@ class AssessmentPlayerSimple extends React.Component {
               settings={settings}
               testItemState={testItemState}
               t={t}
+              highlights={highlights}
               enableCrossAction={enableCrossAction}
               unansweredQuestionCount={unansweredQuestionCount}
               setHighlights={this.saveHistory("resourceId")}

@@ -43,6 +43,7 @@ const PlayerContentArea = ({
   saveHistory,
   history,
   evaluation,
+  highlights,
   enableMagnifier,
   changePreview
 }) => {
@@ -75,6 +76,7 @@ const PlayerContentArea = ({
                 questions={questions}
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn
+                highlights={highlights}
                 activeMode={activeMode}
                 scratchPadMode={scratchPadMode}
                 lineColor={lineColor}
@@ -94,6 +96,7 @@ const PlayerContentArea = ({
                 previewTab="check"
                 preview="check"
                 questions={questions}
+                highlights={highlights}
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn
                 activeMode={activeMode}

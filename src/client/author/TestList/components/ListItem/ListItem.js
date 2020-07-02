@@ -1,4 +1,5 @@
 import { assignmentApi } from "@edulastic/api";
+import { uniqBy } from "lodash";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor, red } from "@edulastic/colors";
 import { CheckboxLabel, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
@@ -47,6 +48,7 @@ import {
   DynamicIconWrapper
 } from "./styled";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
+import { sharedTypeMap } from "../Item/Item";
 
 class ListItem extends Component {
   static propTypes = {
@@ -144,7 +146,16 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: { title, tags = [], _source = {}, status: testStatus, description, thumbnail, collections = [] },
+      item: {
+        title,
+        tags = [],
+        _source = {},
+        status: testStatus,
+        description,
+        thumbnail,
+        collections = [],
+        sharedType
+      },
       item,
       authorName,
       owner: isOwner = false,
@@ -194,6 +205,22 @@ class ListItem extends Component {
           group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
       );
 
+    let collectionName = "PRIVATE";
+    if (collections?.length > 0 && orgCollections.length > 0) {
+      let filteredCollections = orgCollections?.filter(c => collections?.find(i => i._id === c._id));
+      filteredCollections = uniqBy(filteredCollections, "_id");
+      if (filteredCollections?.length > 0) collectionName = filteredCollections?.map(c => c.name).join(", ");
+    } else if (collections?.length && collections?.find(o => o.name === "Edulastic Certified")) {
+      collectionName = "Edulastic Certified";
+    } else if (sharedType) {
+      // sharedType comes as number when "Shared with me" filter is selected
+      if (!Number.isNaN(+sharedType)) {
+        collectionName = sharedTypeMap[+sharedType];
+      } else {
+        collectionName = sharedType;
+      }
+    }
+
     return (
       <>
         <ViewModal
@@ -214,6 +241,7 @@ class ListItem extends Component {
           isDynamic={isDynamic}
           handleLikeTest={this.handleLikeTest}
           isTestLiked={isTestLiked}
+          collectionName={collectionName}
         />
 
         <TestPreviewModal

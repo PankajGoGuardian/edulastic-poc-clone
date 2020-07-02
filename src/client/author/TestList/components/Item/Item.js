@@ -52,7 +52,7 @@ import { approveOrRejectSingleTestRequestAction, toggleTestLikeAction } from "..
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 
-const sharedTypeMap = {
+export const sharedTypeMap = {
   0: "PUBLIC",
   1: "DISTRICT",
   2: "SCHOOL",
@@ -279,6 +279,7 @@ class Item extends Component {
           isDynamic={isDynamic}
           handleLikeTest={this.handleLikeTest}
           isTestLiked={isTestLiked}
+          collectionName={collectionName}
         />
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}

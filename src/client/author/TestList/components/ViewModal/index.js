@@ -129,7 +129,8 @@ class ViewModal extends React.Component {
       isPublisherUser,
       isDynamic,
       handleLikeTest,
-      isTestLiked
+      isTestLiked,
+      collectionName
     } = this.props;
     const {
       title = "",
@@ -141,7 +142,6 @@ class ViewModal extends React.Component {
       analytics = [],
       itemGroups = [],
       summary = {},
-      sharing = [],
       permission,
       _source,
       authors,
@@ -392,9 +392,7 @@ class ViewModal extends React.Component {
             <Footer>
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} />
-                <IconText data-cy="testcard-collection">
-                  {sharing[0] ? sharing[0].type : item.status === "draft" ? "Private Library" : "Public Library"}
-                </IconText>
+                <IconText data-cy="testcard-collection">{collectionName}</IconText>
               </FooterIcon>
               <FooterIcon rotate>
                 <IconShare color={darkGrey} width={14} height={14} />

@@ -92,7 +92,7 @@ const PrintTestModal = ({ onCancel, onProceed, currentTestId }) => {
         <div style={{ marginBottom: "31px", fontSize: "14px" }}>Select the print type based on your need.</div>
         <StyledRadioGroup onChange={handleChangeOption} value={option}>
           <Radio value="complete">COMPLETE TEST</Radio>
-          {haveManualGradedQs && <Radio value="manualGraded">MANUAL GRADED ITEMS</Radio>}
+          {haveManualGradedQs && <Radio value="manualGraded">MANUALLY GRADED ITEMS</Radio>}
           <Radio value="custom">CUSTOM</Radio>
         </StyledRadioGroup>
 

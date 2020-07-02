@@ -152,7 +152,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
     it("> verify status and try closing", () => {
       // closing should not be allowed as still evaluation needs to be done
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
-      lcb.header.clickOnClose(false);
+      lcb.header.clickOnClose();
       lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
     });
     it("> manual evaluation in question view", () => {
@@ -188,10 +188,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> manual grading`, () => {
       lcb.getStudentPerformanceByIndex(0).should("contain", `50%`);
       barGraph.verifyQueBarAndToolTipBasedOnAttemptData(attemptTypeData, Cypress._.keys(attemptTypeData.attempt));
     });
-    it("> verify status and try closing", () => {
-      // closing should be possible as its evalluated now
-      lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
-      lcb.header.clickOnClose();
+    it("> verify status", () => {
       lcb.header.verifyAssignmentStatus(teacherSide.DONE);
     });
     it("> verify author side express grader", () => {

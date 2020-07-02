@@ -326,6 +326,12 @@ function* receiveClassQuestionSaga({ payload }) {
         testItemsIdArray: [item]
       });
     }
+    feedbackResponse = feedbackResponse.map(x => {
+      if (x.graded === false) {
+        Object.assign(x, { score: 0 });
+      }
+      return x;
+    });
     yield put({
       type: RECEIVE_CLASS_QUESTION_SUCCESS,
       payload: feedbackResponse

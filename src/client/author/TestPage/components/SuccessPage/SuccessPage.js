@@ -162,7 +162,7 @@ class SuccessPage extends React.Component {
     if (this.getHighPriorityShared === "Public" && !isPlaylist) {
       shareUrl = `${window.location.origin}/public/view-test/${_id}`;
     } else {
-      shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
+      shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests/tab/review/id"}/${_id}`;
     }
     const currentClass = (assignment.class && assignment.class[0]) || {};
     const assignmentStatus = currentClass.startDate < Date.now() || currentClass.open ? "In-Progress" : "Not-Open";

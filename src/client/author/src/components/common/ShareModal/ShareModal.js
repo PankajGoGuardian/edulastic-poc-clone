@@ -60,13 +60,17 @@ class ShareModal extends React.Component {
       sharedType: sharedKeysObj.INDIVIDUAL,
       searchString: "",
       currentUser: {},
-      permission: (isUndefined(props.hasPlaylistEditAccess) ?
-        props.features.editPermissionOnTestSharing :
-        (props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)) ? "EDIT" : "VIEW",
-      _permissionKeys: (isUndefined(props.hasPlaylistEditAccess) ?
-        props.features.editPermissionOnTestSharing :
-        (props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)) ? permissionKeys : [permissionKeys[1]]
-    }
+      permission: (isUndefined(props.hasPlaylistEditAccess)
+      ? props.features.editPermissionOnTestSharing
+      : props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)
+        ? "EDIT"
+        : "VIEW",
+      _permissionKeys: (isUndefined(props.hasPlaylistEditAccess)
+      ? props.features.editPermissionOnTestSharing
+      : props.features.editPermissionOnTestSharing && props.hasPlaylistEditAccess)
+        ? permissionKeys
+        : [permissionKeys[1]]
+    };
     this.handleSearch = this.handleSearch.bind(this);
   }
 
@@ -219,7 +223,7 @@ class ShareModal extends React.Component {
       userOrgData: { districts }
     } = this.props;
     // share modal is not for student so we can get
-    const [{districtName=""}] = districts;
+    const [{ districtName = "" }] = districts;
     if (data.sharedType === "PUBLIC") {
       return "EVERYONE";
     }
@@ -229,7 +233,7 @@ class ShareModal extends React.Component {
     return `${data.userName && data.userName !== "null" ? data.userName : ""}`;
   }
 
-  getEmail(data) {
+  getEmail = data => {
     if (data.sharedType === "PUBLIC") {
       return "";
     }
@@ -237,7 +241,7 @@ class ShareModal extends React.Component {
       return "";
     }
     return `${data.email && data.email !== "null" ? ` (${data.email})` : ""}`;
-  }
+  };
 
   render() {
     const { sharedType, permission, _permissionKeys, currentUser } = this.state;
@@ -265,15 +269,15 @@ class ShareModal extends React.Component {
     if (sharedType === "PUBLIC" && !isPlaylist) {
       sharableURL = `${window.location.origin}/public/view-test/${testId}`;
     } else {
-      sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${testId}`;
+      sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests/tab/review/id"}/${testId}`;
     }
 
     const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
       currentUser.email ? currentUser.email : ""
-      }`;
+    }`;
     const { districts, schools } = userOrgData;
     // share modal is not for student so we can get
-    const [{ districtName="" }] = districts;
+    const [{ districtName = "" }] = districts;
     const isDA = userRole === roleuser.DISTRICT_ADMIN;
     let sharedTypeMessage = "The entire Edulastic Community";
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
@@ -332,10 +336,11 @@ class ShareModal extends React.Component {
                     disabled={
                       // disabling public sharing for all
                       // TODO: enable it back when needed
-                      (item === shareTypeKeys[0]) ||
+                      item === shareTypeKeys[0] ||
                       (!isPublished && item !== shareTypeKeys[3]) ||
                       (item === shareTypeKeys[0] && hasPremiumQuestion) ||
-                      ((features.isCurator || features.isPublisherAuthor || !hasPlaylistEditAccess) && item === "PUBLIC")
+                      ((features.isCurator || features.isPublisherAuthor || !hasPlaylistEditAccess) &&
+                        item === "PUBLIC")
                     }
                   >
                     {shareTypes[item]}
@@ -371,7 +376,7 @@ class ShareModal extends React.Component {
                 </IndividualSelectInputStyled>
               ) : (
                 <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
-                )}
+              )}
               <IndividualSelectInputStyled
                 style={sharedType === sharedKeysObj.INDIVIDUAL ? { marginLeft: "0px" } : { display: "none" }}
                 onChange={this.permissionHandler}
@@ -420,7 +425,6 @@ ShareModal.defaultProps = {
   isPlaylist: false,
   hasPremiumQuestion: false,
   isPublished: false
-
 };
 
 const enhance = compose(

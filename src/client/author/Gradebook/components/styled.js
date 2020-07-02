@@ -130,7 +130,6 @@ export const StyledTable = styled(Table)`
           .ant-table-tbody {
             border-collapse: collapse;
             tr {
-              cursor: pointer;
               padding-top: 5px;
               td {
                 white-space: nowrap;
@@ -189,7 +188,6 @@ export const StyledTable = styled(Table)`
         .ant-table-tbody {
           border-collapse: collapse;
           tr {
-            cursor: pointer;
             td {
               max-width: 200px;
               white-space: nowrap;

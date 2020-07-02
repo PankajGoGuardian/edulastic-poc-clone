@@ -164,7 +164,7 @@ const Gradebook = ({
                 />
               </TableHeader>
               <GradebookTable
-                data={curatedData}
+                dataSource={curatedData}
                 assessments={assessmentsData}
                 selectedRows={selectedRows}
                 setSelectedRows={setSelectedRows}

@@ -1,16 +1,17 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import moment from "moment";
 
 // components
 import { Tooltip } from "antd";
 import {withNamespaces} from "@edulastic/localization";
+import { extraDesktopWidthMax } from "@edulastic/colors";
 import { StyledTable, StyledTableCell } from "./styled";
 
 // constants
 import { STATUS_LIST } from "../transformers";
-import { extraDesktopWidthMax } from "@edulastic/colors";
 
-const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, windowWidth, windowHeight, t }) => {
+const GradebookTable = ({ dataSource, assessments, selectedRows, setSelectedRows, windowWidth, windowHeight, t }) => {
   const colWidth = windowWidth >= parseInt(extraDesktopWidthMax) ? 170 : 150;
   const columns = [
     {
@@ -45,9 +46,22 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
       align: "center",
       width: colWidth,
       render: (_, row) => {
-        const { status, percentScore } = row.assessments[ass.id] || {};
+        const { classId, assessments: assMap } = row;
+        // assignmentId might not be equal to assessmentId (ass.id)
+        // due to grouping of assignments by report key & name (check "../transformers")
+        const { assignmentId, status, percentScore } = assMap[ass.id] || {};
         const color = STATUS_LIST.find(s => s.id === status)?.color;
-        return <StyledTableCell color={color}>{percentScore || "-"}</StyledTableCell>;
+        return (assignmentId && classId) ? (
+          <Link to={`/author/classBoard/${assignmentId}/${classId}`}>
+            <StyledTableCell color={color}>
+              {percentScore || "-"}
+            </StyledTableCell>
+          </Link>
+        ) : (
+          <StyledTableCell>
+            {percentScore || "-"}
+          </StyledTableCell>
+        );
       },
       sorter: (a, b) =>
         (a.assessments[ass.id]?.percentScore || "-").localeCompare(b.assessments[ass.id]?.percentScore || "-")
@@ -57,7 +71,7 @@ const GradebookTable = ({ data, assessments, selectedRows, setSelectedRows, wind
     <StyledTable
       rowKey={row => `${row._id}_${row.classId}`}
       columns={columns}
-      dataSource={data}
+      dataSource={dataSource}
       rowSelection={{
         selectedRowKeys: selectedRows,
         onChange: setSelectedRows

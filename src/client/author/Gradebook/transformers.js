@@ -159,14 +159,14 @@ export const curateGradebookData = (gradebookData, pagination, status) => {
       if (taCurated) {
         // update test-activity & last-activity date for the assignment-student-class combo
         if (!status || status === taCurated.status) {
-          assessments[a._id] = taCurated;
+          assessments[a._id] = { assignmentId: a._id, ...taCurated };
         }
         laDate = Math.max(laDate, taCurated.laDate);
       } else if (!status || status === "NOT STARTED") {
         // check for not started
         a.class?.forEach(c => {
           if (c._id === classId && (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))) {
-            assessments[a._id] = { laDate: 0, status: "NOT STARTED", percentScore: " " };
+            assessments[a._id] = { assignmentId: a._id, laDate: 0, status: "NOT STARTED", percentScore: " " };
           }
         });
       }

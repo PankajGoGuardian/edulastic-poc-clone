@@ -647,10 +647,15 @@ class ClassBoard extends Component {
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
     const firstQuestionEntities = get(testActivity, [0, "questionActivities"], []);
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
+    /**
+     *  set disableMarkAbsent if the assignment is not-open AND assignment startDate is ahead of current time
+     *  OR student has submitted the assignment
+     *  OR the assignment is closed/marked-as-done/passed-due-date
+     */
     const disableMarkAbsent =
       (assignmentStatus.toLowerCase() == "not open" &&
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
-      assignmentStatus.toLowerCase() === "graded";
+      assignmentStatus.toLowerCase() === "graded" || assignmentStatus.toLowerCase() === "done";
     const existingStudents = testActivity.map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
@@ -955,7 +960,7 @@ class ClassBoard extends Component {
                     enrollmentStatus={enrollmentStatus}
                   />
                 ) : (
-                    <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
+                  <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
                   )}
               </div>
 

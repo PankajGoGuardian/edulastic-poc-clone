@@ -356,6 +356,9 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
   } catch (err) {
     console.log("err", err);
     yield put(createSchoolFailedAction());
+    notification({
+      msg: get(err, "data.result.message", "") || "Failed to create school"
+    });
   }
 
   try {
@@ -380,7 +383,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
     yield put({
       type: JOIN_SCHOOL_FAILED
     });
-    notification({ msg:JOIN_SCHOOL_FAILED});
+    notification({ msg: JOIN_SCHOOL_FAILED });
   }
 }
 
@@ -398,7 +401,7 @@ function* joinSchoolSaga({ payload = {} }) {
       type: JOIN_SCHOOL_FAILED,
       payload: {}
     });
-    notification({ msg:JOIN_SCHOOL_FAILED});
+    notification({ msg: JOIN_SCHOOL_FAILED });
   }
 }
 
@@ -429,7 +432,7 @@ function* saveSubjectGradeSaga({ payload }) {
       type: SAVE_SUBJECTGRADE_FAILED,
       payload: {}
     });
-    notification({ msg:SAVE_SUBJECTGRADE_FAILED});
+    notification({ msg: SAVE_SUBJECTGRADE_FAILED });
 
     const errMsg = get(err, "data.message", "");
     if (errMsg === "Settings already exist") {
@@ -458,7 +461,7 @@ function* saveSubjectGradeSaga({ payload }) {
     }
   } catch (err) {
     console.log("_err", err);
-    notification({ messageKey:"failedToUpdateUser"});
+    notification({ messageKey: "failedToUpdateUser" });
   }
 }
 
@@ -494,7 +497,7 @@ function* checkDistrictPolicyRequestSaga({ payload }) {
   } catch (e) {
     console.log("e", e);
     yield put(checkDistrictPolicyFailedAction());
-    notification({ msg:payload.error.message});
+    notification({ msg: payload.error.message });
   }
 }
 
@@ -552,7 +555,7 @@ function* bulkSyncCanvasClassSaga({ payload }) {
     };
     const { data } = yield call(getCanvasBulkSyncUpdate, payloadData);
     if (data.failedCourseSections.length === payload.bulkSyncData.length) {
-      notification({ messageKey:"bulkSyncFailed"});
+      notification({ messageKey: "bulkSyncFailed" });
       yield put(setBulkSyncCanvasStateAction("FAILED"));
     } else {
       yield put(setBulkSyncCanvasStateAction("SUCCESS"));
@@ -560,7 +563,7 @@ function* bulkSyncCanvasClassSaga({ payload }) {
     }
   } catch (err) {
     console.error(err);
-    notification({ messageKey:"bulkSyncFailed"});
+    notification({ messageKey: "bulkSyncFailed" });
     yield put(setBulkSyncCanvasStateAction("FAILED"));
   }
 }

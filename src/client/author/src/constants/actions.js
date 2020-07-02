@@ -224,7 +224,7 @@ export const RECEIVE_CLASS_QUESTION_ERROR = "[answers] receive list error";
 
 export const RECEIVE_STUDENT_QUESTION_REQUEST = "[answer] receive list request";
 export const RECEIVE_STUDENT_QUESTION_SUCCESS = "[answer] receive list success";
-export const RECEIVE_STUDENT_QUESTION_ERROR = "[answer] receive list success";
+export const RECEIVE_STUDENT_QUESTION_ERROR = "[answer] receive list error";
 
 export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST = "[LCB] sync assignment with google classroom request";
 export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS = "[LCB] sync assignment with google classroom success";

@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, put, call, all, fork } from "redux-saga/effects";
-import { keyBy as _keyBy } from "lodash";
+import { keyBy as _keyBy, isEmpty } from "lodash";
 import { reportsApi, testsApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { setTestItemsAction, SET_CURRENT_ITEM } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
@@ -47,6 +47,28 @@ function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   );
 }
 
+function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
+  try {
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId, referrerId2 });
+    const passageData = {};
+    for (const attachment of attachments) {
+      const { data } = attachment;
+      passageData[referrerId2] = data;
+    }
+    yield put({ type: SAVE_USER_WORK, payload: passageData });
+  } catch (error) {
+    console.log("error from attachmentAPI", error);
+  }
+}
+
+function* loadPassagesForItems({ testActivityId, passages }) {
+  yield all(
+    passages.map(passage =>
+      call(loadPassageHighlightFromServer, { referrerId: testActivityId, referrerId2: passage._id })
+    )
+  );
+}
+
 function* loadTestActivityReport({ payload }) {
   try {
     const { testActivityId, groupId, testId } = payload;
@@ -75,17 +97,25 @@ function* loadTestActivityReport({ payload }) {
       return question;
     });
     const { questionActivities = [] } = reports;
+    const { passages = [] } = test;
     const scratchpadUsedItems = questionActivities.reduce((items, activity) => {
       if (activity?.scratchPad?.scratchpad === true) {
         items.push({ testItemId: activity.testItemId, qActId: activity._id });
       }
       return items;
     }, []);
+
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
       testItemsIdArray: scratchpadUsedItems
     });
 
+    if (!isEmpty(passages)) {
+      yield fork(loadPassagesForItems, {
+        testActivityId,
+        passages
+      });
+    }
     const _testItems = testItems.filter(({ data = {} }) => data.questions.length);
 
     yield put(loadQuestionsAction(_keyBy(questionsWithActivities, "id")));

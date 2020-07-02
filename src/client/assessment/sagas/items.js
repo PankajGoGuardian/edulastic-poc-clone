@@ -73,12 +73,18 @@ function* saveUserResponse({ payload }) {
     }
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
-    const userTestActivityId = yield select(state => state.test && state.test.testActivityId);
+    const { testActivityId: userTestActivityId, passages } = yield select(state => state.test && state.test);
     const shuffledOptions = yield select(state => state.shuffledOptions);
+    // passages: state.test.passages
     const currentItem = items.length && items[itemIndex];
     if (!userTestActivityId || !currentItem) {
       return;
     }
+    let passage = {};
+    if (currentItem.passageId && passages) {
+      passage = passages.find(p => p._id === currentItem.passageId);
+    }
+    const passageId = passage._id;
 
     const questions = getQuestionIds(currentItem);
     const bookmarked = !!(yield select(state => state.assessmentBookmarks[currentItem._id]));
@@ -146,6 +152,25 @@ function* saveUserResponse({ payload }) {
         referrerId2: testItemId
       };
       yield call(attachmentApi.updateAttachment, { update, filter });
+    }
+    if (passageId) {
+      const highlights = yield select(({ userWork }) => userWork.present[passageId]?.resourceId);
+      if (highlights) {
+        const update = {
+          data: { resourceId: highlights },
+          referrerId: userTestActivityId,
+          userId,
+          type: "passage",
+          referrerType: "TestItemContent",
+          referrerId2: passageId,
+          status: "published"
+        };
+        const filter = {
+          referrerId: userTestActivityId,
+          referrerId2: passageId
+        };
+        yield call(attachmentApi.updateAttachment, { update, filter });
+      }
     }
     yield put({ type: SAVE_USER_RESPONSE_SUCCESS });
     yield put({

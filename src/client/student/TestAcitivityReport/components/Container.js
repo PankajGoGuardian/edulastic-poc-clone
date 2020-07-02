@@ -37,8 +37,9 @@ const ReportListContent = ({
 
   let allWidgets = { ...questions, ...resources };
   let itemRows = get(item, "rows", []);
+  let passage = {};
   if (item.passageId && passages.length) {
-    const passage = passages.find(p => p._id === item.passageId) || {};
+    passage = passages.find(p => p._id === item.passageId) || {};
     itemRows = [passage.structure, ...itemRows];
     const passageData = keyBy(passage.data, "id");
     // we store userWork based on testItemId
@@ -48,6 +49,7 @@ const ReportListContent = ({
     });
     allWidgets = { ...allWidgets, ...passageData };
   }
+  const passageId = passage._id;
   const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "check";
   const closeModal = () => setModal(false);
   const hasCollapseButtons =
@@ -82,6 +84,7 @@ const ReportListContent = ({
               isStudentReport
               viewComponent="studentReport"
               evaluation={evaluation}
+              passageTestItemID={passageId}
               previouscratchPadDimensions={previouscratchPadDimensions}
               showScratchpadByDefault={showScratchpadByDefault}
               history={history}

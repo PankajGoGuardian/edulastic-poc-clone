@@ -4,6 +4,7 @@ import { classResponseApi, testActivityApi, attchmentApi as attachmentApi } from
 import { questionType } from "@edulastic/constants";
 import { createAction } from "redux-starter-kit";
 import { notification } from "@edulastic/common";
+import { get, isEmpty } from "lodash";
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
@@ -83,6 +84,28 @@ function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   );
 }
 
+function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
+  try {
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId, referrerId2 });
+    const passageData = {};
+    for (const attachment of attachments) {
+      const { data } = attachment;
+      passageData[referrerId2] = data;
+    }
+    yield put({ type: SAVE_USER_WORK, payload: passageData });
+  } catch (error) {
+    console.log("error from attachmentAPI", error);
+  }
+}
+
+function* loadPassagesForItems({ testActivityId, passages }) {
+  yield all(
+    passages.map(passage =>
+      call(loadPassageHighlightFromServer, { referrerId: testActivityId, referrerId2: passage._id })
+    )
+  );
+}
+
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
@@ -96,6 +119,14 @@ function* receiveStudentResponseSaga({ payload }) {
       testItemsIdArray: scratchpadUsedItems
     });
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
+    const passages = get(originalData, "test.passages", []);
+
+    if (!isEmpty(passages)) {
+      yield fork(loadPassagesForItems, {
+        testActivityId: payload.testActivityId,
+        passages
+      });
+    }
     // AUTOSELECT group will have different questions for every student
     // hence update the items from student response api
     if (hasRandomQuestions(originalData.test.itemGroups)) {
@@ -248,6 +279,17 @@ function* receiveStudentQuestionSaga({ payload }) {
         }
       }
     }
+
+    const originalData = yield select(state => state.author_classboard_testActivity?.data);
+    const passages = get(originalData, "test.passages", []);
+
+    if (!isEmpty(passages)) {
+      yield fork(loadPassagesForItems, {
+        testActivityId: feedbackResponse.testActivityId,
+        passages
+      });
+    }
+
     yield put({
       type: RECEIVE_STUDENT_QUESTION_SUCCESS,
       payload: feedbackResponse

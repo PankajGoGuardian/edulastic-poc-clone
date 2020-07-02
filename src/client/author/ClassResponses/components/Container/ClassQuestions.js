@@ -41,12 +41,13 @@ function Preview({
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
   let questionsKeyed = { ..._keyBy(questions, "id"), ..._keyBy(resources, "id") };
+  let passage = {};
   if (item.passageId && passages.length) {
-    const passage = passages.find(p => p._id === item.passageId) || {};
+    passage = passages.find(p => p._id === item.passageId) || {};
     questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, "id") };
     rows[0] = passage.structure;
   }
-  const testItemID = passages?.[0]?.testItems?.[0] || ""; // pass testItemId in which passage was used
+  const passageId = passage?._id;
   const answerContextConfig = useContext(AnswerContext);
   const showScratchpadByDefault =
     questionActivity && questionActivity.qType === "highlightImage" && questionActivity.scratchPad?.scratchpad === true;
@@ -81,7 +82,7 @@ function Preview({
         qIndex={qIndex}
         evaluation={evaluation}
         showStudentWork={showStudentWork}
-        passageTestItemID={testItemID}
+        passageTestItemID={passageId}
         isQuestionView={isQuestionView}
         isExpressGrader={isExpressGrader}
         isLCBView={isLCBView}
@@ -91,7 +92,7 @@ function Preview({
         {...scratchpadProps}
         previouscratchPadDimensions={previouscratchPadDimensions}
         history={history}
-        saveHistory={() => { }}
+        saveHistory={() => {}}
         {...scoringProps}
         studentId={studentId}
         studentName={studentName || t("common.anonymous")}
@@ -398,12 +399,12 @@ class ClassQuestions extends Component {
     });
     const test = showTestletPlayer
       ? {
-        testType: classResponse.testType,
-        title: classResponse.title,
-        testletConfig: classResponse.testletConfig,
-        testletState: get(testActivity, "userWork.testletState"),
-        itemGroups: [{ items: [selectedTestItem] }]
-      }
+          testType: classResponse.testType,
+          title: classResponse.title,
+          testletConfig: classResponse.testletConfig,
+          testletState: get(testActivity, "userWork.testletState"),
+          itemGroups: [{ items: [selectedTestItem] }]
+        }
       : { itemGroups: [{ items: [selectedTestItem] }] };
 
     let docBasedProps = {};
@@ -493,13 +494,7 @@ export default compose(
 )(ClassQuestions);
 
 ClassQuestions.propTypes = {
-  /**
-   *
-   */
   classResponse: PropTypes.object.isRequired,
-  /**
-   *
-   */
   questionActivities: PropTypes.array.isRequired,
   currentStudent: PropTypes.object.isRequired,
   testItemsOrder: PropTypes.any.isRequired,
@@ -507,8 +502,7 @@ ClassQuestions.propTypes = {
   qIndex: PropTypes.number,
   isPresentationMode: PropTypes.bool,
   studentViewFilter: PropTypes.string,
-  showTestletPlayer: PropTypes.bool,
-  t: PropTypes.func
+  showTestletPlayer: PropTypes.bool
 };
 ClassQuestions.defaultProps = {
   qIndex: null,
@@ -544,7 +538,7 @@ const StyledModal = styled(Modal)`
     }
   }
 
-  .exit-btn-row{
+  .exit-btn-row {
     margin-top: -10px;
     margin-bottom: 10px;
   }

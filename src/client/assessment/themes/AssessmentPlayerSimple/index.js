@@ -209,11 +209,17 @@ class AssessmentPlayerSimple extends React.Component {
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
 
   saveHistory = sourceId => data => {
-    const { saveUserWork, items, currentItem, setUserAnswer, userAnswers, userWork } = this.props;
+    const { saveUserWork, items, currentItem, setUserAnswer, userAnswers, userWork, passage } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
+    // resourceId(passage) will use passage._id
+    // @see https://snapwiz.atlassian.net/browse/EV-14181
+    let userWorkId = items[currentItem]?._id;
+    if (sourceId === "resourceId") {
+      userWorkId = passage._id;
+    }
     saveUserWork({
-      [items[currentItem]._id]: { ...userWork, [sourceId]: data }
+      [userWorkId]: { ...userWork, [sourceId]: data }
     });
     const qId = items[currentItem].data.questions[0].id;
     if (!userAnswers[qId]) {
@@ -361,7 +367,7 @@ const enhance = compose(
       userAnswers: state.answers,
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
       scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
-      highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
+      highlights: get(state, `userWork.present[${ownProps?.passage?._id}].resourceId`, null),
       crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
       userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),

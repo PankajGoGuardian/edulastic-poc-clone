@@ -95,15 +95,9 @@ Passage.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    (state, ownProps) => {
-      // testItemId passed from testActivityReport (EV-10361), otherwise use itemId while authoring
-      const passageId = ownProps.item.testItemId || ownProps.item.id;
-      const { passageTestItemID = passageId } = ownProps;
-      return {
-        userWork: get(state, `userWork.present[${passageTestItemID}].resourceId`, []),
-        passageTestItemID: passageId
-      };
-    },
+    (state, ownProps) => ({
+      userWork: get(state, `userWork.present[${ownProps.passageTestItemID}].resourceId`, [])
+    }),
     {
       setQuestionData: setQuestionDataAction,
       saveUserWork: saveUserWorkAction,

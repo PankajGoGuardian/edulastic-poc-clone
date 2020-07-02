@@ -299,6 +299,10 @@ export const Label = styled.label`
   font-weight: 600;
   text-transform: uppercase;
 `;
+export const RadioButtonWrapper=styled.div`
+  display:flex;
+  margin-top:10px;
+`;
 
 export const StyledDiv = styled.div`
   flex: 1;

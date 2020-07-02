@@ -5,7 +5,7 @@ import { test as testConst, assignmentStatusOptions } from "@edulastic/constants
 import { Col, Row } from "antd";
 import { FieldLabel, DatePickerStyled, RadioBtn, RadioGrp } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { StyledRow, StyledRadioGropRow, Label } from "./styled";
+import { StyledRow, StyledRadioGropRow, Label,RadioButtonWrapper } from "./styled";
 
 const DateSelector = ({
   startDate,
@@ -113,16 +113,18 @@ const DateSelector = ({
       {!forClassLevel && showOpenDueAndCloseDate && (
         <StyledRadioGropRow gutter={32}>
           <Col span={24}>
-            <RadioGrp onChange={changeRadioGrop} value={selectedOption}>
-              <RadioBtn data-cy="radioOpenCloseDate" value={false}>
+            <RadioGrp style={{display:"flex"}} onChange={changeRadioGrop} value={selectedOption}>
+              <RadioButtonWrapper>
+                <RadioBtn data-cy="radioOpenCloseDate" value={false} />
                 <Label>{t("common.assignTest.dateRadioGroup.openClose")}</Label>
-              </RadioBtn>
-              <RadioBtn data-cy="radioOpenDueCloseDate" value>
-                <Label>
-                  {t("common.assignTest.dateRadioGroup.openCloseDue")}{" "}
+              </RadioButtonWrapper>
+
+              <RadioButtonWrapper style={{marginLeft:"50px"}}>
+                <RadioBtn data-cy="radioOpenDueCloseDate" value />
+                <Label>{t("common.assignTest.dateRadioGroup.openCloseDue")}{" "}
                   <span style={{ fontWeight: "normal" }}>(Allows Late Submissions)</span>
                 </Label>
-              </RadioBtn>
+              </RadioButtonWrapper>
             </RadioGrp>
           </Col>
         </StyledRadioGropRow>

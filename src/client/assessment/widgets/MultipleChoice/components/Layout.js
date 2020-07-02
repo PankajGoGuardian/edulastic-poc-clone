@@ -44,12 +44,22 @@ class Layout extends Component {
   render() {
     const { onChange, uiStyle, t, fillSections, cleanSections, advancedAreOpen, item } = this.props;
 
+    const { columns = 1 } = uiStyle;
+
     const changeUiStyle = (prop, value) => {
-      const isNumberColumn = prop === "columns";
-      onChange("uiStyle", {
-        ...uiStyle,
-        [prop]: isNumberColumn ? Math.abs(value).toFixed() : value
-      });
+      switch (prop) {
+        case "columns":
+          onChange("uiStyle", {
+            ...uiStyle,
+            [prop]: Math.max(1, Math.abs(value)).toFixed() // clamp minimum to one
+          });
+          break;
+        default:
+          onChange("uiStyle", {
+            ...uiStyle,
+            [prop]: value
+          });
+      }
     };
 
     const styleOptions = [
@@ -112,7 +122,7 @@ class Layout extends Component {
               disabled={false}
               onChange={e => changeUiStyle("columns", +e.target.value)}
               min={1}
-              value={uiStyle.columns || 1}
+              value={columns}
             />
           </Col>
         </Row>

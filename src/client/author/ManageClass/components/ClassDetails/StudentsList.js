@@ -140,16 +140,18 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       width: "20%",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
-      render: (enrollmentStatus, { lastModified }) => (
+      render: (enrollmentStatus, { enrollmentUpdatedAt }) => (
         <span>
           {enrollmentStatus && enrollmentStatus == 1 ? (
             "Active"
           ) : (
             <NotEnrolledMessage>
               <IconExclamationMark />
-              <div>{`Student not enrolled${
-                lastModified ? ` after ${moment(lastModified).format("MMM DD, YYYY")}` : ""
-              }`}</div>
+              <div>
+                {`Student not enrolled${
+                  enrollmentUpdatedAt ? ` after ${moment(enrollmentUpdatedAt).format("MMM DD, YYYY")}` : ""
+                }`}
+              </div>
             </NotEnrolledMessage>
           )}
         </span>

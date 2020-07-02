@@ -46,7 +46,7 @@ const StandardsPerformance = ({
   filters,
   ddfilter
 }) => {
-  const filterData = get(standardsFilters, "data.result", []);
+  const filterData = standardsFilters || [];
   const scaleInfo = selectedStandardProficiency || [];
   const rawDomainData = get(browseStandards, "data.result", []);
   const maxMasteryScore = getMaxMasteryScore(scaleInfo);
@@ -90,15 +90,19 @@ const StandardsPerformance = ({
   const overallMetricMasteryScore = getOverallMasteryScore(res.metricInfo || []);
   const overallMetricMasteryLevel = getMasteryLevel(overallMetricMasteryScore, scaleInfo);
 
-  const { domainsData, tableData } = useMemo(() => getParsedData(
-      res.metricInfo,
-      maxMasteryScore,
-      tableFilters,
-      selectedDomains,
-      rawDomainData,
-      filterData,
-      scaleInfo
-    ), [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]);
+  const { domainsData, tableData } = useMemo(
+    () =>
+      getParsedData(
+        res.metricInfo,
+        maxMasteryScore,
+        tableFilters,
+        selectedDomains,
+        rawDomainData,
+        filterData,
+        scaleInfo
+      ),
+    [res, maxMasteryScore, filterData, selectedDomains, tableFilters, rawDomainData, scaleInfo]
+  );
 
   if (loading) {
     return <SpinLoader position="fixed" />;

@@ -57,6 +57,7 @@ const {
   completionTypes,
   calculators,
   calculatorKeys,
+  calculatorTypes,
   evalTypes,
   evalTypeLabels,
   accessibilities,
@@ -391,6 +392,10 @@ class MainSetting extends Component {
       { key: "enableScratchpad", value: enableScratchpad }
     ].filter(a => features[a.key]);
 
+    const calculatorKeysAvailable =
+      (premium && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
+      calculatorKeys;
+
     return (
       <Container padding="30px" marginTop="0px">
         <Row style={{ padding: 0 }}>
@@ -683,7 +688,7 @@ class MainSetting extends Component {
                         onChange={this.updateFeatures("calcType")}
                         value={calcType}
                       >
-                        {calculatorKeys.map(item => (
+                        {calculatorKeysAvailable.map(item => (
                           <RadioBtn data-cy={item} value={item} key={item}>
                             {calculators[item]}
                           </RadioBtn>

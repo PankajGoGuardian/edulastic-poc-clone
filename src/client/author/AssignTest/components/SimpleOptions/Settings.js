@@ -43,6 +43,7 @@ const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
 const {
   calculatorKeys,
   calculators,
+  calculatorTypes,
   releaseGradeTypes,
   evalTypes,
   evalTypeLabels,
@@ -214,6 +215,10 @@ const Settings = ({
     { key: "showMagnifier", value: showMagnifier },
     { key: "enableScratchpad", value: enableScratchpad }
   ].filter(a => features[a.key]);
+
+  const calculatorKeysAvailable =
+    (premium && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
+    calculatorKeys;
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -440,7 +445,7 @@ const Settings = ({
                 value={calcType}
                 onChange={e => overRideSettings("calcType", e.target.value)}
               >
-                {calculatorKeys.map(item => (
+                {calculatorKeysAvailable.map(item => (
                   <RadioBtn data-cy={item} value={item} key={item}>
                     <Label>{calculators[item]}</Label>
                   </RadioBtn>
@@ -624,12 +629,12 @@ const Settings = ({
         >
           <StyledRowSettings gutter={16} height="40">
             <Col span={12}>
-              <Label><span>TIMED TEST</span>
+              <Label>
+                <span>TIMED TEST</span>
                 <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                  <IconInfo color={lightGrey9} style={{ cursor: "pointer",marginLeft:"15px"}} />
+                  <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "15px" }} />
                 </Tooltip>
               </Label>
-        
             </Col>
             <Col span={10} style={{ display: "flex", flexDirection: "column" }}>
               <Row style={{ display: "flex", alignItems: "center" }}>

@@ -67,6 +67,7 @@ const StudentsList = ({
       title: "Name",
       dataIndex: "name",
       defaultSortOrder: "descend",
+      width: "20%",
       sorter: (a, b) => a.firstName > b.firstName,
       render: (_, { firstName, lastName }) => (
         <span>
@@ -80,7 +81,7 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       sorter: (a, b) => a.username > b.username,
       render: username => <span>{username}</span>,
-      width: "40%"
+      width: "20%"
     },
     {
       title: "TTS Enabled",

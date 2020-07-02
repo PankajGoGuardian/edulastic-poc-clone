@@ -1248,7 +1248,10 @@ function* updateInterestedCurriculumsSaga({ payload }) {
   try {
     yield call(settingsApi.updateInterestedStandards, payload);
     notification({ type: "success", messageKey: "standardSetsUpdatedSuccessfully" });
-    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
+    yield put({
+      type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS,
+      payload: payload.curriculums.map(item => ({ ...item, orgType: payload.orgType }))
+    });
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
     console.error(e);

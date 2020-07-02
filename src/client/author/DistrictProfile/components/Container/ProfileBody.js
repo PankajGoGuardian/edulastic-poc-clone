@@ -47,6 +47,7 @@ import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
 import Photo from "./Photo";
 import { selectsData } from "../../../TestPage/components/common";
 import JoinSchool from "../../../../student/Signup/components/TeacherContainer/JoinSchool";
+import { getInterestedCurriculumsByOrgType } from "../../../src/selectors/user";
 
 const FormItem = Form.Item;
 class ProfileBody extends React.Component {
@@ -68,7 +69,8 @@ class ProfileBody extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { interestedCurriculums, defaultGrades, defaultSubjects, autoShareGCAssignment } = props.user.orgData;
+    const { defaultGrades, defaultSubjects, autoShareGCAssignment } = props.user.orgData;
+    const { interestedCurriculums } = props;
     const derivedStateProps = {};
     if (state.defaultGrades.length === 0 && defaultGrades.length) {
       Object.assign(derivedStateProps, { defaultGrades });
@@ -176,6 +178,7 @@ class ProfileBody extends React.Component {
 
   updateMyStandardSets = updatedStandards => {
     const { curriculums, updateInterestedCurriculums, user } = this.props;
+    const { role } = user;
 
     const curriculumsData = [];
     for (let i = 0; i < updatedStandards.length; i++) {
@@ -187,10 +190,18 @@ class ProfileBody extends React.Component {
         grades: selStandards[0].grades
       });
     }
-
+    const orgType =
+      role === roleuser.DISTRICT_ADMIN ? "district" : role === roleuser.SCHOOL_ADMIN ? "institution" : "teacher";
+    let orgId = user._id;
+    if (role === roleuser.DISTRICT_ADMIN) {
+      orgId = user.districtIds[0];
+    }
+    if (role === roleuser.SCHOOL_ADMIN) {
+      orgId = user.institutionIds[0];
+    }
     const standardsData = {
-      orgId: user._id,
-      orgType: "teacher",
+      orgId,
+      orgType,
       curriculums: curriculumsData
     };
 
@@ -236,12 +247,21 @@ class ProfileBody extends React.Component {
   handleSaveStandardSets = () => {
     const { updateInterestedCurriculums, user } = this.props;
     const { interestedCurriculums } = this.state;
+    const { role } = user;
 
     const updatedInterestedCurriculums = map(interestedCurriculums, obj => omit(obj, ["orgType"]));
-
+    const orgType =
+      role === roleuser.DISTRICT_ADMIN ? "district" : role === roleuser.SCHOOL_ADMIN ? "institution" : "teacher";
+    let orgId = user._id;
+    if (role === roleuser.DISTRICT_ADMIN) {
+      orgId = user.districtIds[0];
+    }
+    if (role === roleuser.SCHOOL_ADMIN) {
+      orgId = user.institutionIds[0];
+    }
     const standardsData = {
-      orgId: user._id,
-      orgType: "teacher",
+      orgId,
+      orgType,
       curriculums: updatedInterestedCurriculums
     };
 
@@ -437,7 +457,8 @@ class ProfileBody extends React.Component {
       defaultGrades = [],
       defaultSubjects = [],
       autoShareGCAssignment = false,
-      showDefaultSettingSave = false
+      showDefaultSettingSave = false,
+      interestedCurriculums
     } = this.state;
     // checking if institution policy/ district policy is enabled
     // OR teacher with home school and having any google sync classroom
@@ -449,7 +470,7 @@ class ProfileBody extends React.Component {
       (user.orgData?.districts?.[0]?.districtStatus === 2 && !!user.orgData.classList.filter(c => !!c.googleId).length);
     const subjectsList = selectsData.allSubjects.slice(1);
     const interestedStaData = {
-      curriculums: user.orgData.interestedCurriculums
+      curriculums: interestedCurriculums
     };
     const { features, role } = user;
     let showPowerTools = false;
@@ -735,7 +756,8 @@ const enhance = compose(
       user: state.user.user,
       joinSchoolVisible: state.user.joinSchoolVisible,
       userInfo: get(state.user, "user", {}),
-      curriculums: getCurriculumsListSelector(state)
+      curriculums: getCurriculumsListSelector(state),
+      interestedCurriculums: getInterestedCurriculumsByOrgType(state)
     }),
     {
       resetMyPassword: resetMyPasswordAction,

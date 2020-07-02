@@ -1,4 +1,4 @@
-import { get as _get, pick } from "lodash";
+import { get as _get, pick, groupBy } from "lodash";
 import { createSelector } from "reselect";
 import { roleuser } from "@edulastic/constants";
 import { getSchoolsSelector as getDistrictSchoolsSelector } from "../../Schools/ducks";
@@ -190,7 +190,10 @@ export const getSchoolsByUserRoleSelector = createSelector(
 export const isOrganizationDistrictSelector = createSelector(
   getUser,
   state => {
-    if (state.role === roleuser.DISTRICT_ADMIN && state.orgData?.districts?.[0]?.districtPermissions.includes("publisher")) {
+    if (
+      state.role === roleuser.DISTRICT_ADMIN &&
+      state.orgData?.districts?.[0]?.districtPermissions.includes("publisher")
+    ) {
       return true;
     }
     return false;
@@ -275,4 +278,22 @@ export const getAccountSwitchDetails = createSelector(
 export const getIsPowerPremiumAccount = createSelector(
   getUser,
   state => state.isPowerTeacher && state.features.premium
+);
+
+export const getInterestedCurriculumsByOrgType = createSelector(
+  getInterestedCurriculumsSelector,
+  getUserRole,
+  (interestedCurriculums, role) => {
+    const byOrgType = groupBy(interestedCurriculums, "orgType");
+    if (role === roleuser.TEACHER) {
+      return byOrgType.teacher || [];
+    }
+    if (role === roleuser.SCHOOL_ADMIN) {
+      return byOrgType.institution || [];
+    }
+    if (role === roleuser.DISTRICT_ADMIN) {
+      return byOrgType.district || [];
+    }
+    return interestedCurriculums;
+  }
 );

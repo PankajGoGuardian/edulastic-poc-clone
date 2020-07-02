@@ -212,9 +212,19 @@ class ProfileBody extends React.Component {
   saveSettings = () => {
     const { updateDefaultSettings, user } = this.props;
     const { defaultGrades, defaultSubjects, autoShareGCAssignment, isPowerTeacher } = this.state;
+    const { role } = user;
+    const orgType =
+      role === roleuser.DISTRICT_ADMIN ? "district" : role === roleuser.SCHOOL_ADMIN ? "institution" : "teacher";
+    let orgId = user._id;
+    if (role === roleuser.DISTRICT_ADMIN) {
+      orgId = user.districtIds[0];
+    }
+    if (role === roleuser.SCHOOL_ADMIN) {
+      orgId = user.institutionIds[0];
+    }
     const settingsToUpdate = {
-      orgId: user._id,
-      orgType: "teacher",
+      orgId,
+      orgType,
       defaultGrades,
       defaultSubjects,
       autoShareGCAssignment,
@@ -483,10 +493,7 @@ class ProfileBody extends React.Component {
     ) {
       showPowerTools = true;
     }
-    const showDefaultSettings =
-      [roleuser.TEACHER, roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role) &&
-      !features.isPublisherAuthor &&
-      !features.isCurator;
+    const showDefaultSettings = [roleuser.TEACHER, roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role);
     return (
       <MainContentWrapper padding="30px" flag={flag}>
         <ProfileWrapper display="flex" boxShadow="none" minHeight="max-content">

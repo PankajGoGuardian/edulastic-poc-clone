@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState, useContext } from "react";
+import React, { Fragment, useMemo, useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -179,7 +179,7 @@ const OrderList = ({
         prefix="options2"
         readOnly
         items={answersToEdit.map(ite => options[ite.id])}
-        onSortEnd={handleCorrectSortEnd}
+        onSortEnd={handleCorrectSortEnd} // here
         useDragHandle
         columns={columns}
         styleType={styleType}
@@ -219,6 +219,18 @@ const OrderList = ({
     changePreviewTab();
     saveAnswer(newUserAnswer);
   };
+
+  /**
+   * On load initial answer should be set
+   * Orderlist can not be skipped if it has initial answers set
+   *
+   * Checking for changes in view=preview/edit and previewTab=clear/show/check
+   */
+  useEffect(() => {
+    if (isEmpty(_userAnswer) && view === PREVIEW) {
+      onSortPreviewEnd({ oldIndex: 0, newIndex: 0 }); // Setting initial answer set by the author
+    }
+  }, [view, previewTab]);
 
   if (hasAltAnswers) {
     const altAnswers = itemForPreview.validation.altResponses;

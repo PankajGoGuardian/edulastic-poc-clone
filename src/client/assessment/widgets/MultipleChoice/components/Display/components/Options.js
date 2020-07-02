@@ -51,28 +51,31 @@ const Options = ({
   }
 
   const getOption = (startIndex, lastIndex) => (
-    <FlexContainer
-      justifyContent="left"
-      style={{ marginBottom: styleType === "primary" || uiStyle.type === "block" ? "17px" : "0" }}
-    >
-      {mcqOptions.slice(startIndex, lastIndex).map((option, index) => (
-        <Option
-          maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
-          key={option.value}
-          index={uiStyle.orientation !== "vertical" ? startIndex + index : optionsIndexMap[option.value]}
-          uiStyle={uiStyle}
-          item={option}
-          validation={validation}
-          onChange={() => onChange(option.value)}
-          onRemove={() => onRemove(option.value)}
-          correct={evaluation}
-          styleType={styleType}
-          multipleResponses={multipleResponses}
-          fontSize={fontSize}
-          {...restProps}
-        />
-      ))}
-    </FlexContainer>
+    <div className="__prevent-page-break">
+      <FlexContainer
+        justifyContent="left"
+        style={{ marginBottom: styleType === "primary" || uiStyle.type === "block" ? "17px" : "0" }}
+        className="__prevent-page-break __print-space-reduce-options"
+      >
+        {mcqOptions.slice(startIndex, lastIndex).map((option, index) => (
+          <Option
+            maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
+            key={option.value}
+            index={uiStyle.orientation !== "vertical" ? startIndex + index : optionsIndexMap[option.value]}
+            uiStyle={uiStyle}
+            item={option}
+            validation={validation}
+            onChange={() => onChange(option.value)}
+            onRemove={() => onRemove(option.value)}
+            correct={evaluation}
+            styleType={styleType}
+            multipleResponses={multipleResponses}
+            fontSize={fontSize}
+            {...restProps}
+          />
+        ))}
+      </FlexContainer>
+    </div>
   );
 
   const renderOptionList = () => {

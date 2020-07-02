@@ -19,20 +19,27 @@ const QuestionOptions = ({
     borderRadius: "4px",
     padding: "10px"
   }
+
+  if (!options.length) {
+    return null;
+  }
+
   return (
-    <div style={{...style, display: "flex", flexWrap: "wrap"}}>
-      {options.map((option, i) => (
-        <div style={{display: "flex"}}>
-          <StyledOptionTitle>{getStemNumeration("lowercase", i)}</StyledOptionTitle>
-          <Radio.Group style={radioGroupStyle}>
-            {option.map(item => (
-              <Radio style={radioStyle} value={item}>
-                {item}
-              </Radio>
-))}
-          </Radio.Group>
-        </div>
-        ))}
+    <div className="__prevent-page-break">
+      <div style={{...style, display: "flex", flexWrap: "wrap"}} className="__print-question-option">
+        {options.map((option, i) => (
+          <div style={{display: "flex"}}>
+            <StyledOptionTitle>{getStemNumeration("lowercase", i)}</StyledOptionTitle>
+            <Radio.Group style={radioGroupStyle}>
+              {option.map(item => (
+                <Radio style={radioStyle} value={item}>
+                  {item}
+                </Radio>
+  ))}
+            </Radio.Group>
+          </div>
+          ))}
+      </div>
     </div>
   )
 };

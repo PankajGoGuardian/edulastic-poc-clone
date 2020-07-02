@@ -6,25 +6,19 @@ import styled from "styled-components";
 import { dashBorderColor } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
-const CorrectAnswersContainer = ({
-  title,
-  children,
-  imageStyle,
-  maxWidth,
-  className,
-  style = {},
-  minWidth
-}) => (
-  <Container
-    className={className}
-    maxWidth={maxWidth}
-    minWidth={minWidth}
-    imageStyle={imageStyle}
-    style={style}
-  >
-    <Subtitle>{title}</Subtitle>
-    {children}
-  </Container>
+const CorrectAnswersContainer = ({ title, children, imageStyle, maxWidth, className, style = {}, minWidth }) => (
+  <div className="__prevent-page-break">
+    <Container
+      className={`${className} __print_fit_content`}
+      maxWidth={maxWidth}
+      minWidth={minWidth}
+      imageStyle={imageStyle}
+      style={style}
+    >
+      <Subtitle>{title}</Subtitle>
+      {children}
+    </Container>
+  </div>
 );
 
 CorrectAnswersContainer.propTypes = {
@@ -61,8 +55,6 @@ const Container = styled.div`
         : null}
     ${({ imageStyle }) => imageStyle}
   }
-
-  break-inside: avoid;
   h3 {
     margin-bottom: 30px;
   }

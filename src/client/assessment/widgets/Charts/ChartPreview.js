@@ -199,7 +199,7 @@ const ChartPreview = ({
 
   return (
     <>
-      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+      <FlexContainer className="__print_fit_content" justifyContent="flex-start" alignItems="baseline" width="100%">
         <QuestionLabelWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
           {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}

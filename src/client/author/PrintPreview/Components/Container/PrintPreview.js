@@ -3,21 +3,11 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
 import queryString from "query-string";
-import * as moment from "moment";
 import { mobileWidthMax } from "@edulastic/colors";
 import StudentQuestionContainer from "../StudentQuestionContiner/StudentQuestionContainer";
 
-import {
-  PrintPreviewBack,
-  PrintPreviewContainer,
-  PagePrinterHeader,
-  TestInfo,
-  InfoItem,
-  StyledTitle,
-  Color
-} from "./styled";
+import { PrintPreviewBack, PrintPreviewContainer, StyledTitle, Color } from "./styled";
 
 // actions
 import { fetchPrintPreviewEssentialsAction } from "../../ducks";
@@ -31,12 +21,8 @@ import {
 } from "../../../ClassBoard/ducks";
 
 class PrintPreview extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
-    const { fetchPrintPreviewEssentialsAction, match, location } = this.props;
+    const { fetchPrintPreviewEssentialsAction: _fetchPrintPreviewEssentialsAction, match, location } = this.props;
     const { assignmentId, classId } = match.params;
     const selectedStudents = queryString.parse(location.search, { arrayFormat: "comma" });
 
@@ -47,20 +33,16 @@ class PrintPreview extends Component {
       _selectedStudents = selectedStudents.selectedStudents;
     }
 
-    fetchPrintPreviewEssentialsAction({ assignmentId, classId, selectedStudents: _selectedStudents });
+    _fetchPrintPreviewEssentialsAction({ assignmentId, classId, selectedStudents: _selectedStudents });
   }
 
   render() {
     const { testActivity, classResponse, classStudentResponse, additionalData } = this.props;
-    const testName = additionalData ? additionalData.testName : "";
     const { assignmentIdClassId } = this.props;
 
-    const nDueDate = additionalData ? additionalData.endDate : "";
-    const dueDate = moment(nDueDate).format("MMMM DD, YYYY | hh:mm A");
-
-    let renderClassStudentsResponse = [];
+    const renderClassStudentsResponse = [];
     if (classStudentResponse && Object.keys(classStudentResponse).length > 0) {
-      classStudentResponse.map(studentResponse => {
+      classStudentResponse.forEach(studentResponse => {
         const renderStudentResponse = (
           <StudentQuestionContainer
             testActivity={testActivity}
@@ -109,16 +91,12 @@ export default enhance(PrintPreview);
 
 /* eslint-disable react/require-default-props */
 PrintPreview.propTypes = {
-  history: PropTypes.object,
   match: PropTypes.object,
   classResponse: PropTypes.object,
   classStudentResponse: PropTypes.object,
   testActivity: PropTypes.array,
   additionalData: PropTypes.object,
-  loadClassStudentResponse: PropTypes.func,
-  creating: PropTypes.object,
-  assignmentIdClassId: PropTypes.object,
-  loadClassResponses: PropTypes.func
+  assignmentIdClassId: PropTypes.object
 };
 
 const QuestionContentArea = styled.div`
@@ -154,7 +132,6 @@ const QuestionContentArea = styled.div`
     }
     .fr-view img.fr-dii {
       display: block;
-      page-break-inside: avoid;
     }
     .math-formula-display {
       br {
@@ -197,9 +174,6 @@ const QuestionContentArea = styled.div`
           > div {
             height: auto !important;
             width: auto !important;
-            > div {
-              page-break-inside: avoid;
-            }
           }
           div {
             position: relative !important;

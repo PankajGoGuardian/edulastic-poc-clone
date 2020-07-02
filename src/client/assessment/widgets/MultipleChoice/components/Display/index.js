@@ -31,12 +31,25 @@ const Display = ({
       {!flowLayout && (
         <>
           <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start">
-            {showQuestionNumber && <QuestionNumberLabel fontSize={fontSize}>{qLabel}</QuestionNumberLabel>}
+            {showQuestionNumber && (
+              <QuestionNumberLabel fontSize={fontSize} className="__print-space-reduce-qlabel">
+                {qLabel}
+              </QuestionNumberLabel>
+            )}
             {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
           </FlexContainer>
 
-          <FlexContainer width="100%" flexDirection="column" alignItems="flex-start">
-            <StyledStimulus fontSize={fontSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <FlexContainer
+            width="100%"
+            className="__print_question-content-wrapper"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
+            <StyledStimulus
+              fontSize={fontSize}
+              dangerouslySetInnerHTML={{ __html: question }}
+              className="_print-space-reduce-stimulus"
+            />
             <Options
               view={view}
               smallSize={smallSize}

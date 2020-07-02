@@ -4,18 +4,28 @@ export const PrintPreviewBack = styled.div`
   width: 100%;
   background-color: #cccccc;
   display: block;
+
+  .__print-question-main-wrapper {
+    display: inline-table;
+    width: 100%;
+  }
+
   .__print-feedback-wrapper {
     width: 120px!important;
   }
-  .__print-question-wrapper-fixed-width {
-    width: 21cm !important;
+  .test-item-col {
+    height: auto!important;
+  }
+  .__print-item-fix-width {
+    width: 210mm!important;
+    overflow: auto!important;
   }
 `;
 
 export const PrintPreviewContainer = styled.div`
   padding: 0;
-  width: 25cm;
-  min-height: 29.7cm;
+  width: 250mm;
+  min-height: 297mm;
   margin: 0 auto;
   background-color: #fff;
   height: "";
@@ -25,10 +35,6 @@ export const PrintPreviewContainer = styled.div`
   * {
     font-variant: normal !important;
     -webkit-print-color-adjust: exact !important;
-  }
-
-  .sc-ellAub {
-    page-break-inside: avoid;
   }
 
   input[type="text"] {
@@ -41,7 +47,7 @@ export const PrintPreviewContainer = styled.div`
   .question-wrapper {
     width: calc(100% - 10px)!important;
     max-width: 100%!important;
-    padding: 35px 0;
+    padding: 10px 0;
   }
   .print-preview-score {
     width: 120px;
@@ -55,6 +61,13 @@ export const PrintPreviewContainer = styled.div`
   }
   .graph-wrapper, .test-item-preview {
     overflow: unset!important;
+  }
+  .__prevent-page-break.__print-time-spent {
+    margin: 0!important;
+    p {
+      padding: 0!important;
+      margin: 0!important;
+    }
   }
 `;
 

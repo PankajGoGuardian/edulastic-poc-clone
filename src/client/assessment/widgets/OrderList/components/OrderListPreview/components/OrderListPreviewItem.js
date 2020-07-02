@@ -39,28 +39,30 @@ export const PreviewItem = ({
   const { width } = measureText(question, style);
   const showPopover = style.maxWidth < width;
   return (
-    <Container
-      columns={columns}
-      id={`order-list-${cIndex}`}
-      style={style}
-      correct={correct}
-      isPrintPreview={isPrintPreview}
-    >
-      {correct === undefined && showDragHandle && (
-        <StyledDragHandle styleType={styleType} smallSize={smallSize}>
-          <DragHandle smallSize={smallSize} />
-        </StyledDragHandle>
-      )}
-      {(correct !== undefined || showAnswer) && (
-        <IndexBox smallSize={smallSize} correct={correct} showAnswer={showAnswer}>
-          {stemNumeration}
-        </IndexBox>
-      )}
+    <div className="__prevent-page-break">
+      <Container
+        columns={columns}
+        id={`order-list-${cIndex}`}
+        style={style}
+        correct={correct}
+        isPrintPreview={isPrintPreview}
+      >
+        {correct === undefined && showDragHandle && (
+          <StyledDragHandle styleType={styleType} smallSize={smallSize}>
+            <DragHandle smallSize={smallSize} />
+          </StyledDragHandle>
+        )}
+        {(correct !== undefined || showAnswer) && (
+          <IndexBox smallSize={smallSize} correct={correct} showAnswer={showAnswer}>
+            {stemNumeration}
+          </IndexBox>
+        )}
 
-      {showPopover ? <Popover content={content}>{content}</Popover> : content}
+        {showPopover ? <Popover content={content}>{content}</Popover> : content}
 
-      {correct !== undefined && <IconWrapper correct={correct} isPrintPreview={isPrintPreview} />}
-    </Container>
+        {correct !== undefined && <IconWrapper correct={correct} isPrintPreview={isPrintPreview} />}
+      </Container>
+    </div>
   );
 };
 

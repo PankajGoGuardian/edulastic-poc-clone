@@ -132,7 +132,7 @@ const ClozeMath = ({
             {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}</QuestionNumberLabel> : null}
             {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
           </QuestionLabelWrapper>
-          <QuestionContentWrapper>
+          <QuestionContentWrapper className="__question-content-wrapper">
             {view === PREVIEW && (
               <StyledPaperWrapper
                 isV1Multipart={isV1Multipart}

@@ -123,34 +123,12 @@ class StudentQuestions extends Component {
 
     // merge items belongs to same passage
     testItems = testItems.reduce((acc, item) => {
-      let isItemMatched = false;
-
       if (item.passageId && acc.length) {
-        let modifiedItems = acc.map(i => {
-          const cloneItem = { ...i };
-          if (cloneItem.passageId === item.passageId) {
-            // merge questions and resources
-            cloneItem.data.questions = get(cloneItem, "data.questions", []).concat(get(item, "data.questions", []));
-            cloneItem.data.resources = get(cloneItem, "data.resources", []).concat(get(item, "data.resources", []));
-
-            // merge widgets of type 'question'
-            cloneItem.rows = cloneItem.rows.map(row => {
-              const cloneRow = { ...row };
-              const isWidgetTypeRow = get(cloneRow, "widgets.[0].widgetType", "") === "question";
-              if (isWidgetTypeRow) {
-                const mergableItemRow = item.rows.filter(it => get(it, "widgets.[0].widgetType", "") === "question");
-                cloneRow.widgets = [...cloneRow.widgets, ...get(mergableItemRow, "[0].widgets", [])];
-              }
-              return cloneRow;
-            });
-            isItemMatched = true;
+        acc.forEach(i => {
+          if (i.passageId === item.passageId) {
+            item.passageId = null;
           }
-          return cloneItem;
         });
-        if (!isItemMatched) {
-          modifiedItems = [...modifiedItems, item];
-        }
-        return [...modifiedItems];
       }
       return [...acc, item];
     }, []);
@@ -171,8 +149,8 @@ class StudentQuestions extends Component {
       return acc;
     }, {});
 
-    const testItemsRender = testItems.map(item => (
-      <Preview item={item} passages={passages} evaluation={evaluationStatus} />
+    const testItemsRender = testItems.map((item, i) => (
+      <div className={i !== 0 && "__print-question-main-wrapper"}><Preview item={item} passages={passages} evaluation={evaluationStatus} /></div>
     ));
     return <QuestionDiv>{testItemsRender}</QuestionDiv>;
   }

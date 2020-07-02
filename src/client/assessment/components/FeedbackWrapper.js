@@ -67,6 +67,10 @@ const FeedbackWrapper = ({
   const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
   const timeSpent = get(data, "activity.timeSpent", false);
 
+  if (isPrintPreview && disabled) {
+    return null;
+  }
+
   return (
     <StyledFeedbackWrapper
       style={{
@@ -113,16 +117,18 @@ const FeedbackWrapper = ({
           style={{ width: isStudentReport ? "60%" : "100%" }}
         />
       )}
-      {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} />}
-      {isPrintPreview && timeSpent && (
-        <TimeSpentWrapper style={{ justifyContent: "center" }}>
-          <FontAwesomeIcon icon={faClock} aria-hidden="true" />
-          {round(timeSpent / 1000, 1)}s
-        </TimeSpentWrapper>
+      {showFeedback && isPrintPreview && !disabled && <PrintPreviewScore disabled={disabled} data={data} />}
+      {isPrintPreview && timeSpent && showFeedback && !disabled && (
+        <div className="__prevent-page-break __print-time-spent">
+          <TimeSpentWrapper style={{ justifyContent: "center" }}>
+            <FontAwesomeIcon icon={faClock} aria-hidden="true" />
+            {round(timeSpent / 1000, 1)}s
+          </TimeSpentWrapper>
+        </div>
       )}
-      {showFeedback && isPrintPreview && (
+      {showFeedback && isPrintPreview && data?.activity?.feedback?.text && (
         <div data-cy="teacherFeedBack" className="print-preview-feedback">
-          {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}
+          <div>Teacher Feedback: {data.activity.feedback.text}</div>
         </div>
       )}
     </StyledFeedbackWrapper>

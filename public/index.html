@@ -15,6 +15,129 @@
       rel="stylesheet"
     />
     <title>Edulastic | v2</title>
+    <style>
+      @media all {
+        .__break-page {
+          display: none;
+        }
+      }
+      @media print {
+        @page {
+          padding: 1mm;
+        }
+        html,
+        body {
+          line-height: 1.3;
+          width: 250mm;
+          height: 297mm;
+        }
+
+        * {
+          overflow: initial !important;
+          transition: none;
+          user-select: none;
+        }
+
+        .__break-page {
+          display: block;
+          page-break-before: always;
+        }
+
+        .page {
+          margin: 0;
+          border: initial;
+          border-radius: initial;
+          width: initial;
+          min-height: initial;
+          box-shadow: initial;
+          background: initial;
+          page-break-after: always;
+        }
+
+        .__hide-on-print {
+          display: none !important;
+        }
+
+        script {
+          display: none;
+        }
+
+        .__no-flex-on-print {
+          display: block !important;
+        }
+
+        /** Use this classname to not break on print **/
+        .__prevent-page-break,
+        img {
+          display: block;
+          width: 100%;
+          position: relative !important;
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+          page-break-before: auto;
+          page-break-after: auto;
+          -webkit-region-break-inside: avoid;
+          white-space: normal;
+          margin: 4px 0 4px 0; /* to keep the page break from cutting too close to the text in the div */
+        }
+
+        p {
+          display: block;
+          width: 100%;
+          page-break-inside: auto;
+          -webkit-region-break-inside: avoid;
+          page-break-before: auto;
+          page-break-after: auto;
+          white-space: normal;
+          margin: 4px 0 4px 0; /* to keep the page break from cutting too close to the text in the div */
+        }
+        /* .__prevent-page-break * {
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+        } */
+
+        svg,
+        svg > * {
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+          page-break-before: auto;
+          page-break-after: auto;
+          -webkit-region-break-inside: avoid;
+          white-space: normal;
+          margin: 4px 0 4px 0; /* to keep the page break from cutting too close to the text in the div */
+        }
+
+        table tbody tr td:before,
+        table tbody tr td:after {
+          content: "";
+          height: 4px;
+          display: block;
+        }
+
+        table {
+          page-break-inside: auto;
+          border-collapse: collapse;
+        }
+
+        tr,
+        td,
+        thead,
+        tfoot {
+          position: relative !important;
+          break-inside: avoid !important;
+          white-space: nowrap;
+          page-break-inside: avoid !important;
+          -webkit-region-break-inside: avoid;
+          page-break-before: auto;
+          page-break-after: auto;
+          margin: 4px 0 4px 0; /* to keep the page break from cutting too close to the text in the div */
+        }
+
+        .__print_fit_content {
+          width: 100% !important;
+        }
+      }
+    </style>
   </head>
 
   <body id="body">

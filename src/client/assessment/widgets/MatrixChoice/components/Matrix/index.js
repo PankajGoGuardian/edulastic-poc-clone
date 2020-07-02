@@ -35,7 +35,7 @@ const Matrix = props => {
     let checked = false;
     let correct = false;
     const rowIndex = data.index;
-    const responseId = responseIds[rowIndex][columnIndex];
+    const responseId = responseIds?.[rowIndex]?.[columnIndex];
 
     if (evaluation) {
       correct = evaluation[responseId] ? true : "incorrect";

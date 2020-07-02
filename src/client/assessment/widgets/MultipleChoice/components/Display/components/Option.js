@@ -151,7 +151,7 @@ const Option = props => {
   );
 
   const renderCheckbox = () => (
-    <StyledOptionsContainer uiStyleType={uiStyle.type} isSelected={isSelected} multipleResponses={multipleResponses}>
+    <StyledOptionsContainer uiStyleType={uiStyle.type} isSelected={isSelected} multipleResponses={multipleResponses} className="__print-space-reduce-option">
       {uiStyle.type !== "radioBelow" && container}
       <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} uiStyleType={uiStyle.type}>
         <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />

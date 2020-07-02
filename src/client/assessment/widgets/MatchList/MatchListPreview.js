@@ -406,49 +406,55 @@ const MatchListPreview = ({
           <QuestionTitleWrapper>
             {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
           </QuestionTitleWrapper>
-          <div data-cy="previewWrapper" style={wrapperStyle} className="match-list-preview-wrapper">
+          <div data-cy="previewWrapper" style={wrapperStyle} className="match-list-preview-wrapper __no-flex-on-print">
             <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
               {list.map((ite, i) => (
-                <AnswerItem
-                  key={i}
-                  style={styles.listItemContainerStyle}
-                  alignItems="center"
-                  childMarginRight={smallSize ? 13 : 45}
-                >
-                  <ListItem smallSize={smallSize} style={stemColStyle}>
-                    <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite.label }} />
-                  </ListItem>
-                  <Separator smallSize={smallSize} />
-                  <DropContainer
-                    noBorder={!!ans[list[i].value]}
-                    borderNone={showEvaluate && !!ans[list[i].value]}
-                    index={i}
-                    drop={drop}
-                    flag="ans"
-                    style={choiceColStyle}
+                <div className="__prevent-page-break" style={{width: "100%"}}>
+                  <AnswerItem
+                    key={i}
+                    style={styles.listItemContainerStyle}
+                    alignItems="center"
+                    childMarginRight={smallSize ? 13 : 45}
                   >
-                    <DragItem
-                      preview={showEvaluate}
-                      correct={evaluation[list[i].value]}
+                    <ListItem smallSize={smallSize} style={stemColStyle}>
+                      <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite.label }} />
+                    </ListItem>
+                    <Separator smallSize={smallSize} />
+                    <DropContainer
+                      noBorder={!!ans[list[i].value]}
+                      borderNone={showEvaluate && !!ans[list[i].value]}
+                      index={i}
+                      drop={drop}
                       flag="ans"
-                      renderIndex={i}
-                      displayIndex={getStemNumeration(stemNumeration, i)}
-                      onDrop={onDrop}
-                      item={(ans[list[i].value] && allItemsById[ans[list[i].value]]) || null}
-                      width="100%"
-                      centerContent
-                      getStyles={getStyles}
-                      disableResponse={disableResponse || !isAnswerModifiable}
-                      showAnswer={previewTab === SHOW}
-                      changePreviewTab={changePreviewTab}
-                    />
-                  </DropContainer>
-                </AnswerItem>
+                      style={choiceColStyle}
+                    >
+                      <DragItem
+                        preview={showEvaluate}
+                        correct={evaluation[list[i].value]}
+                        flag="ans"
+                        renderIndex={i}
+                        displayIndex={getStemNumeration(stemNumeration, i)}
+                        onDrop={onDrop}
+                        item={(ans[list[i].value] && allItemsById[ans[list[i].value]]) || null}
+                        width="100%"
+                        centerContent
+                        getStyles={getStyles}
+                        disableResponse={disableResponse || !isAnswerModifiable}
+                        showAnswer={previewTab === SHOW}
+                        changePreviewTab={changePreviewTab}
+                      />
+                    </DropContainer>
+                  </AnswerItem>
+                </div>
               ))}
             </FlexContainer>
 
             {!disableResponse && (
-              <StyledCorrectAnswersContainer style={choicesBoxStyle} title={t("component.matchList.dragItemsTitle")}>
+              <StyledCorrectAnswersContainer
+                className="__prevent-page-break"
+                style={choicesBoxStyle}
+                title={t("component.matchList.dragItemsTitle")}
+              >
                 <DropContainer drop={drop} flag="dragItems" style={choicesBoxDropContainerStyle} noBorder>
                   <FlexContainer alignItems="stretch" justifyContent="center" flexWrap="wrap" width="100%">
                     {groupPossibleResponses ? (
@@ -555,6 +561,7 @@ const MatchListPreview = ({
           {previewTab === SHOW || isReviewTab ? (
             <Fragment>
               <StyledCorrectAnswersContainer
+                className="__prevent-page-break"
                 title={t("component.matchList.correctAnswers")}
                 style={correctAnswerBoxStyle}
               >
@@ -581,6 +588,7 @@ const MatchListPreview = ({
 
               {hasAlternateAnswers && (
                 <StyledCorrectAnswersContainer
+                  className="__prevent-page-break"
                   title={t("component.matchList.alternateAnswers")}
                   style={correctAnswerBoxStyle}
                 >

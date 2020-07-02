@@ -713,7 +713,7 @@ class GraphContainer extends PureComponent {
               />
             </StyledToolsContainer>
           )}
-          <JSXBoxWithDrawingObjectsWrapper>
+          <JSXBoxWithDrawingObjectsWrapper className="__prevent-page-break">
             {this.drawingObjectsAreVisible && !disableResponse && (
               <DrawingObjects
                 selectDrawingObject={this.selectDrawingObject}

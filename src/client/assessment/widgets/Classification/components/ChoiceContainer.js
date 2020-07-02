@@ -44,7 +44,6 @@ export default ChoiceContainer;
 
 const Container = styled.div`
   padding: 22px 12px;
-  break-inside: avoid;
   min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : "140px")};
   background-color: ${dashBorderColor};
 

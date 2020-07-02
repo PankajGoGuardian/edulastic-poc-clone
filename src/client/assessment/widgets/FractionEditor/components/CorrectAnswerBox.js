@@ -20,6 +20,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
     return obj;
   }, {});
   return (
+    <div className="__prevent-page-break">
     <StyledCorrectAnswerbox width="max-content">
       <CorrectAnswerTitle>Correct Answer</CorrectAnswerTitle>
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
@@ -55,6 +56,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
           )}
       </FlexContainer>
     </StyledCorrectAnswerbox>
+    </div>
   );
 };
 

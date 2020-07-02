@@ -124,6 +124,7 @@ const BarChart = ({
   const targetRef = useDisableDragScroll();
 
   return (
+    <div className="__prevent-page-break">
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width + margin.left + margin.right}
@@ -176,6 +177,7 @@ const BarChart = ({
         )}
       </g>
     </svg>
+    </div>
   );
 };
 

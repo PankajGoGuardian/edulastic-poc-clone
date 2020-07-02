@@ -481,6 +481,7 @@ class Graph extends Component {
                 </QuestionTitleWrapper>
                 {item.canvas && item.uiStyle && (
                   <GraphDisplay
+                    className="__prevent-page-break"
                     disableResponse={disableResponse}
                     graphData={item}
                     view={view}

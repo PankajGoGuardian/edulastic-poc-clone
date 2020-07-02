@@ -64,32 +64,34 @@ const DragItem = ({
   return (
     item &&
     connectDragSource(
-      <div
-        className="drag-drop-item-match-list"
-        data-cy={`drag-drop-item-${renderIndex}`}
-        style={{
-          ...getStyles({ isDragging, flag, _preview: preview, correct, width }),
-          background: isPrintPreview && white
-        }}
-      >
-        {isMobileDevice() && (
-          <DragPreview isDragging={isDragging} {...restProps}>
-            {itemView}
-          </DragPreview>
-        )}
+      <div className="__prevent-page-break">
+        <div
+          className="drag-drop-item-match-list"
+          data-cy={`drag-drop-item-${renderIndex}`}
+          style={{
+            ...getStyles({ isDragging, flag, _preview: preview, correct, width }),
+            background: isPrintPreview && white
+          }}
+        >
+          {isMobileDevice() && (
+            <DragPreview isDragging={isDragging} {...restProps}>
+              {itemView}
+            </DragPreview>
+          )}
 
-        {correct !== undefined && preview && showAnswer && (
-          <Index preview={preview} correct={correct}>
-            {displayIndex}
-          </Index>
-        )}
-        {itemView}
-        {correct !== undefined && (
-          <div style={{ marginRight: 15, opacity: preview ? "1" : "0" }}>
-            {correct && <IconCheck />}
-            {!correct && <IconClose />}
-          </div>
-        )}
+          {correct !== undefined && preview && showAnswer && (
+            <Index preview={preview} correct={correct}>
+              {displayIndex}
+            </Index>
+          )}
+          {itemView}
+          {correct !== undefined && (
+            <div style={{ marginRight: 15, opacity: preview ? "1" : "0" }}>
+              {correct && <IconCheck />}
+              {!correct && <IconClose />}
+            </div>
+          )}
+        </div>
       </div>
     )
   );

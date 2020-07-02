@@ -402,13 +402,14 @@ class NumberLinePlotContainer extends PureComponent {
         data-cy="numberline-plot-container"
         ref={this.numberLinePlotRef}
         style={{ overflowX: "hidden", width: "100%" }}
+        className="__prevent-page-break"
       >
         {!disableResponse && !isPrintPreview && (
           <Tools tools={selectedControl} controls={controls} setTool={this.onSelectControl} justifyContent="flex-end" />
         )}
         <GraphWrapper>
           <div style={{ position: "relative" }}>
-            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} className="__prevent-page-break" />
             {view === EDIT && !disableResponse && (
               <Fragment>
                 <GraphEditTools

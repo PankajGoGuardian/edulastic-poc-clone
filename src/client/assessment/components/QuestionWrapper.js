@@ -133,6 +133,47 @@ const QuestionContainer = styled.div`
     width: 100%;
     padding: 0 35px;
   }
+
+  @media print {
+    .__print_question-content-wrapper {
+      max-width: calc(100% - 55px);
+      display: block !important;
+      position: relative !important;
+    }
+    .question-wrapper {
+      padding: 5px;
+    }
+    .__print-question-option {
+      margin-top: 20px !important;
+    }
+    .__print-question-main-wrapper {
+      display: inline-table;
+      width: 100%;
+    }
+    .__print-space-reduce {
+      &-qlabel {
+        margin-right: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      &-option {
+        align-items: flex-start !important;
+      }
+      &-options {
+        margin-bottom: 0px !important;
+        label {
+          padding: 0!important;
+        }
+      }
+      &-stimulus {
+        margin-bottom: 5px !important;
+         & p {
+           br {
+             display: none!important;
+           }
+         }
+      }
+    }
+  }
 `;
 
 export const TimeSpentWrapper = styled.p`
@@ -438,121 +479,123 @@ class QuestionWrapper extends Component {
           ) : (
             ""
           )}
-          <QuestionContainer
-            className={`fr-view question-container question-container-id-${data.id}`}
-            disabled={disabled}
-            noPadding={noPadding}
-            isFlex
-            data-cy="question-container"
-            style={{ width: "100%", height: calculatedHeight || (fullHeight ? "100%" : null) }}
-          >
-            {view === EDIT && showQuestionMenu && (
-              <QuestionMenuWrapper>
-                <QuestionMenu
-                  activeTab={activeTab}
-                  main={main}
-                  advanced={advanced}
-                  advancedAreOpen={openAdvancedOptions || advancedAreOpen}
-                  handleAdvancedOpen={handleAdvancedOpen}
-                  scrollContainer={scrollContainer}
-                  questionTitle={data?.title || ""}
-                  hideAdvancedToggleOption={openAdvancedOptions}
-                />
-              </QuestionMenuWrapper>
-            )}
-            <PaperWrapper
-              className="question-wrapper"
+          <div className="__print-question-main-wrapper">
+            <QuestionContainer
+              className={`fr-view question-container question-container-id-${data.id}`}
               disabled={disabled}
-              isV1Multipart={isV1Multipart}
-              isStudentReport={isStudentReport}
-              borderRadius={isLCBView ? "10px" : restProps.borderRadius}
-              style={{
-                width:
-                  !isPrintPreview &&
-                  `${view === EDIT && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
-                maxWidth: isPrintPreview && "calc(100% - 10px)",
-                display: "flex",
-                boxShadow: "none",
-                paddingRight: layoutType === COMPACT ? "100px" : null,
-                border: isLCBView && !restProps.showScratchpadByDefault ? "1px solid #DADAE4" : null
-              }}
-              flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
+              noPadding={noPadding}
+              isFlex
+              data-cy="question-container"
+              style={{ width: "100%", height: calculatedHeight || (fullHeight ? "100%" : null) }}
             >
-              <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
-                {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
-                <Question
-                  {...restProps}
-                  setQuestionData={setQuestionData}
-                  item={data}
-                  view={view}
-                  evaluation={evaluation}
-                  changePreviewTab={changePreviewTab}
-                  qIndex={qIndex}
-                  advancedLink={advancedLink}
-                  advancedAreOpen={openAdvancedOptions || advancedAreOpen}
-                  cleanSections={this.cleanSections}
-                  fillSections={this.fillSections}
-                  showQuestionNumber={!isPassageOrVideoType && data.qLabel}
-                  flowLayout={flowLayout}
-                  disableResponse={disableResponse}
-                  studentReport={studentReportFeedbackVisible}
-                  isPrintPreview={isPrintPreview}
-                  {...userAnswerProps}
-                  page={page}
-                  setPage={this.setPage}
-                />
-                {!restProps.viewAtStudentRes && showFeedback && !isPrintPreview && (
-                  <>
-                    <TimeSpentWrapper className={isStudentReport ? "student-report" : ""}>
-                      {!!showStudentWork && (
-                        <ShowUserWork
-                          style={{ marginRight: "1rem" }}
-                          onClickHandler={() => {
-                            // load the data from server and then show
-                            loadScratchPad({
-                              testActivityId: data.activity.testActivityId,
-                              testItemId: data.activity.testItemId,
-                              qActId: data.activity.qActId || data.activity._id,
-                              callback: () => showStudentWork()
-                            });
-                          }}
-                        >
-                          Show student work
-                        </ShowUserWork>
-                      )}
-                      {timeSpent && (
-                        <>
-                          <IconClockCircularOutline />
-                          {round(timeSpent / 1000, 1)}s
-                        </>
-                      )}
-                    </TimeSpentWrapper>
-                  </>
-                )}
-                {rubricDetails && studentReportFeedbackVisible && (
-                  <RubricTableWrapper>
-                    <span>Graded Rubric</span>
-                    <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
-                  </RubricTableWrapper>
-                )}
-                {view === "preview" && !isPrintPreview && (
-                  <Hints
-                    question={data}
-                    enableMagnifier={enableMagnifier}
-                    saveHintUsage={saveHintUsage}
-                    isStudent={userRole === "student"}
-                    itemIndex={itemIndex}
-                    isLCBView={isLCBView}
-                    isExpressGrader={isExpressGrader}
-                    isStudentReport={isStudentReport}
+              {view === EDIT && showQuestionMenu && (
+                <QuestionMenuWrapper>
+                  <QuestionMenu
+                    activeTab={activeTab}
+                    main={main}
+                    advanced={advanced}
+                    advancedAreOpen={openAdvancedOptions || advancedAreOpen}
+                    handleAdvancedOpen={handleAdvancedOpen}
+                    scrollContainer={scrollContainer}
+                    questionTitle={data?.title || ""}
+                    hideAdvancedToggleOption={openAdvancedOptions}
                   />
-                )}
-                {(isGrade || isLCBView || isExpressGrader) && (
-                  <Explanation isStudentReport={isStudentReport} question={data} isGrade={isGrade} />
-                )}
-              </StyledFlexContainer>
-            </PaperWrapper>
-          </QuestionContainer>
+                </QuestionMenuWrapper>
+              )}
+              <PaperWrapper
+                className="question-wrapper"
+                disabled={disabled}
+                isV1Multipart={isV1Multipart}
+                isStudentReport={isStudentReport}
+                borderRadius={isLCBView ? "10px" : restProps.borderRadius}
+                style={{
+                  width:
+                    !isPrintPreview &&
+                    `${view === EDIT && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
+                  maxWidth: isPrintPreview && "calc(100% - 10px)",
+                  display: "flex",
+                  boxShadow: "none",
+                  paddingRight: layoutType === COMPACT ? "100px" : null,
+                  border: isLCBView && !restProps.showScratchpadByDefault ? "1px solid #DADAE4" : null
+                }}
+                flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
+              >
+                <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
+                  {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
+                  <Question
+                    {...restProps}
+                    setQuestionData={setQuestionData}
+                    item={data}
+                    view={view}
+                    evaluation={evaluation}
+                    changePreviewTab={changePreviewTab}
+                    qIndex={qIndex}
+                    advancedLink={advancedLink}
+                    advancedAreOpen={openAdvancedOptions || advancedAreOpen}
+                    cleanSections={this.cleanSections}
+                    fillSections={this.fillSections}
+                    showQuestionNumber={!isPassageOrVideoType && data.qLabel}
+                    flowLayout={flowLayout}
+                    disableResponse={disableResponse}
+                    studentReport={studentReportFeedbackVisible}
+                    isPrintPreview={isPrintPreview}
+                    {...userAnswerProps}
+                    page={page}
+                    setPage={this.setPage}
+                  />
+                  {!restProps.viewAtStudentRes && showFeedback && !isPrintPreview && (
+                    <>
+                      <TimeSpentWrapper className={isStudentReport ? "student-report" : ""}>
+                        {!!showStudentWork && (
+                          <ShowUserWork
+                            style={{ marginRight: "1rem" }}
+                            onClickHandler={() => {
+                              // load the data from server and then show
+                              loadScratchPad({
+                                testActivityId: data.activity.testActivityId,
+                                testItemId: data.activity.testItemId,
+                                qActId: data.activity.qActId || data.activity._id,
+                                callback: () => showStudentWork()
+                              });
+                            }}
+                          >
+                            Show student work
+                          </ShowUserWork>
+                        )}
+                        {timeSpent && (
+                          <>
+                            <IconClockCircularOutline />
+                            {round(timeSpent / 1000, 1)}s
+                          </>
+                        )}
+                      </TimeSpentWrapper>
+                    </>
+                  )}
+                  {rubricDetails && studentReportFeedbackVisible && (
+                    <RubricTableWrapper>
+                      <span>Graded Rubric</span>
+                      <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
+                    </RubricTableWrapper>
+                  )}
+                  {view === "preview" && !isPrintPreview && (
+                    <Hints
+                      question={data}
+                      enableMagnifier={enableMagnifier}
+                      saveHintUsage={saveHintUsage}
+                      isStudent={userRole === "student"}
+                      itemIndex={itemIndex}
+                      isLCBView={isLCBView}
+                      isExpressGrader={isExpressGrader}
+                      isStudentReport={isStudentReport}
+                    />
+                  )}
+                  {(isGrade || isLCBView || isExpressGrader) && (
+                    <Explanation isStudentReport={isStudentReport} question={data} isGrade={isGrade} />
+                  )}
+                </StyledFlexContainer>
+              </PaperWrapper>
+            </QuestionContainer>
+          </div>
         </>
       </ThemeProvider>
     );

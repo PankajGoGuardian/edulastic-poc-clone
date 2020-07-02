@@ -574,6 +574,7 @@ class PlacementContainer extends PureComponent {
               <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
             </StyledToolsContainer>
           )}
+          <div className="__prevent-page-break">
           <JSXBoxWithDropValues className={dragDropBoundsClassName}>
             {!disableResponse && (
               <DragDropValues
@@ -612,6 +613,7 @@ class PlacementContainer extends PureComponent {
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
             </JSXBoxWrapper>
           </JSXBoxWithDropValues>
+          </div>
         </GraphWrapper>
       </div>
     );

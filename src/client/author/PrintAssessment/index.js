@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -48,6 +48,7 @@ function useTestFetch(testId, type, filterQuestions) {
 }
 
 const PrintAssessment = ({ match, userRole, features, location }) => {
+  const containerRef = useRef(null);
   const query = queryString.parse(location.search);
   const { type, qs } = query;
   const filterQuestions = type === "custom" ? formatQuestionLists(qs) : [];
@@ -64,7 +65,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
       test?.testContentVisibility === testContentVisibilityOptions.GRADING);
 
   return (
-    <PrintAssessmentContainer>
+    <PrintAssessmentContainer className="page" ref={containerRef}>
       <div style={{ padding: "0 20px" }}>
         <StyledTitle>
           <b>
@@ -85,7 +86,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
           {test.questions.map((question, index) => {
             const questionHeight = question.type == "clozeImageDropDown" ? { minHeight: "500px" } : {};
             return (
-              <div style={index !== 0 ? { pageBreakInside: "avoid", ...questionHeight } : questionHeight}>
+              <div style={questionHeight}>
                 <QuestionWrapper
                   view="preview"
                   type={question.type}
@@ -122,7 +123,6 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                       );
                     })}
                   </div>
-                  <hr />
                 </AnswerContainer>
               ))}
             </StyledAnswerWrapper>
@@ -155,10 +155,11 @@ const enhance = compose(
 export default enhance(PrintAssessment);
 
 const PrintAssessmentContainer = styled.div`
-  width: 25cm;
+  width: 250mm;
+  min-height: 297mm;
+  padding: 1mm;
   margin: auto;
   background-color: white;
-  pointer-events: none;
   * {
     -webkit-print-color-adjust: exact !important; /* Chrome, Safari */
     color-adjust: exact !important; /*Firefox*/
@@ -173,7 +174,6 @@ const PrintAssessmentContainer = styled.div`
 
   .matchlist-wrapper img {
     display: block;
-    page-break-inside: avoid;
   }
   .question-wrapper {
     max-width: 100% !important;
@@ -192,7 +192,9 @@ const PrintAssessmentContainer = styled.div`
   }
   .multiple-choice-wrapper {
     .multiplechoice-optionlist {
-      div,
+      > div {
+        margin-bottom: 5px !important;
+      }
       label {
         margin-bottom: 0px !important;
       }
@@ -214,9 +216,6 @@ const PrintAssessmentContainer = styled.div`
         > div {
           height: auto !important;
           width: auto !important;
-          > div {
-            page-break-inside: avoid;
-          }
         }
         div {
           position: relative !important;
@@ -229,6 +228,10 @@ const PrintAssessmentContainer = styled.div`
         }
       }
     }
+  }
+  .__print-question-main-wrapper {
+    display: inline-table;
+    width: 100%;
   }
   @page {
     margin: 10px;

@@ -1,5 +1,5 @@
 import React from "react";
-import { mobileWidth, mobileWidthMax, incorrect, yellow1, dropZoneTitleColor } from "@edulastic/colors";
+import { mobileWidth, mobileWidthMax, incorrect, yellow1, lightGrey9 } from "@edulastic/colors";
 import styled from "styled-components";
 
 const green = "#5eb500";
@@ -20,7 +20,7 @@ const Legends = () => (
         <LegendLabel>PARTIALLY CORRECT</LegendLabel>
       </LegendItem>
       <LegendItem>
-        <LegendIcon color={dropZoneTitleColor} />
+        <LegendIcon color={lightGrey9} />
         <LegendLabel>SKIPPED</LegendLabel>
       </LegendItem>
       <LegendItem>

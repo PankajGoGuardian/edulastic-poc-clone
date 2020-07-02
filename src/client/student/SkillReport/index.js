@@ -64,7 +64,8 @@ const SkillReportContainer = ({
         requestFilters: {
           ...settings.requestFilters,
           termId: getTermId(userClasses, classId || fallbackClassId),
-          groupIds: [classId]
+          // if you need to pass multiple ids then pass it as comma separated
+          groupIds: classId
         }
       });
     }
@@ -78,13 +79,15 @@ const SkillReportContainer = ({
     // set groupId for student
     if (classId && userRole === "student") {
       Object.assign(q, {
-        groupIds: [classId]
+        // if you need to pass multiple ids then pass it as comma separated
+        groupIds: classId
       });
     } else if (!classId && userRole === "student" && (activeClasses || []).length) {
       const firstActiveClassId = activeClasses?.[0]?._id;
       if (firstActiveClassId) {
         Object.assign(q, {
-          groupIds: [firstActiveClassId]
+          // if you need to pass multiple ids then pass it as comma separated
+          groupIds: firstActiveClassId
         });
       }
     }

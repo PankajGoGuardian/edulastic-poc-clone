@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CreateCardBox, CreateClassDiv, SyncClassDiv } from "./styled";
+import { EduButton } from "@edulastic/common";
 import GoogleLogin from "react-google-login";
 import { IconPlusCircle, IconGoogleClassroom, IconClever } from "@edulastic/icons";
 import styled from "styled-components";
@@ -22,14 +23,16 @@ const CreateClassPage = ({
     console.log("error", err);
   };
 
+  const CreateNewClass = () => {
+    history.push('/author/manageClass/createClass')
+  }
+
   return (
     <CreateCardBox>
-      <StyledLink to={"/author/manageClass/createClass"}>
-        <CreateClassDiv>
-          <IconPlusCircle width={20} height={20} />
-          <p>Create new class</p>
-        </CreateClassDiv>
-      </StyledLink>
+      <EduButton style={{width:"207px"}} isBlue onClick={CreateNewClass}>
+        <IconPlusCircle width={20} height={20} />
+        <p>Create new class</p>
+      </EduButton>
       {allowGoogleLogin !== false && (
         <GoogleLogin
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
@@ -63,10 +66,6 @@ const CreateClassPage = ({
 };
 export default CreateClassPage;
 
-const StyledLink = styled(Link)`
-  width: 207px;
-  height: 40px;
-`;
 const StyledP = styled.p`
   color: #9196a2;
 `;

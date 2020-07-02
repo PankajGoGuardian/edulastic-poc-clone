@@ -8,7 +8,7 @@ import { Popover } from "antd";
 
 import { red, white, themeColor } from "@edulastic/colors";
 import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
-import { IconClockDashboard, IconHangouts } from "@edulastic/icons";
+import { IconClockDashboard, IconHangouts ,IconManage } from "@edulastic/icons";
 
 import { slice } from "../../../Subscription/ducks";
 // TODO: Change to SVG
@@ -54,8 +54,12 @@ const HeaderSection = ({
       <FlexContainer>
         <StyledEduButton isBlue data-cy="launch-google-meet" onClick={launchHangout} isGhost>
           <IconHangouts height={21} width={19} />
-          Launch Google Meet
         </StyledEduButton>
+        <Link to="/author/manageClass">
+          <EduButton isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
+            <IconManage />
+          </EduButton>
+        </Link>
         {!premium && (
           <PopoverWrapper>
             <Popover
@@ -66,7 +70,7 @@ const HeaderSection = ({
               onClick={() => setvisible(true)}
               visible={visible}
             >
-              <EduButton style={{ marginLeft: "5px" }} btnType="primary" isGhost data-cy="manageClass">
+              <EduButton isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
                 <i
                   className={isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"}
                   aria-hidden="true"
@@ -80,12 +84,6 @@ const HeaderSection = ({
             </Popover>
           </PopoverWrapper>
         )}
-        <Link to="/author/manageClass">
-          <EduButton isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
-            <IconPlus />
-            MANAGE CLASS
-          </EduButton>
-        </Link>
       </FlexContainer>
     </MainHeader>
   );

@@ -4,7 +4,7 @@ import {
   mediumDesktopExactWidth,
   greyThemeLighter,
   greyThemeDark2,
-  themeColor,
+  themeColorBlue,
   greyThemeLight,
   white
 } from "@edulastic/colors";
@@ -42,11 +42,14 @@ export const RadioStyle = styled(Radio)`
       }
       &.ant-radio-checked {
         &:after {
-          border-color: ${themeColor};
+          border-color: ${themeColorBlue};
         }
         .ant-radio-inner {
-          border-color: ${themeColor};
+          border-color: ${themeColorBlue};
           background: ${white};
+          &:after {
+            background-color: ${themeColorBlue};
+          }
         }
       }
       &.ant-radio-disabled {

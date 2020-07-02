@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { IconSettings, IconEye, IconCheck, IconClear } from "@edulastic/icons";
-import { darkGrey, themeColor } from "@edulastic/colors";
+import { darkGrey, themeColorBlue } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes, EduButton } from "@edulastic/common";
 import { connect } from "react-redux";
@@ -57,8 +57,8 @@ class ButtonAction extends Component {
           <PreviewBar>
             {showSettingsButton && (
               <HeaderActionButton htmlType="button" onClick={onShowSettings}>
-                <EduButton isGhost IconBtn>
-                  <IconSettings color={themeColor} width={20} height={20} />
+                <EduButton title="Layout" isGhost IconBtn isBlue>
+                  <IconSettings color={themeColorBlue} width={20} height={20} />
                 </EduButton>
               </HeaderActionButton>
             )}

@@ -4,7 +4,7 @@ import {
   mediumDesktopExactWidth,
   greyThemeDark2,
   greyThemeLighter,
-  themeColor,
+  themeColorBlue,
   greyThemeLight
 } from "@edulastic/colors";
 import { Checkbox } from "antd";
@@ -34,11 +34,11 @@ export const CheckboxStyle = styled(Checkbox)`
       }
       &.ant-checkbox-checked {
         &:after {
-          border-color: ${themeColor};
+          border-color: ${themeColorBlue};
         }
         .ant-checkbox-inner {
-          border-color: ${themeColor};
-          background: ${themeColor};
+          border-color: ${themeColorBlue};
+          background: ${themeColorBlue};
         }
       }
       &.ant-checkbox-disabled {

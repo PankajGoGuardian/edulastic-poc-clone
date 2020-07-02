@@ -654,7 +654,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: LinePlotNumberLine,
       data: {
-        title: "Line Plot - Number Line",
+        title: "Range Plotter",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -761,7 +761,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "highlight",
       cardImage: HLHightlight,
       data: {
-        title: "Highlight Image",
+        title: "Drawing Response",
         image: {
           source: "",
           width: canvasDimensions.maxWidth,
@@ -847,7 +847,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "highlight",
       cardImage: HLTokenHighlight,
       data: {
-        title: "Token Highlight",
+        title: "Sentence Response",
         stimulus: "",
         template:
           '<p>Risus et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. dignissim, et tincidunt turpis facilisis.</p><p class="newline_section"><br></p><p>Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>',
@@ -984,7 +984,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMultipleResponses,
       data: {
-        title: "Multiple Choice - Multiple Response",
+        title: "Multiple Selection",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         uiStyle: {
@@ -1161,7 +1161,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "classify",
       cardImage: CMMatch,
       data: {
-        title: "Match List",
+        title: "Match the following",
         firstMount: true,
         groupPossibleResponses: false,
         possibleResponseGroups: [
@@ -1206,7 +1206,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "classify",
       cardImage: CMOrderList,
       data: {
-        title: "Order List",
+        title: "Re-sequence",
         type: questionType.ORDER_LIST,
         stimulus: "Simple Question",
         list: {
@@ -1234,7 +1234,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixStandard,
       data: {
-        title: "Choice Matrix - Standard",
+        title: "Match Table - Standard",
         firstMount: true,
         type: questionType.CHOICE_MATRIX,
         stimulus: "",
@@ -1262,7 +1262,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixInline,
       data: {
-        title: "Choice Matrix - Inline",
+        title: "Match Table - Inline",
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
@@ -1289,7 +1289,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "multiple-choice",
       cardImage: MCMatrixLabels,
       data: {
-        title: "Choice Matrix - Labels",
+        title: "Match Table - Labels",
         firstMount: true,
         options: ["True", "False"],
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
@@ -1318,7 +1318,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeDragDrop,
       stimulus: "",
       data: {
-        title: "Cloze with Drag & Drop",
+        title: "Drag & Drop",
         stimulus: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
         uiStyle: {
@@ -1353,7 +1353,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeDropDown,
       stimulus: "Pick the right options in the dropdown below",
       data: {
-        title: "Cloze with Drop Down",
+        title: "Text Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         stimulus: `<p>Pick the right options in the dropdown below.</p><p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
           uuids[0]
@@ -1391,7 +1391,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: FBClozeText,
       stimulus: "Fill blank boxes with the right answer.",
       data: {
-        title: "Cloze with Text",
+        title: "Text Entry",
         type: questionType.CLOZE_TEXT,
         stimulus: `<p>Fill blank boxes with the right answer.</p><p>Sample question text with <textinput responseindex="1" id=${
           uuids[0]

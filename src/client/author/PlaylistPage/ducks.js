@@ -261,8 +261,10 @@ const moveContentInPlaylist = (playlist, payload) => {
       if (toModuleIndex !== 0 && !toModuleIndex) {
         return notification({ messageKey: "invalidModuleSelect" });
       }
-      draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+      if (draft.modules[toModuleIndex] && draft.modules[fromModuleIndex]) {
+        draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
+        draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+      }
     });
   } else if (fromModuleIndex >= 0) {
     newPlaylist = produce(playlist, draft => {

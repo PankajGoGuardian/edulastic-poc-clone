@@ -187,7 +187,7 @@ const getSkippedStatusOfQuestion = (testItemId, questionActivitiesMap, testItems
     }
     return false;
   }
-  return questionActivitiesMap[questionActivityId] ?.skipped;
+  return questionActivitiesMap[questionActivityId]?.skipped;
 };
 
 /**
@@ -198,13 +198,13 @@ const getMaxScoreFromItem = testItem => {
   if (!testItem) {
     return total;
   }
-  if (testItem ?.itemLevelScoring) {
+  if (testItem?.itemLevelScoring) {
     return testItem.itemLevelScore || 0;
   }
-  if (!testItem ?.data ?.questions) {
+  if (!testItem?.data?.questions) {
     return total;
   }
-  for (const question of testItem ?.data ?.questions || []) {
+  for (const question of testItem?.data?.questions || []) {
     total += getMaxScoreFromQuestion(question);
   }
   return total;
@@ -258,34 +258,38 @@ export function stripHtml(html) {
 }
 
 const extractFunctions = {
-  [questionType.MULTIPLE_CHOICE]: (question = {}, userResponse = []) => userResponse
-    .map(r => question ?.options ?.findIndex(x => x ?.value === r))
-    .map(x => alphabets[x] ?.toUpperCase())
-    .join(","),
-  [questionType.CLOZE_DRAG_DROP]: (question = {}, userResponse = []) => typeof userResponse === "object"
-    ? userResponse
-      .filter(x => x)
-      .map(r => question ?.options ?.find(x => x ?.value === r) ?.label)
-      .map(x => stripHtml(x || ""))
-      .filter(x => x)
-      .join(",")
-    : userResponse,
-  [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) => typeof userResponse === "object"
-    ? userResponse
-      .filter(x => x)
-      .map(x => x ?.value)
-      .map(x => stripHtml(x || ""))
-      .filter(x => x)
-      .join(",")
-    : userResponse,
-  [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) => typeof userResponse === "object"
-    ? userResponse
-      .filter(x => x)
-      .map(x => x ?.value)
-      .map(x => stripHtml(x || ""))
-      .filter(x => x)
-      .join(",")
-    : userResponse,
+  [questionType.MULTIPLE_CHOICE]: (question = {}, userResponse = []) =>
+    userResponse
+      .map(r => question?.options?.findIndex(x => x?.value === r))
+      .map(x => alphabets[x]?.toUpperCase())
+      .join(","),
+  [questionType.CLOZE_DRAG_DROP]: (question = {}, userResponse = []) =>
+    typeof userResponse === "object"
+      ? userResponse
+          .filter(x => x)
+          .map(r => question?.options?.find(x => x?.value === r)?.label)
+          .map(x => stripHtml(x || ""))
+          .filter(x => x)
+          .join(",")
+      : userResponse,
+  [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) =>
+    typeof userResponse === "object"
+      ? userResponse
+          .filter(x => x)
+          .map(x => x?.value)
+          .map(x => stripHtml(x || ""))
+          .filter(x => x)
+          .join(",")
+      : userResponse,
+  [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) =>
+    typeof userResponse === "object"
+      ? userResponse
+          .filter(x => x)
+          .map(x => x?.value)
+          .map(x => stripHtml(x || ""))
+          .filter(x => x)
+          .join(",")
+      : userResponse,
   [questionType.MATH]: (question, userResponse = "") => {
     const restrictedMathTypes = ["Matrices", "Complete the Equation", "Formula Essay"];
     if (restrictedMathTypes.includes(question.title)) return "TEI";
@@ -300,20 +304,20 @@ const extractFunctions = {
   [questionType.FORMULA_ESSAY]: (question, userResponse = "") => (userResponse ? "CR" : "")
 };
 export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId) {
-  const question = (testItem.data ?.questions || []) ?.find(q => q.id === questionId) || {};
+  const question = (testItem.data?.questions || [])?.find(q => q.id === questionId) || {};
   const qType = question.type;
 
   if (
-    testItem.data ?.questions ?.filter(x => x.type !== questionType.SECTION_LABEL) ?.length > 1 &&
-      testItem.itemLevelScoring
+    testItem.data?.questions?.filter(x => x.type !== questionType.SECTION_LABEL)?.length > 1 &&
+    testItem.itemLevelScoring
   ) {
     // MULTIPART
     return "TEI";
-  } if (extractFunctions[qType]) {
+  }
+  if (extractFunctions[qType]) {
     return extractFunctions[qType](question, userResponse);
   }
   return userResponse ? "TEI" : "";
-
 }
 
 export const transformGradeBookResponse = (
@@ -418,7 +422,6 @@ export const transformGradeBookResponse = (
           };
         }
         const testActivity = studentTestActivities[studentId];
-        
 
         // TODO: for now always present
         const present = true;
@@ -426,7 +429,7 @@ export const transformGradeBookResponse = (
         const { graded } = testActivity;
         const submitted = testActivity.status == testActivityStatus.SUBMITTED;
         const absent = testActivity.status === testActivityStatus.ABSENT;
-        const { _id: testActivityId, groupId, previouslyRedirected: redirected, number } = testActivity;
+        const { _id: testActivityId, groupId, previouslyRedirected: redirected, number, redirect } = testActivity;
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId];
 
@@ -442,7 +445,7 @@ export const transformGradeBookResponse = (
             const currentQuestionActivity =
               questionActivitiesIndexed[el] || questionActivitiesKeyedByItemId[testItemId];
             const questionMaxScore =
-              maxScore || getMaxScoreOfQid(_id, testItemsData, currentQuestionActivity ?.maxScore);
+              maxScore || getMaxScoreOfQid(_id, testItemsData, currentQuestionActivity?.maxScore);
 
             if (!currentQuestionActivity) {
               return {
@@ -542,7 +545,7 @@ export const transformGradeBookResponse = (
           score,
           testActivityId,
           number,
-          redirected,
+          redirected: redirected || redirect,
           questionActivities: questionActivities.filter(x => isValidQuestionActivity(x)),
           endDate: testActivity.endDate
         };

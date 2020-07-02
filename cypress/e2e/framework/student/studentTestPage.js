@@ -751,14 +751,20 @@ class StudentTestPage {
 
   getQuestionInPracticeByIndex = qIndex => cy.get(`[data-cy="queCircle-${qIndex + 1}"]`);
 
+  getActiveItemCircle = () => cy.get('[data-test="true"]');
+
   selectQuestioninPracticePlayerByIndex = (index, isSkipped = false) => {
     cy.server();
     cy.route("POST", "**/test-activity/**").as("saved");
     this.getQuestionInPracticeByIndex(index).then($ele => {
       if ($ele.css("background-color") !== queColor.GREEN_2) {
-        cy.wrap($ele).click({ force: true });
-        if (isSkipped) this.clickOnSkipOnPopUp();
-        cy.wait("@saved");
+        this.getActiveItemCircle().then($item => {
+          const currentQue = parseInt($item.attr("data-cy").split("-")[1]);
+          const queToNavigate = index + 1;
+          cy.wrap($ele).click({ force: true });
+          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
+          cy.wait("@saved");
+        });
       }
     });
   };
@@ -877,7 +883,9 @@ class StudentTestPage {
     this.getQueDropDown()
       .invoke("text")
       .then(txt => {
-        if (!txt.includes(`Question ${index + 1}/`)) {
+        const currentQue = parseInt(txt.match(/(\d+)/)[0]);
+        const queToNavigate = index + 1;
+        if (!txt.includes(`Question ${queToNavigate}/`)) {
           this.getQueDropDown()
             .click({ force: true })
             .parent()
@@ -885,7 +893,7 @@ class StudentTestPage {
             .find("li")
             .eq(index)
             .click({ force: true });
-          if (isSkipped) this.clickOnSkipOnPopUp();
+          if (isSkipped && queToNavigate > currentQue) this.clickOnSkipOnPopUp();
           cy.wait("@saved");
         }
       });

@@ -30,7 +30,7 @@ const SidebarQuestionList = ({ questions, selectedQuestion, gotoQuestion, t, isS
                 }}
               >
                 <FlexContainer alignItems="center" justifyContent="center">
-                  <Circle data-cy={`queCircle-${index + 1}`} r={6} active={active} />
+                  <Circle data-cy={`queCircle-${index + 1}`} data-test={active} r={6} active={active} />
                   <Content active={active}>
                     {t("common.layout.questionlist.question")} {index + 1}
                   </Content>

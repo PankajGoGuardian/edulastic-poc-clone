@@ -9,6 +9,7 @@ const CenteredText = withMathFormula(styled.div`
   font-weight: 600;
   margin-bottom: 15px;
   font-weight: ${fonts.previewFontWeight};
+  word-wrap: ${({ wordWrap }) => wordWrap};
 
   @media (max-width: ${desktopWidth}) {
     font-size: ${fonts.previewFontSizeMobile};

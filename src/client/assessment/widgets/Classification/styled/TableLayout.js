@@ -15,6 +15,7 @@ export const TH = styled.div`
   display: flex;
   margin: 8px;
   justify-content: center;
+  min-width: ${({ minWidth }) => `${minWidth}px`};
 `;
 
 export const TD = styled.div`

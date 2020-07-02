@@ -20,7 +20,6 @@ const ResponseRnd = props => {
     hasRowTitle = true,
     width,
     maxWidth,
-    showIndex,
     columnId
   } = props;
 
@@ -74,9 +73,6 @@ const ResponseRnd = props => {
     offsetX = maxWidth;
   }
 
-  if (showIndex) {
-    offsetX += 45;
-  }
   /**
    * +100 will be width of rowTitle
    * TODO: need to get width of rowTitle, if it is not set
@@ -119,7 +115,6 @@ ResponseRnd.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   width: PropTypes.number,
   isResizable: PropTypes.bool,
-  showIndex: PropTypes.bool,
   index: PropTypes.number,
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired
@@ -127,7 +122,6 @@ ResponseRnd.propTypes = {
 
 ResponseRnd.defaultProps = {
   isResizable: true,
-  showIndex: false,
   width: 220,
   index: 0
 };

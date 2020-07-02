@@ -5,14 +5,12 @@ import { get } from "lodash";
 import { CenteredText, MathFormulaDisplay, QuestionContext } from "@edulastic/common";
 import produce from "immer";
 import DropContainer from "../../../components/DropContainer";
-import { getStemNumeration } from "../../../utils/helpers";
 import DragItem from "./DragItem";
 import { ColumnHeader, ColumnLabel } from "../styled/Column";
 import { Rnd } from "../styled/RndWrapper";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
-import { IndexBox } from "./DragItem/styled/IndexBox";
 
 const TableRow = ({
   colCount,
@@ -35,11 +33,8 @@ const TableRow = ({
   view,
   setQuestionData,
   rowHeader,
-  dragItemSize,
-  showIndex
+  dragItemSize
 }) => {
-  const uiStyle = get(item, "uiStyle", {});
-
   const { questionId } = useContext(QuestionContext);
 
   const handleRowTitleDragStop = (event, data) => {
@@ -133,7 +128,6 @@ const TableRow = ({
         </Rnd>
       );
     }
-    const renderIndex = getStemNumeration(uiStyle.validationStemNumeration, index);
     const column = item.classifications?.[index] || {};
     const hasAnswer = Array.isArray(answers?.[column.id]) && answers[column.id].length > 0;
 
@@ -143,16 +137,12 @@ const TableRow = ({
         question={item}
         index={index}
         isResizable={isResizable}
-        showIndex={showIndex}
         columnId={column.id}
         {...dragItemSize}
       >
-        {/* {colTitles[index % colCount] || colTitles[index % colCount] === "" ? ( */}
         <ColumnHeader>
-          {showIndex && hasAnswer && <IndexBox>{renderIndex}</IndexBox>}
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index] || "" }} />
         </ColumnHeader>
-        {/* ) : null} */}
         <DropContainer
           style={{
             ...styles.columnContainerStyle,
@@ -219,8 +209,7 @@ TableRow.propTypes = {
   item: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
   rowHeader: PropTypes.string,
-  dragItemSize: PropTypes.object.isRequired,
-  showIndex: PropTypes.bool.isRequired
+  dragItemSize: PropTypes.object.isRequired
 };
 
 TableRow.defaultProps = {

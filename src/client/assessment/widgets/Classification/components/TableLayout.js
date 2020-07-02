@@ -7,8 +7,6 @@ import { Table, TH, TD, TR } from "../styled/TableLayout";
 
 import DropContainer from "../../../components/DropContainer";
 import DragItem from "./DragItem";
-import { IndexBox } from "./DragItem/styled/IndexBox";
-import { getStemNumeration } from "../../../utils/helpers";
 
 const TableLayout = ({
   rowCount,
@@ -30,10 +28,8 @@ const TableLayout = ({
   minWidth,
   disableResponse,
   rowHeader = "",
-  dragItemSize = {},
-  showIndex
+  dragItemSize = {}
 }) => {
-  const uiStyle = get(item, "uiStyle", {});
   const classifications = get(item, ["classifications"], []);
   const classificationsGrouped = groupBy(classifications, obj => obj.rowIndex);
 
@@ -56,8 +52,8 @@ const TableLayout = ({
 
   for (let index = 0; index < colCount; index++) {
     columnTitles.push(
-      <TH colSpan={2} style={{ minWidth: showIndex ? minWidth + 40 : minWidth }}>
-        <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: colTitles[index] }} />
+      <TH colSpan={2} minWidth={minWidth}>
+        <CenteredText wordWrap="break-word" dangerouslySetInnerHTML={{ __html: colTitles[index] }} />
       </TH>
     );
   }
@@ -68,12 +64,11 @@ const TableLayout = ({
     const arr = [];
     arr.push(
       <TD center>
-        <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: rowTitles[rowIndex] }} />
+        <CenteredText wordWrap="break-word" dangerouslySetInnerHTML={{ __html: rowTitles[rowIndex] }} />
       </TD>
     );
     for (let columnIndex = 0; columnIndex < colCount; columnIndex++) {
       validIndex++;
-      const renderIndex = getStemNumeration(uiStyle.validationStemNumeration, validIndex);
       const column = classificationsGrouped?.[rowIndex]?.[columnIndex] || {};
       const hasAnswer = Array.isArray(answers[column.id]) && answers[column.id].length > 0;
       arr.push(
@@ -88,7 +83,6 @@ const TableLayout = ({
               borderRadius: 4
             }}
           >
-            {showIndex && <IndexBox style={{ margin: "5px 0px 5px 5px" }}>{renderIndex}</IndexBox>}
             <div
               style={{
                 ...styles.columnContainerStyle,

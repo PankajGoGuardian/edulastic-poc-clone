@@ -354,7 +354,6 @@ const ClassificationPreview = ({
       setQuestionData={setQuestionData}
       rowHeader={rowHeader}
       dragItemSize={dragItemProps}
-      showIndex={previewTab === SHOW}
     />
   );
 
@@ -380,7 +379,6 @@ const ClassificationPreview = ({
       disableResponse={disableResponse}
       rowHeader={rowHeader}
       dragItemSize={dragItemSize}
-      showIndex={previewTab === SHOW}
     />
   );
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;

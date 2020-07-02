@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import i18n, { I18nextProvider } from "@edulastic/localization";
 import { ConnectedRouter } from "connected-react-router";
 import smoothscroll from "smoothscroll-polyfill";
+import keyboardEventKeyPolyfill from 'keyboardevent-key-polyfill';
 // will import all features.. optimize.!
 import "core-js/features/array";
 import "core-js/features/object";
@@ -41,6 +42,7 @@ if (window.NodeList && !NodeList.prototype.forEach) {
 window.isMobileDevice = isMobileDevice();
 window.isIOS = isIOS();
 
+keyboardEventKeyPolyfill.polyfill();
 smoothscroll.polyfill();
 
 !(function() {

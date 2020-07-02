@@ -75,7 +75,7 @@ module.exports = {
     DONT_RELEASE: "Do not release scores or responses",
     SCORE_ONLY: "Release scores only",
     WITH_RESPONSE: "Release scores and student responses",
-    WITH_ANSWERS: "Release scores,student responses and correct answers"
+    WITH_ANSWERS: "Release scores, student responses and correct answers"
   },
   releaseGradeLabels: {
     DONT_RELEASE: "DONT_RELEASE",

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 import styled from "styled-components";
-import { Form, message } from "antd";
+import { Form } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton,notification } from "@edulastic/common";
 import { userApi } from "@edulastic/api";
@@ -19,7 +19,7 @@ const RequestSchool = props => {
   const [requestButtonDisabled, setRequestButtonDisabled] = useState(true);
   const { form, userInfo, createAndAddSchool, t, creatingAddingSchool } = props;
   const {
-    orgData: { districtId, districtName }
+    orgData: { districts: [{districtId, districtName}] }
   } = userInfo;
 
   useEffect(() => {

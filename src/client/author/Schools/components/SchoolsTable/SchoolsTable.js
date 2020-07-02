@@ -1,17 +1,18 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 import { Link } from "react-router-dom";
 
-import { Form, Icon, Select, message, Button, Menu } from "antd";
-const Option = Select.Option;
+import { Form, Icon, Select, Button, Menu } from "antd";
 
 import { roleuser } from "@edulastic/constants";
 import  {notification} from "@edulastic/common";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 
+import { themeColor } from "@edulastic/colors";
+import { withNamespaces } from "@edulastic/localization";
 import {
   StyledControlDiv,
   StyledFilterDiv,
@@ -29,7 +30,6 @@ import {
 } from "./styled";
 import {
   MainContainer,
-  StyledTable,
   TableContainer,
   SubHeaderWrapper,
   FilterWrapper,
@@ -45,21 +45,18 @@ import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
 import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
 
 // actions
-import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteSchoolsAction } from "../../ducks";
-
-import { getSchoolsSelector } from "../../ducks";
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteSchoolsAction, getSchoolsSelector } from "../../ducks";
+import {getUserOrgId, getUserOrgName, getUserRole} from "../../../src/selectors/user";
 import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
 import Breadcrumb from "../../../src/components/Breadcrumb";
-import { themeColor } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
+
+const Option = Select.Option;
 
 class SchoolsTable extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      editingKey: "",
       isAdding: false,
       selectedRowKeys: [],
       createSchoolModalVisible: false,
@@ -89,17 +86,16 @@ class SchoolsTable extends React.Component {
   }
 
   componentDidMount() {
-    const { loadSchoolsData, userOrgId } = this.props;
     this.loadFilteredList();
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     if (nextProps.schoolList.length === undefined) return { dataSource: [] };
-    else return { dataSource: nextProps.schoolList };
+    return { dataSource: nextProps.schoolList };
   }
 
   onHeaderCell = colName => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { sortedInfo } = this.state;
     if (sortedInfo.columnKey === colName) {
       if (sortedInfo.order === "asc") {
         sortedInfo.order = "desc";
@@ -157,7 +153,7 @@ class SchoolsTable extends React.Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
-    const { userOrgId: districtId, deleteSchool, t } = this.props;
+    const { t } = this.props;
 
     if (e.key === "edit school") {
       if (selectedRowKeys.length == 0) {
@@ -180,6 +176,7 @@ class SchoolsTable extends React.Component {
     const newData = {
       name: newSchoolData.name,
       districtId: this.props.userOrgId,
+      districtName: this.props.userOrgName,
       location: {
         address: newSchoolData.address,
         city: newSchoolData.city,
@@ -192,7 +189,7 @@ class SchoolsTable extends React.Component {
     const { createSchool } = this.props;
     const { sortedInfo, filtersData, searchByName } = this.state;
 
-    let search = {};
+    const search = {};
     if (searchByName.length > 0) {
       search.name = { type: "cont", value: searchByName };
     }
@@ -244,7 +241,6 @@ class SchoolsTable extends React.Component {
   };
 
   changePagination = pageNumber => {
-    const { filtersData, sortedInfo, searchByName } = this.state;
     this.setState({ currentPage: pageNumber }, this.loadFilteredList);
   };
 
@@ -275,7 +271,6 @@ class SchoolsTable extends React.Component {
   };
 
   handleSearchName = value => {
-    const { filtersData, sortedInfo } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
   };
 
@@ -293,7 +288,6 @@ class SchoolsTable extends React.Component {
   };
 
   onBlurFilterText = (event, key) => {
-    const { sortedInfo, searchByName } = this.state;
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
@@ -351,7 +345,7 @@ class SchoolsTable extends React.Component {
     this.setState({ filtersData }, this.loadFilteredList);
   };
 
-  addFilter = (e, key) => {
+  addFilter = () => {
     const { filtersData } = this.state;
     if (filtersData.length < 3) {
       this.setState({
@@ -370,7 +364,7 @@ class SchoolsTable extends React.Component {
   };
 
   removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
       newFiltersData.push({
@@ -389,7 +383,7 @@ class SchoolsTable extends React.Component {
     const { filtersData, sortedInfo, searchByName, currentPage = 1 } = this.state;
     const { userOrgId } = this.props;
 
-    let search = {};
+    const search = {};
 
     for (let i = 0; i < filtersData.length; i++) {
       const { filtersColumn, filtersValue, filterStr } = filtersData[i];
@@ -400,13 +394,11 @@ class SchoolsTable extends React.Component {
           } else {
             search[filtersColumn].push(filterStr);
           }
-        } else {
-          if (!search[filtersColumn]) {
+        } else if (!search[filtersColumn]) {
             search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
           } else {
             search[filtersColumn].push({ type: filtersValue, value: filterStr });
           }
-        }
       }
     }
 
@@ -478,13 +470,11 @@ class SchoolsTable extends React.Component {
         dataIndex: "name",
         editable: true,
         render: name => <span>{name || "-"}</span>,
-        onHeaderCell: column => {
-          return {
+        onHeaderCell: () => ({
             onClick: () => {
               this.onHeaderCell("name");
             }
-          };
-        }
+          })
       },
       {
         title: (
@@ -505,13 +495,11 @@ class SchoolsTable extends React.Component {
         dataIndex: "city",
         editable: true,
         render: city => <span>{city || "-"}</span>,
-        onHeaderCell: column => {
-          return {
+        onHeaderCell: () => ({
             onClick: () => {
               this.onHeaderCell("city");
             }
-          };
-        }
+          })
       },
       {
         title: (
@@ -532,13 +520,11 @@ class SchoolsTable extends React.Component {
         dataIndex: "state",
         editable: true,
         render: state => <span>{state || "-"}</span>,
-        onHeaderCell: column => {
-          return {
+        onHeaderCell: () => ({
             onClick: () => {
               this.onHeaderCell("state");
             }
-          };
-        }
+          })
       },
       {
         title: (
@@ -559,13 +545,11 @@ class SchoolsTable extends React.Component {
         dataIndex: "zip",
         editable: true,
         render: zip => <span>{zip || "-"}</span>,
-        onHeaderCell: column => {
-          return {
+        onHeaderCell: () => ({
             onClick: () => {
               this.onHeaderCell("zip");
             }
-          };
-        }
+          })
       },
       {
         title: (
@@ -585,24 +569,20 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "isApproved",
         editable: true,
-        onHeaderCell: column => {
-          return {
+        onHeaderCell: () => ({
             onClick: () => {
               this.onHeaderCell("isApproved");
             }
-          };
-        },
-        render: (text, record) => {
-          return (
-            <React.Fragment>
-              {typeof record.isApproved === "boolean" && record.isApproved === false ? (
-                <span>{t("school.notapproved")}</span>
+          }),
+        render: (text, record) => (
+          <React.Fragment>
+            {typeof record.isApproved === "boolean" && record.isApproved === false ? (
+              <span>{t("school.notapproved")}</span>
               ) : (
                 <span>{t("school.approved")}</span>
               )}
-            </React.Fragment>
-          );
-        }
+          </React.Fragment>
+          )
       },
       {
         title: (
@@ -613,10 +593,9 @@ class SchoolsTable extends React.Component {
         dataIndex: "teachersCount",
         editable: true,
         align: "center",
-        render: (teachersCount, { name, _id } = {}) => {
-          return (
-            <Link
-              to={{
+        render: (teachersCount, { _id } = {}) => (
+          <Link
+            to={{
                 pathname: "/author/users/teacher",
                 institutionId: _id
                 // uncomment after school filter is implemented in backend
@@ -627,11 +606,10 @@ class SchoolsTable extends React.Component {
                 //   filterAdded: true
                 // }
               }}
-            >
-              {teachersCount}
-            </Link>
-          );
-        }
+          >
+            {teachersCount}
+          </Link>
+          )
       },
       {
         title: (
@@ -642,18 +620,16 @@ class SchoolsTable extends React.Component {
         dataIndex: "studentsCount",
         editable: true,
         align: "center",
-        render: (studentsCount, { name, _id } = {}) => {
-          return (
-            <Link
-              to={{
+        render: (studentsCount, { _id } = {}) => (
+          <Link
+            to={{
                 pathname: "/author/users/student",
                 institutionId: _id
               }}
-            >
-              {studentsCount}
-            </Link>
-          );
-        }
+          >
+            {studentsCount}
+          </Link>
+          )
       },
       {
         title: (
@@ -664,10 +640,9 @@ class SchoolsTable extends React.Component {
         dataIndex: "sectionsCount",
         align: "center",
         editable: true,
-        render: (sectionsCount, { name } = {}) => {
-          return (
-            <Link
-              to={{
+        render: (sectionsCount, { name } = {}) => (
+          <Link
+            to={{
                 pathname: "/author/Classes",
                 state: {
                   filtersColumn: "institutionNames",
@@ -676,36 +651,31 @@ class SchoolsTable extends React.Component {
                   filterAdded: true
                 }
               }}
-            >
-              {sectionsCount}
-            </Link>
-          );
-        }
+          >
+            {sectionsCount}
+          </Link>
+          )
       },
       {
         dataIndex: "operation",
-        render: (text, record) => {
-          return (
-            <div style={{ whiteSpace: "nowrap" }}>
-              <StyledTableButton onClick={() => this.onEditSchool(record.key)} title="Edit">
-                <IconPencilEdit color={themeColor} />
-              </StyledTableButton>
-              {role === roleuser.DISTRICT_ADMIN && (
-                <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
-                  <IconTrash color={themeColor} />
-                </StyledTableButton>
+        render: (text, record) => (
+          <div style={{ whiteSpace: "nowrap" }}>
+            <StyledTableButton onClick={() => this.onEditSchool(record.key)} title="Edit">
+              <IconPencilEdit color={themeColor} />
+            </StyledTableButton>
+            {role === roleuser.DISTRICT_ADMIN && (
+            <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
+              <IconTrash color={themeColor} />
+            </StyledTableButton>
               )}
-            </div>
-          );
-        }
+          </div>
+          )
       }
     ];
 
-    const columns = columnsInfo.map(col => {
-      return {
+    const columns = columnsInfo.map(col => ({
         ...col
-      };
-    });
+      }));
 
     const rowSelection = {
       selectedRowKeys,
@@ -809,7 +779,7 @@ class SchoolsTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -847,7 +817,7 @@ class SchoolsTable extends React.Component {
             pageSize={10}
             total={totalSchoolsCount}
             onChange={this.changePagination}
-            hideOnSinglePage={true}
+            hideOnSinglePage
           />
         </TableContainer>
 
@@ -869,7 +839,7 @@ class SchoolsTable extends React.Component {
             updateSchool={this.updateSchool}
             closeModal={this.closeEditSchoolModal}
             userOrgId={userOrgId}
-            hideOnSinglePage={true}
+            hideOnSinglePage
             t={t}
           />
         )}
@@ -895,6 +865,7 @@ const enhance = compose(
     state => ({
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
+      userOrgName: getUserOrgName(state),
       role: getUserRole(state),
       totalSchoolsCount: get(state, ["schoolsReducer", "totalSchoolCount"], 0)
     }),

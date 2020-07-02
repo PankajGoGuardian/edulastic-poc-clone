@@ -26,7 +26,7 @@ export const SelectContainer = styled.div`
     padding-left: 5px;
     border: 1px solid;
     border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
-    background: ${props => props.backgroundColor};
+    background-color: ${props => props.backgroundColor} !important;
     &:hover {
       border: 1px solid;
       border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
@@ -49,7 +49,7 @@ export const SelectContainer = styled.div`
     color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};
     max-width: calc(100% - 20px);
     text-overflow: clip;
-    ${({isPrintPreview}) => isPrintPreview ? {color: darkBlue} : {}};
+    ${({ isPrintPreview }) => (isPrintPreview ? { color: darkBlue } : {})};
   }
   .anticon-down {
     svg {

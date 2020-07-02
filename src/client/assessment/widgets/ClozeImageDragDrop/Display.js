@@ -252,7 +252,7 @@ class Display extends Component {
   onDrop = ({ data: sourceData, itemRect }, index) => {
     const { option, fromContainerIndex, fromRespIndex } = sourceData;
     const { maxRespCount, onChange, item, preview, responseContainers } = this.props;
-    const { userAnswers, possibleResponses } = this.state;
+    const { userAnswers } = this.state;
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
     if (!isSnapFitValues && preview) {
       return this.onDropForSnapFit(option, fromContainerIndex, fromRespIndex, itemRect);
@@ -263,7 +263,6 @@ class Display extends Component {
     }
 
     const newAnswers = cloneDeep(userAnswers);
-    const newResponses = cloneDeep(possibleResponses);
     // const data = Array.isArray(option) ? option : [option.id];
     const data = [option.id];
 
@@ -527,7 +526,6 @@ class Display extends Component {
     const responseBoxWidth = choiceMaxWidth;
     const idValueMap = this.mapIdAndValue;
 
-
     const containerStyle = {
       margin: "auto",
       overflow: viewComponent !== "authorPreviewPopup" && !isPrintMode && "auto",
@@ -586,6 +584,7 @@ class Display extends Component {
               imageWidth={imageWidth}
               imageHeight={imageHeight}
               options={options}
+              backgroundColor={backgroundColor}
             />
           )}
 
@@ -649,7 +648,6 @@ class Display extends Component {
     const validAnswers = get(item, "validation.validResponse.value", []);
     const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
-
 
     const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
       <CorrectAnswerBoxLayout

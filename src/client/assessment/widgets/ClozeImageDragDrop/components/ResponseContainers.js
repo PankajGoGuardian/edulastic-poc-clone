@@ -2,7 +2,6 @@ import React from "react";
 import { withTheme } from "styled-components";
 import { response } from "@edulastic/constants";
 import { DragDrop } from "@edulastic/common";
-import { get } from "lodash";
 import { Pointer } from "../../../styled/Pointer";
 import { Point } from "../../../styled/Point";
 import { Triangle } from "../../../styled/Triangle";
@@ -27,7 +26,8 @@ const ResponseContainers = ({
   isPrintMode,
   imageWidth,
   imageHeight,
-  options
+  options,
+  backgroundColor = ""
 }) => {
   const getContainerStyle = container => {
     const responseContainerLeft = smallSize ? container.left / 2 : container.left;
@@ -41,7 +41,9 @@ const ResponseContainers = ({
       maxWidth: response.maxWidth,
       width: isPrintMode ? `${(width / imageWidth) * 100}%` : width,
       minHeight: isPrintMode && !`${height}`.includes("auto") ? `${(height / imageHeight) * 100}%` : height,
-      background: transparentBackground ? "transparent" : theme.widgets.clozeImageDragDrop.responseBoxBgColor,
+      background: transparentBackground
+        ? "transparent"
+        : backgroundColor || theme.widgets.clozeImageDragDrop.responseBoxBgColor,
       border: showDropItemBorder
         ? showDashedBorder
           ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
@@ -57,15 +59,15 @@ const ResponseContainers = ({
 
   return responseContainers.map((container, index) => {
     const userAnswer = userAnswers.find(ans => ans?.responseBoxID === container.id) || {};
-    const { optionIds = [] } = userAnswer;  
+    const { optionIds = [] } = userAnswer;
     const answers = optionIds.reduce((acc, id) => {
       const option = options.find(opt => opt.id === id);
-      if(option) {
+      if (option) {
         acc.push(option);
       }
       return acc;
     }, []);
-    
+
     return (
       <div style={{ position: "relative" }}>
         <DropContainer key={container.id} style={getContainerStyle(container)} drop={onDrop} index={index}>

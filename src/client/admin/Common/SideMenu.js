@@ -7,15 +7,17 @@ import {
   white
 } from "@edulastic/colors";
 import { OnDarkBgLogo } from "@edulastic/common";
-import { IconSignoutHighlight } from "@edulastic/icons";
+import { IconProfileHighlight, IconSignoutHighlight } from "@edulastic/icons";
 import { Dropdown, Icon, Layout, Menu } from "antd";
 import { get } from "lodash";
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
 import styled from "styled-components";
 import { logoutAction } from "../../author/src/actions/auth";
 import { LogoCompact } from "./StyledComponents";
+import { toggleSideBarAction } from "../../author/src/actions/toggleMenu";
 
 const { Sider } = Layout;
 
@@ -56,14 +58,15 @@ const siderMenuData = [
 const SideMenu = ({
   history,
   location,
-  logoutAction,
+  logoutBtn,
   profileThumbnail,
   userRole,
   firstName,
   middleName,
   lastName,
   isCollapsed,
-  toggleState
+  toggleState,
+  toggleSideBar
 }) => {
   const [isVisible, toggleIsVisible] = useState(false);
 
@@ -79,10 +82,22 @@ const SideMenu = ({
     if (lastName) return `${lastName.substr(0, 2)}`;
   };
 
+  const onClickFooterDropDownMenu = ({ key }) => {
+    if (key === "1") {
+      toggleDropdown();
+      toggleSideBar;
+    }
+  };
+
   const footerDropdownMenu = (
     <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
-      <Menu style={{ height: "auto" }}>
-        <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder" onClick={logoutAction}>
+      <Menu onClick={onClickFooterDropDownMenu} style={{ height: "auto" }}>
+        <Menu.Item key="1" className="removeSelectedBorder">
+          <Link to="/admin/profile">
+            <IconProfileHighlight /> {isCollapsed ? "" : "My Profile"}
+          </Link>
+        </Menu.Item>
+        <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder" onClick={logoutBtn}>
           <a>
             <IconSignoutHighlight /> {isCollapsed ? "" : "Logout"}
           </a>
@@ -175,6 +190,7 @@ const SideMenu = ({
 };
 
 const enhance = compose(
+  withRouter,
   connect(
     state => ({
       firstName: get(state.user, "user.firstName", ""),
@@ -184,7 +200,7 @@ const enhance = compose(
       userId: get(state.user, "user._id", ""),
       profileThumbnail: get(state.user, "user.thumbnail")
     }),
-    { logoutAction }
+    { toggleSideBar: toggleSideBarAction, logoutBtn: logoutAction }
   )
 );
 
@@ -421,6 +437,21 @@ const FooterDropDown = styled.div`
       &:hover,
       &:focus {
         fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+      }
+    }
+    &.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+      &.removeSelectedBorder {
+        border: none;
+        background-color: ${themeColor};
+        svg {
+          fill: ${white};
+        }
+        &:hover {
+          background-color: #fff;
+          svg {
+            fill: ${themeColor};
+          }
+        }
       }
     }
     &.ant-menu-inline-collapsed {

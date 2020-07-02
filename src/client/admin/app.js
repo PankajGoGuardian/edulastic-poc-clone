@@ -13,6 +13,7 @@ import ProxyUser from "./Components/ProxyUser";
 import ApiForm from "./Containers/ApiForm";
 import CleverSearch from "./Containers/CleverSearch";
 import UpgradeUser from "./Containers/UpgradeUser";
+import ProfileBody from "../author/DistrictProfile/components/Container/ProfileBody";
 
 function Admin({ match, history, location }) {
   const [state, toggleState] = useState();
@@ -32,6 +33,7 @@ function Admin({ match, history, location }) {
               <Route path={`${match.path}/content/collections`} component={Collections} />
               <Route path={`${match.path}/content/buckets`} component={ContentBucket} />
               <Route path={`${match.path}/customReport`} component={CustomReportContainer} />
+              <Route path={`${match.path}/profile`} component={ProfileBody} />
             </Switch>
           </ErrorHandler>
         </MainWrapper>

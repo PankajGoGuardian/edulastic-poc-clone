@@ -449,6 +449,37 @@ class ProfileBody extends React.Component {
     );
   };
 
+  AdminProfileContent = () => {
+    const { t, user } = this.props;
+    return (
+      <ProfileContentWrapper>
+        <UserDetail>
+          <SubHeader>
+            <Title>Edulastic Admin Information</Title>
+          </SubHeader>
+          <Details>
+            <DetailRow>
+              <DetailTitle>{t("common.title.userTitleLabel")}</DetailTitle>
+              <DetailData>{user.title || "Title"}</DetailData>
+            </DetailRow>
+            <DetailRow>
+              <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
+              <DetailData>{user.firstName}</DetailData>
+            </DetailRow>
+            <DetailRow>
+              <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
+              <DetailData>{user.lastName || ""}</DetailData>
+            </DetailRow>
+            <DetailRow>
+              <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
+              <DetailData>{user.email}</DetailData>
+            </DetailRow>
+          </Details>
+        </UserDetail>
+      </ProfileContentWrapper>
+    );
+  };
+
   render() {
     const {
       form: { getFieldDecorator }
@@ -501,111 +532,115 @@ class ProfileBody extends React.Component {
             <Photo user={user} />
           </ProfileImgWrapper>
           <RightContainer>
-            <ProfileContentWrapper>
-              <UserDetail>
-                <SubHeader>
-                  <Title>Instructor Information</Title>
-                  {!isEditProfile && ["teacher", "district-admin", "school-admin"].includes(user.role) ? (
-                    <>
-                      <EditProfileButton
-                        type="primary"
-                        onClick={() => {
-                          this.setState({ isEditProfile: true });
-                        }}
-                      >
-                        <Icon type="edit" theme="filled" />
-                        {t("common.title.editProfile")}
-                      </EditProfileButton>
-                      <DeleteAccountButton
-                        isGhost
-                        noHover
-                        onClick={() => {
-                          this.setState({ showModal: true });
-                        }}
-                      >
-                        <Icon type="close" />
-                        {t("common.title.deleteAccount")}
-                      </DeleteAccountButton>
-                    </>
-                  ) : null}
-                </SubHeader>
-                {!isEditProfile ? (
-                  <Details>
-                    <DetailRow>
-                      <DetailTitle>{t("common.title.userTitleLabel")}</DetailTitle>
-                      <DetailData>{user.title || "Title"}</DetailData>
-                    </DetailRow>
-                    <DetailRow>
-                      <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
-                      <DetailData>{user.firstName}</DetailData>
-                    </DetailRow>
-                    <DetailRow>
-                      <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
-                      <DetailData>{user.lastName || ""}</DetailData>
-                    </DetailRow>
-                    <DetailRow>
-                      <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-                      <DetailData>{user.email}</DetailData>
-                    </DetailRow>
-                  </Details>
-                ) : (
-                  this.getEditProfileContent()
-                )}
-              </UserDetail>
-              <ChangePasswordToggleButton
-                onClick={() => {
-                  this.setState({ showChangePassword: !showChangePassword });
-                }}
-              >
-                <span>Change Password</span>
-                <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
-              </ChangePasswordToggleButton>
+            {user.role.toUpperCase() === "EDULASTIC-ADMIN" ? (
+              this.AdminProfileContent()
+            ) : (
+              <ProfileContentWrapper>
+                <UserDetail>
+                  <SubHeader>
+                    <Title>Instructor Information</Title>
+                    {!isEditProfile && ["teacher", "district-admin", "school-admin"].includes(user.role) ? (
+                      <>
+                        <EditProfileButton
+                          type="primary"
+                          onClick={() => {
+                            this.setState({ isEditProfile: true });
+                          }}
+                        >
+                          <Icon type="edit" theme="filled" />
+                          {t("common.title.editProfile")}
+                        </EditProfileButton>
+                        <DeleteAccountButton
+                          isGhost
+                          noHover
+                          onClick={() => {
+                            this.setState({ showModal: true });
+                          }}
+                        >
+                          <Icon type="close" />
+                          {t("common.title.deleteAccount")}
+                        </DeleteAccountButton>
+                      </>
+                    ) : null}
+                  </SubHeader>
+                  {!isEditProfile ? (
+                    <Details>
+                      <DetailRow>
+                        <DetailTitle>{t("common.title.userTitleLabel")}</DetailTitle>
+                        <DetailData>{user.title || "Title"}</DetailData>
+                      </DetailRow>
+                      <DetailRow>
+                        <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
+                        <DetailData>{user.firstName}</DetailData>
+                      </DetailRow>
+                      <DetailRow>
+                        <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
+                        <DetailData>{user.lastName || ""}</DetailData>
+                      </DetailRow>
+                      <DetailRow>
+                        <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
+                        <DetailData>{user.email}</DetailData>
+                      </DetailRow>
+                    </Details>
+                  ) : (
+                    this.getEditProfileContent()
+                  )}
+                </UserDetail>
+                <ChangePasswordToggleButton
+                  onClick={() => {
+                    this.setState({ showChangePassword: !showChangePassword });
+                  }}
+                >
+                  <span>Change Password</span>
+                  <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
+                </ChangePasswordToggleButton>
 
-              {showChangePassword && (
-                <FormWrapper>
-                  <FormItemWrapper>
-                    <Label>{t("common.title.newPasswordLabel")}</Label>
-                    {getFieldDecorator("password", {
-                      rules: [
-                        {
-                          required: true,
-                          message: t("common.title.password")
-                        },
-                        {
-                          validator: this.validateToNextPassword
-                        }
-                      ]
-                    })(<Input type="password" />)}
-                  </FormItemWrapper>{" "}
-                  <FormItemWrapper>
-                    <Label>{t("common.title.confirmPaswswordLabel")}</Label>
-                    {getFieldDecorator("confirmPassword", {
-                      rules: [
-                        {
-                          required: true,
-                          message: t("common.title.password")
-                        },
-                        {
-                          validator: this.compareToFirstPassword
-                        }
-                      ]
-                    })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
-                  </FormItemWrapper>{" "}
-                </FormWrapper>
-              )}
-              {(isEditProfile || showChangePassword) && (
-                <FormButtonWrapper>
-                  <FormItem>
-                    <EduButton width="100px" type="primary" onClick={this.handleSubmit}>
-                      {t("common.title.save")}
-                    </EduButton>
-                    <EduButton width="100px" isGhost type="primary" onClick={this.handleCancel}>
-                      {t("common.title.cancel")}
-                    </EduButton>
-                  </FormItem>
-                </FormButtonWrapper>
-              )}
-            </ProfileContentWrapper>
+                {showChangePassword && (
+                  <FormWrapper>
+                    <FormItemWrapper>
+                      <Label>{t("common.title.newPasswordLabel")}</Label>
+                      {getFieldDecorator("password", {
+                        rules: [
+                          {
+                            required: true,
+                            message: t("common.title.password")
+                          },
+                          {
+                            validator: this.validateToNextPassword
+                          }
+                        ]
+                      })(<Input type="password" />)}
+                    </FormItemWrapper>{" "}
+                    <FormItemWrapper>
+                      <Label>{t("common.title.confirmPaswswordLabel")}</Label>
+                      {getFieldDecorator("confirmPassword", {
+                        rules: [
+                          {
+                            required: true,
+                            message: t("common.title.password")
+                          },
+                          {
+                            validator: this.compareToFirstPassword
+                          }
+                        ]
+                      })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
+                    </FormItemWrapper>{" "}
+                  </FormWrapper>
+                )}
+                {(isEditProfile || showChangePassword) && (
+                  <FormButtonWrapper>
+                    <FormItem>
+                      <EduButton width="100px" type="primary" onClick={this.handleSubmit}>
+                        {t("common.title.save")}
+                      </EduButton>
+                      <EduButton width="100px" isGhost type="primary" onClick={this.handleCancel}>
+                        {t("common.title.cancel")}
+                      </EduButton>
+                    </FormItem>
+                  </FormButtonWrapper>
+                )}
+              </ProfileContentWrapper>
+            )}
 
             {user.role === roleuser.TEACHER && (
               <SchoolWrapper>

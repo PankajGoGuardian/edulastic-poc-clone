@@ -1,6 +1,7 @@
 require("dotenv").config();
 const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 const ReactRefreshPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 const webpack = require("webpack");
@@ -62,6 +63,11 @@ let config = {
     }
 
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
+
+    chain.plugin("PdfWorker").use(CopyPlugin, [[{
+      from: 'node_modules/pdfjs-dist/build/pdf.worker.js',
+      to: 'pdf.worker.js'
+    }]]);
 
     chain.plugin("BannerPlugin").use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }]);
     // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);

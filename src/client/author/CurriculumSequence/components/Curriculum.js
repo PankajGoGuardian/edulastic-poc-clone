@@ -135,10 +135,11 @@ const Curriculum = props => {
     history,
     status,
     isManageContentActive,
-    hasEditAccess
+    hasEditAccess,
+    urlHasUseThis
   } = props;
 
-  useEffect(() => () => resetDestination(), []);
+  useEffect(() => () => resetDestination({ isAuthoring: !urlHasUseThis }), []);
 
   return (
     <SortableContainer onSortEnd={onSortEnd} lockAxis="y" lockOffset={["0%", "0%"]} lockToContainerEdges useDragHandle>

@@ -1983,13 +1983,15 @@ export default createReducer(initialState, {
       state.playlistTestDetailsModal.currentTestId = null;
     }
   },
-  [RESET_DESTINATION]: state => {
+  [RESET_DESTINATION]: (state, { payload }) => {
     if (state.originalData) {
       state.destinationCurriculumSequence = state.originalData;
     } else {
       state.destinationCurriculumSequence = {};
     }
-    state.activeRightPanel = "manageContent";
+    if (payload.isAuthoring) {
+      state.activeRightPanel = "manageContent";
+    }
 
     state.destinationDirty = false;
   },

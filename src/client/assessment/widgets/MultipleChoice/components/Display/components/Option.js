@@ -76,7 +76,7 @@ const Option = props => {
       }
     }
   } else if (checkAnswer) {
-    if (correct.length && checkAnswer) {
+    if (!isEmpty(correct) && checkAnswer) {
       if (isCorrect && isSelected) {
         className = "right";
       } else if (isCorrect === false && isSelected) {

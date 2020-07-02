@@ -60,10 +60,11 @@ class ItemListPage {
       .next();
 
   getViewItemById = id =>
-    cy
-      .get(`[data-cy=${id}]`)
+    this.getItemById(id)
       .find("button")
       .contains("VIEW");
+
+  getItemById = id => cy.get(`[data-cy=${id}]`);
 
   getTotalNoOfItemsInUI = () => cy.get('[class^="styled__PaginationInfo"]');
 

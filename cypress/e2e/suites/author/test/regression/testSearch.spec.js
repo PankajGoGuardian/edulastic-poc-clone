@@ -114,7 +114,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       it(">search by standards in draft-state", () => {
         Object.keys(standardToTest).forEach(ele => {
           searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           standardToTest[ele].forEach(id => {
             testLibrary.checkforNonExistanceOfTest(id);
@@ -125,7 +124,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         // techersidebar.clickOnTestLibrary();
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           tagsToTest[ele].forEach(id => {
             testLibrary.checkforNonExistanceOfTest(id);
@@ -163,7 +161,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         techersidebar.clickOnTestLibrary();
         Object.keys(standardToTest).forEach(ele => {
           searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           standardToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -173,7 +170,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       it(">search by tags", () => {
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(ele);
           tagsToTest[ele].forEach(id => {
             testLibrary.getTestCardById(id).should("be.visible");
@@ -190,7 +186,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       it(">search by id", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(id);
           testLibrary.getTestCardById(id).should("be.visible");
         });
@@ -227,9 +222,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
       it(">search by id", () => {
-        searchFilters.clearAll();
-        searchFilters.getAuthoredByMe();
         test_ids.forEach(id => {
+          searchFilters.clearAll();
+          searchFilters.getAuthoredByMe();
           searchFilters.typeInSearchBox(id);
           testLibrary.getTestCardById(id).should("be.visible");
         });

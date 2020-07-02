@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { keys } from "lodash";
 
 import { MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -18,11 +17,11 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnsIndex, stemNumera
       {altAnsIndex ? `${t("component.cloze.altAnswers")} ${altAnsIndex}` : t("component.cloze.correctAnswer")}
     </CorrectAnswerTitle>
     <div>
-      {keys(userAnswers).map((id, index) => (
-        <AnswerBox key={`correct-answer-${index}`}>
-          <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>
+      {userAnswers.map(userAnswer => (
+        <AnswerBox key={`correct-answer-${userAnswer.id}`}>
+          <IndexBox>{getStemNumeration(stemNumeration, userAnswer.index)}</IndexBox>
           <AnswerContent>
-            <MathSpan dangerouslySetInnerHTML={{ __html: userAnswers[id] || "" }} />
+            <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer.value || "" }} />
           </AnswerContent>
         </AnswerBox>
       ))}

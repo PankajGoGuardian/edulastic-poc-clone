@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { shuffle, isUndefined, get, maxBy } from "lodash";
+import { shuffle, isUndefined, get, maxBy, orderBy } from "lodash";
 import { withTheme } from "styled-components";
 import {
   Stimulus,
@@ -29,6 +29,26 @@ import { Triangle } from "../../styled/Triangle";
 import QuestionOptions from "./QuestionOptions";
 import Instructions from "../../components/Instructions";
 import { EDIT } from "../../constants/constantsForQuestions";
+
+/**
+ * answers do not contain an index field
+ * in order to show in proper sequence as is shown in ui above
+ * Object.keys will not not guarantee index so need to form a map using the index
+ * and sort it based on index
+ * @see https://snapwiz.atlassian.net/browse/EV-15948
+ *
+ * @param {Object} answers
+ * @param {Object} idIndexMap
+ */
+function getAnswersSortedByIndex(answers = {}, idIndexMap = {}) {
+  const answersIndexed = produce(answers, draft => {
+    Object.keys(draft).forEach(key => {
+      draft[key] = { value: draft[key], index: idIndexMap[key], id: key };
+    });
+  });
+  const answersSortedByIndex = orderBy(answersIndexed, ["index"], ["asc"]);
+  return answersSortedByIndex;
+}
 
 class Display extends Component {
   containerRef = React.createRef();
@@ -119,6 +139,17 @@ class Display extends Component {
     }
     changePreviewTab("clear");
   };
+
+  get idIndexMap() {
+    const { item: { responses = [] } = {} } = this.props;
+    const idIndexMap = {};
+    responses.forEach((resp, index) => {
+      if (resp.id) {
+        idIndexMap[resp.id] = index;
+      }
+    });
+    return idIndexMap;
+  }
 
   render() {
     const {
@@ -349,21 +380,27 @@ class Display extends Component {
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const altAnswers = get(validation, "altResponses", []);
+
+    const correctAnswers = get(validation, ["validResponse", "value"], {});
     const correctAnswerBoxLayout = (
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
           stemNumeration={stemNumeration}
-          userAnswers={validation.validResponse && validation.validResponse.value}
+          userAnswers={getAnswersSortedByIndex(correctAnswers, this.idIndexMap)}
         />
-        {altAnswers.map((answer, index) => (
-          <CorrectAnswerBoxLayout
-            fontSize={fontSize}
-            stemNumeration={stemNumeration}
-            userAnswers={answer.value}
-            altAnsIndex={index + 1}
-          />
-        ))}
+        {altAnswers.map((answer, index) => {
+          const { value = {} } = answer;
+          const altAnswerSorted = getAnswersSortedByIndex(value, this.idIndexMap);
+          return (
+            <CorrectAnswerBoxLayout
+              fontSize={fontSize}
+              stemNumeration={stemNumeration}
+              userAnswers={altAnswerSorted}
+              altAnsIndex={index + 1}
+            />
+          );
+        })}
       </React.Fragment>
     );
 

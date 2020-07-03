@@ -1,4 +1,4 @@
-import { flatten, groupBy, identity, get, maxBy, cloneDeep } from "lodash";
+import { flatten, groupBy, identity, get, maxBy, cloneDeep,isEmpty } from "lodash";
 import { evaluationType } from "@edulastic/constants";
 import { evaluate, getChecks } from "./math";
 import clozeTextEvaluator from "./clozeText";
@@ -90,7 +90,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     const questionScore = (validAnswers[i] && validAnswers[i].score) || 1;
     maxScore = Math.max(questionScore, maxScore);
 
-    if (validAnswers[i].dropdown) {
+    if (!isEmpty(validAnswers[i].dropdown)) {
       const dropDownEvaluation = clozeTextEvaluator({
         userResponse: transformUserResponse(dropDowns),
         validation: {
@@ -102,7 +102,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       evaluations = { ...evaluations, ...dropDownEvaluation };
     }
 
-    if (validAnswers[i].textinput) {
+    if (!isEmpty(validAnswers[i].textinput)) {
       const clozeTextEvaluation = clozeTextEvaluator({
         userResponse: transformUserResponse(inputs),
         validation: {
@@ -115,7 +115,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       evaluations = { ...evaluations, ...clozeTextEvaluation };
     }
 
-    if (validAnswers[i].value) {
+    if (!isEmpty(validAnswers[i].value)) {
       const mathEvaluation = await mathEval({
         userResponse: _maths,
         validation: {
@@ -126,7 +126,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       evaluations = { ...evaluations, ...mathEvaluation };
     }
 
-    if (validAnswers[i].mathUnits) {
+    if (!isEmpty(validAnswers[i].mathUnits)) {
       const mathEvaluation = await mathEval({
         userResponse: _mathUnits,
         validation: {
@@ -264,7 +264,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
 
   // cloze-text evaluation!
   const clozeTextEvaluation =
-    (validResponse.textinput &&
+    (!isEmpty(validResponse.textinput) &&
       clozeTextEvaluator({
         userResponse: transformUserResponse(inputs),
         validation: {
@@ -280,7 +280,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
 
   // dropdown evaluation
   const dropDownEvaluation =
-    (validResponse.dropdown &&
+    (!isEmpty(validResponse.dropdown) &&
       clozeTextEvaluator({
         userResponse: transformUserResponse(dropDowns),
         validation: {
@@ -294,7 +294,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
 
   // math evaluations
   const mathEvaluation =
-    (validResponse &&
+    (!isEmpty(validResponse.value) &&
       (await mixAndMatchMathEvaluator({
         userResponse: _maths,
         validation: {
@@ -306,7 +306,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
 
   // mathUnits evaluations
   const mathUnitsEvaluation =
-    (validResponse.mathUnits &&
+    (!isEmpty(validResponse.mathUnits) &&
       (await mixAndMatchMathEvaluator({
         userResponse: _mathUnits,
         validation: {

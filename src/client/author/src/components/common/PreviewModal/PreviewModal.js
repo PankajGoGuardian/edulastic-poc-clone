@@ -437,7 +437,7 @@ class PreviewModal extends React.Component {
                 justifyContent="center"
                 onClick={this.handleSelection}
               >
-                {this.isAddOrRemove ? "ADD PASSAGE TO TEST" : "REMOVE"}
+                {this.isAddOrRemove ? "ADD PASSAGE TO TEST" : "REMOVE FROM TEST"}
               </EduButton>
             ) : (
               <EduButton

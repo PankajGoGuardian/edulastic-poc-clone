@@ -47,7 +47,7 @@ export const StyledImg = styled.div`
   height: ${({ height }) => (height ? "180px" : "100%")};
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
 `;
 

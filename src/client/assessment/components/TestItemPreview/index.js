@@ -397,7 +397,7 @@ class TestItemPreview extends Component {
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) || (!isStudentReport && !isReviewTab)) && (
-          <div style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}>
+          <div style={{ position: "relative", "min-width": !isPrintPreview && "265px" }} className="__print-feedback-main-wrapper">
             {this.renderFeedbacks(showStackedView)}
           </div>
         )}

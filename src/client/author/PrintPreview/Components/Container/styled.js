@@ -10,7 +10,7 @@ export const PrintPreviewBack = styled.div`
     width: 100%;
   }
 
-  .__print-feedback-wrapper {
+  .__print-feedback-wrapper, .__print-feedback-main-wrapper {
     width: 120px!important;
   }
   .test-item-col {

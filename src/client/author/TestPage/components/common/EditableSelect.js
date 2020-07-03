@@ -36,6 +36,7 @@ const EditableSelect = ({ placeholder, onChange, defaultValue, options, title })
       {show && (
         <Fragment>
           <Select
+            showArrow
             mode="multiple"
             style={{ width: "100%" }}
             placeholder={placeholder}

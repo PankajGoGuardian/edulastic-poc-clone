@@ -151,6 +151,7 @@ const Sidebar = ({
           )}
           <FieldLabel>Grade</FieldLabel>
           <SelectInputStyled
+            showArrow
             data-cy="gradeSelect"
             mode="multiple"
             size="large"
@@ -171,6 +172,7 @@ const Sidebar = ({
 
           <FieldLabel>Subject</FieldLabel>
           <SelectInputStyled
+            showArrow
             data-cy="subjectSelect"
             mode="multiple"
             size="large"
@@ -193,6 +195,7 @@ const Sidebar = ({
             <>
               <FieldLabel>Collections</FieldLabel>
               <SelectInputStyled
+                showArrow
                 data-cy="collectionsSelect"
                 mode="multiple"
                 size="large"
@@ -215,6 +218,7 @@ const Sidebar = ({
 
           <FieldLabel>Tags</FieldLabel>
           <SelectInputStyled
+            showArrow
             data-cy="tagsSelect"
             className="tagsSelect"
             mode="multiple"

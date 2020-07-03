@@ -474,6 +474,7 @@ class LeftFilter extends React.Component {
           <>
             <FieldLabel>Grade</FieldLabel>
             <SelectInputStyled
+              showArrow
               data-cy="grades"
               mode="multiple"
               placeholder="All grades"

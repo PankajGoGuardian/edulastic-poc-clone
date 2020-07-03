@@ -183,6 +183,11 @@ export const SelectInputStyled = styled(Select)`
         }
       }
       &.ant-select-selection--multiple {
+        padding-right: 25px;
+       .ant-select-arrow {
+         position:absolute;
+         top:20px;
+       }
         .ant-select-selection__rendered {
           width: 100%;
           height: auto;

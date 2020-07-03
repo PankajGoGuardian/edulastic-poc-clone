@@ -303,6 +303,7 @@ const AlignmentRow = ({
                   <ItemBody data-cy="gradeItem">
                     <FieldLabel>{t("component.options.grade")}</FieldLabel>
                     <SelectInputStyled
+                      showArrow
                       data-cy="gradeSelect"
                       mode="multiple"
                       showSearch
@@ -324,7 +325,8 @@ const AlignmentRow = ({
               <div data-cy="searchStandardSelectItem">
                 <SelectInputStyled
                   data-cy="searchStandardSelect"
-                  mode="multiple"
+                  mode="multiple" 
+                  showArrow
                   style={{ margin: "auto", display: "block" }}
                   placeholder={t("component.options.searchStandards")}
                   filterOption={false}

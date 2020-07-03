@@ -68,6 +68,7 @@ const ReviewSummary = ({
         <InnerFlex>
           <FieldLabel>Grade</FieldLabel>
           <SelectInputStyled
+            showArrow
             data-cy="gradeSelect"
             mode="multiple"
             size="large"
@@ -87,6 +88,7 @@ const ReviewSummary = ({
         <InnerFlex>
           <FieldLabel>Subject</FieldLabel>
           <SelectInputStyled
+            showArrow
             data-cy="subjectSelect"
             mode="multiple"
             size="large"
@@ -107,6 +109,7 @@ const ReviewSummary = ({
           <InnerFlex>
             <FieldLabel>Collections</FieldLabel>
             <SelectInputStyled
+              showArrow
               mode="multiple"
               data-cy="collectionsSelect"
               size="medium"

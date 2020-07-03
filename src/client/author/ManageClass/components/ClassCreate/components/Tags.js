@@ -48,6 +48,7 @@ const Tags = props => {
     <>
       <FieldLabel label="Tags" optional {...props} fiedlName="tags" initialValue={tags.map(tag => tag._id)}>
         <SelectInputStyled
+          showArrow
           data-cy="tagsSelect"
           mode="multiple"
           style={{ marginBottom: 0 }}

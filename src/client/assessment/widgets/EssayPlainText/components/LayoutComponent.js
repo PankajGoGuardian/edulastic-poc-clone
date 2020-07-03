@@ -20,7 +20,6 @@ import {
   MinHeightOption,
   MaxHeightOption,
   SpecialCharactersOption,
-  BrowserSpellcheckOption,
   CharactersToDisplayOption
 } from "../../../containers/WidgetOptions/components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
@@ -83,12 +82,6 @@ class LayoutComponent extends Component {
                 checked={!!item.characterMap}
               />
             </Col>
-            <Col md={12}>
-              <BrowserSpellcheckOption
-                onChange={checked => handleItemChangeChange("spellcheck", checked)}
-                checked={!!item.spellcheck}
-              />
-            </Col>
           </Row>
 
           {Array.isArray(item.characterMap) && (
@@ -138,12 +131,13 @@ class LayoutComponent extends Component {
           </Row>
         </Layout>
 
-        <CheckboxLabel
+        {/* TODO: Remove "submitOverLimit (EV-15489)" if not needed */}
+        {/* <CheckboxLabel
           defaultChecked={item && item.validation && item.validation.submitOverLimit}
           onChange={e => handleValidationChange("submitOverLimit", e.target.checked)}
         >
           {t("component.essayText.submitOverLimit")}
-        </CheckboxLabel>
+        </CheckboxLabel> */}
       </Question>
     );
   }

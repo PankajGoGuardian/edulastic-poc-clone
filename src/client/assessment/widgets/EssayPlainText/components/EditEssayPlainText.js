@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
+
+import { Row, Col } from "antd";
+
 import { withNamespaces } from "@edulastic/localization";
 import { CheckboxLabel } from "@edulastic/common";
 
@@ -12,7 +15,7 @@ import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
 import Question from "../../../components/Question";
-import { Scoring } from "../../../containers/WidgetOptions/components";
+import { Scoring, BrowserSpellcheckOption } from "../../../containers/WidgetOptions/components";
 import WordLimitAndCount from "../../../components/WordLimitAndCount";
 
 const EditEssayPlainText = ({
@@ -74,14 +77,23 @@ const EditEssayPlainText = ({
             title={item?.title}
             showHeading={false}
           />
-
-          <CheckboxLabel
-            defaultChecked={item.showWordCount}
-            onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
-            style={{ marginBottom: "1rem" }}
-          >
-            {t("component.essayText.showWordCheckbox")}
-          </CheckboxLabel>
+          <Row gutter={24}>
+            <Col md={12}>
+              <CheckboxLabel
+                defaultChecked={item.showWordCount}
+                onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
+                style={{ marginBottom: "1rem" }}
+              >
+                {t("component.essayText.showWordCheckbox")}
+              </CheckboxLabel>
+            </Col>
+            <Col md={12}>
+              <BrowserSpellcheckOption
+                onChange={checked => handleItemChangeChange("spellcheck", checked)}
+                checked={!!item.spellcheck}
+              />
+            </Col>
+          </Row>
         </Scoring>
       </Question>
 

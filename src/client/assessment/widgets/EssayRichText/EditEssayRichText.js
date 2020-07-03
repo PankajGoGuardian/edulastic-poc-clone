@@ -5,10 +5,12 @@ import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
 
-import { withNamespaces } from "@edulastic/localization";
+import { Row, Col } from "antd";
 
+import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
+import { BrowserSpellcheckOption } from "../../containers/WidgetOptions/components";
 import WordLimitAndCount from "../../components/WordLimitAndCount";
 import { ContentArea } from "../../styled/ContentArea";
 import Question from "../../components/Question";
@@ -81,12 +83,22 @@ const EditEssayRichText = ({
           showHeading={false}
         />
 
-        <CheckboxLabel
-          defaultChecked={item.showWordCount}
-          onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
-        >
-          {t("component.essayText.showWordCheckbox")}
-        </CheckboxLabel>
+        <Row gutter={24}>
+          <Col md={12}>
+            <CheckboxLabel
+              defaultChecked={item.showWordCount}
+              onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
+            >
+              {t("component.essayText.showWordCheckbox")}
+            </CheckboxLabel>
+          </Col>
+          <Col md={12}>
+            <BrowserSpellcheckOption
+              onChange={val => handleItemChangeChange("spellcheck", val)}
+              checked={!!item.spellcheck}
+            />
+          </Col>
+        </Row>
       </Question>
 
       {advancedLink}

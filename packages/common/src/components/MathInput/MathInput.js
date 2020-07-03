@@ -189,8 +189,10 @@ class MathInput extends React.PureComponent {
         mathField.keystroke("Up");
         break;
       case "{":
+        mathField.write("\\lbrace");
+        break;
       case "}":
-        mathField.write("\\left\\{\\right\\}");
+        mathField.write("\\rbrace");
         break;
       case "\\embed{response}":
         mathField.write(key);

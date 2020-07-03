@@ -1,5 +1,6 @@
 const SHORT_TEXT = "shortText";
 const ESSAY_PLAIN_TEXT = "essayPlainText";
+const ESSAY = "essay";
 const ESSAY_RICH_TEXT = "essayRichText";
 const CHOICE_MATRIX = "choiceMatrix";
 const SORT_LIST = "sortList";
@@ -39,45 +40,68 @@ const FRACTION_EDITOR = "fractionEditor";
 const TRUE_OR_FALSE = "trueOrFalse";
 const SECTION_LABEL = "sectionLabel";
 const CODING = "coding";
+const MATH_EXPRESSION = "mathExpression";
+const MATH_NUMERIC = "mathNumeric";
+const MATH_EQUATION = "mathEquation";
+const MATH_MATRICES = "mathMatrices";
+const MATH_NUMERIC_UNITS = "mathNumericUnits";
+const MATH_ESSAY = "mathEssay";
+const NUMBER_LINE = "numberLIne";
+const LINE_AND_DOT_PLOT = "lineAndDotPlot";
+const BAR_AND_LINE_CHART = "barAndLineChart";
+const MULTIPLE_SELECTION = "multipleSelection";
+const GRAPH_PLACEMENT = "graphPlacement";
+const RANGE_PLOTTER = "rangePlotter";
+const MULTIPART = "multipart";
 
 const selectsData = [
   { value: "", text: "All Types" },
   { value: SHORT_TEXT, text: "Short Text" },
-  { value: ESSAY_PLAIN_TEXT, text: "Essay Plain Text" },
-  { value: ESSAY_RICH_TEXT, text: "Essay Rich Text" },
-  { value: CHOICE_MATRIX, text: "Choice Matrix" },
+  { value: ESSAY, text: "Essay" },
+  { value: CHOICE_MATRIX, text: "Matching Table" },
   { value: SORT_LIST, text: "Sort List" },
-  { value: MATCH_LIST, text: "Match List" },
+  { value: MATCH_LIST, text: "Match the following" },
   { value: CLASSIFICATION, text: "Classification" },
-  { value: CLOZE_DRAG_DROP, text: "Cloze Drag Drop" },
-  { value: CLOZE_IMAGE_DRAG_DROP, text: "Label Image Drag Drop" },
+  { value: CLOZE_DRAG_DROP, text: "Drag & Drop" },
+  { value: CLOZE_IMAGE_DRAG_DROP, text: "Label Image Drag & Drop" },
   { value: CLOZE_IMAGE_DROP_DOWN, text: "Label Image Drop Down" },
   { value: CLOZE_IMAGE_TEXT, text: "Label Image Text" },
   { value: PROTRACTOR, text: "Protractor" },
-  { value: PASSAGE, text: "Passage with Multiple parts" },
+  { value: PASSAGE, text: "Passage" },
   { value: VIDEO, text: "Video" },
   { value: TEXT, text: "Text" },
   { value: MATH, text: "Math" },
   { value: FORMULA_ESSAY, text: "Formula Essay" },
   { value: CLOZE_MATH, text: "Cloze Math" },
   { value: EXPRESSION_MULTIPART, text: "Expression Multipart" },
-  { value: ORDER_LIST, text: "Order List" },
+  { value: ORDER_LIST, text: "Re-sequence" },
   { value: MULTIPLE_CHOICE, text: "Multiple Choice" },
-  { value: CLOZE_TEXT, text: "Cloze Text" },
-  { value: CLOZE_DROP_DOWN, text: "Cloze Drop Down" },
+  { value: CLOZE_TEXT, text: "Text Entry" },
+  { value: CLOZE_DROP_DOWN, text: "Text Drop Down" },
   { value: EDITING_TASK, text: "Editing Task" },
-  { value: TOKEN_HIGHLIGHT, text: "Token Highlight" },
+  { value: TOKEN_HIGHLIGHT, text: "Sentence Response" },
   { value: HOTSPOT, text: "Hotspot" },
   { value: SHADING, text: "Shading" },
-  { value: HIGHLIGHT_IMAGE, text: "Highlight Image" },
+  { value: HIGHLIGHT_IMAGE, text: "Drawing Response" },
   { value: LINE_CHART, text: "Line Chart" },
   { value: BAR_CHART, text: "Bar Chart" },
   { value: HISTOGRAM, text: "Histogram" },
-  { value: DOT_PLOT, text: "Dot plot" },
-  { value: LINE_PLOT, text: "Line plot" },
-  { value: GRAPH, text: "Graph" },
+  { value: GRAPH, text: "Graphing" },
   { value: COMBINATION_MULTIPART, text: "Combination Multipart" },
-  { value: PASSAGE_WITH_QUESTIONS, text: "Passage with Questions" }
+  { value: TRUE_OR_FALSE, text: "True or False" }, // TestItem type = multipleChoice
+  { value: MATH_EXPRESSION, text: "Math - Expression" },
+  { value: MATH_NUMERIC, text: "Math - Numeric" },
+  { value: MATH_EQUATION, text: "Math - Equation" },
+  { value: MATH_MATRICES, text: "Math - Matrices" },
+  { value: MATH_NUMERIC_UNITS, text: "Math - Numeric w/ units" },
+  { value: MATH_ESSAY, text: "Math - Essay" },
+  { value: NUMBER_LINE, text: "Number Line" },
+  { value: LINE_AND_DOT_PLOT, text: "Line & Dot Plot" },
+  { value: BAR_AND_LINE_CHART, text: "Bar & Line Chart" },
+  { value: GRAPH_PLACEMENT, text: "Graph Placement" },
+  { value: MULTIPLE_SELECTION, text: "Multiple Selection" },
+  { value: RANGE_PLOTTER, text: "Range Plotter" },
+  { value: MULTIPART, text: "Multipart" }
 ];
 
 const manuallyGradableQn = [FORMULA_ESSAY, HIGHLIGHT_IMAGE, ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT];

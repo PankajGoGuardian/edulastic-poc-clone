@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Modal, Button, Radio, message } from "antd";
+import { Modal, Button, Radio } from "antd";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { isEmpty, uniqBy } from "lodash";
@@ -44,7 +44,7 @@ const DroppedItem = ({ onDelete, item }) => (
           {" "}
           <i className="fa fa-user" aria-hidden="true" />
         </IconWrapper>
-      )}
+        )}
       <ItemName>{item.name}</ItemName>
     </FlexContainer>
     <ActionWrapper>
@@ -270,7 +270,7 @@ const DropPlaylistModal = props => {
 
 export default connect(
   state => ({
-    districtId: state?.user?.user?.districtId,
+    districtId: state?.user?.user?.districtIds[0],
     dropPlaylistSource: state?.curriculumSequence?.dropPlaylistSource?.searchSource,
     droppedAccessData: state?.curriculumSequence?.dropPlaylistSource?.droppedAccess,
     destinationCurriculumSequence: state?.curriculumSequence?.destinationCurriculumSequence,

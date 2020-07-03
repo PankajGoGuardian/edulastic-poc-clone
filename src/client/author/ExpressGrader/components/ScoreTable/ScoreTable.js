@@ -201,10 +201,10 @@ class ScoreTable extends Component {
           pagination={false}
           columns={columnInfo}
           dataSource={columnData}
-          //Columns length will be the number of questions
-          //Column data length will be number of students
+          // Columns length will be the number of questions
+          // Column data length will be number of students
           scroll={{
-            x: !scoreMode ? true : columnsLength > showColumnsCount ? scrollX : false,
+            x: columnsLength > showColumnsCount ? scrollX : false,
             y: showY ? scrollY : false
           }}
           rowKey={(record, i) => i}

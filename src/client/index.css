@@ -2130,6 +2130,10 @@ span.token.active-word {
   width: max-content;
 }
 
+.ant-tooltip-inner {
+  text-align: center;
+}
+
 .ant-modal-wrap {
   overflow-y: auto;
 }

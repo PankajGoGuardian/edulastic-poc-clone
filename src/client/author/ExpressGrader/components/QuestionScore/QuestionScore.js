@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { StyledText, StyledWrapper } from "./styled";
 import { round } from "lodash";
-import { stripHtml } from "../../../ClassBoard/Transformer";
+import { StyledText, StyledWrapper } from "./styled";
+import { Tooltip } from "../../../../common/utils/helpers";
 
 class QuestionScore extends Component {
   render() {
     const { question, tableData, showQuestionModal, isTest, scoreMode = true } = this.props;
     const isQuestion = question && question.score !== undefined && question.maxScore !== undefined;
     let { score: studentScore, graded, skipped, maxScore, responseToDisplay } = question; // score, maxScore,
-    //console.log('question', question);
     let answerStatus = null;
     if (studentScore === maxScore && maxScore > 0) {
       answerStatus = "correct";
@@ -37,17 +36,19 @@ class QuestionScore extends Component {
             {scoreMode ? (
               <StyledText>{graded || skipped ? round(studentScore, 2) : "-"}</StyledText>
             ) : (
-              <StyledText
-                title={stripHtml(responseToDisplay || "-")}
-                dangerouslySetInnerHTML={{ __html: responseToDisplay || "-" }}
-              />
-            )}
+              <Tooltip title={<span dangerouslySetInnerHTML={{ __html: responseToDisplay || "-" }} />}>
+                <StyledText
+                  dangerouslySetInnerHTML={{ __html: responseToDisplay || "-" }}
+                  responseView
+                />
+              </Tooltip>
+              )}
           </StyledWrapper>
         ) : (
           <StyledWrapper>
             <StyledText>-</StyledText>
           </StyledWrapper>
-        )}
+          )}
       </React.Fragment>
     );
   }

@@ -188,6 +188,7 @@ class EditingTypeDisplay extends Component {
             {!question && questionContent}
           </QuestionTitleWrapper>
           {question && questionContent}
+          {dragDropValues}
           {(isPrint || isPrintPreview) && <DisplayOptions options={displayOptions} style={{ marginTop: "50px" }} />}
           {view !== EDIT && <Instructions item={item} />}
           {(showAnswer || isExpressGrader) && (
@@ -210,7 +211,6 @@ class EditingTypeDisplay extends Component {
               ) : null}
             </React.Fragment>
           )}
-          {dragDropValues}
         </QuestionContentWrapper>
       </FlexContainer>
     );

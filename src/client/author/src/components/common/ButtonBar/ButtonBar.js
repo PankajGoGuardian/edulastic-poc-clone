@@ -96,7 +96,10 @@ class ButtonBar extends Component {
       showAuditTrail = false,
       permissions,
       qTitle,
-      userRole
+      userRole,
+      showSaveAndPublishButton,
+      onSaveAndPublish,
+      loadingComponents
     } = this.props;
     return (
       <React.Fragment>
@@ -188,16 +191,27 @@ class ButtonBar extends Component {
                         <IconSaveNew />
                         SAVE
                       </EduButton>
-                      <EduButton isBlue disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
-                        PUBLISH
-                      </EduButton>
+                      {!isTestFlow && showSaveAndPublishButton && (
+                        <EduButton
+                          loading={loadingComponents.includes("saveAndPublishItem")}
+                          isBlue
+                          disabled={disableSave}
+                          data-cy="saveAndPublishItem"
+                          onClick={onSaveAndPublish}
+                        >
+                          PUBLISH
+                        </EduButton>
+                      )}
                     </>
                   ))}
-                {showPublishButton && itemStatus === "draft" && !isTestFlow && userRole !== roleuser.EDULASTIC_CURATOR && (
-                  <EduButton isBlue disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
-                    PUBLISH
-                  </EduButton>
-                )}
+                {showPublishButton &&
+                  itemStatus === "draft" &&
+                  !isTestFlow &&
+                  userRole !== roleuser.EDULASTIC_CURATOR && (
+                    <EduButton isBlue disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
+                      PUBLISH
+                    </EduButton>
+                  )}
                 {!(showPublishButton || showPublishButton === undefined) && (
                   <EduButton isBlue data-cy="editItem" onClick={onEnableEdit} width="120px">
                     EDIT
@@ -335,7 +349,8 @@ const enhance = compose(
       return {
         permissions: get(state, ["user", "user", "permissions"], []),
         qTitle: isMultipart ? "compination-multipart" : getCurrentQuestionSelector(state)?.title,
-        userRole: getUserRole(state)
+        userRole: getUserRole(state),
+        loadingComponents: get(state, ["authorUi", "currentlyLoading"], [])
       };
     },
     {

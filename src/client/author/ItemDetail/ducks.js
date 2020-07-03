@@ -42,7 +42,8 @@ import { getOrgDataSelector, isPublisherUserSelector, getUserRole } from "../src
 import {
   getAlignmentFromQuestionSelector,
   setDictAlignmentFromQuestion,
-  getIsGradingCheckboxState
+  getIsGradingCheckboxState,
+  SAVE_QUESTION_REQUEST
 } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import {
@@ -52,6 +53,8 @@ import {
 } from "../src/selectors/dictionaries";
 import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../src/actions/dictionaries";
 import { markQuestionLabel } from "./Transformer";
+import { getUserFeatures } from "../../student/Login/ducks";
+import { addLoadingComponentAction, removeLoadingComponentAction } from "../src/actions/authorUi";
 
 // constants
 const testItemStatusConstants = {
@@ -117,6 +120,8 @@ export const SET_HIGHLIGHT_COLLECTION = "[itemDetail] set highlight collection";
 export const RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST = "[question] recieve question preview attachment request";
 export const RECEIVE_QUESTION_PREVIEW_ATTACHMENT_SUCCESS = "[question] recieve question preview attachment success";
 export const RECEIVE_QUESTION_PREVIEW_ATTACHMENT_FAILURE = "[question] recieve question preview attachment failure";
+export const SAVE_AND_PUBLISH_ITEM = "[question, itemDetail] save question and publish item";
+export const PROCEED_TO_PUBLISH_ITEM = "[itemDetail] proceed to publish item";
 // actions
 
 //
@@ -136,6 +141,8 @@ export const setCollectionsAction = createAction(SET_COLLECTIONS);
 export const setItemLevelScoreFromRubricAction = createAction(SET_ITEM_LEVEL_SCORING_FROM_RUBRIC);
 export const setHighlightCollectionAction = createAction(SET_HIGHLIGHT_COLLECTION);
 export const fetchQuestionPreviewAttachmentsAction = createAction(RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST);
+export const saveAndPublishItemAction = createAction(SAVE_AND_PUBLISH_ITEM);
+export const proceedToPublishItemAction = createAction(PROCEED_TO_PUBLISH_ITEM);
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -1199,6 +1206,7 @@ function* saveTestItemSaga() {
     type: UPDATE_ITEM_DETAIL_SUCCESS,
     payload: { item: newTestItem }
   });
+  return newTestItem;
 }
 
 function* publishTestItemSaga({ payload }) {
@@ -1210,7 +1218,7 @@ function* publishTestItemSaga({ payload }) {
     if (questions.length === 1) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
       if (isIncomplete) {
-        return notification({ msg: errorMessage });
+        return notification({ msg: errMsg });
       }
     }
     const isGradingCheckBox = yield select(getIsGradingCheckboxState);
@@ -1223,10 +1231,11 @@ function* publishTestItemSaga({ payload }) {
     const testItem = yield select(state => get(state, ["itemDetail", "item"]));
     const isMultipartOrPassageType = testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
     const standardPresent = questions.some(hasStandards);
+    const { saveAndPublishFlow = false } = payload;
 
     // if alignment data is not present, set the flag to open the modal, and wait for
     // an action from the modal.
-    if (!isMultipartOrPassageType && !standardPresent) {
+    if (!isMultipartOrPassageType && !standardPresent && !saveAndPublishFlow) {
       yield put(togglePublishWarningModalAction(true));
       // action dispatched by the modal.
       const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
@@ -1240,7 +1249,9 @@ function* publishTestItemSaga({ payload }) {
       }
     }
 
-    yield saveTestItemSaga();
+    if (!saveAndPublishFlow) {
+      yield saveTestItemSaga();
+    }
     if (
       (payload.status === "published" && !payload.isCurator) ||
       ((payload.isPublisherAuthor || payload.isCurator) && testItem?.collections?.length)
@@ -1259,7 +1270,7 @@ function* publishTestItemSaga({ payload }) {
       yield put(updateTestItemStatusAction(testItemStatus));
       const redirectTestId = yield select(getRedirectTestSelector);
       yield put(changeUpdatedFlagAction(false));
-      if (payload.locationState.testAuthoring === false && payload.locationState.testId) {
+      if (payload.locationState?.testAuthoring === false && payload.locationState?.testId) {
         yield put(
           push({
             pathname: `/author/tests/tab/review/id/${payload.locationState.testId}`,
@@ -1523,6 +1534,29 @@ function* loadQuestionPreviewAttachmentsSaga({ payload }) {
   }
 }
 
+function* saveAndPublishItemSaga() {
+  try {
+    yield put(addLoadingComponentAction({ compoentName: "saveAndPublishItem" }));
+    yield put({ type: SAVE_QUESTION_REQUEST, payload: { saveAndPublishFlow: true } });
+    const { payload } = yield take(PROCEED_TO_PUBLISH_ITEM);
+    const userFeatures = yield select(getUserFeatures);
+    const status = userFeatures.isPublisherAuthor ? "inreview" : "published";
+    const publishData = {
+      isCurator: userFeatures.isCurator,
+      isPublisherAuthor: userFeatures.isPublisherAuthor,
+      itemId: payload.itemId,
+      status,
+      saveAndPublishFlow: true
+    };
+    yield put(publishTestItemAction(publishData));
+    return null;
+  } catch (error) {
+    Sentry.captureException(e);
+  } finally {
+    yield put(removeLoadingComponentAction({ compoentName: "saveAndPublishItem" }));
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -1536,6 +1570,7 @@ export function* watcherSaga() {
     yield takeLatest(SAVE_PASSAGE, savePassage),
     yield takeLatest(ADD_WIDGET_TO_PASSAGE, addWidgetToPassage),
     yield takeEvery(DELETE_ITEM, deleteItemSaga),
-    yield takeLatest(RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST, loadQuestionPreviewAttachmentsSaga)
+    yield takeLatest(RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST, loadQuestionPreviewAttachmentsSaga),
+    yield takeLatest(SAVE_AND_PUBLISH_ITEM, saveAndPublishItemSaga)
   ]);
 }

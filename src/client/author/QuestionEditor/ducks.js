@@ -18,7 +18,8 @@ import {
   PROCEED_PUBLISH_ACTION,
   togglePublishWarningModalAction,
   getPassageSelector,
-  generateRecentlyUsedCollectionsList
+  generateRecentlyUsedCollectionsList,
+  proceedToPublishItemAction
 } from "../ItemDetail/ducks";
 import {
   setTestDataAndUpdateAction,
@@ -353,7 +354,7 @@ const updateItemWithAlignmentDetails = (itemDetail = {}, alignments = []) => {
 
 export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTestId", false);
 
-function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
+function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, saveAndPublishFlow = false } }) {
   try {
     if (isTestFlow) {
       const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
@@ -485,7 +486,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
     const redirectTestId = yield select(redirectTestIdSelector);
     let item;
-    console.log(data);
     // if its a new testItem, create testItem, else update it.
     // TODO: do we need redirect testId here?!
     if (itemDetail._id === "new") {
@@ -495,7 +495,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       item = yield call(testItemsApi.updateById, itemDetail._id, data, redirectTestId);
     }
     yield put(changeUpdatedFlagAction(false));
-
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId));
     }
@@ -503,7 +502,10 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    notification({ type: "success", messageKey: "itemSavedSuccess" });
+
+    if (!saveAndPublishFlow) {
+      notification({ type: "success", messageKey: "itemSavedSuccess" });
+    }
 
     const { standards = [] } = alignments[0];
     // to update recent standards used in local storage and store
@@ -518,6 +520,9 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       let recentCollectionsList = yield select(getRecentCollectionsListSelector);
       recentCollectionsList = generateRecentlyUsedCollectionsList(collections, itemBanks, recentCollectionsList);
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
+    }
+    if (saveAndPublishFlow) {
+      yield put(proceedToPublishItemAction({ itemId: item._id }));
     }
     if (isTestFlow) {
       // user should get redirected to item detail page

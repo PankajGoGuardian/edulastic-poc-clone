@@ -205,10 +205,13 @@ const Header = ({
                   <IconPlusCircle />
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
+                
+                {/*
                 <MenuItems>
                   <IconRemove />
-                  <span>Remove a Co-Teacher</span>
+                  <span>Remove a Co-Teacher</span>  //Hidden until functionality added
                 </MenuItems>
+              */}
                 <MenuItems onClick={getAssignmentsByClass(_id)}>
                   <IconAssignment />
                   <span>View Assignments</span>

@@ -170,7 +170,11 @@ const Author = ({
                     <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                     <Route exact path={`${match.url}/printpreview/:assignmentId/:classId`} component={PrintPreview} />
                     <Route exact path={`${match.url}/printAssessment/:testId`} component={PrintAssessment} />
-                    <Route exact path={`${match.url}/manageClass/printPreview`} component={PrintPreviewClass} />
+                    <Route
+                      exact
+                      path={`${match.url}/manageClass/:classId/printpreview`}
+                      component={PrintPreviewClass}
+                    />
                     <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />
                     <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
                     <Route exact path={`${match.url}/manageClass/:classId`} component={ClassDetails} />

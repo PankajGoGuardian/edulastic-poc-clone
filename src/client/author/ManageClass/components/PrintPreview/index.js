@@ -1,8 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { Table } from "antd";
 import { connect } from "react-redux";
 import { get, isInteger, floor, isEmpty } from "lodash";
+import queryString from "query-string";
 import Title from "./Title";
 import StudentCard from "./StudentCard";
 import {
@@ -16,6 +19,8 @@ import {
   Description,
   CardContainer
 } from "./styled";
+
+import { fetchStudentsByIdAction } from "../../ducks";
 
 const columns = [
   {
@@ -42,27 +47,35 @@ const rowKey = ({ _id }) => _id;
 class PrintPreviewClass extends React.Component {
   static propTypes = {
     selctedClass: PropTypes.object.isRequired,
-    students: PropTypes.array.isRequired,
-    selectedStudent: PropTypes.array.isRequired
+    students: PropTypes.array.isRequired
   };
+
+  componentDidMount() {
+    const { match, loadStudents } = this.props;
+    const { classId } = match.params;
+    loadStudents({ classId });
+  }
 
   render() {
     const appLoginUrl = `${window.location.origin}/login`;
-    const { selctedClass, students, selectedStudent, user } = this.props;
+    const { selctedClass, students, location, user } = this.props;
+    const query = queryString.parse(location.search);
+    const { studentIds } = query;
+    const selectedStudent = studentIds && students ? students.filter(s => studentIds.includes(s._id)) : [];
     const { code, name: className, owners = [] } = selctedClass;
-    let teacherName = owners[0].name;
+    let teacherName = owners[0]?.name;
 
-    if (!teacherName && owners[0].id === user._id) {
+    if (!teacherName && owners[0]?.id === user._id) {
       const { firstName, lastName } = user;
       teacherName = [firstName, lastName].filter(n => n).join(" ");
     }
 
     let tableData = selectedStudent;
     if (isEmpty(tableData)) {
-      tableData = students.filter(student => student.enrollmentStatus === 1);
+      tableData = students?.filter(student => student.enrollmentStatus === 1);
     }
 
-    let pages = tableData.length / numOfCard;
+    let pages = tableData?.length / numOfCard;
     if (!isInteger(pages)) {
       pages = floor(pages + 1);
     }
@@ -97,9 +110,12 @@ class PrintPreviewClass extends React.Component {
         {pages.map((p, i) => (
           <PrintPreviewContainer key={i}>
             <CardContainer>
-              {tableData.slice(i * numOfCard, i * numOfCard + numOfCard).map((student, index) => (
-                <StudentCard student={student} key={index} code={code} appLoginUrl={appLoginUrl} />
-              ))}
+              {!!tableData &&
+                tableData
+                  .slice(i * numOfCard, i * numOfCard + numOfCard)
+                  .map((student, index) => (
+                    <StudentCard student={student} key={index} code={code} appLoginUrl={appLoginUrl} />
+                  ))}
             </CardContainer>
           </PrintPreviewContainer>
         ))}
@@ -108,12 +124,16 @@ class PrintPreviewClass extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    students: get(state, "manageClass.studentsList", []),
-    selctedClass: get(state, "manageClass.entity"),
-    selectedStudent: get(state, "manageClass.selectedStudent", []),
-    user: get(state, "user.user")
-  }),
-  {}
+export default compose(
+  withRouter,
+  connect(
+    state => ({
+      students: get(state, "manageClass.studentsList", []),
+      selctedClass: get(state, "manageClass.entity"),
+      user: get(state, "user.user")
+    }),
+    {
+      loadStudents: fetchStudentsByIdAction
+    }
+  )
 )(PrintPreviewClass);

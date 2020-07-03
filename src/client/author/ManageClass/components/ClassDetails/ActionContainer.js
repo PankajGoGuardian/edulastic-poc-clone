@@ -57,7 +57,6 @@ const ActionContainer = ({
   changeTTS,
   loadStudents,
   features,
-  history,
   setSelectedStudents,
   cleverId,
   loadSchoolPolicy,
@@ -161,7 +160,9 @@ const ActionContainer = ({
             const tempName = split(fullName, " ");
             const firstName = tempName[0];
             const lastName = tempName[1];
-            const {districtIds: [userDistrictId]} = orgData;
+            const {
+              districtIds: [userDistrictId]
+            } = orgData;
             values.classCode = selectedClass.code;
             values.role = "student";
             values.districtId = userDistrictId;
@@ -201,7 +202,7 @@ const ActionContainer = ({
       case "enableSpeech":
         if (isEmpty(selectedStudent)) {
           notification({ messageKey: "selectOneOrMoreStudentsToenebaleTextToSpeech" });
-          return ;
+          return;
         }
         if (changeTTS) {
           const isEnabled = selectedStudent.find(std => std.tts === "yes");
@@ -221,8 +222,7 @@ const ActionContainer = ({
         const isDisabled = selectedStudent.find(std => std.tts === "no");
         if (isDisabled) {
           notification({ messageKey: "atleastOneOfSelectedStudentsIsAlreadyDisabled" });
-          return ;
-          
+          return;
         }
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
@@ -250,8 +250,8 @@ const ActionContainer = ({
           return;
         }
         if (selectedStudent.length > 1) {
-          notification({ messageKey: "pleaseSelectOnlyOneStudent"});
-          return; 
+          notification({ messageKey: "pleaseSelectOnlyOneStudent" });
+          return;
         }
         toggleModal("add");
         setEditStudentStatues(true);
@@ -293,6 +293,11 @@ const ActionContainer = ({
   const onMergeStudents = () => {
     toggleModal("mergeStudents");
     loadStudents({ classId });
+  };
+
+  const handlePrintPreview = () => {
+    const selectedStudentIds = selectedStudent.map(s => s._id);
+    window.open(`/author/manageClass/${classId}/printpreview?studentIds=${selectedStudentIds.join(",")}`, "_blank");
   };
 
   return (
@@ -367,12 +372,7 @@ const ActionContainer = ({
               ADD MULTIPLE STUDENTS
             </EduButton>
           )}
-          <EduButton
-            height="30px"
-            isGhost
-            data-cy="printRoster"
-            onClick={() => history.push(`/author/manageClass/printPreview`)}
-          >
+          <EduButton height="30px" isGhost data-cy="printRoster" onClick={handlePrintPreview}>
             <IconPrint />
             PRINT
           </EduButton>

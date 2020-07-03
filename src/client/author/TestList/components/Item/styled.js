@@ -145,6 +145,14 @@ export const AuthorName = styled.span`
   white-space: nowrap;
   color: ${cardTitleColor};
 `;
+
+export const LikeIcon = styled.div`
+  max-width: 60px;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 15px;
+`;
+
 export const AuthorWrapper = styled.span`
   display: flex;
 `;

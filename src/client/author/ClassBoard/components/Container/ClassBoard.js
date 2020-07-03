@@ -125,7 +125,6 @@ class ClassBoard extends Component {
       nCountTrue: 0,
       redirectPopup: false,
       selectedStudentId: "",
-      condition: true, // Whether meet the condition, if not show popconfirm.
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
       showAddStudentsPopup: false,
@@ -138,10 +137,6 @@ class ClassBoard extends Component {
   }
 
   disneyCardsContainerRef = React.createRef();
-
-  changeCondition = value => {
-    this.setState({ condition: value });
-  };
 
   confirm = () => {
     notification({ type: "success", messageKey: "nextStep" });
@@ -412,12 +407,12 @@ class ClassBoard extends Component {
     );
     if (selectedSubmittedStudents.length) {
       return notification({
-        type: "warn", msg: `${
+        type: "warn",
+        msg: `${
           selectedSubmittedStudents.length
-          } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`
+        } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`
       });
     }
-
 
     this.setState({ showMarkSubmittedPopup: true, modalInputVal: "" });
   };
@@ -439,13 +434,21 @@ class ClassBoard extends Component {
     );
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
-      return notification({ type: "warn", msg: `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.` });
+      return notification({
+        type: "warn",
+        msg: `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`
+      });
     }
     this.setState({ showMarkAbsentPopup: true, selectedNotStartedStudents, modalInputVal: "" });
   };
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents, testActivity } = this.props;
+    const { selectedStudents, testActivity, assignmentStatus } = this.props;
+
+    if (assignmentStatus.toLowerCase() === "done") {
+      return notification({ type: "warn", msg: "Cannot remove student(s) from a DONE assignment." });
+    }
+
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length) {
       return notification({ type: "warn", messageKey: "atleastOneStudentToRemove" });
@@ -561,7 +564,7 @@ class ClassBoard extends Component {
     const selectedStudentsStr = selectedStudentsKeys.join(",");
     window.open(
       `/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}&type=${type}&qs=${
-      type === "custom" ? customValue : ""
+        type === "custom" ? customValue : ""
       }`
     );
     this.closePrintModal();
@@ -632,10 +635,14 @@ class ClassBoard extends Component {
     studentTestActivity.timeSpent = Math.floor(
       ((studentResponse &&
         studentResponse.questionActivities &&
-        studentResponse.questionActivities.reduce((acc, qa) => (acc += qa.timeSpent), 0)) ||
+        studentResponse.questionActivities.reduce((acc, qa) => {
+          acc += qa.timeSpent;
+          return acc;
+        }, 0)) ||
         0) / 1000
     );
-    let { score = 0, maxScore = 0, status } = studentTestActivity;
+    const { status } = studentTestActivity;
+    let { score = 0, maxScore = 0 } = studentTestActivity;
     if (studentResponse && !isEmpty(studentResponse.questionActivities) && status === 0) {
       studentResponse.questionActivities.forEach(uqa => {
         score += uqa.score;
@@ -655,7 +662,8 @@ class ClassBoard extends Component {
     const disableMarkAbsent =
       (assignmentStatus.toLowerCase() == "not open" &&
         ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
-      assignmentStatus.toLowerCase() === "graded" || assignmentStatus.toLowerCase() === "done";
+      assignmentStatus.toLowerCase() === "graded" ||
+      assignmentStatus.toLowerCase() === "done";
     const existingStudents = testActivity.map(item => item.studentId);
     const disabledList = testActivity
       .filter(student => {
@@ -679,6 +687,7 @@ class ClassBoard extends Component {
         ) {
           return true;
         }
+        return false;
       })
       .map(x => x.studentId);
     const enableDownload = testActivity.some(item => item.status === "submitted") && isItemsVisible;
@@ -731,7 +740,13 @@ class ClassBoard extends Component {
             okText="Yes, Remove"
           />
         )}
-        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.closePrintModal} currentTestId={additionalData.testId} />}
+        {openPrintModal && (
+          <PrintTestModal
+            onProceed={this.gotoPrintView}
+            onCancel={this.closePrintModal}
+            currentTestId={additionalData.testId}
+          />
+        )}
         <HooksContainer additionalData={additionalData} classId={classId} assignmentId={assignmentId} />
         <ClassHeader
           classId={classId}
@@ -841,18 +856,20 @@ class ClassBoard extends Component {
                   {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
                 </CheckboxLabel>
                 <ClassBoardFeats>
-                  {!classResponse?.isDocBased && <RedirectButton
-                    disabled={!isItemsVisible}
-                    first
-                    data-cy="printButton"
-                    target="_blank"
-                    onClick={this.onClickPrint}
-                  >
-                    <ButtonIconWrap>
-                      <IconPrint />
-                    </ButtonIconWrap>
-                    PRINT
-                  </RedirectButton>}
+                  {!classResponse?.isDocBased && (
+                    <RedirectButton
+                      disabled={!isItemsVisible}
+                      first
+                      data-cy="printButton"
+                      target="_blank"
+                      onClick={this.onClickPrint}
+                    >
+                      <ButtonIconWrap>
+                        <IconPrint />
+                      </ButtonIconWrap>
+                      PRINT
+                    </RedirectButton>
+                  )}
                   <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
                     <ButtonIconWrap>
                       <IconRedirect />
@@ -944,8 +961,8 @@ class ClassBoard extends Component {
                     closed={additionalData.closed}
                     detailedClasses={additionalData.detailedClasses}
                     studentUnselect={this.onUnselectCardOne}
-                    viewResponses={(e, selected, testActivityId) => {
-                      setCurrentTestActivityId(testActivityId);
+                    viewResponses={(e, selected, _testActivityId) => {
+                      setCurrentTestActivityId(_testActivityId);
                       if (!isItemsVisible) {
                         return;
                       }
@@ -954,14 +971,14 @@ class ClassBoard extends Component {
                         assignmentId,
                         groupId: classId
                       });
-                      this.onTabChange(e, "Student", selected, testActivityId);
+                      this.onTabChange(e, "Student", selected, _testActivityId);
                     }}
                     isPresentationMode={isPresentationMode}
                     enrollmentStatus={enrollmentStatus}
                   />
                 ) : (
                   <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
-                  )}
+                )}
               </div>
 
               {redirectPopup && (
@@ -1003,15 +1020,15 @@ class ClassBoard extends Component {
                     students={testActivity}
                     selectedStudent={selectedStudentId}
                     studentResponse={qActivityByStudent}
-                    handleChange={(value, testActivityId) => {
-                      setCurrentTestActivityId(testActivityId);
+                    handleChange={(value, _testActivityId) => {
+                      setCurrentTestActivityId(_testActivityId);
                       getAllTestActivitiesForStudent({
                         studentId: value,
                         assignmentId,
                         groupId: classId
                       });
                       this.setState({ selectedStudentId: value });
-                      history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`);
+                      history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`);
                     }}
                     isPresentationMode={isPresentationMode}
                   />
@@ -1037,27 +1054,23 @@ class ClassBoard extends Component {
                               ? currentTestActivityId || testActivityId
                               : ""
                           }
-                          onChange={testActivityId => {
+                          onChange={_testActivityId => {
                             loadStudentResponses({
-                              testActivityId,
+                              testActivityId: _testActivityId,
                               groupId: classId,
                               studentId: selectedStudentId
                             });
-                            setCurrentTestActivityId(testActivityId);
+                            setCurrentTestActivityId(_testActivityId);
                             history.push(
-                              `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+                              `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
                             );
                           }}
                         >
-                          {[...allTestActivitiesForStudent].reverse().map((testActivityId, index) => (
-                            <Select.Option
-                              key={index}
-                              value={testActivityId._id}
-                              disabled={testActivityId.status === 2}
-                            >
+                          {[...allTestActivitiesForStudent].reverse().map((_testActivity, index) => (
+                            <Select.Option key={index} value={_testActivity._id} disabled={_testActivity.status === 2}>
                               {`Attempt ${allTestActivitiesForStudent.length - index} ${
-                                testActivityId.status === 2 ? " (Absent)" : ""
-                                }`}
+                                _testActivity.status === 2 ? " (Absent)" : ""
+                              }`}
                             </Select.Option>
                           ))}
                         </Select>
@@ -1119,10 +1132,10 @@ class ClassBoard extends Component {
                           {studentTestActivity.status === 2
                             ? "Absent"
                             : studentTestActivity.status === 1
-                              ? studentTestActivity.graded === "GRADED"
-                                ? "Graded"
-                                : "Submitted"
-                              : "In Progress" || ""}
+                            ? studentTestActivity.graded === "GRADED"
+                              ? "Graded"
+                              : "Submitted"
+                            : "In Progress" || ""}
                         </span>
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
@@ -1171,10 +1184,10 @@ class ClassBoard extends Component {
                     selected={selectedQuestion}
                     justifyContent="flex-end"
                     handleChange={value => {
-                      const { assignmentId, classId } = match.params;
+                      const { _assignmentId, _classId } = match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                      history.push(`/author/classboard/${assignmentId}/${classId}/question-activity/${qid}`);
+                      history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}`);
                       this.setState({
                         selectedQuestion: value,
                         selectedQid: qid,

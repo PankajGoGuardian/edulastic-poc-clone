@@ -45,7 +45,8 @@ const Hints = ({
 
   const [showCount, updateShowCount] = useState(0);
 
-  const showHintHandler = () => {
+  const showHintHandler = e => {
+    e.stopPropagation();
     if (isLCBView || isExpressGrader) {
       updateShowCount(hintCount);
     } else {

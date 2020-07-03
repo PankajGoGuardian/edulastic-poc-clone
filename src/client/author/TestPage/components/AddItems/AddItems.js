@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { debounce, uniq, get } from "lodash";
 import { Pagination, Spin } from "antd";
-import Qs from 'query-string';
+import Qs from "query-string";
 import { roleuser } from "@edulastic/constants";
 import { withWindowSizes, FlexContainer, notification, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -112,12 +112,12 @@ class AddItems extends PureComponent {
       search: initSearch,
       history,
       interestedSubjects,
-      interestedGrades, 
-      interestedCurriculums: [firstCurriculum], 
+      interestedGrades,
+      interestedCurriculums: [firstCurriculum],
       pageNumber
-    } = this.props; 
+    } = this.props;
     const query = Qs.parse(window.location.search);
-    
+
     const {
       subject = interestedSubjects?.[0] || "",
       grades = interestedGrades || [],
@@ -137,10 +137,9 @@ class AddItems extends PureComponent {
       curriculumId: parseInt(curriculumId, 10) || ""
     };
 
-
     this.updateFilterState(search);
     if (!curriculums.length) getCurriculums();
-    receiveTestItems(search, parseInt(query.page)?parseInt(query.page): (pageNumber||1), limit);
+    receiveTestItems(search, parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1, limit);
     getAllTags({ type: "testitem" });
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, "");
@@ -418,21 +417,13 @@ class AddItems extends PureComponent {
       search,
       features,
       gotoGroupItems,
-      userRole,
-      isPowerTeacher,
-      isPremiumUser
+      userRole
     } = this.props;
 
     const { isCurator, isPublisherAuthor } = features;
     let showGroupItemsBtn = false;
 
-    if (
-      isCurator ||
-      isPublisherAuthor ||
-      ([roleuser.TEACHER, roleuser.SCHOOL_ADMIN, roleuser.DISTRICT_ADMIN].includes(userRole) &&
-        isPowerTeacher &&
-        isPremiumUser)
-    ) {
+    if (isCurator || isPublisherAuthor) {
       showGroupItemsBtn = true;
     }
 
@@ -545,9 +536,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      isPowerTeacher: get(state, ["user", "user", "isPowerTeacher"], false),
-      isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
-      pageNumber: state ?.testsAddItems ?.page
+      pageNumber: state?.testsAddItems?.page
     }),
     {
       receiveTestItems: receiveTestItemsAction,

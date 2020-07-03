@@ -147,9 +147,11 @@ class SimpleOptions extends React.Component {
                 ? releaseGradeLabels.WITH_RESPONSE
                 : releaseGradeLabels.DONT_RELEASE;
             state.maxAttempts = 1;
+            state.maxAnswerChecks = 0;
           } else {
             state.releaseScore = releaseGradeLabels.WITH_ANSWERS;
             state.maxAttempts = 1;
+            state.maxAnswerChecks = 3;
           }
           break;
         }

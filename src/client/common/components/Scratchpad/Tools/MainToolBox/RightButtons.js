@@ -5,14 +5,8 @@ import { drawTools } from "@edulastic/constants";
 import { StyledButton } from "../styled";
 import { rightControls } from "../constants/controls";
 
-const RightButtons = ({ onChangeTool, deleteMode, zwibbler }) => {
+const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
   const onClickHandler = mode => () => {
-    if (drawTools.UNDO_TOOL === mode) {
-      return zwibbler?.undo();
-    }
-    if (drawTools.REDO_TOOL === mode) {
-      return zwibbler?.redo();
-    }
     onChangeTool(mode);
   };
 
@@ -23,10 +17,7 @@ const RightButtons = ({ onChangeTool, deleteMode, zwibbler }) => {
           key={btn.mode}
           id={btn.mode}
           pos={btn.pos}
-          disabled={
-            (!zwibbler?.canRedo() && btn.mode === drawTools.REDO_TOOL) ||
-            (!zwibbler?.canUndo() && btn.mode === drawTools.UNDO_TOOL)
-          }
+          disabled={(!canRedo && btn.mode === drawTools.REDO_TOOL) || (!canUndo && btn.mode === drawTools.UNDO_TOOL)}
           onClick={onClickHandler(btn.mode)}
           selected={deleteMode && btn.mode === drawTools.DELETE_TOOL}
         >

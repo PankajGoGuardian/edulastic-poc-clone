@@ -6,7 +6,7 @@ import { Sprite, StyledSelect } from "../../styled";
 
 const { Option } = StyledSelect;
 
-const FontOption = ({ fontSize, fontFamily, fontColor, onChangeOption }) => {
+const FontOption = ({ fontSize, fontFamily, fontColor, onChangeOption, hideFontFamily }) => {
   const onChangeFontFamilyHandler = value => {
     onChangeOption("fontFamily", value);
   };
@@ -22,7 +22,9 @@ const FontOption = ({ fontSize, fontFamily, fontColor, onChangeOption }) => {
   return (
     <FlexContainer id="font-options" marginLeft="14px">
       <Sprite pos={-692} width={16} />
-      <StyledFontPicker hideLabel onChange={onChangeFontFamilyHandler} currentFont={fontFamily} placeholder="----" />
+      {!hideFontFamily && (
+        <StyledFontPicker hideLabel onChange={onChangeFontFamilyHandler} currentFont={fontFamily} placeholder="----" />
+      )}
       <StyledSelect width={34} defaultValue={fontSize} onChange={onChangeFontSizeHandler}>
         <Option value={8}>8</Option>
         <Option value={10}>10</Option>

@@ -4,11 +4,10 @@ import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { hexToRGB, withWindowSizes, notification } from "@edulastic/common";
+import { withWindowSizes, notification } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
@@ -29,8 +28,6 @@ import { changePreviewAction } from "../../../author/src/actions/view";
 
 import { setUserAnswerAction } from "../../actions/answers";
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
-
-import { updateScratchpadAction } from "../../../common/ducks/scratchpad";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction } from "../../actions/userInteractions";
 import { CLEAR } from "../../constants/constantsForQuestions";
@@ -135,79 +132,8 @@ class AssessmentPlayerSimple extends React.Component {
     }
   };
 
-  // if scratchpad data is present on mount, then open scratchpad
-  componentDidMount() {
-    const { scratchPad, updateScratchpad } = this.props;
-    if (scratchPad) {
-      updateScratchpad({
-        toolsOpenStatus: [5],
-        activeMode: ""
-      });
-    }
-  }
-
-  componentDidUpdate(previousProps) {
-    const { currentItem, scratchPad, updateScratchpad } = this.props;
-    if (currentItem !== previousProps.currentItem) {
-      const toolsOpenStatus = scratchPad ? [5] : [];
-      updateScratchpad({ toolsOpenStatus, activeMode: "" });
-    }
-  }
-
-  onFillColorChange = obj => {
-    const { updateScratchpad } = this.props;
-    updateScratchpad({
-      fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
-
-  handleToolChange = value => () => {
-    const { activeMode, deleteMode, updateScratchpad } = this.props;
-    if (value === "deleteMode") {
-      updateScratchpad({ deleteMode: !deleteMode });
-    } else if (activeMode === value) {
-      updateScratchpad({ activeMode: "" });
-    } else {
-      updateScratchpad({ activeMode: value, deleteMode: false });
-      if (value === "drawBreakingLine") {
-        notification({ type: "info", messageKey: "pleaseDoubleClickToStopDrawing" });
-      }
-    }
-  };
-
-  handleUndo = () => {
-    const { undoScratchPad } = this.props;
-    const { history } = this.state;
-    if (history > 0) {
-      this.setState(
-        state => ({ history: state.history - 1 }),
-        () => {
-          undoScratchPad();
-        }
-      );
-    }
-  };
-
-  handleRedo = () => {
-    const { redoScratchPad } = this.props;
-
-    this.setState(
-      state => ({ history: state.history + 1 }),
-      () => {
-        redoScratchPad();
-      }
-    );
-  };
-
-  handleColorChange = obj => {
-    const { updateScratchpad } = this.props;
-    updateScratchpad({
-      currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
-
   saveHistory = sourceId => data => {
     const { saveUserWork, items, currentItem, setUserAnswer, userAnswers, userWork, passage } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
@@ -383,10 +309,7 @@ const enhance = compose(
       toggleBookmark: toggleBookmarkAction,
       saveUserWork: saveUserWorkAction,
       changePreview: changePreviewAction,
-      undoScratchPad: ActionCreators.undo,
-      redoScratchPad: ActionCreators.redo,
       setUserAnswer: setUserAnswerAction,
-      updateScratchpad: updateScratchpadAction,
       updateTestPlayer: updateTestPlayerAction,
       showHints: showHintsAction
     }

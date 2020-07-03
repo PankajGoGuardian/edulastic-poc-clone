@@ -4,11 +4,19 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import isEmpty from "lodash/isEmpty";
 import { drawTools } from "@edulastic/constants";
-import { WithResources, ScrollContext } from "@edulastic/common";
+import { WithResources, MathModal, ScrollContext, getMathHtml } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
 import ToolBox from "../Tools";
-import { resetScratchPadDataAction, setSelectedNodesAction, updateScratchpadAction } from "../duck";
-import ZwibblerContext from "../common/ZwibblerContext";
+import {
+  resetScratchPadDataAction,
+  setSelectedNodesAction,
+  toggleButtonsAction,
+  updateEditModeAction,
+  updateScratchpadAction
+} from "../duck";
+import MathTool from "./MathTool";
+import protractorImg from "./assets/protractor.png";
+import centimeterImg from "./assets/ruler.png";
 
 import AppConfig from "../../../../../../app-config";
 
@@ -22,14 +30,18 @@ const lineTypes = [
 const Scratchpad = ({
   activeMode,
   deleteMode,
+  editMode,
   lineWidth,
   lineColor,
   fillColor,
   fontColor,
   fontFamily,
   fontSize,
-  resetScratchPad,
+  resetScratchpad,
+  updateScratchpad,
   setSelectedNodes,
+  toggleButtons,
+  updateEditMode,
   saveData,
   data,
   readOnly,
@@ -37,9 +49,12 @@ const Scratchpad = ({
   clearClicked // this is from highlight image,
 }) => {
   const [zwibbler, setZwibbler] = useState();
+  const [clipBoard, updateClipBoard] = useState();
+  const [showMathModal, setShowMathModal] = useState(false);
   const isDeleteMode = useRef();
   const zwibblerContainer = useRef();
   const zwibblerRef = useRef();
+  const mathNodeRef = useRef();
   isDeleteMode.current = deleteMode;
   const hideToolBar = readOnly || hideTools;
 
@@ -58,10 +73,55 @@ const Scratchpad = ({
   }, [scrollContainerHeight, scrollContainerWidth]);
 
   const isLineMode = lineTypes.includes(activeMode);
+
+  const toggleProtractor = () => {
+    zwibbler.begin();
+    const protractor = zwibbler.findNode("protractor");
+    const centimeter = zwibbler.findNode("centimeter");
+    if (protractor || centimeter) {
+      zwibbler.deleteNode(protractor);
+      zwibbler.deleteNode(centimeter);
+    } else {
+      zwibbler.createNode("ImageNode", {
+        url: protractorImg,
+        tag: "protractor",
+        rotateAround: [191, 191],
+        rotateHandle: [191, -10],
+        lockSize: true,
+        matrix: [1, 0, 0, 1, 12, 75],
+        zIndex: 1
+      });
+
+      zwibbler.createNode("ImageNode", {
+        url: centimeterImg,
+        tag: "centimeter",
+        rotateAround: [191, 191],
+        rotateHandle: [191, -10],
+        lockSize: true,
+        matrix: [1, 0, 0, 1, 4, 4],
+        zIndex: 1
+      });
+    }
+    zwibbler.commit(true);
+    updateScratchpad({ activeMode: "" });
+  };
+
+  const closeMathModal = () => setShowMathModal(false);
+
+  const addLatex = latex => {
+    if (latex && mathNodeRef.current) {
+      const mathHtml = getMathHtml(latex);
+      mathNodeRef.current.addLatex(mathHtml, fontColor, fontSize);
+      setShowMathModal(false);
+      updateScratchpad({ activeMode: "" });
+    }
+  };
+
   const useTool = () => {
     if (zwibbler) {
       const options = { lineWidth, strokeStyle: lineColor, fillStyle: isLineMode ? lineColor : fillColor };
       const fontOps = { fontSize, fontName: fontFamily, fillStyle: fontColor };
+      mathNodeRef.current = null;
 
       switch (activeMode) {
         case drawTools.FREE_DRAW:
@@ -88,6 +148,14 @@ const Scratchpad = ({
         case drawTools.DRAW_TRIANGLE:
           zwibbler.usePolygonTool(3, 0, 1.0, options);
           break;
+        case drawTools.DRAW_MEASURE_TOOL:
+          toggleProtractor();
+          break;
+        case drawTools.DRAW_MATH: {
+          mathNodeRef.current = new MathTool({ ctx: zwibbler });
+          zwibbler.useCustomTool(mathNodeRef.current);
+          break;
+        }
         default:
           zwibbler.usePickTool();
           break;
@@ -121,6 +189,37 @@ const Scratchpad = ({
     }
   }, [fontColor]);
 
+  useEffect(() => {
+    switch (editMode) {
+      case drawTools.UNDO_TOOL:
+        zwibbler?.undo();
+        break;
+      case drawTools.REDO_TOOL:
+        zwibbler?.redo();
+        break;
+      case drawTools.MOVE_FORWARD:
+        zwibbler?.bringToFront();
+        break;
+      case drawTools.MOVE_BEHIND:
+        zwibbler?.sendToBack();
+        break;
+      case drawTools.COPY:
+        updateClipBoard(zwibbler?.copy(true));
+        break;
+      case drawTools.CUT:
+        updateClipBoard(zwibbler?.cut(true));
+        break;
+      case drawTools.PASTE:
+        zwibbler?.paste(clipBoard);
+        break;
+      default:
+        break;
+    }
+    if (editMode) {
+      updateEditMode({ editMode: "" });
+    }
+  }, [editMode]);
+
   const onClickHandler = () => {
     if (zwibbler && !deleteMode) {
       setSelectedNodes(
@@ -139,15 +238,23 @@ const Scratchpad = ({
         activeMode &&
         activeMode !== drawTools.FREE_DRAW &&
         activeMode !== drawTools.DRAW_TEXT &&
+        activeMode !== drawTools.DRAW_MATH &&
         isEmpty(zwibbler.getSelectedNodes())
       ) {
         useTool();
+      }
+      if (activeMode === drawTools.DRAW_MATH) {
+        setShowMathModal(true);
       }
     }
   };
 
   useEffect(() => {
     if (window.$ && window.Zwibbler && zwibblerRef.current) {
+      window.Zwibbler.component("MathNode", {
+        defaults: {},
+        template: `<span z-html="props.htmlStr"></span>`
+      });
       // initialize Zwibbler
       const newZwibbler = window.Zwibbler.create(zwibblerRef.current, {
         showToolbar: false,
@@ -171,36 +278,47 @@ const Scratchpad = ({
         if (newZwibbler.dirty()) {
           saveData(newZwibbler.save("zwibbler3"));
         }
+        toggleButtons({
+          canRedo: newZwibbler.canRedo(),
+          canUndo: newZwibbler.canUndo()
+        });
       });
       setZwibbler(newZwibbler);
     }
     return () => {
       setZwibbler(null);
-      resetScratchPad();
+      resetScratchpad();
     };
   }, []);
 
   useEffect(() => {
     if (clearClicked && zwibbler) {
       zwibbler.newDocument();
-      resetScratchPad();
+      resetScratchpad();
     }
   }, [clearClicked]);
 
   return (
-    <ZwibblerContext.Provider value={{ zwibbler }}>
-      <ScratchpadContainer ref={zwibblerContainer}>
-        {!hideToolBar && <ToolBox />}
-        <ZwibblerMain
-          deleteMode={deleteMode}
-          id="zwibbler-main"
-          ref={zwibblerRef}
-          onClick={onClickHandler}
-          hideToolBar={hideToolBar}
-          readOnly={readOnly}
-        />
-      </ScratchpadContainer>
-    </ZwibblerContext.Provider>
+    <ScratchpadContainer ref={zwibblerContainer}>
+      {!hideToolBar && <ToolBox />}
+      <ZwibblerMain
+        deleteMode={deleteMode}
+        id="zwibbler-main"
+        ref={zwibblerRef}
+        onClick={onClickHandler}
+        hideToolBar={hideToolBar}
+        readOnly={readOnly}
+      />
+      <MathModal
+        value=""
+        isEditable
+        show={showMathModal}
+        width="420px"
+        showDropdown
+        onSave={addLatex}
+        onClose={closeMathModal}
+      />
+    </ScratchpadContainer>
   );
 };
 
@@ -214,12 +332,15 @@ const EnhancedComponent = compose(
       fontSize: state.scratchpad.fontSize,
       fontColor: state.scratchpad.fontColor,
       activeMode: state.scratchpad.activeMode,
-      deleteMode: state.scratchpad.deleteMode
+      deleteMode: state.scratchpad.deleteMode,
+      editMode: state.scratchpad.editMode
     }),
     {
-      resetScratchPad: resetScratchPadDataAction,
+      toggleButtons: toggleButtonsAction,
+      resetScratchpad: resetScratchPadDataAction,
       setSelectedNodes: setSelectedNodesAction,
-      updateScratchPad: updateScratchpadAction
+      updateEditMode: updateEditModeAction,
+      updateScratchpad: updateScratchpadAction
     }
   )
 )(Scratchpad);

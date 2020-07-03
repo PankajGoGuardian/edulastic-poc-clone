@@ -28,7 +28,6 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
-import { updateScratchpadAction, resetScratchPadDataAction } from "../../../common/ducks/scratchpad";
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction, saveHintUsageAction } from "../../actions/userInteractions";
@@ -540,11 +539,10 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentWillUnmount() {
-    const { previewPlayer, clearUserWork, showScratchPad, resetScratchPadData } = this.props;
+    const { previewPlayer, clearUserWork, showScratchPad } = this.props;
     if (previewPlayer && !showScratchPad) {
       clearUserWork();
     }
-    resetScratchPadData();
   }
 }
 
@@ -608,8 +606,6 @@ const enhance = compose(
       checkAnswer: checkAnswerEvaluation,
       setUserAnswer: setUserAnswerAction,
       clearUserWork: clearUserWorkAction,
-      updateScratchPad: updateScratchpadAction,
-      resetScratchPadData: resetScratchPadDataAction,
       updateTestPlayer: updateTestPlayerAction,
       saveHintUsageData: saveHintUsageAction,
       showHints: showHintsAction

@@ -1,4 +1,4 @@
-import { capitalize, groupBy, uniq, isEmpty } from "lodash";
+import { capitalize, groupBy, keyBy, uniq, isEmpty } from "lodash";
 
 // constants
 import { testActivityStatus } from "@edulastic/constants";
@@ -65,16 +65,18 @@ export const getUniqAssessments = (assessments = []) => {
     const subjects = [];
     const grades = [];
     const assessmentIds = [];
+    let testTitle = "";
     const assessment = assessmentGroups[aId][0];
     assessmentGroups[aId].forEach(a => {
       classIds.push(a.classId);
       subjects.push(...a.subjects);
       grades.push(...a.grades);
       assessmentIds.push(a._id);
+      testTitle = testTitle || a.testTitle;
     });
     return {
       id: assessment._id,
-      name: assessment.title,
+      name: testTitle,
       termId: assessment.termId,
       classIds: uniq(classIds),
       subjects: uniq(subjects),
@@ -138,8 +140,10 @@ const getPaginatedData = (curatedData, assessmentsData, pagination) => {
 };
 
 // function to get curated gradebook data
-export const curateGradebookData = (gradebookData, pagination, status) => {
+export const curateGradebookData = (gradebookData, filtersData, pagination, status) => {
   const { students = [], assignments = [], testActivities = [], assignmentsCount, studentsCount } = gradebookData;
+  const { assessments: assessmentsList } = filtersData;
+  const mappedAssessmentsById = keyBy(assessmentsList, "_id");
 
   // group test-activity by assignmentId
   const taGroups = groupBy(testActivities, "assignmentId");
@@ -199,7 +203,10 @@ export const curateGradebookData = (gradebookData, pagination, status) => {
     d.assessments = assessments;
   });
 
-  const assessmentsData = assignmentsData.map(a => ({ id: a._id, name: a.title }));
+  const assessmentsData = assignmentsData.map(a => {
+    const name = mappedAssessmentsById[a._id]?.testTitle || a.title;
+    return { id: a._id, name };
+  });
 
   if (status) {
     return getPaginatedData(curatedData, assessmentsData, pagination);

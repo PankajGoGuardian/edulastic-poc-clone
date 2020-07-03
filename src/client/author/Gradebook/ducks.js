@@ -1,6 +1,7 @@
 import { createSlice } from "redux-starter-kit";
 import { notification } from "@edulastic/common";
 import { takeLatest, call, put, select } from "redux-saga/effects";
+import { keyBy } from "lodash";
 import { reportsApi, assignmentApi, groupApi } from "@edulastic/api";
 
 // imported selectors
@@ -80,7 +81,7 @@ function* fetchStudentPerformanceSaga({ payload }) {
     yield put(actions.fetchStudentPerformanceCompleted(response));
   } catch (e) {
     yield put(actions.fetchStudentPerformanceCompleted({}));
-    notification({ messageKey:"failedToFetchStudentPerformanceGradeBook"});
+    notification({ messageKey: "failedToFetchStudentPerformanceGradeBook" });
   }
 }
 
@@ -94,7 +95,12 @@ function* fetchGradebookFiltersSaga() {
     // testTypes
     const testTypes = tTypes.map(({ value, text }) => ({ id: value, name: text }));
     // assessments
-    const { assignments: assessments } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
+    const { assignments, tests } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} });
+    const groupedTests = keyBy(tests, "_id");
+    const assessments = assignments.map(a => {
+      const testTitle = groupedTests[a.testId]?.title?.trim() || a.title;
+      return { ...a, testTitle };
+    });
     // classes & groups
     const classList = yield call(groupApi.fetchMyGroups);
     const classes = [];
@@ -113,7 +119,7 @@ function* fetchGradebookFiltersSaga() {
     yield put(actions.fetchGradebookFiltersCompleted(filtersData));
   } catch (e) {
     yield put(actions.fetchGradebookFiltersCompleted({}));
-    notification({ messageKey:"failedToFetchFiltersData"});
+    notification({ messageKey: "failedToFetchFiltersData" });
   }
 }
 

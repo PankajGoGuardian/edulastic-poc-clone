@@ -55,6 +55,7 @@ const Gradebook = ({
   const curatedFiltersData = curateFiltersData(filtersData, filters);
   const { curatedData, assessmentsData, studentsCount, assignmentsCount } = curateGradebookData(
     gradebookData,
+    filtersData,
     pagination,
     filters.status
   );

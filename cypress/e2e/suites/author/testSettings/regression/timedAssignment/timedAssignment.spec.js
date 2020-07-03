@@ -150,14 +150,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment`, () =
         studentTestPage.verifyAndGetRemainingTime("00:02:50", 10).then(startTime => {
           /* wait for one minute, so that time limit becomes less than 2 mns */
           studentTestPage.waitWhileAttempt(`00:00:${startTime - 120}`);
-          studentTestPage.verifyAndGetRemainingTime("00:02:00", 3);
+          studentTestPage.verifyAndGetRemainingTime("00:02:00", 8);
 
           /* wait for two mns, so that time gets exhausted */
           studentTestPage.waitWhileAttempt(`00:01:00`);
-          studentTestPage.verifyAndGetRemainingTime("00:01:00", 3);
+          studentTestPage.verifyAndGetRemainingTime("00:01:00", 8);
 
           studentTestPage.waitWhileAttempt(`00:00:59`);
-          studentTestPage.verifyAndGetRemainingTime("00:00:01", 5);
+          studentTestPage.verifyAndGetRemainingTime("00:00:01", 8);
 
           studentTestPage.clickOkOnTimeOutPopUp();
         });

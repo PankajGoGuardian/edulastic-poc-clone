@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { withNamespaces } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Popover } from "antd";
+import { Popover,Tooltip } from "antd";
 
 import { red, white, themeColor } from "@edulastic/colors";
 import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
@@ -52,14 +52,18 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
       <FlexContainer>
-        <StyledEduButton isBlue data-cy="launch-google-meet" onClick={launchHangout} isGhost>
-          <IconHangouts height={21} width={19} />
-        </StyledEduButton>
+        <Tooltip title="Launch Google Meet"> 
+          <StyledEduButton IconBtn isBlue data-cy="launch-google-meet" onClick={launchHangout} isGhost>
+            <IconHangouts color={themeColor} height={21} width={19} />
+          </StyledEduButton>
+        </Tooltip>
+        <Tooltip title="Manage Class">
         <Link to="/author/manageClass">
-          <EduButton isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
+          <EduButton IconBtn isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
             <IconManage />
           </EduButton>
         </Link>
+        </Tooltip>
         {!premium && (
           <PopoverWrapper>
             <Popover

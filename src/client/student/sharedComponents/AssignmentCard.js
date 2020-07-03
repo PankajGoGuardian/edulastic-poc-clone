@@ -94,7 +94,7 @@ const AssignmentCard = memo(
     useEffect(() => {
       if (highlightMode) {
         if (assignmentCardRef.current) {
-          scrollTo({
+          window.scrollTo({
             top: assignmentCardRef.current.parentNode.offsetTop,
             behavior: "smooth"
           });
@@ -135,7 +135,7 @@ const AssignmentCard = memo(
       close = maxCurrentClass.close;
       startDate = maxCurrentClass.startDate;
       endDate = maxCurrentClass.endDate;
-      isPaused = maxCurrentClass.isPaused;
+      isPaused = currentClassList.some(_class => _class.isPaused);
     }
     if (!startDate && open) {
       const maxCurrentClass =
@@ -143,7 +143,7 @@ const AssignmentCard = memo(
           ? maxBy(currentClassList, "openDate") || currentClassList[currentClassList.length - 1]
           : {};
       startDate = maxCurrentClass.openDate;
-      isPaused = maxCurrentClass.isPaused;
+      isPaused = currentClassList.some(_class => _class.isPaused);
     }
     if (!endDate && close) {
       endDate = (currentClassList && currentClassList.length > 0
@@ -172,7 +172,7 @@ const AssignmentCard = memo(
     const scorePercentage = (score / maxScore) * 100 || 0;
     const arrow = showAttempts ? "\u2191" : "\u2193";
     // To handle regrade reduce max attempt settings.
-    if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
+    if (maxAttempts < reports.length && !window.isNaN(maxAttempts)) {
       maxAttempts = reports.length;
     }
     const startTest = () => {

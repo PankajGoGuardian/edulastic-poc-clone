@@ -93,7 +93,8 @@ class AddItems extends PureComponent {
     clearDictStandards: PropTypes.func.isRequired,
     onSaveTestId: PropTypes.func.isRequired,
     createTestItem: PropTypes.func.isRequired,
-    gotoSummary: PropTypes.func.isRequired
+    gotoSummary: PropTypes.func.isRequired,
+    needToSetFilter: PropTypes.bool
   };
 
   state = {
@@ -112,32 +113,35 @@ class AddItems extends PureComponent {
       search: initSearch,
       history,
       interestedSubjects,
-      interestedGrades,
-      interestedCurriculums: [firstCurriculum],
-      pageNumber
-    } = this.props;
+      interestedGrades, 
+      interestedCurriculums: [firstCurriculum], 
+      pageNumber,
+      needToSetFilter
+    } = this.props; 
     const query = Qs.parse(window.location.search);
+    let search = {};
 
-    const {
-      subject = interestedSubjects?.[0] || "",
-      grades = interestedGrades || [],
-      curriculumId = firstCurriculum?.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
-    } = getDefaultInterests();
-    const isAuthoredNow = history?.location?.state?.isAuthoredNow;
-    const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
-    const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
-    const selectedSubjects = test.subjects.filter(item => !!item);
-    const selectedGrades = test.grades.filter(item => !!item);
-    const search = {
-      ...initSearch,
-      ...sessionFilters,
-      ...applyAuthoredFilter,
-      subject: selectedSubjects[0] || subject,
-      grades: uniq([...selectedGrades, ...grades]),
-      curriculumId: parseInt(curriculumId, 10) || ""
-    };
-
-    this.updateFilterState(search);
+    if (needToSetFilter) {
+      const {
+        subject = interestedSubjects?.[0] || "",
+        grades = interestedGrades || [],
+        curriculumId = firstCurriculum?.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+      } = getDefaultInterests();
+      const isAuthoredNow = history?.location?.state?.isAuthoredNow;
+      const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
+      const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
+      const selectedSubjects = test.subjects.filter(item => !!item);
+      const selectedGrades = test.grades.filter(item => !!item);
+      search = {
+        ...initSearch,
+        ...sessionFilters,
+        ...applyAuthoredFilter,
+        subject: selectedSubjects[0] || subject,
+        grades: uniq([...selectedGrades, ...grades]),
+        curriculumId: parseInt(curriculumId, 10) || ""
+      };
+      this.updateFilterState(search);
+    }
     if (!curriculums.length) getCurriculums();
     receiveTestItems(search, parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1, limit);
     getAllTags({ type: "testitem" });
@@ -172,7 +176,7 @@ class AddItems extends PureComponent {
 
   handleClearSearch = () => {
     const { clearFilterState, receiveTestItems, limit } = this.props;
-    clearFilterState();
+    clearFilterState({ needToSetFilter: false });
     receiveTestItems(initalSearchState, 1, limit);
     setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
   };
@@ -536,7 +540,8 @@ const enhance = compose(
       features: getUserFeatures(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      pageNumber: state?.testsAddItems?.page
+      pageNumber: state ?.testsAddItems ?.page,
+      needToSetFilter: state?.testsAddItems?.needToSetFilter
     }),
     {
       receiveTestItems: receiveTestItemsAction,

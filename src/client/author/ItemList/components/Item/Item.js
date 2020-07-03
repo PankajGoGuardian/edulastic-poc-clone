@@ -9,7 +9,15 @@ import { Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants, roleuser } from "@edulastic/constants";
 import { themeColor } from "@edulastic/colors";
-import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton, notification } from "@edulastic/common";
+import {
+  MathFormulaDisplay,
+  PremiumTag,
+  helpers,
+  WithResources,
+  EduButton,
+  notification,
+  LikeIconStyled
+} from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
 
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
@@ -45,8 +53,7 @@ import {
   Details,
   AddRemoveBtn,
   AddRemoveBtnPublisher,
-  AddRemoveButton,
-  HeartWrapper
+  AddRemoveButton
 } from "./styled";
 import {
   setAndSavePassageItemsAction,
@@ -174,13 +181,15 @@ class Item extends Component {
       },
       {
         name: (
-          <HeartWrapper
+          <LikeIconStyled
+            className="like-icon"
+            isLiked={isItemLiked}
             title={isItemLiked ? "Unlike" : "Like"}
             isEnabled={isItemLiked}
             onClick={() => this.handleLike(isItemLiked)}
           >
             <HeartIcon />
-          </HeartWrapper>
+          </LikeIconStyled>
         ),
         text: item?.analytics?.[0]?.likes || "0",
         type: "like"
@@ -202,11 +211,13 @@ class Item extends Component {
       (detail, index) =>
         (detail.text || detail.type === "premium") &&
         detail.text !== "Edulastic Certified" && (
-          <DetailCategory data-cy={`detail_index-${index}`} key={`DetailCategory_${index}`}>
+          <DetailCategory isLiked={isItemLiked} data-cy={`detail_index-${index}`} key={`DetailCategory_${index}`}>
             <CategoryName>{detail.name}</CategoryName>
             {detail.type !== "premium" && (
               <CategoryContent>
                 <Text title={detail.type === "id" ? detail.text : ""}>
+                  {console.log("item: ", item)}
+                  {console.log("analytics: ", item.analytics)}
                   {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
                 </Text>
               </CategoryContent>

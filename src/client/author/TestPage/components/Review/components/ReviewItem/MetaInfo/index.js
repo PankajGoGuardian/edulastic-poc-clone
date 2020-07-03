@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { FlexContainer, PremiumTag } from "@edulastic/common";
-import { red } from "@edulastic/colors";
+import { FlexContainer, PremiumTag, LikeIconStyled } from "@edulastic/common";
+import { darkGrey } from "@edulastic/colors";
 import { IconUser, IconHash, IconVolumeUp, IconNoVolume, IconHeart, IconShare } from "@edulastic/icons";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 import { isPublisherUserSelector } from "../../../../../../src/selectors/user";
@@ -51,13 +51,13 @@ const MetaInfo = ({
         {renderAnalytics(by, IconUser)}
         {renderAnalytics(id && id.substring(18), IconHash)}
         <AnalyticsItem>
-          <IconShare color="#bbbfc4" width={15} height={15} />
+          <IconShare color={darkGrey} width={15} height={15} />
           <MetaTitle>{analytics?.[0]?.usage || 0}</MetaTitle>
         </AnalyticsItem>
-        <AnalyticsItem onClick={handleItemLike}>
-          <IconHeart color={isItemLiked ? red : "#bbbfc4"} width={15} height={15} />
+        <LikeIconStyled isLiked={isItemLiked} onClick={handleItemLike} style={{ marginLeft: "15px" }}>
+          <IconHeart color={isItemLiked ? "#ca481e" : darkGrey} width={15} height={15} />
           <MetaTitle>{analytics?.[0]?.likes || 0}</MetaTitle>
-        </AnalyticsItem>
+        </LikeIconStyled>
         {audio && Object.prototype.hasOwnProperty.call(audio, "ttsSuccess") ? (
           audio.ttsSuccess ? (
             <IconVolumeUp margin="0px 0px 0px 20px" />

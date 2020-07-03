@@ -322,6 +322,16 @@ export const DetailCategory = styled.div`
       fill: ${themeLightGrayColor};
     }
   }
+  .like-icon {
+    svg {
+      max-width: unset;
+      max-height: unset;
+      fill: ${props => (props.isLiked ? "#ca481e" : themeLightGrayColor)};
+      &:hover {
+        fill: ${props => (props.isLiked ? "black" : "#ca481e")};
+      }
+    }
+  }
 
   @media (max-width: ${smallDesktopWidth}) {
     margin-left: 10px;
@@ -351,7 +361,7 @@ export const CategoryName = styled.span`
   align-items: baseline;
   font-size: ${props => props.theme.smallLinkFontSize};
   font-weight: 600;
-  margin-right: 5px;
+  margin-right: ${props => (props.type === "like" ? "0px" : "5px")};
   color: ${themeLightGrayColor};
 
   @media (max-width: ${tabletWidth}) {

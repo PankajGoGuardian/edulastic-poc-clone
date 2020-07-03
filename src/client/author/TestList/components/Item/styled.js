@@ -148,11 +148,6 @@ export const AuthorName = styled.span`
 export const AuthorWrapper = styled.span`
   display: flex;
 `;
-export const LikeIcon = styled.div`
-  max-width: 60px;
-  display: inline-flex;
-  align-items: center;
-`;
 
 export const ShareIcon = styled.div`
   max-width: 60px;

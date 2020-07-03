@@ -1,7 +1,7 @@
 import { assignmentApi } from "@edulastic/api";
 import { uniqBy } from "lodash";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor, red } from "@edulastic/colors";
-import { CheckboxLabel, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
+import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -391,7 +391,7 @@ class ListItem extends Component {
               </TagsWrapper>
 
               <ItemInformation span={12}>
-                <ContentWrapper>
+                <ContentWrapper type="flex" align="middle" justify="end">
                   {showPremiumTag && <PremiumTag />}
                   {authorName && (
                     <Author>
@@ -415,10 +415,10 @@ class ListItem extends Component {
                     <IconText>{usage}</IconText>
                   </IconWrapper>
                   {!isPlaylist && (
-                    <IconWrapper onClick={this.handleLikeTest}>
-                      <IconHeart color={isTestLiked ? red : darkGrey} width={14} height={14} /> &nbsp;
+                    <LikeIconStyled isLiked={isTestLiked} onClick={this.handleLikeTest} style={{ marginLeft: "20px" }}>
+                      <IconHeart color={isTestLiked ? red : darkGrey} width={14} height={14} />
                       <IconText>{likes}</IconText>
-                    </IconWrapper>
+                    </LikeIconStyled>
                   )}
                 </ContentWrapper>
               </ItemInformation>

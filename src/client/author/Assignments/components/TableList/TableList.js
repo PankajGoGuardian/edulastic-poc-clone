@@ -161,7 +161,7 @@ const TableList = ({
             <TimedTestIndicator data-cy="type" type="p">
               {row.timedAssignment && (
                 <Tooltip
-                  title={<IndicatorText>{row.timedAssignment / (60 * 1000)}min</IndicatorText>}
+                  title={<IndicatorText> Time Limit: {row.timedAssignment / (60 * 1000)} min</IndicatorText>}
                   placement="right"
                 >
                   <TimerIcon />

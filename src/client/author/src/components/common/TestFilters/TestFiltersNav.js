@@ -55,9 +55,10 @@ const Item = styled(Menu.Item)`
   }
 
   &.ant-menu-item {
-    font-size: 13px;
+    font-size: 11px;
     display: flex;
     align-items: center;
+    text-transform: uppercase;
 
     @media (max-width: ${smallDesktopWidth}) {
       height: 30px;

@@ -1,5 +1,5 @@
-import { darkGrey, white, greyThemeDark2, red } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { darkGrey, white, greyThemeDark2 } from "@edulastic/colors";
+import { EduButton, LikeIconStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import {
   IconCopy,
@@ -398,10 +398,10 @@ class ViewModal extends React.Component {
                 <IconShare color={darkGrey} width={14} height={14} />
                 {analytics && <IconText>{analytics[0]?.usage || 0} </IconText>}
               </FooterIcon>
-              <FooterIcon onClick={handleLikeTest}>
-                <IconHeart color={isTestLiked ? red : darkGrey} width={14} height={14} />
+              <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest} style={{ marginLeft: "10px" }}>
+                <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
                 {analytics && <IconText>{analytics[0]?.likes || 0}</IconText>}
-              </FooterIcon>
+              </LikeIconStyled>
             </Footer>
           </ModalColumn>
           <ModalColumn>

@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
 import { assignmentApi } from "@edulastic/api";
-import { cardTitleColor, themeColor, red } from "@edulastic/colors";
-import { PremiumLabel, EduButton } from "@edulastic/common";
+import { cardTitleColor, themeColor, darkGrey } from "@edulastic/colors";
+import { PremiumLabel, EduButton, LikeIconStyled } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import {
   Container,
@@ -19,7 +19,6 @@ import {
   Stars,
   StyledLink,
   TestInfo,
-  LikeIcon,
   ShareIcon,
   AuthorWrapper,
   IconText,
@@ -401,14 +400,14 @@ class Item extends Component {
             {status !== "draft" && (
               <>
                 <ShareIcon>
-                  <IconShare color={cardTitleColor} width={14} height={14} /> &nbsp;
+                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
                   <IconText>{usage}</IconText>
                 </ShareIcon>
                 {!isPlaylist && (
-                  <LikeIcon onClick={this.handleLikeTest}>
-                    <IconHeart color={isTestLiked ? red : cardTitleColor} width={14} height={14} /> &nbsp;
+                  <LikeIconStyled isLiked={isTestLiked} onClick={this.handleLikeTest}>
+                    <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
                     <IconText>{likes}</IconText>
-                  </LikeIcon>
+                  </LikeIconStyled>
                 )}
               </>
             )}

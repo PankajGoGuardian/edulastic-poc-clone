@@ -32,7 +32,7 @@ import {
   Collection,
   CollectionNameWrapper,
   ThinLine
-} from "../../../TestList/components/Item/styled.js";
+} from "../../../TestList/components/Item/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 import { TestStatus } from "../../../TestList/components/ListItem/styled";
 
@@ -60,7 +60,7 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [],
   return (
     <Container
       src={thumbnail}
-      onClick={() => { }}
+      onClick={() => {}}
       title={
         <Header src={thumbnail}>
           <Stars />
@@ -72,7 +72,13 @@ const ImageCard = ({ isPlaylist, _source = {}, collections: allCollections = [],
       <TestInfo style={{ textAlign: "left" }}>
         <StyledLink title={contentData.title || title}>{contentData.title || title}</StyledLink>
         <TagsWrapper isPlaylist={isPlaylist}>
-          <Tags show={4} tags={contentData.standardsIdentifiers || standardsIdentifiers} key="standards" isStandards margin="0px" />
+          <Tags
+            show={4}
+            tags={contentData.standardsIdentifiers || standardsIdentifiers}
+            key="standards"
+            isStandards
+            margin="0px"
+          />
           {isPlaylist && <Tags show={2} tags={tags} key="tags" />}
         </TagsWrapper>
       </TestInfo>

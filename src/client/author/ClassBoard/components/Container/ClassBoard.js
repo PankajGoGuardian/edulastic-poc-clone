@@ -712,7 +712,7 @@ class ClassBoard extends Component {
         )}
         {showMarkAbsentPopup && (
           <ConfirmationModal
-            title="Absent"
+            title="MARK AS ABSENT"
             show={showMarkAbsentPopup}
             onOk={this.handleMarkAbsent}
             onCancel={this.handleCancelMarkAbsent}

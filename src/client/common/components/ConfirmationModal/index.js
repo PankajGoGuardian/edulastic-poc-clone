@@ -47,7 +47,7 @@ const ConfirmationModal = ({
             </StyledDiv>
             ) : (
               <StyledDiv>
-                This action can NOT be undone.If you are sure, please type{" "}
+                This action can NOT be undone. If you are sure, please type{" "}
                 <LightGreenSpan> {expectedVal} </LightGreenSpan> in the space below.
               </StyledDiv>
             )}

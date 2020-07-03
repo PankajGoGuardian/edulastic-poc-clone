@@ -509,7 +509,6 @@ class ProfileBody extends React.Component {
         ? !!institutionPolicies.filter(p => p.allowGoogleClassroom).length
         : get(user, "orgData.policies.district.allowGoogleClassroom", false)) ||
       (user.orgData?.districts?.[0]?.districtStatus === 2 && !!user.orgData.classList.filter(c => !!c.googleId).length);
-    const subjectsList = selectsData.allSubjects.slice(1);
     const interestedStaData = {
       curriculums: interestedCurriculums
     };
@@ -712,7 +711,7 @@ class ProfileBody extends React.Component {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    {subjectsList.map(({ value, text }) => (
+                    {selectsData.allSubjects.map(({ value, text }) => (
                       <Select.Option key={value} value={value}>
                         {text}
                       </Select.Option>

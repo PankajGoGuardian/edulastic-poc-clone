@@ -5,10 +5,11 @@ import { get, isEmpty, pullAt } from "lodash";
 import * as moment from "moment";
 
 // components
-import { Spin, Switch, Tooltip } from "antd";
+import { Spin, Tooltip } from "antd";
 import { GiDominoMask } from "react-icons/gi";
 import { IconClose, IconCorrect, IconExclamationMark } from "@edulastic/icons";
 import { lightBlue3 } from "@edulastic/colors";
+import { EduSwitchStyled } from "@edulastic/common";
 import {
   NoStudents,
   NoConentDesc,
@@ -200,7 +201,7 @@ const StudentsList = ({
           <>
             <SwitchBox>
               <span>SHOW ACTIVE STUDENTS</span>
-              <Switch checked={showCurrentStudents} onClick={showStudentsHandler} />
+              <EduSwitchStyled checked={showCurrentStudents} onClick={showStudentsHandler} />
             </SwitchBox>
             <StudentsTable
               columns={columns}

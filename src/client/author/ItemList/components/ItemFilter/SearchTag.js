@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { Select } from "antd";
+import { SelectInputStyled } from "@edulastic/common";
 
 const InputTag = ({ onSearchInputChange, value = [], placeholder, disabled = false }) => (
   <Container>
-    <Select
+    <SelectInputStyled
       mode="tags"
       placeholder={placeholder || "Search by skills and keywords"}
       onChange={onSearchInputChange}

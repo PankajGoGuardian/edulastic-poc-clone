@@ -11,8 +11,9 @@ import {
   title,
   white
 } from "@edulastic/colors";
-import { Button, Col, DatePicker, Input, Radio, Row, Select, Switch, Table } from "antd";
+import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from "antd";
 import styled from "styled-components";
+import { EduSwitchStyled } from "@edulastic/common";
 
 const RadioGroup = Radio.Group;
 
@@ -82,8 +83,7 @@ export const StyledRadioGropRow = styled(Row)`
   margin-top: -8px;
 `;
 
-export const AlignSwitchRight = styled(Switch)`
-  width: 35px;
+export const AlignSwitchRight = styled(EduSwitchStyled)`
   float: left;
 `;
 
@@ -294,14 +294,14 @@ export const DivBlock = styled.div`
 `;
 
 export const Label = styled.label`
-  display:flex;
+  display: flex;
   font-size: ${props => props.theme.linkFontSize};
   font-weight: 600;
   text-transform: uppercase;
 `;
-export const RadioButtonWrapper=styled.div`
-  display:flex;
-  margin-top:10px;
+export const RadioButtonWrapper = styled.div`
+  display: flex;
+  margin-top: 10px;
 `;
 
 export const StyledDiv = styled.div`

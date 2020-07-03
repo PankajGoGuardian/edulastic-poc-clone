@@ -9,15 +9,14 @@ import styled from "styled-components";
 // contants
 import { mobileWidthLarge } from "@edulastic/colors";
 
-
 // components
-import { Switch } from "antd";
 import {
   withWindowSizes,
   MainContentWrapper,
   WithResources,
   FlexContainer,
-  toggleIntercomDisplay
+  toggleIntercomDisplay,
+  EduSwitchStyled
 } from "@edulastic/common";
 import AppConfig from "../../../../../../app-config";
 import ScoreTable from "../ScoreTable/ScoreTable";
@@ -166,7 +165,7 @@ class ExpressGrader extends Component {
                 <FlexContainer justifyContent="space-between">
                   <SwitchBox>
                     RESPONSE{" "}
-                    <Switch data-cy="response-toggle" checked={scoreMode} onChange={() => toggleScoreMode()} />{" "}
+                    <EduSwitchStyled data-cy="response-toggle" checked={scoreMode} onChange={() => toggleScoreMode()} />{" "}
                     SCORE
                   </SwitchBox>
                   <PresentationToggleSwitch groupId={classId} />

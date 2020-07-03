@@ -1,6 +1,6 @@
 import { Input, Select } from "antd";
 import styled from "styled-components";
-import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import { greyThemeLight, greyThemeLighter, themeColorBlue } from "@edulastic/colors";
 
 export const TextInputStyled = styled(Input)`
   &.ant-input {
@@ -20,7 +20,7 @@ export const TextInputStyled = styled(Input)`
     ${props => props.style};
     &:focus,
     &:hover {
-      border: 1px solid ${greyThemeLight};
+      border: 1px solid ${themeColorBlue};
       background-color: ${greyThemeLighter};
       box-shadow: none;
     }
@@ -31,6 +31,23 @@ export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${props => props.width || "100%"};
     margin: ${props => props.margin || "0px"};
+    &.ant-select-focused,
+    &.ant-select-open {
+      .ant-select-selection {
+        border-color: ${themeColorBlue};
+        box-shadow: none;
+      }
+    }
+    &.ant-select-enabled {
+      .ant-select-selection {
+        &:focus,
+        &:hover {
+          border: 1px solid ${themeColorBlue};
+          background-color: ${props => props.bg || greyThemeLighter};
+          box-shadow: none;
+        }
+      }
+    }
     .ant-select-selection {
       display: flex;
       align-items: center;
@@ -47,12 +64,6 @@ export const SelectInputStyled = styled(Select)`
       font-weight: 600;
       line-height: 1.38;
       outline: 0;
-      &:focus,
-      &:hover {
-        border: 1px solid ${greyThemeLight};
-        background-color: ${props => props.bg || greyThemeLighter};
-        box-shadow: none;
-      }
       &.ant-select-selection--single {
         .ant-select-selection__rendered {
           padding: 0px 30px 0px 15px;

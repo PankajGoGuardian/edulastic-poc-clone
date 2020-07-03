@@ -220,7 +220,7 @@ class ShareModal extends React.Component {
 
   getUserName(data) {
     const {
-      userOrgData: { districts }
+      userOrgData: { districts = [{}] }
     } = this.props;
     // share modal is not for student so we can get
     const [{ districtName = "" }] = districts;
@@ -275,7 +275,7 @@ class ShareModal extends React.Component {
     const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
       currentUser.email ? currentUser.email : ""
     }`;
-    const { districts, schools } = userOrgData;
+    const { districts = [{}], schools } = userOrgData;
     // share modal is not for student so we can get
     const [{ districtName = "" }] = districts;
     const isDA = userRole === roleuser.DISTRICT_ADMIN;

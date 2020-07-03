@@ -103,10 +103,17 @@ class MathInput extends React.PureComponent {
         }
         textarea.addEventListener("keyup", this.handleChangeField);
         textarea.addEventListener("keypress", this.handleKeypress);
+        textarea.addEventListener("keydown", this.handleTabKey, false);
         document.addEventListener("click", this.handleClick, false);
       }
     );
   }
+
+  handleTabKey = e => {
+    if (e?.keyCode === 9) {
+      this.setState({ mathFieldFocus: false });
+    }
+  };
 
   sanitizeLatex = v => v.replace(/&amp;/g, "&");
 

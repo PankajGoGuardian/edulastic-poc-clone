@@ -771,7 +771,7 @@ class GraphContainer extends PureComponent {
                 </Fragment>
               )}
               <AnnotationRnd
-                noBorder
+                noBorder={view !== EDIT}
                 question={graphData}
                 setQuestionData={setQuestionData}
                 disableDragging={view !== EDIT}

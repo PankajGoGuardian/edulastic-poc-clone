@@ -575,44 +575,49 @@ class PlacementContainer extends PureComponent {
             </StyledToolsContainer>
           )}
           <div className="__prevent-page-break">
-          <JSXBoxWithDropValues className={dragDropBoundsClassName}>
-            {!disableResponse && (
-              <DragDropValues
-                scale={zoomLevel}
-                height={layout.height}
-                margin={margin}
-                values={this.getDragDropValues()}
-                width={valueDimensions.width}
-                valueHeight={valueDimensions.height}
-                onAddDragDropValue={this.onAddDragDropValue}
-                onDrawDragDropValue={this.onDrawDragDropValue}
-                dragDropBoundsClassName={dragDropBoundsClassName}
-              />
-            )}
-            <JSXBoxWrapper width={+layout.width + 40} showBorder={hasAnnotation}>
-              {annotation && annotation.labelTop && (
-                <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
+            <JSXBoxWithDropValues className={dragDropBoundsClassName}>
+              {!disableResponse && (
+                <DragDropValues
+                  scale={zoomLevel}
+                  height={layout.height}
+                  margin={margin}
+                  values={this.getDragDropValues()}
+                  width={valueDimensions.width}
+                  valueHeight={valueDimensions.height}
+                  onAddDragDropValue={this.onAddDragDropValue}
+                  onDrawDragDropValue={this.onDrawDragDropValue}
+                  dragDropBoundsClassName={dragDropBoundsClassName}
+                />
               )}
-              {annotation && annotation.labelRight && (
-                <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
-              )}
-              {annotation && annotation.labelLeft && (
-                <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
-              )}
-              {annotation && annotation.labelBottom && (
-                <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
-              )}
-              <JSXBox
-                data-cy="jxgbox"
-                id={this._graphId}
-                className="jxgbox"
-                margin={margin}
-                showBorder={!hasAnnotation}
-                isPrintPreview={isPrintPreview}
-              />
-              <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
-            </JSXBoxWrapper>
-          </JSXBoxWithDropValues>
+              <JSXBoxWrapper width={+layout.width + 40} showBorder={hasAnnotation}>
+                {annotation && annotation.labelTop && (
+                  <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
+                )}
+                {annotation && annotation.labelRight && (
+                  <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
+                )}
+                {annotation && annotation.labelLeft && (
+                  <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
+                )}
+                {annotation && annotation.labelBottom && (
+                  <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
+                )}
+                <JSXBox
+                  data-cy="jxgbox"
+                  id={this._graphId}
+                  className="jxgbox"
+                  margin={margin}
+                  showBorder={!hasAnnotation}
+                  isPrintPreview={isPrintPreview}
+                />
+                <AnnotationRnd
+                  noBorder={view !== EDIT}
+                  question={graphData}
+                  setQuestionData={setQuestionData}
+                  disableDragging={view !== EDIT}
+                />
+              </JSXBoxWrapper>
+            </JSXBoxWithDropValues>
           </div>
         </GraphWrapper>
       </div>

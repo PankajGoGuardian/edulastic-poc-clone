@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const statusColors = {
   correct: "#DEF4E8",
@@ -7,6 +7,16 @@ const statusColors = {
   wrong: "#FDE0E9",
   skipped: "#E5E5E5"
 };
+
+const KatexStyle = css`
+  .katex .base {
+    max-width: 100%;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden
+  }
+`;
 
 export const StyledWrapper = styled.div`
   cursor: pointer;
@@ -23,4 +33,5 @@ export const StyledText = styled.span`
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
+  ${({ responseView }) => responseView && KatexStyle};
 `;

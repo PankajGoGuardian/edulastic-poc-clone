@@ -283,7 +283,7 @@ function* receiveStudentQuestionSaga({ payload }) {
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
     const passages = get(originalData, "test.passages", []);
 
-    if (!isEmpty(passages)) {
+    if (!isEmpty(passages) && feedbackResponse) {
       yield fork(loadPassagesForItems, {
         testActivityId: feedbackResponse.testActivityId,
         passages

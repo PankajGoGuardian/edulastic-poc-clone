@@ -32,7 +32,7 @@ const StaticMath = ({
     if (
       e.target.nodeName === "svg" ||
       e.target.nodeName === "path" ||
-      (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option")
+      (e.target.nodeName === "LI" && e.target.attributes[0]?.nodeValue === "option")
     ) {
       return;
     }

@@ -115,6 +115,8 @@ var getChecks = function getChecks(answer) {
         acc += "".concat(fieldVal);
       } else if (key === "tolerance") {
         acc += "".concat(key, "=").concat(fieldVal);
+      } else if (fieldVal && typeof fieldVal !== "boolean") {
+        acc += "".concat(key, "=").concat(fieldVal);
       } else {
         acc += "".concat(key);
       }

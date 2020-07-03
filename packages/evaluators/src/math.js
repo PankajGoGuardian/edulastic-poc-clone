@@ -77,7 +77,9 @@ export const getChecks = answer => {
         acc += `${fieldVal}`;
       } else if (key === "tolerance") {
         acc += `${key}=${fieldVal}`;
-      } else {
+      } else if(fieldVal && typeof fieldVal !== "boolean"){
+        acc += `${key}=${fieldVal}`;
+      }else {
         acc += `${key}`;
       }
       return `${acc},`;

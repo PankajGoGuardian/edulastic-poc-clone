@@ -1,7 +1,7 @@
 export const questionType = {
   MCQ_STD: "Multiple Choice - Standard",
   MCQ_TF: "True or False",
-  MCQ_MULTI: "Multiple Choice - Multiple Response",
+  MCQ_MULTI: "Multiple Selection",
   MCQ_BLOCK: "Multiple Choice - Block Layout",
   CHOICE_STD: "Choice Matrix - Standard",
   CHOICE_INLINE: "Choice Matrix - Inline",

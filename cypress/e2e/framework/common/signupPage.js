@@ -155,7 +155,7 @@ class SignupPage {
       .type(state);
 
   setDistrict = district => {
-    cy.get('[data-cy="Enter your district name"]')
+    cy.get('[data-cy="Enter your school district name"]')
       .click({ force: true })
       .type(district);
 

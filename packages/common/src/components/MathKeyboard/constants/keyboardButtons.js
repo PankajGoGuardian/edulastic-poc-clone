@@ -24,6 +24,8 @@ import Group2211 from "../assets/keyboardButtons/2211.svg";
 import Group1004 from "../assets/keyboardButtons/1004.svg";
 import Group1005 from "../assets/keyboardButtons/1005.svg";
 import Group1015 from "../assets/keyboardButtons/1015.svg";
+import Group1016 from "../assets/keyboardButtons/1016.svg";
+import Group1017 from "../assets/keyboardButtons/1017.svg";
 import Group1008 from "../assets/keyboardButtons/1008.svg";
 import Group1009 from "../assets/keyboardButtons/1009.svg";
 import Group2256 from "../assets/keyboardButtons/2256.svg";
@@ -1793,6 +1795,20 @@ export const TAB_BUTTONS = [
         types: ["all"],
         command: "keystroke",
         name: "shiftEnter"
+      },
+      {
+        handler: "\\almatrix",
+        label: <CustomImage src={Group1016} role="presentation" />,
+        types: ["all"],
+        command: "cmd",
+        name: "bmatrix"
+      },
+      {
+        handler: "\\armatrix",
+        label: <CustomImage src={Group1017} role="presentation" />,
+        types: ["all"],
+        command: "cmd",
+        name: "bmatrix"
       }
     ]
   },

@@ -45,7 +45,11 @@ const sanitizeLatex = latex => {
     .replace(new RegExp("#", "g"), " \\#")
     .replace(/overarc/g, "overgroup")
     .replace(/\\parallelogram/g, "\\text{▱}")
-    .replace(/\\undersim/g, "\\underset{\\sim}");
+    .replace(/\\undersim/g, "\\underset{\\sim}")
+    .replace(/\\begin{almatrix}/g, "\\left\\{\\begin{array}{l}")
+    .replace(/\\end{almatrix}/g, "\\end{array}\\right.")
+    .replace(/\\begin{armatrix}/g, "\\left.\\begin{array}{r}")
+    .replace(/\\end{armatrix}/g, "\\end{array}\\right\\}");
 
   if (_latex.substr(-1) === "\\") {
     _latex = _latex.slice(0, -1);
@@ -64,11 +68,16 @@ export const getMathHtml = latex => {
    * @see https://snapwiz.atlassian.net/browse/EV-11172
    * Katex doesn't support the below commands
    * @see https://snapwiz.atlassian.net/browse/EV-12829
-   * |--- mathQuill --|---- Katex -----|
-   * |    overarc     |   overgroup    |
-   * |  parallelogram |     text{▱}    |
-   * |    undersim    | underset{\\sim}|
-   * |---------------------------------|
+   * @see https://snapwiz.atlassian.net/browse/EV-14386
+   * |--- mathQuill ---|--------- Katex ---------|
+   * | overarc         | overgroup               |
+   * | parallelogram   | text{▱}                 |
+   * | undersim        | underset{\\sim}         |
+   * | \begin{almatrix}| \left\{\begin{array}{l} |
+   * | \end{almatrix}  | \end{array}\right.      |
+   * | \begin{armatrix}| \left.\begin{array}{r}  |
+   * | \end{armatrix}  | \end{array}\right\}     |
+   * |-------------------------------------------|
    * Also, some of the migrated/authored questions have wrong latex.
    * @see https://snapwiz.atlassian.net/browse/EV-11865
    * |--- incorrect --|--- correct ----|
@@ -168,9 +177,8 @@ export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
 // mathQuill does't added extra space after '/square' key, which is needed to inerpret as square box
 // it might be a bug for MathQuill lib
 // handling default addition of mathquill keywords
-export const reformatMathInputLatex = latex => {
-  return latex
+export const reformatMathInputLatex = latex =>
+  latex
     .replace(/\\square/g, "\\square ")
-    .replace(/\\min /g, "min") //avoiding \min keyword added with mathquill latex
-    .replace(/\\deg /g, "deg"); //avoiding \deg keyword added with mathquill latex
-};
+    .replace(/\\min /g, "min") // avoiding \min keyword added with mathquill latex
+    .replace(/\\deg /g, "deg"); // avoiding \deg keyword added with mathquill latex;

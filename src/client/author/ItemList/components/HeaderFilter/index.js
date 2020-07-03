@@ -83,6 +83,11 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
         getTag(type, d, tagTitle, bodyArr, popOverArray, containerWidthObj);
       });
     }
+    if (type === "subject" && data.length && Array.isArray(data)) {
+      data.forEach(subj => {
+        getTag(type, subj, subj, bodyArr, popOverArray, containerWidthObj);
+      });
+    }
     if (type === "standardIds" && selectedStandards.length) {
       selectedStandards.forEach(s => {
         const tagTitle = s.identifier;

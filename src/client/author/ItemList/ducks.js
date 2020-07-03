@@ -107,7 +107,7 @@ export function* createTestFromCart({ payload: { testName } }) {
       .flatMap(x => x.alignment || [])
       .flatMap(x => x.domains)
       .flatMap(x => x.standards)
-      .flatMap(x => x.grades)
+      .flatMap(x => x.grades || [])
   );
   if (questionGrades.length === 0) {
     questionGrades = testItems
@@ -117,8 +117,8 @@ export function* createTestFromCart({ payload: { testName } }) {
   const questionSubjects = testItems
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.subjects || []);
-  const grades = testItems.flatMap(item => item.grades);
-  const subjects = testItems.flatMap(item => item.subjects);
+  const grades = testItems.flatMap(item => item.grades || []);
+  const subjects = testItems.flatMap(item => item.subjects || []);
   const userRole = yield select(getUserRole);
   if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
     test.testType = testConstant.type.COMMON;

@@ -255,7 +255,7 @@ const AlignmentRow = ({
       <Row>
         <FieldLabel>Standards (optional)</FieldLabel>
         <Col md={showIconBrowserBtn ? 24 : 20}>
-          <Row>
+          <Row gutter="20">
             <Col md={12}>
               <CustomTreeSelect
                 data-cy="subjectStandardSet"

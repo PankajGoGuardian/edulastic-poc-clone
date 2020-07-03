@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 import { questionType } from "@edulastic/constants";
-import { withNamespaces } from '@edulastic/localization';
+import { withNamespaces } from "@edulastic/localization";
 import { get, isEmpty, round } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +24,7 @@ const FeedbackWrapper = ({
   isStudentReport,
   isPresentationMode,
   dimensions,
-  shoudlTakeDimensionsFromStore,
+  shouldTakeDimensionsFromStore,
   studentId,
   itemId,
   studentName,
@@ -45,25 +45,6 @@ const FeedbackWrapper = ({
     icon: data.activity && data.activity.icon
   };
 
-  let dimensionProps = { height: "100%" };
-
-  /**
-   * as per https://snapwiz.atlassian.net/browse/EV-12821
-   *
-   * if its a multipart item, with item level scoring off
-   * the container dimesions for the question block is stored in store
-   * need to take the dimensions from store and set it to the feedback block
-   */
-  if (shoudlTakeDimensionsFromStore && dimensions) {
-    dimensionProps = {
-      position: "absolute",
-      top: `${dimensions.top}px`,
-      right: 0,
-      width: "100%",
-      height: `${dimensions.height}px`
-    };
-  }
-
   const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
   const timeSpent = get(data, "activity.timeSpent", false);
 
@@ -73,14 +54,9 @@ const FeedbackWrapper = ({
 
   return (
     <StyledFeedbackWrapper
-      style={{
-        width:
-          showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview
-            ? "265px"
-            : "250px",
-        minWidth: studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : "",
-        ...dimensionProps
-      }}
+      minWidth={studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : ""}
+      shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}
+      dimensions={dimensions}
       className="__print-feedback-wrapper"
     >
       {showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview && (
@@ -114,7 +90,6 @@ const FeedbackWrapper = ({
           qLabel={data.barLabel}
           qId={data.id}
           isStudentReport={isStudentReport}
-          style={{ width: isStudentReport ? "60%" : "100%" }}
         />
       )}
       {showFeedback && isPrintPreview && !disabled && <PrintPreviewScore disabled={disabled} data={data} />}
@@ -137,8 +112,25 @@ const FeedbackWrapper = ({
 
 const StyledFeedbackWrapper = styled.div`
   align-self: normal;
-  ${({ style }) => style};
   padding-bottom: 10px;
+  min-width: ${({ minWidth }) => minWidth}
+    /**
+   * as per https://snapwiz.atlassian.net/browse/EV-12821
+   *
+   * if its a multipart item, with item level scoring off
+   * the container dimensions for the question block is stored in store
+   * need to take the dimensions from store and set it to the feedback block
+   */
+    ${({ shouldTakeDimensionsFromStore, dimensions }) =>
+      shouldTakeDimensionsFromStore &&
+      dimensions &&
+      `
+        position: absolute;
+        top: ${dimensions.top}px;
+        right: 0;
+        width: 100%;
+        height: ${dimensions.height ? `${dimensions.height}px` : "100%"};
+      `};
 `;
 
 FeedbackWrapper.propTypes = {

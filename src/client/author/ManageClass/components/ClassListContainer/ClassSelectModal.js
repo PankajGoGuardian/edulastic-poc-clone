@@ -51,11 +51,19 @@ const ClassSelectModal = ({
     }
     if (type === "googleClassroom") {
       setClassListData(
-        classListToSync.map((c, index) => ({
-          ...c,
-          key: index,
-          disabled: syncedIds.includes(c.enrollmentCode)
-        }))
+        classListToSync.map((c, index) => {
+          if (!c.grades) {
+            c.grades = defaultGrades;
+          }
+          if (!c.subject) {
+            c.subject = defaultSubjects[0];
+          }
+          return {
+            ...c,
+            key: index,
+            disabled: syncedIds.includes(c.enrollmentCode)
+          };
+        })
       );
       setSelectedRows(classListToSync.map((c, i) => i));
     }
@@ -181,7 +189,7 @@ const ClassSelectModal = ({
         dataIndex: "standards",
         align: "center",
         render: (data, row, index) => {
-          const standardsList = getStandardsListBySubject(row.subject);
+          const standardsList = getStandardsListBySubject(row.subject || defaultSubjects[0]);
           return (
             <StyledSelect
               showSearch
@@ -230,7 +238,6 @@ const ClassSelectModal = ({
         align: "center",
         render: (data, row, index) => (
           <StyledSelect
-           
             showSearch
             style={{
               width: "100%",

@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { isArray, isUndefined, isNull, isEmpty, isObject, get, round } from "lodash";
 import { MathSpan } from "@edulastic/common";
 import { releaseGradeLabels } from "@edulastic/constants/const/test";
-import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 
 import {
   SHORT_TEXT,
@@ -16,7 +15,8 @@ import {
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT
 } from "@edulastic/constants/const/questionType";
-import { IconPencilEdit, IconCheck, IconClose, IconTrash } from "@edulastic/icons";
+import { IconPencilEdit, IconCheck, IconClose } from "@edulastic/icons";
+import { FeedbackByQIdSelector } from "../../../../student/sharedDucks/TestItem";
 import withAnswerSave from "../../../../assessment/components/HOC/withAnswerSave";
 import FormChoice from "./components/FormChoice/FormChoice";
 import FormText from "./components/FormText/FormText";
@@ -65,6 +65,7 @@ class QuestionItem extends React.Component {
   };
 
   itemRef = React.createRef();
+
   qFormRef = React.createRef();
 
   componentDidUpdate(prevProps) {
@@ -157,7 +158,7 @@ class QuestionItem extends React.Component {
         answerRenderer = this.renderMathAnswer;
         break;
       default:
-        answerRenderer = () => {};
+        answerRenderer = () => { };
     }
 
     const alternateResponses = this.props?.data?.validation?.altResponses || [];
@@ -201,7 +202,7 @@ class QuestionItem extends React.Component {
       case MULTIPLE_CHOICE:
         return (
           <FormChoice
-            isTrueOrFalse={data.subType === "trueOrFalse" ? true : false}
+            isTrueOrFalse={data.subType === "trueOrFalse"}
             onCreateOptions={onCreateOptions}
             evaluation={evaluation}
             {...props}
@@ -236,8 +237,18 @@ class QuestionItem extends React.Component {
     );
   };
 
+  getIndicatorFromEvaluation = evaluation => {
+    if (!isEmpty(evaluation)) {
+      if (isArray(evaluation)) {
+        return evaluation.every(value => value);
+      }
+      return Object.values(evaluation).every(value => value);
+    }
+    return false;
+  }
+
   renderAnswerIndicator = type => {
-    let { evaluation } = this.props;
+    let { evaluation } = this.props
     if (!evaluation) {
       evaluation = this.props?.data?.activity?.evaluation;
     }
@@ -246,7 +257,7 @@ class QuestionItem extends React.Component {
     }
 
     let correct = isObject(evaluation)
-      ? !isEmpty(evaluation) && isArray(evaluation) && evaluation.every(value => value)
+      ? this.getIndicatorFromEvaluation(evaluation)
       : evaluation;
 
     if (type === CLOZE_DROP_DOWN) {
@@ -315,7 +326,6 @@ class QuestionItem extends React.Component {
 
     const check =
       viewMode === "report" || previewTab === "check" || typeof previousFeedback?.[0]?.score !== "undefined";
-
     const canShowAnswer = () => {
       if (reportActivity) {
         if (reportActivity?.releaseScore === releaseGradeLabels.WITH_ANSWERS) {
@@ -349,7 +359,7 @@ class QuestionItem extends React.Component {
               dragging={dragging}
               highlighted={highlighted}
               pdfPreview={pdfPreview}
-              // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
+            // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
             >
               {questionIndex}
             </QuestionNumber>

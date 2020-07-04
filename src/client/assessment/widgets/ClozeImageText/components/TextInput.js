@@ -48,7 +48,7 @@ const TextInput = ({
   };
 
   const onChangeHandler = answer => {
-    if (type === "number" && Number.isNaN(+value)) {
+    if (type === "number" && Number.isNaN(+answer)) {
       return;
     }
     onChange(answer);

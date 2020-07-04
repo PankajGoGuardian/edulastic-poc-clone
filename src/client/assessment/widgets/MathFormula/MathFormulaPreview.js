@@ -245,7 +245,7 @@ class MathFormulaPreview extends Component {
     let statusColor = theme.widgets.mathFormula.inputColor;
     if (latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
       statusColor = !isEmpty(evaluation)
-        ? evaluation.some(ie => ie)
+        ? evaluation?.some(ie => ie)
           ? theme.widgets.mathFormula.inputCorrectColor
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
@@ -258,7 +258,7 @@ class MathFormulaPreview extends Component {
         borderRadius: 4,
         paddingRight: 30,
         borderColor: !isEmpty(evaluation)
-          ? evaluation.some(ie => ie)
+          ? evaluation?.some(ie => ie)
             ? theme.widgets.mathFormula.inputCorrectBorderColor
             : theme.widgets.mathFormula.inputIncorrectBorderColor
           : theme.widgets.mathFormula.inputIncorrectBorderColor
@@ -282,7 +282,7 @@ class MathFormulaPreview extends Component {
     }
 
     let statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-      <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+      <MathInputStatus valid={!!evaluation && !!evaluation?.some(ie => ie)} />
     );
 
     if (expressGrader && isAnswerModifiable) {
@@ -364,7 +364,7 @@ class MathFormulaPreview extends Component {
                       value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                       onInput={latexv => this.onUserResponse(latexv)}
                       onBlur={latexv => this.onBlur(latexv)}
-                      disabled={evaluation && !evaluation.some(ie => ie)}
+                      disabled={evaluation && !evaluation?.some(ie => ie)}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
                       style={{ background: isPrintPreview ? white : statusColor, ...cssStyles }}
                     />

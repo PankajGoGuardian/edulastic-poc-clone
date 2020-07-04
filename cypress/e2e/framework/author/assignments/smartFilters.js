@@ -105,14 +105,15 @@ export default class SmartFilters {
       .last()
       .click({ force: true });
     cy.get('[placeholder="Name this folder"]').type(newName);
-    cy.contains("span", "Update").click();
+    cy.contains("span", "Update").click({ force: true });
+
     if (isValid) {
       cy.wait("@updateFolder").then(xhr => expect(xhr.status).to.eq(200));
       this.verifyFolderVisible(newName);
       this.verifyFolderNotVisible(currentName);
     } else {
       cy.contains("The folder name is already used").should("be.visible");
-      cy.contains("span", "Cancel").click();
+      cy.contains("span", "Cancel").click({ force: true });
     }
   };
 
@@ -130,7 +131,9 @@ export default class SmartFilters {
       .click({ force: true });
 
     if (isValid) {
-      cy.get('[data-cy="submit"]').click();
+      cy.get('[data-cy="submit"]')
+        .first()
+        .click({ force: true });
       cy.wait("@deleteFolder").then(xhr => expect(xhr.status).to.eq(200));
       this.verifyFolderNotVisible(folderName);
     } else {
@@ -166,7 +169,7 @@ export default class SmartFilters {
   moveToFolder = (folderName, isValid = true) => {
     cy.server();
     cy.route("PUT", "**/user-folder/**").as("updateFolder");
-    cy.contains("span", "Move").click();
+    cy.contains("span", "Move").click({ force: true });
 
     cy.get(".ant-modal-body")
       .find(`[title="${folderName}"]`)

@@ -73,7 +73,8 @@ export default class CypressHelper {
       const datetimeToSet = `${formattedDate}${time}`;
       cy.get(".ant-calendar-date-input-wrap")
         .find("input")
-        .type(`${"{backspace}".repeat(datetimeToSet.substr(1).length)}${datetimeToSet.substr(1)}`);
+        .clear()
+        .type(`${datetimeToSet}`);
       cy.get(".ant-calendar-ok-btn").click({ force: true });
     } else {
       const [day, mon, date, year] = dateTime.toDateString().split(" ");

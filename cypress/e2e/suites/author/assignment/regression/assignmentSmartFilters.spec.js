@@ -184,7 +184,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
           testLibrary.assignPage.selectClass(filters.statusFilter[`${status}`].className);
           if (status === teacherSide.NOT_OPEN) {
             let start = new Date();
-            start.setMinutes(start.getMinutes() + 10);
+            start.setDate(start.getDate() + 1);
             testLibrary.assignPage.setStartDate(start);
           }
           testLibrary.assignPage.clickOnAssign().then(assgnObj => {

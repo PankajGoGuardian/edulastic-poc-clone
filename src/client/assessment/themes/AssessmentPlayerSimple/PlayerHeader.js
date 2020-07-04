@@ -72,7 +72,13 @@ const PlayerHeader = ({
 
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
   const rightButtons = (
-    <SaveAndExit utaId={utaId} previewPlayer={previewPlayer} showZoomBtn finishTest={onOpenExitPopup} />
+    <SaveAndExit
+      utaId={utaId}
+      previewPlayer={previewPlayer}
+      showZoomBtn
+      finishTest={onOpenExitPopup}
+      timedAssignment={timedAssignment}
+    />
   );
 
   return (
@@ -169,9 +175,9 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    state => ({
+    (state, { timedAssignment }) => ({
       settings: state.test.settings,
-      timedAssignment: state.test?.settings?.timedAssignment
+      timedAssignment: timedAssignment || state.test?.settings?.timedAssignment
     }),
     null
   )

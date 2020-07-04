@@ -140,7 +140,6 @@ const TableList = ({
   bulkActionStatus,
   isHeaderAction
 }) => {
-  console.log({ classList });
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
   const convertRowData = (data, index) => ({

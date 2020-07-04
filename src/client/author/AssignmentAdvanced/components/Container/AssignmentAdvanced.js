@@ -170,10 +170,7 @@ class AssignmentAdvanced extends Component {
     const { match } = this.props;
     const { testId } = match.params;
 
-    window.open(
-      `/author/printAssessment/${testId}?type=${type}&qs=${type === "custom" ? customValue : ""}`,
-      "_blank"
-    );
+    window.open(`/author/printAssessment/${testId}?type=${type}&qs=${type === "custom" ? customValue : ""}`, "_blank");
     this.togglePrintModal();
   };
 
@@ -204,7 +201,6 @@ class AssignmentAdvanced extends Component {
     } = this.props;
     const { testId } = match.params;
     const { filterStatus, openEditPopup, isPreviewModalVisible, isHeaderAction, openPrintModal } = this.state;
-    console.log(openPrintModal)
     const assingment = find(assignmentsSummary, item => item.testId === testId) || {};
     const { testType = "" } = qs.parse(location.search);
     return (
@@ -225,11 +221,7 @@ class AssignmentAdvanced extends Component {
         />
 
         {openPrintModal && (
-          <PrintTestModal
-            onProceed={this.gotoPrintView}
-            onCancel={this.togglePrintModal}
-            currentTestId={testId}
-          />
+          <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal} currentTestId={testId} />
         )}
 
         <ListHeader
@@ -284,9 +276,9 @@ class AssignmentAdvanced extends Component {
                 bulkReleaseScoreAssignmentRequest={bulkReleaseScoreAssignmentRequest}
                 bulkUnassignAssignmentRequest={bulkUnassignAssignmentRequest}
                 bulkDownloadGradesAndResponsesRequest={bulkDownloadGradesAndResponsesRequest}
-                toggleDeleteAssignmentModal={() => {
+                toggleDeleteAssignmentModal={toggleState => {
                   this.setState({ isHeaderAction: false });
-                  toggleDeleteAssignmentModal(true);
+                  toggleDeleteAssignmentModal(toggleState);
                 }}
                 testType={testType}
                 testName={assingment.title}

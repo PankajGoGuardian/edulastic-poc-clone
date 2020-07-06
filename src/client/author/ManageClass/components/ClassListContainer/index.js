@@ -84,6 +84,9 @@ const ClassListContainer = ({
         courseList={courseList}
         getStandardsListBySubject={getStandardsListBySubject}
         refreshPage="manageClass"
+        existingGroups={groups}
+        defaultGrades={defaultGrades}
+        defaultSubjects={defaultSubjects}
       />
       <ClassSelectModal
         style={{ width: "700px" }}

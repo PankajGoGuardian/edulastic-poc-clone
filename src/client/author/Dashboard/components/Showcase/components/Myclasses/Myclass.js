@@ -30,7 +30,9 @@ import {
 import { receiveTeacherDashboardAction } from "../../../../duck";
 import {
   getGoogleAllowedInstitionPoliciesSelector,
-  getCleverSyncEnabledInstitutionPoliciesSelector
+  getCleverSyncEnabledInstitutionPoliciesSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector
 } from "../../../../../src/selectors/user";
 import { getFormattedCurriculumsSelector } from "../../../../../src/selectors/dictionaries";
 
@@ -62,7 +64,9 @@ const MyClasses = ({
   cleverClassList,
   getStandardsListBySubject,
   fetchCleverClassList,
-  syncCleverClassList
+  syncCleverClassList,
+  defaultGrades = [],
+  defaultSubjects = []
 }) => {
   const [showCleverSyncModal, setShowCleverSyncModal] = useState(false);
 
@@ -104,6 +108,9 @@ const MyClasses = ({
         courseList={courseList}
         getStandardsListBySubject={getStandardsListBySubject}
         refreshPage="dashboard"
+        existingGroups={allClasses}
+        defaultGrades={defaultGrades}
+        defaultSubjects={defaultSubjects}
       />
       <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
         My Classes
@@ -141,7 +148,9 @@ export default compose(
       cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
       loadingCleverClassList: get(state, "manageClass.loadingCleverClassList"),
       cleverClassList: getCleverClassListSelector(state),
-      getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject })
+      getStandardsListBySubject: subject => getFormattedCurriculumsSelector(state, { subject }),
+      defaultGrades: getInterestedGradesSelector(state),
+      defaultSubjects: getInterestedSubjectsSelector(state)
     }),
     {
       fetchClassList: fetchClassListAction,

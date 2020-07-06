@@ -463,7 +463,8 @@
     "addToStudentGroup": "Add to Student Group",
     "addstds": "Add Student(s)",
     "movetoanotherclass": "Move User(s) to another class",
-    "moveusers": "Move User(s)"
+    "moveusers": "Move User(s)",
+    "showactiveenrollments": "Show active class enrollments only"
   },
   "content": {
     "buckets": {

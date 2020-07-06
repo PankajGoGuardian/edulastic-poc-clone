@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon, Button, Menu, Select } from "antd";
-import { notification, TypeToConfirmModal } from "@edulastic/common";
+import {CheckboxLabel, notification, TypeToConfirmModal} from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
@@ -83,7 +83,8 @@ class ClassEnrollmentTable extends React.Component {
       addStudentsModalVisible: false,
       moveUsersModalVisible: false,
       refineButtonActive: false,
-      showAddToGroupModal: false
+      showAddToGroupModal: false,
+      showActive: true
     };
   }
 
@@ -406,7 +407,7 @@ class ClassEnrollmentTable extends React.Component {
 
   getSearchQuery = () => {
     const { userOrgId: districtId, userDetails } = this.props;
-    const { filtersData = [], searchByName, currentPage } = this.state;
+    const { filtersData = [], searchByName, currentPage, showActive=true } = this.state;
 
     const { role = "" } = filtersData?.[0] || {};
 
@@ -446,6 +447,7 @@ class ClassEnrollmentTable extends React.Component {
       // sortField,
       // order
     };
+    if (showActive) Object.assign(data, { active: 1 });
     if (userDetails) {
       Object.assign(data, { institutionIds: userDetails.institutionIds });
     }
@@ -477,6 +479,10 @@ class ClassEnrollmentTable extends React.Component {
     this.setState({ refineButtonActive: !this.state.refineButtonActive });
   };
 
+  onChangeShowActive = e => {
+    this.setState({ showActive: e.target.checked }, this.loadClassEnrollmentList);
+  };
+
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
@@ -494,7 +500,8 @@ class ClassEnrollmentTable extends React.Component {
       currentPage,
       pageNo,
       refineButtonActive,
-      showAddToGroupModal
+      showAddToGroupModal,
+      showActive
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -709,6 +716,9 @@ class ClassEnrollmentTable extends React.Component {
           </LeftFilterDiv>
 
           <RightFilterDiv width={35}>
+            <CheckboxLabel defaultChecked={showActive} onChange={this.onChangeShowActive}>
+              {t("classenrollment.showactiveenrollments")}
+            </CheckboxLabel>
             <StyledActionDropDown overlay={actionMenu}>
               <Button>
                 {t("common.actions")} <Icon type="down" />

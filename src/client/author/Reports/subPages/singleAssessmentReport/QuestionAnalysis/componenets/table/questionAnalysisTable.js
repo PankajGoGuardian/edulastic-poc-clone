@@ -104,7 +104,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
       }
       return text;
     };
-    rawColumns[2].render = text => text.toFixed(2);
+    rawColumns[2].render = text => text?.toFixed(2);
     rawColumns[3].render = text => `${text}%`;
 
     if (roleuser.TEACHER === role) {

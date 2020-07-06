@@ -59,8 +59,7 @@ class DisneyCardContainer extends Component {
   static defaultProps = {
     isPresentationMode: false,
     isLoading: false,
-    testActivityLoading: false,
-    hoverActiveStudentActive: null
+    testActivityLoading: false
   };
 
   constructor(props) {
@@ -166,26 +165,36 @@ class DisneyCardContainer extends Component {
               <ExclamationMark />
             </span>
           ) : (
-              ""
-            );
+            ""
+          );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
         const pastDueTag =
           (actualDueDate || dueDate) && status.status !== "Absent"
             ? formatStudentPastDueTag({
-              status: student.status,
-              dueDate: actualDueDate || dueDate,
-              endDate: student.endDate
-            })
+                status: student.status,
+                dueDate: actualDueDate || dueDate,
+                endDate: student.endDate
+              })
             : null;
-
+        const responseLink = student.testActivityId && status.status !== "Absent" && (
+          <PagInfo
+            data-cy="viewResponse"
+            disabled={!isItemsVisible}
+            onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
+          >
+            {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
+            VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+            {/* </Link> */}
+          </PagInfo>
+        );
         const studentData = (
           <StyledCard
             data-cy={`student-card-${name}`}
             bordered={false}
             key={index}
             isClickEnable={canShowResponse}
-            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => { })}
+            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
             onMouseLeave={() => this.setState({ hoverActiveStudentActive: null })}
           >
             <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
@@ -206,17 +215,17 @@ class DisneyCardContainer extends Component {
                     {" "}
                   </i>
                 ) : (
-                    <CircularDiv
-                      data-cy="studentAvatarName"
-                      isLink={viewResponseStatus.includes(status.status)}
-                      title={isPresentationMode ? "" : student.userName}
-                      onClick={e =>
-                        viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
-                      }
-                    >
-                      {getAvatarName(student.studentName || "Anonymous")}
-                    </CircularDiv>
-                  )}
+                  <CircularDiv
+                    data-cy="studentAvatarName"
+                    isLink={viewResponseStatus.includes(status.status)}
+                    title={isPresentationMode ? "" : student.userName}
+                    onClick={e =>
+                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                    }
+                  >
+                    {getAvatarName(student.studentName || "Anonymous")}
+                  </CircularDiv>
+                )}
                 <StyledName>
                   <StyledParaF
                     isLink={viewResponseStatus.includes(status.status)}
@@ -249,8 +258,8 @@ class DisneyCardContainer extends Component {
                       )}
                     </>
                   ) : (
-                      <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
-                    )}
+                    <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
+                  )}
                 </StyledName>
                 <RightAlignedCol>
                   <Row>
@@ -301,17 +310,7 @@ class DisneyCardContainer extends Component {
                       <StyledParaSS data-cy="studentScore">
                         {round(student.score, 2) || 0} / {student.maxScore || 0}
                       </StyledParaSS>
-                      {student.testActivityId && status.status !== "Absent" && (
-                        <PagInfo
-                          data-cy="viewResponse"
-                          disabled={!isItemsVisible}
-                          onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
-                        >
-                          {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
-                          VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-                          {/* </Link> */}
-                        </PagInfo>
-                      )}
+                      {responseLink}
                     </StyledFlexDiv>
                   </PerfomanceSection>
                 </PaginationInfoS>
@@ -349,6 +348,7 @@ class DisneyCardContainer extends Component {
                       <PerfomanceSection>
                         <StyledFlexDiv>
                           <StyledParaFF>Performance</StyledParaFF>
+                          <StyledParaFF>{responseLink}</StyledParaFF>
                         </StyledFlexDiv>
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
                           <AttemptDiv>
@@ -426,7 +426,6 @@ const RecentAttemptsContainer = styled.div`
   padding-left: 20px;
   box-sizing: border-box;
   padding-right: 20px;
-  height: 80px;
   background: #fff;
   opacity: 0;
   transition: opacity 0.7s;

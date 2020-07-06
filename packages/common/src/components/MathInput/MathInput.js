@@ -197,6 +197,9 @@ class MathInput extends React.PureComponent {
       case "\\embed{response}":
         mathField.write(key);
         break;
+      case "{}":
+        mathField[command]("{");
+        break;
       default:
         mathField[command](key);
     }

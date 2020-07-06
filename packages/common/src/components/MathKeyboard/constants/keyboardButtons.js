@@ -1867,7 +1867,7 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
-        handler: "{",
+        handler: "{}",
         label: <CustomImage src={Group1023} role="presentation" />,
         types: ["all"],
         command: "cmd"

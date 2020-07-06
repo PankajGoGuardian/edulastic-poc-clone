@@ -38,7 +38,7 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       key: "standard",
       dataIndex: "standard",
       fixed: "left",
-      width: 120,
+      width: 150,
       render: (data, record) => {
         const obj = {
           termId: filters.termId || termId,

@@ -48,7 +48,7 @@ const AnalysisTable = styled(StyledTable)`
       }
       .ant-table-tbody {
         td {
-          padding: 10px 8px;
+          padding: 10px 0px 10px 8px;
           font-size: 11px;
           color: #434b5d;
           font-weight: 600;

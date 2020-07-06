@@ -511,17 +511,20 @@ class MainSetting extends Component {
 
             {/* Add instruction starts */}
             <Block id="add-instruction" smallSize={isSmallSize}>
-              <Title>Add Instruction</Title>
-              <Body smallSize={isSmallSize}>
-                <CheckboxLabel
+              <Title>
+                <span>Test Instructions</span>
+                <EduSwitchStyled
                   disabled={!owner || !isEditable}
                   data-cy="add-test-instruction"
-                  checked={hasInstruction}
+                  defaultChecked={hasInstruction}
                   onChange={() => this.updateTestData("hasInstruction")(!hasInstruction)}
-                  mb="1rem"
-                >
-                  Instruction
-                </CheckboxLabel>
+                />
+              </Title>
+              <Body smallSize={isSmallSize}>
+                <Description>
+                  Add instructions for the students here. For example, &ldquo;You will be allowed two attempts on this
+                  quiz.&ldquo; Or, &ldquo;This test is worth 30% of your grade.&ldquo;
+                </Description>
                 {hasInstruction && (
                   <Instruction
                     border="border"
@@ -627,10 +630,12 @@ class MainSetting extends Component {
                     </Col>
                   </Row>
                   <Description>
-                    Ensure secure testing environment by using Safe Exam Browser to lockdown the student&apos;s device.
-                    To
-                    <br /> use this feature Safe Exam Browser (on Windows/Mac only) must be installed on the student
-                    devices.
+                    Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to lockdown
+                    the student&apos;s device. To use this feature, Safe Exam Browser (on Windows/Mac/iPad) must be
+                    installed on the student device. On Chromebook, Edulastic Kiosk Mode 2.1 must be installed. <br />
+                    The quit password can be used by teacher or proctor to safely exit Safe Exam Browser in the middle
+                    of an assessment. The quit password should not be revealed to the students. The quit password cannot
+                    be used to exit Chromebook Kiosk mode.
                   </Description>
                 </Body>
               </Block>
@@ -871,7 +876,8 @@ class MainSetting extends Component {
                     <Description>
                       Choose if students should be awarded partial credit for their answers or not. If partial credit is
                       allowed, then choose whether the student should be penalized for incorrect answers or not
-                      (applicable only for multiple selection que widgets).
+                      (applicable only for multiple selection question and multi part question with multiple selection
+                      widgets)
                     </Description>
                   </Col>
                 </Row>

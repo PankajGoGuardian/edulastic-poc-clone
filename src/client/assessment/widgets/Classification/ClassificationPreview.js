@@ -493,6 +493,7 @@ const ClassificationPreview = ({
           {previewTab === SHOW || isReviewTab ? (
             <ChoiceContainer>
               <CorrectAnswers
+                classifications={classifications}
                 colCount={colCount}
                 possibleResponse={posResp}
                 answersArr={validArray}
@@ -505,6 +506,7 @@ const ClassificationPreview = ({
               {altArrays.map((altArray, ind) => (
                 <CorrectAnswers
                   colCount={colCount}
+                  classifications={classifications}
                   possibleResponse={posResp}
                   answersArr={altArray}
                   columnTitles={colTitles}

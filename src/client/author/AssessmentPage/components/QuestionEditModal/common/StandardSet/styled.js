@@ -13,5 +13,6 @@ export const StandardsTitle = styled.p`
 export const StandardSelectWrapper = styled(Paper)`
   border-radius: 4px;
   padding: 15px;
+  padding-left: 0px;
   margin-top: 15px;
 `;

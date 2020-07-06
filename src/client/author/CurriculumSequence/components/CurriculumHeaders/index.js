@@ -151,7 +151,7 @@ const CurriculumHeader = ({
   const mainPlaylistVerticalMenu = (
     <Menu>
       <Menu.Item onClick={() => handleConfirmForRemovePlaylistFromFavourite(_id, title, removePlaylistFromUse)}>
-        Remove from Favourite
+        Remove from Favorite
       </Menu.Item>
     </Menu>
   );

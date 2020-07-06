@@ -1796,11 +1796,11 @@
     "description": ""
   },
   "playlistRemoveFromUseSuccess": {
-    "message": "Playlist  removed from Favourites successfully",
+    "message": "Playlist  removed from Favorites successfully",
     "description": ""
   },
   "playlistRemoveFromUseFailed": {
-    "message": "Playlist  removed from Favourites failed",
+    "message": "Playlist  removed from Favorites failed",
     "description": ""
   },
   "selectOneOrMoreStudentsForGroup": {

@@ -1,14 +1,14 @@
+import { groupApi } from "@edulastic/api";
+import { CustomModalStyled, EduButton, notification, SelectInputStyled } from "@edulastic/common";
+import { Select } from "antd";
+import { debounce, get, isNull } from "lodash";
+import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { get, isNull, debounce } from "lodash";
-import { Select, message } from "antd";
-import { StyledModal, Title, ActionButton, Description } from "./styled";
+import { setClassAction } from "../../../ducks";
+import { getUserIdSelector, getUserOrgId } from "../../../../src/selectors/user";
 import { receiveTeachersListAction } from "../../../../Teacher/ducks";
-import { getUserOrgId, getUserIdSelector } from "../../../../src/selectors/user";
-import { groupApi } from "@edulastic/api";
-import { setClassAction } from "../../../../ManageClass/ducks";
-import { EduButton ,notification,CustomModalStyled } from "@edulastic/common";
+import { Description, Title } from "./styled";
 
 class AddCoTeacher extends React.Component {
   static propTypes = {
@@ -63,22 +63,22 @@ class AddCoTeacher extends React.Component {
     const result = groupApi
       .addCoTeacher({
         groupId: classId,
-        coTeacherId: coTeacherId
+        coTeacherId
       })
       .then(data => {
         if (data.groupData) {
           setClass(data.groupData);
-          notification({ type: "success", messageKey:"coTeacherAddedSuccessfully"});
+          notification({ type: "success", messageKey: "coTeacherAddedSuccessfully" });
           handleCancel();
         }
       })
       .catch(err => {
-        notification({ msg:err.data.message});
+        notification({ msg: err.data.message });
       });
   }, 1000);
 
   render() {
-    const { isOpen, handleCancel, primaryTeacherId, teachers, type } = this.props;
+    const { isOpen, handleCancel, primaryTeacherId, teachers, type, userInfo } = this.props;
     const { searchText } = this.state;
     const coTeachers = teachers.filter(
       teacher =>
@@ -109,14 +109,14 @@ class AddCoTeacher extends React.Component {
         visible={isOpen}
         footer={footer}
         onCancel={() => handleCancel()}
-        destroyOnClose={true}
+        destroyOnClose
         textAlign="left"
       >
         <Description>
           Invite your colleagues to view and manage your {type === "class" ? "class" : "group"}. Co-teachers can manage
           enrollment, assign the Test and view reports of your {type === "class" ? "class(es)" : "group(s)"}.
         </Description>
-        <Select
+        <SelectInputStyled
           placeholder="Search teacher by name, email or username."
           showSearch
           defaultActiveFirstOption={false}
@@ -126,17 +126,20 @@ class AddCoTeacher extends React.Component {
           notFoundContent={notFoundText}
           onSearch={this.onSearchHandler}
           getPopupContainer={triggerNode => triggerNode.parentNode}
-          style={{width:"100%",marginTop:"10px"}}
+          style={{ width: "100%", marginTop: "10px" }}
         >
-          {coTeachers.map((el, index) => (
-            <Select.Option key={index} value={el._id}>
-              <div>
-                <span style={{ fontSize: "14px" }}>{`${el.firstName} ${el.lastName || ""}`}</span>
-                <span style={{ fontSize: "12px" }}>{` (${el.email || el.username})`}</span>
-              </div>
-            </Select.Option>
-          ))}
-        </Select>
+          {coTeachers.map(
+            (el, index) =>
+              userInfo.email !== el.email && (
+                <Select.Option key={index} value={el._id}>
+                  <div>
+                    <span style={{ fontSize: "14px" }}>{`${el.firstName} ${el.lastName || ""}`}</span>
+                    <span style={{ fontSize: "12px" }}>{` (${el.email || el.username})`}</span>
+                  </div>
+                </Select.Option>
+              )
+          )}
+        </SelectInputStyled>
       </CustomModalStyled>
     );
   }
@@ -146,6 +149,7 @@ export default connect(
   state => ({
     userOrgId: getUserOrgId(state),
     selectedStudent: get(state, "manageClass.selectedStudent", []),
+    userInfo: get(state.user, "user", {}),
     teachers: get(state, "teacherReducer.data", []),
     primaryTeacherId: getUserIdSelector(state)
   }),

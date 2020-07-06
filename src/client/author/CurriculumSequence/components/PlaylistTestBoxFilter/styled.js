@@ -26,9 +26,9 @@ export const FilterContainer = styled.div`
 export const Title = styled.div`
   text-transform: uppercase;
   color: ${title};
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
-  margin: 10px 0px;
+  margin: 15px 0px 5px;
   user-select: none;
 `;
 
@@ -57,8 +57,9 @@ export const Label = styled.label`
   color: ${({ active }) => (active ? themeColor : title)};
   font-weight: 600;
   text-align: left;
-  font-size: 14px;
+  font-size: 11px;
   letter-spacing: 0;
   padding-left: 25px;
   cursor: inherit;
+  text-transform: uppercase;
 `;

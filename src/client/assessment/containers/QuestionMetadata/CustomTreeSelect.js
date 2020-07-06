@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 
-const CustomTreeSelect = ({ children, title, style }) => {
+const CustomTreeSelect = ({ bg, children, title, style }) => {
   const [show, setShow] = useState(false);
   const wrapperRef = useRef();
 
@@ -34,7 +34,7 @@ const CustomTreeSelect = ({ children, title, style }) => {
   return (
     <div ref={wrapperRef}>
       <Wrapper style={style}>
-        <Title onClick={() => setShow(!show)}>
+        <Title bg={bg} onClick={() => setShow(!show)}>
           <TextEllipsis title={title}>{title}</TextEllipsis>
           <SelectSuffixIcon type="caret-down" />
         </Title>
@@ -62,9 +62,9 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled.div`
-  background: ${greyThemeLighter};
+  background: ${props => props.bg || greyThemeLighter};
   min-height: 40px;
-  border-radius: 4px 0px 0px 4px;
+  border-radius: 2px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;

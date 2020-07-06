@@ -253,138 +253,137 @@ const AlignmentRow = ({
         />
       )}
       <Row>
-        <FieldLabel>Standards (optional)</FieldLabel>
-        <Col md={showIconBrowserBtn ? 24 : 20}>
-          <Row gutter="20">
-            <Col md={12}>
-              <CustomTreeSelect
-                data-cy="subjectStandardSet"
-                title={`${curriculum}${curriculum && grades.length ? " - " : ""}${grades.length ? "Grade - " : ""}${
-                  grades.length ? grades : ""
-                }`}
-              >
-                <Fragment>
-                  <ItemBody data-cy="subjectItem">
-                    <FieldLabel>{t("component.options.subject")}</FieldLabel>
-                    <SelectInputStyled
-                      getPopupContainer={trigger => trigger.parentNode}
-                      data-cy="subjectSelect"
-                      value={subject}
-                      onChange={setSubject}
-                    >
-                      {selectsData.allSubjects.map(({ text, value }) =>
-                        value ? (
-                          <Select.Option key={value} value={value}>
-                            {text}
-                          </Select.Option>
-                        ) : (
-                          ""
-                        )
-                      )}
-                    </SelectInputStyled>
-                  </ItemBody>
-                  <ItemBody data-cy="standardItem">
-                    <FieldLabel>{t("component.options.standardSet")}</FieldLabel>
-                    <SelectInputStyled
-                      data-cy="standardSetSelect"
-                      showSearch
-                      filterOption
-                      value={curriculum}
-                      onChange={handleChangeStandard}
-                      getPopupContainer={trigger => trigger.parentNode}
-                    >
-                      {formattedCuriculums.map(({ value, text, disabled }) => (
-                        <Select.Option key={value} value={text} disabled={disabled}>
+        {showIconBrowserBtn && <FieldLabel>Standards (optional)</FieldLabel>}
+        <Row gutter={24}>
+          <Col md={showIconBrowserBtn ? 12 : 10}>
+            <CustomTreeSelect
+              bg={!showIconBrowserBtn && "white"}
+              data-cy="subjectStandardSet"
+              title={`${curriculum}${curriculum && grades.length ? " - " : ""}${grades.length ? "Grade - " : ""}${
+                grades.length ? grades : ""
+              }`}
+            >
+              <Fragment>
+                <ItemBody data-cy="subjectItem">
+                  <FieldLabel>{t("component.options.subject")}</FieldLabel>
+                  <SelectInputStyled
+                    getPopupContainer={trigger => trigger.parentNode}
+                    data-cy="subjectSelect"
+                    value={subject}
+                    onChange={setSubject}
+                  >
+                    {selectsData.allSubjects.map(({ text, value }) =>
+                      value ? (
+                        <Select.Option key={value} value={value}>
                           {text}
                         </Select.Option>
-                      ))}
-                    </SelectInputStyled>
-                  </ItemBody>
-                  <ItemBody data-cy="gradeItem">
-                    <FieldLabel>{t("component.options.grade")}</FieldLabel>
-                    <SelectInputStyled
-                      showArrow
-                      data-cy="gradeSelect"
-                      mode="multiple"
-                      showSearch
-                      value={grades}
-                      onChange={setGrades}
-                      getPopupContainer={trigger => trigger.parentNode}
-                    >
-                      {selectsData.allGrades.map(({ text, value }) => (
-                        <Select.Option key={text} value={value}>
-                          {text}
-                        </Select.Option>
-                      ))}
-                    </SelectInputStyled>
-                  </ItemBody>
-                </Fragment>
-              </CustomTreeSelect>
-            </Col>
-            <Col md={12}>
-              <div data-cy="searchStandardSelectItem">
-                <SelectInputStyled
-                  data-cy="searchStandardSelect"
-                  mode="multiple" 
-                  showArrow
-                  style={{ margin: "auto", display: "block" }}
-                  placeholder={t("component.options.searchStandards")}
-                  filterOption={false}
-                  value={standardsArr}
-                  optionLabelProp="title"
-                  onFocus={handleStandardFocus}
-                  onSearch={handleSearchStandard}
-                  onSelect={handleStandardSelect}
-                  onDeselect={handleStandardDeselect}
-                  getPopupContainer={trigger => trigger.parentNode}
-                >
-                  {!curriculumStandardsLoading &&
-                    curriculumStandardsELO &&
-                    curriculumStandardsELO.length > 0 &&
-                    curriculumStandardsELO.map(el => (
-                      <Select.Option
-                        title={el.identifier}
-                        key={el._id}
-                        value={el.identifier}
-                        obj={el}
-                        style={{ whiteSpace: "normal" }}
-                      >
-                        <div>
-                          <div>
-                            <b>{el.identifier}</b>
-                          </div>
-                          <div
-                            className="selected-item-desctiption"
-                            dangerouslySetInnerHTML={{ __html: el.description }}
-                          />
-                        </div>
+                      ) : (
+                        ""
+                      )
+                    )}
+                  </SelectInputStyled>
+                </ItemBody>
+                <ItemBody data-cy="standardItem">
+                  <FieldLabel>{t("component.options.standardSet")}</FieldLabel>
+                  <SelectInputStyled
+                    data-cy="standardSetSelect"
+                    showSearch
+                    filterOption
+                    value={curriculum}
+                    onChange={handleChangeStandard}
+                    getPopupContainer={trigger => trigger.parentNode}
+                  >
+                    {formattedCuriculums.map(({ value, text, disabled }) => (
+                      <Select.Option key={value} value={text} disabled={disabled}>
+                        {text}
                       </Select.Option>
                     ))}
-                </SelectInputStyled>
-              </div>
-              {recentStandardsList && recentStandardsList.length > 0 && !isDocBased && (
-                <RecentStandardsList
-                  recentStandardsList={recentStandardsList}
-                  standardsArr={standardsArr}
-                  handleAddStandard={handleAddStandard}
-                />
-              )}
-            </Col>
-          </Row>
-        </Col>
-        {showIconBrowserBtn ? (
-          <IconWrapper>
-            <IconExpandBox onClick={handleShowBrowseModal} />
-          </IconWrapper>
-        ) : (
-          <Col md={4}>
-            <div>
-              <EduButton height="40px" isGhost onClick={handleShowBrowseModal}>
-                {t("component.options.browse")}
-              </EduButton>
-            </div>
+                  </SelectInputStyled>
+                </ItemBody>
+                <ItemBody data-cy="gradeItem">
+                  <FieldLabel>{t("component.options.grade")}</FieldLabel>
+                  <SelectInputStyled
+                    data-cy="gradeSelect"
+                    mode="multiple"
+                    showSearch
+                    value={grades}
+                    onChange={setGrades}
+                    getPopupContainer={trigger => trigger.parentNode}
+                  >
+                    {selectsData.allGrades.map(({ text, value }) => (
+                      <Select.Option key={text} value={value}>
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </ItemBody>
+              </Fragment>
+            </CustomTreeSelect>
           </Col>
-        )}
+          <Col md={showIconBrowserBtn ? 12 : 10}>
+            <div data-cy="searchStandardSelectItem">
+              <SelectInputStyled
+                bg={!showIconBrowserBtn && "white"}
+                data-cy="searchStandardSelect"
+                mode="multiple"
+                style={{ margin: "auto", display: "block" }}
+                placeholder={t("component.options.searchStandards")}
+                filterOption={false}
+                value={standardsArr}
+                optionLabelProp="title"
+                onFocus={handleStandardFocus}
+                onSearch={handleSearchStandard}
+                onSelect={handleStandardSelect}
+                onDeselect={handleStandardDeselect}
+                getPopupContainer={trigger => trigger.parentNode}
+              >
+                {!curriculumStandardsLoading &&
+                  curriculumStandardsELO &&
+                  curriculumStandardsELO.length > 0 &&
+                  curriculumStandardsELO.map(el => (
+                    <Select.Option
+                      title={el.identifier}
+                      key={el._id}
+                      value={el.identifier}
+                      obj={el}
+                      style={{ whiteSpace: "normal" }}
+                    >
+                      <div>
+                        <div>
+                          <b>{el.identifier}</b>
+                        </div>
+                        <div
+                          className="selected-item-desctiption"
+                          dangerouslySetInnerHTML={{ __html: el.description }}
+                        />
+                      </div>
+                    </Select.Option>
+                  ))}
+              </SelectInputStyled>
+            </div>
+            {recentStandardsList && recentStandardsList.length > 0 && !isDocBased && (
+              <RecentStandardsList
+                recentStandardsList={recentStandardsList}
+                standardsArr={standardsArr}
+                handleAddStandard={handleAddStandard}
+              />
+            )}
+          </Col>
+
+          {showIconBrowserBtn ? (
+            <IconWrapper>
+              <IconExpandBox onClick={handleShowBrowseModal} />
+            </IconWrapper>
+          ) : (
+            <Col md={4}>
+              <div>
+                <EduButton width="100%" height="40px" isGhost onClick={handleShowBrowseModal}>
+                  {t("component.options.browse")}
+                </EduButton>
+              </div>
+            </Col>
+          )}
+        </Row>
 
         {recentStandardsList && recentStandardsList.length > 0 && isDocBased && (
           <Col xs={24}>

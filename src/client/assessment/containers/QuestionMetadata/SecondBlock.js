@@ -2,9 +2,8 @@ import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select } from "antd";
 import { uniqBy } from "lodash";
-import { notification } from "@edulastic/common";
+import { notification, FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
-import { Label } from "../../styled/WidgetOptions/Label";
 import { Container } from "./styled/Container";
 import { ItemBody } from "./styled/ItemBody";
 import { selectsData } from "../../../author/TestPage/components/common";
@@ -73,13 +72,13 @@ const SecondBlock = ({
   ]);
   return (
     <Container padding="20px">
-      <Row gutter={36}>
+      <Row gutter={24}>
         <Col md={6}>
           <ItemBody>
-            <Label>{t("component.options.depthOfKnowledge")}</Label>
-            <Select
+            <FieldLabel>{t("component.options.depthOfKnowledge")}</FieldLabel>
+            <SelectInputStyled
+              bg="white"
               data-cy="dokSelect"
-              style={{ width: "100%" }}
               placeholder={t("component.options.selectDOK")}
               onSelect={onQuestionDataSelect("depthOfKnowledge")}
               value={depthOfKnowledge}
@@ -96,15 +95,15 @@ const SecondBlock = ({
                     </Select.Option>
                   )
               )}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Col>
         <Col md={6}>
           <ItemBody>
-            <Label>{t("component.options.difficultyLevel")}</Label>
-            <Select
+            <FieldLabel>{t("component.options.difficultyLevel")}</FieldLabel>
+            <SelectInputStyled
+              bg="white"
               data-cy="difficultySelect"
-              style={{ width: "100%" }}
               placeholder={t("component.options.selectDifficulty")}
               onSelect={onQuestionDataSelect("authorDifficulty")}
               value={authorDifficulty}
@@ -121,41 +120,40 @@ const SecondBlock = ({
                     </Select.Option>
                   )
               )}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Col>
         <Col md={6}>
           <ItemBody>
-            <Label>{t("component.options.blooomTaxonomy")}</Label>
-            <Select
+            <FieldLabel>{t("component.options.blooomTaxonomy")}</FieldLabel>
+            <SelectInputStyled
               data-cy="bloomsTaxonomy"
-              style={{ width: "100%" }}
+              bg="white"
               placeholder={t("component.options.blooomTaxonomy")}
               onSelect={onQuestionDataSelect("bloomsTaxonomy")}
               value={bloomsTaxonomy}
               suffixIcon={<SelectSuffixIcon type="caret-down" />}
             >
               <Select.Option key={"Select Bloom's Taxonomy"} value="">
-                Select Bloom's Taxonomy
+                Select Bloom&apos;s Taxonomy
               </Select.Option>
-              {bloomsTaxonomyOptions.map(x => (<Select.Option key={x.toLowerCase()} value={x.toLowerCase()}>
-                {x}
-              </Select.Option>))}
-
-            </Select>
-
+              {bloomsTaxonomyOptions.map(x => (
+                <Select.Option key={x.toLowerCase()} value={x.toLowerCase()}>
+                  {x}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
           </ItemBody>
         </Col>
         {(userFeatures.isPublisherAuthor || userFeatures.isCurator) && (
           <Col md={6}>
             <ItemBody>
-              <Label>Collections</Label>
-              <Select
-                showArrow
+              <FieldLabel>Collections</FieldLabel>
+              <SelectInputStyled
                 mode="multiple"
                 className="tagsSelect"
                 data-cy="collectionsSelect"
-                style={{ marginBottom: 0, width: "100%" }}
+                bg="white"
                 placeholder="Please select"
                 value={filteredCollections.flatMap(c => c.bucketIds)}
                 onChange={(value, options) => handleCollectionsSelect(value, options)}
@@ -168,7 +166,7 @@ const SecondBlock = ({
                     {`${o.collectionName} - ${o.name}`}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </ItemBody>
             {recentCollectionsList?.length > 0 && (
               <RecentCollectionsList
@@ -181,12 +179,11 @@ const SecondBlock = ({
         )}
         <Col md={6}>
           <ItemBody>
-            <Label>{t("component.options.tags")}</Label>
+            <FieldLabel>{t("component.options.tags")}</FieldLabel>
             {searchValue.length && !searchValue.trim().length ? (
-              <Select
-                showArrow
+              <SelectInputStyled
                 mode="multiple"
-                style={{ marginBottom: 0, width: "100%" }}
+                bg="white"
                 optionLabelProp="title"
                 className="tagsSelect"
                 placeholder="Please select"
@@ -196,36 +193,35 @@ const SecondBlock = ({
                 <Select.Option key={0} value="invalid" title="invalid" disabled>
                   Please enter valid characters
                 </Select.Option>
-              </Select>
+              </SelectInputStyled>
             ) : (
-                <Select
-                  showArrow
-                  data-cy="tagsSelect"
-                  mode="multiple"
-                  className="tagsSelect"
-                  style={{ marginBottom: 0, width: "100%" }}
-                  optionLabelProp="title"
-                  placeholder="Please select"
-                  value={tags.map(x => x._id)}
-                  onSearch={searchTags}
-                  onSelect={selectTags}
-                  onDeselect={deselectTags}
-                  filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
-                >
-                  {searchValue.trim() ? (
-                    <Select.Option data-cy={`dok-select-${searchValue}`} key={0} value={searchValue} title={searchValue}>
-                      {`${searchValue} (Create new Tag)`}
-                    </Select.Option>
-                  ) : (
-                      ""
-                    )}
-                  {newAllTagsData.map(({ tagName, _id }) => (
-                    <Select.Option data-cy={`tags-select-${tagName}`} key={_id} value={_id} title={tagName}>
-                      {tagName}
-                    </Select.Option>
-                  ))}
-                </Select>
-              )}
+              <SelectInputStyled
+                data-cy="tagsSelect"
+                mode="multiple"
+                className="tagsSelect"
+                bg="white"
+                optionLabelProp="title"
+                placeholder="Please select"
+                value={tags.map(x => x._id)}
+                onSearch={searchTags}
+                onSelect={selectTags}
+                onDeselect={deselectTags}
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+              >
+                {searchValue.trim() ? (
+                  <Select.Option data-cy={`dok-select-${searchValue}`} key={0} value={searchValue} title={searchValue}>
+                    {`${searchValue} (Create new Tag)`}
+                  </Select.Option>
+                ) : (
+                  ""
+                )}
+                {newAllTagsData.map(({ tagName, _id }) => (
+                  <Select.Option data-cy={`tags-select-${tagName}`} key={_id} value={_id} title={tagName}>
+                    {tagName}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            )}
           </ItemBody>
         </Col>
       </Row>

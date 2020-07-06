@@ -135,7 +135,6 @@ const TokenHighlightPreview = ({
       }
     } else if (previewTab === CLEAR && !isCheck) {
       if (!userAnswer.some(ans => ans.selected)) {
-        saveAnswer(initialArray);
         setAnswers(initialArray);
       }
     } else if (previewTab === CLEAR && isCheck) {
@@ -166,6 +165,10 @@ const TokenHighlightPreview = ({
     }
 
     setAnswers(newAnswers);
+    if (previewTab === CLEAR && !newAnswers.some(ans => ans.selected)) {
+      saveAnswer([], true);
+      return;
+    }
     saveAnswer(newAnswers, true);
   };
 

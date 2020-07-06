@@ -5,13 +5,8 @@ import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { Upload, Spin } from "antd";
-import {
-  themeColorBlue,
-  white,
-  greyishDarker2,
-  largeDesktopWidth
-} from "@edulastic/colors";
-import { beforeUpload,notification } from "@edulastic/common";
+import { themeColorBlue, white, greyishDarker2, largeDesktopWidth } from "@edulastic/colors";
+import { beforeUpload, notification } from "@edulastic/common";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { updateProfileImageAction } from "../../../../student/Login/ducks";
 
@@ -26,10 +21,11 @@ class Photo extends React.Component {
       this.setState({ loading: true });
       const { file } = info;
       if (!file.type.match(/image/g)) {
-        notification({ messageKey:"pleaseUploadFilesInImageFormat"});
+        notification({ messageKey: "pleaseUploadFilesInImageFormat" });
         this.setState({ loading: false });
         return;
-      } if (!beforeUpload(file)) {
+      }
+      if (!beforeUpload(file)) {
         this.setState({ loading: false });
         return;
       }
@@ -46,7 +42,7 @@ class Photo extends React.Component {
         loading: false
       });
     } catch (e) {
-      notification({ messageKey:"unableTOsaveThumbnail"});
+      notification({ messageKey: "unableTOsaveThumbnail" });
       this.setState({
         loading: false
       });
@@ -55,14 +51,14 @@ class Photo extends React.Component {
   };
 
   render() {
-    const { height, windowWidth, imageUrl } = this.props;
+    const { height, windowWidth, imageUrl, isProfile } = this.props;
     const uploadButton = (
       <Container>
         <Image alt="Profile">
           <Backdrop />
         </Image>
-        <Camera>
-          <IconPhotoCamera color={white} width={16} height={16} />
+        <Camera className={isProfile && "profile-btn"}>
+          {isProfile ? "CHANGE IMAGE" : <IconPhotoCamera color={white} width={16} height={16} />}
         </Camera>
       </Container>
     );
@@ -90,8 +86,8 @@ class Photo extends React.Component {
                 uploadButton
               )}
             </ImageContainer>
-            <Camera>
-              <IconPhotoCamera color={white} width="20px" />
+            <Camera className={isProfile && "profile-btn"}>
+              {isProfile ? "CHANGE IMAGE" : <IconPhotoCamera color={white} width="20px" />}
             </Camera>
           </Container>
         </Upload>
@@ -157,7 +153,7 @@ const ImageLoading = styled(Spin)`
 
 const Image = styled.div`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? `${props.height  }px` : "100%")};
+  height: ${props => (props.windowWidth > 993 ? `${props.height}px` : "100%")};
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;
@@ -186,6 +182,23 @@ const Camera = styled.div`
   justify-content: center;
   z-index: 1;
   cursor: pointer;
+  &.profile-btn {
+    position: relative;
+    margin: 40px auto 0px;
+    width: 190px;
+    left: 0;
+    border-radius: 4px;
+    height: 32px;
+    background: white;
+    border: 1px solid ${themeColorBlue};
+    font-size: 10px;
+    color: ${themeColorBlue};
+    font-weight: 600;
+    &:hover {
+      background: ${themeColorBlue};
+      color: white;
+    }
+  }
   @media (max-width: ${largeDesktopWidth}) {
     left: 5px;
   }

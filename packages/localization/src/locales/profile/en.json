@@ -17,7 +17,7 @@
       "password": "Please input your password!",
       "cancel": "cancel",
       "save": "save",
-      "editProfile": "Edit Profile",
+      "editProfile": "Edit My Profile",
       "deleteAccount": "Delete My Account",
       "confirmPasswordMess": "Password didn't match.",
       "passwordLengthErrorMessage": "Password is too short - must be at least 4 characters.",

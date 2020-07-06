@@ -13,6 +13,7 @@ import { getUserNameSelector } from "../../../src/selectors/user";
 import { getPlaylistEntitySelector } from "../../../PlaylistPage/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
+import { updateAssingnmentSettingsAction } from "../../../AssignTest/duck";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
@@ -111,9 +112,9 @@ export const reducer = createReducer(initialState, {
 });
 
 // selectors
-const module = "authorTestAssignments";
+const _module = "authorTestAssignments";
 
-export const stateSelector = state => state[module];
+export const stateSelector = state => state[_module];
 
 export const getIsloadingAssignmentSelector = createSelector(
   stateSelector,
@@ -308,7 +309,7 @@ function* saveAssignment({ payload }) {
       push({
         pathname: `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
           payload.playlistModuleId ? payload.playlistId : testIds[0]
-          }/assign/${assignmentId}`,
+        }/assign/${assignmentId}`,
         state: { ...locationState, assignedTestId: payload.testId, playlistModuleId: payload.playlistModuleId }
       })
     );
@@ -324,6 +325,10 @@ function* saveAssignment({ payload }) {
     }
     yield put(toggleHasCommonAssignmentsPopupAction(false));
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
+    if (err.status === 403 && err.data.message === "NO_CLASS_FOUND_AFTER_REMOVING_DUPLICATES") {
+      yield put(updateAssingnmentSettingsAction({ class: [] }));
+      return notification({ msg: "No classes found after removing the duplicates. Select one or more to assign." });
+    }
     notification({ msg: err.statusText });
   }
 }

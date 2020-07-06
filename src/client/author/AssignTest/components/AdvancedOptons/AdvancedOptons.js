@@ -5,7 +5,7 @@ import produce from "immer";
 import { notification } from "@edulastic/common";
 import { curry } from "lodash";
 import * as moment from "moment";
-import { Col, Icon, message } from "antd";
+import { Col, Icon } from "antd";
 import { test as testConst, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
 import ClassList from "./ClassList";
 import DatePolicySelector from "./DatePolicySelector";
@@ -33,7 +33,6 @@ class AdvancedOptons extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      classIds: [],
       _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
   }
@@ -42,11 +41,11 @@ class AdvancedOptons extends React.Component {
     const { features, testSettings } = nextProps;
     const { grades, subjects } = testSettings || {};
     if (
-      features["assessmentSuperPowersReleaseScorePremium"] ||
+      features.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({
-          features: features,
+          features,
           inputFeatures: "assessmentSuperPowersReleaseScorePremium",
           gradeSubject: { grades, subjects }
         }))
@@ -54,18 +53,17 @@ class AdvancedOptons extends React.Component {
       return {
         _releaseGradeKeys: releaseGradeKeys
       };
-    } else {
-      return {
-        _releaseGradeKeys: nonPremiumReleaseGradeKeys
-      };
     }
+    return {
+      _releaseGradeKeys: nonPremiumReleaseGradeKeys
+    };
   }
 
   toggleSettings = () => {
     const { freezeSettings } = this.props;
     const { showSettings } = this.state;
     if (freezeSettings && !showSettings) {
-      notification({ type: "warn", messageKey:"overrrideSettingsRestricted"});
+      notification({ type: "warn", messageKey: "overrrideSettingsRestricted" });
     }
     this.setState({ showSettings: !showSettings });
   };
@@ -80,14 +78,12 @@ class AdvancedOptons extends React.Component {
       defaultTestProfiles
     } = this.props;
     if (field === "class") {
-      this.setState({ classIds: value }, () => {
-        const { classData, termId } = onClassFieldChange(value, groups);
-        const nextAssignment = produce(assignment, state => {
-          state["class"] = classData;
-          if (termId) state.termId = termId;
-        });
-        updateOptions(nextAssignment);
+      const { classData, termId } = onClassFieldChange(value, groups);
+      const nextAssignment = produce(assignment, state => {
+        state.class = classData;
+        if (termId) state.termId = termId;
       });
+      updateOptions(nextAssignment);
       return;
     }
     if (field === "endDate") {
@@ -146,8 +142,9 @@ class AdvancedOptons extends React.Component {
   updateStudents = studentList => this.onChange("students", studentList);
 
   render() {
-    const { testSettings = {}, assignment, updateOptions, defaultTestProfiles = {} } = this.props;
-    const { showSettings, classIds, _releaseGradeKeys } = this.state;
+    const { testSettings = {}, assignment, updateOptions } = this.props;
+    const classIds = assignment?.class?.map(item => item._id);
+    const { showSettings, _releaseGradeKeys } = this.state;
     const changeField = curry(this.onChange);
 
     return (

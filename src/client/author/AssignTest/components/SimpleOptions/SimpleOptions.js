@@ -38,7 +38,6 @@ class SimpleOptions extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      classIds: [],
       studentList: [],
       _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
@@ -110,14 +109,12 @@ class SimpleOptions extends React.Component {
       return toggleSpecificStudents(value);
     }
     if (field === "class") {
-      this.setState({ classIds: value }, () => {
-        const { classData, termId } = onClassFieldChange(value, group);
-        const nextAssignment = produce(assignment, state => {
-          state.class = classData;
-          if (termId) state.termId = termId;
-        });
-        updateOptions(nextAssignment);
+      const { classData, termId } = onClassFieldChange(value, group);
+      const nextAssignment = produce(assignment, state => {
+        state.class = classData;
+        if (termId) state.termId = termId;
       });
+      updateOptions(nextAssignment);
       return;
     }
     if (field === "endDate" || field === "dueDate") {
@@ -264,7 +261,7 @@ class SimpleOptions extends React.Component {
   };
 
   render() {
-    const { showSettings, classIds, studentList, _releaseGradeKeys } = this.state;
+    const { showSettings, studentList, _releaseGradeKeys } = this.state;
     const {
       group,
       fetchStudents,
@@ -287,8 +284,8 @@ class SimpleOptions extends React.Component {
       closePolicy = selectsData.closePolicyForAdmin;
     }
     const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
+    const classIds = assignment?.class?.map(item => item._id);
     const studentOfSelectedClass = getListOfActiveStudents(students, classIds);
-
     return (
       <OptionConationer>
         <InitOptions>

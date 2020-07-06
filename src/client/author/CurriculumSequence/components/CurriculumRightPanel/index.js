@@ -34,7 +34,7 @@ const CurriculumRightPanel = ({
   const showSummaryBlock = !isManageContentActive || isStudent;
 
   return (
-    <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative" }}>
+    <div data-cy="curriculum-sequence-right-panel" style={{ position: "relative", height: "calc(100vh - 160px)" }}>
       {(showManageContent || showSummaryBlock) && (
         <HideRightPanel onClick={hideRightpanel}>
           <IconClose />

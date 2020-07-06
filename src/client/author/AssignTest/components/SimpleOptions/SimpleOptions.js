@@ -7,7 +7,7 @@ import * as moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getUserRole } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
@@ -368,20 +368,16 @@ class SimpleOptions extends React.Component {
               </Row>
             </Col>
           </StyledRow>
-
-          <FeaturesSwitch
-            inputFeatures="selectTestType"
-            actionOnInaccessible="hidden"
-            key="selectTestType"
-            gradeSubject={gradeSubject}
-          >
-            <TestTypeSelector
-              userRole={userRole}
-              testType={assignment.testType || testSettings.testType}
-              onAssignmentTypeChange={changeField("testType")}
-              disabled={freezeSettings}
-            />
-          </FeaturesSwitch>
+          <StyledRow gutter={32} mb="15px">
+            <Col span={12}>
+              <TestTypeSelector
+                userRole={userRole}
+                testType={assignment.testType || testSettings.testType}
+                onAssignmentTypeChange={changeField("testType")}
+                disabled={freezeSettings}
+              />
+            </Col>
+          </StyledRow>
           <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>

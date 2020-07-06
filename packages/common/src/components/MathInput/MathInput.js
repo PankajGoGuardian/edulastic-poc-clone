@@ -118,10 +118,18 @@ class MathInput extends React.PureComponent {
   sanitizeLatex = v => v.replace(/&amp;/g, "&");
 
   handleKeypress = e => {
-    const { restrictKeys, allowNumericOnly } = this.props;
-
+    const { restrictKeys, allowNumericOnly,value=""} = this.props;
     if (allowNumericOnly) {
-      if (!e.key.match(/[0-9+-.%^/]/g)) {
+      const isDynamicVar = value &&  value[value.length-1]==="@";
+      if(isDynamicVar){
+         if(!e.key.match(/[a-zA-Z]/g)){
+          e.preventDefault();
+          e.stopPropagation();
+         }
+         return;
+      }
+
+      if (!e.key.match(/[0-9+-.%^@/]/g)) {
         e.preventDefault();
         e.stopPropagation();
       }

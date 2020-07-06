@@ -332,7 +332,7 @@ class AuthorTestItemPreview extends Component {
         {showScratch && isEnableScratchpad && <ScratchpadTool />}
         <WidgetContainer alignItems="flex-start" {...this.getScrollContainerProps(showScratch)}>
           {showScratch && isEnableScratchpad && <Scratchpad hideTools />}
-          {col.widgets.map((widget, i) => (
+          {col.widgets?.map((widget, i) => (
             <React.Fragment key={i}>
               {col.tabs &&
                 !!col.tabs.length &&
@@ -405,7 +405,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   getSectionQue = cols => {
-    if (cols.length !== 2) return [cols[0].widgets.length];
+    if (cols.length !== 2) return [cols[0]?.widgets?.length];
 
     const sections = [];
 
@@ -437,7 +437,7 @@ class AuthorTestItemPreview extends Component {
           const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
           // will show scratch only in multipart and item preview modal
-          const showScratch = col.widgets.some(w => w.type === questionType.HIGHLIGHT_IMAGE);
+          const showScratch = col.widgets?.some(w => w.type === questionType.HIGHLIGHT_IMAGE);
 
           return (
             // width of divider 25px
@@ -466,7 +466,7 @@ class AuthorTestItemPreview extends Component {
     let questionCount = 0;
     let resourceCount = 0;
     cols
-      .filter(item => item.widgets.length > 0)
+      .filter(item => item.widgets?.length > 0)
       .forEach(({ widgets }) => {
         questionCount += widgets.length;
         resourceCount += widgets.reduce((count, wid) => {

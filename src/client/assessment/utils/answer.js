@@ -43,7 +43,16 @@ export const hasValidAnswers = (type, answer) => {
       if (!isObject(answer) || isEmpty(answer)) {
         return false;
       }
-      return keys(answer).every(key => !!answer[key]);
+      const answerKeys = keys(answer);
+      return answerKeys.every(key => {
+        const value = answer[key];
+        /**
+         * value can be 0, indicating index 0
+         * !!0 is false, so it would return wrong result in every, considering question to be skipped
+         * @see https://snapwiz.atlassian.net/browse/EV-16256
+         */
+        return value === 0 ? true : !!value;
+      });
     }
     default:
       return !isEmpty(answer);

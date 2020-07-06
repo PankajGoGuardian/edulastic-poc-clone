@@ -1,6 +1,6 @@
 import { assignmentApi } from "@edulastic/api";
 import { uniqBy } from "lodash";
-import { cardTitleColor, darkGrey, fadedBlack, themeColor, red } from "@edulastic/colors";
+import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
 import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
@@ -416,7 +416,7 @@ class ListItem extends Component {
                   </IconWrapper>
                   {!isPlaylist && (
                     <LikeIconStyled isLiked={isTestLiked} onClick={this.handleLikeTest} style={{ marginLeft: "20px" }}>
-                      <IconHeart color={isTestLiked ? red : darkGrey} width={14} height={14} />
+                      <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
                       <IconText>{likes}</IconText>
                     </LikeIconStyled>
                   )}

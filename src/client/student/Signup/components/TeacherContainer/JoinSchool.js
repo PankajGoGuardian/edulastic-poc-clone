@@ -8,16 +8,7 @@ import { Row, Col, Breadcrumb, Icon } from "antd";
 import styled, { css } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClose } from "@edulastic/icons";
-import {
-  themeColor,
-  white,
-  title,
-  fadedGreen,
-  cardBg,
-  mobileWidthMax,
-  mobileWidthLarge,
-  extraDesktopWidthMax
-} from "@edulastic/colors";
+import { themeColor, white, title, mobileWidthMax, mobileWidthLarge, extraDesktopWidthMax } from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
@@ -175,7 +166,7 @@ const JoinSchool = ({
         institutionIds: [...new Set(newInstitutionIds)],
         districtId: selected.districtId,
         email: email || "",
-        firstName,
+        ...(firstName ? { firstName } : {}),
         middleName,
         lastName
       };
@@ -186,7 +177,7 @@ const JoinSchool = ({
         districtId: selected.districtId,
         currentSignUpState: "PREFERENCE_NOT_SELECTED",
         email: email || "",
-        firstName,
+        ...(firstName ? { firstName } : {}),
         middleName,
         lastName
       };

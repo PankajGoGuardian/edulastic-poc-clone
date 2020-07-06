@@ -856,20 +856,18 @@ class ClassBoard extends Component {
                   {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
                 </CheckboxLabel>
                 <ClassBoardFeats>
-                  {!classResponse?.isDocBased && (
-                    <RedirectButton
-                      disabled={!isItemsVisible}
-                      first
-                      data-cy="printButton"
-                      target="_blank"
-                      onClick={this.onClickPrint}
-                    >
-                      <ButtonIconWrap>
-                        <IconPrint />
-                      </ButtonIconWrap>
-                      PRINT
-                    </RedirectButton>
-                  )}
+                  <RedirectButton
+                    disabled={!isItemsVisible}
+                    first
+                    data-cy="printButton"
+                    target="_blank"
+                    onClick={this.onClickPrint}
+                  >
+                    <ButtonIconWrap>
+                      <IconPrint />
+                    </ButtonIconWrap>
+                    PRINT
+                  </RedirectButton>
                   <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
                     <ButtonIconWrap>
                       <IconRedirect />

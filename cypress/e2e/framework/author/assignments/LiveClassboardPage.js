@@ -101,7 +101,9 @@ class LiveClassboardPage {
       .click({ force: true })
       .should("have.css", "background-color", queColor.GREEN_2);
 
-    return cy.wait("@getFirstQuestion").then(xhr => xhr.response.body.result[0].testItemId);
+    return cy
+      .wait("@getFirstQuestion")
+      .then(xhr => xhr.response.body.result[0] && xhr.response.body.result[0].testItemId);
   };
 
   clickOnPresent = () => {
@@ -340,13 +342,13 @@ class LiveClassboardPage {
       this.getStudentScoreByIndex(index).should("have.text", score);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
-      if ([studentSide.NOT_STARTED, teacherSide.REDIRECTED, studentSide.ABSENT].indexOf(status) === -1) {
+      if ([studentSide.NOT_STARTED, studentSide.ABSENT].indexOf(status) === -1) {
         cy.server();
         cy.route("GET", "**/test-activity/**").as("test-activity");
         // this.getViewResponseByIndex(index)
         this.getViewResponseByStudentName(studentName)
           .should("be.exist")
-          .click()
+          .click({ force: true })
           .then(() => {
             cy.wait("@test-activity");
             cy.get(".ant-select-selection-selected-value")
@@ -358,6 +360,9 @@ class LiveClassboardPage {
       } else this.getViewResponseByStudentName(studentName).should("not.be.exist");
     });
   }
+
+  // for performance on redirected student card on hover
+  verifyStudentCardRedirectedPerformance({ studentName, attempt1, attempt2, attempt3 }) {}
 
   verifyStudentStatusIsByIndex = (index, status, isManualGraded = false) => {
     if (!isManualGraded)

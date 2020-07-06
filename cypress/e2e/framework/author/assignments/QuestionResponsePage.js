@@ -184,8 +184,11 @@ export default class QuestionResponsePage {
 
     this.getScoreInput(card)
       .as("scoreinputbox")
-      .should("have.value", score.toString());
-
+      // .should("have.value", score.toString());
+      .should($score => {
+        const value = Cypress.$($score).attr("value");
+        expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
+      });
     // verify max score
     cy.get("@scoreinputbox")
       .next()
@@ -214,7 +217,12 @@ export default class QuestionResponsePage {
           });
         });
 
-      cy.get("@scoreinputbox").should("have.value", score.toString());
+      cy.get("@scoreinputbox")
+        // .should("have.value", score.toString());
+        .should($score => {
+          const value = Cypress.$($score).attr("value");
+          expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
+        });
     }
 
     if (feedback) {
@@ -242,7 +250,7 @@ export default class QuestionResponsePage {
   verifyTotalScoreAndImprovement = (totalScore, maxScore, improvemnt) => {
     this.getTotalScore().should("have.text", `${totalScore}`);
     this.getMaxScore().should("have.text", `${maxScore}`);
-    if (improvemnt) this.getImprovement().should("have.text", `${improvemnt}`);
+    if (improvemnt) this.getImprovement().should("have.text", `${Math.sign(improvemnt) == 1 ? "+" : ""}${improvemnt}`);
     else this.getImprovement().should("not.be.visible");
   };
 

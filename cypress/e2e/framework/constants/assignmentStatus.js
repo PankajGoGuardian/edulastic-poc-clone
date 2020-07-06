@@ -74,9 +74,9 @@ export const releaseGradeTypes = {
 };
 
 export const redirectType = {
-  SCORE_AND_FEEDBACK: "Score & Feedback",
-  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Feedback",
-  FEEDBACK_ONLY: "Feedback only"
+  SCORE_AND_FEEDBACK: "Score & Teacher Feedback",
+  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Teacher Feedback",
+  FEEDBACK_ONLY: "Teacher Feedback only"
 };
 
 export const questionDeliveryType = {

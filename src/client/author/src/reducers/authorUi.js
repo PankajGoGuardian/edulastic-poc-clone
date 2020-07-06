@@ -11,8 +11,12 @@ const initialState = {
   isResponsive: false,
   currentlyLoading: []
 };
-const reducer = (state = initialState, { type, payload = {} }) => {
-  const { compoentName } = payload;
+const reducer = (state = initialState, { type, payload }) => {
+  /**
+   * cannot set default value {} to argument
+   * sometimes null values are passed
+   */
+  const { compoentName } = payload || {};
 
   switch (type) {
     case TOGGLE_MENU:

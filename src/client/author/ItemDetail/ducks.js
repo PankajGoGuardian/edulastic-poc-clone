@@ -24,7 +24,7 @@ import {
   addQuestionAction,
   getCurrentQuestionSelector
 } from "../sharedDucks/questions";
-import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
+import { CLEAR_DICT_ALIGNMENTS, SAVE_QUESTION_ERROR } from "../src/constants/actions";
 import { isIncompleteQuestion, hasImproperDynamicParamsConfig } from "../questionUtils";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
@@ -1538,7 +1538,10 @@ function* saveAndPublishItemSaga() {
   try {
     yield put(addLoadingComponentAction({ compoentName: "saveAndPublishItem" }));
     yield put({ type: SAVE_QUESTION_REQUEST, payload: { saveAndPublishFlow: true } });
-    const { payload } = yield take(PROCEED_TO_PUBLISH_ITEM);
+    const { payload } = yield take([SAVE_QUESTION_ERROR, PROCEED_TO_PUBLISH_ITEM]);
+    if (payload.error) {
+      throw new Error(error);
+    }
     const userFeatures = yield select(getUserFeatures);
     const status = userFeatures.isPublisherAuthor ? "inreview" : "published";
     const publishData = {
@@ -1549,11 +1552,11 @@ function* saveAndPublishItemSaga() {
       saveAndPublishFlow: true
     };
     yield put(publishTestItemAction(publishData));
-    return null;
   } catch (error) {
     Sentry.captureException(e);
   } finally {
     yield put(removeLoadingComponentAction({ compoentName: "saveAndPublishItem" }));
+    return null;
   }
 }
 

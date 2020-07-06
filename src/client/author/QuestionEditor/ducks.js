@@ -385,7 +385,16 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
 
     const { itemLevelScoring = false } = itemDetail;
     const [isIncomplete, errMsg] = isIncompleteQuestion(question, itemLevelScoring);
-    if (isIncomplete) return notification({ msg: errMsg });
+    if (isIncomplete) {
+      notification({ msg: errMsg });
+      if (saveAndPublishFlow) {
+        yield put({
+          type: SAVE_QUESTION_ERROR,
+          payload: { error: errMsg, customError: true }
+        });
+      }
+      return;
+    }
 
     const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(question);
     if (hasImproperConfig) {
@@ -400,6 +409,12 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow, sav
     const isGradingCheckboxState = yield select(getIsGradingCheckboxState);
 
     if (isGradingCheckboxState && !question.rubrics) {
+      if (saveAndPublishFlow) {
+        yield put({
+          type: SAVE_QUESTION_ERROR,
+          payload: { error: "Rubric not associated", customError: true }
+        });
+      }
       return notification({ messageKey: "pleaseAssociateARubric" });
     }
 

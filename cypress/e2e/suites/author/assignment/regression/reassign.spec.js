@@ -127,7 +127,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnAssign();
         testAssignPage.selectClass(CLASS_3);
-        testAssignPage.clickOnAssign({ duplicate: true }).then(() => {
+        testAssignPage.clickOnAssign().then(() => {
           cy.contains("Success!");
           testAssignPage.sidebar.clickOnAssignment();
           authorAssignmentPage.getStatus().should("have.length", assignCountForClass1 + assignCountForClass3);
@@ -250,7 +250,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyStatusOfAssignment([teacherSide.IN_PROGRESS]);
       });
     });
-    context("One Student is Part Of 2 Classes-At The Different Times", () => {
+    /* context("One Student is Part Of 2 Classes-At The Different Times", () => {
       before("Login and Assign", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         cy.deleteAllAssignments(Student1Class1.email, Teacher.email);
@@ -296,10 +296,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyStatusOfAssignment([teacherSide.NOT_STARTED]);
 
         cy.login("student", Student4Class1Class3.email, Student4Class1Class3.pass);
-        assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
+        assignmentsPage
+          .getAssignmentByTestId(OriginalTestId)
+          .should("have.length", assignCountForClass1 + assignCountForClass3);
         assignmentsPage.verifyStatusOfAssignment([teacherSide.NOT_STARTED]);
       });
-    });
+    }); */
     context("To The Same Class Along With New Class", () => {
       before("Login and Assign", () => {
         assignCountForClass1 = 0;

@@ -195,8 +195,7 @@ function partialMatchEvaluator(_ref3) {
   var maxScore = bestMatch.maxScore,
       incorrectCount = bestMatch.incorrectCount,
       totalCount = bestMatch.totalCount,
-      evaluation = bestMatch.evaluation,
-      allCorrect = bestMatch.allCorrect;
+      evaluation = bestMatch.evaluation;
   var score = bestMatch.currentScore;
   var penaltyPoints = validation.penalty,
       _validation$rounding = validation.rounding,
@@ -205,9 +204,10 @@ function partialMatchEvaluator(_ref3) {
   if (penaltyPoints && incorrectCount) {
     var penalisation = penaltyPoints / totalCount * incorrectCount;
     score = Math.max(0, score - penalisation);
-  }
+  } // if round down is selected, but score achieved is not maxScore, round down to nearest integer
 
-  if (rounding === ROUND_DOWN && !allCorrect) {
+
+  if (rounding === ROUND_DOWN && score !== maxScore) {
     score = Math.floor(score);
   }
 

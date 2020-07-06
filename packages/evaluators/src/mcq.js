@@ -35,7 +35,6 @@ function getEvaluations({ validation = {}, userResponse = [] }) {
     }
 
     const currentScore = (answerScore / totalCount) * correctCount;
-
     evaluations.push({
       correctCount,
       incorrectCount,
@@ -91,14 +90,15 @@ function partialMatchEvaluator({ validation = {}, userResponse = [] }) {
   const evaluations = getEvaluations({ validation, userResponse });
   const maxByScore = obj => obj.currentScore;
   const bestMatch = maxBy(evaluations, maxByScore);
-  const { maxScore, incorrectCount, totalCount, evaluation, allCorrect } = bestMatch;
+  const { maxScore, incorrectCount, totalCount, evaluation } = bestMatch;
   let { currentScore: score } = bestMatch;
   const { penalty: penaltyPoints, rounding = NONE } = validation;
   if (penaltyPoints && incorrectCount) {
     const penalisation = (penaltyPoints / totalCount) * incorrectCount;
     score = Math.max(0, score - penalisation);
   }
-  if (rounding === ROUND_DOWN && !allCorrect) {
+  // if round down is selected, but score achieved is not maxScore, round down to nearest integer
+  if (rounding === ROUND_DOWN && score !== maxScore) {
     score = Math.floor(score);
   }
   return {

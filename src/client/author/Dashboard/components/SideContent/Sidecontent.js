@@ -107,12 +107,12 @@ const SideContent = props => {
         >
           <iframe
             title="Welcome to Edulastic 2020"
-            width="100%"
-            height="400px"
-            src="https://www.youtube.com/embed/0BvRwAkxs1Q?autoplay=1"
+            src="//fast.wistia.net/embed/iframe/6in8kpqe03"
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
+            width="100%"
+            height="400"
           />
         </CustomModalStyled>
         <Row>

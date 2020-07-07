@@ -1,11 +1,11 @@
 import React from "react";
-import { Input, message } from "antd";
+import { Input } from "antd";
 import get from "lodash/get";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { FlexContainer,notification } from "@edulastic/common";
+import { FlexContainer, notification } from "@edulastic/common";
 import Question from "../../../components/Question/index";
 import { Subtitle } from "../../../styled/Subtitle";
 import Circles from "./Circles";
@@ -24,14 +24,12 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
     if (value > 0) {
       if (fractionType === "circles") {
         if (value > count * sectors) {
-          notification({ type: "warn", messageKey: "valueCantBeGreaterThanSector"});
+          notification({ type: "warn", messageKey: "valueCantBeGreaterThanSector" });
           return false;
         }
-      } else {
-        if (value > count * (rows * columns)) {
-          notification({ type: "warn", messageKey: "valueCantBeGreaterThanRectangles"});
-          return false;
-        }
+      } else if (value > count * (rows * columns)) {
+        notification({ type: "warn", messageKey: "valueCantBeGreaterThanRectangles" });
+        return false;
       }
       setQuestionData(
         produce(item, draft => {
@@ -43,7 +41,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
         })
       );
     } else {
-      notification({ type: "warn", messageKey: "valueCantBeLessThanOne"});
+      notification({ type: "warn", messageKey: "valueCantBeLessThanOne" });
     }
   };
 
@@ -58,7 +56,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
         })
       );
     } else {
-      notification({ messageKey:"scoreShouldBeGreateThanZero"});
+      notification({ messageKey: "scoreShouldBeGreateThanZero" });
     }
   };
 
@@ -120,8 +118,8 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
         >
           {Array(count)
             .fill()
-            .map((el, index) => {
-              return fractionType === "circles" ? (
+            .map((el, index) =>
+              fractionType === "circles" ? (
                 <Circles fractionNumber={index} sectors={sectors} selected={selected} sectorClick={() => {}} />
               ) : (
                 <Rectangles
@@ -131,9 +129,15 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
                   columns={columns}
                   selected={selected}
                 />
-              );
-            })}
-          <AnnotationRnd bounds={"window"} question={item} setQuestionData={setQuestionData} disableDragging={false} />
+              )
+            )}
+          <AnnotationRnd
+            bounds="window"
+            question={item}
+            setQuestionData={setQuestionData}
+            disableDragging={false}
+            noBorder
+          />
         </FlexContainer>
       </FlexContainer>
     </Question>

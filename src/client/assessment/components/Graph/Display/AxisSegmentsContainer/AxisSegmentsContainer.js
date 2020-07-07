@@ -520,7 +520,12 @@ class AxisSegmentsContainer extends PureComponent {
         <GraphWrapper vertical={vertical}>
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-            <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+            <AnnotationRnd
+              noBorder={view !== EDIT}
+              question={graphData}
+              setQuestionData={setQuestionData}
+              disableDragging={view !== EDIT}
+            />
           </div>
           {!disableResponse && !isPrintPreview && (
             <SegmentsTools

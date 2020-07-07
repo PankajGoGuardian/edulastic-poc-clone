@@ -127,7 +127,7 @@ const Display = ({
                 )
               )}
           </FlexContainer>
-          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
+          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging noBorder />}
         </FlexContainer>
         {view && view !== EDIT && <Instructions item={item} />}
         {previewTab === SHOW && (

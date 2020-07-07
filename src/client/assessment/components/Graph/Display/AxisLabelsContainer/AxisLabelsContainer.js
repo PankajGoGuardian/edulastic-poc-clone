@@ -170,11 +170,19 @@ class AxisLabelsContainer extends PureComponent {
       graphData,
       setElementsStash,
       disableResponse,
-      view
+      view,
+      setQuestionData
     } = this.props;
 
     const adjustedHeightWidth = this.adjustedHeightWidth;
 
+    if (view === EDIT) {
+      setQuestionData(
+        next(graphData, draft => {
+          draft.prevContSize = adjustedHeightWidth;
+        })
+      );
+    }
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (this._graph) {
@@ -232,10 +240,19 @@ class AxisLabelsContainer extends PureComponent {
       previewTab,
       changePreviewTab,
       elements,
-      view
+      view,
+      graphData,
+      setQuestionData
     } = this.props;
 
     const adjustedHeightWidth = this.adjustedHeightWidth;
+    if (!isEqual(graphData.prevContSize, adjustedHeightWidth) && view === EDIT) {
+      setQuestionData(
+        next(graphData, draft => {
+          draft.prevContSize = adjustedHeightWidth;
+        })
+      );
+    }
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -475,7 +492,7 @@ class AxisLabelsContainer extends PureComponent {
                   layout={layout}
                   bounds={`#${this._graphId}`}
                   v1Dimenstions={v1Dimenstions}
-                  noBorder
+                  noBorder={view !== EDIT}
                 />
               </div>
             </div>

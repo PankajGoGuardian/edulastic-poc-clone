@@ -155,6 +155,30 @@ class AnnotationsRnd extends Component {
     }
   }
 
+  get widthRatio() {
+    const {
+      adjustedHeightWidth,
+      question: { prevContSize },
+      disableDragging
+    } = this.props;
+    if (!adjustedHeightWidth || !prevContSize || !disableDragging) {
+      return 1;
+    }
+    return adjustedHeightWidth.width / prevContSize.width;
+  }
+
+  get heightRatio() {
+    const {
+      adjustedHeightWidth,
+      question: { prevContSize },
+      disableDragging
+    } = this.props;
+    if (!adjustedHeightWidth || !prevContSize || !disableDragging) {
+      return 1;
+    }
+    return adjustedHeightWidth.height / prevContSize.height;
+  }
+
   render() {
     const { question, disableDragging, isAbove, bounds } = this.props;
     if (!question || !question.annotations) return null;
@@ -166,9 +190,11 @@ class AnnotationsRnd extends Component {
           .filter(a => a.value)
           .map((annotation, i) => {
             const { x, y } = annotation.position || { x: i * 50, y: 0 };
-            const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
-            const { value } = annotation;
+            let { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
+            height *= this.heightRatio;
+            width *= this.widthRatio;
 
+            const { value } = annotation;
             const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureText(value, {
               maxWidth: width,
               height,
@@ -187,13 +213,10 @@ class AnnotationsRnd extends Component {
               <StyledRnd
                 key={annotation.id}
                 position={{
-                  x,
-                  y
+                  x: x * this.widthRatio,
+                  y: y * this.heightRatio
                 }}
-                size={{
-                  height,
-                  width
-                }}
+                size={{ height, width }}
                 onDragStop={(evt, d) => this.handleAnnotationPosition(d, annotation.id)}
                 onResizeStop={(e, dir, ref, delta) => this.handleAnnotationSize(delta, annotation.id)}
                 style={{

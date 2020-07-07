@@ -49,8 +49,6 @@ const ReviewSummary = ({
   hasRandomQuestions,
   isPublishers
 }) => {
-  const subjectsList = [...selectsData.allSubjects];
-  subjectsList.splice(0, 1);
   const questionsCount = summary?.totalItems || 0;
   const totalPoints = summary?.totalPoints || 0;
   const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
@@ -98,7 +96,7 @@ const ReviewSummary = ({
             onChange={onChangeSubjects}
             margin="0px 0px 15px"
           >
-            {subjectsList.map(({ value, text }) => (
+            {selectsData.allSubjects.map(({ value, text }) => (
               <Select.Option key={value} value={value}>
                 {text}
               </Select.Option>

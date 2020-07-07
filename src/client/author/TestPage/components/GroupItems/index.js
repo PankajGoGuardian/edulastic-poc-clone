@@ -663,6 +663,7 @@ const GroupItems = ({
                       <SelectWrapper width="200px">
                         <Label>Tags</Label>
                         <Select
+                          showArrow
                           mode="multiple"
                           data-cy="selectTags"
                           size="default"

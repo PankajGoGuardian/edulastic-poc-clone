@@ -61,6 +61,7 @@ const PopupRowSelect = ({
       <ItemBody>
         <FieldLabel>{t("component.options.grade")}</FieldLabel>
         <SelectInputStyled
+          showArrow
           data-cy="grade-Select"
           mode="multiple"
           showSearch

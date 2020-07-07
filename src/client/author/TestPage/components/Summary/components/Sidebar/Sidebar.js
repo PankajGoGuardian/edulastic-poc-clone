@@ -112,6 +112,7 @@ const Sidebar = ({
         />
         <FieldLabel>Test Name</FieldLabel>
         <TextInputStyled
+          showArrow
           value={title}
           data-cy="testname"
           onChange={e => onChangeField("title", e.target.value)}
@@ -132,6 +133,7 @@ const Sidebar = ({
         />
         <FieldLabel>Grade</FieldLabel>
         <SelectInputStyled
+          showArrow
           data-cy="gradeSelect"
           mode="multiple"
           size="large"
@@ -152,6 +154,7 @@ const Sidebar = ({
 
         <FieldLabel>Subject</FieldLabel>
         <SelectInputStyled
+          showArrow
           data-cy="subjectSelect"
           mode="multiple"
           size="large"
@@ -174,6 +177,7 @@ const Sidebar = ({
           <>
             <FieldLabel>Collections</FieldLabel>
             <SelectInputStyled
+              showArrow
               data-cy="collectionsSelect"
               mode="multiple"
               size="large"
@@ -196,6 +200,7 @@ const Sidebar = ({
 
         <FieldLabel>Tags</FieldLabel>
         <SelectInputStyled
+          showArrow
           data-cy="tagsSelect"
           className="tagsSelect"
           mode="multiple"

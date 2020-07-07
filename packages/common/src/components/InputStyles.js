@@ -173,20 +173,10 @@ export const SelectInputStyled = styled(Select)`
       }
       &.ant-select-selection--multiple {
         padding-right: 25px;
-        &:after {
-          content: "";
-          position: absolute;
-          right: 14px;
-          top: 14px;
-          width: 9px;
-          height: 9px;
-          border: 1px solid ${themeColor};
-          border-top: none;
-          border-left: none;
-          cursor: pointer;
-          transform: rotate(45deg);
-          transition: 0.2s;
-        }
+       .ant-select-arrow {
+         position:absolute;
+         top:20px;
+       }
         .ant-select-selection__rendered {
           width: 100%;
           height: auto;

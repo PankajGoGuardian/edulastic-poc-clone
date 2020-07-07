@@ -347,6 +347,7 @@ class CustomReportModal extends React.Component {
                   ]
                 })(
                   <Select
+                    showArrow
                     mode="multiple"
                     labelInValue
                     placeholder={t("customreport.selectschool")}

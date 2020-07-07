@@ -238,6 +238,7 @@ const ClassSelectModal = ({
         align: "center",
         render: (data, row, index) => (
           <StyledSelect
+           
             showSearch
             style={{
               width: "100%",

@@ -121,6 +121,7 @@ const RightFields = ({
         <Col xs={12}>
           <FieldLabel label="Grades" {...restProps} fiedlName="grades" initialValue={[]}>
             <SelectInputStyled
+              showArrow
               showSearch
               placeholder="Select Grades"
               optionFilterProp="children"
@@ -153,6 +154,7 @@ const RightFields = ({
           <Col xs={24}>
             <FieldLabel label="Standards Set" {...restProps} fiedlName="standardSets" initialValue={[]}>
               <SelectInputStyled
+                showArrow
                 showSearch
                 mode="multiple"
                 optionFilterProp="children"
@@ -184,6 +186,7 @@ const RightFields = ({
           <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
             <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={[]}>
               <SelectInputStyled
+                showArrow
                 placeholder="Select Course"
                 showSearch
                 defaultActiveFirstOption={false}

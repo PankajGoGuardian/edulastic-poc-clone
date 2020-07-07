@@ -46,7 +46,7 @@ const FilterBar = ({ windowWidth, windowHeight, loadAssignments, termsData }) =>
         </Container>
       </FilterButtonWrapper>
       <StyledBoldText>Grade</StyledBoldText>
-      <Select mode="multiple" style={{ width: "100%" }} placeholder="All grades" onChange={handleChange("grades")}>
+      <Select showArrow mode="multiple" style={{ width: "100%" }} placeholder="All grades" onChange={handleChange("grades")}>
         {allGrades.map(
           ({ value, text, isContentGrade }) =>
             !isContentGrade && (

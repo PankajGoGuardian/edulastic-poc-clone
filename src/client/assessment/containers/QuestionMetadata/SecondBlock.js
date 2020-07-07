@@ -150,6 +150,7 @@ const SecondBlock = ({
             <ItemBody>
               <FieldLabel>Collections</FieldLabel>
               <SelectInputStyled
+                showArrow
                 mode="multiple"
                 className="tagsSelect"
                 data-cy="collectionsSelect"
@@ -182,6 +183,7 @@ const SecondBlock = ({
             <FieldLabel>{t("component.options.tags")}</FieldLabel>
             {searchValue.length && !searchValue.trim().length ? (
               <SelectInputStyled
+                showArrow
                 mode="multiple"
                 bg="white"
                 optionLabelProp="title"
@@ -195,7 +197,8 @@ const SecondBlock = ({
                 </Select.Option>
               </SelectInputStyled>
             ) : (
-              <SelectInputStyled
+              <SelectInputStyled 
+                showArrow
                 data-cy="tagsSelect"
                 mode="multiple"
                 className="tagsSelect"

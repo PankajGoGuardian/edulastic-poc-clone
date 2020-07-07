@@ -129,7 +129,7 @@ class ClassList extends React.Component {
       queryType: "OR",
       search: searchTerms,
       page: 1,
-      limit: 10000
+      limit: 1000
     });
   };
 

@@ -6,7 +6,7 @@ import { Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-import { Info } from "./styled";
+import { Info, InfoText } from "./styled";
 
 const { releaseGradeTypes, releaseGradeLabels } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -63,13 +63,16 @@ const ReleaseScoreSettingsModal = ({
       {!!releaseGradeValue &&
         (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? (
           <Info>
-            <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" /> This setting will be retained and the scores will
-            not be released to the students
+            <FontAwesomeIcon style={{ marginLeft: "2px" }} icon={faInfoCircle} aria-hidden="true" />
+            <InfoText>This setting will be retained and the scores will not be released to the students</InfoText>
           </Info>
         ) : (
           <Info>
-            <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" /> This setting will be retained and scores will be
-            released automatically when students complete the assignment
+            <FontAwesomeIcon style={{ marginLeft: "2px" }} icon={faInfoCircle} aria-hidden="true" />
+            <InfoText>
+              This setting will be retained and scores will be released automatically when students complete the
+              assignment
+            </InfoText>
           </Info>
         ))}
     </CustomModalStyled>

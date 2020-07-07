@@ -69,11 +69,21 @@ class Container extends Component {
       showModal: false,
       saveClicked: false,
       clearClicked: false,
-      showHints: false
+      showHints: false,
+      showStickyHeader: false
     };
 
     this.innerDiv = React.createRef();
     this.scrollContainer = React.createRef();
+  }
+
+  componentDidMount() {
+    window.removeEventListener("scroll", this.handleStickyHeader);
+    window.addEventListener("scroll", this.handleStickyHeader);
+  }
+
+  componentDidUnmount() {
+    window.removeEventListener("scroll", this.handleStickyHeader);
   }
 
   componentDidUpdate = () => {
@@ -88,6 +98,17 @@ class Container extends Component {
     ) {
       window.scrollTo(0, savedWindowScrollTop);
       onSaveScrollTop(0);
+    }
+  };
+
+  handleStickyHeader = () => {
+    const { showStickyHeader } = this.state;
+    // 100 is the height of header plus how to author button area
+    if (window.scrollY >= 100 && showStickyHeader === false) {
+      this.setState({ showStickyHeader: true });
+    }
+    if (window.scrollY < 100 && showStickyHeader === true) {
+      this.setState({ showStickyHeader: false });
     }
   };
 
@@ -452,7 +473,7 @@ class Container extends Component {
       return <div />;
     }
 
-    const { showModal } = this.state;
+    const { showModal, showStickyHeader } = this.state;
     const itemId = question === null ? "" : question._id;
     return (
       <EditorContainer ref={this.innerDiv}>
@@ -475,7 +496,7 @@ class Container extends Component {
             {this.header()}
           </ItemHeader>
 
-          <BreadCrumbBar>
+          <BreadCrumbBar className={showStickyHeader ? "sticky-header" : ""}>
             <Col xs={{ span: 8 }} lg={{ span: 12 }}>
               {windowWidth > desktopWidth.replace("px", "") ? (
                 <SecondHeadBar breadcrumb={this.breadcrumb} />
@@ -592,6 +613,13 @@ export default enhance(Container);
 
 const BreadCrumbBar = styled(Row)`
   padding: 10px 30px;
+  &.sticky-header {
+    position: fixed;
+    left: 70px;
+    right: 0;
+    background: #fff;
+    z-index: 999;
+  }
 `;
 
 const RightActionButtons = styled(Col)`

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { throttle } from "lodash";
 import { themeColor, extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -18,14 +18,20 @@ class QuestionMenu extends Component {
 
   handleScroll = option => {
     this.contentWrapper.removeEventListener("scroll", this.throttledFindActiveTab);
-    const { main, advanced } = this.props;
+    const { main, advanced, theme } = this.props;
     const options = [...main, ...advanced];
     const activeTab = options.findIndex(opt => opt.label === option.label);
-
     this.setState({ activeTab }, () => {
-      option.el.scrollIntoView({
-        behavior: "smooth"
-      });
+      const node = option.el;
+      node.scrollIntoView(true);
+      const scrolledY = window.scrollY;
+      if (scrolledY) {
+        window.scroll({
+          left: 0,
+          top: scrolledY - (theme.HeaderHeight.xl + 50), // 50 is the height of how to author button area
+          behavior: "smooth"
+        });
+      }
       setTimeout(() => this.contentWrapper.addEventListener("scroll", this.throttledFindActiveTab), 1000);
     });
   };
@@ -172,13 +178,13 @@ QuestionMenu.defaultProps = {
   questionTitle: ""
 };
 
-export default withWindowSizes(QuestionMenu);
+export default withTheme(withWindowSizes(QuestionMenu));
 export { default as AdvancedOptionsLink } from "./AdvancedOptionsLink";
 
 const Menu = styled.div`
   position: fixed;
   width: 230px;
-  padding: 30px 0px;
+  padding: 50px 0px 30px 0px;
   height: 100%;
 `;
 

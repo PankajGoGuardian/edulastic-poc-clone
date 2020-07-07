@@ -24,7 +24,7 @@ import dropDownFormat from "./standardsGradebook/static/json/dropDownFormat.json
 import { getUserRole } from "../../../src/selectors/user";
 import { getFilterDropDownData } from "./standardsGradebook/utils/transformers";
 import { getDropDownData } from "./standardsPerformance/utils/transformers";
-import { getReportsStandardsFilters } from "./common/filterDataDucks";
+import { getReportsStandardsFilters, getFiltersSelector } from "./common/filterDataDucks";
 
 const StandardsMasteryReportContainer = props => {
   const {
@@ -42,7 +42,8 @@ const StandardsMasteryReportContainer = props => {
     standardsGradebook,
     onRefineResultsCB,
     showFilter,
-    standardsFilters
+    standardsFilters,
+    filters
   } = props;
 
   const firstRender = useRef(true);
@@ -54,6 +55,13 @@ const StandardsMasteryReportContainer = props => {
     },
     []
   );
+
+  useEffect(() => {
+    setSMRSettings({
+      ...gradebookSettings,
+      requestFilters: { ...(filters || standardsFilters?.filters) }
+    });
+  }, []);
 
   const computeChartNavigationLinks = filt => {
     if (navigation.locToData[loc]) {
@@ -229,7 +237,8 @@ const ConnectedStandardsMasteryReportContainer = connect(
     role: getUserRole(state),
     standardsFilters: getReportsStandardsFilters(state),
     standardsGradebook: getReportsStandardsGradebook(state),
-    gradebookSettings: getReportsSMRSettings(state)
+    gradebookSettings: getReportsSMRSettings(state),
+    filters: getFiltersSelector(state)
   }),
   {
     setSMRSettings: setSMRSettingsAction,

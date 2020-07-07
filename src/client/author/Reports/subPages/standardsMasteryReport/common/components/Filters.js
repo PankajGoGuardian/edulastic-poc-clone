@@ -80,8 +80,8 @@ const StandardsFilters = ({
 
   useEffect(() => {
     const search = qs.parse(location.search.substring(1));
-    const defaultTermId = get(user, "orgData.defaultTermId", "");
-
+    const defaultTermId =
+      filters?.termId || standardsFilters?.filters?.termId || get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find(item => item.key === search.termId) ||
       schoolYear.find(item => item.key === defaultTermId) ||
@@ -121,6 +121,13 @@ const StandardsFilters = ({
       getStandardsFiltersRequest(_q);
     }
   }, []);
+
+  useEffect(() => {
+    setFilters({
+      ...filters,
+      termId: filters?.termId || standardsFilters?.filters?.termId || get(user, "orgData.defaultTermId", "")
+    });
+  }, [standardsFilters]);
 
   const scaleInfo = get(standardsFilters, "scaleInfo", []);
 
@@ -186,7 +193,7 @@ const StandardsFilters = ({
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     // allTestIds Received
-  
+
     const search = qs.parse(location.search.substring(1));
     setPrevStandardsFilters(standardsFilters);
 
@@ -203,7 +210,7 @@ const StandardsFilters = ({
       filters: { ...filters, ...onLoadFilters },
       selectedTest: validTestIds
     };
-    setFilters({...filters, ...onLoadFilters});
+    setFilters({ ...filters, ...onLoadFilters });
 
     if (standardsFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
       _onGoClick(settings);

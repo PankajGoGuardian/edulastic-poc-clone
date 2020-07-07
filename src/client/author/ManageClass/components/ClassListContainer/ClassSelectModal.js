@@ -26,7 +26,8 @@ const ClassSelectModal = ({
   refreshPage,
   allowedInstitutions,
   defaultGrades = [],
-  defaultSubjects = []
+  defaultSubjects = [],
+  existingGroups = []
 }) => {
   const [classListData, setClassListData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -36,17 +37,33 @@ const ClassSelectModal = ({
   useEffect(() => {
     if (type === "clever") {
       setClassListData(
-        classListToSync.map((c, index) => ({
-          name: c.name,
-          key: index,
-          cleverId: c.id,
-          // course: "",
-          // subject: "",
-          grades: [],
-          standards: [],
-          standardSets: [],
-          disabled: syncedIds.includes(c.id)
-        }))
+        classListToSync.map((c, index) => {
+          const data = {
+            name: c.name,
+            key: index,
+            cleverId: c.id,
+            standards: [],
+            standardSets: [],
+            disabled: syncedIds.includes(c.id)
+          };
+          if (syncedIds.includes(c.id)) {
+            const group = existingGroups.find(o => o.cleverId === c.id);
+            c.grades = group ? group.grades : defaultGrades;
+            c.subject = group ? group.subject : defaultSubjects[0];
+            return {
+              ...data,
+              subject: c.subject,
+              grades: c.grades,
+              disabled: syncedIds.includes(c.id)
+            };
+          }
+          return {
+            ...data,
+            subject: defaultSubjects[0],
+            grades: defaultGrades,
+            disabled: false
+          };
+        })
       );
     }
     if (type === "googleClassroom") {

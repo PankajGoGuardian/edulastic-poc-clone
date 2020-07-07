@@ -43,6 +43,11 @@ export const StyledTable = styled(Table)`
       .ant-table-body {
         overflow-x: auto !important;
       }
+      @media print {
+        .ant-table-body {
+          overflow-x: hidden !important;
+        }
+      }
     }
     .ant-table-fixed-left {
       .ant-table-thead {

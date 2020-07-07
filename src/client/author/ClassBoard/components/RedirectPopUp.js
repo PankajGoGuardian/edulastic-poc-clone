@@ -26,9 +26,9 @@ const QuestionDelivery = {
 };
 
 const ShowPreviousAttempt = {
-  SCORE_AND_FEEDBACK: "Score & Feedback",
-  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Feedback",
-  FEEDBACK_ONLY: "Feedback only"
+  FEEDBACK_ONLY: "Teacher Feedback only",
+  SCORE_AND_FEEDBACK: "Score & Teacher Feedback",
+  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Teacher Feedback"
 };
 
 const Option = Select.Option;
@@ -145,6 +145,7 @@ const RedirectPopUp = ({
     setLoading(false);
   }, [studentsToRedirect, assignmentId, endDate, groupId, showPrevAttempt, qDeliveryState, dueDate, allowedTime]);
 
+  // eslint-disable-next-line no-shadow
   const disabledEndDate = endDate => {
     if (!endDate) {
       return false;
@@ -152,6 +153,7 @@ const RedirectPopUp = ({
     return endDate < moment().startOf("day");
   };
 
+  // eslint-disable-next-line no-shadow
   const disabledDueDate = useCallback(dueDate => dueDate < moment().startOf("day") || dueDate > endDate, [endDate]);
 
   return (
@@ -170,7 +172,6 @@ const RedirectPopUp = ({
       ]}
     >
       <BodyContainer>
-        <h3>Class/Group Section</h3>
         <h4>{additionalData.className}</h4>
         <Row>
           {/* 

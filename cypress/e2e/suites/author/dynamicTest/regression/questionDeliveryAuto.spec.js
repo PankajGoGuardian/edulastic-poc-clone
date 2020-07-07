@@ -36,7 +36,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       standardsToSelect: ["K.CC.A.1"]
     },
     collection: "auto collection 1",
-    deliveryCount: 2
+    deliveryCount: 1
   };
   const filterForAutoselect2 = {
     standard: {
@@ -46,7 +46,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       standardsToSelect: ["K.CC.A.2"]
     },
     collection: "auto collection 1",
-    deliveryCount: 2
+    deliveryCount: 1
   };
 
   const deliveredArray = [[], []];
@@ -143,15 +143,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         testLibraryPage.clickOnDetailsOfCard();
       });
       it("> verify test review at teacher side", () => {
-        testLibraryPage.review.verifyItemCoutInPreview(4);
-        testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
-          testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
-            expect(val).to.be.oneOf(itemIds);
-          });
-        });
+        testLibraryPage.review.verifyItemCoutByGroupInPublisherPreview(
+          filterForAutoselect1.deliveryCount,
+          1,
+          filterForAutoselect1.deliveryCount
+        );
+        testLibraryPage.review.verifyItemCoutByGroupInPublisherPreview(
+          filterForAutoselect2.deliveryCount,
+          2,
+          filterForAutoselect2.deliveryCount
+        );
+        testLibraryPage.review.verifyItemIdsByGroupIndex(groups[1].items, 1);
+        testLibraryPage.review.verifyItemIdsByGroupIndex(groups[2].items, 2);
       });
       it("> assign the test", () => {
-        testLibraryPage.review.testheader.clickOnAssign();
+        testLibraryPage.assignPage.visitAssignPageById(testID);
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });
@@ -299,15 +305,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         testLibraryPage.clickOnDetailsOfCard();
       });
       it("> verify test review at teacher side", () => {
-        testLibraryPage.review.verifyItemCoutInPreview(6);
-        testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
-          testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
-            expect(val).to.be.oneOf(itemIds);
-          });
-        });
+        testLibraryPage.review.verifyItemCoutByGroupInPublisherPreview(
+          filterForAutoselect1.deliveryCount,
+          1,
+          filterForAutoselect1.deliveryCount
+        );
+        testLibraryPage.review.verifyItemCoutByGroupInPublisherPreview(
+          groups[2].items.length,
+          2,
+          groups[2].items.length
+        );
+        testLibraryPage.review.verifyItemIdsByGroupIndex(groups[1].items, 1);
+        testLibraryPage.review.verifyItemIdsByGroupIndex(groups[2].items, 2);
       });
       it("> assign the test", () => {
-        testLibraryPage.review.testheader.clickOnAssign();
+        testLibraryPage.assignPage.visitAssignPageById(testID);
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });

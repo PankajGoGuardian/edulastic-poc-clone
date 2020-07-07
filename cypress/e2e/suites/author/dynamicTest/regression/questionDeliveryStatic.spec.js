@@ -125,7 +125,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
       });
       it("> assign the test", () => {
-        testLibraryPage.review.testheader.clickOnAssign();
+        testLibraryPage.assignPage.visitAssignPageById(testID);
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });
@@ -231,15 +231,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         testLibraryPage.clickOnDetailsOfCard();
       });
       it("> verify test review at teacher side", () => {
-        testLibraryPage.review.verifyItemCoutInPreview(itemIds.length);
-        testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
-          testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
-            expect(val).to.be.oneOf(itemIds);
-          });
-        });
+        testLibraryPage.review.verifyItemCoutByGroupInPublisherPreview(
+          groups[1].items.length,
+          1,
+          groups[1].deliveryCount
+        );
+        testLibraryPage.review.verifyItemCoutByGroupInPublisherPreview(
+          groups[2].items.length,
+          2,
+          groups[2].deliveryCount
+        );
+        testLibraryPage.review.verifyItemIdsByGroupIndex(groups[1].items, 1);
+        testLibraryPage.review.verifyItemIdsByGroupIndex(groups[2].items, 2);
       });
       it("> assign the test", () => {
-        testLibraryPage.review.testheader.clickOnAssign();
+        testLibraryPage.assignPage.visitAssignPageById(testID);
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });
@@ -322,7 +328,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
       });
       it("> assign the test", () => {
-        testLibraryPage.review.testheader.clickOnAssign();
+        testLibraryPage.assignPage.visitAssignPageById(testID);
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });
@@ -405,14 +411,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       });
       it("> verify test review at teacher side", () => {
         testLibraryPage.review.verifyItemCoutInPreview(groups[1].items.length);
-        testLibraryPage.review.getAllquestionInReview().each((questions, index) => {
-          testLibraryPage.review.getItemIdIdByIndex(index).then(val => {
-            expect(val).to.be.oneOf(itemIds);
-          });
-        });
+        testLibraryPage.review.verifyItemCoutByGroupInPublisherPreview(
+          groups[1].items.length,
+          1,
+          groups[1].deliveryCount
+        );
       });
       it("> assign the test", () => {
-        testLibraryPage.review.testheader.clickOnAssign();
+        testLibraryPage.assignPage.visitAssignPageById(testID);
         testLibraryPage.assignPage.selectClass("class");
         testLibraryPage.assignPage.clickOnAssign();
       });

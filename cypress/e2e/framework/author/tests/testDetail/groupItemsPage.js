@@ -148,7 +148,7 @@ export default class GroupItemsPage {
   };
 
   selectOptionByAttrByGroup = (group, attr) => {
-    cy.get(`[data-cy="Group ${group} ${attr}"]`).click();
+    cy.get(`[data-cy="Group ${group} ${attr}"]`).click({ force: true });
   };
 
   // *** ACTIONS END ***
@@ -202,6 +202,7 @@ export default class GroupItemsPage {
         });
         cy.wait(500);
       }
+      cy.wait(300);
     });
     return cy.wait(1).then(() => testID);
   };

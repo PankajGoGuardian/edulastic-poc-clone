@@ -273,7 +273,8 @@ class ClassHeader extends Component {
       canCloseClass,
       dueDate,
       assignedBy = {},
-      answerOnPaper
+      answerOnPaper,
+      classes = []
     } = additionalData;
     const dueOn = dueDate || endDate;
     const dueOnDate = Number.isNaN(dueOn) ? new Date(dueOn) : new Date(parseInt(dueOn, 10));
@@ -294,6 +295,7 @@ class ClassHeader extends Component {
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
 
     const isSmallDesktop = windowWidth <= parseInt(smallDesktopWidth, 10);
+    const loading = classes[0]?._id !== classId;
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -408,33 +410,37 @@ class ClassHeader extends Component {
     return (
       <MainHeader>
         <TitleWrapper titleMinWidth="unset" titleMaxWidth="22rem">
-          <div>
-            {classesList.length > 1 ? (
-              <Dropdown
-                overlay={classListMenu}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-                placement="bottomLeft"
-              >
+          {loading ? (
+            "loading..."
+          ) : (
+            <div>
+              {classesList.length > 1 ? (
+                <Dropdown
+                  overlay={classListMenu}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  placement="bottomLeft"
+                >
+                  <div style={{ position: "relative" }}>
+                    <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className}>
+                      {additionalData.className}
+                    </StyledParaFirst>
+                    <DownArrow type="down" />
+                  </div>
+                </Dropdown>
+              ) : (
                 <div style={{ position: "relative" }}>
-                  <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
-                    {additionalData.className || "loading..."}
+                  <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className}>
+                    {additionalData.className}
                   </StyledParaFirst>
-                  <DownArrow type="down" />
                 </div>
-              </Dropdown>
-            ) : (
-              <div style={{ position: "relative" }}>
-                <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
-                  {additionalData.className || "loading..."}
-                </StyledParaFirst>
-              </div>
-            )}
-            <StyledParaSecond data-cy="assignmentStatusForDisplay">
-              {assignmentStatusForDisplay}
-              {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
-              <div>{!!(dueDate || endDate) && `(Due on ${moment(dueOnDate).format("MMM DD, YYYY")})`}</div>
-            </StyledParaSecond>
-          </div>
+              )}
+              <StyledParaSecond data-cy="assignmentStatusForDisplay">
+                {assignmentStatusForDisplay}
+                {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
+                <div>{!!(dueDate || endDate) && `(Due on ${moment(dueOnDate).format("MMM DD, YYYY")})`}</div>
+              </StyledParaSecond>
+            </div>
+          )}
         </TitleWrapper>
         <HeaderMidContainer>
           <StyledTabs>

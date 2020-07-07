@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { white, greyThemeDark2, greyThemeLight } from "@edulastic/colors";
+import { white, greyThemeDark2, greyThemeLight, themeColor, themeColorHoverBlue } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const CustomStyleBtn = styled(Button)`
   &.ant-btn {
-    background: ${props => (props.ghost ? "transparent" : props.bg || greyThemeDark2)};
-    color: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
+    background: ${props => (props.ghost ? "transparent" : props.bg || themeColor)};
+    color: ${props => (props.ghost ? themeColor : props.color || white)};
     width: ${props => props.width || "220px"};
     height: ${props => props.height || "40px"};
     padding: ${props => props.padding || "0px 30px"};
@@ -33,16 +33,16 @@ export const CustomStyleBtn = styled(Button)`
     }
 
     & svg {
-      stroke: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
-      fill: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
+      stroke: ${props => (props.ghost ? themeColor : props.color || white)};
+      fill: ${props => (props.ghost ? themeColor : props.color || white)};
       margin-right: 10px;
     }
 
     &:hover,
     &:focus,
     &:active {
-      background: ${props => (props.ghost ? "transparent" : props.bg || greyThemeDark2)};
-      color: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
+      background: ${props => (props.ghost ? "transparent" : props.bg || themeColorHoverBlue)};
+      color: ${props => (props.ghost ? themeColor : props.color || white)};
     }
   }
 `;

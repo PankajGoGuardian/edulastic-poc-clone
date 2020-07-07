@@ -54,8 +54,9 @@ export const QuestionIcon = ({ id = "", customStyle = {} }) =>
     </FlexContainer>
   ) : null;
 
-export const Subtitle = ({ children, titleStyle = {}, textStyles = {}, margin }) => (
+export const Subtitle = ({ id, children, titleStyle = {}, textStyles = {}, showIcon = false, margin }) => (
   <WidgetTitle titleStyle={titleStyle} margin={margin} justifyContent="flex-start" alignItems="baseline">
     <SubtitleText styles={textStyles}>{children}</SubtitleText>
+    {showIcon && <QuestionIcon id={id} />}
   </WidgetTitle>
 );

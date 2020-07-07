@@ -1,9 +1,10 @@
-import React from "react";
-import { Col, Form, Input, Row, Select, Spin, Switch } from "antd";
-import { ButtonsContainer, CancelButton, ModalFormItem, OkButton, StyledModal } from "../../../common/styled";
-import TextArea from "antd/es/input/TextArea";
 import { schoolApi } from "@edulastic/api";
+import { EduSwitchStyled } from "@edulastic/common";
+import { Col, Form, Input, Row, Select, Spin } from "antd";
 import CheckboxGroup from "antd/es/checkbox/Group";
+import TextArea from "antd/es/input/TextArea";
+import React from "react";
+import { ButtonsContainer, CancelButton, ModalFormItem, OkButton, StyledModal } from "../../../common/styled";
 
 const EMAIL_PATTERN_FORMAT = /^[_A-Za-z0-9-'\+]+(\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\-\.]+)*(\.[A-Za-z]{1,25})$/;
 const Option = Select.Option;
@@ -73,7 +74,7 @@ class CustomReportModal extends React.Component {
       schoolsState: {
         list: [],
         fetching: false,
-        value: value
+        value
       }
     });
   };
@@ -151,16 +152,14 @@ class CustomReportModal extends React.Component {
     const orgType = permissions.length > 0 ? permissions?.[0].orgType : "";
     const schools =
       orgType === "school"
-        ? permissions.map(o => {
-            return { _id: o.orgId, _source: { name: o.orgName } };
-          })
+        ? permissions.map(o => ({ _id: o.orgId, _source: { name: o.orgName } }))
         : [];
     const roles = orgType === "role" ? permissions.map(o => o.permissionLevel) : [];
     const users = orgType === "user" ? permissions.map(o => o.user.email).join(", ") : "";
     this.setState({
-      isUsersSelected: orgType === "user" ? true : false,
-      isSchoolSelected: orgType === "school" ? true : false,
-      isRoleSelected: orgType === "role" ? true : false,
+      isUsersSelected: orgType === "user",
+      isSchoolSelected: orgType === "school",
+      isRoleSelected: orgType === "role",
       orgType,
       schoolsState: {
         list: [...schools],
@@ -225,10 +224,10 @@ class CustomReportModal extends React.Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton id={"cancel"} onClick={onCancel}>
+            <CancelButton id="cancel" onClick={onCancel}>
               {t(`customreport.cancel`)}
             </CancelButton>
-            <OkButton id={"ok"} onClick={this.onSubmitForm}>
+            <OkButton id="ok" onClick={this.onSubmitForm}>
               {t(`customreport.${modalType}.ok`)}
             </OkButton>
           </ButtonsContainer>
@@ -419,7 +418,7 @@ class CustomReportModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label={t(`customreport.activatereport`)}>
-              {getFieldDecorator("active")(<Switch defaultChecked={enabled} onChange={this.onStatusChange} />)}
+              {getFieldDecorator("active")(<EduSwitchStyled defaultChecked={enabled} onChange={this.onStatusChange} />)}
             </ModalFormItem>
           </Col>
         </Row>

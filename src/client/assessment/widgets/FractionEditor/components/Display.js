@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { withTheme } from "styled-components";
 import get from "lodash/get";
 import PropTypes from "prop-types";
-import Switch from "antd/lib/switch";
 
 import {
   Stimulus,
@@ -11,7 +10,8 @@ import {
   AnswerContext,
   QuestionLabelWrapper,
   QuestionSubLabel,
-  QuestionContentWrapper
+  QuestionContentWrapper,
+  EduSwitchStyled
 } from "@edulastic/common";
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
@@ -77,7 +77,10 @@ const Display = ({
             <FlexContainer>
               <span style={{ marginRight: "5px" }}>{t("component.fractionEditor.showAnnotations")}</span>
               <SwitchWrapper>
-                <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
+                <EduSwitchStyled
+                  defaultChecked={showAnnotations}
+                  onChange={checked => toggleAnnotationsVibility(checked)}
+                />
               </SwitchWrapper>
             </FlexContainer>
           )}

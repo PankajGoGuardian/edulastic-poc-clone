@@ -1,12 +1,12 @@
-import { CheckBoxGrp, CheckboxLabel } from "@edulastic/common";
-import { Col, Form, Input, Row, Select, Switch } from "antd";
+import { CheckBoxGrp, CheckboxLabel, EduSwitchStyled } from "@edulastic/common";
+import { Col, Form, Input, Row, Select } from "antd";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
 import { StyledCancelBtn, StyledOkBtn, StyledUpsertModal } from "../styled";
 
 const CreateBucketModal = ({ form, createBucket, closeModal, bucket, collections, onCollectionSearch, t }) => {
-  const [status, setStatus] = useState(bucket.status === 1 ? true : false);
+  const [status, setStatus] = useState(bucket.status === 1);
 
   useEffect(() => {
     document.addEventListener("click", onDropdownVisibleChange);
@@ -184,7 +184,7 @@ const CreateBucketModal = ({ form, createBucket, closeModal, bucket, collections
       <Row>
         <Col span={24}>
           <ModalFormItem label={t("content.buckets.upsertModal.bucketActive")} className="content-bucket-status">
-            <Switch checked={status} onChange={onChangeStatus} size="small" />
+            <EduSwitchStyled checked={status} onChange={onChangeStatus} size="small" />
           </ModalFormItem>
         </Col>
       </Row>
@@ -193,7 +193,7 @@ const CreateBucketModal = ({ form, createBucket, closeModal, bucket, collections
 };
 
 CreateBucketModal.propTypes = {
-  form: PropTypes.object,
+  form: PropTypes.object.isRequired,
   createBucket: PropTypes.func.isRequired,
   closeModal: PropTypes.func.isRequired,
   bucket: PropTypes.object,

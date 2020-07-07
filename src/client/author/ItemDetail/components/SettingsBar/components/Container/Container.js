@@ -1,8 +1,8 @@
 import { themeColor, title } from "@edulastic/colors";
-import { Button, CheckboxLabel } from "@edulastic/common";
+import { Button, CheckboxLabel, EduSwitchStyled } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { Col, Row, Switch } from "antd";
+import { Col, Row } from "antd";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import ReactOutsideEvent from "react-outside-event";
@@ -200,7 +200,7 @@ class Container extends Component {
             <Row type="flex">
               <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
               <Col>
-                <Switch
+                <EduSwitchStyled
                   checked={itemLevelScoring}
                   checkedChildren="on"
                   unCheckedChildren="off"

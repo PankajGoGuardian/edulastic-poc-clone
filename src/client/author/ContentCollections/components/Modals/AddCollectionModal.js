@@ -1,6 +1,6 @@
 import { backgroundGrey2 } from "@edulastic/colors";
-import { EduButton,notification } from "@edulastic/common";
-import { Input, Switch } from "antd";
+import { EduButton, notification, EduSwitchStyled } from "@edulastic/common";
+import { Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -25,7 +25,9 @@ const AddCollectionModal = ({
   editCollectionRequest,
   searchValue
 }) => {
-  const {districtIds: [userDistrictId]} = user;
+  const {
+    districtIds: [userDistrictId]
+  } = user;
   const [fieldData, setFieldData] = useState({
     name: "",
     owner: "",
@@ -47,10 +49,10 @@ const AddCollectionModal = ({
 
   const handleCreate = () => {
     if (!fieldData.name) {
-      return notification({ messageKey:"collectionNameRequired"});
+      return notification({ messageKey: "collectionNameRequired" });
     }
     if (!fieldData.owner) {
-      return notification({ messageKey:"ownerNameRequired"});
+      return notification({ messageKey: "ownerNameRequired" });
     }
     const payload = {
       data: fieldData,
@@ -102,7 +104,7 @@ const AddCollectionModal = ({
         </StyledFieldRow>
         <StyledFieldRow>
           <span>Collection Active</span>
-          <Switch
+          <EduSwitchStyled
             size="small"
             checked={fieldData.status}
             onChange={value => handleFieldChange("status", value ? 1 : 0)}

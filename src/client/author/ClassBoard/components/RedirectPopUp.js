@@ -29,7 +29,6 @@ const ShowPreviousAttempt = {
   FEEDBACK_ONLY: "Teacher Feedback only",
   SCORE_AND_FEEDBACK: "Score & Teacher Feedback",
   STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Teacher Feedback"
-  
 };
 
 const Option = Select.Option;
@@ -158,7 +157,7 @@ const RedirectPopUp = ({
   return (
     <CustomModalStyled
       centered
-      title={additionalData.className}
+      title="Redirect Assignment"
       visible={open}
       onCancel={closePopup}
       footer={[
@@ -171,6 +170,7 @@ const RedirectPopUp = ({
       ]}
     >
       <BodyContainer>
+        <h4>{additionalData.className}</h4>
         <Row>
           {/* 
             TODO: handle the change

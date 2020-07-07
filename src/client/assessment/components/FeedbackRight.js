@@ -197,7 +197,7 @@ class FeedbackRight extends Component {
 
   onChangeScore = e => {
     const value = e.target.value;
-    if (!Number.isNaN(value) || value === ".") {
+    if (!isNaN(value) || value === ".") {
       this.setState({ score: value, changed: true });
     }
   };

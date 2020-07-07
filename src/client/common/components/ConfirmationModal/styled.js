@@ -23,6 +23,7 @@ export const StyledInput = styled(Input)`
 `;
 
 export const StyledDiv = styled.div`
+  margin-top:20px;
   margin-bottom: 5px;
 `;
 

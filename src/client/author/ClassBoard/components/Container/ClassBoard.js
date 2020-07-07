@@ -698,7 +698,7 @@ class ClassBoard extends Component {
       <div>
         {showMarkSubmittedPopup && (
           <ConfirmationModal
-            title="Mark As Submitted"
+            title="mark as submitted"
             show={showMarkSubmittedPopup}
             onOk={this.handleMarkSubmitted}
             onCancel={this.handleCancelMarkSubmitted}

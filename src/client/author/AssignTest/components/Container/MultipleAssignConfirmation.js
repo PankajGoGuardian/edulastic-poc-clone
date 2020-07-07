@@ -21,7 +21,7 @@ const MultipleAssignConfirmation = ({
 
   const onProceed = () => {
     setSavingState(true);
-    //allowCommonStudents has to be true for the second time as we have to avoid
+    // allowCommonStudents has to be true for the second time as we have to avoid
     saveAssignment({ ...assignment, allowCommonStudents: true, allowDuplicates: true });
   };
 
@@ -52,6 +52,7 @@ const MultipleAssignConfirmation = ({
       visible={hasDuplicateAssignments}
       footer={Footer}
       onCancel={onCancel}
+      afterClose={() => setSavingState(false)}
     >
       <Paragraph>
         {entity.title} is already assigned to some of the student(s) you have selected. Student(s) who were assigned

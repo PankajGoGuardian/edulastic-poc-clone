@@ -883,6 +883,7 @@ function* logout() {
       sessionStorage.removeItem("filters[Assignments]");
       TokenStorage.removeKID();
       TokenStorage.initKID();
+      TokenStorage.removeTokens();
       yield put({ type: "RESET" });
       yield put(push(getSignOutUrl()));
       removeSignOutUrl();

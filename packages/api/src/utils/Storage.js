@@ -1,17 +1,17 @@
 // @ts-check
 import uuid from "uuid/v4";
 import { configureScope } from "@sentry/browser";
-import { uniq } from 'lodash';
+import { uniq } from "lodash";
 import AppConfig from "../../../../app-config";
 
 const tokenKey = (userId, role) => `user:${userId}:role:${role}`;
 
 /**
- * Sets userId, districtId, role, kid, tid to Sentry for 
- * authenticated users, and sets kid & tid for 
+ * Sets userId, districtId, role, kid, tid to Sentry for
+ * authenticated users, and sets kid & tid for
  * unauthenticated users
  */
-export const updateSentryScope = (user) => {
+export const updateSentryScope = user => {
   if (AppConfig.sentryURI) {
     // for authenticated users user will be passed
     if (user && user._id) {
@@ -19,29 +19,32 @@ export const updateSentryScope = (user) => {
       configureScope(scope => {
         scope.setUser({ id: _id });
         scope.setTags({
-          "tid": window.sessionStorage.tid,
-          "districtId": districtId,
-          "role": role,
-          "kid": kid
+          tid: window.sessionStorage.tid,
+          districtId: districtId,
+          role: role,
+          kid: kid
         });
       });
     } else if (window.sessionStorage.kid) {
       // In case user is unauthenticated then set kid & tid to Sentry tags
       configureScope(scope => {
         scope.setTags({
-          "tid": window.sessionStorage.tid,
-          "kid": window.sessionStorage.kid
+          tid: window.sessionStorage.tid,
+          kid: window.sessionStorage.kid
         });
       });
     }
   }
-}
+};
 
 export function storeAccessToken(token, userId, role, _default = false) {
   const key = tokenKey(userId, role);
   window.localStorage.setItem(key, token);
+  const tokens = JSON.parse(window.localStorage.getItem("tokens") || "[]");
+
+  window.localStorage.setItem("tokens", JSON.stringify([...tokens, key]));
   if (_default) {
-    window.localStorage.defaultTokenKey = key;
+    window.sessionStorage.defaultTokenKey = key;
   }
 }
 
@@ -51,7 +54,13 @@ export function selectAccessToken(userId, role) {
 
 export function removeAccessToken(userId, role) {
   const key = tokenKey(userId, role);
+  const oldTokens = JSON.parse(window.localStorage.getItem("tokens") || "[]");
+  window.localStorage.setItem("tokens", JSON.stringify(oldTokens.filter(x => x != key)));
   window.localStorage.removeItem(key);
+}
+
+export function removeTokens() {
+  window.localStorage.removeItem("tokens");
 }
 
 // Initialise browser tab id
@@ -73,7 +82,7 @@ export const initKID = () => {
 /**
  * Update kid after user authentication
  * and sets the same to sentry scope
- * @param {*} user 
+ * @param {*} user
  */
 export const updateKID = ({ _id, role, districtId, kid }) => {
   if (window.sessionStorage) {
@@ -100,11 +109,21 @@ export const getFromSessionStorage = key => {
 export const getTraceId = () => `tid=${window.sessionStorage.tid};kid=${window.sessionStorage.kid}`;
 
 export function getAccessToken() {
-  let tokenKey = window.sessionStorage.tokenKey;
-  if (!tokenKey) {
-    tokenKey = window.localStorage.defaultTokenKey;
+  let _tokenKey = window.sessionStorage.tokenKey;
+  if (!_tokenKey) {
+    _tokenKey = window.sessionStorage.defaultTokenKey;
   }
-  return window.localStorage.getItem(tokenKey);
+  if (!_tokenKey) {
+    // to keep backward compatible
+    _tokenKey = window.localStorage.defaultTokenKey;
+  }
+  if (!_tokenKey) {
+    const tokens = window.localStorage.getItem("tokens");
+    if (tokens) {
+      _tokenKey = JSON.parse(tokens)[0];
+    }
+  }
+  return window.localStorage.getItem(_tokenKey);
 }
 
 export function storeInLocalStorage(key, value) {
@@ -134,12 +153,10 @@ export function getProxyParent(roles = []) {
       return proxyParent;
     }
     return null;
-
   } catch (e) {
     return null;
   }
 }
-
 
 export function addPlaylistIdToDeleted(id) {
   if (window && window.sessionStorage) {

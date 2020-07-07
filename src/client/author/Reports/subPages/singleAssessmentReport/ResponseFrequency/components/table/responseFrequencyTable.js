@@ -137,7 +137,8 @@ export class ResponseFrequencyTable extends Component {
       // V1 migrated UQA doesn't have user answer data
       let hasChoiceData = false;
       // filter out empty keys from data
-      data = omitBy(data || {}, (_, key) => ["[]"].includes(key));
+      const emptyKeyList = ["[]"];
+      data = omitBy(data || {}, (_, key) => emptyKeyList.includes(key));
       // show correct, incorrect & partial correct if data is empty
       if (isEmpty(data)) {
         arr.push({
@@ -183,7 +184,7 @@ export class ResponseFrequencyTable extends Component {
               }
             }
           }
-          if (record.qType === "True or false" && record.validation && record.validation[0]) {
+          if (record.qType.toLocaleLowerCase() === "true or false" && record.validation && record.validation[0]) {
             str = record.validation[0] === comboKey ? "Correct" : "Incorrect";
           }
 
@@ -199,7 +200,13 @@ export class ResponseFrequencyTable extends Component {
         });
       }
 
-      if (record.qType.toLocaleLowerCase().includes("multiple choice") && hasChoiceData) {
+      const checkForQtypes = [
+        "multiple choice - standard",
+        "multiple choice - multiple response",
+        // "multiple selection"
+      ];
+
+      if (checkForQtypes.includes(record.qType.toLocaleLowerCase()) && hasChoiceData) {
         const selectedMap = {};
         for (let i = 0; i < arr.length; i++) {
           selectedMap[arr[i].key] = true;
@@ -234,7 +241,7 @@ export class ResponseFrequencyTable extends Component {
       return (
         <Row type="flex" justify="start" className="table-tag-container">
           {arr.map((_data, i) =>
-            _data.value || (_data.record.qType.toLocaleLowerCase().includes("multiple choice") && hasChoiceData) ? (
+            _data.value || (checkForQtypes.includes(_data.record.qType.toLocaleLowerCase()) && hasChoiceData) ? (
               <ResponseTag
                 isPrinting={isPrinting}
                 key={i}

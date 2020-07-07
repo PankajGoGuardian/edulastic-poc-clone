@@ -62,6 +62,7 @@ const DeleteAssignmentModal = ({
       width="750px"
       title="Unassign"
       onCancel={() => toggleDeleteAssignmentModal(false)}
+      destroyOnClose
       footer={[
         <ModalFooter>
           <EduButton isGhost key="cancel" onClick={() => toggleDeleteAssignmentModal(false)}>

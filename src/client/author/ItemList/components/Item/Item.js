@@ -216,8 +216,6 @@ class Item extends Component {
             {detail.type !== "premium" && (
               <CategoryContent>
                 <Text title={detail.type === "id" ? detail.text : ""}>
-                  {console.log("item: ", item)}
-                  {console.log("analytics: ", item.analytics)}
                   {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
                 </Text>
               </CategoryContent>

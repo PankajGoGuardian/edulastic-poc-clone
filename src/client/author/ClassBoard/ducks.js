@@ -345,7 +345,6 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     const { assignmentId, groupId, studentId } = payload;
     const result = yield call(classBoardApi.testActivitiesForStudent, { assignmentId, groupId, studentId });
     yield put(setAllTestActivitiesForStudentAction(result));
-    yield put(setCurrentTestActivityIdAction(""));
   } catch (err) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));

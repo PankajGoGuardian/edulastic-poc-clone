@@ -215,10 +215,10 @@ function* upgradeUserData({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      notification({ type: "success", msg: result.messag });
+      notification({ type: "success", msg: result.message });
       yield put(manageSubscriptionsByUsers.actions.success(result.subscriptionResult));
     } else {
-      notification({ msg: result.messag });
+      notification({ msg: result.message });
     }
   } catch (err) {
     console.error(err);

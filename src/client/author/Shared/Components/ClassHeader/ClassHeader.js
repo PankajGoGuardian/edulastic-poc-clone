@@ -406,7 +406,6 @@ class ClassHeader extends Component {
         ))}
       </ClassDropMenu>
     );
-
     return (
       <MainHeader>
         <TitleWrapper titleMinWidth="unset" titleMaxWidth="22rem">
@@ -543,9 +542,13 @@ class ClassHeader extends Component {
               onInputChange={this.handleValidateInput}
               expectedVal="PAUSE"
               canUndone
-              bodyText={`Are you sure you want to pause? Once paused, 
-              no student would be able to answer the test unless you
-                resume it.`}
+              bodyText={
+                <div>
+                  Are you sure you want to pause? <br />
+                  Once paused,no student would be able to answer the test <br />
+                  unless you resume it.
+                </div>
+              }
               okText="Yes, Pause"
               cancelText="No, Cancel"
             />

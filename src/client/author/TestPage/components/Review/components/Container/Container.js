@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 import produce from "immer";
 import qs from "qs";
 import { Paper, withWindowSizes, notification, MainContentWrapper } from "@edulastic/common";
-import { test as testConstants } from "@edulastic/constants";
+import { test as testConstants, roleuser } from "@edulastic/constants";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import { getItemsSubjectAndGradeSelector, setTestItemsAction } from "../../../AddItems/ducks";
@@ -540,7 +540,7 @@ class Review extends PureComponent {
             isVisible={isModalVisible}
             onClose={this.closeModal}
             showModal
-            isEditable={isEditable}
+            isEditable={isEditable || userRole === roleuser.EDULASTIC_CURATOR}
             owner={owner}
             addDuplicate={this.handleDuplicateItem}
             page="review"

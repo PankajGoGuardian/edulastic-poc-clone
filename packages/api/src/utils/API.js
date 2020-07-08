@@ -1,5 +1,6 @@
 import axios from "axios";
 import { storeInLocalStorage, getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import * as Sentry from "@sentry/browser";
 import config from "../config";
 import { getAccessToken, getTraceId, initKID, initTID } from "./Storage";
 
@@ -153,6 +154,14 @@ export default class API {
       data => {
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
+            // log in to sentry
+            Sentry.withScope(scope => {
+              scope.setLevel("error");
+              scope.setFingerprint(["Forced Redirection"]);
+              Sentry.captureException(new Error("User forced to log out due to uncaught error"));
+              Sentry.captureMessage(JSON.stringify(data.response));
+            });
+
             // Needs proper fixing, patching it to fix infinite reload
             const loginRedirectUrl = localStorage.getItem("loginRedirectUrl");
             localStorage.clear();

@@ -64,14 +64,14 @@ const ReleaseScoreSettingsModal = ({
         (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? (
           <Info>
             <FontAwesomeIcon style={{ marginLeft: "2px" }} icon={faInfoCircle} aria-hidden="true" />
-            <InfoText>This setting will be retained and the scores will not be released to the students</InfoText>
+            <InfoText>This setting will be retained and the scores will not be released to the students.</InfoText>
           </Info>
         ) : (
           <Info>
             <FontAwesomeIcon style={{ marginLeft: "2px" }} icon={faInfoCircle} aria-hidden="true" />
             <InfoText>
               This setting will be retained and scores will be released automatically when students complete the
-              assignment
+              assignment.
             </InfoText>
           </Info>
         ))}

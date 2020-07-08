@@ -88,7 +88,7 @@ function* handleStripePayment({ payload }) {
       const apiPaymentResponse = yield call(paymentApi.pay, { token });
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse));
-        notification({ type: "success", msg: { content: "Payment Successful", key: "handle-payment" } });
+        notification({ type: "success", msg: "Payment Successful", key: "handle-payment" });
         yield put(fetchUserAction({ background: true }));
       } else {
         notification({ msg: `API Response failed: ${error}`, Key: "handle-payment" });

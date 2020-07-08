@@ -120,7 +120,7 @@ const CurriculumSubHeader = ({
                 </DraftModeActionsWrapper>
               )}
               {(!isManageContentActive || !showRightPanel) && enableCustomize && !shouldHidCustomizeButton && (
-                <CustomizeButton isGhost onClick={toggleManageContentClick("manageContent")}>
+                <CustomizeButton isGhost isBlue onClick={toggleManageContentClick("manageContent")}>
                   Customize Content
                 </CustomizeButton>
               )}

@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
+import { greyThemeLight, greyThemeLighter, themeColorBlue } from "@edulastic/colors";
 import { isObject } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
 import { useDrop } from "react-dnd";
-import { themeColorBlue, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 
 const DropContainer = ({ style, drop, children, index, ...rest }) => {
   const [{ isOver }, dropRef] = useDrop({
@@ -37,7 +37,7 @@ const DropContainer = ({ style, drop, children, index, ...rest }) => {
   };
 
   return (
-    <div ref={dropRef} style={mergedStyle} {...rest} id={`drop-container-${index}`}>
+    <div className="drop-target-box" ref={dropRef} style={mergedStyle} {...rest} id={`drop-container-${index}`}>
       {children}
     </div>
   );

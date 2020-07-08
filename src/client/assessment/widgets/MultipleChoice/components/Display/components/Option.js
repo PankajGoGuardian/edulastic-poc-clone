@@ -1,4 +1,4 @@
-import { themeColorBlue, white } from "@edulastic/colors";
+import { themeColorBlue, white, themeColorHoverBlue } from "@edulastic/colors";
 import { MathFormulaDisplay } from "@edulastic/common";
 import produce from "immer";
 import { flatten, isEmpty } from "lodash";
@@ -151,7 +151,12 @@ const Option = props => {
   );
 
   const renderCheckbox = () => (
-    <StyledOptionsContainer uiStyleType={uiStyle.type} isSelected={isSelected} multipleResponses={multipleResponses} className="__print-space-reduce-option">
+    <StyledOptionsContainer
+      uiStyleType={uiStyle.type}
+      isSelected={isSelected}
+      multipleResponses={multipleResponses}
+      className="__print-space-reduce-option"
+    >
       {uiStyle.type !== "radioBelow" && container}
       <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} uiStyleType={uiStyle.type}>
         <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
@@ -229,6 +234,12 @@ const StyledOptionsContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &:hover {
+      background: ${themeColorHoverBlue};
+      color: ${white};
+      border-color: ${themeColorHoverBlue};
+    }
   }
 `;
 

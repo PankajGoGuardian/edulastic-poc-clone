@@ -1,8 +1,8 @@
-import React from "react";
+import { greyThemeLight, themeColorBlue } from "@edulastic/colors";
 import PropTypes from "prop-types";
+import React from "react";
 import { DropTarget } from "react-dnd";
 import { withTheme } from "styled-components";
-import { themeColorBlue, greyThemeLight } from "@edulastic/colors";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -48,6 +48,7 @@ const DropContainer = ({
 
   return connectDropTarget(
     <div
+      className="drop-target-box"
       data-cy={`drag-drop-board-${index}`}
       id={`drag-drop-board-${index}${flag === "selected" ? "-target" : ""}`}
       style={{
@@ -78,7 +79,8 @@ DropContainer.propTypes = {
 DropContainer.defaultProps = {
   style: {},
   children: undefined,
-  noBorder: false
+  noBorder: false,
+  index: null
 };
 
 export default withTheme(DropTarget("item", specTarget, collectTarget)(DropContainer));

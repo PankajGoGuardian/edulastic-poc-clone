@@ -2265,3 +2265,7 @@ div[class*="_pendo"] button {
   max-width: 195px;
   text-align: center;
 }
+
+.drop-target-box:not([id*="null"]):hover {
+  border-color: #1a73e8 !important;
+}

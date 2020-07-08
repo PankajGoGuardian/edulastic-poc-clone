@@ -38,6 +38,7 @@ const PlayListDescription = ({ onChangeField, description }) => (
 
 const Sidebar = ({
   title,
+  alignmentInfo,
   subjects,
   onChangeSubjects,
   onChangeField,
@@ -143,6 +144,15 @@ const Sidebar = ({
             size="large"
             placeholder="Enter a playlist name"
             ref={playListTitleInput}
+            margin="0px 0px 15px"
+          />
+          <FieldLabel>Alignment Info</FieldLabel>
+          <TextInputStyled
+            value={alignmentInfo}
+            data-cy="alignmentInfo"
+            onChange={e => onChangeField("alignmentInfo", e.target.value)}
+            size="large"
+            placeholder="Insert the alignment info"
             margin="0px 0px 15px"
           />
           {title !== undefined && !title.trim().length && <ErrorWrapper>Test should have title</ErrorWrapper>}

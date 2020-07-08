@@ -37,7 +37,7 @@ export const SearchInput = styled(Input.Search)`
 `;
 
 export const CardBox = styled.div`
-  width: 225px;
+  width: ${({ isPlaylist }) => (isPlaylist ? "242px" : "255px")};
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 264px;
   }

@@ -122,6 +122,7 @@ const Summary = ({
       </SecondHeader>
       <SummaryCard
         title={test.title}
+        alignmentInfo={test.alignmentInfo}
         description={test.description}
         tags={test.tags}
         analytics={test.analytics}

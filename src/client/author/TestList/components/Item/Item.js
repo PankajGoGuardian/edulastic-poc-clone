@@ -4,36 +4,8 @@ import { compose } from "redux";
 import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
 import { assignmentApi } from "@edulastic/api";
-import { cardTitleColor, themeColor, darkGrey } from "@edulastic/colors";
-import { PremiumLabel, EduButton, LikeIconStyled } from "@edulastic/common";
-import { roleuser, test } from "@edulastic/constants";
-import {
-  Container,
-  Inner,
-  Footer,
-  Author,
-  AuthorName,
-  Header,
-  Stars,
-  StyledLink,
-  TestInfo,
-  ShareIcon,
-  AuthorWrapper,
-  IconText,
-  ButtonWrapper,
-  TagsWrapper,
-  PlaylistId,
-  StatusRow,
-  Qcount,
-  PlaylistDesc,
-  MidRow,
-  Collection,
-  CollectionNameWrapper,
-  ThinLine,
-  DynamicIconWrapper
-} from "./styled";
+import { test } from "@edulastic/constants";
 import {
   getOrgDataSelector,
   getCollectionsSelector,
@@ -41,15 +13,14 @@ import {
   getUserRole,
   getUserId
 } from "../../../src/selectors/user";
-import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { TestStatus } from "../ListItem/styled";
-import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
+import { flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction, toggleTestLikeAction } from "../../ducks";
-import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
+import PlaylistCard from "./PlaylistCard";
+import TestItemCard from "./TestItemCard";
 
 export const sharedTypeMap = {
   0: "PUBLIC",
@@ -257,6 +228,37 @@ class Item extends Component {
           group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
           group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
       );
+
+    const cardViewProps = {
+      _source,
+      status,
+      collections,
+      showPremiumTag,
+      tags,
+      usage,
+      standardsIdentifiers,
+      authorName,
+      testItemId,
+      thumbnail,
+      isOwner,
+      btnStyle,
+      userRole,
+      testId,
+      title,
+      collectionName,
+      isDocBased,
+      summary,
+      isDynamic,
+      openModal: this.openModal,
+      moveToItem: this.moveToItem,
+      assignTest: this.assignTest,
+      showPreviewModal: this.showPreviewModal,
+      handleLikeTest: this.handleLikeTest,
+      likes
+    };
+
+    const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard;
+
     return (
       <>
         <ViewModal
@@ -288,131 +290,7 @@ class Item extends Component {
         {isDeleteModalOpen ? (
           <DeleteItemModal isVisible={isDeleteModalOpen} onCancel={this.onDeleteModelCancel} testId={item._id} />
         ) : null}
-        <Container
-          isPlaylist={isPlaylist}
-          src={isPlaylist ? _source.thumbnail : thumbnail}
-          onClick={isPlaylist ? this.moveToItem : this.openModal}
-          title={
-            <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
-              <Stars isPlaylist={isPlaylist} />
-              <ButtonWrapper className="showHover">
-                {isOwner && status === "draft" && (
-                  <EduButton style={btnStyle} height="32px" onClick={this.moveToItem}>
-                    Edit
-                  </EduButton>
-                )}
-                {status === "published" && userRole !== roleuser.EDULASTIC_CURATOR && (
-                  <EduButton style={btnStyle} height="32px" onClick={this.assignTest}>
-                    Assign
-                  </EduButton>
-                )}
-                {(status === "published" || status === "draft") && (
-                  <>
-                    <EduButton
-                      data-cy="test-preview-button"
-                      style={btnStyle}
-                      height="32px"
-                      onClick={e => this.showPreviewModal(testId, e)}
-                    >
-                      Preview
-                    </EduButton>
-                    <EduButton style={btnStyle} height="32px" onClick={this.openModal}>
-                      More
-                    </EduButton>
-                  </>
-                )}
-              </ButtonWrapper>
-              {collections.find(o => o.name === "Edulastic Certified") &&
-                getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
-              {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>}
-            </Header>
-          }
-        >
-          <TestInfo isPlaylist={isPlaylist}>
-            <StyledLink data-cy="test-title" title={isPlaylist ? _source?.title : title}>
-              {isPlaylist ? _source?.title : title}
-            </StyledLink>
-            {isPlaylist && <PlaylistDesc dangerouslySetInnerHTML={{ __html: _source.description }} />}
-
-            <TagsWrapper data-cy="test-standards" isPlaylist={isPlaylist}>
-              <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
-              {isPlaylist && <Tags data-cy="test-tags" show={2} tags={_source.tags || tags} key="tags" />}
-            </TagsWrapper>
-          </TestInfo>
-
-          {!isPlaylist && (
-            <MidRow>
-              <Collection isDynamic>
-                <label>COLLECTIONS</label>
-                <CollectionNameWrapper data-cy="test-collection" title={collectionName}>
-                  {collectionName}
-                </CollectionNameWrapper>
-              </Collection>
-              <Qcount>
-                <label>{isDocBased ? "TOTAL QUESTIONS" : "TOTAL ITEMS"}</label>
-                {/**
-                 * For doc based wee need to consider
-                 *  total number questions and toal number of items
-                 *  */}
-                <div data-cy="test-item-count">{isDocBased ? summary.totalQuestions : summary.totalItems}</div>
-              </Qcount>
-              {isDynamic && (
-                <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
-                  <IconDynamic color={themeColor} />
-                </DynamicIconWrapper>
-              )}
-            </MidRow>
-          )}
-          {isPlaylist ? <ThinLine /> : null}
-          <Inner>
-            {authorName && (
-              <Author isPlaylist={isPlaylist}>
-                <AuthorWrapper>
-                  {collections.find(o => o.name === "Edulastic Certified") ? (
-                    getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
-                  ) : (
-                    <IconUser color={cardTitleColor} />
-                  )}
-                  <AuthorName data-cy="test-author-name" title={authorName}>
-                    {authorName}
-                  </AuthorName>
-                </AuthorWrapper>
-              </Author>
-            )}
-            <StatusRow>
-              <TestStatusWrapper status={status || _source?.status} checkUser={false}>
-                {({ children, ...rest }) => (
-                  <TestStatus data-cy="test-status" {...rest} view="tile">
-                    {children}
-                  </TestStatus>
-                )}
-              </TestStatusWrapper>
-            </StatusRow>
-          </Inner>
-
-          <Footer>
-            {testItemId ? (
-              <PlaylistId data-cy="test-id">
-                <span>#</span>
-                <span>{testItemId}</span>
-              </PlaylistId>
-            ) : null}
-            {status !== "draft" && (
-              <>
-                <ShareIcon>
-                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                  <IconText>{usage}</IconText>
-                </ShareIcon>
-                {!isPlaylist && (
-                  <LikeIconStyled isLiked={isTestLiked} onClick={this.handleLikeTest}>
-                    <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
-                    <IconText>{likes}</IconText>
-                  </LikeIconStyled>
-                )}
-              </>
-            )}
-          </Footer>
-        </Container>
+        <CardViewComponent {...cardViewProps} />
       </>
     );
   }

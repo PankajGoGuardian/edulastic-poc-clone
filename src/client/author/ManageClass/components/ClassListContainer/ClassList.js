@@ -13,7 +13,6 @@ import ClassCreatePage from "./ClassCreatePage";
 import { TableWrapper, ClassListTable, Tags, SubHeader } from "./styled";
 import { fetchClassListAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
-import BreadCrumb from "../../../src/components/Breadcrumb";
 import { getUserDetails } from "../../../../student/Login/ducks";
 import Header from "./Header";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
@@ -62,6 +61,11 @@ const ClassList = ({
   useEffect(() => {
     setClassGroups(groups);
   }, [groups]);
+
+  useEffect(() => {
+    setFilterClass("Active Classes");
+    setClassGroups(groups);
+  }, [currentTab]);
 
   // get assignments related to class
   const getAssignmentsByClass = classId => event => {
@@ -191,20 +195,6 @@ const ClassList = ({
     }
   });
 
-  const breadCrumbData = [
-    {
-      title: "MANAGE CLASS",
-      to: "/author/manageClass"
-    },
-    {
-      title: "GROUPS",
-      to: "/author/manageClass",
-      state: { currentTab: "group" }
-    }
-  ];
-
-  const getBreadCrumbData = () => (currentTab === "class" ? [breadCrumbData[0]] : breadCrumbData);
-
   const onClickHandler = value => {
     setCurrentTab(value);
   };
@@ -229,15 +219,13 @@ const ClassList = ({
       />
       <MainContentWrapper>
         <SubHeader>
-          {currentTab === "class" && (
-            <ClassSelector
-              groups={groups}
-              archiveGroups={archiveGroups}
-              setClassGroups={setClassGroups}
-              filterClass={filterClass}
-              setFilterClass={setFilterClass}
-            />
-          )}
+          <ClassSelector
+            groups={groups}
+            archiveGroups={archiveGroups}
+            setClassGroups={setClassGroups}
+            filterClass={filterClass}
+            setFilterClass={setFilterClass}
+          />
         </SubHeader>
         <TableWrapper>
           {currentTab === "class" && (

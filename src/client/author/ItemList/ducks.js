@@ -118,7 +118,13 @@ export function* createTestFromCart({ payload: { testName } }) {
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.subjects || []);
   const grades = testItems.flatMap(item => item.grades || []);
-  const subjects = testItems.flatMap(item => item.subjects || []);
+  /**
+   * TODO: test item subjects should not have [[]] as a value, need to fix at item level
+   * https://snapwiz.atlassian.net/browse/EV-16263
+   */
+  const subjects = testItems.flatMap(({ subjects: _subjects = [] }) =>
+    _subjects.filter(subject => subject && !Array.isArray(subject))
+  );
   const userRole = yield select(getUserRole);
   if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
     test.testType = testConstant.type.COMMON;

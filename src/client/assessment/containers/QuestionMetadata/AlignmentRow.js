@@ -195,10 +195,15 @@ const AlignmentRow = ({
   useEffect(() => {
     const { curriculumId: alCurriculumId } = alignment;
     const defaultInterests = getDefaultInterests();
+    /**
+     * TODO: test item subjects should not have [[]] as a value, need to fix at item level
+     * https://snapwiz.atlassian.net/browse/EV-16263
+     */
+    const _subject = (Array.isArray(defaultInterests?.subject) && defaultInterests?.subject[0]) || "";
     if (!alCurriculumId) {
       if (defaultInterests.subject || defaultInterests.grades?.length || defaultInterests.curriculumId) {
         editAlignment(alignmentIndex, {
-          subject: defaultInterests.subject || "",
+          subject: _subject,
           curriculum:
             curriculums.find(item => item._id === parseInt(defaultInterests.curriculumId, 10))?.curriculum || "",
           curriculumId: parseInt(defaultInterests.curriculumId, 10) || "",

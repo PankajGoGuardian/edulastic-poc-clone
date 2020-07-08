@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, white, themeColor, greyThemeDark1, extraDesktopWidthMax } from "@edulastic/colors";
+import { mediumDesktopExactWidth, greyThemeDark1, extraDesktopWidthMax } from "@edulastic/colors";
 import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
@@ -38,14 +38,13 @@ export const SubtitleText = styled.div`
 `;
 
 const IconStyle = {
-  fill: white,
+  fill: "#f1f1f5",
   width: "16px",
   height: "16px",
-  background: themeColor,
+  background: "#f1f1f5",
   borderRadius: "50%",
   padding: "3px",
-  marginLeft: "16px",
-  opacity: 0
+  marginLeft: "16px"
 };
 
 export const QuestionIcon = ({ id = "", customStyle = {} }) =>

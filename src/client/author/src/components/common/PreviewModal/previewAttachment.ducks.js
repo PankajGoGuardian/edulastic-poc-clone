@@ -1,15 +1,13 @@
-import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { get } from "lodash";
 import undoable, { ActionTypes } from "redux-undo";
 import { filterActions } from "redux-ignore";
+
+import { PREVIEW_FEEDBACK_SUCCESS, LOAD_ITEM_PREVIEW_FEEDBACK_SUCCESS } from "../../../../ItemList/ducks";
 
 export const SAVE_PREVIEW_REJECT_WORK = "[testItemPreview] save reject item preview";
 export const LOAD_SCRATCH_PAD = "[testItemPreview] load scratchpad item preview";
 export const CLEAR_PREVIEW_REJECT_WORK = "[testItemPreview] clear reject item preview";
 export const SET_SCRATCHPAD_DATA = "[testItemPreview] set reject item preview";
-
-import { PREVIEW_FEEDBACK_SUCCESS, LOAD_ITEM_PREVIEW_FEEDBACK_SUCCESS } from "../../../../ItemList/ducks";
 
 export const savePreviewRejectAction = createAction(SAVE_PREVIEW_REJECT_WORK);
 export const loadScratchPadAction = createAction(LOAD_SCRATCH_PAD);

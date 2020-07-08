@@ -20,6 +20,9 @@ const MathSpan = withMathFormula(styled.span`
   @media (max-width: ${desktopWidth}) {
     font-size: ${fonts.previewFontSizeMobile};
   }
+  img.fr-dii {
+    vertical-align: top;
+  }
 `);
 
 export default MathSpan;

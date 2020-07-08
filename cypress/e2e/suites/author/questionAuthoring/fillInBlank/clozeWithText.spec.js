@@ -3,13 +3,13 @@ import ClozeWithTextPage from "../../../../framework/author/itemList/questionTyp
 import FileHelper from "../../../../framework/util/fileHelper";
 import ScoringBlock from "../../../../framework/author/itemList/questionType/common/scoringBlock";
 import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
-import { queColor } from "../../../../framework/constants/questionTypes";
+import { queColor, questionType } from "../../../../framework/constants/questionTypes";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Text" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
-    queType: "Cloze with Text",
+    queType: questionType.CLOZE_TEXT,
     queText: "Fill in the blanks?",
     template: "Enter the capital of india = ",
     correctAns: "NEW DELHI",

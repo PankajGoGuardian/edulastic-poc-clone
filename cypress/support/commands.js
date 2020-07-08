@@ -143,14 +143,20 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
       : DEFAULT_USERS.student.username
     : email;
   postData.password = password;
-  cy.clearToken();
-  // FIXME: sometimgs app fails to load to login page
-  if (Cypress.$(".footerDropdown").length > 0) {
-    Cypress.$(".footerDropdown").click();
-    Cypress.$('[data-cy="footer-dropdown"]').click();
-    Cypress.$('[data-cy="signout"]').click();
-  }
 
+  // FIXME: sometimgs app fails to load to login page
+
+  cy.get("body").then(() => {
+    if (Cypress.$(".footerDropdown").length > 0) {
+      Cypress.$(".footerDropdown").click();
+      // Cypress.$('[data-cy="footer-dropdown"]').click();
+      cy.wait(2000).then(() => {
+        Cypress.$('[data-cy="signout"]').click();
+      });
+    }
+  });
+
+  cy.clearToken();
   const login = new LoginPage();
   cy.visit("/login");
   cy.server();

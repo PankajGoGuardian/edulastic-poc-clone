@@ -5,17 +5,17 @@ export const questionType = {
   MCQ_BLOCK: "Multiple Choice - Block Layout",
   CHOICE_STD: "Match Table - Standard",
   CHOICE_INLINE: "Match Table - Inline",
-  CHOICE_LABEL: "Choice Matrix - Labels",
-  CLOZE_DRAG_DROP: "Cloze with Drag & Drop",
-  CLOZE_DROP_DOWN: "Cloze with Drop Down",
-  CLOZE_TEXT: "Cloze with Text",
+  CHOICE_LABEL: "Match Table - Labels",
+  CLOZE_DRAG_DROP: "Drag & Drop",
+  CLOZE_DROP_DOWN: "Text Drop Down",
+  CLOZE_TEXT: "Text Entry",
   IMAGE_DRAG_DROP: "Label Image with Drag & Drop",
   IMAGE_DROP_DOWN: "Label Image with Drop Down",
   IMAGE_TEXT: "Label Image with Text",
   SORT_LIST: "Sort List",
   CLASSIFICATION: "Classification",
-  MATCH_LIST: "Match List",
-  ORDERLIST: "Order List",
+  MATCH_LIST: "Match the following",
+  ORDERLIST: "Re-sequence",
   ESSAY_RICH: "Essay with Rich Text",
   ESSAY_PLAIN: "Essay with Plain Text",
   ESSAY_SHORT: "Short Text",
@@ -23,7 +23,13 @@ export const questionType = {
   PASSAGE_QUE: "Passage with Questions",
   COMBINATION_MULTIPART: "Combination Multipart",
   MATH: "Math, Text & Dropdown",
-  MATH_NUMERIC: "Numeric Entry"
+  MATH_NUMERIC: "Numeric Entry",
+  MATH_ESSAY: "Math Essay",
+  MATH_EXP_FORM: "Expression & Formula",
+  MATH_COMPL_EQN: "Complete the Equation",
+  MATH_INEQUALITY: "Equations & Inequalities",
+  MATH_MATRICES: "Matrices",
+  MATH_UNITS: "Units"
 };
 
 export const questionTypeKey = {

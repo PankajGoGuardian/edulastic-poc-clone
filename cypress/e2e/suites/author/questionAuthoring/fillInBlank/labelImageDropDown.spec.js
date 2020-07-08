@@ -5,11 +5,12 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
 import ScoringBlock from "../../../../framework/author/itemList/questionType/common/scoringBlock";
 import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image with Drop Down" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
-    queType: "Label Image with Drop Down",
+    queType: questionType.IMAGE_DROP_DOWN,
     queText: "Indian state known as garden spice is:",
     choices: ["Choice A", "Choice B"],
     ScoringChoices: ["Scoring Choice A", "Scoring Choice B"],

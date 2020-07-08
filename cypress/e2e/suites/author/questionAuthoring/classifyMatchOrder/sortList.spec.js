@@ -3,11 +3,12 @@ import SortListPage from "../../../../framework/author/itemList/questionType/cla
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Sort List" type question`, () => {
   const queData = {
     group: "Classify, Match & Order",
-    queType: "Sort List",
+    queType: questionType.SORT_LIST,
     list: ["List1", "List2", "List3", "List4"],
     correctList: ["List1", "List2", "List3", "List4"]
   };

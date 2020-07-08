@@ -6,11 +6,12 @@ import MetadataPage from "../../../../framework/author/itemList/itemDetail/metad
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import { STEM, FONT_SIZE } from "../../../../framework/constants/questionAuthoring";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Drag & Drop" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
-    queType: "Cloze with Drag & Drop",
+    queType: questionType.CLOZE_DRAG_DROP,
     queText: "Select the correct option?",
     template: " is the world's largest democracy",
     correctAns: "India",

@@ -2,11 +2,12 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import TextPage from "../../../../framework/author/itemList/questionType/fillInBlank/textPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image with Text" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
-    queType: "Label Image with Text",
+    queType: questionType.IMAGE_TEXT,
     queText: "Indian state known as garden spice is:",
     choices: [],
     alterate: ["KL"],

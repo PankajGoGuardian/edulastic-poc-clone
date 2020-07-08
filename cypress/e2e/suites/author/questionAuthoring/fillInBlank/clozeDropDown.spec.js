@@ -3,13 +3,13 @@ import ClozeDropDownPage from "../../../../framework/author/itemList/questionTyp
 import FileHelper from "../../../../framework/util/fileHelper";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
-import { queColor } from "../../../../framework/constants/questionTypes";
+import { queColor, questionType } from "../../../../framework/constants/questionTypes";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Drop Down" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
-    queType: "Cloze with Drop Down",
+    queType: questionType.CLOZE_DROP_DOWN,
     queText: "Select the correct option?",
     template: " is the world's largest democracy",
     correctAns: "India",

@@ -5,11 +5,12 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import ScoringBlock from "../../../../framework/author/itemList/questionType/common/scoringBlock";
 import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
 import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image with Drag & Drop" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
-    queType: "Label Image with Drag & Drop",
+    queType: questionType.IMAGE_DRAG_DROP,
     queText: "Indian state known as garden spice is:",
     choices: ["Kerala", "Delhi", "KL"],
     scoringChoices: ["Kerala", "Delhi", "Karnataka"],

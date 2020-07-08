@@ -45,7 +45,7 @@ const IconStyle = {
   borderRadius: "50%",
   padding: "3px",
   marginLeft: "16px",
-  visibility: "hidden"
+  opacity: 0
 };
 
 export const QuestionIcon = ({ id = "", customStyle = {} }) =>

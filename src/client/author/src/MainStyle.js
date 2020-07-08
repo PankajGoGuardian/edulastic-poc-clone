@@ -5,7 +5,8 @@ import {
   secondaryTextColor,
   tabletWidth,
   themeColor,
-  title
+  title,
+  themeColorBlue
 } from "@edulastic/colors";
 import styled from "styled-components";
 
@@ -54,6 +55,7 @@ export const MainContainer = styled.div`
       }
     }
   }
+
   .ant-select {
     .ant-select-selection {
       &:hover,
@@ -170,39 +172,58 @@ export const MainContainer = styled.div`
     }
   }
 
-  .ant-table-thead > tr > th.ant-table-selection-column,
-  .ant-table-tbody > tr > td.ant-table-selection-column {
-    width: 35px;
-    max-width: 35px;
-    .ant-checkbox {
-      .ant-checkbox-inner {
-        width: 18px;
-        height: 18px;
-        border-color: ${greyThemeLight};
-        background: ${greyThemeLighter};
-        &:after {
-          left: 30%;
-        }
-      }
-      &-indeterminate .ant-checkbox-inner::after {
-        left: 50%;
-      }
-      &.ant-checkbox-checked {
-        &:after {
-          border-color: ${themeColor};
-        }
-        .ant-checkbox-inner {
-          border-color: ${themeColor};
-          background: ${themeColor};
-        }
-      }
-      &.ant-checkbox-disabled {
-        &:after {
-          border-color: ${greyThemeLight};
-        }
-        .ant-checkbox-inner {
-          border-color: ${greyThemeLight};
-          background: ${greyThemeLight};
+  .ant-table-body,
+  .ant-table-body-inner,
+  .ant-table-fixed {
+    .ant-table-thead,
+    .ant-table-tbody {
+      & > tr {
+        th,
+        td {
+          &.ant-table-selection-column {
+            width: 35px;
+            max-width: 35px;
+            .ant-checkbox-wrapper {
+              .ant-checkbox {
+                .ant-checkbox-inner {
+                  width: 18px;
+                  height: 18px;
+                  border-color: ${greyThemeLight};
+                  background: ${greyThemeLighter};
+                  &:after {
+                    left: 30%;
+                  }
+                }
+                &.ant-checkbox-indeterminate .ant-checkbox-inner {
+                  &:after {
+                    background: ${themeColorBlue};
+                    left: 50%;
+                  }
+                }
+                &.ant-checkbox-checked {
+                  &:after {
+                    border-color: ${themeColorBlue};
+                  }
+                  .ant-checkbox-inner {
+                    border-color: ${themeColorBlue};
+                    background: ${themeColorBlue};
+                    &:after {
+                      top: 45%;
+                    }
+                  }
+                }
+                &.ant-checkbox-disabled {
+                  &:after {
+                    border-color: ${greyThemeLight};
+                  }
+                  .ant-checkbox-inner {
+                    border-color: ${greyThemeLight};
+                    background: ${greyThemeLight};
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

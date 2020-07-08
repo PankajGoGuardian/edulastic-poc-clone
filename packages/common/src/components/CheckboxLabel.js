@@ -37,6 +37,7 @@ export const CheckboxStyle = styled(Checkbox)`
       &.ant-checkbox-indeterminate .ant-checkbox-inner {
         &:after {
           left: 50%;
+          background: ${themeColorBlue};
         }
       }
       &.ant-checkbox-checked {

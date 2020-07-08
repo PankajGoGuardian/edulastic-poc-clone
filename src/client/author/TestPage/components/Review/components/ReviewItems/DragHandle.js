@@ -1,8 +1,8 @@
 import React from "react";
 import { SortableHandle } from "react-sortable-hoc";
-import { QuestionNumberLabel } from "@edulastic/common";
+import { QuestionNumberLabel, CheckboxLabel } from "@edulastic/common";
 import { FaBars } from "react-icons/fa";
-import { DragHandler, QuestionCheckbox } from "./styled";
+import { DragHandler } from "./styled";
 
 export default React.memo(
   SortableHandle(({ selected, onSelect, isEditable, indx }) => (
@@ -11,7 +11,7 @@ export default React.memo(
         {indx + 1}
       </QuestionNumberLabel>
       {isEditable && <FaBars />}
-      {isEditable && <QuestionCheckbox checked={selected} onChange={onSelect} />}
+      {isEditable && <CheckboxLabel checked={selected} onChange={onSelect} />}
     </DragHandler>
   ))
 );

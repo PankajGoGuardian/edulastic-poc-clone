@@ -306,6 +306,7 @@ const TableList = ({
       sorter: (a, b) => a.name.localeCompare(b.name, "en", { ignorePunctuation: true }),
       width: "20%",
       className: "assignment-name",
+      align: "left",
       render: (text, row) => (
         <Tooltip placement="bottom" title={<div>{text}</div>}>
           <FlexContainer style={{ marginLeft: 0 }} justifyContent="left">

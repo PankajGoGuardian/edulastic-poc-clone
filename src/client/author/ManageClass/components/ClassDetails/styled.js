@@ -13,13 +13,12 @@ import {
   cardTitleColor,
   greyDarken,
   mainTextColor,
-  backgroundGrey,
   white
 } from "@edulastic/colors";
-import { Paper } from "@edulastic/common";
+import { Paper, EduTableStyled } from "@edulastic/common";
 import { IconManage } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
-import { Button, Divider, Icon, Menu, Modal, Table, Row, Col } from "antd";
+import { Button, Divider, Icon, Menu, Modal, Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import styled, { css } from "styled-components";
 
@@ -30,71 +29,34 @@ export const TableWrapper = styled.div`
   margin-bottom: 30px;
 `;
 
-export const StudentsTable = styled(Table)`
+export const StudentsTable = styled(EduTableStyled)`
   .ant-table {
     overflow: auto;
-    &-thead {
+    .ant-table-thead {
       & > tr {
         & > th {
-          border: none;
-          font-weight: bold;
           font-size: 12px;
-          text-transform: uppercase;
-          color: ${cardTitleColor};
-          background: white;
-          padding: 16px 10px;
-          &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
-          & .ant-table-header-column .ant-table-column-sorters::before {
-            background: ${white};
-          }
-          &.ant-table-column-has-actions.ant-table-column-has-filters
-            &.ant-table-column-has-actions.ant-table-column-has-sorters {
-            text-align: center;
-          }
-          .ant-table-column-sorters {
-            display: flex;
-            justify-content: center;
-
-            .ant-table-column-sorter-inner {
-              &.ant-table-column-sorter-inner-full {
-                margin-top: 0em;
-              }
-              .ant-table-column-sorter {
-                &-up,
-                &-down {
-                  font-size: 10px;
-                }
-              }
-            }
-          }
+          padding: 16px 0px;
         }
       }
     }
-    &-tbody {
+    .ant-table-tbody {
       & > tr {
-        letter-spacing: 0.26px;
-        color: ${secondaryTextColor};
-        font-size: 14px;
-        cursor: pointer;
-        border: none;
-        border-bottom: 15px solid white;
         & > td {
-          border: none;
-          font-weight: 550;
-          padding: 10px 10px;
-        }
-        & > td:last-child {
-          padding: 0px;
-          width: 40px;
-          svg {
-            display: none;
-            width: auto;
-            height: 28px;
-            fill: ${greenDark7};
+          padding: 10px 0px;
+          font-size: 14px;
+          letter-spacing: 0.26px;
+          color: ${secondaryTextColor};
+          &:last-child {
+            padding: 0px;
+            width: 40px;
+            svg {
+              display: none;
+              width: auto;
+              height: 28px;
+              fill: ${greenDark7};
+            }
           }
-        }
-        &:hover:not(.ant-table-expanded-row) > td {
-          background: ${backgroundGrey};
         }
         &:hover:not(.ant-table-expanded-row) > td:last-child {
           svg {

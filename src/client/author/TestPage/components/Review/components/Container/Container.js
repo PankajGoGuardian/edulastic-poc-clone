@@ -31,7 +31,7 @@ import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import { SecondHeader, ReviewSummaryWrapper, ReviewContentWrapper, ReviewLeftContainer } from "./styled";
+import { SecondHeader, ReviewSummaryWrapper, ReviewContentWrapper, ReviewLeftContainer, TestTitle } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import { getUserFeatures, getUserRole, getIsPowerPremiumAccount } from "../../../../../src/selectors/user";
@@ -446,7 +446,15 @@ class Review extends PureComponent {
 
     return (
       <MainContentWrapper ref={this.containerRef}>
-        {!isPlaylistTestReview && (
+        {isPlaylistTestReview ? (
+          <Row>
+            <Col lg={24}>
+              <SecondHeader>
+                <TestTitle>{test?.title}</TestTitle>
+              </SecondHeader>
+            </Col>
+          </Row>
+        ) : (
           <Row>
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>

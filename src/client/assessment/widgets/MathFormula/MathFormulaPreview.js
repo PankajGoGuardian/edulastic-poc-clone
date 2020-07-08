@@ -277,7 +277,7 @@ class MathFormulaPreview extends Component {
 
     // in Units type, this need when the show dropdown option is true
     let correctUnit = get(item, "validation.validResponse.value[0].options.unit", "");
-    if (correctUnit.search("f") !== -1 || correctUnit.search(/\s/g) !== -1) {
+    if (correctUnit.search("text{") === -1 && correctUnit.search("f") !== -1 || correctUnit.search(/\s/g) !== -1) {
       correctUnit = `\\text{${correctUnit}}`;
     }
 
@@ -413,7 +413,7 @@ class MathFormulaPreview extends Component {
                   .map(ans => {
                     if (item.isUnits && item.showDropdown) {
                       let altUnit = get(ans, "value[0].options.unit", "");
-                      if (altUnit.search("f") !== -1 || altUnit.search(/\s/g) !== -1) {
+                      if (altUnit.search("text{") === -1 && altUnit.search("f") !== -1 || altUnit.search(/\s/g) !== -1) {
                         altUnit = `\\text{${altUnit}}`;
                       }
                       return ans.value[0].value.search("=") === -1

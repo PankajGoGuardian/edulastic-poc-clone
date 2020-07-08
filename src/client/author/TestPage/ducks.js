@@ -1660,7 +1660,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
       .flatMap(itemGroup => itemGroup.items || []);
     const questionGrades = testItems
       .flatMap(_item => (_item.data && _item.data.questions) || [])
-      .flatMap(question => question.grades || []);
+      .flatMap(question => (question.grades && question.grades.length < 13) || []);
     const questionSubjects = testItems
       .flatMap(_item => (_item.data && _item.data.questions) || [])
       .flatMap(question => question.subjects || []);
@@ -1676,7 +1676,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
     const grades = getAlignmentsObject
       .flatMap(alignment => alignment?.domains)
       .flatMap(domain => domain?.standards)
-      .flatMap(standard => standard?.grades)
+      .flatMap(standard => (standard?.grades?.length || 0) < 13 && standard?.grades)
       .filter(identity);
 
     yield put(

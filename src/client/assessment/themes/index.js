@@ -326,9 +326,11 @@ const AssessmentContainer = ({
     if (!preview) {
       if (!testletType) {
         const timeSpent = Date.now() - lastTime.current;
-        await saveUserAnswer(currentItem, timeSpent, false, groupId);
+        saveUserAnswer(currentItem, timeSpent, false, groupId, {
+          urlToGo: `${url}/${"test-summary"}`,
+          locState: { ...history?.location?.state, fromSummary: true }
+        });
       }
-      history.push(`${url}/test-summary`);
     } else {
       history.push(`/login`);
     }

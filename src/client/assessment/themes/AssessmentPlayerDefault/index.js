@@ -475,7 +475,7 @@ class AssessmentPlayerDefault extends React.Component {
                 hasCollapseButtons={hasCollapseButtons}
                 className="scrollable-main-wrapper"
               >
-                {scratchPadMode && <ScratchpadTool />}
+                {scratchPadMode && !LCBPreviewModal && <ScratchpadTool />}
                 {testItemState === "" && (
                   <TestItemPreview
                     LCBPreviewModal={LCBPreviewModal}

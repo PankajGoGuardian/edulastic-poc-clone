@@ -11,14 +11,7 @@ import { compose } from "redux";
 import { Dropdown } from "antd";
 
 import GoogleLogin from "react-google-login";
-import {
-  IconGoogleClassroom,
-  IconClever,
-  IconPlusCircle,
-  IconPencilEdit,
-  IconRemove,
-  IconAssignment
-} from "@edulastic/icons";
+import { IconGoogleClassroom, IconClever, IconPlusCircle, IconPencilEdit, IconAssignment } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
 import { canvasApi } from "@edulastic/api";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -135,7 +128,7 @@ const Header = ({
 
   const showSyncButtons = type === "class" && active === 1;
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId;
-  const showGoogleSyncButton = showSyncButtons && !cleverId && (allowGoogleLogin !== false);
+  const showGoogleSyncButton = showSyncButtons && !cleverId && allowGoogleLogin !== false;
   const showCanvasSyncButton = showSyncButtons && !cleverId && allowCanvasLogin;
 
   return (
@@ -195,17 +188,17 @@ const Header = ({
                 <CaretUp className="fa fa-caret-up" />
                 <MenuItems onClick={onEdit}>
                   <IconPencilEdit />
-                  <span>Edit Class</span>
+                  <span>{type === "class" ? "Edit Class" : "Edit Group"}</span>
                 </MenuItems>
                 <MenuItems onClick={() => setShowModal(true)}>
                   <IconArchive />
-                  <span>Archive Class</span>
+                  <span>{type === "class" ? "Archive Class" : "Archive Group"}</span>
                 </MenuItems>
                 <MenuItems onClick={handleActionMenuClick}>
                   <IconPlusCircle />
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
-                
+
                 {/*
                 <MenuItems>
                   <IconRemove />

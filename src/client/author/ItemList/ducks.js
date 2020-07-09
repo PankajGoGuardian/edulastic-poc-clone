@@ -107,18 +107,25 @@ export function* createTestFromCart({ payload: { testName } }) {
       .flatMap(x => x.alignment || [])
       .flatMap(x => x.domains)
       .flatMap(x => x.standards)
-      .flatMap(x => x.grades)
+      .flatMap(x => (x.grades && x.grades < 13 ? x.grades : []))
   );
   if (questionGrades.length === 0) {
     questionGrades = testItems
       .flatMap(item => (item.data && item.data.questions) || [])
-      .flatMap(question => question.grades || []);
+      .flatMap(question => (question.grades && question.grades.length < 13 ? question.grades : []));
   }
   const questionSubjects = testItems
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.subjects || []);
-  const grades = testItems.flatMap(item => item.grades);
-  const subjects = testItems.flatMap(item => item.subjects);
+  const grades = testItems.flatMap(item => (item.grades && item.grades < 13 ? item.grades : []));
+  /**
+   * TODO: test item subjects should not have [[]] as a value, need to fix at item level
+   * https://snapwiz.atlassian.net/browse/EV-16263
+   */
+  const subjects = testItems.flatMap(({ subjects: _subjects = [] }) =>
+    _subjects.filter(subject => subject && !Array.isArray(subject))
+  );
+
   const userRole = yield select(getUserRole);
   if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
     test.testType = testConstant.type.COMMON;

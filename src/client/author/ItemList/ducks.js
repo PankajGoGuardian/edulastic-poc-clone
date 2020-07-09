@@ -101,6 +101,9 @@ export function* addItemToCartSaga({ payload }) {
 export function* createTestFromCart({ payload: { testName } }) {
   const test = yield select(getTestEntitySelector);
   const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+  /**
+   * ignore anchor standard grades
+   */
   let questionGrades = uniq(
     testItems
       .flatMap(x => x.data.questions)

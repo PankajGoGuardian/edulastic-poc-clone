@@ -80,6 +80,7 @@ const Collections = lazy(() => import("../ContentCollections"));
 const ExternalTools = lazy(() => import("../ExternalTools"));
 const StudentsReportCard = lazy(() => import("../StudentsReportCard"));
 const Gradebook = lazy(() => import("../Gradebook"));
+const StartAssignment = lazy(() => import("../../student/StartAssignment"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({
@@ -178,6 +179,15 @@ const Author = ({
 
                     <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
                     <Route exact path={`${match.url}/lcb/settings/:assignmentId/:classId`} component={LCBSettings} />
+                    {/* 
+                      on navigation from 3rd party /author/group/{groupId}/assignment/{assignmentId} 
+                      StartAssignment will navigate author to LCB
+                    */}
+                    <Route
+                      exact
+                      path={`${match.url}/group/:groupId/assignment/:assignmentId`}
+                      component={StartAssignment}
+                    />
                     <Route
                       exact
                       path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}

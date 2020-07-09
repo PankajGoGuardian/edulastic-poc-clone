@@ -105,7 +105,10 @@ const CurriculumHeader = ({
   onRejectClick,
   windowWidth,
   deletePlaylist,
-  removePlaylistFromUse
+  removePlaylistFromUse,
+  customizeInDraft = false,
+  publishPlaylistInDraft,
+  discardDraftPlaylist
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const {
@@ -144,6 +147,10 @@ const CurriculumHeader = ({
   }
 
   const savePlaylist = () => {
+    if (customizeInDraft) {
+      publishPlaylistInDraft();
+      return;
+    }
     updateDestinationPlaylist({ showNotification: true });
   };
   const isMobile = windowWidth < parseInt(tabletWidth, 10);
@@ -202,14 +209,20 @@ const CurriculumHeader = ({
               </HeaderButton>
             )}
 
-          {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
+          {customizeInDraft && (
+            <HeaderButton isBlue isGhost data-cy="cancel" onClick={discardDraftPlaylist}>
+              CANCEL
+            </HeaderButton>
+          )}
+
+          {(isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit) && (
             <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               {isDesktop && "SAVE"}
             </HeaderButton>
           )}
 
-          {urlHasUseThis && isTeacher && !isPublisherUser && (
+          {urlHasUseThis && isTeacher && !isPublisherUser && !customizeInDraft && (
             <>
               <HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
                 <IconAirdrop />

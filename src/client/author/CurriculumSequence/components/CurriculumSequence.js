@@ -32,14 +32,16 @@ import {
   updateDestinationCurriculumSequenceRequestAction,
   resetDestinationAction,
   duplicateManageContentAction,
-  cancelPlaylistCustomizeAction,
+  setCustomizeToDraftAction,
+  discardDraftPlaylistAction,
   publishCustomizedPlaylistAction,
   toggleManageModulesVisibilityCSAction,
   setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction,
   setShowRightSideAction,
   setActiveRightPanelViewAction,
   deletePlaylistRequestAction,
-  removePlaylistFromUseAction
+  removePlaylistFromUseAction,
+  checkPreviouslyCustomizedAction
 } from "../ducks";
 import { getSummaryData } from "../util";
 /* eslint-enable */
@@ -358,11 +360,12 @@ class CurriculumSequence extends Component {
       destinationCurriculumSequence,
       currentUserId,
       activeRightPanel,
-      duplicateManageContent,
       role,
       isStudent,
       setShowRightPanel,
-      current
+      current,
+      toggleManageContent,
+      checkPreviouslyCustomized
     } = this.props;
     const { authors } = destinationCurriculumSequence;
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
@@ -381,7 +384,7 @@ class CurriculumSequence extends Component {
         content:
           "Customizing the playlist will unlink from original source. Any updates made by the owner of the playlist will not be visible anymore. Do you want to continue?",
         onOk: () => {
-          duplicateManageContent(destinationCurriculumSequence);
+          checkPreviouslyCustomized(destinationCurriculumSequence);
           Modal.destroyAll();
         },
         okText: "Continue",
@@ -392,7 +395,7 @@ class CurriculumSequence extends Component {
         }
       });
     } else {
-      this.props?.toggleManageContent(contentName);
+      toggleManageContent(contentName);
     }
   };
 
@@ -458,6 +461,18 @@ class CurriculumSequence extends Component {
     return !!destinationCurriculumSequence.authors?.find(x => x?._id === currentUserId);
   };
 
+  // Duplicate the customised playlist
+  publishPlaylistInDraft = () => {
+    const { destinationCurriculumSequence, publishCustomizedPlaylist } = this.props;
+    publishCustomizedPlaylist(destinationCurriculumSequence);
+  }
+
+  // Discard the changes back to original playlist
+  discardDraftPlaylist = () => {
+    const { discardDraftPlaylistAction, destinationCurriculumSequence } = this.props;
+    discardDraftPlaylistAction(destinationCurriculumSequence._id);
+  }
+
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
 
@@ -505,7 +520,6 @@ class CurriculumSequence extends Component {
       collections,
       dateKeys,
       resetDestination,
-      cancelPlaylistCustomize,
       publishCustomizedPlaylist,
       activeRightPanel,
       setEmbeddedVideoPreviewModal,
@@ -515,7 +529,8 @@ class CurriculumSequence extends Component {
       showRightPanel,
       location,
       deletePlaylist,
-      removePlaylistFromUse
+      removePlaylistFromUse,
+      customizeInDraft
     } = this.props;
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
@@ -535,9 +550,9 @@ class CurriculumSequence extends Component {
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
-          value: module.id,
-          label: module.name
-        }))
+        value: module.id,
+        label: module.name
+      }))
       : [];
 
     // TODO: change options2 to something more meaningful
@@ -562,28 +577,28 @@ class CurriculumSequence extends Component {
     // Module progress
     const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules
-          .filter(m => {
-            if (m.data.length === 0) {
+        .filter(m => {
+          if (m.data.length === 0) {
+            return false;
+          }
+          for (const test of m.data) {
+            if (!test.assignments || test.assignments.length === 0) {
               return false;
             }
-            for (const test of m.data) {
-              if (!test.assignments || test.assignments.length === 0) {
+            for (const assignment of test.assignments) {
+              if (!assignment.class || assignment.class.length === 0) {
                 return false;
               }
-              for (const assignment of test.assignments) {
-                if (!assignment.class || assignment.class.length === 0) {
+              for (const cs of assignment.class) {
+                if (cs.status !== "DONE") {
                   return false;
-                }
-                for (const cs of assignment.class) {
-                  if (cs.status !== "DONE") {
-                    return false;
-                  }
                 }
               }
             }
-            return true;
-          })
-          .map(x => x._id)
+          }
+          return true;
+        })
+        .map(x => x._id)
       : [];
 
     const isAuthoringFlowReview = current === "review";
@@ -677,6 +692,9 @@ class CurriculumSequence extends Component {
             windowWidth={windowWidth}
             deletePlaylist={deletePlaylist}
             removePlaylistFromUse={removePlaylistFromUse}
+            customizeInDraft={customizeInDraft}
+            publishPlaylistInDraft={this.publishPlaylistInDraft}
+            discardDraftPlaylist={this.discardDraftPlaylist}
           />
 
           <MainContentWrapper mode={mode}>
@@ -700,9 +718,7 @@ class CurriculumSequence extends Component {
                     handleCheckout={this.handleCheckout}
                     isManageContentActive={isManageContentActive}
                     isContentExpanded={isContentExpanded}
-                    cancelPlaylistCustomize={cancelPlaylistCustomize}
                     toggleManageContentClick={this.toggleManageContentClick}
-                    publishCustomizedPlaylist={publishCustomizedPlaylist}
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
                     isAuthoringFlowReview={current === "review"}
                   />
@@ -805,7 +821,8 @@ const enhance = compose(
       dateKeys: getDateKeysSelector(state),
       currentUserId: state?.user?.user?._id,
       isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal,
-      showRightPanel: state.curriculumSequence?.showRightPanel
+      showRightPanel: state.curriculumSequence?.showRightPanel,
+      customizeInDraft: state.curriculumSequence?.customizeInDraft
     }),
     {
       onGuideChange: changeGuideAction,
@@ -823,14 +840,16 @@ const enhance = compose(
       updateDestinationPlaylist: updateDestinationCurriculumSequenceRequestAction,
       resetDestination: resetDestinationAction,
       duplicateManageContent: duplicateManageContentAction,
-      cancelPlaylistCustomize: cancelPlaylistCustomizeAction,
+      setCustomizeToDraft: setCustomizeToDraftAction,
+      discardDraftPlaylistAction,
       publishCustomizedPlaylist: publishCustomizedPlaylistAction,
       toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       setShowRightPanel: setShowRightSideAction,
       setActiveRightPanelView: setActiveRightPanelViewAction,
       deletePlaylist: deletePlaylistRequestAction,
-      removePlaylistFromUse: removePlaylistFromUseAction
+      removePlaylistFromUse: removePlaylistFromUseAction,
+      checkPreviouslyCustomized: checkPreviouslyCustomizedAction
     }
   )
 );
@@ -908,14 +927,14 @@ export const ContentContainer = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 240px)" : "100%")};
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
-      if (isDifferentiationTab) {
-        return "calc(100vh - 175px)";
-      }
-      if (showBreadCrumb) {
-        return "calc(100vh - 138px)";
-      }
-      return "calc(100vh - 102px)";
-    }};
+    if (isDifferentiationTab) {
+      return "calc(100vh - 175px)";
+    }
+    if (showBreadCrumb) {
+      return "calc(100vh - 138px)";
+    }
+    return "calc(100vh - 102px)";
+  }};
   }
 
   @media (max-width: ${desktopWidth}) {

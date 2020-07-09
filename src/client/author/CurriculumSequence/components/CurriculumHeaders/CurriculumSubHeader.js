@@ -25,13 +25,10 @@ const CurriculumSubHeader = ({
   handleCheckout,
   isManageContentActive,
   isContentExpanded,
-  cancelPlaylistCustomize,
   toggleManageContentClick,
-  publishCustomizedPlaylist,
   shouldHidCustomizeButton,
   isAuthoringFlowReview
 }) => {
-  const { id: parentId = null, cloneId = null } = match.params;
   const { description, subjects = [], grades = [] } = destinationCurriculumSequence;
 
   const subHeaderIcon1 = !!grades.length && (
@@ -98,27 +95,6 @@ const CurriculumSubHeader = ({
               {subHeaderIcon2}
             </SubHeaderInfoCardWrapper>
             <ButtonWrapper>
-              {enableCustomize && isManageContentActive && cloneId && (
-                <DraftModeActionsWrapper>
-                  <StyledButton
-                    isGhost
-                    width="100px"
-                    data-cy="cancel-customize"
-                    onClick={() => cancelPlaylistCustomize({ parentId })}
-                  >
-                    Cancel
-                  </StyledButton>
-                  <StyledButton
-                    isGhost
-                    width="100px"
-                    data-cy="publish-customized-playlist"
-                    onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
-                    isManageContentActive={isManageContentActive}
-                  >
-                    Update
-                  </StyledButton>
-                </DraftModeActionsWrapper>
-              )}
               {(!isManageContentActive || !showRightPanel) && enableCustomize && !shouldHidCustomizeButton && (
                 <CustomizeButton isGhost isBlue onClick={toggleManageContentClick("manageContent")}>
                   Customize Content

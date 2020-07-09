@@ -208,7 +208,7 @@ class ItemListPage {
   };
 
   verifyAbsenceOfitemById = id => {
-    this.getViewItemById(id).should("not.exist");
+    this.getItemById(id).should("not.exist");
   };
 
   verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>

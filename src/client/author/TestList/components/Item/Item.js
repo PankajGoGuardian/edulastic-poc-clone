@@ -254,7 +254,8 @@ class Item extends Component {
       assignTest: this.assignTest,
       showPreviewModal: this.showPreviewModal,
       handleLikeTest: this.handleLikeTest,
-      likes
+      likes,
+      isTestLiked
     };
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard;

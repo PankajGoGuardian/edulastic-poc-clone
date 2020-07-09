@@ -119,7 +119,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .should("have.value", queData.formattext);
       });
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 2; i++) {
         context(`Response ${i + 1}`, () => {
           it(" > Delete Choices", () => {
             question
@@ -160,7 +160,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       it(" > Select the responses from drop down", () => {
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
-        question.setAnswerOnBoard(2, 0);
+        // question.setAnswerOnBoard(2, 0);
       });
 
       it(" > Add/Delete alternatives", () => {
@@ -197,7 +197,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         const preview = editItem.header.preview();
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
-        question.setAnswerOnBoard(2, 0);
+        // question.setAnswerOnBoard(2, 0);
         preview.checkScore("3/3");
         for (let i = 0; i < 3; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "correct");
@@ -209,7 +209,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         preview.getClear().click();
         question.setAnswerOnBoard(0, 1);
         question.setAnswerOnBoard(1, 1);
-        question.setAnswerOnBoard(2, 1);
+        // question.setAnswerOnBoard(2, 1);
         preview.checkScore("0/3");
         for (let i = 0; i < 3; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "wrong");
@@ -391,7 +391,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       it(" > Select the responses from drop down", () => {
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
-        question.setAnswerOnBoard(2, 0);
+        // question.setAnswerOnBoard(2, 0);
       });
 
       it(" > Add/Delete alternatives", () => {
@@ -427,7 +427,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         const preview = editItem.header.preview();
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
-        question.setAnswerOnBoard(2, 0);
+        // question.setAnswerOnBoard(2, 0);
         preview.checkScore("3/3");
         for (let i = 0; i < 3; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "correct");
@@ -439,7 +439,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         preview.getClear().click();
         question.setAnswerOnBoard(0, 1);
         question.setAnswerOnBoard(1, 1);
-        question.setAnswerOnBoard(2, 1);
+        // question.setAnswerOnBoard(2, 1);
         preview.checkScore("0/3");
         for (let i = 0; i < 3; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "wrong");

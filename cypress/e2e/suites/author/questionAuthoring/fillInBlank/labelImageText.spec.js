@@ -86,14 +86,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         });
       });
 
-      it(" > Maximum responses per container", () => {
+      /* it.skip(" > Maximum responses per container", () => {
         question
           .getMaxResponseInput()
           .click()
           .clear()
           .type(queData.maxRes)
           .should("have.value", queData.maxRes);
-      });
+      }); */
 
       it(" > Edit ARIA labels", () => {
         question
@@ -143,7 +143,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.checkAndDeleteAlternates();
       });
 
-      it(" > Check/uncheck Shuffle Possible responses", () => {
+      /* it.skip(" > Check/uncheck Shuffle Possible responses", () => {
         question
           .getShuffleTextImage()
           .click()
@@ -155,7 +155,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .click()
           .find("input")
           .should("not.be.checked");
-      });
+      }); */
     });
 
     context(" > [Tc_400]:Tc_5 => Save Question", () => {
@@ -215,6 +215,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
+
+      question.getAnswersFieldOnTextPage().each(($el, index) => {
+        queData.choices.push(`Answer${index}`);
+        cy.wrap($el)
+          .type(queData.choices[index])
+          .should("have.value", queData.choices[index]);
+      });
+
       question.header.saveAndgetId().then(id => {
         cy.saveItemDetailToDelete(id);
         cy.server();
@@ -280,14 +288,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         });
       });
 
-      it(" > Maximum responses per container", () => {
+      /* it.skip(" > Maximum responses per container", () => {
         question
           .getMaxResponseInput()
           .click()
           .clear()
           .type(queData.maxRes)
           .should("have.value", queData.maxRes);
-      });
+      }); */
 
       it(" > Edit ARIA labels", () => {
         question
@@ -326,6 +334,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       it(" > Add correct Answers", () => {
         question.getAnswersFieldOnTextPage().each(($el, index) => {
           cy.wrap($el)
+            .clear()
             .type(queData.choices[index])
             .should("have.value", queData.choices[index]);
         });
@@ -336,7 +345,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.checkAndDeleteAlternates();
       });
 
-      it(" > Check/uncheck Shuffle Possible responses", () => {
+      /* it.skip(" > Check/uncheck Shuffle Possible responses", () => {
         question
           .getShuffleTextImage()
           .click()
@@ -348,7 +357,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .click()
           .find("input")
           .should("not.be.checked");
-      });
+      }); */
     });
 
     context(" > [Tc_406]:Tc_5 => Save Question", () => {

@@ -32,7 +32,9 @@ export default class QuestionResponsePage {
     cy
       .get('[data-cy="studentName"]')
       .contains(studentName)
-      .closest('[data-cy="student-question-container"]');
+      .closest('[data-cy="student-question-container"]')
+      .should($ele => expect(Cypress.dom.isAttached($ele)).to.be.true);
+
   // .find('[data-cy="question-container"]');
 
   getLabels = qcard => qcard.find("label");
@@ -201,41 +203,25 @@ export default class QuestionResponsePage {
     cy.route("PUT", "**/response-entry-and-score").as("scoreEntry");
     cy.route("PUT", "**/feedback").as("feedback");
 
-    this.getQuestionContainerByStudent(studentName).as("updatecard");
-    cy.wait(500); // front end renders slow and gets old value appended in the box, hence waiting
-    this.getScoreInput(cy.get("@updatecard")).as("scoreinputbox");
-
     if (!(typeof score === "undefined" || score === "")) {
-      cy.get("@scoreinputbox").type("{selectall}{del}", { force: score });
-      cy.get("@scoreinputbox").type(score, { force: true });
+      this.getScoreInput(this.getQuestionContainerByStudent(studentName)).type(`{selectall}{del}${score}{esc}`, {
+        force: true
+      });
+      cy.wait("@scoreEntry").then(xhr => {
+        expect(xhr.status).to.eq(200);
+      });
 
-      this.getFeedbackArea(cy.get("@updatecard"))
-        .click()
-        .then(() => {
-          cy.wait("@scoreEntry").then(xhr => {
-            expect(xhr.status).to.eq(200);
-          });
-        });
-
-      cy.get("@scoreinputbox")
-        // .should("have.value", score.toString());
-        .should($score => {
-          const value = Cypress.$($score).attr("value");
-          expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
-        });
+      this.getScoreInput(this.getQuestionContainerByStudent(studentName)).should($score => {
+        const value = Cypress.$($score).attr("value");
+        expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
+      });
     }
 
     if (feedback) {
-      this.getFeedbackArea(cy.get("@updatecard"))
-        .clear()
-        .type(feedback);
-      cy.get("@scoreinputbox")
-        .click()
-        .then(() => {
-          cy.wait("@feedback").then(xhr => {
-            expect(xhr.status).to.eq(200);
-          });
-        });
+      this.getFeedbackArea(this.getQuestionContainerByStudent(studentName)).type(`{selectall}${feedback}{esc}`);
+      cy.wait("@feedback").then(xhr => {
+        expect(xhr.status).to.eq(200);
+      });
     }
   };
 

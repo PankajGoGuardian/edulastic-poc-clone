@@ -110,17 +110,17 @@ export function* createTestFromCart({ payload: { testName } }) {
       .flatMap(x => x.alignment || [])
       .flatMap(x => x.domains)
       .flatMap(x => x.standards)
-      .flatMap(x => (x.grades && x.grades < 13) || [])
+      .flatMap(x => (x.grades && x.grades < 13 ? x.grades : []))
   );
   if (questionGrades.length === 0) {
     questionGrades = testItems
       .flatMap(item => (item.data && item.data.questions) || [])
-      .flatMap(question => (question.grades && question.grades.length < 13) || []);
+      .flatMap(question => (question.grades && question.grades.length < 13 ? question.grades : []));
   }
   const questionSubjects = testItems
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.subjects || []);
-  const grades = testItems.flatMap(item => (item.grades && item.grades < 13) || []);
+  const grades = testItems.flatMap(item => (item.grades && item.grades < 13 ? item.grades : []));
   /**
    * TODO: test item subjects should not have [[]] as a value, need to fix at item level
    * https://snapwiz.atlassian.net/browse/EV-16263

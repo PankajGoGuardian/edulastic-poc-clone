@@ -75,7 +75,9 @@ class OrderListPreview extends Component {
                 isPrintPreview
               };
               return showAnswer ? (
-                <div className="__prevent-page-break"><PreviewItem {...itemProps} /></div>
+                <div className="__prevent-page-break">
+                  <PreviewItem {...itemProps} />
+                </div>
               ) : (
                 <OrderListPreviewItem
                   {...itemProps}

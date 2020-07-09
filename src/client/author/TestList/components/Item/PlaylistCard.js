@@ -48,21 +48,29 @@ const PlaylistCard = ({
 }) => {
   const grade = first(_source.grades);
   const { title, alignmentInfo, skin } = _source;
+
   const isSparkMathSkin = skin === "SPARK";
+  const isPublisherSkin = skin === "PUBLISHER";
+
   let headerTitle = title;
   if (alignmentInfo && isSparkMathSkin) {
     headerTitle += ` - ${alignmentInfo}`;
+  } else if (!isSparkMathSkin && !isPublisherSkin) {
+    headerTitle = "";
   }
 
-  const skinType = isSparkMathSkin ? (
-    "SparkMath"
-  ) : (
-    <span>
-      EUREKA
-      <br />
-      MATH
-    </span>
-  );
+  let skinType = "";
+  if (isSparkMathSkin) {
+    skinType = "SparkMath";
+  } else if (isPublisherSkin) {
+    skinType = (
+      <span>
+        EUREKA
+        <br />
+        MATH
+      </span>
+    );
+  }
 
   return (
     <Container

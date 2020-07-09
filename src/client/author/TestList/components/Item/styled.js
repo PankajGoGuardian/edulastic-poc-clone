@@ -302,7 +302,7 @@ Header.displayName = "CardHeader";
 
 const playlistStars = css`
   bottom: 12px;
-  right: 10px;
+  left: 10px;
 `;
 
 const testItemStars = css`

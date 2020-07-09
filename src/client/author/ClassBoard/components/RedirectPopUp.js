@@ -145,14 +145,14 @@ const RedirectPopUp = ({
     setLoading(false);
   }, [studentsToRedirect, assignmentId, endDate, groupId, showPrevAttempt, qDeliveryState, dueDate, allowedTime]);
 
-  const disabledEndDate = endDate => {
-    if (!endDate) {
+  const disabledEndDate = _endDate => {
+    if (!_endDate) {
       return false;
     }
-    return endDate < moment().startOf("day");
+    return _endDate < moment().startOf("day");
   };
 
-  const disabledDueDate = useCallback(dueDate => dueDate < moment().startOf("day") || dueDate > endDate, [endDate]);
+  const disabledDueDate = useCallback(_dueDate => _dueDate < moment().startOf("day") || dueDate > endDate, [endDate]);
 
   return (
     <CustomModalStyled
@@ -170,7 +170,7 @@ const RedirectPopUp = ({
       ]}
     >
       <BodyContainer>
-        <h4>{additionalData.className}</h4>
+        <h4 style={{ fontWeight: 550 }}>{additionalData.className}</h4>
         <Row>
           {/* 
             TODO: handle the change

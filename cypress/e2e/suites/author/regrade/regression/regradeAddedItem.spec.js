@@ -150,6 +150,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} test editing with applyin
   });
 
   before(">create test", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.login("teacher", Teacher.username, Teacher.password);
     testLibraryPage.createTest("LCB_2", false).then(id => {
       testid = id;

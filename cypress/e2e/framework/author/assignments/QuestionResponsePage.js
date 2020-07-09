@@ -197,7 +197,7 @@ export default class QuestionResponsePage {
       .should("have.text", points.toString());
   };
 
-  updateScoreAndFeedbackForStudent = (studentName, score, feedback) => {
+   updateScoreAndFeedbackForStudent = (studentName, score, feedback) => {
     cy.server();
     cy.route("PUT", "**/feedback").as("feedback");
     cy.route("PUT", "**/response-entry-and-score").as("scoreEntry");
@@ -208,7 +208,7 @@ export default class QuestionResponsePage {
         force: true
       });
       cy.wait("@scoreEntry").then(xhr => {
-        expect(xhr.status).to.eq(200);
+        expect(xhr.status, `score update ${xhr.status === 200 ? "success" : "fialed"}`).to.eq(200);
       });
 
       this.getScoreInput(this.getQuestionContainerByStudent(studentName)).should($score => {
@@ -220,7 +220,7 @@ export default class QuestionResponsePage {
     if (feedback) {
       this.getFeedbackArea(this.getQuestionContainerByStudent(studentName)).type(`{selectall}${feedback}{esc}`);
       cy.wait("@feedback").then(xhr => {
-        expect(xhr.status).to.eq(200);
+        expect(xhr.status, `feed back update ${xhr.status === 200 ? "success" : "fialed"}`).to.eq(200);
       });
     }
   };

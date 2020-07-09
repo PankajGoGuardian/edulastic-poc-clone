@@ -54,6 +54,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   let attempt = [];
 
   before("Get Data Of test and its itemns", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
       itemsInTest = testData.EDIT_ASSIGNED_TEST_REGRADE.itemKeys;

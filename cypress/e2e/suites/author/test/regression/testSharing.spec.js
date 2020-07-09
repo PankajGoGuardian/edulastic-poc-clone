@@ -349,7 +349,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.searchByCollection(COLLECTION.school);
         testLibrary.verifyCollectionOnTestCardbyId(test_id, COLLECTION.school.split(" ")[0].toUpperCase());
         testLibrary.clickOnTestCardById(test_id);
-        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.school);
+        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.school.split(" ")[0].toUpperCase());
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
     });
@@ -391,7 +391,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.searchByCollection(COLLECTION.district);
         testLibrary.verifyCollectionOnTestCardbyId(test_id, COLLECTION.district.split(" ")[0].toUpperCase());
         testLibrary.clickOnTestCardById(test_id);
-        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.district);
+        testLibrary.verifyTestCollectionOnTestCardPopUp(COLLECTION.district.split(" ")[0].toUpperCase());
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
     });

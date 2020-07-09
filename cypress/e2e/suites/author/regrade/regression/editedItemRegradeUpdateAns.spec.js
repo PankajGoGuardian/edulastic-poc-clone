@@ -110,6 +110,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   let updatedAttempt;
 
   before("create tests", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments("", Teacher.username);
     cy.login("teacher", Teacher.username, Teacher.password);
 

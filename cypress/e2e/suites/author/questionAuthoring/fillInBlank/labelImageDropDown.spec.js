@@ -21,7 +21,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     imagePosLeft: "100",
     imagePosTop: "50",
     imageAlternate: "Background",
-    testColor: "#d49c9c"
+    testColor: "#d49c9c",
+    testColor_rgb : "rgb(212, 156, 156)"
   };
 
   const scoringBlock = new ScoringBlock();
@@ -79,7 +80,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.updateColorPicker(queData.testColor);
         question.verifyFillColor(queData.testColor);
         for (let i = 0; i < 2; i++) {
-          question.verifyFillColorInPreviewContainer(i, queData.testColor);
+          question.verifyFillColorInPreviewContainer(i, queData.testColor_rgb);
         }
       });
     });
@@ -199,7 +200,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.setAnswerOnBoard(1, 0);
         // question.setAnswerOnBoard(2, 0);
         preview.checkScore("3/3");
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "correct");
         }
       });
@@ -211,7 +212,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.setAnswerOnBoard(1, 1);
         // question.setAnswerOnBoard(2, 1);
         preview.checkScore("0/3");
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "wrong");
         }
       });
@@ -310,7 +311,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.updateColorPicker(queData.testColor);
         question.verifyFillColor(queData.testColor);
         for (let i = 0; i < 2; i++) {
-          question.verifyFillColorInPreviewContainer(i, queData.testColor);
+          question.verifyFillColorInPreviewContainer(i, queData.testColor_rgb);
         }
       });
     });
@@ -350,7 +351,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .should("have.value", queData.formattext);
       });
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 2; i++) {
         context(`Response ${i + 1}`, () => {
           it(" > Delete Choices", () => {
             question
@@ -429,7 +430,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.setAnswerOnBoard(1, 0);
         // question.setAnswerOnBoard(2, 0);
         preview.checkScore("3/3");
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "correct");
         }
       });
@@ -441,7 +442,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question.setAnswerOnBoard(1, 1);
         // question.setAnswerOnBoard(2, 1);
         preview.checkScore("0/3");
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
           question.VerifyAnswerBoxColorByIndex(i, "wrong");
         }
       });

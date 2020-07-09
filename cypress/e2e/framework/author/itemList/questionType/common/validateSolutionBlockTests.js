@@ -1,5 +1,5 @@
-import solutionBlockPage from "../../../../author/itemList/questionType/common/solutionBlock.js";
-import EditItemPage from "../../../../../framework/author/itemList/itemDetail/editPage.js";
+import solutionBlockPage from "./solutionBlock.js";
+import EditItemPage from "../../itemDetail/editPage.js";
 
 const validateSolutionBlockTests = (questionGroup, questionType) => {
   const editItem = new EditItemPage();

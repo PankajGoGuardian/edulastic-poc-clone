@@ -128,7 +128,6 @@ export function* createTestFromCart({ payload: { testName } }) {
   const subjects = testItems.flatMap(({ subjects: _subjects = [] }) =>
     _subjects.filter(subject => subject && !Array.isArray(subject))
   );
-
   const userRole = yield select(getUserRole);
   if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
     test.testType = testConstant.type.COMMON;

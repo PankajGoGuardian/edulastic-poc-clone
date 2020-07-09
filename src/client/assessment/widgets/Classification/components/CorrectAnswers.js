@@ -17,7 +17,8 @@ const CorrectAnswers = ({
   dragItemProps,
   possibleResponse,
   multiRow,
-  title
+  title,
+  classifications = []
 }) => {
   const replaceIdWithValue = answers => {
     const res = produce(answers, draft => {
@@ -39,27 +40,30 @@ const CorrectAnswers = ({
   const containers = replaceIdWithValue(answersArr);
 
   const boxWidth = dragItemProps.width;
-
   return (
     <>
       <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{title}</Subtitle>
       <ColWrapper multiRow={multiRow}>
-        {Object.keys(containers).map((key, i) => (
-          <CorrectAnswerContainer multiRow={multiRow} minWidth={boxWidth}>
-            {multiRow && <IndexBox style={{ margin: 5 }}>{getStemNumeration(stemNumeration, i)}</IndexBox>}
-            {!multiRow && (
-              <ColumnHeader>
-                <IndexBox>{getStemNumeration(stemNumeration, i)}</IndexBox>
-                <ColumnLabel dangerouslySetInnerHTML={{ __html: columnTitles[i] }} />
-              </ColumnHeader>
-            )}
-            <AnswersContainer>
-              {containers[key].map((res, index) => (
-                <DragItem {...dragItemProps} dragHandle={false} disableDrag item={res || ""} key={`answer-${index}`} />
-              ))}
-            </AnswersContainer>
-          </CorrectAnswerContainer>
-        ))}
+        {classifications.map((classification, index) => {
+          const answers = containers[classification.id] || [];
+          const indexValue = getStemNumeration(stemNumeration, index);
+          return (
+            <CorrectAnswerContainer multiRow={multiRow} minWidth={boxWidth}>
+              {multiRow && <IndexBox style={{ margin: 5 }}>{indexValue}</IndexBox>}
+              {!multiRow && (
+                <ColumnHeader>
+                  <IndexBox>{indexValue}</IndexBox>
+                  <ColumnLabel dangerouslySetInnerHTML={{ __html: columnTitles[index] }} />
+                </ColumnHeader>
+              )}
+              <AnswersContainer>
+                {answers.map((res, i) => (
+                  <DragItem {...dragItemProps} dragHandle={false} disableDrag item={res || ""} key={`answer-${i}`} />
+                ))}
+              </AnswersContainer>
+            </CorrectAnswerContainer>
+          );
+        })}
       </ColWrapper>
     </>
   );

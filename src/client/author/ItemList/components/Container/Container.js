@@ -3,7 +3,7 @@ import { IconItemLibrary } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
 import { Pagination, Spin } from "antd";
-import { debounce, omit } from "lodash";
+import { debounce, omit, isEqual } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -174,7 +174,10 @@ class Contaier extends Component {
   };
 
   handleClearSearch = () => {
-    const { clearFilterState, limit, receiveItems } = this.props;
+    const { clearFilterState, limit, receiveItems, search = {} } = this.props;
+
+    // If current filter and initial filter is equal don't need to reset again
+    if (isEqual(search, initalSearchState)) return null;
 
     clearFilterState();
 
@@ -334,7 +337,6 @@ class Contaier extends Component {
 
     return (
       <>
-       
         <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
           <CartButton
             onClick={() => approveOrRejectMultipleItem({ status: "rejected" })}

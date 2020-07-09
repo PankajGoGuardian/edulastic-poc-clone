@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce, get, has, pickBy, identity, pick } from "lodash";
+import { debounce, get, has, pickBy, identity, pick, isEqual } from "lodash";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -417,7 +417,11 @@ class TestList extends Component {
   };
 
   handleClearFilter = () => {
-    const { history, mode, limit, receiveTests } = this.props;
+    const { history, mode, limit, receiveTests, testFilters } = this.props;
+
+    // If current filter and initial filter is equal don't need to reset again
+    if (isEqual(testFilters, emptyFilters)) return null;
+
     this.updateFilterState(emptyFilters, true);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
     if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);

@@ -59,6 +59,7 @@ const selectsData = [
   { value: TEXT, text: "Text" },
   { value: MATH, text: "Math" },
   { value: FORMULA_ESSAY, text: "Formula Essay" },
+  { value: PASSAGE_WITH_QUESTIONS, text: "Passage with Questions" },
   { value: CLOZE_MATH, text: "Cloze Math" },
   { value: EXPRESSION_MULTIPART, text: "Expression Multipart" },
   { value: ORDER_LIST, text: "Order List" },

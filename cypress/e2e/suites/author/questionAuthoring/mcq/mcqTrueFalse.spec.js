@@ -478,12 +478,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     it(" > [Tc_297]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.verifyScore("");
-        });
+      preview.checkScore("0/1");
 
       preview.getClear().click();
 

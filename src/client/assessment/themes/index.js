@@ -193,9 +193,12 @@ const AssessmentContainer = ({
           const initialData = q.chart_data.data;
           return initialData.every((d, i) => d.y === qAnswers[i].y);
         }
-        case questionType.SORT_LIST:
         case questionType.MATCH_LIST:
           return Object.values(qAnswers || {}).every(d => isNull(d));
+        case questionType.SORT_LIST:
+        case questionType.CLOZE_DRAG_DROP:
+        case questionType.HOTSPOT:
+          return !qAnswers?.some(ans => ans?.toString());
         case questionType.ORDER_LIST: {
           const prevOrder = [...Array(q.list.length).keys()];
           return qAnswers ? isEqual(prevOrder, qAnswers) : true;
@@ -212,15 +215,13 @@ const AssessmentContainer = ({
             return isEmpty(ans);
           });
         case questionType.EXPRESSION_MULTIPART: {
-          const { inputs = {}, dropdowns = {}, maths = {}, mathUnits = {} } = qAnswers || {};
-          let isAnswered = Object.values({
+          const { inputs = {}, dropDowns = {}, maths = {}, mathUnits = {} } = qAnswers || {};
+          const isAnswered = Object.values({
             ...inputs,
-            ...dropdowns,
-            ...maths
-          }).some(d => d.value?.trim());
-          if (!isAnswered) {
-            isAnswered = Object.values(mathUnits).some(d => d.value || d.unit);
-          }
+            ...dropDowns,
+            ...maths,
+            ...mathUnits
+          }).some(d => d.value?.trim() || d.unit);
           return !isAnswered;
         }
         case questionType.CLOZE_TEXT: {
@@ -239,7 +240,7 @@ const AssessmentContainer = ({
             return true;
           }
           const keys = Object.keys(qAnswers);
-          return keys.length === 0 || keys.some(key => isEmpty(qAnswers[key]));
+          return keys.length === 0 || keys.every(key => isEmpty(qAnswers[key]));
         }
         case questionType.CLOZE_IMAGE_DROP_DOWN:
         case questionType.CLOZE_IMAGE_TEXT: {

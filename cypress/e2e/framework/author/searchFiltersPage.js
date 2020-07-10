@@ -28,11 +28,9 @@ export default class SearchFilters {
 
   getSearch = () => cy.get(".ant-input-search");
 
-  getSearchTextBox = () =>
-    cy
-      .contains("Search by skills and keywords")
-      .next()
-      .find("input");
+  getSearchBar = () => cy.contains("Search by skills and keywords").next();
+
+  getSearchTextBox = () => this.getSearchBar().find("input");
 
   getPaginationContainer = () => cy.get(".ant-pagination");
 
@@ -73,8 +71,9 @@ export default class SearchFilters {
 
   clearAll = () => {
     this.routeSearch();
+    this.typeInSearchBox("E");
     cy.get('[data-cy="clearAll"]').click({ force: true });
-    return cy.wait("@search");
+    cy.wait("@search").then(() => this.getSearchBar().should("not.contain", "E"));
   };
 
   setGrades = grades => {

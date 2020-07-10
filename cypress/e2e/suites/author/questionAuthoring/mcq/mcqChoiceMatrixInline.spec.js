@@ -1,10 +1,11 @@
 import FileHelper from "../../../../framework/util/fileHelper";
 import runMatrixPageTests from "../../../../framework/author/itemList/questionType/mcq/runMatrixPageTests";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Choice matrix - inline" type question`, () => {
   runMatrixPageTests({
     group: "Multiple Choice",
-    queType: "Match Table - Inline",
+    queType: questionType.CHOICE_INLINE,
     qShortKey: "CHOICE_INLINE",
     queText: "Choose the correct number of days in following month",
     ansChoice: ["right-1", "wrong-1", "wrong-2", "right-2"],

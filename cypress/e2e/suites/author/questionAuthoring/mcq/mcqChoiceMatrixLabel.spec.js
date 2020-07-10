@@ -1,10 +1,11 @@
 import FileHelper from "../../../../framework/util/fileHelper";
 import runMatrixPageTests from "../../../../framework/author/itemList/questionType/mcq/runMatrixPageTests";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Choice matrix - labels" type question`, () => {
   runMatrixPageTests({
     group: "Multiple Choice",
-    queType: "Match Table - Labels",
+    queType: questionType.CHOICE_LABEL,
     qShortKey: "CHOICE_LABEL",
     queText: "Choose the correct number of days in following month",
     ansChoice: ["right-1", "wrong-1", "wrong-2", "right-2"],

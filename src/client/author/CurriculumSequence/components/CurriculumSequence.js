@@ -465,13 +465,13 @@ class CurriculumSequence extends Component {
   publishPlaylistInDraft = () => {
     const { destinationCurriculumSequence, publishCustomizedPlaylist } = this.props;
     publishCustomizedPlaylist(destinationCurriculumSequence);
-  }
+  };
 
   // Discard the changes back to original playlist
   discardDraftPlaylist = () => {
-    const { discardDraftPlaylistAction, destinationCurriculumSequence } = this.props;
-    discardDraftPlaylistAction(destinationCurriculumSequence._id);
-  }
+    const { discardDraftPlaylist, destinationCurriculumSequence } = this.props;
+    discardDraftPlaylist(destinationCurriculumSequence._id);
+  };
 
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
@@ -520,7 +520,6 @@ class CurriculumSequence extends Component {
       collections,
       dateKeys,
       resetDestination,
-      publishCustomizedPlaylist,
       activeRightPanel,
       setEmbeddedVideoPreviewModal,
       isVideoResourcePreviewModal,
@@ -550,9 +549,9 @@ class CurriculumSequence extends Component {
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
-        value: module.id,
-        label: module.name
-      }))
+          value: module.id,
+          label: module.name
+        }))
       : [];
 
     // TODO: change options2 to something more meaningful
@@ -577,28 +576,28 @@ class CurriculumSequence extends Component {
     // Module progress
     const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules
-        .filter(m => {
-          if (m.data.length === 0) {
-            return false;
-          }
-          for (const test of m.data) {
-            if (!test.assignments || test.assignments.length === 0) {
+          .filter(m => {
+            if (m.data.length === 0) {
               return false;
             }
-            for (const assignment of test.assignments) {
-              if (!assignment.class || assignment.class.length === 0) {
+            for (const test of m.data) {
+              if (!test.assignments || test.assignments.length === 0) {
                 return false;
               }
-              for (const cs of assignment.class) {
-                if (cs.status !== "DONE") {
+              for (const assignment of test.assignments) {
+                if (!assignment.class || assignment.class.length === 0) {
                   return false;
+                }
+                for (const cs of assignment.class) {
+                  if (cs.status !== "DONE") {
+                    return false;
+                  }
                 }
               }
             }
-          }
-          return true;
-        })
-        .map(x => x._id)
+            return true;
+          })
+          .map(x => x._id)
       : [];
 
     const isAuthoringFlowReview = current === "review";
@@ -721,6 +720,7 @@ class CurriculumSequence extends Component {
                     toggleManageContentClick={this.toggleManageContentClick}
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
                     isAuthoringFlowReview={current === "review"}
+                    customizeInDraft={customizeInDraft}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
@@ -760,6 +760,7 @@ class CurriculumSequence extends Component {
                         setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                         droppedItemId={droppedItemId}
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
+                        customizeInDraft={customizeInDraft}
                       />
                     )}
                   </Wrapper>
@@ -841,7 +842,7 @@ const enhance = compose(
       resetDestination: resetDestinationAction,
       duplicateManageContent: duplicateManageContentAction,
       setCustomizeToDraft: setCustomizeToDraftAction,
-      discardDraftPlaylistAction,
+      discardDraftPlaylist: discardDraftPlaylistAction,
       publishCustomizedPlaylist: publishCustomizedPlaylistAction,
       toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
@@ -927,14 +928,14 @@ export const ContentContainer = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     width: ${({ showRightPanel }) => (showRightPanel ? "calc(100% - 240px)" : "100%")};
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
-    if (isDifferentiationTab) {
-      return "calc(100vh - 175px)";
-    }
-    if (showBreadCrumb) {
-      return "calc(100vh - 138px)";
-    }
-    return "calc(100vh - 102px)";
-  }};
+      if (isDifferentiationTab) {
+        return "calc(100vh - 175px)";
+      }
+      if (showBreadCrumb) {
+        return "calc(100vh - 138px)";
+      }
+      return "calc(100vh - 102px)";
+    }};
   }
 
   @media (max-width: ${desktopWidth}) {

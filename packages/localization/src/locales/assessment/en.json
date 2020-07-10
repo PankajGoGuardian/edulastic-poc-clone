@@ -437,7 +437,8 @@
       "alternateAnswer": "Alternate Answer",
       "list": "List",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter your question"
+      "enterQuestion": "Enter your question",
+      "listLabels": "Labels"
     },
     "multiplechoice": {
       "thisisstem": "Enter your question",

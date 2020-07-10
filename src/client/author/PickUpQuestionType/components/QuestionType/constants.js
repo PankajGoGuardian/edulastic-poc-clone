@@ -1071,6 +1071,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         type: questionType.SORT_LIST,
         stimulus: "",
+        labels: {
+          source: "source",
+          target: "target"
+        },
         uiStyle: {},
         source: ["Item A", "Item B", "Item C", "Item D"],
         validation: {

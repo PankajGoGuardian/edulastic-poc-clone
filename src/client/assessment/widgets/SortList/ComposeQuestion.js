@@ -14,10 +14,10 @@ class ComposeQuestion extends Component {
   render() {
     const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
-    const handleItemChangeChange = (prop, uiStyle) => {
+    const handleItemChangeChange = (prop, data) => {
       setQuestionData(
         produce(item, draft => {
-          draft[prop] = uiStyle;
+          draft[prop] = data;
           updateVariables(draft);
         })
       );

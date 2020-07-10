@@ -180,6 +180,9 @@ const SortListPreview = ({
 
   const drop = ({ obj, index, flag }) => ({ obj, index, flag });
 
+  const sourceLabel = get(item, "labels.source", t("component.sortList.containerSourcePreview"));
+  const targetLabel = get(item, "labels.target", t("component.sortList.containerTargetPreview"));
+
   const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
   const orientation = get(item, "uiStyle.orientation");
   const isVertical = orientation === "vertical";
@@ -277,7 +280,7 @@ const SortListPreview = ({
               className="sort-list-wrapper"
             >
               <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}
+                {!smallSize && <Title smallSize={smallSize}>{sourceLabel}</Title>}
                 {items.map((draggableItem, i) => (
                   <DropContainer
                     key={i}
@@ -321,7 +324,7 @@ const SortListPreview = ({
               </FlexWithMargins>
 
               <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerTargetPreview")}</Title>}
+                {!smallSize && <Title smallSize={smallSize}>{targetLabel}</Title>}
                 {selected.map((selectedItem, i) => (
                   <DropContainer
                     key={i}

@@ -184,7 +184,7 @@ class LabelImageStandardPage {
         cy.get('input[spellcheck="false"]')
           .type(`{selectall}${color}`)
           .should("have.value", color);
-        cy.get("body").click();
+        cy.get('[data-cy="image-text-box-color-picker"]').click();
       });
     return this;
   }

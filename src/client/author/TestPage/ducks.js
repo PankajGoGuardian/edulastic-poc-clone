@@ -1308,22 +1308,25 @@ function* updateTestSaga({ payload }) {
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true));
     const { scoring = {}, currentTab } = payload.data;
+    const testFieldsToOmit = [
+      "_id",
+      "updatedDate",
+      "createdDate",
+      "assignments",
+      "authors",
+      "createdBy",
+      "passages",
+      "isUsed",
+      "scoring",
+      "sharedType",
+      "currentTab",
+      "summary",
+      "alreadyLiked"
+    ];
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
-    delete payload.data.updatedDate;
-    delete payload.data.createdDate;
-    delete payload.data.assignments;
-    delete payload.data.authors;
-    delete payload.data.createdBy;
-    delete payload.data.passages;
-    delete payload.data.isUsed;
-    delete payload.data.scoring;
-    delete payload.data.sharedType;
-    delete payload.data.currentTab;
-    delete payload.data.summary;
-    delete payload.data.alreadyLiked;
     if (payload.data.testType !== test.type.COMMON) {
-      delete payload.data.freezeSettings;
+      testFieldsToOmit.push("freezeSettings");
     }
 
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
@@ -1339,10 +1342,10 @@ function* updateTestSaga({ payload }) {
 
     payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
     if (payload.data.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
-      delete payload.data.passwordExpireIn;
+      testFieldsToOmit.push("passwordExpireIn");
     }
     if (payload.data.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
-      delete payload.data.assignmentPassword;
+      testFieldsToOmit.push("assignmentPassword");
     } else if (
       payload.data.passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!payload.data.assignmentPassword ||
@@ -1361,7 +1364,8 @@ function* updateTestSaga({ payload }) {
       payload.data.standardGradingScale = pick(payload.data?.standardGradingScale, ["_id", "name"]);
     }
 
-    const entity = yield call(testsApi.update, payload);
+    const testData = omit(payload.data, testFieldsToOmit);
+    const entity = yield call(testsApi.update, { ...payload, data: testData });
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     const userRole = yield select(getUserRole);

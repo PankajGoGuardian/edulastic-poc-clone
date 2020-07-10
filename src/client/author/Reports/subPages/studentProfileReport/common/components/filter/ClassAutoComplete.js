@@ -19,7 +19,8 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
   // build search query
   const query = useMemo(() => {
     const { email, institutionIds, role: userRole, orgData } = userDetails;
-    const { districtId } = orgData;
+    const { districtIds } = orgData;
+    const districtId = districtIds?.[0];
     const q = {
       limit: 25,
       page: 1,

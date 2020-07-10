@@ -1,10 +1,9 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import ClozeDropDownPage from "../../../../framework/author/itemList/questionType/fillInBlank/clozeWithDropDownPage";
 import FileHelper from "../../../../framework/util/fileHelper";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
 import { queColor, questionType } from "../../../../framework/constants/questionTypes";
-import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Drop Down" type question`, () => {
   const queData = {
@@ -25,10 +24,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
 
   const question = new ClozeDropDownPage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
   let preview;
-
-  let testItemId;
 
   before(() => {
     cy.login();
@@ -181,7 +177,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
           for (let i = 0; i < resp.length; i++) {
             question.deleteChoices(respIndex, --lengthOfresp);
           }
-          resp.forEach((ch, index) => {
+          resp.forEach(ch => {
             question.checkAnsChoicesLength(respIndex, ch.length, 0);
           });
         });
@@ -304,22 +300,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
         .getPanalty()
         .clear()
         .type(2);
-      question.updatePoints(4);
-      question.getAlternates().click();
       question.updatePoints(6);
+      question.getAlternates().click();
+      question.updatePoints(4);
       preview = question.header.preview();
-      question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][0]);
+      question.setChoiceForResponseIndex(0, queData.forScoringAltAns[0]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][0]);
-      preview.checkScore("0/6");
+      preview.checkScore("1/6");
       preview
         .getClear()
         .click()
         .then(() => {
           cy.get('[data-cy="answer-box"]').should("have.length", 0);
         });
-      question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][1]);
+      question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][0]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][0]);
-      preview.checkScore("1/6");
+      preview.checkScore("2/6");
     });
 
     it(" > [clz_dropdown_scoring]: Test score with alternate answer, partial match, Round Down and penalty", () => {
@@ -331,9 +327,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
         .clear()
         .type(1.5);
       question.selectRoundingType("Round down");
-      question.updatePoints(4);
-      question.getAlternates().click();
       question.updatePoints(6);
+      question.getAlternates().click();
+      question.updatePoints(4);
       preview = question.header.preview();
       question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][1]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][0]);
@@ -343,5 +339,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
 
   validateSolutionBlockTests(queData.group, queData.queType);
 
-  //TODO - Display Block Testing
+  // TODO - Display Block Testing
 });

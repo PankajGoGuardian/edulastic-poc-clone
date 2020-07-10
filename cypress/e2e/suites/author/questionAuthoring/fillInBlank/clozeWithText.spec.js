@@ -18,7 +18,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
     forSingleLetterMistakeCorrectAns: ["test", "test"],
     forMixNMatchAltAns: ["alt1", "alt2"],
     forMixNMatchCorrectAns: ["test1", "alt2"],
-    forScoringAltAns: ["alt1", "test2"],
+    forScoringAltAns: ["alt1", "test2a"],
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2"
@@ -234,7 +234,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         scoringBlock.selectScoringType(SCORING_TYPE.PARTIAL);
         preview = question.header.preview();
         question.getResponseBoxByIndex(0).type("incorrect1");
-        question.getResponseBoxByIndex(1).type(queData.forScoringAltAns[1]);
+        question.getResponseBoxByIndex(1).type(queData.forScoringCorrectAns[1]);
         preview.checkScore("4/8");
         question.getResponseOnPreview(0).should("have.css", "background-color", queColor.LIGHT_RED);
         question.getResponseOnPreview(1).should("have.css", "background-color", queColor.LIGHT_GREEN);
@@ -255,13 +255,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         question.selectRoundingType("None");
         preview = question.header.preview();
         question.getResponseBoxByIndex(0).type("incorrect1");
-        question.getResponseBoxByIndex(1).type(queData.forScoringAltAns[1]);
+        question.getResponseBoxByIndex(1).type(queData.forScoringCorrectAns[1]);
         preview.checkScore("2.5/5");
         question.header.edit();
         question.selectRoundingType("Round down");
         preview = question.header.preview();
         question.getResponseBoxByIndex(0).type("incorrect1");
-        question.getResponseBoxByIndex(1).type(queData.forScoringAltAns[1]);
+        question.getResponseBoxByIndex(1).type(queData.forScoringCorrectAns[1]);
         preview.checkScore("2/5");
       });
 
@@ -304,7 +304,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         preview = question.header.preview();
         question.getResponseBoxByIndex(0).type("incorrect1");
         question.getResponseBoxByIndex(1).type(queData.forScoringAltAns[1]);
-        preview.checkScore("2/8");
+        preview.checkScore("1/8");
       });
     });
 

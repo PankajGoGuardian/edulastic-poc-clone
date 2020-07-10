@@ -4,10 +4,9 @@ import moment from "moment";
 import styled from "styled-components";
 import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
-import { HeadingSpan, ValueSpan } from "../Common/StyledComponents/upgradePlan";
+import { HeadingSpan, ValueSpan, PermissionSelect, PermissionSaveBtn } from "../Common/StyledComponents/upgradePlan";
 import { getDate, useUpdateEffect } from "../Common/Utils";
 import { SUBSCRIPTION_TYPE_CONFIG } from "../Data";
-import { PermissionSelect, PermissionSaveBtn } from "../Common/StyledComponents/upgradePlan";
 
 const { Option } = Select;
 const { Option: AutocompleteOption } = AutoComplete;
@@ -143,15 +142,15 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
         <Row>
           <Col span={5}>
             <HeadingSpan>City:</HeadingSpan>
-            <ValueSpan>{location.city}</ValueSpan>
+            <ValueSpan>{location?.city || "-"}</ValueSpan>
           </Col>
           <Col span={5}>
             <HeadingSpan>State:</HeadingSpan>
-            <ValueSpan>{location.state}</ValueSpan>
+            <ValueSpan>{location?.state || "-"}</ValueSpan>
           </Col>
           <Col span={5}>
             <HeadingSpan>Zipcode:</HeadingSpan>
-            <ValueSpan>{location.zip}</ValueSpan>
+            <ValueSpan>{location?.zip || "-"}</ValueSpan>
           </Col>
         </Row>
         <Form.Item label={<HeadingSpan>Org Permission</HeadingSpan>} labelCol={{ span: 3 }}>
@@ -184,7 +183,7 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
             </Select>
           )}
         </Form.Item>
-        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} showAdditionalDetails={true} />
+        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} showAdditionalDetails />
         <Form.Item>
           <Button type="primary" htmlType="submit">
             {ctaSubscriptionState}

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { compose } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { groupBy, maxBy, last } from "lodash";
 import { IconClose } from "@edulastic/icons";
 import { EduButton } from "@edulastic/common";
@@ -44,7 +46,8 @@ const Differentiation = ({
   showResource,
   removeSubResource,
   toggleManageContent,
-  activeRightPanel
+  activeRightPanel,
+  history
 }) => {
   const [selectedClass, setSelectedClass] = useState();
   const [classList, setClassList] = useState([]);
@@ -86,14 +89,19 @@ const Differentiation = ({
       const gradedAssignments = assignments.filter(a => a.status === assignmentStatusOptions.DONE);
       const _assignmentsByTestId = groupBy(gradedAssignments, "testId");
       setAssignmentsByTestId(_assignmentsByTestId);
+
       const testDataGenerated = Object.keys(_assignmentsByTestId).map(testId => ({
         title: _assignmentsByTestId[testId][0].title,
         _id: testId
       }));
 
+      const { testId } = history.location.state || {};
+      const specificTest = testId && testDataGenerated.find(({ _id }) => _id === testId);
+
       setTestData(testDataGenerated);
 
-      const lastTestData = last(testDataGenerated);
+      const lastTestData = specificTest || last(testDataGenerated);
+
       if (lastTestData) {
         setSelectedTest(lastTestData._id);
         let currentTestClasses = _assignmentsByTestId[lastTestData._id].map(a => ({
@@ -279,23 +287,28 @@ const Differentiation = ({
   );
 };
 
-export default connect(
-  state => ({
-    termId: getCurrentTerm(state),
-    assignments: getAssignmentsSelector(state),
-    differentiationStudentList: getDifferentiationStudentListSelector(state),
-    differentiationWork: getDifferentiationWorkSelector(state),
-    isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
-    workStatusData: getWorkStatusDataSelector(state)
-  }),
-  {
-    receiveAssignments: receiveAssignmentsAction,
-    fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
-    fetchDifferentiationWork: fetchDifferentiationWorkAction,
-    addRecommendations: addRecommendationsAction,
-    addTestToDifferentiation: addTestToDifferentationAction,
-    addResourceToDifferentiation: addResourceToDifferentiationAction,
-    addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
-    removeSubResource: removeSubResourceInDiffAction
-  }
-)(Differentiation);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      termId: getCurrentTerm(state),
+      assignments: getAssignmentsSelector(state),
+      differentiationStudentList: getDifferentiationStudentListSelector(state),
+      differentiationWork: getDifferentiationWorkSelector(state),
+      isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
+      workStatusData: getWorkStatusDataSelector(state)
+    }),
+    {
+      receiveAssignments: receiveAssignmentsAction,
+      fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
+      fetchDifferentiationWork: fetchDifferentiationWorkAction,
+      addRecommendations: addRecommendationsAction,
+      addTestToDifferentiation: addTestToDifferentationAction,
+      addResourceToDifferentiation: addResourceToDifferentiationAction,
+      addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
+      removeSubResource: removeSubResourceInDiffAction
+    }
+  )
+);
+
+export default enhance(Differentiation);

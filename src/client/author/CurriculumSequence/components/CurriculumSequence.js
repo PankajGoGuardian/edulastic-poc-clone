@@ -761,6 +761,7 @@ class CurriculumSequence extends Component {
                         droppedItemId={droppedItemId}
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
                         customizeInDraft={customizeInDraft}
+                        isSparkMathPlaylist={isSparkMathPlaylist}
                       />
                     )}
                   </Wrapper>

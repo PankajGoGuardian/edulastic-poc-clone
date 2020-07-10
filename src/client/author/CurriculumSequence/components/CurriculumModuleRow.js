@@ -197,6 +197,16 @@ class ModuleRow extends Component {
     }
   };
 
+  showDifferentiation = testId => {
+    const { history, playlistId } = this.props;
+    history.push({
+      pathname: `/author/playlists/differentiation/${playlistId}/use-this`,
+      state: {
+        testId
+      }
+    });
+  };
+
   closeModal = () => {
     this.setState({
       showModal: false
@@ -428,7 +438,8 @@ class ModuleRow extends Component {
       isManageContentActive,
       userRole,
       fromPlaylist,
-      isPlaylistDetailsPage
+      isPlaylistDetailsPage,
+      isSparkMathPlaylist
     } = this.props;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignTest } = this;
@@ -572,6 +583,14 @@ class ModuleRow extends Component {
                       {!isStudent && (
                         <Menu.Item data-cy="view-test" onClick={() => this.viewTest(moduleData.contentId)}>
                           Preview Test
+                        </Menu.Item>
+                      )}
+                      {!isStudent && isSparkMathPlaylist && (
+                        <Menu.Item
+                          data-cy="show-differentiation"
+                          onClick={() => this.showDifferentiation(moduleData.contentId)}
+                        >
+                          DIfferentiation
                         </Menu.Item>
                       )}
                       {/* <Menu.Item

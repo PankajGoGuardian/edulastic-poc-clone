@@ -15,7 +15,6 @@ import {
 import { IconBook, IconGraduationCap } from "@edulastic/icons";
 
 const CurriculumSubHeader = ({
-  match,
   isStudent,
   dateKeys,
   enableCustomize,
@@ -27,7 +26,8 @@ const CurriculumSubHeader = ({
   isContentExpanded,
   toggleManageContentClick,
   shouldHidCustomizeButton,
-  isAuthoringFlowReview
+  isAuthoringFlowReview,
+  customizeInDraft = false
 }) => {
   const { description, subjects = [], grades = [] } = destinationCurriculumSequence;
 
@@ -101,11 +101,13 @@ const CurriculumSubHeader = ({
                 </CustomizeButton>
               )}
 
-              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && !isAuthoringFlowReview && (
-                <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
-                  View Summary
-                </StyledButton>
-              )}
+              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) &&
+                !isAuthoringFlowReview &&
+                !customizeInDraft && (
+                  <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
+                    View Summary
+                  </StyledButton>
+                )}
             </ButtonWrapper>
           </RightColumn>
         </CurriculumSubHeaderRow>
@@ -327,15 +329,6 @@ const ButtonWrapper = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     flex-direction: column;
   }
-`;
-
-const DraftModeActionsWrapper = styled.div`
-  width: 210px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap-reverse;
-  margin-left: 15px;
 `;
 
 const StyledButton = styled(EduButton)`

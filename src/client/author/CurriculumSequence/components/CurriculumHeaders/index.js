@@ -203,6 +203,7 @@ const CurriculumHeader = ({
             )}
 
           {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
+            !customizeInDraft &&
             role !== roleuser.EDULASTIC_CURATOR && (
               <HeaderButton isBlue isGhost data-cy="share" onClick={onShareClick} IconBtn>
                 <IconShare />
@@ -215,7 +216,7 @@ const CurriculumHeader = ({
             </HeaderButton>
           )}
 
-          {(isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit) && (
+          {isManageContentActive && !cloneId && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
             <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               {isDesktop && "SAVE"}
@@ -254,12 +255,15 @@ const CurriculumHeader = ({
               </HeaderButton>
             </Tooltip>
           )}
-          {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
-            <HeaderButton isBlue data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
-              <IconUseThis />
-              <span>USE THIS</span>
-            </HeaderButton>
-          )}
+          {(shouldShowEdit || showUseThisButton) &&
+            !customizeInDraft &&
+            !shouldHideUseThis &&
+            role !== roleuser.EDULASTIC_CURATOR && (
+              <HeaderButton isBlue data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
+                <IconUseThis />
+                <span>USE THIS</span>
+              </HeaderButton>
+            )}
           {features.isCurator && (status === "inreview" || status === "rejected") && (
             <HeaderButton isBlue onClick={onApproveClick}>
               APPROVE

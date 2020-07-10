@@ -838,22 +838,32 @@ function* duplicateManageContentSaga({ payload }) {
 function* checkForPreviouslyCustomizedPlaylist({ payload }) {
   try {
     const { _id: originalId } = payload;
-    const { _id, title, grades, subjects } = yield call(curriculumSequencesApi.checkExistingDuplicatedForUser, originalId);
+    const { _id, title, grades, subjects } = yield call(
+      curriculumSequencesApi.checkExistingDuplicatedForUser,
+      originalId
+    );
 
+    const pathname = yield select(state => state.router.location.pathname);
+    const isMyPlaylist = pathname.includes("use-this");
     if (_id !== originalId) {
-      yield all([
-        call(makeApiRequest, [_id], false),
-        call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects }),
-        call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects })
-      ]);
-      yield put(push(`/author/playlists/playlist/${_id}/use-this`));
+      if (isMyPlaylist) {
+        yield all([
+          call(makeApiRequest, [_id], false),
+          call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects }),
+          call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects })
+        ]);
+      } else {
+        yield call(makeApiRequest, [_id], false);
+      }
+
+      const locToPush = isMyPlaylist ? `/author/playlists/playlist/${_id}/use-this` : `/author/playlists/${_id}#review`;
+      yield put(push(locToPush));
     } else {
       yield put(setCustomizeToDraftAction(true));
     }
 
     yield put(toggleManageContentActiveAction("manageContent"));
     yield put(setShowRightSideAction(true));
-
   } catch (error) {
     console.error(error);
     notification({ messageKey: "commonErr" });
@@ -875,7 +885,6 @@ function* resetToOriginalPlaylist({ payload }) {
 
 function* publishDraftCustomizedPlaylist({ payload }) {
   try {
-
     // throw error if missing payload
     if (!payload) throw new Error("Missing Payload Data...");
 
@@ -895,18 +904,27 @@ function* publishDraftCustomizedPlaylist({ payload }) {
       data: draftPlaylist.modules
     });
 
-    // set customized playlist in userContext
+    const pathname = yield select(state => state.router.location.pathname);
+    const isMyPlaylist = pathname.includes("use-this");
+
+    // set customized playlist in userContext if in myPlaylist
     const { _id, title, grades, subjects } = customisedPlaylist;
-    yield all([
-      call(makeApiRequest, [_id], false),
-      call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects }),
-      call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects })
-    ]);
+    if (isMyPlaylist) {
+      yield all([
+        call(makeApiRequest, [_id], false),
+        call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects }),
+        call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects })
+      ]);
+    } else {
+      yield call(makeApiRequest, [_id], false);
+    }
 
     yield put(setCustomizeToDraftAction(false));
     yield put(toggleManageContentActiveAction(false));
     yield put(setActiveRightPanelViewAction("summary"));
-    yield put(push(`/author/playlists/playlist/${_id}/use-this`));
+
+    const locToPush = isMyPlaylist ? `/author/playlists/playlist/${_id}/use-this` : `/author/playlists/${_id}#review`;
+    yield put(push(locToPush));
   } catch (e) {
     console.error("Customized draft playlist publish failed - ", e);
     notification({ messageKey: "publishDraftPlaylistErr" });
@@ -1328,11 +1346,15 @@ export function* watcherSaga() {
     const { payload } = yield take(currSequenceUpdateQueue);
 
     const { version } = yield select(state => state.curriculumSequence.destinationCurriculumSequence);
+    const customizeInDraft = yield select(state => state.curriculumSequence.customizeInDraft);
     /**
-     *  version from store will be greater than payload version only if previous
+     *  1. dont allow any request to be made while in customizeDraft due to only view permission on playlist
+     *  2. version from store will be greater than payload version only if previous
      *  api call was resolved, else execute next action from channel
      */
-    if (version <= payload.curriculumSequence?.version) {
+    if (customizeInDraft) {
+      yield put(updateCurriculumSequenceAction(payload.curriculumSequence));
+    } else if (version <= payload.curriculumSequence?.version) {
       yield call(putCurriculumSequence, { payload });
     }
   }

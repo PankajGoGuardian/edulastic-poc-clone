@@ -9,7 +9,7 @@ import {
 } from "@edulastic/colors";
 import { Card, MathFormulaDisplay } from "@edulastic/common";
 import { Rate } from "antd/lib/index";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const Container = styled(Card)`
   border: ${props => (props.isPlaylist ? "none" : "1px solid #dfdfdf")};
@@ -293,14 +293,23 @@ export const Header = styled.div`
 `;
 Header.displayName = "CardHeader";
 
+const playlistStars = css`
+  bottom: 12px;
+  left: 15px;
+`;
+
+const testItemStars = css`
+  top: 5px;
+  left: 10px;
+`;
+
 export const Stars = styled(Rate)`
   font-size: 13px;
   position: absolute;
-  top: 5px;
-  left: 10px;
   right: auto;
   bottom: auto;
   z-index: 1;
+  ${({ isPlaylist }) => (isPlaylist ? playlistStars : testItemStars)};
 `;
 
 export const StyledLink = styled.a`

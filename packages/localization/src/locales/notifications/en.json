@@ -351,12 +351,12 @@
     "message": "Receive tests is failing",
     "description": ""
   },
-  "itemAddedCart": {
-    "message": "Item added to cart",
+  "itemAddedTest": {
+    "message": "Item added to test",
     "description": ""
   },
-  "itemRemovedCart": {
-    "message": "Item removed from cart",
+  "itemRemovedTest": {
+    "message": "Item removed from test",
     "description": ""
   },
   "AssignmentDelete": {
@@ -1407,8 +1407,8 @@
     "message": "Add items to create test",
     "description": ""
   },
-  "addAtleastOneItemToCart": {
-    "message": "Add atleast one item to cart",
+  "addAtleastOneItemToTest": {
+    "message": "Add atleast one item to test",
     "description": ""
   },
   "pleaseProvideValidTestName": {

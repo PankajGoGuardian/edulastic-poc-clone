@@ -5,7 +5,9 @@ import {
   lightGrey,
   red,
   themeColor,
-  titleColor
+  titleColor,
+  white,
+  blue1
 } from "@edulastic/colors";
 import { Card, MathFormulaDisplay } from "@edulastic/common";
 import { Rate } from "antd/lib/index";
@@ -18,10 +20,11 @@ export const Container = styled(Card)`
   border-radius: ${props => (props.isPlaylist ? "4px" : "10px")};
   &.ant-card {
     .ant-card-body {
-      padding: 16px;
+      padding: 16px 12px;
       border: ${props => (props.isPlaylist ? "1px solid #dfdfdf" : "none")};
       border-radius: ${props => (props.isPlaylist ? "10px" : "0px")};
       min-height: 185px;
+      height: ${props => (props.isPlaylist ? "240px" : null)};
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -29,7 +32,7 @@ export const Container = styled(Card)`
   }
 
   .ant-card-head {
-    padding: ${props => (props.isPlaylist ? "15px 8px" : "0px")};
+    padding: ${props => (props.isPlaylist ? "15px 0px 8px" : "0px")};
     border: 0;
     overflow: hidden;
     position: relative;
@@ -39,9 +42,9 @@ export const Container = styled(Card)`
         content: "";
         position: absolute;
         top: 8px;
-        left: 24px;
         bottom: 24px;
-        right: 24px;
+        left: ${({ isPlaylist }) => (isPlaylist ? "8px" : "24px")};
+        right: ${({ isPlaylist }) => (isPlaylist ? "8px" : "24px")};
         border-radius: 4px;
         opacity: 0.3;
         background: ${({ isPlaylist, src }) =>
@@ -56,9 +59,10 @@ export const Container = styled(Card)`
 `;
 
 export const Inner = styled.div`
-  margin: 10px 0px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  height: 30px;
 `;
 
 export const CardDescription = styled.div`
@@ -68,9 +72,11 @@ export const CardDescription = styled.div`
 `;
 
 export const TagsWrapper = styled.div`
-  height: ${props => (props.isPlaylist ? "70px" : "55px")};
   overflow: hidden;
-  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: ${props => (props.isPlaylist ? "47.52px" : "55px")};
 `;
 
 export const Footer = styled.div`
@@ -78,8 +84,7 @@ export const Footer = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 0px;
-  height: 25px;
+  height: 30px;
   overflow: hidden;
 `;
 
@@ -273,7 +278,7 @@ export const PremiumLabel = styled.div`
 `;
 
 export const Header = styled.div`
-  height: 83px;
+  height: ${({ isPlaylist }) => (isPlaylist ? "99px" : "83px")};
   padding: 10px 15px;
   position: relative;
   background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
@@ -295,7 +300,7 @@ Header.displayName = "CardHeader";
 
 const playlistStars = css`
   bottom: 12px;
-  left: 15px;
+  left: 10px;
 `;
 
 const testItemStars = css`
@@ -309,7 +314,7 @@ export const Stars = styled(Rate)`
   right: auto;
   bottom: auto;
   z-index: 1;
-  ${({ isPlaylist }) => (isPlaylist ? playlistStars : testItemStars)};
+  ${({ isPlaylist }) => (isPlaylist ? playlistStars : testItemStars)}
 `;
 
 export const StyledLink = styled.a`
@@ -334,7 +339,7 @@ export const StyledLink = styled.a`
 `;
 
 export const StyledDesc = styled.p`
-  height: 75px;
+  height: 35px;
   overflow: hidden;
   text-align: center;
   padding-top: 10px;
@@ -342,15 +347,13 @@ export const StyledDesc = styled.p`
 `;
 
 export const PlaylistDesc = styled(MathFormulaDisplay)`
-  height: 75px;
+  height: 50px;
   overflow: hidden;
   text-align: center;
-  padding-top: 10px;
-  margin-bottom: 20px;
+  font-size: 11px;
 `;
 
 export const TestInfo = styled.div`
-  padding: 0px;
   margin: 0px;
   text-align: ${props => (props.isPlaylist ? "center" : "left")};
 `;
@@ -358,9 +361,10 @@ export const TestInfo = styled.div`
 export const MidRow = styled.div`
   border-top: 1px solid #f0f0f0;
   border-bottom: 1px solid #f0f0f0;
-  padding: 10px 0px;
-  margin: 10px -16px 3px;
+  padding: 10px 12px;
+  margin: 10px -12px 8px;
   color: ${titleColor};
+  min-height: 45px;
   font-size: 11px;
   display: flex;
   text-align: center;
@@ -407,4 +411,46 @@ export const CollectionNameWrapper = styled.div`
 export const DynamicIconWrapper = styled.div`
   padding: 0px 10px;
   margin-top: auto;
+`;
+
+export const PlaylistCardHeaderRow = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AlignmentInfo = styled.h5`
+  font-size: 11px;
+  color: ${({ dark }) => (dark ? "#969CA8" : white)};
+  text-transform: uppercase;
+  font-weight: bold;
+  margin: 4px 0px;
+  display: inline-block;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+`;
+
+export const PlaylistSkinType = styled.h4`
+  font-size: 16px;
+  font-weight: bold;
+  color: ${white};
+  line-height: 1rem;
+  margin: 0px;
+`;
+
+export const Grade = styled.div`
+  width: 62px;
+  height: 20px;
+  background: ${white};
+  color: ${blue1};
+  border-radius: 5px;
+  font-size: 8px;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

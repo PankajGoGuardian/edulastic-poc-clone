@@ -54,7 +54,7 @@ export const TagsWrapper = styled(Col)`
 
 export const TestStatus = styled.span`
   background: ${({ status }) => backgroundColor[status]};
-  padding: 2px 10px;
+  padding: ${({ view }) => (view === "tile" ? " 2px 0px" : " 2px 10px")};
   margin-bottom: 3px;
   border-radius: 5px;
   font-size: 9px;
@@ -62,6 +62,8 @@ export const TestStatus = styled.span`
   text-transform: uppercase;
   font-weight: bold;
   line-height: 16px;
+  width: 77px;
+  justify-content: center;
 `;
 
 export const EdulasticVerified = styled(IconELogo)`

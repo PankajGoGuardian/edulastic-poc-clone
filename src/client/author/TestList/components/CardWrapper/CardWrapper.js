@@ -55,7 +55,7 @@ class CardWrapper extends Component {
 
     if (blockStyle === "tile") {
       return (
-        <CardBox data-cy={item._id} key={item._id} style={{ marginBottom: 20 }}>
+        <CardBox data-cy={item._id} key={item._id} style={{ marginBottom: 20 }} isPlaylist={isPlaylist}>
           <Item
             owner={owner}
             item={item}

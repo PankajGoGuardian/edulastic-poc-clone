@@ -67,8 +67,9 @@ class Item extends Component {
     if (isPlaylist) {
       history.push(`/author/playlists/${item._id}#review`);
     } else {
+      const tab = item.title ? "review" : "description";
       history.push({
-        pathname: `/author/tests/tab/review/id/${item._id}`,
+        pathname: `/author/tests/tab/${tab}/id/${item._id}`,
         state: {
           editTestFlow: true
         }

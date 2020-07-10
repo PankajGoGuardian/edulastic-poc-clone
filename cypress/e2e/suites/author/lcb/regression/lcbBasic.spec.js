@@ -390,6 +390,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   });
 
   describe(" > verify express grader", () => {
+    before("> navigate to lcb", () => {
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+    });
+
     before(() => {
       lcb.header.clickOnExpressGraderTab();
     });
@@ -480,6 +485,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   });
 
   describe("> verify present-reset toggle", () => {
+    before("> navigate to lcb", () => {
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+    });
+
     it("enable the present from card view", () => {
       lcb.header.clickOnLCBTab();
       lcb.clickOnPresent();
@@ -661,6 +671,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   */
 
   describe(" > update response and score from express grader", () => {
+    before("> navigate to lcb", () => {
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+    });
+
     before(() => {
       lcb.header.clickOnExpressGraderTab();
       expressg.clickOnResetSwitch();
@@ -731,6 +746,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   });
 
   describe(" > verify score update from question centric", () => {
+    before("> navigate to lcb", () => {
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+    });
+
     before("question centric view", () => {
       lcb.header.clickOnLCBTab();
       lcb.clickOnReset();

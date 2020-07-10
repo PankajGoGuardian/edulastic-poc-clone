@@ -353,26 +353,24 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.getScoreforQueNum("Q1").click();
     this.waitForStudentData();
 
-    Object.keys(studentAttempts)
-      .sort()
-      .forEach((queNum, index, item) => {
-        const attemptType = studentAttempts[queNum];
-        const { queKey, attemptData, points } = questionTypeMap[queNum];
-        console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
-        this.questionResponsePage.verifyQuestionResponseCard(
-          points,
-          queKey,
-          attemptType,
-          attemptData,
-          false,
-          studentName
-        );
+    Object.keys(studentAttempts).forEach((queNum, index, item) => {
+      const attemptType = studentAttempts[queNum];
+      const { queKey, attemptData, points } = questionTypeMap[queNum];
+      console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
+      this.questionResponsePage.verifyQuestionResponseCard(
+        points,
+        queKey,
+        attemptType,
+        attemptData,
+        false,
+        studentName
+      );
 
-        if (index < item.length - 1) {
-          if (useKeyBoardKeys) this.navigateByRightKey();
-          else this.clickOnNextQuestion();
-        }
-      });
+      if (index < item.length - 1) {
+        if (useKeyBoardKeys) this.navigateByRightKey();
+        else this.clickOnNextQuestion();
+      }
+    });
 
     Object.keys(studentAttempts)
       .sort()

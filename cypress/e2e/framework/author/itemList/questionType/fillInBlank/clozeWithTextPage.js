@@ -21,7 +21,7 @@ class ClozeWithTextPage {
     return this;
   }
 
-  getPoints = () => cy.get("#text-entry-points");
+  getPoints = () => cy.get("#cloze-with-text-points");
 
   getAlternates = () => cy.get('[data-cy="tabs"]').contains("span", "Alternate");
 

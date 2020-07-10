@@ -60,7 +60,7 @@ class ClozeDropDownPage {
     expect(arrayOfchoices).to.have.lengthOf(expectedLength);
   };
 
-  getPoints = () => cy.get("#text-drop-down-points");
+  getPoints = () => cy.get("#cloze-with-drop-down-points");
 
   // advance options
   clickOnAdvancedOptions() {

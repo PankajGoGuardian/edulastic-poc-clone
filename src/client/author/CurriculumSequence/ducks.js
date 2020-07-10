@@ -125,7 +125,6 @@ export const SET_DESTINATION_ORIGINAL = "[playlist] set destination original dat
 export const RESET_DESTINATION_FLAGS = "[playlist] reset destination flags";
 
 export const DUPLICATE_MANAGE_CONTENT = "[playlist] duplicate mange content";
-export const CANCEL_PLAYLIST_CUSTOMIZE = "[playlist] cancel manage content";
 export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized playlist";
 export const SET_VIDEO_PREVIEW_RESOURCE_MODAL = "[playlist] set video resource modal content";
 export const ADD_SUB_RESOURCE_IN_DIFFERENTIATION = "[playlist] add sub-resource to test";
@@ -190,7 +189,6 @@ export const removeSubResourceInDiffAction = createAction(REMOVE_SUB_RESOURCE_FR
 export const getSignedRequestAction = createAction(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST);
 export const updateSinedRequestAction = createAction(UPDATE_SIGNED_REQUEST_FOR_RESOURCE);
 export const duplicateManageContentAction = createAction(DUPLICATE_MANAGE_CONTENT);
-export const cancelPlaylistCustomizeAction = createAction(CANCEL_PLAYLIST_CUSTOMIZE);
 export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST);
 export const setEmbeddedVideoPreviewModal = createAction(SET_VIDEO_PREVIEW_RESOURCE_MODAL);
 export const setShowRightSideAction = createAction(SET_SHOW_RIGHT_SIDE_PANEL);
@@ -245,6 +243,19 @@ export const togglePlaylistTestDetailsModalWithId = createAction(TOGGLE_PLAYLIST
 // use This button notification
 export const TOGGLE_SHOW_USE_THIS_NOTIFICATION = "[playlist] remove sub-resource from test";
 export const toggleShowUseThisNotificationAction = createAction(TOGGLE_SHOW_USE_THIS_NOTIFICATION);
+
+// used to put customized playlist in draft state temporarily...
+export const SET_CUSTOMIZE_TO_DRAFT = "[playlist] set/unset curriculum sequence to temporary draft state";
+export const setCustomizeToDraftAction = createAction(SET_CUSTOMIZE_TO_DRAFT);
+
+// used to reset to original playlist
+export const REVERT_CUSTOMIZE_TO_DRAFT = "[playlist] revert to original playlist";
+export const discardDraftPlaylistAction = createAction(REVERT_CUSTOMIZE_TO_DRAFT);
+
+// used to reset to original playlist
+export const CHECK_PREVIOUSLY_CUSTOMIZED = "[playlist] check if this playlist is already customized";
+export const checkPreviouslyCustomizedAction = createAction(CHECK_PREVIOUSLY_CUSTOMIZED);
+
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
 
@@ -680,13 +691,8 @@ function* createAssignmentNow({ payload }) {
 
 export function* updateDestinationCurriculumSequencesaga({ payload }) {
   try {
-    let curriculumSequence = yield select(getDestinationCurriculumSequence);
-    if (payload.customizeDraft) {
-      curriculumSequence = {
-        ...curriculumSequence,
-        title: `${curriculumSequence.title} - ${moment().format("MM/DD/YYYY HH:mm")}`
-      };
-    }
+    const curriculumSequence = yield select(getDestinationCurriculumSequence);
+
     yield put(
       putCurriculumSequenceAction({
         id: curriculumSequence._id,
@@ -805,27 +811,105 @@ function* fetchAssigned() {
 function* duplicateManageContentSaga({ payload }) {
   try {
     const { _id: originalId, title: originalTitle, grades, subjects } = payload;
-    const duplicatedDraftPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
+    const duplicatedPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
       _id: originalId,
       title: originalTitle,
       forUseThis: true
     });
 
-    const newId = duplicatedDraftPlaylist._id;
+    const newId = duplicatedPlaylist._id;
     yield all([
       call(userContextApi.setLastUsedPlayList, { _id: newId, title: originalTitle, grades, subjects }),
       call(userContextApi.setRecentUsedPlayLists, { _id: newId, title: originalTitle, grades, subjects })
     ]);
 
-    yield put(updateCurriculumSequenceAction(duplicatedDraftPlaylist));
+    yield put(updateCurriculumSequenceAction(duplicatedPlaylist));
     yield put(setOriginalDestinationData(payload));
     yield put(toggleManageContentActiveAction(true));
     yield put(setActiveRightPanelViewAction("manageContent"));
     yield put(setShowRightSideAction(true));
-    yield put(push(`/author/playlists/playlist/${duplicatedDraftPlaylist._id}/use-this`));
+    yield put(push(`/author/playlists/playlist/${duplicatedPlaylist._id}/use-this`));
   } catch (error) {
     console.error(error);
     notification({ messageKey: "commonErr" });
+  }
+}
+
+function* checkForPreviouslyCustomizedPlaylist({ payload }) {
+  try {
+    const { _id: originalId } = payload;
+    const { _id, title, grades, subjects } = yield call(curriculumSequencesApi.checkExistingDuplicatedForUser, originalId);
+
+    if (_id !== originalId) {
+      yield all([
+        call(makeApiRequest, [_id], false),
+        call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects }),
+        call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects })
+      ]);
+      yield put(push(`/author/playlists/playlist/${_id}/use-this`));
+    } else {
+      yield put(setCustomizeToDraftAction(true));
+    }
+
+    yield put(toggleManageContentActiveAction("manageContent"));
+    yield put(setShowRightSideAction(true));
+
+  } catch (error) {
+    console.error(error);
+    notification({ messageKey: "commonErr" });
+  }
+}
+
+function* resetToOriginalPlaylist({ payload }) {
+  try {
+    // onCancel - fetch original playlist byId and reset flags
+    yield call(makeApiRequest, [payload], false);
+    yield put(setCustomizeToDraftAction(false));
+    yield put(toggleManageContentActiveAction(false));
+    yield put(setActiveRightPanelViewAction("summary"));
+  } catch (error) {
+    console.error(error);
+    notification({ messageKey: "commonErr" });
+  }
+}
+
+function* publishDraftCustomizedPlaylist({ payload }) {
+  try {
+
+    // throw error if missing payload
+    if (!payload) throw new Error("Missing Payload Data...");
+
+    const draftPlaylist = { ...payload };
+
+    // Omit forbidden object keys
+    draftPlaylist.modules.forEach(({ data }) => {
+      data.forEach(d => {
+        delete d.assignments;
+        delete d.standards;
+      });
+    });
+
+    // publish customized playlist + unlink & re-link all assignments to new copy
+    const customisedPlaylist = yield call(curriculumSequencesApi.publishCustomizeDraft, {
+      _id: draftPlaylist._id,
+      data: draftPlaylist.modules
+    });
+
+    // set customized playlist in userContext
+    const { _id, title, grades, subjects } = customisedPlaylist;
+    yield all([
+      call(makeApiRequest, [_id], false),
+      call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects }),
+      call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects })
+    ]);
+
+    yield put(setCustomizeToDraftAction(false));
+    yield put(toggleManageContentActiveAction(false));
+    yield put(setActiveRightPanelViewAction("summary"));
+    yield put(push(`/author/playlists/playlist/${_id}/use-this`));
+  } catch (e) {
+    console.error("Customized draft playlist publish failed - ", e);
+    notification({ messageKey: "publishDraftPlaylistErr" });
   }
 }
 
@@ -1096,35 +1180,6 @@ function* addRecommendationsSaga({ payload }) {
   }
 }
 
-function* cancelPlaylistCustomize({ payload }) {
-  try {
-    const { parentId } = payload;
-    const parentPlaylist = yield select(state => state.curriculumSequence.originalData);
-    if (parentPlaylist && parentPlaylist._id) {
-      yield put(updateCurriculumSequenceAction(parentPlaylist));
-    } else if (parentId) {
-      yield put(makeApiRequest([parentId]));
-    } else throw new Error("Parent playlist id is missing");
-    yield put(toggleManageContentActiveAction());
-    yield put(push(`/author/playlists/playlist/${parentId}/use-this`));
-  } catch (e) {
-    console.error("Cancel customize playlist error - ", e);
-    notification({ messageKey: "cancelPlaylistCustomizationErr" });
-  }
-}
-
-function* publishDraftCustomizedPlaylist({ payload }) {
-  try {
-    yield put(resetDestinationFlags());
-    yield updateDestinationCurriculumSequencesaga({ payload: { customizeDraft: true } });
-    yield call(curriculumSequencesApi.publishPlaylist, payload);
-    yield put(push(`/author/playlists/playlist/${payload.id}/use-this`));
-  } catch (e) {
-    console.error("Customized draft playlist publish failed - ", e);
-    notification({ messageKey: "publishDraftPlaylistErr" });
-  }
-}
-
 const moveContentInPlaylist = (state, { payload }) => {
   const { toModuleIndex, toContentIndex, fromModuleIndex, fromContentIndex } = payload;
   let newPlaylist;
@@ -1261,10 +1316,11 @@ export function* watcherSaga() {
     yield takeEvery(UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST, updateDestinationCurriculumSequencesaga),
     yield takeLatest(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST, getSignedRequestSaga),
     yield takeLatest(DUPLICATE_MANAGE_CONTENT, duplicateManageContentSaga),
-    yield takeLatest(CANCEL_PLAYLIST_CUSTOMIZE, cancelPlaylistCustomize),
     yield takeLatest(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST, publishDraftCustomizedPlaylist),
     yield takeLatest(DELETE_PLAYLIST_REQUEST, deletePlaylistSaga),
-    yield takeLatest(REMOVE_PLAYLIST_FROM_USE, removeFromUseSaga)
+    yield takeLatest(REMOVE_PLAYLIST_FROM_USE, removeFromUseSaga),
+    yield takeLatest(REVERT_CUSTOMIZE_TO_DRAFT, resetToOriginalPlaylist),
+    yield takeLatest(CHECK_PREVIOUSLY_CUSTOMIZED, checkForPreviouslyCustomizedPlaylist)
   ]);
 
   const currSequenceUpdateQueue = yield actionChannel(PUT_CURRICULUM_SEQUENCE, buffers.sliding(5));
@@ -1407,7 +1463,8 @@ const initialState = {
   },
   isVideoResourcePreviewModal: false,
   showSumary: true,
-  showRightPanel: true
+  showRightPanel: true,
+  customizeInDraft: false
 };
 
 /**
@@ -2047,5 +2104,8 @@ export default createReducer(initialState, {
   },
   [TOGGLE_SHOW_USE_THIS_NOTIFICATION]: (state, { payload }) => {
     state.showUseThisNotification = payload;
+  },
+  [SET_CUSTOMIZE_TO_DRAFT]: (state, { payload }) => {
+    state.customizeInDraft = payload;
   }
 });

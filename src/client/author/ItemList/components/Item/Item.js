@@ -274,11 +274,11 @@ class Item extends Component {
       }
 
       setDataAndSave({ addToTest: true, item, current });
-      notification({ type: "success", messageKey: "itemAddedCart" });
+      notification({ type: "success", messageKey: "itemAddedTest" });
     } else {
       keys = keys.filter(_item => _item !== row._id);
       setDataAndSave({ addToTest: false, item: { _id: row._id }, current });
-      notification({ type: "success", messageKey: "itemRemovedCart" });
+      notification({ type: "success", messageKey: "itemRemovedTest" });
     }
     setTestItems(keys);
     this.setState({ selectedId: "" });
@@ -349,7 +349,7 @@ class Item extends Component {
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
-      notification({ type: "success", messageKey: "itemAddedCart" });
+      notification({ type: "success", messageKey: "itemAddedTest" });
       return setAndSavePassageItems({ passageItems, page });
     }
     // open the modal for selecting  testItems manually.

@@ -215,7 +215,7 @@ class NumberLinePlot extends Component {
           <ColoredRow gutter={12}>
             <Col md={3}>
               <RowLabel textTransform="capitalize" height={30}>
-                X-Axis label
+                X-Axis Tick Label
               </RowLabel>
             </Col>
             <Col md={6}>

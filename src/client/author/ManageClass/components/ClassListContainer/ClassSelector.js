@@ -3,9 +3,16 @@ import { Menu, Icon } from "antd";
 import { themeColor } from "@edulastic/colors";
 import { ClassSelect, ClassStatusButton, ClassStatusDropdown } from "./styled";
 
-const options = ["Active Classes", "Archived Classes"];
+const options = ["Active", "Archived"];
 
-const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, setFilterClass }) => {
+const type = {
+  class: "Classes",
+  group: "Groups"
+};
+
+const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, setFilterClass, currentTab }) => {
+  const currentType = type[currentTab];
+
   const handleActiveClassClick = () => {
     setFilterClass(options[0]);
     setClassGroups(groups);
@@ -18,10 +25,10 @@ const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, set
   const menu = (
     <Menu>
       <Menu.Item key="1" onClick={handleActiveClassClick}>
-        Active Classes
+        Active {currentType}
       </Menu.Item>
       <Menu.Item key="2" onClick={handleArchiveClassClick}>
-        Archived Classes
+        Archived {currentType}
       </Menu.Item>
     </Menu>
   );
@@ -30,7 +37,7 @@ const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, set
     <ClassSelect>
       <ClassStatusDropdown overlay={menu}>
         <ClassStatusButton data-cy="class-status">
-          {filterClass || options[0]} <Icon color={themeColor} type="down" />
+          {`${filterClass || options[0]} ${currentType}`} <Icon color={themeColor} type="down" />
         </ClassStatusButton>
       </ClassStatusDropdown>
     </ClassSelect>

@@ -63,7 +63,7 @@ const ClassList = ({
   }, [groups]);
 
   useEffect(() => {
-    setFilterClass("Active Classes");
+    setFilterClass("Active");
     setClassGroups(groups);
   }, [currentTab]);
 
@@ -225,6 +225,7 @@ const ClassList = ({
             setClassGroups={setClassGroups}
             filterClass={filterClass}
             setFilterClass={setFilterClass}
+            currentTab={currentTab}
           />
         </SubHeader>
         <TableWrapper>

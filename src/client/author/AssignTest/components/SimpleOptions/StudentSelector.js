@@ -3,7 +3,7 @@ import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { TreeSelect, Tooltip } from "antd";
 import { keyBy, groupBy, sortBy } from "lodash";
 import PropTypes from "prop-types";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { SelectStudentColumn, HeaderButtonsWrapper, SelectAll, UnselectAll, SelectTextInline } from "./styled";
 
 const StudentsSelector = ({
@@ -12,9 +12,15 @@ const StudentsSelector = ({
   selectAllStudents,
   unselectAllStudents,
   handleRemoveStudents,
-  groups
+  groups,
+  selectedGroups
 }) => {
   const [selectedValues, setSelectedValues] = useState([]);
+  useEffect(() => {
+    if (!selectedGroups?.length && selectedValues.length) {
+      setSelectedValues([]);
+    }
+  }, [selectedGroups]);
   const groupKeyed = useMemo(() => keyBy(groups, "_id"), [groups]);
   const studentsGroupedByGroupId = useMemo(
     () => groupBy(students.filter(({ enrollmentStatus }) => enrollmentStatus > 0), "groupId"),

@@ -69,11 +69,13 @@ class DisneyCardContainer extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props, state) {
+    const { testActivity, assignmentId, classId, isPresentationMode } = props;
     return {
-      testActivity: props.testActivity,
-      assignmentId: props.assignmentId,
-      classId: props.classId
+      testActivity: !state.isPresentationMode && isPresentationMode ? shuffle(testActivity) : testActivity,
+      assignmentId,
+      classId,
+      isPresentationMode
     };
   }
 
@@ -109,7 +111,7 @@ class DisneyCardContainer extends Component {
     );
 
     const showLoader = () => <Spin size="small" />;
-    let styledCard = [];
+    const styledCard = [];
     const classess = detailedClasses?.filter(({ _id }) => _id === classId);
 
     if (testActivity.length > 0) {
@@ -218,7 +220,7 @@ class DisneyCardContainer extends Component {
                   <CircularDiv
                     data-cy="studentAvatarName"
                     isLink={viewResponseStatus.includes(status.status)}
-                    title={isPresentationMode ? "" : student.userName}
+                    title={student.userName}
                     onClick={e =>
                       viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
                     }
@@ -410,9 +412,6 @@ class DisneyCardContainer extends Component {
         styledCard.push(studentData);
         return null;
       });
-    }
-    if (isPresentationMode) {
-      styledCard = shuffle(styledCard);
     }
     return (
       <StyledCardContiner>

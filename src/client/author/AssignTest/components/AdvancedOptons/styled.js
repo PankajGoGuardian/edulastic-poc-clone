@@ -110,6 +110,7 @@ export const StyledDatePicker = styled(DatePicker)`
   .ant-calendar-picker-input {
     background: #f8f8f8;
     border: 1px #e1e1e1 solid;
+    font-size: 14px;
   }
   svg {
     fill: ${themeColor};

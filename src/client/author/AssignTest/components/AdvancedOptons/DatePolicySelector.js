@@ -7,7 +7,7 @@ import { getUserRole } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
 import PlayerSkinSelector from "../SimpleOptions/PlayerSkinSelector";
-import { Label, StyledDatePicker, StyledRow, StyledRowLabel, StyledSelect } from "./styled";
+import { Label, StyledDatePicker, StyledRow, StyledSelect } from "./styled";
 import { getIsOverrideFreezeSelector } from "../../../TestPage/ducks";
 
 const DatePolicySelector = ({
@@ -20,21 +20,20 @@ const DatePolicySelector = ({
   testType,
   passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
   playerSkinType,
-  showMagnifier = true,
   freezeSettings
 }) => {
-  const disabledStartDate = startDate => {
-    if (!startDate || !endDate) {
+  const disabledStartDate = _startDate => {
+    if (!_startDate || !endDate) {
       return false;
     }
-    return startDate.valueOf() < Date.now();
+    return _startDate.valueOf() < Date.now();
   };
 
-  const disabledEndDate = endDate => {
-    if (!endDate || !startDate) {
+  const disabledEndDate = _endDate => {
+    if (!_endDate || !startDate) {
       return false;
     }
-    return endDate.valueOf() < startDate.valueOf() || endDate.valueOf() < Date.now();
+    return _endDate.valueOf() < startDate.valueOf() || _endDate.valueOf() < Date.now();
   };
 
   let openPolicy = selectsData.openPolicy;
@@ -47,7 +46,7 @@ const DatePolicySelector = ({
 
   return (
     <React.Fragment>
-      <StyledRow gutter={48}>
+      <StyledRow gutter={24}>
         <Col xs={24} md={12} lg={6}>
           <Label>Open Date</Label>
           <StyledDatePicker
@@ -57,7 +56,7 @@ const DatePolicySelector = ({
             size="large"
             disabledDate={disabledStartDate}
             showTime
-            format="YYYY-MM-DD HH:mm:ss"
+            format="YYYY-MM-DD hh:mm:ss a"
             value={moment(startDate)}
             placeholder="Open Date"
             onChange={changeField("startDate")}
@@ -73,7 +72,7 @@ const DatePolicySelector = ({
             size="large"
             disabledDate={disabledEndDate}
             showTime
-            format="YYYY-MM-DD HH:mm:ss"
+            format="YYYY-MM-DD hh:mm:ss a"
             value={moment(endDate)}
             placeholder="Close Date"
             showToday={false}
@@ -114,7 +113,7 @@ const DatePolicySelector = ({
           </StyledSelect>
         </Col>
       </StyledRow>
-      <StyledRow gutter={48}>
+      <StyledRow gutter={24}>
         <Col xs={24} md={12} lg={6}>
           <Label>Test Type</Label>
           <TestTypeSelector

@@ -121,7 +121,7 @@ const CurriculumHeader = ({
 
   // figure out which tab contents to render || just render default playlist
   const {
-    params: { cloneId = null, currentTab: cTab },
+    params: { currentTab: cTab },
     url
   } = match;
   const currentTab = cTab || "playlist";
@@ -216,7 +216,7 @@ const CurriculumHeader = ({
             </HeaderButton>
           )}
 
-          {isManageContentActive && !cloneId && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
+          {isManageContentActive && !shouldHideUseThis && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
             <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               {isDesktop && "SAVE"}

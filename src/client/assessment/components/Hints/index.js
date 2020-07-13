@@ -137,7 +137,6 @@ const Hints = ({
           <QuestionLabel isStudentReport={isStudentReport}>
             <span style={{ color: "#4aac8b" }}>{question.barLabel}</span> - Hint
           </QuestionLabel>
-          {console.log("question", question)}
           {validHints.map(({ value, label }, index) => (
             <HintItem isStudentReport={isStudentReport} data-cy="hint-subcontainer" key={value}>
               <HintLabel className="hint-label">

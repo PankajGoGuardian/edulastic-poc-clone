@@ -300,6 +300,15 @@ class AuthorTestItemPreview extends Component {
     const { style, windowWidth, onlySratchpad, viewComponent, fullModal, ...restProps } = this.props;
     const { value, isEnableScratchpad } = this.state;
 
+    const scratchpadProps =
+      showScratch && isEnableScratchpad
+        ? {
+            saveData: saveScratchpad,
+            data: scratchpadData,
+            showToolbar: showScratch && isEnableScratchpad
+          }
+        : null;
+
     let subCount = 0;
     const columns = (
       <>
@@ -329,11 +338,7 @@ class AuthorTestItemPreview extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        {showScratch && isEnableScratchpad && <ScratchpadTool />}
         <WidgetContainer alignItems="flex-start" {...this.getScrollContainerProps(showScratch)}>
-          {showScratch && isEnableScratchpad && (
-            <Scratchpad hideTools saveData={saveScratchpad} data={scratchpadData} />
-          )}
           {col.widgets.map((widget, i) => (
             <React.Fragment key={i}>
               {col.tabs &&
@@ -346,7 +351,8 @@ class AuthorTestItemPreview extends Component {
                   colIndex,
                   sectionQue,
                   subCount: subCount++,
-                  resourceCount
+                  resourceCount,
+                  scratchpadProps
                 })}
               {((col.tabs && !col.tabs.length) || !col.tabs) &&
                 this.renderTabContent({
@@ -356,7 +362,8 @@ class AuthorTestItemPreview extends Component {
                   colIndex,
                   sectionQue,
                   subCount: subCount++,
-                  resourceCount
+                  resourceCount,
+                  scratchpadProps
                 })}
             </React.Fragment>
           ))}

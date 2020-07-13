@@ -119,6 +119,7 @@ export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${props => props.width || "100%"};
     margin: ${props => props.margin || "0px"};
+    min-width: ${({ minWidth }) => minWidth || ""};
     &.ant-select-disabled {
       .ant-select-selection {
         background-color: ${props => props.bg || greyThemeLighter};
@@ -186,10 +187,10 @@ export const SelectInputStyled = styled(Select)`
       }
       &.ant-select-selection--multiple {
         padding-right: 25px;
-       .ant-select-arrow {
-         position:absolute;
-         top:20px;
-       }
+        .ant-select-arrow {
+          position: absolute;
+          top: 20px;
+        }
         .ant-select-selection__rendered {
           width: 100%;
           height: auto;

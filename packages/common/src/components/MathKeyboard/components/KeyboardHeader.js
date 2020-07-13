@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { isObject } from "lodash";
 import { math } from "@edulastic/constants";
 import { SelectInputStyled } from "@edulastic/common";
-import { white, cardTitleColor } from "@edulastic/colors";
 
 const { Option } = SelectInputStyled;
 const { EMBED_RESPONSE } = math;
@@ -23,7 +22,7 @@ const KeyboardHeader = ({ options, method, showResponse, showDropdown, onInput, 
             onSelect={onChangeKeypad}
             value={isObject(method) ? method.label : method}
             getPopupContainer={triggerNode => triggerNode.parentNode}
-            style={{ width: showResponse ? "calc(100% - 48px)" : "100%" }}
+            minWidth="204px" // width when full keypad mode is selected
           >
             {options.map(({ value, label }, index) => (
               <Option value={value} key={index} data-cy={`math-keyboard-dropdown-list-${index}`}>
@@ -34,7 +33,10 @@ const KeyboardHeader = ({ options, method, showResponse, showDropdown, onInput, 
         )}
         {showResponse && (
           <ResponseBtn onClick={handleClickResponseButton}>
-            <span>R</span>
+            <span className="response-embed">
+              <span className="response-embed__char">R</span>
+              <span className="response-embed__text">Response</span>
+            </span>
           </ResponseBtn>
         )}
       </Container>
@@ -62,19 +64,16 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  padding: 10px 10px 0px;
+  padding: 1rem 1.5rem 0px 1.5rem;
 `;
 
 const ResponseBtn = styled.div`
   cursor: pointer;
-  width: 40px;
   margin-left: 8px;
   border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${white};
-  background: ${cardTitleColor};
   font-size: ${props => props.theme.mathKeyboard.numFontSize};
   font-weight: ${props => props.theme.mathKeyboard.numFontWeight};
 `;

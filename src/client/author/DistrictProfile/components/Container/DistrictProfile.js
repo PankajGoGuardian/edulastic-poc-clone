@@ -102,21 +102,22 @@ class DistrictProfile extends Component {
             {(isSAlevelSettingsAccess || role === roleuser.DISTRICT_ADMIN) &&
               (!isInputEnabled ? (
                 <Fragment>
-                  <EduButton type="primary" onClick={this.handleEditClick}>
+                  <EduButton isBlue type="primary" onClick={this.handleEditClick}>
                     <IconPencilEdit />
                     Edit
                   </EduButton>
                 </Fragment>
               ) : (
                 <div style={{ display: "flex" }}>
-                  <EduButton isGhost onClick={this.handleEditClick}>
+                  <EduButton isBlue isGhost onClick={this.handleEditClick}>
                     Cancel
                   </EduButton>
-                  <EduButton type="primary" onClick={this.handleFormSubmit}>
+                  <EduButton isBlue type="primary" onClick={this.handleFormSubmit}>
                     <IconSaveNew /> Save
                   </EduButton>
                 </div>
-              ))}
+                ))
+            }
           </AdminHeader>
           <SubHeader>
             <Spacer />

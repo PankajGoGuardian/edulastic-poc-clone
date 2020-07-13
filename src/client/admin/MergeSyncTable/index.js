@@ -65,22 +65,36 @@ const DistrictSpan = styled.span`
   font-size: 20px;
 `;
 
+const SyncMessage = styled.span`
+  margin-right: 10px;
+  align-self: center;
+`;
+
 const {TabPane} = Tabs;
-const SyncEnableDisable = ({ districtName, districtId, enableDisableSyncAction }) => (
+const SyncEnableDisable = ({
+  districtName,
+  districtId,
+  enableDisableSyncAction,
+  syncEnabled,
+  cleverId
+}) => (
   <DistrictNameDiv justifyContentSpaceBetween>
     <DistrictSpan>{districtName}</DistrictSpan>
     <FlexDiv>
+      <SyncMessage>{`Clever Sync is ${syncEnabled ? 'enabled' : 'disabled'}.`}</SyncMessage>
       {SyncTypes.map(item => (
         <Button
           style={item.style}
           key={item.label}
+          disabled={syncEnabled === item.value}
           onClick={() =>
-              enableDisableSyncAction({
-                syncEnabled: item.value,
-                districtId,
-                districtName
-              })
-            }
+            enableDisableSyncAction({
+              syncEnabled: item.value,
+              districtId,
+              districtName,
+              cleverId
+            })
+          }
         >
           {item.label}
         </Button>
@@ -183,6 +197,8 @@ function MergeSyncTable({
           <SyncEnableDisable
             districtName={districtName}
             districtId={districtId}
+            syncEnabled={syncEnabled}
+            cleverId={cleverId}
             enableDisableSyncAction={enableDisableSyncAction}
           />
           <Tabs type="card" defaultActiveKey="mergeCleverIds" animated>

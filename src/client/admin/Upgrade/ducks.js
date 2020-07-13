@@ -203,7 +203,7 @@ function* upgradeDistrict({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      notification({ type: "success", msg: result.messag });
+      notification({ type: "success", msg: result.message });
       yield put(manageSubscriptionsBydistrict.actions.subscribeSuccess(result.subscriptionResult[0]));
     }
   } catch (err) {

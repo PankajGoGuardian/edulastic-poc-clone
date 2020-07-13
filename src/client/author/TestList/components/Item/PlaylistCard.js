@@ -1,8 +1,8 @@
 import React from "react";
 import { first } from "lodash";
-import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
+import { IconShare, IconUser } from "@edulastic/icons";
 import { cardTitleColor, darkGrey } from "@edulastic/colors";
-import { PremiumLabel, LikeIconStyled } from "@edulastic/common";
+import { PremiumLabel } from "@edulastic/common";
 
 import {
   Container,
@@ -41,10 +41,7 @@ const PlaylistCard = ({
   usage,
   standardsIdentifiers,
   authorName,
-  isTestLiked,
-  testItemId,
-  handleLikeTest,
-  likes
+  testItemId
 }) => {
   const grade = first(_source.grades);
   const { title, alignmentInfo, skin } = _source;
@@ -138,16 +135,10 @@ const PlaylistCard = ({
           </PlaylistId>
         ) : null}
         {status !== "draft" && (
-          <>
-            <ShareIcon>
-              <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-              <IconText>{usage}</IconText>
-            </ShareIcon>
-            <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest} style={{ paddingRight: 24 }}>
-              <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
-              <IconText>{likes}</IconText>
-            </LikeIconStyled>
-          </>
+          <ShareIcon>
+            <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+            <IconText>{usage}</IconText>
+          </ShareIcon>
         )}
       </Footer>
     </Container>

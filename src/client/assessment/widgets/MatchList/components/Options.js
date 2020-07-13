@@ -12,6 +12,7 @@ import LayoutWrapper from "./Layout";
 
 const Options = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => (
   <WidgetOptions
+    showVariables
     title={t("common.options.title")}
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}

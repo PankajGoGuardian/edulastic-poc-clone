@@ -9,7 +9,8 @@ import Layout from "./Layout";
 
 const FormulaEssayOptions = ({ onChange, item, fillSections, cleanSections, advancedAreOpen }) => (
   <WidgetOptions
-    showScoring={true}
+    showVariables
+    showScoring
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}

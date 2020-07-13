@@ -23,6 +23,7 @@ const Options = ({
   item
 }) => (
   <WidgetOptions
+    showVariables
     item={item}
     outerStyle={outerStyle}
     advancedAreOpen={advancedAreOpen}

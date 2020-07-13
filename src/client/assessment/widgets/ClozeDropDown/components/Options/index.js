@@ -21,6 +21,7 @@ const Options = ({
   item = {}
 }) => (
   <WidgetOptions
+    showVariables
     outerStyle={outerStyle}
     scoringTypes={scoringTypes}
     advancedAreOpen={advancedAreOpen}

@@ -83,7 +83,7 @@ const SideContent = props => {
       >
         <Icon type={showSideContent ? "right" : "left"} />
       </SliderButton>
-      <SideContentWrapper>
+      <SideContentWrapper show={showSideContent}>
         <TextWrapper fw="600" mb="5px" color="#5EB500">
           Introduction to Edulastic
         </TextWrapper>

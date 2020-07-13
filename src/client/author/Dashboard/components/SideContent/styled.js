@@ -37,14 +37,14 @@ export const SideContentWrapper = styled.div`
   background: ${white};
   padding: 20px 30px;
   width: 358px;
-  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
+  height: ${props => (props.show ? `calc(100vh - ${props.theme.HeaderHeight.xs}px)` : 0)};
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+    height: ${props => (props.show ? `calc(100vh - ${props.theme.HeaderHeight.md}px)` : 0)};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+    height: ${props => (props.show ? `calc(100vh - ${props.theme.HeaderHeight.xl}px)` : 0)};
   }
 `;
 

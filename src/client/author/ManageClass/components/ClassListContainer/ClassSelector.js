@@ -35,7 +35,7 @@ const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, set
 
   return (
     <ClassSelect>
-      <ClassStatusDropdown overlay={menu}>
+      <ClassStatusDropdown getPopupContainer={trigger => trigger.parentNode} overlay={menu}>
         <ClassStatusButton data-cy="class-status">
           {`${filterClass || options[0]} ${currentType}`} <Icon color={themeColor} type="down" />
         </ClassStatusButton>

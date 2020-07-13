@@ -2263,3 +2263,16 @@ div[class*="_pendo"] button {
   max-width: 195px;
   text-align: center;
 }
+
+.drop-target-box:not([id*="null"]):hover {
+  border-color: #1a73e8 !important;
+}
+
+.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+  background-color: rgba(63, 132, 229, 1);
+  color: white;
+}
+
+.ant-select-dropdown.ant-select-dropdown--multiple .ant-select-dropdown-menu-item:hover .ant-select-selected-icon {
+  color: white;
+}

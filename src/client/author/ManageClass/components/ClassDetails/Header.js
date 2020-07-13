@@ -209,6 +209,7 @@ const Header = ({
                 </MenuItems>
               </DropMenu>
             }
+            getPopupContainer={trigger => trigger.parentNode}
             placement="bottomRight"
           >
             <EduButton isBlue data-cy="headerDropDown" IconBtn>

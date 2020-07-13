@@ -6,7 +6,8 @@ import {
   tabletWidth,
   themeColor,
   title,
-  themeColorBlue
+  themeColorBlue,
+  white
 } from "@edulastic/colors";
 import styled from "styled-components";
 
@@ -84,7 +85,23 @@ export const MainContainer = styled.div`
   .ant-dropdown-menu {
     .ant-dropdown-menu-item {
       &:hover {
-        background-color: ${props => props.theme.themeColor};
+        background-color: ${themeColorBlue};
+        color: ${white};
+      }
+    }
+  }
+
+  .ant-dropdown {
+    .ant-menu-vertical {
+      text-align: left;
+      .ant-menu-item {
+        &:hover {
+          background-color: ${themeColorBlue};
+          color: ${white};
+          svg {
+            fill: ${white};
+          }
+        }
       }
     }
   }

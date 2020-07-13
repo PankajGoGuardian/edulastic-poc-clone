@@ -233,6 +233,7 @@ const CurriculumHeader = ({
                 overlayStyle={{ zIndex: 999, cursor: "pointer" }}
                 overlay={mainPlaylistVerticalMenu}
                 trigger={["click"]}
+                getPopupContainer={trigger => trigger.parentNode}
               >
                 <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
                   <IconMoreVertical width={5} height={14} color={themeColorBlue} />

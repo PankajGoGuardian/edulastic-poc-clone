@@ -403,6 +403,7 @@ const TableList = ({
               })}
               placement="bottomRight"
               trigger={["click"]}
+              getPopupContainer={trigger => trigger.parentNode}
             >
               <EduButton height="28px" width="100%" isGhost data-cy="actions">
                 ACTIONS

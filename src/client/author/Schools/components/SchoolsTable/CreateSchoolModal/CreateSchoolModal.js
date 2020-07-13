@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Select } from "antd";
-import { states } from "../../../../../student/Signup/components/TeacherContainer/constants";
-import { StyledDescription, StyledSelect, StyledSpinContainer, StyledSpin } from "./styled";
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
-
+import { Form, Input, Row, Col, Select } from "antd";
 import { countryApi, schoolApi } from "@edulastic/api";
+import { states } from "../../../../../student/Signup/components/TeacherContainer/constants";
+import { StyledSelect, StyledSpinContainer, StyledSpin } from "./styled";
+import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 const Option = Select.Option;
 class CreateSchoolModal extends Component {
@@ -109,7 +108,7 @@ class CreateSchoolModal extends Component {
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { modalVisible, t } = this.props;
-    const { countryList, nameValidateStatus, nameValidateMsg, showSpin, stateList } = this.state;
+    const { countryList, showSpin, stateList, nameValidateMsg, nameValidateStatus } = this.state;
 
     const CountryOptions = Object.entries(countryList).map(([key, value]) => <Option value={key}>{value}</Option>);
 
@@ -139,7 +138,7 @@ class CreateSchoolModal extends Component {
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label={t("school.name")} required={true}>
+            <ModalFormItem label={t("school.name")} required help={nameValidateMsg} validateStatus={nameValidateStatus}>
               {getFieldDecorator("name", {
                 rules: [
                   {
@@ -147,7 +146,13 @@ class CreateSchoolModal extends Component {
                     message: t("school.validations.name")
                   }
                 ]
-              })(<Input placeholder={t("school.components.createschool.name")} onChange={this.changeSchoolName} />)}
+              })(
+                <Input
+                  placeholder={t("school.components.createschool.name")}
+                  onChange={this.changeSchoolName}
+                  maxLength={128}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
@@ -208,7 +213,7 @@ class CreateSchoolModal extends Component {
                   showSearch
                   placeholder={t("school.components.createschool.country")}
                   showArrow={false}
-                  optionFilterProp={"children"}
+                  optionFilterProp="children"
                   notFoundContent={null}
                   onChange={this.changeCountryHandler}
                   onInputKeyDown={this.onCountryKeyDown}

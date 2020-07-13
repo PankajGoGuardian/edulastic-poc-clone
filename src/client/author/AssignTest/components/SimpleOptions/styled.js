@@ -103,7 +103,6 @@ export const StyledRowSettings = styled(Row)`
 
 export const StyledRowSelect = styled(StyledRowSettings)`
   .ant-select {
-    width: auto;
     .ant-select-selection {
       border: none;
       margin: 0px;

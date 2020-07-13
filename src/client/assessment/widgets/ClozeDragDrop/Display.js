@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { cloneDeep, get } from "lodash";
 import uuid from "uuid/v4";
 
@@ -239,7 +239,7 @@ class ClozeDragDropDisplay extends Component {
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 140,
-      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 40,
+      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 32,
       whiteSpace: uiStyle.wordwrap ? "inherit" : "nowrap"
     };
 
@@ -375,8 +375,32 @@ class ClozeDragDropDisplay extends Component {
       />
     );
 
+    const horizontallyAligned = responsecontainerposition === "left" || responsecontainerposition === "right";
+
+    const answerContainerStyle = {
+      minWidth: dragItemMaxWidth + 62,
+      maxWidth: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
+    };
+
+    const responseBoxStyle = {
+      height: "100%",
+      width: horizontallyAligned ? dragItemMaxWidth + 62 : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
+      flexShrink: 0,
+      borderRadius: smallSize ? 0 : 10,
+      marginRight: responsecontainerposition === "left" ? 15 : null,
+      marginLeft: responsecontainerposition === "right" ? 15 : null,
+      marginBottom: responsecontainerposition === "top" ? 15 : null,
+      marginTop: responsecontainerposition === "bottom" ? 15 : null,
+      background: theme.widgets.clozeDragDrop.responseBoxBgColor
+    };
+
+    const templateBoxStyle = {
+      borderRadius: smallSize ? 0 : 10,
+      width: horizontallyAligned ? answerContainerStyle.maxWidth - dragItemMaxWidth + 62 : null
+    };
+
     const correctAnswerBoxLayout = (
-      <>
+      <div style={{ ...responseBoxStyle, margin: 0 }}>
         <CorrectAnswerBoxLayout
           centerText
           hasGroupResponses={hasGroupResponses}
@@ -398,60 +422,36 @@ class ClozeDragDropDisplay extends Component {
             stemNumeration={stemNumeration}
           />
         ))}
-      </>
+      </div>
     );
-    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
-    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
-
-    const horizontallyAligned = responsecontainerposition === "left" || responsecontainerposition === "right";
-
-    const answerContainerStyle = {
-      minWidth: dragItemMaxWidth + 62,
-      maxWidth: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
-    };
-
-    const responseBoxStyle = {
-      height: "100%",
-      width:
-        showAnswer || isReviewTab ? 0 : horizontallyAligned ? dragItemMaxWidth + 62 : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
-      flexShrink: 0,
-      borderRadius: smallSize ? 0 : 10,
-      marginRight: responsecontainerposition === "left" ? 15 : null,
-      marginLeft: responsecontainerposition === "right" ? 15 : null,
-      marginBottom: responsecontainerposition === "top" ? 15 : null,
-      marginTop: responsecontainerposition === "bottom" ? 15 : null,
-      background: theme.widgets.clozeDragDrop.responseBoxBgColor
-    };
-
-    const templateBoxStyle = {
-      borderRadius: smallSize ? 0 : 10,
-      width: horizontallyAligned ? answerContainerStyle.maxWidth - dragItemMaxWidth + 62 : null
-    };
+    const responseBoxLayout =
+      showAnswer || isReviewTab ? <Fragment /> : <div style={responseBoxStyle}>{previewResponseBoxLayout}</div>;
+    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <Fragment />;
 
     const questionContent = (
       <div>
         {responsecontainerposition === "top" && (
           <div style={answerContainerStyle}>
-            <div style={responseBoxStyle}>{responseBoxLayout}</div>
+            {responseBoxLayout}
             <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
           </div>
         )}
         {responsecontainerposition === "bottom" && (
           <div style={answerContainerStyle}>
             <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
-            <div style={responseBoxStyle}>{responseBoxLayout}</div>
+            {responseBoxLayout}
           </div>
         )}
         {responsecontainerposition === "left" && (
           <AnswerContainer position={responsecontainerposition} style={answerContainerStyle}>
-            <div style={responseBoxStyle}>{responseBoxLayout}</div>
+            {responseBoxLayout}
             <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
           </AnswerContainer>
         )}
         {responsecontainerposition === "right" && (
           <AnswerContainer position={responsecontainerposition} style={answerContainerStyle}>
             <div style={templateBoxStyle}>{templateBoxLayoutContainer}</div>
-            <div style={responseBoxStyle}>{responseBoxLayout}</div>
+            {responseBoxLayout}
           </AnswerContainer>
         )}
       </div>

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { white } from "@edulastic/colors";
 import { MultiChoiceContent, MultipleChoiceLabelContainer } from "./MultiChoiceContent";
 
 export const Label = styled.label`
@@ -37,18 +36,10 @@ export const Label = styled.label`
   flex: 1;
   position: relative;
   display: inline-block;
-  padding: 5px;
-  padding-left: ${props =>
-    props.uiStyle.type === "block"
-      ? "0px"
-      : props.uiStyle.type === "radioBelow"
-      ? "12px"
-      : props.styleType === "primary"
-      ? "15px"
-      : "25px"};
-
+  margin-bottom: 5px;
+  border: ${({ showBorder }) => (showBorder ? "1px solid #b9b9b9" : "")};
   border: ${props =>
-    props.uiStyle.type === "block" &&
+    props.showBorder &&
     (props.styleType === "primary"
       ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
       : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
@@ -57,23 +48,11 @@ export const Label = styled.label`
     (props.styleType === "primary"
       ? `1px solid ${props.theme.widgets.multipleChoice.labelBorderColor}`
       : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
-  background-color: ${({ styleType, color, selected, uiStyle, theme, isPrintPreview }) => {
-    if (isPrintPreview) return white;
-    if (styleType === "primary" && uiStyle.type !== "block") {
-      return theme.widgets.multipleChoice.labelIconCheckColor;
-      // eslint-disable-next-line no-else-return
-    } else if (uiStyle.type === "block" && !selected) {
-      return theme.widgets.multipleChoice.labelIconCheckColor;
-    } else if (uiStyle.type === "block" && selected) {
-      return theme.widgets.multipleChoice.labelIconSelectedCheckColor;
-    }
 
-    return color;
-  }};
   max-width: ${props => props.maxWidth || "100%"};
   border-radius: ${props =>
     props.styleType === "primary" || props.uiStyle.type === "block" ? "4px" : "0px 10px 10px 0px"};
-  min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "44px" : "auto")};
+  min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "26px" : "auto")};
   box-shadow: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "none" : "none")};
   display: flex;
   align-items: center;

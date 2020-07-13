@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import styled from "styled-components";
+import { white } from "@edulastic/colors";
 import { MathSpan } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -67,13 +68,13 @@ const CorrectAnswerBoxLayout = ({
                 const getContent = (inPopover = false) => {
                   const height = inPopover ? "auto" : btnStyle.height;
                   return (
-                    <div
+                    <AnswerBoxItem
                       key={itemId}
-                      className="response-btn check-answer showanswer"
                       style={{
                         ...btnStyle,
                         height,
                         overflow: inPopover && "auto",
+                        minHeight: btnStyle.height,
                         maxWidth: inPopover ? response.popoverMaxWidth : response.maxWidth
                       }}
                     >
@@ -83,7 +84,7 @@ const CorrectAnswerBoxLayout = ({
                       <span className="text" style={{ justifyContent: centerText && "center" }}>
                         {Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}
                       </span>
-                    </div>
+                    </AnswerBoxItem>
                   );
                 };
                 const content = getContent();
@@ -101,12 +102,12 @@ const CorrectAnswerBoxLayout = ({
             const getContent = (inPopover = false) => {
               const height = inPopover ? "auto" : btnStyle.height;
               return (
-                <div
+                <AnswerBoxItem
                   key={index}
-                  className="response-btn check-answer showanswer"
                   style={{
                     ...btnStyle,
                     height,
+                    minHeight: btnStyle.height,
                     overflow: inPopover && "auto",
                     maxWidth: inPopover ? response.popoverMaxWidth : response.maxWidth
                   }}
@@ -119,7 +120,7 @@ const CorrectAnswerBoxLayout = ({
                       ? getLabel(result)
                       : result}
                   </span>
-                </div>
+                </AnswerBoxItem>
               );
             };
             const content = getContent();
@@ -161,3 +162,32 @@ CorrectAnswerBoxLayout.defaultProps = {
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));
+
+const AnswerBoxItem = styled.div`
+  display: inline-flex;
+  min-width: 135px;
+  align-items: center;
+  background: ${white};
+  margin-right: 5px;
+  border: 1px solid #b6b6cc;
+  border-radius: 4px;
+
+  & .index {
+    width: 32px;
+    background: #a7a7a7;
+    color: ${white};
+    border-radius: 4px 0px 0px 4px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & .text {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;

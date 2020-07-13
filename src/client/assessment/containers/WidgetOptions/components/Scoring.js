@@ -265,6 +265,8 @@ class Scoring extends Component {
                   e.target.blur();
                 }}
                 display="inline-block"
+                padding="0px 16px"
+                width="142px"
                 margin="0px 15px 0px 0px"
               >
                 Create New Rubric
@@ -275,6 +277,8 @@ class Scoring extends Component {
                   e.target.blur();
                 }}
                 display="inline-block"
+                padding="0px 16px"
+                width="142px"
                 margin="0px 15px 0px 0px"
               >
                 Use Existing Rubric

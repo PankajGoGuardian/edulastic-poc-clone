@@ -1,10 +1,11 @@
-import { greyThemeLight, greyThemeLighter, themeColorBlue } from "@edulastic/colors";
+import { greyThemeLighter, themeColorBlue } from "@edulastic/colors";
 import { isObject } from "lodash";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import React from "react";
 import { useDrop } from "react-dnd";
 
-const DropContainer = ({ style, drop, children, index, ...rest }) => {
+const DropContainer = ({ style, drop, children, index, borderColor, showHoverBorder, noBorder, ...rest }) => {
   const [{ isOver }, dropRef] = useDrop({
     accept: "item",
     drop(item, monitor) {
@@ -26,20 +27,26 @@ const DropContainer = ({ style, drop, children, index, ...rest }) => {
     })
   });
 
-  const overrideStyle = {
-    border: isOver ? `2px dashed ${themeColorBlue}` : style.border || `2px dashed ${greyThemeLight}`,
-    background: style.background || greyThemeLighter
-  };
+  const overrideBorderColor = isOver ? themeColorBlue : borderColor || "transparent";
 
   const mergedStyle = {
     ...style,
-    ...overrideStyle
+    background: style.background || greyThemeLighter
   };
 
   return (
-    <div className="drop-target-box" ref={dropRef} style={mergedStyle} {...rest} id={`drop-container-${index}`}>
+    <Container
+      {...rest}
+      className="drop-target-box"
+      ref={dropRef}
+      style={mergedStyle}
+      id={`drop-container-${index}`}
+      borderColor={overrideBorderColor}
+      showHoverBorder={showHoverBorder}
+      noBorder={noBorder}
+    >
       {children}
-    </div>
+    </Container>
   );
 };
 
@@ -60,3 +67,16 @@ DropContainer.defaultProps = {
 };
 
 export default DropContainer;
+
+const hoverStyle = css`
+  &:hover {
+    border-color: ${themeColorBlue};
+  }
+`;
+
+const Container = styled.div`
+  border: ${({ noBorder }) => !noBorder && "2px dashed"};
+  border-radius: 2px;
+  border-color: ${({ borderColor }) => borderColor};
+  ${({ showHoverBorder }) => showHoverBorder && hoverStyle}
+`;

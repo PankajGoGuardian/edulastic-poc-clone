@@ -106,15 +106,19 @@ const TemplateBox = ({ resprops, id }) => {
   const containerStyle = {
     display: "inline-flex",
     verticalAlign: "middle",
-    borderRadius: 2,
-    border: `2px dashed ${greyThemeLight}`,
     background: greyThemeLighter,
     minHeight: style.height,
     padding: style.padding
   };
 
   return (
-    <DropContainer style={{ ...containerStyle, ...style }} index={dropTargetIndex} drop={onDrop}>
+    <DropContainer
+      style={{ ...containerStyle, ...style }}
+      index={dropTargetIndex}
+      drop={onDrop}
+      showHoverBorder
+      borderColor={greyThemeLight}
+    >
       <DragItem data={itemData} style={{ overflow: "hidden" }}>
         <ResponseContainer>
           {showPopover && (

@@ -24,6 +24,7 @@ export const greyThemeLighter = "#f8f8f8";
 
 export const grey = "#dfdfdf";
 export const fadedGrey = "#e5e5e5";
+export const fadedGrey1 = "#e4e4e4";
 export const lightGreySecondary = "#f8f8f8";
 export const lightGrey = "#f9f9f9";
 export const lightGrey2 = "#888787";
@@ -98,6 +99,7 @@ export const lightBlue5 = "#91d5dc";
 export const lightBlue6 = "#c8e8f6";
 export const lightBlue7 = "#4e95f3";
 export const lightBlue8 = "#5faef3";
+export const lightBlue9 = "#00b2ff";
 export const darkBlue = "#0080b9";
 export const darkBlue1 = "#157ad8";
 export const darkBlue2 = "#3896be";
@@ -251,3 +253,5 @@ export const publisherPlaylistIcon = "#1487DB";
 export const publisherBorder1 = "#d4d4e5";
 
 export const playlistTabLink = "#989BA4";
+
+export const graphTickColor = "#435b5d";

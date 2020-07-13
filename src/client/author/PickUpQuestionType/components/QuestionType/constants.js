@@ -1330,7 +1330,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           wordwrap: false,
           responsecontainerindividuals: [],
           responseContainerWidth: 200

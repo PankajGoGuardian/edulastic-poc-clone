@@ -1,55 +1,56 @@
+import { white, lightBlue9, greyThemeDark4, fadedGrey1, graphTickColor } from "@edulastic/colors";
 import { TOOLS } from "./constants";
 
 export default {
   special: {
     [TOOLS.POINT]: {
-      fillColor: "#ffffff",
-      strokeColor: "#00b2ff",
-      highlightStrokeColor: "#00b2ff",
-      highlightFillColor: "#ffffff",
+      fillColor: white,
+      strokeColor: lightBlue9,
+      highlightStrokeColor: lightBlue9,
+      highlightFillColor: white,
       highlightFillOpacity: 1
     }
   },
   default: {
     [TOOLS.POINT]: {
-      fillColor: "#00b2ff",
-      strokeColor: "#00b2ff",
-      highlightStrokeColor: "#00b2ff",
-      highlightFillColor: "#00b2ff"
+      fillColor: lightBlue9,
+      strokeColor: lightBlue9,
+      highlightStrokeColor: lightBlue9,
+      highlightFillColor: lightBlue9
     },
     [TOOLS.SEGMENTS_POINT]: {
-      fillColor: "#ffffff",
-      strokeColor: "#00b2ff",
-      highlightStrokeColor: "#00b2ff",
-      highlightFillColor: "#ffffff"
+      fillColor: white,
+      strokeColor: lightBlue9,
+      highlightStrokeColor: lightBlue9,
+      highlightFillColor: white
     },
     [TOOLS.LINE]: {
-      fillColor: "#00b2ff",
-      strokeColor: "#00b2ff",
-      highlightStrokeColor: "#00b2ff",
-      highlightFillColor: "#00b2ff"
+      fillColor: lightBlue9,
+      strokeColor: lightBlue9,
+      highlightStrokeColor: lightBlue9,
+      highlightFillColor: lightBlue9
     },
     [TOOLS.RAY]: {
-      fillColor: "#00b2ff",
-      strokeColor: "#00b2ff",
-      highlightStrokeColor: "#00b2ff",
-      highlightFillColor: "#00b2ff"
+      fillColor: lightBlue9,
+      strokeColor: lightBlue9,
+      highlightStrokeColor: lightBlue9,
+      highlightFillColor: lightBlue9
     },
     [TOOLS.SEGMENT]: {
-      fillColor: "#00b2ff",
-      strokeColor: "#00b2ff",
-      highlightStrokeColor: "#00b2ff",
-      highlightFillColor: "#00b2ff"
+      fillColor: lightBlue9,
+      strokeColor: lightBlue9,
+      highlightStrokeColor: lightBlue9,
+      highlightFillColor: lightBlue9
     },
     [TOOLS.VECTOR]: {
-      fillColor: "#00b2ff",
-      strokeColor: "#00b2ff",
-      highlightStrokeColor: "#00b2ff",
-      highlightFillColor: "#00b2ff"
+      fillColor: lightBlue9,
+      strokeColor: lightBlue9,
+      highlightStrokeColor: lightBlue9,
+      highlightFillColor: lightBlue9
     },
     [TOOLS.AREA]: {
-      fillColor: "#00b2ff",
-      highlightFillColor: "#00b2ff"
+      fillColor: lightBlue9,
+      highlightFillColor: lightBlue9
     }
   },
 
@@ -61,10 +62,10 @@ export default {
       highlightFillColor: "#ee1658"
     },
     [TOOLS.SEGMENTS_POINT]: {
-      fillColor: "#ffffff",
+      fillColor: white,
       strokeColor: "#ee1658",
       highlightStrokeColor: "#ee1658",
-      highlightFillColor: "#ffffff"
+      highlightFillColor: white
     },
     [TOOLS.LINE]: {
       fillColor: "#ee1658",
@@ -95,7 +96,6 @@ export default {
       highlightFillColor: "#ee1658"
     }
   },
-
   green: {
     [TOOLS.POINT]: {
       fillColor: "#1fe3a1",
@@ -104,10 +104,10 @@ export default {
       highlightFillColor: "#1fe3a1"
     },
     [TOOLS.SEGMENTS_POINT]: {
-      fillColor: "#ffffff",
+      fillColor: white,
       strokeColor: "#1fe3a1",
       highlightStrokeColor: "#1fe3a1",
-      highlightFillColor: "#ffffff"
+      highlightFillColor: white
     },
     [TOOLS.LINE]: {
       fillColor: "#1fe3a1",
@@ -138,8 +138,35 @@ export default {
       highlightFillColor: "#1fe3a1"
     }
   },
+
+  gray: {
+    [TOOLS.POINT]: {
+      fillColor: greyThemeDark4,
+      strokeColor: greyThemeDark4,
+      highlightStrokeColor: greyThemeDark4,
+      highlightFillColor: greyThemeDark4
+    }
+  },
   numberline: {
-    strokeColor: "#434b5d",
-    highlightStrokeColor: "#434b5d"
+    strokeColor: fadedGrey1,
+    highlightStrokeColor: fadedGrey1,
+    strokeWidth: 2
+  },
+  majorTick: {
+    strokeColor: fadedGrey1,
+    highlightStrokeColor: fadedGrey1,
+    strokeWidth: 2,
+    majorHeight: 18
+  },
+  minorTick: {
+    strokeColor: fadedGrey1,
+    highlightStrokeColor: fadedGrey1,
+    strokeWidth: 2,
+    majorHeight: 10
+  },
+  tickLabel: {
+    color: graphTickColor,
+    "font-size": "12px",
+    "font-weight": "bold"
   }
 };

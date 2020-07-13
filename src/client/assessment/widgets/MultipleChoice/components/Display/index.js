@@ -24,49 +24,51 @@ const Display = ({
   fontSize,
   item = {},
   qSubLabel,
+  fromSetAnswers,
   ...restProps
 }) => (
-  <div style={{ display: "inline-block", width: "100%" }}>
-    <FlexContainer alignItems="baseline" justifyContent="flex-start">
-      {!flowLayout && (
-        <>
-          <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start">
-            {showQuestionNumber && (
-              <QuestionNumberLabel fontSize={fontSize} className="__print-space-reduce-qlabel">
-                {qLabel}
-              </QuestionNumberLabel>
-            )}
-            {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
-          </FlexContainer>
+  <FlexContainer alignItems="baseline" justifyContent="flex-start">
+    {!flowLayout && (
+      <>
+        <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start">
+          {showQuestionNumber && (
+            <QuestionNumberLabel fontSize={fontSize} className="__print-space-reduce-qlabel">
+              {qLabel}
+            </QuestionNumberLabel>
+          )}
+          {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
+        </FlexContainer>
 
-          <FlexContainer
-            width="100%"
-            className="__print_question-content-wrapper"
-            flexDirection="column"
-            alignItems="flex-start"
-          >
+        <FlexContainer
+          width="100%"
+          className="__print_question-content-wrapper"
+          flexDirection="column"
+          alignItems="flex-start"
+        >
+          {!fromSetAnswers && (
             <StyledStimulus
               fontSize={fontSize}
               dangerouslySetInnerHTML={{ __html: question }}
               className="_print-space-reduce-stimulus"
             />
-            <Options
-              view={view}
-              smallSize={smallSize}
-              question={question}
-              uiStyle={uiStyle}
-              styleType={styleType}
-              multipleResponses={multipleResponses}
-              fontSize={fontSize}
-              item={item}
-              {...restProps}
-            />
-            {view !== EDIT && <Instructions item={item} />}
-          </FlexContainer>
-        </>
-      )}
-    </FlexContainer>
-  </div>
+          )}
+          <Options
+            view={view}
+            smallSize={smallSize}
+            question={question}
+            uiStyle={uiStyle}
+            styleType={styleType}
+            multipleResponses={multipleResponses}
+            fontSize={fontSize}
+            fromSetAnswers={fromSetAnswers}
+            item={item}
+            {...restProps}
+          />
+          {view !== EDIT && <Instructions item={item} />}
+        </FlexContainer>
+      </>
+    )}
+  </FlexContainer>
 );
 
 Display.propTypes = {
@@ -117,6 +119,7 @@ Display.defaultProps = {
 };
 
 const StyledStimulus = styled(Stimulus)`
+  margin-bottom: 25px;
   word-break: break-word;
   overflow: hidden;
   font-size: ${props => props.fontSize};

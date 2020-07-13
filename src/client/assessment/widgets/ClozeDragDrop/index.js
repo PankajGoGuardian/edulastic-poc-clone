@@ -6,7 +6,6 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
-import { Checkbox } from "antd";
 
 import { WithResources, AnswerContext, WithMathFormula } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -66,32 +65,6 @@ class ClozeDragDrop extends Component {
     };
   };
 
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        const response = {
-          score: 1,
-          value: new Array(draft.responseIds.length).fill(null)
-        };
-
-        draft.validation.altResponses = draft.validation.altResponses || [];
-        draft.validation.altResponses.push(response);
-      })
-    );
-  };
-
-  handleRemoveAltResponses = index => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.splice(index, 1);
-        }
-      })
-    );
-  };
-
   handleOptionsChange = (name, value) => {
     const { setQuestionData, item } = this.props;
     setQuestionData(
@@ -126,6 +99,7 @@ class ClozeDragDrop extends Component {
       cleanSections,
       advancedLink,
       advancedAreOpen,
+      setQuestionData,
       ...restProps
     } = this.props;
 
@@ -153,7 +127,6 @@ class ClozeDragDrop extends Component {
                   cleanSections={cleanSections}
                 >
                   <CorrectAnswers
-                    // key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
                     hasGroupResponses={item.hasGroupResponses}
                     configureOptions={{
@@ -164,12 +137,11 @@ class ClozeDragDrop extends Component {
                     options={previewDisplayOptions}
                     stimulus={previewStimulus}
                     uiStyle={uiStyle}
-                    onAddAltResponses={this.handleAddAltResponses}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                     responseIDs={item.responseIds}
-                    item={item}
+                    setQuestionData={setQuestionData}
+                    item={itemForEdit}
                   />
                   <CorrectAnswerOptions>
                     <CheckContainer>

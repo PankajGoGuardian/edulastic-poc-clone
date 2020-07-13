@@ -1,8 +1,9 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 
-import { themeColorLight, red, green } from "@edulastic/colors";
+import { themeColor, red, green, greyThemeDark4 } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
+import { isEmpty } from "lodash";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
@@ -20,7 +21,7 @@ const Crosses = ({
   view,
   gridParams,
   previewTab,
-  correct,
+  evaluation,
   saveAnswer,
   deleteMode
 }) => {
@@ -39,14 +40,14 @@ const Crosses = ({
     }
   };
 
-  const getCenterX = index => step * index + 2;
+  const getCenterX = index => step * index;
 
   const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + 20;
 
   const renderValidationIcons = index => (
-    <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
-      {correct[index] && <IconCheck color={green} width={12} height={12} />}
-      {!correct[index] && <IconClose color={red} width={12} height={12} />}
+    <g transform={`translate(${getCenterX(index) + step / 2 - 3},${getCenterY(bars[index]) - 30})`}>
+      {evaluation[index] && <IconCheck color={green} width={12} height={10} />}
+      {!evaluation[index] && <IconClose color={red} width={10} height={10} />}
     </g>
   );
 
@@ -67,7 +68,7 @@ const Crosses = ({
     ((data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
       (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
 
-  const isRenderIcons = !!(correct && correct.length);
+  const isRenderIcons = !isEmpty(evaluation);
 
   return (
     <Fragment>
@@ -80,21 +81,21 @@ const Crosses = ({
             y={0}
             onMouseEnter={() => handleLabelVisibility(index)}
             onMouseLeave={() => handleLabelVisibility(null)}
-            width={step - 2}
+            width={step}
             height={height + margin}
           />
           {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <path
               key={`path-${ind}`}
-              transform={`translate(${getCenterX(index) + step / 2 - 16}, ${height -
+              transform={`translate(${getCenterX(index) + step / 2 - 4}, ${height -
                 margin -
                 17 -
                 ind * yAxisStep -
                 yAxisStep / 2 +
                 20})`}
-              fill={themeColorLight}
-              d="M24.778,21.419L19.276,15.917L24.777,10.415L21.949,7.585L16.447,13.087L10.945,7.585L8.117,10.415L13.618,15.917L8.116,21.419L10.946,24.248L16.447,18.746L21.948,24.248Z"
+              fill={greyThemeDark4}
+              d="M8.625,0.707106781 L5.75,3.58210678 L2.875,0.707106781 L0.707106781,2.875 L3.58210678,5.75 L0.707106781,8.625 L2.87959354,10.7974868 L5.75,8.00118958 L8.62040646,10.7974868 L10.7928932,8.625 L7.91789322,5.75 L10.7928932,2.875 L8.625,0.707106781 Z"
             />
           ))}
           <Bar
@@ -109,7 +110,7 @@ const Crosses = ({
             }}
             x={getCenterX(index)}
             y={getCenterY(dot)}
-            width={step - 2}
+            width={step}
             height={getBarHeight(dot.y)}
             color="transparent"
           />
@@ -119,7 +120,7 @@ const Crosses = ({
                 hoverState={isHovered(index)}
                 x={getCenterX(index)}
                 y={getCenterY(dot)}
-                width={step - 2}
+                width={step}
                 height={getBarHeight(dot.y)}
               />
               <ActiveBar
@@ -130,10 +131,10 @@ const Crosses = ({
                 onTouchEnd={handleMouse(null)}
                 onTouchStart={onMouseDown(index)}
                 x={getCenterX(index)}
-                y={getCenterY(dot) - 4}
-                width={step - 2}
+                y={getCenterY(dot) - 5}
+                width={step}
                 deleteMode={deleteMode}
-                color={dot.y === 0 ? themeColorLight : "transparent"}
+                color={dot.y === 0 ? themeColor : "transparent"}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
               />
@@ -158,7 +159,7 @@ Crosses.propTypes = {
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  activeIndex: PropTypes.number,
+  activeIndex: PropTypes.number.isRequired,
   view: PropTypes.string.isRequired,
   gridParams: PropTypes.shape({
     width: PropTypes.number,
@@ -169,7 +170,7 @@ Crosses.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number
   }).isRequired,
-  correct: PropTypes.array.isRequired,
+  evaluation: PropTypes.object.isRequired,
   previewTab: PropTypes.string,
   saveAnswer: PropTypes.func,
   deleteMode: PropTypes.bool

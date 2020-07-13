@@ -6,17 +6,16 @@ export const SortableItemContainer = styled.div.attrs({
 })`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
   font-size: ${props => props.fontSize || "14px"};
-  min-height: 40px;
   margin: ${({ styleType }) =>
-    styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 10px 0" : "0 0 12px 0"};
+    styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 10px 0" : "0 0 4px 0"};
   display: inline-flex;
   flex-direction: column;
-  background: ${greyThemeLighter};
-  border: ${({ styleType }) =>
-    styleType === "list" || styleType === "inline" ? "none" : `1px solid ${greyThemeLight}`};
   border-radius: 4px;
-  padding-right: 12px;
   z-index: 99999;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
 
   .ql-container {
     font-size: ${props => props.fontSize || "14px"};
@@ -38,7 +37,10 @@ export const SortableItemContainer = styled.div.attrs({
     background: ${greyThemeLighter};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     margin-right: 0;
+    min-height: 34px;
     max-width: 100%;
+    border: ${({ styleType }) =>
+      styleType === "list" || styleType === "inline" ? "none" : `1px solid ${greyThemeLight}`};
   }
   & div.main i.fa-align-justify {
     color: ${props => props.theme.sortableList.dragIconColor};
@@ -60,7 +62,7 @@ export const SortableItemContainer = styled.div.attrs({
 `;
 
 export const DragIcon = styled.div`
-  padding: 10px 17px;
+  padding: 9px 15px;
 `;
 
 export const DragLine = styled.div`
@@ -69,7 +71,7 @@ export const DragLine = styled.div`
   background: #878a91;
 
   &:not(:last-child) {
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
 `;
 

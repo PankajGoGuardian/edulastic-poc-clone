@@ -5,15 +5,12 @@ import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
 const WidgetTitle = styled.h2`
-  background: #f1f1f5;
   color: ${greyThemeDark1};
-  padding: 10px 20px;
   display: flex;
   align-items: center;
   border-radius: 4px;
-  margin: ${props => props.margin || "0px -20px 20px"};
+  margin: ${props => props.margin || "0px 0px 16px"};
   font-weight: bold;
-  min-height: 50px;
   ${({ titleStyle }) => titleStyle};
 `;
 
@@ -38,10 +35,10 @@ export const SubtitleText = styled.div`
 `;
 
 const IconStyle = {
-  fill: "#f1f1f5",
+  fill: "#fff",
   width: "16px",
   height: "16px",
-  background: "#f1f1f5",
+  background: "#878A91",
   borderRadius: "50%",
   padding: "3px",
   marginLeft: "16px"

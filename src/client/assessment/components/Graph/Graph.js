@@ -495,7 +495,15 @@ class Graph extends Component {
                 {view !== EDIT && <Instructions item={item} />}
                 {previewTab === "show" && item.canvas && item.uiStyle && (
                   <Fragment>
-                    <CorrectAnswersContainer minWidth="max-content" title={t("component.graphing.correctAnswer")}>
+                    <CorrectAnswersContainer
+                      minWidth="max-content"
+                      title={t("component.graphing.correctAnswer")}
+                      titleMargin="4px"
+                      noBackground
+                      showBorder
+                      padding="0px"
+                      margin="0px"
+                    >
                       <GraphDisplay
                         disableResponse
                         graphData={item}
@@ -513,6 +521,13 @@ class Graph extends Component {
                         <CorrectAnswersContainer
                           minWidth="max-content"
                           title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                          titleStyle={{
+                            margin: 4
+                          }}
+                          noBackground
+                          showBorder
+                          padding="0px"
+                          margin="0px"
                         >
                           <GraphDisplay
                             disableResponse

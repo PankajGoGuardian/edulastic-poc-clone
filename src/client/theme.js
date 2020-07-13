@@ -59,15 +59,15 @@ const iconDeleteColor = themeColor;
 const iconDeleteHoverColor = "#FF0057";
 const clearIconColor = "#FFFFFF";
 const rightIconColor = "#84cd36";
-const rightBgColor = "#D3FEA6";
+const rightBgColor = "#E2FCF3";
 const wrongIconColor = "#dd2e44";
 const wrongBgColor = "#FCE0E8";
 const rightBorderColor = "#5EB500";
 const wrongBorderColor = "#DD2E44";
 const noAnswerBgColor = "#f8f8f8";
 const noAnswerColor = "#b9b9b9";
-const checkColor = "#5EB500";
-const closeColor = "#DD2E44";
+const checkColor = "#36D29C";
+const closeColor = "#F25783";
 const questionTextColor = title;
 const questionTextBorderColor = "#d9d9d9";
 const questionLabelColor = "#8ed863";
@@ -118,7 +118,7 @@ const questionTextnormalFontSize = "14px";
 const questionTextlargeFontSize = "15px";
 const questionTextextraFontSize = "16px";
 const questionTexthugeFontSize = "17px";
-const questionTexticonFontSize = "20px";
+const questionTexticonFontSize = "13px";
 const largeFontSize = "26px";
 const headerLineHeight = "17px";
 
@@ -131,7 +131,7 @@ const brandRed = "#EE1658";
 const brandYellow = "#FDCC3B";
 const brandDarkGrey = "#434B5D";
 const brandGrey = "#e5e5e5";
-const brandLightGrey = "#f3f3f3";
+const brandLightGrey = "#F6F6F6";
 const brandWhite = "#ffffff";
 const warningColor = "#f4a700";
 const dangerColor = "#ee1658";
@@ -167,7 +167,7 @@ const tagUnactiveBgColor = "#AAAFB5";
 const tagUnactiveTextColor = "#AEAEAE";
 
 const chartGridColor = "#e4e4e4";
-const chartAxisLabelColor = "#aaafb5";
+const chartAxisLabelColor = "#434B5D";
 const chartTickColor = "#434b5d";
 const chartStockColor = "#42d184";
 const pastDueTagBackground = "#F6C7D5";
@@ -468,7 +468,7 @@ export const defaultTheme = {
   common: {
     addNewChoiceButtonFontFamily: "Open Sans",
     addNewChoiceButtonFontSize: linkFontSize,
-    addNewChoiceButtonFontWeight: linkFontSize,
+    addNewChoiceButtonFontWeight: semiBold,
     addNewChoiceButtonFontStyle: linkFontSize,
     addNewChoiceButtonFontStretch: linkFontSize,
     addNewChoiceButtonBorderColor: "none",
@@ -1164,7 +1164,7 @@ export const defaultTheme = {
       multiChoiceContentFontSize: questionTextnormalFontSize,
       multiChoiceContentFontWeight: semiBold,
       labelColor: labelStyle,
-      labelBorderColor: borderColor,
+      labelBorderColor: "#b9b9b9",
       labelBorderHoverColor: "none",
       labelCheckedBorderColor: rightBorderColor,
       labelCheckedBgColor: rightIconColor,
@@ -1265,6 +1265,8 @@ export const defaultTheme = {
     chart: {
       bgColor: brandWhite,
       axisLabelFontWeight: bold,
+      axisLabelFontSize: smallFontSize,
+      axisLabelColor: labelStyle,
       axisBorderColor: brandGrey,
       labelStrokeColor: textColor,
       labelBgHoverColor: white,

@@ -1,32 +1,23 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import produce from "immer";
+import { Tab, TabContainer, Tabs, FlexContainer, ItemLevelContext, getFormattedAttrId } from "@edulastic/common";
 import _, { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Tab, Tabs, TabContainer } from "@edulastic/common";
 
 import { Subtitle } from "../../styled/Subtitle";
-import {
-  setQuestionDataAction,
-  getQuestionDataSelector
-} from "../../../author/QuestionEditor/ducks";
-
+import { Label } from "../../styled/WidgetOptions/Label";
+import { PointsInput } from "../../styled/CorrectAnswerHeader";
 import CorrectAnswer from "./CorrectAnswer";
-import AddAlternateAnswerButton from "../../components/AddAlternateAnswerButton";
-import { AddAlternative } from "../../styled/ButtonStyles";
+import { AlternateAnswerLink } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
-  constructor(props) {
-    super(props);
+  state = {
+    currentTab: 0
+  };
 
-    this.state = {
-      value: 0
-    };
-    this.wrapperRef = React.createRef();
-  }
+  static contextType = ItemLevelContext;
 
   componentDidUpdate(prevProps) {
     const { options } = this.props;
@@ -45,62 +36,13 @@ class CorrectAnswers extends Component {
     }
   }
 
-  handleTabChange = value => {
-    this.setState({ value });
-  };
-
-  removeAltResponse = (evt, index) => {
-    evt.stopPropagation();
-    const { onRemoveAltResponses } = this.props;
-    const { value } = this.state;
-    if (value === index + 1) {
-      this.setState({
-        value: index
-      });
-    }
-    onRemoveAltResponses(index);
-  };
-
-  renderAltResponses = () => {
-    const { validation, t } = this.props;
-
-    if (validation.altResponses && validation.altResponses.length) {
-      return validation.altResponses.map((res, i) => (
-        <Tab
-          key={i}
-          label={`${t("component.correctanswers.alternate")} ${i + 1}`}
-          close
-          onClose={evt => {
-            this.removeAltResponse(evt, i);
-          }}
-          type="primary"
-          IconPosition="right"
-        />
-      ));
-    }
-    return null;
-  };
-
-  renderPlusButton = () => {
-    const { onAddAltResponses, validation, t } = this.props;
-    return (
-      <AddAlternateAnswerButton
-        onClickHandler={() => {
-          this.handleTabChange(validation.altResponses.length + 1);
-          onAddAltResponses();
-        }}
-        text={`+${t("component.correctanswers.alternativeAnswer")}`}
-      />
-    );
-  };
-
   updateCorrectValidationAnswers = answers => {
-    const { question, setQuestionData } = this.props;
-    const newData = cloneDeep(question);
+    const { item, setQuestionData } = this.props;
+    const newData = cloneDeep(item);
     const updatedValidation = {
-      ...question.data,
+      ...item.data,
       validResponse: {
-        score: question.validation.validResponse.score,
+        score: item.validation.validResponse.score,
         value: answers
       }
     };
@@ -108,132 +50,175 @@ class CorrectAnswers extends Component {
     setQuestionData(newData);
   };
 
-  updateAltCorrectValidationAnswers = (answers, tabIndex) => {
-    const { question, setQuestionData } = this.props;
-    const newData = cloneDeep(question);
+  addAltResponses = () => {
+    const { setQuestionData, item } = this.props;
+    const { currentTab } = this.state;
 
-    const updatedAltResponses = newData.validation.altResponses;
-    updatedAltResponses[tabIndex] = {
-      score: newData.validation.altResponses[tabIndex].score,
-      value: answers
-    };
+    setQuestionData(
+      produce(item, draft => {
+        const response = {
+          score: 1,
+          value: new Array(draft.responseIds.length).fill(null)
+        };
 
-    newData.validation.altResponses = updatedAltResponses;
-    setQuestionData(newData);
+        draft.validation.altResponses = draft.validation.altResponses || [];
+        draft.validation.altResponses.push(response);
+      })
+    );
+    this.setState({
+      currentTab: currentTab + 1
+    });
   };
 
-  handleUpdateCorrectScore = points => {
-    const { question, setQuestionData } = this.props;
-    const newData = cloneDeep(question);
-
-    newData.validation.validResponse.score = points;
-
-    setQuestionData(newData);
+  removeAltResponses = index => e => {
+    e?.stopPropagation();
+    const { setQuestionData, item } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.splice(index, 1);
+        }
+      })
+    );
+    this.setState({
+      currentTab: 0
+    });
   };
 
-  handleUpdateAltValidationScore = i => points => {
-    const { question, setQuestionData } = this.props;
-    const newData = cloneDeep(question);
-
-    newData.validation.altResponses[i].score = points;
-
-    setQuestionData(newData);
+  tabChange = value => {
+    this.setState({ currentTab: value });
   };
+
+  renderAltResponsesTabs = () => {
+    const { validation, t } = this.props;
+    if (validation.altResponses && validation.altResponses.length) {
+      return validation.altResponses.map((res, i) => (
+        <Tab
+          IconPosition="right"
+          key={i}
+          close
+          type="primary"
+          onClose={this.removeAltResponses(i)}
+          label={`${t("component.correctanswers.alternate")} ${i + 1}`}
+        />
+      ));
+    }
+    return null;
+  };
+
+  updateScore = e => {
+    if (!(e.target.value > 0)) {
+      return;
+    }
+    const points = parseFloat(e.target.value, 10);
+    const { item, setQuestionData } = this.props;
+    const { currentTab } = this.state;
+
+    setQuestionData(
+      produce(item, draft => {
+        if (currentTab === 0) {
+          draft.validation.validResponse.score = points;
+        } else if (currentTab > 0) {
+          draft.validation.altResponses[currentTab - 1].score = points;
+        }
+      })
+    );
+  };
+
+  updateAnswers = answers => {
+    const { item, setQuestionData } = this.props;
+    const { currentTab } = this.state;
+    setQuestionData(
+      produce(item, draft => {
+        if (currentTab === 0) {
+          draft.validation.validResponse.value = answers;
+        } else if (currentTab > 0) {
+          draft.validation.altResponses[currentTab - 1].value = answers;
+        }
+      })
+    );
+  };
+
+  get response() {
+    const { validation } = this.props;
+    const { currentTab } = this.state;
+    if (currentTab === 0) {
+      return validation.validResponse;
+    }
+    return validation.altResponses[currentTab - 1];
+  }
+
+  get tabs() {
+    const { validation } = this.props;
+    return validation?.altResponses?.length || 0;
+  }
 
   render() {
-    const {
-      validation,
-      stimulus,
-      options,
-      t,
-      hasGroupResponses,
-      configureOptions,
-      uiStyle,
-      responseIDs,
-      item
-    } = this.props;
-    const { value } = this.state;
+    const { stimulus, options, t, hasGroupResponses, configureOptions, uiStyle, responseIDs, item } = this.props;
+    const { currentTab } = this.state;
+    const itemLevelScoring = this.context;
+    const title = currentTab === 0 ? "correct" : "alternative";
+    const { response } = this;
+
     return (
-      <div ref={this.wrapperRef}>
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
-          )}
-        >
+      <Fragment>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
-        <AddAlternative>
-          {this.renderPlusButton()}
-          <Tabs
-            value={value}
-            onChange={this.handleTabChange}
-            style={{ marginBottom: 10, marginTop: 20 }}
-          >
-            <Tab
-              style={{ borderRadius: validation.altResponses <= 1 ? "4px" : "4px 0 0 4px" }}
-              label={t("component.correctanswers.correct")}
-              type="primary"
-            />
-            {this.renderAltResponses()}
+        <FlexContainer alignItems="flex-end" marginBottom="16px">
+          {itemLevelScoring || (
+            <FlexContainer flex={1} flexDirection="column" alignItems="flex-start">
+              <Label>{t("component.correctanswers.points")}</Label>
+              <PointsInput
+                id={getFormattedAttrId(`${title}-${t("component.correctanswers.points")}`)}
+                type="number"
+                data-cy="points"
+                value={response.score}
+                onChange={this.updateScore}
+                onBlur={this.updateScore}
+                disabled={false}
+                min={0}
+                step={0.5}
+              />
+            </FlexContainer>
+          )}
+          <FlexContainer flex={1}>
+            <AlternateAnswerLink onClick={this.addAltResponses} variant="extendedFab" data-cy="alternate">
+              {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+            </AlternateAnswerLink>
+          </FlexContainer>
+        </FlexContainer>
+
+        {this.tabs >= 1 && (
+          <Tabs value={currentTab} onChange={this.tabChange} mb="16px">
+            <Tab type="primary" data_cy="correct" label={t("component.correctanswers.correct")} />
+            {this.renderAltResponsesTabs()}
           </Tabs>
-        </AddAlternative>
-        {value === 0 && (
-          <TabContainer>
-            <CorrectAnswer
-              key={options}
-              response={validation.validResponse}
-              stimulus={stimulus}
-              options={options}
-              uiStyle={uiStyle}
-              configureOptions={configureOptions}
-              hasGroupResponses={hasGroupResponses}
-              onUpdateValidationValue={this.updateCorrectValidationAnswers}
-              onUpdatePoints={this.handleUpdateCorrectScore}
-              responseIDs={responseIDs}
-              item={item}
-            />
-          </TabContainer>
         )}
-        {validation.altResponses &&
-          !!validation.altResponses.length &&
-          validation.altResponses.map((alter, i) => {
-            if (i + 1 === value) {
-              return (
-                <TabContainer key={i}>
-                  <CorrectAnswer
-                    key={options}
-                    response={alter}
-                    stimulus={stimulus}
-                    options={options}
-                    configureOptions={configureOptions}
-                    hasGroupResponses={hasGroupResponses}
-                    uiStyle={uiStyle}
-                    onUpdateValidationValue={answers =>
-                      this.updateAltCorrectValidationAnswers(answers, i)
-                    }
-                    onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                    responseIDs={responseIDs}
-                    item={item}
-                  />
-                </TabContainer>
-              );
-            }
-            return null;
-          })}
-      </div>
+        <TabContainer padding="0px">
+          <CorrectAnswer
+            response={response}
+            stimulus={stimulus}
+            options={options}
+            uiStyle={uiStyle}
+            configureOptions={configureOptions}
+            hasGroupResponses={hasGroupResponses}
+            onUpdateValidationValue={this.updateAnswers}
+            responseIDs={responseIDs}
+            item={item}
+          />
+        </TabContainer>
+      </Fragment>
     );
   }
 }
 
 CorrectAnswers.propTypes = {
-  onAddAltResponses: PropTypes.func.isRequired,
-  onRemoveAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   validation: PropTypes.object,
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
-  question: PropTypes.object.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
@@ -257,14 +242,4 @@ CorrectAnswers.defaultProps = {
   }
 };
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  connect(
-    state => ({
-      question: getQuestionDataSelector(state)
-    }),
-    { setQuestionData: setQuestionDataAction }
-  )
-);
-
-export default enhance(CorrectAnswers);
+export default withNamespaces("assessment")(CorrectAnswers);

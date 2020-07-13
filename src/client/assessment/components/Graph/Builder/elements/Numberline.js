@@ -63,8 +63,8 @@ const onHandler = board => {
     {
       straightFirst: false,
       straightLast: false,
-      firstArrow: leftArrow === true ? { size: 10 } : false,
-      lastArrow: rightArrow === true ? { size: 10 } : false,
+      firstArrow: leftArrow === true ? { size: 8 } : false,
+      lastArrow: rightArrow === true ? { size: 8 } : false,
       ...Colors.numberline
     }
   );
@@ -134,7 +134,7 @@ const onHandler = board => {
   if (minorTicks) {
     const minors = createMinorTicks(minorTicks, ticks.sort((a, b) => a - b));
     board.$board.create("ticks", [newAxis, minors], {
-      ...Colors.numberline,
+      ...Colors.minorTick,
       majorHeight: 10,
       visible: showTicks
     });
@@ -232,26 +232,25 @@ const onHandler = board => {
   }
 
   if (!labelShowMin) {
-    let item = labels[0];
+    const item = labels[0];
     if (item === xMin && !specificTicks.includes(item)) {
       labels[0] = "";
     }
   }
 
   if (!labelShowMax) {
-    let item = labels[labels.length - 1];
+    const item = labels[labels.length - 1];
     if (item === xMax && !specificTicks.includes(item)) {
       labels[labels.length - 1] = "";
     }
   }
 
   board.$board.create("ticks", [newAxis, ticks], {
-    ...Colors.numberline,
+    ...Colors.majorTick,
     visible: true,
     anchor: "middle",
     insertTicks: false,
     tickEndings: [1, 1],
-    majorHeight: 25,
     drawLabels: true,
     ticksDistance,
     label: {
@@ -263,7 +262,7 @@ const onHandler = board => {
       cssClass: "numberline-fraction",
       highlightCssClass: "numberline-fraction"
     },
-    generateLabelText: function(a, b, label) {
+    generateLabelText(a, b, label) {
       return toFractionHTML(label, fractionsFormat);
     },
     labels

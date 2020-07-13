@@ -252,7 +252,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
         .fr {
           &-box {
             background: ${greyThemeLighter};
-            min-height: 120px;
+            min-height: 102px;
             border-radius: 0px;
             border: 1px solid ${greyThemeLight};
             display: flex;
@@ -265,16 +265,16 @@ const BackgroundStyleWrapper = styled.div.attrs({
           &-view {
             width: 100%;
             min-height: 100%;
-            padding: 20px 23px;
+            padding: 8px 14px;
             overflow: auto;
           }
         }
       `;
     } else {
-    /**
-     * need to show scroll if math content overflows
-     * @see https://snapwiz.atlassian.net/browse/EV-10575
-     */
+      /**
+       * need to show scroll if math content overflows
+       * @see https://snapwiz.atlassian.net/browse/EV-10575
+       */
       return `
       .fr-box {
           max-width: 100%;

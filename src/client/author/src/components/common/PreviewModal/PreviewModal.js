@@ -442,7 +442,6 @@ class PreviewModal extends React.Component {
             ) : (
               <EduButton
                 isBlue
-                isGhost={!this.isAddOrRemove}
                 height="28px"
                 justifyContent="center"
                 onClick={() => {

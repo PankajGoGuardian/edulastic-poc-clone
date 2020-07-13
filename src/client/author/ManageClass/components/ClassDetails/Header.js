@@ -19,7 +19,6 @@ import { DropMenu, MenuItems, CaretUp } from "./styled";
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
-import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 
 const modalStatus = {};
 
@@ -38,7 +37,6 @@ const Header = ({
   added,
   archiveClass,
   location,
-  setAssignmentFilters,
   history,
   entity
 }) => {
@@ -122,8 +120,8 @@ const Header = ({
       testType: "",
       termId: ""
     };
+    sessionStorage.setItem("filters[Assignments]", JSON.stringify(filter));
     history.push("/author/assignments");
-    setAssignmentFilters(filter);
   };
 
   const showSyncButtons = type === "class" && active === 1;
@@ -255,11 +253,8 @@ Header.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  connect(
-    state => ({
-      user: state?.user?.user
-    }),
-    { setAssignmentFilters: setAssignmentFiltersAction }
-  )
+  connect(state => ({
+    user: state?.user?.user
+  }))
 );
 export default enhance(Header);

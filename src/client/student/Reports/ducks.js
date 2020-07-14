@@ -106,7 +106,7 @@ const statusFilter = filterType => assignment => {
     case FILTERS.MISSED:
       return isAbsent;
     case FILTERS.SUBMITTED:
-      return isSubmitted && !isGraded;
+      return isSubmitted && !isGraded && !isAbsent;
     case FILTERS.GRADED:
       return isGraded;
     default:
@@ -161,8 +161,8 @@ export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
   assignments => {
     let MISSED = 0;
-      let SUBMITTED = 0;
-      let GRADED = 0;
+    let SUBMITTED = 0;
+    let GRADED = 0;
     assignments.forEach(assignment => {
       const lastAttempt = last(assignment.reports) || {};
       const isSubmitted =

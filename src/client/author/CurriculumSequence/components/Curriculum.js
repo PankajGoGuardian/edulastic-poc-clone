@@ -1,6 +1,6 @@
 import { themeColor, white } from "@edulastic/colors";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Prompt } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
@@ -126,7 +126,7 @@ const Curriculum = props => {
   };
 
   const {
-    curriculum: { modules } = {},
+    curriculum = {},
     onSortEnd,
     manageContentDirty,
     resetDestination,
@@ -139,23 +139,80 @@ const Curriculum = props => {
     urlHasUseThis
   } = props;
 
-  useEffect(() => () => resetDestination({ isAuthoring: !urlHasUseThis }), []);
+  const { _id: playlistId, modules = [] } = curriculum;
+
+  const [modulesContainerRef, setModulesContainerRef] = useState();
+
+  const onRefChange = useCallback(node => setModulesContainerRef(node), []);
+
+  useEffect(() => {
+    const { parentElement } = modulesContainerRef?.container?.parentElement || {};
+    const persistObj = JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`));
+    if (parentElement && persistObj) {
+      parentElement.scrollTo({ top: persistObj?.currentOffsetTop || 0, behavior: "smooth" });
+    }
+    return () => resetDestination({ isAuthoring: !urlHasUseThis });
+  }, [modulesContainerRef]);
+
+  const handleActionClick = (e, destinaion, assignmentId, classId, moduleId, contentId) => {
+    // prevent Event Bubbling
+    e.preventDefault();
+    e.stopPropagation();
+
+    let currentOffsetTop = 0;
+    const { childNodes, parentElement } = modulesContainerRef?.container || {};
+    let depth = modules.findIndex(({ _id }) => _id === moduleId);
+    // Calculate the sum of heights of each childNode thats has -ve offsetTop
+    if (depth > 0 && childNodes) {
+      while (depth >= 0) {
+        const node = childNodes?.[depth];
+        if (node) {
+          currentOffsetTop += node.scrollHeight;
+        }
+        --depth;
+      }
+    }
+
+    // subract half of viewport height, so that content renders at the center
+    if (parentElement) {
+      currentOffsetTop -= parentElement?.parentElement?.clientHeight / 2 || 0;
+    }
+
+    const persistObj = {
+      moduleId,
+      contentId,
+      currentOffsetTop
+    };
+
+    // persist the current minimal state in session
+    sessionStorage.setItem(`playlist/${playlistId}`, JSON.stringify(persistObj));
+    history.push({
+      pathname: `/author/${destinaion}/${assignmentId}/${classId}`
+    });
+  };
 
   return (
-    <SortableContainer onSortEnd={onSortEnd} lockAxis="y" lockOffset={["0%", "0%"]} lockToContainerEdges useDragHandle>
+    <SortableContainer
+      ref={onRefChange}
+      onSortEnd={onSortEnd}
+      lockAxis="y"
+      lockOffset={["0%", "0%"]}
+      lockToContainerEdges
+      useDragHandle
+    >
       <Prompt when={manageContentDirty} message={() => "Changes done here are not saved. Do you want to leave?"} />
-      {modules &&
-        modules.map((moduleItem, index) => (
-          <SortableItem
-            moduleItem={moduleItem}
-            index={index}
-            id={index}
-            onDrop={onDrop}
-            onDropOriginal={props.onDrop}
-            addModule={openAddModuleModal}
-            {...props}
-          />
-        ))}
+      {modules.map((moduleItem, index) => (
+        <SortableItem
+          moduleItem={moduleItem}
+          index={index}
+          id={index}
+          onDrop={onDrop}
+          onDropOriginal={props.onDrop}
+          addModule={openAddModuleModal}
+          handleActionClick={handleActionClick}
+          {...props}
+        />
+      ))}
       {!isStudent &&
         hasEditAccess &&
         (isManageContentActive || history.location.state?.editFlow || status === "draft") &&

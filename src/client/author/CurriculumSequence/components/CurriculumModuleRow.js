@@ -213,18 +213,12 @@ class ModuleRow extends Component {
     });
   };
 
-  handleActionClick = (e, destinaion, assignmentId, classId) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const { history } = this.props;
-    history.push({
-      pathname: `/author/${destinaion}/${assignmentId}/${classId}`
-    });
-  };
-
   setAssignmentDropdown = id => {
     const { currentAssignmentId } = this.state;
-    if (currentAssignmentId.includes(id)) {
+    const { playlistId } = this.props;
+    const { contentId } = JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
+    sessionStorage.removeItem(`playlist/${playlistId}`);
+    if (currentAssignmentId.includes(id) || id === contentId) {
       const prevState = [...currentAssignmentId];
       prevState.splice(currentAssignmentId.find(x => x === id), 1);
       this.setState({ currentAssignmentId: prevState });
@@ -439,7 +433,8 @@ class ModuleRow extends Component {
       userRole,
       fromPlaylist,
       isPlaylistDetailsPage,
-      isSparkMathPlaylist
+      isSparkMathPlaylist,
+      handleActionClick
     } = this.props;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignTest } = this;
@@ -534,7 +529,9 @@ class ModuleRow extends Component {
                   };
 
                   const progressData = getProgressData(playlistMetrics, _id, contentId, assignments);
-
+                  const { contentId: _contentId = "", moduleId: _moduleId = "" } =
+                    JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
+                  const isPrevActiveContent = contentId === _contentId && module._id === _moduleId;
                   const assignmentRows = assignments.flatMap(assignment => {
                     const { testType, _id: assignmentId, maxAttempts, assignedBy } = assignment;
                     return assignment.class.map(
@@ -650,7 +647,7 @@ class ModuleRow extends Component {
                                 >
                                   <IconCheckSmall color={white} />
                                   &nbsp;&nbsp;
-                                  {currentAssignmentId.includes(moduleData.contentId)
+                                  {currentAssignmentId.includes(moduleData.contentId) || isPrevActiveContent
                                     ? "HIDE ASSIGNMENTS"
                                     : "SHOW ASSIGNMENTS"}
                                 </Button>
@@ -798,9 +795,15 @@ class ModuleRow extends Component {
                     </FlexContainer>
                   );
 
-                  const assignmentsRow = currentAssignmentId.includes(moduleData.contentId) && !isStudent && (
-                    <AssignmentsClasses assignmentRows={assignmentRows} handleActionClick={this.handleActionClick} />
-                  );
+                  const assignmentsRow = (currentAssignmentId.includes(moduleData.contentId) || isPrevActiveContent) &&
+                    !isStudent && (
+                      <AssignmentsClasses
+                        moduleId={module?._id}
+                        contentId={moduleData.contentId}
+                        assignmentRows={assignmentRows}
+                        handleActionClick={handleActionClick}
+                      />
+                    );
 
                   if (mode === "embedded" && !(isStudent && moduleData.hidden)) {
                     return (

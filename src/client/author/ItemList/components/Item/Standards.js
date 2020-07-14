@@ -37,16 +37,18 @@ const Standards = ({ item, interestedCurriculums, search }) => {
     if (!domains.length) return null;
     domains.map(el => (el.standards && el.standards.length ? standards.push(...el.standards) : null));
   }
-  // Bring the searching standard to the starting position
-  const searchMatches = [];
-  const standardsById = keyBy(standards, "id") || {};
-  for (const std of standardIds) {
-    if (standardsById[std]) {
-      searchMatches.push(standardsById[std]);
-      delete standardsById[std];
+  if (standardIds?.length) {
+    // Bring the searching standard to the starting position
+    const searchMatches = [];
+    const standardsById = keyBy(standards, "id") || {};
+    for (const std of standardIds) {
+      if (standardsById[std]) {
+        searchMatches.push(standardsById[std]);
+        delete standardsById[std];
+      }
     }
+    standards = [...searchMatches, ...(Object.values(standardsById) || [])];
   }
-  standards = [...searchMatches, ...Object.values(standardsById)];
 
   return standards.length ? <Tags tags={standards.map(_item => ({ ..._item, tagName: _item.name }))} show={2} /> : null;
 };

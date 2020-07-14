@@ -68,14 +68,25 @@ const AssessmentPlayer = ({
     return "Are you sure you want to quit";
   };
 
+  const confirmBeforeGoBack = e => {
+    e.preventDefault();
+    if (window.confirm("You are navigating away and you will quit the assignment. Are you sure?")) {
+      restProps.history.push("/");
+    } else {
+      window.history.pushState(null, null, window.location.pathname);
+    }
+  };
+
   useEffect(() => {
     if (isPublic) {
       // can't return undefined from useEffect hook
       return () => {};
     }
     window.addEventListener("beforeunload", confirmBeforeQuitting);
+    window.addEventListener("popstate", confirmBeforeGoBack);
     return () => {
       window.removeEventListener("beforeunload", confirmBeforeQuitting);
+      window.removeEventListener("popstate", confirmBeforeGoBack);
     };
   }, []);
 

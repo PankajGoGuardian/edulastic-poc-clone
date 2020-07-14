@@ -140,7 +140,7 @@ class Item extends Component {
     const { features, item, userId, history, openPreviewModal } = this.props;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     // Author can only edit if owner
-    if (features.isCurator || (features.isPublisherAuthor && owner)) {
+    if (features.isPublisherAuthor && owner) {
       return history.push(`/author/items/${item._id}/item-detail`);
     }
     openPreviewModal();

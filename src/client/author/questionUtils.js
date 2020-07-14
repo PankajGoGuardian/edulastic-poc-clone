@@ -529,7 +529,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
   }
 
   // check for empty correct answers
-  if (!hasEmptyAnswers(item)) return [true, "Correct/Alternate answers should be set"];
+  if (hasEmptyAnswers(item)) return [true, "Correct/Alternate answers should be set"];
 
   return [false];
 };

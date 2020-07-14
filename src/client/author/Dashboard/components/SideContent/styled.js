@@ -19,7 +19,7 @@ export const SliderButton = styled(Button)`
 export const SideContentContainer = styled.div`
   display: flex;
   position: fixed;
-  transform: ${props => (props.show ? `translate(0%)` : `translate(88%)`)};
+  transform: ${props => (props.show ? `translate(0%)` : props.showSliderBtn ? `translate(88%)` : "translate(100%)")};
   transition: all 0.5s ease-in-out;
   z-index: 300;
   top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;

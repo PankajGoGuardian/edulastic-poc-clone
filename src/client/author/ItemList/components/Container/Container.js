@@ -72,11 +72,13 @@ import {
 } from "./styled";
 import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../HeaderFilter";
+import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    isShowFilter: true
+    isShowFilter: true,
+    openSidebar: false
   };
 
   componentDidMount() {
@@ -331,6 +333,8 @@ class Contaier extends Component {
     createTestFromCart();
   };
 
+  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
   renderCartButton = () => {
     const { approveOrRejectMultipleItem, userRole } = this.props;
     if (userRole === roleuser.EDULASTIC_CURATOR) return null;
@@ -368,9 +372,10 @@ class Contaier extends Component {
       userRole
     } = this.props;
 
-    const { isShowFilter } = this.state;
+    const { isShowFilter, openSidebar } = this.state;
     return (
       <div>
+        <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
         <SelectCollectionModal contentType="TESTITEM" />
         <ListHeader
           onCreate={this.handleCreate}
@@ -381,6 +386,7 @@ class Contaier extends Component {
           renderExtra={this.renderCartButton}
           renderFilterIcon={this.renderFilterIcon}
           newTest={this.onClickNewTest}
+          toggleSidebar={this.toggleSidebar}
         />
         <Container>
           {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (

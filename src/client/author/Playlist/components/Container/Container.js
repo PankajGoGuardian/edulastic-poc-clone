@@ -71,6 +71,7 @@ import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCo
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
+import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 
 function getUrlFilter(filter) {
   if (filter === "AUTHORED_BY_ME") {
@@ -113,7 +114,8 @@ class TestList extends Component {
   state = {
     standardQuery: "",
     blockStyle: "tile",
-    isShowFilter: false
+    isShowFilter: false,
+    openSidebar: false
   };
 
   getUrlToPush(page = undefined) {
@@ -369,10 +371,12 @@ class TestList extends Component {
     });
   };
 
+  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
   render() {
     const { page, limit, count, creating, playListFilters, t, isProxyUser } = this.props;
 
-    const { blockStyle, isShowFilter } = this.state;
+    const { blockStyle, isShowFilter, openSidebar } = this.state;
     const { searchString } = playListFilters;
 
     return (
@@ -402,7 +406,9 @@ class TestList extends Component {
               />
             </StyleChangeWrapper>
           )}
+          toggleSidebar={this.toggleSidebar}
         />
+        <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
         <Container>
           <MobileFilter>
             <Input.Search

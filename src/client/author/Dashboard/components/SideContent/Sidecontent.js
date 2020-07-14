@@ -2,7 +2,7 @@ import { themeColor, white } from "@edulastic/colors";
 import { OnWhiteBgLogo, CustomModalStyled } from "@edulastic/common";
 import { IconPlayFilled } from "@edulastic/icons";
 import { Col, Icon, Row } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { isProxyUser as isProxyUserSelector } from "../../../../student/Login/ducks";
@@ -72,15 +72,25 @@ const QuestionBanks = () => (
 
 const SideContent = props => {
   const [isVideoModalVisible, setVideoModalVisible] = useState(false);
-  const [showSideContent, toggleSideContent] = useState(false);
-  const { isProxyUser } = props;
+  const [showSideContent, toggleSideContent] = useState(props.open);
+
+  useEffect(() => {
+    toggleSideContent(props.open);
+  }, [props.open]);
+
+  const handleSliderClick = () => {
+    const { onClick } = props;
+    toggleSideContent(!showSideContent);
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const { isProxyUser, showSliderBtn = true } = props;
+
   return (
-    <SideContentContainer show={showSideContent} isProxyUser={isProxyUser}>
-      <SliderButton
-        onClick={() => {
-          toggleSideContent(!showSideContent);
-        }}
-      >
+    <SideContentContainer show={showSideContent} isProxyUser={isProxyUser} showSliderBtn={showSliderBtn}>
+      <SliderButton onClick={handleSliderClick}>
         <Icon type={showSideContent ? "right" : "left"} />
       </SliderButton>
       <SideContentWrapper show={showSideContent}>

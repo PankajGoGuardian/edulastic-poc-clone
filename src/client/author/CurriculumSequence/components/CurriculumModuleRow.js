@@ -3,6 +3,7 @@ import { FlexContainer, notification } from "@edulastic/common";
 import { testActivityStatus, roleuser } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
 import { Avatar, Button, Dropdown, Menu, Col } from "antd";
+import moment from "moment";
 import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
@@ -235,7 +236,7 @@ class ModuleRow extends Component {
 
     if (isAssigned) {
       // TODO: filter out the assignments in assignmentRows by classIds in case of multiple assignments
-      const { testType, assignmentId, classId, maxAttempts } = assignmentRows[0] || {};
+      const { testType, assignmentId, classId, maxAttempts, status } = assignmentRows[0] || {};
       uta = {
         testId,
         classId,
@@ -276,7 +277,18 @@ class ModuleRow extends Component {
         uta.text = "RESUME ASSIGNMENT";
         uta.action = () => resumeAssignment(uta);
       } else {
-        uta.text = "START ASSIGNMENT";
+        const isAssignmentNotOpen = status === "NOT OPEN";
+        uta.text = isAssignmentNotOpen ? "NOT AVAILABLE" : "START ASSIGNMENT";
+        const classDetails =
+          isAssignmentNotOpen &&
+          moduleData?.assignments?.[0]?.class?.find(({ _id }) =>
+            [uta.groupId, groupId, playlistClassList[0]].includes(_id)
+          );
+        if (classDetails && classDetails.startDate && classDetails.status === "NOT OPEN") {
+          const startDate = moment(classDetails.startDate).format("MM/DD/YYYY HH:mm");
+          uta.title = `Open Date : ${startDate}`;
+          uta.disabled = true;
+        }
         uta.action = () => startAssignment(uta);
       }
     } else {
@@ -694,9 +706,11 @@ class ModuleRow extends Component {
                           <LastColumn width={!urlHasUseThis || isStudent ? "auto" : null}>
                             {!isParentRoleProxy && (
                               <AssignmentButton assigned={false}>
-                                <Button data-cy={uta.text} onClick={uta.action}>
-                                  {uta.text}
-                                </Button>
+                                <Tooltip title={uta.title}>
+                                  <Button data-cy={uta.text} onClick={uta.action} disabled={uta.disabled}>
+                                    {uta.text}
+                                  </Button>
+                                </Tooltip>
                               </AssignmentButton>
                             )}
                             {uta.retake && !isParentRoleProxy && (

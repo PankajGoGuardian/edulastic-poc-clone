@@ -960,6 +960,8 @@ function* useThisPlayListSaga({ payload }) {
     } else if (onChange && !urlHasUseThis) {
       yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary", fromUseThis } }));
     } else {
+      yield put(toggleManageContentActiveAction(false));
+      yield put(setActiveRightPanelViewAction("summary"));
       yield put(
         push({
           pathname: `/author/playlists/playlist/${_id}/use-this`,

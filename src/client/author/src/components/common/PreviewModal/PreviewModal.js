@@ -27,7 +27,7 @@ import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPag
 import { getTestSelector, setTestDataAndUpdateAction, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
 import { clearAnswersAction } from "../../../actions/answers";
 import { changePreviewAction, changeViewAction } from "../../../actions/view";
-import { getCollectionsSelector, getUserFeatures, getIsCurator } from "../../../selectors/user";
+import { getCollectionsSelector, getUserFeatures, isPublisherUserSelector } from "../../../selectors/user";
 import { allowDuplicateCheck } from "../../../utils/permissionCheck";
 import ScoreBlock from "../ScoreBlock";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
@@ -370,7 +370,7 @@ class PreviewModal extends React.Component {
       testAssignments,
       userRole,
       deleting,
-      isCurator
+      isPublisherUser
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField, fullModal, isRejectMode } = this.state;
@@ -383,7 +383,7 @@ class PreviewModal extends React.Component {
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
     const isOwner = authors.some(author => author._id === userId);
 
-    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner || isCurator;
+    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner || isPublisherUser;
 
     const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
@@ -696,7 +696,7 @@ const enhance = compose(
         test: getTestSelector(state),
         testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state),
-        isCurator: getIsCurator(state),
+        isPublisherUser: isPublisherUserSelector(state),
         deleting: getItemDeletingSelector(state)
       };
     },

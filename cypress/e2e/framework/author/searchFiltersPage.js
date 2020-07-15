@@ -1,5 +1,6 @@
 import CypressHelper from "../util/cypressHelpers";
 import { DOK } from "../constants/questionAuthoring";
+import Helpers from "../util/Helpers";
 
 export default class SearchFilters {
   // *** ELEMENTS START ***
@@ -70,10 +71,11 @@ export default class SearchFilters {
   };
 
   clearAll = () => {
+    const dummyCharToType = Helpers.getRamdomString(2).toUpperCase();
     this.routeSearch();
-    this.typeInSearchBox("E");
+    this.typeInSearchBox(dummyCharToType);
     cy.get('[data-cy="clearAll"]').click({ force: true });
-    cy.wait("@search").then(() => this.getSearchBar().should("not.contain", "E"));
+    cy.wait("@search").then(() => this.getSearchBar().should("not.contain", dummyCharToType));
   };
 
   setGrades = grades => {

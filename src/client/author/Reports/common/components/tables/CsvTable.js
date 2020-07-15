@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from "react";
 import { filter, includes } from "lodash";
 import styled from "styled-components";
 import { convertTableToCSV } from "../../util";
+import { getPrintingState } from "../../../ducks";
+import { connect } from "react-redux";
 
 const defaultPagination = {
   hideOnSinglePage: true,
@@ -22,6 +24,12 @@ const CsvTable = ({
 
   const _pagination = pagination ? { ...pagination } : pagination;
   let _columns = [...columns];
+  if (restProps.isPrinting) {
+    _columns = _columns.map(c => {
+      delete c.fixed;
+      return c;
+    })
+  }
 
   if (pagination && typeof _pagination.pageSize === "undefined") {
     _pagination.pageSize = 50;
@@ -57,7 +65,22 @@ const StyledTableWrapper = styled.div`
     .custom-table-tooltip {
       display: none;
     }
+    colgroup {
+      display: none;
+    }
+    table {
+      overflow-wrap: break-word;
+    }
+  }
+
+  .ant-table-layout-fixed .ant-table-scroll .ant-table-body {
+    overflow-x: hidden !important;
   }
 `;
 
-export default CsvTable;
+export default connect(
+  state => ({
+    isPrinting: getPrintingState(state)
+  }),
+  null
+)(CsvTable);

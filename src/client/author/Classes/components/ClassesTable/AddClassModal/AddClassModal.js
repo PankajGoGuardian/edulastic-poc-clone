@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { get, debounce, uniq } from "lodash";
-import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
+import { Form, Input, Row, Col, Select, Spin } from "antd";
 import { notification } from "@edulastic/common";
-import { schoolApi, userApi, tagsApi, courseApi } from "@edulastic/api";
+import { schoolApi, userApi, tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
 import selectsData from "../../../../TestPage/components/common/selectsData";
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
@@ -120,7 +120,7 @@ class AddClassModal extends Component {
     this.setState({ teacherList: teacherListData, fetchingTeacher: false });
   };
 
-  handleTeacherChange = value => {
+  handleTeacherChange = () => {
     // this code was commented out since the form handles setting of fields automatically, and
     // there is no need to manually set fields
     // this.props.form.setFieldsValue({ teacher: value });
@@ -201,7 +201,7 @@ class AddClassModal extends Component {
                     message: t("class.components.addclass.validation.class")
                   }
                 ]
-              })(<Input placeholder={t("class.components.addclass.classname")} />)}
+              })(<Input placeholder={t("class.components.addclass.classname")} maxLength={128} />)}
             </ModalFormItem>
           </Col>
         </Row>

@@ -134,7 +134,6 @@ const PerformanceByStudents = ({
   const onCsvConvert = data => downloadCSV(`Performance by Students.csv`, data);
 
   const _columns = getColumns(columns, res && res.testName, role, location, pageTitle, t);
-
   const testName = get(settings, "selectedTest.title", "");
 
   const checkedStudentsForModal = tableData

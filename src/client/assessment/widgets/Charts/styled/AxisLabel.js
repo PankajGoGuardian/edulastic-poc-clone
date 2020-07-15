@@ -4,18 +4,19 @@ export const AxisLabel = styled.div`
   display: flex;
   text-transform: uppercase;
   font-weight: ${({ theme }) => theme.widgets.chart.axisLabelFontWeight};
-  font-size: ${({ theme }) => theme.size6}px;
+  font-size: ${({ theme }) => theme.widgets.chart.axisLabelFontSize};
+  color: ${({ theme }) => theme.widgets.chart.axisLabelColor};
   ${({ axis }) => {
     if (axis === "y") {
       return `
-        width: 40px;
+        width: 1rem;
         white-space: nowrap;
+        margin-right: 16px;
         transform: rotate(-90deg);
         justify-content: flex-start;    
       `;
     }
     return `
-      margin-bottom: 20px;
       justify-content: center;
     `;
   }};

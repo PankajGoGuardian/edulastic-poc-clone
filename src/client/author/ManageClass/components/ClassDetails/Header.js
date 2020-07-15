@@ -11,14 +11,7 @@ import { compose } from "redux";
 import { Dropdown } from "antd";
 
 import GoogleLogin from "react-google-login";
-import {
-  IconGoogleClassroom,
-  IconClever,
-  IconPlusCircle,
-  IconPencilEdit,
-  IconRemove,
-  IconAssignment
-} from "@edulastic/icons";
+import { IconGoogleClassroom, IconClever, IconPlusCircle, IconPencilEdit, IconAssignment } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
 import { canvasApi } from "@edulastic/api";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -26,7 +19,6 @@ import { DropMenu, MenuItems, CaretUp } from "./styled";
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
-import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 
 const modalStatus = {};
 
@@ -45,7 +37,6 @@ const Header = ({
   added,
   archiveClass,
   location,
-  setAssignmentFilters,
   history,
   entity
 }) => {
@@ -129,13 +120,13 @@ const Header = ({
       testType: "",
       termId: ""
     };
+    sessionStorage.setItem("filters[Assignments]", JSON.stringify(filter));
     history.push("/author/assignments");
-    setAssignmentFilters(filter);
   };
 
   const showSyncButtons = type === "class" && active === 1;
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId;
-  const showGoogleSyncButton = showSyncButtons && !cleverId && (allowGoogleLogin !== false);
+  const showGoogleSyncButton = showSyncButtons && !cleverId && allowGoogleLogin !== false;
   const showCanvasSyncButton = showSyncButtons && !cleverId && allowCanvasLogin;
 
   return (
@@ -195,17 +186,17 @@ const Header = ({
                 <CaretUp className="fa fa-caret-up" />
                 <MenuItems onClick={onEdit}>
                   <IconPencilEdit />
-                  <span>Edit Class</span>
+                  <span>{type === "class" ? "Edit Class" : "Edit Group"}</span>
                 </MenuItems>
                 <MenuItems onClick={() => setShowModal(true)}>
                   <IconArchive />
-                  <span>Archive Class</span>
+                  <span>{type === "class" ? "Archive Class" : "Archive Group"}</span>
                 </MenuItems>
                 <MenuItems onClick={handleActionMenuClick}>
                   <IconPlusCircle />
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
-                
+
                 {/*
                 <MenuItems>
                   <IconRemove />
@@ -218,6 +209,7 @@ const Header = ({
                 </MenuItems>
               </DropMenu>
             }
+            getPopupContainer={trigger => trigger.parentNode}
             placement="bottomRight"
           >
             <EduButton isBlue data-cy="headerDropDown" IconBtn>
@@ -262,11 +254,8 @@ Header.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  connect(
-    state => ({
-      user: state?.user?.user
-    }),
-    { setAssignmentFilters: setAssignmentFiltersAction }
-  )
+  connect(state => ({
+    user: state?.user?.user
+  }))
 );
 export default enhance(Header);

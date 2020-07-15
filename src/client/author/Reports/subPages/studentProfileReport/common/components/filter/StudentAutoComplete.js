@@ -27,7 +27,8 @@ const StudentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { districtId, institutionIds } = userOrgData;
+    const { districtIds, institutionIds } = userOrgData;
+    const districtId = districtIds?.[0];
     const q = {
       limit: 20,
       page: 0,
@@ -90,13 +91,13 @@ const StudentAutoComplete = ({
   // build dropdown data
   const dropdownData = searchTerms.text
     ? [
-        <AutoComplete.OptGroup key="studentList" label="Students [Type to search]">
-          {studentList.map(item => (
-            <AutoComplete.Option key={item._id} title={getFullName(item)}>
-              {getFullName(item)}
-            </AutoComplete.Option>
+      <AutoComplete.OptGroup key="studentList" label="Students [Type to search]">
+        {studentList.map(item => (
+          <AutoComplete.Option key={item._id} title={getFullName(item)}>
+            {getFullName(item)}
+          </AutoComplete.Option>
           ))}
-        </AutoComplete.OptGroup>
+      </AutoComplete.OptGroup>
       ]
     : [];
 

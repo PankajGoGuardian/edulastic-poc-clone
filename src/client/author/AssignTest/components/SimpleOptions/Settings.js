@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Row, Col, Radio, Select, Icon, Input, Tooltip, Modal } from "antd";
 import { green, red, blueBorder, themeColor, lightGrey9 } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
-import { RadioBtn, CheckboxLabel, notification } from "@edulastic/common";
+import { RadioBtn, CheckboxLabel, notification, SelectInputStyled, NumberInputStyled } from "@edulastic/common";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 import { withRouter } from "react-router-dom";
@@ -15,11 +15,9 @@ import {
   StyledRowSelect,
   SettingsWrapper,
   Password,
-  StyledSelect,
   StyledDiv,
   CheckBoxWrapper,
   MessageSpan,
-  MaxAttemptIInput,
   DivBlock,
   Label,
   AdvancedButton,
@@ -172,7 +170,7 @@ const Settings = ({
           setTimedtestConfirmed(true);
           Modal.destroyAll();
         },
-        onCancel: () => {},
+        onCancel: () => { },
         okText: "Proceed",
         centered: true,
         width: 500,
@@ -279,19 +277,21 @@ const Settings = ({
               <Label>RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Label>
             </Col>
             <Col span={12}>
-              <StyledSelect
+              <SelectInputStyled
                 data-cy="selectRelaseScore"
                 placeholder="Please select"
                 cache="false"
                 value={releaseScore}
                 onChange={changeField("releaseScore")}
+                noBorder
+                height="30px"
               >
                 {_releaseGradeKeys.map((item, index) => (
                   <Select.Option data-cy="class" key={index} value={item}>
                     {releaseGradeTypes[item]}
                   </Select.Option>
                 ))}
-              </StyledSelect>
+              </SelectInputStyled>
             </Col>
           </StyledRowSelect>
         ) : null}
@@ -309,14 +309,15 @@ const Settings = ({
               <Label>MAXIMUM ATTEMPTS ALLOWED</Label>
             </Col>
             <Col span={12}>
-              <MaxAttemptIInput
-                type="number"
+              <NumberInputStyled
                 size="large"
                 disabled={forClassLevel || freezeSettings}
                 value={maxAttempts}
-                onChange={e => overRideSettings("maxAttempts", e.target.value)}
+                onChange={value => overRideSettings("maxAttempts", value)}
                 min={1}
                 step={1}
+                bg="white"
+                width="20%"
               />
             </Col>
           </StyledRowSettings>
@@ -377,55 +378,55 @@ const Settings = ({
         {/* Safe Exam Browser/Kiosk Mode */}
 
         {/* Shuffle Question */
-        !isDocBased && (
-          <FeaturesSwitch
-            inputFeatures="assessmentSuperPowersShuffleQuestions"
-            actionOnInaccessible="hidden"
-            key="assessmentSuperPowersShuffleQuestions"
-            gradeSubject={gradeSubject}
-          >
-            <StyledRowSettings gutter={16}>
-              <Col span={12}>
-                <Label>SHUFFLE QUESTIONS</Label>
-              </Col>
-              <Col span={12}>
-                <AlignSwitchRight
-                  disabled={forClassLevel || freezeSettings}
-                  size="small"
-                  defaultChecked={shuffleQuestions}
-                  onChange={value => overRideSettings("shuffleQuestions", value)}
-                />
-              </Col>
-            </StyledRowSettings>
-          </FeaturesSwitch>
-        )
-        /* Shuffle Question */
+          !isDocBased && (
+            <FeaturesSwitch
+              inputFeatures="assessmentSuperPowersShuffleQuestions"
+              actionOnInaccessible="hidden"
+              key="assessmentSuperPowersShuffleQuestions"
+              gradeSubject={gradeSubject}
+            >
+              <StyledRowSettings gutter={16}>
+                <Col span={12}>
+                  <Label>SHUFFLE QUESTIONS</Label>
+                </Col>
+                <Col span={12}>
+                  <AlignSwitchRight
+                    disabled={forClassLevel || freezeSettings}
+                    size="small"
+                    defaultChecked={shuffleQuestions}
+                    onChange={value => overRideSettings("shuffleQuestions", value)}
+                  />
+                </Col>
+              </StyledRowSettings>
+            </FeaturesSwitch>
+          )
+          /* Shuffle Question */
         }
 
         {/* Shuffle Answer Choice */
-        !isDocBased && (
-          <FeaturesSwitch
-            inputFeatures="assessmentSuperPowersShuffleAnswerChoice"
-            actionOnInaccessible="hidden"
-            key="assessmentSuperPowersShuffleAnswerChoice"
-            gradeSubject={gradeSubject}
-          >
-            <StyledRowSettings gutter={16}>
-              <Col span={12}>
-                <Label>SHUFFLE ANSWER CHOICE</Label>
-              </Col>
-              <Col span={12}>
-                <AlignSwitchRight
-                  disabled={forClassLevel || freezeSettings}
-                  size="small"
-                  defaultChecked={shuffleAnswers}
-                  onChange={value => overRideSettings("shuffleAnswers", value)}
-                />
-              </Col>
-            </StyledRowSettings>
-          </FeaturesSwitch>
-        )
-        /* Shuffle Answer Choice */
+          !isDocBased && (
+            <FeaturesSwitch
+              inputFeatures="assessmentSuperPowersShuffleAnswerChoice"
+              actionOnInaccessible="hidden"
+              key="assessmentSuperPowersShuffleAnswerChoice"
+              gradeSubject={gradeSubject}
+            >
+              <StyledRowSettings gutter={16}>
+                <Col span={12}>
+                  <Label>SHUFFLE ANSWER CHOICE</Label>
+                </Col>
+                <Col span={12}>
+                  <AlignSwitchRight
+                    disabled={forClassLevel || freezeSettings}
+                    size="small"
+                    defaultChecked={shuffleAnswers}
+                    onChange={value => overRideSettings("shuffleAnswers", value)}
+                  />
+                </Col>
+              </StyledRowSettings>
+            </FeaturesSwitch>
+          )
+          /* Shuffle Answer Choice */
         }
 
         {/* Show Calculator */}
@@ -491,49 +492,58 @@ const Settings = ({
               <Label>REQUIRE PASSWORD</Label>
             </Col>
             <Col span={12}>
-              <StyledSelect
-                disabled={forClassLevel || freezeSettings}
-                placeholder="Please select"
-                cache="false"
-                value={passwordPolicy}
-                onChange={changeField("passwordPolicy")}
-              >
-                {Object.keys(passwordPolicyValues).map((item, index) => (
-                  <Select.Option data-cy="class" key={index} value={passwordPolicyValues[item]}>
-                    {passwordPolicyOptions[item]}
-                  </Select.Option>
-                ))}
-              </StyledSelect>
-              {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
-                <>
-                  <Password
+              <Row>
+                <Col span={24}>
+                  <SelectInputStyled
                     disabled={forClassLevel || freezeSettings}
-                    onChange={e => overRideSettings("assignmentPassword", e.target.value)}
-                    size="large"
-                    value={assignmentPassword}
-                    type="text"
-                    placeholder="Enter Password"
-                    color={passwordStatus.color}
-                  />
-                  <MessageSpan>{passwordStatus.message}</MessageSpan>
-                </>
-              )}
-              {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
-                <>
-                  <Input
-                    disabled={forClassLevel || freezeSettings}
-                    required
-                    type="number"
-                    onChange={handleUpdatePasswordExpireIn}
-                    value={passwordExpireIn / 60}
-                    style={{ width: "100px", marginLeft: "15px" }}
-                    max={999}
-                    min={1}
-                    step={1}
-                  />{" "}
-                  MINUTES
-                </>
-              )}
+                    placeholder="Please select"
+                    cache="false"
+                    value={passwordPolicy}
+                    onChange={changeField("passwordPolicy")}
+                    noBorder
+                    height="30px"
+                  >
+                    {Object.keys(passwordPolicyValues).map((item, index) => (
+                      <Select.Option data-cy="class" key={index} value={passwordPolicyValues[item]}>
+                        {passwordPolicyOptions[item]}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </Col>
+
+                {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
+                  <Col span={24}>
+                    <Password
+                      disabled={forClassLevel || freezeSettings}
+                      onChange={e => overRideSettings("assignmentPassword", e.target.value)}
+                      size="large"
+                      value={assignmentPassword}
+                      type="text"
+                      placeholder="Enter Password"
+                      color={passwordStatus.color}
+                    />
+                    <MessageSpan>{passwordStatus.message}</MessageSpan>
+                  </Col>
+                )}
+
+
+                {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
+                  <Col span={24}>
+                    <Input
+                      disabled={forClassLevel || freezeSettings}
+                      required
+                      type="number"
+                      onChange={handleUpdatePasswordExpireIn}
+                      value={passwordExpireIn / 60}
+                      style={{ width: "100px" }}
+                      max={999}
+                      min={1}
+                      step={1}
+                    />{" "}
+                    MINUTES
+                  </Col>
+                )}
+              </Row>
             </Col>
             {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
               <Col span={24} style={{ marginTop: "10px" }}>
@@ -555,69 +565,60 @@ const Settings = ({
         {/* Require Password */}
 
         {/* Check Answer Tries Per Question */
-        !isDocBased && (
-          <FeaturesSwitch
-            inputFeatures="assessmentSuperPowersCheckAnswerTries"
-            actionOnInaccessible="hidden"
-            key="assessmentSuperPowersCheckAnswerTries"
-            gradeSubject={gradeSubject}
-          >
-            <StyledRowSettings gutter={16}>
-              <Col span={12}>
-                <Label>CHECK ANSWER TRIES PER QUESTION</Label>
-              </Col>
-              <Col span={12}>
-                <Input
-                  disabled={forClassLevel || freezeSettings}
-                  onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
-                  size="large"
-                  value={maxAnswerChecks}
-                  type="number"
-                  min={0}
-                  placeholder="Number of tries"
-                />
-              </Col>
-            </StyledRowSettings>
-          </FeaturesSwitch>
-        )
-        /* Check Answer Tries Per Question */
+          !isDocBased && (
+            <FeaturesSwitch
+              inputFeatures="assessmentSuperPowersCheckAnswerTries"
+              actionOnInaccessible="hidden"
+              key="assessmentSuperPowersCheckAnswerTries"
+              gradeSubject={gradeSubject}
+            >
+              <StyledRowSettings gutter={16}>
+                <Col span={12}>
+                  <Label>CHECK ANSWER TRIES PER QUESTION</Label>
+                </Col>
+                <Col span={12}>
+                  <NumberInputStyled
+                    disabled={forClassLevel || freezeSettings}
+                    onChange={value => overRideSettings("maxAnswerChecks", value)}
+                    size="large"
+                    value={maxAnswerChecks}
+                    min={0}
+                    placeholder="Number of tries"
+                    bg="white"
+                  />
+                </Col>
+              </StyledRowSettings>
+            </FeaturesSwitch>
+          )
+          /* Check Answer Tries Per Question */
         }
 
         {/* Evaluation Method */}
-        <StyledRowSettings gutter={16}>
-          <Col span={6}>
+        <StyledRowSelect gutter={16}>
+          <Col span={12}>
             <Label>EVALUATION METHOD</Label>
           </Col>
-          <Col span={18}>
-            <AlignRight
-              forClassLevel={forClassLevel || freezeSettings}
-              // disabled={forClassLevel}
-              onChange={e => {
+          <Col span={12}>
+            <SelectInputStyled
+              disabled={forClassLevel || freezeSettings}
+              onChange={value => {
                 if (!forClassLevel && !freezeSettings) {
-                  overRideSettings("scoringType", e.target.value);
+                  overRideSettings("scoringType", value);
                 }
               }}
               value={scoringType}
+              noBorder
+              height="30px"
+
             >
-              <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
-                {evalTypes.ALL_OR_NOTHING}
-              </RadioBtn>
-              <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
-                {evalTypes.PARTIAL_CREDIT}
-              </RadioBtn>
-              <RadioBtn
-                value={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                key={PARTIAL_CREDIT_IGNORE_INCORRECT}
-              >
-                {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
-              </RadioBtn>
-              <RadioBtn value={ITEM_LEVEL_EVALUATION} data-cy={ITEM_LEVEL_EVALUATION} key={ITEM_LEVEL_EVALUATION}>
-                {evalTypes.ITEM_LEVEL_EVALUATION}
-              </RadioBtn>
-            </AlignRight>
+              {Object.keys(evalTypes).map((evalKey, index) => (
+                <Select.Option value={evalKey} data-cy={evalKey} key={evalKey}>
+                  {Object.values(evalTypes)[index]}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
           </Col>
-        </StyledRowSettings>
+        </StyledRowSelect>
         {/* Evaluation Method */}
 
         {/* Timed TEST */}

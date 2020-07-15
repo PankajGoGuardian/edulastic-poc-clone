@@ -26,7 +26,7 @@ export const hasValidAnswers = (type, answer) => {
       if (!isObject(answer)) {
         return false;
       }
-      return keys(answer).length > 0 && keys(answer).every(key => !isEmpty(answer[key]));
+      return keys(answer).length > 0 && keys(answer).some(key => !isEmpty(answer[key]));
     case questionType.TOKEN_HIGHLIGHT:
       return !isEmpty(answer?.filter(ans => ans?.selected));
     case questionType.FORMULA_ESSAY:

@@ -458,7 +458,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: DotPlotNumberLine,
       data: {
-        title: "Dot Plot - Number Line",
+        title: "Dot Plot",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -654,7 +654,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: LinePlotNumberLine,
       data: {
-        title: "Range Plotter",
+        title: "Line Plot",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -1071,6 +1071,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         firstMount: true,
         type: questionType.SORT_LIST,
         stimulus: "",
+        labels: {
+          source: "source",
+          target: "target"
+        },
         uiStyle: {},
         source: ["Item A", "Item B", "Item C", "Item D"],
         validation: {
@@ -1326,7 +1330,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           wordwrap: false,
           responsecontainerindividuals: [],
           responseContainerWidth: 200
@@ -1866,7 +1870,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "graphing",
       cardImage: GRNumberLinePlot,
       data: {
-        title: "Number Line with Plot",
+        title: "Range Plotter",
         type: questionType.GRAPH,
         stimulus: "",
         firstMount: true,
@@ -1987,7 +1991,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "graphing",
       cardImage: GRNumberLineDragDrop,
       data: {
-        title: "Number Line with Drag & Drop",
+        title: "Number Line",
         type: questionType.GRAPH,
         firstMount: true,
         graphType: "axisLabels",

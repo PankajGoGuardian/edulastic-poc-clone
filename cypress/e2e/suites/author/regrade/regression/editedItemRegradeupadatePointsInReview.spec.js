@@ -16,6 +16,7 @@ import ReportsPage from "../../../../framework/student/reportsPage";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 const { MCQ_MULTI } = require("./../../../../../fixtures/questionAuthoring");
+
 const { _ } = Cypress;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applying regrade 'edited item'`, () => {
@@ -106,6 +107,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   let testid;
 
   before("create tests", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments("", Teacher.username);
     cy.login("teacher", Teacher.username, Teacher.password);
     testLibraryPage.createTest(testname, false).then(id => {

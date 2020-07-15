@@ -140,7 +140,7 @@ class Item extends Component {
     const { features, item, userId, history, openPreviewModal } = this.props;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     // Author can only edit if owner
-    if (features.isCurator || (features.isPublisherAuthor && owner)) {
+    if (features.isPublisherAuthor && owner) {
       return history.push(`/author/items/${item._id}/item-detail`);
     }
     openPreviewModal();
@@ -216,8 +216,6 @@ class Item extends Component {
             {detail.type !== "premium" && (
               <CategoryContent>
                 <Text title={detail.type === "id" ? detail.text : ""}>
-                  {console.log("item: ", item)}
-                  {console.log("analytics: ", item.analytics)}
                   {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
                 </Text>
               </CategoryContent>
@@ -274,11 +272,11 @@ class Item extends Component {
       }
 
       setDataAndSave({ addToTest: true, item, current });
-      notification({ type: "success", messageKey: "itemAddedCart" });
+      notification({ type: "success", messageKey: "itemAddedTest" });
     } else {
       keys = keys.filter(_item => _item !== row._id);
       setDataAndSave({ addToTest: false, item: { _id: row._id }, current });
-      notification({ type: "success", messageKey: "itemRemovedCart" });
+      notification({ type: "success", messageKey: "itemRemovedTest" });
     }
     setTestItems(keys);
     this.setState({ selectedId: "" });
@@ -349,7 +347,7 @@ class Item extends Component {
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
-      notification({ type: "success", messageKey: "itemAddedCart" });
+      notification({ type: "success", messageKey: "itemAddedTest" });
       return setAndSavePassageItems({ passageItems, page });
     }
     // open the modal for selecting  testItems manually.

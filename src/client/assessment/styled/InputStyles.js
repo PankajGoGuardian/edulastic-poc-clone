@@ -8,6 +8,7 @@ export const TextInputStyled = styled(Input)`
     border: ${props => (props.noBorder ? "0px" : `1px solid ${greyThemeLight} !important`)};
     color: #6a737f;
     font-size: ${props => props.fontSize || "13px"};
+    text-transform: ${props => props.transformText};
     width: ${props => props.width || "100%"};
     height: ${props => props.height || "40px"};
     margin: ${props => props.margin || "0px"};

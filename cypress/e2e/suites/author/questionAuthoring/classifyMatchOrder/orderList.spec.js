@@ -3,11 +3,12 @@ import OrderListPage from "../../../../framework/author/itemList/questionType/cl
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" type question`, () => {
   const queData = {
     group: "Classify, Match & Order",
-    queType: "OrderList",
+    queType: questionType.ORDERLIST,
     queText: "Select the correct option?",
     template: " is the world's largest democracy",
     correctAns: "India",

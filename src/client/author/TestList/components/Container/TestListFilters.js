@@ -212,7 +212,7 @@ const TestListFilters = ({
 
   const handleStandardsAlert = ({ title, disabled }) => {
     if (title === "Standards" && disabled) {
-      return "Select Grades, Subject, Standard Set before selecting Standards";
+      return "Select Grades, Subject and Standard Set before selecting Standards";
     }
     return "";
   };
@@ -358,7 +358,6 @@ const IconExpandBoxWrapper = styled.div`
   z-index: 1;
   cursor: pointer;
   &.disabled {
-    cursor: not-allowed;
     svg path {
       fill: ${grey};
     }

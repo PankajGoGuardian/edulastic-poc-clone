@@ -143,7 +143,7 @@ class AdvancedOptons extends React.Component {
 
   render() {
     const { testSettings = {}, assignment, updateOptions } = this.props;
-    const classIds = assignment?.class?.map(item => item._id);
+    const classIds = assignment?.class?.map(item => item._id) || [];
     const { showSettings, _releaseGradeKeys } = this.state;
     const changeField = curry(this.onChange);
 

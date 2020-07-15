@@ -3,6 +3,7 @@ import { FlexContainer, notification } from "@edulastic/common";
 import { testActivityStatus, roleuser } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
 import { Avatar, Button, Dropdown, Menu, Col } from "antd";
+import moment from "moment";
 import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
@@ -188,13 +189,23 @@ class ModuleRow extends Component {
   };
 
   deleteTest = (moduleIndex, itemId) => {
-    const { removeItemFromUnit, removeItemFromDestinationPlaylist, urlHasUseThis } = this.props;
+    const { removeItemFromUnit, removeItemFromDestinationPlaylist, urlHasUseThis, customizeInDraft } = this.props;
 
-    if (urlHasUseThis) {
+    if (urlHasUseThis || customizeInDraft) {
       removeItemFromDestinationPlaylist({ moduleIndex, itemId });
     } else {
       removeItemFromUnit({ moduleIndex, itemId });
     }
+  };
+
+  showDifferentiation = testId => {
+    const { history, playlistId } = this.props;
+    history.push({
+      pathname: `/author/playlists/differentiation/${playlistId}/use-this`,
+      state: {
+        testId
+      }
+    });
   };
 
   closeModal = () => {
@@ -203,18 +214,12 @@ class ModuleRow extends Component {
     });
   };
 
-  handleActionClick = (e, destinaion, assignmentId, classId) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const { history } = this.props;
-    history.push({
-      pathname: `/author/${destinaion}/${assignmentId}/${classId}`
-    });
-  };
-
   setAssignmentDropdown = id => {
     const { currentAssignmentId } = this.state;
-    if (currentAssignmentId.includes(id)) {
+    const { playlistId } = this.props;
+    const { contentId } = JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
+    sessionStorage.removeItem(`playlist/${playlistId}`);
+    if (currentAssignmentId.includes(id) || id === contentId) {
       const prevState = [...currentAssignmentId];
       prevState.splice(currentAssignmentId.find(x => x === id), 1);
       this.setState({ currentAssignmentId: prevState });
@@ -231,7 +236,7 @@ class ModuleRow extends Component {
 
     if (isAssigned) {
       // TODO: filter out the assignments in assignmentRows by classIds in case of multiple assignments
-      const { testType, assignmentId, classId, maxAttempts } = assignmentRows[0] || {};
+      const { testType, assignmentId, classId, maxAttempts, status } = assignmentRows[0] || {};
       uta = {
         testId,
         classId,
@@ -272,7 +277,18 @@ class ModuleRow extends Component {
         uta.text = "RESUME ASSIGNMENT";
         uta.action = () => resumeAssignment(uta);
       } else {
-        uta.text = "START ASSIGNMENT";
+        const isAssignmentNotOpen = status === "NOT OPEN";
+        uta.text = isAssignmentNotOpen ? "NOT AVAILABLE" : "START ASSIGNMENT";
+        const classDetails =
+          isAssignmentNotOpen &&
+          moduleData?.assignments?.[0]?.class?.find(({ _id }) =>
+            [uta.groupId, groupId, playlistClassList[0]].includes(_id)
+          );
+        if (classDetails && classDetails.startDate && classDetails.status === "NOT OPEN") {
+          const startDate = moment(classDetails.startDate).format("MM/DD/YYYY HH:mm");
+          uta.title = `Open Date : ${startDate}`;
+          uta.disabled = true;
+        }
         uta.action = () => startAssignment(uta);
       }
     } else {
@@ -428,7 +444,9 @@ class ModuleRow extends Component {
       isManageContentActive,
       userRole,
       fromPlaylist,
-      isPlaylistDetailsPage
+      isPlaylistDetailsPage,
+      isSparkMathPlaylist,
+      handleActionClick
     } = this.props;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
     const { assignTest } = this;
@@ -523,7 +541,9 @@ class ModuleRow extends Component {
                   };
 
                   const progressData = getProgressData(playlistMetrics, _id, contentId, assignments);
-
+                  const { contentId: _contentId = "", moduleId: _moduleId = "" } =
+                    JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
+                  const isPrevActiveContent = contentId === _contentId && module._id === _moduleId;
                   const assignmentRows = assignments.flatMap(assignment => {
                     const { testType, _id: assignmentId, maxAttempts, assignedBy } = assignment;
                     return assignment.class.map(
@@ -572,6 +592,14 @@ class ModuleRow extends Component {
                       {!isStudent && (
                         <Menu.Item data-cy="view-test" onClick={() => this.viewTest(moduleData.contentId)}>
                           Preview Test
+                        </Menu.Item>
+                      )}
+                      {!isStudent && isSparkMathPlaylist && (
+                        <Menu.Item
+                          data-cy="show-differentiation"
+                          onClick={() => this.showDifferentiation(moduleData.contentId)}
+                        >
+                          DIfferentiation
                         </Menu.Item>
                       )}
                       {/* <Menu.Item
@@ -631,7 +659,7 @@ class ModuleRow extends Component {
                                 >
                                   <IconCheckSmall color={white} />
                                   &nbsp;&nbsp;
-                                  {currentAssignmentId.includes(moduleData.contentId)
+                                  {currentAssignmentId.includes(moduleData.contentId) || isPrevActiveContent
                                     ? "HIDE ASSIGNMENTS"
                                     : "SHOW ASSIGNMENTS"}
                                 </Button>
@@ -678,9 +706,11 @@ class ModuleRow extends Component {
                           <LastColumn width={!urlHasUseThis || isStudent ? "auto" : null}>
                             {!isParentRoleProxy && (
                               <AssignmentButton assigned={false}>
-                                <Button data-cy={uta.text} onClick={uta.action}>
-                                  {uta.text}
-                                </Button>
+                                <Tooltip title={uta.title}>
+                                  <Button data-cy={uta.text} onClick={uta.action} disabled={uta.disabled}>
+                                    {uta.text}
+                                  </Button>
+                                </Tooltip>
                               </AssignmentButton>
                             )}
                             {uta.retake && !isParentRoleProxy && (
@@ -779,9 +809,15 @@ class ModuleRow extends Component {
                     </FlexContainer>
                   );
 
-                  const assignmentsRow = currentAssignmentId.includes(moduleData.contentId) && !isStudent && (
-                    <AssignmentsClasses assignmentRows={assignmentRows} handleActionClick={this.handleActionClick} />
-                  );
+                  const assignmentsRow = (currentAssignmentId.includes(moduleData.contentId) || isPrevActiveContent) &&
+                    !isStudent && (
+                      <AssignmentsClasses
+                        moduleId={module?._id}
+                        contentId={moduleData.contentId}
+                        assignmentRows={assignmentRows}
+                        handleActionClick={handleActionClick}
+                      />
+                    );
 
                   if (mode === "embedded" && !(isStudent && moduleData.hidden)) {
                     return (

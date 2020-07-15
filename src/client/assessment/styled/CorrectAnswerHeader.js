@@ -23,8 +23,8 @@ export const PointsInput = styled(Input)`
     background: #f8f8fb;
     border: 1px solid ${greyThemeLight};
     max-height: 40px;
-    min-height: 40px;
-    font-size: 14px;
+    min-height: 34px;
+    font-size: 11px;
     line-height: 38px;
     padding: 0 15px;
     margin-right: ${props => props.mr || "0px"};

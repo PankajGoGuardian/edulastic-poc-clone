@@ -6,8 +6,8 @@ export const CustomStyleBtn = styled(Button)`
   &.ant-btn {
     background: ${props => (props.ghost ? "transparent" : props.bg || themeColor)};
     color: ${props => (props.ghost ? themeColor : props.color || white)};
-    width: ${props => props.width || "220px"};
-    height: ${props => props.height || "40px"};
+    width: ${props => props.width || "136px"};
+    height: ${props => props.height || "28px"};
     padding: ${props => props.padding || "0px 30px"};
     margin: ${props => props.margin || "15px 0px 0px"};
     border: ${props => (props.ghost ? `1px solid ${greyThemeDark2}` : "0px")} !important;
@@ -55,6 +55,7 @@ export const AddAlternative = styled.div`
 `;
 
 export const AlternateAnswerLink = styled(Button)`
+  visibility: ${({ visibility }) => visibility};
   &.ant-btn {
     background: transparent;
     color: ${greyThemeDark2};
@@ -62,13 +63,14 @@ export const AlternateAnswerLink = styled(Button)`
     padding: 0;
     box-shadow: none;
     margin-left: auto;
-    min-height: 28px;
+    min-height: 34px;
     text-transform: uppercase;
     font-size: 11px;
     border: none;
     outline: none;
     font-weight: 600;
     display: flex;
+    align-items: center;
 
     &:hover,
     &:hover,

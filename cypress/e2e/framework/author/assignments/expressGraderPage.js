@@ -353,26 +353,24 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.getScoreforQueNum("Q1").click();
     this.waitForStudentData();
 
-    Object.keys(studentAttempts)
-      .sort()
-      .forEach((queNum, index, item) => {
-        const attemptType = studentAttempts[queNum];
-        const { queKey, attemptData, points } = questionTypeMap[queNum];
-        console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
-        this.questionResponsePage.verifyQuestionResponseCard(
-          points,
-          queKey,
-          attemptType,
-          attemptData,
-          false,
-          studentName
-        );
+    Object.keys(studentAttempts).forEach((queNum, index, item) => {
+      const attemptType = studentAttempts[queNum];
+      const { queKey, attemptData, points } = questionTypeMap[queNum];
+      console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
+      this.questionResponsePage.verifyQuestionResponseCard(
+        points,
+        queKey,
+        attemptType,
+        attemptData,
+        false,
+        studentName
+      );
 
-        if (index < item.length - 1) {
-          if (useKeyBoardKeys) this.navigateByRightKey();
-          else this.clickOnNextQuestion();
-        }
-      });
+      if (index < item.length - 1) {
+        if (useKeyBoardKeys) this.navigateByRightKey();
+        else this.clickOnNextQuestion();
+      }
+    });
 
     Object.keys(studentAttempts)
       .sort()
@@ -453,21 +451,24 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
     this.getScoreforQueNum(queNum)
       .then(ele => {
+        this.verifyCellColorForQuestion(queNum, attemptType);
         previousScore = ele.text();
         cy.wrap(ele).click({ force: true });
         this.waitForStudentData();
-        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score);
+        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score, undefined, true);
         this.clickOnExit(true);
+        this.waitForStudentData();
         this.verifyCellColorForQuestion(queNum, attemptTypes.PARTIAL_CORRECT);
       })
       .then(() => {
         this.getScoreforQueNum(queNum)
           .should("have.text", score)
           .click({ force: true });
+        this.waitForStudentData();
         console.log("previousScore ::", previousScore);
-        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, previousScore);
+        this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, previousScore, undefined, true);
         this.clickOnExit(true);
-        this.verifyCellColorForQuestion(queNum, attemptType);
+        this.verifyCellColorForQuestion(queNum, previousScore === "0" ? attemptTypes.WRONG : attemptType, true);
       });
   };
 

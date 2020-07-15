@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { Modal, Form, Input, Row, Col, Button } from "antd";
-import { StyledDescription, StyledSpinContainer, StyledSpin } from "./styled";
+import { Form, Input, Row, Col } from "antd";
+import { schoolApi } from "@edulastic/api";
+import { StyledSpinContainer, StyledSpin } from "./styled";
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
-import { schoolApi } from "@edulastic/api";
 
-class EditSchoolModal extends React.Component {
+class EditSchoolModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,16 +48,14 @@ class EditSchoolModal extends React.Component {
           }
         });
       }
-    } else {
-      if (name.length == 0) {
-        this.setState({
-          nameValidate: {
-            value: nameValidate.value,
-            validateStatus: "error",
-            validateMsg: "Please input school name"
-          }
-        });
-      }
+    } else if (nameValidate.value.length == 0) {
+      this.setState({
+        nameValidate: {
+          value: nameValidate.value,
+          validateStatus: "error",
+          validateMsg: "Please input school name"
+        }
+      });
     }
 
     this.props.form.validateFields((err, row) => {
@@ -123,7 +121,7 @@ class EditSchoolModal extends React.Component {
               label={t("school.name")}
               validateStatus={nameValidate.validateStatus}
               help={nameValidate.validateMsg}
-              required={true}
+              required
             >
               {getFieldDecorator("name", {
                 rules: [
@@ -133,7 +131,7 @@ class EditSchoolModal extends React.Component {
                   }
                 ],
                 initialValue: schoolData.name
-              })(<Input placeholder={t("school.components.createschool.name")} onChange={this.changeSchoolName} />)}
+              })(<Input placeholder={t("school.components.createschool.name")} onChange={this.changeSchoolName} maxLength={128} />)}
             </ModalFormItem>
           </Col>
         </Row>

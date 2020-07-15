@@ -59,6 +59,7 @@ const MathFormulaOptions = ({
 
   return (
     <WidgetOptions
+      showVariables
       scoringTypes={scoringTypes}
       advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}

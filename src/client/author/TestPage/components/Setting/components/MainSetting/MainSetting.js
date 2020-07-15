@@ -439,57 +439,54 @@ class MainSetting extends Component {
             </NavigationMenu>
           </Col>
           <Col span={isSmallSize ? 24 : 18}>
-            {availableFeatures.includes("selectTestType") && (
-              <Block id="test-type" smallSize={isSmallSize}>
-                <Row>
-                  <Title>Test Type</Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row>
-                      <SelectInputStyled
-                        width="70%"
-                        value={testType}
-                        disabled={!owner || !isEditable}
-                        onChange={this.updateTestData("testType")}
-                        getPopupContainer={trigger => trigger.parentNode}
-                      >
-                        {(userRole === roleuser.DISTRICT_ADMIN ||
-                          userRole === roleuser.SCHOOL_ADMIN ||
-                          testType === COMMON) &&
-                          !districtPermissions.includes("publisher") && (
-                            <Option key={COMMON} value={COMMON}>
-                              Common Assessment
-                            </Option>
-                          )}
-                        {Object.keys(isAuthorPublisher ? authorPublisherTestTypes : testTypes).map(key => (
-                          <Option key={key} value={key}>
-                            {isAuthorPublisher ? authorPublisherTestTypes[key] : testTypes[key]}
+            <Block id="test-type" smallSize={isSmallSize}>
+              <Row>
+                <Title>Test Type</Title>
+                <Body smallSize={isSmallSize}>
+                  <Row>
+                    <SelectInputStyled
+                      width="70%"
+                      value={testType}
+                      disabled={!owner || !isEditable}
+                      onChange={this.updateTestData("testType")}
+                      getPopupContainer={trigger => trigger.parentNode}
+                    >
+                      {(userRole === roleuser.DISTRICT_ADMIN ||
+                        userRole === roleuser.SCHOOL_ADMIN ||
+                        testType === COMMON) &&
+                        !districtPermissions.includes("publisher") && (
+                          <Option key={COMMON} value={COMMON}>
+                            Common Assessment
                           </Option>
-                        ))}
-                      </SelectInputStyled>
-                    </Row>
-                    {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) &&
-                      testType === COMMON && (
-                        <>
-                          <br />
-                          <Row>
-                            <CheckboxLabel
-                              disabled={!owner || !isEditable}
-                              data-cy="freeze-settings"
-                              checked={freezeSettings}
-                              onChange={e => this.updateTestData("freezeSettings")(e.target.checked)}
-                            >
-                              Freeze Settings
-                            </CheckboxLabel>
-                            <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
-                              <IconInfo color={lightGrey9} style={{ cursor: "pointer" }} />
-                            </Tooltip>
-                          </Row>
-                        </>
-                      )}
-                  </Body>
-                </Row>
-              </Block>
-            )}
+                        )}
+                      {Object.keys(isAuthorPublisher ? authorPublisherTestTypes : testTypes).map(key => (
+                        <Option key={key} value={key}>
+                          {isAuthorPublisher ? authorPublisherTestTypes[key] : testTypes[key]}
+                        </Option>
+                      ))}
+                    </SelectInputStyled>
+                  </Row>
+                  {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && testType === COMMON && (
+                    <>
+                      <br />
+                      <Row>
+                        <CheckboxLabel
+                          disabled={!owner || !isEditable}
+                          data-cy="freeze-settings"
+                          checked={freezeSettings}
+                          onChange={e => this.updateTestData("freezeSettings")(e.target.checked)}
+                        >
+                          Freeze Settings
+                        </CheckboxLabel>
+                        <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
+                          <IconInfo color={lightGrey9} style={{ cursor: "pointer" }} />
+                        </Tooltip>
+                      </Row>
+                    </>
+                  )}
+                </Body>
+              </Row>
+            </Block>
             {availableFeatures.includes("maxAttemptAllowed") && (
               <Block id="maximum-attempts-allowed">
                 <Title>Maximum Attempts Allowed</Title>

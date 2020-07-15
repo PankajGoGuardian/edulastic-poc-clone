@@ -2,6 +2,8 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
+import { get } from "lodash";
+
 import {
   Stimulus,
   withWindowSizes,
@@ -30,7 +32,8 @@ const HighlightImagePreview = ({
   theme,
   viewComponent,
   clearClicked,
-  hideInternalOverflow
+  hideInternalOverflow,
+  scratchpadProps
 }) => {
   const containerRef = useRef();
   const { image } = item;
@@ -41,35 +44,43 @@ const HighlightImagePreview = ({
 
   const CDN_IMAGE_PATH = `${s3ImageBucketPath}/highlight_image_background.svg`;
 
+  const showDrawing = viewComponent === "editQuestion";
+  const showToolbar = get(scratchpadProps, "showToolbar", false);
+
   const renderImage = () => (
-    <div style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}>
+    <div
+      style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}
+    >
+      {scratchpadProps
+        ? <Scratchpad {...scratchpadProps} hideTools />
+        : showDrawing && <Scratchpad clearClicked={clearClicked} hideTools />
+      }
       <img src={file || CDN_IMAGE_PATH || DEFAULT_IMAGE} alt={altText} style={{ width, height }} draggable="false" />
     </div>
   );
 
-  const showDrawing = viewComponent === "editQuestion";
-
   return (
     <React.Fragment value={{ getContainer: () => containerRef.current }}>
-      {showDrawing && <ScratchpadTool />}
-      <PreviewContainer
-        hideInternalOverflow={hideInternalOverflow || viewComponent === "authorPreviewPopup"}
-        padding={smallSize}
-        ref={containerRef}
-        boxShadow={smallSize ? "none" : ""}
-      >
-        {showDrawing && <Scratchpad clearClicked={clearClicked} hideTools />}
-        <FlexContainer justifyContent="flex-start" alignItems="baseline">
-          <QuestionLabelWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
-          </QuestionLabelWrapper>
-          <QuestionContentWrapper>
-            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-            {renderImage()}
-          </QuestionContentWrapper>
-        </FlexContainer>
-      </PreviewContainer>
+      <FlexContainer justifyContent="flex-start" alignItems="baseline">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
+        <QuestionContentWrapper>
+          {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+          <div>
+            {(showDrawing || showToolbar) && <ScratchpadTool />}
+            <PreviewContainer
+              hideInternalOverflow={hideInternalOverflow || viewComponent === "authorPreviewPopup"}
+              padding={smallSize}
+              ref={containerRef}
+              boxShadow={smallSize ? "none" : ""}
+            >
+              {renderImage()}
+            </PreviewContainer>
+          </div>
+        </QuestionContentWrapper>
+      </FlexContainer>
       <Instructions item={item} />
     </React.Fragment>
   );

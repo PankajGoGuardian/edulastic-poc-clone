@@ -69,11 +69,13 @@ class DisneyCardContainer extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props, state) {
+    const { testActivity, assignmentId, classId, isPresentationMode } = props;
     return {
-      testActivity: props.testActivity,
-      assignmentId: props.assignmentId,
-      classId: props.classId
+      testActivity: !state.isPresentationMode && isPresentationMode ? shuffle(testActivity) : testActivity,
+      assignmentId,
+      classId,
+      isPresentationMode
     };
   }
 
@@ -109,7 +111,7 @@ class DisneyCardContainer extends Component {
     );
 
     const showLoader = () => <Spin size="small" />;
-    let styledCard = [];
+    const styledCard = [];
     const classess = detailedClasses?.filter(({ _id }) => _id === classId);
 
     if (testActivity.length > 0) {
@@ -218,7 +220,7 @@ class DisneyCardContainer extends Component {
                   <CircularDiv
                     data-cy="studentAvatarName"
                     isLink={viewResponseStatus.includes(status.status)}
-                    title={isPresentationMode ? "" : student.userName}
+                    title={student.userName}
                     onClick={e =>
                       viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
                     }
@@ -303,12 +305,15 @@ class DisneyCardContainer extends Component {
                     <StyledFlexDiv>
                       <StyledParaFF>Performance</StyledParaFF>
                       <StyledParaSSS data-cy="studentPerformance">
-                        {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
+                        {student.score > 0 && student.status !== "redirected"
+                          ? round((student.score / student.maxScore) * 100, 2)
+                          : 0}
+                        %
                       </StyledParaSSS>
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {round(student.score, 2) || 0} / {student.maxScore || 0}
+                        {student.status === "redirected" ? 0 : round(student.score, 2) || 0} / {student.maxScore || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>
@@ -319,7 +324,7 @@ class DisneyCardContainer extends Component {
                     .filter(x => !x.disabled)
                     .map((questionAct, questionIndex) => {
                       const weight = questionAct.weight;
-                      if (questionAct.notStarted) {
+                      if (questionAct.notStarted || student.status === "redirected") {
                         return <SquareColorDisabled key={questionIndex} />;
                       }
                       if (questionAct.skipped && questionAct.score === 0) {
@@ -341,7 +346,7 @@ class DisneyCardContainer extends Component {
                     })}
                 </PaginationInfoT>
               </div>
-              {recentAttemptsGrouped?.[student.studentId]?.length > 0 &&
+              {(recentAttemptsGrouped?.[student.studentId]?.length > 0 || student.status === "redirected") &&
                 hoverActiveStudentActive === student.studentId && (
                   <RecentAttemptsContainer>
                     <PaginationInfoS>
@@ -351,24 +356,49 @@ class DisneyCardContainer extends Component {
                           <StyledParaFF>{responseLink}</StyledParaFF>
                         </StyledFlexDiv>
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
-                          <AttemptDiv>
+                          {student.status === "redirected" && (
+                            <AttemptDiv>
+                              <StyledParaSSS>&nbsp;</StyledParaSSS>
+                              <StyledParaSS style={{ fontSize: "12px" }}>Not Started</StyledParaSS>
+                              <p style={{ fontSize: "12px" }}>
+                                Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 2}
+                              </p>
+                            </AttemptDiv>
+                          )}
+                          <AttemptDiv
+                            className="attempt-container"
+                            onClick={e =>
+                              viewResponses(
+                                e,
+                                student.studentId,
+                                student.testActivityId,
+                                recentAttemptsGrouped[student.studentId][0].number + 1
+                              )
+                            }
+                          >
                             <StyledParaSS>
                               {round(student.score || student._score, 2) || 0} / {student.maxScore || 0}
                             </StyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                             </StyledParaSSS>
-                            <p>Attempt {recentAttemptsGrouped[student.studentId][0].number + 1}</p>
+                            <p style={{ fontSize: "12px" }}>
+                              Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}
+                            </p>
                           </AttemptDiv>
                           {recentAttemptsGrouped?.[student.studentId].map(attempt => (
-                            <AttemptDiv key={attempt._id || attempt.id}>
+                            <AttemptDiv
+                              className="attempt-container"
+                              key={attempt._id || attempt.id}
+                              onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
+                            >
                               <StyledParaSS>
                                 {round(attempt.score, 2) || 0} / {attempt.maxScore || 0}
                               </StyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
                               </StyledParaSSS>
-                              <p>Attempt {attempt.number}</p>
+                              <p style={{ fontSize: "12px" }}>Attempt {attempt.number}</p>
                             </AttemptDiv>
                           ))}
                         </StyledFlexDiv>
@@ -382,9 +412,6 @@ class DisneyCardContainer extends Component {
         styledCard.push(studentData);
         return null;
       });
-    }
-    if (isPresentationMode) {
-      styledCard = shuffle(styledCard);
     }
     return (
       <StyledCardContiner>
@@ -420,8 +447,9 @@ const AttemptDiv = styled.div`
 
 const RecentAttemptsContainer = styled.div`
   position: absolute;
-  top: 98px;
+  top: 96px;
   width: 100%;
+  height: 80px;
   left: 0px;
   padding-left: 20px;
   box-sizing: border-box;
@@ -429,6 +457,12 @@ const RecentAttemptsContainer = styled.div`
   background: #fff;
   opacity: 0;
   transition: opacity 0.7s;
+  .attempt-container {
+    :hover {
+      border: 1px solid #dadae4;
+      box-shadow: 8px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+  }
   ${StyledCard}:hover & {
     opacity: 1;
   }

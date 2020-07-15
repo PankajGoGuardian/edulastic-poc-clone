@@ -423,6 +423,7 @@ const ActionContainer = ({
                 )}
               </DropMenu>
             }
+            getPopupContainer={trigger => trigger.parentNode}
             placement="bottomRight"
           >
             <EduButton data-cy="actions" height="30px" isGhost>

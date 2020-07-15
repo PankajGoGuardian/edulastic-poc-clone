@@ -199,14 +199,15 @@ export const toggleItem = (items, item) =>
   });
 
 export const convertTableToCSV = refComponent => {
-  const rows = refComponent.querySelectorAll("tr");
+  const rows = refComponent.querySelectorAll("table")[0].querySelectorAll("tr");
   const csv = [];
   const csvRawData = [];
   for (let i = 0; i < rows.length; i++) {
     const row = [];
       const cols = rows[i].querySelectorAll("td, th");
     for (let j = 0; j < cols.length; j++) {
-      let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/(\s+)/gm, " ");
+      if(cols[j].getElementsByClassName("ant-checkbox").length > 0) continue;
+      let data = (cols[j].innerText || cols[j].textContent).replace(/(\r\n|\n|\r)/gm, " ").replace(/(\s+)/gm, " ");
       data = data.replace(/"/g, '""');
       row.push(`"${  data  }"`);
     }

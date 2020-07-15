@@ -109,6 +109,25 @@ const duplicatePlayList = ({ _id, title, forUseThis = false }) =>
     })
     .then(res => res.data.result);
 
+const publishCustomizeDraft = ({ _id, data }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${_id}/duplicate`,
+      data
+    })
+    .then(res => res.data.result);
+
+checkExistingDuplicatedForUser
+
+const checkExistingDuplicatedForUser = id =>
+  api
+    .callApi({
+      method: "get",
+      url: `${prefix}/${id}/duplicate`
+    })
+    .then(res => res.data.result);
+
 const fetchPlaylistMetrics = data => {
   const queryString = qs.stringify(data);
   return api
@@ -165,5 +184,7 @@ export default {
   getSignedRequest,
   delelePlaylist,
   delelePlaylistFromUse,
-  usePlaylist
+  usePlaylist,
+  publishCustomizeDraft,
+  checkExistingDuplicatedForUser
 };

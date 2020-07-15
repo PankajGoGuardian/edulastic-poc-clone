@@ -18,6 +18,11 @@ export const scopes = [
   "https://www.googleapis.com/auth/classroom.announcements"
 ].join(" ");
 
+const classesType = {
+  ARCHIVED: "Archived Classes",
+  ACTIVE: "Active classes"
+};
+
 const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassList, googleAllowedInstitutions }) => {
   const { name } = recentInstitute;
 
@@ -33,7 +38,7 @@ const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassLi
   return (
     <>
       <ClassCreateContainer>
-        {filterClass === "Archive Classes" ? (
+        {filterClass === classesType.ARCHIVED ? (
           <NoClassNotification heading="No archived classes" description="You have no archived classes available" />
         ) : (
           <>

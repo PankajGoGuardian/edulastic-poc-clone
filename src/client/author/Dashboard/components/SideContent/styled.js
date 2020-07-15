@@ -19,7 +19,7 @@ export const SliderButton = styled(Button)`
 export const SideContentContainer = styled.div`
   display: flex;
   position: fixed;
-  transform: ${props => (props.show ? `translate(0%)` : `translate(88%)`)};
+  transform: ${props => (props.show ? `translate(0%)` : props.showSliderBtn ? `translate(88%)` : "translate(100%)")};
   transition: all 0.5s ease-in-out;
   z-index: 300;
   top: ${props => props.theme.HeaderHeight.xs + (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
@@ -37,14 +37,14 @@ export const SideContentWrapper = styled.div`
   background: ${white};
   padding: 20px 30px;
   width: 358px;
-  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
+  height: ${props => (props.show ? `calc(100vh - ${props.theme.HeaderHeight.xs}px)` : 0)};
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+    height: ${props => (props.show ? `calc(100vh - ${props.theme.HeaderHeight.md}px)` : 0)};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+    height: ${props => (props.show ? `calc(100vh - ${props.theme.HeaderHeight.xl}px)` : 0)};
   }
 `;
 

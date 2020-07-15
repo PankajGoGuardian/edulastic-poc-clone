@@ -231,6 +231,7 @@ const ChartPreview = ({
                 previewTab={previewTab}
                 saveAnswer={saveAnswerHandler}
                 correct={correct}
+                evaluation={evaluation}
                 item={item}
                 setQuestionData={setQuestionData}
                 showAnswer={previewTab === CHECK || (previewTab === SHOW && !isReviewTab)}
@@ -241,7 +242,13 @@ const ChartPreview = ({
             {view !== EDIT && <Instructions item={item} />}
 
             {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
-              <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
+              <CorrectAnswersContainer
+                title={t("component.chart.correctAnswer")}
+                noBackground
+                showBorder
+                padding="14px 45px"
+                margin="38px 0px"
+              >
                 <ChartContainer>
                   <CurrentChart
                     name={name}
@@ -265,7 +272,13 @@ const ChartPreview = ({
               previewTab === SHOW &&
               altAnswerData.length > 0 &&
               altAnswerData.map((ans, index) => (
-                <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
+                <CorrectAnswersContainer
+                  title={`${t("component.chart.alternateAnswer")} ${index + 1}`}
+                  noBackground
+                  showBorder
+                  padding="14px 45px 14px"
+                  margin="38px 0px"
+                >
                   <ChartContainer>
                     <CurrentChart
                       name={name}

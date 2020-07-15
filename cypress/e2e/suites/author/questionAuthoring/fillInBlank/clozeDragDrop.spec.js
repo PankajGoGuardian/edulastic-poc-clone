@@ -2,15 +2,14 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import ClozeDragDropPage from "../../../../framework/author/itemList/questionType/fillInBlank/clozeWithDragDropPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
-import MetadataPage from "../../../../framework/author/itemList/itemDetail/metadataPage";
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
-import { STEM, FONT_SIZE } from "../../../../framework/constants/questionAuthoring";
-import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
+import { queColor, questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Drag & Drop" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
-    queType: "Cloze with Drag & Drop",
+    queType: questionType.CLOZE_DRAG_DROP,
     queText: "Select the correct option?",
     template: " is the world's largest democracy",
     correctAns: "India",
@@ -30,7 +29,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
   let preview;
   let item_id;
-  let testItemId;
 
   before(() => {
     cy.login();
@@ -62,16 +60,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
     context(" > TC_3 => Use Group possible responses block", () => {
       it(" > Delete choices", () => {
-        question
-          .getChoiceResponseContainer()
-          .each(($el, index, $list) => {
-            const cusIndex = $list.length - (index + 1);
-            cy.wrap($list[cusIndex])
-              .find(".main")
-              .next()
-              .click();
-          })
-          .should("have.length", 0);
+        question.deleteAllChoices();
       });
 
       it(" > Check the group possible responses checkbox", () => {
@@ -178,10 +167,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("not.checked");
         question.header.preview();
         question.verifyShuffledChoices(queData.choices, false);
-        question.header.edit();
       });
 
       it(" > Click on + symbol", () => {
+        question.header.edit();
         question.addAlternative().then(() => {
           question.getAddedAlternateTab().should("be.visible");
           question
@@ -300,22 +289,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
     context(" > TC_9 => Use Group possible responses block", () => {
       it(" > Delete choices", () => {
-        question
-          .getChoiceResponseContainer()
-          .each(($el, index, $list) => {
-            const cusIndex = $list.length - (index + 1);
-            cy.wrap($list[cusIndex])
-              .find(".main")
-              .next()
-              .click();
-          })
-          .should("have.length", 0);
+        question.deleteAllChoices();
       });
+
       it(" > Check the group possible responses checkbox", () => {
         question.getGroupResponsesCheckbox().as("group-check");
         cy.get("@group-check")
           .click({ force: true })
-          .then($el => {
+          .then(() => {
             cy.get("@group-check").should("be.checked");
             question
               .getAddedGroupTitle()
@@ -440,7 +421,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
         itemList.searchFilters.getAuthoredByMe();
         itemList.clickOnViewItemById(item_id);
         itemPreview.clickOnDeleteOnPreview();
-        itemList.getViewItemById(item_id).should("have.length", 0);
+        itemPreview.closePreiview();
+        cy.get(`[data-cy=${item_id}]`).should("not.exist");
       });
     });
   });
@@ -480,6 +462,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
 
       preview.checkScore("2/6");
+      question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
+      question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_GREEN);
 
       preview.getClear().click();
 
@@ -487,6 +471,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
 
       preview.checkScore("6/6");
+      question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
+      question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_GREEN);
     });
 
     it(" > Test scoring with partial match, Round down and penalty", () => {
@@ -504,7 +490,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
 
       preview.checkScore("1/6");
-
+      question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
+      question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_RED);
       preview.header.edit();
       question.clickOnAdvancedOptions();
       question.updatePenalty(2);
@@ -514,10 +501,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
 
       preview.checkScore("2/6");
+      question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
+      question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_RED);
     });
   });
 
   validateSolutionBlockTests(queData.group, queData.queType);
 
-  //TODO - Display Block Testing
+  // TODO - Display Block Testing
 });

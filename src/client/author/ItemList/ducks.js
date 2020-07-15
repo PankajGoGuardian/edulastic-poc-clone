@@ -61,7 +61,7 @@ export function* addItemToCartSaga({ payload }) {
   if (testItems.some(o => o._id === item._id)) {
     updatedTestItems = produce(testItems, draft => {
       draft = draft.filter(x => x._id !== item._id);
-      notification({ type: "success", messageKey: "itemRemovedCart" });
+      notification({ type: "success", messageKey: "itemRemovedTest" });
       /**
        * returning because no mutation happened
        */
@@ -73,7 +73,7 @@ export function* addItemToCartSaga({ payload }) {
       /**
        * not returning here because, muation happened above. that is enough
        */
-      notification({ type: "success", messageKey: "itemAddedCart" });
+      notification({ type: "success", messageKey: "itemAddedTest" });
     });
   }
   const userRole = yield select(getUserRole);
@@ -101,24 +101,34 @@ export function* addItemToCartSaga({ payload }) {
 export function* createTestFromCart({ payload: { testName } }) {
   const test = yield select(getTestEntitySelector);
   const testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+  /**
+   * ignore anchor standard grades
+   */
   let questionGrades = uniq(
     testItems
       .flatMap(x => x.data.questions)
       .flatMap(x => x.alignment || [])
       .flatMap(x => x.domains)
       .flatMap(x => x.standards)
-      .flatMap(x => x.grades || [])
+      .flatMap(x => (x.grades && x.grades < 13 ? x.grades : []))
   );
   if (questionGrades.length === 0) {
     questionGrades = testItems
       .flatMap(item => (item.data && item.data.questions) || [])
-      .flatMap(question => question.grades || []);
+      .flatMap(question => (question.grades && question.grades.length < 13 ? question.grades : []));
   }
   const questionSubjects = testItems
     .flatMap(item => (item.data && item.data.questions) || [])
     .flatMap(question => question.subjects || []);
-  const grades = testItems.flatMap(item => item.grades || []);
-  const subjects = testItems.flatMap(item => item.subjects || []);
+  const grades = testItems.flatMap(item => (item.grades && item.grades < 13 ? item.grades : []));
+  /**
+   * TODO: test item subjects should not have [[]] as a value, need to fix at item level
+   * https://snapwiz.atlassian.net/browse/EV-16263
+   */
+  const subjects = testItems.flatMap(({ subjects: _subjects = [] }) =>
+    _subjects.filter(subject => subject && !Array.isArray(subject))
+  );
+
   const userRole = yield select(getUserRole);
   if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
     test.testType = testConstant.type.COMMON;

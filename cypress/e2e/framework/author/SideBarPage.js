@@ -51,8 +51,9 @@ export default class TeacherSideBar {
     cy.route("POST", "**/search/items").as("itemSearch");
     cy.route("POST", "**browse-standards").as("search-standards");
 
-    cy.get('[data-cy="Item Bank"]').dblclick({ force: true });
+    cy.get('[data-cy="Item Bank"]').click({ force: true });
     // .click({ force: true });
+    this.clickOnConfirmPopUp();
     cy.wait("@itemSearch");
   };
 
@@ -71,6 +72,14 @@ export default class TeacherSideBar {
     cy.route("GET", "**/playlists/**").as("loadPlayContent");
     cy.get(`[data-cy="My Playlist"]`).dblclick({ force: true });
     if (isLoading) cy.wait("@loadPlayContent");
+  };
+
+  clickOnConfirmPopUp = () => {
+    cy.get("body").then($body => {
+      if ($body.find(".ant-modal-confirm-btns").length > 0) {   
+        cy.get(".ant-modal-confirm-btns > button").contains('Yes, Continue').click({ force: true })
+      }
+    })
   };
 
   // *** ACTIONS END ***

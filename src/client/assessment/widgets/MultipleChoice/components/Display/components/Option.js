@@ -1,4 +1,4 @@
-import { themeColorBlue, white } from "@edulastic/colors";
+import { themeColorBlue, white, themeColorHoverBlue } from "@edulastic/colors";
 import { MathFormulaDisplay } from "@edulastic/common";
 import produce from "immer";
 import { flatten, isEmpty } from "lodash";
@@ -36,7 +36,8 @@ const Option = props => {
     qId,
     crossAction,
     fontSize,
-    isPrintPreview
+    isPrintPreview,
+    fromSetAnswers
   } = props;
   let className = "";
   let correctAnswers = [];
@@ -151,7 +152,12 @@ const Option = props => {
   );
 
   const renderCheckbox = () => (
-    <StyledOptionsContainer uiStyleType={uiStyle.type} isSelected={isSelected} multipleResponses={multipleResponses} className="__print-space-reduce-option">
+    <StyledOptionsContainer
+      uiStyleType={uiStyle.type}
+      isSelected={isSelected}
+      multipleResponses={multipleResponses}
+      className="__print-space-reduce-option"
+    >
       {uiStyle.type !== "radioBelow" && container}
       <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} uiStyleType={uiStyle.type}>
         <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
@@ -161,6 +167,7 @@ const Option = props => {
     </StyledOptionsContainer>
   );
 
+  const showBorder = fromSetAnswers || uiStyle.type === "block";
   // const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
   return (
     // <Label width={width} smallSize={smallSize} className={className} showAnswer>
@@ -178,6 +185,7 @@ const Option = props => {
       checkAnswer={checkAnswer}
       userSelect={!!setCrossAction}
       isPrintPreview={isPrintPreview}
+      showBorder={showBorder}
       onMouseEnter={() => {
         if (setCrossAction) {
           toggleHover(true);
@@ -201,15 +209,19 @@ const Option = props => {
 };
 
 const StyledOptionsContainer = styled.div`
+  flex: 1;
   display: flex;
   justify-content: flex-start;
+  padding: 2px 12px;
   flex-direction: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "column" : "row")};
   align-items: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "flex-start" : "center")};
+  border-radius: ${({ uiStyleType }) => (uiStyleType === "block" ? "4px" : "2px")};
+
 
   span.labelOnly {
-    width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "44px" : "36px")};
+    width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "30px" : "26px")};
     height: ${({ uiStyleType }) =>
-      uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "calc(100% + 2px)" : "36px"};
+      uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "calc(100% + 2px)" : "26px"};
 
     position: ${({ uiStyleType }) => (uiStyleType === "block" ? "absolute" : "")};
     left: ${({ uiStyleType }) => (uiStyleType === "block" ? "-1px" : "")};
@@ -217,7 +229,7 @@ const StyledOptionsContainer = styled.div`
 
     overflow: hidden;
     font-size: ${({ theme, uiStyleType }) =>
-      uiStyleType === "radioBelow" ? "0px" : theme.widgets.multipleChoice.labelOptionFontSize || "20px"};
+      uiStyleType === "radioBelow" ? "0px" : theme.widgets.multipleChoice.labelOptionFontSize || "13px"};
     font-weight: 600;
     color: ${props => (props.isSelected ? white : "#111111")};
     background: ${props => (props.isSelected ? themeColorBlue : white)};
@@ -229,6 +241,12 @@ const StyledOptionsContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &:hover {
+      background: ${themeColorHoverBlue};
+      color: ${white};
+      border-color: ${themeColorHoverBlue};
+    }
   }
 `;
 

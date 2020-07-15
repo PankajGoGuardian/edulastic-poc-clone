@@ -676,8 +676,6 @@ input[type="checkbox"] {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin: 3px 8px;
-  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -941,14 +939,14 @@ paragraphnumber {
 
 response {
   min-width: 120px;
-  min-height: 30px;
+  min-height: 32px;
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
   margin: 2px;
-  border-radius: 10px;
+  border-radius: 2px;
   overflow: hidden;
-  border: 2px black dotted;
+  border: 2px #858585 dashed;
   justify-content: center;
 }
 
@@ -2264,4 +2262,17 @@ div[class*="_pendo"] button {
 .antd-notify-custom-popover {
   max-width: 195px;
   text-align: center;
+}
+
+.drop-target-box:not([id*="null"]):hover {
+  border-color: #1a73e8 !important;
+}
+
+.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+  background-color: rgba(63, 132, 229, 1);
+  color: white;
+}
+
+.ant-select-dropdown.ant-select-dropdown--multiple .ant-select-dropdown-menu-item:hover .ant-select-selected-icon {
+  color: white;
 }

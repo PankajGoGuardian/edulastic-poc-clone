@@ -257,7 +257,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test library`, () => {
       const { name, description } = testData[currentTestKey];
       testLibraryPage.verifyTestNameOnTestCardPopUp(name);
       testLibraryPage.verifyDescriptionOnTestCardPopUp(description);
-      testLibraryPage.verifyTestCollectionOnTestCardPopUp(COLLECTION.private);
+      testLibraryPage.verifyTestCollectionOnTestCardPopUp(COLLECTION.private.split(" ")[0].toUpperCase());
     });
     it("> verify grade and subject", () => {
       const { testGrades, subjects } = testData[currentTestKey];

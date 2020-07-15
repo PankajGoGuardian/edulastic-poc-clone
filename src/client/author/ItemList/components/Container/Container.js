@@ -3,7 +3,7 @@ import { IconItemLibrary } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
 import { Pagination, Spin } from "antd";
-import { debounce, omit } from "lodash";
+import { debounce, omit, isEqual } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -72,11 +72,13 @@ import {
 } from "./styled";
 import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../HeaderFilter";
+import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 
 // container the main entry point to the component
 class Contaier extends Component {
   state = {
-    isShowFilter: true
+    isShowFilter: true,
+    openSidebar: false
   };
 
   componentDidMount() {
@@ -174,7 +176,10 @@ class Contaier extends Component {
   };
 
   handleClearSearch = () => {
-    const { clearFilterState, limit, receiveItems } = this.props;
+    const { clearFilterState, limit, receiveItems, search = {} } = this.props;
+
+    // If current filter and initial filter is equal don't need to reset again
+    if (isEqual(search, initalSearchState)) return null;
 
     clearFilterState();
 
@@ -328,13 +333,14 @@ class Contaier extends Component {
     createTestFromCart();
   };
 
+  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
   renderCartButton = () => {
     const { approveOrRejectMultipleItem, userRole } = this.props;
     if (userRole === roleuser.EDULASTIC_CURATOR) return null;
 
     return (
       <>
-       
         <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
           <CartButton
             onClick={() => approveOrRejectMultipleItem({ status: "rejected" })}
@@ -366,9 +372,10 @@ class Contaier extends Component {
       userRole
     } = this.props;
 
-    const { isShowFilter } = this.state;
+    const { isShowFilter, openSidebar } = this.state;
     return (
       <div>
+        <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
         <SelectCollectionModal contentType="TESTITEM" />
         <ListHeader
           onCreate={this.handleCreate}
@@ -379,6 +386,7 @@ class Contaier extends Component {
           renderExtra={this.renderCartButton}
           renderFilterIcon={this.renderFilterIcon}
           newTest={this.onClickNewTest}
+          toggleSidebar={this.toggleSidebar}
         />
         <Container>
           {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (

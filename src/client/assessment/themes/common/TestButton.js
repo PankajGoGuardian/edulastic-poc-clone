@@ -1,60 +1,40 @@
 /* eslint-disable react/prop-types */
+import { smallDesktopWidth } from "@edulastic/colors";
+import { IconBookmark, IconCheck } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
-import PropTypes from "prop-types";
-import get from "lodash/get";
 import styled from "styled-components";
-import { withNamespaces } from "@edulastic/localization";
-import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
-import { smallDesktopWidth } from "@edulastic/colors";
 import { Tooltip } from "../../../common/utils/helpers";
-import { showHintButton } from "../../utils/test";
 
-const TestButton = ({
-  t,
-  checkAnswer,
-  settings,
-  answerChecksUsedForItem,
-  isNonAutoGradable = false,
-  toggleBookmark,
-  isBookmarked = false,
-  items,
-  currentItem: currentItemIndex,
-  handletoggleHints
-}) => {
-  const questions = get(items, [`${currentItemIndex}`, `data`, `questions`], []);
-
-  return (
-    <Container>
-      {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
-        <Tooltip
-          placement="top"
-          title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : "Check Answer"}
-        >
-          <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
-            <StyledIconCheck />
-            <span> {t("common.test.checkanswer")}</span>
-          </StyledButton>
-        </Tooltip>
-      )}
-      {showHintButton(questions) ? (
+const TestButton = ({ t, checkAnswer, settings, answerChecksUsedForItem, toggleBookmark, isBookmarked = false }) => (
+  <Container>
+    <Tooltip placement="top" title="Bookmark">
+      <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+        <StyledIconBookmark />
+        <span>{t("common.test.bookmark")}</span>
+      </StyledButton>
+    </Tooltip>
+    <Tooltip
+      placement="top"
+      title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : "Check Answer"}
+    >
+      <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
+        <StyledIconCheck />
+        <span> {t("common.test.checkanswer")}</span>
+      </StyledButton>
+    </Tooltip>
+    {/* {showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handletoggleHints}>
             <StyledIconLightBulb />
             <span>{t("common.test.hint")}</span>
           </StyledButton>
         </Tooltip>
-      ) : null}
-
-      <Tooltip placement="top" title="Bookmark">
-        <StyledButton onClick={toggleBookmark} active={isBookmarked}>
-          <StyledIconBookmark />
-          <span>{t("common.test.bookmark")}</span>
-        </StyledButton>
-      </Tooltip>
-    </Container>
-  );
-};
+      ) : null} */}
+  </Container>
+);
 
 TestButton.propTypes = {
   t: PropTypes.func.isRequired
@@ -65,7 +45,7 @@ const enhance = compose(withNamespaces("student"));
 export default enhance(TestButton);
 
 const Container = styled.div`
-  margin-left: 10px;
+  margin-left: 5px;
   display: flex;
 `;
 
@@ -120,12 +100,6 @@ const StyledIconCheck = styled(IconCheck)`
   ${({ theme }) => `
     width: ${theme.default.headerCheckIconWidth};
     height: ${theme.default.headerCheckIconHeight};
-  `}
-`;
-const StyledIconLightBulb = styled(IconLightBulb)`
-  ${({ theme }) => `
-    width: ${theme.default.headerLightBulbIconWidth};
-    height: ${theme.default.headerLightBulbIconHeight};
   `}
 `;
 const StyledIconBookmark = styled(IconBookmark)`

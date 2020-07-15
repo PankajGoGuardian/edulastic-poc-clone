@@ -6,12 +6,13 @@ import EditToolBar from "../../../../framework/author/itemList/questionType/comm
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import { methods } from "../../../../framework/constants/questionAuthoring";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" type question`, () => {
   const queData = {
     mockString: "10-5+8-4",
     group: "Math",
-    queType: "Expression",
+    queType: questionType.MATH_EXP_FORM,
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2",

@@ -4,7 +4,8 @@ import {
   FlexContainer,
   MathFormulaDisplay,
   Paper,
-  CustomModalStyled
+  CustomModalStyled,
+  RadioBtn
 } from "@edulastic/common";
 import { Col, Row, Spin } from "antd";
 import PropTypes from "prop-types";
@@ -138,8 +139,8 @@ const StandardsModal = ({
               </TLOList>
             </Col>
             <Col md={16} style={{ overflow: "hidden" }}>
-              <ELOList>
-                <Container>
+              <ELOList padding="0">
+                <Container padding="15px" borderRadius="0px">
                   {filteredELO.map(c => (
                     <FlexContainer
                       key={c._id}
@@ -147,12 +148,22 @@ const StandardsModal = ({
                       justifyContent="flex-start"
                       style={{ marginBottom: 15 }}
                     >
-                      <CheckboxLabel
-                        data-cy={c.identifier}
-                        onChange={() => handleCheckELO(c)}
-                        checked={state.eloStandards.some(item => item._id === c._id)}
-                        style={{ marginRight: "10px" }}
-                      />
+                      {singleSelect ? (
+                        <RadioBtn
+                          data-cy={c.identifier}
+                          onChange={() => handleCheckELO(c)}
+                          checked={state.eloStandards.some(item => item._id === c._id)}
+                          style={{ marginRight: "10px" }}
+                        />
+                      ) : (
+                        <CheckboxLabel
+                          singleSelect={singleSelect}
+                          data-cy={c.identifier}
+                          onChange={() => handleCheckELO(c)}
+                          checked={state.eloStandards.some(item => item._id === c._id)}
+                          style={{ marginRight: "10px" }}
+                        />
+                      )}
                       <div>
                         <b>{c.identifier}</b>
                         <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: c.description }} />

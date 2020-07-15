@@ -500,9 +500,12 @@ class StudentTestPage {
     cy.get("[data-cy='drop_down_select']")
       .eq(index)
       .click({ force: true });
-    cy.get("body")
+    cy.get(".ant-select-dropdown-menu-item")
       .contains(answer)
       .click({ force: true });
+    cy.get("[data-cy='drop_down_select']")
+      .eq(index)
+      .should("contain", answer);
   };
 
   // cloze with text

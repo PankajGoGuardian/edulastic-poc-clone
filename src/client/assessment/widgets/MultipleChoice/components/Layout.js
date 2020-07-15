@@ -7,6 +7,7 @@ import { Select } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { questionTitle } from "@edulastic/constants";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
@@ -122,15 +123,18 @@ class Layout extends Component {
               disabled={false}
               onChange={e => changeUiStyle("columns", +e.target.value)}
               min={1}
+              max={item.title === questionTitle.MCQ_TRUE_OR_FALSE ? 2 : Number.MAX_SAFE_INTEGER}
               value={columns}
             />
           </Col>
         </Row>
 
         <Row gutter={24}>
-          <Col md={12}>
-            <OrientationSelect onChange={val => changeUiStyle("orientation", val)} value={uiStyle.orientation} />
-          </Col>
+          {questionTitle.MCQ_TRUE_OR_FALSE !== item.title && (
+            <Col md={12}>
+              <OrientationSelect onChange={val => changeUiStyle("orientation", val)} value={uiStyle.orientation} />
+            </Col>
+          )}
           <Col md={12}>
             <FontSizeSelect onChange={fontsize => changeUiStyle("fontsize", fontsize)} value={uiStyle.fontsize} />
           </Col>

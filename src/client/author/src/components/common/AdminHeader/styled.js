@@ -39,6 +39,7 @@ export const AdminHeaderContent = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  margin-left: 10px;
   width: 100%;
   .ant-tabs-bar {
     margin: 0px;
@@ -99,7 +100,7 @@ export const StyledTabs = styled(Tabs)`
         }
         .ant-tabs-tab {
           cursor: pointer;
-          padding: 0 20px;
+          padding: 0 12px;
           text-transform: uppercase;
           font-size: 11px;
           font-weight: 600;
@@ -113,7 +114,7 @@ export const StyledTabs = styled(Tabs)`
           color: #87929b;
           white-space: nowrap;
           border-radius: 4px 4px 0px 0px;
-          margin: 0 3px;
+          margin: 0 2px;
           border: 1px solid #e5e5e5;
 
           &-active {

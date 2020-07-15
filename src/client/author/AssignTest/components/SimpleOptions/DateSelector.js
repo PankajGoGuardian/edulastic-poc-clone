@@ -5,7 +5,7 @@ import { test as testConst, assignmentStatusOptions } from "@edulastic/constants
 import { Col, Row } from "antd";
 import { FieldLabel, DatePickerStyled, RadioBtn, RadioGrp } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { StyledRow, StyledRadioGropRow, Label,RadioButtonWrapper } from "./styled";
+import { StyledRow, StyledRadioGropRow, Label, RadioButtonWrapper } from "./styled";
 
 const DateSelector = ({
   startDate,
@@ -54,7 +54,7 @@ const DateSelector = ({
                 style={{ width: "100%" }}
                 disabledDate={disabledStartDate}
                 showTime
-                format="YYYY-MM-DD HH:mm:ss"
+                format="YYYY-MM-DD hh:mm:ss a"
                 value={startDate}
                 placeholder={t("common.assignTest.openDatePlaceholder")}
                 onChange={changeField("startDate")}
@@ -77,7 +77,7 @@ const DateSelector = ({
                   size="large"
                   style={{ width: "100%" }}
                   showTime
-                  format="YYYY-MM-DD HH:mm:ss"
+                  format="YYYY-MM-DD hh:mm:ss a"
                   value={dueDate}
                   placeholder={t("common.assignTest.dueDatePlaceholder")}
                   onChange={changeField("dueDate")}
@@ -99,7 +99,7 @@ const DateSelector = ({
                 size="large"
                 disabledDate={disabledEndDate}
                 showTime
-                format="YYYY-MM-DD HH:mm:ss"
+                format="YYYY-MM-DD hh:mm:ss a"
                 value={endDate}
                 placeholder={t("common.assignTest.closeDatePlaceholder")}
                 showToday={false}
@@ -113,15 +113,16 @@ const DateSelector = ({
       {!forClassLevel && showOpenDueAndCloseDate && (
         <StyledRadioGropRow gutter={32}>
           <Col span={24}>
-            <RadioGrp style={{display:"flex"}} onChange={changeRadioGrop} value={selectedOption}>
+            <RadioGrp style={{ display: "flex" }} onChange={changeRadioGrop} value={selectedOption}>
               <RadioButtonWrapper>
                 <RadioBtn data-cy="radioOpenCloseDate" value={false} />
                 <Label>{t("common.assignTest.dateRadioGroup.openClose")}</Label>
               </RadioButtonWrapper>
 
-              <RadioButtonWrapper style={{marginLeft:"50px"}}>
+              <RadioButtonWrapper style={{ marginLeft: "50px" }}>
                 <RadioBtn data-cy="radioOpenDueCloseDate" value />
-                <Label>{t("common.assignTest.dateRadioGroup.openCloseDue")}{" "}
+                <Label>
+                  {t("common.assignTest.dateRadioGroup.openCloseDue")}{" "}
                   <span style={{ fontWeight: "normal" }}>(Allows Late Submissions)</span>
                 </Label>
               </RadioButtonWrapper>

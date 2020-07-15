@@ -69,7 +69,7 @@
       "standardSet": "Standard set",
       "standard": "Standard",
       "block": "Block",
-      "radioButtonBelow": "Radio Button Below",
+      "radioButtonBelow": "Choice Option Below",
       "horizontal": "Horizontal",
       "vertical": "Vertical",
       "small": "Small",
@@ -437,7 +437,8 @@
       "alternateAnswer": "Alternate Answer",
       "list": "List",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter your question"
+      "enterQuestion": "Enter your question",
+      "listLabels": "Labels"
     },
     "multiplechoice": {
       "thisisstem": "Enter your question",
@@ -899,7 +900,7 @@
       "requireIntervalNotation": "INTERVAL NOTATION"
     },
     "matrix": {
-      "matrixStyle": "Matrix style",
+      "matrixStyle": "Matching Table style",
       "multipleResponses": "Multiple responses",
       "enterQuestion": "Enter your question",
       "multipleChoiceOptions": "Multiple Choice Options",

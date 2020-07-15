@@ -13,7 +13,8 @@ import {
   white,
   extraDesktopWidthMax,
   smallDesktopWidth,
-  mobileWidthLarge
+  mobileWidthLarge,
+  themeColorBlue
 } from "@edulastic/colors";
 import { ProgressBar, MathFormulaDisplay } from "@edulastic/common";
 import { Col, Modal } from "antd";
@@ -382,11 +383,11 @@ export const AssignmentButton = styled.div`
       fill: ${({ assigned }) => (assigned ? white : themeColor)};
     }
     &:hover {
-      background-color: ${({ assigned }) => (assigned ? white : themeColor)};
-      color: ${({ assigned }) => (assigned ? themeColor : white)};
-      border-color: ${({ assigned }) => (assigned ? white : themeColor)};
+      background-color: ${({ assigned }) => (assigned ? white : themeColorBlue)};
+      color: ${({ assigned }) => (assigned ? themeColorBlue : white)};
+      border-color: ${({ assigned }) => (assigned ? white : themeColorBlue)};
       svg {
-        fill: ${({ assigned }) => (assigned ? themeColor : white)};
+        fill: ${({ assigned }) => (assigned ? themeColorBlue : white)};
       }
     }
     i {

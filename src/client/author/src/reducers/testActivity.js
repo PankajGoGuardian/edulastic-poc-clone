@@ -1,6 +1,6 @@
 import { createAction } from "redux-starter-kit";
 import { uniqBy, keyBy, cloneDeep } from "lodash";
-import { produce, original } from "immer";
+import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
@@ -19,7 +19,6 @@ import {
   UPDATE_SUBMITTED_STUDENTS,
   TOGGLE_VIEW_PASSWORD_MODAL,
   UPDATE_PASSWORD_DETAILS,
-  UPDATE_STUDENTS_DATA,
   RECEIVE_STUDENT_RESPONSE_SUCCESS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid, getResponseTobeDisplayed } from "../../ClassBoard/Transformer";
@@ -120,7 +119,7 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         allTestActivitiesForStudent: payload
       };
-    case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
+    case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD: {
       const entity = payload;
       nextState = produce(state, _st => {
         if (!state.allTestActivitiesForStudent.includes(entity.testActivityId)) {
@@ -186,7 +185,7 @@ const reducer = (state = initialState, { type, payload }) => {
         }
       });
       return nextState;
-
+    }
     case REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT:
       return produce(state, _state => {
         const { status, ...otherProps } = payload;
@@ -236,10 +235,10 @@ const reducer = (state = initialState, { type, payload }) => {
         for (const qid of questionIds) {
           questionIdsMaxScore[qid] = getMaxScoreOfQid(qid, _st.data.testItemsData);
         }
-        for (const entity of _st.entities) {
-          const matchingQids = entity.questionActivities.filter(x => questionIds.includes(x._id));
-          entity.maxScore -= matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
-          entity.questionActivities = entity.questionActivities.filter(x => !questionIds.includes(x._id));
+        for (const _entity of _st.entities) {
+          const matchingQids = _entity.questionActivities.filter(x => questionIds.includes(x._id));
+          _entity.maxScore -= matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
+          _entity.questionActivities = _entity.questionActivities.filter(x => !questionIds.includes(x._id));
         }
       });
       return nextState;
@@ -250,9 +249,9 @@ const reducer = (state = initialState, { type, payload }) => {
           questionIdsMaxScore[qid] = maxScore;
         }
         const questionIds = payload.map(x => x.qid);
-        for (const entity of _st.entities) {
-          const matchingQids = entity.questionActivities.filter(x => questionIds.includes(x._id));
-          entity.maxScore += matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
+        for (const _entity of _st.entities) {
+          const matchingQids = _entity.questionActivities.filter(x => questionIds.includes(x._id));
+          _entity.maxScore += matchingQids.reduce((prev, qid) => prev + (questionIdsMaxScore[qid] || 0), 0);
         }
       });
       return nextState;
@@ -301,7 +300,7 @@ const reducer = (state = initialState, { type, payload }) => {
         }
       });
       return nextState;
-    case REALTIME_GRADEBOOK_REDIRECT:
+    case REALTIME_GRADEBOOK_REDIRECT: {
       const { specificStudents, students } = payload;
       nextState = produce(state, _st => {
         if (specificStudents && students.length > 0) {
@@ -315,6 +314,7 @@ const reducer = (state = initialState, { type, payload }) => {
         }
       });
       return nextState;
+    }
     case RECEIVE_TESTACTIVITY_ERROR:
       return { ...state, loading: false, error: payload.error };
 
@@ -336,7 +336,7 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         viewPassword: !state.viewPassword
       };
-    case UPDATE_PASSWORD_DETAILS:
+    case UPDATE_PASSWORD_DETAILS: {
       const {
         assignmentPassword = state?.additionalData?.assignmentPassword,
         passwordExpireTime = state?.additionalData?.passwordExpireTime,
@@ -351,6 +351,7 @@ const reducer = (state = initialState, { type, payload }) => {
           passwordExpireIn
         }
       };
+    }
     case UPDATE_OPEN_ASSIGNMENTS:
       return {
         ...state,
@@ -442,7 +443,7 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         studentViewFilter: payload
       };
-    case SET_STUDENTS_GRADEBOOK:
+    case SET_STUDENTS_GRADEBOOK: {
       // take out newly added students from class students
       const pickClassStudentsObj = state.classStudents.filter(item => payload.includes(item._id));
 
@@ -483,6 +484,7 @@ const reducer = (state = initialState, { type, payload }) => {
           endDate: state.data.status === "DONE" ? Date.now() + 100 : state.additionalData.endDate
         }
       };
+    }
     case RECEIVE_STUDENT_RESPONSE_SUCCESS:
       return {
         ...state,
@@ -490,6 +492,8 @@ const reducer = (state = initialState, { type, payload }) => {
           if (payload.testActivity.userId === entity.studentId) {
             return {
               ...entity,
+              graded: payload?.testActivity?.graded || entity.graded,
+              score: payload?.testActivity?.score || entity.score,
               questionActivities: payload.questionActivities
             };
           }

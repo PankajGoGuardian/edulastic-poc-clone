@@ -5,16 +5,25 @@ import { connect } from "react-redux";
 import styled, { ThemeProvider, css } from "styled-components";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Row, Col, Button } from "antd";
+import { Row, Col, Button, Spin } from "antd";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
-import { IconSend} from "@edulastic/icons"
+import { IconSend } from "@edulastic/icons";
 import { test as testTypes } from "@edulastic/constants";
-import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge,mainBgColor,lightGrey9 } from "@edulastic/colors";
+import {
+  largeDesktopWidth,
+  desktopWidth,
+  smallDesktopWidth,
+  tabletWidth,
+  mobileWidthLarge,
+  mainBgColor,
+  lightGrey9
+} from "@edulastic/colors";
 import { themes } from "../../../theme";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
 import { loadTestAction } from "../../../assessment/actions/test";
+import { testLoadingSelector } from "../../../assessment/selectors/test";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type;
 class SummaryTest extends Component {
@@ -74,12 +83,15 @@ class SummaryTest extends Component {
   };
 
   render() {
-    const { questionList: questionsAndOrder, t, test, finishTest, savingResponse } = this.props;
+    const { questionList: questionsAndOrder, t, test, finishTest, savingResponse, testLoading } = this.props;
     const { isDocBased, items } = test;
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased;
     const { blocks: questionList, itemWiseQids = [] } = questionsAndOrder;
     const itemIds = Object.keys(itemWiseQids);
     const { buttonIdx } = this.state;
+    if (testLoading) {
+      return <Spin />;
+    }
     return (
       <ThemeProvider theme={themes.default}>
         <AssignmentContentWrapperSummary>
@@ -213,7 +225,8 @@ const enhance = compose(
       items: state.test.items,
       assignmentId: get(state, "author_classboard_testActivity.assignmentId", ""),
       classId: get(state, "author_classboard_testActivity.classId", ""),
-      savingResponse: state?.test?.savingResponse
+      savingResponse: state?.test?.savingResponse,
+      testLoading: testLoadingSelector(state)
     }),
     {
       loadTest: loadTestAction
@@ -227,12 +240,11 @@ const ShareWrapperCss = css`
   border-radius: 10px;
   padding: 0px 80px;
   background: ${props => props.theme.assignment.cardContainerBgColor};
- 
 `;
 const AssignmentContentWrapper = styled.div`
   ${ShareWrapperCss};
-  position:absolute;
-  bottom:20px !important;
+  position: absolute;
+  bottom: 20px !important;
   @media (max-width: 767px) {
     padding: 0px 15px;
   }
@@ -491,19 +503,19 @@ const ShortDescription = styled.div`
 `;
 
 const SubmitButton = styled(Button)`
-  display:flex;
-  justify-content:space-evenly;
-  align-items:center;
-  position:fixed !important;
-  right:20px;
-  top:10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: fixed !important;
+  right: 20px;
+  top: 10px;
   height: 32px;
   border-radius: 4px;
-  background-color:#1A73E8;
+  background-color: #1a73e8;
   font-size: 10px;
-  font-weight:600;
+  font-weight: 600;
   svg {
-    fill:${mainBgColor};
-    margin-right:10px;
+    fill: ${mainBgColor};
+    margin-right: 10px;
   }
 `;

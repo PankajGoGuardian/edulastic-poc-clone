@@ -1,19 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, white, themeColor, greyThemeDark1, extraDesktopWidthMax } from "@edulastic/colors";
+import { mediumDesktopExactWidth, greyThemeDark1, extraDesktopWidthMax } from "@edulastic/colors";
 import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
 const WidgetTitle = styled.h2`
-  background: #f1f1f5;
   color: ${greyThemeDark1};
-  padding: 10px 20px;
   display: flex;
   align-items: center;
   border-radius: 4px;
-  margin: ${props => props.margin || "0px -20px 20px"};
+  margin: ${props => props.margin || "0px 0px 16px"};
   font-weight: bold;
-  min-height: 50px;
   ${({ titleStyle }) => titleStyle};
 `;
 
@@ -38,10 +35,10 @@ export const SubtitleText = styled.div`
 `;
 
 const IconStyle = {
-  fill: white,
+  fill: "#fff",
   width: "16px",
   height: "16px",
-  background: themeColor,
+  background: "#878A91",
   borderRadius: "50%",
   padding: "3px",
   marginLeft: "16px"
@@ -54,8 +51,9 @@ export const QuestionIcon = ({ id = "", customStyle = {} }) =>
     </FlexContainer>
   ) : null;
 
-export const Subtitle = ({ children, titleStyle = {}, textStyles = {}, margin }) => (
+export const Subtitle = ({ id, children, titleStyle = {}, textStyles = {}, showIcon = true, margin }) => (
   <WidgetTitle titleStyle={titleStyle} margin={margin} justifyContent="flex-start" alignItems="baseline">
     <SubtitleText styles={textStyles}>{children}</SubtitleText>
+    {showIcon && <QuestionIcon id={id} />}
   </WidgetTitle>
 );

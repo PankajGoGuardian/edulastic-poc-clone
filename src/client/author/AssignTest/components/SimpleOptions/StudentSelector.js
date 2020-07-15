@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
-import { TreeSelect } from "antd";
+import { TreeSelect, Tooltip } from "antd";
 import { keyBy, groupBy, sortBy } from "lodash";
 import PropTypes from "prop-types";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { SelectStudentColumn, HeaderButtonsWrapper, SelectAll, UnselectAll, SelectTextInline } from "./styled";
 
 const StudentsSelector = ({
@@ -12,9 +12,15 @@ const StudentsSelector = ({
   selectAllStudents,
   unselectAllStudents,
   handleRemoveStudents,
-  groups
+  groups,
+  selectedGroups
 }) => {
   const [selectedValues, setSelectedValues] = useState([]);
+  useEffect(() => {
+    if (!selectedGroups?.length && selectedValues.length) {
+      setSelectedValues([]);
+    }
+  }, [selectedGroups]);
   const groupKeyed = useMemo(() => keyBy(groups, "_id"), [groups]);
   const studentsGroupedByGroupId = useMemo(
     () => groupBy(students.filter(({ enrollmentStatus }) => enrollmentStatus > 0), "groupId"),
@@ -51,58 +57,68 @@ const StudentsSelector = ({
     <React.Fragment>
       <SelectStudentColumn span={12}>
         <FieldLabel>STUDENTS</FieldLabel>
-        <SelectInputStyled
-          as={TreeSelect}
-          placeholder="Select a student to assign"
-          treeCheckable
-          data-cy="selectStudent"
-          dropdownStyle={{ maxHeight: "300px" }}
-          onChange={ids => setSelectedValues(ids)}
-          value={selectedValues}
-          maxTagCount={2}
-          dropdownClassName="student-dropdown"
+        <Tooltip
+          autoAdjustOverflow
+          overlayStyle={{ maxWidth: "100%" }}
           getPopupContainer={triggerNode => triggerNode.parentNode}
-          maxTagPlaceholder={omittedValues => `+ ${omittedValues.length} Students ...`}
-          onSelect={updateStudents}
-          onDeselect={handleRemoveStudents}
-          disabled={SelectedStudents.length === 0}
-          treeData={[
-            {
-              title: (
-                <HeaderButtonsWrapper>
-                  {selectedValues.length === SelectedStudents.length ? (
-                    <SelectAll className="disabled">Select all</SelectAll>
-                  ) : (
-                    <SelectAll
-                      onClick={() => {
-                        setSelectedValues(allIds);
-                        selectAllStudents(SelectedStudents, selectedValues);
-                      }}
-                    >
-                      Select all
-                    </SelectAll>
-                  )}
-                  {selectedValues.length === 0 ? (
-                    <UnselectAll className="disabled">Unselect all</UnselectAll>
-                  ) : (
-                    <UnselectAll
-                      onClick={() => {
-                        setSelectedValues([]);
-                        unselectAllStudents(SelectedStudents, selectedValues);
-                      }}
-                    >
-                      Unselect all
-                    </UnselectAll>
-                  )}
-                </HeaderButtonsWrapper>
-              ),
-              value: "all",
-              disableCheckbox: true,
-              disabled: true
-            },
-            ...SelectedStudents
-          ]}
-        />
+          title={!SelectedStudents?.length ? "Select one or more Class/Group Section" : ""}
+        >
+          <div>
+            <SelectInputStyled
+              as={TreeSelect}
+              placeholder={
+                !SelectedStudents?.length ? "Select one or more Class/Group Section" : "Select a student to assign"
+              }
+              treeCheckable
+              data-cy="selectStudent"
+              dropdownStyle={{ maxHeight: "300px" }}
+              onChange={ids => setSelectedValues(ids)}
+              value={selectedValues}
+              maxTagCount={2}
+              dropdownClassName="student-dropdown"
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+              maxTagPlaceholder={omittedValues => `+ ${omittedValues.length} Students ...`}
+              onSelect={updateStudents}
+              onDeselect={handleRemoveStudents}
+              treeData={[
+                {
+                  title: (
+                    <HeaderButtonsWrapper>
+                      {selectedValues.length === SelectedStudents.length ? (
+                        <SelectAll className="disabled">Select all</SelectAll>
+                      ) : (
+                        <SelectAll
+                          onClick={() => {
+                            setSelectedValues(allIds);
+                            selectAllStudents(SelectedStudents, selectedValues);
+                          }}
+                        >
+                          Select all
+                        </SelectAll>
+                      )}
+                      {selectedValues.length === 0 ? (
+                        <UnselectAll className="disabled">Unselect all</UnselectAll>
+                      ) : (
+                        <UnselectAll
+                          onClick={() => {
+                            setSelectedValues([]);
+                            unselectAllStudents(SelectedStudents, selectedValues);
+                          }}
+                        >
+                          Unselect all
+                        </UnselectAll>
+                      )}
+                    </HeaderButtonsWrapper>
+                  ),
+                  value: "all",
+                  disableCheckbox: true,
+                  disabled: true
+                },
+                ...SelectedStudents
+              ]}
+            />
+          </div>
+        </Tooltip>
       </SelectStudentColumn>
     </React.Fragment>
   );

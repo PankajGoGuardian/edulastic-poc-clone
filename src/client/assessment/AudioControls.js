@@ -123,9 +123,7 @@ const AudioControls = ({
             setLoading(false);
           });
         } else {
-          Promise.all(questionData.tts.pages.map(p => 
-            audioLoadResolve(p.contentAudioURL)
-          )).then(contentAudios => {
+          Promise.all(questionData.tts.pages.map(p => audioLoadResolve(p.contentAudioURL))).then(contentAudios => {
             setPageHowls(contentAudios);
             setLoading(false);
           });
@@ -173,10 +171,10 @@ const AudioControls = ({
       });
     } else if (questionData.type === questionType.PASSAGE) {
       if (page > 1) {
-        audioPlayResolve(pageHowls[page -1]).then(() => setCurrentPlayingDetails());
+        audioPlayResolve(pageHowls[page - 1]).then(() => setCurrentPlayingDetails());
       } else {
         audioPlayResolve(stimulusHowl).then(async () => {
-          await audioPlayResolve(pageHowls[page -1]);
+          await audioPlayResolve(pageHowls[page - 1]);
           setCurrentPlayingDetails();
         });
       }
@@ -194,44 +192,40 @@ const AudioControls = ({
     : currentPlayingDetails.qId === qId
     ? "Pause"
     : "Play";
-  return (
-    <AudioButtonsWrapper className={className}>
-      {!btnWithText ? (
-        <div style={{ display: showAudioControls ? "none" : "block" }}>
-          <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
-            {currentPlayingDetails.qId === qId ? (
-              <IconAudioPause color={white} className="audio-pause" />
-            ) : (
-              !loading && <IconPlayFilled color={white} className="audio-play" />
-            )}
-          </ControlButtons>
-          <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title="Stop">
-            <IconStop color={white} className="audio-stop" />
-          </ControlButtons>
-        </div>
-      ) : (
-        <div style={{ display: showAudioControls ? "none" : "flex" }}>
-          <EduButton height="40px" onClick={handlePlayPauseAudio}>
-            {currentPlayingDetails.qId === qId ? (
-              <>
-                <IconAudioPause />
-                PAUSE
-              </>
-            ) : (
-              !loading && (
-                <>
-                  <IconPlayBig />
-                  PLAY
-                </>
-              )
-            )}
-          </EduButton>
-          <EduButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
-            <IconStopCircle />
-            STOP
-          </EduButton>
-        </div>
-      )}
+  return !btnWithText ? (
+    <AudioButtonsWrapper style={{ display: showAudioControls ? "none" : "block" }} className={className}>
+      <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
+        {currentPlayingDetails.qId === qId ? (
+          <IconAudioPause color={white} className="audio-pause" />
+        ) : (
+          !loading && <IconPlayFilled color={white} className="audio-play" />
+        )}
+      </ControlButtons>
+      <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title="Stop">
+        <IconStop color={white} className="audio-stop" />
+      </ControlButtons>
+    </AudioButtonsWrapper>
+  ) : (
+    <AudioButtonsWrapper style={{ display: showAudioControls ? "none" : "flex" }} className={className}>
+      <EduButton height="40px" onClick={handlePlayPauseAudio}>
+        {currentPlayingDetails.qId === qId ? (
+          <>
+            <IconAudioPause />
+            PAUSE
+          </>
+        ) : (
+          !loading && (
+            <>
+              <IconPlayBig />
+              PLAY
+            </>
+          )
+        )}
+      </EduButton>
+      <EduButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
+        <IconStopCircle />
+        STOP
+      </EduButton>
     </AudioButtonsWrapper>
   );
 };

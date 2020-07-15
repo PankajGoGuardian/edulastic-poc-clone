@@ -191,6 +191,7 @@ export const SET_PASSAGE_ITEMS = "[tests] set passage items";
 export const SET_AND_SAVE_PASSAGE_ITEMS = "[tests] set and save passage items";
 export const GET_ALL_TAGS_IN_DISTRICT = "[test] get all tags in district";
 export const SET_ALL_TAGS = "[test] set all tags";
+export const SET_ALL_TAGS_FAILED = "[test] set all tags failure";
 export const ADD_NEW_TAG = "[test] add new tag";
 export const RECEIVE_DEFAULT_TEST_SETTINGS = "[tests] receive default test settings";
 export const SET_DEFAULT_TEST_TYPE_PROFILES = "[tests] set default test type profiles";
@@ -866,7 +867,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_QUESTION:
       return produce(state, _state => {
         if (_state.entity.isDocBased) {
-          const newSubjects = payload?.alignment?.map(x => x.subject) || [];
+          const newSubjects = payload?.alignment?.flatMap(x => x.subject) || [];
           const newGrades = payload?.alignment?.flatMap(x => x.grades) || [];
           _state.entity.grades = _uniq([..._state.entity.grades, ...newGrades]);
           _state.entity.subjects = _uniq([..._state.entity.subjects, ...newSubjects]);
@@ -1112,8 +1113,8 @@ export const getIsOverrideFreezeSelector = createSelector(
 );
 
 export const getAllTagsSelector = (state, tagType) => {
-  const stat = stateSelector(state);
-  return get(stat, ["tagsList", tagType], []);
+  const _state = stateSelector(state);
+  return get(_state, ["tagsList", tagType], []);
 };
 
 export const getCurrentGroupIndexSelector = createSelector(
@@ -1235,6 +1236,7 @@ function* receiveTestByIdSaga({ payload }) {
       })
     );
   } catch (err) {
+    Sentry.captureException(err);
     console.log({ err });
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
@@ -1295,6 +1297,7 @@ function* createTestSaga({ payload }) {
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`));
     notification({ type: "success", messageKey: "testCreated" });
   } catch (err) {
+    Sentry.captureException(err);
     console.log({ err });
 
     const errorMessage = err?.data?.message || "Failed to create test!";
@@ -1308,22 +1311,25 @@ function* updateTestSaga({ payload }) {
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true));
     const { scoring = {}, currentTab } = payload.data;
+    const testFieldsToOmit = [
+      "_id",
+      "updatedDate",
+      "createdDate",
+      "assignments",
+      "authors",
+      "createdBy",
+      "passages",
+      "isUsed",
+      "scoring",
+      "sharedType",
+      "currentTab",
+      "summary",
+      "alreadyLiked"
+    ];
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
-    delete payload.data.updatedDate;
-    delete payload.data.createdDate;
-    delete payload.data.assignments;
-    delete payload.data.authors;
-    delete payload.data.createdBy;
-    delete payload.data.passages;
-    delete payload.data.isUsed;
-    delete payload.data.scoring;
-    delete payload.data.sharedType;
-    delete payload.data.currentTab;
-    delete payload.data.summary;
-    delete payload.data.alreadyLiked;
     if (payload.data.testType !== test.type.COMMON) {
-      delete payload.data.freezeSettings;
+      testFieldsToOmit.push("freezeSettings");
     }
 
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
@@ -1339,10 +1345,10 @@ function* updateTestSaga({ payload }) {
 
     payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
     if (payload.data.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
-      delete payload.data.passwordExpireIn;
+      testFieldsToOmit.push("passwordExpireIn");
     }
     if (payload.data.passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
-      delete payload.data.assignmentPassword;
+      testFieldsToOmit.push("assignmentPassword");
     } else if (
       payload.data.passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!payload.data.assignmentPassword ||
@@ -1361,7 +1367,8 @@ function* updateTestSaga({ payload }) {
       payload.data.standardGradingScale = pick(payload.data?.standardGradingScale, ["_id", "name"]);
     }
 
-    const entity = yield call(testsApi.update, payload);
+    const testData = omit(payload.data, testFieldsToOmit);
+    const entity = yield call(testsApi.update, { ...payload, data: testData });
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     const userRole = yield select(getUserRole);
@@ -1388,6 +1395,7 @@ function* updateTestSaga({ payload }) {
     }
     yield put(setTestsLoadingAction(false));
   } catch (err) {
+    Sentry.captureException(err);
     console.log({ err });
     const errorMessage = err?.data?.message || "Update test is failing";
     notification({ msg: errorMessage });
@@ -1438,6 +1446,7 @@ function* updateTestDocBasedSaga({ payload }) {
       payload: { ...payload, data: newAssessment }
     });
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = err?.data?.message || "Update test is failing";
     notification({ msg: errorMessage });
     yield put(updateTestErrorAction(errorMessage));
@@ -1452,6 +1461,7 @@ function* updateRegradeDataSaga({ payload }) {
     notification({ type: "success", messageKey: "successUpdate" });
     yield put(push(`/author/regrade/${payload.newTestId}/success`));
   } catch (e) {
+    Sentry.captureException(e);
     const errorMessage = e?.data?.message || "Update test is failing";
     notification({ msg: errorMessage });
   } finally {
@@ -1470,6 +1480,7 @@ function* shareTestSaga({ payload }) {
     );
     notification({ type: "success", messageKey: "sharedPlaylist" });
   } catch (e) {
+    Sentry.captureException(e);
     console.warn(e);
     const errorMessage = "Sharing failed";
     const hasInvalidMails = e?.data?.invalidEmails?.length > 0;
@@ -1563,6 +1574,7 @@ function* publishTestSaga({ payload }) {
       }
     }
   } catch (error) {
+    Sentry.captureException(error);
     console.error(error);
     notification({ type: "success", msg: error?.data?.message || "publish failed." });
   }
@@ -1579,7 +1591,7 @@ function* publishForRegrade({ payload }) {
       _test.isInEditAndRegrade = true;
     }
     yield call(_test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
-      payload: { id: payload, data: _test, assignFlow: true }
+      payload: { id: payload, data: _test, assignFlow: true, disableLoadingIndicator: true }
     });
     const newTestId = yield select(getTestIdSelector);
     const locationState = yield select(({ router }) => router.location.state);
@@ -1590,6 +1602,7 @@ function* publishForRegrade({ payload }) {
       })
     );
   } catch (error) {
+    Sentry.captureException(error);
     console.error(error);
     notification({ msg: error?.data?.message || "publish failed." });
   }
@@ -1606,6 +1619,7 @@ function* receiveSharedWithListSaga({ payload }) {
     }));
     yield put(updateSharedWithListAction(coAuthors));
   } catch (e) {
+    Sentry.captureException(e);
     const errorMessage = "receive share with users list is failing";
     notification({ msg: errorMessage });
   }
@@ -1621,6 +1635,7 @@ function* deleteSharedUserSaga({ payload }) {
       })
     );
   } catch (e) {
+    Sentry.captureException(e);
     const errorMessage = "delete shared user is failing";
     notification({ msg: errorMessage });
   }
@@ -1660,7 +1675,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
       .flatMap(itemGroup => itemGroup.items || []);
     const questionGrades = testItems
       .flatMap(_item => (_item.data && _item.data.questions) || [])
-      .flatMap(question => question.grades || []);
+      .flatMap(question => (question.grades && question.grades.length < 13 ? question.grades : []));
     const questionSubjects = testItems
       .flatMap(_item => (_item.data && _item.data.questions) || [])
       .flatMap(question => question.subjects || []);
@@ -1676,7 +1691,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
     const grades = getAlignmentsObject
       .flatMap(alignment => alignment?.domains)
       .flatMap(domain => domain?.standards)
-      .flatMap(standard => standard?.grades)
+      .flatMap(standard => ((standard?.grades?.length || 0) < 13 ? standard?.grades : []))
       .filter(identity);
 
     yield put(
@@ -1767,6 +1782,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
       }
     }
   } catch (e) {
+    Sentry.captureException(e);
     console.error(e);
     const errorMessage = e?.data?.message || "Auto Save of Test is failing";
     notification({ msg: errorMessage });
@@ -1824,6 +1840,7 @@ function* checkAnswerSaga({ payload }) {
 
     // message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
   } catch (e) {
+    Sentry.captureException(e);
     notification({ messageKey: "checkAnswerFailed" });
     console.log("error checking answer", e);
   }
@@ -1861,20 +1878,35 @@ function* showAnswerSaga({ payload }) {
       }
     });
   } catch (e) {
+    Sentry.captureException(e);
     notification({ messageKey: "loadAnswerFailed" });
     console.log("error showing answer", e);
   }
 }
 
+/** TODO: If this needs to be wired to UI say for loading etc, please move it to redux store
+ *  This is meant only for dependent sagas to wait upon if in loading state.
+ */
+export const TAGS_SAGA_FETCH_STATUS = {
+  isLoading: false
+};
+
 function* getAllTagsSaga({ payload }) {
   try {
+    TAGS_SAGA_FETCH_STATUS.isLoading = true;
     const tags = yield call(tagsApi.getAll, payload.type);
     yield put({
       type: SET_ALL_TAGS,
       payload: { tags, tagType: payload.type }
     });
   } catch (e) {
+    Sentry.captureException(e);
+    yield put({
+      type: SET_ALL_TAGS_FAILED
+    });
     notification({ messageKey: "getAllTagsFailed" });
+  } finally {
+    TAGS_SAGA_FETCH_STATUS.isLoading = false;
   }
 }
 
@@ -1951,6 +1983,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     }
     yield put(setDefaultSettingsLoadingAction(false));
   } catch (e) {
+    Sentry.captureException(e);
     notification({ messageKey: "getDeafultSettingsFailed" });
     yield put(setDefaultSettingsLoadingAction(false));
   }
@@ -2010,6 +2043,7 @@ function* setAndSavePassageItems({ payload: { passageItems, page } }) {
     // update the test data wth testItems, and passage if needed.
     yield put(setTestDataAction(newPayload));
   } catch (e) {
+    Sentry.captureException(e);
     notification({ messageKey: "errorAddingPassageItems" });
     console.error("error", e, e.stack);
   }
@@ -2039,6 +2073,7 @@ function* updateTestAndNavigate({ payload }) {
 
     yield put(push(pathname, { isTestFlow: true, fadeSidebar, regradeFlow, previousTestId }));
   } catch (e) {
+    Sentry.captureException(e);
     notification({ messageKey: "errorUpdatingTest" });
     console.error("err", e);
   }
@@ -2062,6 +2097,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
     });
     yield put(push("/author/tests"));
   } catch (error) {
+    Sentry.captureException(error);
     console.error(error);
     notification({
       msg: error?.data?.message || `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`
@@ -2105,6 +2141,7 @@ function* fetchAutoselectGroupItemsSaga(payload) {
     const response = yield call(testItemsApi.getAutoSelectedItems, payload);
     return response.items.map(i => ({ ...i, autoselectedItem: true }));
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     notification({ messageKey: "failedToFetchAutoselectItems" });
     return null;
@@ -2125,6 +2162,7 @@ function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
     }
     yield put(setAutoselectItemsFetchingStatusAction(false));
   } catch (err) {
+    Sentry.captureException(err);
     yield put(setAutoselectItemsFetchingStatusAction(false));
     console.error(err);
   }
@@ -2156,6 +2194,7 @@ export function* addAutoselectGroupItems({ payload: _test }) {
 
     return { ..._test, itemGroups };
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
   }
 }
@@ -2166,6 +2205,7 @@ function* toggleTestLikeSaga({ payload }) {
     else yield put(updateTestItemLikeCountAction(payload));
     yield call(analyticsApi.toggleLike, payload);
   } catch (e) {
+    Sentry.captureException(e);
     console.error(e);
     payload = {
       ...payload,

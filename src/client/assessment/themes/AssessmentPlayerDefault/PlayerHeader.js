@@ -134,8 +134,6 @@ const PlayerHeader = ({
                     handletoggleHints={handletoggleHints}
                   />
                 )}
-              </MainActionWrapper>
-              <MainActionWrapper>
                 {!LCBPreviewModal && (
                   <ToolTipContainer>
                     {showSettingIcon && (

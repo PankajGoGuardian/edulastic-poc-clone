@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { get, keyBy } from "lodash";
-import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
+import { FlexContainer, AnswerContext, helpers, CheckboxLabel } from "@edulastic/common";
 import TestItemPreview from "../../../../../../../assessment/components/TestItemPreview";
-import { PointsLabel, QuestionCheckbox } from "./styled";
+import { PointsLabel } from "./styled";
 import Actions from "../Actions";
 import { PointsInput } from "../styled";
 
@@ -84,7 +84,7 @@ const Expanded = ({
       <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
         {isEditable && (
           <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
-            {isEditable && <QuestionCheckbox checked={selected} onChange={onSelect} />}
+            {isEditable && <CheckboxLabel checked={selected} onChange={onSelect} />}
           </FlexContainer>
         )}
         <FlexContainer>
@@ -144,7 +144,7 @@ const Expanded = ({
         <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
           {isEditable && (
             <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
-              {isEditable && <QuestionCheckbox checked={selected} onChange={onSelect} />}
+              {isEditable && <CheckboxLabel checked={selected} onChange={onSelect} />}
             </FlexContainer>
           )}
           <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>

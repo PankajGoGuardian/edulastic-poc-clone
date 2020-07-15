@@ -16,6 +16,7 @@ import CypressHelper from "../../../../framework/util/cypressHelpers";
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 
 const { MCQ_MULTI } = require("./../../../../../fixtures/questionAuthoring");
+
 const { _ } = Cypress;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applying regrade 'edited item'`, () => {
@@ -104,12 +105,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
   const queCentric = {};
 
   let attemptData = MCQ_MULTI["5"].attemptData;
-  let updatedAttempData = MCQ_MULTI["6"].attemptData;
+  const updatedAttempData = MCQ_MULTI["6"].attemptData;
   let itemId;
   let testid;
   let updatedAttempt;
 
   before("create tests", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments("", Teacher.username);
     cy.login("teacher", Teacher.username, Teacher.password);
 

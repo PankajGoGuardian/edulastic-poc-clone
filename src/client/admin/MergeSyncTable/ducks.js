@@ -228,10 +228,12 @@ function* fetchClassNamesSync({ payload }) {
 
 function* fetchEnableDisableSync({ payload }) {
   try {
-    const { syncEnabled, districtName = "" } = payload;
-    const newPayload = omit(payload, ["districtName"]);
+    const { syncEnabled, districtName = "", districtId, cleverId } = payload;
+    const newPayload = omit(payload, ["districtName", "cleverId"]);
     const item = yield call(enableDisableSyncApi, newPayload);
+    const searchPayload = {cleverDistrict: districtId, cleverId};
     if (item.success) {
+      yield call(fetchExistingData, {payload: searchPayload});
       if (syncEnabled) {
         notification({ type: "success", msg: `Enabled clever sync for ${districtName}` });
       } else {

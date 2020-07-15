@@ -15,7 +15,6 @@ import {
 import { IconBook, IconGraduationCap } from "@edulastic/icons";
 
 const CurriculumSubHeader = ({
-  match,
   isStudent,
   dateKeys,
   enableCustomize,
@@ -25,13 +24,11 @@ const CurriculumSubHeader = ({
   handleCheckout,
   isManageContentActive,
   isContentExpanded,
-  cancelPlaylistCustomize,
   toggleManageContentClick,
-  publishCustomizedPlaylist,
   shouldHidCustomizeButton,
-  isAuthoringFlowReview
+  isAuthoringFlowReview,
+  customizeInDraft = false
 }) => {
-  const { id: parentId = null, cloneId = null } = match.params;
   const { description, subjects = [], grades = [] } = destinationCurriculumSequence;
 
   const subHeaderIcon1 = !!grades.length && (
@@ -98,38 +95,19 @@ const CurriculumSubHeader = ({
               {subHeaderIcon2}
             </SubHeaderInfoCardWrapper>
             <ButtonWrapper>
-              {enableCustomize && isManageContentActive && cloneId && (
-                <DraftModeActionsWrapper>
-                  <StyledButton
-                    isGhost
-                    width="100px"
-                    data-cy="cancel-customize"
-                    onClick={() => cancelPlaylistCustomize({ parentId })}
-                  >
-                    Cancel
-                  </StyledButton>
-                  <StyledButton
-                    isGhost
-                    width="100px"
-                    data-cy="publish-customized-playlist"
-                    onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
-                    isManageContentActive={isManageContentActive}
-                  >
-                    Update
-                  </StyledButton>
-                </DraftModeActionsWrapper>
-              )}
               {(!isManageContentActive || !showRightPanel) && enableCustomize && !shouldHidCustomizeButton && (
-                <CustomizeButton isGhost onClick={toggleManageContentClick("manageContent")}>
+                <CustomizeButton isGhost isBlue onClick={toggleManageContentClick("manageContent")}>
                   Customize Content
                 </CustomizeButton>
               )}
 
-              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) && !isAuthoringFlowReview && (
-                <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
-                  View Summary
-                </StyledButton>
-              )}
+              {(isManageContentActive || !showRightPanel || (!enableCustomize && isStudent)) &&
+                !isAuthoringFlowReview &&
+                !customizeInDraft && (
+                  <StyledButton isGhost onClick={toggleManageContentClick("summary")}>
+                    View Summary
+                  </StyledButton>
+                )}
             </ButtonWrapper>
           </RightColumn>
         </CurriculumSubHeaderRow>
@@ -351,15 +329,6 @@ const ButtonWrapper = styled.div`
   @media (max-width: ${mobileWidthLarge}) {
     flex-direction: column;
   }
-`;
-
-const DraftModeActionsWrapper = styled.div`
-  width: 210px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap-reverse;
-  margin-left: 15px;
 `;
 
 const StyledButton = styled(EduButton)`

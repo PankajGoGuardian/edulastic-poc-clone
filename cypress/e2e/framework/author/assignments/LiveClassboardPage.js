@@ -84,13 +84,13 @@ class LiveClassboardPage {
   clickOnCardViewTab = () => {
     this.getCardViewTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.GREEN_2);
+      .should("have.css", "background-color", queColor.BLUE_2);
   };
 
   clickOnStudentsTab = () => {
     this.getStudentsTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.GREEN_2);
+      .should("have.css", "background-color", queColor.BLUE_2);
     cy.contains("Leave a feedback!"); // waiting for UI to render
   };
 
@@ -99,8 +99,7 @@ class LiveClassboardPage {
     cy.route("GET", /\bitem\b.*\bgroup\b/).as("getFirstQuestion");
     this.getQuestionsTab()
       .click({ force: true })
-      .should("have.css", "background-color", queColor.GREEN_2);
-
+      .should("have.css", "background-color", queColor.BLUE_2);
     return cy
       .wait("@getFirstQuestion")
       .then(xhr => xhr.response.body.result[0] && xhr.response.body.result[0].testItemId);

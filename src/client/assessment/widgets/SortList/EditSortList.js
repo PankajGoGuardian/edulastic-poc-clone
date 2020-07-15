@@ -13,20 +13,13 @@ import CorrectAnswers from "../../components/CorrectAnswers";
 
 import AdvancedOptions from "./components/AdvancedOptions";
 import ComposeQuestion from "./ComposeQuestion";
+import ListLabels from "./ListLabels";
 import ListComponent from "./ListComponent";
 import Question from "../../components/Question";
 
 const OptionsList = withPoints(QuillSortableList);
 
-const EditSortList = ({
-  item,
-  setQuestionData,
-  advancedLink,
-  advancedAreOpen,
-  fillSections,
-  cleanSections,
-  t
-}) => {
+const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleUiStyleChange = (prop, value) => {
@@ -71,11 +64,7 @@ const EditSortList = ({
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.validResponse.value = arrayMove(
-            draft.validation.validResponse.value,
-            oldIndex,
-            newIndex
-          );
+          draft.validation.validResponse.value = arrayMove(draft.validation.validResponse.value, oldIndex, newIndex);
         } else {
           draft.validation.altResponses[correctTab - 1].value = arrayMove(
             draft.validation.altResponses[correctTab - 1].value,
@@ -115,9 +104,7 @@ const EditSortList = ({
       useDragHandle
       columns={1}
       points={
-        correctTab === 0
-          ? item.validation.validResponse.score
-          : item.validation.altResponses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
     />
@@ -127,6 +114,12 @@ const EditSortList = ({
     <Fragment>
       <Paper padding="0px" boxShadow="none">
         <ComposeQuestion
+          item={item}
+          setQuestionData={setQuestionData}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
+        <ListLabels
           item={item}
           setQuestionData={setQuestionData}
           fillSections={fillSections}

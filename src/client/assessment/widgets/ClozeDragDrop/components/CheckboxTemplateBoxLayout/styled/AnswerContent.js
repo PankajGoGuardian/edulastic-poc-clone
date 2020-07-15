@@ -5,9 +5,9 @@ export const AnswerContent = styled(MathFormulaDisplay)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 8px 25px 8px 10px;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
+  padding: 6px 25px 6px 10px;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
   display: inline-block;
   vertical-align: middle;
   ${({ showIndex, inPopover, isPrintPreview }) => `

@@ -56,18 +56,20 @@ const drawPoint = (board, point1, point2, colors = null) => {
 
   const pointOptions = {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-    ...Colors.default[CONSTANT.TOOLS.POINT],
+    ...Colors.gray[CONSTANT.TOOLS.POINT],
     highlightStrokeColor: () =>
       board.currentTool === CONSTANT.TOOLS.TRASH
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightStrokeColor
-        : Colors.default[CONSTANT.TOOLS.POINT].highlightStrokeColor,
+        : Colors.gray[CONSTANT.TOOLS.POINT].highlightStrokeColor,
     highlightFillColor: () =>
       board.currentTool === CONSTANT.TOOLS.TRASH
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightFillColor
-        : Colors.default[CONSTANT.TOOLS.POINT].highlightFillColor,
+        : Colors.gray[CONSTANT.TOOLS.POINT].highlightFillColor,
     ...colors,
     fixed: true,
-    snapToGrid: false
+    snapToGrid: false,
+    size: 5,
+    strokeWidth: 2
   };
 
   const pointYs = getPointYs(board, point2);

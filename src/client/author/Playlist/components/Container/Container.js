@@ -3,7 +3,7 @@ import { greyLight1, greyThemeLight } from "@edulastic/colors";
 import { FlexContainer, withWindowSizes } from "@edulastic/common";
 import { IconList, IconPlaylist2, IconTile } from "@edulastic/icons";
 import { Button, Input, Row, Spin } from "antd";
-import { debounce, get, pick } from "lodash";
+import { debounce, get, pick, isEqual } from "lodash";
 import moment from "moment";
 import PropTypes from "prop-types";
 import * as qs from "query-string";
@@ -71,6 +71,7 @@ import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCo
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
+import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 
 function getUrlFilter(filter) {
   if (filter === "AUTHORED_BY_ME") {
@@ -113,7 +114,8 @@ class TestList extends Component {
   state = {
     standardQuery: "",
     blockStyle: "tile",
-    isShowFilter: false
+    isShowFilter: false,
+    openSidebar: false
   };
 
   getUrlToPush(page = undefined) {
@@ -264,7 +266,10 @@ class TestList extends Component {
   };
 
   resetFilter = () => {
-    const { receivePlaylists, limit, history } = this.props;
+    const { receivePlaylists, limit, history, playListFilters } = this.props;
+    // If current filter and initial filter is equal don't need to reset again
+    if (isEqual(playListFilters, emptyFilters)) return null;
+
     this.updateFilterState(emptyFilters);
     receivePlaylists({ page: 1, limit, search: emptyFilters });
     history.push(`/author/playlists`);
@@ -366,10 +371,12 @@ class TestList extends Component {
     });
   };
 
+  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
   render() {
     const { page, limit, count, creating, playListFilters, t, isProxyUser } = this.props;
 
-    const { blockStyle, isShowFilter } = this.state;
+    const { blockStyle, isShowFilter, openSidebar } = this.state;
     const { searchString } = playListFilters;
 
     return (
@@ -399,7 +406,9 @@ class TestList extends Component {
               />
             </StyleChangeWrapper>
           )}
+          toggleSidebar={this.toggleSidebar}
         />
+        <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
         <Container>
           <MobileFilter>
             <Input.Search

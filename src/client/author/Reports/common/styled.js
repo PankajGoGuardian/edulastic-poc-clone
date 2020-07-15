@@ -343,14 +343,23 @@ export const StyledText = styled.text`
 
 export const PrintableScreen = styled.div`
   @media print {
-    width: 1024px;
-
+    width: 250mm;
+    @page {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
     .fixed-header,
     .navigator-tabs-container,
     .ant-pagination,
     .single-assessment-report-go-button-container,
     .anticon-caret-down {
       display: none;
+    }
+    .ant-table-scroll table {
+      display: contents !important;
+      thead th.class-name-column {
+        min-width: auto !important;
+      }
     }
   }
 `;
@@ -498,17 +507,7 @@ export const HideLinkLabel = styled(StyledLabel)`
 
 export const ReportContaner = styled.div`
   width: ${({ showFilter }) => (showFilter ? "calc(100% - 250px)" : "100%")};
-  height: calc(100vh - 170px);
-  overflow: auto;
   position: relative;
-
-  @media print {
-    overflow: hidden;
-  }
-
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: calc(100vh - 180px);
-  }
 `;
 
 export const FilterIcon = styled(IconFilter).attrs({

@@ -185,6 +185,18 @@ class DistrictPolicyForm extends Component {
     changeDistrictPolicyData({ ...nextState, schoolLevel: role === "school-admin" });
   };
 
+  enforceDistrictSignonPolicy = e => {
+    const { districtPolicy = {}, changeDistrictPolicyData, role } = this.props;
+
+    const { value } = e.target;
+
+    const nextState = produce(districtPolicy, draftState => {
+      draftState.enforceDistrictSignonPolicy = value === "yes";
+    });
+
+    changeDistrictPolicyData({ ...nextState, schoolLevel: role === "school-admin" });
+  };
+
   isValidIp = (ipAddress = "") => {
     const validIpAddressPattern = /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])-(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))|25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[*0-9])\.(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])-(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]))|25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[*0-9])$/;
     return validIpAddressPattern.test(ipAddress); // will return true if valid
@@ -295,7 +307,8 @@ class DistrictPolicyForm extends Component {
       allowedIpForAssignments: districtPolicyData.allowedIpForAssignments || [],
       disableStudentLogin: districtPolicyData.disableStudentLogin || false,
       schoology: districtPolicyData.schoology || false,
-      classlink: districtPolicyData.classlink || false
+      classlink: districtPolicyData.classlink || false,
+      enforceDistrictSignonPolicy: districtPolicyData.enforceDistrictSignonPolicy || false
     };
     if (Object.prototype.hasOwnProperty.call(districtPolicyData, "_id")) {
       updateDistrictPolicy(updateData);
@@ -476,6 +489,13 @@ class DistrictPolicyForm extends Component {
           <StyledRow>
             <StyledLabel>Disable Student Login: </StyledLabel>
             <RadioGrp onChange={this.disableStudentLogin} value={districtPolicy?.disableStudentLogin ? "yes" : "no"}>
+              <RadioBtn value="yes">Yes</RadioBtn>
+              <RadioBtn value="no">No</RadioBtn>
+            </RadioGrp>
+          </StyledRow>
+          <StyledRow>
+            <StyledLabel>Enforced District Sign-On<br/> policy: </StyledLabel>
+            <RadioGrp onChange={this.enforceDistrictSignonPolicy} value={districtPolicy?.enforceDistrictSignonPolicy ? "yes" : "no"}>
               <RadioBtn value="yes">Yes</RadioBtn>
               <RadioBtn value="no">No</RadioBtn>
             </RadioGrp>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, DatePicker, message } from "antd";
+import { Form, Input, Row, Col, Select, DatePicker } from "antd";
 import { notification } from "@edulastic/common";
 import moment from "moment";
 import { debounce, uniqBy, uniq } from "lodash";
@@ -241,7 +241,7 @@ class EditClassModal extends Component {
                   }
                 ],
                 initialValue: name
-              })(<Input placeholder={t("class.components.addclass.classname")} />)}
+              })(<Input placeholder={t("class.components.addclass.classname")} maxLength={128} />)}
             </ModalFormItem>
           </Col>
         </Row>

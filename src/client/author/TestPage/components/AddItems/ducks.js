@@ -1,12 +1,13 @@
 import { createSelector } from "reselect";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
-import { createAction } from 'redux-starter-kit';
-import { call, put, all, takeEvery, select, takeLatest } from "redux-saga/effects";
-import { push, replace } from "connected-react-router";
+import { createAction } from "redux-starter-kit";
+import * as Sentry from "@sentry/browser";
+import { call, put, all, takeEvery, select, takeLatest, take, race } from "redux-saga/effects";
+import { push } from "connected-react-router";
 import { testItemsApi, contentErrorApi } from "@edulastic/api";
 import { keyBy } from "lodash";
-import { getAllTagsSelector } from "../../ducks";
+import { getAllTagsSelector, TAGS_SAGA_FETCH_STATUS, SET_ALL_TAGS, SET_ALL_TAGS_FAILED } from "../../ducks";
 import { DELETE_ITEM_SUCCESS } from "../../../ItemDetail/ducks";
 import {
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
@@ -206,7 +207,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         search: { ...initalSearchState },
-        ...(payload ? payload : {})
+        ...(payload || {})
       };
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
       return {
@@ -267,10 +268,10 @@ export const reducer = (state = initialState, { type, payload }) => {
               ...item,
               analytics: [
                 {
-                  usage: item ?.analytics ?.[0] ?.usage || 0,
+                  usage: item?.analytics?.[0]?.usage || 0,
                   likes: payload.toggleValue
-                    ? (item ?.analytics ?.[0] ?.likes || 0) + 1
-                    : (item ?.analytics ?.[0] ?.likes || 1) - 1
+                    ? (item?.analytics?.[0]?.likes || 0) + 1
+                    : (item?.analytics?.[0]?.likes || 1) - 1
                 }
               ],
               alreadyLiked: payload.toggleValue
@@ -290,10 +291,19 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
   try {
     const currentLocation = yield select(state => state.router.location.pathname);
     yield put(push(`${currentLocation}?page=${page}`));
+
+    // if the tags are still being fetched, wait for it to fetch and complete
+    if (TAGS_SAGA_FETCH_STATUS.isLoading) {
+      yield race({
+        success: take(SET_ALL_TAGS),
+        fail: take(SET_ALL_TAGS_FAILED)
+      });
+    }
+
     const allTagsData = yield select(state => getAllTagsSelector(state, "testitem"));
     const allTagsKeyById = keyBy(allTagsData, "_id");
     const { tags = [] } = search;
-    const searchTags = tags.map(tag => allTagsKeyById[tag].tagName || "");
+    const searchTags = tags.map(tag => allTagsKeyById[tag]?.tagName || "");
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
       page,
@@ -301,6 +311,7 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     });
     yield put(receiveTestItemsSuccess(items, count, page, limit));
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = "Receive items is failing";
     notification({ messageKey: "receiveItemFailing" });
     yield put(receiveTestItemsError(errorMessage));
@@ -312,7 +323,7 @@ function* reportContentErrorSaga({ payload }) {
     yield call(contentErrorApi.reportContentError, payload);
     notification({ type: "success", messageKey: "issueReportedSuccessfully" });
   } catch (err) {
-    console.error(err);
+    Sentry.captureException(err);
     notification({ messageKey: "failedToReportIssue" });
   }
 }

@@ -13,10 +13,10 @@ export const filterMenuItems = [
   { icon: "book", filter: SMART_FILTERS.ENTIRE_LIBRARY, path: "all", text: "Entire Library" },
   { icon: "folder", filter: SMART_FILTERS.AUTHORED_BY_ME, path: "by-me", text: "Authored by me" },
   { icon: "share-alt", filter: SMART_FILTERS.SHARED_WITH_ME, path: "shared", text: "Shared with me" },
-  { icon: "copy", filter: SMART_FILTERS.CO_AUTHOR, path: "co-author", text: "I am a Co-Author" }
+  { icon: "copy", filter: SMART_FILTERS.CO_AUTHOR, path: "co-author", text: "I am a Co-Author" },
+  { icon: "reload", filter: SMART_FILTERS.PREVIOUSLY_USED, path: "previous", text: "Previously Used" }
 
-  // These two filters are to be enabled later so, commented out
-  // { icon: "reload", filter: "PREVIOUS", path: "previous", text: "Previously Used" },
+  // This filter will be enabled once playlist favourites feature is implemented
   // { icon: "heart", filter: SMART_FILTERS.FAVORITES, path: "favourites", text: "My Favorites" }
 ];
 
@@ -82,7 +82,7 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     });
     const deletedPlaylistIds = new Set(yield call(Storage.getDeletedPlaylistIds));
     /**
-     * deleted playlists won't sometimes sync right away to elastic search. 
+     * deleted playlists won't sometimes sync right away to elastic search.
      * they are tracked by sessionStorage of the user who deleted them
      * TODO: Take care of sessionStorage cleanup if ever the bloat becomes too big and causes issue to any user
      */

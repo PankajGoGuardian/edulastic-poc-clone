@@ -212,7 +212,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.questionResponsePage.verifyTotalScoreAndImprovement(attempt1.totalScore, attempt1.maxScore, false);
       });
 
-      it(` > verify question centric view,should be shown with attempt1`, () => {
+      it(` > verify question centric view,should be shown with attempt reset`, () => {
         lcb.clickonQuestionsTab();
         _.keys(attempt1.attempt).forEach(queNum => {
           lcb.questionResponsePage.selectQuestion(queNum);
@@ -220,7 +220,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
           lcb.questionResponsePage.verifyQuestionResponseCard(
             points,
             queKey,
-            attempt1.attempt[queNum],
+            noattempt[queNum],
             attemptData,
             false,
             stuName
@@ -434,7 +434,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.questionResponsePage.verifyTotalScoreAndImprovement(attempt1.totalScore, attempt1.maxScore, false);
     });
 
-    it(` > verify question centric view,should be shown with attempt1`, () => {
+    it(` > verify question centric view,should be shown with attempt reset`, () => {
       lcb.clickonQuestionsTab();
       _.keys(attempt1.attempt).forEach(queNum => {
         lcb.questionResponsePage.selectQuestion(queNum);
@@ -442,7 +442,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.questionResponsePage.verifyQuestionResponseCard(
           points,
           queKey,
-          attempt1.attempt[queNum],
+          noattempt[queNum],
           attemptData,
           false,
           stuName
@@ -548,7 +548,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.questionResponsePage.verifyTotalScoreAndImprovement(attempt1.totalScore, attempt1.maxScore, false);
     });
 
-    it(` > verify question centric view,should be shown with attempt1`, () => {
+    it(` > verify question centric view,should be shown with attempt reset`, () => {
       lcb.clickonQuestionsTab();
       _.keys(attempt1.attempt).forEach(queNum => {
         lcb.questionResponsePage.selectQuestion(queNum);
@@ -556,7 +556,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.questionResponsePage.verifyQuestionResponseCard(
           points,
           queKey,
-          attempt1.attempt[queNum],
+          noattempt[queNum],
           attemptData,
           false,
           stuName
@@ -665,7 +665,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       lcb.questionResponsePage.verifyTotalScoreAndImprovement(attempt1.totalScore, attempt1.maxScore, false);
     });
 
-    it(` > verify question centric view,should be shown with attempt1`, () => {
+    it(` > verify question centric view,should be shown with attempt reset`, () => {
       lcb.clickonQuestionsTab();
       _.keys(attempt1.attempt).forEach(queNum => {
         lcb.questionResponsePage.selectQuestion(queNum);
@@ -673,7 +673,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.questionResponsePage.verifyQuestionResponseCard(
           points,
           queKey,
-          attempt1.attempt[queNum],
+          noattempt[queNum],
           attemptData,
           false,
           stuName

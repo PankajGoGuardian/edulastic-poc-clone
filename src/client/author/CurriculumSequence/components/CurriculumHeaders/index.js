@@ -105,7 +105,10 @@ const CurriculumHeader = ({
   onRejectClick,
   windowWidth,
   deletePlaylist,
-  removePlaylistFromUse
+  removePlaylistFromUse,
+  customizeInDraft = false,
+  publishPlaylistInDraft,
+  discardDraftPlaylist
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const {
@@ -118,7 +121,7 @@ const CurriculumHeader = ({
 
   // figure out which tab contents to render || just render default playlist
   const {
-    params: { cloneId = null, currentTab: cTab },
+    params: { currentTab: cTab },
     url
   } = match;
   const currentTab = cTab || "playlist";
@@ -144,6 +147,10 @@ const CurriculumHeader = ({
   }
 
   const savePlaylist = () => {
+    if (customizeInDraft) {
+      publishPlaylistInDraft();
+      return;
+    }
     updateDestinationPlaylist({ showNotification: true });
   };
   const isMobile = windowWidth < parseInt(tabletWidth, 10);
@@ -196,20 +203,27 @@ const CurriculumHeader = ({
             )}
 
           {(showUseThisButton || shouldShowEdit || urlHasUseThis || features.isCurator) &&
+            !customizeInDraft &&
             role !== roleuser.EDULASTIC_CURATOR && (
               <HeaderButton isBlue isGhost data-cy="share" onClick={onShareClick} IconBtn>
                 <IconShare />
               </HeaderButton>
             )}
 
-          {isManageContentActive && !cloneId && !showUseThisButton && !shouldShowEdit && (
+          {customizeInDraft && (
+            <HeaderButton isBlue isGhost data-cy="cancel" onClick={discardDraftPlaylist}>
+              CANCEL
+            </HeaderButton>
+          )}
+
+          {isManageContentActive && !shouldHideUseThis && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
             <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               {isDesktop && "SAVE"}
             </HeaderButton>
           )}
 
-          {urlHasUseThis && isTeacher && !isPublisherUser && (
+          {urlHasUseThis && isTeacher && !isPublisherUser && !customizeInDraft && (
             <>
               <HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
                 <IconAirdrop />
@@ -219,6 +233,7 @@ const CurriculumHeader = ({
                 overlayStyle={{ zIndex: 999, cursor: "pointer" }}
                 overlay={mainPlaylistVerticalMenu}
                 trigger={["click"]}
+                getPopupContainer={trigger => trigger.parentNode}
               >
                 <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
                   <IconMoreVertical width={5} height={14} color={themeColorBlue} />
@@ -241,12 +256,15 @@ const CurriculumHeader = ({
               </HeaderButton>
             </Tooltip>
           )}
-          {(shouldShowEdit || showUseThisButton) && !shouldHideUseThis && role !== roleuser.EDULASTIC_CURATOR && (
-            <HeaderButton isBlue data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
-              <IconUseThis />
-              <span>USE THIS</span>
-            </HeaderButton>
-          )}
+          {(shouldShowEdit || showUseThisButton) &&
+            !customizeInDraft &&
+            !shouldHideUseThis &&
+            role !== roleuser.EDULASTIC_CURATOR && (
+              <HeaderButton isBlue data-cy="use-this" onClick={handleUseThisClick} IconBtn={!isDesktop}>
+                <IconUseThis />
+                <span>USE THIS</span>
+              </HeaderButton>
+            )}
           {features.isCurator && (status === "inreview" || status === "rejected") && (
             <HeaderButton isBlue onClick={onApproveClick}>
               APPROVE

@@ -4,7 +4,7 @@ import runMatrixPageTests from "../../../../framework/author/itemList/questionTy
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Choice matrix - inline" type question`, () => {
   runMatrixPageTests({
     group: "Multiple Choice",
-    queType: "Choice Matrix - Inline",
+    queType: "Match Table - Inline",
     qShortKey: "CHOICE_INLINE",
     queText: "Choose the correct number of days in following month",
     ansChoice: ["right-1", "wrong-1", "wrong-2", "right-2"],

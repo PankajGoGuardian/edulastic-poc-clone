@@ -205,13 +205,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
     before("Login and UnAssign", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       assignCountForClass1 = 0;
-      testLibraryPage.sidebar.clickOnAssignment();
-      authorAssignmentPage.clickOnUnassign();
     });
     context("To The Same Class", () => {
       before("Login and Assign", () => {
         cy.deleteAllAssignments(Student1Class1.email, Teacher.email);
-
         testAssignPage.visitAssignPageById(OriginalTestId);
         // testAssignPage.clickOnEntireClass();
         testAssignPage.selectClass(CLASS_1);
@@ -239,6 +236,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         authorAssignmentPage.clickOnAssign();
         testAssignPage.selectClass(CLASS_1);
         testAssignPage.clickOnAssign({ duplicate: false, willNotAssign: true }).then(() => {
+          cy.wait(3000);
           testAssignPage.sidebar.clickOnAssignment();
           authorAssignmentPage.getStatus().should("have.length", assignCountForClass1);
         });

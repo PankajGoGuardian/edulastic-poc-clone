@@ -182,7 +182,7 @@ const reducer = combineReducers({
 const {
   searchUpdateDistrict: searchUpdateDistrictApi,
   manageSubscription: manageSubscriptionApi,
-  searchUsersByEmailIds: searchUsersByEmailIdsApi,
+  searchUsersByEmailsOrIds: searchUsersByEmailsOrIdsApi,
   searchSchoolsById: searchSchoolsByIdApi,
   saveOrgPermissionsApi
 } = adminApi;
@@ -203,7 +203,7 @@ function* upgradeDistrict({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      notification({ type: "success", msg: result.messag });
+      notification({ type: "success", msg: result.message });
       yield put(manageSubscriptionsBydistrict.actions.subscribeSuccess(result.subscriptionResult[0]));
     }
   } catch (err) {
@@ -215,10 +215,10 @@ function* upgradeUserData({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
-      notification({ type: "success", msg: result.messag });
+      notification({ type: "success", msg: result.message });
       yield put(manageSubscriptionsByUsers.actions.success(result.subscriptionResult));
     } else {
-      notification({ msg: result.messag });
+      notification({ msg: result.message });
     }
   } catch (err) {
     console.error(err);
@@ -227,7 +227,7 @@ function* upgradeUserData({ payload }) {
 
 function* searchUsersByEmailIds({ payload }) {
   try {
-    const item = yield call(searchUsersByEmailIdsApi, payload);
+    const item = yield call(searchUsersByEmailsOrIdsApi, payload);
     if (item.result) {
       if (!item.result.data.length) {
         notification({ messageKey: "userNotFound" });

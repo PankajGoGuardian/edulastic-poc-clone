@@ -1,16 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { get, keyBy } from "lodash";
-import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
+import { FlexContainer, AnswerContext, helpers, CheckboxLabel } from "@edulastic/common";
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
-import {
-  TestItemWrapper,
-  PreviewButton,
-  PointsInput,
-  PointsLabel,
-  QuestionCheckbox
-} from "./styled";
+import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel } from "./styled";
 
 const transformItemRow = ([row], qid) => [
   {
@@ -97,17 +91,10 @@ const ListItem = ({
     <TestItemWrapper data-cy={metaInfoData.id}>
       {mobile ? (
         <FlexContainer flexDirection="column" alignItems="flex-start">
-          <FlexContainer
-            justifyContent="space-between"
-            style={{ width: "100%", marginBottom: "15px" }}
-          >
+          <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
             {isEditable && !collapseView && (
               <FlexContainer flexDirection="column" justifyContent="center">
-                <QuestionCheckbox
-                  data-cy="queCheckbox"
-                  checked={selected.includes(indx)}
-                  onChange={handleCheck}
-                />
+                <CheckboxLabel data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
               </FlexContainer>
             )}
             <FlexContainer>
@@ -153,21 +140,11 @@ const ListItem = ({
         </FlexContainer>
       ) : (
         items.map(({ item: _item }, index) => (
-          <FlexContainer
-            className="expanded-rows"
-            justifyContent="space-between"
-            alignItems="flex-start"
-          >
+          <FlexContainer className="expanded-rows" justifyContent="space-between" alignItems="flex-start">
             <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
               {isEditable && !collapseView && (
-                <FlexContainer
-                  style={{ marginTop: 20, width: "5%" }}
-                  flexDirection="column"
-                  justifyContent="center"
-                >
-                  {isEditable && (
-                    <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
-                  )}
+                <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
+                  {isEditable && <CheckboxLabel checked={selected.includes(indx)} onChange={handleCheck} />}
                 </FlexContainer>
               )}
               <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
@@ -202,9 +179,7 @@ const ListItem = ({
                   onChange={handleChangePoint(get(_item, "[0].widgets[0].reference", null))}
                 />
               </FlexContainer>
-              {index === 0 && (
-                <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>
-              )}
+              {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
             </FlexContainer>
           </FlexContainer>
         ))

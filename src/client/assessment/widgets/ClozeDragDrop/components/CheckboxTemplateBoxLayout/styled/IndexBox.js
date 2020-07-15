@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 export const IndexBox = styled.div`
-  width: 40px;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+  width: 32px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
   display: flex;
   justify-content: center;
   align-items: center;

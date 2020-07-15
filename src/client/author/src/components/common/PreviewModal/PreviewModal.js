@@ -27,7 +27,7 @@ import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPag
 import { getTestSelector, setTestDataAndUpdateAction, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
 import { clearAnswersAction } from "../../../actions/answers";
 import { changePreviewAction, changeViewAction } from "../../../actions/view";
-import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
+import { getCollectionsSelector, getUserFeatures, isPublisherUserSelector } from "../../../selectors/user";
 import { allowDuplicateCheck } from "../../../utils/permissionCheck";
 import ScoreBlock from "../ScoreBlock";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
@@ -256,11 +256,11 @@ class PreviewModal extends React.Component {
     if (!keys.includes(item._id)) {
       keys[keys.length] = item._id;
       setDataAndSave({ addToTest: true, item });
-      notification({ type: "success", messageKey: "itemAddedCart" });
+      notification({ type: "success", messageKey: "itemAddedTest" });
     } else {
       keys = keys.filter(key => key !== item._id);
       setDataAndSave({ addToTest: false, item: { _id: item._id } });
-      notification({ type: "success", messageKey: "itemRemovedCart" });
+      notification({ type: "success", messageKey: "itemRemovedTest" });
     }
     setTestItems(keys);
   };
@@ -369,7 +369,8 @@ class PreviewModal extends React.Component {
       test,
       testAssignments,
       userRole,
-      deleting
+      deleting,
+      isPublisherUser
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField, fullModal, isRejectMode } = this.state;
@@ -382,7 +383,7 @@ class PreviewModal extends React.Component {
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
     const isOwner = authors.some(author => author._id === userId);
 
-    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner;
+    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item") || isOwner || isPublisherUser;
 
     const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
@@ -394,7 +395,7 @@ class PreviewModal extends React.Component {
     const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH;
 
     const isTestInRegrade = !!test?._id && (testAssignments.length && test.isUsed);
-    const isDisableEdit = !(isEditable || userRole === roleuser.EDULASTIC_CURATOR);
+    const isDisableEdit = !(isEditable || userRole === roleuser.EDULASTIC_CURATOR || userFeatures.isCurator);
     const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
 
@@ -442,7 +443,6 @@ class PreviewModal extends React.Component {
             ) : (
               <EduButton
                 isBlue
-                isGhost={!this.isAddOrRemove}
                 height="28px"
                 justifyContent="center"
                 onClick={() => {
@@ -696,6 +696,7 @@ const enhance = compose(
         test: getTestSelector(state),
         testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state),
+        isPublisherUser: isPublisherUserSelector(state),
         deleting: getItemDeletingSelector(state)
       };
     },

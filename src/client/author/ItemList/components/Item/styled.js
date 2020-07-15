@@ -26,7 +26,7 @@ const Style = css`
   background: transparent !important;
   font-family: ${props => props.theme.defaultFontFamily} !important;
   font-size: ${props => props.theme.questionTextnormalFontSize} !important;
-  color: ${props => props.theme.titleColor} !important;
+  color: ${props => props.theme.questionTextColor} !important;
   font-weight: normal !important;
   font-style: normal !important;
   text-decoration: none;

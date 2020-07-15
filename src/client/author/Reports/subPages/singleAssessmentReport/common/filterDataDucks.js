@@ -1,10 +1,11 @@
 import { takeLatest, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
-import { reportsApi } from "@edulastic/api";
-import { message } from "antd";
-import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy, set, get } from "lodash";
+import * as Sentry from "@sentry/browser";
+
+import { reportsApi } from "@edulastic/api";
+import { notification } from "@edulastic/common";
 
 import { RESET_ALL_REPORTS } from "../../../common/reportsRedux";
 
@@ -117,7 +118,7 @@ const initialState = {
 
 const setFiltersReducer = (state, { payload }) => {
   if (payload.filters && payload.orgDataArr) {
-    let byGroupId = groupBy(
+    const byGroupId = groupBy(
       payload.orgDataArr.filter((item, index) => {
         const checkForGrades =
           (item.grades || "")
@@ -136,11 +137,11 @@ const setFiltersReducer = (state, { payload }) => {
       "groupId"
     );
     // map filtered class ids & custom group ids by group type
-    let classIds = [],
-      groupIds = [];
+    const classIds = [];
+      const groupIds = [];
     Object.keys(byGroupId).forEach(item => {
-      const key = byGroupId[item][0].groupId,
-        groupType = byGroupId[item][0].groupType;
+      const key = byGroupId[item][0].groupId;
+        const groupType = byGroupId[item][0].groupType;
       groupType === "class" ? classIds.push(key) : groupIds.push(key);
     });
     // set default filters for missing class id & group id
@@ -199,14 +200,37 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
 function* getReportsSARFilterDataRequest({ payload }) {
   try {
     yield put({ type: RESET_REPORTS_SAR_FILTER_DATA });
-    const SARFilterData = yield call(reportsApi.fetchSARFilterData, payload);
+    const response = yield call(reportsApi.fetchSARFilterData, payload);
+
+    // filter out testData with empty testId(aka reportKey)
+    const responseResult = get(response, "data.result", {});
+    const testData = get(responseResult, "testData", []);
+    const filteredTestData = testData.filter(t => t.testId);
+
+    // send faulty data to sentry
+    if (testData.length !== filteredTestData.length) {
+      Sentry.withScope(scope => {
+        scope.setExtra("testData", testData.filter(t => !t.testId));
+        Sentry.captureException(new Error("[SARFilters] fetched testData has empty testId(s)"));
+      });
+    }
+
+    const SARFilterData = {
+      data: {
+        result: {
+          ...responseResult,
+          testData: filteredTestData
+        }
+      }
+    };
+  
     yield put({
       type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS,
       payload: { SARFilterData }
     });
   } catch (error) {
-    let msg = "Failed to fetch filter data Please try again...";
-    notification({ msg:msg });
+    const msg = "Failed to fetch filter data Please try again...";
+    notification({ msg });
     yield put({
       type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR,
       payload: { error: msg }

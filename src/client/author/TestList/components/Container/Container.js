@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce, get, has, pickBy, identity, pick } from "lodash";
+import { debounce, get, has, pickBy, identity, pick, isEqual } from "lodash";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -106,6 +106,7 @@ import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCo
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
+import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -165,7 +166,8 @@ class TestList extends Component {
     selectedTests: [],
     isShowFilter: false,
     markedTests: [],
-    moduleModalAdd: null
+    moduleModalAdd: null,
+    openSidebar: false
   };
 
   static getDerivedStateFromProps = (props, prevState) => {
@@ -417,7 +419,11 @@ class TestList extends Component {
   };
 
   handleClearFilter = () => {
-    const { history, mode, limit, receiveTests } = this.props;
+    const { history, mode, limit, receiveTests, testFilters } = this.props;
+
+    // If current filter and initial filter is equal don't need to reset again
+    if (isEqual(testFilters, emptyFilters)) return null;
+
     this.updateFilterState(emptyFilters, true);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
     if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
@@ -703,6 +709,8 @@ class TestList extends Component {
     removeTestFromCart(item);
   };
 
+  toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
   renderCardContent = () => {
     const {
       loading,
@@ -890,7 +898,8 @@ class TestList extends Component {
       showRemoveModules,
       markedTests,
       moduleModalAdd,
-      testAdded
+      testAdded,
+      openSidebar
     } = this.state;
     const search = {
       ...testFilters
@@ -935,32 +944,36 @@ class TestList extends Component {
           handleRemove={this.removeTestFromPlaylist}
         />
         {mode !== "embedded" && (
-          <ListHeader
-            onCreate={this.handleCreate}
-            creating={creating}
-            title={t("common.testLibrary")}
-            titleIcon={IconTestBank}
-            btnTitle="New Test"
-            renderFilter={() => (
-              <StyleChangeWrapper>
-                <IconTile
-                  data-cy="tileView"
-                  onClick={() => this.handleStyleChange("tile")}
-                  width={18}
-                  height={18}
-                  color={blockstyle === "tile" ? greyThemeLight : greyLight1}
-                />
-                <IconList
-                  data-cy="listView"
-                  onClick={() => this.handleStyleChange("horizontal")}
-                  width={18}
-                  height={18}
-                  color={blockstyle === "horizontal" ? greyThemeLight : greyLight1}
-                />
-              </StyleChangeWrapper>
-            )}
-            renderExtra={this.renderExtra}
-          />
+          <>
+            <ListHeader
+              onCreate={this.handleCreate}
+              creating={creating}
+              title={t("common.testLibrary")}
+              titleIcon={IconTestBank}
+              btnTitle="New Test"
+              renderFilter={() => (
+                <StyleChangeWrapper>
+                  <IconTile
+                    data-cy="tileView"
+                    onClick={() => this.handleStyleChange("tile")}
+                    width={18}
+                    height={18}
+                    color={blockstyle === "tile" ? greyThemeLight : greyLight1}
+                  />
+                  <IconList
+                    data-cy="listView"
+                    onClick={() => this.handleStyleChange("horizontal")}
+                    width={18}
+                    height={18}
+                    color={blockstyle === "horizontal" ? greyThemeLight : greyLight1}
+                  />
+                </StyleChangeWrapper>
+              )}
+              renderExtra={this.renderExtra}
+              toggleSidebar={this.toggleSidebar}
+            />
+            <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
+          </>
         )}
         <Container>
           <MobileFilter>

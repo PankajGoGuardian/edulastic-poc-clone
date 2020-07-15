@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Row, Input, Button, Form } from "antd";
 import { white, tabletWidth } from "@edulastic/colors";
+
 const { TextArea } = Input;
 
 export const StyledFormDiv = styled.div`
@@ -19,6 +20,14 @@ export const HeaderRow = styled(Row)`
     font-size: 20px;
     font-weight: bold;
     margin: 0px;
+  }
+  .hide-label {
+    label {
+      display: none;
+    }
+    .ant-form-item {
+      margin: 0px;
+    }
   }
 `;
 

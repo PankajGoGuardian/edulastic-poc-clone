@@ -1,10 +1,10 @@
 import { groupBy as _groupBy, uniq, get } from "lodash";
 
 export const getListOfStudents = (students, classes) => {
-  let idList = [];
+  const idList = [];
 
-  let selected = students
-    .filter(student => classes.includes(student.groupId))
+  const selected = students
+    .filter(student => classes?.includes(student.groupId))
     .filter(({ _id }) => {
       if (idList.includes(_id)) return false;
 

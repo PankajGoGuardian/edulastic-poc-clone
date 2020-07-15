@@ -5,16 +5,16 @@ export const getYAxis = (yAxisMax, yAxisMin, stepSize) =>
 
 export const getPadding = yAxis => Math.max(...yAxis.map(val => val.toString().length)) * 10;
 
-export const getStep = (data, width, margin, padding, isBar = false) => {
+export const getStep = (data, width, margin, isBar = false) => {
   let count = data && data.length > 1 ? data.length : 1;
   count = isBar ? count : count - 1;
-  return (width - margin - padding) / count;
+  return (width - margin) / count;
 };
 
 export const getGridVariables = (data, { width, height, margin, yAxisMax, yAxisMin, stepSize }, isBar = false) => {
   const yAxis = getYAxis(yAxisMax, yAxisMin, stepSize);
   const padding = getPadding(yAxis);
-  const step = getStep(data, width, margin, padding, isBar);
+  const step = getStep(data, width, margin, isBar);
   const yAxisStep =
     yAxisMax !== yAxisMin ? Math.abs((height - margin - padding) / (yAxisMax - yAxisMin)) : height - margin - padding;
   return { yAxis, padding, step, yAxisStep };

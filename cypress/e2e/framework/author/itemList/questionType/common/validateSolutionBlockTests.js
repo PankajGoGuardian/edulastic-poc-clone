@@ -1,5 +1,5 @@
-import solutionBlockPage from "../../../../author/itemList/questionType/common/solutionBlock.js";
-import EditItemPage from "../../../../../framework/author/itemList/itemDetail/editPage.js";
+import solutionBlockPage from "./solutionBlock.js";
+import EditItemPage from "../../itemDetail/editPage.js";
 
 const validateSolutionBlockTests = (questionGroup, questionType) => {
   const editItem = new EditItemPage();
@@ -8,7 +8,7 @@ const validateSolutionBlockTests = (questionGroup, questionType) => {
 
   context(" > Solution block tests", () => {
     before("visit items page and select question type", () => {
-      editItem.sideBar.clickOnDashboard();
+      // editItem.sideBar.clickOnDashboard();
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(questionGroup, questionType);

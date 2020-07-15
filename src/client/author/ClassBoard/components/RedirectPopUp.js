@@ -12,9 +12,10 @@ import {
 } from "@edulastic/common";
 import { test as testContants } from "@edulastic/constants";
 import { Col, Row, Select } from "antd";
-import { some } from "lodash";
+import { some, get } from "lodash";
 import moment from "moment";
 import React, { useCallback, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { getRedirectEndDate, getUserName } from "../utils";
 import { BodyContainer } from "./styled";
 
@@ -29,7 +30,6 @@ const ShowPreviousAttempt = {
   FEEDBACK_ONLY: "Teacher Feedback only",
   SCORE_AND_FEEDBACK: "Score & Teacher Feedback",
   STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Teacher Feedback"
-  
 };
 
 const Option = Select.Option;
@@ -63,7 +63,8 @@ const RedirectPopUp = ({
   absentList = [],
   disabledList = [],
   groupId,
-  testActivity
+  testActivity,
+  isPremiumUser
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
   const [endDate, setEndDate] = useState(moment(getRedirectEndDate(additionalData, dueDate)));
@@ -71,7 +72,7 @@ const RedirectPopUp = ({
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
   const [qDeliveryState, setQDeliveryState] = useState("ALL");
-  const [showPrevAttempt, setshowPrevAttempt] = useState("FEEDBACK_ONLY");
+  const [showPrevAttempt, setshowPrevAttempt] = useState( isPremiumUser ? "FEEDBACK_ONLY" : "STUDENT_RESPONSE_AND_FEEDBACK");
   const [allowedTime, setAllowedTime] = useState(additionalData.allowedTime || 1);
   useEffect(() => {
     const setRedirectStudents = {};
@@ -146,19 +147,19 @@ const RedirectPopUp = ({
     setLoading(false);
   }, [studentsToRedirect, assignmentId, endDate, groupId, showPrevAttempt, qDeliveryState, dueDate, allowedTime]);
 
-  const disabledEndDate = endDate => {
-    if (!endDate) {
+  const disabledEndDate = _endDate => {
+    if (!_endDate) {
       return false;
     }
-    return endDate < moment().startOf("day");
+    return _endDate < moment().startOf("day");
   };
 
-  const disabledDueDate = useCallback(dueDate => dueDate < moment().startOf("day") || dueDate > endDate, [endDate]);
+  const disabledDueDate = useCallback(_dueDate => _dueDate < moment().startOf("day") || dueDate > endDate, [endDate]);
 
   return (
     <CustomModalStyled
       centered
-      title={additionalData.className}
+      title="Redirect Assignment"
       visible={open}
       onCancel={closePopup}
       footer={[
@@ -171,6 +172,7 @@ const RedirectPopUp = ({
       ]}
     >
       <BodyContainer>
+        <h4 style={{ fontWeight: 550 }}>{additionalData.className}</h4>
         <Row>
           {/* 
             TODO: handle the change
@@ -241,22 +243,24 @@ const RedirectPopUp = ({
               />
             </Col>
           ) : (
-            <Col span={12}>
-              <FieldLabel>Questions delivery</FieldLabel>
-              <SelectInputStyled
-                data-cy="questionDelivery"
-                defaultValue={qDeliveryState}
-                onChange={val => setQDeliveryState(val)}
-                style={{ width: "100%" }}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-              >
-                {Object.keys(QuestionDelivery).map(item => (
-                  <Option key="1" value={item}>
-                    {QuestionDelivery[item]}
-                  </Option>
+            isPremiumUser && (
+              <Col span={12}>
+                <FieldLabel>Questions delivery</FieldLabel>
+                <SelectInputStyled
+                  data-cy="questionDelivery"
+                  defaultValue={qDeliveryState}
+                  onChange={val => setQDeliveryState(val)}
+                  style={{ width: "100%" }}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  {Object.keys(QuestionDelivery).map(item => (
+                    <Option key="1" value={item}>
+                      {QuestionDelivery[item]}
+                    </Option>
                 ))}
-              </SelectInputStyled>
-            </Col>
+                </SelectInputStyled>
+              </Col>
+            )
           )}
           <Col span={12}>
             <FieldLabel>Close Date</FieldLabel>
@@ -272,60 +276,64 @@ const RedirectPopUp = ({
             />
           </Col>
         </Row>
-        <Row gutter={24}>
-          {additionalData.dueDate ? (
+        {isPremiumUser && (
+          <Row gutter={24}>
+            {additionalData.dueDate ? (
+              <Col span={12}>
+                <FieldLabel>Questions delivery</FieldLabel>
+                <SelectInputStyled
+                  data-cy="questionDelivery"
+                  defaultValue={qDeliveryState}
+                  onChange={val => setQDeliveryState(val)}
+                  style={{ width: "100%" }}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  {Object.keys(QuestionDelivery).map(item => (
+                    <Option key="1" value={item}>
+                      {QuestionDelivery[item]}
+                    </Option>
+                  ))}
+                </SelectInputStyled>
+              </Col>
+            ) : null}
             <Col span={12}>
-              <FieldLabel>Questions delivery</FieldLabel>
+              <FieldLabel>Show Previous attempt</FieldLabel>
               <SelectInputStyled
-                data-cy="questionDelivery"
-                defaultValue={qDeliveryState}
-                onChange={val => setQDeliveryState(val)}
+                data-cy="previousAttempt"
+                value={showPrevAttempt}
+                onChange={val => setshowPrevAttempt(val)}
                 style={{ width: "100%" }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
               >
-                {Object.keys(QuestionDelivery).map(item => (
-                  <Option key="1" value={item}>
-                    {QuestionDelivery[item]}
+                {Object.keys(ShowPreviousAttempt).map((item, index) => (
+                  <Option key={index} value={item}>
+                    {ShowPreviousAttempt[item]}
                   </Option>
                 ))}
               </SelectInputStyled>
             </Col>
-          ) : null}
-          <Col span={12}>
-            <FieldLabel>Show Previous attempt</FieldLabel>
-            <SelectInputStyled
-              data-cy="previousAttempt"
-              value={showPrevAttempt}
-              onChange={val => setshowPrevAttempt(val)}
-              style={{ width: "100%" }}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              {Object.keys(ShowPreviousAttempt).map((item, index) => (
-                <Option key={index} value={item}>
-                  {ShowPreviousAttempt[item]}
-                </Option>
-              ))}
-            </SelectInputStyled>
-          </Col>
-          {additionalData.timedAssignment ? (
-            <Col span={12}>
-              <FieldLabel>Time Limit</FieldLabel>
-              <TextInputStyled
-                type="number"
-                data-cy="allowedTime"
-                value={allowedTime / (60 * 1000)}
-                onChange={e => setAllowedTime(e.target.value * (60 * 1000))}
-                style={{ width: "60%" }}
-                min={1}
-                max={300}
-              />{" "}
-              <span>&nbsp;minutes</span>
-            </Col>
-          ) : null}
-        </Row>
+            {additionalData.timedAssignment ? (
+              <Col span={12}>
+                <FieldLabel>Time Limit</FieldLabel>
+                <TextInputStyled
+                  type="number"
+                  data-cy="allowedTime"
+                  value={allowedTime / (60 * 1000)}
+                  onChange={e => setAllowedTime(e.target.value * (60 * 1000))}
+                  style={{ width: "60%" }}
+                  min={1}
+                  max={300}
+                />{" "}
+                <span>&nbsp;minutes</span>
+              </Col>
+            ) : null}
+          </Row>
+        )}
       </BodyContainer>
     </CustomModalStyled>
   );
 };
 
-export default RedirectPopUp;
+export default connect(state => ({
+  isPremiumUser: get(state, ["user", "user", "features", "premium"], false)
+}), null)(RedirectPopUp);

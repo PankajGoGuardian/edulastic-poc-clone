@@ -248,7 +248,7 @@ class AssignmentsPage {
 
   verifyAbsenceOfTest = id => cy.get("body").should("not.have.descendants", `[data-cy="test-${id}"]`);
 
-  verifyPresenceOfTest = id => cy.get("body").should("have.descendants", `[data-cy="test-${id}"]`);
+  verifyPresenceOfTest = id => cy.get("body", { timeout: 30000 }).should("have.descendants", `[data-cy="test-${id}"]`);
 
   reviewSubmittedTestById = id => {
     this.getReviewButtonById(id).click({ force: true });

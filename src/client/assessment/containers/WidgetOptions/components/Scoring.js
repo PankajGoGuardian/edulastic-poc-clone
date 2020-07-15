@@ -176,7 +176,8 @@ class Scoring extends Component {
                     data-cy="maxscore"
                     type="number"
                     value={maxScore}
-                    min={1}
+                    step={0.5}
+                    min={0}
                     onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
                     size="large"
                     style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
@@ -227,6 +228,7 @@ class Scoring extends Component {
                     <TextInputStyled
                       type="number"
                       data-cy="penalty"
+                      step="0.5"
                       value={questionData.validation.penalty}
                       onChange={e => handleChangeValidation("penalty", +e.target.value)}
                       size="large"
@@ -265,6 +267,8 @@ class Scoring extends Component {
                   e.target.blur();
                 }}
                 display="inline-block"
+                padding="0px 16px"
+                width="142px"
                 margin="0px 15px 0px 0px"
               >
                 Create New Rubric
@@ -275,6 +279,8 @@ class Scoring extends Component {
                   e.target.blur();
                 }}
                 display="inline-block"
+                padding="0px 16px"
+                width="142px"
                 margin="0px 15px 0px 0px"
               >
                 Use Existing Rubric

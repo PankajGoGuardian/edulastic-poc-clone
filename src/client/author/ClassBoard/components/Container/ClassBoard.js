@@ -307,6 +307,7 @@ class ClassBoard extends Component {
 
     if (name === "Both") {
       history.push(`/author/classboard/${assignmentId}/${classId}`);
+      setCurrentTestActivityId("");
     } else if (name === "Student") {
       history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`);
       setCurrentTestActivityId(testActivityId);
@@ -959,7 +960,7 @@ class ClassBoard extends Component {
                     closed={additionalData.closed}
                     detailedClasses={additionalData.detailedClasses}
                     studentUnselect={this.onUnselectCardOne}
-                    viewResponses={(e, selected, _testActivityId) => {
+                    viewResponses={(e, selected, _testActivityId, attempt = null) => {
                       setCurrentTestActivityId(_testActivityId);
                       if (!isItemsVisible) {
                         return;

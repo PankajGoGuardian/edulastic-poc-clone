@@ -28,7 +28,7 @@ const Back = styled(Button)`
   justify-content: center;
   padding-bottom: ${props => (props.next ? "2px" : "0")};
   padding-right: ${props => (props.next ? "0" : "3px")};
-  margin-left: 10px;
+  margin-left: 5px;
   cursor: normal;
 
   &:hover,

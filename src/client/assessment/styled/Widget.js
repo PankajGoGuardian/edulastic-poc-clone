@@ -19,7 +19,7 @@ export const WidgetWrapper = styled.div`
 
 export const Widget = styled.div`
   position: ${({ position }) => position || "relative"};
-  padding: 0px 20px 40px;
+  padding: 0px 20px 22px;
   ${({ overflowHandlers }) => overflowHandlers};
   display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
   ${({ visible }) =>

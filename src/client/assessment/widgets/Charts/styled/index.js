@@ -58,7 +58,7 @@ export const StrokedRect = styled.rect`
 
 export const Text = styled.text`
   user-select: none;
-  font-size: ${props => props.theme.bodyFontSize};
+  font-size: ${({ theme }) => theme.widgets.chart.axisLabelFontSize};
   font-weight: ${props => props.theme.bold};
   text-transform: uppercase;
   fill: ${props => props.theme.widgets.chart.axisLabel};
@@ -66,9 +66,8 @@ export const Text = styled.text`
 
 export const VxText = styled(vxText)`
   user-select: none;
-  font-size: ${props => props.theme.bodyFontSize};
+  font-size: ${({ theme }) => theme.widgets.chart.axisLabelFontSize};
   font-weight: ${props => props.theme.bold};
-  text-transform: uppercase;
   fill: ${props => props.theme.widgets.chart.axisLabel};
 `;
 

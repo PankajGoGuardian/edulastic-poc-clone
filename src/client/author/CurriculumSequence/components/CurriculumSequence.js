@@ -32,14 +32,16 @@ import {
   updateDestinationCurriculumSequenceRequestAction,
   resetDestinationAction,
   duplicateManageContentAction,
-  cancelPlaylistCustomizeAction,
+  setCustomizeToDraftAction,
+  discardDraftPlaylistAction,
   publishCustomizedPlaylistAction,
   toggleManageModulesVisibilityCSAction,
   setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction,
   setShowRightSideAction,
   setActiveRightPanelViewAction,
   deletePlaylistRequestAction,
-  removePlaylistFromUseAction
+  removePlaylistFromUseAction,
+  checkPreviouslyCustomizedAction
 } from "../ducks";
 import { getSummaryData } from "../util";
 /* eslint-enable */
@@ -358,11 +360,12 @@ class CurriculumSequence extends Component {
       destinationCurriculumSequence,
       currentUserId,
       activeRightPanel,
-      duplicateManageContent,
       role,
       isStudent,
       setShowRightPanel,
-      current
+      current,
+      toggleManageContent,
+      checkPreviouslyCustomized
     } = this.props;
     const { authors } = destinationCurriculumSequence;
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
@@ -381,7 +384,7 @@ class CurriculumSequence extends Component {
         content:
           "Customizing the playlist will unlink from original source. Any updates made by the owner of the playlist will not be visible anymore. Do you want to continue?",
         onOk: () => {
-          duplicateManageContent(destinationCurriculumSequence);
+          checkPreviouslyCustomized(destinationCurriculumSequence);
           Modal.destroyAll();
         },
         okText: "Continue",
@@ -392,7 +395,7 @@ class CurriculumSequence extends Component {
         }
       });
     } else {
-      this.props?.toggleManageContent(contentName);
+      toggleManageContent(contentName);
     }
   };
 
@@ -458,6 +461,18 @@ class CurriculumSequence extends Component {
     return !!destinationCurriculumSequence.authors?.find(x => x?._id === currentUserId);
   };
 
+  // Duplicate the customised playlist
+  publishPlaylistInDraft = () => {
+    const { destinationCurriculumSequence, publishCustomizedPlaylist } = this.props;
+    publishCustomizedPlaylist(destinationCurriculumSequence);
+  };
+
+  // Discard the changes back to original playlist
+  discardDraftPlaylist = () => {
+    const { discardDraftPlaylist, destinationCurriculumSequence } = this.props;
+    discardDraftPlaylist(destinationCurriculumSequence._id);
+  };
+
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
 
@@ -505,8 +520,6 @@ class CurriculumSequence extends Component {
       collections,
       dateKeys,
       resetDestination,
-      cancelPlaylistCustomize,
-      publishCustomizedPlaylist,
       activeRightPanel,
       setEmbeddedVideoPreviewModal,
       isVideoResourcePreviewModal,
@@ -515,7 +528,8 @@ class CurriculumSequence extends Component {
       showRightPanel,
       location,
       deletePlaylist,
-      removePlaylistFromUse
+      removePlaylistFromUse,
+      customizeInDraft
     } = this.props;
     const isManageContentActive = activeRightPanel === "manageContent";
     // check Current user's edit permission
@@ -677,6 +691,9 @@ class CurriculumSequence extends Component {
             windowWidth={windowWidth}
             deletePlaylist={deletePlaylist}
             removePlaylistFromUse={removePlaylistFromUse}
+            customizeInDraft={customizeInDraft}
+            publishPlaylistInDraft={this.publishPlaylistInDraft}
+            discardDraftPlaylist={this.discardDraftPlaylist}
           />
 
           <MainContentWrapper mode={mode}>
@@ -700,11 +717,10 @@ class CurriculumSequence extends Component {
                     handleCheckout={this.handleCheckout}
                     isManageContentActive={isManageContentActive}
                     isContentExpanded={isContentExpanded}
-                    cancelPlaylistCustomize={cancelPlaylistCustomize}
                     toggleManageContentClick={this.toggleManageContentClick}
-                    publishCustomizedPlaylist={publishCustomizedPlaylist}
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
                     isAuthoringFlowReview={current === "review"}
+                    customizeInDraft={customizeInDraft}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
@@ -744,6 +760,8 @@ class CurriculumSequence extends Component {
                         setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                         droppedItemId={droppedItemId}
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
+                        customizeInDraft={customizeInDraft}
+                        isSparkMathPlaylist={isSparkMathPlaylist}
                       />
                     )}
                   </Wrapper>
@@ -805,7 +823,8 @@ const enhance = compose(
       dateKeys: getDateKeysSelector(state),
       currentUserId: state?.user?.user?._id,
       isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal,
-      showRightPanel: state.curriculumSequence?.showRightPanel
+      showRightPanel: state.curriculumSequence?.showRightPanel,
+      customizeInDraft: state.curriculumSequence?.customizeInDraft
     }),
     {
       onGuideChange: changeGuideAction,
@@ -823,14 +842,16 @@ const enhance = compose(
       updateDestinationPlaylist: updateDestinationCurriculumSequenceRequestAction,
       resetDestination: resetDestinationAction,
       duplicateManageContent: duplicateManageContentAction,
-      cancelPlaylistCustomize: cancelPlaylistCustomizeAction,
+      setCustomizeToDraft: setCustomizeToDraftAction,
+      discardDraftPlaylist: discardDraftPlaylistAction,
       publishCustomizedPlaylist: publishCustomizedPlaylistAction,
       toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       setShowRightPanel: setShowRightSideAction,
       setActiveRightPanelView: setActiveRightPanelViewAction,
       deletePlaylist: deletePlaylistRequestAction,
-      removePlaylistFromUse: removePlaylistFromUseAction
+      removePlaylistFromUse: removePlaylistFromUseAction,
+      checkPreviouslyCustomized: checkPreviouslyCustomizedAction
     }
   )
 );

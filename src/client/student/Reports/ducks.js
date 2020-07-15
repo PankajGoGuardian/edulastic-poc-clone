@@ -18,6 +18,7 @@ import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/duc
 export const getCurrentGroup = createSelectorator(["user.user.orgData.defaultClass"], r => r);
 
 export const getClassIds = createSelectorator(["user.user.orgData.classList"], cls => (cls || []).map(cl => cl._id));
+export const currentUserId = createSelectorator(["user.user._id"], r => r);
 
 export const FILTERS = {
   ALL: "all",
@@ -79,7 +80,9 @@ const isReport = (assignment, classIds) => {
   // or assignments is past dueDate
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
   const attempts = (assignment.reports && assignment.reports.length) || 0;
-  let { endDate, class: groups = [], classId: currentGroup } = assignment;
+  let { endDate } = assignment;
+  const { class: groups = [], classId: currentGroup } = assignment;
+
   if (!endDate) {
     endDate = (maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
       .endDate;
@@ -103,7 +106,7 @@ const statusFilter = filterType => assignment => {
     case FILTERS.MISSED:
       return isAbsent;
     case FILTERS.SUBMITTED:
-      return isSubmitted && !isGraded;
+      return isSubmitted && !isGraded && !isAbsent;
     case FILTERS.GRADED:
       return isGraded;
     default:
@@ -117,7 +120,8 @@ export const getAllAssignmentsSelector = createSelector(
 
   getCurrentGroup,
   getClassIds,
-  (assignmentsObj, reportsObj, currentGroup, classIds) => {
+  currentUserId,
+  (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
@@ -125,7 +129,10 @@ export const getAllAssignmentsSelector = createSelector(
         // no redirected classes and no class filter or class ID match the filter and student belongs to the class
         const allClassess = assignment.class.filter(
           clazz =>
-            clazz.redirect !== true && (!currentGroup || currentGroup === clazz._id) && classIds.includes(clazz._id)
+            clazz.redirect !== true &&
+            (!currentGroup || currentGroup === clazz._id) &&
+            classIds.includes(clazz._id) &&
+            (clazz.students?.length > 0 ? clazz.students?.includes(userId) : true)
         );
         return allClassess.map(clazz => ({
           ...assignment,
@@ -154,8 +161,8 @@ export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
   assignments => {
     let MISSED = 0;
-      let SUBMITTED = 0;
-      let GRADED = 0;
+    let SUBMITTED = 0;
+    let GRADED = 0;
     assignments.forEach(assignment => {
       const lastAttempt = last(assignment.reports) || {};
       const isSubmitted =

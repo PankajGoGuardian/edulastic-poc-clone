@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 import produce from "immer";
 import qs from "qs";
 import { Paper, withWindowSizes, notification, MainContentWrapper } from "@edulastic/common";
-import { test as testConstants } from "@edulastic/constants";
+import { test as testConstants, roleuser } from "@edulastic/constants";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import { getItemsSubjectAndGradeSelector, setTestItemsAction } from "../../../AddItems/ducks";
@@ -31,7 +31,7 @@ import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import { SecondHeader, ReviewSummaryWrapper, ReviewContentWrapper, ReviewLeftContainer } from "./styled";
+import { SecondHeader, ReviewSummaryWrapper, ReviewContentWrapper, ReviewLeftContainer, TestTitle } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import { getUserFeatures, getUserRole, getIsPowerPremiumAccount } from "../../../../../src/selectors/user";
@@ -446,7 +446,15 @@ class Review extends PureComponent {
 
     return (
       <MainContentWrapper ref={this.containerRef}>
-        {!isPlaylistTestReview && (
+        {isPlaylistTestReview ? (
+          <Row>
+            <Col lg={24}>
+              <SecondHeader>
+                <TestTitle>{test?.title}</TestTitle>
+              </SecondHeader>
+            </Col>
+          </Row>
+        ) : (
           <Row>
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>
@@ -532,7 +540,7 @@ class Review extends PureComponent {
             isVisible={isModalVisible}
             onClose={this.closeModal}
             showModal
-            isEditable={isEditable}
+            isEditable={isEditable || userRole === roleuser.EDULASTIC_CURATOR}
             owner={owner}
             addDuplicate={this.handleDuplicateItem}
             page="review"

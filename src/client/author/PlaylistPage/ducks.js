@@ -168,6 +168,7 @@ export const moveContentInPlaylistAction = createAction(MOVE_CONTENT);
 const initialPlaylistState = {
   title: undefined,
   description: "",
+  alignmentInfo: "",
   status: "draft",
   createdBy: {
     _id: "",

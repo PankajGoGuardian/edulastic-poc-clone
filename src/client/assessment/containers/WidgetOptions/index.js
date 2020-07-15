@@ -26,7 +26,7 @@ class WidgetOptions extends Component {
   static defaultProps = {
     scoringTypes: types,
     showScoring: true,
-    showVariables: true,
+    showVariables: false,
     advancedAreOpen: false,
     fillSections: () => {},
     cleanSections: () => {},

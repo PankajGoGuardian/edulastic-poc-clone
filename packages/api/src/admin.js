@@ -155,6 +155,15 @@ const searchUsersByEmailIds = data =>
     })
     .then(({ data: response }) => response);
 
+const searchUsersByEmailsOrIds = data =>
+  api
+    .callApi({
+      url: `/search/users/by-emails-or-ids`,
+      method: "post",
+      data
+    })
+    .then(({ data: response }) => response);
+
 const searchSchoolsById = data =>
   api
     .callApi({
@@ -193,5 +202,6 @@ export default {
   manageSubscription,
   searchUsersByEmailIds,
   searchSchoolsById,
-  saveOrgPermissionsApi
+  saveOrgPermissionsApi,
+  searchUsersByEmailsOrIds
 };

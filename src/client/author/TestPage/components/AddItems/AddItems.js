@@ -97,6 +97,10 @@ class AddItems extends PureComponent {
     needToSetFilter: PropTypes.bool
   };
 
+  static defaultProps = {
+    needToSetFilter: false
+  };
+
   state = {
     itemIndexForPreview: null
   };
@@ -113,11 +117,11 @@ class AddItems extends PureComponent {
       search: initSearch,
       history,
       interestedSubjects,
-      interestedGrades, 
-      interestedCurriculums: [firstCurriculum], 
+      interestedGrades,
+      interestedCurriculums: [firstCurriculum],
       pageNumber,
       needToSetFilter
-    } = this.props; 
+    } = this.props;
     const query = Qs.parse(window.location.search);
     let search = {};
 
@@ -143,8 +147,8 @@ class AddItems extends PureComponent {
       this.updateFilterState(search);
     }
     if (!curriculums.length) getCurriculums();
-    receiveTestItems(search, parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1, limit);
     getAllTags({ type: "testitem" });
+    receiveTestItems(search, parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1, limit);
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, "");
     }
@@ -540,7 +544,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      pageNumber: state ?.testsAddItems ?.page,
+      pageNumber: state?.testsAddItems?.page,
       needToSetFilter: state?.testsAddItems?.needToSetFilter
     }),
     {

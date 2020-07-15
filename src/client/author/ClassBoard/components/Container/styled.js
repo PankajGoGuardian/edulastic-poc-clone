@@ -15,7 +15,9 @@ import {
   cardTitleColor,
   largeDesktopWidth,
   extraDesktopWidthMax,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  themeColorHoverBlue,
+  themeColorBlue
 } from "@edulastic/colors";
 import { themes } from "../../../../theme";
 import { FixedHeaderStyle } from "../../../StudentView/styled";
@@ -114,14 +116,14 @@ const StyledTabButton = styled.a`
   padding: 6px 15px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? themeColor : white)};
+  background-color: ${({ active }) => (active ? themeColorBlue : white)};
   color: ${({ active }) => (active ? white : themeColor)};
-  border: 1px solid ${themeColor};
+  border: 1px solid ${({ active }) => (active ? themeColorBlue : themeColor)};
   display: flex;
   justify-content: center;
   align-items: center;
   &:hover {
-    background-color: ${themeColor};
+    background-color: ${themeColorHoverBlue};
     color: ${white};
   }
 

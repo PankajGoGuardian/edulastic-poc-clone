@@ -12,18 +12,18 @@ import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconMoreVertical, IconPlusCircle } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faUsers, faUnlockAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import CartButton from "../../../ItemList/components/CartButton/CartButton";
 import { connect } from "react-redux";
 // components
 import { Link } from "react-router-dom";
 import { compose } from "redux";
 import styled from "styled-components";
+import CartButton from "../../../ItemList/components/CartButton/CartButton";
 // ducks
 import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction } from "../../../SchoolAdmin/ducks";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
@@ -51,7 +51,8 @@ const ListHeader = ({
   windowWidth,
   titleIcon,
   userFeatures,
-  newTest
+  newTest,
+  toggleSidebar
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
 
@@ -98,15 +99,21 @@ const ListHeader = ({
               )}
             </>
           ) : userRole === roleuser.EDULASTIC_CURATOR ? null : (
-            <div style={{display:"flex"}}>
-              {btnTitle && btnTitle.length ? null : <CartButton onClick={newTest} buttonText="New Test"  />}
+            <div style={{ display: "flex" }}>
+              {userRole && userRole === roleuser.TEACHER && !userFeatures.isPublisherAuthor && !userFeatures.isCurator && (
+                <EduButton isGhost onClick={toggleSidebar} isBlue>
+                  <FontAwesomeIcon icon={faUnlockAlt} aria-hidden="true" />
+                  UNLOCK COLLECTION
+                </EduButton>
+              )}
+              {btnTitle && btnTitle.length ? null : <CartButton onClick={newTest} buttonText="New Test" />}
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
-                <IconPlusStyled /> 
+                <IconPlusStyled />
                 {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
               </EduButton>
             </div>
           ))}
-      
+
         {createAssignment && (
           <>
             {userRole && userRole === roleuser.DISTRICT_ADMIN && (
@@ -164,7 +171,8 @@ ListHeader.propTypes = {
   isAdvancedView: PropTypes.bool,
   hasButton: PropTypes.bool,
   renderButton: PropTypes.func,
-  midTitle: PropTypes.string
+  midTitle: PropTypes.string,
+  toggleSidebar: PropTypes.func
 };
 
 ListHeader.defaultProps = {
@@ -177,7 +185,8 @@ ListHeader.defaultProps = {
   renderButton: null,
   isAdvancedView: false,
   hasButton: true,
-  midTitle: ""
+  midTitle: "",
+  toggleSidebar: () => null
 };
 
 const enhance = compose(

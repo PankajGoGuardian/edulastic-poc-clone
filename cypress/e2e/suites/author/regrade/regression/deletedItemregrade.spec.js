@@ -46,14 +46,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   };
   const { Student1, Student2 } = students;
 
-  let OriginalTestId, newTestId;
-  let assignedTest, qType, num, itemsInTest;
-  let questText = [];
-  let points = [];
-  let questionType = [];
-  let attempt = [];
+  let OriginalTestId; let newTestId;
+  let assignedTest; let qType; let num; let itemsInTest;
+  const questText = [];
+  const points = [];
+  const questionType = [];
+  const attempt = [];
 
   before("Get Data Of test and its itemns", () => {
+    cy.getAllTestsAndDelete(Teacher.username);
+    cy.getAllItemsAndDelete(Teacher.username);
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
       itemsInTest = testData.EDIT_ASSIGNED_TEST_REGRADE.itemKeys;
@@ -86,7 +88,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
     testAssignPage.clickOnAssign();
   });
   before(">attempt the test by 2 students", () => {
-    //Partial Attempt
+    // Partial Attempt
     cy.login("student", Student1.email, Student1.pass);
     sidebarPage.clickOnAssignment();
     assignmentsPage.clickOnAssigmentByTestId(assignedTest);

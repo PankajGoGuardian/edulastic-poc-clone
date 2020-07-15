@@ -8,7 +8,7 @@ class MetadataPage {
 
   // *** ELEMENTS START ***
 
-  getDropDownMenu = () => cy.get(".ant-select-dropdown-menu-item");
+  getDropDownMenu = () => cy.get(".ant-select-dropdown-menu-item").should("not.contain", "No Data");
 
   getSearchStandardSelect = () => cy.get('[data-cy="searchStandardSelect"]');
 

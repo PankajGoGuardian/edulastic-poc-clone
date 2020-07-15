@@ -232,7 +232,7 @@ class Container extends Component {
         to: "/author/items"
       },
       {
-        title: "SELECT THE TYPE OF WIDGET",
+        title: "SELECT A QUESTION OR RESOURCE",
         to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
       },
       {

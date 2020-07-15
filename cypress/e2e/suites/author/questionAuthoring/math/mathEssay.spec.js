@@ -4,12 +4,13 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import EditToolBar from "../../../../framework/author/itemList/questionType/common/editToolBar";
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" type question`, () => {
   const queData = {
     mockString: "10-5+8-4",
     group: "Math",
-    queType: "Math essay",
+    queType: questionType.MATH_ESSAY,
     extlink: "www.testdomain.com",
     testText: "testtext",
     formula: "s=ar^2",

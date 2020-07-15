@@ -3,11 +3,7 @@ import PropTypes from "prop-types";
 import { measureText, DragDrop } from "@edulastic/common";
 import { Popover } from "antd";
 import { response as dimensions } from "@edulastic/constants";
-
-import { compose } from "redux";
-import { withTheme } from "styled-components";
 import { getStemNumeration } from "../../../../utils/helpers";
-import { CheckBoxTemplateBox } from "./styled/CheckBoxTemplateBox";
 import getImageDimensionsHook from "../../../../hooks/imageDimensions";
 
 import CheckMark from "./styled/CheckMark";
@@ -17,7 +13,7 @@ import { AnswerContent } from "./styled/AnswerContent";
 
 const { DropContainer, DragItem } = DragDrop;
 
-const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
+const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
     showAnswer,
     checkAnswer,
@@ -116,7 +112,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
     <AnswerBox
       onMouseEnter={handleHover}
       onMouseLeave={handleHover}
-      style={{ ...btnStyle, maxHeight }}
+      maxHeight={maxHeight}
       checked={choiceAttempted}
       correct={correct}
       isPrintPreview={isPrintPreview}
@@ -166,28 +162,23 @@ const CheckboxTemplateBoxLayout = ({ resprops, id, theme }) => {
     : `${getDataForGroup("value")}_${userSelections[dropTargetIndex] &&
         userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`;
 
-  const {
-    answerBox: { borderWidth, borderStyle, borderColor, borderRadius }
-  } = theme;
-
+  const containerStyle = {
+    display: "inline-flex",
+    verticalAlign: "middle",
+    ...btnStyle
+  };
   return (
-    <CheckBoxTemplateBox>
-      <DropContainer
-        drop={onDropHandler}
-        index={dropTargetIndex}
-        style={{ border: `${borderWidth} ${borderStyle} ${borderColor}`, borderRadius }}
-      >
-        <DragItem disableResponse={disableResponse} data={itemData} style={{ overflow: "hidden" }}>
-          {choiceAttempted && showPopover ? (
-            <Popover placement="bottomLeft" overlayClassName="customTooltip" content={getContent()}>
-              {getContent(btnStyle.maxHeight)}
-            </Popover>
-          ) : (
-            getContent()
-          )}
-        </DragItem>
-      </DropContainer>
-    </CheckBoxTemplateBox>
+    <DropContainer drop={onDropHandler} index={dropTargetIndex} style={containerStyle} noBorder>
+      <DragItem disableResponse={disableResponse} data={itemData} style={{ overflow: "hidden", width: "100%" }}>
+        {choiceAttempted && showPopover ? (
+          <Popover placement="bottomLeft" overlayClassName="customTooltip" content={getContent()}>
+            {getContent(btnStyle.maxHeight)}
+          </Popover>
+        ) : (
+          getContent()
+        )}
+      </DragItem>
+    </DropContainer>
   );
 };
 
@@ -196,9 +187,4 @@ CheckboxTemplateBoxLayout.propTypes = {
   id: PropTypes.string.isRequired
 };
 
-const enhance = compose(
-  React.memo,
-  withTheme
-);
-
-export default enhance(CheckboxTemplateBoxLayout);
+export default React.memo(CheckboxTemplateBoxLayout);

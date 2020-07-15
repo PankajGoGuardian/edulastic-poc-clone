@@ -118,7 +118,7 @@ const Search = ({
 
   const handleStandardsAlert = () => {
     if (isStandardsDisabled) {
-      return "Select Grades, Subject, Standard Set before selecting Standards";
+      return "Select Grades, Subject and Standard Set before selecting Standards";
     }
     return "";
   };
@@ -229,9 +229,9 @@ const Search = ({
                   </Select.Option>
                   {subject?.length > 0
                     ? formattedCuriculums.map(el => (
-                        <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
-                          {el.text}
-                        </Select.Option>
+                      <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                        {el.text}
+                      </Select.Option>
                       ))
                     : ""}
                 </SelectInputStyled>

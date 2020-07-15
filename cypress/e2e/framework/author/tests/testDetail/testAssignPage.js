@@ -221,9 +221,10 @@ export default class TestAssignPage {
       }
       return cy.wait(1).then(() => assignmentIdObj);
     }
-    return CypressHelper.verifyAntMesssage(
+    return cy.wait(1);
+    /* CypressHelper.verifyAntMesssage(
       "No classes found after removing the duplicates. Select one or more to assign."
-    );
+    ); */
   };
 
   // OVER RIDE TEST SETTING

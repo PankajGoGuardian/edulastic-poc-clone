@@ -248,10 +248,10 @@ class ItemListPage {
     let qType;
     switch (key) {
       case queTypes.MULTIPLE_CHOICE_MULTIPLE:
-        qType = "Multiple choice - multiple response";
+        qType = "Multiple Choice - Multiple Response";
         break;
       case queTypes.ESSAY_RICH:
-        qType = "Essay with rich text";
+        qType = "Essay with Rich Text";
         break;
       case queTypes.CLOZE_DROP_DOWN:
         qType = "Cloze with Drop Down";
@@ -312,7 +312,7 @@ class ItemListPage {
       if ($ele.find(".ant-dropdown-trigger").length === 1) {
         cy.wrap($ele)
           .find(".ant-dropdown-trigger")
-          .trigger("mouseover");
+          .trigger("mouseover", { force: true });
         cy.wait(1000);
       }
       cy.wrap($ele)

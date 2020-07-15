@@ -27,9 +27,7 @@ const SelectCollectionModal = ({
   selectedPlaylists,
   test
 }) => {
-  const handleCancel = () => {
-    return setAddCollectionModalVisible(false);
-  };
+  const handleCancel = () => setAddCollectionModalVisible(false);
 
   const addedItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
   const itemsKeyed = keyBy(addedItems, "_id");
@@ -65,11 +63,10 @@ const SelectCollectionModal = ({
       destroyOnClose
     >
       <BodyStyled>
-        {buckets.map(bucket => {
-          return (
-            <ModuleContainer
-              key={bucket.bucketId}
-              onClick={() =>
+        {buckets.map(bucket => (
+          <ModuleContainer
+            key={bucket.bucketId}
+            onClick={() =>
                 handleAddToCollection({
                   _id: bucket.bucketId,
                   name: bucket.name,
@@ -77,12 +74,11 @@ const SelectCollectionModal = ({
                   collectionName: bucket.collectionName
                 })
               }
-            >
-              <ModuleLabel>{bucket.collectionName}: </ModuleLabel>
-              <ModuleName>{bucket.name}</ModuleName>
-            </ModuleContainer>
-          );
-        })}
+          >
+            <ModuleLabel>{bucket.collectionName}: </ModuleLabel>
+            <ModuleName>{bucket.name}</ModuleName>
+          </ModuleContainer>
+          ))}
       </BodyStyled>
     </StyledModal>
   );

@@ -117,7 +117,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       });
     });
     context(">with 'Can View & Duplicate' permission", () => {
-      //Testing the above context for View and duplicate permission
+      // Testing the above context for View and duplicate permission
       context(">with 'published' test", () => {
         before("login to publish and share the test", () => {
           cy.login("teacher", author[email], author[pass]);
@@ -190,7 +190,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       });
     });
     context(">with 'Can View & Duplicate' permission with 'individual other district'", () => {
-      //Testing the above context for View and duplicate permission
+      // Testing the above context for View and duplicate permission
       context(">with 'draft' test", () => {
         before(">creating test without publishing", () => {
           cy.login("teacher", author[email], author[pass]);

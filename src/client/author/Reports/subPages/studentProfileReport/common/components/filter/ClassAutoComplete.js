@@ -74,13 +74,13 @@ const ClassAutoComplete = ({ userDetails, classList, loading, loadClassList, sel
   // build dropdown data
   const dropdownData = searchTerms.text
     ? [
-        <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
-          {Object.values(classList).map(item => (
-            <AutoComplete.Option key={item._id} title={item._source.name}>
-              {item._source.name}
-            </AutoComplete.Option>
+      <AutoComplete.OptGroup key="classList" label="Classes [Type to search]">
+        {Object.values(classList).map(item => (
+          <AutoComplete.Option key={item._id} title={item._source.name}>
+            {item._source.name}
+          </AutoComplete.Option>
           ))}
-        </AutoComplete.OptGroup>
+      </AutoComplete.OptGroup>
       ]
     : [];
 

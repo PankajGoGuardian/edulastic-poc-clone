@@ -195,7 +195,7 @@ class DistrictProfileForm extends React.Component {
                       />
                     </div>
                   ) : (
-                      <h3>{isDA ? districtProfile.name : schools.find(item => item._id === schoolId)?.name || ""}</h3>
+                    <h3>{isDA ? districtProfile.name : schools.find(item => item._id === schoolId)?.name || ""}</h3>
                     )}
 
 

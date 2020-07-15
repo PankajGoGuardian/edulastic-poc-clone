@@ -185,6 +185,7 @@ class MultipleChoice extends Component {
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                   fontSize={fontSize}
+                  queTitle={item?.title}
                   {...restProps}
                 />
                 <Divider />

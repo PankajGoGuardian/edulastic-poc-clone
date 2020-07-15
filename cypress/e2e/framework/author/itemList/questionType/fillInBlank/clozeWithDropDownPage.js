@@ -48,9 +48,9 @@ class ClozeDropDownPage {
       .find("label");
 
   checkAnsChoicesLength = (respIndex, lengthOfChoices, expectedLength) => {
-    let arrayOfchoices = [];
+    const arrayOfchoices = [];
     for (let i = 0; i < lengthOfChoices.length; i++) {
-      let container = this.getResponseContainer(respIndex).find(`[data-cy="edit_prefix_${i}"]`);
+      const container = this.getResponseContainer(respIndex).find(`[data-cy="edit_prefix_${i}"]`);
       if (container != "undefined") {
         container.invoke("text").then(txt => {
           arrayOfchoices.push(txt);
@@ -81,7 +81,7 @@ class ClozeDropDownPage {
   }
 
   verifyShuffleChoices = (index, choices, shuffled = true) => {
-    let arrayOfchoices = [];
+    const arrayOfchoices = [];
     cy.get("[data-cy='drop_down_select']")
       .eq(index)
       .click();

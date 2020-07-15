@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { questionTitle } from "@edulastic/constants";
 import produce from "immer";
 import uuid from "uuid/v4";
 
@@ -113,11 +114,15 @@ class MultipleChoiceOptions extends Component {
           onChange={this.editOptions}
           fontSize={fontSize}
         />
-        <div>
-          <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
-            {t("component.multiplechoice.addnewchoice")}
-          </CustomStyleBtn>
-        </div>
+        {/** Checking question should not be of type true false
+         * Or show add new choice if the number of option is less than 2 (to undo delete option) */}
+        {(item.title !== questionTitle.MCQ_TRUE_OR_FALSE || item.options.length < 2) && (
+          <div>
+            <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
+              {t("component.multiplechoice.addnewchoice")}
+            </CustomStyleBtn>
+          </div>
+        )}
       </Question>
     );
   }

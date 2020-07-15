@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
+import { questionTitle } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { Tab, TabContainer, Tabs, FlexContainer, ItemLevelContext, getFormattedAttrId } from "@edulastic/common";
 import { PointsInput } from "../../styled/CorrectAnswerHeader";
@@ -124,7 +125,7 @@ class CorrectAnswers extends Component {
   }
 
   render() {
-    const { stimulus, options, t, multipleResponses, uiStyle, styleType, fontSize } = this.props;
+    const { stimulus, options, t, multipleResponses, uiStyle, styleType, fontSize, queTitle = "" } = this.props;
     const { currentTab } = this.state;
     const title = currentTab === 0 ? "correct" : "alternative";
     const { response } = this;
@@ -152,11 +153,13 @@ class CorrectAnswers extends Component {
               />
             </FlexContainer>
           )}
-          <FlexContainer flex={1}>
-            <AlternateAnswerLink onClick={this.handleAddAltResponses} variant="extendedFab" data-cy="alternate">
-              {`+ ${t("component.correctanswers.alternativeAnswer")}`}
-            </AlternateAnswerLink>
-          </FlexContainer>
+          {queTitle !== questionTitle.MCQ_TRUE_OR_FALSE && (
+            <FlexContainer flex={1}>
+              <AlternateAnswerLink onClick={this.handleAddAltResponses} variant="extendedFab" data-cy="alternate">
+                {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+              </AlternateAnswerLink>
+            </FlexContainer>
+          )}
         </FlexContainer>
 
         {this.tabs >= 1 && (

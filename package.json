@@ -1,5 +1,5 @@
 {
-  "name": "edulastic",
+  "name": "@edulastic/client",
   "version": "11.0.0",
   "private": true,
   "workspaces": [
@@ -50,6 +50,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@edulastic/common": "^1.0.0",
     "@babel/polyfill": "^7.0.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",

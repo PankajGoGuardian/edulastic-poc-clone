@@ -2,7 +2,7 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
-import { testTypes, teacherSide } from "../../../../framework/constants/assignmentStatus";
+import { testTypes, teacherSide, openPolicyTypes } from "../../../../framework/constants/assignmentStatus";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 
@@ -183,9 +183,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Smart Filters`, () => 
           testLibrary.assignPage.visitAssignPageById(testId);
           testLibrary.assignPage.selectClass(filters.statusFilter[`${status}`].className);
           if (status === teacherSide.NOT_OPEN) {
-            let start = new Date();
-            start.setDate(start.getDate() + 1);
-            testLibrary.assignPage.setStartDate(start);
+            testLibrary.assignPage.selectOpenPolicy(openPolicyTypes.MANUAL);
           }
           testLibrary.assignPage.clickOnAssign().then(assgnObj => {
             assignmentIds[status] = assgnObj[testId];

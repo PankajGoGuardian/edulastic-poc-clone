@@ -326,9 +326,39 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
       yield put(updateCurriculumSequenceAction(items));
     }
   } catch (error) {
-    if (error.data.message === "permission denied") {
-      yield put(push("/author/playlists"));
-      yield call(notification, { messageKey: "curriculumMakeApiErr" });
+    if (error.data?.statusCode === 403) {
+      /**
+       * if permission is denied while trying to access MyPlaylist, then
+       * show any one of the recently used playlists.
+       */
+      try {
+        const pathname = yield select(state => state.router.location.pathname);
+        const isMyPlaylist = pathname.includes("use-this");
+        if (isMyPlaylist) {
+          const recentPlaylists = yield select(state => state?.playlists?.recentPlayLists || []);
+          const currentPlaylistIndex = recentPlaylists?.findIndex(({ _id }) => _id === idsForFetch?.[0]);
+          // currentPlaylistIndex should be -1 if its > -1 then something's not right !
+          const index = currentPlaylistIndex === -1 ? 0 : currentPlaylistIndex + 1;
+          const { _id = "" } = recentPlaylists[index] || {};
+          if (_id) {
+            yield call(makeApiRequest, [_id], false);
+            yield put(push(`/author/playlists/playlist/${_id}/use-this`));
+            yield call(notification, {
+              msg: `You can no longer access '${error?.data?.title ||
+                "this"}' Playlist as sharing is revoked by the author.`
+            });
+            return;
+          }
+        }
+        // handle the rest in successive catch block
+        throw new Error("Permission Denied !");
+      } catch (e) {
+        yield put(push("/author/playlists"));
+        yield call(notification, {
+          msg: `You can no longer access '${error?.data?.title ||
+            "this"}' Playlist as sharing is revoked by the author.`
+        });
+      }
     } else {
       notification({ type: "warning", messageKey: "curriculumMakeApiWarn" });
     }

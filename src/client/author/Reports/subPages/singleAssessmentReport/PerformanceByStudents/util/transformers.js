@@ -112,8 +112,8 @@ export const normaliseTableData = (rawData, data) => {
     let assessmentScore = "Absent";
     let proficiencyBand = "Absent";
     if (studentMetric.progressStatus === 1) {
-      studentScore = round((studentMetric.totalScore / studentMetric.maxScore) * 100);
-      assessmentScore = `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`;
+      studentScore = round(((studentMetric.totalScore || 0) / (studentMetric.maxScore || 1)) * 100);
+      assessmentScore = `${(studentMetric.totalScore || 0).toFixed(2)} / ${(studentMetric.maxScore || 1).toFixed(2)}`;
       proficiencyBand = getProficiency(studentMetric, bandInfo);
     }
 

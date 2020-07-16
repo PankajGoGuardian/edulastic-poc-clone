@@ -254,7 +254,7 @@ const StandardsFilters = ({
     setFilters(obj);
 
     const q = {
-      curriculumId: obj.subject || undefined,
+      curriculumId: obj.subject || curriculums[0]?.key || undefined,
       grades: [selected.key]
     };
     getStandardsBrowseStandardsRequest(q);

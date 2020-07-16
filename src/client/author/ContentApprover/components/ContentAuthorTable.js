@@ -245,6 +245,7 @@ class ContentAuthorTable extends Component {
     createReq.role = "district-admin";
     createReq.permissions = ['curator'];
     createReq.districtId = userOrgId;
+    createReq.isPowerTeacher = true;
 
     const o = {
       createReq,

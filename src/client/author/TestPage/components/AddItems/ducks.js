@@ -148,7 +148,8 @@ const initialState = {
     grades: []
   },
   search: { ...initalSearchState },
-  archivedItems: []
+  archivedItems: [],
+  needToSetFilter: true
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -199,7 +200,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_SEARCH_FILTER_STATE:
       return {
         ...state,
-        search: { ...payload }
+        search: { ...payload },
+        needToSetFilter: true
       };
     case CLEAR_SEARCH_FILTER_STATE:
       return {
@@ -254,7 +256,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case RESET_PAGE_STATE_ADD_ITEMS:
       return {
         ...state,
-        page: 1
+        page: 1,
+        needToSetFilter: true
       };
     case UPDATE_TEST_ITEM_LIKE_COUNT:
       return {

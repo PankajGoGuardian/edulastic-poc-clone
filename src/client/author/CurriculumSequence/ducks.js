@@ -276,9 +276,13 @@ const getPublisher = state => {
 
 const getDestinationCurriculumSequence = state => state.curriculumSequence.destinationCurriculumSequence;
 
-function* makeApiRequest(idsForFetch = [], showNotification = false) {
+function* makeApiRequest(idsForFetch = [], showNotification = false, forUseThis = false) {
   try {
-    const unflattenedItems = yield all(idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id)));
+    const pathname = yield select(state => state.router.location.pathname);
+    const isMyPlaylist = pathname.includes("use-this");
+    const unflattenedItems = yield all(
+      idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, { id, forUseThis: forUseThis || isMyPlaylist }))
+    );
 
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
@@ -334,9 +338,9 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
       try {
         const pathname = yield select(state => state.router.location.pathname);
         const isMyPlaylist = pathname.includes("use-this");
+        const recentPlaylists = yield select(state => state?.playlists?.recentPlayLists || []);
+        const currentPlaylistIndex = recentPlaylists?.findIndex(({ _id }) => _id === idsForFetch?.[0]);
         if (isMyPlaylist) {
-          const recentPlaylists = yield select(state => state?.playlists?.recentPlayLists || []);
-          const currentPlaylistIndex = recentPlaylists?.findIndex(({ _id }) => _id === idsForFetch?.[0]);
           // currentPlaylistIndex should be -1 if its > -1 then something's not right !
           const index = currentPlaylistIndex === -1 ? 0 : currentPlaylistIndex + 1;
           const { _id = "" } = recentPlaylists[index] || {};
@@ -349,6 +353,17 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
             });
             return;
           }
+        } else if (currentPlaylistIndex !== -1) {
+          // if the playlist is in recents then navigate to myPlaylist
+
+          yield call(makeApiRequest, [idsForFetch?.[0]], false, true);
+          yield put(push(`/author/playlists/playlist/${idsForFetch?.[0]}/use-this`));
+          yield call(notification, {
+            type: "warn",
+            msg: `You can no longer access '${error?.data?.title ||
+              "this"}' Playlist as sharing is revoked by the author.`
+          });
+          return;
         }
         // handle the rest in successive catch block
         throw new Error("Permission Denied !");

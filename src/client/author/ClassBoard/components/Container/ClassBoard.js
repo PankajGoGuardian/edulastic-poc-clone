@@ -1182,7 +1182,7 @@ class ClassBoard extends Component {
                     selected={selectedQuestion}
                     justifyContent="flex-end"
                     handleChange={value => {
-                      const { _assignmentId, _classId } = match.params;
+                      const { assignmentId: _assignmentId, classId: _classId } = match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
                       history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}`);

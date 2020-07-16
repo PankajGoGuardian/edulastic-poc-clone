@@ -6,8 +6,7 @@ import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
-import { Effects ,notification } from "@edulastic/common";
-import { message } from "antd";
+import { Effects, notification } from "@edulastic/common";
 import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -79,14 +78,22 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
       x.redirect && ((x.specificStudents && x.students.includes(userId)) || (!x.specificStudents && x._id === groupId))
   );
 
+  assignment.class = assignment.class.map(c => {
+    if (!c.redirect) {
+      const redirectGroups = redirects.filter(r => r._id === c._id) || [];
+      const classMaxAttempts = c.maxAttempts || assignment.maxAttempts || 1;
+      c.maxAttempts = classMaxAttempts + redirectGroups.length;
+    }
+    return c;
+  });
+
   if (redirects.length === 0) {
     return false;
   }
-  const attempts = redirects.length;
 
   const dueDate = Math.max(...redirects.map(x => x.endDate));
   const { allowedTime, pauseAllowed } = redirects[redirects.length - 1];
-  return { attempts, dueDate, allowedTime, pauseAllowed };
+  return { dueDate, allowedTime, pauseAllowed };
 };
 
 export const transformAssignmentForRedirect = (groupId, userId, classIds, assignment) => {
@@ -95,14 +102,11 @@ export const transformAssignmentForRedirect = (groupId, userId, classIds, assign
     return assignment;
   }
 
-  let maxAttempts = (assignment && assignment.maxAttempts) || 1;
   let { endDate } = assignment;
   endDate = redirect.dueDate;
-  maxAttempts += redirect.attempts;
   return {
     ...assignment,
     endDate,
-    maxAttempts,
     redir: true,
     ...(redirect.allowedTime ? { allowedTime: redirect.allowedTime } : {}),
     ...(redirect.pauseAllowed !== undefined ? { pauseAllowed: redirect.pauseAllowed } : {})
@@ -199,7 +203,6 @@ const assignmentSortByDueDate = (groupedReports, assignment) => {
 export const getAllAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
-
   getCurrentGroup,
   getClassIds,
   getUserId,
@@ -224,6 +227,7 @@ export const getAllAssignmentsSelector = createSelector(
         );
         return allClassess.map(clazz => ({
           ...assignment,
+          maxAttempts: clazz.maxAttempts,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`] || [],
           ...(clazz.allowedTime && !assignment.redir ? { allowedTime: clazz.allowedTime } : {}),
@@ -265,7 +269,7 @@ export const assignmentsCountByFilerNameSelector = createSelector(
 
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments({ payload }) {
+function* fetchAssignments() {
   try {
     yield put(setAssignmentsLoadingAction());
     const groupId = yield select(getCurrentGroup);
@@ -365,7 +369,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId
@@ -377,7 +381,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -388,7 +392,7 @@ function* startAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );
@@ -402,7 +406,7 @@ function* startAssignment({ payload }) {
     const { status, data = {} } = err;
     console.error(err);
     if (status === 403 && data.message) {
-      notification({ msg:data.message});
+      notification({ msg: data.message });
     }
   }
 }
@@ -454,7 +458,7 @@ function* resumeAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -465,7 +469,7 @@ function* resumeAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );

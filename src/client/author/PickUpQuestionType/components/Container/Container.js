@@ -346,12 +346,10 @@ class Container extends Component {
                     <IconMultipart />
                     Multipart
                   </Menu.Item>
-                  {multipartItem && (
-                    <Menu.Item key="instruction">
-                      <IconPlay />
-                      Instructions
-                    </Menu.Item>
-                  )}
+                  <Menu.Item key="instruction">
+                    <IconPlay />
+                    Instructions
+                  </Menu.Item>
                   <Menu.Item key="rulers-calculators">
                     <IconRulerPencil />
                     Tools
@@ -458,12 +456,10 @@ class Container extends Component {
                 <IconMultipart />
                 Multipart
               </Menu.Item>
-              {multipartItem && (
-                <Menu.Item key="instruction">
-                  <IconPlay />
-                  Instructions
-                </Menu.Item>
-              )}
+              <Menu.Item key="instruction">
+                <IconPlay />
+                Instructions
+              </Menu.Item>
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
                 <IconRulerPencil />
                 Tools

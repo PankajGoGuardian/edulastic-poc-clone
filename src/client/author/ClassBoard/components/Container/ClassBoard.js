@@ -960,7 +960,7 @@ class ClassBoard extends Component {
                     closed={additionalData.closed}
                     detailedClasses={additionalData.detailedClasses}
                     studentUnselect={this.onUnselectCardOne}
-                    viewResponses={(e, selected, _testActivityId, attempt = null) => {
+                    viewResponses={(e, selected, _testActivityId) => {
                       setCurrentTestActivityId(_testActivityId);
                       if (!isItemsVisible) {
                         return;
@@ -1183,7 +1183,7 @@ class ClassBoard extends Component {
                     selected={selectedQuestion}
                     justifyContent="flex-end"
                     handleChange={value => {
-                      const { _assignmentId, _classId } = match.params;
+                      const { assignmentId: _assignmentId, classId: _classId } = match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
                       history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}`);

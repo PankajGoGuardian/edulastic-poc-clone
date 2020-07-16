@@ -2169,7 +2169,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MTFormula,
       stimulus: "",
       data: {
-        title: "Expression & Formula",
+        title: questionTitle.EXPRESSION_AND_FORMULA,
         isMath: true,
         stimulus: "",
         type: questionType.MATH,
@@ -2281,7 +2281,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MTText,
       stimulus: "",
       data: {
-        title: "Equations & Inequalities",
+        title: questionTitle.EQUATION_AND_INEQUALITIES,
         isMath: true,
         responseContainers: [
           {

@@ -5,7 +5,7 @@ import { produce } from "immer";
 import { get } from "lodash";
 import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic, notification } from "@edulastic/common";
 
-import { math } from "@edulastic/constants";
+import { math, questionTitle } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth } from "@edulastic/colors";
 
@@ -63,7 +63,7 @@ const MathFormulaAnswerMethod = ({
   keypadMode, // need only for Math w/Unit in cloze Math
   customUnits, // need only for Math w/Unit in cloze Math
   containerHeight,
-  allowNumericOnly = null,
+  allowNumericOnly = false,
   isClozeMath, // this is from clozemath
   template = "",
   useTemplate, // this is from clozemath
@@ -72,9 +72,14 @@ const MathFormulaAnswerMethod = ({
   isClozeMathWithUnit = false,
   t
 }) => {
-  // Initial value of allowNumbericOnly is null
-  // Setting allowNumericOnly when the value is null and method is equivSymbolic
-  const _allowNumericOnly = (method === methodsConst.EQUIV_SYMBOLIC && allowNumericOnly === null) || allowNumericOnly;
+  // Initial value of allowNumericOnly is not set (false)
+  // Setting _allowNumericOnly when the value is not set (false) and method is equivSymbolic
+  // _allowNumericOnly is set to true when question type is Expression & Formula
+  const _allowNumericOnly =
+    (method === methodsConst.EQUIV_SYMBOLIC &&
+      allowNumericOnly === false &&
+      item.title !== questionTitle.EXPRESSION_AND_FORMULA) ||
+    allowNumericOnly;
 
   const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {
     let flag = false;

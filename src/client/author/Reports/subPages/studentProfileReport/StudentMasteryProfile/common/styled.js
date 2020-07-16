@@ -35,11 +35,6 @@ export const StyledTable = styled(Table)`
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
       .ant-table-body {
         overflow-x: auto !important;
       }

@@ -149,5 +149,4 @@ export const StyledParagraph = styled.p`
 
 export const StyledLink = styled.span`
   color: ${themeColor};
-  cursor: pointer;
 `;

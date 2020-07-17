@@ -229,9 +229,9 @@ const Search = ({
                   </Select.Option>
                   {subject?.length > 0
                     ? formattedCuriculums.map(el => (
-                      <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
-                        {el.text}
-                      </Select.Option>
+                        <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                          {el.text}
+                        </Select.Option>
                       ))
                     : ""}
                 </SelectInputStyled>

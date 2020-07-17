@@ -245,21 +245,21 @@ const RedirectPopUp = ({
           ) : (
             isPremiumUser && (
               <Col span={12}>
-                <FieldLabel>Questions delivery</FieldLabel>
-                <SelectInputStyled
-                  data-cy="questionDelivery"
-                  defaultValue={qDeliveryState}
-                  onChange={val => setQDeliveryState(val)}
-                  style={{ width: "100%" }}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                >
-                  {Object.keys(QuestionDelivery).map(item => (
-                    <Option key="1" value={item}>
-                      {QuestionDelivery[item]}
-                    </Option>
+              <FieldLabel>Questions delivery</FieldLabel>
+              <SelectInputStyled
+                data-cy="questionDelivery"
+                defaultValue={qDeliveryState}
+                onChange={val => setQDeliveryState(val)}
+                style={{ width: "100%" }}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {Object.keys(QuestionDelivery).map(item => (
+                  <Option key="1" value={item}>
+                    {QuestionDelivery[item]}
+                  </Option>
                 ))}
-                </SelectInputStyled>
-              </Col>
+              </SelectInputStyled>
+            </Col>
             )
           )}
           <Col span={12}>
@@ -335,5 +335,5 @@ const RedirectPopUp = ({
 };
 
 export default connect(state => ({
-  isPremiumUser: get(state, ["user", "user", "features", "premium"], false)
+  isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
 }), null)(RedirectPopUp);

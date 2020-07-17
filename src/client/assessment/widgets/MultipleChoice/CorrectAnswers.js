@@ -153,13 +153,13 @@ class CorrectAnswers extends Component {
               />
             </FlexContainer>
           )}
-          {queTitle !== questionTitle.MCQ_TRUE_OR_FALSE && (
-            <FlexContainer flex={1}>
+          <FlexContainer flex={1}>
+            {queTitle !== questionTitle.MCQ_TRUE_OR_FALSE && (
               <AlternateAnswerLink onClick={this.handleAddAltResponses} variant="extendedFab" data-cy="alternate">
                 {`+ ${t("component.correctanswers.alternativeAnswer")}`}
               </AlternateAnswerLink>
-            </FlexContainer>
-          )}
+            )}
+          </FlexContainer>
         </FlexContainer>
 
         {this.tabs >= 1 && (

@@ -7,7 +7,7 @@ import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { Effects, notification } from "@edulastic/common";
-import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
+import { getCurrentSchool, fetchUserAction, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
 // external actions
@@ -489,7 +489,7 @@ function* resumeAssignment({ payload }) {
 function* bootstrapAssesment({ payload }) {
   try {
     const { testType, assignmentId, testActivityId, testId, classId } = payload;
-    yield fetchUser();
+    yield put(fetchUserAction());
     if (testActivityId) {
       yield put(resumeAssignmentAction({ testType, assignmentId, testActivityId, testId, classId }));
     } else {

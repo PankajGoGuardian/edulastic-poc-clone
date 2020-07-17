@@ -1591,7 +1591,7 @@ function* publishForRegrade({ payload }) {
       _test.isInEditAndRegrade = true;
     }
     yield call(_test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
-      payload: { id: payload, data: _test, assignFlow: true }
+      payload: { id: payload, data: _test, assignFlow: true, disableLoadingIndicator: true }
     });
     const newTestId = yield select(getTestIdSelector);
     const locationState = yield select(({ router }) => router.location.state);

@@ -64,7 +64,7 @@ const getFormattedLink = (record, location, pageTitle, value) => (
         // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
         breadCrumb: [
           {
-            title: "REPORTS",
+            title: "INSIGHTS",
             to: "/author/reports"
           },
           {
@@ -225,7 +225,7 @@ AssessmentTable.defaultProps = {
   studentName: "",
   selectedTests: [],
   isCsvDownloading: false,
-  onCsvConvert: () => {}
+  onCsvConvert: () => { }
 };
 
 export default AssessmentTable;

@@ -170,7 +170,7 @@ class ClassCreate extends React.Component {
       case "reports":
         breadCrumbData = [
           {
-            title: "Reports",
+            title: "INSIGHTS",
             to: "/author/reports"
           },
           {
@@ -189,12 +189,12 @@ class ClassCreate extends React.Component {
           },
           ...(type !== "class"
             ? [
-                {
-                  title: "GROUPS",
-                  to: "/author/manageClass",
-                  state: { currentTab: "group" }
-                }
-              ]
+              {
+                title: "GROUPS",
+                to: "/author/manageClass",
+                state: { currentTab: "group" }
+              }
+            ]
             : [])
         ];
     }

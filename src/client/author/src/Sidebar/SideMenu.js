@@ -72,7 +72,7 @@ const menuItems = [
     path: "author/gradebook"
   },
   {
-    label: "Skill Report",
+    label: "Insights",
     icon: IconBarChart,
     allowedPathPattern: [/author\/reports/],
     path: "author/reports"
@@ -365,7 +365,7 @@ class SideMenu extends Component {
                 <IconSwitchUser /> {isCollapsed ? "" : "Add Account"}
               </Link>
             </Menu.Item>
-          )}
+            )}
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight /> {isCollapsed ? "" : "Sign Out"}
@@ -515,7 +515,7 @@ class SideMenu extends Component {
                       <UserImg src={profileThumbnail} isCollapsed={isCollapsed} />
                     ) : (
                       <PseudoDiv isCollapsed={isCollapsed}>{this.getInitials()}</PseudoDiv>
-                    )}
+                      )}
                     <div style={{ width: "100px", display: !isCollapsed ? "block" : "none" }}>
                       <UserName>{userName || "Anonymous"}</UserName>
                       <UserType isVisible={isVisible}>{_userRole}</UserType>
@@ -660,14 +660,14 @@ const SideBar = styled(Layout.Sider)`
     }
 
     ${({ collapsed }) =>
-      collapsed
-        ? `
+    collapsed
+      ? `
       flex: inherit;
       max-width: 220px;
       min-width: 0;
       width: 100%;
     `
-        : ``}
+      : ``}
   }
   @media print {
     display: none;
@@ -1077,7 +1077,7 @@ const UserInfoButton = styled.div`
     width: 100%;
     height: 80px;
     background-color: ${({ theme, isCollapsed, isVisible }) =>
-      isCollapsed ? "" : isVisible ? theme.sideMenu.userInfoButtonBgHoverColor : theme.sideMenu.userInfoButtonBgColor};
+    isCollapsed ? "" : isVisible ? theme.sideMenu.userInfoButtonBgHoverColor : theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
     position: relative;

@@ -96,7 +96,7 @@ const StudentProfileSummary = ({
         // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
         breadCrumb: [
           {
-            title: "REPORTS",
+            title: "INSIGHTS",
             to: "/author/reports"
           },
           {

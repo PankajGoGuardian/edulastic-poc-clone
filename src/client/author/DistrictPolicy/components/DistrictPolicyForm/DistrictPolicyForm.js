@@ -1,5 +1,5 @@
-import { CheckboxLabel, RadioBtn, RadioGrp,notification } from "@edulastic/common";
-import { Form, Input, message } from "antd";
+import { CheckboxLabel, RadioBtn, RadioGrp, notification, TextInputStyled, EduButton } from "@edulastic/common";
+import { Form } from "antd";
 import { produce } from "immer";
 import { get } from "lodash";
 import PropTypes from "prop-types";
@@ -18,7 +18,6 @@ import {
 } from "../../ducks";
 import {
   HelperText,
-  SaveButton,
   StyledElementDiv,
   StyledFormDiv,
   StyledFormItem,
@@ -266,7 +265,7 @@ class DistrictPolicyForm extends Component {
       !districtPolicyData.cleverSignOn &&
       !districtPolicyData.googleSignOn
     ) {
-      notification({ messageKey:"pleaseSelectOneOrMoreSignOnParticles"});
+      notification({ messageKey: "pleaseSelectOneOrMoreSignOnParticles" });
       return;
     }
 
@@ -329,12 +328,12 @@ class DistrictPolicyForm extends Component {
     const thirdPartyValue = districtPolicy.googleClassroom
       ? _3RDPARTYINTEGRATION.googleClassroom
       : districtPolicy.canvas
-      ? _3RDPARTYINTEGRATION.canvas
-      : districtPolicy.schoology
-      ? _3RDPARTYINTEGRATION.schoology
-      : districtPolicy.classlink
-      ? _3RDPARTYINTEGRATION.classlink
-      : _3RDPARTYINTEGRATION.none;
+        ? _3RDPARTYINTEGRATION.canvas
+        : districtPolicy.schoology
+          ? _3RDPARTYINTEGRATION.schoology
+          : districtPolicy.classlink
+            ? _3RDPARTYINTEGRATION.classlink
+            : _3RDPARTYINTEGRATION.none;
     let saveBtnStr = "Save";
     if (Object.prototype.hasOwnProperty.call(districtPolicy, "_id")) {
       saveBtnStr = "Save";
@@ -434,7 +433,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowDomainForTeacherValidate.validateStatus}
               help={allowDomainForTeacherValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedDomainForTeachers}
                 onChange={this.handleTagTeacherChange}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
@@ -451,7 +450,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowDomainForStudentValidate.validateStatus}
               help={allowDomainForStudentValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedDomainForStudents}
                 onChange={this.handleTagStudentChange}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
@@ -468,7 +467,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowDomainForSchoolValidate.validateStatus}
               help={allowDomainForSchoolValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedDomainsForDistrict}
                 onChange={this.handleTagSchoolChange}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
@@ -510,7 +509,7 @@ class DistrictPolicyForm extends Component {
               validateStatus={allowIpForAssignmentValidate.validateStatus}
               help={allowIpForAssignmentValidate.errorMsg}
             >
-              <Input
+              <TextInputStyled
                 value={districtPolicy.allowedIpForAssignments}
                 onChange={this.handleInputIpAddresses}
                 placeholder="Enter allowed ip(s), example - 127.0.*.1, 187.0.*.*"
@@ -521,8 +520,8 @@ class DistrictPolicyForm extends Component {
               </HelperText>
             </StyledFormItem>
           </StyledRow>
-          <StyledRow>
-            <SaveButton onClick={this.onSave}>{saveBtnStr}</SaveButton>
+          <StyledRow type="flex" justify="center">
+            <EduButton onClick={this.onSave}>{saveBtnStr}</EduButton>
           </StyledRow>
         </Form>
       </StyledFormDiv>

@@ -23,6 +23,7 @@ export { default as Legends, LegendContainer } from "./src/components/Legends";
 export { default as CustomModalStyled } from "./src/components/CustomModalStyled";
 export {
   TextInputStyled,
+  SearchInputStyled,
   SelectInputStyled,
   NumberInputStyled,
   DatePickerStyled,

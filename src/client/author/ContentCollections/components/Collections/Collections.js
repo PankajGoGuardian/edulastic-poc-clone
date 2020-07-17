@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Icon, Spin } from "antd";
+import { EduButton, SearchInputStyled } from "@edulastic/common";
 import ContentSubHeader from "../../../src/components/common/AdminSubHeader/ContentSubHeader";
 import { CollectionsTable } from "./CollectionsTable";
 import { PermissionsTable } from "./PermissionsTable";
 import { MainContainer, SubHeaderWrapper } from "../../../../common/styled";
-import { ImportButton, TablesWrapper, StyledSearch, AddCollectionButton, CollectionSearchHeader } from "../../styled";
+import { TablesWrapper, CollectionSearchHeader } from "../../styled";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import ImportContentModal from "../Modals/ImportContentModal";
 import AddCollectionModal from "../Modals/AddCollectionModal";
@@ -48,18 +49,23 @@ const Collections = ({ history, user, manageTabLabel, importDataToCollection, im
     <MainContainer>
       <SubHeaderWrapper>
         {user.role !== "edulastic-admin" && <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />}
-        <ImportButton onClick={() => setImportModalVisibility(true)}>
+        <EduButton height="30px" onClick={() => setImportModalVisibility(true)}>
           <Icon type="upload" />
           Import Content
-        </ImportButton>
+        </EduButton>
       </SubHeaderWrapper>
       <ContentSubHeader active={menuActive} history={history} />
       <CollectionSearchHeader>
-        <StyledSearch placeholder="Search by collection name" onChange={handleCollectionSeach} value={searchValue} />
+        <SearchInputStyled
+          height="36px"
+          placeholder="Search by collection name"
+          onChange={handleCollectionSeach}
+          value={searchValue}
+        />
         {user.role !== "edulastic-admin" && (
-          <AddCollectionButton onClick={() => setAddCollectionModalVisibility(true)}>
+          <EduButton onClick={() => setAddCollectionModalVisibility(true)}>
             Add Collection
-          </AddCollectionButton>
+          </EduButton>
         )}
       </CollectionSearchHeader>
       <TablesWrapper>
@@ -82,7 +88,7 @@ const Collections = ({ history, user, manageTabLabel, importDataToCollection, im
           isEditCollection={false}
         />
       )}
-      {importLoader && <Spin size={"small"} />}
+      {importLoader && <Spin size="small" />}
     </MainContainer>
   );
 };

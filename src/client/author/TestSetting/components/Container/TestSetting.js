@@ -1,44 +1,35 @@
-import React, { Component } from "react";
+import { EduButton, FieldLabel, RadioBtn, RadioGrp, SelectInputStyled } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import { Col, Row, Select } from "antd";
+import { get } from "lodash";
 import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-
+import styled from "styled-components";
+import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
-import { roleuser } from "@edulastic/constants";
-
-import { Radio, Row, Col, Select } from "antd";
-import styled from "styled-components";
-import { RadioBtn, RadioGrp } from "@edulastic/common";
-
-import {
-  TestSettingDiv,
-  StyledContent,
-  StyledLayout,
-  SpinContainer,
-  StyledSpin,
-  StyledRow,
-  StyledLabel,
-  SaveButton,
-  StyledRdioGroup,
-  Break
-} from "./styled";
-
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { receiveStandardsProficiencyAction } from "../../../StandardsProficiency/ducks";
 // actions
 import {
-  receiveTestSettingAction,
-  updateTestSettingAction,
   createTestSettingAction,
+  receiveTestSettingAction,
+  setTestSettingDefaultProfileAction,
   setTestSettingValueAction,
-  setTestSettingDefaultProfileAction
+  updateTestSettingAction
 } from "../../ducks";
-
-import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
-import { receiveStandardsProficiencyAction } from "../../../StandardsProficiency/ducks";
-
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  SpinContainer,
+  StyledContent,
+  StyledLabel,
+  StyledLayout,
+  StyledRow,
+  StyledSpin,
+  TestSettingDiv
+} from "./styled";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Test Settings" };
@@ -76,7 +67,7 @@ class TestSetting extends Component {
     }
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     if (nextProps.testSetting == null || Object.keys(nextProps.testSetting).length === 0) {
       return {
         testSetting: {
@@ -84,7 +75,7 @@ class TestSetting extends Component {
           timer: true
         }
       };
-    } else return { testSetting: nextProps.testSetting };
+    } return { testSetting: nextProps.testSetting };
   }
 
   changePartialScore = e => {
@@ -144,9 +135,6 @@ class TestSetting extends Component {
       </Select.Option>
     ));
 
-    const performanceBand1 = performanceBandProfiles[0];
-    const standardProficiency1 = standardsProficiencyProfiles[0];
-
     return (
       <TestSettingDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
@@ -167,7 +155,7 @@ class TestSetting extends Component {
                   onChange={e => this.changePartialScore(e)}
                   value={testSetting.partialScore}
                 >
-                  <RadioBtn value={true}>Yes</RadioBtn>
+                  <RadioBtn value>Yes</RadioBtn>
                   <RadioBtn value={false}>No</RadioBtn>
                 </RadioGrp>
               </React.Fragment>
@@ -180,19 +168,19 @@ class TestSetting extends Component {
                   onChange={e => this.changeTimerScore(e)}
                   value={testSetting.timer}
                 >
-                  <RadioBtn value={true}>Yes</RadioBtn>
+                  <RadioBtn value>Yes</RadioBtn>
                   <RadioBtn value={false}>No</RadioBtn>
                 </RadioGrp>
               </React.Fragment>
             </StyledRow>
             <StyledRow>
               <React.Fragment>
-                <StyledLabel>Default Performance Band Profiles </StyledLabel>
+                <StyledLabel>Default Performance Band <br /> Profiles </StyledLabel>
               </React.Fragment>
-              <FlexingRow>
+              <FlexingRow gutter={20}>
                 <Col span={8}>
-                  <p>Common Test</p>
-                  <StyledSelect
+                  <FieldLabel>Common Test</FieldLabel>
+                  <SelectInputStyled
                     value={get(testSetting, "testTypesProfile.performanceBand.common")}
                     onChange={value => setDefaultProfile({ value, profileType: "performanceBand", testType: "common" })}
                     loading={performanceBandLoading}
@@ -200,11 +188,11 @@ class TestSetting extends Component {
                     size="large"
                   >
                     {performanceBandOptions}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
                 <Col span={8}>
-                  <p>Class Test</p>
-                  <StyledSelect
+                  <FieldLabel>Class Test</FieldLabel>
+                  <SelectInputStyled
                     value={get(testSetting, "testTypesProfile.performanceBand.class")}
                     onChange={value => setDefaultProfile({ value, profileType: "performanceBand", testType: "class" })}
                     loading={performanceBandLoading}
@@ -212,11 +200,11 @@ class TestSetting extends Component {
                     size="large"
                   >
                     {performanceBandOptions}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
                 <Col span={8}>
-                  <p>Practice Test</p>
-                  <StyledSelect
+                  <FieldLabel>Practice Test</FieldLabel>
+                  <SelectInputStyled
                     value={get(testSetting, "testTypesProfile.performanceBand.practice")}
                     onChange={value =>
                       setDefaultProfile({ value, profileType: "performanceBand", testType: "practice" })
@@ -226,18 +214,18 @@ class TestSetting extends Component {
                     size="large"
                   >
                     {performanceBandOptions}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
               </FlexingRow>
             </StyledRow>
             <StyledRow>
               <React.Fragment>
-                <StyledLabel>Default Standard Proficiency Profiles </StyledLabel>
+                <StyledLabel>Default Standard Proficiency <br /> Profiles </StyledLabel>
               </React.Fragment>
-              <FlexingRow>
+              <FlexingRow gutter={20}>
                 <Col span={8}>
-                  <p>Common Test</p>
-                  <StyledSelect
+                  <FieldLabel>Common Test</FieldLabel>
+                  <SelectInputStyled
                     value={get(testSetting, "testTypesProfile.standardProficiency.common")}
                     onChange={value =>
                       setDefaultProfile({ value, profileType: "standardProficiency", testType: "common" })
@@ -247,11 +235,11 @@ class TestSetting extends Component {
                     size="large"
                   >
                     {standardsProficiencyOptions}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
                 <Col span={8}>
-                  <p>Class Test</p>
-                  <StyledSelect
+                  <FieldLabel>Class Test</FieldLabel>
+                  <SelectInputStyled
                     value={get(testSetting, "testTypesProfile.standardProficiency.class")}
                     onChange={value =>
                       setDefaultProfile({ value, profileType: "standardProficiency", testType: "class" })
@@ -261,11 +249,11 @@ class TestSetting extends Component {
                     size="large"
                   >
                     {standardsProficiencyOptions}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
                 <Col span={8}>
-                  <p>Practice Test</p>
-                  <StyledSelect
+                  <FieldLabel>Practice Test</FieldLabel>
+                  <SelectInputStyled
                     value={get(testSetting, "testTypesProfile.standardProficiency.practice")}
                     loading={standardsProficiencyLoading}
                     onChange={value =>
@@ -275,15 +263,15 @@ class TestSetting extends Component {
                     size="large"
                   >
                     {standardsProficiencyOptions}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
               </FlexingRow>
             </StyledRow>
 
-            <StyledRow>
-              <SaveButton type="primary" onClick={this.updateValue}>
+            <StyledRow type="flex" justify="center" style={{ marginTop: "15px" }}>
+              <EduButton type="primary" onClick={this.updateValue}>
                 {btnSaveStr}
-              </SaveButton>
+              </EduButton>
             </StyledRow>
           </StyledLayout>
         </StyledContent>
@@ -294,7 +282,7 @@ class TestSetting extends Component {
 
 const enhance = compose(
   connect(
-    (state, props) => ({
+    (state) => ({
       testSetting: get(state, ["testSettingReducer", "data"], {}),
       loading: get(state, ["testSettingReducer", "loading"], false),
       updating: get(state, ["testSettingReducer", "updating"], false),
@@ -319,18 +307,8 @@ const enhance = compose(
   )
 );
 
-const StyledSelect = styled(Select)`
-  width: 100%;
-  box-sizing: border-box;
-  margin: 3px;
-`;
-
 const FlexingRow = styled(Row)`
   flex: 1 1;
-  & > .ant-col {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
 `;
 
 export default enhance(TestSetting);

@@ -39,6 +39,22 @@ const inputCommonStyle = {
   outline: "0"
 };
 
+export const SearchInputStyled = styled(Input.Search)`
+  &.ant-input-search {
+    .ant-input {
+      ${inputCommonStyle};
+      ${props => props.style};
+      color: ${({ theme }) => theme.questionTextColor};
+      &:focus,
+      &:hover {
+        border: 1px solid ${themeColorBlue} !important;
+        background-color: ${greyThemeLighter};
+        box-shadow: none;
+      }
+    }
+  }
+`;
+
 export const TextInputStyled = styled(props => <Input maxLength={128} {...props} />)`
   &.ant-input {
     ${inputCommonStyle};
@@ -46,7 +62,7 @@ export const TextInputStyled = styled(props => <Input maxLength={128} {...props}
     color: ${({ theme }) => theme.questionTextColor};
     &:focus,
     &:hover {
-      border: 1px solid ${themeColorBlue};
+      border: 1px solid ${themeColorBlue} !important;
       background-color: ${greyThemeLighter};
       box-shadow: none;
     }
@@ -59,7 +75,7 @@ export const TextInputStyled = styled(props => <Input maxLength={128} {...props}
       color: ${({ theme }) => theme.questionTextColor};
       &:focus,
       &:hover {
-        border: 1px solid ${themeColorBlue};
+        border: 1px solid ${themeColorBlue} !important;
         background-color: ${greyThemeLighter};
         box-shadow: none;
       }
@@ -74,7 +90,7 @@ export const TextAreaInputStyled = styled(props => <Input.TextArea maxLength="20
     ${props => props.style};
     &:focus,
     &:hover {
-      border: 1px solid ${themeColorBlue};
+      border: 1px solid ${themeColorBlue} !important;
       background-color: ${greyThemeLighter};
       box-shadow: none;
     }
@@ -149,7 +165,7 @@ export const SelectInputStyled = styled(Select)`
       .ant-select-selection {
         &:focus,
         &:hover {
-          border: ${props => props.noBorder ? "none" : `1px solid ${themeColorBlue}`};
+          border: ${props => props.noBorder ? "none" : `1px solid ${themeColorBlue}`} !important;
           background-color: ${props => props.bg || greyThemeLighter};
           box-shadow: none;
         }

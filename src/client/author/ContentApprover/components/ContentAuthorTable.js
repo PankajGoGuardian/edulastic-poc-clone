@@ -1,18 +1,14 @@
-import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
+import { CheckboxLabel, EduButton, notification, TypeToConfirmModal, SearchInputStyled, SelectInputStyled } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, message, Select } from "antd";
-import { GiDominoMask } from "react-icons/gi";
+import { Icon, Select, Row, Col } from "antd";
 import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
+import { GiDominoMask } from "react-icons/gi";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import {
-  StyledAddFilterButton,
   StyledClassName,
-  StyledControlDiv,
-  StyledFilterDiv,
-  StyledFilterInput,
-  StyledFilterSelect
+  StyledFilterDiv
 } from "../../../admin/Common/StyledComponents";
 import {
   FilterWrapper,
@@ -21,11 +17,12 @@ import {
   RightFilterDiv,
   StyledButton,
   StyledPagination,
-  StyledSchoolSearch,
+  StyledTableButton,
   SubHeaderWrapper,
-  TableContainer,
-  StyledTableButton
+  TableContainer
 } from "../../../common/styled";
+import { isProxyUser as isProxyUserSelector } from "../../../student/Login/ducks";
+import { proxyUser } from "../../authUtils";
 import { StyledContentAuthorTable } from "../../ContentAuthor/components/styled";
 import {
   addFilterAction,
@@ -50,8 +47,6 @@ import {
 import Breadcrumb from "../../src/components/Breadcrumb";
 import AdminSubHeader from "../../src/components/common/AdminSubHeader/UserSubHeader";
 import { getUserOrgId } from "../../src/selectors/user";
-import { isProxyUser as isProxyUserSelector } from "../../../student/Login/ducks";
-import { proxyUser } from "../../authUtils";
 import CreateContentAuthorModal from "./CreateContentAuthorModal";
 import EditContentAuthorModal from "./EditContentAuthorModal";
 
@@ -171,8 +166,6 @@ class ContentAuthorTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {}
-
   onProxyContentApprover = id => {
     proxyUser({ userId: id });
   };
@@ -203,13 +196,14 @@ class ContentAuthorTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
+    const { t } = this.props;
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-        notification({ msg:t("users.validations.edituser")});
+        notification({ msg: t("users.validations.edituser") });
       } else if (selectedRowKeys.length === 1) {
         this.onEditDistrictAdmin(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        notification({ msg:t("users.validations.editsingleuser")});
+        notification({ msg: t("users.validations.editsingleuser") });
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -219,7 +213,7 @@ class ContentAuthorTable extends Component {
         });
         // deleteDistrictAdmin(selectedDistrictAdminData);
       } else {
-        notification({ msg:t("users.validations.deleteuser")});
+        notification({ msg: t("users.validations.deleteuser") });
       }
     }
   };
@@ -314,7 +308,7 @@ class ContentAuthorTable extends Component {
       }
       return item;
     });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
   changeStatusValue = (value, key) => {
@@ -378,7 +372,7 @@ class ContentAuthorTable extends Component {
     this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
-  addFilter = (e, key) => {
+  addFilter = () => {
     const { filtersData } = this.state;
     if (filtersData.length < 3) {
       this.setState({
@@ -514,83 +508,98 @@ class ContentAuthorTable extends Component {
                 filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
 
               return (
-                <StyledControlDiv key={i}>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectcolumn")}
-                    onChange={e => this.changeFilterColumn(e, i)}
-                    value={filtersColumn || undefined}
-                  >
-                    <Option value="other" disabled>
-                      {t("common.selectcolumn")}
-                    </Option>
-                    <Option value="username">{t("users.contentApprover.username")}</Option>
-                    <Option value="email">{t("users.contentApprover.email")}</Option>
-                    <Option value="status">{t("users.contentApprover.status")}</Option>
-                  </StyledFilterSelect>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectvalue")}
-                    onChange={e => this.changeFilterValue(e, i)}
-                    value={filtersValue || undefined}
-                  >
-                    <Option value="" disabled>
-                      {t("common.selectvalue")}
-                    </Option>
-                    <Option value="eq">{t("common.equals")}</Option>
-                    {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
-                  </StyledFilterSelect>
-                  {!filterStrDD[filtersColumn] ? (
-                    <StyledFilterInput
-                      placeholder={t("common.entertext")}
-                      onChange={e => this.changeFilterText(e, i)}
-                      onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                      onBlur={e => this.onBlurFilterText(e, i)}
-                      value={filterStr || undefined}
-                      disabled={isFilterTextDisable}
-                      ref={this.filterTextInputRef[i]}
-                    />
-                  ) : (
-                    <StyledFilterSelect
-                      placeholder={filterStrDD[filtersColumn].placeholder}
-                      onChange={v => this.changeStatusValue(v, i)}
-                      value={filterStr !== "" ? filterStr : undefined}
+                <Row gutter={20} key={i} style={{ marginBottom: "5px" }}>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectcolumn")}
+                      onChange={e => this.changeFilterColumn(e, i)}
+                      value={filtersColumn || undefined}
+                      height="32px"
                     >
-                      {filterStrDD[filtersColumn].list.map(item => (
-                        <Option key={item.title} value={item.value} disabled={item.disabled}>
-                          {item.title}
-                        </Option>
-                      ))}
-                    </StyledFilterSelect>
-                  )}
-                  {i < 2 && (
-                    <StyledAddFilterButton
-                      type="primary"
-                      onClick={e => this.addFilter(e, i)}
-                      disabled={isAddFilterDisable || i < filtersData.length - 1}
+                      <Option value="other" disabled>
+                        {t("common.selectcolumn")}
+                      </Option>
+                      <Option value="username">{t("users.contentApprover.username")}</Option>
+                      <Option value="email">{t("users.contentApprover.email")}</Option>
+                      <Option value="status">{t("users.contentApprover.status")}</Option>
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectvalue")}
+                      onChange={e => this.changeFilterValue(e, i)}
+                      value={filtersValue || undefined}
+                      height="32px"
                     >
-                      {t("common.addfilter")}
-                    </StyledAddFilterButton>
-                  )}
-                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                    <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-                      {t("common.removefilter")}
-                    </StyledAddFilterButton>
-                  )}
-                </StyledControlDiv>
+                      <Option value="" disabled>
+                        {t("common.selectvalue")}
+                      </Option>
+                      <Option value="eq">{t("common.equals")}</Option>
+                      {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    {!filterStrDD[filtersColumn] ? (
+                      <SearchInputStyled
+                        placeholder={t("common.entertext")}
+                        onChange={e => this.changeFilterText(e, i)}
+                        onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                        onBlur={e => this.onBlurFilterText(e, i)}
+                        value={filterStr || undefined}
+                        disabled={isFilterTextDisable}
+                        ref={this.filterTextInputRef[i]}
+                        height="32px"
+                      />
+                    ) : (
+                      <SelectInputStyled
+                        placeholder={filterStrDD[filtersColumn].placeholder}
+                        onChange={v => this.changeStatusValue(v, i)}
+                        value={filterStr !== "" ? filterStr : undefined}
+                        height="32px"
+                      >
+                        {filterStrDD[filtersColumn].list.map(item => (
+                          <Option key={item.title} value={item.value} disabled={item.disabled}>
+                            {item.title}
+                          </Option>
+                          ))}
+                      </SelectInputStyled>
+                      )}
+                  </Col>
+                  <Col span={6} style={{ display: "flex" }}>
+                    {i < 2 && (
+                      <EduButton
+                        height="32px"
+                        width="50%"
+                        type="primary"
+                        onClick={e => this.addFilter(e, i)}
+                        disabled={isAddFilterDisable || i < filtersData.length - 1}
+                      >
+                        {t("common.addfilter")}
+                      </EduButton>
+                    )}
+                    {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                      <EduButton height="32px" width="50%" type="primary" onClick={e => this.removeFilter(e, i)}>
+                        {t("common.removefilter")}
+                      </EduButton>
+                    )}
+                  </Col>
+                </Row>
               );
             })}
           </FilterWrapper>
         )}
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={60}>
-            <StyledSchoolSearch
+          <LeftFilterDiv width={50}>
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
-            <Button type="primary" onClick={this.showCreateDistrictAdminModal}>
+            <EduButton type="primary" onClick={this.showCreateDistrictAdminModal}>
               {t("users.contentApprover.createContentAuthor")}
-            </Button>
+            </EduButton>
           </LeftFilterDiv>
           <RightFilterDiv width={35}>
             <CheckboxLabel

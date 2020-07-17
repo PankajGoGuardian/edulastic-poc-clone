@@ -1,40 +1,38 @@
 import React, { Component } from "react";
 import { Col } from "antd";
-import { MainContainer, SubHeaderWrapper } from "../../../../common/styled";
-import ContentSubHeader from "../../../src/components/common/AdminSubHeader/ContentSubHeader";
-import { ExternalToolsSearchHeader, StyledSearch, StyledList, StyledRow, StyledColRight, CustomModal } from "./styled";
-import { EduButton } from "@edulastic/common";
-import { ToolForm } from "../ToolForm/ToolForm";
+import { EduButton, SearchInputStyled } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { set, cloneDeep } from "lodash";
+import { MainContainer, SubHeaderWrapper } from "../../../../common/styled";
+import ContentSubHeader from "../../../src/components/common/AdminSubHeader/ContentSubHeader";
+import { ExternalToolsSearchHeader, StyledList, StyledRow, StyledColRight } from "./styled";
+import { ToolForm } from "../ToolForm/ToolForm";
 import {
   getFormData,
   fetchExternalToolProviderAction,
   deleteExternalToolProviderAction,
   saveExternalToolProviderAction
 } from "../../ducks";
-import { getUser, getManageTabLabelSelector } from "../../../src/selectors/user";
+import { getUser, getManageTabLabelSelector, getUserOrgId } from "../../../src/selectors/user";
 import Breadcrumb from "../../../src/components/Breadcrumb";
-import { getUserOrgId } from "../../../src/selectors/user";
+
 import ExternalToolsModal from "../ExternalToolsModalContent/ExternalToolsModalContent";
-import { set, cloneDeep } from "lodash";
 
 const menuActive = { mainMenu: "Content", subMenu: "ExternalTools" };
 
-const ETPHeader = ({ addExternalTool }) => {
-  return (
-    <StyledRow>
-      <Col span={12}>
-        <h4>External Tool Provider</h4>
-      </Col>
-      <StyledColRight span={12}>
-        <EduButton height="40px" isGhost onClick={addExternalTool}>
-          Add Provider
-        </EduButton>
-      </StyledColRight>
-    </StyledRow>
-  );
-};
+const ETPHeader = ({ addExternalTool }) => (
+  <StyledRow>
+    <Col span={12}>
+      <h4>External Tool Provider</h4>
+    </Col>
+    <StyledColRight span={12}>
+      <EduButton height="40px" isGhost onClick={addExternalTool}>
+        Add Provider
+      </EduButton>
+    </StyledColRight>
+  </StyledRow>
+);
 
 const initialState = {
   isModalVisible: false,
@@ -54,9 +52,7 @@ const initialState = {
   searchTerm: ""
 };
 
-const getInitailState = () => {
-  return cloneDeep(initialState);
-};
+const getInitailState = () => cloneDeep(initialState);
 
 class ExternalTools extends Component {
   componentDidMount() {
@@ -84,8 +80,8 @@ class ExternalTools extends Component {
     const words = this.state.searchTerm.split(" ").filter(t => t);
     // search the presence of every search word in the order of its occurrence
     return this.props.formData.filter(({ toolName }) => {
-      let pos = 0,
-        flag = true;
+      let pos = 0;
+      let flag = true;
       // return false if either of the search term is not found
       words.every(w => {
         const nextPos = toolName.indexOf(w, pos);
@@ -140,12 +136,13 @@ class ExternalTools extends Component {
         </SubHeaderWrapper>
         <ContentSubHeader active={menuActive} history={history} />
         <ExternalToolsSearchHeader>
-          <StyledSearch
+          <SearchInputStyled
             placeholder="Search External Tools"
             value={searchTerm}
             onChange={e => this.setState({ searchTerm: e.target.value })}
+            height="36px"
           />
-          <EduButton height="40px" onClick={() => this.setState({ searchTerm })}>
+          <EduButton onClick={() => this.setState({ searchTerm })}>
             Search
           </EduButton>
         </ExternalToolsSearchHeader>

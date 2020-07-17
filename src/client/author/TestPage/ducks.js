@@ -1136,7 +1136,7 @@ export const getTestCreatedItemsSelector = createSelector(
 function* receiveTestByIdSaga({ payload }) {
   try {
     const tests = yield select(state => state.tests);
-    const createdItems = yield select(getTestCreatedItemsSelector);
+    let createdItems = yield select(getTestCreatedItemsSelector);
     const entity = yield call(testsApi.getById, payload.id, {
       data: true,
       requestLatest: payload.requestLatest,
@@ -1166,12 +1166,16 @@ function* receiveTestByIdSaga({ payload }) {
         })
       );
     }
-    entity.itemGroups[currentGroupIndex].items = entity.itemGroups[currentGroupIndex].items.map(testItem =>
-      createdItems.length > 0 &&
-      (createdItems[0]._id === testItem._id || createdItems[0].previousTestItemId === testItem._id)
-        ? createdItems[0]
-        : testItem
-    );
+
+    entity.itemGroups.forEach(itemGroup => {
+      itemGroup.items.forEach(item => {
+        if (createdItems?.[0]?._id === item._id || createdItems?.[0]?.previousTestItemId === item._id) {
+          item = createdItems[0];
+          createdItems = createdItems?.slice(1) || [];
+        }
+      });
+    });
+
     entity.itemGroups[currentGroupIndex].items = uniqBy(
       [...entity.itemGroups[currentGroupIndex].items, ...createdItems],
       x => x.previousTestItemId || x._id

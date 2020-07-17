@@ -23,7 +23,12 @@ export const isRichTextFieldEmpty = text => {
     return false;
   }
 
-  let _text = striptags(text);
+  /**
+   * if the option only has video, do not strip the video or iframe tags
+   * otherwise, after stripping it considers it as empty
+   * @see https://snapwiz.atlassian.net/browse/EV-16093
+   */
+  let _text = striptags(text, ["iframe", "video"]);
   _text = _text.replace(/&nbsp;/g, " ");
   if (!_text || (_text && !_text.trim())) {
     return true;

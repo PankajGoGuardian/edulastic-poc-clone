@@ -161,16 +161,16 @@ const QuestionContainer = styled.div`
       &-options {
         margin-bottom: 0px !important;
         label {
-          padding: 0!important;
+          padding: 0 !important;
         }
       }
       &-stimulus {
         margin-bottom: 5px !important;
-         & p {
-           br {
-             display: none!important;
-           }
-         }
+        & p {
+          br {
+            display: none !important;
+          }
+        }
       }
     }
   }
@@ -589,7 +589,7 @@ class QuestionWrapper extends Component {
                       isStudentReport={isStudentReport}
                     />
                   )}
-                  {(isGrade || isLCBView || isExpressGrader) && (
+                  {(isGrade || isLCBView || isExpressGrader || restProps.previewTab === "show") && (
                     <Explanation isStudentReport={isStudentReport} question={data} isGrade={isGrade} />
                   )}
                 </StyledFlexContainer>

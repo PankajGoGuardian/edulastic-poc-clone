@@ -12,7 +12,8 @@ import {
   borderGrey,
   greyThemeDark1,
   darkGrey2,
-  lightFadedBlack
+  lightFadedBlack,
+  themeColorBlue
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon, Dropdown } from "antd";
 import { IconPlusCircle } from "@edulastic/icons";
@@ -124,7 +125,7 @@ export const CreateClassButton = styled(Button)`
 
 const ResponsiveButton = styled(Button)`
   height: 36px;
-  border-color: ${themeColor};
+  border-color: ${themeColorBlue};
   box-shadow: none;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
@@ -187,7 +188,7 @@ export const ClassSelect = styled.div`
   button {
     &:hover,
     &:focus {
-      color: ${themeColor};
+      color: ${themeColorBlue};
     }
   }
 `;
@@ -311,7 +312,7 @@ export const Tags = styled.p`
 
 export const SubHeader = styled.div`
   display: flex;
-  justify-content:flex-end;
+  justify-content: flex-end;
   align-items: center;
 `;
 

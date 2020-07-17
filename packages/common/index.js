@@ -132,3 +132,4 @@ export { default as questionTheme } from "./src/themes/questionTheme";
 // DragDrop includes DragItem, DropContainer, and DragPreview
 export { default as DragDrop } from "./src/components/DragDrop";
 export { default as SimpleConfirmModal } from "./src/components/SimpleConfirmModal";
+export { default as PrintActionWrapper } from "./src/components/PrintActionWrapper";

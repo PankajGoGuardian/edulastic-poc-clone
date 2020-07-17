@@ -19,6 +19,7 @@ import {
   Description,
   CardContainer
 } from "./styled";
+import { PrintActionWrapper } from "@edulastic/common";
 
 import { fetchStudentsByIdAction } from "../../ducks";
 
@@ -82,44 +83,47 @@ class PrintPreviewClass extends React.Component {
     pages = [...Array(pages).keys()];
 
     return (
-      <PrintPreviewBack>
-        <PrintPreviewContainer>
-          <Title />
-          <ParagraphDiv>
-            <BoldText>{`Congratulations ${teacherName} - your class roster is now ready for class ${className}.`}</BoldText>
-          </ParagraphDiv>
+      <>
+        <PrintActionWrapper/>
+        <PrintPreviewBack>
+          <PrintPreviewContainer>
+            <Title />
+            <ParagraphDiv>
+              <BoldText>{`Congratulations ${teacherName} - your class roster is now ready for class ${className}.`}</BoldText>
+            </ParagraphDiv>
 
-          <ParagraphDiv>
-            <ClassInfo>
-              <BoldText>Class Name: </BoldText> <ClassName>{className}</ClassName>
-            </ClassInfo>
-            <ClassInfo>
-              <BoldText>Class Code: </BoldText> <ClassCode>{code}</ClassCode>
-            </ClassInfo>
-          </ParagraphDiv>
+            <ParagraphDiv>
+              <ClassInfo>
+                <BoldText>Class Name: </BoldText> <ClassName>{className}</ClassName>
+              </ClassInfo>
+              <ClassInfo>
+                <BoldText>Class Code: </BoldText> <ClassCode>{code}</ClassCode>
+              </ClassInfo>
+            </ParagraphDiv>
 
-          <Description>
-            Please ask the student to navigate to <a href={appLoginUrl}>{appLoginUrl}</a>. The default password for all
-            students is set to the class code. Please ask the student to log in using the username below and enter the
-            password as <ClassCode>{code}</ClassCode>.
-          </Description>
+            <Description>
+              Please ask the student to navigate to <a href={appLoginUrl}>{appLoginUrl}</a>. The default password for all
+              students is set to the class code. Please ask the student to log in using the username below and enter the
+              password as <ClassCode>{code}</ClassCode>.
+            </Description>
 
-          <Table columns={columns} bordered dataSource={tableData} rowKey={rowKey} pagination={false} />
-        </PrintPreviewContainer>
-
-        {pages.map((p, i) => (
-          <PrintPreviewContainer key={i}>
-            <CardContainer>
-              {!!tableData &&
-                tableData
-                  .slice(i * numOfCard, i * numOfCard + numOfCard)
-                  .map((student, index) => (
-                    <StudentCard student={student} key={index} code={code} appLoginUrl={appLoginUrl} />
-                  ))}
-            </CardContainer>
+            <Table columns={columns} bordered dataSource={tableData} rowKey={rowKey} pagination={false} />
           </PrintPreviewContainer>
-        ))}
-      </PrintPreviewBack>
+
+          {pages.map((p, i) => (
+            <PrintPreviewContainer key={i}>
+              <CardContainer>
+                {!!tableData &&
+                  tableData
+                    .slice(i * numOfCard, i * numOfCard + numOfCard)
+                    .map((student, index) => (
+                      <StudentCard student={student} key={index} code={code} appLoginUrl={appLoginUrl} />
+                    ))}
+              </CardContainer>
+            </PrintPreviewContainer>
+          ))}
+        </PrintPreviewBack>
+      </>
     );
   }
 }

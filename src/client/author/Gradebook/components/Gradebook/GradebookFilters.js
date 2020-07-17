@@ -3,11 +3,11 @@ import styled from "styled-components";
 
 // components
 import { Row, Col, Select } from "antd";
-import GroupsFilter from "./GroupsFilter";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 
 // constants
 import { themeColor, titleColor } from "@edulastic/colors";
+import GroupsFilter from "./GroupsFilter";
 
 const FilterDropdown = ({ label, mode, onChange, value, options, dataCy }) => (
   <Col span={24}>

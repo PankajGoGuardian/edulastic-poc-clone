@@ -4,29 +4,33 @@ import moment from "moment";
 
 // components
 import { Tooltip } from "antd";
-import {withNamespaces} from "@edulastic/localization";
+import { withNamespaces } from "@edulastic/localization";
 import { extraDesktopWidthMax } from "@edulastic/colors";
-import { StyledTable, StyledTableCell } from "./styled";
+import { StyledTable, StyledTableCell } from "../styled";
 
 // constants
-import { STATUS_LIST } from "../transformers";
+import { STATUS_LIST } from "../../transformers";
 
 const GradebookTable = ({ dataSource, assessments, selectedRows, setSelectedRows, windowWidth, windowHeight, t }) => {
   const colWidth = windowWidth >= parseInt(extraDesktopWidthMax) ? 170 : 150;
   const columns = [
     {
       title: "Student",
-      key: "_id",
       dataIndex: "studentName",
       fixed: "left",
       width: colWidth + 40,
-      render: data => <Tooltip title={data}>{data || t("common.anonymous")}</Tooltip>,
+      render: (data, row) => (
+        <Tooltip title={data}>
+          <Link to={`/author/gradebook/student/${row._id}`}>
+            {data || t("common.anonymous")}
+          </Link>
+        </Tooltip>
+      ),
       sorter: (a, b) => (a.studentName || "-").toLowerCase().localeCompare((b.studentName || "-").toLowerCase()),
       defaultSortOrder: "descend"
     },
     {
       title: "Class Name",
-      key: "className",
       dataIndex: "className",
       width: colWidth + 80,
       render: data => <Tooltip title={data}>{data || "-"}</Tooltip>,
@@ -34,7 +38,6 @@ const GradebookTable = ({ dataSource, assessments, selectedRows, setSelectedRows
     },
     {
       title: "Last Activity Date",
-      key: "laDate",
       dataIndex: "laDate",
       width: colWidth + 20,
       render: data => (data ? moment(data).format("MMM Do, YYYY h:mm A") : "-"),
@@ -61,7 +64,7 @@ const GradebookTable = ({ dataSource, assessments, selectedRows, setSelectedRows
           <StyledTableCell>
             {percentScore || "-"}
           </StyledTableCell>
-        );
+          );
       },
       sorter: (a, b) =>
         (a.assessments[ass.id]?.percentScore || "-").localeCompare(b.assessments[ass.id]?.percentScore || "-")

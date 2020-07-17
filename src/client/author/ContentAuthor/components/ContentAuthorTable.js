@@ -242,7 +242,8 @@ class ContentAuthorTable extends Component {
 
   createUser = createReq => {
     const { userOrgId, createAdminUser } = this.props;
-    createReq.role = "content-author";
+    createReq.role = "teacher";
+    createReq.permissions = ['author'];
     createReq.districtId = userOrgId;
 
     const o = {

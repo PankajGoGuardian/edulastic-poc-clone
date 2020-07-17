@@ -6,9 +6,8 @@ import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
-import { Effects ,notification } from "@edulastic/common";
-import { message } from "antd";
-import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
+import { Effects, notification } from "@edulastic/common";
+import { getCurrentSchool, fetchUserAction, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
 // external actions
@@ -365,7 +364,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId
@@ -377,7 +376,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -388,7 +387,7 @@ function* startAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );
@@ -402,7 +401,7 @@ function* startAssignment({ payload }) {
     const { status, data = {} } = err;
     console.error(err);
     if (status === 403 && data.message) {
-      notification({ msg:data.message});
+      notification({ msg: data.message });
     }
   }
 }
@@ -454,7 +453,7 @@ function* resumeAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-              }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId
@@ -465,7 +464,7 @@ function* resumeAssignment({ payload }) {
         yield put(
           push(
             `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
           )
         );
@@ -485,7 +484,7 @@ function* resumeAssignment({ payload }) {
 function* bootstrapAssesment({ payload }) {
   try {
     const { testType, assignmentId, testActivityId, testId, classId } = payload;
-    yield fetchUser();
+    yield put(fetchUserAction());
     if (testActivityId) {
       yield put(resumeAssignmentAction({ testType, assignmentId, testActivityId, testId, classId }));
     } else {

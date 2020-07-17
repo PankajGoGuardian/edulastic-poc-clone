@@ -169,7 +169,7 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
       } else if (!status || status === "NOT STARTED") {
         // check for not started
         a.class?.forEach(c => {
-          if (c._id === classId && (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))) {
+          if (c._id === classId && !c.exStudents?.includes(sId) && (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))) {
             assessments[a._id] = { assignmentId: a._id, laDate: 0, status: "NOT STARTED", percentScore: " " };
           }
         });

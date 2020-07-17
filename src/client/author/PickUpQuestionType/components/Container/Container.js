@@ -323,7 +323,7 @@ class Container extends Component {
                   {!multipartItem && (
                     <Menu.Item key="read">
                       <IconRead />
-                      Reading
+                      PASSAGE
                     </Menu.Item>
                   )}
                   <Menu.Item key="highlight">

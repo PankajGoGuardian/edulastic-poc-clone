@@ -1072,11 +1072,11 @@
     "description": ""
   },
   "someErrorOccuredDuringProxying": {
-    "message": "some error occured during proxying",
+    "message": "Some error occured during proxying",
     "description": ""
   },
   "someErrorOccuredDuringSwicthingRole": {
-    "message": "some error occured during switching role",
+    "message": "Some error occured during switching role",
     "description": ""
   },
   "ErrorOccuredSwicthingRole": {

@@ -54,7 +54,7 @@ const ReleaseScoreSettingsModal = ({
       <RadioGrp value={releaseGradeValue} onChange={e => setReleaseGradeValue(e.target.value)}>
         {_releaseGradeKeys.map((item, index) => (
           <Row key={index} style={{ marginBottom: "5px" }}>
-            <RadioBtn data-cy={item} value={item} key={item}>
+            <RadioBtn style={{ marginTop: "10px" }} data-cy={item} value={item} key={item}>
               {releaseGradeTypes[item]}
             </RadioBtn>
           </Row>

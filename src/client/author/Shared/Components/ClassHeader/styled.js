@@ -299,13 +299,14 @@ export const ClassDropMenu = styled(DropMenu)`
 export const StudentStatusDetails = styled.div`
   display: flex;
   justify-content: space-evenly;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   p {
     background: #f2f2f2;
-    padding: 12px 18px;
+    padding: 12px 10px;
     border-radius: 5px;
     font-size: 12px;
     color: #8f8f8f;
+    text-align:center;
     text-transform: uppercase;
   }
 `;

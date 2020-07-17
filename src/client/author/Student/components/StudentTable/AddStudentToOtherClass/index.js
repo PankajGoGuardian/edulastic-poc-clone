@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Table, Spin, Icon } from "antd";
-import { StyledModal, Title, ActionButton, Field, FooterDiv } from "./styled";
 import { IconUser } from "@edulastic/icons";
-import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
 import { get } from "lodash";
-import { ThemeButton } from "../../../../src/components/common/ThemeButton";
 import { EduButton } from "@edulastic/common";
+import { StyledModal, Title, Field, FooterDiv } from "./styled";
+import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
+import { ThemeButton } from "../../../../src/components/common/ThemeButton";
 
 function AddStudentsToOtherClass({
   titleText,
@@ -18,7 +18,6 @@ function AddStudentsToOtherClass({
   fetchClassDetailsUsingCode,
   destinationClassData,
   loading,
-  selectedUsersInfo = [],
   askUserConfirmation,
   t
 }) {
@@ -116,6 +115,7 @@ function AddStudentsToOtherClass({
   ) : (
     <>
       <ConfirmationModal
+        bodyTextStyle={{textAlign:"center"}}
         title={t("users.student.addtoanotherclass.title")}
         show={isConfirmationModalVisible}
         onOk={() => {
@@ -129,7 +129,7 @@ function AddStudentsToOtherClass({
         inputVal={cofirmationText}
         onInputChange={e => setConfimationText(e.target.value)}
         expectedVal="MOVE"
-        bodyText={t("users.student.addtoanotherclass.confirmtext")}
+        bodyText={<div style={{textAlign:"center"}}>{t("users.student.addtoanotherclass.confirmtext")}</div>}
         okText={t("users.student.addtoanotherclass.oktext")}
         canUndone
       />

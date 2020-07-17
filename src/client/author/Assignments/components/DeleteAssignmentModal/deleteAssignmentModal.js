@@ -95,6 +95,7 @@ const DeleteAssignmentModal = ({
             data-cy="confirmationInput"
             className="delete-confirm-input"
             type="text"
+            placeholder="Type the action"
             onChange={event => setConfirmText(event.currentTarget.value)}
           />
         </div>

@@ -123,7 +123,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
           testReviewTab.moveQuestionByIndex(totalItems.length);
           // Item should be at last-- totalItems.length
           testReviewTab.verifyMovedQuestionById(itemIds[index], totalItems.length);
-          testReviewTab.clickOnCheckBoxByItemId(itemIds[index]);
+          // testReviewTab.clickOnCheckBoxByItemId(itemIds[index]);
         });
       });
     });

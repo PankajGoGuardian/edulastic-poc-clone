@@ -61,7 +61,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
       cy.wait("@assignment");
       liveClassBoardPage.getSubmitSummary().should("contain.text", `2 out of 2 Submitted`);
       liveClassBoardPage.getAllStudentStatus().each(ele => {
-        cy.wrap(ele).should("contain.text", studentSide.IN_GRADING);
+        cy.wrap(ele).should("contain.text", studentSide.SUBMITTED.toLowerCase());
       });
     });
 

@@ -71,7 +71,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
       testSettings.clickOnShuffleChoices();
       testSettings.clickOnShuffleQuestions();
       /* Use Scientific Calculator */
-      testSettings.clickOnCalculatorByType(CALCULATOR.SCIENTIFIC);
+      // testSettings.clickOnCalculatorByType(CALCULATOR.SCIENTIFIC);
       /* Set Dynamic Password */
       testSettings.clickOnPassword();
       testSettings.clickOnDynamicPassword();
@@ -94,8 +94,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
       /* De-Select the Shuffle questions and choices */
       testAssignPage.deselectShuffleChoices();
       testAssignPage.deselectShuffleQuestions();
-      /* Over-ride Calculator Type To Graph  */
-      testAssignPage.clickOnCalculatorByType(CALCULATOR.GRAPH);
+      /* Over-ride Calculator Type To basic  */
+      testAssignPage.clickOnCalculatorByType(CALCULATOR.BASIC);
       /* Over-ride Password Policy To Static */
       testAssignPage.clickOnStaticPassword();
       testAssignPage.enterStaticPassword(staticPassword);
@@ -120,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
         studentTestPage.clickOnCalcuator();
 
         /* Verifying Calculator Type */
-        studentTestPage.assertCalcType(CALCULATOR.GRAPH);
+        studentTestPage.assertCalcType(CALCULATOR.BASIC);
       });
       it(">shuffle ques,choices and check ans button", () => {
         /* Verifying No Shuffle Questions */

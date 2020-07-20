@@ -31,7 +31,9 @@ const DeleteAssignmentModal = ({
   handleUnassignAssignments,
   bulkUnassignAssignmentRequest,
   testType,
-  userRole
+  userRole,
+  deleteAssignmentFromPlaylist,
+  fromPlaylist = false
 }) => {
   const [confirmText, setConfirmText] = useState("");
   const handleUnassign = () => {
@@ -41,6 +43,9 @@ const DeleteAssignmentModal = ({
       }
       if (advancedAssignments) {
         return handleUnassignAssignments();
+      }
+      if (fromPlaylist) {
+        return deleteAssignmentFromPlaylist();
       }
 
       if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {

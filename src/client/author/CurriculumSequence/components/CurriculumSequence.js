@@ -41,7 +41,8 @@ import {
   setActiveRightPanelViewAction,
   deletePlaylistRequestAction,
   removePlaylistFromUseAction,
-  checkPreviouslyCustomizedAction
+  checkPreviouslyCustomizedAction,
+  unassignAssignmentsfromPlaylistAction
 } from "../ducks";
 import { getSummaryData } from "../util";
 /* eslint-enable */
@@ -56,6 +57,8 @@ import CurriculumSubHeader from "./CurriculumHeaders/CurriculumSubHeader";
 import CurriculumBreadCrumb from "./CurriculumHeaders/BreadCrumb";
 import CurriculumRightPanel from "./CurriculumRightPanel";
 import { allowDuplicateCheck } from "../../src/utils/permissionCheck";
+import { DeleteAssignmentModal } from "../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
+import { toggleDeleteAssignmentModalAction } from "../../sharedDucks/assignments";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -168,7 +171,8 @@ class CurriculumSequence extends Component {
     showSummary: false,
     showRightPanel: true,
     isVisibleAddModule: false,
-    moduleForEdit: {}
+    moduleForEdit: {},
+    unassignData: {}
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -473,6 +477,20 @@ class CurriculumSequence extends Component {
     discardDraftPlaylist(destinationCurriculumSequence._id);
   };
 
+  toggleUnassignModal = unassignData => {
+    const { toggleDeleteAssignmentModal } = this.props;
+    this.setState({ unassignData });
+    toggleDeleteAssignmentModal(true);
+  };
+
+  deleteAssignmentFromPlaylist = () => {
+    const { unassignAssignmentsRequest, toggleDeleteAssignmentModal } = this.props;
+    const { unassignData } = this.state;
+    toggleDeleteAssignmentModal(false);
+    unassignAssignmentsRequest(unassignData);
+    this.setState({ unassignData: {} });
+  };
+
   render() {
     const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
 
@@ -662,6 +680,8 @@ class CurriculumSequence extends Component {
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
 
+        <DeleteAssignmentModal deleteAssignmentFromPlaylist={this.deleteAssignmentFromPlaylist} fromPlaylist />
+
         <CurriculumSequenceWrapper>
           <CurriculumHeader
             role={role}
@@ -762,6 +782,7 @@ class CurriculumSequence extends Component {
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
                         customizeInDraft={customizeInDraft}
                         isSparkMathPlaylist={isSparkMathPlaylist}
+                        toggleUnassignModal={this.toggleUnassignModal}
                       />
                     )}
                   </Wrapper>
@@ -851,7 +872,9 @@ const enhance = compose(
       setActiveRightPanelView: setActiveRightPanelViewAction,
       deletePlaylist: deletePlaylistRequestAction,
       removePlaylistFromUse: removePlaylistFromUseAction,
-      checkPreviouslyCustomized: checkPreviouslyCustomizedAction
+      checkPreviouslyCustomized: checkPreviouslyCustomizedAction,
+      toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+      unassignAssignmentsRequest: unassignAssignmentsfromPlaylistAction
     }
   )
 );

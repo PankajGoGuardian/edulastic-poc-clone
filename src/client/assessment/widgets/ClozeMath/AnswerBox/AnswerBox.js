@@ -119,7 +119,7 @@ const AnswerBox = ({
         const { index } = find(mathUnits, d => d.id === answer.id) || { index: 0 };
         let { unit = "" } = answer.options;
 
-        if (unit.search("f") !== -1 || unit.search(/\s/g) !== -1) {
+        if (unit && unit.search("text{") === -1 && (unit.search("f") !== -1 || unit.search(/\s/g) !== -1)) {
           unit = `\\text{${unit}}`;
         }
         if (answer.value) {

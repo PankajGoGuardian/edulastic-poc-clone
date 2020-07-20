@@ -57,41 +57,43 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
       });
     });
 
-    Object.keys(CALCULATOR).forEach(CALC => {
-      context(`${CALC}`, () => {
-        it(`Edit Setings-${CALC}`, () => {
-          cy.deleteAllAssignments(Student1.email, Teacher.email);
-          cy.login("teacher", Teacher.email, Teacher.pass);
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.searchFilters.clearAll();
-          testLibraryPage.searchFilters.getAuthoredByMe();
-          testLibraryPage.clickOnTestCardById(OriginalTestId);
-          testLibraryPage.clickOnDetailsOfCard();
-          testLibraryPage.publishedToDraftAssigned();
-          testLibraryPage.getVersionedTestID().then(id => {
-            OriginalTestId = id;
+    Object.keys(CALCULATOR)
+      .slice(0, 1)
+      .forEach(CALC => {
+        context(`${CALC}`, () => {
+          it(`Edit Setings-${CALC}`, () => {
+            cy.deleteAllAssignments(Student1.email, Teacher.email);
+            cy.login("teacher", Teacher.email, Teacher.pass);
+            testLibraryPage.sidebar.clickOnTestLibrary();
+            testLibraryPage.searchFilters.clearAll();
+            testLibraryPage.searchFilters.getAuthoredByMe();
+            testLibraryPage.clickOnTestCardById(OriginalTestId);
+            testLibraryPage.clickOnDetailsOfCard();
+            testLibraryPage.publishedToDraftAssigned();
+            testLibraryPage.getVersionedTestID().then(id => {
+              OriginalTestId = id;
+            });
+            testReviewTab.testheader.clickOnSettings();
+            testSettings.clickOnCalculatorByType(CALCULATOR[CALC]);
+            testSettings.header.clickOnSaveButton(true);
+            testSettings.header.clickOnPublishButton();
           });
-          testReviewTab.testheader.clickOnSettings();
-          testSettings.clickOnCalculatorByType(CALCULATOR[CALC]);
-          testSettings.header.clickOnSaveButton(true);
-          testSettings.header.clickOnPublishButton();
-        });
-        it("Assign the test", () => {
-          testLibraryPage.clickOnAssign();
-          testAssignPage.selectClass("Class");
-          testAssignPage.selectTestType("Class Assessment");
-          //  testAssignPage.clickOnEntireClass();
-          testAssignPage.clickOnAssign();
-        });
-        it(`Verifying At Student Side-${CALC}`, () => {
-          cy.login("student", Student1.email, Student1.pass);
-          assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
-          studentTestPage.clickOnCalcuator();
-          studentTestPage.assertCalcType(CALCULATOR[CALC]);
-          studentTestPage.clickOnExitTest();
+          it("Assign the test", () => {
+            testLibraryPage.clickOnAssign();
+            testAssignPage.selectClass("Class");
+            testAssignPage.selectTestType("Class Assessment");
+            //  testAssignPage.clickOnEntireClass();
+            testAssignPage.clickOnAssign();
+          });
+          it(`Verifying At Student Side-${CALC}`, () => {
+            cy.login("student", Student1.email, Student1.pass);
+            assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
+            studentTestPage.clickOnCalcuator();
+            studentTestPage.assertCalcType(CALCULATOR[CALC]);
+            studentTestPage.clickOnExitTest();
+          });
         });
       });
-    });
   });
   context("Passwords", () => {
     context("Static Password", () => {

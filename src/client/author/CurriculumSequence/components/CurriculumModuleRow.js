@@ -10,7 +10,7 @@ import React, { Component, Fragment } from "react";
 import { useDrop } from "react-dnd";
 import { FaBars, FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import { compose } from "redux";
 import { pick } from "lodash";
@@ -52,7 +52,8 @@ import {
   ModuleDataName,
   Assignment,
   ModuleWrapper,
-  HideLinkLabel
+  HideLinkLabel,
+  CaretUp
 } from "./styled";
 
 const IS_ASSIGNED = "ASSIGNED";
@@ -497,6 +498,7 @@ class ModuleRow extends Component {
             onClick={() => onCollapseExpand(moduleIndex)}
           >
             <ModuleRowView
+              mode={mode}
               module={module}
               moduleIndex={moduleIndex}
               summaryData={summaryData}
@@ -581,12 +583,13 @@ class ModuleRow extends Component {
 
                   const moreMenu = (
                     <Menu data-cy="assessmentItemMoreMenu">
+                      <CaretUp className="fa fa-caret-up" />
                       {!isStudent && (
                         <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
                       )}
                       {!isStudent && isAssigned && (
-                        <Menu.Item>
-                          <Link to="/author/assignments">View Assignments</Link>
+                        <Menu.Item onClick={() => togglePlaylistTestDetails({ id: moduleData?.contentId })}>
+                          View Test Details
                         </Menu.Item>
                       )}
                       {!isStudent && (
@@ -681,7 +684,7 @@ class ModuleRow extends Component {
                             ))}
 
                           {isDesktop && (mode === "embedded" || urlHasUseThis) && (
-                            <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle}>
+                            <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle} arrow>
                               <IconActionButton>
                                 <IconMoreVertical width={5} height={14} color={themeColor} />
                               </IconActionButton>

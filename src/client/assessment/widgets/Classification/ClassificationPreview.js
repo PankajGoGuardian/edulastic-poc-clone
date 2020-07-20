@@ -428,7 +428,7 @@ const ClassificationPreview = ({
                 choiceWidth={dragItemMaxWidth}
                 title={t("component.classification.dragItemsTitle")}
               >
-                <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
+                <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} borderNone>
                   <FlexContainer
                     style={{ width: "100%" }}
                     flexDirection="column"

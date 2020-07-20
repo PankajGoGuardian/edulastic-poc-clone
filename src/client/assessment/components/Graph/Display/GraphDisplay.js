@@ -284,6 +284,7 @@ class GraphDisplay extends Component {
         drawLabels: uiStyle.xDrawLabel,
         maxArrow: uiStyle.xMaxArrow,
         minArrow: uiStyle.xMinArrow,
+        arrowSize: 5,
         commaInLabel: uiStyle.xCommaInLabel,
         showAxis: xShowAxis,
         drawZero: drawLabelZero
@@ -295,6 +296,7 @@ class GraphDisplay extends Component {
         drawLabels: uiStyle.yDrawLabel,
         maxArrow: uiStyle.yMaxArrow,
         minArrow: uiStyle.yMinArrow,
+        arrowSize: 5,
         commaInLabel: uiStyle.yCommaInLabel,
         showAxis: yShowAxis,
         drawZero: drawLabelZero && !xShowAxis

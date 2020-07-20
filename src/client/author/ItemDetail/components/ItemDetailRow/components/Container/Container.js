@@ -48,7 +48,6 @@ class Container extends Component {
     handleAddToPassage: PropTypes.func.isRequired,
     hideColumn: PropTypes.func.isRequired,
     addTabs: PropTypes.func.isRequired,
-    isCollapsed: PropTypes.bool.isRequired,
     removeTab: PropTypes.func.isRequired
   };
 
@@ -171,29 +170,22 @@ class Container extends Component {
       handleAddToPassage,
       hideColumn,
       addTabs,
-      isCollapsed,
-      removeTab
+      removeTab,
+      passageNavigator
     } = this.props;
     const { tabIndex } = this.state;
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
     // adding first part?
     const isAddFirstPart = row.widgets && row.widgets.length === 0;
     return (
-      <Content
-        value={tabIndex}
-        padding="20px 0px 25px"
-        style={{
-          width: isCollapsed ? "90%" : row.dimension
-        }}
-        hide={hideColumn}
-        data-cy="itemdetail-content"
-      >
+      <Content value={tabIndex} padding="20px 0px 25px" hide={hideColumn} data-cy="itemdetail-content">
         {isPassageQuestion && row.tabs?.length === 0 && (
           <AddTabButton tabsBtn onClick={() => addTabs()}>
             <GreenPlusIcon>+</GreenPlusIcon>
             ADD TABS
           </AddTabButton>
         )}
+        {passageNavigator}
         {row.tabs && row.tabs.length > 0 && (
           <TabContainer>
             <Tabs value={tabIndex} onChange={ind => this.handleTabChange(ind)}>

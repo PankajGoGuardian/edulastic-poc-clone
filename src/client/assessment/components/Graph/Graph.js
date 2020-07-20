@@ -502,7 +502,7 @@ class Graph extends Component {
                       noBackground
                       showBorder
                       padding="0px"
-                      margin="0px"
+                      margin="20px 0px"
                     >
                       <GraphDisplay
                         disableResponse
@@ -521,13 +521,11 @@ class Graph extends Component {
                         <CorrectAnswersContainer
                           minWidth="max-content"
                           title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
-                          titleStyle={{
-                            margin: 4
-                          }}
+                          titleMargin="4px"
                           noBackground
                           showBorder
                           padding="0px"
-                          margin="0px"
+                          margin="20px 0px"
                         >
                           <GraphDisplay
                             disableResponse

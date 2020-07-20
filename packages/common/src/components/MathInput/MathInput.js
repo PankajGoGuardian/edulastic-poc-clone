@@ -1,4 +1,3 @@
-import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 import { math } from "@edulastic/constants";
 import { Popover } from "antd";
@@ -118,15 +117,15 @@ class MathInput extends React.PureComponent {
   sanitizeLatex = v => v.replace(/&amp;/g, "&");
 
   handleKeypress = e => {
-    const { restrictKeys, allowNumericOnly,value=""} = this.props;
+    const { restrictKeys, allowNumericOnly, value = "" } = this.props;
     if (allowNumericOnly) {
-      const isDynamicVar = value &&  value[value.length-1]==="@";
-      if(isDynamicVar){
-         if(!e.key.match(/[a-zA-Z]/g)){
+      const isDynamicVar = value && value[value.length - 1] === "@";
+      if (isDynamicVar) {
+        if (!e.key.match(/[a-zA-Z]/g)) {
           e.preventDefault();
           e.stopPropagation();
-         }
-         return;
+        }
+        return;
       }
 
       if (!e.key.match(/[0-9+-.%^@/]/g)) {
@@ -332,12 +331,8 @@ class MathInput extends React.PureComponent {
               style={{
                 ...style,
                 height: "auto",
-                padding: "2px 5px",
                 minHeight: style.height,
-                fontSize: style.fontSize ? style.fontSize : "inherit",
-                background: greyThemeLighter,
-                border: `1px solid ${greyThemeLight}`,
-                paddingRight: "25px"
+                fontSize: style.fontSize ? style.fontSize : "inherit"
               }}
               data-cy="answer-math-input-field"
             >

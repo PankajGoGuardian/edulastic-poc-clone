@@ -3,7 +3,6 @@ import { darkBlue } from "@edulastic/colors";
 
 export const SelectContainer = styled.div`
   position: relative;
-  width: 200px;
   display: flex;
   align-items: center;
   border: none;

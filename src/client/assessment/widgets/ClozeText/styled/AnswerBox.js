@@ -1,13 +1,12 @@
 import styled from "styled-components";
-import { greyThemeLight, white } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 
 export const AnswerBox = styled.div`
   display: inline-flex;
   vertical-align: middle;
   cursor: pointer;
-  margin: 0px 4px 4px;
+  margin: 0px 4px;
   border-radius: 4px;
-  border: 1px solid ${greyThemeLight};
   background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white;
     if (checked === undefined && correct === undefined) {

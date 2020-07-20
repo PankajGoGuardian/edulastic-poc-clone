@@ -1,5 +1,5 @@
 import styled from "styled-components";
 
-export const CorrectAnswerBox = styled.div`
+export const AnswersWrapper = styled.div`
   padding-left: 20px;
 `;

@@ -1,8 +1,11 @@
+import { greyThemeDark1 } from "@edulastic/colors";
 import styled from "styled-components";
 import { Item } from "../../../styled/Item";
 
 export const ToolbarItem = styled(Item)`
   height: 100%;
+  color: ${greyThemeDark1};
+  font-weight: ${({ theme }) => theme.semiBold};
 
   &:hover {
     cursor: pointer;

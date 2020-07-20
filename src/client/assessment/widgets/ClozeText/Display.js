@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import produce from "immer";
@@ -64,8 +63,8 @@ class ClozeTextDisplay extends Component {
       position: "relative",
       maxWidth: 600,
       width: widthpx || 140,
-      height: heightpx || 35,
-      minHeight: heightpx || 35,
+      height: heightpx || 32,
+      minHeight: heightpx || 32,
       type: inputtype,
       fontSize,
       placeholder,

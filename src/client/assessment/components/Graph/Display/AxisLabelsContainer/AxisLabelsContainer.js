@@ -23,7 +23,7 @@ import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import Tools from "../../common/Tools";
 import ResponseBox from "./ResponseBox";
-import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
+import { GraphWrapper, JSXBox, ContainerWithResponses } from "./styled";
 import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
 import AppConfig from "../../../../../../../app-config";
 
@@ -31,7 +31,6 @@ const v1Dimenstions = {
   v1Height: 390,
   v1Width: 740
 };
-
 export const defaultTitleWidth = 150;
 
 const getColoredElems = (elements, compareResult) => {
@@ -441,7 +440,6 @@ class AxisLabelsContainer extends PureComponent {
 
     // +20 is padding between container and choices
     const responseBoxWidth = this.isHorizontal ? "100%" : `${this.choiceMaxWidth + 20}px`;
-    const graphContainerWidth = this.isHorizontal ? "100%" : `calc(100% - ${responseBoxWidth}px)`;
 
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef} style={{ width: "100%" }}>
@@ -454,14 +452,12 @@ class AxisLabelsContainer extends PureComponent {
         </WithResources>
         <GraphWrapper>
           {!disableResponse && !isPrintPreview && (
-            <StyledToolsContainer width={Math.min(adjustedHeightWidth.width, this.parentWidth)}>
-              <Tools
-                controls={this.controls}
-                onSelectControl={this.onSelectControl}
-                onSelect={() => {}}
-                fontSize={layout?.fontSize}
-              />
-            </StyledToolsContainer>
+            <Tools
+              controls={this.controls}
+              onSelectControl={this.onSelectControl}
+              onSelect={() => {}}
+              fontSize={layout?.fontSize}
+            />
           )}
           <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
             <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
@@ -482,7 +478,7 @@ class AxisLabelsContainer extends PureComponent {
                   minHeight={adjustedHeightWidth.height}
                 />
               )}
-              <div style={{ position: "relative", overflow: "auto", width: graphContainerWidth }}>
+              <div className="jsxbox-with-annotation">
                 <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
                 <AnnotationRnd
                   question={_graphData}

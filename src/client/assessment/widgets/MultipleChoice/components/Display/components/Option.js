@@ -212,11 +212,10 @@ const StyledOptionsContainer = styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-start;
-  padding: 2px 12px;
+  padding: 7px 12px;
   flex-direction: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "column" : "row")};
   align-items: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "flex-start" : "center")};
   border-radius: ${({ uiStyleType }) => (uiStyleType === "block" ? "4px" : "2px")};
-
 
   span.labelOnly {
     width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "30px" : "26px")};

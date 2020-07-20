@@ -1,43 +1,62 @@
 import styled from "styled-components";
-import { WithMathFormula } from "@edulastic/common";
+import { Rnd } from "react-rnd";
 
 export const Container = styled.div`
-  position: relative;
   width: ${({ width }) => width};
   text-align: ${({ isHorizontal }) => (isHorizontal ? "" : "center")};
+  margin-top: ${({ isHorizontal }) => (isHorizontal ? "24px" : "")};
   background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
+  padding: 15px 25px 25px;
+  border-radius: 4px;
 `;
 
 export const Title = styled.div`
-  font-size: ${props => props.theme.widgets.axisLabels.responseBoxTitleFontSize};
-  font-weight: ${props => props.theme.widgets.axisLabels.responseBoxTitleFontWeight};
-  padding-left: 10px;
+  margin: 0 auto 12px 0px;
+  color: ${({ theme }) => theme.textColor};
+  font-weight: ${({ theme }) => theme.bold};
+  font-size: ${({ theme }) => theme.smallFontSize};
+  line-height: ${({ theme }) => theme.headerLineHeight};
 `;
 
-export const MarkContainer = WithMathFormula(
-  styled.div`
-    margin: auto 0;
+export const MarkContainer = styled.div`
+  margin: auto 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+
+  .index-box {
+    width: 32px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-
-    .mark-content {
-      div {
-        margin: auto;
-      }
-
-      p {
-        margin: auto;
-      }
-    }
-  `
-);
+    justify-content: center;
+    flex-shrink: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    margin-right: 8px;
+    ${({ theme }) => `
+      background: ${theme.widgets.axisLabels.indexBoxBgColor};
+      color: ${theme.widgets.axisLabels.indexBoxColor};
+      font-size: ${theme.widgets.axisLabels.indexBoxFontSize};
+      font-weight: ${theme.widgets.axisLabels.indexBoxFontWeight};
+    `};
+  }
+  .drag-item-cotent {
+    display: flex;
+    align-items: center;
+  }
+`;
 
 export const DraggableOptionsContainer = styled.div`
-  height: ${props => props.height}px;
-  width: ${props => props.width}px;
+  min-height: 50px;
+  width: 100%;
   position: relative;
+`;
+
+export const StyledRnd = styled(Rnd).attrs({
+  disableDragging: false,
+  enableResizing: false
+})`
+  z-index: 10;
 `;

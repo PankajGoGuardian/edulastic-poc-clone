@@ -13,7 +13,7 @@ export const withMathFormula = WrappedComponent => {
      * this whole component needs rethinking.
      */
     const contextConfig = useContext(RefContext);
-    const { dangerouslySetInnerHTML, isCollapse = false, style = {}, fontSize, theme = {}, className } = props;
+    const { dangerouslySetInnerHTML, isCollapse = false, style = {}, fontSize, theme = {}, className, color } = props;
     const [loaded, setLoaded] = useState(false);
     const [newInnerHtml, setNewInnerHtml] = useState("");
     let elemClassName = className;
@@ -48,7 +48,7 @@ export const withMathFormula = WrappedComponent => {
           className={elemClassName}
           data-cy="styled-wrapped-component"
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
-          style={{ ...style, color: theme.questionTextColor, fontSize: fontSize || theme.fontSize }}
+          style={{ ...style, color: color || theme.questionTextColor, fontSize: fontSize || theme.fontSize }}
         />
       </WithResources>
     );
@@ -57,8 +57,8 @@ export const withMathFormula = WrappedComponent => {
   MathFormulaWrapped.propTypes = {
     dangerouslySetInnerHTML: PropTypes.object,
     className: PropTypes.string,
-    isCollapse: PropTypes.bool,
-    fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    isCollapse: PropTypes.bool.isRequired,
+    fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     theme: PropTypes.object.isRequired,
     style: PropTypes.object
   };

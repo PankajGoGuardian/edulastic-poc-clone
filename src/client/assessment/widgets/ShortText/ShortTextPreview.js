@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Popover } from "antd";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { get, isEmpty } from "lodash";
 
 import {
@@ -21,7 +21,7 @@ import { CHECK, SHOW, PREVIEW, CLEAR, EDIT } from "../../constants/constantsForQ
 import Instructions from "../../components/Instructions";
 import { SmallContainer } from "./styled/SmallContainer";
 import { SmallStim } from "./styled/SmallStim";
-import { getSpellCheckAttributes, getFontSize } from "../../utils/helpers";
+import { getSpellCheckAttributes } from "../../utils/helpers";
 import { Addon } from "./styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
 import { InputWrapper } from "./styled/InputWrapper";
@@ -82,26 +82,17 @@ const ShortTextPreview = ({
 
   const preview = previewTab === CHECK || previewTab === SHOW;
   let background; // no background highlights initially
-
   if (text.length && preview) {
-    /**
-     * if user has attempted attempted and in check/show answer mode
-     * only then add background highlights
-     */
     if (evaluation === true) {
-      background = theme.widgets.shortText.correctInputBgColor;
+      background = theme.checkbox.rightBgColor;
     } else {
-      background = theme.widgets.shortText.incorrectInputBgColor;
+      background = theme.checkbox.wrongBgColor;
     }
   }
 
-  const style = {
-    paddingRight: 35,
-    minHeight: 40,
-    height: "auto",
-    fontSize: theme.fontSize || getFontSize(get(item, "uiStyle.fontsize")),
-    background: isPrintPreview ? "transparent" : background
-  };
+  if (isPrintPreview) {
+    background = "transparent";
+  }
 
   const isCharacterMap = Array.isArray(item.characterMap) && !!item.characterMap.length;
 
@@ -126,14 +117,15 @@ const ShortTextPreview = ({
 
           <InputWrapper>
             <TextInputStyled
-              style={style}
               value={text}
+              pr="35px"
+              bg={background}
+              noBorder={preview}
               disabled={disableResponse}
               onChange={handleTextChange}
               onSelect={handleSelect}
               placeholder={item.placeholder || ""}
               type={get(item, "uiStyle.input_type", "text")}
-              size="large"
               {...getSpellCheckAttributes(item.spellcheck)}
             />
             {isCharacterMap && (
@@ -160,17 +152,28 @@ const ShortTextPreview = ({
           {view !== EDIT && <Instructions item={item} />}
           {previewTab === SHOW && (
             <>
-              <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
-                {item?.validation?.validResponse?.value}
+              <CorrectAnswersContainer
+                title={t("component.shortText.correctAnswers")}
+                minHeight="auto"
+                padding="15px 25px 20px"
+              >
+                <CorrectAnswers>{item?.validation?.validResponse?.value}</CorrectAnswers>
               </CorrectAnswersContainer>
               {!isEmpty(item.validation?.altResponses) && (
-                <CorrectAnswersContainer title={t("component.shortText.alternateAnswers")}>
-                  {item.validation.altResponses.map((altAnswer, i) => (
-                    <div key={i}>
-                      <span>Alternate Answer {i + 1} : </span>
-                      {altAnswer.value}
-                    </div>
-                  ))}
+                <CorrectAnswersContainer
+                  title={t("component.shortText.alternateAnswers")}
+                  minHeight="auto"
+                  padding="15px 25px 20px"
+                  titleMargin="0px 0px 8px"
+                >
+                  <CorrectAnswers>
+                    {item.validation.altResponses.map((altAnswer, i) => (
+                      <div key={i}>
+                        <span>Alternate Answer {i + 1} : </span>
+                        {altAnswer.value}
+                      </div>
+                    ))}
+                  </CorrectAnswers>
                 </CorrectAnswersContainer>
               )}
             </>
@@ -207,3 +210,7 @@ const enhance = compose(
 );
 
 export default enhance(ShortTextPreview);
+
+const CorrectAnswers = styled.div`
+  padding-left: 20px;
+`;

@@ -1,9 +1,8 @@
 .mark {
-  height: 45px;
+  height: 32px;
   width: 120px;
   word-break: break-word;
   max-width: 55px;
-  padding: 2px;
   border-radius: 4px;
   background-color: #ffffff;
   border: 1px solid #e6e6e6 !important;
@@ -15,6 +14,8 @@
 
 .mark.mounted {
   transform: translate(0, -15px);
+  padding: 2px;
+  padding-right: 4px;
 }
 
 .mark.mounted .delete-mark {
@@ -89,10 +90,12 @@
 .mark .delete-mark {
   opacity: 0;
   position: absolute;
-  height: 15px;
-  width: 15px;
-  top: -8px;
-  right: -8px;
+  height: 13px;
+  width: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -5px;
+  fill: #878a91;
   transition: 0.2s ease fill;
 }
 
@@ -108,7 +111,7 @@
 .mark .mark-content {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   text-align: center;
   overflow: hidden;
   height: 100%;

@@ -196,6 +196,7 @@ const MatrixChoice = ({
                   disableResponse
                   changeView={() => {}}
                   evaluation={validResponse.value}
+                  pl="20px"
                   {...restProps}
                 />
               </CorrectAnswersContainer>
@@ -212,6 +213,7 @@ const MatrixChoice = ({
                       previewTab={previewTab}
                       disableResponse
                       changeView={() => {}}
+                      pl="20px"
                       evaluation={altAnswer.value}
                       {...restProps}
                     />

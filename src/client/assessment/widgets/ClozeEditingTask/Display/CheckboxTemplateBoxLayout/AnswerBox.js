@@ -31,13 +31,13 @@ const Container = styled.div`
   background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white;
     if (!checked) {
-      return theme.widgets.clozeDropDown.boxNoAnswerBgColor;
+      return theme.checkbox.noAnswerBgColor;
     }
     if (!correct) {
-      return theme.widgets.clozeDropDown.boxWrongBgColor;
+      return theme.checkbox.wrongBgColor;
     }
     if (correct) {
-      return theme.widgets.clozeDropDown.boxBgCorrectColor;
+      return theme.checkbox.rightBgColor;
     }
     return theme.widgets.clozeDropDown.boxBgColor;
   }};
@@ -61,7 +61,7 @@ const AnswerContent = styled(MathFormulaDisplay)`
 `;
 
 const IndexBox = styled.div`
-  width: 40px;
+  width: 32px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   display: flex;
@@ -71,10 +71,10 @@ const IndexBox = styled.div`
   ${({ theme, checked, correct }) => `
     background: ${
       !checked
-        ? theme.widgets.clozeDropDown.indexBoxNoAnswerBgColor
+        ? theme.checkbox.noAnswerIconColor
         : correct
-        ? theme.widgets.clozeDropDown.indexBoxCorrectBgColor
-        : theme.widgets.clozeDropDown.indexBoxIncorrectBgColor
+        ? theme.checkbox.rightIconColor
+        : theme.checkbox.wrongIconColor
     };
     color: ${theme.widgets.clozeDropDown.indexBoxColor};
     font-size: ${theme.widgets.clozeDropDown.indexBoxFontSize};

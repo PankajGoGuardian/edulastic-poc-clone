@@ -67,8 +67,8 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
   return checked ? (
     <CheckedBlock
       {...resprops}
-      width={width}
-      height={height}
+      width={`${width}px`}
+      height={`${height}px`}
       userAnswer={userAnswer}
       id={id}
       type="maths"

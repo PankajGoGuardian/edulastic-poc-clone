@@ -36,7 +36,7 @@ export const Label = styled.label`
   flex: 1;
   position: relative;
   display: inline-block;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   border: ${({ showBorder }) => (showBorder ? "1px solid #b9b9b9" : "")};
   border: ${props =>
     props.showBorder &&

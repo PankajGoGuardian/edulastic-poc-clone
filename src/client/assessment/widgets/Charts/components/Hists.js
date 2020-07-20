@@ -1,13 +1,14 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
+import { isEmpty } from "lodash";
 
 import { red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
-import { Bar, ActiveBar, Text, VxText } from "../styled";
-import { convertUnitToPx, getGridVariables } from "../helpers";
+import { Bar, ActiveBar, VxText } from "../styled";
+import { convertUnitToPx } from "../helpers";
 import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 
 const Hists = ({
@@ -19,15 +20,13 @@ const Hists = ({
   view,
   gridParams,
   previewTab,
-  correct,
+  evaluation,
   deleteMode,
   saveAnswer
 }) => {
   const { margin, yAxisMin, height, multicolorBars } = gridParams;
   const { chart_data = {} } = item;
   const { data = [] } = chart_data;
-
-  const { padding, step } = getGridVariables(bars, gridParams, true);
 
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
@@ -36,10 +35,6 @@ const Hists = ({
       onPointOver(value);
     }
   };
-
-  const getCenterX = index => step * index + margin / 2 + padding;
-
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + 20;
 
   const handleMouse = index => () => {
     handleMouseAction(index)();
@@ -72,10 +67,10 @@ const Hists = ({
     "#bd1f7c"
   ];
 
-  const renderValidationIcons = index => (
-    <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
-      {correct[index] && <IconCheck color={green} width={12} height={12} />}
-      {!correct[index] && <IconClose color={red} width={12} height={12} />}
+  const renderValidationIcons = (bar, index) => (
+    <g transform={`translate(${bar.posX + bar.width / 2 - 6},${bar.posY - 30})`}>
+      {evaluation[index] && <IconCheck color={green} width={12} height={12} />}
+      {!evaluation[index] && <IconClose color={red} width={12} height={12} />}
     </g>
   );
 
@@ -98,30 +93,30 @@ const Hists = ({
     ((data[index].labelVisibility === SHOW_BY_HOVER && hoveredIndex === index) ||
       (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
 
-  const isRenderIcons = !!(correct && correct.length);
+  const isRenderIcons = !isEmpty(evaluation);
 
   return (
     <Fragment>
-      {bars.map((dot, index) => (
+      {bars.map((bar, index) => (
         <Fragment key={`bar-${index}`}>
           <rect
             fill="transparent"
-            x={getCenterX(index)}
+            x={bar.posX}
             y={0}
             onMouseEnter={handleMouse(index)}
             onMouseLeave={handleMouse(null)}
-            width={step - 2}
+            width={bar.width}
             height={height + margin}
           />
-          {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
+          {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(bar, index)}
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
-            x={getCenterX(index)}
-            y={getCenterY(dot)}
-            width={step - 2}
-            height={getBarHeight(dot.y)}
+            x={bar.posX}
+            y={bar.posY}
+            width={bar.width}
+            height={getBarHeight(bar.y)}
             color={getColorForIndex(index)}
           />
           {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
@@ -132,9 +127,9 @@ const Hists = ({
               onClick={handleMouse(index)}
               onTouchEnd={handleMouse(null)}
               onTouchStart={onMouseDown(index)}
-              x={getCenterX(index)}
-              y={getCenterY(dot)}
-              width={step - 2}
+              x={bar.posX}
+              y={bar.posY}
+              width={bar.width}
               deleteMode={deleteMode}
               color={getColorForIndex(index)}
               hoverState={isHovered(index)}
@@ -145,13 +140,13 @@ const Hists = ({
             <VxText
               textAnchor="middle"
               verticalAnchor="start"
-              x={getCenterX(index) + (step - 2) / 2}
+              x={bar.posX + bar.width / 2}
               y={height}
               width={70}
               onMouseEnter={handleMouse(index)}
               onMouseLeave={handleMouse(null)}
             >
-              {dot.x}
+              {bar.x}
             </VxText>
           )}
         </Fragment>
@@ -165,7 +160,6 @@ Hists.propTypes = {
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  activeIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
   gridParams: PropTypes.shape({
     width: PropTypes.number,
@@ -177,7 +171,7 @@ Hists.propTypes = {
     snapTo: PropTypes.number,
     multicolorBars: PropTypes.bool
   }).isRequired,
-  correct: PropTypes.array.isRequired,
+  evaluation: PropTypes.object.isRequired,
   previewTab: PropTypes.string,
   saveAnswer: PropTypes.func,
   deleteMode: PropTypes.bool

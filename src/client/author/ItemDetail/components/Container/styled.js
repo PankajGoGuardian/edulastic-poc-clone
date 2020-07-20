@@ -1,5 +1,5 @@
 import { Paper } from "@edulastic/common";
-import { mobileWidth, themeColor, white, linkColor } from "@edulastic/colors";
+import { mobileWidth, themeColor, white, linkColor, title } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -27,9 +27,15 @@ export const ContentWrapper = styled.div`
 export const PassageNavigation = styled.div`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   padding: 0 10px;
   font-size: 11px;
   color: ${linkColor};
+  .pagination-title {
+    color: ${title};
+    font-size: 10px;
+    font-weight: ${({ theme }) => theme.semiBold};
+  }
   .ant-pagination {
     margin: 0 10px;
     &li {

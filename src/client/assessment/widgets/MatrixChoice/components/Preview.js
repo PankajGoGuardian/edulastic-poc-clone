@@ -11,6 +11,7 @@ const Preview = ({
   saveAnswer,
   userAnswer,
   item,
+  pl,
   smallSize,
   onCheckAnswer,
   feedbackAttempts,
@@ -49,7 +50,7 @@ const Preview = ({
   };
 
   return (
-    <QuestionWrapper>
+    <QuestionWrapper pl={pl}>
       <QuestionContent>
         <Matrix
           stems={item.stems}
@@ -103,4 +104,5 @@ const QuestionContent = styled.div`
 const QuestionWrapper = styled.div`
   max-width: 100%;
   width: max-content;
+  padding-left: ${({ pl }) => pl};
 `;

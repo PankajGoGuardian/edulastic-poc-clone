@@ -46,13 +46,41 @@ const getIcon = ({ showAnswers, correct, locked, checkAnswers, active }) => {
   return "";
 };
 
+const getBorderWidth = ({ active, checkAnswers, correct, locked, border }) => {
+  if (border !== "full") {
+    return 0;
+  }
+  const isCheckGreen = checkAnswers && active && !locked && correct;
+  const isCheckRed = checkAnswers && active && !locked && !correct;
+
+  return isCheckGreen || isCheckRed ? "2px" : "1px";
+};
+
+const getBorderColor = ({ active, checkAnswers, correct, locked, showAnswers, theme }) => {
+  const isCheckGreen = checkAnswers && active && !locked && correct;
+  const isCheckRed = checkAnswers && active && !locked && !correct;
+  const isShowGreen = showAnswers && correct && !locked;
+  const isShowRed = showAnswers && !correct && active && !locked;
+
+  if (isCheckGreen || isShowGreen) {
+    return theme.widgets.shading.correctLiBorderColor;
+  }
+  if (isCheckRed || isShowRed) {
+    return theme.widgets.shading.incorrectLiBorderColor;
+  }
+
+  return theme.widgets.shading.liBorderColor;
+};
+
 export const Li = styled.li`
-  width: ${({ width }) => width * 40}px;
+  width: ${({ width }) => width * 50}px;
   visibility: ${props => props.visibility};
-  height: ${({ height }) => height * 40}px;
+  height: ${({ height }) => height * 50}px;
   background: ${getItemBackground(0.5)};
   cursor: ${({ locked }) => (locked ? "not-allowed" : "pointer")};
-  border: ${props => (props.border === "full" ? `1px solid ${props.theme.widgets.shading.liBorderColor}` : "none")};
+  border-width: ${getBorderWidth};
+  border-style: solid;
+  border-color: ${getBorderColor};
   display: inline-block;
   margin-left: 0px;
   position: relative;

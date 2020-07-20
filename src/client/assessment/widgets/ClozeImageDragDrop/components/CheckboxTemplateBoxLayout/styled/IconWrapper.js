@@ -6,6 +6,7 @@ export const IconWrapper = styled.div`
   height: 100%;
   width: 18px;
   background-color: inherit;
+  border-radius: 4px;
 
   & svg {
     position: absolute;

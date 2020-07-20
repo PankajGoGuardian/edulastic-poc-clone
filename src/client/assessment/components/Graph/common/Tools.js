@@ -33,13 +33,62 @@ import {
   ToolBtn,
   ToolbarItem,
   ToolbarItemLabel,
-  ToolbarItemIcon,
   Popup,
   PopupToolsContainer,
   PopupContent
 } from "./styled_components";
 import utils from "./utils";
 
+const allTools = [
+  "point",
+  "line",
+  "ray",
+  "segment",
+  "vector",
+  "circle",
+  "ellipse",
+  "sine",
+  "tangent",
+  "secant",
+  "exponent",
+  "logarithm",
+  "polynom",
+  "hyperbola",
+  "polygon",
+  "parabola",
+  "parabola2",
+  "area",
+  "dashed"
+];
+
+const iconsByToolName = {
+  point: <IconPoint width={16} height={16} />,
+  line: <IconLine width={16} height={16} />,
+  ray: <IconRay width={26} height={21} />,
+  segment: <IconSegment width={26} height={21} />,
+  vector: <IconVector width={26} height={21} />,
+  circle: <IconCircle width={14} height={14} />,
+  ellipse: <IconEllipse width={20} height={14} />,
+  sine: <IconSine width={16} height={16} />,
+  tangent: <IconTangent width={30} height={28} />,
+  secant: <IconSecant width={22} height={22} />,
+  logarithm: <IconLogarithm width={20} height={13} />,
+  exponent: <IconExponent width={16} height={16} />,
+  polynom: <IconPolynom width={40} height={16} />,
+  parabola: <IconParabola width={16} height={16} />,
+  parabola2: <IconParabola2 width={18} height={20} />,
+  hyperbola: <IconHyperbola width={30} height={20} />,
+  polygon: <IconPolygon width={16} height={16} />,
+  area: <IconArea width={16} height={16} />,
+  dashed: <IconDashed width={26} height={16} />,
+  undo: <IconUndo width={16} height={15} />,
+  redo: <IconRedo width={16} height={15} />,
+  clear: <IconEraseText width={13} height={16} stroke="transparent !important" />,
+  reset: <IconEraseText width={16} height={15} stroke="transparent !important" />,
+  trash: <IconTrash width={13} height={15} stroke="transparent !important" />,
+  delete: <IconTrash width={13} height={15} stroke="transparent !important" />,
+  add: <IconPlusCircle width={16} height={15} stroke="transparent !important" />
+};
 export default function Tools(props) {
   const {
     toolsAreVisible,
@@ -53,238 +102,11 @@ export default function Tools(props) {
     canEditTools
   } = props;
 
-  const allTools = [
-    "point",
-    "line",
-    "ray",
-    "segment",
-    "vector",
-    "circle",
-    "ellipse",
-    "sine",
-    "tangent",
-    "secant",
-    "exponent",
-    "logarithm",
-    "polynom",
-    "hyperbola",
-    "polygon",
-    "parabola",
-    "parabola2",
-    "area",
-    "dashed"
-  ];
-
   const [toolsPopupExpanded, setToolsPopupExpanded] = useState(false);
   const [popupTools, setPopupTools] = useState(tools);
   let choosed = false;
 
   const isActive = tool => selected.includes(tool);
-
-  const getSize = () => {
-    const size = fontSize < 17 ? 70 : fontSize < 20 ? 88 : fontSize < 24 ? 105 : 120;
-    return {
-      width: size,
-      height: size
-    };
-  };
-
-  const getIconByToolName = (toolName = "point") => {
-    const options = {
-      width: fontSize + 2,
-      height: fontSize + 2
-    };
-    const { width, height } = options;
-
-    const iconsByToolName = {
-      point: () => <IconPoint {...options} />,
-      line: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconLine {...newOptions} />;
-      },
-      ray: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconRay {...newOptions} />;
-      },
-      segment: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconSegment {...newOptions} />;
-      },
-      vector: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconVector {...newOptions} />;
-      },
-      circle: () => <IconCircle {...options} />,
-      ellipse: () => {
-        const newOptions = {
-          ...options,
-          width: width + 4
-        };
-
-        return <IconEllipse {...newOptions} />;
-      },
-      hyperbola: () => <IconHyperbola {...options} />,
-      tangent: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 16
-        };
-
-        return <IconTangent {...newOptions} />;
-      },
-      secant: () => {
-        const newOptions = {
-          ...options,
-          width: width + 6,
-          height: height + 6
-        };
-
-        return <IconSecant {...newOptions} />;
-      },
-      exponent: () => <IconExponent {...options} />,
-      logarithm: () => {
-        const newOptions = {
-          ...options,
-          width: width + 4
-        };
-
-        return <IconLogarithm {...newOptions} />;
-      },
-      polynom: () => {
-        const newOptions = {
-          ...options,
-          width: width + 30
-        };
-
-        return <IconPolynom {...newOptions} />;
-      },
-      parabola: () => {
-        const newOptions = {
-          ...options,
-          width: width + 14,
-          height: height + 4
-        };
-
-        return <IconParabola {...newOptions} />;
-      },
-      parabola2: () => {
-        const newOptions = {
-          ...options,
-          width: width + 14,
-          height: height + 4
-        };
-
-        return <IconParabola2 {...newOptions} />;
-      },
-      sine: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10
-        };
-
-        return <IconSine {...newOptions} />;
-      },
-      polygon: () => <IconPolygon {...options} />,
-      area: () => <IconArea {...options} />,
-      dashed: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10
-        };
-
-        return <IconDashed {...newOptions} />;
-      },
-      undo: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconUndo {...newOptions} />;
-      },
-      redo: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconRedo {...newOptions} />;
-      },
-      clear: () => {
-        const newOptions = {
-          ...options,
-          stroke: "transparent !important",
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconEraseText {...newOptions} />;
-      },
-      reset: () => {
-        const newOptions = {
-          ...options,
-          stroke: "transparent !important",
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconEraseText {...newOptions} />;
-      },
-      trash: () => {
-        const newOptions = {
-          ...options,
-          stroke: "transparent !important",
-          height: height + 5
-        };
-
-        return <IconTrash {...newOptions} />;
-      },
-      delete: () => {
-        const newOptions = {
-          ...options,
-          stroke: "transparent !important",
-          height: height + 5
-        };
-
-        return <IconTrash {...newOptions} />;
-      },
-      add: () => {
-        const newOptions = {
-          ...options,
-          stroke: "transparent !important",
-          height: height + 5,
-          width: width + 5
-        };
-
-        return <IconPlusCircle {...newOptions} />;
-      }
-    };
-
-    return iconsByToolName[toolName]();
-  };
 
   const onSelectPopupTool = tool => {
     let newTools = [...popupTools];
@@ -298,13 +120,13 @@ export default function Tools(props) {
     choosed = true;
   };
 
-  const isSelectedPopupTool = tool => {
-    return popupTools.includes(tool);
-  };
+  const isSelectedPopupTool = tool => popupTools.includes(tool);
 
   const addTools = () => {
-    if (!choosed) setToolsPopupExpanded(toolsPopupExpanded ? false : true);
+    if (!choosed) setToolsPopupExpanded(!toolsPopupExpanded);
   };
+
+  const buttonSize = { width: "60px", height: "50px" };
 
   return (
     <GraphToolbar fontSize={fontSize} data-cy="graphTools">
@@ -312,21 +134,15 @@ export default function Tools(props) {
         <ToolbarLeft className="graph-toolbar-left">
           {tools.map(item => (
             <ToolBtn
-              style={{ ...getSize() }}
+              width={buttonSize.width}
+              height={buttonSize.height}
               className={isActive(item) ? "active" : ""}
               onClick={() => onSelect(item)}
               key={`tool-btn-${item}`}
             >
               <ToolbarItem>
-                <ToolbarItemIcon
-                  className="tool-btn-icon"
-                  style={{
-                    marginBottom: item === "tangent" ? 0 : fontSize / 2
-                  }}
-                >
-                  {getIconByToolName(item)}
-                </ToolbarItemIcon>
-                <ToolbarItemLabel style={{ fontSize }}>
+                {iconsByToolName[item]}
+                <ToolbarItemLabel>
                   {utils.capitalizeFirstLetter(item === "parabola2" ? "parabola" : item)}
                 </ToolbarItemLabel>
               </ToolbarItem>
@@ -334,16 +150,14 @@ export default function Tools(props) {
           ))}
           {canEditTools && (
             <ToolBtn
-              style={{ ...getSize(), zIndex: 40 }}
+              zIndex={40}
+              width={buttonSize.width}
+              height={buttonSize.height}
               className={toolsPopupExpanded ? "active" : ""}
               onClick={addTools}
               key="tool-btn-add"
             >
-              <ToolbarItem>
-                <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: 0 }}>
-                  {getIconByToolName("add")}
-                </ToolbarItemIcon>
-              </ToolbarItem>
+              <ToolbarItem>{iconsByToolName.add}</ToolbarItem>
               {toolsPopupExpanded && (
                 <Fragment>
                   <Popup bottom>
@@ -352,21 +166,15 @@ export default function Tools(props) {
                         {allTools.map(item => (
                           <ToolBtn
                             bordered
-                            style={{ ...getSize() }}
+                            width={buttonSize.width}
+                            height={buttonSize.height}
                             className={isSelectedPopupTool(item) ? "active" : ""}
                             onClick={() => onSelectPopupTool(item)}
                             key={`popup-tool-btn-${item}`}
                           >
                             <ToolbarItem>
-                              <ToolbarItemIcon
-                                className="tool-btn-icon"
-                                style={{
-                                  marginBottom: item === "tangent" ? 0 : fontSize / 2
-                                }}
-                              >
-                                {getIconByToolName(item)}
-                              </ToolbarItemIcon>
-                              <ToolbarItemLabel style={{ fontSize }}>
+                              {iconsByToolName[item]}
+                              <ToolbarItemLabel>
                                 {utils.capitalizeFirstLetter(item === "parabola2" ? "parabola" : item)}
                               </ToolbarItemLabel>
                             </ToolbarItem>
@@ -381,19 +189,18 @@ export default function Tools(props) {
           )}
         </ToolbarLeft>
       )}
-      <ToolbarRight  className="graph-toolbar-right">
+      <ToolbarRight className="graph-toolbar-right">
         {controls.map(control => (
           <ToolBtn
             key={`control-${control}`}
             className={isActive(control) ? "active" : ""}
             onClick={() => onSelectControl(control)}
-            style={{ ...getSize() }}
+            width={buttonSize.width}
+            height={buttonSize.height}
           >
             <ToolbarItem>
-              <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
-                {getIconByToolName(control)}
-              </ToolbarItemIcon>
-              <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(control)}</ToolbarItemLabel>
+              {iconsByToolName[control]}
+              <ToolbarItemLabel>{utils.capitalizeFirstLetter(control)}</ToolbarItemLabel>
             </ToolbarItem>
           </ToolBtn>
         ))}

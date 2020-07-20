@@ -15,30 +15,27 @@ const TextContainer = ({
   isChecked,
   isPrintPreview
 }) => (
-  <div
-    className="text-wrapper"
-    style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", width: "100%" }}
-  >
+  <div className="text" style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
     {userSelections[dropTargetIndex] &&
       userSelections[dropTargetIndex].optionIds?.map((optionId, user_select_index) => {
         let userAnswer = "";
-        if(userSelections[dropTargetIndex]?.responseBoxID && isSnapFitValues) {
-          const option =  options.find(_option => _option.id === optionId);
-          if(option) {
+        if (userSelections[dropTargetIndex]?.responseBoxID && isSnapFitValues) {
+          const option = options.find(_option => _option.id === optionId);
+          if (option) {
             userAnswer = option.value;
           }
-        } 
+        }
 
         return (
           <DragItem
             key={user_select_index}
             data={{
-              option: {id: optionId, value: userAnswer},
+              option: { id: optionId, value: userAnswer },
               fromContainerIndex: dropTargetIndex,
               fromRespIndex: user_select_index
             }}
           >
-            <Container _lineHeight={style.height}>
+            <Container>
               <AnswerContent
                 userAnswer={userAnswer}
                 // answer={answer}

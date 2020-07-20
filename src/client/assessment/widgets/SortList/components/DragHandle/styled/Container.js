@@ -6,8 +6,6 @@ export const Container = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-right: 10px;
-  padding-left: 10px;
   color: ${props => props.theme.widgets.sortList.dragHandleContainerColor};
   font-size: ${props =>
     props.smallSize
@@ -17,5 +15,10 @@ export const Container = styled.div`
   :hover {
     cursor: pointer;
     color: ${props => props.theme.widgets.sortList.dragHandleContainerHoverColor};
+  }
+
+  svg {
+    width: 14px;
+    height: 13px;
   }
 `;

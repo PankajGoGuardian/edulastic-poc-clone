@@ -7,6 +7,8 @@ const Paper = styled.div`
   background: ${white};
   padding: ${props => (props.padding ? props.padding : "0px")};
   box-shadow: ${props => (props.boxShadow ? props.boxShadow : "none")};
+  overflow: ${({ overflow }) => overflow || ""};
+  height: ${({ height }) => height || ""};
   width: ${({ width }) => (!width ? null : width)};
   @media (max-width: 480px) {
     padding: 28px;

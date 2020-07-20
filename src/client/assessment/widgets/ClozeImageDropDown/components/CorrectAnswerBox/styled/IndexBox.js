@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const IndexBox = styled.div`
-  width: 40px;
+  width: 32px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   display: flex;
@@ -9,7 +9,7 @@ export const IndexBox = styled.div`
   justify-content: center;
   align-items: center;
   ${({ theme }) => `
-    background: ${theme.widgets.clozeImageDropDown.indexBoxBgColor};
+    background: ${theme.checkbox.noAnswerIconColor};
     color: ${theme.widgets.clozeImageDropDown.indexBoxColor};
     font-size: ${theme.widgets.clozeImageDropDown.indexBoxFontWeight};
     font-weight: ${theme.widgets.clozeImageDropDown.indexBoxFontWeight};

@@ -1,32 +1,18 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-
+import { isEmpty } from "lodash";
 import { IconClose, IconCheck } from "@edulastic/icons";
 import { red, green } from "@edulastic/colors";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
 import { Circle, Cross } from "../styled";
-import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Points = ({
-  item,
-  circles,
-  onPointOver,
-  onMouseDown,
-  activeIndex,
-  view,
-  gridParams,
-  previewTab,
-  correct,
-  paddingTop
-}) => {
-  const { height, margin, pointStyle } = gridParams;
+const Points = ({ item, points, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, evaluation }) => {
+  const { pointStyle } = gridParams;
 
   const { chart_data = {} } = item;
   const { data = [] } = chart_data;
-
-  const { padding, step } = getGridVariables(circles, gridParams);
 
   const handleMouseAction = value => () => {
     if (activeIndex === null) {
@@ -34,41 +20,30 @@ const Points = ({
     }
   };
 
-  const getCenterX = index => step * index + margin / 2 + padding;
-
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + paddingTop;
-
   const getCrossD = (x, y) => `M ${x - 6},${y - 6} L ${x + 7},${y + 7} M ${x + 7},${y - 6} L ${x - 6},${y + 7}`;
 
-  const renderValidationIcons = index => (
-    <g transform={`translate(${getCenterX(index) - 6},${getCenterY(circles[index]) - 24})`}>
-      {correct[index] && <IconCheck color={green} width={12} height={12} />}
-      {!correct[index] && <IconClose color={red} width={12} height={12} />}
+  const renderValidationIcons = (x, y, index) => (
+    <g transform={`translate(${x - 6},${y - 24})`}>
+      {evaluation[index] && <IconCheck color={green} width={12} height={12} />}
+      {!evaluation[index] && <IconClose color={red} width={12} height={12} />}
     </g>
   );
 
-  const isRenderIcons = !!(correct && correct.length);
+  const isRenderIcons = !isEmpty(evaluation);
 
   return (
     <Fragment>
-      {circles.map(
-        (dot, index) =>
+      {points.map(
+        ({ posX, posY }, index) =>
           ((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <Fragment key={`dot-point-${index}`}>
-              <rect
-                fill="transparent"
-                x={getCenterX(index) - step * 0.5}
-                y={0}
-                onMouseEnter={handleMouseAction(index)}
-                onMouseLeave={handleMouseAction(null)}
-                width={step - 2}
-                height={height + margin}
-              />
-              {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
+              {(previewTab === SHOW || previewTab === CHECK) &&
+                isRenderIcons &&
+                renderValidationIcons(posX, posY, index)}
               {pointStyle === "cross" ? (
                 <Cross
                   key={`cross-${index}`}
-                  d={getCrossD(getCenterX(index), getCenterY(dot))}
+                  d={getCrossD(posX, posY)}
                   onMouseEnter={handleMouseAction(index)}
                   onMouseLeave={handleMouseAction(null)}
                   onMouseDown={onMouseDown(index)}
@@ -83,9 +58,9 @@ const Points = ({
                   onTouchEnd={handleMouseAction(null)}
                   onMouseDown={onMouseDown(index)}
                   onTouchStart={onMouseDown(index)}
-                  cx={getCenterX(index)}
-                  cy={getCenterY(dot)}
-                  r={6}
+                  cx={posX}
+                  cy={posY}
+                  r={5}
                 />
               )}
             </Fragment>
@@ -97,10 +72,9 @@ const Points = ({
 
 Points.propTypes = {
   item: PropTypes.object.isRequired,
-  circles: PropTypes.array.isRequired,
+  points: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  activeIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
   gridParams: PropTypes.shape({
     width: PropTypes.number,
@@ -112,9 +86,8 @@ Points.propTypes = {
     snapTo: PropTypes.number,
     pointStyle: PropTypes.string
   }).isRequired,
-  correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string,
-  paddingTop: PropTypes.number.isRequired
+  evaluation: PropTypes.object.isRequired,
+  previewTab: PropTypes.string
 };
 
 Points.defaultProps = {

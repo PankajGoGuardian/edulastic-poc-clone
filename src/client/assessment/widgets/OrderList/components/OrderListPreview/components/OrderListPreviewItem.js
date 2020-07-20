@@ -60,7 +60,7 @@ export const PreviewItem = ({
 
         {showPopover ? <Popover content={content}>{content}</Popover> : content}
 
-        {correct !== undefined && <IconWrapper correct={correct} isPrintPreview={isPrintPreview} />}
+        {correct !== undefined && <IconWrapper correct={correct} />}
       </Container>
     </div>
   );

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { dashBorderColor } from "@edulastic/colors";
+import { lightGrey1 } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
 const CorrectAnswersContainer = ({
@@ -15,6 +15,7 @@ const CorrectAnswersContainer = ({
   style = {},
   titleMargin,
   minWidth,
+  minHeight,
   noBackground,
   showBorder,
   padding,
@@ -25,6 +26,7 @@ const CorrectAnswersContainer = ({
       className={`${className} __print_fit_content`}
       maxWidth={maxWidth}
       minWidth={minWidth}
+      minHeight={minHeight}
       imageStyle={imageStyle}
       style={style}
       noBackground={noBackground}
@@ -57,9 +59,9 @@ const Container = styled.div`
   margin: ${({ margin }) => margin || "20px 0px"};
   padding: ${({ padding }) => padding || "22px 12px"};
   min-height: ${({ minHeight }) => minHeight || 200}px;
-  background-color: ${({ noBackground }) => !noBackground && dashBorderColor};
+  background-color: ${({ noBackground }) => !noBackground && lightGrey1};
   max-width: ${({ maxWidth }) => maxWidth || null};
-  min-width: ${({ minWidth }) => minWidth || "200px"};
+  min-width: ${({ minWidth }) => minWidth || "650px"};
   border: ${({ showBorder }) => showBorder && "1px solid #d6d6d6"};
   border-radius: 4px;
 

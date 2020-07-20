@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useRef, useMemo } from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
@@ -15,6 +14,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { WithPopover } from "./WithPopover";
+import { AnswerBox } from "./styled/AnswerBox";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 const { DropContainer } = DragDrop;
@@ -30,7 +30,6 @@ const CheckboxTemplateBox = ({
   stemNumeration,
   evaluation,
   onDropHandler,
-  theme,
   disableResponse,
   isSnapFitValues,
   isExpressGrader,
@@ -92,24 +91,19 @@ const CheckboxTemplateBox = ({
       indexStr = index + 1;
   }
 
-  const {
-    answerBox: { borderWidth, borderStyle, borderColor }
-  } = theme;
-
   const dropContainerStyle = {
     ...btnStyle,
     width: isPrintMode ? `${(respWidth / imageWidth) * 100}%` : respWidth,
     height: isPrintMode ? `${(respHeight / imageHeight) * 100}%` : respHeight,
     minWidth: lessMinWidth ? parseInt(respWidth, 10) + 4 : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
-    background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null,
-    border: `${borderWidth} ${borderStyle} ${borderColor}`
+    background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
   };
 
   let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
   containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
 
-  const icons = (checkAnswer || (showAnswer && !lessMinWidth)) && (
+  const icons = isSnapFitValues && (checkAnswer || (showAnswer && !lessMinWidth)) && (
     <>
       <IconWrapper>
         {isChecked && status === "right" && <RightIcon />}
@@ -122,37 +116,7 @@ const CheckboxTemplateBox = ({
     </>
   );
 
-  const indexBoxRef = useRef();
-
-  const responseBoxIndex = showAnswer && (
-    <div
-      style={{
-        alignSelf: "stretch",
-        height: "auto",
-        width: lessMinWidth ? "20px" : null,
-        maxWidth: lessMinWidth && "20%",
-        padding: lessMinWidth && "0 8px",
-        display: !lessMinWidth ? "flex" : "none"
-      }}
-      className="index index-box"
-      ref={indexBoxRef}
-    >
-      {indexStr}
-    </div>
-  );
-
-  const textContainerStyle = checkAnswer
-    ? {
-        borderRadius: 5,
-        justifyContent: lessMinWidth ? "flex-start" : "center",
-        width: isPrintMode ? "" : respWidth,
-        height: isPrintMode ? "" : respHeight
-      }
-    : {
-        width: isPrintMode ? "" : respWidth,
-        height: isPrintMode ? "" : respHeight,
-        background: (isPrintMode || isPrintPreview) && "transparent"
-      };
+  const responseBoxIndex = showAnswer && <div className="index">{indexStr}</div>;
 
   return (
     <WithPopover
@@ -171,12 +135,10 @@ const CheckboxTemplateBox = ({
         className={containerClassName}
         drop={onDropHandler}
         disableResponse={disableResponse}
+        noBorder
       >
-        {responseBoxIndex}
-        <div
-          className="text container"
-          style={showAnswer || checkAnswer ? { ...textContainerStyle, padding: !isPrintPreview && "0px" } : {}}
-        >
+        <AnswerBox checked={isChecked} correct={status === "right"} isPrintPreview={isPrintPreview}>
+          {responseBoxIndex}
           <TextContainer
             options={options}
             dropTargetIndex={index}
@@ -184,7 +146,6 @@ const CheckboxTemplateBox = ({
             isSnapFitValues={isSnapFitValues}
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
-            // dragItemStyle={dragItemStyle}
             lessMinWidth={lessMinWidth}
             className={containerClassName}
             status={status}
@@ -205,8 +166,8 @@ const CheckboxTemplateBox = ({
             isExpressGrader={isExpressGrader}
             isPrintPreview={isPrintPreview}
           />
-        </div>
-        {isSnapFitValues && icons}
+          {icons}
+        </AnswerBox>
       </DropContainer>
     </WithPopover>
   );
@@ -251,7 +212,6 @@ CheckboxTemplateBox.propTypes = {
   showAnswer: PropTypes.bool.isRequired,
   checkAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool.isRequired,
   lessMinWidth: PropTypes.bool.isRequired,
   isExpressGrader: PropTypes.bool.isRequired,

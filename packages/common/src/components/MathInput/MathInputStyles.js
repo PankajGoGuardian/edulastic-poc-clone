@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, lightGrey12 } from "@edulastic/colors";
 
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) => width || (fullWidth ? "100%" : "fit-content")};
@@ -13,12 +13,11 @@ export const MathInputStyles = styled.div`
     height: 100%;
     width: 100%;
     min-width: 40px;
-    min-height: 40px;
+    min-height: 32px;
     display: inline-flex;
     position: relative;
-    border-radius: 5px;
-    background: ${props => props.theme.common.mathInputBgColor};
-    border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
+    border-radius: 2px;
+    border: ${({ noBorder }) => !noBorder && `1px solid ${lightGrey12}`};
     padding: ${({ width }) => (width ? "unset" : "5px 15px")};
     align-items: center;
     padding-right: 25px;

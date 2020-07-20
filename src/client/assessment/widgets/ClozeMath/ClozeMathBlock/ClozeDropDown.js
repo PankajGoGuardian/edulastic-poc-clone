@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { find, indexOf } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
-import { darkBlue } from "@edulastic/colors";
+import { darkBlue, lightGrey12 } from "@edulastic/colors";
 import { SelectInputStyled, MathFormulaDisplay } from "@edulastic/common";
 import CheckedBlock from "./CheckedBlock";
 import { getStemNumeration } from "../../../utils/helpers";
@@ -34,16 +34,23 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   const { index } = find(dropDowns, res => res.id === id) || {};
   const response = find(responseContainers || [], cont => cont.id === id);
 
-  const individualWidth = response?.widthpx || 0;
-  const individualHeight = response?.heightpx || 0;
+  const dropdownStyle = useMemo(() => {
+    const individualWidth = response?.widthpx || 0;
+    const individualHeight = response?.heightpx || 0;
 
-  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
+    const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
 
-  const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
-  const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
+    const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
+    const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
+    return {
+      ...uiStyles,
+      width: `${width}px`,
+      height: `${height}px`
+    };
+  }, [item]);
 
   const dropDownWrapper = useRef(null);
-  const [menuStyle, setMenuStyle] = useState({ top: `${height} !important`, left: `0px !important` });
+  const [menuStyle, setMenuStyle] = useState({ top: `${dropdownStyle.height} !important`, left: `0px !important` });
 
   if (isPrintPreview) {
     const itemIndex = indexOf(allOptions.map(o => o.id), id);
@@ -75,8 +82,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
 
   return checked ? (
     <CheckedBlock
-      width={width}
-      height={height}
+      width={dropdownStyle.width}
+      height={dropdownStyle.height}
       item={item}
       userAnswer={_dropDownAnswers[id]}
       id={id}
@@ -87,20 +94,13 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
     />
   ) : (
-    <DropdownWrapper
-      ref={dropDownWrapper}
-      width={`${width}px`}
-      height={`${height}px`}
-      menuStyle={menuStyle}
-      isPrintPreview={isPrintPreview}
-    >
-      <SelectInputStyled
+    <DropdownWrapper ref={dropDownWrapper} menuStyle={menuStyle} isPrintPreview={isPrintPreview}>
+      <Dropdown
         disabled={disableResponse}
         onChange={text => save({ value: text, index }, "dropDowns", id)}
         getPopupContainer={triggerNode => triggerNode.parentNode}
         value={val}
-        dropdownStyle={uiStyles}
-        height={`${height}px`}
+        {...dropdownStyle}
       >
         {options &&
           options[id] &&
@@ -109,7 +109,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: option }} />
             </Option>
           ))}
-      </SelectInputStyled>
+      </Dropdown>
     </DropdownWrapper>
   );
 };
@@ -123,10 +123,10 @@ ClozeDropDown.defaultProps = {};
 
 export default ClozeDropDown;
 
-const DropdownWrapper = styled.span`
+const DropdownWrapper = styled.div`
   position: relative;
   display: inline-block;
-  min-height: 35px;
+  vertical-align: middle;
   .ant-select {
     min-width: 120px;
     width: ${props => props.width};
@@ -136,7 +136,16 @@ const DropdownWrapper = styled.span`
       ${({ isPrintPreview }) => (isPrintPreview ? { color: darkBlue } : {})}
     }
   }
+
   .ant-select-dropdown {
     ${({ menuStyle }) => menuStyle};
+  }
+`;
+
+const Dropdown = styled(SelectInputStyled)`
+  &.ant-select {
+    .ant-select-selection {
+      border: 1px solid ${lightGrey12};
+    }
   }
 `;

@@ -1,6 +1,6 @@
 import { EduButton, ScrollContext, Tabs, withWindowSizes } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
-import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
+import { IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Pagination } from "antd";
@@ -10,7 +10,6 @@ import { compose } from "redux";
 import { ThemeProvider } from "styled-components";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
-import { Scratchpad, ScratchpadTool } from "../../../../../common/components/Scratchpad";
 import { themes } from "../../../../../theme";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import {
@@ -319,7 +318,7 @@ class AuthorTestItemPreview extends Component {
                 key={tabIndex}
                 label={tab}
                 style={{
-                  width: `calc(${100 / col.tabs.length}% - 10px)`,
+                  width: `calc(${100 / col.tabs.length}% - 30px)`,
                   textAlign: "center",
                   padding: "5px 15px"
                 }}
@@ -388,26 +387,26 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  renderCollapseButtons = () => {
+  get collapseButtons() {
     const { collapseDirection } = this.state;
-    const { onlySratchpad } = this.props;
     return (
-      <Divider
-        isCollapsed={!!collapseDirection}
-        collapseDirection={collapseDirection}
-        style={onlySratchpad ? { visibility: "hidden" } : {}}
-      >
-        <div>
+      <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
+        <div className="button-wrapper">
           <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
-            <IconArrowLeft />
+            <IconChevronLeft />
+          </CollapseBtn>
+          <CollapseBtn collapseDirection={collapseDirection} mid>
+            <div className="vertical-line first" />
+            <div className="vertical-line second" />
+            <div className="vertical-line third" />
           </CollapseBtn>
           <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
-            <IconArrowRight />
+            <IconGraphRightArrow />
           </CollapseBtn>
         </div>
       </Divider>
     );
-  };
+  }
 
   getSectionQue = cols => {
     if (cols.length !== 2) return [cols[0]?.widgets?.length];
@@ -437,29 +436,20 @@ class AuthorTestItemPreview extends Component {
    * @param {func}  saveScratchpad is from PeviewModalWithRejectNote component.
    */
   renderColumnsContentArea = ({ sectionQue, resourceCount, scratchpadData, saveScratchpad }) => {
-    const { cols, onlySratchpad } = this.props;
+    const { cols, passageNavigator } = this.props;
     const { collapseDirection } = this.state;
 
-    const collapseButtonShouldRernder = i => i > 0 || collapseDirection === "left";
     return cols.map((col, i) => {
       const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-      if (hideColumn) return "";
-      // show scratch => multipart with heighlightImage, heighlightImage, and reject mode.
       const showScratch = col.widgets.some(w => w.type === questionType.HIGHLIGHT_IMAGE) || !!saveScratchpad;
-
       return (
-        // width of divider 25px
-        <Container width={!collapseDirection ? col.dimension : "100%"}>
-          {collapseButtonShouldRernder(i) && this.renderCollapseButtons(i)}
-          <ColumnContentArea
-            hide={hideColumn}
-            width={collapseButtonShouldRernder(i) ? `calc(100% - 25px)` : null}
-            style={onlySratchpad ? { boxShadow: "none" } : {}}
-          >
+        <Container width={!collapseDirection ? col.dimension : hideColumn ? "0px" : "100%"}>
+          <ColumnContentArea>
+            {i === 1 && passageNavigator}
             {i === 0 ? this.renderLeftButtons(showScratch) : this.renderRightButtons()}
             {this.renderColumns(col, i, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData)}
           </ColumnContentArea>
-          {collapseDirection === "right" && this.renderCollapseButtons(i)}
+          {i === 0 && cols.length > 1 && this.collapseButtons}
         </Container>
       );
     });

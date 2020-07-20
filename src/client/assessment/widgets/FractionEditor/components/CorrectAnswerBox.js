@@ -1,9 +1,6 @@
 import React from "react";
 
-import { FlexContainer } from "@edulastic/common";
-
-import { StyledCorrectAnswerbox } from "../../../components/CorrectAnswerBoxLayout/styled/StyledCorrectAnswerbox";
-import { CorrectAnswerTitle } from "../../../components/CorrectAnswerBoxLayout/styled/CorrectAnswerTitle";
+import { FlexContainer, CorrectAnswersContainer } from "@edulastic/common";
 import Rectangles from "./Rectangles";
 import Circles from "./Circles";
 
@@ -20,9 +17,14 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
     return obj;
   }, {});
   return (
-    <div className="__prevent-page-break">
-    <StyledCorrectAnswerbox width="max-content">
-      <CorrectAnswerTitle>Correct Answer</CorrectAnswerTitle>
+    <CorrectAnswersContainer
+      title="Correct Answer"
+      noBackground
+      showBorder
+      padding="20px 45px 45px"
+      margin="0px"
+      titleMargin="0px 0px 20px"
+    >
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
         {Array(count)
           .fill()
@@ -55,8 +57,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
             )
           )}
       </FlexContainer>
-    </StyledCorrectAnswerbox>
-    </div>
+    </CorrectAnswersContainer>
   );
 };
 

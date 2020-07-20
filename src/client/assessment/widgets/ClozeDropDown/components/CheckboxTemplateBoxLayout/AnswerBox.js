@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { MathFormulaDisplay } from "@edulastic/common";
-import { greyThemeLight, white } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
@@ -28,19 +28,19 @@ const Container = styled.div`
   vertical-align: middle;
   cursor: pointer;
   border-radius: 4px;
-  border: 1px solid ${greyThemeLight};
+  color: ${({ theme }) => theme.checkbox.textColor};
   background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white;
     if (!checked) {
-      return theme.widgets.clozeDropDown.boxNoAnswerBgColor;
+      return theme.checkbox.noAnswerBgColor;
     }
     if (!correct) {
-      return theme.widgets.clozeDropDown.boxWrongBgColor;
+      return theme.checkbox.wrongBgColor;
     }
     if (correct) {
-      return theme.widgets.clozeDropDown.boxBgCorrectColor;
+      return theme.checkbox.rightBgColor;
     }
-    return theme.widgets.clozeDropDown.boxBgColor;
+    return theme.checkbox.noAnswerBgColor;
   }};
 `;
 
@@ -62,7 +62,7 @@ const AnswerContent = styled(MathFormulaDisplay)`
 `;
 
 const IndexBox = styled.div`
-  width: 40px;
+  width: 32px;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   display: flex;
@@ -72,10 +72,10 @@ const IndexBox = styled.div`
   ${({ theme, checked, correct }) => `
     background: ${
       !checked
-        ? theme.widgets.clozeDropDown.indexBoxNoAnswerBgColor
+        ? theme.checkbox.noAnswerIconColor
         : correct
-        ? theme.widgets.clozeDropDown.indexBoxCorrectBgColor
-        : theme.widgets.clozeDropDown.indexBoxIncorrectBgColor
+        ? theme.checkbox.rightIconColor
+        : theme.checkbox.wrongIconColor
     };
     color: ${theme.widgets.clozeDropDown.indexBoxColor};
     font-size: ${theme.widgets.clozeDropDown.indexBoxFontSize};

@@ -47,6 +47,22 @@ const inputCommonStyle = {
   outline: "0"
 };
 
+export const SearchInputStyled = styled(Input.Search)`
+  &.ant-input-search {
+    .ant-input {
+      ${inputCommonStyle};
+      ${props => props.style};
+      color: ${({ theme }) => theme.questionTextColor};
+      &:focus,
+      &:hover {
+        border: 1px solid ${themeColorBlue} !important;
+        background-color: ${greyThemeLighter};
+        box-shadow: none;
+      }
+    }
+  }
+`;
+
 export const TextInputStyled = styled(props => <Input maxLength={128} {...props} ref={props.inputRef} />)`
   &.ant-input {
     ${inputCommonStyle};

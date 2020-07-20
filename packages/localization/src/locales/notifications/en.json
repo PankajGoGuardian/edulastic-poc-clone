@@ -11,12 +11,24 @@
     "message": "Image size should be less than 2MB",
     "description": ""
   },
+  "videoSizeError": {
+    "message": "Video size should be less than 25MB",
+    "description": ""
+  },
   "imageUploadErr": {
     "message": "image upload failed",
     "description": ""
   },
+  "videoUploadErr": {
+    "message": "Video upload failed",
+    "description": ""
+  },
   "imageLoadErr": {
     "message": "image upload failed",
+    "description": ""
+  },
+  "videoLoadErr": {
+    "message": "Video upload failed",
     "description": ""
   },
   "selectionError": {

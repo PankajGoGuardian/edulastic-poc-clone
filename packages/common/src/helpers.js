@@ -329,16 +329,25 @@ export const removeIndexFromTemplate = tmpl => {
   return $(parsedHTML).html();
 };
 
-export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+export const allowedFileTypes = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "video/mp4",
+  "video/webm",
+  "video/ogg"
+];
 
-export const beforeUpload = file => {
+export const beforeUpload = (file, type) => {
+  const isVideoFile = type === "video";
   const isAllowedType = allowedFileTypes.includes(file.type);
   if (!isAllowedType) {
     notification({ messageKey: "imageTypeError" });
   }
-  const withinSizeLimit = file.size / 1024 / 1024 < 2;
+  const withinSizeLimit = isVideoFile ? file.size / 1024 / 1024 < 25 : file.size / 1024 / 1024 < 2;
   if (!withinSizeLimit) {
-    notification({ messageKey: "imageSizeError" });
+    notification({ messageKey: isVideoFile ? "videoSizeError" : "imageSizeError" });
   }
   return isAllowedType && withinSizeLimit;
 };

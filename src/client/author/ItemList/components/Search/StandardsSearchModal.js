@@ -38,6 +38,10 @@ const StandardsSearchModal = ({
 
       return parseInt(aSubIdentifier, 10) - parseInt(bSubIdentifier, 10);
     });
+  const currentEloIds = filteredELO.map(item => item._id) || [];
+  const numberOfSelected = standardIds.filter(std => currentEloIds.includes(std))?.length || 0;
+  const isSelectAll = numberOfSelected === filteredELO.length;
+  const isIndeterminate = numberOfSelected > 0 && !isSelectAll;
 
   const handleCheckELO = c => {
     let standards = [];
@@ -57,6 +61,25 @@ const StandardsSearchModal = ({
     setShowModal(false);
   };
 
+  const toggleSelectAll = () => {
+    const selectItems = [];
+    const unSelectItems = [];
+    for (const elo of filteredELO) {
+      if (standardIds.includes(elo._id)) {
+        unSelectItems.push(elo._id);
+      } else {
+        selectItems.push(elo._id);
+      }
+    }
+    let standards = [];
+    if (unSelectItems.length === filteredELO.length) {
+      standards = standardIds.filter(item => !unSelectItems.includes(item));
+    } else {
+      standards = [...standardIds, ...selectItems];
+    }
+    setEloStandards(standards);
+    handleApply(standards);
+  };
   const footer = (
     <>
       <StyledCounterWrapper>
@@ -75,8 +98,18 @@ const StandardsSearchModal = ({
   const selectedStandards = curriculumStandardsELO.filter(f => standardIds.includes(f._id));
 
   const title = <StandardSearchModalHeader standards={selectedStandards} selectedCurriculam={selectedCurriculam} />;
+  const selectedTLOData = curriculumStandardsTLO.find(item => item._id === selectedTLO);
   return (
     <StyledModal title={title} visible={showModal} onCancel={() => setShowModal(false)} footer={footer} width="80%">
+      <Row type="flex" gutter={24}>
+        <Col md={8} />
+        <Col md={16} style={{ paddingLeft: "25px" }}>
+          <FlexContainer alignItems="flex-start" justifyContent="flex-start" marginBottom="15px" padding="0px ">
+            <CheckboxLabel onChange={toggleSelectAll} checked={isSelectAll} indeterminate={isIndeterminate} />
+            <EloText>All {selectedTLOData.identifier} Standards</EloText>
+          </FlexContainer>
+        </Col>
+      </Row>
       <Row type="flex" gutter={24}>
         <StandardsWrapper md={8}>
           <TLOList>
@@ -129,6 +162,12 @@ const StyledModal = styled(Modal)`
   .ant-modal-header {
     border: none;
     padding: 25px;
+  }
+  .ant-modal-body {
+    padding: 0px 24px 24px 24px;
+  }
+  .ant-modal-header {
+    padding: 25px 25px 15px 25px;
   }
 `;
 

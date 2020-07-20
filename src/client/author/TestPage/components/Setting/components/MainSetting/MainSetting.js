@@ -967,6 +967,7 @@ class MainSetting extends Component {
                 <PeformanceBand
                   setSettingsData={val => this.updateTestData("performanceBand")(val)}
                   performanceBand={performanceBand}
+                  disabled={!owner || !isEditable}
                 />
               </Block>
             )}
@@ -977,6 +978,7 @@ class MainSetting extends Component {
               <StandardProficiencyTable
                 standardGradingScale={standardGradingScale}
                 setSettingsData={val => this.updateTestData("standardGradingScale")(val)}
+                disabled={!owner || !isEditable}
               />
             </Block>
 

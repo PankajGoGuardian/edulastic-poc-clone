@@ -744,7 +744,7 @@ const CustomEditor = ({
     };
 
     // for hidden refs wait for it to be shown in the dom to set config.
-    if (toolbarContainerRef?.current?.offsetParent === null) {
+    if (EditorRef?.current?.offsetParent === null) {
       setConfigState(null);
     } else {
       setConfigState(updatedConfig);

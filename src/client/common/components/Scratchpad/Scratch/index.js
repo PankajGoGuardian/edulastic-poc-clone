@@ -269,10 +269,6 @@ const Scratchpad = ({
           newZwibbler.deleteNode(node);
         }
       });
-      // load saved user work from backend
-      if (data) {
-        newZwibbler.load(data);
-      }
 
       newZwibbler.on("document-changed", () => {
         if (newZwibbler.dirty()) {
@@ -297,6 +293,13 @@ const Scratchpad = ({
       resetScratchpad();
     }
   }, [clearClicked]);
+
+  useEffect(() => {
+    // load saved user work from backend
+    if (data && zwibbler && readOnly) {
+      zwibbler.load(data);
+    }
+  }, [data]);
 
   return (
     <ScratchpadContainer ref={zwibblerContainer}>

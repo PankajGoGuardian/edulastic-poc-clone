@@ -1,11 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { MathSpan, FlexContainer, DragDrop, DragDropInnerContainer } from "@edulastic/common";
-import { StyledResponseDiv } from "../../ClozeDragDrop/styled/ResponseBox";
-import { ChoiceItem, DragHandler } from "../../../components/ChoiceItem";
-import { DropContainerTitle } from "../../../components/DropContainerTitle";
+import isEqual from "lodash/isEqual";
 
-const { DragItem, DropContainer } = DragDrop;
+import { FlexContainer, DragDrop, DragDropInnerContainer } from "@edulastic/common";
+
+import { StyledResponseDiv } from "../../ClozeDragDrop/styled/ResponseBox";
+import { DropContainerTitle } from "../../../components/DropContainerTitle";
+import Responses from "./Responses";
+
+const { DropContainer } = DragDrop;
 
 const ResponseBoxLayout = ({
   smallSize,
@@ -16,20 +19,17 @@ const ResponseBoxLayout = ({
   transparentResponses,
   responseContainerPosition,
   getHeading,
-  choiceStyle,
-  isPrintMode
+  isPrintMode,
+  shuffleOptions,
+  ...choiceStyle
 }) => {
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
-  const itemStyle = {
-    ...choiceStyle,
-    fontSize: smallSize ? 10 : fontSize
-  };
-
   const containerStyle = {
     height: horizontallyAligned && "100%",
     padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16
   };
-  
+  const fontSizeToApply = smallSize ? 10 : fontSize;
+
   return (
     <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%", border: "none" }}>
       <StyledResponseDiv className="responses_box" data-cy="responses-box" style={containerStyle}>
@@ -41,22 +41,15 @@ const ResponseBoxLayout = ({
               flexDirection={isPrintMode ? "column" : horizontallyAligned ? "column" : "row"}
               flexWrap="wrap"
             >
-              {responses.map((option = "", index) => (
-                <DragItem
-                  id={`response-item-${index}`}
-                  key={`response-item-${index}`}
-                  data={{ option, fromRespIndex: index }}
-                  size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
-                >
-                  <ChoiceItem
-                    style={itemStyle}
-                    className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
-                  >
-                    {dragHandler && <DragHandler />}
-                    <MathSpan dangerouslySetInnerHTML={{ __html: option.value }} />
-                  </ChoiceItem>
-                </DragItem>
-              ))}
+              <Responses
+                key="responses"
+                responses={responses}
+                dragHandler={dragHandler}
+                shuffleOptions={shuffleOptions}
+                transparentResponses={transparentResponses}
+                fontSize={fontSizeToApply}
+                {...choiceStyle}
+              />
             </FlexContainer>
           </DragDropInnerContainer>
         </FlexContainer>
@@ -68,14 +61,14 @@ const ResponseBoxLayout = ({
 ResponseBoxLayout.propTypes = {
   responses: PropTypes.array,
   fontSize: PropTypes.string,
-  choiceStyle: PropTypes.object.isRequired,
   onDrop: PropTypes.func.isRequired,
   getHeading: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
   transparentResponses: PropTypes.bool,
   responseContainerPosition: PropTypes.string,
-  isPrintMode: PropTypes.bool
+  isPrintMode: PropTypes.bool,
+  shuffleOptions: PropTypes.bool
 };
 
 ResponseBoxLayout.defaultProps = {
@@ -85,7 +78,11 @@ ResponseBoxLayout.defaultProps = {
   dragHandler: false,
   transparentResponses: false,
   responseContainerPosition: "bottom",
-  isPrintMode: false
+  isPrintMode: false,
+  shuffleOptions: false
 };
 
-export default React.memo(ResponseBoxLayout);
+export default React.memo(ResponseBoxLayout, (prevProps, nextProps) => {
+  const responsesAreEqual = isEqual(prevProps.responses, nextProps.responses);
+  return responsesAreEqual;
+});

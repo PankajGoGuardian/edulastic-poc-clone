@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy } from "lodash";
+import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy, isEqual } from "lodash";
 import { withTheme } from "styled-components";
 import {
   Stimulus,
@@ -139,6 +139,12 @@ class Display extends Component {
       let possibleResponses = getInitialResponses(nextProps);
       if (nextProps.previewTab === "check" || !isSnapFitValues) {
         possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
+      }
+      if (
+        isEqual(prevState?.possibleResponses, possibleResponses) &&
+        isEqual(prevState?.userAnswers, nextProps?.userSelections)
+      ) {
+        return null;
       }
       return {
         userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : [],
@@ -417,10 +423,10 @@ class Display extends Component {
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
-    let responses = cloneDeep(possibleResponses);
-    if (preview && shuffleOptions) {
-      responses = this.shuffle(possibleResponses);
-    }
+    // let responses = cloneDeep(possibleResponses);
+    // if (preview && shuffleOptions) {
+    //   responses = this.shuffle(possibleResponses);
+    // }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
@@ -630,16 +636,18 @@ class Display extends Component {
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
+        key="ResponseBoxLayout"
         smallSize={smallSize}
-        responses={responses}
+        shuffleOptions={shuffleOptions}
+        responses={possibleResponses}
         fontSize={fontSize}
         dragHandler={dragHandler}
         onDrop={!disableResponse ? this.onDrop : () => {}}
         transparentResponses={transparentResponses}
         responseContainerPosition={responsecontainerposition}
         getHeading={getHeading}
-        choiceStyle={choiceStyle}
         isPrintMode={isPrintMode}
+        {...choiceStyle}
       />
     );
 
@@ -807,5 +815,7 @@ Display.defaultProps = {
   isExpressGrader: false,
   isReviewTab: false
 };
+
+Display.whyDidYouRender = true;
 
 export default withTheme(withCheckAnswerButton(Display));

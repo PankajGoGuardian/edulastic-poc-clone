@@ -61,7 +61,7 @@ import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
-import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
+import { CLEAR, EDIT } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
@@ -672,7 +672,7 @@ class Container extends Component {
     return (
       item.canAddMultipleItems &&
       passage &&
-      view !== "metadata" && (
+      view === EDIT && (
         <PassageNavigation>
           {passageTestItems.length > 1 && (
             <>

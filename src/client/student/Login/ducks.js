@@ -580,7 +580,7 @@ function* login({ payload }) {
     const { status, data = {} } = err;
     console.error(err);
     let errorMessage = "You have entered an invalid email/username or password.";
-    if (status === 403 && data.message) {
+    if ((status === 403 || status === 412) && data.message) {
       errorMessage = data.message;
     }
     notification({ msg: errorMessage });

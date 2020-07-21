@@ -45,7 +45,8 @@ class WidgetOptions extends Component {
       advancedAreOpen,
       showSelect,
       renderExtra,
-      item
+      item,
+      showScoringSectionAnyRole
     } = this.props;
 
     return (
@@ -58,6 +59,7 @@ class WidgetOptions extends Component {
             fillSections={fillSections}
             cleanSections={cleanSections}
             advancedAreOpen={advancedAreOpen}
+            showScoringSectionAnyRole={showScoringSectionAnyRole}
           >
             <Scoring
               scoringTypes={scoringTypes}

@@ -49,7 +49,15 @@ class Question extends Component {
   };
 
   showSection = () => {
-    const { userRole, isPowerTeacher, isPremiumUser, section, label, features } = this.props;
+    const {
+      userRole,
+      isPowerTeacher,
+      isPremiumUser,
+      section,
+      label,
+      features,
+      showScoringSectionAnyRole = false
+    } = this.props;
 
     // show all tools except advanced section and 'Solution' section
     if (section !== "advanced" || label === "Solution") {
@@ -57,16 +65,21 @@ class Question extends Component {
     }
     let showAdvancedTools = true;
 
-    // allowed for teacher/DA/SA having premium feature and enabled power tools
+    /**
+     * allowed for teacher/DA/SA having premium feature and enabled power tools
+     * scoring section needs to be shown for non power users as well
+     * @see https://snapwiz.atlassian.net/browse/EV-15883
+     */
     if (
       (userRole === TEACHER && !features.isPublisherAuthor && !features.isCurator) ||
       [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
     ) {
       showAdvancedTools = false;
-      if (isPremiumUser && isPowerTeacher) {
+      if ((isPremiumUser && isPowerTeacher) || showScoringSectionAnyRole) {
         showAdvancedTools = true;
       }
     }
+
     return showAdvancedTools;
   };
 

@@ -402,6 +402,6 @@ const StandardSelectStyled = styled(SelectInputStyled)`
   }
 
   .ant-select-selection {
-    cursor: ${({ disabled }) => (disabled ? "default" : "pointer")} !important;
+    cursor: pointer !important;
   }
 `;

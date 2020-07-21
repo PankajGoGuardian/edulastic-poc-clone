@@ -39,6 +39,7 @@ const ModuleRowView = props => {
     deleteModuleMenuClick,
     isPlaylistDetailsPage,
     isManageContentActive,
+    customizeInDraft,
     mode
   } = props;
 
@@ -105,13 +106,15 @@ const ModuleRowView = props => {
     );
   }
 
-  const moreActions = !isStudent && (mode === "embedded" || isManageContentActive) && (
-    <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
-      <IconActionButton onClick={e => e.stopPropagation()}>
-        <IconMoreVertical width={5} height={14} color={themeColor} />
-      </IconActionButton>
-    </Dropdown>
-  );
+  const moreActions = !isStudent &&
+    (!isPlaylistDetailsPage || isManageContentActive) &&
+    (hasEditAccess || customizeInDraft) && (
+      <Dropdown overlay={moduleManagementMenu} trigger={["click"]}>
+        <IconActionButton onClick={e => e.stopPropagation()}>
+          <IconMoreVertical width={5} height={14} color={themeColor} />
+        </IconActionButton>
+      </Dropdown>
+    );
 
   const moduleActions = (
     <Fragment>

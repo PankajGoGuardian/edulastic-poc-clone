@@ -182,6 +182,7 @@ const CurriculumHeader = ({
 
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
           {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
+            !shouldHideUseThis &&
             !urlHasUseThis &&
             destinationCurriculumSequence?._id && (
               <Tooltip placement="bottom" title="DELETE">
@@ -242,7 +243,7 @@ const CurriculumHeader = ({
             </>
           )}
 
-          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
+          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && !shouldHideUseThis && (
             <Tooltip placement="bottom" title="EDIT">
               <HeaderButton
                 isBlue

@@ -450,8 +450,10 @@ class ModuleRow extends Component {
       isPlaylistDetailsPage,
       isSparkMathPlaylist,
       handleActionClick,
+      customizeInDraft,
       currentAssignmentIds,
       toggleAssignments
+
     } = this.props;
     const { showModal, selectedTest } = this.state;
     const { assignTest } = this;
@@ -521,6 +523,7 @@ class ModuleRow extends Component {
               deleteModuleMenuClick={this.deleteModuleMenuClick}
               isPlaylistDetailsPage={isPlaylistDetailsPage}
               isManageContentActive={isManageContentActive}
+              customizeInDraft={customizeInDraft}
             />
 
             {!collapsed && (
@@ -702,17 +705,19 @@ class ModuleRow extends Component {
                               </IconActionButton>
                             </Dropdown>
                           )}
-                          {(urlHasUseThis || mode === "embedded") && isManageContentActive && (
-                            <IconActionButton
-                              data-cy="assignmentDeleteOptionsIcon"
-                              onClick={e => {
-                                e.stopPropagation();
-                                this.deleteTest(moduleIndex, moduleData.contentId);
-                              }}
-                            >
-                              <IconTrash color={themeColor} />
-                            </IconActionButton>
-                          )}
+                          {(urlHasUseThis || mode === "embedded") &&
+                            isManageContentActive &&
+                            (hasEditAccess || customizeInDraft) && (
+                              <IconActionButton
+                                data-cy="assignmentDeleteOptionsIcon"
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  this.deleteTest(moduleIndex, moduleData.contentId);
+                                }}
+                              >
+                                <IconTrash color={themeColor} />
+                              </IconActionButton>
+                            )}
                         </LastColumn>
                       </Fragment>
                     ) : (
@@ -748,7 +753,7 @@ class ModuleRow extends Component {
                         </Button>
                       </AssignmentButton>
 
-                      {mode === "embedded" ? (
+                      {mode === "embedded" && (hasEditAccess || customizeInDraft) ? (
                         <IconActionButton
                           data-cy="assignmentDeleteOptionsIcon"
                           onClick={e => {
@@ -834,7 +839,7 @@ class ModuleRow extends Component {
                       />
                     );
 
-                  if (mode === "embedded" && !(isStudent && moduleData.hidden)) {
+                  if (mode === "embedded" && !(isStudent && moduleData.hidden) && (hasEditAccess || customizeInDraft)) {
                     return (
                       <SortableElement
                         {...this.props}

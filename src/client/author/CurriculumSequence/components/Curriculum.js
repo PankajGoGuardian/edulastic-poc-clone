@@ -151,7 +151,7 @@ const Curriculum = props => {
     if (parentElement && persistObj) {
       parentElement.scrollTo({ top: persistObj?.currentOffsetTop || 0, behavior: "smooth" });
     }
-    return () => resetDestination({ isAuthoring: !urlHasUseThis });
+    return () => resetDestination({ isAuthoring: Object.keys(curriculum).length && hasEditAccess && !urlHasUseThis });
   }, [modulesContainerRef]);
 
   const handleActionClick = (e, destinaion, assignmentId, classId, moduleId, contentId) => {

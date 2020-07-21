@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { Tag, Popover } from "antd";
+
 import {
   darkBlue,
   lightBlue,
@@ -11,7 +13,6 @@ import {
   lightGreen6,
   extraDesktopWidthMax
 } from "@edulastic/colors";
-import { Dropdown, Tag } from "antd";
 
 const Tags = ({
   tags = [],
@@ -57,11 +58,16 @@ const Tags = ({
         </Label>
       ))}
       {hiddenTags && !!hiddenTags.length && (
-        <Dropdown getPopupContainer={triggerNode => triggerNode.parentNode} overlay={popup}>
-          <Label className={className} style={labelStyle} type={type}>
+        <Popover
+          placement="bottomLeft"
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+          content={popup}
+          trigger="click"
+        >
+          <Label className={`${className} hidden-tags`} style={labelStyle} type={type}>
             <span>{hiddenTags.length} +</span>
           </Label>
-        </Dropdown>
+        </Popover>
       )}
     </Labels>
   );
@@ -142,6 +148,12 @@ const Label = styled(Tag)`
   line-height: 16px;
   margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : "3px")} 0;
   height: 20px;
+
+  &.hidden-tags {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 
   &.gray-tags {
     display: inline-block;

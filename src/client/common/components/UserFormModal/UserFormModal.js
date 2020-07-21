@@ -1,16 +1,22 @@
-import React from "react";
-import moment from "moment";
-import { get, unset, pickBy, identity, isEmpty } from "lodash";
-import { Icon, Collapse, Input, Select, DatePicker } from "antd";
-import { IconUser } from "@edulastic/icons";
 import { userApi } from "@edulastic/api";
-import { EduButton } from "@edulastic/common";
-import { isEmailValid } from "../../utils/helpers";
-
-import { StyledModal, Title, PanelHeader, Field, Form, FooterDiv } from "./styled";
-import userIcon from "../../../student/assets/user-icon.svg";
-import mailIcon from "../../../student/assets/mail-icon.svg";
+import {
+  CustomModalStyled,
+  DatePickerStyled,
+  EduButton,
+  FieldLabel,
+  SelectInputStyled,
+  TextInputStyled
+} from "@edulastic/common";
+import { IconUser } from "@edulastic/icons";
+import { Collapse, Icon, Select } from "antd";
+import { get, identity, isEmpty, pickBy, unset } from "lodash";
+import moment from "moment";
+import React from "react";
 import keyIcon from "../../../student/assets/key-icon.svg";
+import mailIcon from "../../../student/assets/mail-icon.svg";
+import userIcon from "../../../student/assets/user-icon.svg";
+import { isEmailValid } from "../../utils/helpers";
+import { Field, FooterDiv, Form, PanelHeader, Title } from "./styled";
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -20,7 +26,7 @@ class UserForm extends React.Component {
   };
 
   onProceed = () => {
-    const {form} = this.props;
+    const { form } = this.props;
     form.validateFields((err, row) => {
       if (!err) {
         const { modalData, modalFunc, userOrgId: districtId, closeModal } = this.props;
@@ -45,7 +51,7 @@ class UserForm extends React.Component {
   };
 
   confirmPwdCheck = (rule, value, callback) => {
-    const {form} = this.props;
+    const { form } = this.props;
     const pwd = form.getFieldValue("password");
     if (pwd !== value) {
       callback(rule.message);
@@ -101,10 +107,10 @@ class UserForm extends React.Component {
 
     const footer = (
       <FooterDiv>
-        <EduButton height="32px" isGhost onClick={() => closeModal()}>
+        <EduButton isGhost onClick={() => closeModal()}>
           No, Cancel
         </EduButton>
-        <EduButton height="32px" onClick={() => this.onProceed()}>
+        <EduButton onClick={() => this.onProceed()}>
           {buttonText || `Yes, Update`}
           <Icon type="right" />
         </EduButton>
@@ -133,18 +139,19 @@ class UserForm extends React.Component {
     };
 
     return (
-      <StyledModal title={title} footer={footer} visible={showModal} onCancel={() => closeModal()}>
+      <CustomModalStyled centered title={title} footer={footer} visible={showModal} onCancel={() => closeModal()}>
         <Form>
           <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
             <Panel header={BasicDetailsHeader} key="basic">
               {isStudentEdit && (
                 <Field name="Username">
-                  <legend>Username</legend>
+                  <FieldLabel>Username</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("username", {
                       initialValue: get(_source, "username", get(_source, "username", ""))
                     })(
-                      <Input
+                      <TextInputStyled
+                        padding="0px 15px 0px 30px"
                         prefix={<img style={iconSize} src={mailIcon} alt="" />}
                         placeholder="Enter Username/email"
                         disabled
@@ -155,13 +162,14 @@ class UserForm extends React.Component {
               )}
               {!isStudentEdit && (
                 <Field name="email">
-                  <legend>Username/Email</legend>
+                  <FieldLabel>Username/Email</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("email", {
                       rules: [{ required: true, message: "Please enter valid username" }],
                       initialValue: get(_source, "username", get(_source, "email", ""))
                     })(
-                      <Input
+                      <TextInputStyled
+                        padding="0px 15px 0px 30px"
                         prefix={<img style={iconSize} src={mailIcon} alt="" />}
                         placeholder="Enter Username/email"
                         disabled
@@ -171,7 +179,7 @@ class UserForm extends React.Component {
                 </Field>
               )}
               <Field name="firstName">
-                <legend>First Name</legend>
+                <FieldLabel>First Name</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("firstName", {
                     rules: [
@@ -180,7 +188,8 @@ class UserForm extends React.Component {
                     ],
                     initialValue: get(_source, "firstName", "")
                   })(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={userIcon} alt="" />}
                       placeholder="Enter the first name of the user"
                     />
@@ -188,10 +197,11 @@ class UserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="lastName">
-                <legend>Last name</legend>
+                <FieldLabel>Last name</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("lastName", { initialValue: get(_source, "lastName", "") })(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={userIcon} alt="" />}
                       placeholder="Enter the last name of the user"
                     />
@@ -200,21 +210,26 @@ class UserForm extends React.Component {
               </Field>
               {isStudentEdit && (
                 <Field name="email">
-                  <legend>Email</legend>
+                  <FieldLabel>Email</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("email", {
                       validateTrigger: ["onBlur"],
                       rules: [{ validator: this.validateEmailValue }],
                       initialValue: get(_source, "email", get(_source, "email", ""))
-                    })(<Input prefix={<img style={iconSize} src={mailIcon} alt="" />} placeholder="Enter email" />)}
+                    })(<TextInputStyled
+                      padding="0px 15px 0px 30px"
+                      prefix={<img style={iconSize} src={mailIcon} alt="" />}
+                      placeholder="Enter email"
+                    />)}
                   </Form.Item>
                 </Field>
               )}
               <Field name="password">
-                <legend>Password</legend>
+                <FieldLabel>Password</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("password")(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
                       placeholder="Enter Password"
@@ -223,12 +238,13 @@ class UserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="confirmPassword">
-                <legend>Confirm Password</legend>
+                <FieldLabel>Confirm Password</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
                     rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
                   })(
-                    <Input
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
                       placeholder="Confirm Password"
@@ -240,110 +256,110 @@ class UserForm extends React.Component {
             {showAdditionalFields && (
               <Panel header={AdditionalDetailsHeader} key="additional">
                 <Field name="sisId">
-                  <legend>SIS ID</legend>
+                  <FieldLabel>SIS ID</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("sisId", { initialValue: get(_source, "sisId", "") })(
-                      <Input placeholder="Enter SIS ID" />
+                      <TextInputStyled placeholder="Enter SIS ID" />
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="studentNumber">
-                  <legend>Student Number</legend>
+                  <FieldLabel>Student Number</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("studentNumber", { initialValue: get(_source, "studentNumber", "") })(
-                      <Input placeholder="Enter Student Number" />
+                      <TextInputStyled placeholder="Enter Student Number" />
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="frlStatus">
-                  <legend>Free Reduced Lunch</legend>
+                  <FieldLabel>Free Reduced Lunch</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("frlStatus", { initialValue: get(_source, "frlStatus", "") })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                      <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
-                      </Select>
+                      </SelectInputStyled>
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="iepStatus">
-                  <legend>Individual Education Plan</legend>
+                  <FieldLabel>Individual Education Plan</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("iepStatus", { initialValue: get(_source, "iepStatus", "") })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                      <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
-                      </Select>
+                      </SelectInputStyled>
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="ellStatus">
-                  <legend>English Language Learner</legend>
+                  <FieldLabel>English Language Learner</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("ellStatus", { initialValue: get(_source, "ellStatus", "") })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                      <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
-                      </Select>
+                      </SelectInputStyled>
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="sedStatus">
-                  <legend>Special ED</legend>
+                  <FieldLabel>Special ED</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("sedStatus", { initialValue: get(_source, "sedStatus", "") })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                      <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="active">Yes</Option>
                         <Option value="deActive">No</Option>
-                      </Select>
+                      </SelectInputStyled>
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="race">
-                  <legend>Race</legend>
+                  <FieldLabel>Race</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("race", { initialValue: get(_source, "race", "") })(
-                      <Input placeholder="Race" />
+                      <TextInputStyled placeholder="Race" />
                     )}
                   </Form.Item>
                 </Field>
 
                 <Field name="dob" optional>
-                  <legend>DOB</legend>
+                  <FieldLabel>DOB</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("dob", { initialValue: dobValue ? moment(dobValue) : null })(
-                      <DatePicker format="DD MMM, YYYY" />
+                      <DatePickerStyled format="DD MMM, YYYY" />
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="gender">
-                  <legend>Gender</legend>
+                  <FieldLabel>Gender</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("gender", { initialValue: get(_source, "gender", "") })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                      <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="male">Male</Option>
                         <Option value="female">Female</Option>
                         <Option value="other">Other</Option>
-                      </Select>
+                      </SelectInputStyled>
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="contactEmails">
-                  <legend>Contact</legend>
+                  <FieldLabel>Contact</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("contactEmails", { initialValue: contactEmails ? contactEmails.join(",") : "" })(
-                      <Input placeholder="Enter Contact" />
+                      <TextInputStyled placeholder="Enter Contact" />
                     )}
                   </Form.Item>
                 </Field>
                 <Field name="tts">
-                  <legend>Enable Text To Speech</legend>
+                  <FieldLabel>Enable Text To Speech</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator("tts", { initialValue: get(_source, "tts", "") })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                      <SelectInputStyled getPopupContainer={triggerNode => triggerNode.parentNode}>
                         <Option value="Yes">Yes</Option>
                         <Option value="No">No</Option>
-                      </Select>
+                      </SelectInputStyled>
                     )}
                   </Form.Item>
                 </Field>
@@ -351,7 +367,7 @@ class UserForm extends React.Component {
             )}
           </Collapse>
         </Form>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

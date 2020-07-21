@@ -571,7 +571,7 @@ export const defaultTheme = {
     modalBodyBgcolor: white,
     modalBodyBoxShadow: "0px 2px 5px #00000012",
     modalBodyBorderRadius: "4px",
-    formLabelFontSize: "12px",
+    formLabelFontSize: "11px",
     formLabelColor: textColor,
     modalFooterBtnTextFontSize: "11px",
     modalFooterBtnColor1: themeColor,

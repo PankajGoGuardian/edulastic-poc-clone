@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Checkbox } from "antd";
+import { CheckboxLabel, CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row } from "antd";
 import { omit } from "lodash";
-
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+import React, { Component } from "react";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
 
 class EditTeacherModal extends Component {
   onSaveTeacher = () => {
@@ -48,7 +48,7 @@ class EditTeacherModal extends Component {
       t
     } = this.props;
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("users.teacher.editteacher.title")}
         onOk={this.onSaveTeacher}
@@ -57,8 +57,8 @@ class EditTeacherModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>{t("users.teacher.editteacher.nocancel")}</CancelButton>
-            <OkButton onClick={this.onSaveTeacher}>{t("users.teacher.editteacher.yesupdate")}</OkButton>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("users.teacher.editteacher.nocancel")}</EduButton>
+            <EduButton onClick={this.onSaveTeacher}>{t("users.teacher.editteacher.yesupdate")}</EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -73,7 +73,7 @@ class EditTeacherModal extends Component {
                   }
                 ],
                 initialValue: _source?.firstName
-              })(<Input placeholder={t("users.teacher.editteacher.enterfirstname")} />)}
+              })(<TextInputStyled placeholder={t("users.teacher.editteacher.enterfirstname")} />)}
             </ModalFormItem>
           </Col>
           <Col span={24}>
@@ -86,7 +86,7 @@ class EditTeacherModal extends Component {
                   }
                 ],
                 initialValue: _source?.lastName
-              })(<Input placeholder={t("users.teacher.editteacher.enterlastname")} />)}
+              })(<TextInputStyled placeholder={t("users.teacher.editteacher.enterlastname")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -105,7 +105,7 @@ class EditTeacherModal extends Component {
                   }
                 ],
                 initialValue: _source?.email
-              })(<Input placeholder={t("users.teacher.editteacher.enteremail")} />)}
+              })(<TextInputStyled placeholder={t("users.teacher.editteacher.enteremail")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -113,7 +113,7 @@ class EditTeacherModal extends Component {
           <Col span={24}>
             <ModalFormItem label={t("users.teacher.editteacher.password")}>
               {getFieldDecorator("password", {})(
-                <Input type="password" placeholder={t("users.teacher.editteacher.enterpassword")} />
+                <TextInputStyled type="password" placeholder={t("users.teacher.editteacher.enterpassword")} />
               )}
             </ModalFormItem>
           </Col>
@@ -128,21 +128,19 @@ class EditTeacherModal extends Component {
                     message: t("users.teacher.editteacher.validations.invalidpassword")
                   }
                 ]
-              })(<Input type="password" placeholder={t("users.teacher.editteacher.enterconfirmpassword")} />)}
+              })(<TextInputStyled type="password" placeholder={t("users.teacher.editteacher.enterconfirmpassword")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem>
-              {getFieldDecorator("isPowerTeacher", {
-                initialValue: _source?.isPowerTeacher,
-                valuePropName: "checked"
-              })(<Checkbox>{t("users.teacher.powertools")}</Checkbox>)}
-            </ModalFormItem>
+            {getFieldDecorator("isPowerTeacher", {
+              initialValue: _source?.isPowerTeacher,
+              valuePropName: "checked"
+            })(<CheckboxLabel>{t("users.teacher.powertools")}</CheckboxLabel>)}
           </Col>
         </Row>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

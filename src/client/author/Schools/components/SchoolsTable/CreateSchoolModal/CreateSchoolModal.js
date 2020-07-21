@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Select } from "antd";
 import { countryApi, schoolApi } from "@edulastic/api";
+import { CustomModalStyled, EduButton, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row, Select } from "antd";
+import React, { Component } from "react";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
 import { states } from "../../../../../student/Signup/components/TeacherContainer/constants";
-import { StyledSelect, StyledSpinContainer, StyledSpin } from "./styled";
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+import { StyledSpin, StyledSpinContainer } from "./styled";
 
 const Option = Select.Option;
 class CreateSchoolModal extends Component {
@@ -120,7 +121,7 @@ class CreateSchoolModal extends Component {
     ));
 
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("school.createschool")}
         onOk={this.onCreateSchool}
@@ -129,10 +130,10 @@ class CreateSchoolModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
-            <OkButton onClick={this.onCreateSchool} disabled={showSpin}>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("common.cancel")}</EduButton>
+            <EduButton onClick={this.onCreateSchool} disabled={showSpin}>
               {t("school.createnewschool")}
-            </OkButton>
+            </EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -147,7 +148,7 @@ class CreateSchoolModal extends Component {
                   }
                 ]
               })(
-                <Input
+                <TextInputStyled
                   placeholder={t("school.components.createschool.name")}
                   onChange={this.changeSchoolName}
                   maxLength={128}
@@ -159,19 +160,19 @@ class CreateSchoolModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label={t("school.address")}>
-              {getFieldDecorator("address", {})(<Input placeholder={t("school.components.createschool.address")} />)}
+              {getFieldDecorator("address", {})(<TextInputStyled placeholder={t("school.components.createschool.address")} />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem label={t("school.city")}>
-              {getFieldDecorator("city", {})(<Input placeholder={t("school.components.createschool.city")} />)}
+              {getFieldDecorator("city", {})(<TextInputStyled placeholder={t("school.components.createschool.city")} />)}
             </ModalFormItem>
           </Col>
         </Row>
-        <Row>
-          <Col span={11}>
+        <Row gutter={20}>
+          <Col span={12}>
             <ModalFormItem label={t("school.zip")}>
               {getFieldDecorator("zip", {
                 rules: [
@@ -180,14 +181,14 @@ class CreateSchoolModal extends Component {
                     message: t("school.validations.zip")
                   }
                 ]
-              })(<Input placeholder={t("school.components.createschool.zip")} />)}
+              })(<TextInputStyled placeholder={t("school.components.createschool.zip")} />)}
             </ModalFormItem>
           </Col>
-          <Col span={11} offset={2}>
+          <Col span={12}>
             <ModalFormItem label={t("school.state")}>
               {getFieldDecorator("state", { initialValue: states[0] })(
                 country === "US" ? (
-                  <Select
+                  <SelectInputStyled
                     showSearch
                     showArrow={false}
                     placeholder={t("school.components.createschool.selectstate")}
@@ -195,10 +196,10 @@ class CreateSchoolModal extends Component {
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     {stateOptions}
-                  </Select>
+                  </SelectInputStyled>
                 ) : (
-                  <Input placeholder={t("school.components.createschool.state")} />
-                )
+                  <TextInputStyled placeholder={t("school.components.createschool.state")} />
+                  )
               )}
             </ModalFormItem>
           </Col>
@@ -209,7 +210,7 @@ class CreateSchoolModal extends Component {
               {getFieldDecorator("country", {
                 initialValue: "US"
               })(
-                <StyledSelect
+                <SelectInputStyled
                   showSearch
                   placeholder={t("school.components.createschool.country")}
                   showArrow={false}
@@ -220,7 +221,7 @@ class CreateSchoolModal extends Component {
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {CountryOptions}
-                </StyledSelect>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
@@ -230,7 +231,7 @@ class CreateSchoolModal extends Component {
             <StyledSpin size="large" />
           </StyledSpinContainer>
         )}
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

@@ -1,9 +1,10 @@
+import { themeColor } from "@edulastic/colors";
+import { CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common";
+import { Form } from "antd";
 import React from "react";
-import { Form, Button } from "antd";
-import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
 import styled from "styled-components";
-import { StyledClassName, StyledInput } from "../../../../Classes/components/ClassesTable/ArchiveClassModal/styled";
-import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
+import { StyledClassName } from "../../../../Classes/components/ClassesTable/ArchiveClassModal/styled";
+
 class DeactivateSchoolModal extends React.Component {
   constructor(props) {
     super(props);
@@ -17,6 +18,7 @@ class DeactivateSchoolModal extends React.Component {
   onChangeInput = e => {
     this.setState({ textDeactivate: e.target.value });
   };
+
   onDeactivateSchool = () => {
     this.props.deactivateSchool();
   };
@@ -27,7 +29,7 @@ class DeactivateSchoolModal extends React.Component {
     const schoolName = schoolData.map(row => <StyledClassName>{row.name}</StyledClassName>);
 
     return (
-      <ConfirmationModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("school.components.deactivateschool.deactivateschools")}
         onOk={this.onDeactivateSchool}
@@ -35,12 +37,12 @@ class DeactivateSchoolModal extends React.Component {
         maskClosable={false}
         centered
         footer={[
-          <Button onClick={this.onCloseModal} ghost type="primary">
+          <EduButton onClick={this.onCloseModal} isGhost type="primary">
             {t("school.components.deactivateschool.nocancel")}
-          </Button>,
-          <YesButton onClick={this.onDeactivateSchool} disabled={textDeactivate.toLowerCase() !== "deactivate"}>
+          </EduButton>,
+          <EduButton onClick={this.onDeactivateSchool} disabled={textDeactivate.toLowerCase() !== "deactivate"}>
             {t("school.components.deactivateschool.yesdeactivate")}
-          </YesButton>
+          </EduButton>
         ]}
       >
         <ModalBody>
@@ -54,10 +56,10 @@ class DeactivateSchoolModal extends React.Component {
             {t("common.modalConfirmationText3")}
           </span>
           <FormItem>
-            <TextInput value={textDeactivate} onChange={this.onChangeInput} />
+            <TextInputStyled align="center" value={textDeactivate} onChange={this.onChangeInput} />
           </FormItem>
         </ModalBody>
-      </ConfirmationModal>
+      </CustomModalStyled>
     );
   }
 }
@@ -75,23 +77,6 @@ const FormItem = styled(Form.Item)`
   width: 80%;
   display: inline-block;
   margin: 10px;
-  .ant-input {
-    height: 33px;
-    background: ${backgrounds.primary};
-    border: 1px solid ${borders.secondary};
-    padding: 10px 24px;
-  }
-`;
-
-const TextInput = styled(StyledInput)`
-  text-align: center;
-  width: 100%;
-`;
-
-const YesButton = styled(Button)`
-  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
-  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
-  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
 `;
 
 export const LightGreenSpan = styled.span`

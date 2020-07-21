@@ -2219,6 +2219,10 @@ div[class*="_pendo"] button {
   color: white;
 }
 
+.ant-modal-wrap.ant-modal-centered {
+  padding: 15px 0px;
+}
+
 .drag-drop-item-match-list:hover {
   border-color: #1a73e8 !important;
   background: #1a73e8 !important;

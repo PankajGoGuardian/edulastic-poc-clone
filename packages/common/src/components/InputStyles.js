@@ -39,7 +39,7 @@ const inputCommonStyle = {
   height: props => props.height || "32px",
   margin: props => props.margin || "0px",
   minHeight: props => props.height || "32px",
-  padding: "0 15px",
+  padding: props => props.padding || "0px 15px",
   paddingRight: props => props.pr || "",
   borderRadius: "2px",
   fontWeight: "600",
@@ -65,6 +65,7 @@ export const SearchInputStyled = styled(Input.Search)`
 
 export const TextInputStyled = styled(props => <Input maxLength={128} {...props} ref={props.inputRef} />)`
   &.ant-input {
+    text-align: ${props => props.align || "left"};
     ${inputCommonStyle};
     ${props => props.style};
     color: ${({ theme }) => theme.questionTextColor};

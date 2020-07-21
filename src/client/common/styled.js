@@ -281,43 +281,19 @@ export const ModalFormItem = styled(Form.Item)`
   .ant-form-item-control-wrapper {
     width: 100%;
   }
-
-  .ant-input,
-  .ant-select {
-    width: 100%;
-    max-width: 100%;
-    padding: 5px;
-  }
   .ant-form-item-label {
-    font-family: Open Sans;
-    letter-spacing: 0.22px;
     text-transform: uppercase;
     color: ${props => props.theme.manageDistrict.formLabelColor};
     font-weight: 600;
-    line-height: 1;
     font-size: ${props => props.theme.manageDistrict.formLabelFontSize};
-  }
-  .ant-form-item-control-wrapper {
-    width: 100%;
+    margin-bottom: 5px;
+    line-height: 1;
   }
   .ant-form-item-label > label::after {
-    content: "";
+    display: none;
   }
   .ant-form-item-label > label::before {
-    content: "";
-  }
-
-  .ant-input {
-    width: 100%;
-    max-width: 100%;
-    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
-    border-radius: 2px;
-    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
-  }
-  .ant-select-selection {
-    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
-    border-radius: 2px;
-    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
+    display: none;
   }
 `;
 

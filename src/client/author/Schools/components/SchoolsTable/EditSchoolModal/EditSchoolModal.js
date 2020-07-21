@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col } from "antd";
 import { schoolApi } from "@edulastic/api";
-import { StyledSpinContainer, StyledSpin } from "./styled";
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
-
+import { CustomModalStyled, EduButton, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row } from "antd";
+import React, { Component } from "react";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
+import { StyledSpin, StyledSpinContainer } from "./styled";
 
 class EditSchoolModal extends Component {
   constructor(props) {
@@ -99,7 +99,7 @@ class EditSchoolModal extends Component {
     const { nameValidate, showSpin } = this.state;
 
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("school.editschool")}
         onOk={this.onUpdateSchool}
@@ -108,10 +108,10 @@ class EditSchoolModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
-            <OkButton onClick={this.onUpdateSchool} disabled={showSpin}>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("common.cancel")}</EduButton>
+            <EduButton onClick={this.onUpdateSchool} disabled={showSpin}>
               {t("school.updateschool")}
-            </OkButton>
+            </EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -131,7 +131,7 @@ class EditSchoolModal extends Component {
                   }
                 ],
                 initialValue: schoolData.name
-              })(<Input placeholder={t("school.components.createschool.name")} onChange={this.changeSchoolName} maxLength={128} />)}
+              })(<TextInputStyled placeholder={t("school.components.createschool.name")} onChange={this.changeSchoolName} maxLength={128} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -140,7 +140,7 @@ class EditSchoolModal extends Component {
             <ModalFormItem label={t("school.address")}>
               {getFieldDecorator("address", {
                 initialValue: schoolData.address
-              })(<Input placeholder={t("school.components.createschool.address")} />)}
+              })(<TextInputStyled placeholder={t("school.components.createschool.address")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -149,12 +149,12 @@ class EditSchoolModal extends Component {
             <ModalFormItem label={t("school.city")}>
               {getFieldDecorator("city", {
                 initialValue: schoolData.city
-              })(<Input placeholder={t("school.components.createschool.city")} />)}
+              })(<TextInputStyled placeholder={t("school.components.createschool.city")} />)}
             </ModalFormItem>
           </Col>
         </Row>
-        <Row>
-          <Col span={11}>
+        <Row gutter={20}>
+          <Col span={12}>
             <ModalFormItem label={t("school.zip")}>
               {getFieldDecorator("zip", {
                 rules: [
@@ -164,14 +164,14 @@ class EditSchoolModal extends Component {
                   }
                 ],
                 initialValue: schoolData.zip
-              })(<Input placeholder={t("school.components.createschool.zip")} />)}
+              })(<TextInputStyled placeholder={t("school.components.createschool.zip")} />)}
             </ModalFormItem>
           </Col>
-          <Col span={11} offset={2}>
+          <Col span={12}>
             <ModalFormItem label={t("school.state")}>
               {getFieldDecorator("state", {
                 initialValue: schoolData.state
-              })(<Input placeholder={t("school.components.createschool.state")} />)}
+              })(<TextInputStyled placeholder={t("school.components.createschool.state")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -180,7 +180,7 @@ class EditSchoolModal extends Component {
             <StyledSpin size="large" />
           </StyledSpinContainer>
         )}
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

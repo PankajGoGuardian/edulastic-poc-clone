@@ -1,9 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { get, includes } from "lodash";
-import { Form } from "antd";
 import { userApi } from "@edulastic/api";
+import { FieldLabel } from "@edulastic/common";
+import { Form } from "antd";
+import { get, includes } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
 import { Field } from "./styled";
 
 function validateEmail(email) {
@@ -131,7 +132,7 @@ const CustomField = ({
 
   return (
     <Field>
-      <legend>{label}</legend>
+      <FieldLabel>{label}</FieldLabel>
       <Form.Item>
         {getFieldDecorator(fiedlName, {
           rules: validations[fiedlName],

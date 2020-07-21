@@ -1,6 +1,12 @@
 import { themeColor } from "@edulastic/colors";
-import { CheckboxLabel, EduButton, notification, TypeToConfirmModal } from "@edulastic/common";
-import { SearchInputStyled, SelectInputStyled } from "@edulastic/common/src/components/InputStyles";
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  TypeToConfirmModal,
+  SearchInputStyled,
+  SelectInputStyled
+} from "@edulastic/common";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col, Icon, Menu, Row, Select } from "antd";
@@ -684,18 +690,18 @@ class TeacherTable extends Component {
                         height="32px"
                       />
                     ) : (
-                      <SelectInputStyled
-                        placeholder={filterStrDD[filtersColumn].placeholder}
-                        onChange={v => this.changeStatusValue(v, i)}
-                        value={filterStr !== "" ? filterStr : undefined}
-                        height="32px"
-                      >
-                        {filterStrDD[filtersColumn].list.map(_item => (
-                          <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
-                            {_item.title}
-                          </Option>
+                        <SelectInputStyled
+                          placeholder={filterStrDD[filtersColumn].placeholder}
+                          onChange={v => this.changeStatusValue(v, i)}
+                          value={filterStr !== "" ? filterStr : undefined}
+                          height="32px"
+                        >
+                          {filterStrDD[filtersColumn].list.map(_item => (
+                            <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
+                              {_item.title}
+                            </Option>
                           ))}
-                      </SelectInputStyled>
+                        </SelectInputStyled>
                       )}
                   </Col>
                   <Col span={6} style={{ display: "flex" }}>
@@ -720,7 +726,8 @@ class TeacherTable extends Component {
               );
             })}
           </FilterWrapper>
-        )}
+        )
+        }
         <StyledFilterDiv>
           <LeftFilterDiv width={50}>
             <SearchInputStyled
@@ -775,65 +782,75 @@ class TeacherTable extends Component {
             }}
           />
         </TableContainer>
-        {inviteTeacherModalVisible && (
-          <InviteMultipleTeacherModal
-            modalVisible={inviteTeacherModalVisible}
-            closeModal={this.closeInviteTeacherModal}
-            addTeachers={this.sendInvite}
-            userOrgId={userOrgId}
-            t={t}
-          />
-        )}
-        {editTeacherModaVisible && (
-          <EditTeacherModal
-            modalVisible={editTeacherModaVisible}
-            userOrgId={userOrgId}
-            data={result[editTeacherKey]}
-            editTeacher={updateAdminUser}
-            closeModal={this.closeEditTeacherModal}
-            t={t}
-          />
-        )}
-        {addTeacherModalVisible && (
-          <AddTeacherModal
-            modalVisible={addTeacherModalVisible}
-            addTeacher={this.createUser}
-            closeModal={this.closeAddUserModal}
-            userOrgId={userOrgId}
-            t={t}
-          />
-        )}
-        {deactivateAdminModalVisible && (
-          <TypeToConfirmModal
-            modalVisible={deactivateAdminModalVisible}
-            title={t("users.teacher.deactivateTeacher.title")}
-            handleOnOkClick={this.confirmDeactivate}
-            wordToBeTyped="DEACTIVATE"
-            primaryLabel={t("common.modalConfirmationText1") + t("users.teacher.deactivateTeacher.teachers")}
-            secondaryLabel={selectedAdminsForDeactivate.map(id => {
-              const { _source: { firstName, lastName } = {} } = result[id];
-              return (
-                <StyledClassName key={id}>
-                  {firstName} {lastName}
-                </StyledClassName>
-              );
-            })}
-            closeModal={() =>
-              this.setState({
-                deactivateAdminModalVisible: false
-              })
-            }
-          />
-        )}
+        {
+          inviteTeacherModalVisible && (
+            <InviteMultipleTeacherModal
+              modalVisible={inviteTeacherModalVisible}
+              closeModal={this.closeInviteTeacherModal}
+              addTeachers={this.sendInvite}
+              userOrgId={userOrgId}
+              t={t}
+            />
+          )
+        }
+        {
+          editTeacherModaVisible && (
+            <EditTeacherModal
+              modalVisible={editTeacherModaVisible}
+              userOrgId={userOrgId}
+              data={result[editTeacherKey]}
+              editTeacher={updateAdminUser}
+              closeModal={this.closeEditTeacherModal}
+              t={t}
+            />
+          )
+        }
+        {
+          addTeacherModalVisible && (
+            <AddTeacherModal
+              modalVisible={addTeacherModalVisible}
+              addTeacher={this.createUser}
+              closeModal={this.closeAddUserModal}
+              userOrgId={userOrgId}
+              t={t}
+            />
+          )
+        }
+        {
+          deactivateAdminModalVisible && (
+            <TypeToConfirmModal
+              modalVisible={deactivateAdminModalVisible}
+              title={t("users.teacher.deactivateTeacher.title")}
+              handleOnOkClick={this.confirmDeactivate}
+              wordToBeTyped="DEACTIVATE"
+              primaryLabel={t("common.modalConfirmationText1") + t("users.teacher.deactivateTeacher.teachers")}
+              secondaryLabel={selectedAdminsForDeactivate.map(id => {
+                const { _source: { firstName, lastName } = {} } = result[id];
+                return (
+                  <StyledClassName key={id}>
+                    {firstName} {lastName}
+                  </StyledClassName>
+                );
+              })}
+              closeModal={() =>
+                this.setState({
+                  deactivateAdminModalVisible: false
+                })
+              }
+            />
+          )
+        }
         {/* eslint-disabled-next-line jsx-a11y/aria-role */}
-        {teacherDetailsModalVisible && (
-          <StudentsDetailsModal
-            modalVisible={teacherDetailsModalVisible}
-            closeModal={this.closeTeachersDetailModal}
-            role="teacher"
-            title="Teacher Details"
-          />
-        )}
+        {
+          teacherDetailsModalVisible && (
+            <StudentsDetailsModal
+              modalVisible={teacherDetailsModalVisible}
+              closeModal={this.closeTeachersDetailModal}
+              role="teacher"
+              title="Teacher Details"
+            />
+          )
+        }
         <MergeTeachersModal
           visible={showMergeTeachersModal}
           userIds={selectedRowKeys}

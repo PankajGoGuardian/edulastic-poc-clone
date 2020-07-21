@@ -29,7 +29,7 @@ const slice = createSlice({
     isLoading: false,
     loadedPage: 0,
     filter: "ENTIRE_LIBRARY",
-    searchString: null,
+    searchString: undefined,
     testPreviewModalVisible: false,
     selectedTestForPreview: "",
     externalToolsProviders: [],

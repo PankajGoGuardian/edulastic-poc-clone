@@ -368,7 +368,7 @@ const StandardsGradebookTableComponent = ({
                 <ControlDropDown
                   data={dropDownFormat.analyseByDropDownData}
                   by={dropDownFormat.analyseByDropDownData[0]}
-                  prefix="Analyse By"
+                  prefix="Analyze By"
                   selectCB={tableFilterDropDownCB}
                   comData="analyseBy"
                 />

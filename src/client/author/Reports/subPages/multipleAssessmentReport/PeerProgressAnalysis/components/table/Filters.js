@@ -13,7 +13,7 @@ const Filters = ({ compareByOptions = [], onFilterChange, analyseBy, compareBy }
   return (
     <Row type="flex" justify="end" align="middle">
       <ControlDropDown
-        prefix="Analyse By"
+        prefix="Analyze By"
         by={analyseBy}
         selectCB={onAnalyseByChange}
         data={dropDownData.analyseByData}

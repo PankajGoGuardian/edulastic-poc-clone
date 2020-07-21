@@ -171,6 +171,7 @@ const OrderList = ({
   const renderOptions = view === EDIT && scrollContainer && (
     <OptionsContainer styleType={styleType}>
       <OptionsList
+        item={item}
         fontSize={fontSize}
         width="230px"
         // placement={{ position: "absolute", top: "70px" }}
@@ -191,6 +192,7 @@ const OrderList = ({
         onChangePoints={handleUpdatePoints}
         canDelete={false}
         className="orderlist-set-correct-answer"
+        isCorrectAnsTab={correctTab === 0}
       />
     </OptionsContainer>
   );

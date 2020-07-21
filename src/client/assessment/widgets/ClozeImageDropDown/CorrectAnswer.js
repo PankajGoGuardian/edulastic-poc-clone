@@ -47,13 +47,13 @@ class CorrectAnswer extends Component {
     };
   }
 
-  updateScore = e => {
+  updateScore = score => {
     const { onUpdatePoints } = this.props;
-    if (!(e.target.value > 0)) {
+    if (!(score > 0)) {
       return;
     }
-    this.setState({ responseScore: e.target.value });
-    onUpdatePoints(parseFloat(e.target.value, 10));
+    this.setState({ responseScore: score });
+    onUpdatePoints(parseFloat(score, 10));
   };
 
   handleMultiSelect = answers => {
@@ -79,7 +79,8 @@ class CorrectAnswer extends Component {
       maxRespCount,
       imageHeight,
       imageOptions,
-      item
+      item = {},
+      isCorrectAnsTab = false
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -95,6 +96,7 @@ class CorrectAnswer extends Component {
               onBlur={this.updateScore}
               disabled={false}
               min={0}
+              max={!isCorrectAnsTab ? item?.validation?.validResponse?.score : Number.MAX_SAFE_INTEGER}
               step={0.5}
               data-cy="point-field"
             />

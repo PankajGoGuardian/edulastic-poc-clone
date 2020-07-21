@@ -8,8 +8,8 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
-import { PointsInput } from "../../styled/CorrectAnswerHeader";
 import CorrectAnswer from "./CorrectAnswer";
+import { PointsInput } from "../../styled/CorrectAnswerHeader";
 import { AlternateAnswerLink } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
@@ -106,11 +106,11 @@ class CorrectAnswers extends Component {
     return null;
   };
 
-  updateScore = e => {
-    if (!(e.target.value > 0)) {
+  updateScore = score => {
+    if (!(score > 0)) {
       return;
     }
-    const points = parseFloat(e.target.value, 10);
+    const points = parseFloat(score, 10);
     const { item, setQuestionData } = this.props;
     const { currentTab } = this.state;
 
@@ -158,6 +158,7 @@ class CorrectAnswers extends Component {
     const { currentTab } = this.state;
     const itemLevelScoring = this.context;
     const title = currentTab === 0 ? "correct" : "alternative";
+    const isCorrectAnsTab = currentTab === 0;
     const { response } = this;
 
     return (
@@ -178,6 +179,7 @@ class CorrectAnswers extends Component {
                 onBlur={this.updateScore}
                 disabled={false}
                 min={0}
+                max={!isCorrectAnsTab ? item?.validation?.validResponse?.score : Number.MAX_SAFE_INTEGER}
                 step={0.5}
               />
             </FlexContainer>

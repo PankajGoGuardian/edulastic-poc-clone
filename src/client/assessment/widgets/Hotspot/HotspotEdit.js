@@ -16,7 +16,6 @@ import { ContentArea } from "../../styled/ContentArea";
 import { EDIT } from "../../constants/constantsForQuestions";
 
 import HotspotPreview from "./HotspotPreview";
-import { StyledCheckbox } from "./styled/StyledCheckbox";
 
 import ComposeQuestion from "./ComposeQuestion";
 import AreasBlockTitle from "./AreasBlockTitle";
@@ -138,6 +137,7 @@ const HotspotEdit = ({
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
+      isCorrectAnsTab={correctTab === 0}
     />
   );
 

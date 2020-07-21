@@ -166,6 +166,8 @@ class Answers extends Component {
                   onChangePoints={points => handleChangeValidPoints(points)}
                   id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
                   data-cy="points"
+                  item={item}
+                  isCorrectAnsTab
                 />
               </div>
             )}
@@ -185,6 +187,7 @@ class Answers extends Component {
                       onCheck={handleCheck("altResponses", i)}
                       points={item.validation.altResponses[i].score}
                       onChangePoints={points => handleChangeAltPoints(points, i)}
+                      item={item}
                     />
                   );
                 }

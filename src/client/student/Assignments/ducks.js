@@ -15,7 +15,8 @@ import {
   assignmentSchema,
   setAssignmentsAction,
   setAssignmentsLoadingAction,
-  setActiveAssignmentAction
+  setActiveAssignmentAction,
+  setConfirmationForTimedAssessmentAction
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
@@ -40,6 +41,7 @@ export const SET_RESUME_STATUS = "[test] set resume status";
 export const RESUME_ASSIGNMENT = "[studentAssignments] resume assignments";
 export const BOOTSTRAP_ASSESSMENT = "[assessment] bootstrap";
 export const LAUNCH_ASSIGNMENT_FROM_LINK = "[studentAssignemnts] launch assignment from link";
+export const REDIRECT_TO_DASHBOARD = "[studentAssignments] redirect to dashboard";
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 export const startAssignmentAction = createAction(START_ASSIGNMENT);
@@ -48,6 +50,7 @@ export const setResumeAssignment = createAction(SET_RESUME_STATUS);
 export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 export const bootstrapAssessmentAction = createAction(BOOTSTRAP_ASSESSMENT);
 export const launchAssignmentFromLinkAction = createAction(LAUNCH_ASSIGNMENT_FROM_LINK);
+export const redirectToDashboardAction = createAction(REDIRECT_TO_DASHBOARD);
 
 const getAssignmentClassId = (assignment, groupId, classIds) => {
   if (groupId) {
@@ -307,6 +310,7 @@ function* fetchAssignments() {
  */
 function* startAssignment({ payload }) {
   try {
+    yield put(setConfirmationForTimedAssessmentAction(null));
     const { assignmentId, testId, testType, classId, isPlaylist = false, studentRecommendation } = payload;
     if (!isPlaylist && !studentRecommendation) {
       if (!assignmentId || !testId) throw new Error("insufficient data");
@@ -515,7 +519,7 @@ function* launchAssignment({ payload }) {
       const classIds = yield select(getClassIds);
       assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
       const lastActivity = _maxBy(testActivities, "createdAt");
-      const { testId, testType = "assessment" } = assignment;
+      const { testId, testType = "assessment", resume, timedAssignment } = assignment;
 
       if (lastActivity && lastActivity.status === 0) {
         yield put(
@@ -537,6 +541,10 @@ function* launchAssignment({ payload }) {
         }
 
         if (maxAttempt > testActivities.length) {
+          if (!resume && timedAssignment) {
+            yield put(setConfirmationForTimedAssessmentAction(assignment));
+            return;
+          }
           yield put(startAssignmentAction({ testId, assignmentId, testType, classId: groupId }));
         } else {
           yield put(push(`/home/grades`));
@@ -550,6 +558,12 @@ function* launchAssignment({ payload }) {
   }
 }
 
+function* redirectToDashboard() {
+  yield put(setConfirmationForTimedAssessmentAction(null));
+  notification({msg: "Redirecting to the student dashboard"});
+  yield put(push('/home/assignments'));
+}
+
 // set actions watcherss
 export function* watcherSaga() {
   yield all([
@@ -557,6 +571,7 @@ export function* watcherSaga() {
     yield Effects.throttleAction(10000, START_ASSIGNMENT, startAssignment),
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
-    yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment)
+    yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment),
+    yield takeLatest(REDIRECT_TO_DASHBOARD, redirectToDashboard)
   ]);
 }

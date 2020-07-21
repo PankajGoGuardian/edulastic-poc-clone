@@ -1,8 +1,10 @@
 import { CustomModalStyled, EduButton, RadioBtn, RadioGrp } from "@edulastic/common";
 import { test } from "@edulastic/constants";
+import styled from "styled-components";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Row } from "antd";
+import { extraDesktopWidth } from "@edulastic/colors";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getUserFeatures } from "../../../../student/Login/ducks";
@@ -27,8 +29,9 @@ const ReleaseScoreSettingsModal = ({
     _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]];
   }
   return (
-    <CustomModalStyled
+    <ReleaseModal
       centered
+      minWidth="614px"
       visible={showReleaseGradeSettings}
       title={`Release Scores ${
         releaseGradeValue !== "" ? (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]") : ""
@@ -75,7 +78,7 @@ const ReleaseScoreSettingsModal = ({
             </InfoText>
           </Info>
         ))}
-    </CustomModalStyled>
+    </ReleaseModal>
   );
 };
 
@@ -83,3 +86,9 @@ export default connect(
   state => ({ features: getUserFeatures(state) }),
   null
 )(ReleaseScoreSettingsModal);
+
+export const ReleaseModal = styled(CustomModalStyled)`
+  @media (min-width: ${extraDesktopWidth}) {
+    min-width: 750px !important;
+  }
+`;

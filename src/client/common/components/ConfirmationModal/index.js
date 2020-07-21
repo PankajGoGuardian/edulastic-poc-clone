@@ -1,5 +1,6 @@
 import { CustomModalStyled, EduButton } from "@edulastic/common";
 import { Col, Row } from "antd";
+import { extraDesktopWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import React from "react";
 import { InitOptions, LightGreenSpan, ModalFooter, StyledCol, StyledDiv, StyledInput } from "./styled";
@@ -22,7 +23,7 @@ const ConfirmationModal = ({
   <ConfirmationModalStyled
     centered
     visible={show}
-    width="750px"
+    width="614px"
     title={title}
     onCancel={onCancel}
     destroyOnClose
@@ -36,7 +37,7 @@ const ConfirmationModal = ({
           {okText.toUpperCase()}
         </EduButton>
       </ModalFooter>
-      ]}
+    ]}
   >
     <InitOptions bodyStyle={bodyStyle}>
       <Row>
@@ -68,7 +69,7 @@ const ConfirmationModal = ({
             data-cy="confirmationInput"
             value={inputVal}
             onChange={onInputChange}
-              // here paste is not allowed, and user has to manually type in inputVal
+            // here paste is not allowed, and user has to manually type in inputVal
             onPaste={e => e.preventDefault()}
           />
         </StyledCol>
@@ -77,10 +78,15 @@ const ConfirmationModal = ({
   </ConfirmationModalStyled>
   );
 
+
 export default ConfirmationModal;
 
 export const ConfirmationModalStyled = styled(CustomModalStyled)`
-  .ant-modal-title {
+ .ant-modal-title {
     margin-left: 5px;
   }
+  @media (min-width: ${extraDesktopWidth}) {
+    min-width: 750px !important;
+  }
 `;
+

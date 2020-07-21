@@ -13,7 +13,8 @@ import {
   cardTitleColor,
   greyDarken,
   mainTextColor,
-  white
+  white,
+  greyThemeDark4
 } from "@edulastic/colors";
 import { Paper, EduTableStyled } from "@edulastic/common";
 import { IconManage } from "@edulastic/icons";
@@ -34,6 +35,12 @@ export const StudentsTable = styled(EduTableStyled)`
     overflow: auto;
     .ant-table-thead {
       & > tr {
+        .ant-table-selection-column {
+          text-align: left;
+          .ant-checkbox-wrapper {
+            margin-left: 10px;
+          }
+        }
         & > th {
           font-size: 12px;
           padding: 16px 0px;
@@ -42,6 +49,12 @@ export const StudentsTable = styled(EduTableStyled)`
     }
     .ant-table-tbody {
       & > tr {
+        .ant-table-selection-column {
+          text-align: left;
+        }
+        .ant-checkbox-wrapper {
+          margin-left: 10px;
+        }
         & > td {
           padding: 10px 0px;
           font-size: 14px;
@@ -163,7 +176,6 @@ export const AddStudentButton = styled(Button)`
     background: ${themeColor};
   }
 `;
-
 export const ButtonsWrapper = styled.div`
   display: flex;
   align-items: right;
@@ -262,11 +274,19 @@ export const Studentscount = styled(Col)`
     font-size: 18px;
     color: ${themeColorLighter};
     position: relative;
-    top: 2px;
+    top: 1px;
     margin-left: 10px;
   }
   @media (max-width: ${desktopWidth}) {
     padding-right: 0px;
+  }
+`;
+export const CoTeacher = styled(Studentscount)`
+  margin-top: 4px;
+  margin-left: 35px;
+  span {
+    font-size: 15px;
+    margin-top: -2px;
   }
 `;
 
@@ -553,7 +573,9 @@ export const FlexDiv = styled.div`
 export const SwitchBox = styled.span`
   font-size: 10px;
   padding-bottom: 10px;
-  margin-left: 21px;
+  margin-left: 10px;
+  position: relative;
+  top: -50px;
   .ant-switch {
     min-width: 32px;
     height: 16px;
@@ -588,6 +610,11 @@ export const GoogleClassSyncModal = styled(Modal)`
     border: none;
     padding: 20px 24px;
   }
+`;
+export const Institution = styled.div`
+  font-size: 14px;
+  color: ${greyThemeDark4};
+  font-weight: normal;
 `;
 
 export const NotEnrolledMessage = styled.div`

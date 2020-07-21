@@ -220,20 +220,22 @@ const ClassDetails = ({
               isFetchingCanvasData={isFetchingCanvasData}
             />
           )}
-          <Header
-            onEdit={handleEditClick}
-            fetchClassList={fetchClassList}
-            selectedClass={selectedClass}
-            allowCanvasLogin={allowCanvasLogin}
-            syncCanvasModal={syncCanvasModal}
-            allowGoogleLogin={allowGoogleLogin}
-            syncGCModal={() => setOpenGCModal(true)}
-            isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-            enableCleverSync={enableCleverSync}
-            syncClassesWithClever={syncClassesWithClever}
-            archiveClass={archiveClass}
-            entity={selectedClass}
-          />
+          <div>
+            <Header
+              onEdit={handleEditClick}
+              fetchClassList={fetchClassList}
+              selectedClass={selectedClass}
+              allowCanvasLogin={allowCanvasLogin}
+              syncCanvasModal={syncCanvasModal}
+              allowGoogleLogin={allowGoogleLogin}
+              syncGCModal={() => setOpenGCModal(true)}
+              isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+              enableCleverSync={enableCleverSync}
+              syncClassesWithClever={syncClassesWithClever}
+              archiveClass={archiveClass}
+              entity={selectedClass}
+            />
+          </div>
           <MainContentWrapper>
             <BreadCrumb ellipsis="calc(100% - 200px)" data={getBreadCrumbData()} style={{ position: "unset" }} />
             <MainInfo

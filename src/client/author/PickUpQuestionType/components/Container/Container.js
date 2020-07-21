@@ -350,10 +350,12 @@ class Container extends Component {
                     <IconPlay />
                     Instructions
                   </Menu.Item>
-                  <Menu.Item key="rulers-calculators">
-                    <IconRulerPencil />
-                    Tools
-                  </Menu.Item>
+                  {multipartItem && (
+                    <Menu.Item key="rulers-calculators">
+                      <IconRulerPencil />
+                      Tools
+                    </Menu.Item>
+                  )}
                   <Menu.Item key="other">
                     <IconMore />
                     Other

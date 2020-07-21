@@ -141,6 +141,12 @@ class ClozeDropDown extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                <ChoicesForResponses
+                  responses={responseIds || []}
+                  item={item}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
                 <Question
                   position="unset"
                   section="main"
@@ -174,12 +180,6 @@ class ClozeDropDown extends Component {
                     </CheckboxLabel>
                   </CorrectAnswerOptions>
                 </Question>
-                <ChoicesForResponses
-                  responses={responseIds || []}
-                  item={item}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                />
               </div>
 
               {advancedLink}

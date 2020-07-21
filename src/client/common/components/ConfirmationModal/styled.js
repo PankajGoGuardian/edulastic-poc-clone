@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { lightBlue, lightGrey, mainTextColor, white, themeColor,lightGrey9 } from "@edulastic/colors";
+import { lightBlue, lightGrey, mainTextColor, white, themeColor, lightGrey9 } from "@edulastic/colors";
 import { Input, Col, Modal, Button } from "antd";
 
 export const LightGreenSpan = styled.span`
@@ -24,14 +24,17 @@ export const StyledInput = styled(Input)`
     text-align: left;
     color: ${lightGrey9};
   }
+  &:focus::placeholder {
+    color: transparent;
+  }
 `;
 
 export const StyledDiv = styled.div`
-  width:90%;
-  text-align:left;
-  margin-top:20px;
+  width: 90%;
+  text-align: left;
+  margin-top: 20px;
   margin-bottom: 5px;
-  margin-left:45px;
+  margin-left: 45px;
 `;
 
 export const StyledClassName = styled.p`

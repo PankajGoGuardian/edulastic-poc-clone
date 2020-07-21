@@ -27,8 +27,8 @@ window[LOADING_RESOURCES] = {};
 const getResourcesNotLoaded = resources => {
   const allResources = Array.isArray(resources) ? resources : [resources];
 
-  // we check for both loading yet and already loaded since do not want to retrigger them
-  return allResources.filter(a => a).filter(x => !window[NAMESPACE][x] && !window[LOADING_RESOURCES][x]);
+  // return resources that aren't loaded yet
+  return allResources.filter(x => x && !window[NAMESPACE][x]);
 };
 
 /**
@@ -42,23 +42,27 @@ const loadResources = (resources = []) => {
     window[LOADING_RESOURCES][resource] = true;
   });
 
-  const returnPromise = load(resources, { returnPromise: true, async: true, numRetries: 1 }).then(() => {
-    resources.forEach(resource => {
-      window[LOADING_RESOURCES][resource] = false;
-      // flag the resource as already loaded!
-      window[NAMESPACE][resource] = true;
-    });
-  });
+  const returnPromise = load(resources, {
+    returnPromise: true,
+    async: true,
+    numRetries: 1,
+    success: () => {
+      resources.forEach(resource => {
+        window[LOADING_RESOURCES][resource] = false;
+        // flag the resource as already loaded!
+        window[NAMESPACE][resource] = true;
+      });
+    },
+    error: pathsNotFound => {
+      // replace them from the global context as never loaded and see if next render will invoke them,
+      // we already retried once.
+      pathsNotFound.forEach(resource => {
+        window[LOADING_RESOURCES][resource] = false;
+        window[NAMESPACE][resource] = false;
+      });
 
-  returnPromise.catch(pathsNotFound => {
-    // replace them from the global context as never loaded and see if next render will invoke them,
-    // we already retried once.
-    pathsNotFound.forEach(resource => {
-      window[LOADING_RESOURCES][resource] = false;
-      window[NAMESPACE][resource] = false;
-    });
-
-    throw new Error(`Some resources could not be loaded ${pathsNotFound}`);
+      throw new Error(`Some resources could not be loaded ${pathsNotFound}`);
+    }
   });
 
   return returnPromise;
@@ -86,7 +90,6 @@ export const useResources = (criticalResources, resources, onLoaded) => {
       // if both are empty, then the fragments are loaded already
       handleOnLoad();
     } else {
-      // TODO: refactor with async/await.
       // first resolve the critical resources, if specified
       loadResources(targetCriticalResources)
         .then(() => loadResources(targetResources)) // then remaining resources

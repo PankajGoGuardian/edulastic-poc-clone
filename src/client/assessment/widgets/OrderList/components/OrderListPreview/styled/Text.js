@@ -7,26 +7,25 @@ export const Text = styled.div`
   align-items: center;
   overflow: hidden;
   justify-content: space-between;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
   img {
     max-height: ${({ maxHeight }) => maxHeight}px;
     max-width: ${({ maxWidth }) => maxWidth}px;
     width: auto;
   }
-  ${({ showDragHandle, smallSize, styleType, correct, theme, showAnswer }) => `
+  ${({ showDragHandle, smallSize, correct, theme, showAnswer }) => `
     width: ${
       showDragHandle
         ? smallSize
           ? "calc(100% - 30px)"
-          : "calc(100% - 40px)"
+          : "calc(100% - 32px)"
         : showAnswer
         ? smallSize
           ? "calc(100% - 30px)"
-          : "calc(100% - 40px)"
+          : "calc(100% - 32px)"
         : "100%"
     };
-    border: ${styleType === "button" ? `1px solid` : "none"};
     padding: ${smallSize ? "2px 5px" : "2px 15px"};
     padding-right:${correct === undefined ? "" : "30px"};
     border-color: ${

@@ -265,6 +265,7 @@ class CorrectAnswers extends Component {
               previewTab={previewTab}
               isV1Migrated={isV1Migrated}
               item={item}
+              isCorrectAnsTab
             />
           </TabContainer>
         )}

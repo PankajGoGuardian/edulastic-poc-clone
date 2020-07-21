@@ -1,11 +1,10 @@
 import React from "react";
 import { Button } from "antd";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { themeColor, smallDesktopWidth, white } from "@edulastic/colors";
+import { themeColor, smallDesktopWidth, white, themeColorBlue } from "@edulastic/colors";
 
-const ShowActiveClasses = ({ t, classList, setClassList, showClass, setShowClass }) => {
+const ShowActiveClasses = ({ classList, setClassList, showClass, setShowClass }) => {
   const activeClasses = classList.filter(c => c.active === 1);
   const archiveClasses = classList.filter(c => c.active === 0);
   // const options = [`ACTIVE (${activeClasses.length})`, `ARCHIVE (${archiveClasses.length})`];
@@ -31,10 +30,6 @@ const ShowActiveClasses = ({ t, classList, setClassList, showClass, setShowClass
   );
 };
 
-ShowActiveClasses.propTypes = {
-  t: PropTypes.func.isRequired
-};
-
 export default React.memo(ShowActiveClasses);
 
 const ManageActiveClasses = styled.div`
@@ -58,11 +53,11 @@ const ButtonTabGroup = styled(Button.Group)`
 `;
 
 const TabButton = styled(Button)`
-  background: ${props => (props.active ? themeColor : white)};
+  background: ${props => (props.active ? themeColorBlue : white)};
   color: ${props => (props.active ? white : themeColor)};
   &:hover,
   &:focus {
-    background: ${props => (props.active ? themeColor : white)};
+    background: ${props => (props.active ? themeColorBlue : white)};
     color: ${props => (props.active ? white : themeColor)};
   }
 `;

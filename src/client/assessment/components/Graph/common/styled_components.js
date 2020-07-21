@@ -386,7 +386,7 @@ export const PaperWrapper = styled(StyledPaperWrapper)`
       : "35px"};
   min-width: ${({ style }) => style.minWidth};
   ${({ style }) => style};
-  
+
   @media (max-width: ${mobileWidthMax}) {
     padding: ${({ flowLayout }) => (flowLayout ? "0px" : "20px;")};
     margin-bottom: 15px;
@@ -398,7 +398,7 @@ export const GraphToolbar = createStandardTextSet(styled.div`
   position: relative;
   width: 100%;
   display: flex;
-  min-height: 90px;
+  justify-content: flex-end;
   padding: 0 0 10px 0;
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
 
@@ -407,7 +407,7 @@ export const GraphToolbar = createStandardTextSet(styled.div`
   }
 
   ul li {
-    margin: 10px 10px 0 0;
+    margin: 5px 5px 0 0;
   }
 `);
 
@@ -428,7 +428,7 @@ export const ToolbarRight = styled.ul`
   padding: 0;
 
   li:last-child {
-    margin: 10px 0 0 0;
+    margin: 5px 0 0 0;
   }
 `;
 
@@ -439,23 +439,25 @@ export const ToolbarItem = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  svg {
+    margin-bottom: 4px;
+  }
 `;
 
-export const ToolbarItemLabel = createStandardTextSet(styled.span`
+export const ToolbarItemLabel = styled.span`
   font-weight: 600;
-  line-height: 19px;
-`);
+  text-transform: uppercase;
+  font-size: ${({ fontSize }) => fontSize || "10px"};
+  line-height: 1;
+`;
 
 export const ToolbarItemIcon = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  width: auto;
-  height: auto;
-  min-width: 23px;
-  min-height: 24px;
-  margin-bottom: 5px;
+  margin-bottom: ${({ mb }) => mb || "4px"};
 `;
 
 export const ToolBtn = styled.li`
@@ -470,9 +472,11 @@ export const ToolBtn = styled.li`
   line-height: 1.5em;
   transition: all 0.1s ease-in;
   user-select: none;
-  box-shadow: ${props => (props.bordered ? "none" : "2px 2px 8px #00000026")};
   border-radius: 4px;
-  border: ${props => (props.bordered ? `1px solid ${props.theme.borderColor}` : "none")};
+  border: 1px solid #878a91;
+  z-index: ${({ zIndex }) => zIndex || ""};
+  width: ${({ width }) => width || ""};
+  height: ${({ height }) => height || ""};
 
   > ${ToolbarItem} {
     svg {
@@ -501,11 +505,6 @@ export const ToolBtn = styled.li`
   &:active,
   &.active {
     box-shadow: none;
-  }
-
-  .tool-btn-icon + span {
-    font-size: 11px !important;
-    text-transform: uppercase;
   }
 `;
 

@@ -7,9 +7,9 @@ export const Index = styled(FlexRow)`
   justify-content: center;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  width: 40px;
+  width: 32px;
   height: auto;
-  min-height: 40px;
+  min-height: 32px;
   color: ${props => props.theme.widgets.sortList.correctAnswersIndexColor};
-  background-color: ${props => props.theme.widgets.sortList.correctAnswersIndexBgColor};
+  background-color: ${props => props.theme.checkbox.noAnswerIconColor};
 `;

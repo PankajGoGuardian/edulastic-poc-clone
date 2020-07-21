@@ -11,11 +11,19 @@ import { compose } from "redux";
 import { Dropdown } from "antd";
 
 import GoogleLogin from "react-google-login";
-import { IconGoogleClassroom, IconClever, IconPlusCircle, IconPencilEdit, IconAssignment } from "@edulastic/icons";
+import {
+  IconGoogleClassroom,
+  IconClever,
+  IconPlusCircle,
+  IconPencilEdit,
+  IconAssignment,
+  IconManage
+} from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
 import { canvasApi } from "@edulastic/api";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import { DropMenu, MenuItems, CaretUp } from "./styled";
+import { Institution, DropMenu, MenuItems, CaretUp } from "./styled";
+
 import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
@@ -102,11 +110,14 @@ const Header = ({
     }
   };
 
-  const headingSubContent = (
-    <span>
-      {districtName ? `${districtName}, ` : ""}
-      {institutionName}
-    </span>
+  const classDetails = (
+    <>
+      <div>{name}</div>
+      <Institution>
+        {districtName ? `${districtName}, ` : ""}
+        {institutionName}
+      </Institution>
+    </>
   );
 
   const handleCleverSync = () => {
@@ -130,7 +141,7 @@ const Header = ({
   const showCanvasSyncButton = showSyncButtons && !cleverId && allowCanvasLogin;
 
   return (
-    <MainHeader headingText={name} headingSubContent={headingSubContent} flexDirection="column" alignItems="flex-start">
+    <MainHeader Icon={IconManage} headingText={classDetails}>
       <div style={{ display: "flex", alignItems: "right" }}>
         {showCleverSyncButton && (
           <EduButton isBlue isGhost onClick={handleCleverSync}>

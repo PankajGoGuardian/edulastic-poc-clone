@@ -53,8 +53,8 @@ const ChoicesBox = ({ resprops, id }) => {
   const styles = {
     ...btnStyle,
     overflow: "hidden",
-    width: widthpx,
-    height: heightpx,
+    minWidth: widthpx || btnStyle.width,
+    height: heightpx || btnStyle.height,
     minWidthpx: maxW.width + 25
   };
 

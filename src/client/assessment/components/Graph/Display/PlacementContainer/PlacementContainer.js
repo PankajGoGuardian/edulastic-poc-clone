@@ -559,7 +559,7 @@ class PlacementContainer extends PureComponent {
     const valueDimensions = valueHeightHashMap[zoomLevel];
 
     return (
-      <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
+      <div data-cy="placement-graph-container" style={{ width: "100%" }}>
         <WithResources
           resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
           fallBack={<span />}

@@ -44,7 +44,9 @@ import {
   getTestsItemsPageSelector,
   initalSearchState,
   receiveTestItemsAction,
-  updateSearchFilterStateAction
+  updateSearchFilterStateAction,
+  getSelectedItemSelector,
+  setApproveConfirmationOpenAction
 } from "../../../TestPage/components/AddItems/ducks";
 import {
   getAllTagsAction,
@@ -73,6 +75,7 @@ import {
 import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../HeaderFilter";
 import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
+import ApproveConfirmModal from "../ApproveConfirmModal";
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -335,6 +338,15 @@ class Contaier extends Component {
 
   toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
 
+  handleApproveItems = () => {
+    const { approveOrRejectMultipleItem, selectedItems, setApproveConfirmationOpen } = this.props;
+    if (selectedItems.length > 1) {
+      setApproveConfirmationOpen(true);
+    } else {
+      approveOrRejectMultipleItem({ status: "published" });
+    }
+  };
+
   renderCartButton = () => {
     const { approveOrRejectMultipleItem, userRole } = this.props;
     if (userRole === roleuser.EDULASTIC_CURATOR) return null;
@@ -348,7 +360,7 @@ class Contaier extends Component {
             numberChecker={this.rejectNumberChecker}
           />
           <CartButton
-            onClick={() => approveOrRejectMultipleItem({ status: "published" })}
+            onClick={this.handleApproveItems}
             buttonText="Approve"
             numberChecker={this.approveNumberChecker}
           />
@@ -375,6 +387,7 @@ class Contaier extends Component {
     const { isShowFilter, openSidebar } = this.state;
     return (
       <div>
+        <ApproveConfirmModal />
         <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
         <SelectCollectionModal contentType="TESTITEM" />
         <ListHeader
@@ -487,7 +500,8 @@ const enhance = compose(
       search: getSearchFilterStateSelector(state),
       passageItems: state.tests.passageItems || [],
       userFeatures: getUserFeatures(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      selectedItems: getSelectedItemSelector(state)
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -505,7 +519,8 @@ const enhance = compose(
       createTestFromCart: createTestFromCartAction,
       updateSearchFilterState: updateSearchFilterStateAction,
       clearFilterState: clearFilterStateAction,
-      approveOrRejectMultipleItem: approveOrRejectMultipleItemAction
+      approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
+      setApproveConfirmationOpen: setApproveConfirmationOpenAction
     }
   )
 );

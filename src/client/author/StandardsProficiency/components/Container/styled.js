@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { Layout, Spin, Input, List, Col, Row } from "antd";
 import { themeColor, white, lightGreySecondary, sectionBorder, mediumDesktopExactWidth } from "@edulastic/colors";
-import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 const { Content } = Layout;
 
@@ -56,28 +55,6 @@ export const StyledSpin = styled(Spin)`
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
-`;
-
-export const CreateProfile = styled(ThemeButton)`
-  font-size: 11px;
-  text-transform: uppercase;
-  height: 45px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  i {
-    width: 19px;
-    height: 19px;
-    background: ${white};
-    color: ${themeColor};
-    line-height: 20px;
-    border-radius: 50%;
-    margin-right: 10px;
-    font-style: normal;
-    font-size: 20px;
-    text-align: center;
-  }
 `;
 
 export const ModalInput = styled(Input)`
@@ -137,5 +114,6 @@ export const StyledProfileCol = styled(Col)`
 `;
 
 export const StyledList = styled(List)`
+  margin-top: 10px;
   border: none;
 `;

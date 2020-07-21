@@ -41,6 +41,10 @@ export const SortableItemContainer = styled.div.attrs({
     max-width: 100%;
     border: ${({ styleType }) =>
       styleType === "list" || styleType === "inline" ? "none" : `1px solid ${greyThemeLight}`};
+
+    .froala-wrapper {
+      padding: 8px 0px;
+    }
   }
   & div.main i.fa-align-justify {
     color: ${props => props.theme.sortableList.dragIconColor};
@@ -62,7 +66,10 @@ export const SortableItemContainer = styled.div.attrs({
 `;
 
 export const DragIcon = styled.div`
-  padding: 9px 15px;
+  padding: 0px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export const DragLine = styled.div`

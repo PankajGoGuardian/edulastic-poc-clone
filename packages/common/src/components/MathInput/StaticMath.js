@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 import { Popover } from "antd";
-import { white } from "@edulastic/colors";
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
 import AppConfig from "../../../../../app-config";
@@ -19,7 +18,7 @@ const StaticMath = ({
   restrictKeys,
   customKeys,
   alwaysShowKeyboard,
-  isPrintPreview
+  noBorder
 }) => {
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
@@ -210,12 +209,11 @@ const StaticMath = ({
   const mathInputFieldStyle = {
     minWidth: style.width,
     minHeight: style.height,
-    fontSize: style.fontSize ? style.fontSize : "inherit",
-    background: isPrintPreview ? white : style.background
+    fontSize: style.fontSize ? style.fontSize : "inherit"
   };
 
   return (
-    <MathInputStyles minWidth={style.minWidth} ref={containerRef}>
+    <MathInputStyles noBorder={noBorder} minWidth={style.minWidth} ref={containerRef}>
       <Popover
         content={keypad}
         trigger="click"

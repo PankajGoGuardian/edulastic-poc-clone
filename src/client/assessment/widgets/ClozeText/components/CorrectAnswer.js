@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Popover } from "antd";
+import styled from "styled-components";
+import { greyishBorder } from "@edulastic/colors";
 import { AnswerContent } from "../styled/AnswerContent";
 import { AnswerBox } from "../styled/AnswerBox";
 import { IndexBox } from "../styled/IndexBox";
@@ -9,13 +11,6 @@ export const Answer = ({ answer, getStemNumeration, stemNumeration }) => {
   const [showPopover, togglePopover] = useState(false);
   const content = (
     <AnswerContent
-      style={{
-        whiteSpace: "normal",
-        minWidth: 70,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-      }}
       dangerouslySetInnerHTML={{
         __html: answer.value
       }}
@@ -23,7 +18,7 @@ export const Answer = ({ answer, getStemNumeration, stemNumeration }) => {
   );
 
   return (
-    <AnswerBox
+    <CorrectAnswerBox
       className="answer-list"
       key={answer.id}
       onMouseEnter={() => togglePopover(true)}
@@ -33,7 +28,7 @@ export const Answer = ({ answer, getStemNumeration, stemNumeration }) => {
       <Popover content={content} visible={showPopover && answer.value}>
         {content}
       </Popover>
-    </AnswerBox>
+    </CorrectAnswerBox>
   );
 };
 
@@ -46,3 +41,14 @@ Answer.propTypes = {
 Answer.defaultProps = {
   answer: {}
 };
+
+const CorrectAnswerBox = styled(AnswerBox)`
+  border: 1px solid ${greyishBorder};
+  min-width: 140px;
+  ${AnswerContent} {
+    white-space: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;

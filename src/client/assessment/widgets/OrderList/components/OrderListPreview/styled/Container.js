@@ -3,7 +3,7 @@ import { white } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   cursor: pointer;
   align-items: stretch;
   border-radius: 5px;
@@ -17,8 +17,8 @@ export const Container = styled.div`
           ? white
           : correct !== undefined
           ? correct
-            ? theme.widgets.orderList.correctContainerBgColor
-            : theme.widgets.orderList.incorrectContainerBgColor
+            ? theme.checkbox.rightBgColor
+            : theme.checkbox.wrongBgColor
           : theme.widgets.orderList.containerBgColor
       }
   `}

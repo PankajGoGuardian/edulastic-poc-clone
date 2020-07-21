@@ -323,7 +323,7 @@ class Container extends Component {
                   {!multipartItem && (
                     <Menu.Item key="read">
                       <IconRead />
-                      Reading
+                      PASSAGE
                     </Menu.Item>
                   )}
                   <Menu.Item key="highlight">
@@ -346,16 +346,16 @@ class Container extends Component {
                     <IconMultipart />
                     Multipart
                   </Menu.Item>
+                  <Menu.Item key="instruction">
+                    <IconPlay />
+                    Instructions
+                  </Menu.Item>
                   {multipartItem && (
-                    <Menu.Item key="instruction">
-                      <IconPlay />
-                      Instructions
+                    <Menu.Item key="rulers-calculators">
+                      <IconRulerPencil />
+                      Tools
                     </Menu.Item>
                   )}
-                  <Menu.Item key="rulers-calculators">
-                    <IconRulerPencil />
-                    Tools
-                  </Menu.Item>
                   <Menu.Item key="other">
                     <IconMore />
                     Other
@@ -458,12 +458,10 @@ class Container extends Component {
                 <IconMultipart />
                 Multipart
               </Menu.Item>
-              {multipartItem && (
-                <Menu.Item key="instruction">
-                  <IconPlay />
-                  Instructions
-                </Menu.Item>
-              )}
+              <Menu.Item key="instruction">
+                <IconPlay />
+                Instructions
+              </Menu.Item>
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
                 <IconRulerPencil />
                 Tools

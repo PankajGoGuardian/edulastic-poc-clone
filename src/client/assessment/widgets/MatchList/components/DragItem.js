@@ -1,7 +1,6 @@
 import React from "react";
 import { DragSource } from "react-dnd";
 import { MathFormulaDisplay, isMobileDevice } from "@edulastic/common";
-import { white } from "@edulastic/colors";
 import { Index } from "../styled/Index";
 import { IconClose } from "../styled/IconClose";
 import { IconCheck } from "../styled/IconCheck";
@@ -69,8 +68,7 @@ const DragItem = ({
           className="drag-drop-item-match-list"
           data-cy={`drag-drop-item-${renderIndex}`}
           style={{
-            ...getStyles({ isDragging, flag, _preview: preview, correct, width }),
-            background: isPrintPreview && white
+            ...getStyles({ isDragging, flag, _preview: preview, correct, width })
           }}
         >
           {isMobileDevice() && (

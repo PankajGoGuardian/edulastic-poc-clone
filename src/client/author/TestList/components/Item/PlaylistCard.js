@@ -2,7 +2,7 @@ import React from "react";
 import { first } from "lodash";
 import { IconShare, IconUser } from "@edulastic/icons";
 import { cardTitleColor, darkGrey } from "@edulastic/colors";
-import { PremiumLabel } from "@edulastic/common";
+import { PremiumLabel, EduButton } from "@edulastic/common";
 
 import {
   Container,
@@ -21,10 +21,10 @@ import {
   PlaylistId,
   StatusRow,
   PlaylistDesc,
-  AlignmentInfo,
   PlaylistCardHeaderRow,
   PlaylistSkinType,
-  Grade
+  Grade,
+  ButtonWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
@@ -41,33 +41,12 @@ const PlaylistCard = ({
   usage,
   standardsIdentifiers,
   authorName,
-  testItemId
+  testItemId,
+  allowDuplicate,
+  duplicatePlayList,
+  _id
 }) => {
   const grade = first(_source.grades);
-  const { title, alignmentInfo, skin } = _source;
-
-  const isSparkMathSkin = skin === "SPARK";
-  const isPublisherSkin = skin === "PUBLISHER";
-
-  let headerTitle = title;
-  if (alignmentInfo && isSparkMathSkin) {
-    headerTitle += ` - ${alignmentInfo}`;
-  } else if (!isSparkMathSkin && !isPublisherSkin) {
-    headerTitle = "";
-  }
-
-  let skinType = "";
-  if (isSparkMathSkin) {
-    skinType = "SparkMath";
-  } else if (isPublisherSkin) {
-    skinType = (
-      <span>
-        EUREKA
-        <br />
-        MATH
-      </span>
-    );
-  }
 
   return (
     <Container
@@ -77,12 +56,22 @@ const PlaylistCard = ({
       title={
         <Header src={_source.thumbnail} isPlaylist>
           <PlaylistCardHeaderRow>
-            <PlaylistSkinType>{skinType}</PlaylistSkinType>
+            <PlaylistSkinType />
             <Grade>Grade {grade}</Grade>
           </PlaylistCardHeaderRow>
-          <PlaylistCardHeaderRow>
-            <AlignmentInfo title={headerTitle}>{headerTitle}</AlignmentInfo>
-          </PlaylistCardHeaderRow>
+    
+          {allowDuplicate && <ButtonWrapper className="showHover">
+            <EduButton
+              height="32px"
+              onClick={(e) => {
+                e.stopPropagation();
+                duplicatePlayList({ _id, title: _source.title });
+              }}
+            >
+              clone
+            </EduButton>
+          </ButtonWrapper>}
+
           <Stars isPlaylist />
           {collections.find(o => o.name === "Edulastic Certified") &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
@@ -91,10 +80,9 @@ const PlaylistCard = ({
       }
     >
       <TestInfo isPlaylist>
-        <StyledLink data-cy="test-title" title={title}>
-          {title}
+        <StyledLink data-cy="test-title" title={_source.title}>
+          {_source.title}
         </StyledLink>
-        {isSparkMathSkin && alignmentInfo && <AlignmentInfo dark>Alignment: {alignmentInfo}</AlignmentInfo>}
         <PlaylistDesc dangerouslySetInnerHTML={{ __html: _source.description }} />
         <MidRow data-cy="test-standards">
           <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />
@@ -108,8 +96,8 @@ const PlaylistCard = ({
               {collections.find(o => o.name === "Edulastic Certified") ? (
                 getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
               ) : (
-                <IconUser color={cardTitleColor} />
-              )}
+                  <IconUser color={cardTitleColor} />
+                )}
               <AuthorName data-cy="test-author-name" title={authorName}>
                 {authorName}
               </AuthorName>
@@ -117,7 +105,7 @@ const PlaylistCard = ({
           </Author>
         )}
         <StatusRow>
-          <TestStatusWrapper status={status || _source?.status} checkUser={false}>
+          <TestStatusWrapper status={status || _source ?.status} checkUser={false}>
             {({ children, ...rest }) => (
               <TestStatus data-cy="test-status" {...rest} view="tile">
                 {children}

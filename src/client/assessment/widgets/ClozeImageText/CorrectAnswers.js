@@ -189,6 +189,7 @@ class CorrectAnswers extends Component {
               onUpdatePoints={this.handleUpdateCorrectScore}
               backgroundColor={backgroundColor}
               imageOptions={imageOptions}
+              isCorrectAnsTab
             />
           </TabContainer>
         )}

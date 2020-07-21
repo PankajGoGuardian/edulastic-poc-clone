@@ -201,7 +201,7 @@ export const TypeWrapper = styled.span`
   align-items: center;
   justify-content: ${props => props.justify || "center"};
   margin: auto;
-  padding-left: 25px;
+  padding-left: ${({ paddingLeft }) => paddingLeft || "25px"};
   @media (min-width: ${mediumDesktopExactWidth}) {
     width: ${props => props.width || "110px"};
   }

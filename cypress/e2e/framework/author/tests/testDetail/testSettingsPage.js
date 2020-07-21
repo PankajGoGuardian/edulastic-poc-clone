@@ -31,6 +31,10 @@ export default class TestSettings {
 
   getAllowExit = () => cy.get('[data-cy="exit-allowed"]');
 
+  getSafeExamBrowserSwitch = () => cy.get("#require-safe-exame-browser").find("button");
+
+  getQuitPassord = () => cy.get('[placeholder="Quit Password"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -133,6 +137,19 @@ export default class TestSettings {
         cy.wrap($ele)
           .click()
           .should("not.have.class", "ant-switch-checked");
+    });
+
+  setSafeExamBrowser = pass =>
+    this.getSafeExamBrowserSwitch().then($ele => {
+      if (!$ele.hasClass("ant-switch-checked")) {
+        cy.wrap($ele).click({ force: true });
+      }
+      this.getQuitPassord().type(pass);
+    });
+
+  unSetSafeExamBrowser = () =>
+    this.getSafeExamBrowserSwitch().then($ele => {
+      if ($ele.hasClass("ant-switch-checked")) cy.wrap($ele).click({ force: true });
     });
 
   // *** ACTIONS END ***

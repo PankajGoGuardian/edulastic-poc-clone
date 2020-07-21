@@ -171,9 +171,10 @@ const OrderList = ({
   const renderOptions = view === EDIT && scrollContainer && (
     <OptionsContainer styleType={styleType}>
       <OptionsList
+        item={item}
         fontSize={fontSize}
         width="230px"
-        placement={{ position: "absolute", top: "70px" }}
+        // placement={{ position: "absolute", top: "70px" }}
         axis={axis}
         data-cy="match-option-list"
         prefix="options2"
@@ -191,6 +192,7 @@ const OrderList = ({
         onChangePoints={handleUpdatePoints}
         canDelete={false}
         className="orderlist-set-correct-answer"
+        isCorrectAnsTab={correctTab === 0}
       />
     </OptionsContainer>
   );
@@ -336,12 +338,15 @@ const OrderList = ({
               {view !== EDIT && <Instructions item={item} />}
               {previewTab === SHOW || isReviewTab ? (
                 <Fragment>
-                  <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
+                  <CorrectAnswersContainer title={t("component.orderlist.correctanswer")} titleMargin="0px 0px 20px">
                     <OrderListPreview {...previewProps} showAnswer questions={correctAnswersToShow} />
                   </CorrectAnswersContainer>
 
                   {hasAltAnswers && (
-                    <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
+                    <CorrectAnswersContainer
+                      title={t("component.orderlist.alternateAnswer")}
+                      titleMargin="0px 0px 20px"
+                    >
                       <OrderListPreview
                         {...previewProps}
                         showAnswer

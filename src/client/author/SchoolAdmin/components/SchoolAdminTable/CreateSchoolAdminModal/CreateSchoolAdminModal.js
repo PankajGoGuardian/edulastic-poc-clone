@@ -1,9 +1,8 @@
-import React from "react";
-import { Form, Input, Row, Col, Select, Spin, Checkbox } from "antd";
-
 import { authApi, schoolApi } from "@edulastic/api";
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
-
+import { CheckboxLabel, CustomModalStyled, EduButton, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row, Select, Spin } from "antd";
+import React from "react";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
 import { nameValidator } from "../../../../../common/utils/helpers";
 
 const Option = Select.Option;
@@ -27,32 +26,32 @@ class CreateSchoolAdminModal extends React.Component {
 
     if (emailValidateStatus === "success" && email.length > 0) {
       checkUserResponse = await authApi.checkUserExist({ email });
-      if (checkUserResponse.userExists) {
+      if (checkUserResponse.userExists && checkUserResponse.role === "school-admin") {
         this.setState({
           emailValidateStatus: "error",
           emailValidateMsg: "Username already exists"
         });
       }
     } else if (email.length == 0) {
-        this.setState({
-          emailValidateStatus: "error",
-          emailValidateMsg: "Please input Email"
-        });
-      } else if (this.checkValidEmail(email)) {
-          this.setState({
-            emailValidateStatus: "error",
-            emailValidateMsg: "Username already exists"
-          });
-        } else {
-          this.setState({
-            emailValidateStatus: "error",
-            emailValidateMsg: "Please input valid Email"
-          });
-        }
+      this.setState({
+        emailValidateStatus: "error",
+        emailValidateMsg: "Please input Email"
+      });
+    } else if (this.checkValidEmail(email)) {
+      this.setState({
+        emailValidateStatus: "error",
+        emailValidateMsg: "Username already exists"
+      });
+    } else {
+      this.setState({
+        emailValidateStatus: "error",
+        emailValidateMsg: "Please input valid Email"
+      });
+    }
 
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        if (checkUserResponse.userExists) return;
+        if (checkUserResponse.userExists && checkUserResponse.role === "school-admin") return;
 
         const firstName = row.name.split(" ", 1);
         let lastName = "";
@@ -92,18 +91,18 @@ class CreateSchoolAdminModal extends React.Component {
         email: e.target.value
       });
     } else if (this.checkValidEmail(e.target.value)) {
-        this.setState({
-          emailValidateStatus: "success",
-          emailValidateMsg: "",
-          email: e.target.value
-        });
-      } else {
-        this.setState({
-          emailValidateStatus: "error",
-          emailValidateMsg: "Please input valid Email",
-          email: e.target.value
-        });
-      }
+      this.setState({
+        emailValidateStatus: "success",
+        emailValidateMsg: "",
+        email: e.target.value
+      });
+    } else {
+      this.setState({
+        emailValidateStatus: "error",
+        emailValidateMsg: "Please input valid Email",
+        email: e.target.value
+      });
+    }
   };
 
   checkValidEmail(strEmail) {
@@ -150,7 +149,7 @@ class CreateSchoolAdminModal extends React.Component {
     const { emailValidateStatus, emailValidateMsg, fetching, schoolList, isPowerTeacher } = this.state;
 
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("users.schooladmin.createsa.title")}
         onOk={this.onCreateSchoolAdmin}
@@ -159,8 +158,8 @@ class CreateSchoolAdminModal extends React.Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>{t("users.schooladmin.createsa.nocancel")}</CancelButton>
-            <OkButton onClick={this.onCreateSchoolAdmin}>{t("users.schooladmin.createsa.yescreate")}</OkButton>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("users.schooladmin.createsa.nocancel")}</EduButton>
+            <EduButton onClick={this.onCreateSchoolAdmin}>{t("users.schooladmin.createsa.yescreate")}</EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -174,7 +173,7 @@ class CreateSchoolAdminModal extends React.Component {
                     validator: this.validateName
                   }
                 ]
-              })(<Input placeholder={t("users.schooladmin.createsa.entername")} />)}
+              })(<TextInputStyled placeholder={t("users.schooladmin.createsa.entername")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -187,7 +186,7 @@ class CreateSchoolAdminModal extends React.Component {
               required
               type="email"
             >
-              <Input
+              <TextInputStyled
                 placeholder={t("users.schooladmin.createsa.enteremail")}
                 autocomplete="new-password"
                 onChange={this.changeEmail}
@@ -206,7 +205,7 @@ class CreateSchoolAdminModal extends React.Component {
                   }
                 ]
               })(
-                <Input
+                <TextInputStyled
                   placeholder={t("users.schooladmin.createsa.enterpassword")}
                   type="password"
                   autocomplete="new-password"
@@ -226,7 +225,7 @@ class CreateSchoolAdminModal extends React.Component {
                   }
                 ]
               })(
-                <Select
+                <SelectInputStyled
                   mode="multiple"
                   labelInValue
                   placeholder={t("users.schooladmin.createsa.selectschool")}
@@ -242,24 +241,22 @@ class CreateSchoolAdminModal extends React.Component {
                       {school._source.name}
                     </Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem>
-              <Checkbox
-                checked={isPowerTeacher}
-                onChange={this.changePowerTool}
-              >
-                {t("users.schooladmin.powertools")}
-              </Checkbox>
-            </ModalFormItem>
+            <CheckboxLabel
+              checked={isPowerTeacher}
+              onChange={this.changePowerTool}
+            >
+              {t("users.schooladmin.powertools")}
+            </CheckboxLabel>
           </Col>
         </Row>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

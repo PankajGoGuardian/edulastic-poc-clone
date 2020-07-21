@@ -6,6 +6,7 @@ import next from "immer";
 import qs from "qs";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
 
 import { getNavigationTabLinks } from "../../common/util";
 
@@ -20,7 +21,7 @@ import PerformanceOverTime from "./PerformanceOverTime";
 
 import { setMARSettingsAction, getReportsMARSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
+import { FilterButton, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
 
 const MultipleAssessmentReportContainer = props => {
   const {
@@ -138,7 +139,9 @@ const MultipleAssessmentReportContainer = props => {
         style={showFilter ? { display: "block" } : { display: "none" }}
         extraFilter={extraFilters}
       />
-      <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+      <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+        <IconFilter />
+      </FilterButton>
       <ReportContaner showFilter={showFilter}>
         <Route
           exact

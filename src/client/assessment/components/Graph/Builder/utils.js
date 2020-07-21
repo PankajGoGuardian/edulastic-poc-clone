@@ -328,8 +328,8 @@ export function updateAxe(line, parameters, axe) {
   }
   if ("minArrow" in parameters || "maxArrow" in parameters) {
     line.setArrow(
-      parameters.minArrow === true ? { size: 8 } : false,
-      parameters.maxArrow === true ? { size: 8 } : false
+      parameters.minArrow === true ? { size: parameters.arrowSize || 8 } : false,
+      parameters.maxArrow === true ? { size: parameters.arrowSize || 8 } : false
     );
   }
   line.ticks[0].generateLabelText = tickLabel(axe, parameters.commaInLabel, parameters.drawZero);

@@ -9,15 +9,16 @@ import {
   FlexContainer,
   QuestionNumberLabel,
   QuestionSubLabel,
+  TextAreaInputStyled,
   QuestionLabelWrapper,
   QuestionContentWrapper
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
+import { lightGrey12, white } from "@edulastic/colors";
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
 
 import { Toolbar } from "../../styled/Toolbar";
-import { Item, TextAnswer } from "../../styled/Item";
+import { Item } from "../../styled/Item";
 
 import { ToolbarItem } from "./styled/ToolbarItem";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -26,7 +27,12 @@ import Character from "./components/Character";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import Instructions from "../../components/Instructions";
 
-const getWordCount = val => val?.split("\n").map(line => line.split(" ")).flat().filter(i => !!i).length;
+const getWordCount = val =>
+  val
+    ?.split("\n")
+    .map(line => line.split(" "))
+    .flat()
+    .filter(i => !!i).length;
 
 const EssayPlainTextPreview = ({
   col,
@@ -140,6 +146,10 @@ const EssayPlainTextPreview = ({
   const numberOfRows = get(item, "uiStyle.numberOfRows", 10);
   const isV1Multipart = get(col, "isV1Multipart", false);
   const fontSize = theme.fontSize || getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const background =
+    item.maxWord < wordCount
+      ? theme.widgets.essayPlainText.textInputLimitedBgColor
+      : theme.widgets.essayPlainText.textInputBgColor;
 
   return (
     <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -154,72 +164,73 @@ const EssayPlainTextPreview = ({
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
 
-          {!disableResponse && (
-            <Toolbar reviewTab={reviewTab} borderRadiusOnlyTop style={{ borderBottom: 0 }}>
-              <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
-                {item.showCopy && (
-                  <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>
-                )}
-                {item.showCut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
-                {item.showPaste && (
-                  <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>
-                )}
-                {Array.isArray(item.characterMap) && (
-                  <Character
-                    onSelect={char => {
-                      setSelection({
-                        start: selection.start + char.length,
-                        end: selection.start + char.length
-                      });
-                      setText(text.slice(0, selection.start) + char + text.slice(selection.end));
-                    }}
-                    characters={item.characterMap}
-                  />
-                )}
-              </FlexContainer>
-            </Toolbar>
-          )}
-          {!isPrintPreview && <TextAnswer
-            ref={ref => {
-              node = ref;
-            }}
-            style={{
-              borderRadius: 0,
-              fontSize,
-              color: theme.widgets.essayPlainText.textInputColor,
-              borderColor: theme.widgets.essayPlainText.textInputBorderColor,
-              background:
-                item.maxWord < wordCount
-                  ? theme.widgets.essayPlainText.textInputLimitedBgColor
-                  : theme.widgets.essayPlainText.textInputBgColor
-            }}
-            rows={numberOfRows} // textarea number of rows
-            onSelect={handleSelect}
-            value={smallSize ? t("component.essayText.plain.templateText") : text}
-            onChange={handleTextChange}
-            size="large"
-            onPaste={preventEvent}
-            readOnly={disableResponse}
-            onCopy={preventEvent}
-            onCut={preventEvent}
-            placeholder={item.placeholder || ""}
-            disabled={reviewTab}
-            {...getSpellCheckAttributes(item.spellcheck)}
-          />
-          }
-          {isPrintPreview && (
-            <StyledPrintAnswerBox>
-              {text.split("\n").map((txt, i) => <p key={i}>{txt}</p>)}
-            </StyledPrintAnswerBox>
-          )}
+          <EssayPlainTextBoxContainer>
+            {!disableResponse && (
+              <EssayToolbar reviewTab={reviewTab} borderRadiusOnlyTop>
+                <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
+                  {item.showCopy && (
+                    <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>
+                  )}
+                  {item.showCut && (
+                    <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>
+                  )}
+                  {item.showPaste && (
+                    <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>
+                  )}
+                  {Array.isArray(item.characterMap) && (
+                    <Character
+                      onSelect={char => {
+                        setSelection({
+                          start: selection.start + char.length,
+                          end: selection.start + char.length
+                        });
+                        setText(text.slice(0, selection.start) + char + text.slice(selection.end));
+                      }}
+                      characters={item.characterMap}
+                    />
+                  )}
+                </FlexContainer>
+              </EssayToolbar>
+            )}
+            {!isPrintPreview && (
+              <TextArea
+                ref={ref => {
+                  node = ref;
+                }}
+                noBorder
+                height="auto"
+                fontSize={fontSize}
+                bg={background}
+                rows={numberOfRows} // textarea number of rows
+                onSelect={handleSelect}
+                value={smallSize ? t("component.essayText.plain.templateText") : text}
+                onChange={handleTextChange}
+                size="large"
+                onPaste={preventEvent}
+                readOnly={disableResponse}
+                onCopy={preventEvent}
+                onCut={preventEvent}
+                placeholder={item.placeholder || ""}
+                disabled={reviewTab}
+                {...getSpellCheckAttributes(item.spellcheck)}
+              />
+            )}
+            {isPrintPreview && (
+              <StyledPrintAnswerBox>
+                {text.split("\n").map((txt, i) => (
+                  <p key={i}>{txt}</p>
+                ))}
+              </StyledPrintAnswerBox>
+            )}
 
-          {!reviewTab && item.showWordCount && (
-            <Toolbar borderRadiusOnlyBottom style={{ borderTop: 0 }}>
-              <FlexContainer alignItems="stretch" justifyContent="space-between" />
+            {!reviewTab && item.showWordCount && (
+              <EssayToolbar borderRadiusOnlyBottom>
+                <FlexContainer alignItems="stretch" justifyContent="space-between" />
 
-              <Item style={wordCountStyle}>{displayWordCount}</Item>
-            </Toolbar>
-          )}
+                <Item style={wordCountStyle}>{displayWordCount}</Item>
+              </EssayToolbar>
+            )}
+          </EssayPlainTextBoxContainer>
         </QuestionContentWrapper>
       </FlexContainer>
       <Instructions item={item} />
@@ -257,10 +268,34 @@ const enhance = compose(
   withTheme
 );
 
+export default enhance(EssayPlainTextPreview);
+
 const StyledPrintAnswerBox = styled.div`
   min-height: 150px;
   border-radius: 10px;
   border: 1px solid;
   padding-left: 6px;
 `;
-export default enhance(EssayPlainTextPreview);
+
+const EssayPlainTextBoxContainer = styled.div`
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid ${lightGrey12};
+`;
+
+const EssayToolbar = styled(Toolbar)`
+  min-height: 40px;
+  background: ${white};
+  border-bottom: ${({ borderRadiusOnlyTop }) => borderRadiusOnlyTop && `1px solid ${lightGrey12}`};
+  border-top: ${({ borderRadiusOnlyBottom }) => borderRadiusOnlyBottom && `1px solid ${lightGrey12}`};
+`;
+
+const TextArea = styled(TextAreaInputStyled)`
+  resize: none;
+  &.ant-input {
+    &:focus,
+    &:hover {
+      border: none;
+    }
+  }
+`;

@@ -3,7 +3,7 @@ import React, { useRef, useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { dashBorderColor, mobileWidthLarge } from "@edulastic/colors";
+import { lightGrey1, mobileWidthLarge } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
 const ChoiceContainer = ({ title, children, direction, choiceWidth }) => {
@@ -45,7 +45,7 @@ export default ChoiceContainer;
 const Container = styled.div`
   padding: 22px 12px;
   min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : "140px")};
-  background-color: ${dashBorderColor};
+  background-color: ${lightGrey1};
 
   ${({ direction, choiceWidth }) => {
     if (direction === "row") {

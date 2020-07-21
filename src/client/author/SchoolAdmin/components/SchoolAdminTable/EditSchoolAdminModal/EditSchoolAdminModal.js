@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Checkbox } from "antd";
+import { CheckboxLabel, CustomModalStyled, EduButton, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row, Select } from "antd";
 import { omit, uniqBy } from "lodash";
-
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+import React, { Component } from "react";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
 
 const Option = Select.Option;
 
@@ -67,7 +67,7 @@ class EditSchoolAdminModal extends Component {
 
     const { getFieldDecorator } = this.props.form;
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("users.schooladmin.editsa.title")}
         onOk={this.onCreateSchoolAdmin}
@@ -76,8 +76,8 @@ class EditSchoolAdminModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onSaveSchoolAdmin}>Yes, Update</OkButton>
+            <EduButton isGhost onClick={this.onCloseModal}>No, Cancel</EduButton>
+            <EduButton onClick={this.onSaveSchoolAdmin}>Yes, Update</EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -92,7 +92,7 @@ class EditSchoolAdminModal extends Component {
                   }
                 ],
                 initialValue: _source.firstName
-              })(<Input placeholder={t("users.schooladmin.editsa.enterfirstname")} />)}
+              })(<TextInputStyled placeholder={t("users.schooladmin.editsa.enterfirstname")} />)}
             </ModalFormItem>
           </Col>
           <Col span={24}>
@@ -105,7 +105,7 @@ class EditSchoolAdminModal extends Component {
                   }
                 ],
                 initialValue: _source.lastName
-              })(<Input placeholder={t("users.schooladmin.editsa.enterlastname")} />)}
+              })(<TextInputStyled placeholder={t("users.schooladmin.editsa.enterlastname")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -124,7 +124,7 @@ class EditSchoolAdminModal extends Component {
                   }
                 ],
                 initialValue: _source.email
-              })(<Input placeholder={t("users.schooladmin.editsa.enteremail")} />)}
+              })(<TextInputStyled placeholder={t("users.schooladmin.editsa.enteremail")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -132,7 +132,7 @@ class EditSchoolAdminModal extends Component {
           <Col span={24}>
             <ModalFormItem label={t("users.schooladmin.editsa.password")}>
               {getFieldDecorator("password", {})(
-                <Input type="password" placeholder={t("users.schooladmin.editsa.enterpassword")} />
+                <TextInputStyled type="password" placeholder={t("users.schooladmin.editsa.enterpassword")} />
               )}
             </ModalFormItem>
           </Col>
@@ -147,7 +147,7 @@ class EditSchoolAdminModal extends Component {
                     message: t("users.schooladmin.editsa.validations.invalidpassword")
                   }
                 ]
-              })(<Input type="password" placeholder={t("users.schooladmin.editsa.enterconfirmpassword")} />)}
+              })(<TextInputStyled type="password" placeholder={t("users.schooladmin.editsa.enterconfirmpassword")} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -163,31 +163,32 @@ class EditSchoolAdminModal extends Component {
                 ],
                 initialValue: _source.institutionIds
               })(
-                <Select
+                <SelectInputStyled
                   mode="multiple"
                   placeholder={t("users.schooladmin.editsa.selectschool")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
                   {schoolsOptions}
-                </Select>
+                </SelectInputStyled>
               )}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem>
+            <ModalFormItem style={{ margin: "0px" }}>
               {getFieldDecorator("isPowerTeacher", {
-              initialValue: _source?.isPowerTeacher,
-              valuePropName: "checked"
-            })(<Checkbox>
-              {t("users.schooladmin.powertools")}
-            </Checkbox>
+                initialValue: _source?.isPowerTeacher,
+                valuePropName: "checked"
+              })(
+                <CheckboxLabel>
+                  {t("users.schooladmin.powertools")}
+                </CheckboxLabel>
               )}
             </ModalFormItem>
           </Col>
         </Row>
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

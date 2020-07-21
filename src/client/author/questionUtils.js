@@ -23,7 +23,12 @@ export const isRichTextFieldEmpty = text => {
     return false;
   }
 
-  let _text = striptags(text);
+  /**
+   * if the option only has video, do not strip the video or iframe tags
+   * otherwise, after stripping it considers it as empty
+   * @see https://snapwiz.atlassian.net/browse/EV-16093
+   */
+  let _text = striptags(text, ["iframe", "video"]);
   _text = _text.replace(/&nbsp;/g, " ");
   if (!_text || (_text && !_text.trim())) {
     return true;
@@ -386,11 +391,12 @@ const answerValidator = {
   [questionType.CLASSIFICATION](answers) {
     const isEmptyArray = arr => arr.length === 0;
     const values = answers.map(ans => ans.value);
+    // At least one column should have correct answer
     const hasEmpty =
       !values.length ||
       values.some(val => {
         const responseIdArrays = Object.values(val);
-        return !responseIdArrays.length || responseIdArrays.some(isEmptyArray);
+        return responseIdArrays.length ? responseIdArrays.every(isEmptyArray) : true;
       });
     return hasEmpty;
   },

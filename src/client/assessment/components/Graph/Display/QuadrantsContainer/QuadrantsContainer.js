@@ -52,7 +52,7 @@ const colorMap = type => {
       return "#005ce6"; // dark blue
     case "xaxis":
     case "yaxis":
-      return "black";
+      return "#434B5D";
     case "dashed":
       return darkGrey2; // dark bluish grey
     case "area":
@@ -271,9 +271,7 @@ class GraphContainer extends PureComponent {
       this._graph.setAxesParameters({
         x: {
           ...defaultAxesParameters(),
-          ...xAxesParameters,
-          fill: "red",
-          stockColor: "red"
+          ...xAxesParameters
         },
         y: {
           ...yAxesParameters

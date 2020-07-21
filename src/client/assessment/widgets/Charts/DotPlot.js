@@ -16,7 +16,7 @@ const DotPlot = ({
   previewTab,
   gridParams,
   view,
-  correct,
+  evaluation,
   disableResponse,
   toggleBarDragging,
   deleteMode
@@ -123,7 +123,7 @@ const DotPlot = ({
         bars={localData}
         view={view}
         gridParams={gridParams}
-        correct={correct}
+        evaluation={evaluation}
       />
 
       <ArrowPair getActivePoint={getActivePoint} />
@@ -152,7 +152,7 @@ DotPlot.propTypes = {
   deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired,
+  evaluation: PropTypes.object.isRequired,
   toggleBarDragging: PropTypes.func
 };
 

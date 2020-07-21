@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import { greyThemeLight, lightGreySecondary, themeColor } from "@edulastic/colors";
 import { Button, Form } from "antd";
-import { title, themeColor, boxShadowDefault,greyThemeLight,greyThemeLighter ,lightGreySecondary} from "@edulastic/colors";
+import styled from "styled-components";
 import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 
 export const StyledModal = styled(ConfirmationModal)`
@@ -64,20 +64,11 @@ export const Field = styled.fieldset`
   width: 100%;
   padding: 0px;
 
-  legend {
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 0px;
-    border: 0px;
-    color: ${title};
-    text-transform: uppercase;
+  label {
+    font-size: 11px;
   }
 
-  &:first-child {
-    margin-top: 0px;
-  }
-  .ant-calendar-picker,
-  .ant-select {
+  .ant-calendar-picker {
     width: 100%;
   }
 `;

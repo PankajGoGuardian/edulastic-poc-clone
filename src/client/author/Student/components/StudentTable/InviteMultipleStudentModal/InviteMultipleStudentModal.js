@@ -1,44 +1,40 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Form, Row, Col, Select } from "antd";
-import { get } from "lodash";
 import { userApi } from "@edulastic/api";
+import { CustomModalStyled, EduButton, SelectInputStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { IconClose, IconCorrect } from "@edulastic/icons";
+import { IconCorrect } from "@edulastic/icons";
+import { Col, Form, Row, Select } from "antd";
+import { get } from "lodash";
+import React, { Component } from "react";
 import { withNamespaces } from "react-i18next";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { connect } from "react-redux";
 import { compose } from "redux";
-import { EduButton,CustomModalStyled } from "@edulastic/common";
-import {
-  StyledTextArea,
-  PlaceHolderText,
-  SelUserKindDiv,
-  ItemDiv,
-  Text,
-  ColWrapper,
-  StyledModal,
-  StyledSearch,
-  ModalCloseIconWrapper,
-  SearchViewContainer,
-  AddBulkStudentsViewContainer,
-  SearchTabButton,
-  AddMultipleStudentsTabButton,
-  CancelButton,
-  OkButton,
-  ItemText,
-  ButtonsContainer,
-  AddBulkUserPrimaryTextContainer,
-  IconSwap
-} from "./styled";
 import { ModalFormItem } from "../AddStudentModal/styled";
+import {
+  AddBulkStudentsViewContainer,
+  AddBulkUserPrimaryTextContainer,
+  AddMultipleStudentsTabButton,
+  ButtonsContainer,
+  ColWrapper,
+  IconSwap,
+  ItemDiv,
+  ItemText,
+  PlaceHolderText,
+  SearchTabButton,
+  SearchViewContainer,
+  SelUserKindDiv,
+  StyledSearch,
+  StyledTextArea,
+  Text
+} from "./styled";
 
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
     moveItem(item);
   };
 
-  const {_source: source} = item;
-  const {username, firstName, lastName} = source;
+  const { _source: source } = item;
+  const { username, firstName, lastName } = source;
   const fullName = (`${firstName ? `${firstName} ` : ""}${lastName || ''}`) || 'Anonymous';
 
   return (
@@ -245,11 +241,11 @@ class InviteMultipleStudentModal extends Component {
     const allLists =
       allStudents.length > 0
         ? allStudents.map(item => {
-            const isEnrolled =
-              studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
-                .length > 0;
-            return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
-          })
+          const isEnrolled =
+            studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
+              .length > 0;
+          return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
+        })
         : null;
 
     const toEnrollLists =
@@ -310,15 +306,24 @@ class InviteMultipleStudentModal extends Component {
     const defaultSchoolId = schools.length ? schools[0]._id : "";
     return (
       <CustomModalStyled
+        title={t("users.student.invitestudents.tab2")}
         visible={modalVisible}
         onOk={this.onInviteStudents}
         onCancel={this.onCloseModal}
         maskClosable={false}
-        footer={null}
-        closable={false}
+        footer={[
+          <ButtonsContainer>
+            <EduButton isGhost onClick={this.onCloseModal}>
+              <span>{t("users.student.invitestudents.nocancel")}</span>
+            </EduButton>
+            <EduButton data-cy="addStudents" onClick={() => { this.addStudents() }}>
+              <span>{t("users.student.invitestudents.addtoclass")}</span>
+            </EduButton>
+          </ButtonsContainer>
+        ]}
         centered
       >
-        <Row type="flex" justify="space-between">
+        <Row gutter={4} type="flex" justify="space-between">
           {searchAndAddStudents && (
             <Col span={13}>
               <SearchTabButton
@@ -330,7 +335,7 @@ class InviteMultipleStudentModal extends Component {
               </SearchTabButton>
             </Col>
           )}
-          <Col span={9}>
+          <Col span={11}>
             <AddMultipleStudentsTabButton
               data-cy="addMultipleStudent"
               searchViewVisible={searchViewVisible}
@@ -339,9 +344,6 @@ class InviteMultipleStudentModal extends Component {
               {t("users.student.invitestudents.tab2")}
             </AddMultipleStudentsTabButton>
           </Col>
-          <ModalCloseIconWrapper span={2}>
-            <IconClose color="black" width="15px" height="15px" onClick={this.onCloseModal} />
-          </ModalCloseIconWrapper>
         </Row>
         {searchViewVisible ? (
           <SearchViewContainer>
@@ -373,14 +375,14 @@ class InviteMultipleStudentModal extends Component {
         ) : (
           <AddBulkStudentsViewContainer>
             <Row>
-              <AddBulkUserPrimaryTextContainer span={15}>
+              <AddBulkUserPrimaryTextContainer span={24}>
                 {t("users.student.invitestudents.tab2title")}
               </AddBulkUserPrimaryTextContainer>
             </Row>
             <SelUserKindDiv>
               <Col span={8}>{t("users.student.invitestudents.byname")}</Col>
               <Col span={16}>
-                <Select
+                <SelectInputStyled
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                   data-cy="studentType"
                   onChange={this.handleChange}
@@ -391,8 +393,8 @@ class InviteMultipleStudentModal extends Component {
                   {firstNameAndLastName && [
                     <Option value="fl">{t("users.student.invitestudents.fl")}</Option>,
                     <Option value="lf">{t("users.student.invitestudents.lf")}</Option>
-                  ]}
-                </Select>
+                    ]}
+                </SelectInputStyled>
               </Col>
             </SelUserKindDiv>
             <Row>
@@ -400,68 +402,53 @@ class InviteMultipleStudentModal extends Component {
                 <FormItem style={{ marginBottom: "0px" }}>
                   {placeHolderComponent}
                   {getFieldDecorator("students", {
-                    rules: [
-                      {
-                        validator: this.validateStudentsList
-                      }
-                    ]
-                  })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
+                      rules: [
+                        {
+                          validator: this.validateStudentsList
+                        }
+                      ]
+                    })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
                 </FormItem>
               </Col>
             </Row>
             {curSel === "fl" || curSel === "lf" ? (
               <p>
                 {role === roleuser.TEACHER
-                  ? `Class code (${
-                      selectedClass.code
+                    ? `Class code (${
+                    selectedClass.code
                     }) will be used as default password for these students, please ask the students to change their password once they login to their account.
                   `
-                  : `'edulastic' will be used as default password for these students, please ask the students to change
+                    : `'edulastic' will be used as default password for these students, please ask the students to change
                   their password once they login to their account.`}
               </p>
-            ) : null}
+              ) : null}
             {role === roleuser.SCHOOL_ADMIN ? (
               <Row>
                 <Col span={24}>
                   <ModalFormItem label="Select School">
                     {getFieldDecorator("institutionId", {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Please select school"
-                        }
-                      ],
-                      initialValue: defaultSchoolId
-                    })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode} placeholder="Select school">
-                        {schools.map(school => (
-                          <Option key={school._id} value={school._id}>
-                            {school.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
+                        rules: [
+                          {
+                            required: true,
+                            message: "Please select school"
+                          }
+                        ],
+                        initialValue: defaultSchoolId
+                      })(
+                        <Select getPopupContainer={triggerNode => triggerNode.parentNode} placeholder="Select school">
+                          {schools.map(school => (
+                            <Option key={school._id} value={school._id}>
+                              {school.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      )}
                   </ModalFormItem>
                 </Col>
               </Row>
-            ) : null}
+              ) : null}
           </AddBulkStudentsViewContainer>
-        )}
-
-        <ButtonsContainer gutter={5}>
-          <EduButton height="40px" isGhost onClick={this.onCloseModal}>
-            <span>{t("users.student.invitestudents.nocancel")}</span>
-          </EduButton>
-          <EduButton
-            height="40px"
-            data-cy="addStudents"
-            onClick={() => {
-              this.addStudents();
-            }}
-          >
-            <span>{t("users.student.invitestudents.addtoclass")}</span>
-          </EduButton>
-        </ButtonsContainer>
+          )}
       </CustomModalStyled>
     );
   }

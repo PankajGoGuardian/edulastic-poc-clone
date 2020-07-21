@@ -38,13 +38,13 @@ class CorrectAnswer extends Component {
     };
   }
 
-  updateScore = e => {
+  updateScore = score => {
     const { onUpdatePoints, max } = this.props;
-    if (!(e.target.value > 0)) {
+    if (!(score > 0)) {
       return;
     }
-    this.setState({ responseScore: e.target.value > max ? max : e.target.value });
-    onUpdatePoints(parseFloat(e.target.value, 10));
+    this.setState({ responseScore: score > max ? max : score });
+    onUpdatePoints(parseFloat(score, 10));
   };
 
   handleMultiSelect = (answers, id, widthpx) => {

@@ -15,7 +15,8 @@ import {
   userContextApi,
   groupApi,
   recommendationsApi,
-  TokenStorage as Storage
+  TokenStorage as Storage,
+  testsApi
 } from "@edulastic/api";
 import produce from "immer";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
@@ -134,6 +135,12 @@ export const SET_ACTIVE_RIGHT_PANEL = "[playlist] set active right panel view";
 export const DELETE_PLAYLIST_REQUEST = "[playlist] delete request";
 export const REMOVE_PLAYLIST_FROM_USE = "[playlist] remove from use";
 
+export const UNASSIGN_ASSIGNMENTS_FROM_PLAYLIST = "[playlist] unassign assignments";
+export const UNASSIGN_ASSINMENTS_SUCCESS = "[playlist] unassign assignments success";
+export const TOGGLE_ASSIGNMENTS = "[playlist] toggle assignments";
+export const SET_CURRENT_ASSIGNMENT_IDS = "[playlist] set current assignment ids";
+export const DUPLICATE_PLAYLIST_REQUEST = "[playlist] duplicate request";
+
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
 export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE);
@@ -195,6 +202,11 @@ export const setShowRightSideAction = createAction(SET_SHOW_RIGHT_SIDE_PANEL);
 export const setActiveRightPanelViewAction = createAction(SET_ACTIVE_RIGHT_PANEL);
 export const deletePlaylistRequestAction = createAction(DELETE_PLAYLIST_REQUEST);
 export const removePlaylistFromUseAction = createAction(REMOVE_PLAYLIST_FROM_USE);
+export const unassignAssignmentsfromPlaylistAction = createAction(UNASSIGN_ASSIGNMENTS_FROM_PLAYLIST);
+export const unassignAssignmentsSuccessAction = createAction(UNASSIGN_ASSINMENTS_SUCCESS);
+export const toggleAssignmentsAction = createAction(TOGGLE_ASSIGNMENTS);
+export const setCurrentAssignmentIdsAction = createAction(SET_CURRENT_ASSIGNMENT_IDS);
+export const duplicatePlaylistRequestAction = createAction(DUPLICATE_PLAYLIST_REQUEST);
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -276,22 +288,26 @@ const getPublisher = state => {
 
 const getDestinationCurriculumSequence = state => state.curriculumSequence.destinationCurriculumSequence;
 
-function* makeApiRequest(idsForFetch = [], showNotification = false) {
+function* makeApiRequest(idsForFetch = [], showNotification = false, forUseThis = false) {
   try {
-    const unflattenedItems = yield all(idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id)));
+    const pathname = yield select(state => state.router.location.pathname);
+    const isMyPlaylist = pathname.includes("use-this");
+    const unflattenedItems = yield all(
+      idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, { id, forUseThis: forUseThis || isMyPlaylist }))
+    );
 
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
     const items = flatten(unflattenedItems);
-    const recentPlaylists = yield select(state => state?.playlists?.recentPlayLists || []);
+    const recentPlaylists = yield select(state => state ?.playlists ?.recentPlayLists || []);
 
     // show notification if when user comes to playlist page and playlist has assigned assignments
     // show only notification for teacher
     if (showNotification) {
-      const modules = items?.reduce((acc, curr) => [...acc, ...(curr?.modules || [])], []);
+      const modules = items ?.reduce((acc, curr) => [...acc, ...(curr ?.modules || [])], []);
       const sumOfclasse = modules
         .reduce((acc, curr) => [...acc, ...(curr.data || [])], [])
-        .flatMap(x => x?.assignments || {})
+        .flatMap(x => x ?.assignments || {})
         .reduce((acc, curr) => acc + get(curr, "class.length", 0), 0);
       const playlistBeingUsed = idsForFetch.length === 1 && recentPlaylists.find(x => x._id === idsForFetch[0]);
       if (sumOfclasse > 0 && playlistBeingUsed) {
@@ -326,7 +342,7 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
       yield put(updateCurriculumSequenceAction(items));
     }
   } catch (error) {
-    if (error.data?.statusCode === 403) {
+    if (error.data ?.statusCode === 403) {
       /**
        * if permission is denied while trying to access MyPlaylist, then
        * show any one of the recently used playlists.
@@ -334,9 +350,9 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
       try {
         const pathname = yield select(state => state.router.location.pathname);
         const isMyPlaylist = pathname.includes("use-this");
+        const recentPlaylists = yield select(state => state ?.playlists ?.recentPlayLists || []);
+        const currentPlaylistIndex = recentPlaylists ?.findIndex(({ _id }) => _id === idsForFetch ?.[0]);
         if (isMyPlaylist) {
-          const recentPlaylists = yield select(state => state?.playlists?.recentPlayLists || []);
-          const currentPlaylistIndex = recentPlaylists?.findIndex(({ _id }) => _id === idsForFetch?.[0]);
           // currentPlaylistIndex should be -1 if its > -1 then something's not right !
           const index = currentPlaylistIndex === -1 ? 0 : currentPlaylistIndex + 1;
           const { _id = "" } = recentPlaylists[index] || {};
@@ -344,18 +360,29 @@ function* makeApiRequest(idsForFetch = [], showNotification = false) {
             yield call(makeApiRequest, [_id], false);
             yield put(push(`/author/playlists/playlist/${_id}/use-this`));
             yield call(notification, {
-              msg: `You can no longer access '${error?.data?.title ||
+              msg: `You can no longer access '${error ?.data ?.title ||
                 "this"}' Playlist as sharing is revoked by the author.`
             });
             return;
           }
+        } else if (currentPlaylistIndex !== -1) {
+          // if the playlist is in recents then navigate to myPlaylist
+
+          yield call(makeApiRequest, [idsForFetch ?.[0]], false, true);
+          yield put(push(`/author/playlists/playlist/${idsForFetch ?.[0]}/use-this`));
+          yield call(notification, {
+            type: "warn",
+            msg: `You can no longer access '${error ?.data ?.title ||
+              "this"}' Playlist as sharing is revoked by the author.`
+          });
+          return;
         }
         // handle the rest in successive catch block
         throw new Error("Permission Denied !");
       } catch (e) {
         yield put(push("/author/playlists"));
         yield call(notification, {
-          msg: `You can no longer access '${error?.data?.title ||
+          msg: `You can no longer access '${error ?.data ?.title ||
             "this"}' Playlist as sharing is revoked by the author.`
         });
       }
@@ -581,7 +608,7 @@ function* saveCurriculumSequence({ payload }) {
   delete destinationCurriculumSequence._id;
 
   yield putCurriculumSequence({
-    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload?.isPlaylist }
+    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload ?.isPlaylist }
   });
 }
 
@@ -838,6 +865,22 @@ function* fetchAssigned() {
   }
 }
 
+function* duplicatePlayListSaga({ payload }) {
+  try {
+    const { _id, title } = payload;
+    const duplicatedPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
+      _id,
+      title
+    });
+    const newId = duplicatedPlaylist._id;
+    yield put(push(`/author/playlists/${newId}/edit`));
+  } catch (e) {
+    console.error(e);
+    notification({ messageKey: "commonErr" });
+    Sentry.captureException(e);
+  }
+}
+
 function* duplicateManageContentSaga({ payload }) {
   try {
     const { _id: originalId, title: originalTitle, grades, subjects } = payload;
@@ -1032,7 +1075,7 @@ function* fetchClassListByDistrictId() {
       fetchClassListSuccess({ classList: classList.map(x => ({ id: x.classId, name: x.className, type: "class" })) })
     );
   } catch (error) {
-    notification({ msg: error?.data?.message });
+    notification({ msg: error ?.data ?.message });
     console.error(error);
   }
 }
@@ -1048,14 +1091,14 @@ function* fetchStudentListByGroupId({ payload }) {
       fetchStudentListSuccess({
         studentList: studentList.map(x => ({
           id: x.studentId,
-          name: `${x?.firstName || ""} ${x?.lastName || ""}`,
+          name: `${x ?.firstName || ""} ${x ?.lastName || ""}`,
           type: "student",
           classId: payload.classId
         }))
       })
     );
   } catch (error) {
-    notification({ msg: error?.data?.message });
+    notification({ msg: error ?.data ?.message });
     console.error(error);
   }
 }
@@ -1077,8 +1120,8 @@ function* fetchPlaylistAccessList({ payload }) {
       const result = yield call(groupApi.fetchPlaylistAccess, playlistId);
       if (result) {
         yield put(updateDroppedAccessList(result));
-        const classIds = [...result?.classList?.map(x => x?._id), ...result?.studentList?.map(x => x?.groupId)];
-        if (classIds?.length) {
+        const classIds = [...result ?.classList ?.map(x => x ?._id), ...result ?.studentList ?.map(x => x ?.groupId)];
+        if (classIds ?.length) {
           yield all(classIds.map(classId => put(fetchStudentListAction({ districtId, classId }))));
         }
       }
@@ -1314,7 +1357,7 @@ function* removeFromUseSaga({ payload: id }) {
     yield put(receiveRecentPlayListsAction());
     message.destroy();
     notification({ type: "success", messageKey: "playlistRemoveFromUseSuccess" });
-    if (lastPlaylistResult?.value) {
+    if (lastPlaylistResult ?.value) {
       yield put(
         useThisPlayListAction({
           ...lastPlaylistResult.value,
@@ -1330,6 +1373,24 @@ function* removeFromUseSaga({ payload: id }) {
     console.error("delete playlist failed -e ", e);
     notification({ messageKey: "playlistRemoveFromUseFailed" });
     Sentry.captureException(e);
+  }
+}
+
+function* unassignAssignmentsfromPlaylistSaga({ payload }) {
+  try {
+    const { playlistId, moduleId, unsetAssignmentCallback, ...data } = payload;
+    const { deletedIds = [] } = yield call(testsApi.deleteAssignments, data);
+    if (deletedIds.length) {
+      notification({ type: "success", msg: "Assignment(s) successfully unassigned" });
+      yield put(unassignAssignmentsSuccessAction({ moduleId, testId: payload.testId, deletedIds }));
+      yield put(toggleAssignmentsAction({ testId: payload.testId, playlistId }));
+      return;
+    }
+    throw new Error("Failed to unassign");
+  } catch (err) {
+    notification({ msg: "Failed to unassign Assignment(s)" });
+    console.error(err);
+    Sentry.captureException(err);
   }
 }
 
@@ -1370,7 +1431,9 @@ export function* watcherSaga() {
     yield takeLatest(DELETE_PLAYLIST_REQUEST, deletePlaylistSaga),
     yield takeLatest(REMOVE_PLAYLIST_FROM_USE, removeFromUseSaga),
     yield takeLatest(REVERT_CUSTOMIZE_TO_DRAFT, resetToOriginalPlaylist),
-    yield takeLatest(CHECK_PREVIOUSLY_CUSTOMIZED, checkForPreviouslyCustomizedPlaylist)
+    yield takeLatest(CHECK_PREVIOUSLY_CUSTOMIZED, checkForPreviouslyCustomizedPlaylist),
+    yield takeLatest(UNASSIGN_ASSIGNMENTS_FROM_PLAYLIST, unassignAssignmentsfromPlaylistSaga),
+    yield takeLatest(DUPLICATE_PLAYLIST_REQUEST, duplicatePlayListSaga)
   ]);
 
   const currSequenceUpdateQueue = yield actionChannel(PUT_CURRICULUM_SEQUENCE, buffers.sliding(5));
@@ -1386,7 +1449,7 @@ export function* watcherSaga() {
      */
     if (customizeInDraft) {
       yield put(updateCurriculumSequenceAction(payload.curriculumSequence));
-    } else if (version <= payload.curriculumSequence?.version) {
+    } else if (version <= payload.curriculumSequence ?.version) {
       yield call(putCurriculumSequence, { payload });
     }
   }
@@ -1518,7 +1581,8 @@ const initialState = {
   isVideoResourcePreviewModal: false,
   showSumary: true,
   showRightPanel: true,
-  customizeInDraft: false
+  customizeInDraft: false,
+  currentAssignmentIds: []
 };
 
 /**
@@ -1573,9 +1637,9 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
  */
 const updateCurriculumSequenceReducer = (state, { payload }) => {
   const curriculumSequence = payload;
-  const id = (curriculumSequence?.[0] && curriculumSequence[0]._id) || curriculumSequence._id;
+  const id = (curriculumSequence ?.[0] && curriculumSequence[0]._id) || curriculumSequence._id;
 
-  state.byId[id] = curriculumSequence?.[0] || curriculumSequence;
+  state.byId[id] = curriculumSequence ?.[0] || curriculumSequence;
   // if (curriculumSequence.type === "guide") {
   state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
   state.originalData = state.destinationCurriculumSequence;
@@ -1861,7 +1925,7 @@ function updateStudentList(state, { payload }) {
       ...state.dropPlaylistSource,
       searchSource: {
         ...state.dropPlaylistSource.searchSource,
-        studentList: uniqBy(state?.dropPlaylistSource?.searchSource?.studentList.concat(payload.studentList), "id")
+        studentList: uniqBy(state ?.dropPlaylistSource ?.searchSource ?.studentList.concat(payload.studentList), "id")
       }
     },
     studentListFetching: false
@@ -1951,18 +2015,18 @@ export default createReducer(initialState, {
   [TOGGLE_MANAGE_MODULE]: toggleManageModuleHandler,
   [ADD_MODULE]: (state, { payload }) => {
     const newModule = createNewModuleState(
-      payload?.title || payload?.moduleName,
-      payload?.description,
+      payload ?.title || payload ?.moduleName,
+      payload ?.description,
       payload.moduleId,
       payload.moduleGroupName
     );
     if (!state.destinationCurriculumSequence.modules) {
       state.destinationCurriculumSequence.modules = [];
     }
-    if (payload?.afterModuleIndex !== undefined) {
-      state.destinationCurriculumSequence?.modules?.splice(payload.afterModuleIndex, 0, newModule);
+    if (payload ?.afterModuleIndex !== undefined) {
+      state.destinationCurriculumSequence ?.modules ?.splice(payload.afterModuleIndex, 0, newModule);
     } else {
-      state.destinationCurriculumSequence?.modules?.push(newModule);
+      state.destinationCurriculumSequence ?.modules ?.push(newModule);
     }
     return state;
   },
@@ -1978,14 +2042,14 @@ export default createReducer(initialState, {
   },
   [DELETE_MODULE]: (state, { payload }) => {
     if (payload !== undefined) {
-      state.destinationCurriculumSequence?.modules?.splice(payload, 1);
+      state.destinationCurriculumSequence ?.modules ?.splice(payload, 1);
     }
     return state;
   },
   [ORDER_MODULES]: (state, { payload }) => {
     const { oldIndex, newIndex } = payload;
-    const obj = state.destinationCurriculumSequence?.modules?.splice(oldIndex, 1);
-    state.destinationCurriculumSequence?.modules?.splice(newIndex, 0, obj[0]);
+    const obj = state.destinationCurriculumSequence ?.modules ?.splice(oldIndex, 1);
+    state.destinationCurriculumSequence ?.modules ?.splice(newIndex, 0, obj[0]);
     return state;
   },
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
@@ -1995,8 +2059,8 @@ export default createReducer(initialState, {
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload;
     const alreadyPresent = Object.keys(state.differentiationWork)
-      .flatMap(x => state.differentiationWork?.[x] || [])
-      .find(x => x?.testId === testId);
+      .flatMap(x => state.differentiationWork ?.[x] || [])
+      .find(x => x ?.testId === testId);
     if (!alreadyPresent) {
       state.differentiationWork[type].push({
         testId,
@@ -2010,7 +2074,7 @@ export default createReducer(initialState, {
   [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, contentId, masteryRange, contentTitle, contentType, contentUrl } = payload;
     const alreadyPresent = Object.keys(state.differentiationWork)
-      .flatMap(x => state.differentiationWork?.[x] || [])
+      .flatMap(x => state.differentiationWork ?.[x] || [])
       .find(x => x.contentId === contentId);
     if (!alreadyPresent) {
       state.differentiationWork[type].push({
@@ -2072,7 +2136,7 @@ export default createReducer(initialState, {
   },
   [REMOVE_TEST_FROM_MODULE_PLAYLIST]: (state, { payload }) => {
     const { moduleIndex, itemId } = payload;
-    if (state?.destinationCurriculumSequence?.modules?.[moduleIndex]?.data?.find(x => x.contentId === itemId)) {
+    if (state ?.destinationCurriculumSequence ?.modules ?.[moduleIndex] ?.data ?.find(x => x.contentId === itemId)) {
       state.destinationCurriculumSequence.modules[moduleIndex].data = state.destinationCurriculumSequence.modules[
         moduleIndex
       ].data.filter(x => x.contentId !== itemId);
@@ -2086,7 +2150,7 @@ export default createReducer(initialState, {
     state.signedRequest = payload;
   },
   [TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID]: (state, { payload }) => {
-    if (payload?.id) {
+    if (payload ?.id) {
       state.playlistTestDetailsModal.isVisible = true;
       state.playlistTestDetailsModal.currentTestId = payload.id;
     } else {
@@ -2161,5 +2225,30 @@ export default createReducer(initialState, {
   },
   [SET_CUSTOMIZE_TO_DRAFT]: (state, { payload }) => {
     state.customizeInDraft = payload;
+  },
+  [UNASSIGN_ASSINMENTS_SUCCESS]: (state, { payload }) => {
+    state.destinationCurriculumSequence.modules.forEach(_module => {
+      if (_module._id === payload.moduleId) {
+        _module.data.forEach(test => {
+          if (test.contentId === payload.testId) {
+            test.assignments = test.assignments.filter(({ _id }) => !payload.deletedIds.includes(_id));
+          }
+        });
+      }
+    });
+  },
+  [TOGGLE_ASSIGNMENTS]: (state, { payload }) => {
+    const { testId, playlistId } = payload;
+    const { currentAssignmentIds } = state;
+    const { contentId } = JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
+    sessionStorage.removeItem(`playlist/${playlistId}`);
+    if (currentAssignmentIds.includes(testId) || testId === contentId) {
+      currentAssignmentIds.splice(currentAssignmentIds.findIndex(x => x === testId), 1);
+    } else {
+      currentAssignmentIds.push(testId);
+    }
+  },
+  [SET_CURRENT_ASSIGNMENT_IDS]: (state, { payload }) => {
+    state.currentAssignmentIds = payload;
   }
 });

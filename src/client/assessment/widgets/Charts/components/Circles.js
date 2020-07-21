@@ -1,12 +1,12 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
-
-import { themeColorLight, red, green } from "@edulastic/colors";
+import { isEmpty } from "lodash";
+import { themeColor, red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
-import { Bar, ActiveBar, Text, Circle, StrokedRect } from "../styled";
+import { Bar, ActiveBar, Circle, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 
@@ -21,7 +21,7 @@ const Circles = ({
   view,
   gridParams,
   previewTab,
-  correct,
+  evaluation,
   saveAnswer,
   deleteMode
 }) => {
@@ -40,14 +40,14 @@ const Circles = ({
     }
   };
 
-  const getCenterX = index => step * index + 2;
+  const getCenterX = index => step * index;
 
   const getCenterY = dot => convertUnitToPx(dot.y, { height, margin, yAxisMax, yAxisMin, stepSize }) + 20;
 
   const renderValidationIcons = index => (
     <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
-      {correct[index] && <IconCheck color={green} width={12} height={12} />}
-      {!correct[index] && <IconClose color={red} width={12} height={12} />}
+      {evaluation[index] && <IconCheck color={green} width={12} height={12} />}
+      {!evaluation[index] && <IconClose color={red} width={12} height={12} />}
     </g>
   );
 
@@ -68,7 +68,7 @@ const Circles = ({
     ((data[index].labelVisibility === SHOW_BY_HOVER && showLabel === index) ||
       (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
 
-  const isRenderIcons = !!(correct && correct.length);
+  const isRenderIcons = !isEmpty(evaluation);
 
   return (
     <Fragment>
@@ -81,16 +81,16 @@ const Circles = ({
             y={0}
             onMouseEnter={() => handleLabelVisibility(index)}
             onMouseLeave={() => handleLabelVisibility(null)}
-            width={step - 2}
+            width={step}
             height={height + margin}
           />
           {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
               key={`circle-inner-${ind}`}
-              cx={getCenterX(index) + step / 2}
+              cx={getCenterX(index) + step / 2 + 2}
               cy={height - margin - ind * yAxisStep - yAxisStep / 2 + 20}
-              r={yAxisStep / 2 - 5}
+              r={5}
             />
           ))}
           <Bar
@@ -105,7 +105,7 @@ const Circles = ({
             }}
             x={getCenterX(index)}
             y={getCenterY(dot)}
-            width={step - 2}
+            width={step}
             height={getBarHeight(dot.y)}
             color="transparent"
           />
@@ -115,7 +115,7 @@ const Circles = ({
                 hoverState={isHovered(index)}
                 x={getCenterX(index)}
                 y={getCenterY(dot)}
-                width={step - 2}
+                width={step}
                 height={getBarHeight(dot.y)}
               />
               <ActiveBar
@@ -124,9 +124,9 @@ const Circles = ({
                 onMouseDown={onMouseDown(index)}
                 x={getCenterX(index)}
                 y={getCenterY(dot) - 4}
-                width={step - 2}
+                width={step}
                 deleteMode={deleteMode}
-                color={dot.y === 0 ? themeColorLight : "transparent"}
+                color={dot.y === 0 ? themeColor : "transparent"}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
               />
@@ -151,7 +151,6 @@ Circles.propTypes = {
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  activeIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
   gridParams: PropTypes.shape({
     width: PropTypes.number,
@@ -162,7 +161,7 @@ Circles.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number
   }).isRequired,
-  correct: PropTypes.array.isRequired,
+  evaluation: PropTypes.object.isRequired,
   previewTab: PropTypes.string,
   saveAnswer: PropTypes.func,
   deleteMode: PropTypes.bool

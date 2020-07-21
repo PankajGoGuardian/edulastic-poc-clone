@@ -8,7 +8,7 @@ const validateSolutionBlockTests = (questionGroup, questionType) => {
 
   context(" > Solution block tests", () => {
     before("visit items page and select question type", () => {
-      // editItem.sideBar.clickOnDashboard();
+      //editItem.sideBar.clickOnDashboard();
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(questionGroup, questionType);

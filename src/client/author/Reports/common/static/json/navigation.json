@@ -4,7 +4,7 @@
       "title": "Assessment Summary",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -17,7 +17,7 @@
       "title": "Sub-group Performance",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -30,7 +30,7 @@
       "title": "Question Analysis",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -43,7 +43,7 @@
       "title": "Response Frequency",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -56,7 +56,7 @@
       "title": "Performance by Standards",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -69,7 +69,7 @@
       "title": "Performance by Students",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -82,7 +82,7 @@
       "title": "Standards Performance Summary",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -95,7 +95,7 @@
       "title": "Standards Gradebook",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
@@ -108,7 +108,7 @@
       "title": "Performance Over Time",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
@@ -121,7 +121,7 @@
       "title": "Peer Progress Analysis",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
@@ -134,7 +134,7 @@
       "title": "Student progress",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
@@ -147,7 +147,7 @@
       "title": "Student Profile Summary",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
@@ -160,7 +160,7 @@
       "title": "Student Mastery Profile",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
@@ -173,7 +173,7 @@
       "title": "Student Assessment Profile",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
@@ -186,7 +186,7 @@
       "title": "Standard Reports",
       "breadcrumb": [
         {
-          "title": "REPORTS",
+          "title": "INSIGHTS",
           "to": "/author/reports"
         }
       ],

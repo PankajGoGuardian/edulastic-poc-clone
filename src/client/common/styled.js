@@ -1,21 +1,15 @@
-import styled from "styled-components";
-import { Card } from "@edulastic/common";
-import { Table, Button, Pagination, Input, Row, Modal, Form, Select } from "antd";
 import {
-  cardTitleColor,
-  white,
-  lightGreySecondary,
-  secondaryTextColor,
-  boxShadowDefault,
-  themeColor,
-  lightGrey,
   fadedGrey,
-  title,
-  themeColorTagsBg,
-  themeColorLighter,
+  mobileWidthMax,
   smallDesktopWidth,
-  mobileWidthMax
+  themeColor,
+  themeColorLighter,
+  title,
+  white
 } from "@edulastic/colors";
+import { Card } from "@edulastic/common";
+import { Button, Form, Input, Modal, Pagination, Select, Table } from "antd";
+import styled from "styled-components";
 
 export const StyledCard = styled(Card)`
   // when u change this u have to change "StyledCard" in "src/client/author/Reports/common/styled.js" to make every css in sync
@@ -79,6 +73,7 @@ export const TableContainer = styled.div`
 export const SubHeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 0.5rem;
   margin-bottom: 5px;
 `;
@@ -141,7 +136,7 @@ export const StyledButton = styled(Button)`
 export const FilterWrapper = styled.div`
   background: ${props => props.theme.manageDistrict.filterDivBgcolor};
   border-radius: ${props => props.theme.manageDistrict.filterDivBorderRadius};
-  padding: 1rem;
+  padding: 10px;
   margin-bottom: 15px;
 `;
 
@@ -286,43 +281,19 @@ export const ModalFormItem = styled(Form.Item)`
   .ant-form-item-control-wrapper {
     width: 100%;
   }
-
-  .ant-input,
-  .ant-select {
-    width: 100%;
-    max-width: 100%;
-    padding: 5px;
-  }
   .ant-form-item-label {
-    font-family: Open Sans;
-    letter-spacing: 0.22px;
     text-transform: uppercase;
     color: ${props => props.theme.manageDistrict.formLabelColor};
     font-weight: 600;
-    line-height: 1;
     font-size: ${props => props.theme.manageDistrict.formLabelFontSize};
-  }
-  .ant-form-item-control-wrapper {
-    width: 100%;
+    margin-bottom: 5px;
+    line-height: 1;
   }
   .ant-form-item-label > label::after {
-    content: "";
+    display: none;
   }
   .ant-form-item-label > label::before {
-    content: "";
-  }
-
-  .ant-input {
-    width: 100%;
-    max-width: 100%;
-    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
-    border-radius: 2px;
-    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
-  }
-  .ant-select-selection {
-    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
-    border-radius: 2px;
-    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
+    display: none;
   }
 `;
 
@@ -338,6 +309,7 @@ export const RightFilterDiv = styled.div`
   display: flex;
   width: ${props => (props.width ? `${props.width}%` : "auto")};
   justify-content: flex-end;
+  align-items: center;
   @media (max-width: ${mobileWidthMax}) {
     width: 90%;
     justify-content: space-between;

@@ -414,6 +414,7 @@ const CustomEditor = ({
   border,
   centerContent,
   imageDefaultWidth,
+  videoDefaultWidth,
   placeholder,
   fontSize,
   className,
@@ -455,7 +456,7 @@ const CustomEditor = ({
       toolbarButtonsMD,
       toolbarButtonsSM,
       toolbarButtonsXS,
-      videoInsertButtons: ["videoBack", "|", "videoByURL", "videoEmbed"],
+      videoInsertButtons: ["videoBack", "|", "videoByURL", "videoEmbed", "videoUpload"],
       videoResize: true,
       videoMove: true,
       videoDefaultAlign: "left",
@@ -567,7 +568,7 @@ const CustomEditor = ({
 
           return false;
         },
-        "image.inserted": async function($img, response) {
+        "image.inserted": async function($img) {
           try {
             if (!$img[0].complete) {
               await loadImage($img[0].src);
@@ -580,11 +581,32 @@ const CustomEditor = ({
             notification({ messageKey: "imageLoadErr" });
           }
         },
+        "video.beforeUpload": function(video) {
+          if (
+            !canInsert(this.selection.element()) ||
+            !canInsert(this.selection.endElement()) ||
+            !beforeUpload(video[0], "video")
+          ) {
+            return false;
+          }
+          this.video.showProgressBar();
+          uploadToS3(video[0], aws.s3Folders.DEFAULT)
+            .then(url => {
+              const embedded = `<video src='${url}' controls>Video is not supported on this browser.</video>`;
+              this.video.insert(embedded);
+            })
+            .catch(e => {
+              console.error(e);
+              this.popups.hideAll();
+              notification({ messageKey: "videoUploadErr" });
+            });
+          return false;
+        },
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
             this.edit.off();
             this.$el.find(".input__math").css("pointer-events", "none");
-            this.$el.find("img").css("pointer-events", "none");
+            this.$el.find("video").css("pointer-events", "none");
           }
         },
         "toolbar.show": function() {
@@ -744,7 +766,7 @@ const CustomEditor = ({
     };
 
     // for hidden refs wait for it to be shown in the dom to set config.
-    if (toolbarContainerRef?.current?.offsetParent === null) {
+    if (EditorRef?.current?.offsetParent === null) {
       setConfigState(null);
     } else {
       setConfigState(updatedConfig);
@@ -1001,6 +1023,7 @@ CustomEditor.defaultProps = {
   additionalToolbarOptions: [],
   readOnly: false,
   imageDefaultWidth: 300,
+  videoDefaultWidth: 480,
   border: "none",
   centerContent: false,
   editorHeight: null

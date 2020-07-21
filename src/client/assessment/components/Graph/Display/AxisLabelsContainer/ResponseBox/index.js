@@ -1,17 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Rnd } from "react-rnd";
-import { Tooltip } from "antd";
-
-import { WithResources } from "@edulastic/common";
-import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
-import AppConfig from "../../../../../../../../app-config";
-import { Container, Title, MarkContainer, DraggableOptionsContainer } from "./styled";
+import { MathFormulaDisplay } from "@edulastic/common";
+import { Container, Title, MarkContainer, DraggableOptionsContainer, StyledRnd } from "./styled";
 
 class ResponseBox extends Component {
   state = {
-    draggingMark: null,
-    resourcesLoaded: false
+    draggingMark: null
   };
 
   titleRef = React.createRef();
@@ -22,9 +16,10 @@ class ResponseBox extends Component {
     window.removeEventListener("touchstart", this.preventPageScroll);
     window.removeEventListener("touchmove", this.preventPageScroll);
     const titleHeight = this.titleRef.current.clientHeight;
-    const { onAddMark, position, choiceWidth, markHeight, minWidth } = this.props;
-    let x = d.x + choiceWidth / 2;
-    let y = d.y + markHeight / 2;
+    const { onAddMark, position, markHeight, minWidth } = this.props;
+    // 15 is padding-top of container
+    let x = d.x + this.dragItemWidth / 2 + 25;
+    let y = d.y + markHeight / 2 + 15;
 
     const _height = height + titleHeight;
     if (position === "top") {
@@ -49,19 +44,16 @@ class ResponseBox extends Component {
     this.setState({ draggingMark: i });
   };
 
-  resourcesOnLoaded = () => {
-    const { resourcesLoaded } = this.state;
-    if (resourcesLoaded) {
-      return;
-    }
-    this.setState({ resourcesLoaded: true });
-  };
+  get dragItemWidth() {
+    const { choiceWidth } = this.props;
+    // 40 is width of index
+    return choiceWidth + 40;
+  }
 
   render() {
     const {
       values,
       responseBoxWidth,
-      choiceWidth,
       minWidth,
       minHeight,
       markCount,
@@ -74,64 +66,41 @@ class ResponseBox extends Component {
       scale,
       shouldZoom
     } = this.props;
-
-    const { draggingMark, resourcesLoaded } = this.state;
+    const { draggingMark } = this.state;
     const isHorizontal = position === "top" || position === "bottom";
-    const width = isHorizontal ? minWidth : choiceWidth;
+    const optionsContWidth = isHorizontal ? minWidth : this.dragItemWidth;
 
-    const markCountInLine = Math.floor((width - separationDistanceX) / (markWidth + separationDistanceX));
+    const markCountInLine = Math.floor((optionsContWidth - separationDistanceX) / (markWidth + separationDistanceX));
     const linesCount = Math.ceil(markCount / markCountInLine);
     let height = linesCount * (markHeight + separationDistanceY);
     height = Math.max(height, minHeight);
 
     return (
-      <WithResources
-        resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
-        fallBack={<span />}
-        onLoaded={this.resourcesOnLoaded}
-      >
-        {!resourcesLoaded ? null : (
-          <Container width={responseBoxWidth} isHorizontal={isHorizontal}>
-            <Title ref={this.titleRef}>DRAG DROP VALUES</Title>
-            <DraggableOptionsContainer className="draggable-options-container" height={height} width={width}>
-              {values.map((value, i) => {
-                const content = replaceLatexesWithMathHtml(value.text);
-                return (
-                  <Rnd
-                    key={value.id}
-                    position={{
-                      x: separationDistanceX + (i % markCountInLine) * (choiceWidth + separationDistanceX),
-                      y: Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
-                    }}
-                    size={{ width: choiceWidth, height: markHeight }}
-                    onDragStart={this.handleDragStart(i)}
-                    onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
-                    style={{ zIndex: 10 }}
-                    disableDragging={false}
-                    enableResizing={false}
-                    bounds={bounds}
-                    className={`mark${draggingMark === i ? " dragging" : ""}`}
-                    scale={shouldZoom ? scale : 1}
-                  >
-                    <Tooltip
-                      placement="bottomRight"
-                      title={<span dangerouslySetInnerHTML={{ __html: content }} />}
-                      arrowPointAtCenter
-                    >
-                      <MarkContainer
-                        fontSize={12}
-                        dangerouslySetInnerHTML={{
-                          __html: `<div class='mark-content'>${content}</div>`
-                        }}
-                      />
-                    </Tooltip>
-                  </Rnd>
-                );
-              })}
-            </DraggableOptionsContainer>
-          </Container>
-        )}
-      </WithResources>
+      <Container width={responseBoxWidth} isHorizontal={isHorizontal}>
+        <Title ref={this.titleRef}>DRAG DROP VALUES</Title>
+        <DraggableOptionsContainer>
+          {values.map((value, i) => (
+            <StyledRnd
+              key={value.id}
+              position={{
+                x: separationDistanceX + (i % markCountInLine) * (this.dragItemWidth + separationDistanceX),
+                y: Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
+              }}
+              size={{ width: this.dragItemWidth, height: markHeight }}
+              onDragStart={this.handleDragStart(i)}
+              onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, optionsContWidth, height)}
+              bounds={bounds}
+              className={`mark${draggingMark === i ? " dragging" : ""}`}
+              scale={shouldZoom ? scale : 1}
+            >
+              <MarkContainer>
+                <div className="index-box">{i + 1}</div>
+                <MathFormulaDisplay className="drag-item-cotent" dangerouslySetInnerHTML={{ __html: value.text }} />
+              </MarkContainer>
+            </StyledRnd>
+          ))}
+        </DraggableOptionsContainer>
+      </Container>
     );
   }
 }
@@ -159,7 +128,7 @@ ResponseBox.defaultProps = {
   minHeight: 150,
   markCount: 0,
   markWidth: 120, // from .mark class
-  markHeight: 45, // from .mark class
+  markHeight: 32, // from .mark class
   separationDistanceX: 10,
   separationDistanceY: 20,
   position: "bottom",

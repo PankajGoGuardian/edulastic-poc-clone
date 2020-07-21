@@ -187,6 +187,7 @@ class CorrectAnswers extends Component {
               imageHeight={imageHeight}
               imageOptions={imageOptions}
               item={item}
+              isCorrectAnsTab
             />
           </TabContainer>
         )}

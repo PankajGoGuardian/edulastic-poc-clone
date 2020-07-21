@@ -10,10 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
 
 import { Subtitle } from "../../styled/Subtitle";
-import {
-  setQuestionDataAction,
-  getQuestionDataSelector
-} from "../../../author/QuestionEditor/ducks";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import CorrectAnswer from "./CorrectAnswer";
 import AddAlternateAnswerButton from "../../components/AddAlternateAnswerButton";
@@ -141,20 +138,12 @@ class CorrectAnswers extends Component {
     const { value } = this.state;
     return (
       <div>
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
-          )}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
         <AddAlternative>
           {this.renderPlusButton()}
-          <Tabs
-            value={value}
-            onChange={this.handleTabChange}
-            style={{ marginBottom: 10, marginTop: 20 }}
-          >
+          <Tabs value={value} onChange={this.handleTabChange} style={{ marginBottom: 10, marginTop: 20 }}>
             <Tab
               style={{ borderRadius: validation.altResponses <= 1 ? "4px" : "4px 0 0 4px" }}
               label={t("component.correctanswers.correct")}
@@ -186,6 +175,7 @@ class CorrectAnswers extends Component {
               imageOptions={imageOptions}
               item={item}
               setQuestionData={setQuestionData}
+              isCorrectAnsTab
             />
           </TabContainer>
         )}
@@ -210,9 +200,7 @@ class CorrectAnswers extends Component {
                     showDashedBorder={showDashedBorder}
                     uiStyle={uiStyle}
                     backgroundColor={backgroundColor}
-                    onUpdateValidationValue={answers =>
-                      this.updateAltCorrectValidationAnswers(answers, i)
-                    }
+                    onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                     onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     imageOptions={imageOptions}
                     item={item}

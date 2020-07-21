@@ -4,7 +4,6 @@ export const TextEmpty = styled.div`
   resize: none;
   width: ${({ showDragHandle, smallSize }) =>
     showDragHandle ? (smallSize ? "calc(100% - 30px)" : "calc(100% - 50px)") : "100%"};
-  height: 40px;
   border-radius: 4px;
   min-height: ${({ smallSize }) => (smallSize ? 31 : 56)}px;
   display: flex;

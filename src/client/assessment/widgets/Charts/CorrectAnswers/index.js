@@ -26,11 +26,12 @@ const CorrectAnswers = ({
   onAdd,
   onCloseTab,
   points,
+  isCorrectAnsTab = false,
   item
 }) => {
-  const handleChangePoint = event => {
-    if (event.target.value > 0) {
-      onChangePoints(+event.target.value);
+  const handleChangePoint = score => {
+    if (score > 0) {
+      onChangePoints(+score);
     }
   };
 
@@ -66,6 +67,7 @@ const CorrectAnswers = ({
               onChange={handleChangePoint}
               step={0.5}
               min={0.5}
+              max={!isCorrectAnsTab ? item?.validation?.validResponse?.score : Number.MAX_SAFE_INTEGER}
             />
           </CorrectAnswerHeader>
         </Col>

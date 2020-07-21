@@ -5,7 +5,17 @@ import PropTypes from "prop-types";
 import React from "react";
 import { useDrop } from "react-dnd";
 
-const DropContainer = ({ style, drop, children, index, borderColor, showHoverBorder, noBorder, ...rest }) => {
+const DropContainer = ({
+  style,
+  drop,
+  children,
+  index,
+  borderColor,
+  showHoverBorder,
+  noBorder,
+  className,
+  ...rest
+}) => {
   const [{ isOver }, dropRef] = useDrop({
     accept: "item",
     drop(item, monitor) {
@@ -37,7 +47,7 @@ const DropContainer = ({ style, drop, children, index, borderColor, showHoverBor
   return (
     <Container
       {...rest}
-      className="drop-target-box"
+      className={`${className} drop-target-box`}
       ref={dropRef}
       style={mergedStyle}
       id={`drop-container-${index}`}
@@ -55,7 +65,8 @@ DropContainer.propTypes = {
   drop: PropTypes.func,
   style: PropTypes.object,
   isOver: PropTypes.bool,
-  index: PropTypes.number
+  index: PropTypes.number,
+  className: PropTypes.string
 };
 
 DropContainer.defaultProps = {
@@ -63,7 +74,8 @@ DropContainer.defaultProps = {
   isOver: false,
   drop: () => null,
   style: {},
-  index: null
+  index: null,
+  className: ""
 };
 
 export default DropContainer;

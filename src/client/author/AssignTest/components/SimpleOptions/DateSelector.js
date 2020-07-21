@@ -53,7 +53,7 @@ const DateSelector = ({
                 size="large"
                 style={{ width: "100%" }}
                 disabledDate={disabledStartDate}
-                showTime
+                showTime={{ use12Hours: true }}
                 format="YYYY-MM-DD hh:mm:ss a"
                 value={startDate}
                 placeholder={t("common.assignTest.openDatePlaceholder")}
@@ -76,7 +76,7 @@ const DateSelector = ({
                   data-cy="dueDate"
                   size="large"
                   style={{ width: "100%" }}
-                  showTime
+                  showTime={{ use12Hours: true }}
                   format="YYYY-MM-DD hh:mm:ss a"
                   value={dueDate}
                   placeholder={t("common.assignTest.dueDatePlaceholder")}
@@ -98,7 +98,7 @@ const DateSelector = ({
                 style={{ width: "100%" }}
                 size="large"
                 disabledDate={disabledEndDate}
-                showTime
+                showTime={{ use12Hours: true }}
                 format="YYYY-MM-DD hh:mm:ss a"
                 value={endDate}
                 placeholder={t("common.assignTest.closeDatePlaceholder")}

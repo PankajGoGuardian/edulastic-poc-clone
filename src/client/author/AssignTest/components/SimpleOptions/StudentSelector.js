@@ -20,26 +20,24 @@ const StudentsSelector = ({
     if (!selectedGroups?.length && selectedValues.length) {
       setSelectedValues([]);
     }
+    if (selectedGroups?.length && selectedValues.length) {
+      const selectedStudentByClassId = groupBy(selectedValues, item => item.split("_")[0]);
+      setSelectedValues(selectedGroups.flatMap(item => selectedStudentByClassId[item] || []) || []);
+    }
   }, [selectedGroups]);
   const groupKeyed = useMemo(() => keyBy(groups, "_id"), [groups]);
-  const studentsGroupedByGroupId = useMemo(
-    () => groupBy(students.filter(({ enrollmentStatus }) => enrollmentStatus > 0), "groupId"),
-    [students]
-  );
-
+  const studentsGroupedByGroupId = useMemo(() => groupBy(students, "groupId"), [students]);
   const SelectedStudents = Object.keys(studentsGroupedByGroupId).flatMap(groupId => {
     const groupName = groupKeyed[groupId].name;
-    const studentRows = (studentsGroupedByGroupId[groupId] || []).map(
-      ({ _id, firstName, lastName, groupId: _groupId }) => {
-        const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
-        return {
-          title: fullName,
-          key: _id,
-          value: _id,
-          groupId: _groupId
-        };
-      }
-    );
+    const studentRows = (studentsGroupedByGroupId[groupId] || []).map(({ _id, firstName, lastName }) => {
+      const fullName = `${lastName ? `${lastName}, ` : ""}${firstName ? `${firstName}` : ""}`;
+      return {
+        title: fullName || "Anonymous",
+        key: `${groupId}_${_id}`,
+        value: `${groupId}_${_id}`,
+        groupId
+      };
+    });
     return [
       {
         title: <SelectTextInline>{groupName}</SelectTextInline>,
@@ -90,7 +88,7 @@ const StudentsSelector = ({
                         <SelectAll
                           onClick={() => {
                             setSelectedValues(allIds);
-                            selectAllStudents(SelectedStudents, selectedValues);
+                            selectAllStudents();
                           }}
                         >
                           Select all
@@ -102,7 +100,7 @@ const StudentsSelector = ({
                         <UnselectAll
                           onClick={() => {
                             setSelectedValues([]);
-                            unselectAllStudents(SelectedStudents, selectedValues);
+                            unselectAllStudents();
                           }}
                         >
                           Unselect all

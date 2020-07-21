@@ -14,7 +14,7 @@ import {
   mobileWidthLarge
 } from "@edulastic/colors";
 import { IconSearch } from "@edulastic/icons";
-import { Modal } from "antd";
+import { Modal, Select } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
@@ -150,15 +150,19 @@ export const SearchIcon = styled(IconSearch)`
   height: 14px;
 `;
 
-export const SearchBar = styled.input`
+export const SearchBar = styled(Select)`
   height: 40px;
-  padding: 10px;
-  padding-right: 25px;
-  border-radius: 2px;
-  border: 1px solid ${greyThemeLight};
-  background: ${backgrounds?.default};
   outline: none;
   width: 100%;
+
+  .ant-select-selection {
+    border-radius: 2px;
+    border: 1px solid ${greyThemeLight};
+    background: ${backgrounds?.default};
+    min-height: 40px;
+    line-height: 40px;
+    padding: 4px;
+  }
 
   @media (max-width: ${extraDesktopWidthMax}) {
     height: 38px;

@@ -13,11 +13,11 @@ export const IndexBox = styled.div`
     font-weight: ${theme.widgets.orderList.indexFontWeight};
     background: ${
       showAnswer
-        ? theme.widgets.orderList.indexColor
+        ? theme.checkbox.noAnswerIconColor
         : correct
-        ? theme.widgets.orderList.iconCheckColor
-        : theme.widgets.orderList.iconCloseColor
+        ? theme.checkbox.rightIconColor
+        : theme.checkbox.wrongIconColor
     };
-    width: ${smallSize ? 30 : 40}px;
+    width: ${smallSize ? 30 : 32}px;
   `}
 `;

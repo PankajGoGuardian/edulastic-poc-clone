@@ -1,7 +1,6 @@
 import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { omitBy, isUndefined, isEmpty, invert, set, get } from "lodash";
 import { assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
@@ -102,7 +101,16 @@ function* loadAssignmentSaga({ payload }) {
      * if class level openPolicy and  closePolicy present,
      * override the top level with class level
      */
-    const { openPolicy, closePolicy, allowedTime, pauseAllowed } = data.class[0] || {};
+    const {
+      openPolicy,
+      closePolicy,
+      allowedTime,
+      pauseAllowed,
+      answerOnPaper,
+      maxAttempts,
+      maxAnswerChecks,
+      calcType
+    } = data.class[0] || {};
     if (openPolicy) {
       data.openPolicy = openPolicy;
     }
@@ -115,11 +123,23 @@ function* loadAssignmentSaga({ payload }) {
     if (typeof pauseAllowed !== "undefined") {
       data.pauseAllowed = pauseAllowed;
     }
+    if (answerOnPaper !== undefined) {
+      data.answerOnPaper = answerOnPaper;
+    }
+    if (maxAttempts) {
+      data.maxAttempts = maxAttempts;
+    }
+    if (maxAnswerChecks !== undefined) {
+      data.maxAnswerChecks = maxAnswerChecks;
+    }
+    if (calcType) {
+      data.calcType = calcType;
+    }
     yield put(slice.actions.loadAssignmentSucess(data));
   } catch (e) {
     console.warn("error", e, e.stack);
     yield put(slice.actions.stopLoading());
-    notification({ msg:e?.data?.message || "Loading assignment failed"});
+    notification({ msg: e?.data?.message || "Loading assignment failed" });
   }
 }
 
@@ -134,7 +154,10 @@ function getSettingsSelector(state) {
     calcType,
     dueDate,
     allowedTime,
-    pauseAllowed
+    pauseAllowed,
+    answerOnPaper,
+    maxAttempts,
+    maxAnswerChecks
   } = assignment;
   return omitBy(
     {
@@ -146,7 +169,10 @@ function getSettingsSelector(state) {
       calcType,
       dueDate,
       allowedTime,
-      pauseAllowed
+      pauseAllowed,
+      answerOnPaper,
+      maxAttempts,
+      maxAnswerChecks
     },
     isUndefined
   );
@@ -157,16 +183,16 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
   try {
     const settings = yield select(getSettingsSelector);
     if (isEmpty(settings)) {
-      notification({ messageKey:"noChangesToBeSaved"});
+      notification({ messageKey: "noChangesToBeSaved" });
       return;
     }
     yield call(assignmentApi.updateClassSettings, { assignmentId, classId, settings });
     yield put(slice.actions.updateAssignmentClassSettingsSucess());
-    notification({ type: "success", messageKey:"settingsUpdatedSuccessfully"});
+    notification({ type: "success", messageKey: "settingsUpdatedSuccessfully" });
   } catch (e) {
     console.log(e, "------");
     yield put(slice.actions.updateAssignmentClassSettingsError());
-    notification({ msg: e?.data?.message || "Updating assignment settings failed"});
+    notification({ msg: e?.data?.message || "Updating assignment settings failed" });
     console.warn("error", e, e.stack);
   }
 }

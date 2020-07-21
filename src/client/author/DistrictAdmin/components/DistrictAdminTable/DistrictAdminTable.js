@@ -1,17 +1,14 @@
-import { CheckboxLabel, TypeToConfirmModal,notification } from "@edulastic/common";
+import { CheckboxLabel, EduButton, notification, SelectInputStyled, TypeToConfirmModal } from "@edulastic/common";
+import { SearchInputStyled } from "@edulastic/common/src/components/InputStyles";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Icon, message, Select } from "antd";
+import { Col, Icon, Row, Select } from "antd";
 import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import {
-  StyledAddFilterButton,
   StyledClassName,
-  StyledControlDiv,
-  StyledFilterDiv,
-  StyledFilterInput,
-  StyledFilterSelect
+  StyledFilterDiv
 } from "../../../../admin/Common/StyledComponents";
 import {
   FilterWrapper,
@@ -20,7 +17,6 @@ import {
   RightFilterDiv,
   StyledButton,
   StyledPagination,
-  StyledSchoolSearch,
   SubHeaderWrapper,
   TableContainer
 } from "../../../../common/styled";
@@ -144,8 +140,6 @@ class DistrictAdminTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {}
-
   onEditDistrictAdmin = key => {
     this.setState({
       editDistrictAdminModaVisible: true,
@@ -172,13 +166,14 @@ class DistrictAdminTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
+    const { t } = this.props;
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
-        notification({ msg:t("users.validations.edituser")});
+        notification({ msg: t("users.validations.edituser") });
       } else if (selectedRowKeys.length === 1) {
         this.onEditDistrictAdmin(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        notification({ msg:t("users.validations.editsingleuser")});
+        notification({ msg: t("users.validations.editsingleuser") });
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
@@ -188,7 +183,7 @@ class DistrictAdminTable extends Component {
         });
         // deleteDistrictAdmin(selectedDistrictAdminData);
       } else {
-        notification({ msg:t("users.validations.deleteuser")});
+        notification({ msg: t("users.validations.deleteuser") });
       }
     }
   };
@@ -214,8 +209,8 @@ class DistrictAdminTable extends Component {
     createReq.role = "district-admin";
     createReq.districtId = userOrgId;
 
-    let o = {
-      createReq: createReq,
+    const o = {
+      createReq,
       listReq: this.getSearchQuery()
     };
 
@@ -261,7 +256,7 @@ class DistrictAdminTable extends Component {
       if (index === i) {
         return {
           ...item,
-          filterAdded: value ? true : false
+          filterAdded: !!value
         };
       }
       return item;
@@ -276,12 +271,12 @@ class DistrictAdminTable extends Component {
       if (index === key) {
         return {
           ...item,
-          filterAdded: event.target.value ? true : false
+          filterAdded: !!event.target.value
         };
       }
       return item;
     });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
   changeStatusValue = (value, key) => {
@@ -290,7 +285,7 @@ class DistrictAdminTable extends Component {
         return {
           ...item,
           filterStr: value,
-          filterAdded: value !== "" ? true : false
+          filterAdded: value !== ""
         };
       }
       return item;
@@ -315,7 +310,7 @@ class DistrictAdminTable extends Component {
   changeFilterColumn = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (key === index) {
-        let _item = {
+        const _item = {
           ...item,
           filtersColumn: value
         };
@@ -345,7 +340,7 @@ class DistrictAdminTable extends Component {
     this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
-  addFilter = (e, key) => {
+  addFilter = () => {
     const { filtersData } = this.state;
     if (filtersData.length < 3) {
       this.setState({
@@ -364,7 +359,7 @@ class DistrictAdminTable extends Component {
   };
 
   removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const { filtersData } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
       newFiltersData.push({
@@ -384,8 +379,8 @@ class DistrictAdminTable extends Component {
     const { filtersData, searchByName, currentPage } = this.state;
     let { showActive } = this.state;
 
-    let search = {};
-    for (let [index, item] of filtersData.entries()) {
+    const search = {};
+    for (const [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (filtersColumn === "status") {
@@ -400,7 +395,7 @@ class DistrictAdminTable extends Component {
       }
     }
     if (searchByName) {
-      search["name"] = searchByName;
+      search.name = searchByName;
     }
 
     const queryObj = {
@@ -414,10 +409,10 @@ class DistrictAdminTable extends Component {
       // order
     };
 
-    queryObj["status"] = 0;
+    queryObj.status = 0;
 
     if (showActive) {
-      queryObj["status"] = 1;
+      queryObj.status = 1;
     }
     return queryObj;
   };
@@ -451,18 +446,7 @@ class DistrictAdminTable extends Component {
       adminUsersData: result,
       totalUsers,
       userOrgId,
-      setShowActiveUsers,
-      showActiveUsers,
       updateAdminUser,
-      pageNo,
-      setPageNo,
-      filters,
-      changeFilterColumn,
-      changeFilterType,
-      changeFilterValue,
-      loadAdminData,
-      addFilter,
-      removeFilter,
       history,
       t
     } = this.props;
@@ -482,7 +466,7 @@ class DistrictAdminTable extends Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton type={"default"} shape="round" icon="filter" onClick={this._onRefineResultsCB}>
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -498,68 +482,81 @@ class DistrictAdminTable extends Component {
                 filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
 
               return (
-                <StyledControlDiv key={i}>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectcolumn")}
-                    onChange={e => this.changeFilterColumn(e, i)}
-                    value={filtersColumn ? filtersColumn : undefined}
-                  >
-                    <Option value="other" disabled={true}>
-                      {t("common.selectcolumn")}
-                    </Option>
-                    <Option value="username">{t("users.districtadmin.username")}</Option>
-                    <Option value="email">{t("users.districtadmin.email")}</Option>
-                    <Option value="status">{t("users.districtadmin.status")}</Option>
-                  </StyledFilterSelect>
-                  <StyledFilterSelect
-                    placeholder={t("common.selectvalue")}
-                    onChange={e => this.changeFilterValue(e, i)}
-                    value={filtersValue ? filtersValue : undefined}
-                  >
-                    <Option value="" disabled={true}>
-                      {t("common.selectvalue")}
-                    </Option>
-                    <Option value="eq">{t("common.equals")}</Option>
-                    {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
-                  </StyledFilterSelect>
-                  {!filterStrDD[filtersColumn] ? (
-                    <StyledFilterInput
-                      placeholder={t("common.entertext")}
-                      onChange={e => this.changeFilterText(e, i)}
-                      onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                      onBlur={e => this.onBlurFilterText(e, i)}
-                      value={filterStr ? filterStr : undefined}
-                      disabled={isFilterTextDisable}
-                      ref={this.filterTextInputRef[i]}
-                    />
-                  ) : (
-                    <StyledFilterSelect
-                      placeholder={filterStrDD[filtersColumn].placeholder}
-                      onChange={v => this.changeStatusValue(v, i)}
-                      value={filterStr !== "" ? filterStr : undefined}
+                <Row gutter={20} style={{ marginBottom: "5px" }} key={i}>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectcolumn")}
+                      onChange={e => this.changeFilterColumn(e, i)}
+                      value={filtersColumn || undefined}
+                      height="32px"
                     >
-                      {filterStrDD[filtersColumn].list.map(item => (
-                        <Option key={item.title} value={item.value} disabled={item.disabled}>
-                          {item.title}
-                        </Option>
-                      ))}
-                    </StyledFilterSelect>
-                  )}
-                  {i < 2 && (
-                    <StyledAddFilterButton
-                      type="primary"
-                      onClick={e => this.addFilter(e, i)}
-                      disabled={isAddFilterDisable || i < filtersData.length - 1}
+                      <Option value="other" disabled>
+                        {t("common.selectcolumn")}
+                      </Option>
+                      <Option value="username">{t("users.districtadmin.username")}</Option>
+                      <Option value="email">{t("users.districtadmin.email")}</Option>
+                      <Option value="status">{t("users.districtadmin.status")}</Option>
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    <SelectInputStyled
+                      placeholder={t("common.selectvalue")}
+                      onChange={e => this.changeFilterValue(e, i)}
+                      value={filtersValue || undefined}
+                      height="32px"
                     >
-                      {t("common.addfilter")}
-                    </StyledAddFilterButton>
-                  )}
-                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                    <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-                      {t("common.removefilter")}
-                    </StyledAddFilterButton>
-                  )}
-                </StyledControlDiv>
+                      <Option value="" disabled>
+                        {t("common.selectvalue")}
+                      </Option>
+                      <Option value="eq">{t("common.equals")}</Option>
+                      {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
+                    </SelectInputStyled>
+                  </Col>
+                  <Col span={6}>
+                    {!filterStrDD[filtersColumn] ? (
+                      <SearchInputStyled
+                        placeholder={t("common.entertext")}
+                        onChange={e => this.changeFilterText(e, i)}
+                        onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                        onBlur={e => this.onBlurFilterText(e, i)}
+                        value={filterStr || undefined}
+                        disabled={isFilterTextDisable}
+                        ref={this.filterTextInputRef[i]}
+                        height="32px"
+                      />
+                    ) : (
+                      <SelectInputStyled
+                        placeholder={filterStrDD[filtersColumn].placeholder}
+                        onChange={v => this.changeStatusValue(v, i)}
+                        value={filterStr !== "" ? filterStr : undefined}
+                        height="32px"
+                      >
+                        {filterStrDD[filtersColumn].list.map(item => (
+                          <Option key={item.title} value={item.value} disabled={item.disabled}>
+                            {item.title}
+                          </Option>
+                          ))}
+                      </SelectInputStyled>
+                      )}
+                  </Col>
+                  <Col span={6} style={{ display: "flex" }}>
+                    {i < 2 && (
+                      <EduButton
+                        type="primary"
+                        onClick={e => this.addFilter(e, i)}
+                        disabled={isAddFilterDisable || i < filtersData.length - 1}
+                        height="32px"
+                      >
+                        {t("common.addfilter")}
+                      </EduButton>
+                    )}
+                    {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                      <EduButton height="32px" type="primary" onClick={e => this.removeFilter(e, i)}>
+                        {t("common.removefilter")}
+                      </EduButton>
+                    )}
+                  </Col>
+                </Row>
               );
             })}
           </FilterWrapper>
@@ -567,14 +564,15 @@ class DistrictAdminTable extends Component {
 
         <StyledFilterDiv>
           <LeftFilterDiv width={60}>
-            <StyledSchoolSearch
+            <SearchInputStyled
               placeholder={t("common.searchbyname")}
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
+              height="36px"
             />
-            <Button type="primary" onClick={this.showCreateDistrictAdminModal}>
+            <EduButton type="primary" onClick={this.showCreateDistrictAdminModal}>
               {t("users.districtadmin.createdistrictadmin")}
-            </Button>
+            </EduButton>
           </LeftFilterDiv>
           <RightFilterDiv width={35}>
             <CheckboxLabel
@@ -600,7 +598,7 @@ class DistrictAdminTable extends Component {
             pageSize={25}
             total={totalUsers}
             onChange={page => this.setPageNo(page)}
-            hideOnSinglePage={true}
+            hideOnSinglePage
           />
         </TableContainer>
         {createDistrictAdminModalVisible && (

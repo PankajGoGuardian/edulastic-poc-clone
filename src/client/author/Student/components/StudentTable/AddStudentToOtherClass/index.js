@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Table, Spin, Icon } from "antd";
-import { StyledModal, Title, ActionButton, Field, FooterDiv } from "./styled";
+import { CustomModalStyled, EduButton, FieldLabel, TextInputStyled } from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
-import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
+import { Form, Icon, Spin, Table } from "antd";
 import { get } from "lodash";
-import { ThemeButton } from "../../../../src/components/common/ThemeButton";
-import { EduButton } from "@edulastic/common";
+import React, { useEffect, useState } from "react";
+import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
+import { Field, FooterDiv, Title } from "./styled";
 
 function AddStudentsToOtherClass({
   titleText,
@@ -18,7 +17,6 @@ function AddStudentsToOtherClass({
   fetchClassDetailsUsingCode,
   destinationClassData,
   loading,
-  selectedUsersInfo = [],
   askUserConfirmation,
   t
 }) {
@@ -64,26 +62,27 @@ function AddStudentsToOtherClass({
 
   const footer = (
     <FooterDiv>
-      <EduButton height="32px" isGhost onClick={() => onCloseModal()}>
+      <EduButton isGhost onClick={() => onCloseModal()}>
         No, Cancel
       </EduButton>
-      <EduButton height="32px" onClick={() => handleOkClick()} disabled={!destinationClassData}>
+      <EduButton onClick={() => handleOkClick()} disabled={!destinationClassData}>
         {buttonText}
         <Icon type="right" />
       </EduButton>
     </FooterDiv>
   );
   return successData ? (
-    <Modal
+    <CustomModalStyled
       visible={showModal}
       title={t("users.student.addtoanotherclass.studentdetails")}
       width="800px"
       footer={[
-        <ThemeButton type="primary" onClick={onCloseModal}>
+        <EduButton type="primary" onClick={onCloseModal}>
           Done
-        </ThemeButton>
+        </EduButton>
       ]}
       onCancel={onCloseModal}
+      centered
     >
       <Table
         rowKey={record => record.username}
@@ -112,64 +111,66 @@ function AddStudentsToOtherClass({
         ]}
         dataSource={successData}
       />
-    </Modal>
+    </CustomModalStyled>
   ) : (
-    <>
-      <ConfirmationModal
-        title={t("users.student.addtoanotherclass.title")}
-        show={isConfirmationModalVisible}
-        onOk={() => {
-          formSubmitConfirmed();
-          setIsConfirmationModalVisible(false);
-        }}
-        onCancel={() => {
-          setConfimationText("");
-          setIsConfirmationModalVisible(false);
-        }}
-        inputVal={cofirmationText}
-        onInputChange={e => setConfimationText(e.target.value)}
-        expectedVal="MOVE"
-        bodyText={t("users.student.addtoanotherclass.confirmtext")}
-        okText={t("users.student.addtoanotherclass.oktext")}
-        canUndone
-      />
+      <>
+        <ConfirmationModal
+          bodyTextStyle={{ textAlign: "center" }}
+          title={t("users.student.addtoanotherclass.title")}
+          show={isConfirmationModalVisible}
+          onOk={() => {
+            formSubmitConfirmed();
+            setIsConfirmationModalVisible(false);
+          }}
+          onCancel={() => {
+            setConfimationText("");
+            setIsConfirmationModalVisible(false);
+          }}
+          inputVal={cofirmationText}
+          onInputChange={e => setConfimationText(e.target.value)}
+          expectedVal="MOVE"
+          bodyText={<div style={{ textAlign: "center" }}>{t("users.student.addtoanotherclass.confirmtext")}</div>}
+          okText={t("users.student.addtoanotherclass.oktext")}
+          canUndone
+          centered
+        />
 
-      <StyledModal
-        visible={showModal}
-        title={title}
-        footer={footer}
-        onCancel={onCloseModal}
-        width="600px"
-        height="400px"
-        maskClosable={false}
-      >
-        <Spin spinning={loading}>
-          <Form>
-            <Field name="destClassCode">
-              <legend>{t("users.student.addtoanotherclass.classcode")}</legend>
-              <Form.Item>
-                {getFieldDecorator("destClassCode", {
-                  rules: [{ required: true, message: "Please input the destination class" }]
-                })(<Input onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)} />)}
-              </Form.Item>
-            </Field>
-            <Field name="name">
-              <legend>{t("users.student.addtoanotherclass.classname")}</legend>
-              <Form.Item>{getFieldDecorator("name")(<Input disabled />)}</Form.Item>
-            </Field>
-            <Field name="institutionName">
-              <legend>{t("users.student.addtoanotherclass.schoolname")}</legend>
-              <Form.Item>{getFieldDecorator("institutionName")(<Input disabled />)}</Form.Item>
-            </Field>
-            <Field name="teacherName">
-              <legend>{t("users.student.addtoanotherclass.teachername")}</legend>
-              <Form.Item>{getFieldDecorator("teacherName")(<Input disabled />)}</Form.Item>
-            </Field>
-          </Form>
-        </Spin>
-      </StyledModal>
-    </>
-  );
+        <CustomModalStyled
+          visible={showModal}
+          title={title}
+          footer={footer}
+          onCancel={onCloseModal}
+          width="600px"
+          maskClosable={false}
+          centered
+        >
+          <Spin spinning={loading}>
+            <Form>
+              <Field name="destClassCode">
+                <FieldLabel>{t("users.student.addtoanotherclass.classcode")}</FieldLabel>
+                <Form.Item>
+                  {getFieldDecorator("destClassCode", {
+                    rules: [{ required: true, message: "Please input the destination class" }]
+                  })(<TextInputStyled onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)} />)}
+                </Form.Item>
+              </Field>
+              <Field name="name">
+                <FieldLabel>{t("users.student.addtoanotherclass.classname")}</FieldLabel>
+                <Form.Item>{getFieldDecorator("name")(<TextInputStyled disabled />)}</Form.Item>
+              </Field>
+              <Field name="institutionName">
+                <FieldLabel>{t("users.student.addtoanotherclass.schoolname")}</FieldLabel>
+                <Form.Item>{getFieldDecorator("institutionName")(<TextInputStyled disabled />)}</Form.Item>
+              </Field>
+              <Field name="teacherName">
+                <FieldLabel>{t("users.student.addtoanotherclass.teachername")}</FieldLabel>
+                <Form.Item>{getFieldDecorator("teacherName")(<TextInputStyled disabled />)}</Form.Item>
+              </Field>
+            </Form>
+          </Spin>
+        </CustomModalStyled>
+      </>
+    );
 }
 
 export const AddStudentsToOtherClassModal = Form.create()(AddStudentsToOtherClass);

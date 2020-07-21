@@ -10,10 +10,10 @@ import React, { Component, Fragment } from "react";
 import { useDrop } from "react-dnd";
 import { FaBars, FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import { compose } from "redux";
-import { pick } from "lodash";
+import { pick, uniq } from "lodash";
 import { curriculumSequencesApi } from "@edulastic/api";
 import AssessmentPlayer from "../../../assessment";
 import { Tooltip } from "../../../common/utils/helpers";
@@ -28,7 +28,9 @@ import {
   removeUnitAction,
   setSelectedItemsForAssignAction,
   toggleCheckedUnitItemAction,
-  togglePlaylistTestDetailsModalWithId
+  togglePlaylistTestDetailsModalWithId,
+  toggleAssignmentsAction,
+  setCurrentAssignmentIdsAction
 } from "../ducks";
 import { getProgressData } from "../util";
 import ModuleRowView, { InfoProgressBar } from "./ModuleRowView";
@@ -52,7 +54,8 @@ import {
   ModuleDataName,
   Assignment,
   ModuleWrapper,
-  HideLinkLabel
+  HideLinkLabel,
+  CaretUp
 } from "./styled";
 
 const IS_ASSIGNED = "ASSIGNED";
@@ -150,8 +153,7 @@ export const submitLTIForm = signedRequest => {
 class ModuleRow extends Component {
   state = {
     showModal: false,
-    selectedTest: "",
-    currentAssignmentId: []
+    selectedTest: ""
   };
 
   /**
@@ -212,21 +214,6 @@ class ModuleRow extends Component {
     this.setState({
       showModal: false
     });
-  };
-
-  setAssignmentDropdown = id => {
-    const { currentAssignmentId } = this.state;
-    const { playlistId } = this.props;
-    const { contentId } = JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
-    sessionStorage.removeItem(`playlist/${playlistId}`);
-    if (currentAssignmentId.includes(id) || id === contentId) {
-      const prevState = [...currentAssignmentId];
-      prevState.splice(currentAssignmentId.find(x => x === id), 1);
-      this.setState({ currentAssignmentId: prevState });
-    } else {
-      const newAssignmentIds = currentAssignmentId.concat(id);
-      this.setState({ currentAssignmentId: newAssignmentIds });
-    }
   };
 
   processStudentAssignmentAction = (moduleId, moduleData, isAssigned, assignmentRows = []) => {
@@ -338,18 +325,23 @@ class ModuleRow extends Component {
   };
 
   hideTest = (moduleId, assignment) => {
-    const { updateCurriculumSequence, playlistId, curriculum } = this.props;
-    const { currentAssignmentId } = this.state;
+    const {
+      updateCurriculumSequence,
+      playlistId,
+      curriculum,
+      currentAssignmentIds,
+      setCurrentAssignmentIds
+    } = this.props;
 
     const dataToUpdate = produce(curriculum, draftState => {
       const module = draftState.modules.find(el => el._id === moduleId);
       const content = module.data.find(el => el.contentId === assignment.contentId);
       content.hidden = !content.hidden;
       // if Hide is clicked and assignment rows expanded, then hide assignment rows
-      if (content.hidden && currentAssignmentId.includes(content.contentId)) {
-        const prevState = [...currentAssignmentId];
-        prevState.splice(currentAssignmentId.find(x => x === content.contentId), 1);
-        this.setState({ currentAssignmentId: prevState });
+      if (content.hidden && currentAssignmentIds.includes(content.contentId)) {
+        const prevState = [...currentAssignmentIds];
+        prevState.splice(currentAssignmentIds.find(x => x === content.contentId), 1);
+        setCurrentAssignmentIds(prevState);
       }
       const allTestInHidden = module.data.filter(t => !t.hidden);
       if (!allTestInHidden.length && content.hidden) {
@@ -413,6 +405,17 @@ class ModuleRow extends Component {
     }
   };
 
+  unassignTest = (testId, assignments, moduleId) => {
+    const { playlistId, toggleUnassignModal } = this.props;
+    const assignmentIds = uniq(assignments.map(({ assignmentId }) => assignmentId));
+    toggleUnassignModal({
+      testId,
+      assignmentIds,
+      playlistId,
+      moduleId
+    });
+  };
+
   render() {
     const {
       onCollapseExpand,
@@ -446,9 +449,13 @@ class ModuleRow extends Component {
       fromPlaylist,
       isPlaylistDetailsPage,
       isSparkMathPlaylist,
-      handleActionClick
+      handleActionClick,
+      customizeInDraft,
+      currentAssignmentIds,
+      toggleAssignments
+
     } = this.props;
-    const { showModal, selectedTest, currentAssignmentId } = this.state;
+    const { showModal, selectedTest } = this.state;
     const { assignTest } = this;
     const { _id, data = [] } = module;
     const isParentRoleProxy = proxyUserRole === "parent";
@@ -497,6 +504,7 @@ class ModuleRow extends Component {
             onClick={() => onCollapseExpand(moduleIndex)}
           >
             <ModuleRowView
+              mode={mode}
               module={module}
               moduleIndex={moduleIndex}
               summaryData={summaryData}
@@ -515,6 +523,7 @@ class ModuleRow extends Component {
               deleteModuleMenuClick={this.deleteModuleMenuClick}
               isPlaylistDetailsPage={isPlaylistDetailsPage}
               isManageContentActive={isManageContentActive}
+              customizeInDraft={customizeInDraft}
             />
 
             {!collapsed && (
@@ -581,12 +590,13 @@ class ModuleRow extends Component {
 
                   const moreMenu = (
                     <Menu data-cy="assessmentItemMoreMenu">
+                      <CaretUp className="fa fa-caret-up" />
                       {!isStudent && (
                         <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
                       )}
                       {!isStudent && isAssigned && (
-                        <Menu.Item>
-                          <Link to="/author/assignments">View Assignments</Link>
+                        <Menu.Item onClick={() => togglePlaylistTestDetails({ id: moduleData?.contentId })}>
+                          View Test Details
                         </Menu.Item>
                       )}
                       {!isStudent && (
@@ -600,6 +610,14 @@ class ModuleRow extends Component {
                           onClick={() => this.showDifferentiation(moduleData.contentId)}
                         >
                           DIfferentiation
+                        </Menu.Item>
+                      )}
+                      {!isStudent && isAssigned && (
+                        <Menu.Item
+                          data-cy="unassign-test"
+                          onClick={() => this.unassignTest(moduleData.contentId, assignmentRows, module._id)}
+                        >
+                          Unassign
                         </Menu.Item>
                       )}
                       {/* <Menu.Item
@@ -650,16 +668,16 @@ class ModuleRow extends Component {
                               <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
                                 <Button
                                   data-cy={
-                                    currentAssignmentId.includes(moduleData.contentId)
+                                    currentAssignmentIds.includes(moduleData.contentId)
                                       ? "hide-assignment"
                                       : "show-assignment"
                                   }
-                                  onClick={() => this.setAssignmentDropdown(moduleData.contentId)}
+                                  onClick={() => toggleAssignments({ testId: moduleData.contentId, playlistId })}
                                   style={{ padding: "0 6px" }}
                                 >
                                   <IconCheckSmall color={white} />
                                   &nbsp;&nbsp;
-                                  {currentAssignmentId.includes(moduleData.contentId) || isPrevActiveContent
+                                  {currentAssignmentIds.includes(moduleData.contentId) || isPrevActiveContent
                                     ? "HIDE ASSIGNMENTS"
                                     : "SHOW ASSIGNMENTS"}
                                 </Button>
@@ -681,23 +699,25 @@ class ModuleRow extends Component {
                             ))}
 
                           {isDesktop && (mode === "embedded" || urlHasUseThis) && (
-                            <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle}>
+                            <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle} arrow>
                               <IconActionButton>
                                 <IconMoreVertical width={5} height={14} color={themeColor} />
                               </IconActionButton>
                             </Dropdown>
                           )}
-                          {(urlHasUseThis || mode === "embedded") && isManageContentActive && (
-                            <IconActionButton
-                              data-cy="assignmentDeleteOptionsIcon"
-                              onClick={e => {
-                                e.stopPropagation();
-                                this.deleteTest(moduleIndex, moduleData.contentId);
-                              }}
-                            >
-                              <IconTrash color={themeColor} />
-                            </IconActionButton>
-                          )}
+                          {(urlHasUseThis || mode === "embedded") &&
+                            isManageContentActive &&
+                            (hasEditAccess || customizeInDraft) && (
+                              <IconActionButton
+                                data-cy="assignmentDeleteOptionsIcon"
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  this.deleteTest(moduleIndex, moduleData.contentId);
+                                }}
+                              >
+                                <IconTrash color={themeColor} />
+                              </IconActionButton>
+                            )}
                         </LastColumn>
                       </Fragment>
                     ) : (
@@ -733,7 +753,7 @@ class ModuleRow extends Component {
                         </Button>
                       </AssignmentButton>
 
-                      {mode === "embedded" ? (
+                      {mode === "embedded" && (hasEditAccess || customizeInDraft) ? (
                         <IconActionButton
                           data-cy="assignmentDeleteOptionsIcon"
                           onClick={e => {
@@ -809,7 +829,7 @@ class ModuleRow extends Component {
                     </FlexContainer>
                   );
 
-                  const assignmentsRow = (currentAssignmentId.includes(moduleData.contentId) || isPrevActiveContent) &&
+                  const assignmentsRow = (currentAssignmentIds.includes(moduleData.contentId) || isPrevActiveContent) &&
                     !isStudent && (
                       <AssignmentsClasses
                         moduleId={module?._id}
@@ -819,7 +839,7 @@ class ModuleRow extends Component {
                       />
                     );
 
-                  if (mode === "embedded" && !(isStudent && moduleData.hidden)) {
+                  if (mode === "embedded" && !(isStudent && moduleData.hidden) && (hasEditAccess || customizeInDraft)) {
                     return (
                       <SortableElement
                         {...this.props}
@@ -970,7 +990,8 @@ const enhance = compose(
       isStudent: getUserRole({ user }) === "student",
       classId: getCurrentGroup({ user }),
       playlistTestDetailsModalData: curriculumSequence?.playlistTestDetailsModal,
-      proxyUserRole: proxyRole({ user })
+      proxyUserRole: proxyRole({ user }),
+      currentAssignmentIds: curriculumSequence.currentAssignmentIds
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,
@@ -981,7 +1002,9 @@ const enhance = compose(
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction,
       updateCurriculumSequence: putCurriculumSequenceAction,
-      togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId
+      togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId,
+      toggleAssignments: toggleAssignmentsAction,
+      setCurrentAssignmentIds: setCurrentAssignmentIdsAction
     }
   )
 );

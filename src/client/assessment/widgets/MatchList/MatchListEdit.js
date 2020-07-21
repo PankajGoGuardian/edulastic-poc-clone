@@ -86,7 +86,9 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
           draft.validation.altResponses = [];
         }
         const value = {};
-        item.list.forEach(l => value[l.value] = null); 
+        item.list.forEach(l => {
+          value[l.value] = null;
+        });
         draft.validation.altResponses.push({
           score: 1,
           value
@@ -135,10 +137,12 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
       produce(item, draft => {
         draft.groupPossibleResponses = e.target.checked;
         const value = {};
-        item.list.forEach(l => value[l.value] = null);
-        draft.validation.validResponse.value = {...value};
+        item.list.forEach(l => {
+          value[l.value] = null;
+        });
+        draft.validation.validResponse.value = { ...value };
         draft.validation.altResponses.forEach(ite => {
-          ite.value = {...value};
+          ite.value = { ...value };
         });
       })
     );
@@ -165,6 +169,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
       }
       view={EDIT}
       showBorder
+      isCorrectAnsTab={correctTab === 0}
     />
   );
 
@@ -180,7 +185,9 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
     _setQuestionData(
       produce(item, draft => {
         item.list.forEach(l => {
-          if (draft.validation.validResponse.value[l.value] === draft.possibleResponseGroups[ind].responses[index].value) {
+          if (
+            draft.validation.validResponse.value[l.value] === draft.possibleResponseGroups[ind].responses[index].value
+          ) {
             draft.validation.validResponse.value[l.value] = null;
           }
         });

@@ -110,13 +110,19 @@ const HotspotPreview = ({
           {view !== EDIT && <Instructions item={item} />}
           {previewTab === "show" && !smallSize && (
             <Fragment>
-              <CorrectAnswersContainer title={t("component.graphing.correctAnswer")} minWidth={`${width + 24}px`}>
+              <CorrectAnswersContainer
+                title={t("component.graphing.correctAnswer")}
+                padding="15px 25px 20px"
+                minHeight="auto"
+                titleMargin="0px 0px 12px"
+              >
                 <BlockContainer
                   data-cy="hotspotMap"
                   style={{ maxWidth }}
                   width={+width}
                   height={+height}
                   justifyContent="center"
+                  ml="20px"
                 >
                   <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
                   <Svg data-cy="answer-container" width={+width} height={+height}>
@@ -137,13 +143,19 @@ const HotspotPreview = ({
               </CorrectAnswersContainer>
               {altAnswers &&
                 altAnswers.map((altAnswer, i) => (
-                  <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
+                  <CorrectAnswersContainer
+                    title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                    padding="15px 25px 20px"
+                    minHeight="auto"
+                    titleMargin="0px 0px 12px"
+                  >
                     <BlockContainer
                       data-cy="hotspotMap"
                       style={{ maxWidth }}
                       width={+width}
                       height={+height}
                       justifyContent="center"
+                      ml="20px"
                     >
                       <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
                       <Svg data-cy="answer-container" width={+width} height={+height}>

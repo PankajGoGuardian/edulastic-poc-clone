@@ -57,7 +57,7 @@ const populateGroups = (state, { payload = [] }) => {
 
   const studentsMap = {};
   for (const student of students) {
-    studentsMap[student._id] = student;
+    studentsMap[`${student.groupId}_${student._id}`] = student;
   }
 
   // updating student list
@@ -67,8 +67,8 @@ const populateGroups = (state, { payload = [] }) => {
   const newPayload = payload
     .filter(({ enrollmentStatus }) => enrollmentStatus > 0)
     .filter(student => {
-      if (studentsMap[student._id]) {
-        studentsMap[student._id] = student;
+      if (studentsMap[`${student.groupId}_${student._id}`]) {
+        studentsMap[`${student.groupId}_${student._id}`] = student;
         return false;
       }
       return true;
@@ -137,7 +137,7 @@ function* fetchMembers({ payload }) {
     if (loadedGroups.includes(classId)) {
       return;
     }
-    let { students = [] } = yield call(enrollmentApi.fetch, classId);
+    const { students = [] } = yield call(enrollmentApi.fetch, classId);
     setLoadedGroupsAction([...loadedGroups, classId]);
     yield put(setGroupMemebersAction(students.map(student => ({ ...student, groupId: classId }))));
   } catch (err) {
@@ -149,11 +149,11 @@ function* fetchMultipleGroupMembers({ payload }) {
   try {
     const groupIds = payload || [];
     const loadedGroups = yield select(getLoadedGroupsSelector);
-    let newGroups = groupIds.filter(id => !loadedGroups.includes(id));
+    const newGroups = groupIds.filter(id => !loadedGroups.includes(id));
     if (!newGroups.length) {
       return;
     }
-    let allStudents = yield call(enrollmentApi.fetchByIds, groupIds);
+    const allStudents = yield call(enrollmentApi.fetchByIds, groupIds);
     yield put(setGroupMemebersAction(allStudents));
     setLoadedGroupsAction([...groupIds, ...newGroups]);
   } catch (err) {

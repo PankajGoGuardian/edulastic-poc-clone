@@ -55,7 +55,6 @@ export const AddAlternative = styled.div`
 `;
 
 export const AlternateAnswerLink = styled(Button)`
-  visibility: ${({ visibility }) => visibility};
   &.ant-btn {
     background: transparent;
     color: ${greyThemeDark2};

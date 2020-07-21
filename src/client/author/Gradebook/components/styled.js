@@ -14,8 +14,20 @@ import {
   backgroundGrey,
   lightGrey11,
   greyThemeDark1,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  themeColorBlue
 } from "@edulastic/colors";
+
+export const StudentLabel = styled.div`
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 3px;
+  font-weight: 600;
+  height: 48px;
+  background-color: ${backgroundGrey};
+`;
 
 export const FilterButton = styled(Button)`
   min-width: 35px;
@@ -27,14 +39,16 @@ export const FilterButton = styled(Button)`
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   margin-left: ${props => (props.showFilter ? "240px" : "-23px")};
-  background: ${props => (props.showFilter ? themeColor : white)} !important;
+  background: ${props => (props.showFilter ? themeColorBlue : white)} !important;
+  border: 1px solid ${themeColorBlue} !important;
   &:focus,
   &:hover {
     outline: unset;
+    color: ${props => (props.isShowFilter ? white : themeColorBlue)};
   }
   svg,
   svg:hover {
-    fill: ${props => (props.showFilter ? white : themeColor)};
+    fill: ${props => (props.showFilter ? white : themeColorBlue)};
   }
 `;
 
@@ -60,7 +74,7 @@ export const LeftArrow = styled(Arrow)`
 export const RightArrow = styled(Arrow)`
   display: ${props => (props.disabled ? "none" : "block")};
   position: fixed;
-  right: 8px;
+  right: 15px;
   top: 50%;
   cursor: pointer;
 `;
@@ -71,6 +85,11 @@ export const TableContainer = styled.div`
   padding-left: ${props => (props.showFilter ? "30px" : "0px")};
   .ant-spin {
     position: relative;
+  }
+  > .ant-pagination {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
   }
 `;
 
@@ -94,6 +113,89 @@ export const StyledTableCell = styled.div`
   background-color: ${props => props.color};
   height: 40px;
   width: 100%;
+`;
+
+export const StyledTag = styled.div`
+  padding: 0 10px;
+  margin: 0px;
+  background: ${props => props.bgColor || themeColor};
+  height: 28px;
+  width: auto;
+  font-size: 9px;
+  color: ${props => props.textColor || "#ffffff"};
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: 24px;
+    font-size: 10px;
+    line-height: 14px;
+  }
+
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+`;
+
+export const Icon = styled.img`
+  margin-left: 10px;
+  width: 18px;
+  height: 18px;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export const TestThumbnail = styled.img`
+  border-radius: 4px;
+  width: 32px;
+  height: 24px;
+  margin-right: 5px;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 50px;
+  }
+`;
+
+export const TestTypeIcon = styled.span`
+  width: 18px;
+  height: 18px;
+  margin: 0px 10px;
+  border-radius: 50%;
+  text-align: center;
+  text-transform: uppercase;
+  color: ${white};
+  background: ${props => props.bgColor};
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 17px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    line-height: 19px;
+  }
+`;
+
+export const AssignmentTD = styled.div`
+  text-align: left;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    max-width: 250px;
+  }
 `;
 
 export const StyledTable = styled(Table)`

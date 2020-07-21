@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { get, isEmpty } from "lodash";
-import { Input, Form } from "antd";
-
 import { userApi } from "@edulastic/api";
+import { red, themeColor } from "@edulastic/colors";
+import { FieldLabel, TextInputStyled } from "@edulastic/common";
+import { IconHash, IconLock, IconMail, IconUser } from "@edulastic/icons";
+import { Form } from "antd";
+import { get, isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
-import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
-import { themeColor, red } from "@edulastic/colors";
-import { Field } from "./styled";
 import { nameValidator } from "../../../../../common/utils/helpers";
+import { Field } from "./styled";
 
 const BasicFields = ({
   stds,
@@ -24,7 +24,7 @@ const BasicFields = ({
   setFounduser,
   showClassCodeField,
   fetchClassDetailsUsingCode,
-  resetClassDetails = () => {},
+  resetClassDetails = () => { },
   setFoundContactEmails,
   validatedClassDetails,
   classDetails
@@ -86,7 +86,15 @@ const BasicFields = ({
       if (error) return null;
     }
 
-    const user = result[0] || {};
+    // many user can exists with same email
+    // get user with student role
+    let user = {};
+    if(!isEmpty(result)){
+      const student = result.find(o => o.role === "student");
+      if(!isEmpty(student)){
+        user = student;
+      }
+    }
 
     if (user.existInClass) {
       setUserExistsInClass(true);
@@ -103,16 +111,14 @@ const BasicFields = ({
 
     setUserExistsInClass(false);
     let errorMsg = "";
-    if (result.length > 0) {
+    if (!isEmpty(user)) {
       const foundUser = user;
       const isExistingStudent = students.find(
         student => student._id == foundUser._id && student.enrollmentStatus === "1"
       );
       if (isExistingStudent) {
         errorMsg = "User already part of this class section";
-      } else if (foundUser.role === "teacher")
-        errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
-      else {
+      } else {
         errorMsg = "";
         setEnroll(true);
         setIsUpdate(!isUpdate);
@@ -161,13 +167,14 @@ const BasicFields = ({
     <FormBody>
       {showClassCodeField && (
         <Field name="ClassCode">
-          <legend>Class Code</legend>
+          <FieldLabel>Class Code</FieldLabel>
           <Form.Item>
             {getFieldDecorator("code", {
               validateTrigger: ["onBlur"],
               rules: [{ required: true, message: "Please input the destination class" }]
             })(
-              <Input
+              <TextInputStyled
+                padding="0px 15px 0px 30px"
                 data-cy="classCode"
                 prefix={<IconHash color={themeColor} />}
                 onBlur={evt => {
@@ -187,48 +194,50 @@ const BasicFields = ({
       )}
       {!isEdit ? (
         <Field name="email">
-          <legend>Username</legend>
+          <FieldLabel>Username</FieldLabel>
           <Form.Item>
             {getFieldDecorator("email", {
               validateTrigger: ["onBlur"],
               rules: [{ validator: checkUser }, ...commonEmailValidations]
-            })(<Input data-cy="username" prefix={<IconMail color={themeColor} />} placeholder="Enter Username" />)}
+            })(<TextInputStyled padding="0px 15px 0px 30px" data-cy="username" prefix={<IconMail color={themeColor} />} placeholder="Enter Username" />)}
             {enroll && <InputMessage>User exists and will be enrolled.</InputMessage>}
           </Form.Item>
         </Field>
       ) : (
         <Field name="email">
-          <legend>Username/Email</legend>
+          <FieldLabel>Username/Email</FieldLabel>
           <Form.Item>
             {getFieldDecorator("email", {
-              rules: [...commonEmailValidations],
-              initialValue: email || username
-            })(
-              <Input
-                data-cy="username"
-                prefix={<IconUser color={themeColor} />}
-                placeholder="Enter Username"
-                disabled={googleId || canvasId || cliId || cleverId}
-              />
-            )}
+                rules: [...commonEmailValidations],
+                initialValue: email || username
+              })(
+                <TextInputStyled
+                  padding="0px 15px 0px 30px"
+                  data-cy="username"
+                  prefix={<IconUser color={themeColor} />}
+                  placeholder="Enter Username"
+                  disabled={googleId || canvasId || cliId || cleverId}
+                />
+              )}
           </Form.Item>
         </Field>
-      )}
+        )}
       {showClassCodeField && (
         <Field name="role">
-          <legend>Role</legend>
-          <Form.Item>{getFieldDecorator("role", { initialValue: "student" })(<Input disabled />)}</Form.Item>
+          <FieldLabel>Role</FieldLabel>
+          <Form.Item>{getFieldDecorator("role", { initialValue: "student" })(<TextInputStyled disabled />)}</Form.Item>
         </Field>
       )}
       {!isEdit && (
         <Field name="fullName">
-          <legend>Name of User</legend>
+          <FieldLabel>Name of User</FieldLabel>
           <Form.Item>
             {getFieldDecorator("fullName", {
               validateTrigger: ["onBlur"],
               rules: [{ validator: validateName }]
             })(
-              <Input
+              <TextInputStyled
+                padding="0px 15px 0px 30px"
                 data-cy="fullName"
                 prefix={<IconUser color={themeColor} />}
                 placeholder="Enter the name of the user"
@@ -241,14 +250,15 @@ const BasicFields = ({
       {isEdit && (
         <>
           <Field name="firstName">
-            <legend>First Name</legend>
+            <FieldLabel>First Name</FieldLabel>
             <Form.Item>
               {getFieldDecorator("firstName", {
                 validateTrigger: ["onBlur"],
                 rules: [{ validator: checkFirstName }],
                 initialValue: firstName || ""
               })(
-                <Input
+                <TextInputStyled
+                  padding="0px 15px 0px 30px"
                   data-cy="fname"
                   prefix={<IconUser color={themeColor} />}
                   placeholder="Enter the first name of the user"
@@ -257,12 +267,13 @@ const BasicFields = ({
             </Form.Item>
           </Field>
           <Field name="lastName">
-            <legend>Last name</legend>
+            <FieldLabel>Last name</FieldLabel>
             <Form.Item>
               {getFieldDecorator("lastName", {
                 initialValue: lastName || ""
               })(
-                <Input
+                <TextInputStyled
+                  padding="0px 15px 0px 30px"
                   data-cy="lname"
                   prefix={<IconUser color={themeColor} />}
                   placeholder="Enter the last name of the user"
@@ -276,7 +287,7 @@ const BasicFields = ({
       {!isEdit ? (
         <>
           <Field name="password">
-            <legend>Password</legend>
+            <FieldLabel>Password</FieldLabel>
             <Form.Item>
               {getFieldDecorator("password", {
                 rules: [
@@ -284,7 +295,8 @@ const BasicFields = ({
                   { min: 6, message: "Must larger than 6 characters!" }
                 ]
               })(
-                <Input
+                <TextInputStyled
+                  padding="0px 15px 0px 30px"
                   data-cy="password"
                   prefix={<IconLock color={themeColor} />}
                   type="password"
@@ -296,12 +308,13 @@ const BasicFields = ({
             </Form.Item>
           </Field>
           <Field name="confirmPassword">
-            <legend>Confirm Password</legend>
+            <FieldLabel>Confirm Password</FieldLabel>
             <Form.Item>
               {getFieldDecorator("confirmPassword", {
                 rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
               })(
-                <Input
+                <TextInputStyled
+                  padding="0px 15px 0px 30px"
                   data-cy="confirmPassword"
                   prefix={<IconLock color={themeColor} />}
                   type="password"
@@ -316,35 +329,37 @@ const BasicFields = ({
       ) : (
         <>
           <Field name="password">
-            <legend>Password</legend>
+            <FieldLabel>Password</FieldLabel>
             <Form.Item>
               {getFieldDecorator("password", {})(
-                <Input
+                <TextInputStyled
+                  padding="0px 15px 0px 30px"
                   prefix={<IconLock color={themeColor} />}
                   type="password"
                   placeholder="Enter Password"
                   autoComplete="new-password"
                 />
-              )}
+                )}
             </Form.Item>
           </Field>
           <Field name="confirmPassword">
-            <legend>Confirm Password</legend>
+            <FieldLabel>Confirm Password</FieldLabel>
             <Form.Item>
               {getFieldDecorator("confirmPassword", {
-                rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
-              })(
-                <Input
-                  prefix={<IconLock color={themeColor} />}
-                  type="password"
-                  placeholder="Confirm Password"
-                  autoComplete="new-password"
-                />
-              )}
+                  rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
+                })(
+                  <TextInputStyled
+                    padding="0px 15px 0px 30px"
+                    prefix={<IconLock color={themeColor} />}
+                    type="password"
+                    placeholder="Confirm Password"
+                    autoComplete="new-password"
+                  />
+                )}
             </Form.Item>
           </Field>
         </>
-      )}
+        )}
     </FormBody>
   );
 };
@@ -366,9 +381,6 @@ export default connect(state => ({
 
 const FormBody = styled.div`
   background: white;
-  padding: 2rem 2rem 1.2rem 2rem;
-  margin-bottom: 20px;
-  border-radius: 2px;
   .ant-input-affix-wrapper {
     .ant-input-prefix {
       width: 15px;

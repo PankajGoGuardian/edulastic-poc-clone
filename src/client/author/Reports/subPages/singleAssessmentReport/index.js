@@ -4,6 +4,7 @@ import next from "immer";
 import qs from "qs";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
 
 import ResponseFrequency from "./ResponseFrequency";
 import AssessmentSummary from "./AssessmentSummary";
@@ -22,7 +23,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
+import { ReportContaner, SearchField, FilterLabel, FilterButton } from "../../common/styled";
 
 const SingleAssessmentReportContainer = props => {
   const {
@@ -147,7 +148,9 @@ const SingleAssessmentReportContainer = props => {
           extraFilters={extraFilters}
           style={showFilter ? { display: "block" } : { display: "none" }}
         />
-        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+        <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          <IconFilter />
+        </FilterButton>
         <ReportContaner showFilter={showFilter}>
           <Route
             exact

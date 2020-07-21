@@ -12,15 +12,15 @@ const getCellColor = (correct, theme) => {
 };
 
 export const Wrapper = styled.div`
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: ${props => !props.isPrintPreview && getCellColor(props.correct, props.theme)};
-  padding: ${props => (props.smallSize ? 1 : 15)}px;
+  padding: ${props => (props.smallSize ? 1 : 16)}px;
   position: relative;
   .inline-label {
     margin-right: ${({ isPrintPreview }) => (isPrintPreview ? "0px" : "10px")};
   }
-  height: 100%;
+  height: calc(100% - 4px);
+  width: calc(100% - 4px);
 `;

@@ -14,7 +14,7 @@ class Options extends Component {
 
     return (
       <WidgetOptions
-        showScoring={false}
+        showScoring
         scoringTypes={[]}
         outerStyle={{ marginTop: 40 }}
         title={t("common.options.title")}
@@ -23,6 +23,7 @@ class Options extends Component {
         cleanSections={cleanSections}
         item={item}
         handleItemChangeChange={handleItemChangeChange}
+        showScoringSectionAnyRole
       >
         <LayoutComponent
           item={item}

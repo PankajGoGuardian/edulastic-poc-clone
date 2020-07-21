@@ -6,11 +6,7 @@ export const Text = styled.div`
 
   background: ${({ checkStyle, correct, theme, isPrintPreview }) => {
     if (isPrintPreview) return "transparent";
-    return checkStyle
-      ? correct
-        ? `${theme.widgets.sortList.dragItemCorrectTextBgColor}`
-        : `${theme.widgets.sortList.dragItemIncorrectTextBgColor}`
-      : "none";
+    return checkStyle ? (correct ? `${theme.checkbox.rightBgColor}` : `${theme.checkbox.wrongBgColor}`) : "none";
   }};
   display: flex;
   position: relative;
@@ -19,11 +15,9 @@ export const Text = styled.div`
    */
   overflow: auto;
   .math-formula-display {
-    /** 
-      To cope up removing align item 
-      current choice box height is 40px
-    */
-    padding: 10px;
-    padding-right: ${({ checkStyle }) => (checkStyle ? 40 : 4)}px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 40px;
   }
 `;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
 import produce from "immer";
@@ -27,7 +27,7 @@ const Histogram = ({
   saveAnswer,
   gridParams,
   view,
-  correct,
+  evaluation,
   disableResponse,
   toggleBarDragging,
   deleteMode,
@@ -51,13 +51,20 @@ const Histogram = ({
     }
   }, [data]);
 
+  const bars = useMemo(
+    () =>
+      (localData || []).map((bar, index) => ({
+        ...bar,
+        posX: step * index + (padding + gridMargin) / 2,
+        posY: convertUnitToPx(bar.y, gridParams) + 20,
+        labelVisibility: bar.labelVisibility,
+        width: step - 2
+      })),
+    [localData]
+  );
+
   const getPolylinePoints = () =>
-    localData
-      .map(
-        (dot, index) =>
-          `${step * index + gridMargin / 2 + padding + (step - 2) / 2},${convertUnitToPx(dot.y, gridParams) + 20}`
-      )
-      .join(" ");
+    bars.map(bar => `${bar.posX + bar.width / 2},${convertUnitToPx(bar.y, gridParams) + 20}`).join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -137,6 +144,7 @@ const Histogram = ({
       <g transform={`translate(${margin.left}, ${margin.top})`}>
         <BarsAxises
           lines={data}
+          bars={bars}
           gridParams={gridParams}
           displayAxisLabel={false}
           displayGridlines={displayVerticalLines(showGridlines)}
@@ -155,11 +163,11 @@ const Histogram = ({
           activeIndex={activeIndex}
           onPointOver={setActive}
           previewTab={previewTab}
-          bars={localData}
+          bars={bars}
+          evaluation={evaluation}
           view={view}
           onMouseDown={!disableResponse ? onMouseDown : () => {}}
           gridParams={gridParams}
-          correct={correct}
         />
 
         <ArrowPair getActivePoint={getActivePoint} />
@@ -195,9 +203,8 @@ Histogram.propTypes = {
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired,
-  toggleBarDragging: PropTypes.func,
-  margin: PropTypes.object
+  evaluation: PropTypes.object.isRequired,
+  toggleBarDragging: PropTypes.func
 };
 
 Histogram.defaultProps = {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { IconFilter } from "@edulastic/icons";
-import { themeColor, white } from "@edulastic/colors";
+import { white, themeColorBlue } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
 
@@ -16,7 +16,7 @@ class FilterToggleBtn extends Component {
           variant="filter"
           onClick={toggleFilter}
         >
-          <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
+          <IconFilter color={isShowFilter ? white : themeColorBlue} width={20} height={20} />
         </MobileLeftFilterButton>
       </>
     );
@@ -36,17 +36,12 @@ const MobileLeftFilterButton = styled(Button)`
   margin-top: 24px;
   z-index: 100;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  background: ${props => (props.header ? white : props.isShowFilter ? themeColor : white)};
-  svg {
-    fill: ${props => (props.header ? themeColor : props.isShowFilter ? white : themeColor)};
-  }
+  background: ${props => (props.header ? white : props.isShowFilter ? themeColorBlue : white)};
+  border-color: ${themeColorBlue} !important;
 
   &:focus,
   &:hover {
     outline: unset;
-    background: ${props => (props.header ? white : props.isShowFilter ? themeColor : white)};
-    svg {
-      fill: ${props => (props.header ? themeColor : props.isShowFilter ? white : themeColor)};
-    }
+    background: ${props => (props.header ? white : props.isShowFilter ? themeColorBlue : white)};
   }
 `;

@@ -287,8 +287,8 @@ const AssessmentContainer = ({
     }
   };
 
-  const moveToNext = async (e, needsToProceed = false) => {
-    if (!isLast()) {
+  const moveToNext = async (e, needsToProceed = false, value) => {
+    if (!isLast() && value !== "SUBMIT") {
       gotoQuestion(Number(currentItem) + 1, needsToProceed, "next");
     }
 
@@ -296,7 +296,7 @@ const AssessmentContainer = ({
       closeTestPreviewModal();
     }
 
-    if (isLast() && !preview) {
+    if ((isLast() || value === "SUBMIT") && !preview) {
       const unansweredQs = getUnAnsweredQuestions();
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
         const timeSpent = Date.now() - lastTime.current;

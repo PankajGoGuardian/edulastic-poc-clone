@@ -210,7 +210,7 @@ class Item extends Component {
     return details.map(
       (detail, index) =>
         (detail.text || detail.type === "premium") &&
-        detail.text !== "Edulastic Certified" && (
+        detail.text && (
           <DetailCategory isLiked={isItemLiked} data-cy={`detail_index-${index}`} key={`DetailCategory_${index}`}>
             <CategoryName>{detail.name}</CategoryName>
             {detail.type !== "premium" && (

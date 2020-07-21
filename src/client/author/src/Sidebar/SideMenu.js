@@ -72,7 +72,7 @@ const menuItems = [
     path: "author/gradebook"
   },
   {
-    label: "Skill Report",
+    label: "Insights",
     icon: IconBarChart,
     allowedPathPattern: [/author\/reports/],
     path: "author/reports"
@@ -343,32 +343,33 @@ class SideMenu extends Component {
         <Menu onClick={this.onClickFooterDropDownMenu} style={{ height: "auto" }}>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/author/profile">
-              <IconProfileHighlight /> {isCollapsed ? "" : "My Profile"}
+              <IconProfileHighlight /> <span>{isCollapsed ? "" : "My Profile"}</span>
             </Link>
           </Menu.Item>
           {!isPublisher && (
             <Menu.Item key="2" className="removeSelectedBorder">
               <Link to="/author/subscription">
-                <IconSubscriptionHighlight /> {isCollapsed ? "" : "Subscription"}
+                <IconSubscriptionHighlight /> <span>{isCollapsed ? "" : "Subscription"}</span>
               </Link>
             </Menu.Item>
           )}
           {users.length ? (
             <Menu.Item key="3" className="removeSelectedBorder">
               <a>
-                <IconSwitchUser /> {isCollapsed ? "" : "Switch Account"}
+                <IconSwitchUser />
+                <span>{isCollapsed ? "" : "Switch Account"} </span>
               </a>
             </Menu.Item>
           ) : (
             <Menu.Item key="4" className="removeSelectedBorder">
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
-                <IconSwitchUser /> {isCollapsed ? "" : "Add Account"}
+                <IconSwitchUser /> <span>{isCollapsed ? "" : "Add Account"}</span>
               </Link>
             </Menu.Item>
           )}
           <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
-              <IconSignoutHighlight /> {isCollapsed ? "" : "Sign Out"}
+              <IconSignoutHighlight /> <span>{isCollapsed ? "" : "Sign Out"}</span>
             </a>
           </Menu.Item>
         </Menu>
@@ -956,6 +957,7 @@ const FooterDropDown = styled.div`
         &.ant-menu-item {
           margin: 0px;
           height: 58px;
+          
         }
       }
     }
@@ -976,16 +978,19 @@ const FooterDropDown = styled.div`
           font-weight: 600;
           display: flex;
           align-items: center;
-          &:hover,
+          &:focus,
+          &:hover {
+            svg,
+            svg path {
+              fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
+            }
+          }
           &:focus {
             color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             a {
               color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
             }
-            svg,
-            svg path {
-              fill: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
-            }
+      
           }
           svg {
             margin-right: 15px;
@@ -993,6 +998,9 @@ const FooterDropDown = styled.div`
             height: 23px;
             width: 23px;
           }
+        }
+         span:hover {
+          color:${white};
         }
       }
     }

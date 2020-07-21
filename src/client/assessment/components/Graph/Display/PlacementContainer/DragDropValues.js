@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Rnd } from "react-rnd";
-import { DragDropValuesContainer, DragDropTitle, DragDropContainer } from "./styled";
+
+import { DragDropValuesContainer, DragDropTitle } from "./styled";
+import { Responses } from "./Responses";
 
 class DragDropValues extends Component {
   constructor(props) {
@@ -31,44 +32,22 @@ class DragDropValues extends Component {
       width,
       height: values.length * (valueHeight + 5)
     };
+    const bounds = dragDropBoundsClassName ? `.${dragDropBoundsClassName}` : "";
 
     return (
       <DragDropValuesContainer ref={this.container} width={width} minHeight={height}>
         <DragDropTitle>DRAG DROP VALUES</DragDropTitle>
         <div style={containerStyle}>
-          {values.map((value, i) => {
-            const position = { x: 5, y: i * (valueHeight + 5) };
-            const size = { width: width - 10, height: valueHeight };
-
-            return (
-              <Rnd
-                key={value.id}
-                position={position}
-                size={size}
-                onDragStop={(evt, d) => {
-                  if (window.isIOS) {
-                    document.body.removeEventListener("touchmove", this.scrollHandler);
-                  }
-                  this.handleDragDropValuePosition(d, value);
-                }}
-                onDrag={(e, d) => {
-                  if (window.isIOS) {
-                    document.body.addEventListener("touchmove", this.scrollHandler, { passive: false });
-                    document.body.scrollTop = 0;
-                  }
-                  this.handleDragDropValue(d, value);
-                }}
-                style={{ zIndex: 10 }}
-                disableDragging={false}
-                enableResizing={false}
-                bounds={dragDropBoundsClassName ? `.${dragDropBoundsClassName}` : ""}
-                className="drag-drop-value"
-                scale={scale}
-              >
-                <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
-              </Rnd>
-            );
-          })}
+          <Responses
+            values={values}
+            bounds={bounds}
+            handleDragDropValuePosition={this.handleDragDropValuePosition}
+            handleDragDropValue={this.handleDragDropValue}
+            scale={scale}
+            width={width}
+            scrollHandler={this.scrollHandler}
+            valueHeight={valueHeight}
+          />
         </div>
       </DragDropValuesContainer>
     );
@@ -81,7 +60,6 @@ DragDropValues.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   valueHeight: PropTypes.number,
-  titleOffset: PropTypes.number,
   margin: PropTypes.number,
   onAddDragDropValue: PropTypes.func,
   onDrawDragDropValue: PropTypes.func,
@@ -93,7 +71,6 @@ DragDropValues.defaultProps = {
   width: 150,
   height: 600,
   valueHeight: 50,
-  titleOffset: 40,
   margin: 0,
   onDrawDragDropValue: () => {},
   onAddDragDropValue: () => {},

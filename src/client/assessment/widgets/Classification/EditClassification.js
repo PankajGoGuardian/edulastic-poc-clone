@@ -433,6 +433,7 @@ const EditClassification = ({
       }
       setQuestionData={setQuestionData}
       view={EDIT}
+      isCorrectAnsTab={correctTab === 0}
     />
   );
 

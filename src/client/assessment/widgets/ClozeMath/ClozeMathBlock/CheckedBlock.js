@@ -99,10 +99,8 @@ const CheckedBlock = ({
       className={!isPrintPreview && checkBoxClass}
       key={`input_${index}`}
       onClick={onInnerClick}
-      style={{
-        width: isPopover ? null : width,
-        minWidth: width
-      }}
+      width={isPopover ? null : width}
+      height={height}
     >
       {showIndex && (
         <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>

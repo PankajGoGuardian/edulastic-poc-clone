@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy } from "lodash";
+import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy, isEqual } from "lodash";
 import { withTheme } from "styled-components";
 import {
   Stimulus,
@@ -39,7 +39,8 @@ import {
   LeftResponseContainer,
   RightContainer,
   RightTemplateContainer,
-  RightResponseContainer
+  RightResponseContainer,
+  StyledDisplayContainer
 } from "./styled/layout";
 
 const { DragPreview } = DragDrop;
@@ -138,6 +139,12 @@ class Display extends Component {
       let possibleResponses = getInitialResponses(nextProps);
       if (nextProps.previewTab === "check" || !isSnapFitValues) {
         possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
+      }
+      if (
+        isEqual(prevState?.possibleResponses, possibleResponses) &&
+        isEqual(prevState?.userAnswers, nextProps?.userSelections)
+      ) {
+        return null;
       }
       return {
         userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : [],
@@ -407,8 +414,7 @@ class Display extends Component {
       getHeading,
       isPrint = false,
       isPrintPreview = false,
-      view,
-      viewComponent
+      view
     } = this.props;
     const isPrintMode = isPrint || isPrintPreview;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
@@ -417,10 +423,10 @@ class Display extends Component {
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
-    let responses = cloneDeep(possibleResponses);
-    if (preview && shuffleOptions) {
-      responses = this.shuffle(possibleResponses);
-    }
+    // let responses = cloneDeep(possibleResponses);
+    // if (preview && shuffleOptions) {
+    //   responses = this.shuffle(possibleResponses);
+    // }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
@@ -527,8 +533,6 @@ class Display extends Component {
     const idValueMap = this.mapIdAndValue;
 
     const containerStyle = {
-      margin: "auto",
-      overflow: viewComponent !== "authorPreviewPopup" && !isPrintMode && "auto",
       minWidth: choiceMaxWidth,
       maxWidth: !isPrintMode && (responseposition === "left" || responseposition === "right" ? 1050 : 750),
       flexDirection: isPrintMode ? "column" : "row",
@@ -632,16 +636,18 @@ class Display extends Component {
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
+        key="ResponseBoxLayout"
         smallSize={smallSize}
-        responses={responses}
+        shuffleOptions={shuffleOptions}
+        responses={possibleResponses}
         fontSize={fontSize}
         dragHandler={dragHandler}
         onDrop={!disableResponse ? this.onDrop : () => {}}
         transparentResponses={transparentResponses}
         responseContainerPosition={responsecontainerposition}
         getHeading={getHeading}
-        choiceStyle={choiceStyle}
         isPrintMode={isPrintMode}
+        {...choiceStyle}
       />
     );
 
@@ -666,68 +672,70 @@ class Display extends Component {
     return (
       <div style={{ fontSize }}>
         <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.displayWrapperRef.current }}>
-          <FlexContainer justifyContent="flex-start" alignItems="baseline">
-            <QuestionLabelWrapper>
-              {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
-            </QuestionLabelWrapper>
-            <QuestionContentWrapper>
-              <QuestionTitleWrapper>
-                <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-              </QuestionTitleWrapper>
-              {responseposition === "top" && (
-                <div style={containerStyle} ref={this.displayWrapperRef}>
-                  <StyledContainer>
-                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                  </StyledContainer>
-                  <StyledContainer>{templateBoxLayout}</StyledContainer>
-                </div>
-              )}
-              {responseposition === "bottom" && (
-                <div style={containerStyle} ref={this.displayWrapperRef}>
-                  <StyledContainer>
-                    <RelativeContainer>{templateBoxLayout}</RelativeContainer>
-                  </StyledContainer>
-                  <StyledContainer>{responseBoxLayout}</StyledContainer>
-                </div>
-              )}
-              {responseposition === "left" && (
-                <LeftContainer style={containerStyle} ref={this.displayWrapperRef}>
-                  <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
-                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                  </LeftResponseContainer>
-                  <LeftTemplateContainer
-                    studentReport={isPrintMode ? true : studentReport}
-                    responseBoxContainerWidth={responseBoxWidth}
-                  >
-                    {templateBoxLayout}
-                  </LeftTemplateContainer>
-                </LeftContainer>
-              )}
-              {responseposition === "right" && (
-                <RightContainer smallSize={smallSize} style={containerStyle} ref={this.displayWrapperRef}>
-                  <RightTemplateContainer
-                    smallSize={smallSize}
-                    studentReport={isPrintMode ? true : studentReport}
-                    responseBoxContainerWidth={responseBoxWidth}
-                  >
-                    {templateBoxLayout}
-                  </RightTemplateContainer>
+          <StyledDisplayContainer>
+            <FlexContainer justifyContent="flex-start" alignItems="baseline">
+              <QuestionLabelWrapper>
+                {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+                {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+              </QuestionLabelWrapper>
+              <QuestionContentWrapper>
+                <QuestionTitleWrapper>
+                  <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+                </QuestionTitleWrapper>
+                {responseposition === "top" && (
+                  <div style={containerStyle} ref={this.displayWrapperRef}>
+                    <StyledContainer>
+                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                    </StyledContainer>
+                    <StyledContainer>{templateBoxLayout}</StyledContainer>
+                  </div>
+                )}
+                {responseposition === "bottom" && (
+                  <div style={containerStyle} ref={this.displayWrapperRef}>
+                    <StyledContainer>
+                      <RelativeContainer>{templateBoxLayout}</RelativeContainer>
+                    </StyledContainer>
+                    <StyledContainer>{responseBoxLayout}</StyledContainer>
+                  </div>
+                )}
+                {responseposition === "left" && (
+                  <LeftContainer style={containerStyle} ref={this.displayWrapperRef}>
+                    <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
+                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                    </LeftResponseContainer>
+                    <LeftTemplateContainer
+                      studentReport={isPrintMode ? true : studentReport}
+                      responseBoxContainerWidth={responseBoxWidth}
+                    >
+                      {templateBoxLayout}
+                    </LeftTemplateContainer>
+                  </LeftContainer>
+                )}
+                {responseposition === "right" && (
+                  <RightContainer smallSize={smallSize} style={containerStyle} ref={this.displayWrapperRef}>
+                    <RightTemplateContainer
+                      smallSize={smallSize}
+                      studentReport={isPrintMode ? true : studentReport}
+                      responseBoxContainerWidth={responseBoxWidth}
+                    >
+                      {templateBoxLayout}
+                    </RightTemplateContainer>
 
-                  <RightResponseContainer
-                    isReviewTab={isReviewTab}
-                    width={responseBoxWidth || null}
-                    smallSize={smallSize}
-                  >
-                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                  </RightResponseContainer>
-                </RightContainer>
-              )}
-              {view && view !== EDIT && <Instructions item={item} />}
-              {answerBox}
-              <DragPreview />
-            </QuestionContentWrapper>
-          </FlexContainer>
+                    <RightResponseContainer
+                      isReviewTab={isReviewTab}
+                      width={responseBoxWidth || null}
+                      smallSize={smallSize}
+                    >
+                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                    </RightResponseContainer>
+                  </RightContainer>
+                )}
+                {view && view !== EDIT && <Instructions item={item} />}
+                {answerBox}
+                <DragPreview />
+              </QuestionContentWrapper>
+            </FlexContainer>
+          </StyledDisplayContainer>
         </HorizontalScrollContext.Provider>
       </div>
     );
@@ -807,5 +815,7 @@ Display.defaultProps = {
   isExpressGrader: false,
   isReviewTab: false
 };
+
+Display.whyDidYouRender = true;
 
 export default withTheme(withCheckAnswerButton(Display));

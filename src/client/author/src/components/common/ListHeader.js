@@ -107,6 +107,7 @@ const ListHeader = ({
                 </EduButton>
               )}
               {btnTitle && btnTitle.length ? null : <CartButton onClick={newTest} buttonText="New Test" />}
+              {renderExtra()}
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
                 <IconPlusStyled />
                 {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
@@ -136,7 +137,6 @@ const ListHeader = ({
             </EduButton>
           </>
         )}
-        {renderExtra()}
       </RightButtonWrapper>
       {inviteTeacherModalVisible && (
         <InviteMultipleTeacherModal

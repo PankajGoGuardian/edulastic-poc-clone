@@ -1,24 +1,18 @@
-import React, { useState } from "react";
-
-// components
-import { Button, Icon, Spin, Menu, notification } from "antd";
-import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { CheckboxLabel, EduButton, TypeToConfirmModal } from "@edulastic/common";
+import { SearchInputStyled } from "@edulastic/common/src/components/InputStyles";
 import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
 import { roleuser } from "@edulastic/constants";
-
-import {
-  StyledActionDropDown,
-  StyledFilterDiv
-} from "../../../admin/Common/StyledComponents";
+// components
+import { Spin } from "antd";
+import React, { useState } from "react";
+import { StyledFilterDiv } from "../../../admin/Common/StyledComponents";
 import {
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledSchoolSearch,
   SubHeaderWrapper,
   TableContainer
 } from "../../../common/styled";
-
 import Breadcrumb from "../../src/components/Breadcrumb";
 import StudentGroupsTable from "./StudentGroupsTable";
 
@@ -56,16 +50,16 @@ const GroupListContainer = ({
     state: { type: "group", exitPath: match.url, editPath: `${match.url}/edit/${groupId}` }
   });
 
-  const changeActionMode = e => {
-    if (e.key === "archiveGroups") {
-      if (selectedRows.length > 0) {
-        // TODO: update when Actions dropdown is enabled
-        // use deleteClassAction(Classes/ducks) to archive selected groups  
-      } else {
-        notification({ msg: t("group.validation.archiveGroups") });
+  /*   const changeActionMode = e => {
+      if (e.key === "archiveGroups") {
+        if (selectedRows.length > 0) {
+          // TODO: update when Actions dropdown is enabled
+          // use deleteClassAction(Classes/ducks) to archive selected groups  
+        } else {
+          notification({ msg: t("group.validation.archiveGroups") });
+        }
       }
-    }
-  }
+    } */
 
   const breadcrumbData = [
     {
@@ -78,11 +72,11 @@ const GroupListContainer = ({
     }
   ];
 
-  const actionMenu = (
+  /* const actionMenu = (
     <Menu onClick={changeActionMode}>
       <Menu.Item key="archiveGroups">{t("group.archiveGroups")}</Menu.Item>
     </Menu>
-  )
+  ) */
 
   const filteredGroups = studentGroups.filter(({ name }) => name.toLowerCase().startsWith(searchName));
 
@@ -94,14 +88,15 @@ const GroupListContainer = ({
 
       <StyledFilterDiv>
         <LeftFilterDiv width={60}>
-          <StyledSchoolSearch
+          <SearchInputStyled
             placeholder={t("common.searchbyname")}
             onSearch={setSearchName}
             onChange={e => setSearchName(e.target.value.toLowerCase())}
+            height="36px"
           />
-          <Button style={{ fontSize: "11px" }} type="primary" onClick={handleCreateGroup}>
+          <EduButton style={{ fontSize: "11px" }} type="primary" onClick={handleCreateGroup}>
             {t("group.createGroup")}
-          </Button>
+          </EduButton>
         </LeftFilterDiv>
         <RightFilterDiv width={35}>
           <CheckboxLabel

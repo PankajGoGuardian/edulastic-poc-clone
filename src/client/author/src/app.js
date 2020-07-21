@@ -344,6 +344,15 @@ const Author = ({
                         </Suspense>
                       )}
                     />
+                    <Route
+                      exact
+                      path="/author/gradebook/student/:studentId"
+                      render={props => (
+                        <Suspense fallback={<Progress />}>
+                          <Gradebook {...props} urlHasStudent />
+                        </Suspense>
+                      )}
+                    />
                     <Route exact path="/author/gradebook/createClass" component={ClassCreate} />
                     <Route exact path="/author/add-item" component={ItemAdd} />
                     <Route

@@ -460,6 +460,7 @@ function* submitTest({ payload }) {
     yield put({
       type: CLEAR_USER_WORK
     });
+    sessionStorage.removeItem("testAttemptReviewVistedId");
     if (navigator.userAgent.includes("SEB")) {
       return yield put(push("/student/seb-quit-confirm"));
     }

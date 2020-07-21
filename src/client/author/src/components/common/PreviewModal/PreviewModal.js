@@ -441,15 +441,7 @@ class PreviewModal extends React.Component {
                 {this.isAddOrRemove ? "ADD PASSAGE TO TEST" : "REMOVE FROM TEST"}
               </EduButton>
             ) : (
-              <EduButton
-                isBlue
-                height="28px"
-                justifyContent="center"
-                onClick={() => {
-                  this.handleSelection();
-                  this.closeModal();
-                }}
-              >
+              <EduButton isBlue height="28px" justifyContent="center" onClick={this.handleSelection}>
                 {this.isAddOrRemove ? "Add To Test" : "Remove from Test"}
               </EduButton>
             )}

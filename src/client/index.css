@@ -2218,3 +2218,12 @@ div[class*="_pendo"] button {
 .ant-select-dropdown.ant-select-dropdown--multiple .ant-select-dropdown-menu-item:hover .ant-select-selected-icon {
   color: white;
 }
+
+.drag-drop-item-match-list:hover {
+  border-color: #1a73e8 !important;
+  background: #1a73e8 !important;
+}
+
+.drag-drop-item-match-list:hover * {
+  color: white !important;
+}

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Rnd } from "react-rnd";
+import { themeColorHoverBlue } from "@edulastic/colors";
 
 export const Container = styled.div`
   width: ${({ width }) => width};
@@ -59,4 +60,11 @@ export const StyledRnd = styled(Rnd).attrs({
   enableResizing: false
 })`
   z-index: 10;
+  &:hover {
+    border-color: ${themeColorHoverBlue} !important;
+    background: ${themeColorHoverBlue};
+    .drag-item-cotent {
+      color: white !important;
+    }
+  }
 `;

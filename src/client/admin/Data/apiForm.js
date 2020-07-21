@@ -251,10 +251,11 @@ export const apiForms = [
         name: "districtId",
         displayName: "District ID",
         placeholder: "Enter districtId",
-        type: "textarea",
+        type: "string",
         required: true
       },
       {
+        key: "enableDisableDesmosRadio",
         name: "enable",
         placeholder: "Enable/Disable",
         type: "radiogroup",

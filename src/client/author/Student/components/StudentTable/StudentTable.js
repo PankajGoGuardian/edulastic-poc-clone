@@ -354,7 +354,7 @@ class StudentTable extends Component {
 
   createUser = () => {
     if (this.formRef) {
-      const { userOrgId: createAdminUser } = this.props;
+      const { createAdminUser } = this.props;
       const { form } = this.formRef.props;
       form.validateFields((err, values) => {
         if (!err) {

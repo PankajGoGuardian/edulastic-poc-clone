@@ -14,7 +14,8 @@ import {
   backgroundGrey,
   lightGrey11,
   greyThemeDark1,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  themeColorBlue
 } from "@edulastic/colors";
 
 export const StudentLabel = styled.div`
@@ -38,14 +39,16 @@ export const FilterButton = styled(Button)`
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   margin-left: ${props => (props.showFilter ? "240px" : "-23px")};
-  background: ${props => (props.showFilter ? themeColor : white)} !important;
+  background: ${props => (props.showFilter ? themeColorBlue : white)} !important;
+  border: 1px solid ${themeColorBlue} !important;
   &:focus,
   &:hover {
     outline: unset;
+    color: ${props => (props.isShowFilter ? white : themeColorBlue)};
   }
   svg,
   svg:hover {
-    fill: ${props => (props.showFilter ? white : themeColor)};
+    fill: ${props => (props.showFilter ? white : themeColorBlue)};
   }
 `;
 

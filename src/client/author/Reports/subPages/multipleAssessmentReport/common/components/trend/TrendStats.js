@@ -80,7 +80,7 @@ TrendStats.defaultProps = {
     down: 0
   },
   selectedTrend: "",
-  onTrendSelect: () => { },
+  onTrendSelect: () => {},
   renderFilters: () => null,
   heading: ""
 };
@@ -89,7 +89,7 @@ export default TrendStats;
 
 const UpperContainer = styled(StyledCard)`
   .ant-card-body {
-    padding: 18px 0px;
+    padding: 0px 0px 18px;
   }
 `;
 const PaddedContainer = styled.div`

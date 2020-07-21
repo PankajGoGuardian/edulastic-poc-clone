@@ -72,9 +72,15 @@ class AddNewUserForm extends React.Component {
         classCode,
         role: "student"
       });
-
-      const user = res[0] || {};
-
+      // many user can exists with same email
+      // get user with student role
+      let user = {};
+      if(!isEmpty(res)){
+        const student = res.find(o => o.role === "student");
+        if(student){
+          user = student;
+        }
+      }
       // student exists in same class
       if (user.existInClass) {
         this.setState(prevState => ({ ...prevState, userExistsInClass: true, isUserExists: true }));

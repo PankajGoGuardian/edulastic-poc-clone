@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col } from "antd";
 
+import { authApi } from "@edulastic/api";
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
-import { authApi } from "@edulastic/api";
 
 class CreateDistrictAdminModal extends React.Component {
   constructor(props) {
@@ -21,21 +21,19 @@ class CreateDistrictAdminModal extends React.Component {
     let checkUserResponse = { userExists: true };
 
     if (emailValidateStatus === "success" && email.length > 0) {
-      checkUserResponse = await authApi.checkUserExist({ email: email });
-      if (checkUserResponse.userExists) {
+      checkUserResponse = await authApi.checkUserExist({ email });
+      if (checkUserResponse.userExists && checkUserResponse.role === "district-admin") {
         this.setState({
           emailValidateStatus: "error",
           emailValidateMsg: "Username already exists"
         });
       }
-    } else {
-      if (email.length == 0) {
+    } else if (email.length == 0) {
         this.setState({
           emailValidateStatus: "error",
           emailValidateMsg: "Please input Email"
         });
-      } else {
-        if (this.checkValidEmail(email)) {
+      } else if (this.checkValidEmail(email)) {
           this.setState({
             emailValidateStatus: "error",
             emailValidateMsg: "Username already exists"
@@ -46,12 +44,10 @@ class CreateDistrictAdminModal extends React.Component {
             emailValidateMsg: "Please input valid Email"
           });
         }
-      }
-    }
 
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        if (checkUserResponse.userExists) return;
+        if (checkUserResponse.userExists && checkUserResponse.role === "district-admin") return;
 
         const firstName = row.name.split(" ", 1);
         let lastName = "";
@@ -81,8 +77,7 @@ class CreateDistrictAdminModal extends React.Component {
         emailValidateMsg: "Please input Email",
         email: e.target.value
       });
-    } else {
-      if (this.checkValidEmail(e.target.value)) {
+    } else if (this.checkValidEmail(e.target.value)) {
         this.setState({
           emailValidateStatus: "success",
           emailValidateMsg: "",
@@ -95,11 +90,10 @@ class CreateDistrictAdminModal extends React.Component {
           email: e.target.value
         });
       }
-    }
   };
 
   checkValidEmail(strEmail) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(strEmail).toLowerCase());
   }
 
@@ -143,7 +137,7 @@ class CreateDistrictAdminModal extends React.Component {
               label={t("users.districtadmin.username")}
               validateStatus={emailValidateStatus}
               help={emailValidateMsg}
-              required={true}
+              required
               type="email"
             >
               <Input

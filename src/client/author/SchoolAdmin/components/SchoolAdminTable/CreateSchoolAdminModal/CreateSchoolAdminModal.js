@@ -27,7 +27,7 @@ class CreateSchoolAdminModal extends React.Component {
 
     if (emailValidateStatus === "success" && email.length > 0) {
       checkUserResponse = await authApi.checkUserExist({ email });
-      if (checkUserResponse.userExists) {
+      if (checkUserResponse.userExists && checkUserResponse.role === "school-admin") {
         this.setState({
           emailValidateStatus: "error",
           emailValidateMsg: "Username already exists"
@@ -52,7 +52,7 @@ class CreateSchoolAdminModal extends React.Component {
 
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        if (checkUserResponse.userExists) return;
+        if (checkUserResponse.userExists && checkUserResponse.role === "school-admin") return;
 
         const firstName = row.name.split(" ", 1);
         let lastName = "";

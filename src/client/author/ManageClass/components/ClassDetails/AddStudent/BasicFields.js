@@ -86,7 +86,15 @@ const BasicFields = ({
       if (error) return null;
     }
 
-    const user = result[0] || {};
+    // many user can exists with same email
+    // get user with student role
+    let user = {};
+    if(!isEmpty(result)){
+      const student = result.find(o => o.role === "student");
+      if(!isEmpty(student)){
+        user = student;
+      }
+    }
 
     if (user.existInClass) {
       setUserExistsInClass(true);
@@ -103,16 +111,14 @@ const BasicFields = ({
 
     setUserExistsInClass(false);
     let errorMsg = "";
-    if (result.length > 0) {
+    if (!isEmpty(user)) {
       const foundUser = user;
       const isExistingStudent = students.find(
         student => student._id == foundUser._id && student.enrollmentStatus === "1"
       );
       if (isExistingStudent) {
         errorMsg = "User already part of this class section";
-      } else if (foundUser.role === "teacher")
-        errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
-      else {
+      } else {
         errorMsg = "";
         setEnroll(true);
         setIsUpdate(!isUpdate);

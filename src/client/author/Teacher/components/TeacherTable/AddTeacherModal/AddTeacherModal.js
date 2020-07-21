@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Row, Col, Select, Spin, Icon, Checkbox } from "antd";
+import { Form, Input, Row, Col, Select, Spin, Checkbox } from "antd";
 import { authApi, schoolApi } from "@edulastic/api";
 import { IconLock, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
@@ -38,7 +38,7 @@ class AddTeacherModal extends React.Component {
 
     if (emailValidate.validateStatus === "success" && emailValidate.value.length > 0) {
       checkUserResponse = await authApi.checkUserExist({ email: emailValidate.value });
-      if (checkUserResponse.userExists) {
+      if (checkUserResponse.userExists && checkUserResponse.role === "teacher") {
         this.setState({
           emailValidate: {
             validateStatus: "error",
@@ -75,7 +75,7 @@ class AddTeacherModal extends React.Component {
 
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        if (checkUserResponse.userExists) return;
+        if (checkUserResponse.userExists && checkUserResponse.role === "teacher") return;
         const institutionIds = [];
         for (let i = 0; i < row.institutionIds.length; i++) {
           institutionIds.push(row.institutionIds[i].key);

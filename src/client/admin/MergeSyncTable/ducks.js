@@ -111,7 +111,7 @@ const fetchExistingDataReducer = createReducer(initialState, {
     } = state;
     cleverSubjectStandardMap[subject].standard = value;
   },
-  [ADD_SUBJECT_STANDARD_ROW_ACTION]: (state, _) => {
+  [ADD_SUBJECT_STANDARD_ROW_ACTION]: state => {
     const {
       subStandardMapping: { rows }
     } = state;
@@ -184,7 +184,7 @@ function* fetchExistingData({ payload }) {
     }
   } catch (err) {
     console.error(err);
-    notification({ msg: err.message });
+    notification({ msg: err?.data?.message || err.message });
   }
 }
 
@@ -231,9 +231,9 @@ function* fetchEnableDisableSync({ payload }) {
     const { syncEnabled, districtName = "", districtId, cleverId } = payload;
     const newPayload = omit(payload, ["districtName", "cleverId"]);
     const item = yield call(enableDisableSyncApi, newPayload);
-    const searchPayload = {cleverDistrict: districtId, cleverId};
+    const searchPayload = { cleverDistrict: districtId, cleverId };
     if (item.success) {
-      yield call(fetchExistingData, {payload: searchPayload});
+      yield call(fetchExistingData, { payload: searchPayload });
       if (syncEnabled) {
         notification({ type: "success", msg: `Enabled clever sync for ${districtName}` });
       } else {

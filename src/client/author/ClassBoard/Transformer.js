@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // @ts-check
-import { keyBy, groupBy, get, values, flatten } from "lodash";
+import { keyBy, groupBy, get, values, flatten,isEmpty } from "lodash";
 import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
 import { getMathHtml } from "@edulastic/common";
@@ -290,7 +290,10 @@ const extractFunctions = {
           .filter(x => x)
           .join(",")
       : userResponse,
-  [questionType.MATH]: (question, userResponse = "") => {
+  [questionType.MATH]: (question, userResponse) => {
+    if(isEmpty(userResponse)){
+      return "";
+    }
     const restrictedMathTypes = ["Matrices", "Complete the Equation", "Formula Essay"];
     if (restrictedMathTypes.includes(question.title)) return "TEI";
     if (question.title === "Units" && typeof userResponse === "object") {

@@ -93,7 +93,7 @@ const initialState = {
   prevStandardsFilters: null,
   filters: {
     termId: "",
-    subject: "All",
+    subject: "",
     grades: ["K"],
     domainIds: ["All"],
     profileId: ""

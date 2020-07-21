@@ -22,20 +22,21 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
   );
 
   const convertedBandData = map(metricInfo, metric => {
-    let scaleData = { ...defaultScaleData };
+    const scaleData = { ...defaultScaleData };
 
     forEach(metric.records, record => {
       scaleData[record.bandName] = parseInt(record.totalAssigned);
       const calculatedPercentage = round(
-        percentage(parseInt(record.totalAssigned), sumBy(metric.records, el => parseFloat(el.totalAssigned)))
+        percentage(parseInt(record.totalGraded), 
+        (sumBy(metric.records, el => parseFloat(el.totalAssigned))-sumBy(metric.records, el => parseFloat(el.totalAbsent))))
       );
       scaleData[`${record.bandName} Percentage`] =
         record.bandName == leastProficiency.name ? -calculatedPercentage : calculatedPercentage;
 
       if (parseInt(record.aboveStandard) > 0) {
-        scaleData["aboveStandard"] += parseInt(record.totalAssigned);
+        scaleData.aboveStandard += parseInt(record.totalAssigned);
       } else {
-        scaleData["belowStandard"] += parseInt(record.totalAssigned);
+        scaleData.belowStandard += parseInt(record.totalAssigned);
       }
     });
 
@@ -63,8 +64,7 @@ export const augmentTestData = (metricInfo = [], testData = []) => {
 
   const groupedByTest = groupBy(testData, "testId");
 
-  const mappedTests = map(metricInfo, metric => {
-    return next(metric, draftMetric => {
+  const mappedTests = map(metricInfo, metric => next(metric, draftMetric => {
       const selectedTestRecords = groupedByTest[metric.testId];
       const selectedTest = head(selectedTestRecords);
 
@@ -75,8 +75,7 @@ export const augmentTestData = (metricInfo = [], testData = []) => {
         draftMetric.testName = selectedTest.testName || "N/A";
         draftMetric.totalTestItems = selectedTest.totalTestItems || 0;
       }
-    });
-  });
+    }));
 
   return mappedTests.sort((firstMetric, secondMetric) => firstMetric.assessmentDate - secondMetric.assessmentDate);
 };
@@ -115,7 +114,7 @@ export const parseData = (rawData = {}) => {
       minScore: get(minBy(records, "minScore"), "minScore", 0),
       maxPossibleScore: (records.find(r => r.maxPossibleScore) || records[0]).maxPossibleScore,
       totalAbsent: sumBy(records, test => parseInt(test.totalAbsent)),
-      totalGraded: totalGraded,
+      totalGraded,
       diffScore: 100 - round(score),
       testId,
       uniqId: testId + testType,

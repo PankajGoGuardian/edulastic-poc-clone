@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import {
   desktopWidth,
@@ -17,6 +17,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: space-between;
   width: ${({ width }) => width || "100%"};
+  transition: width 0.5s;
   &.scratchpad-wrapper {
     input {
       position: absolute;
@@ -93,7 +94,6 @@ export const ButtonsWrapper = styled.div`
 `;
 
 export const ColumnContentArea = styled.div`
-  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 0px;
   width: ${({ width }) => width || "100%"};
@@ -168,58 +168,86 @@ export const PassageNavigation = styled.div`
   }
 `;
 
+const buttonWrapperExtraStyle = css`
+  border-top-left-radius: ${({ collapseDirection }) => (collapseDirection === "left" ? "0px" : "4px")};
+  border-bottom-left-radius: ${({ collapseDirection }) => (collapseDirection === "left" ? "0px" : "4px")};
+  border-top-right-radius: ${({ collapseDirection }) => (collapseDirection === "right" ? "0px" : "4px")};
+  border-bottom-right-radius: ${({ collapseDirection }) => (collapseDirection === "right" ? "0px" : "4px")};
+  left: ${({ collapseDirection }) =>
+    collapseDirection === "left" ? "auto" : collapseDirection === "right" ? "-20px" : "-22px"};
+  right: ${({ collapseDirection }) =>
+    collapseDirection === "right" ? "auto" : collapseDirection === "left" ? "-20px" : "-22px"};
+`;
+
 export const Divider = styled.div`
-  width: ${props => (props.isCollapsed ? "8%" : "25px")};
+  width: 0px;
+  border: 1px solid #dadae4;
   position: relative;
   background-color: ${props => (props.isCollapsed ? "#e5e5e5" : "transparent")};
   border-radius: 10px;
   z-index: 1;
-  > div {
-    position: absolute;
-    background: #fff;
-    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    top: 20px;
+  height: 65vh;
+  .button-wrapper {
+    background: #a7b5c1;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    left: ${props =>
-      props.collapseDirection === "left" ? "auto" : props.collapseDirection === "right" ? "-76px" : "-41px"};
-    right: ${props =>
-      props.collapseDirection === "right" ? "auto" : props.collapseDirection === "left" ? "-76px" : "-41px"};
+    position: absolute;
+    top: 20px;
+    ${buttonWrapperExtraStyle}
   }
 `;
 
-export const CollapseBtn = styled.i`
-  cursor: pointer;
-  font-size: 15px;
-  cursor: pointer;
-  padding: 5px 15px;
-  color: ${themeColor};
-  ${props => {
-    if (props.right) {
-      return `border-top-right-radius: 5px;
-          border-bottom-right-radius: 5px;
-          background-color:${props.collapseDirection === "left" ? themeColor : "#fff"};
-          color:${props.collapseDirection === "left" ? "#fff" : themeColor};
-          svg{
-            fill:${props.collapseDirection === "left" ? "#fff" : themeColor};
-            &:hover{
-              fill:${props.collapseDirection === "left" ? "#fff" : themeColor};
-            }
-          }`;
+const rightCollaps = css`
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  display: ${({ collapseDirection }) => (collapseDirection === "right" ? "none" : "")};
+`;
+
+const leftCollaps = css`
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  display: ${({ collapseDirection }) => (collapseDirection === "left" ? "none" : "")};
+`;
+
+const midCollaps = css`
+  .vertical-line {
+    border: 1px solid #d4d8dc;
+    height: 16px;
+    &.first {
+      display: ${({ collapseDirection }) => (collapseDirection === "left" ? "none" : "")};
+      margin-right: 2px;
     }
-    if (props.left) {
-      return `border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-        background-color:${props.collapseDirection === "right" ? themeColor : "#fff"};
-        color:${props.collapseDirection === "right" ? "#fff" : themeColor};
-        svg{
-          fill:${props.collapseDirection === "right" ? "#fff" : themeColor};
-          &:hover{
-            fill:${props.collapseDirection === "right" ? "#fff" : themeColor};
-          }
-        }`;
+    &.third {
+      margin-left: 2px;
+      display: ${({ collapseDirection }) => (collapseDirection === "right" ? "none" : "")};
+    }
+  }
+`;
+
+export const CollapseBtn = styled.div`
+  cursor: pointer;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 6px;
+    height: 11px;
+    fill: ${white};
+    &:hover {
+      fill: ${white};
+    }
+  }
+  ${({ right, left, mid }) => {
+    if (right) {
+      return rightCollaps;
+    }
+    if (mid) {
+      return midCollaps;
+    }
+    if (left) {
+      return leftCollaps;
     }
   }}
 `;

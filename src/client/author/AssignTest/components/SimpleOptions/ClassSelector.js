@@ -10,7 +10,7 @@ const dropdownStyle = {
   boxShadow: "0 3px 10px 0 rgba(0, 0, 0, 0.1)"
 };
 
-const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDeselect, specificStudents }) => (
+const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, specificStudents }) => (
   <React.Fragment>
     <Col span={12}>
       <FieldLabel>CLASS/GROUP SECTION</FieldLabel>
@@ -29,7 +29,6 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDesel
         onSelect={classId => {
           fetchStudents({ classId });
         }}
-        onDeselect={onDeselect}
         filterOption={(input, option) => option?.props?.name?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0}
         value={selectedGroups}
         getPopupContainer={trigger => trigger.parentNode}

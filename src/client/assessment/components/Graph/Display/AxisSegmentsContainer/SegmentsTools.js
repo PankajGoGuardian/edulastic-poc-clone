@@ -1,79 +1,73 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
+import {
+  IconGraphPoint as IconPoint,
+  IconBothIncludedSegment,
+  IconBothNotIncludedSegment,
+  IconOnlyLeftIncludedSegment,
+  IconOnlyRightIncludedSegment,
+  IconInfinityToIncludedSegment,
+  IconIncludedToInfinitySegment,
+  IconInfinityToNotIncludedSegment,
+  IconNotIncludedToInfinitySegment
+} from "@edulastic/icons";
+
 import { GraphToolbar, SegmentsToolBtn, SegmentsToolbarItem, ToolbarItemIcon } from "./styled";
 import { ifZoomed } from "../../../../../common/utils/helpers";
 
-const SegmentsTools = ({
-  tool,
-  onSelect,
-  fontSize,
-  getIconByToolName,
-  responsesAllowed,
-  elementsNumber,
-  toolbar,
-  vertical,
-  theme
-}) => {
-  const segmentsTools = [
-    "segments_point",
-    "segment_both_point_included",
-    "segment_both_points_hollow",
-    "segment_left_point_hollow",
-    "segment_right_point_hollow",
-    "ray_left_direction",
-    "ray_right_direction",
-    "ray_left_direction_right_hollow",
-    "ray_right_direction_left_hollow"
-  ];
+const SegmentsTools = ({ tool, onSelect, fontSize, toolbar, vertical, theme }) => {
+  const segmentsTools = useMemo(
+    () => [
+      "segments_point",
+      "segment_both_point_included",
+      "segment_both_points_hollow",
+      "segment_left_point_hollow",
+      "segment_right_point_hollow",
+      "ray_left_direction",
+      "ray_right_direction",
+      "ray_left_direction_right_hollow",
+      "ray_right_direction_left_hollow"
+    ],
+    []
+  );
 
-  const uiTools =
-    toolbar.length > 0
-      ? toolbar.map((item, index) => ({
-          name: item,
-          index,
-          groupIndex: -1
-        }))
-      : segmentsTools.map((item, index) => ({
-          name: item,
-          index,
-          groupIndex: -1
-        }));
+  const uiTools = useMemo(
+    () =>
+      (toolbar?.length ? toolbar : segmentsTools).map((item, index) => ({
+        name: item,
+        index,
+        groupIndex: -1
+      })),
+    [toolbar]
+  );
 
-  const serviceTools = ["undo", "redo", "reset", "trash"];
+  const iconsByToolName = useMemo(
+    () => ({
+      segments_point: () => <IconPoint width={14} height={14} />,
+      segment_both_point_included: () => <IconBothIncludedSegment width={50} height={14} />,
+      segment_both_points_hollow: () => <IconBothNotIncludedSegment width={50} height={14} />,
+      segment_left_point_hollow: () => <IconOnlyRightIncludedSegment width={50} height={14} />,
+      segment_right_point_hollow: () => <IconOnlyLeftIncludedSegment width={50} height={14} />,
+      ray_left_direction: () => <IconInfinityToIncludedSegment width={50} height={14} />,
+      ray_right_direction: () => <IconIncludedToInfinitySegment width={50} height={14} />,
+      ray_left_direction_right_hollow: () => <IconInfinityToNotIncludedSegment width={50} height={14} />,
+      ray_right_direction_left_hollow: () => <IconNotIncludedToInfinitySegment width={50} height={14} />
+    }),
+    []
+  );
 
-  const isActive = uiTool => uiTool.index === tool.index && uiTool.groupIndex === tool.groupIndex;
-
-  const getToolClassName = uiTool => {
-    if (uiTool.name === "undo" || uiTool.name === "redo" || uiTool.name === "reset") {
-      return "";
-    }
-    if (uiTool.name === "trash") {
-      if (isActive(uiTool)) {
-        return "active";
-      }
-      return "";
-    }
-    // if (elementsNumber >= responsesAllowed) {
-    //   return "disabled";
-    // }
-    if (isActive(uiTool)) {
+  const isActiveTool = uiTool => {
+    if (uiTool.index === tool.index && uiTool.groupIndex === tool.groupIndex) {
       return "active";
     }
     return "";
   };
 
-  const getToolClickHandler = uiTool => {
-    if (serviceTools.includes(uiTool.name)) {
-      return () => onSelect(uiTool);
-    }
-    // if (elementsNumber >= responsesAllowed) {
-    //   return null;
-    // }
-    return () => onSelect(uiTool);
-  };
+  const onClickSegmentsTool = uiTool => () => onSelect(uiTool);
 
-  const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName, options);
+  const getIconTemplate = (toolName = "segments_point") =>
+    iconsByToolName[toolName] ? iconsByToolName[toolName]() : "";
 
   const getStyle = (_theme, _fontSize) => {
     if (ifZoomed(_theme?.zoomLevel)) {
@@ -93,6 +87,7 @@ const SegmentsTools = ({
 
   const toolBtnStyle = getStyle(theme, fontSize);
   const zoomLevel = theme?.zoomLevel || localStorage.getItem("zoomLevel");
+
   return (
     <GraphToolbar data-cy="segmentsToolbar" fontSize={fontSize} vertical={vertical}>
       {uiTools.map(
@@ -101,53 +96,25 @@ const SegmentsTools = ({
             <SegmentsToolBtn
               style={toolBtnStyle}
               zoomLevel={zoomLevel}
-              className={getToolClassName(uiTool)}
-              onClick={getToolClickHandler(uiTool)}
+              className={isActiveTool(uiTool)}
+              onClick={onClickSegmentsTool(uiTool)}
               key={`segments-tool-btn-${i}`}
             >
               <SegmentsToolbarItem>
-                <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
-                  {getIconTemplate(uiTool.name, {
-                    width: fontSize + 2,
-                    height: fontSize + 2,
-                    color: ""
-                  })}
-                </ToolbarItemIcon>
+                <ToolbarItemIcon className="tool-btn-icon">{getIconTemplate(uiTool.name)}</ToolbarItemIcon>
               </SegmentsToolbarItem>
             </SegmentsToolBtn>
           )
       )}
-      {serviceTools.map((serviceTool, i) => (
-        <SegmentsToolBtn
-          style={toolBtnStyle}
-          zoomLevel={zoomLevel}
-          className={getToolClassName({ name: serviceTool, groupIndex: -1, index: uiTools.length })}
-          onClick={getToolClickHandler({ name: serviceTool, groupIndex: -1, index: uiTools.length })}
-          key={`segments-service-tool-btn-${i}`}
-        >
-          <SegmentsToolbarItem>
-            <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
-              {getIconTemplate(serviceTool, {
-                width: fontSize + 2,
-                height: fontSize + 2,
-                color: ""
-              })}
-            </ToolbarItemIcon>
-          </SegmentsToolbarItem>
-        </SegmentsToolBtn>
-      ))}
     </GraphToolbar>
   );
 };
 
 SegmentsTools.propTypes = {
   tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  responsesAllowed: PropTypes.number.isRequired,
-  getIconByToolName: PropTypes.func.isRequired,
   vertical: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
   fontSize: PropTypes.number,
-  elementsNumber: PropTypes.number.isRequired,
   toolbar: PropTypes.array
 };
 

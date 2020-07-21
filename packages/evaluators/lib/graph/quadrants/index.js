@@ -226,20 +226,25 @@ var serialize = function serialize(shapes, lineTypes, points) {
     return shape[0] === "eqn" ? "['eqn','".concat(shape[1], "']") : "['".concat(shape[0], "',[").concat(shape[1].join(","), "]]");
   };
 
-  return "[".concat(shapes.map(getShape).join(","), "],[").concat(lineTypes.map(function (x) {
+  var serializeShapes = shapes.length ? "[".concat(shapes.map(getShape).join(","), "]") : null;
+  var serializeLineTypes = lineTypes.length ? "[".concat(lineTypes.map(function (x) {
     return "'".concat(x, "'");
-  }).join(","), "],[").concat(points.join(","), "]");
+  }).join(","), "]") : null;
+  var serializePoints = points.length ? "[".concat(points.join(","), "]") : null;
+  return [serializeShapes, serializeLineTypes, serializePoints].filter(function (el) {
+    return !!el;
+  }).join(",");
 };
 
 var buildGraphApiResponse = function buildGraphApiResponse() {
   var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var allowedShapes = [_constants.ShapeTypes.PARABOLA, _constants.ShapeTypes.PARABOLA2, _constants.ShapeTypes.EQUATION, _constants.ShapeTypes.POLYNOM, _constants.ShapeTypes.SECANT, _constants.ShapeTypes.TANGENT, _constants.ShapeTypes.LOGARITHM, _constants.ShapeTypes.EXPONENT, _constants.ShapeTypes.HYPERBOLA, _constants.ShapeTypes.ELLIPSE, _constants.ShapeTypes.CIRCLE, _constants.ShapeTypes.LINE, _constants.ShapeTypes.POLYGON, _constants.ShapeTypes.SINE, _constants.ShapeTypes.AREA];
+  var allowedShapes = [_constants.ShapeTypes.POINT, _constants.ShapeTypes.SEGMENT, _constants.ShapeTypes.RAY, _constants.ShapeTypes.VECTOR, _constants.ShapeTypes.PARABOLA, _constants.ShapeTypes.PARABOLA2, _constants.ShapeTypes.EQUATION, _constants.ShapeTypes.POLYNOM, _constants.ShapeTypes.SECANT, _constants.ShapeTypes.TANGENT, _constants.ShapeTypes.LOGARITHM, _constants.ShapeTypes.EXPONENT, _constants.ShapeTypes.HYPERBOLA, _constants.ShapeTypes.ELLIPSE, _constants.ShapeTypes.CIRCLE, _constants.ShapeTypes.LINE, _constants.ShapeTypes.POLYGON, _constants.ShapeTypes.SINE, _constants.ShapeTypes.AREA];
   var more2PointShapes = [_constants.ShapeTypes.POLYNOM, _constants.ShapeTypes.HYPERBOLA, _constants.ShapeTypes.ELLIPSE, _constants.ShapeTypes.POLYGON, _constants.ShapeTypes.PARABOLA2];
   var shapes = [];
   var lineTypes = [];
   var points = [];
   elements.forEach(function (el) {
-    if (!allowedShapes.includes(el.type)) {
+    if (el.subElement || !allowedShapes.includes(el.type)) {
       return;
     }
 
@@ -256,7 +261,9 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
 
     var shapePoints = [];
 
-    if (more2PointShapes.includes(el.type)) {
+    if (el.type === _constants.ShapeTypes.POINT) {
+      shapePoints.push("(".concat(+el.x.toFixed(4), ",").concat(+el.y.toFixed(4), ")"));
+    } else if (more2PointShapes.includes(el.type)) {
       Object.values(el.subElementsIds).forEach(function (id) {
         var point = elements.find(function (x) {
           return x.id === id;
@@ -290,7 +297,14 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
     }
 
     shapes.push([el.type, shapePoints]);
-    lineTypes.push(el.dashed ? "dashed" : "solid");
+
+    if (![_constants.ShapeTypes.POINT, _constants.ShapeTypes.RAY, _constants.ShapeTypes.VECTOR, _constants.ShapeTypes.SEGMENT].includes(el.type)) {
+      lineTypes.push(el.dashed ? "dashed" : "solid");
+
+      if (!points.length) {
+        points.push("(0,0)");
+      }
+    }
   });
   return serialize(shapes, lineTypes, points);
 };
@@ -433,8 +447,8 @@ var evaluator = /*#__PURE__*/function () {
 
             _step$value = (0, _slicedToArray2["default"])(_step.value, 2), index = _step$value[0], answer = _step$value[1];
 
-            if (!userResponse.some(function (x) {
-              return x.type === _constants.ShapeTypes.AREA;
+            if (userResponse.find(function (x) {
+              return x.type === _constants.ShapeTypes.DRAG_DROP;
             })) {
               _context2.next = 19;
               break;

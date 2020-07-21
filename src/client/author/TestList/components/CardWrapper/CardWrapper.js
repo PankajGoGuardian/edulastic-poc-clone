@@ -21,7 +21,7 @@ class CardWrapper extends Component {
   };
 
   static defaultProps = {
-    owner: {},
+    owner: false,
     windowWidth: null,
     isTestAdded: false,
     blockStyle: ""
@@ -51,7 +51,7 @@ class CardWrapper extends Component {
 
     const itemId = _id.substr(_id.length - 6);
 
-    const isTestLiked = (!isPlaylist && item?.alreadyLiked) || false;
+    const isTestLiked = (!isPlaylist && item ?.alreadyLiked) || false;
 
     if (blockStyle === "tile") {
       return (

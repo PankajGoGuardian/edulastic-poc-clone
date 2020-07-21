@@ -171,6 +171,8 @@ const ClozeMath = ({
                   cleanSections={cleanSections}
                 />
 
+                <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
+
                 <Question
                   section="main"
                   label={t("component.math.correctAnswers")}
@@ -187,8 +189,6 @@ const ClozeMath = ({
                     t={t}
                   />
                 </Question>
-
-                <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
                 {advancedLink}
 

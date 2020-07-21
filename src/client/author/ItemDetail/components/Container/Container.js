@@ -8,7 +8,7 @@ import styled from "styled-components";
 import produce from "immer";
 import { questionType as constantsQuestionType, questionType } from "@edulastic/constants";
 import { withWindowSizes, AnswerContext, ScrollContext, notification } from "@edulastic/common";
-import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
+import { IconClose, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination } from "antd";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
@@ -61,7 +61,7 @@ import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
-import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
+import { CLEAR, EDIT } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
@@ -404,25 +404,22 @@ class Container extends Component {
       _questions = { ..._questions, ..._passage };
     }
     return (
-      <>
-        <PreviewContent view={view}>
-          <AuthorTestItemPreview
-            cols={allRows}
-            previewTab={preview}
-            preview={preview}
-            verticalDivider={item.verticalDivider}
-            scrolling={item.scrolling}
-            style={{ width: "100%" }}
-            questions={_questions}
-            item={item}
-            isMultipart={item.multipartItem}
-            isAnswerBtnVisible={false}
-            page="itemAuthoring"
-          />
-        </PreviewContent>
-        {/* we may need to bring hint button back */}
-        {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
-      </>
+      <PreviewContent view={view}>
+        <AuthorTestItemPreview
+          cols={allRows}
+          previewTab={preview}
+          preview={preview}
+          verticalDivider={item.verticalDivider}
+          scrolling={item.scrolling}
+          style={{ width: "100%" }}
+          questions={_questions}
+          item={item}
+          isMultipart={item.multipartItem}
+          isAnswerBtnVisible={false}
+          page="itemAuthoring"
+          passageNavigator={item.passageId && this.passageNavigator}
+        />
+      </PreviewContent>
     );
   };
 
@@ -553,12 +550,17 @@ class Container extends Component {
     const { collapseDirection } = this.state;
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
-        <div>
+        <div className="button-wrapper">
           <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("left")} left>
-            <IconArrowLeft />
+            <IconChevronLeft />
+          </CollapseBtn>
+          <CollapseBtn collapseDirection={collapseDirection} mid>
+            <div className="vertical-line first" />
+            <div className="vertical-line second" />
+            <div className="vertical-line third" />
           </CollapseBtn>
           <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("right")} right>
-            <IconArrowRight />
+            <IconGraphRightArrow />
           </CollapseBtn>
         </div>
       </Divider>
@@ -617,6 +619,7 @@ class Container extends Component {
                   }
                   isCollapsed={!!collapseDirection}
                   useTabsLeft={useTabsLeft}
+                  passageNavigator={passageWithQuestions && this.passageNavigator}
                 />
               </>
             ))}
@@ -662,6 +665,41 @@ class Container extends Component {
     ];
   }
 
+  get passageNavigator() {
+    const { item, passage, view, rows, itemDeleting } = this.props;
+    const passageTestItems = get(passage, "testItems", []);
+
+    return (
+      item.canAddMultipleItems &&
+      passage &&
+      view === EDIT && (
+        <PassageNavigation>
+          {passageTestItems.length > 1 && (
+            <>
+              <span className="pagination-title">PASSAGE ITEMS </span>
+              <Pagination
+                total={passageTestItems.length}
+                pageSize={1}
+                defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
+                onChange={this.goToItem}
+              />
+            </>
+          )}
+          {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+            <AddRemoveButtonWrapper>
+              <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
+                - ITEM
+              </Button>
+              <Button disabled={itemDeleting} onClick={this.addItemToPassage}>
+                + ITEM
+              </Button>
+            </AddRemoveButtonWrapper>
+          )}
+        </PassageNavigation>
+      )
+    );
+  }
+
   render() {
     const { showSettings, showRemovePassageItemPopup } = this.state;
     const {
@@ -686,7 +724,6 @@ class Container extends Component {
       view,
       showPublishButton,
       hasAuthorPermission,
-      itemDeleting,
       t
     } = this.props;
 
@@ -696,8 +733,6 @@ class Container extends Component {
     } else if (item.passageId && !item.canAddMultipleItems) {
       breadCrumbQType = "Passage with Multiple parts";
     }
-
-    const passageTestItems = get(passage, "testItems", []);
 
     const qLength = rows.flatMap(x => x.widgets.filter(y => y.widgetType === "question")).length;
 
@@ -804,31 +839,6 @@ class Container extends Component {
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
                   <SecondHeadBar itemId={item._id} breadCrumbQType={breadCrumbQType} breadcrumb={this.breadCrumbs}>
-                    {item.canAddMultipleItems && passage && view !== "metadata" && (
-                      <PassageNavigation>
-                        {passageTestItems.length > 1 && (
-                          <>
-                            <span>PASSAGE ITEMS </span>
-                            <Pagination
-                              total={passageTestItems.length}
-                              pageSize={1}
-                              defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
-                              onChange={this.goToItem}
-                            />
-                          </>
-                        )}
-                        {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
-                          <AddRemoveButtonWrapper>
-                            <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
-                              - ITEM
-                            </Button>
-                            <Button disabled={itemDeleting} onClick={this.addItemToPassage}>
-                              + ITEM
-                            </Button>
-                          </AddRemoveButtonWrapper>
-                        )}
-                      </PassageNavigation>
-                    )}
                     {view === "preview" && (
                       <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
                         <div>{this.renderButtons()}</div>
@@ -963,7 +973,7 @@ const enhance = compose(
 export default enhance(Container);
 
 const BreadCrumbBar = styled(Row)`
-  padding: 0px 0px 10px;
+  padding: 0px;
 `;
 
 const RightActionButtons = styled(Col)`

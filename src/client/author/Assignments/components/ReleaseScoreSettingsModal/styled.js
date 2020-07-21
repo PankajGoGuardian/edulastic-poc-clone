@@ -15,7 +15,7 @@ export const ReleaseGradesModal = styled(ConfirmationModal)`
 export const Info = styled.div`
   display: flex;
   font-weight: bold;
-  margin-top: 9px;
+  margin-top: 12px;
 `;
 
 export const InfoText = styled.span`

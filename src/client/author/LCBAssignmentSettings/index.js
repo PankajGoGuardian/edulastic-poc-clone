@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Col, Icon, Row, Select, message, Tooltip } from "antd";
+import { Col, Icon, Row, Select, Tooltip } from "antd";
 import moment from "moment";
 import { test as testConst, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
-import { MainContentWrapper,notification } from "@edulastic/common";
+import { MainContentWrapper, notification, EduButton } from "@edulastic/common";
 import { getAdditionalDataSelector, getTestActivitySelector } from "../ClassBoard/ducks";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { slice } from "./ducks";
@@ -22,14 +22,13 @@ import {
 import DateSelector from "../AssignTest/components/SimpleOptions/DateSelector";
 import Settings from "../AssignTest/components/SimpleOptions/Settings";
 import selectsData from "../TestPage/components/common/selectsData";
-import { EduButton } from "@edulastic/common";
 
 /**
  * Imports related to testSettings
  */
 import { getDefaultTestSettingsAction } from "../TestPage/ducks";
 import { getTestEntitySelector } from "../AssignTest/duck";
-import { InputLabel, InputLabelContainer, ClassHeading, ActionButton } from "./styled";
+import { InputLabel, InputLabelContainer, ClassHeading } from "./styled";
 import { QuestionIcon } from "../../assessment/styled/Subtitle";
 import { allowedSettingPageToDisplay } from "../Shared/Components/ClassHeader/utils/transformers";
 
@@ -64,19 +63,20 @@ function LCBAssignmentSettings({
     const { assignedBy } = additionalData;
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId);
     if (!showSettingTab) {
-      notification({ messageKey: "persmissionDenied"});
+      notification({ messageKey: "persmissionDenied" });
       history.push(`/author/classboard/${assignmentId}/${classId}`);
     }
   }, [additionalData]);
 
   const [showSettings, setShowSettings] = useState(false);
+  const [showClassSettings, toggleClassSettings] = useState(true);
 
   const { startDate, endDate, status, dueDate } = assignment?.["class"]?.[0] || {};
   const changeField = key => value => {
     if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
       notification({ type: "info", messageKey: "pleaseSelectYourPreferedStartDate" });
     } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
-      notification({ type: "info", messageKey: "pleaseSelectYourPreferedDueDate  "});
+      notification({ type: "info", messageKey: "pleaseSelectYourPreferedDueDate  " });
     }
     changeAttrs({ key, value });
   };
@@ -180,6 +180,33 @@ function LCBAssignmentSettings({
               </Col>
               {/* Release score */}
             </Row>
+
+            <StyledRowButton gutter={16}>
+              <Col>
+                <SettingsBtn onClick={() => toggleClassSettings(old => !old)}>
+                  CLASS LEVEL SETTINGS
+                  {showClassSettings ? (
+                    <Icon style={{ marginLeft: "-12px" }} type="caret-up" />
+                  ) : (
+                    <Icon type="caret-down" style={{ marginLeft: "-10px" }} />
+                  )}
+                </SettingsBtn>
+              </Col>
+            </StyledRowButton>
+
+            {showClassSettings && (
+              <Settings
+                assignmentSettings={assignment || {}}
+                updateAssignmentSettings={() => {}}
+                forClassLevel
+                hideTestLevelOptions
+                changeField={changeField}
+                testSettings={testSettings}
+                gradeSubject={gradeSubject}
+                _releaseGradeKeys={releaseGradeKeys}
+                isDocBased={assignment?.isDocBased}
+              />
+            )}
             <StyledRowButton gutter={16}>
               <Col>
                 <SettingsBtn onClick={() => setShowSettings(old => !old)}>
@@ -206,9 +233,10 @@ function LCBAssignmentSettings({
 
             {showSettings && (
               <Settings
-                assignmentSettings={assignment}
+                assignmentSettings={assignment || {}}
                 updateAssignmentSettings={() => {}}
                 forClassLevel
+                hideClassLevelOptions
                 changeField={changeField}
                 testSettings={testSettings}
                 gradeSubject={gradeSubject}

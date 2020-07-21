@@ -31,7 +31,9 @@ const DeleteAssignmentModal = ({
   handleUnassignAssignments,
   bulkUnassignAssignmentRequest,
   testType,
-  userRole
+  userRole,
+  deleteAssignmentFromPlaylist,
+  fromPlaylist = false
 }) => {
   const [confirmText, setConfirmText] = useState("");
   const handleUnassign = () => {
@@ -41,6 +43,9 @@ const DeleteAssignmentModal = ({
       }
       if (advancedAssignments) {
         return handleUnassignAssignments();
+      }
+      if (fromPlaylist) {
+        return deleteAssignmentFromPlaylist();
       }
 
       if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
@@ -95,6 +100,7 @@ const DeleteAssignmentModal = ({
             data-cy="confirmationInput"
             className="delete-confirm-input"
             type="text"
+            placeholder="Type the action"
             onChange={event => setConfirmText(event.currentTarget.value)}
           />
         </div>

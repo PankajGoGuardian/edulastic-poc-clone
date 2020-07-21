@@ -2,7 +2,6 @@ import React from "react";
 import Proptypes from "prop-types";
 import { Popover } from "antd";
 import { measureText, MathSpan } from "@edulastic/common";
-import { white } from "@edulastic/colors";
 import { Pointer } from "../../../../../styled/Pointer";
 import { Point } from "../../../../../styled/Point";
 import { Triangle } from "../../../../../styled/Triangle";
@@ -10,6 +9,7 @@ import { IconWrapper } from "../styled/IconWrapper";
 import { WrongIcon } from "../styled/WrongIcon";
 import { RightIcon } from "../styled/RightIcon";
 import PopoverContent from "../../PopoverContent";
+import { CheckBox } from "../styled/CheckBox";
 
 const Response = ({
   lessMinWidth,
@@ -26,16 +26,6 @@ const Response = ({
   imageHeight,
   imageWidth
 }) => {
-  const textContainerStyle = {
-    minwidth: "100%",
-    padding: lessMinWidth ? "0 1px" : null,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    background: isPrintPreview && white
-  };
-
-  const classNames = `imagelabeldragdrop-droppable active ${answered ? "check-answer" : "noAnswer"} ${status}`;
-
   const { width: contentWidth } = measureText(answered, btnStyle);
   const textPadding = lessMinWidth ? 2 : 30;
   const indexBoxWidth = showAnswer ? 40 : 0;
@@ -58,33 +48,30 @@ const Response = ({
   );
 
   const content = (
-    <div style={{ ...btnStyle, ...modifiedDimesion }} className={`${classNames} show-answer`} onClick={onClickHandler}>
-      <span
-        className="index index-box"
-        style={{ display: !checkAnswer && (showAnswer && !lessMinWidth) ? "flex" : "none" }}
-      >
-        {indexStr}
-      </span>
-      <div className="text container" style={textContainerStyle}>
+    <CheckBox
+      style={{ ...btnStyle, ...modifiedDimesion }}
+      onClick={onClickHandler}
+      checked={answered}
+      correct={status === "right"}
+      isPrintPreview={isPrintPreview}
+    >
+      <span className="index">{indexStr}</span>
+      <div className="text">
         <div className="clipText">
           <MathSpan dangerouslySetInnerHTML={{ __html: answered || "" }} />
         </div>
-        <div
-          style={{
-            display: checkAnswer || (showAnswer && !lessMinWidth) ? "flex" : "none"
-          }}
-        >
-          <IconWrapper rightPosition={lessMinWidth ? "5" : "10"}>
-            {answered && status === "right" && <RightIcon />}
-            {answered && status === "wrong" && <WrongIcon />}
-          </IconWrapper>
-          <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-            <Point />
-            <Triangle />
-          </Pointer>
-        </div>
       </div>
-    </div>
+      <div className="icons">
+        <IconWrapper rightPosition={lessMinWidth ? "5" : "10"}>
+          {answered && status === "right" && <RightIcon />}
+          {answered && status === "wrong" && <WrongIcon />}
+        </IconWrapper>
+        <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+          <Point />
+          <Triangle />
+        </Pointer>
+      </div>
+    </CheckBox>
   );
   return answered && (isOverContent || lessMinWidth) ? <Popover content={popoverContent}>{content}</Popover> : content;
 };

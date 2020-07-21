@@ -12,7 +12,7 @@ import { updateVariables } from "../../utils/variables";
 
 import { latexKeys } from "./constants";
 
-const { methods, fields: fieldsConst } = math;
+const { methods } = math;
 
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
@@ -294,6 +294,7 @@ class MathFormulaAnswers extends React.Component {
             keypadOffset={keypadOffset}
             toggleAdditional={this.toggleAdditional}
             view={view}
+            isCorrectAnsTab
           />
         )}
         {item.validation.altResponses &&

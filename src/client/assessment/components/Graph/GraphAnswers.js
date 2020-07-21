@@ -210,6 +210,8 @@ class GraphAnswers extends Component {
                 disableResponse={false}
                 onChange={this.updateValidationValue}
                 points={graphData.validation.validResponse.score}
+                item={graphData}
+                isCorrectAnsTab
               />
             </TabContainer>
           )}
@@ -231,6 +233,7 @@ class GraphAnswers extends Component {
                       disableResponse={false}
                       onChange={val => this.updateAltValidationValue(val, i)}
                       points={alter.score}
+                      item={graphData}
                     />
                   </TabContainer>
                 );

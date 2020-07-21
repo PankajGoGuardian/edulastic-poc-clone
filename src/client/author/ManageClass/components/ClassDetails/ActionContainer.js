@@ -369,6 +369,7 @@ const ActionContainer = ({
           )}
           {checkForAddStudent && (
             <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+              <IconPlusCircle />
               ADD MULTIPLE STUDENTS
             </EduButton>
           )}

@@ -72,8 +72,12 @@ const MainContent = ({ regradeSettings, onUpdateSettings }) => {
             onChange={e => onUpdateSettings("testSettings", e.target.value)}
           >
             <Row>
-              <Radio value={"ALL"}>Choose all assignments</Radio>
-              <Radio value={"EXCLUDE"}>Exclude assignments where overridden</Radio>
+              <Radio data-cy="choose-all" value={"ALL"}>
+                Choose all assignments
+              </Radio>
+              <Radio data-cy="exclude-overidden" value={"EXCLUDE"}>
+                Exclude assignments where overridden
+              </Radio>
             </Row>
           </Group>
         </Row>

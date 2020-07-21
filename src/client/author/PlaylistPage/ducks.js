@@ -707,7 +707,7 @@ export const getTestItemsRowsSelector = createSelector(
 // saga
 function* receivePlaylistByIdSaga({ payload }) {
   try {
-    const entity = yield call(curriculumSequencesApi.getCurriculums, payload.id, { data: true });
+    const entity = yield call(curriculumSequencesApi.getCurriculums, { id: payload.id, data: true });
     if (entity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
         subject: get(entity, "subjects[0]", "Other Subjects"),

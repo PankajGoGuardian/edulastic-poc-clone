@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { find } from "lodash";
 import { AutoExpandInput } from "@edulastic/common";
 import { math } from "@edulastic/constants";
-import { greyThemeLighter, greyThemeLight } from "@edulastic/colors";
+import { lightGrey12 } from "@edulastic/colors";
 import NumberPad from "../../components/NumberPad";
 import { getInputSelection } from "../../utils/helpers";
 
@@ -15,7 +15,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     return null;
   }
   const { item, onChange, getUiStyles, userAnswers, disableResponse, isReviewTab, cAnswers } = resprops;
-  const ref = useRef();
+  const inputRef = useRef();
 
   let { value, index: responseIndex } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
 
@@ -34,9 +34,9 @@ const ClozeTextInput = ({ resprops, id }) => {
   const [selection, setSelection] = useState(false);
 
   const _getValue = specialChar => {
-    // TODO get input ref ? set cursor postion ?
-    if (ref.current) {
-      const inputElement = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
+    // TODO get input inputRef ? set cursor postion ?
+    if (inputRef.current) {
+      const inputElement = item.multiple_line ? inputRef.current.textAreaRef : inputRef.current.input;
       if (inputElement) {
         const _selection = getInputSelection(inputElement);
         setSelection(_selection);
@@ -79,7 +79,9 @@ const ClozeTextInput = ({ resprops, id }) => {
 
   const insertSpecialChar = (_, char) => {
     handleInputChange(_getValue(char));
-    ref.current.focus();
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   useEffect(() => {
@@ -87,8 +89,8 @@ const ClozeTextInput = ({ resprops, id }) => {
   }, [value]);
 
   useEffect(() => {
-    if (selection && ref.current) {
-      const em = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
+    if (selection && inputRef.current) {
+      const em = item.multiple_line ? inputRef.current.textAreaRef : inputRef.current.input;
       if (em.setSelectionRange) {
         em.setSelectionRange(selection.start + 1, selection.end + 1);
       }
@@ -101,11 +103,13 @@ const ClozeTextInput = ({ resprops, id }) => {
     height: btnStyle.height
   };
 
+  const setInputRef = node => console.log(node);
+
   return (
-    <CustomInput key={id} style={{ marginBottom: "4px" }}>
+    <CustomInput key={id}>
       <AutoExpandInput
         key={id}
-        inputRef={ref}
+        inputRef={inputRef}
         type={btnStyle.type}
         onChange={handleInputChange}
         onBlur={() => onChange(input)}
@@ -115,6 +119,7 @@ const ClozeTextInput = ({ resprops, id }) => {
         style={{ ...btnStyle, padding: "4px 10px" }}
         placeholder={btnStyle.placeholder}
         characterMap={item.characterMap}
+        setRef={setInputRef}
       />
 
       {item.characterMap && (
@@ -139,13 +144,10 @@ export default ClozeTextInput;
 
 const CustomInput = styled.div`
   display: inline-block;
-  margin: 0px 4px;
+  margin: 0px 4px 4px;
   position: relative;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-
-  .ant-input {
-    border-radius: 4px;
-    background: ${greyThemeLighter};
-    border: 1px solid ${greyThemeLight};
+  vertical-align: middle;
+  & .ant-input {
+    border: 1px solid ${lightGrey12};
   }
 `;

@@ -13,6 +13,7 @@ const BlockContainer = styled.div`
   & > *:last-child {
     margin-right: 0;
   }
+  margin-left: ${({ ml }) => ml};
 `;
 
 export default BlockContainer;

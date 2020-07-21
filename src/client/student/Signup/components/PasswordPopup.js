@@ -21,35 +21,33 @@ const roles = {
   student: "Student"
 };
 
-const PasswordModal = ({ showModal, disabled, existingUser = {}, closeModal, onChange, onClickProceed }) => {
-  return (
-    <Modal title="Existing Account" visible={showModal} onCancel={closeModal} footer={null}>
-      <div>
-        <p>
-          We already have a {roles[existingUser.role]} account for you. Do you want to have the same username for a{" "}
-          {roles[existingUser.currentSelectedRole]} account? If yes, Please enter your current password to proceed.
-        </p>
-        <Row style={{ "margin-top": "10px" }}>
-          <Col span={12} offset={6}>
-            <Input
-              type="password"
-              onChange={e => onChange(e.currentTarget.value)}
-              prefix={<IconLock color={themeColor} />}
-            />
-          </Col>
-        </Row>
-      </div>
-      <ButtonsContainer>
-        <Button isGhost onClick={closeModal}>
-          Cancle
-        </Button>
+const PasswordModal = ({ showModal, disabled, existingUser = {}, closeModal, onChange, onClickProceed }) => (
+  <Modal title="Existing Account" visible={showModal} onCancel={closeModal} footer={null}>
+    <div>
+      <p>
+        We already have a {roles[existingUser.role]} account for you. Do you want to have the same username for a{" "}
+        {roles[existingUser.currentSelectedRole]} account? If yes, Please enter your current password to proceed.
+      </p>
+      <Row style={{ "margin-top": "10px" }}>
+        <Col span={12} offset={6}>
+          <Input
+            type="password"
+            onChange={e => onChange(e.currentTarget.value)}
+            prefix={<IconLock color={themeColor} />}
+          />
+        </Col>
+      </Row>
+    </div>
+    <ButtonsContainer>
+      <Button isGhost onClick={closeModal}>
+        Cancel
+      </Button>
 
-        <Button disabled={disabled} onClick={() => onClickProceed(existingUser.username)}>
-          Proceed <IconGraphRightArrow />
-        </Button>
-      </ButtonsContainer>
-    </Modal>
-  );
-};
+      <Button disabled={disabled} onClick={() => onClickProceed(existingUser.username)}>
+        Proceed <IconGraphRightArrow />
+      </Button>
+    </ButtonsContainer>
+  </Modal>
+);
 
 export default PasswordModal;

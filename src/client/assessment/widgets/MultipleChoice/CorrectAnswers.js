@@ -70,11 +70,11 @@ class CorrectAnswers extends Component {
     );
   };
 
-  updateScore = e => {
-    if (!(e.target.value > 0)) {
+  updateScore = score => {
+    if (!(score > 0)) {
       return;
     }
-    const points = parseFloat(e.target.value, 10);
+    const points = parseFloat(score, 10);
     const { question, setQuestionData } = this.props;
     const { currentTab } = this.state;
 
@@ -125,12 +125,12 @@ class CorrectAnswers extends Component {
   }
 
   render() {
-    const { stimulus, options, t, multipleResponses, uiStyle, styleType, fontSize, queTitle = "" } = this.props;
+    const { stimulus, options, t, multipleResponses, uiStyle, styleType, fontSize, queTitle = "", question={} } = this.props;
     const { currentTab } = this.state;
     const title = currentTab === 0 ? "correct" : "alternative";
+    const isCorrectAnsTab = currentTab === 0;
     const { response } = this;
     const itemLevelScoring = this.context;
-
     return (
       <Fragment>
         <Subtitle id={getFormattedAttrId(`${title}-${t("component.correctanswers.setcorrectanswers")}`)}>
@@ -149,17 +149,18 @@ class CorrectAnswers extends Component {
                 onBlur={this.updateScore}
                 disabled={false}
                 min={0}
+                max={!isCorrectAnsTab ? question?.validation?.validResponse?.score : Number.MAX_SAFE_INTEGER}
                 step={0.5}
               />
             </FlexContainer>
           )}
-          {queTitle !== questionTitle.MCQ_TRUE_OR_FALSE && (
-            <FlexContainer flex={1}>
+          <FlexContainer flex={1}>
+            {queTitle !== questionTitle.MCQ_TRUE_OR_FALSE && (
               <AlternateAnswerLink onClick={this.handleAddAltResponses} variant="extendedFab" data-cy="alternate">
                 {`+ ${t("component.correctanswers.alternativeAnswer")}`}
               </AlternateAnswerLink>
-            </FlexContainer>
-          )}
+            )}
+          </FlexContainer>
         </FlexContainer>
 
         {this.tabs >= 1 && (

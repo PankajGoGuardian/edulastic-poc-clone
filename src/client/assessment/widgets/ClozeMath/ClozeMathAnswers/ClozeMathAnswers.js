@@ -410,12 +410,15 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           <MathFormulaPoints
             points={get(item, "validation.validResponse.score", 1)}
             onChangePoints={_changeCorrectPoints}
+            item={item}
+            isCorrectAnsTab
           />
         )}
         {correctTab !== 0 && (
           <MathFormulaPoints
             points={get(item, `validation.altResponses[${correctTab - 1}].score`, 1)}
             onChangePoints={_changeAltPoints(correctTab - 1)}
+            item={item}
           />
         )}
         <Row>

@@ -117,12 +117,8 @@ const ChartPreview = ({
   }
 
   const answerData = validation ? validation.validResponse.value : [];
-  const answerCorrect = Array(answerData.length).fill(true);
 
   const altAnswerData = validation && validation.altResponses ? validation.altResponses : [];
-  const altAnswerCorrect = altAnswerData.map(ans => Array(ans.value.length).fill(true));
-
-  const correct = evaluation && evaluation.length ? evaluation : [];
 
   const saveAnswerHandler = (ans, index) => {
     changePreviewTab(CLEAR);
@@ -230,7 +226,6 @@ const ChartPreview = ({
                 disableResponse={disableResponse}
                 previewTab={previewTab}
                 saveAnswer={saveAnswerHandler}
-                correct={correct}
                 evaluation={evaluation}
                 item={item}
                 setQuestionData={setQuestionData}
@@ -259,7 +254,6 @@ const ChartPreview = ({
                     disableResponse
                     previewTab={previewTab}
                     saveAnswer={saveAnswerHandler}
-                    correct={answerCorrect}
                     item={item}
                     setQuestionData={setQuestionData}
                     showAnswer
@@ -289,7 +283,6 @@ const ChartPreview = ({
                       disableResponse
                       previewTab={previewTab}
                       saveAnswer={saveAnswerHandler}
-                      correct={altAnswerCorrect[index]}
                       item={item}
                       setQuestionData={setQuestionData}
                       showAnswer

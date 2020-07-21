@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Button, Col, Input, Modal, Row, Spin } from "antd";
 import { MainHeader, EduButton, MainContentWrapper } from "@edulastic/common";
 import { IconPlus, IconManage } from "@edulastic/icons";
+import { smallDesktopWidth, themeColor, white, themeColorBlue } from "@edulastic/colors";
 import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
 import { StudentSlectCommon } from "../../sharedComponents/ClassSelector";
 import { NoDataBox } from "../../styled";
@@ -17,7 +18,6 @@ import ClassCard from "./CardContainer";
 import NoDataIcon from "../../assets/nodata.svg";
 
 // constants
-import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
 
 const ClassCards = ({ classList, t }) => {
   const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
@@ -61,7 +61,7 @@ const ManageClassContainer = ({
           <StudentSlectCommon />
         ) : (
           !isParentRoleProxy && (
-            <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
+            <JoinClassBtn isGhost isBlue data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
               <IconPlus width={12} height={12} color="white" stroke="white" />
               <span>{t("common.joinClass")}</span>
             </JoinClassBtn>
@@ -164,28 +164,16 @@ const SubHeaderWrapper = styled(Row)`
   align-items: baseline;
   justify-content: flex-end;
 `;
-const JoinClassBtn = styled(Button)`
-  background: ${white};
-  color: ${themeColor};
-  border-color: ${themeColor};
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 600;
+const JoinClassBtn = styled(EduButton)`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 25px 0px 10px;
-  text-transform: uppercase;
-  &:focus,
-  :hover {
-    background: ${white};
-    color: ${themeColor};
-  }
   svg {
     margin-right: 20px;
     height: 17px;
     width: 17px;
-    background: ${themeColor};
+    background: ${themeColorBlue};
     border-radius: 50%;
     padding: 4px;
   }

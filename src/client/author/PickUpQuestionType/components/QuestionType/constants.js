@@ -1370,7 +1370,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           wordwrap: false,
           responsecontainerindividuals: []
         },
@@ -1404,7 +1404,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         }/></textinput>&nbsp;</p>`,
         uiStyle: {
           fontsize: "normal",
-          heightpx: 36,
+          heightpx: 32,
           placeholder: "",
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
@@ -1464,9 +1464,9 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal"
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
-          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
+          { top: 0, left: 240, width: 140, height: 32, id: uuids[0] },
+          { top: 100, left: 120, width: 140, height: 32, id: uuids[1] },
+          { top: 220, left: 200, width: 140, height: 32, id: uuids[2] }
         ],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -1500,12 +1500,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           showborder: true
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { top: 100, left: 120, width: 200, height: 40, id: uuids[1] }
+          { top: 0, left: 240, width: 140, height: 32, id: uuids[0] },
+          { top: 100, left: 120, width: 140, height: 32, id: uuids[1] }
         ],
         uiStyle: {
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           inputtype: "text",
           stemNumeration: "numerical",
           fontsize: "normal",
@@ -1554,9 +1554,9 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           showborder: true
         },
         responses: [
-          { placeholder: "", top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { placeholder: "", top: 100, left: 120, width: 200, height: 40, id: uuids[1] },
-          { placeholder: "", top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
+          { placeholder: "", top: 0, left: 240, width: 140, height: 32, id: uuids[0] },
+          { placeholder: "", top: 100, left: 120, width: 140, height: 32, id: uuids[1] },
+          { placeholder: "", top: 220, left: 200, width: 140, height: 32, id: uuids[2] }
         ],
         stimulusReviewonly: "",
         instructorStimulus: "",
@@ -1587,7 +1587,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           fontsize: "normal",
           stemNumeration: "",
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 32,
           wordwrap: false,
           responsecontainerindividuals: []
         },
@@ -2169,7 +2169,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MTFormula,
       stimulus: "",
       data: {
-        title: "Expression & Formula",
+        title: questionTitle.EXPRESSION_AND_FORMULA,
         isMath: true,
         stimulus: "",
         type: questionType.MATH,
@@ -2281,7 +2281,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MTText,
       stimulus: "",
       data: {
-        title: "Equations & Inequalities",
+        title: questionTitle.EQUATION_AND_INEQUALITIES,
         isMath: true,
         responseContainers: [
           {
@@ -2444,7 +2444,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           type: "floating-keyboard",
           minWidth: 140,
-          minHeight: 35
+          minHeight: 32
         },
         options: {},
         validation: {
@@ -2570,7 +2570,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           sectors: 7,
           selected: [1]
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },

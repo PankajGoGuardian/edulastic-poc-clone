@@ -1,10 +1,11 @@
-import { EduButton,notification} from "@edulastic/common";
-import { Col, Icon, Input, message, Row } from "antd";
+import { EduButton, notification } from "@edulastic/common";
+import { Col, Icon, Input, Row } from "antd";
 import { get, upperFirst } from "lodash";
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
+import { IconPlusCircle } from "@edulastic/icons";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
@@ -21,7 +22,6 @@ import {
 } from "../../ducks";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 import {
-  CreateProfile,
   ListItemStyled,
   ModalInput,
   RowStyled,
@@ -149,8 +149,8 @@ function ProfileRow(props) {
               }}
             />
           ) : (
-            profileName
-          )}
+              profileName
+            )}
         </Col>
         <StyledProfileCol span={12}>
           {props.hideEdit ? null : (
@@ -221,7 +221,6 @@ function StandardsProficiency(props) {
     history,
     list,
     create,
-    update,
     remove,
     editingIndex,
     setEditingIndex,
@@ -246,7 +245,7 @@ function StandardsProficiency(props) {
   const handleProfileLimit = () => {
     const canCreateProfile = props.profiles.filter(x => x.createdBy?._id === props.userId).length <= 10;
     if (!canCreateProfile) {
-      notification({ messageKey:"maximumTenProfilesPerUser"});
+      notification({ messageKey: "maximumTenProfilesPerUser" });
       return false;
     }
     return true;
@@ -255,16 +254,16 @@ function StandardsProficiency(props) {
   const createStandardProficiency = () => {
     const name = profileName;
     if (name === "") {
-     notification({ messageKey:"nameCannotBeEmpty"});
+      notification({ messageKey: "nameCannotBeEmpty" });
     } else if (name) {
       // needed for unicode aware length
       if ([...name].length > 150) {
-        notification({ messageKey:"maximumLengthForProifleName150"});
+        notification({ messageKey: "maximumLengthForProifleName150" });
         return;
       }
 
       if (props.profiles.find(p => (p.name || "").toLowerCase() === name.toLowerCase())) {
-       notification({ msg:`Profile with name "${name}" already exists. Please try with a different name`});
+        notification({ msg: `Profile with name "${name}" already exists. Please try with a different name` });
         return;
       }
       create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });
@@ -355,9 +354,9 @@ function StandardsProficiency(props) {
               <h4>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</h4>
               <ModalInput value={profileName} onChange={e => setProfileName(e.target.value)} />
             </ProfileModal>
-            <CreateProfile type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
-              <i>+</i> Create new Profile
-            </CreateProfile>
+            <EduButton type="primary" onClick={() => handleProfileLimit() && setConfirmVisible(true)}>
+              <IconPlusCircle width={19} height={19} /> Create new Profile
+            </EduButton>
           </Row>
 
           <StyledList
@@ -423,5 +422,5 @@ StandardsProficiency.propTypes = {
   loading: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
   creating: PropTypes.bool.isRequired,
-  profiles: PropTypes.array
+  profiles: PropTypes.array.isRequired
 };

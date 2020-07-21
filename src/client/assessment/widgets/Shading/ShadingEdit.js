@@ -116,6 +116,7 @@ const ShadingEdit = ({
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
+      isCorrectAnsTab={correctTab === 0}
     />
   );
 

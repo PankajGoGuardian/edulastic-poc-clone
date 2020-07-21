@@ -55,8 +55,8 @@ const MultipleAssignConfirmation = ({
       afterClose={() => setSavingState(false)}
     >
       <Paragraph>
-        {entity.title} is already assigned to some of the student(s) you have selected. Student(s) who were assigned
-        earlier will receive a duplicate copy of this assessment.
+        {entity.title} has already been assigned to one or more of the selected students. Those students will receive a
+        duplicate copy of this assessment.
       </Paragraph>
       <Paragraph>Please select if the student(s) should receive a duplicate assessment.</Paragraph>
     </ConfirmationModal>

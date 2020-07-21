@@ -94,7 +94,7 @@ class MathFormulaPreview extends Component {
     }
   }
 
-  isStatic() {
+  get isStatic() {
     const { studentTemplate, item } = this.props;
     return (
       (studentTemplate &&
@@ -106,7 +106,7 @@ class MathFormulaPreview extends Component {
 
   getValidLatex(props) {
     const { studentTemplate, userAnswer, item } = props;
-    if (this.isStatic()) {
+    if (this.isStatic) {
       return studentTemplate;
     }
 
@@ -134,7 +134,7 @@ class MathFormulaPreview extends Component {
       return;
     }
 
-    if (!this.isStatic()) return;
+    if (!this.isStatic) return;
 
     const innerValues = getInnerValuesForStatic(studentTemplate, userAnswer);
     this.setState({ innerValues });
@@ -155,7 +155,7 @@ class MathFormulaPreview extends Component {
     const { type: previewType, saveAnswer, userAnswer, item } = this.props;
     const { isUnits, showDropdown } = item;
 
-    if (this.isStatic() && previewType !== CHECK) {
+    if (this.isStatic && previewType !== CHECK) {
       if (isUnits && showDropdown) {
         saveAnswer({ ...userAnswer, expression: latexv });
       } else {
@@ -308,7 +308,7 @@ class MathFormulaPreview extends Component {
               />
             </QuestionTitleWrapper>
             {testItem && (
-              <FlexContainer alignItems="stretch" justifyContent="flex-start">
+              <FlexContainer alignItems="stretch" justifyContent="flex-start" width="100%">
                 <MathDisplay styles={cssStyles} template="\MathQuillMathField{}" innerValues={testItemCorrectValues} />
                 {item.isUnits && item.showDropdown && (
                   <UnitsDropdown
@@ -328,12 +328,13 @@ class MathFormulaPreview extends Component {
                 alignItems="stretch"
                 justifyContent="flex-start"
                 style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
+                width="100%"
               >
                 <MathInputWrapper
-                  width={cssStyles.width}
-                  style={{ background: isPrintPreview ? white : statusColor, borderRadius: "5px" }}
+                  bg={isPrintPreview ? white : statusColor}
+                  minWidth={this.isStatic ? cssStyles.width : "100%"}
                 >
-                  {this.isStatic() && !disableResponse && (
+                  {this.isStatic && !disableResponse && (
                     <StaticMath
                       symbols={item.symbols}
                       restrictKeys={this.restrictKeys}
@@ -343,19 +344,19 @@ class MathFormulaPreview extends Component {
                       hideKeypad={item.isUnits && item.showDropdown}
                       onInput={latexv => this.onUserResponse(latexv)}
                       onBlur={latexv => this.onBlur(latexv)}
-                      style={{ background: isPrintPreview ? white : statusColor, ...cssStyles }}
                       latex={studentTemplate}
                       innerValues={innerValues}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
                       isPrintPreview={isPrintPreview}
+                      noBorder
                     />
                   )}
-                  {this.isStatic() && disableResponse && (
-                    <MathInputSpan style={{ background: isPrintPreview ? white : statusColor }}>
+                  {this.isStatic && disableResponse && (
+                    <MathInputSpan>
                       <MathSpanWrapper latex={userAnswer || ""} />
                     </MathInputSpan>
                   )}
-                  {!this.isStatic() && !disableResponse && (
+                  {!this.isStatic && !disableResponse && (
                     <MathInput
                       symbols={item.symbols}
                       restrictKeys={this.restrictKeys}
@@ -368,11 +369,10 @@ class MathFormulaPreview extends Component {
                       onBlur={latexv => this.onBlur(latexv)}
                       disabled={evaluation && !evaluation?.some(ie => ie)}
                       onInnerFieldClick={() => this.onInnerFieldClick()}
-                      style={{ background: isPrintPreview ? white : statusColor, ...cssStyles }}
                     />
                   )}
-                  {!this.isStatic() && disableResponse && (
-                    <MathInputSpan style={{ background: isPrintPreview ? white : statusColor, ...cssStyles }}>
+                  {!this.isStatic && disableResponse && (
+                    <MathInputSpan>
                       <MathSpanWrapper
                         latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                       />
@@ -399,6 +399,7 @@ class MathFormulaPreview extends Component {
             {view && view !== EDIT && <Instructions item={item} />}
             {previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
               <CorrectAnswerBox
+                theme={theme}
                 answer={
                   item.isUnits && item.showDropdown
                     ? item.validation.validResponse.value[0].value.search("=") === -1
@@ -411,6 +412,7 @@ class MathFormulaPreview extends Component {
             {hasAltAnswers && previewType === SHOW && (
               <CorrectAnswerBox
                 altAnswers
+                theme={theme}
                 answer={item.validation.altResponses
                   .map(ans => {
                     if (item.isUnits && item.showDropdown) {

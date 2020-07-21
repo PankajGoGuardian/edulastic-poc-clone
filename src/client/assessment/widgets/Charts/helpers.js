@@ -3,7 +3,7 @@ import { SHOW_GRIDLINES_BOTH, SHOW_GRIDLINES_X_ONLY, SHOW_GRIDLINES_Y_ONLY } fro
 export const getYAxis = (yAxisMax, yAxisMin, stepSize) =>
   Array.from({ length: (yAxisMax - yAxisMin) / stepSize + 1 }, (v, k) => +(yAxisMax - k * stepSize).toFixed(2));
 
-export const getPadding = yAxis => Math.max(...yAxis.map(val => val.toString().length)) * 10;
+export const getPadding = yAxis => Math.max(...yAxis.map(val => val.toString().length)) * 12;
 
 export const getStep = (data, width, margin, isBar = false) => {
   let count = data && data.length > 1 ? data.length : 1;

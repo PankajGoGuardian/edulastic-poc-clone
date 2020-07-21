@@ -5,8 +5,7 @@ import { FlexContainer,notification } from "@edulastic/common";
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId });
-  console.log("proxy user", result);
-  if (result.result) {
+  if (result.result?._id && result.result?.role) {
     TokenStorage.storeAccessToken(result.result.token, result.result._id, result.result.role);
     TokenStorage.storeInLocalStorage("proxyParent", JSON.stringify(currentUser));
     window.open(
@@ -14,7 +13,7 @@ export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
       "_blank"
     );
   } else {
-    notification({ messageKey:"someErrorOccuredDuringProxying"});
+    notification({ messageKey:"someErrorOccuredDuringProxying" });
   }
 }
 

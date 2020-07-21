@@ -33,6 +33,7 @@ const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen, handle
       advancedAreOpen={advancedAreOpen}
       item={item}
       handleItemChangeChange={handleItemChangeChange}
+      showScoringSectionAnyRole
     >
       <LayoutComponent
         item={item}

@@ -65,19 +65,25 @@ export const { actions, reducer } = slice;
 // sagas
 function* fetchStudentPerformanceSaga({ payload }) {
   try {
-    const { filters, pageDetail } = payload;
+    const { filters, studentId, pageDetail } = payload;
     const { assessmentIds, classIds, grades, subjects, status, termId, testType, groupId } = filters;
-    const response = yield call(reportsApi.fetchStudentPerformance, {
-      assessmentIds: assessmentIds.join(","),
-      classIds: classIds.join(","),
-      grades: grades.join(","),
-      subjects: subjects.join(","),
+    const newPayload = {
+      studentId,
       status,
       termId,
-      testType,
-      groupId,
       ...pageDetail
-    });
+    };
+    if (!studentId) {
+      Object.assign(newPayload, {
+        assessmentIds: assessmentIds.join(","),
+        classIds: classIds.join(","),
+        grades: grades.join(","),
+        subjects: subjects.join(","),
+        testType,
+        groupId
+      });
+    }
+    const response = yield call(reportsApi.fetchStudentPerformance, newPayload);
     yield put(actions.fetchStudentPerformanceCompleted(response));
   } catch (e) {
     yield put(actions.fetchStudentPerformanceCompleted({}));

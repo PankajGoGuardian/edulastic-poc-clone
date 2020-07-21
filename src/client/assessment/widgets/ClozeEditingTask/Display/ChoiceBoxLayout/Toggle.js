@@ -10,12 +10,10 @@ const Toggle = ({ styles, options, userAnswer, disableResponse, onChange, displa
   const answer = userAnswer;
   const answeredIndex = fineIndex(options, op => op === answer);
   const isDashedline = subOptions.DASHED_LINE === displayStyleOption;
-  // * 10 is toggle button width and +30 is padding
-  const minWidth = options.length * 10 + 30;
   const handleChange = ({ target: { value: opIndex } }) => onChange(options[opIndex]);
   return (
     <ToggleWrapper>
-      <AnswerBox isDashedline={isDashedline} style={{ ...styles, width: "auto", minWidth }}>
+      <AnswerBox isDashedline={isDashedline} style={styles}>
         <AnswerCont dangerouslySetInnerHTML={{ __html: answer }} isHighlight={!isDashedline} />
       </AnswerBox>
       <RadioGroup value={answeredIndex} disabled={disableResponse} onChange={handleChange} isDashedline={isDashedline}>

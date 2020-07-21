@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 import { Select } from "antd";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 import {
   Stimulus,
   FlexContainer,
@@ -205,35 +205,39 @@ const ShadingPreview = ({
           {previewTab === SHOW && (
             <Fragment>
               <CorrectAnswersContainer title={t("component.shading.correctAnswer")}>
-                {validation.validResponse.method === BY_LOCATION_METHOD ? (
-                  <ShadesView
-                    {...renderProps}
-                    correctAnswers={validation.validResponse.value}
-                    showAnswers
-                    onCellClick={() => {}}
-                    shaded={[]}
-                    lockedCells={read_only_author_cells ? shaded : undefined}
-                  />
-                ) : (
-                  <Fragment>Any {validation.validResponse.value} cells</Fragment>
-                )}
+                <CorrectAnswerBlock>
+                  {validation.validResponse.method === BY_LOCATION_METHOD ? (
+                    <ShadesView
+                      {...renderProps}
+                      correctAnswers={validation.validResponse.value}
+                      showAnswers
+                      onCellClick={() => {}}
+                      shaded={[]}
+                      lockedCells={read_only_author_cells ? shaded : undefined}
+                    />
+                  ) : (
+                    <Fragment>Any {validation.validResponse.value} cells</Fragment>
+                  )}
+                </CorrectAnswerBlock>
               </CorrectAnswersContainer>
 
               {validation.altResponses &&
                 validation.altResponses.map((altAnswer, i) => (
                   <CorrectAnswersContainer title={`${t("component.shading.alternateAnswer")} ${i + 1}`}>
-                    {altAnswer.method === BY_LOCATION_METHOD ? (
-                      <ShadesView
-                        {...renderProps}
-                        correctAnswers={altAnswer.value}
-                        showAnswers
-                        onCellClick={() => {}}
-                        shaded={[]}
-                        lockedCells={read_only_author_cells ? shaded : undefined}
-                      />
-                    ) : (
-                      <Fragment>Any {altAnswer.value} cells</Fragment>
-                    )}
+                    <CorrectAnswerBlock>
+                      {altAnswer.method === BY_LOCATION_METHOD ? (
+                        <ShadesView
+                          {...renderProps}
+                          correctAnswers={altAnswer.value}
+                          showAnswers
+                          onCellClick={() => {}}
+                          shaded={[]}
+                          lockedCells={read_only_author_cells ? shaded : undefined}
+                        />
+                      ) : (
+                        <Fragment>Any {altAnswer.value} cells</Fragment>
+                      )}
+                    </CorrectAnswerBlock>
                   </CorrectAnswersContainer>
                 ))}
             </Fragment>
@@ -275,3 +279,7 @@ const enhance = compose(
 );
 
 export default enhance(ShadingPreview);
+
+const CorrectAnswerBlock = styled.div`
+  padding-left: 20px;
+`;

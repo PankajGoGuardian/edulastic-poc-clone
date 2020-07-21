@@ -4,9 +4,9 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Row, Col, Button, Tooltip, Collapse } from "antd";
+import { Row, Col, Tooltip, Collapse } from "antd";
 import moment from "moment";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, EduButton } from "@edulastic/common";
 import { smallDesktopWidth, themeColor } from "@edulastic/colors";
 import { changeClassAction } from "../../Login/ducks";
 
@@ -61,11 +61,13 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
             </Col>
             <Col span={12}>
               <Row type="flex" justify="end" align="center">
-                <EllipsisContainer style={{paddingRight:"0px"}}>
+                <EllipsisContainer style={{ paddingRight: "0px" }}>
                   <InstitutionInfo>
                     {institutionName}, {districtName}
                   </InstitutionInfo>
-                  <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>
+                  <EduButton isGhost height="32px" onClick={handleVisitClass}>
+                    {t("common.visitClass")}
+                  </EduButton>
                 </EllipsisContainer>
               </Row>
             </Col>
@@ -188,31 +190,6 @@ const EllipsisContainer = styled.div`
   align-items: center;
   position: relative;
   max-width: 100%;
-`;
-
-const VisitClassButton = styled(Button)`
-  height: 32px;
-  border-radius: 4px;
-  background-color: ${props => props.theme.classCard.cardVisitClassBtnBgColor};
-  text-transform: uppercase;
-  padding: 0px 30px;
-  font-size: ${props => props.theme.classCard.cardVisitClassBtnTextSize};
-  color: ${props => props.theme.classCard.cardVisitClassBtnTextColor};
-  border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
-  font-weight: 600;
-
-  &:active,
-  &:focus,
-  &:hover {
-    background-color: ${props => props.theme.classCard.cardVisitClassBtnBgHoverColor};
-    color: ${props => props.theme.classCard.cardVisitClassBtnTextHoverColor};
-    border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    height: 28px;
-    padding: 0px 20px;
-  }
 `;
 
 const ClassStatus = styled(Col)`

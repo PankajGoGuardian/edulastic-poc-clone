@@ -159,7 +159,7 @@ const PeerPerformance = ({
                   </Col>
                   <Col className="dropdown-container" xs={24} sm={24} md={12} lg={16} xl={12}>
                     <ControlDropDown
-                      prefix="Analyse by"
+                      prefix="Analyze by"
                       by={dropDownFormat.analyseByDropDownData[0]}
                       selectCB={updateAnalyseByCB}
                       data={dropDownFormat.analyseByDropDownData}

@@ -192,12 +192,18 @@ const getParabolaThirdPoint = (startPoint, endPoint) => {
 
 const serialize = (shapes, lineTypes, points) => {
   const getShape = shape => (shape[0] === "eqn" ? `['eqn','${shape[1]}']` : `['${shape[0]}',[${shape[1].join(",")}]]`);
-
-  return `[${shapes.map(getShape).join(",")}],[${lineTypes.map(x => `'${x}'`).join(",")}],[${points.join(",")}]`;
+  const serializeShapes = shapes.length ? `[${shapes.map(getShape).join(",")}]` : null;
+  var serializeLineTypes = lineTypes.length ? `[${lineTypes.map(x => `'${x}'`).join(",")}]` : null;
+  var serializePoints = points.length ? `[${points.join(",")}]` : null;
+  return [serializeShapes, serializeLineTypes, serializePoints].filter(el=>!!el).join(",");
 };
 
 const buildGraphApiResponse = (elements = []) => {
   const allowedShapes = [
+    ShapeTypes.POINT,
+    ShapeTypes.SEGMENT,
+    ShapeTypes.RAY,
+    ShapeTypes.VECTOR,
     ShapeTypes.PARABOLA,
     ShapeTypes.PARABOLA2,
     ShapeTypes.EQUATION,
@@ -228,7 +234,7 @@ const buildGraphApiResponse = (elements = []) => {
   const points = [];
 
   elements.forEach(el => {
-    if (!allowedShapes.includes(el.type)) {
+    if (el.subElement || !allowedShapes.includes(el.type)) {
       return;
     }
 
@@ -244,7 +250,9 @@ const buildGraphApiResponse = (elements = []) => {
     }
 
     const shapePoints = [];
-    if (more2PointShapes.includes(el.type)) {
+    if(el.type === ShapeTypes.POINT){
+      shapePoints.push(`(${+el.x.toFixed(4)},${+el.y.toFixed(4)})`);
+    }else if (more2PointShapes.includes(el.type)) {
       Object.values(el.subElementsIds).forEach(id => {
         const point = elements.find(x => x.id === id);
         if (point) {
@@ -267,7 +275,12 @@ const buildGraphApiResponse = (elements = []) => {
     }
 
     shapes.push([el.type, shapePoints]);
-    lineTypes.push(el.dashed ? "dashed" : "solid");
+    if(![ShapeTypes.POINT,ShapeTypes.RAY,ShapeTypes.VECTOR,ShapeTypes.SEGMENT].includes(el.type)){
+      lineTypes.push(el.dashed ? "dashed" : "solid");
+      if(!points.length){
+        points.push(`(0,0)`);
+      }   
+    }
   });
 
   return serialize(shapes, lineTypes, points);
@@ -355,7 +368,7 @@ const evaluator = async ({ userResponse, validation }) => {
   let result = {};
 
   for (const [index, answer] of answers.entries()) {
-    if (userResponse.some(x => x.type === ShapeTypes.AREA)) {
+    if (!userResponse.find(x => x.type === ShapeTypes.DRAG_DROP)) {
       result = await checkEquations(answer.value, userResponse);
     } else {
       result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);

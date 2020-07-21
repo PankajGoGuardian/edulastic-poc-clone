@@ -93,6 +93,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
   const renderOptions = () => (
     <OptionsList
       title={item.title}
+      item={item}
       points={
         correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
@@ -111,6 +112,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       onChangePoints={handlePointsChange}
+      isCorrectAnsTab={correctTab === 0}
     />
   );
 

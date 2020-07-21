@@ -6,6 +6,7 @@ import { compose } from "redux";
 import queryString from "query-string";
 import { mobileWidthMax } from "@edulastic/colors";
 import StudentQuestionContainer from "../StudentQuestionContiner/StudentQuestionContainer";
+import { PrintActionWrapper } from "@edulastic/common";
 
 import { PrintPreviewBack, PrintPreviewContainer, StyledTitle, Color } from "./styled";
 
@@ -57,17 +58,20 @@ class PrintPreview extends Component {
     }
 
     return (
-      <PrintPreviewBack>
-        <PrintPreviewContainer>
-          <StyledTitle>
-            <b>
-              <Color>Edu</Color>
-            </b>
-            lastic
-          </StyledTitle>
-          <QuestionContentArea>{renderClassStudentsResponse}</QuestionContentArea>
-        </PrintPreviewContainer>
-      </PrintPreviewBack>
+      <>
+        <PrintActionWrapper />
+        <PrintPreviewBack>
+          <PrintPreviewContainer>
+            <StyledTitle>
+              <b>
+                <Color>Edu</Color>
+              </b>
+              lastic
+            </StyledTitle>
+            <QuestionContentArea>{renderClassStudentsResponse}</QuestionContentArea>
+          </PrintPreviewContainer>
+        </PrintPreviewBack>
+      </>
     );
   }
 }

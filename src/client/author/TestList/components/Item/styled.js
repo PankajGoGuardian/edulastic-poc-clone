@@ -74,9 +74,11 @@ export const CardDescription = styled.div`
 export const TagsWrapper = styled.div`
   overflow: hidden;
   display: flex;
-  align-items: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   justify-content: flex-start;
-  height: ${props => (props.isPlaylist ? "47.52px" : "55px")};
+  height: ${props => (props.isPlaylist ? "47.52px" : props.testNameHeight > 22 ? "23px" : "45px")};
+  margin-top: 5px;
 `;
 
 export const Footer = styled.div`
@@ -320,12 +322,13 @@ export const Stars = styled(Rate)`
 `;
 
 export const StyledLink = styled.a`
+  display: -webkit-box;
   font-size: 14px;
   font-weight: bold;
-  display: inline-block;
   width: 100%;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-decoration: none;
   color: ${themeColor};

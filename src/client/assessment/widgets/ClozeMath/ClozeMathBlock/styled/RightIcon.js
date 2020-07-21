@@ -4,8 +4,8 @@ import { IconCheck } from "@edulastic/icons";
 export const RightIcon = styled(IconCheck)`
   width: 12px;
   height: 12px;
-  fill: ${props => props.theme.widgets.clozeDropDown.rightIconColor};
+  fill: ${({ theme }) => theme.checkbox.rightIconColor};
   &:hover {
-    fill: ${props => props.theme.widgets.clozeDropDown.rightIconColor};
+    fill: ${({ theme }) => theme.checkbox.rightIconColor};
   }
 `;

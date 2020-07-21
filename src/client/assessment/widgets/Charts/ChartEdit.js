@@ -242,6 +242,7 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
         fillSections={fillSections}
         cleanSections={cleanSections}
         item={item}
+        isCorrectAnsTab={currentTab === 0}
       />
 
       {advancedLink}

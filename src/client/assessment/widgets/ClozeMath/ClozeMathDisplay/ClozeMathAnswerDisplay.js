@@ -10,7 +10,7 @@ const ClozeMathAnswerDisplay = ({ resprops, id }) => {
   const { value = "", options = {} } = userAnswers[id] || {};
   let { unit } = options;
 
-  if (unit && (unit.search("f") !== -1 || unit.search(/\s/g) !== -1)) {
+  if (unit && unit.search("text{") === -1 && (unit.search("f") !== -1 || unit.search(/\s/g) !== -1)) {
     unit = `\\text{${unit}}`;
   }
 

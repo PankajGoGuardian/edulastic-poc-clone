@@ -19,7 +19,6 @@ import {
   previewShowAnswerAction,
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
-  getCurrentGroupIndexSelector,
   getTestItemsSelector,
   addItemsToAutoselectGroupsRequestAction,
   getAutoSelectItemsLoadingStatusSelector,
@@ -62,7 +61,6 @@ class Review extends PureComponent {
     onChangeCollection: PropTypes.func.isRequired,
     questions: PropTypes.object.isRequired,
     itemsSubjectAndGrade: PropTypes.any.isRequired,
-    currentGroupIndex: PropTypes.number.isRequired,
     isEditable: PropTypes.bool.isRequired,
     defaultThumbnail: PropTypes.any.isRequired,
     setTestItems: PropTypes.func.isRequired,
@@ -229,21 +227,46 @@ class Review extends PureComponent {
   };
 
   moveTestItems = ({ oldIndex, newIndex }) => {
-    const { test, setData, currentGroupIndex } = this.props;
-    setData(
-      produce(test, draft => {
-        draft.itemGroups[currentGroupIndex].items = draft.itemGroups[currentGroupIndex].items.map(
-          ({ selected, ...item }) => ({ ...item })
-        );
-        const [removed] = draft.itemGroups[currentGroupIndex].items.splice(oldIndex, 1);
-        draft.itemGroups[currentGroupIndex].items.splice(newIndex, 0, removed);
-      })
-    );
+    const { test, setData } = this.props;
+    if (test.itemGroups.length > 1) {
+      let itemCounter = 0;
+      let [newGroupIndex, newItemIndex] = [0, 0];
+      let [oldGroupIndex, oldItemIndex] = [0, 0];
+      test.itemGroups.forEach((group, i) => {
+        group.items.forEach((_, j) => {
+          if (itemCounter === newIndex) {
+            [newGroupIndex, newItemIndex] = [i, j];
+          }
+          if (itemCounter === oldIndex) {
+            [oldGroupIndex, oldItemIndex] = [i, j];
+          }
+          itemCounter++;
+        });
+      });
+      setData(
+        produce(test, draft => {
+          const tempItem = test.itemGroups[oldGroupIndex].items[oldItemIndex];
+          delete tempItem.selected;
+          draft.itemGroups[oldGroupIndex].items[oldItemIndex] = draft.itemGroups[newGroupIndex].items[newItemIndex];
+          draft.itemGroups[newGroupIndex].items[newItemIndex] = tempItem;
+        })
+      );
+    } else {
+      setData(
+        produce(test, draft => {
+          draft.itemGroups[0].items = draft.itemGroups[0].items.map(({ selected, ...item }) => ({
+            ...item
+          }));
+          const [removed] = draft.itemGroups[0].items.splice(oldIndex, 1);
+          draft.itemGroups[0].items.splice(newIndex, 0, removed);
+        })
+      );
+    }
   };
 
   handleMoveTo = newIndex => {
-    const { test, currentGroupIndex } = this.props;
-    const oldIndex = test.itemGroups[currentGroupIndex].items.findIndex(item => item.selected);
+    const { test } = this.props;
+    const oldIndex = test.itemGroups.flatMap(({ items }) => items).findIndex(item => item.selected);
     this.moveTestItems({ oldIndex, newIndex });
   };
 
@@ -576,7 +599,6 @@ const enhance = compose(
       defaultThumbnail: getDefaultThumbnailSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       userFeatures: getUserFeatures(state),
-      currentGroupIndex: getCurrentGroupIndexSelector(state),
       testItems: getTestItemsSelector(state),
       isFetchingAutoselectItems: getAutoSelectItemsLoadingStatusSelector(state),
       userRole: getUserRole(state),

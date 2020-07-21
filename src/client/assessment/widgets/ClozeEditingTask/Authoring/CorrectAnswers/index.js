@@ -175,6 +175,7 @@ class CorrectAnswers extends Component {
               hasGroupResponses={hasGroupResponses}
               onUpdateValidationValue={this.updateCorrectValidationAnswers}
               onUpdatePoints={this.handleUpdateCorrectScore}
+              isCorrectAnsTab
             />
           </TabContainer>
         )}

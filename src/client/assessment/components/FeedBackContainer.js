@@ -71,16 +71,16 @@ const FeedBackContainer = ({ correct, prevScore, prevMaxScore, prevFeedback, ite
     return null;
   }
   if (!isResponseVisible) {
-    //return here if all contents are blank
+    // return here if all contents are blank
     if (!prevFeedback?.text && correct === undefined && !(prevScore || prevScore === 0)) return "";
     return (
-      <Wrapper visible={true}>
+      <Wrapper visible>
         <TeacherResponseContainer {...props} />
       </Wrapper>
     );
   }
   return (
-    <Wrapper onClick={toggleFeedbackView} visible={true}>
+    <Wrapper onClick={toggleFeedbackView} visible>
       {!feedbackView && correct !== undefined && (
         <div style={{ width: "100px" }}>
           <div data-cy="answerIcon" style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
@@ -108,15 +108,16 @@ export default connect(
 )(FeedBackContainer);
 
 const Wrapper = styled.div`
-  position: absolute;
-  right: -18px;
+  position: fixed;
+  right: 40px;
   display: ${({ visible }) => (visible ? "flex" : "none")};
   flex-direction: column;
   box-shadow: 0 3px 10px 2px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  top: 40px;
+  top: 100px;
   padding: 20px 15px;
   background-color: white;
+  z-index: 100;
 `;
 
 const TeacherResponse = styled.div`

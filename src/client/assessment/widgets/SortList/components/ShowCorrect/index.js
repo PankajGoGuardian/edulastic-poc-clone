@@ -1,42 +1,34 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Popover } from "antd";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { CorrectAnswersContainer, Subtitle } from "@edulastic/common";
+import { CorrectAnswersContainer, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { getStemNumeration } from "../../../../utils/helpers";
-import { FlexRow } from "./styled/FlexRow";
 import { Item } from "./styled/Item";
 import { Index } from "./styled/Index";
 import { Content } from "./styled/Content";
 
-const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle, item }) => (
-  <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
-    <FlexRow>
-      {list.map((ele, i) => {
-        const content = <Content dangerouslySetInnerHTML={{ __html: ele }} />;
-        return (
-          <Popover content={content}>
-            <Item key={i} style={itemStyle}>
-              <Index>{getStemNumeration(stemNumeration, i)}</Index>
-              {content}
-            </Item>
-          </Popover>
-        );
-      })}
-    </FlexRow>
+const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle }) => (
+  <Fragment>
+    <CorrectAnswersContainer minHeight="auto" title={t("component.sortList.correctAnswers")}>
+      <FlexContainer marginLeft="20px">
+        {list.map((ele, i) => {
+          const content = <Content dangerouslySetInnerHTML={{ __html: ele }} />;
+          return (
+            <Popover content={content}>
+              <Item key={i} style={itemStyle}>
+                <Index>{getStemNumeration(stemNumeration, i)}</Index>
+                {content}
+              </Item>
+            </Popover>
+          );
+        })}
+      </FlexContainer>
+    </CorrectAnswersContainer>
 
     {altResponses.map((ans, i) => (
-      <Fragment key={i}>
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t("component.sortList.alternateAnswer")} ${i + 1}`
-          )}
-          style={{ marginTop: 40 }}
-        >
-          {`${t("component.sortList.alternateAnswer")} ${i + 1}`}
-        </Subtitle>
-        <FlexRow>
+      <CorrectAnswersContainer key={i} title={`${t("component.sortList.alternateAnswer")} ${i + 1}`} minHeight="auto">
+        <FlexContainer marginLeft="20px">
           {ans.value.map((answer, index) => {
             const content = <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />;
             return (
@@ -48,10 +40,10 @@ const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle
               </Popover>
             );
           })}
-        </FlexRow>
-      </Fragment>
+        </FlexContainer>
+      </CorrectAnswersContainer>
     ))}
-  </CorrectAnswersContainer>
+  </Fragment>
 );
 
 ShowCorrect.propTypes = {

@@ -11,9 +11,11 @@ export const GraphToolbar = styled.div`
   justify-content: flex-start;
   min-height: 65px;
   padding: 0;
-  background-color: ${props => props.theme.widgets.chart.bgColor};
+  border-radius: 4px;
+  background-color: ${props => props.theme.widgets.graphPlacement.toolbarBgColor};
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
   margin-right: ${({ vertical }) => (vertical ? "8px" : "")};
+  margin: ${({ vertical }) => (vertical ? "" : "16px 0px")};
 
   .toolbar-compact & {
     max-width: 700px;
@@ -63,7 +65,6 @@ export const SegmentsToolBtn = styled.li`
   line-height: 1.5em;
   transition: background-color 0.1s ease-in;
   user-select: none;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
   margin-right: ${({ zoomLevel }) => (zoomLevel > "1" ? `1rem` : "0.2rem")};
 
   @media screen and (min-width: ${extraDesktopWidth}) {
@@ -71,12 +72,6 @@ export const SegmentsToolBtn = styled.li`
   }
 
   &.disabled {
-    background-color: rgba(0, 0, 0, 0.15);
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.15);
-    }
-
     .dd-header-title svg {
       color: ${svgDisabledColor};
       stroke: ${svgDisabledColor};
@@ -97,12 +92,6 @@ export const SegmentsToolBtn = styled.li`
   }
 
   &.disabled {
-    background-color: rgba(0, 0, 0, 0.15);
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.15);
-    }
-
     .dd-header-title svg {
       color: ${svgDisabledColor};
       stroke: ${svgDisabledColor};
@@ -123,24 +112,11 @@ export const SegmentsToolBtn = styled.li`
   }
 
   svg {
-    color: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
-    stroke: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
-    fill: ${props => props.theme.widgets.graphPlacement.buttonLabelStroke};
-  }
-
-  &:hover {
-    background-color: ${props => props.theme.widgets.graphPlacement.buttonHoverBgColor};
-  }
-
-  &:active {
-    background-color: ${props => props.theme.widgets.graphPlacement.buttonActiveBgColor};
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+    stroke: ${props => props.theme.widgets.graphPlacement.buttonIconColor};
+    fill: ${props => props.theme.widgets.graphPlacement.buttonIconColor};
   }
 
   &.active {
-    background-color: ${props => props.theme.widgets.graphPlacement.buttonActiveBgColor};
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
-
     .dd-header-title svg {
       color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
       stroke: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
@@ -148,9 +124,8 @@ export const SegmentsToolBtn = styled.li`
     }
 
     .tool-btn-icon svg {
-      color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
-      stroke: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
-      fill: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+      stroke: ${props => props.theme.widgets.graphPlacement.buttonActiveIconColor};
+      fill: ${props => props.theme.widgets.graphPlacement.buttonActiveIconColor};
     }
   }
 `;
@@ -173,7 +148,7 @@ export const JSXBox = styled.div`
   position: relative;
   overflow: hidden;
 
-  border: 1px solid #e8e8e8;
+  border: 0px solid #e8e8e8;
   border-radius: 0;
   border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;

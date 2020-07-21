@@ -34,6 +34,11 @@ export default class TestAssignPage {
 
   getNavigateToTestLibraryPage = () => cy.get('[data-cy="assignButton"]').contains("Return to TEST LIBRARY");
 
+  getSafeExamBrowserSwitch = () =>
+    cy.get('[inputfeatures="assessmentSuperPowersRequireSafeExamBrowser"]').find("button");
+
+  getQuitPassord = () => cy.get('[placeholder="Quit Password"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -168,6 +173,19 @@ export default class TestAssignPage {
   proceedWithDuplicate = () => cy.get('[data-cy="duplicate"]').click();
 
   proceedWithNoDuplicate = () => cy.get('[data-cy="noDuplicate"]').click();
+
+  setSafeExamBrowser = pass =>
+    this.getSafeExamBrowserSwitch().then($ele => {
+      if (!$ele.hasClass("ant-switch-checked")) {
+        cy.wrap($ele).click({ force: true });
+      }
+      this.getQuitPassord().type(pass);
+    });
+
+  unSetSafeExamBrowser = () =>
+    this.getSafeExamBrowserSwitch().then($ele => {
+      if ($ele.hasClass("ant-switch-checked")) cy.wrap($ele).click({ force: true });
+    });
 
   // start , end => new Date() instance
   setStartAndCloseDate = (start, end) => {

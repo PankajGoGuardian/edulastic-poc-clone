@@ -115,8 +115,8 @@ const MathWithUnit = ({ resprops = {}, id }) => {
 
   return checked ? (
     <CheckedBlock
-      width={width}
-      height={height}
+      width={`${width}px`}
+      height={`${height}px`}
       evaluation={evaluation}
       showIndex={showIndex}
       userAnswer={mathUnits[id]}

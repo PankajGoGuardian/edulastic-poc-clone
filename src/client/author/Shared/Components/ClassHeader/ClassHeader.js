@@ -539,13 +539,14 @@ class ClassHeader extends Component {
               onOk={() => this.handlePauseAssignment(!isPaused)}
               onCancel={() => this.togglePauseModal(false)}
               inputVal={modalInputVal}
+              placeHolder="Type the action"
               onInputChange={this.handleValidateInput}
               expectedVal="PAUSE"
               canUndone
               bodyText={
                 <div>
-                  Are you sure you want to pause? <br />
-                  Once paused,no student would be able to answer the test <br />
+                  Are you sure you want to pause? 
+                  Once paused,no student would be able to answer the test 
                   unless you resume it.
                 </div>
               }
@@ -558,13 +559,14 @@ class ClassHeader extends Component {
               onOk={this.handleCloseAssignment}
               onCancel={() => this.toggleCloseModal(false)}
               inputVal={modalInputVal}
+              placeHolder="Type the action"
               onInputChange={this.handleValidateInput}
               expectedVal="CLOSE"
               bodyText={
                 <div>
                   <StudentStatusDetails>
                     {notStartedStudents.length ? (
-                      <p>{notStartedStudents.length} student(s) have not yet started</p>
+                      <p style={{marginRight:"10px"}}>{notStartedStudents.length} student(s) have not yet started</p>
                     ) : (
                       ""
                     )}
@@ -574,8 +576,9 @@ class ClassHeader extends Component {
                       ""
                     )}
                   </StudentStatusDetails>
-                  <p>Are you sure you want to close ?</p>
-                  <p>Once closed, no student would be able to answer the assessment</p>
+                  <p>Are you sure you want to close ?
+                    Once closed, no student would be able to answer the assessment
+                  </p>
                 </div>
               }
               okText="Yes, Close"

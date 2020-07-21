@@ -1,4 +1,4 @@
-// / <reference types="Cypress" />
+/// <reference types="Cypress" />
 import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage.js";
@@ -623,7 +623,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question.header.save();
     });
     it("change points and check answer", () => {
-      // set score to 2
+      //set score to 2
       question.header.edit();
 
       question.getPoints().type("{selectall}2");

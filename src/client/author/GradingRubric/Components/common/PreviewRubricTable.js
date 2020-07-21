@@ -12,6 +12,7 @@ const PreviewRubricTable = ({
   validateRubricResponse = false
 }) => {
   const [selectedRatings, setSelectedRatings] = useState({});
+  const [scrolledX, setScrolledX] = useState({});
 
   useEffect(() => {
     if (rubricFeedback) {
@@ -32,6 +33,13 @@ const PreviewRubricTable = ({
         suppressScrollY: true,
         useBothWheelAxes: true
       }}
+      onScrollX={() =>
+        criteria?.id && !scrolledX[criteria.id] && setScrolledX({
+          ...scrolledX,
+          [criteria.id]: true
+        })
+      }
+      visibleOnLoad={criteria?.id && !scrolledX[criteria.id]}
     >
       {criteria.ratings.map(rating => (
         <RatingSection
@@ -146,4 +154,16 @@ const RatingScrollContainer = styled(PerfectScrollbar)`
   padding: 2px 3px 18px 3px;
   white-space: nowrap;
   display: flex;
+  ${props => props.visibleOnLoad && `
+    .ps__rail-x { 
+      display: block;
+      opacity: 0.2 !important;
+      width: 100%;
+      background-color: transparent !important;
+      .ps__thumb-x {
+        width: 100% !important;
+        height: 6px !important;
+      }
+    }
+  `}
 `;

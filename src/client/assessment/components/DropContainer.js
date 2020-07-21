@@ -1,4 +1,4 @@
-import { greyThemeLight, themeColorBlue } from "@edulastic/colors";
+import { themeColorBlue, lightGrey12, greyThemeLighter } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import React from "react";
 import { DropTarget } from "react-dnd";
@@ -40,10 +40,10 @@ const DropContainer = ({
     !noBorder
       ? isOver
         ? `2px dashed ${themeColorBlue}`
-        : `2px dashed ${isPlaylist ? "transparent" : greyThemeLight}`
+        : `2px dashed ${isPlaylist ? "transparent" : lightGrey12}`
       : isOver
       ? `1px solid ${theme.dropContainer.isOverBorderColor}`
-      : `1px solid ${theme.dropContainer.isNotOverBorderColor}`
+      : `2px solid ${lightGrey12}`
   }`;
 
   return connectDropTarget(
@@ -56,7 +56,7 @@ const DropContainer = ({
         zIndex: 50,
         ...style,
         border: borderNone ? "none" : border,
-        background: isPlaylist ? "unset" : "#f8f8f8",
+        background: isPlaylist ? "unset" : greyThemeLighter,
         borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border
       }}
     >

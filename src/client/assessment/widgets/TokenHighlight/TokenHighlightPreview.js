@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, get } from "lodash";
+import { cloneDeep, get, isEmpty } from "lodash";
 import { compose } from "redux";
 import produce from "immer";
 import styled, { withTheme } from "styled-components";
@@ -21,6 +21,7 @@ import Instructions from "../../components/Instructions";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 import { getFontSize } from "../../utils/helpers";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { AnswersWrapper } from "./styled/AnswersWrapper";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -150,6 +151,8 @@ const TokenHighlightPreview = ({
   useEffect(() => {
     if (view === EDIT && !isCheck) {
       setAnswers(validArray);
+    } else if (isEmpty(userAnswer) && !isCheck) {
+      setAnswers(initialArray);
     }
   }, [userAnswer]);
 
@@ -202,13 +205,11 @@ const TokenHighlightPreview = ({
 
     if (condition && !!rightAnswers.find(el => el.index === index && el.selected)) {
       resultStyle = {
-        background: theme.widgets.tokenHighlight.correctResultBgColor,
-        borderColor: theme.widgets.tokenHighlight.correctResultBorderColor
+        background: theme.checkbox.rightBgColor
       };
     } else if (condition) {
       resultStyle = {
-        background: theme.widgets.tokenHighlight.incorrectResultBgColor,
-        borderColor: theme.widgets.tokenHighlight.incorrectResultBorderColor
+        background: theme.checkbox.wrongBgColor
       };
     } else {
       resultStyle = {};
@@ -331,23 +332,30 @@ const TokenHighlightPreview = ({
                   : `${t("component.sortList.alternateAnswer")} ${correctGroupIndex}`;
               return (
                 <div style={{ width: "100%" }}>
-                  <CorrectAnswersContainer key={correctGroupIndex} title={title}>
-                    {correctAnswers.map((el, i) =>
-                      el.selected ? (
-                        <MathSpan
-                          onClick={() => {}}
-                          dangerouslySetInnerHTML={{ __html: el.value }}
-                          style={getStyles(i, correctAnswers)}
-                          key={i}
-                        />
-                      ) : (
-                        <MathSpan
-                          className="token without-cursor"
-                          dangerouslySetInnerHTML={{ __html: el.value }}
-                          key={i}
-                        />
-                      )
-                    )}
+                  <CorrectAnswersContainer
+                    key={correctGroupIndex}
+                    title={title}
+                    padding="15px 20px 24px 30px"
+                    titleMargin="0px 0px 20px"
+                  >
+                    <AnswersWrapper>
+                      {correctAnswers.map((el, i) =>
+                        el.selected ? (
+                          <MathSpan
+                            onClick={() => {}}
+                            dangerouslySetInnerHTML={{ __html: el.value }}
+                            style={getStyles(i, correctAnswers)}
+                            key={i}
+                          />
+                        ) : (
+                          <MathSpan
+                            className="token without-cursor"
+                            dangerouslySetInnerHTML={{ __html: el.value }}
+                            key={i}
+                          />
+                        )
+                      )}
+                    </AnswersWrapper>
                   </CorrectAnswersContainer>
                 </div>
               );

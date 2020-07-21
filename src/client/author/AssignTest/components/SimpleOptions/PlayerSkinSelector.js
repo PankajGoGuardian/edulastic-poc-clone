@@ -8,7 +8,7 @@ const { playerSkinTypes } = test;
 const PlayerSkinSelector = ({
   playerSkinType = playerSkinTypes.edulastic,
   onAssignmentTypeChange,
-  testType,
+  testType = [],
   isAdvanceView,
   disabled = false,
   fullwidth = false,

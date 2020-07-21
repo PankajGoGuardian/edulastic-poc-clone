@@ -4,12 +4,7 @@ import { cloneDeep, find } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import produce from "immer";
 
-import {
-  WORD_MODE,
-  PARAGRAPH_MODE,
-  EDIT,
-  CUSTOM_MODE
-} from "../../constants/constantsForQuestions";
+import { WORD_MODE, PARAGRAPH_MODE, EDIT, CUSTOM_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
@@ -21,13 +16,7 @@ import Options from "./components/Options";
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 
-import {
-  getInitialArray,
-  getParagraphsArray,
-  getSentencesArray,
-  getWordsArray,
-  getCustomArray
-} from "./helpers";
+import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray, getCustomArray } from "./helpers";
 import Question from "../../components/Question";
 
 const OptionsList = withPoints(TokenHighlightPreview);
@@ -150,19 +139,16 @@ const TokenHighlightEdit = ({
     <OptionsList
       item={item}
       points={
-        correctTab === 0
-          ? item.validation.validResponse.score
-          : item.validation.altResponses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       mode={mode}
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0
-          ? item.validation.validResponse.value
-          : item.validation.altResponses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
+      isCorrectAnsTab={correctTab === 0}
     />
   );
 

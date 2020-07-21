@@ -5,7 +5,7 @@ import { withNamespaces } from "react-i18next";
 import styled from "styled-components";
 import { themeColor, smallDesktopWidth, tabletWidth } from "@edulastic/colors";
 import { EduButton, MainHeader, withWindowSizes } from "@edulastic/common";
-import { IconBarChart, IconMoreVertical, IconQuestionCircle } from "@edulastic/icons";
+import { IconBarChart, IconMoreVertical } from "@edulastic/icons";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import HeaderNavigation from "./HeaderNavigation";
 
@@ -40,12 +40,12 @@ const CustomizedHeaderWrapper = ({
   const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
   const navMenu = isSmallDesktop
     ? navigationItems
-        .filter(ite => ite.key !== activeNavigationKey)
-        .map(ite => (
-          <ActionButton key={ite.key}>
-            <Link to={ite.location}>{ite.title}</Link>
-          </ActionButton>
-        ))
+      .filter(ite => ite.key !== activeNavigationKey)
+      .map(ite => (
+        <ActionButton key={ite.key}>
+          <Link to={ite.location}>{ite.title}</Link>
+        </ActionButton>
+      ))
     : null;
 
   const actionRightButtons = (
@@ -74,12 +74,12 @@ const CustomizedHeaderWrapper = ({
           </ActionButton>
         ) : null}
       </FeaturesSwitch>
-      {activeNavigationKey === "standard-reports" && (
+      {/* {activeNavigationKey === "standard-reports" && (
         <ActionButton isBlue>
           <IconQuestionCircle />
           <span>HOW TO USE INSIGHTS</span>
         </ActionButton>
-      )}
+      )} */}
     </ActionButtonWrapper>
   );
 
@@ -96,7 +96,7 @@ const CustomizedHeaderWrapper = ({
           </FeaturesSwitch>
         ) : (
           <HeaderNavigation navigationItems={availableNavItems} activeItemKey={activeNavigationKey} />
-        )
+          )
       ) : null}
       <StyledCol>
         {!isSmallDesktop && actionRightButtons}

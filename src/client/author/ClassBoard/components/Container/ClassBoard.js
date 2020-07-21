@@ -699,44 +699,56 @@ class ClassBoard extends Component {
       <div>
         {showMarkSubmittedPopup && (
           <ConfirmationModal
-            title="mark as submitted"
+            title="Mark as Submitted"
             show={showMarkSubmittedPopup}
             onOk={this.handleMarkSubmitted}
             onCancel={this.handleCancelMarkSubmitted}
             inputVal={modalInputVal}
+            placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="SUBMIT"
-            bodyText={`The assignment for selected student(s) will be marked as "Submitted". Once you proceed, these students will not be able to take the assignment online. If the students have answered any questions, their responses will be saved.`}
+            bodyText={<div>The assignment for selected student(s) will be marked as &quot;Submitted&quot;.Once   you proceed, these students will not be able to take the assignment online.If the students have answered any questions, their responses will be saved. </div>}
             okText="Yes, Submit"
             canUndone
           />
         )}
         {showMarkAbsentPopup && (
           <ConfirmationModal
-            title="MARK AS ABSENT"
+            title="Mark as Absent"
             show={showMarkAbsentPopup}
             onOk={this.handleMarkAbsent}
             onCancel={this.handleCancelMarkAbsent}
             inputVal={modalInputVal}
+            placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="ABSENT"
             bodyText={
-              "You are about to Mark the selected student(s) as Absent. Student's response if present will be deleted. Do you still want to proceed?"
+              <span>
+                You are about to Mark the selected student(s) as Absent. 
+                Student&apos;s response if present will be deleted. Do 
+                you still want to proceed?
+              </span>
             }
             okText="Yes,Absent"
+            
           />
         )}
         {showRemoveStudentsPopup && (
           <ConfirmationModal
-            title="Remove"
+            title="Remove Students"
             show={showRemoveStudentsPopup}
             onOk={this.handleRemoveStudents}
             onCancel={this.handleCancelRemove}
             inputVal={modalInputVal}
+            placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="REMOVE"
             bodyText={
-              "You are about to remove the selected student(s) from this assessment. Student's responses will be deleted. Do you still want to proceed?"
+              <span>
+                You are about to remove the selected student(s) 
+                from this assessment.Student&apos;s responses will be deleted. 
+                Do you still want to proceed?
+              </span>
             }
             okText="Yes, Remove"
           />
@@ -960,7 +972,7 @@ class ClassBoard extends Component {
                     closed={additionalData.closed}
                     detailedClasses={additionalData.detailedClasses}
                     studentUnselect={this.onUnselectCardOne}
-                    viewResponses={(e, selected, _testActivityId, attempt = null) => {
+                    viewResponses={(e, selected, _testActivityId) => {
                       setCurrentTestActivityId(_testActivityId);
                       if (!isItemsVisible) {
                         return;
@@ -1183,7 +1195,7 @@ class ClassBoard extends Component {
                     selected={selectedQuestion}
                     justifyContent="flex-end"
                     handleChange={value => {
-                      const { _assignmentId, _classId } = match.params;
+                      const { assignmentId: _assignmentId, classId: _classId } = match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
                       history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}`);

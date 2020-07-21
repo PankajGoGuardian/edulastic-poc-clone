@@ -30,7 +30,8 @@ const ActionMenu = ({
   userRole = "",
   assignmentTest = {},
   canEdit = true,
-  userClassList
+  userClassList,
+  canUnassign = true
 }) => {
   const getAssignmentDetails = () => (!Object.keys(currentAssignment).length ? row : currentAssignment);
   const assignmentDetails = getAssignmentDetails();
@@ -164,7 +165,7 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {(isAssignmentOwner || isCoAuthor || isAdmin) && (
+        {(isAssignmentOwner || isCoAuthor || isAdmin) && canUnassign && (
           <Menu.Item
             data-cy="delete-Assignment"
             key="delete-Assignment"

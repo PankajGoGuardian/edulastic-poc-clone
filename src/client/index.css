@@ -1042,63 +1042,12 @@ textinput::before {
   transform: translateX(-9999px);
 }
 
-.imagelabeldragdrop-droppable {
-  display: flex;
-  align-items: center;
-  border-radius: 5px;
-  border: 1px solid red;
-}
-
-.imagelabeldragdrop-droppable .index-box {
-  padding: 0 10px;
-  color: white;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 40px;
-  background: #b9b9b9;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-
 .iseditablearialabel .index-box {
   border-radius: 4px;
   margin-right: 5px;
   height: 32px;
   width: 32px;
   justify-content: center;
-}
-
-.imagelabeldragdrop-droppable .label-box {
-  padding: 0 20px 0 10px;
-  display: inline-flex;
-}
-
-.imagelabeldragdrop-droppable .img-box {
-  width: 10px;
-  position: absolute;
-  right: 24px;
-  display: inline-flex;
-}
-
-.imagelabeldragdrop-droppable .container {
-  width: 100%;
-  height: 100%;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  display: flex;
-  justify-content: flex-start;
-  /* min-height: 35px; 5043*/
-}
-
-.imagelabeldragdrop-droppable.noAnswer {
-  border: 1px solid #b9b9b9;
-  background: #f8f8f8;
-  border-radius: 4px;
-  border-right-width: 1px !important;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  overflow: hidden;
 }
 
 .controls-bar .ant-select-selection {
@@ -1199,10 +1148,6 @@ textinput::before {
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 }
 
-.imagelabeldragdrop-droppable.iseditablearialabel {
-  margin: 5px 0;
-}
-
 .ant-input {
   margin: 0;
 }
@@ -1276,17 +1221,14 @@ span.token.without-cursor {
 
 span.token.answer:hover {
   background: #fdcc3b80;
-  border: 1px solid #fdcc3b;
 }
 
 span.token.active-word.answer {
   background: #fdcc3b80;
-  border: 1px solid #fdcc3b;
 }
 
 span.token.active-word {
   background: #93d8f780;
-  border: 1px solid #12a6e8;
 }
 
 #svg-control-block {
@@ -2275,4 +2217,13 @@ div[class*="_pendo"] button {
 
 .ant-select-dropdown.ant-select-dropdown--multiple .ant-select-dropdown-menu-item:hover .ant-select-selected-icon {
   color: white;
+}
+
+.drag-drop-item-match-list:hover {
+  border-color: #1a73e8 !important;
+  background: #1a73e8 !important;
+}
+
+.drag-drop-item-match-list:hover * {
+  color: white !important;
 }

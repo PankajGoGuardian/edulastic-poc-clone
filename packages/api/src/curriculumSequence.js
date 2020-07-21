@@ -3,11 +3,11 @@ import API from "./utils/API";
 
 const api = new API();
 const prefix = "/playlists";
-const getPlaylist = id =>
+const getPlaylist = ({ id, forUseThis = false }) =>
   api
     .callApi({
       method: "get",
-      url: `${prefix}/${id}`
+      url: `${prefix}/${id}${forUseThis ? "?forUseThis=1" : ""}`
     })
     .then(result => result.data.result);
 
@@ -117,8 +117,6 @@ const publishCustomizeDraft = ({ _id, data }) =>
       data
     })
     .then(res => res.data.result);
-
-checkExistingDuplicatedForUser
 
 const checkExistingDuplicatedForUser = id =>
   api

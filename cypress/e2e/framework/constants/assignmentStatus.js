@@ -110,6 +110,10 @@ export const regradeOptions = {
   },
   deleted: {
     REMOVE: "discard-item"
+  },
+  settings: {
+    chooseAll: "choose-all",
+    excludeOveridden: "exclude-overidden"
   }
 };
 

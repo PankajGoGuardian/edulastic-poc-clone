@@ -1,14 +1,19 @@
 import {
   themeColor,
+  themeColorBlue,
   themeColorLight,
   white,
   dashBorderColor,
   mainTextColor,
   greyThemeLight,
+  greyThemeDark1,
   greyThemeDark2,
+  greyThemeDark4,
   greyThemeLighter,
   title,
-  greyishBorder
+  lightGrey1,
+  greyishBorder,
+  lightGrey12
 } from "@edulastic/colors";
 
 // all theme variables
@@ -58,13 +63,14 @@ const numberpadBgDisable = "#FFFFFF";
 const iconDeleteColor = themeColor;
 const iconDeleteHoverColor = "#FF0057";
 const clearIconColor = "#FFFFFF";
-const rightIconColor = "#84cd36";
+const rightIconColor = "#36d29c";
 const rightBgColor = "#E2FCF3";
-const wrongIconColor = "#dd2e44";
-const wrongBgColor = "#FCE0E8";
+const wrongIconColor = "#F25783";
+const wrongBgColor = "#FDE0E9";
 const rightBorderColor = "#5EB500";
 const wrongBorderColor = "#DD2E44";
-const noAnswerBgColor = "#f8f8f8";
+const noAnswerBgColor = "#F5F5F5";
+const noAnswerIconColor = "#A7A7A7";
 const noAnswerColor = "#b9b9b9";
 const checkColor = "#36D29C";
 const closeColor = "#F25783";
@@ -76,7 +82,7 @@ const uploadIcon = "#E6E6E6";
 const zoneDropFontColor = "#E6E6E6";
 const correctAnswerBoxBorderColor = "#E6E6E6";
 const zoneDropFontColorAlt = "#B1B1B1";
-const liColor = themeColor;
+const liColor = "#D8DBDE";
 const checkboxBgColor = "#F8F8FB";
 const shadowColor = "#E6E6EB";
 const appBgColor = "#F3F3F8";
@@ -169,7 +175,7 @@ const tagUnactiveTextColor = "#AEAEAE";
 const chartGridColor = "#e4e4e4";
 const chartAxisLabelColor = "#434B5D";
 const chartTickColor = "#434b5d";
-const chartStockColor = "#42d184";
+const chartStockColor = greyThemeDark4;
 const pastDueTagBackground = "#F6C7D5";
 const pastDueTagColor = "#CE5A7C";
 
@@ -220,6 +226,7 @@ export const themeColorsMap = {
 export const allThemeVars = {
   defaultFontFamily,
   themeColor,
+  themeColorBlue,
   themeColorHover,
   buttonBackgroundColor,
   buttonBackgroundHoverColor,
@@ -283,6 +290,7 @@ export const allThemeVars = {
   classNameFontSize,
   sidebarBgColorPlayer,
   sidebarFontColorPlayer,
+  questionLableColor: greyThemeDark4,
 
   regular,
   semiBold,
@@ -463,7 +471,14 @@ export const defaultTheme = {
     checkboxBorderColor: borderColor,
     checkboxCheckedColor: themeColor,
     checkboxIntermediateColor: themeColor,
-    checkboxLabelColor: themeColor
+    checkboxLabelColor: themeColor,
+    rightBgColor,
+    rightIconColor,
+    wrongBgColor,
+    wrongIconColor,
+    noAnswerBgColor,
+    noAnswerIconColor,
+    textColor: "#2F4151"
   },
   common: {
     addNewChoiceButtonFontFamily: "Open Sans",
@@ -683,10 +698,13 @@ export const defaultTheme = {
     labelColor: labelStyle
   },
   answerBox: {
+    textColor: "#2F4151",
     borderWidth: "1px",
     borderStyle: "solid",
     borderColor: greyishBorder,
-    borderRadius: "4px"
+    borderRadius: "4px",
+    indexBoxColor: white,
+    indexBoxBgColor: noAnswerIconColor
   },
   correctAnswers: {
     iconPlusColor: actionIconActiveColor,
@@ -990,7 +1008,7 @@ export const defaultTheme = {
     },
     essayPlainText: {
       wordCountLimitedColor: closeColor,
-      textInputBgColor: containerWhite,
+      textInputBgColor: tableBgColor,
       textInputColor: labelStyle,
       textInputBorderColor: "none",
       textInputLimitedBgColor: wrongBgColor,
@@ -1000,6 +1018,7 @@ export const defaultTheme = {
     essayRichText: {
       qlBlocksFontFamily: "Arial",
       wordCountLimitedColor: closeColor,
+      textInputBgColor: tableBgColor,
       quillBgColor: "none",
       quillTextColor: labelStyle,
       quillLimitedBgColor: wrongBgColor,
@@ -1067,10 +1086,12 @@ export const defaultTheme = {
       subtitleColor: labelStyle,
       liIconFontSize: questionTexticonFontSize,
       liIconColor: clearIconColor,
-      liBorderColor: "#069448",
+      liBorderColor: "#2F4151",
       liBorderHoverColor: themeColorHover,
-      correctLiBgColor: checkColor,
-      incorrectLiBgColor: closeColor,
+      correctLiBgColor: "#E2FCF3",
+      correctLiBorderColor: "#35D19B",
+      incorrectLiBgColor: "#FDE0E8",
+      incorrectLiBorderColor: "#F25783",
       lockedLiBgColor: liColor,
       liBgColor: liColor,
       liBgHoverColor: "transparent"
@@ -1081,10 +1102,10 @@ export const defaultTheme = {
       subtitleColor: labelStyle,
       svgMapFillColor: liColor,
       svgMapStrokeColor: actionIconColor,
-      svgMapRightFillColor: liColor,
-      svgMapRightStrokeColor: actionIconColor,
-      intersectStrokeColor: wrongBorderColor,
-      intersectFillColor: wrongBgColor,
+      svgMapRightFillColor: "#00ad504d",
+      svgMapRightStrokeColor: "#00AD50",
+      intersectStrokeColor: "#F25783",
+      intersectFillColor: "#f257834d",
       iconPlusColor: actionIconColor,
       iconCloseColor: themeColorLight,
       iconCloseHoverColor: closeColor,
@@ -1133,12 +1154,12 @@ export const defaultTheme = {
       dragItemColor: labelStyle,
       dragItemFontWeight: semiBold,
       groupSeparatorBorderColor: borderColor,
-      separatorBorderColor: borderColor,
+      separatorBorderColor: greyThemeDark2,
       correctAnswerBlockSeparatorBorderColor: keyboardBorderColor,
-      separatorBgColor: iconColor,
+      separatorBgColor: greyThemeDark2,
       listItemFontWeight: semiBold,
       listItemColor: labelStyle,
-      listItemBorderColor: borderColor,
+      listItemBorderColor: lightGrey12,
       indexCorrectBgColor: checkColor,
       indexIncorrectBgColor: closeColor,
       indexColor: clearIconColor,
@@ -1196,7 +1217,7 @@ export const defaultTheme = {
       textFontSize: questionTextnormalFontSize,
       questionTextFontSize: questionTextnormalFontSize,
       questionTextColor: labelStyle,
-      indexFontSize: headerTitle,
+      indexFontSize: standardFont,
       indexFontWeight: semiBold,
       indexColor: themeColorLight,
       incorrectIndexColor: labelStyle,
@@ -1232,7 +1253,7 @@ export const defaultTheme = {
       correctAnswersIndexColor: clearIconColor,
       dragItemActiveBgColor: containerGrey,
       dragItemBgColor: containerWhite,
-      dragItemWithIndexFontSize: headerTitle,
+      dragItemWithIndexFontSize: standardFont,
       dragItemWithIndexFontWeight: semiBold,
       dragItemTextEmptyFontSize: questionTextextraFontSize,
       dragItemTextEmptySmallFontSize: questionTextsmallFontSize,
@@ -1284,6 +1305,9 @@ export const defaultTheme = {
       dragDropTitleFontWeight: bold,
       dragDropTitleFontSize: subtitleFontSize,
       buttonLabelStroke: textColor,
+      toolbarBgColor: lightGrey1,
+      buttonIconColor: greyThemeDark2,
+      buttonActiveIconColor: greyThemeDark1,
       buttonActiveLabelStroke: greyThemeDark2,
       buttonActiveBgColor: brandWhite,
       buttonHoverBgColor: brandWhite,
@@ -1301,7 +1325,11 @@ export const defaultTheme = {
     axisLabels: {
       responseBoxTitleFontWeight: bold,
       responseBoxTitleFontSize: subtitleFontSize,
-      responseBoxBgColor: "rgba(230, 230, 230, 0.23)"
+      responseBoxBgColor: "#F6F6F6",
+      indexBoxFontSize: "14px",
+      indexBoxFontWeight: semiBold,
+      indexBoxColor: containerWhite,
+      indexBoxBgColor: "#A7A7A7"
     },
     assessmentPlayers: {
       fontMono: "'Courier', monospace",

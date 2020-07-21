@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
 import produce from "immer";
+import { themeColor } from "@edulastic/colors";
 
 import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
@@ -20,7 +21,7 @@ import {
 
 function normalizeTouchEvent(e) {
   if (e?.nativeEvent?.changedTouches?.length) {
-    //e.preventDefault();
+    // e.preventDefault();
     // e.clientX = e.nativeEvent.changedTouches[0].clientX;
     // e.clientY = e.nativeEvent.changedTouches[0].clientY;
     e.pageX = e.nativeEvent.changedTouches[0].pageX;
@@ -49,14 +50,13 @@ const LineChart = ({
   saveAnswer,
   gridParams,
   view,
-  correct,
+  evaluation,
   disableResponse,
   toggleBarDragging,
   deleteMode,
   margin = { top: 0, right: 0, left: 0, bottom: 50 }
 }) => {
-  const { width, height, margin: gridMargin, showGridlines } = gridParams;
-
+  const { width, height, showGridlines, margin: gridMargin } = gridParams;
   const { padding, step } = getGridVariables(data, gridParams);
 
   const [active, setActive] = useState(null);
@@ -68,6 +68,16 @@ const LineChart = ({
   const [localData, setLocalData] = useState(data);
 
   const paddingTop = 20;
+  const points = useMemo(
+    () =>
+      (localData || []).map((dot, index) => ({
+        ...dot,
+        posY: convertUnitToPx(dot.y, gridParams) + paddingTop,
+        posX: step * index + (padding + gridMargin) / 2,
+        labelVisibility: data[index].labelVisibility
+      })),
+    [localData]
+  );
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
@@ -76,11 +86,7 @@ const LineChart = ({
   }, [data]);
 
   const getPolylinePoints = () =>
-    localData
-      .map(
-        (dot, index) => `${step * index + gridMargin / 2 + padding},${convertUnitToPx(dot.y, gridParams) + paddingTop}`
-      )
-      .join(" ");
+    points.map(dot => `${dot.posX},${convertUnitToPx(dot.y, gridParams) + paddingTop}`).join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -138,8 +144,7 @@ const LineChart = ({
   const targetRef = useDisableDragScroll();
 
   return (
-    <svg
-      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
+    <StyledSvg
       width={width + margin.left + margin.right}
       height={height + margin.top + margin.bottom}
       onMouseMove={onMouseMove}
@@ -151,7 +156,7 @@ const LineChart = ({
     >
       <g transform={`translate(${margin.left}, ${margin.top})`}>
         <VerticalLines
-          lines={data}
+          points={points}
           gridParams={gridParams}
           displayGridlines={displayVerticalLines(showGridlines)}
           active={active}
@@ -182,15 +187,14 @@ const LineChart = ({
           activeIndex={activeIndex}
           onPointOver={setActive}
           previewTab={previewTab}
-          circles={localData}
+          points={points}
           view={view}
           onMouseDown={!disableResponse ? onMouseDown : () => {}}
           gridParams={gridParams}
-          correct={correct}
-          paddingTop={paddingTop}
+          evaluation={evaluation}
         />
       </g>
-    </svg>
+    </StyledSvg>
   );
 };
 
@@ -213,9 +217,8 @@ LineChart.propTypes = {
   deleteMode: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
-  correct: PropTypes.array.isRequired,
-  toggleBarDragging: PropTypes.func,
-  margin: PropTypes.object
+  evaluation: PropTypes.object.isRequired,
+  toggleBarDragging: PropTypes.func
 };
 
 LineChart.defaultProps = {
@@ -227,5 +230,11 @@ LineChart.defaultProps = {
 export default withGrid(LineChart);
 
 const StyledPolyline = styled.polyline`
-  stroke: ${props => props.theme.widgets.chart.stockColor};
+  stroke: ${themeColor};
+`;
+
+const StyledSvg = styled.svg`
+  user-select: none;
+  position: relative;
+  z-index: 15;
 `;

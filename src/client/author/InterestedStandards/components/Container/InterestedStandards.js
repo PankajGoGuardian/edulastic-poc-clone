@@ -1,42 +1,37 @@
-import React, { Component } from "react";
+import { CheckboxLabel, EduButton } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import { Col, Icon, Row } from "antd";
+import { get } from "lodash";
 import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-import { roleuser } from "@edulastic/constants";
-
-import { Row, Col, Button, Icon, Checkbox } from "antd";
-import {
-  StyledContent,
-  StyledLayout,
-  SpinContainer,
-  StyledSpin,
-  StyledSaveButton,
-  StyledSubjectTitle,
-  StyledSubjectLine,
-  StyledSubjectCloseButton,
-  StyledSubjectContent,
-  StyledCheckbox,
-  InterestedStandardsDiv,
-  DropdownWrapper
-} from "./styled";
-
+import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import StandardSetModal from "../StandardSetsModal/StandardSetsModal";
-// actions
-import {
-  receiveInterestedStandardsAction,
-  updateInterestedStandardsAction,
-  saveInterestedStandardsAction,
-  deleteStandardAction,
-  updateStandardsPreferencesAction
-} from "../../ducks";
-
-import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
+import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
+// actions
+import {
+  deleteStandardAction,
+  receiveInterestedStandardsAction,
+  saveInterestedStandardsAction,
+  updateInterestedStandardsAction,
+  updateStandardsPreferencesAction
+} from "../../ducks";
+import StandardSetModal from "../StandardSetsModal/StandardSetsModal";
+import {
+  InterestedStandardsDiv,
+  SpinContainer,
+  StyledContent,
+  StyledLayout,
+  StyledSpin,
+  StyledSubjectCloseButton,
+  StyledSubjectContent,
+  StyledSubjectLine,
+  StyledSubjectTitle
+} from "./styled";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Interested Standards" };
@@ -64,8 +59,7 @@ class InterestedStandards extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.loading || prevState.saving || prevState.updating) return null;
-    else
-      return {
+    return {
         dataSource: nextProps.courseList
       };
   }
@@ -84,7 +78,7 @@ class InterestedStandards extends Component {
     const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
     const orgId = isSchoolLevel ? schoolId : userOrgId;
     const orgType = isSchoolLevel ? "institution" : "district";
-    let saveData = {
+    const saveData = {
       orgId,
       orgType,
       showAllStandards,
@@ -162,10 +156,10 @@ class InterestedStandards extends Component {
     const { showAllStandards, includeOtherStandards = false } = interestedStaData;
     let isDisableSaveBtn = true;
     const subjectArray = ["Mathematics", "ELA", "Science", "Social Studies", "Other Subjects"];
-    let selectedStandards = [],
-      standardsList = [];
+    const selectedStandards = [];
+      const standardsList = [];
     if (interestedStaData != null && interestedStaData.hasOwnProperty("curriculums")) {
-      isDisableSaveBtn = interestedStaData.curriculums.length == 0 ? true : false;
+      isDisableSaveBtn = interestedStaData.curriculums.length == 0;
       for (let i = 0; i < subjectArray.length; i++) {
         const filtedSubject = interestedStaData.curriculums.filter(item => item.subject === subjectArray[i]);
         if (filtedSubject.length > 0) {
@@ -214,35 +208,34 @@ class InterestedStandards extends Component {
             )}
             <Row>
               <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
-                <StyledCheckbox onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
+                <CheckboxLabel onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
                   Allow teachers to view and use other standards
-                </StyledCheckbox>
-                <StyledCheckbox
+                </CheckboxLabel>
+                <CheckboxLabel
                   onChange={this.updatePreferences}
                   name="includeOtherStandards"
                   checked={includeOtherStandards}
                 >
                   Make the teacher-selected standards visible to all
-                </StyledCheckbox>
-                <Button
-                  style={{ width: "260px" }}
+                </CheckboxLabel>
+                <EduButton
+                  isGhost
                   type="primary"
                   onClick={this.showMyStandardSetsModal}
-                  shape="round"
-                  ghost
+                  style={{
+                    marginTop: "10px",
+                    width: "260px",
+                    borderRadius: "15px"
+                  }}
                 >
                   Select your standard sets
-                </Button>
+                </EduButton>
               </Col>
-              <Col span={12}>
-                <Col span={8}>
-                  <DropdownWrapper>
-                    <SaSchoolSelect onChange={this.handleSchoolSelect} />
-                  </DropdownWrapper>
-                </Col>
-                <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
+              <Col span={12} style={{ display: "flex", justifyContent: "flex-end" }}>
+                <SaSchoolSelect onChange={this.handleSchoolSelect} />
+                <EduButton style={{ marginleft: "10px" }} type="primary" onClick={this.saveInterestedStandards}>
                   Save
-                </StyledSaveButton>
+                </EduButton>
               </Col>
             </Row>
 

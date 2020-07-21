@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { Button, Select, Checkbox, Pagination, Icon, Menu } from "antd";
-import { StyledTable } from "../../../../common/styled";
+import { Button, Checkbox, Pagination, Icon } from "antd";
 import { mainTextColor, grey } from "@edulastic/colors";
+import { SelectInputStyled } from "@edulastic/common";
+import { StyledTable } from "../../../../common/styled";
 
 export const StyledDropdownBtn = styled(Button)`
   &:hover,
@@ -25,7 +26,7 @@ export const StyledTableContainer = styled.div`
   }
 `;
 
-export const StyledFilterSelect = styled(Select)`
+export const StyledFilterSelect = styled(SelectInputStyled)`
   width: 300px;
   margin-left: 20px;
   &:first-child {

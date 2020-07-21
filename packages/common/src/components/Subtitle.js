@@ -18,7 +18,7 @@ const Subtitle = styled.h3`
   padding: 11px 19px;
   border: 4px;
   width: max-content;
-  margin: ${({ titleMargin }) => titleMargin || "0px"};
+  margin: ${({ margin }) => margin || "0px"};
 `;
 
 export default Subtitle;

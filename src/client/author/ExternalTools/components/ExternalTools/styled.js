@@ -5,10 +5,8 @@ import { ConfirmationModal } from "../../../src/components/common/ConfirmationMo
 
 export const ExternalToolsSearchHeader = styled.div`
   display: flex;
-  padding: 30px;
+  padding: 20px 10px;
   background: white;
-  margin-bottom: 20px;
-  border-radius: 8px;
 `;
 
 export const StyledSearch = styled(Input.Search)`

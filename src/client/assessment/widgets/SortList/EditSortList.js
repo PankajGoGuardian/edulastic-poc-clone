@@ -92,6 +92,7 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
 
   const renderOptions = () => (
     <OptionsList
+      item={item}
       prefix="options"
       readOnly
       canDelete={false}
@@ -107,6 +108,7 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
         correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
+      isCorrectAnsTab={correctTab === 0}
     />
   );
 

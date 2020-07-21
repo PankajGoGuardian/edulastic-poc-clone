@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { find, isEmpty } from "lodash";
 import styled from "styled-components";
-import { white, themeColor, smallDesktopWidth } from "@edulastic/colors";
+import { CorrectAnswersContainer } from "@edulastic/common";
 import AnswerBoxText from "./AnswerBoxText";
 
 const AnswerBox = ({
@@ -19,7 +19,6 @@ const AnswerBox = ({
 }) => {
   const { inputs, maths, dropDowns, mathUnits } = responseIds;
   let validAnswers = [];
-
   mathAnswers.map(answer => {
     const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
     return validAnswers.push({
@@ -120,7 +119,7 @@ const AnswerBox = ({
         const { index } = find(mathUnits, d => d.id === answer.id) || { index: 0 };
         let { unit = "" } = answer.options;
 
-        if (unit.search("f") !== -1 || unit.search(/\s/g) !== -1) {
+        if (unit && unit.search("text{") === -1 && (unit.search("f") !== -1 || unit.search(/\s/g) !== -1)) {
           unit = `\\text{${unit}}`;
         }
         if (answer.value) {
@@ -141,27 +140,35 @@ const AnswerBox = ({
 
   return (
     <>
-      <Wrapper>
-        <Title>Correct answers</Title>
+      <CorrectAnswersContainer
+        minHeight="auto"
+        title="Correct answers"
+        padding="15px 25px 20px"
+        titleMargin="0px 0px 12px"
+      >
         {validAnswers.map((answer, index) => (
           <Answer key={index}>
             <Label>{answer.index + 1}</Label>
             <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
           </Answer>
         ))}
-      </Wrapper>
+      </CorrectAnswersContainer>
 
       {!isEmpty(altAnswers) &&
         altAnswers.map((altAnswer, index) => (
-          <Wrapper>
-            <Title>Alternate answers {index + 1}</Title>
+          <CorrectAnswersContainer
+            minHeight="auto"
+            title={`Alternate answers ${index + 1}`}
+            padding="15px 25px 20px"
+            titleMargin="0px 0px 12px"
+          >
             {altAnswer.map(altAns => (
               <Answer>
                 <Label>{altAns.index + 1}</Label>
                 <AnswerBoxText isMath={altAns.isMath}>{altAns.value}</AnswerBoxText>
               </Answer>
             ))}
-          </Wrapper>
+          </CorrectAnswersContainer>
         ))}
     </>
   );
@@ -189,31 +196,10 @@ AnswerBox.defaultProps = {
 
 export default AnswerBox;
 
-const Wrapper = styled.div`
-  background: #eeeeef;
-  border-radius: 10px;
-  padding: 8px 24px 24px;
-  margin-top: 16px;
-  width: 100%;
-  .ant-tabs-bar {
-    border-bottom: 1px solid #ccc;
-  }
-
-  @media screen and (max-width: ${smallDesktopWidth}) {
-    width: max-content;
-  }
-`;
-
-const Title = styled.div`
-  text-transform: uppercase;
-  font-size: 16px;
-  margin-bottom: 10px;
-  margin-top: 16px;
-`;
-
 const Answer = styled.div`
   display: inline-flex;
   margin-right: 15px;
+  min-height: 32px;
   margin-bottom: 10px;
   border: ${({
     theme: {
@@ -228,14 +214,14 @@ const Answer = styled.div`
 `;
 
 const Label = styled.div`
-  width: 40px;
-  color: ${white};
-  background: ${themeColor};
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  width: 32px;
+  color: ${({ theme }) => theme.answerBox.indexBoxColor};
+  background: ${({ theme }) => theme.answerBox.indexBoxBgColor};
+  border-top-left-radius: ${({ theme }) => theme.answerBox.borderRadius};
+  border-bottom-left-radius: ${({ theme }) => theme.answerBox.borderRadius};
   display: flex;
   align-items: center;
+  align-self: stretch;
   justify-content: center;
   font-weight: 700;
-  padding: 5px 0;
 `;

@@ -116,7 +116,7 @@ const MathFormula = ({
         </ContentArea>
       )}
       {view === PREVIEW && (
-        <Wrapper style={{ height: "100%", overflow: "visible" }}>
+        <Wrapper height="100%" overflow="visible">
           <MathFormulaPreview
             type={previewTab}
             testItem={testItem}

@@ -43,6 +43,7 @@ export const CLEAR_SEARCH_FILTER_STATE = "[addItems] clear search filter state";
 export const UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN = "[addItems] update init search state on login";
 export const RESET_PAGE_STATE_ADD_ITEMS = "[addItems] reset page state";
 export const SHOW_ADD_PASSAGE_ITEM_MODAL = "[addItems] toggle show add passage item modal";
+export const SET_APPROVE_CONFIRMATION_OPEN = "[addItems] set approve confirmation modal open";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -116,6 +117,7 @@ export const updateInitSearchStateAction = payload => ({
 });
 
 export const resetPageStateAction = createAction(RESET_PAGE_STATE_ADD_ITEMS);
+export const setApproveConfirmationOpenAction = createAction(SET_APPROVE_CONFIRMATION_OPEN);
 
 // reducer
 
@@ -149,7 +151,8 @@ const initialState = {
   },
   search: { ...initalSearchState },
   archivedItems: [],
-  needToSetFilter: true
+  needToSetFilter: true,
+  showApproveConfirmation: false
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -280,6 +283,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           return item;
         })
       };
+    case SET_APPROVE_CONFIRMATION_OPEN:
+      return {
+        ...state,
+        showApproveConfirmation: payload
+      };
     default:
       return state;
   }
@@ -392,4 +400,9 @@ export const getPassageConfirmModalStateSelector = createSelector(
 export const getSearchFilterStateSelector = createSelector(
   stateTestItemsSelector,
   state => state.search
+);
+
+export const getShowApproveConfirmationSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.showApproveConfirmation
 );

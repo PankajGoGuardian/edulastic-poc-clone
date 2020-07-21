@@ -105,8 +105,6 @@ export function* receiveTestActivitySaga({ payload }) {
     const students = get(gradebookData, "students", []);
     // the below methods mutates the gradebookData
     classResponse.testItems = classResponse.itemGroups.flatMap(itemGroup => itemGroup.items || []);
-    classResponse.totalItemsCount = classResponse.itemGroups.reduce((prev, curr) => prev + (curr.deliverItemsCount || curr.items.length), 0);
-    const autoselectItemsCount = classResponse.totalItemsCount - classResponse.testItems.length;
     gradebookData.passageData = classResponse.passages;
     gradebookData.testItemsData = classResponse.testItems;
     gradebookData.testItemsDataKeyed = keyBy(classResponse.testItems, "_id");
@@ -122,7 +120,13 @@ export function* receiveTestActivitySaga({ payload }) {
     }));
 
     let entities = [];
-    if (autoselectItemsCount) {
+    const {
+      ITEM_GROUP_DELIVERY_TYPES: { ALL_RANDOM, LIMITED_RANDOM }
+    } = test;
+    const isRandomDelivery = classResponse.itemGroups.some(
+      group => group.deliveryType === ALL_RANDOM || group.deliveryType === LIMITED_RANDOM
+    );
+    if (isRandomDelivery) {
       // students can have different test items so generating student data for each student with its testItems
       const studentsDataWithTestItems = students.map(student => {
         const activity = gradebookData.testActivities.find(activity => activity.userId === student._id);
@@ -139,12 +143,19 @@ export function* receiveTestActivitySaga({ payload }) {
               };
             });
         } else {
-          const dummyItems = [];
-          for (let i = 0; i < autoselectItemsCount; i++) {
-            dummyItems.push({ _id: "", itemLevelScoring: true });
-          }
-          allItems = [...gradebookData.testItemsData, ...dummyItems];
+          classResponse.itemGroups.forEach(group => {
+            if (group.deliveryType === ALL_RANDOM || group.deliveryType === LIMITED_RANDOM) {
+              const dummyItems = [...new Array(group.deliverItemsCount)].map(() => ({
+                _id: "",
+                itemLevelScoring: true
+              }));
+              allItems.push(...dummyItems);
+            } else {
+              allItems.push(...group.items);
+            }
+          });
         }
+
         return {
           activityId: activity?._id || "",
           studentId: student._id,
@@ -732,14 +743,13 @@ export const getCanCloseAssignmentSelector = createSelector(
   getCurrentClassIdSelector,
   getUserRole,
   getAssignmentStatusSelector,
-  (additionalData, currentClass, userRole, status) => (
-      additionalData?.canCloseClass.includes(currentClass) &&
-      status !== "DONE" &&
-      status !== "NOT OPEN" &&
-      !(
-        additionalData?.closePolicy === assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN &&
-        userRole === roleuser.TEACHER
-      )
+  (additionalData, currentClass, userRole, status) =>
+    additionalData?.canCloseClass.includes(currentClass) &&
+    status !== "DONE" &&
+    status !== "NOT OPEN" &&
+    !(
+      additionalData?.closePolicy === assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN &&
+      userRole === roleuser.TEACHER
     )
 );
 
@@ -747,12 +757,11 @@ export const getCanOpenAssignmentSelector = createSelector(
   getAdditionalDataSelector,
   getCurrentClassIdSelector,
   getUserRole,
-  (additionalData, currentClass, userRole) => (
-      additionalData?.canOpenClass.includes(currentClass) &&
-      !(
-        additionalData?.openPolicy === assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&
-        userRole === roleuser.TEACHER
-      )
+  (additionalData, currentClass, userRole) =>
+    additionalData?.canOpenClass.includes(currentClass) &&
+    !(
+      additionalData?.openPolicy === assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&
+      userRole === roleuser.TEACHER
     )
 );
 
@@ -883,13 +892,11 @@ export const getStudentQuestionSelector = createSelector(
       return data.map(x => {
         if (!isNullOrUndefined(egAnswers[x.qid])) {
           return { ...x, userResponse: egAnswers[x.qid] };
-        } 
-          return x;
-        
+        }
+        return x;
       });
-    } 
-      return [];
-    
+    }
+    return [];
   }
 );
 

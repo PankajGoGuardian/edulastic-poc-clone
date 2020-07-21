@@ -90,7 +90,7 @@ const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, tes
               // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
               breadCrumb: [
                 {
-                  title: "REPORTS",
+                  title: "INSIGHTS",
                   to: "/author/reports"
                 },
                 {
@@ -216,8 +216,8 @@ const getColumns = (
             {data}
           </Link>
         ) : (
-          data
-        ),
+            data
+          ),
       sorter: (a, b) => {
         const keyword = compareByMap[compareBy.key];
         return a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase());
@@ -352,7 +352,7 @@ TrendTable.defaultProps = {
   heading: "",
   toolTipContent: () => null,
   isCsvDownloading: false,
-  onCsvConvert: () => {}
+  onCsvConvert: () => { }
 };
 
 export default TrendTable;

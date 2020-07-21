@@ -202,7 +202,7 @@ const StandardsPerformanceTable = ({
             </StyledDropDownContainer>
             <StyledDropDownContainer xs={24} sm={24} md={13} lg={13} xl={8}>
               <ControlDropDown
-                prefix="Analyse by "
+                prefix="Analyze by "
                 data={analyseByData}
                 by={tableFilters.analyseBy}
                 selectCB={bindOnChange("analyseBy", analyseByData)}

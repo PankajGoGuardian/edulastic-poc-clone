@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import produce from "immer";
 import { get } from "lodash";
-import { lightGrey } from "@edulastic/colors";
 import { QuestionContext } from "@edulastic/common";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { RndWrapper, Rnd } from "./styled/RndWrapper";
@@ -90,7 +89,6 @@ const ResponseRnd = props => {
       <Rnd
         style={{
           padding: "2px",
-          border: `1px solid ${lightGrey}`,
           minHeight: `${minHeight}px`
         }}
         isResizable={isResizable}

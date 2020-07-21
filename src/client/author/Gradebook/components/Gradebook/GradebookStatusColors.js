@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 
 // constants
-import { STATUS_LIST } from "../transformers";
+import { STATUS_LIST } from "../../transformers";
 
 const GradebookStatusColors = () => (
   <FlexContainer padding="10px 0" width="600px" justifyContent="space-between" flexWrap="wrap">

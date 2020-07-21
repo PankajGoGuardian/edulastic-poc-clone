@@ -119,10 +119,12 @@ export default class TestReviewTab {
   moveQuestionByIndex = index => {
     this.clickOnMoveTo();
     this.getMoveTo()
+      .next()
       .find("input")
       .clear({ force: true })
       .type(index, { force: true });
     this.getMoveTo()
+      .next()
       .contains("Reorder")
       .click({ force: true });
   };

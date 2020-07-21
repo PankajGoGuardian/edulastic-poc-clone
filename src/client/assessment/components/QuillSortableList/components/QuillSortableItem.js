@@ -40,7 +40,6 @@ const QuillSortableItem = SortableElement(
             placeholder={placeholder}
             toolbarId={`${toolbarId}${indx}`}
             onChange={onChange}
-            style={{ width: "100%" }}
             readOnly={rOnly}
             centerContent={centerContent}
             toolbarSize={toolbarSize}

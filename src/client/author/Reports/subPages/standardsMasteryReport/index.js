@@ -6,6 +6,7 @@ import qs from "qs";
 import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
 import { FlexContainer } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
 
 import StandardsGradebook from "./standardsGradebook";
 import StandardsPerfromance from "./standardsPerformance";
@@ -17,7 +18,7 @@ import navigation from "../../common/static/json/navigation.json";
 
 import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
-import { FilterIcon, ReportContaner, SearchField, FilterLabel } from "../../common/styled";
+import { ReportContaner, SearchField, FilterLabel, FilterButton } from "../../common/styled";
 
 import { getReportsStandardsGradebook } from "./standardsGradebook/ducks";
 import dropDownFormat from "./standardsGradebook/static/json/dropDownFormat.json";
@@ -200,7 +201,9 @@ const StandardsMasteryReportContainer = props => {
         style={showFilter ? { display: "block" } : { display: "none" }}
         extraFilter={extraFilters}
       />
-      <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+      <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+        <IconFilter />
+      </FilterButton>
       <ReportContaner showFilter={showFilter}>
         <Route
           exact

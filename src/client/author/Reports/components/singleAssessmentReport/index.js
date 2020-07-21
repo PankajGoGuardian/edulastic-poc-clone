@@ -19,7 +19,7 @@ const links = [
   },
   {
     key: "peerPerformance",
-    title: "Peer Performance",
+    title: "Sub-Group Performance",
     thumbnail: PeerPerformanceImg,
     description: "Drill down to compare the performance on an assessment by student group, class, or cohort.",
     location: "/author/reports/peer-performance/test/"

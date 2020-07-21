@@ -1,9 +1,10 @@
-import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import React from "react";
+import PropTypes from "prop-types";
+import { Popover } from "antd";
+import styled from "styled-components";
+import { greyThemeLight } from "@edulastic/colors";
 import { DragDrop, MathSpan, measureText } from "@edulastic/common";
 import { response as Dimensions } from "@edulastic/constants";
-import { Popover } from "antd";
-import PropTypes from "prop-types";
-import React from "react";
 import getImageDimensionsHook from "../../../hooks/imageDimensions";
 import { ResponseContainer } from "../styled/ResponseContainer";
 
@@ -103,23 +104,17 @@ const TemplateBox = ({ resprops, id }) => {
     : `${getDataForGroup("value")}_${userAnswers[dropTargetIndex] &&
         userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`;
 
-  const containerStyle = {
-    display: "inline-flex",
-    verticalAlign: "middle",
-    background: greyThemeLighter,
-    minHeight: style.height,
-    padding: style.padding
-  };
-
   return (
-    <DropContainer
-      style={{ ...containerStyle, ...style }}
-      index={dropTargetIndex}
+    <StyledDropContainer
       drop={onDrop}
       showHoverBorder
       borderColor={greyThemeLight}
+      height={boxHeight}
+      minWidth={style.minWidth}
+      maxWidth={style.maxWidth}
+      index={dropTargetIndex}
     >
-      <DragItem data={itemData} style={{ overflow: "hidden" }}>
+      <StyledDragItem data={itemData}>
         <ResponseContainer>
           {showPopover && (
             <Popover placement="bottomLeft" content={getContent(true)}>
@@ -128,8 +123,8 @@ const TemplateBox = ({ resprops, id }) => {
           )}
           {!showPopover && getContent()}
         </ResponseContainer>
-      </DragItem>
-    </DropContainer>
+      </StyledDragItem>
+    </StyledDropContainer>
   );
 };
 
@@ -139,3 +134,18 @@ TemplateBox.propTypes = {
 };
 
 export default TemplateBox;
+
+const StyledDropContainer = styled(DropContainer)`
+  display: inline-flex;
+  padding: 5px;
+  vertical-align: middle;
+  white-space: nowrap;
+  min-height: ${({ height }) => height}px;
+  max-height: ${({ height }) => height}px;
+  min-width: ${({ minWidth }) => minWidth}px;
+  max-width: ${({ maxWidth }) => maxWidth}px;
+`;
+
+const StyledDragItem = styled(DragItem)`
+  overflow: hidden;
+`;

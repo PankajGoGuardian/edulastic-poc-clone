@@ -106,14 +106,14 @@ export const normaliseTableData = (rawData, data) => {
       round(
         (sumBy(classes[studentMetric.groupId], "totalScore") /
           sumBy(classes[studentMetric.groupId], o => (o.progressStatus === 2 ? 0 : o.maxScore))) *
-          100
+        100
       ) || 0;
     let studentScore = 0;
     let assessmentScore = "Absent";
     let proficiencyBand = "Absent";
     if (studentMetric.progressStatus === 1) {
-      studentScore = round((studentMetric.totalScore / studentMetric.maxScore) * 100);
-      assessmentScore = `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`;
+      studentScore = round(((studentMetric.totalScore || 0) / (studentMetric.maxScore || 1)) * 100);
+      assessmentScore = `${(studentMetric.totalScore || 0).toFixed(2)} / ${(studentMetric.maxScore || 1).toFixed(2)}`;
       proficiencyBand = getProficiency(studentMetric, bandInfo);
     }
 
@@ -192,7 +192,7 @@ export const getSorter = (columnType, columnKey) => {
 // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
 const getBreadCrumb = (location, pageTitle) => [
   {
-    title: "REPORTS",
+    title: "INSIGHTS",
     to: "/author/reports"
   },
   {
@@ -221,7 +221,7 @@ const getCellContents = ({ printData, colorKey, ...restProps }) => {
           to={{
             pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
               record.testActivityId
-            }`,
+              }`,
             state: {
               breadCrumb: getBreadCrumb(location, pageTitle)
             }
@@ -297,8 +297,8 @@ export const getColumns = (columns, assessmentName, role, location, pageTitle, t
           {data || anonymousString}
         </Link>
       ) : (
-        data || anonymousString
-      );
+          data || anonymousString
+        );
 
     // column 5 defined assessmentScore
     columnsDraft[5].render = (data, record) => {
@@ -309,7 +309,7 @@ export const getColumns = (columns, assessmentName, role, location, pageTitle, t
           to={{
             pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
               record.testActivityId
-            }`,
+              }`,
             state: {
               breadCrumb: getBreadCrumb(location, pageTitle)
             }

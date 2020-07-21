@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { dashBorderColor, white, themeColor } from "@edulastic/colors";
+import { white, themeColor, lightGrey12 } from "@edulastic/colors";
 
 const CorItem = styled.div`
   display: flex;
@@ -8,10 +8,10 @@ const CorItem = styled.div`
   justify-content: flex-start;
   align-self: stretch;
   align-items: center;
-  min-height: 40px;
+  min-height: 32px;
   border-bottom-right-radius: 4px;
   border-top-right-radius: 4px;
-  border: 1px solid ${dashBorderColor};
+  border: 1px solid ${lightGrey12};
   background: ${white};
   font-weight: 600;
   width: calc(50% - 50px);
@@ -39,7 +39,7 @@ const CorItem = styled.div`
     left: -40px;
     border-bottom-left-radius: 4px;
     border-top-left-radius: 4px;
-    min-height: 40px;
+    min-height: 32px;
     width: 40px;
     top: 0px;
     bottom: 0px;

@@ -141,6 +141,14 @@ export const LastColumn = styled(StyledCol)`
   margin-left: ${({ ml }) => ml || ""};
 `;
 
+export const CaretUp = styled.i`
+  position: absolute;
+  top: -20px;
+  color: ${white};
+  left: 5px;
+  font-size: 30px;
+`;
+
 export const HideLinkLabel = styled(StyledLabel)`
   width: 80px;
   white-space: nowrap;

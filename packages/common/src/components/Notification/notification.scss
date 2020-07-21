@@ -2,15 +2,16 @@
   padding: 16px;
   &.ant-notification-notice {
     background-color: #2f4151;
-    left:50px;
+    left: 50px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
   }
-  .ant-notification-notice-with-icon .ant-notification-notice-message {
+  .ant-notification-notice-with-icon .ant-notification-notice-message,
+  .ant-notification-notice-description {
     color: white;
     font-weight: 600;
   }
   .ant-notification-close-icon {
-   color:white;
-   margin-top:6px;
+    color: white;
+    margin-top: 6px;
   }
 }

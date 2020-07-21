@@ -16,7 +16,6 @@ import ReportsPage from "../../../../framework/student/reportsPage";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 const { MCQ_MULTI } = require("./../../../../../fixtures/questionAuthoring");
-
 const { _ } = Cypress;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applying regrade 'edited item'`, () => {

@@ -88,6 +88,8 @@ const PlayerHeader = ({
                       skipped={skipped}
                       dropdownStyle={dropdownStyle}
                       zoomLevel={zoomLevel}
+                      moveToNext={moveToNext}
+                      utaId={utaId}
                     />
                     <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
                       <ControlBtn.Back

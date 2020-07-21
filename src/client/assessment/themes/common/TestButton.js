@@ -16,15 +16,18 @@ const TestButton = ({ t, checkAnswer, settings, answerChecksUsedForItem, toggleB
         <span>{t("common.test.bookmark")}</span>
       </StyledButton>
     </Tooltip>
-    <Tooltip
-      placement="top"
-      title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : "Check Answer"}
-    >
-      <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
-        <StyledIconCheck />
-        <span> {t("common.test.checkanswer")}</span>
-      </StyledButton>
-    </Tooltip>
+    {settings.maxAnswerChecks > 0 && (
+      <Tooltip
+        placement="top"
+        title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : "Check Answer"}
+      >
+        <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
+          <StyledIconCheck />
+          <span> {t("common.test.checkanswer")}</span>
+        </StyledButton>
+      </Tooltip>
+    )}
+
     {/* {showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handletoggleHints}>

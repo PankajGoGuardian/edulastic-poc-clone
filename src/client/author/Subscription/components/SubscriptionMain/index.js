@@ -173,7 +173,7 @@ const SubscriptionMain = props => {
       <MainContentWrapper padding="30px">
         <CurrentPlanContainer onClick={() => setShowPlans(false)}>
           <Container>
-            <Title padding="0 30px 0 0">Current Plan</Title>
+            <Title padding="0 30px 0 0">Your Current Plan:</Title>
             <Description>{isSubscribed && licenseExpiryDate ? "Premium Version" : "Free Plan"}</Description>
           </Container>
           <PlanStatus>

@@ -8,10 +8,9 @@ import {
   placeholderGray,
   backgrounds,
   smallDesktopWidth,
-  largeDesktopWidth,
-  extraDesktopWidth,
   themeColorLight,
-  red
+  red,
+  themeColorBlue
 } from "@edulastic/colors";
 
 export const CollectionTableContainer = styled.div`
@@ -59,7 +58,8 @@ export const PermissionsButton = styled.span`
   transition: all 0.3s ease-in;
   margin-right: 10px;
   &:hover {
-    background-color: ${themeColor};
+    border: 1px solid ${themeColorBlue};
+    background-color: ${themeColorBlue};
     color: ${white};
     span {
       display: none;
@@ -220,10 +220,8 @@ export const StyledTab = styled(Tabs)`
 
 export const CollectionSearchHeader = styled.div`
   display: flex;
-  padding: 30px;
+  padding: 20px 10px;
   background: white;
-  margin-bottom: 20px;
-  border-radius: 8px;
 `;
 
 export const StatusText = styled.span`

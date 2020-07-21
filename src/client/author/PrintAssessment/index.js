@@ -7,7 +7,7 @@ import queryString from "query-string";
 
 import { withRouter } from "react-router-dom";
 import { testsApi } from "@edulastic/api";
-import { AnswerContext, MathFormulaDisplay } from "@edulastic/common";
+import { AnswerContext, MathFormulaDisplay, PrintActionWrapper, FlexContainer } from "@edulastic/common";
 import { roleuser, test as testConstants } from "@edulastic/constants";
 import { getOrderedQuestionsAndAnswers, formatQuestionLists } from "./utils";
 import QuestionWrapper from "../../assessment/components/QuestionWrapper";
@@ -65,78 +65,80 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
       test?.testContentVisibility === testContentVisibilityOptions.GRADING);
 
   return (
-    <PrintAssessmentContainer className="page" ref={containerRef}>
-      <div style={{ padding: "0 20px" }}>
-        <StyledTitle>
-          <b>
-            <Color>Edu</Color>
-          </b>
-          lastic
-        </StyledTitle>
-        <Row type="flex" className="print-assessment-title-container">
-          <Col>
-            <span> {test.title}</span>
-          </Col>
-        </Row>
-        <span> Created By {test?.createdBy?.name} </span> <br />
-      </div>
-      <hr />
-      {!isContentHidden ? (
-        <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-          {test.questions.map((question, index) => {
-            const questionHeight = question.type == "clozeImageDropDown" ? { minHeight: "500px" } : {};
-            return (
-              <div style={questionHeight}>
-                <QuestionWrapper
-                  view="preview"
-                  type={question.type}
-                  previewTab="clear"
-                  qIndex={index}
-                  data={{ ...question, smallSize: true }}
-                  isPrint
-                  isPrintPreview
-                />
-                <hr />
-              </div>
-            );
-          })}
-          {!!test.answers.length && features.premium && (
-            <StyledAnswerWrapper>
-              <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
-                Answer Key of {test.title}
-              </span>
-              {test.answers.map(answer => (
-                <AnswerContainer>
-                  {answer.qLabel}.
-                  <div className="answer-wrapper">
-                    {answer.answers.map((ans, i) => {
-                      const stringifyContent = Array.isArray(ans) ? ans.join(", ") : ans;
-                      return (
-                        <div style={{ display: "flex" }}>
-                          <MathFormulaDisplay
-                            key={i}
-                            style={{ margin: "0 0 10px 10px", minHeight: "22px" }}
-                            dangerouslySetInnerHTML={{ __html: stringifyContent || "" }}
-                          />
-                          {i !== answer.answers.length - 1 && ";"}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </AnswerContainer>
-              ))}
-            </StyledAnswerWrapper>
-          )}
-        </AnswerContext.Provider>
-      ) : (
-        <div>
-          <b>
-            View of Items is restricted by the admin if content visibility is set to &quot;Always hidden&quot; OR
-            &quot;Hide prior to grading&quot;
-          </b>
-        </div>
-      )}
-    </PrintAssessmentContainer>
+    <>
+      <PrintActionWrapper />
+      <PrintAssessmentContainer className="page" ref={containerRef}>
+        <StyledHeader>
+          <StyledTitle>
+            <b>
+              <Color>Edu</Color>
+            </b>
+            lastic
+          </StyledTitle>
+          <Row type="flex" className="print-assessment-title-container">
+            <Col>
+              <span> {test.title}</span>
+            </Col>
+          </Row>
+          <span> Created By {test?.createdBy?.name} </span> <br />
+        </StyledHeader>
+        <hr />
+        {!isContentHidden ? (
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            {test.questions.map((question, index) => {
+              const questionHeight = question.type == "clozeImageDropDown" ? { minHeight: "500px" } : {};
+              return (
+                <div style={questionHeight}>
+                  <QuestionWrapper
+                    view="preview"
+                    type={question.type}
+                    previewTab="clear"
+                    qIndex={index}
+                    data={{ ...question, smallSize: true }}
+                    isPrint
+                    isPrintPreview
+                  />
+                  <hr />
+                </div>
+              );
+            })}
+            {!!test.answers.length && features.premium && (
+              <StyledAnswerWrapper>
+                <StyledAnswerText>
+                  Answer Key of {test.title}
+                </StyledAnswerText>
+                {test.answers.map(answer => (
+                  <AnswerContainer>
+                    {answer.qLabel}.
+                    <div className="answer-wrapper">
+                      {answer.answers.map((ans, i) => {
+                        const stringifyContent = Array.isArray(ans) ? ans.join(", ") : ans;
+                        return (
+                          <FlexContainer>
+                            <StyledMathFormulaDisplay
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: stringifyContent || "" }}
+                            />
+                            {i !== answer.answers.length - 1 && ";"}
+                          </FlexContainer>
+                        );
+                      })}
+                    </div>
+                  </AnswerContainer>
+                ))}
+              </StyledAnswerWrapper>
+            )}
+          </AnswerContext.Provider>
+        ) : (
+          <div>
+            <b>
+              View of Items is restricted by the admin if content visibility is set to &quot;Always hidden&quot; OR
+              &quot;Hide prior to grading&quot;
+            </b>
+          </div>
+        )}
+      </PrintAssessmentContainer>
+    </>
   );
 };
 
@@ -265,4 +267,19 @@ const AnswerContainer = styled.div`
 const StyledAnswerWrapper = styled.div`
   page-break-before: always;
   padding-top: 20px;
+`;
+
+const StyledHeader = styled.div`
+  padding: 0 20px;
+`;
+
+const StyledMathFormulaDisplay = styled(MathFormulaDisplay)`
+  margin: 0 0 10px 10px;
+  min-height: 22px;
+`;
+
+const StyledAnswerText = styled.span`
+  text-decoration: underline;
+  font-weight: 700;
+  font-size: 18px;
 `;

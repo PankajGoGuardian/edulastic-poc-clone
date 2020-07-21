@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import produce from "immer";
 import PropTypes from "prop-types";

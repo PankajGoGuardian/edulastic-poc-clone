@@ -61,3 +61,10 @@ export const StyledContainer = styled.div`
   margin: 15px 0px;
   border-radius: 10px;
 `;
+
+export const StyledDisplayContainer = styled.div`
+  height: auto;
+  width: 100%;
+  max-width: 100%;
+  overflow: auto;
+`;

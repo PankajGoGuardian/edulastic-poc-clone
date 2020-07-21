@@ -1,7 +1,7 @@
-import { capitalize, groupBy, keyBy, uniq, isEmpty } from "lodash";
+import { capitalize, groupBy, keyBy, countBy, uniq, isEmpty } from "lodash";
 
 // constants
-import { testActivityStatus } from "@edulastic/constants";
+import { test as testConstants, testActivityStatus } from "@edulastic/constants";
 
 export const INITIAL_FILTERS = {
   assessmentIds: [],
@@ -25,31 +25,48 @@ export const PAGE_DETAIL = {
 // testActivityStatus from @edulastic/constants
 export const STATUS_LIST = [
   {
+    idx: 0,
     id: "NOT STARTED",
     name: "NOT STARTED",
-    color: "#E5E5E5"
+    color: "#E5E5E5",
+    fgColor: "#a6a6a6"
   },
   {
+    idx: 1,
     id: "START",
     name: "IN PROGRESS",
-    color: "#BEDEFF"
+    color: "#BEDEFF",
+    fgColor: "#66b3ff"
   },
   {
+    idx: 2,
     id: "SUBMITTED",
     name: "SUBMITTED",
-    color: "#FFE9A8"
+    color: "#FFE9A8",
+    fgColor: "#ffc61a"
   },
   {
+    idx: 3,
     id: "GRADED",
     name: "GRADED",
-    color: "#DEF4E8"
+    color: "#DEF4E8",
+    fgColor: "#79d2a1"
   },
   {
+    idx: 4,
     id: "ABSENT",
     name: "ABSENT",
-    color: "#FDE0E9"
+    color: "#FDE0E9",
+    fgColor: "#f787ab"
   }
 ];
+
+export const TEST_TYPE_COLOR = {
+  [testConstants.type.ASSESSMENT]: "#5EB500",
+  [testConstants.type.COMMON]: "#FF9100",
+  [testConstants.type.PRACTICE]: "#00A8FF",
+  "common assessment": "#FF9100"
+};
 
 export const getFormattedName = (...names) => {
   const nameArr = names.filter(n => n?.trim()).map(n => capitalize(n));
@@ -78,6 +95,7 @@ export const getUniqAssessments = (assessments = []) => {
       id: assessment._id,
       name: testTitle,
       termId: assessment.termId,
+      thumbnail: assessment.thumbnail,
       classIds: uniq(classIds),
       subjects: uniq(subjects),
       grades: uniq(grades),
@@ -103,17 +121,19 @@ const getCuratedTestActivity = taGroup => {
   const laDate = endDate || startDate || 0;
   if (status === testActivityStatus.START) {
     // TODO: check if partial score, can be returned, else query in PRD
-    return { laDate, status: "START" };
+    return { laDate, status: "START", score, maxScore };
   }
   if (status === testActivityStatus.SUBMITTED) {
     return {
       laDate,
       status: graded === "GRADED" ? "GRADED" : "SUBMITTED",
-      percentScore: `${Math.round((100 * score) / maxScore)}%`
+      percentScore: `${Math.round((100 * score) / maxScore)}%`,
+      score,
+      maxScore
     };
   }
   if (status === testActivityStatus.ABSENT) {
-    return { laDate, status: "ABSENT", percentScore: "0%" };
+    return { laDate, status: "ABSENT", percentScore: "0%", score, maxScore };
   }
 };
 
@@ -140,7 +160,7 @@ const getPaginatedData = (curatedData, assessmentsData, pagination) => {
 };
 
 // function to get curated gradebook data
-export const curateGradebookData = (gradebookData, filtersData, pagination, status) => {
+export const curateGradebookData = (gradebookData, filtersData, pagination, status, urlHasStudent) => {
   const { students = [], assignments = [], testActivities = [], assignmentsCount, studentsCount } = gradebookData;
   const { assessments: assessmentsList } = filtersData;
   const mappedAssessmentsById = keyBy(assessmentsList, "_id");
@@ -150,9 +170,10 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
 
   // curate student-class data
   const curatedData = students.map(student => {
-    const { _id: sId, firstName, middleName, lastName, group, assessments = {} } = student;
+    const { _id: sId, firstName, middleName, lastName, group } = student;
     const { _id: classId, name: className } = group;
     let laDate = 0;
+    let assessments = {};
     // get formatted student name
     const studentName = getFormattedName(firstName, middleName, lastName);
     // update assessments for the curated student
@@ -162,22 +183,26 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
       const taCurated = taGroup?.length && getCuratedTestActivity(taGroup);
       if (taCurated) {
         // update test-activity & last-activity date for the assignment-student-class combo
-        if (!status || status === taCurated.status) {
-          assessments[a._id] = { assignmentId: a._id, ...taCurated };
-        }
+        assessments[a._id] = { assignmentId: a._id, testType: a.testType, ...taCurated };
         laDate = Math.max(laDate, taCurated.laDate);
-      } else if (!status || status === "NOT STARTED") {
+      } else {
         // check for not started
         a.class?.forEach(c => {
-          if (c._id === classId && (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))) {
-            assessments[a._id] = { assignmentId: a._id, laDate: 0, status: "NOT STARTED", percentScore: " " };
+          if (c._id === classId && !c.exStudents?.includes(sId) && (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))) {
+            assessments[a._id] = { assignmentId: a._id, testType: a.testType, laDate: 0, status: "NOT STARTED", percentScore: " " };
           }
         });
       }
     });
 
+    // assessments count for all status
+    const assessmentsArr = Object.values(assessments);
+    const countByStatus = countBy(assessmentsArr, a => a.status);
+    // filter out the assignments for the selected status
+    assessments = keyBy(assessmentsArr.filter(a => !status || status === a.status), "assignmentId");
+
     // return updated student data
-    return { _id: sId, studentName, classId, className, laDate, assessments };
+    return { _id: sId, studentName, classId, className, laDate, assessments, countByStatus };
   });
 
   // group assignments by report key and title
@@ -191,24 +216,27 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
     return assignment;
   });
 
-  // re-curate student data for the grouped assignments
-  curatedData.forEach(d => {
-    const assessments = {};
-    Object.entries(d.assessments).forEach(([k, v]) => {
-      // store the latest test activity
-      const prevLaDate = assessments[assignmentsMap[k]]?.laDate;
-      const selectPrev = prevLaDate && prevLaDate > v.laDate;
-      assessments[assignmentsMap[k]] = selectPrev ? assessments[assignmentsMap[k]] : v;
+  if (!urlHasStudent) {
+    // re-curate student data for the grouped assignments
+    curatedData.forEach(d => {
+      const assessments = {};
+      Object.entries(d.assessments).forEach(([k, v]) => {
+        // store the latest test activity
+        const prevLaDate = assessments[assignmentsMap[k]]?.laDate;
+        const selectPrev = prevLaDate && prevLaDate > v.laDate;
+        assessments[assignmentsMap[k]] = selectPrev ? assessments[assignmentsMap[k]] : v;
+      });
+      d.assessments = assessments;
     });
-    d.assessments = assessments;
-  });
+  }
 
   const assessmentsData = assignmentsData.map(a => {
     const name = mappedAssessmentsById[a._id]?.testTitle || a.title;
-    return { id: a._id, name };
+    const thumbnail = mappedAssessmentsById[a._id]?.thumbnail;
+    return { id: a._id, name, class: a.class, thumbnail };
   });
 
-  if (status) {
+  if (status || urlHasStudent) {
     return getPaginatedData(curatedData, assessmentsData, pagination);
   }
 

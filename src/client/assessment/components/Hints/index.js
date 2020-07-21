@@ -117,7 +117,7 @@ const Hints = ({
                       </HintContent>
                       {index + 1 === showCount && showCount < hintCount && (
                         <ShowMoreHint data-cy="more-hint" onClick={showMoreHints}>
-                          + Get Another Hint {`1/${hintCount}`}
+                          + Get Another Hint {`${index + 1}/${hintCount}`}
                         </ShowMoreHint>
                       )}
                     </div>

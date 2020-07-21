@@ -16,7 +16,7 @@ import {
   QuestionContentWrapper
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
+import { lightGrey12, white } from "@edulastic/colors";
 import { calculateWordsCount } from "@edulastic/common/src/helpers";
 import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
@@ -119,7 +119,7 @@ const EssayRichTextPreview = ({
           <QuestionTitleWrapper>
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
-          <div style={{ position: "relative", width: "100%" }}>
+          <EssayRichTextContainer>
             {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
               <FroalaEditorContainer>
                 <FroalaEditor
@@ -165,12 +165,12 @@ const EssayRichTextPreview = ({
             {item.showWordCount &&
               (userAnswer || !isReadOnly) &&
               (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
-                <Toolbar borderRadiusOnlyBottom>
+                <EssayToolbar borderRadiusOnlyBottom>
                   <FlexContainer />
                   <Item style={wordCountStyle}>{displayWordCount}</Item>
-                </Toolbar>
+                </EssayToolbar>
               )}
-          </div>
+          </EssayRichTextContainer>
         </QuestionContentWrapper>
       </FlexContainer>
       <Instructions item={item} />
@@ -250,17 +250,28 @@ const enhance = compose(
 
 export default enhance(EssayRichTextPreview);
 
+const EssayRichTextContainer = styled.div`
+  width: 100%;
+  border-radius: 4px;
+  position: relative;
+  border: 1px solid ${lightGrey12};
+`;
+
 const FroalaEditorContainer = styled.div`
   & * {
     user-select: text !important;
   }
 
   .fr-box.fr-basic .fr-element {
-    font-size: ${props => props.theme.fontSize}px;
+    font-size: ${props => props.theme.fontSize};
   }
-  .fr-toolbar,
+  .fr-toolbar {
+    border-radius: 4px 4px 0 0;
+    background-color: ${white};
+    border-bottom: 1px solid ${lightGrey12};
+  }
   .second-toolbar {
-    background-color: ${props => props.theme.widgets.essayRichText.toolbarBgColor};
+    display: none;
   }
 
   .fr-box .fr-counter,
@@ -268,7 +279,17 @@ const FroalaEditorContainer = styled.div`
     color: ${props => props.theme.widgets.essayRichText.toolbarColor};
   }
 
+  .fr-box.fr-basic .fr-wrapper {
+    background: ${props => props.theme.widgets.essayRichText.textInputBgColor};
+  }
+
   .fr-toolbar .fr-command.fr-btn svg path {
     fill: ${props => props.theme.widgets.essayRichText.toolbarColor};
   }
+`;
+
+const EssayToolbar = styled(Toolbar)`
+  min-height: 40px;
+  background: ${white};
+  border-top: 1px solid ${lightGrey12};
 `;

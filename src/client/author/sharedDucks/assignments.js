@@ -2,7 +2,6 @@ import { createAction } from "redux-starter-kit";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { createSelector } from "reselect";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 
 import { testsApi } from "@edulastic/api";
@@ -40,7 +39,7 @@ export const getToggleDeleteAssignmentModalState = createSelector(
 
 function* deleteAssignmentSaga({ payload }) {
   try {
-    const result = yield call(testsApi.deleteAssignments, payload);
+    const result = yield call(testsApi.deleteAssignments, { testId: payload });
     const { deletedIds } = result;
     if (deletedIds.length) {
       yield put(deleteAssignmentRequestSuccessAction(deletedIds));
@@ -52,7 +51,7 @@ function* deleteAssignmentSaga({ payload }) {
     }
   } catch (error) {
     console.log(error);
-    notification({ messageKey:"failedToDelete" });
+    notification({ messageKey: "failedToDelete" });
   }
   yield put(toggleDeleteAssignmentModalAction(false));
 }

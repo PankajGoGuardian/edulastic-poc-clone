@@ -55,7 +55,7 @@ const DatePolicySelector = ({
             style={{ width: "100%" }}
             size="large"
             disabledDate={disabledStartDate}
-            showTime
+            showTime={{ use12Hours: true }}
             format="YYYY-MM-DD hh:mm:ss a"
             value={moment(startDate)}
             placeholder="Open Date"
@@ -71,7 +71,7 @@ const DatePolicySelector = ({
             style={{ width: "100%" }}
             size="large"
             disabledDate={disabledEndDate}
-            showTime
+            showTime={{ use12Hours: true }}
             format="YYYY-MM-DD hh:mm:ss a"
             value={moment(endDate)}
             placeholder="Close Date"

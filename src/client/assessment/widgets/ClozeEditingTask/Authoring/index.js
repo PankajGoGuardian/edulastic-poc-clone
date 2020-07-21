@@ -38,6 +38,8 @@ const Authoring = ({
     <React.Fragment>
       <TemplateMarkup {...commonProps} />
 
+      <ChoicesForResponses {...commonProps} />
+
       <CorrectAnswers
         {...commonProps}
         key="editingTypeCorrectAnswers"
@@ -47,8 +49,6 @@ const Authoring = ({
         item={itemForPreview}
         stimulus={previewStimulus}
       />
-
-      <ChoicesForResponses {...commonProps} />
 
       {advancedLink}
 

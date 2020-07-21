@@ -82,7 +82,6 @@ const isReport = (assignment, classIds) => {
   const attempts = (assignment.reports && assignment.reports.length) || 0;
   let { endDate } = assignment;
   const { class: groups = [], classId: currentGroup } = assignment;
-
   if (!endDate) {
     endDate = (maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
       .endDate;
@@ -136,6 +135,7 @@ export const getAllAssignmentsSelector = createSelector(
         );
         return allClassess.map(clazz => ({
           ...assignment,
+          maxAttempts: clazz.maxAttempts,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`]?.filter(item => item.status !== 0) || [],
           ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {})

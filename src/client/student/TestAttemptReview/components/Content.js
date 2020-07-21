@@ -42,6 +42,7 @@ class SummaryTest extends Component {
       if (allQids.length === 0) {
         loadTest({ testId, testActivityId, groupId: match.params.groupId });
       }
+      sessionStorage.setItem("testAttemptReviewVistedId", testActivityId);
     } else {
       history.push("/home/assignments");
     }

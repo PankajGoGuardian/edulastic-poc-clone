@@ -90,16 +90,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             {stemNumeration}
           </IndexBox>
         )}
-        <AnswerContent
-          style={{
-            textAlign: "center",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap"
-          }}
-          showIndex={!checkAnswer}
-          dangerouslySetInnerHTML={{ __html: userAnswer || "" }}
-        />
+        <AnswerContent showIndex={!checkAnswer} dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
         {attempt && <CheckMark correct={evaluation[choiceId]} />}
       </AnswerBox>
     </Popover>

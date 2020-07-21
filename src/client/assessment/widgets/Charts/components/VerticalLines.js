@@ -1,49 +1,41 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
 import { Line, Tick, VxText } from "../styled";
-import { getGridVariables } from "../helpers";
 import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 
-const VerticalLines = ({ lines, gridParams, displayAxisLabel, displayGridlines, active }) => {
+const VerticalLines = ({ points, gridParams, displayAxisLabel, displayGridlines, active }) => {
   const { height, margin, showTicks } = gridParams;
-
-  const { padding, step } = getGridVariables(lines, gridParams);
-
-  const getConstantX = index => step * index + margin / 2 + padding;
   const y2 = height - margin / 2;
 
   const labelIsVisible = index =>
-    lines[index] &&
-    ((lines[index].labelVisibility === SHOW_BY_HOVER && active === index) ||
-      (lines[index].labelVisibility === SHOW_ALWAYS || !lines[index].labelVisibility));
+    points[index] &&
+    ((points[index].labelVisibility === SHOW_BY_HOVER && active === index) ||
+      (points[index].labelVisibility === SHOW_ALWAYS || !points[index].labelVisibility));
 
   return (
     <g>
-      {lines.map((dot, index) => {
-        const x = getConstantX(index);
-        return (
-          <Fragment key={`vertical-line-${index}`}>
-            {displayAxisLabel && (
-              <g transform={`translate(${getConstantX(index)},${height})`}>
-                {labelIsVisible(index) && (
-                  <VxText textAnchor="middle" verticalAnchor="start" width={70}>
-                    {dot.x}
-                  </VxText>
-                )}
-              </g>
-            )}
-            {displayGridlines && <Line x1={x} y1={margin} x2={x} y2={y2} strokeWidth={2} />}
-            {showTicks && <Tick x1={x} y1={y2 - 10} x2={x} y2={y2 + 10} strokeWidth={2} />}
-          </Fragment>
-        );
-      })}
+      {points.map((dot, index) => (
+        <Fragment key={`vertical-line-${index}`}>
+          {displayAxisLabel && (
+            <g transform={`translate(${dot.posX},${height})`}>
+              {labelIsVisible(index) && (
+                <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+                  {dot.x}
+                </VxText>
+              )}
+            </g>
+          )}
+          {displayGridlines && <Line x1={dot.posX} y1={margin} x2={dot.posX} y2={y2} strokeWidth={2} />}
+          {showTicks && <Tick x1={dot.posX} y1={y2 - 10} x2={dot.posX} y2={y2 + 10} strokeWidth={2} />}
+        </Fragment>
+      ))}
     </g>
   );
 };
 
 VerticalLines.propTypes = {
-  lines: PropTypes.array.isRequired,
+  points: PropTypes.array.isRequired,
   displayAxisLabel: PropTypes.bool,
   displayGridlines: PropTypes.bool,
   gridParams: PropTypes.shape({

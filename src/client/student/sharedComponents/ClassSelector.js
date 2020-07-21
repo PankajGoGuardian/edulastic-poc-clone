@@ -1,13 +1,12 @@
-import React, { Fragment, useState, useEffect } from "react";
+import { extraDesktopWidthMax, green, largeDesktopWidth, mobileWidthMax, themeColorBlue } from "@edulastic/colors";
+import { IconFilterClass } from "@edulastic/icons";
 import { Select } from "antd";
-import { connect } from "react-redux";
 import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
+import React, { Fragment, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
-import { green, extraDesktopWidthMax, largeDesktopWidth, mobileWidthMax, themeColor } from "@edulastic/colors";
-import { IconFilterClass } from "@edulastic/icons";
-
-import { getCurrentGroup, changeClassAction, changeChildAction } from "../Login/ducks";
+import { changeChildAction, changeClassAction, getCurrentGroup } from "../Login/ducks";
 
 const ClassSelector = ({ t, classList, currentGroup, changeClass, allClasses, showAllClassesOption }) => {
   const [isShown, setShown] = useState(false);
@@ -148,7 +147,7 @@ const AssignmentSelectClass = styled.div`
   .ant-select {
     height: 40px;
     width: 190px;
-    border-color: ${themeColor};
+    border-color: ${themeColorBlue};
 
     @media (min-width: ${extraDesktopWidthMax}) {
       width: 240px;
@@ -162,9 +161,11 @@ const AssignmentSelectClass = styled.div`
 
   .ant-select-selection {
     background-color: ${props => props.theme.headerDropdownBgColor};
-    color: ${props => props.theme.headerDropdownTextColor};
+    color: ${themeColorBlue};
     font-size: ${props => props.theme.classNameFontSize};
-    border-color: ${themeColor};
+    border-color: ${themeColorBlue};
+    box-shadow: none !important;
+    font-weight: 600;
   }
 
   .ant-select-dropdown-menu-item {

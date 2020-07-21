@@ -399,7 +399,8 @@ const TableList = ({
                 assignmentTest,
                 togglePrintModal,
                 canEdit: row.canEdit && !(row.hasAdminAssignments && userRole === roleuser.TEACHER),
-                userClassList
+                userClassList,
+                canUnassign: !(row.hasAdminAssignments && userRole === roleuser.TEACHER)
               })}
               placement="bottomRight"
               trigger={["click"]}

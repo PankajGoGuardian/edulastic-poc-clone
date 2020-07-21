@@ -21,7 +21,6 @@ import {
   PlaylistId,
   StatusRow,
   PlaylistDesc,
-  AlignmentInfo,
   PlaylistCardHeaderRow,
   PlaylistSkinType,
   Grade
@@ -44,30 +43,6 @@ const PlaylistCard = ({
   testItemId
 }) => {
   const grade = first(_source.grades);
-  const { title, alignmentInfo, skin } = _source;
-
-  const isSparkMathSkin = skin === "SPARK";
-  const isPublisherSkin = skin === "PUBLISHER";
-
-  let headerTitle = title;
-  if (alignmentInfo && isSparkMathSkin) {
-    headerTitle += ` - ${alignmentInfo}`;
-  } else if (!isSparkMathSkin && !isPublisherSkin) {
-    headerTitle = "";
-  }
-
-  let skinType = "";
-  if (isSparkMathSkin) {
-    skinType = "SparkMath";
-  } else if (isPublisherSkin) {
-    skinType = (
-      <span>
-        EUREKA
-        <br />
-        MATH
-      </span>
-    );
-  }
 
   return (
     <Container
@@ -77,11 +52,8 @@ const PlaylistCard = ({
       title={
         <Header src={_source.thumbnail} isPlaylist>
           <PlaylistCardHeaderRow>
-            <PlaylistSkinType>{skinType}</PlaylistSkinType>
+            <PlaylistSkinType />
             <Grade>Grade {grade}</Grade>
-          </PlaylistCardHeaderRow>
-          <PlaylistCardHeaderRow>
-            <AlignmentInfo title={headerTitle}>{headerTitle}</AlignmentInfo>
           </PlaylistCardHeaderRow>
           <Stars isPlaylist />
           {collections.find(o => o.name === "Edulastic Certified") &&
@@ -91,10 +63,9 @@ const PlaylistCard = ({
       }
     >
       <TestInfo isPlaylist>
-        <StyledLink data-cy="test-title" title={title}>
-          {title}
+        <StyledLink data-cy="test-title" title={_source.title}>
+          {_source.title}
         </StyledLink>
-        {isSparkMathSkin && alignmentInfo && <AlignmentInfo dark>Alignment: {alignmentInfo}</AlignmentInfo>}
         <PlaylistDesc dangerouslySetInnerHTML={{ __html: _source.description }} />
         <MidRow data-cy="test-standards">
           <Tags show={4} tags={standardsIdentifiers} key="standards" isStandards margin="0px" />

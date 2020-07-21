@@ -240,5 +240,29 @@ export const apiForms = [
         values: ["option1", "option2", "option3", "option4"]
       }
     ]
+  },
+  {
+    id: "enable-desmos",
+    name: "Enable Desmos Calculator for District",
+    endPoint: "subscription/enable-desmos",
+    method: "put",
+    fields: [
+      {
+        name: "districtId",
+        displayName: "District ID",
+        placeholder: "Enter districtId",
+        type: "string",
+        required: true
+      },
+      {
+        key: "enableDisableDesmosRadio",
+        name: "enable",
+        placeholder: "Enable/Disable",
+        type: "radiogroup",
+        values: ["enable", "disable"],
+        defaultValue: "disable",
+        formatter: value => value === "enable"
+      }
+    ]
   }
 ];

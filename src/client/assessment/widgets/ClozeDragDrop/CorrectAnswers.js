@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { Tab, TabContainer, Tabs, FlexContainer, ItemLevelContext, getFormattedAttrId } from "@edulastic/common";
-import _, { cloneDeep } from "lodash";
+import _ from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -38,16 +38,11 @@ class CorrectAnswers extends Component {
 
   updateCorrectValidationAnswers = answers => {
     const { item, setQuestionData } = this.props;
-    const newData = cloneDeep(item);
-    const updatedValidation = {
-      ...item.data,
-      validResponse: {
-        score: item.validation.validResponse.score,
-        value: answers
-      }
-    };
-    newData.validation.validResponse = updatedValidation.validResponse;
-    setQuestionData(newData);
+    setQuestionData(
+      produce(item, draft => {
+        draft.validation.validResponse.value = answers;
+      })
+    );
   };
 
   addAltResponses = () => {

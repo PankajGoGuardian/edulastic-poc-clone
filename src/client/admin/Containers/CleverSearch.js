@@ -27,7 +27,27 @@ const WrappedForm = Form.create({ name: "validate_other" })(
       });
     }
 
-    return <SearchDistrictByIdName handleSubmit={searchData} getFieldDecorator={getFieldDecorator} />;
+    return <SearchDistrictByIdName
+      handleSubmit={searchData}
+      getFieldDecorator={getFieldDecorator}
+      listOfRadioOptions={[
+          {
+            id: "name",
+            label: "District Name",
+            message: "Please enter valid district name"
+          },
+          {
+            id: "id",
+            label: "District Id",
+            message: "Please enter valid District ID"
+          },
+          {
+            id: "cleverid",
+            label: "Clever Id",
+            message: "Please enter valid Clever ID"
+          }
+        ]}
+    />;
   }
 );
 

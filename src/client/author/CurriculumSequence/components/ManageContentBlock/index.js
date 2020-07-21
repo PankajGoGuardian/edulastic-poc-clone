@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { curriculumSequencesApi } from "@edulastic/api";
 import { themeColor, white } from "@edulastic/colors";
-import { FlexContainer,notification } from "@edulastic/common";
+import { FlexContainer, notification } from "@edulastic/common";
 import { test as testsConstants } from "@edulastic/constants";
 import { IconFilter, IconPlus } from "@edulastic/icons";
 import { Dropdown, Empty, Menu, Spin } from "antd";
@@ -76,7 +76,7 @@ const ManageContentBlock = props => {
     setCollectionAction,
     setSourcesAction,
     resetAndFetchTests,
-    searchString,
+    searchStrings,
     setTestSearchAction,
     testsInPlaylist = [],
     selectedTestForPreview = "",
@@ -147,7 +147,7 @@ const ManageContentBlock = props => {
     setShowFilter(x => !x);
   };
 
-  const onSearchChange = e => setTestSearchAction(e.target.value);
+  const onSearchChange = list => setTestSearchAction(list);
 
   const enhanceTextWeight = text => <span style={{ fontWeight: 600 }}>{text}</span>;
 
@@ -173,7 +173,7 @@ const ManageContentBlock = props => {
       const signedRequest = await curriculumSequencesApi.getSignedRequest({ resource });
       submitLTIForm(signedRequest);
     } catch (e) {
-      notification({ messageKey:"failedToLoadResource"});
+      notification({ messageKey: "failedToLoadResource" });
     }
   };
 
@@ -246,9 +246,12 @@ const ManageContentBlock = props => {
             <SearchBoxContainer>
               <SearchBar
                 type="search"
+                mode="tags"
+                tokenSeparators={[","]}
                 placeholder={`Search by ${searchBy}`}
                 onChange={onSearchChange}
-                value={searchString}
+                value={searchStrings}
+                dropdownStyle={{ display: "none" }}
               />
               <SearchIcon color={themeColor} />
             </SearchBoxContainer>
@@ -373,7 +376,7 @@ export default connect(
     tests: state.playlistTestBox?.tests,
     collection: state.playlistTestBox?.collection,
     sources: state.playlistTestBox?.sources,
-    searchString: state.playlistTestBox?.searchString,
+    searchStrings: state.playlistTestBox?.searchString,
     testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
     selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
     externalToolsProviders: state.playlistTestBox?.externalToolsProviders,

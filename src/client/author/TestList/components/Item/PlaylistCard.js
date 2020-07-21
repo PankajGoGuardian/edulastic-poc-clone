@@ -2,7 +2,7 @@ import React from "react";
 import { first } from "lodash";
 import { IconShare, IconUser } from "@edulastic/icons";
 import { cardTitleColor, darkGrey } from "@edulastic/colors";
-import { PremiumLabel } from "@edulastic/common";
+import { PremiumLabel, EduButton } from "@edulastic/common";
 
 import {
   Container,
@@ -23,7 +23,8 @@ import {
   PlaylistDesc,
   PlaylistCardHeaderRow,
   PlaylistSkinType,
-  Grade
+  Grade,
+  ButtonWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
@@ -40,7 +41,10 @@ const PlaylistCard = ({
   usage,
   standardsIdentifiers,
   authorName,
-  testItemId
+  testItemId,
+  allowDuplicate,
+  duplicatePlayList,
+  _id
 }) => {
   const grade = first(_source.grades);
 
@@ -55,6 +59,19 @@ const PlaylistCard = ({
             <PlaylistSkinType />
             <Grade>Grade {grade}</Grade>
           </PlaylistCardHeaderRow>
+    
+          {allowDuplicate && <ButtonWrapper className="showHover">
+            <EduButton
+              height="32px"
+              onClick={(e) => {
+                e.stopPropagation();
+                duplicatePlayList({ _id, title: _source.title });
+              }}
+            >
+              clone
+            </EduButton>
+          </ButtonWrapper>}
+
           <Stars isPlaylist />
           {collections.find(o => o.name === "Edulastic Certified") &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
@@ -79,8 +96,8 @@ const PlaylistCard = ({
               {collections.find(o => o.name === "Edulastic Certified") ? (
                 getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
               ) : (
-                <IconUser color={cardTitleColor} />
-              )}
+                  <IconUser color={cardTitleColor} />
+                )}
               <AuthorName data-cy="test-author-name" title={authorName}>
                 {authorName}
               </AuthorName>
@@ -88,7 +105,7 @@ const PlaylistCard = ({
           </Author>
         )}
         <StatusRow>
-          <TestStatusWrapper status={status || _source?.status} checkUser={false}>
+          <TestStatusWrapper status={status || _source ?.status} checkUser={false}>
             {({ children, ...rest }) => (
               <TestStatus data-cy="test-status" {...rest} view="tile">
                 {children}

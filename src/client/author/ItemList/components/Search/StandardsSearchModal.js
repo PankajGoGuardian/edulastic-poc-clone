@@ -103,7 +103,7 @@ const StandardsSearchModal = ({
     <StyledModal title={title} visible={showModal} onCancel={() => setShowModal(false)} footer={footer} width="80%">
       <Row type="flex" gutter={24}>
         <Col md={8} />
-        <Col md={16} style={{ paddingLeft: "25px" }}>
+        <Col md={16} style={{ paddingLeft: "28px" }}>
           <FlexContainer alignItems="flex-start" justifyContent="flex-start" marginBottom="15px" padding="0px ">
             <CheckboxLabel onChange={toggleSelectAll} checked={isSelectAll} indeterminate={isIndeterminate} />
             <EloText>All {selectedTLOData.identifier} Standards</EloText>

@@ -292,6 +292,13 @@ export const sanitizeForReview = stimulus => {
       elem.replaceWith("[video]");
     }
   });
+
+  jqueryEl.find("a").each(function() {
+    const elem = $(this);
+    const textValue = elem.text();
+    elem.replaceWith(textValue);
+  });
+
   let splitJquery = jqueryEl.html();
 
   if (tagFound) {

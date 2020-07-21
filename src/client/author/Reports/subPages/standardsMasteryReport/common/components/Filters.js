@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { get, isEmpty, keyBy, uniqBy } from "lodash";
 import qs from "qs";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
+import { Select } from "antd";
+import { SelectInputStyled } from "@edulastic/common";
+
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import { MultipleSelect } from "../../../../common/components/widgets/MultipleSelect";
 import { toggleItem } from "../../../../common/util";
@@ -36,6 +38,28 @@ import {
   ApplyFitlerLabel,
   FilterLabel
 } from "../../../../common/styled";
+
+const DropdownFilters = ({ dataCy, onChange, value = "", options = [] }) => (
+  <SelectInputStyled
+    data-cy={dataCy}
+    onChange={onChange}
+    value={`${value}`}
+    optionFilterProp="children"
+    getPopupContainer={triggerNode => triggerNode.parentNode}
+    fontSize="11px"
+    arrowFontSize="11px"
+    height="34px"
+    padding="8px 18px"
+    noBorder
+    style={{ border: "1px solid #e5e5e5" }}
+  >
+    {options.map(data => (
+      <Select.Option key={`${data.key}`} value={`${data.key}`}>
+        {data.title}
+      </Select.Option>
+    ))}
+  </SelectInputStyled>
+);
 
 const StandardsFilters = ({
   filters,
@@ -224,24 +248,24 @@ const StandardsFilters = ({
   const updateSchoolYearDropDownCB = selected => {
     const obj = {
       ...filters,
-      termId: selected.key
+      termId: selected
     };
     setFilters(obj);
 
     const q = {
-      termId: selected.key
+      termId: selected
     };
     getStandardsFiltersRequest(q);
   };
   const updateSubjectDropDownCB = selected => {
     const obj = {
       ...filters,
-      subject: selected.key
+      subject: selected
     };
     setFilters(obj);
 
     const q = {
-      curriculumId: selected.key || undefined,
+      curriculumId: selected || undefined,
       grades: obj.grades
     };
     getStandardsBrowseStandardsRequest(q);
@@ -249,13 +273,13 @@ const StandardsFilters = ({
   const updateGradeDropDownCB = selected => {
     const obj = {
       ...filters,
-      grades: [selected.key]
+      grades: [selected]
     };
     setFilters(obj);
 
     const q = {
       curriculumId: obj.subject || curriculums[0]?.key || undefined,
-      grades: [selected.key]
+      grades: [selected]
     };
     getStandardsBrowseStandardsRequest(q);
   };
@@ -269,7 +293,7 @@ const StandardsFilters = ({
   };
 
   const updateDomainDropDownCB = selected => {
-    if (selected.key === "All") {
+    if (selected === "All") {
       let tempArr = domains.filter((item, index) => index > 0);
       tempArr = tempArr.map(item => item.key);
 
@@ -281,32 +305,11 @@ const StandardsFilters = ({
     } else {
       const obj = {
         ...filters,
-        domainIds: [selected.key].join()
+        domainIds: [selected].join()
       };
       setFilters(obj);
     }
   };
-
-  // IMPORTANT: To be implemented later
-  // const updateClassSectionDropDownCB = selected => {
-  //   let obj = {
-  //     ...filters,
-  //     groupId: selected.key
-  //   };
-  //   setFilters(obj);
-  // };
-
-  // const updateAssessmentTypeDropDownCB = selected => {
-  //   let obj = {
-  //     ...filters,
-  //     assessmentType: selected.key
-  //   };
-  //   setFilters(obj);
-  // };
-
-  // const onTestIdChange = (selected, comData) => {
-  //   setTestId(selected.key);
-  // };
 
   const onSelectTest = test => {
     const items = toggleItem(testIds.map(_test => _test.key), test.key);
@@ -354,26 +357,9 @@ const StandardsFilters = ({
             placeholder="All Assessments"
           />
         </SearchField>
-        {/* // IMPORTANT: To be implemented later */}
-        {/* <SearchField>
-        <FilterLabel>Class Section</FilterLabel>
-        <AutocompleteDropDown
-          prefix="Class Section"
-          by={filters.groupId}
-          selectCB={updateClassSectionDropDownCB}
-          data={dropDownData.classSections}
-        />
-      </SearchField>
-      <SearchField>
-        <FilterLabel>Assessment Type</FilterLabel>
-        <ControlDropDown
-          prefix="Assessment Type"
-          by={filters.assessmentType}
-          selectCB={updateAssessmentTypeDropDownCB}
-          data={filtersDropDownData.assessmentType}
-        />
-      </SearchField> */}
+
         {extraFilter}
+
         <SearchField>
           <FilterLabel>Standard Proficiency</FilterLabel>
           <ControlDropDown
@@ -386,42 +372,32 @@ const StandardsFilters = ({
         </SearchField>
         <SearchField>
           <FilterLabel>Domain</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Domain"
-            by={(domainIdsArray.length <= 1 && domainIdsArray[0]) || domains[0]}
-            selectCB={updateDomainDropDownCB}
-            data={domains}
+          <DropdownFilters
+            value={(domainIdsArray.length <= 1 && domainIdsArray[0]) || domains[0].key}
+            onChange={updateDomainDropDownCB}
+            options={domains}
           />
         </SearchField>
         <SearchField>
           <FilterLabel>Grade</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Grade"
+          <DropdownFilters
             className="custom-1-scrollbar"
-            by={filters.grades[0]}
-            selectCB={updateGradeDropDownCB}
-            data={filtersDropDownData.grades}
+            value={filters.grades[0]}
+            onChange={updateGradeDropDownCB}
+            options={filtersDropDownData.grades}
           />
         </SearchField>
         <SearchField>
           <FilterLabel>Subject</FilterLabel>
-          <ControlDropDown
-            by={filters.subject}
-            selectCB={updateSubjectDropDownCB}
-            data={curriculums}
-            prefix="Subject"
-            showPrefixOnSelected={false}
+          <DropdownFilters
+            value={filters.subject || curriculums[0].key}
+            onChange={updateSubjectDropDownCB}
+            options={curriculums}
           />
         </SearchField>
         <SearchField>
           <FilterLabel>School Year</FilterLabel>
-          <ControlDropDown
-            by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
-            data={schoolYear}
-            prefix="School Year"
-            showPrefixOnSelected={false}
-          />
+          <DropdownFilters value={filters.termId} onChange={updateSchoolYearDropDownCB} options={schoolYear} />
         </SearchField>
       </PerfectScrollbar>
     </StyledFilterWrapper>

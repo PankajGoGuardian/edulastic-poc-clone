@@ -212,6 +212,7 @@ export const SelectInputStyled = styled(Select)`
       &.ant-select-selection--multiple {
         padding-right: 25px;
         .ant-select-arrow {
+          font-size: ${props => props.arrowFontSize || "14px"};
           position: absolute;
           top: 20px;
         }
@@ -265,7 +266,7 @@ export const SelectInputStyled = styled(Select)`
         }
       }
       .ant-select-arrow-icon {
-        font-size: 14px;
+        font-size: ${props => props.arrowFontSize || "14px"};
         svg {
           fill: ${themeColor};
         }

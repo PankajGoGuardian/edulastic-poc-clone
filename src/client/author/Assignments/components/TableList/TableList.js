@@ -453,12 +453,17 @@ const TableList = ({
   if (loading) {
     return <Spin size="large" />;
   }
+
+  const NoDataMessage = (
+    <>
+      <p>There are no assignments found for the filter options selected.</p>
+      <p>Something Wrong? Check the filters including the school year selected.</p>
+    </>
+  );
+
   if (data.length < 1) {
     return (
-      <NoDataNotification
-        heading="Assignments not available"
-        description="There are no assignments found for this filter."
-      />
+      <NoDataNotification style={{ width: "auto" }} heading="Assignments not available" description={NoDataMessage} />
     );
   }
 

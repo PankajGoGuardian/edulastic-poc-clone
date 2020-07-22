@@ -424,7 +424,7 @@ class App extends Component {
                 render={() => <AssessmentPlayer defaultAP={false} />}
               />
               <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
-              <Route path="/public/test/:id" render={() => <TestDemoPlayer isPublic />} />
+              <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
               <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
               <Route exact path="/fwd" render={() => <V1Redirect />} />
               <Route path="/inviteTeacher" render={() => <Invite />} />

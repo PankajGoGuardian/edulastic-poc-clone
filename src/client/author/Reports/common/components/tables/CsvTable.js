@@ -54,7 +54,7 @@ const CsvTable = ({
   }, [isCsvDownloading]);
 
   return (
-    <StyledTableWrapper ref={childrenRef} id="student_reports_table">
+    <StyledTableWrapper ref={childrenRef}>
       <Component {...restProps} dataSource={dataSource} pagination={_pagination} columns={_columns} />
     </StyledTableWrapper>
   );
@@ -62,9 +62,6 @@ const CsvTable = ({
 
 const StyledTableWrapper = styled.div`
   @media print {
-    .custom-table-tooltip {
-      display: none;
-    }
     colgroup {
       display: none;
     }

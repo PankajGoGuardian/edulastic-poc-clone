@@ -5,13 +5,11 @@ import { black } from "@edulastic/colors";
 
 const CustomTableTooltip = props => {
   const { className, overlayClassName = "", getCellContents, columnKey, ...attrs } = props;
-  const tableContainer = document.getElementById("student_reports_table");
 
   return (
     <Tooltip
       {...attrs}
       overlayClassName={`custom-table-tooltip ${overlayClassName} ${className}`}
-      getPopupContainer={() => tableContainer}
     >
       {getCellContents(props)}
     </Tooltip>

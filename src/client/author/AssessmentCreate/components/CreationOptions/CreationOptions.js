@@ -10,17 +10,15 @@ import FlexWrapper from "../../../AssignmentCreate/common/FlexWrapper";
 import OptionQti from "../OptionQTI/OptionQTI";
 import { QTI_DISTRICTS } from "../../../../config";
 
-const CreationOptions = ({ onUploadPDF, isShowQTI }) => {
-  return (
-    <BodyWrapper>
-      <FlexWrapper marginBottom="0px">
-        <OptionScratch />
-        <OptionPDF onClick={onUploadPDF} />
-        {isShowQTI && <OptionQti />}
-      </FlexWrapper>
-    </BodyWrapper>
-  );
-};
+const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
+  <BodyWrapper>
+    <FlexWrapper marginBottom="0px">
+      <OptionScratch />
+      <OptionPDF onClick={onUploadPDF} />
+      {isShowQTI && <OptionQti />}
+    </FlexWrapper>
+  </BodyWrapper>
+);
 
 CreationOptions.propTypes = {
   onUploadPDF: PropTypes.func.isRequired
@@ -29,7 +27,7 @@ CreationOptions.propTypes = {
 const enhance = compose(
   withRouter,
   connect(state => ({
-    isShowQTI: QTI_DISTRICTS.includes(state?.user?.user?.districtId)
+    isShowQTI: QTI_DISTRICTS.includes(state?.user?.user?.districtIds[0])
   }))
 );
 

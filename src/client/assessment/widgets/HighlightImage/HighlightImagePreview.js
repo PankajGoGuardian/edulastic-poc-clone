@@ -48,13 +48,12 @@ const HighlightImagePreview = ({
   const showToolbar = get(scratchpadProps, "showToolbar", false);
 
   const renderImage = () => (
-    <div
-      style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}
-    >
-      {scratchpadProps
-        ? <Scratchpad {...scratchpadProps} hideTools />
-        : showDrawing && <Scratchpad clearClicked={clearClicked} hideTools />
-      }
+    <div style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}>
+      {scratchpadProps ? (
+        <Scratchpad {...scratchpadProps} hideTools disableResize />
+      ) : (
+        showDrawing && <Scratchpad clearClicked={clearClicked} hideTools disableResize />
+      )}
       <img src={file || CDN_IMAGE_PATH || DEFAULT_IMAGE} alt={altText} style={{ width, height }} draggable="false" />
     </div>
   );

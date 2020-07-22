@@ -9,7 +9,7 @@ const FillColor = ({ fillColor = "", onChangeOption }) => {
   };
 
   return (
-    <FlexContainer id="fill-color" marginLeft="14px">
+    <FlexContainer id="fill-color" marginLeft="14px" alignItems="center">
       <Sprite pos={-732} />
       <ColorPicker color={fillColor} onChangeColor={onChangeColorHandler} />
     </FlexContainer>

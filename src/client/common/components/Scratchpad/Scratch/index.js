@@ -27,6 +27,8 @@ const lineTypes = [
   drawTools.DRAW_CURVE_LINE
 ];
 
+const textTypes = [drawTools.DRAW_MATH, drawTools.DRAW_TEXT];
+
 const Scratchpad = ({
   activeMode,
   deleteMode,
@@ -45,6 +47,7 @@ const Scratchpad = ({
   saveData,
   data,
   readOnly,
+  disableResize,
   hideTools,
   clearClicked // this is from highlight image,
 }) => {
@@ -63,11 +66,13 @@ const Scratchpad = ({
   const scrollContainerWidth = getScrollElement()?.scrollWidth;
 
   useEffect(() => {
-    const zwibblerHeight = scrollContainerHeight ? `${scrollContainerHeight}px` : "100%";
-    if (zwibblerContainer.current && zwibblerHeight) {
-      zwibblerContainer.current.style.height = zwibblerHeight;
-      if (zwibbler) {
-        zwibbler.resize();
+    if (!disableResize) {
+      const zwibblerHeight = scrollContainerHeight ? `${scrollContainerHeight}px` : "100%";
+      if (zwibblerContainer.current && zwibblerHeight) {
+        zwibblerContainer.current.style.height = zwibblerHeight;
+        if (zwibbler) {
+          zwibbler.resize();
+        }
       }
     }
   }, [scrollContainerHeight, scrollContainerWidth]);
@@ -125,7 +130,7 @@ const Scratchpad = ({
 
       switch (activeMode) {
         case drawTools.FREE_DRAW:
-          zwibbler.useBrushTool(options);
+          zwibbler.useBrushTool({ lineWidth, strokeStyle: lineColor });
           break;
         case drawTools.DRAW_SIMPLE_LINE:
           zwibbler.useLineTool(options, { singleLine: true });
@@ -184,7 +189,7 @@ const Scratchpad = ({
   }, [lineWidth, lineColor, fillColor, fontFamily, fontSize]);
 
   useEffect(() => {
-    if (zwibbler) {
+    if (zwibbler && textTypes.includes(activeMode)) {
       zwibbler.setToolProperty("fillStyle", fontColor);
     }
   }, [fontColor]);
@@ -352,12 +357,14 @@ Scratchpad.propTypes = {
   saveData: PropTypes.func,
   data: PropTypes.string,
   hideTools: PropTypes.bool,
-  readOnly: PropTypes.bool
+  readOnly: PropTypes.bool,
+  disableResize: PropTypes.bool
 };
 
 Scratchpad.defaultProps = {
   saveData: () => null,
   readOnly: false,
+  disableResize: false,
   hideTools: false,
   data: ""
 };

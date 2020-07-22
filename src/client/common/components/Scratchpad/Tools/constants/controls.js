@@ -14,7 +14,7 @@ export const leftControls = [
 
 export const midControls = [
   { mode: drawTools.DRAW_MEASURE_TOOL, label: "Measure Tool", pos: -342 },
-  { mode: drawTools.COMMENT, label: "Show teacher comments", pos: -950 },
+  // { mode: drawTools.COMMENT, label: "Show teacher comments", pos: -950 },
   { mode: drawTools.EDITING_TOOL, label: "Editing tools", pos: -266 }
 ];
 

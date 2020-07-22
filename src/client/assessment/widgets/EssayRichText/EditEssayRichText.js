@@ -72,6 +72,7 @@ const EditEssayRichText = ({
         item={item}
       >
         <WordLimitAndCount
+          data-cy="setShowWordLimit"
           title={item?.title}
           withOutTopMargin
           onChange={handleItemChangeChange}
@@ -86,6 +87,7 @@ const EditEssayRichText = ({
         <Row gutter={24}>
           <Col md={12}>
             <CheckboxLabel
+              data-cy="showWordCount"
               defaultChecked={item.showWordCount}
               onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
             >
@@ -94,6 +96,7 @@ const EditEssayRichText = ({
           </Col>
           <Col md={12}>
             <BrowserSpellcheckOption
+              data-cy="browserSpellCheckOption"
               onChange={val => handleItemChangeChange("spellcheck", val)}
               checked={!!item.spellcheck}
             />

@@ -301,7 +301,7 @@ class Scoring extends Component {
         <Row gutter={24} mb="0">
           <Col md={12}>
             <CheckboxLabel
-              data-cy=""
+              data-cy="isScoringInstructionsEnabled"
               checked={questionData?.isScoringInstructionsEnabled}
               onChange={e => handleChangeInstructions("isScoringInstructionsEnabled", e.target.checked)}
               size="large"
@@ -315,6 +315,7 @@ class Scoring extends Component {
             <Col md={24} lg={24} xs={24}>
               <WidgetFRInput fontSize={theme?.fontSize}>
                 <QuestionTextArea
+                  data-cy="scoringInstructions"
                   border="border"
                   toolbarSize="SM"
                   toolbarId="scoringInstructions"
@@ -331,6 +332,7 @@ class Scoring extends Component {
 
         {showGradingRubricModal && (
           <GradingRubricModal
+            data-cy="GradingRubricModal"
             visible={showGradingRubricModal}
             actionType={rubricActionType}
             toggleModal={() => {

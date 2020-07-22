@@ -1,4 +1,4 @@
-/// <reference types="Cypress"/>
+// / <reference types="Cypress"/>
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import EssayPlainTextPage from "../../../../framework/author/itemList/questionType/writtenAndSpoken/essayPlainTextPage";
 import FileHelper from "../../../../framework/util/fileHelper";
@@ -7,7 +7,7 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with plain text" type question`, () => {
   const queData = {
     group: "Writing",
-    queType: "Essay with plain text",
+    queType: "Essay with Plain Text",
     queText: "Describe yourself in one sentence?",
     extlink: "www.testdomain.com",
     testtext: "testtext",
@@ -89,14 +89,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
 
       // typing 5 words
       const words = [1, 2, 3, 4, 5];
-      var i;
+      let i;
       for (i in words) {
         question
           .getTextEditor()
           .type(queData.testtext)
           .type(" ");
 
-        question.getWordCount().should("have.text", words[i] + " Words");
+        question.getWordCount().should("have.text", `${words[i]  } Words`);
       }
 
       // typing overlimit
@@ -104,9 +104,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
 
       // validate
       question.getTextEditor().should("have.css", "background-color", "rgb(255, 255, 255)");
-      //question.getTextEditor().should("have.css", "background-color", "rgb(251, 223, 231)");
+      // question.getTextEditor().should("have.css", "background-color", "rgb(251, 223, 231)");
       question.getWordCount().should("have.text", "6 Words");
-      //question.getWordCount().should("have.text", "6 / 5 Word limit");
+      // question.getWordCount().should("have.text", "6 / 5 Word limit");
     });
   });
 });

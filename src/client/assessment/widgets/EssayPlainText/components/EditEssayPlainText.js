@@ -68,6 +68,7 @@ const EditEssayPlainText = ({
           item={item}
         >
           <WordLimitAndCount
+            data-cy="setShowWordLimit"
             onChange={handleItemChangeChange}
             selectValue={item.showWordLimit}
             inputValue={item.maxWord}
@@ -80,6 +81,7 @@ const EditEssayPlainText = ({
           <Row gutter={24}>
             <Col md={12}>
               <CheckboxLabel
+                data-cy="showWordCount"
                 defaultChecked={item.showWordCount}
                 onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
                 style={{ marginBottom: "1rem" }}
@@ -89,6 +91,7 @@ const EditEssayPlainText = ({
             </Col>
             <Col md={12}>
               <BrowserSpellcheckOption
+                data-cy="browserSpellCheckOption"
                 onChange={checked => handleItemChangeChange("spellcheck", checked)}
                 checked={!!item.spellcheck}
               />

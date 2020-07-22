@@ -1,54 +1,49 @@
-/// <reference types="Cypress"/>
+// / <reference types="Cypress"/>
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
 
 class EssayShortTextPage {
   constructor() {
     this.editToolBar = new EditToolBar();
-
     this.header = new Header();
   }
 
-  // question page
-  getQuestionEditor() {
-    return cy.get(".fr-element").eq(0);
-  }
+  // getQuestionEditor = () => cy.get(".fr-element").eq(0); Can be removed if below line works fine
+  getQuestionEditor = () => cy.get('[data-cy="compose-question-quill-component"]');
 
-  getPoints() {
-    return cy.get('[data-cy="points"]').should("exist");
-  }
+  // scoring block -> move to common utitly
+  getScoreInput = () => cy.get('[data-cy="maxscore"]');
 
-  selectAllowType(option) {
-    //cy.get('.ant-select-selection')
-    cy.get(".ant-select-selection-selected-value");
-    cy.contains("Exact Match").click();
+  getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]');
 
-    cy.contains(option).click();
+  getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]');
 
-    cy.get(".ant-select-selection-selected-value");
-    cy.contains("Any text containing").should("have.text", option);
-  }
+  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]');
 
-  getCorrectValue() {
-    return cy
-      .get(".ant-input")
-      .eq(1)
-      .should("exist");
-  }
+  getShowWordCount = () => cy.get('[data-cy="showWordCount"]');
+
+  getBrowserSpellCheckOption = () => cy.get('[data-cy="browserSpellCheckOption"]');
+
+  // Display block
+  getSpecialCharactersOption = () => cy.get('[data-cy="specialCharactersOption"]');
+
+  getCharactersToDisplayOption = () => cy.get('[data-cy="charactersToDisplayOption"]');
+
+  getPlaceholderOption = () => cy.get('[data-cy="placeholderOption"]');
+
+  getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
+
 
   // on preview
-  getTextEditor() {
-    //  return cy.get('.ant-input')
-    return cy.get(".ant-input-lg").should("be.visible");
-  }
+  // ACTION STARTS
 
-  ansHighLightAsRight = rgb => {
-    this.getTextEditor().should("have.css", "background-color", rgb);
-  };
+  clcikOnCopy = () => this.getCopy().click();
 
-  ansHighLightAsWrong = rgb => {
-    this.getTextEditor().should("have.css", "background-color", rgb);
-  };
+  clickOnpaste = () => this.getPaste().click();
+
+  clickOnCut = () => this.getCut().click();
+
+// ACTION ENDS
 }
 
 export default EssayShortTextPage;

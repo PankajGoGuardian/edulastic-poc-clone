@@ -8,6 +8,7 @@ const SortableList = SortableContainer(({ items, handleActiveChange, validList }
   <QlFormats>
     {items.map((value, index) => (
       <SortableItem
+        data-cy={`QuestionEssayRichEditFormatOption${value.value}-${value.id}`}
         item={value}
         i={index}
         index={index}

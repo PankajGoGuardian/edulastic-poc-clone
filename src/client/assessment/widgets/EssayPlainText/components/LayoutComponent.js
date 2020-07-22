@@ -72,6 +72,7 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <SpecialCharactersOption
+                data-cy="specialCharactersOption"
                 onChange={checked => {
                   if (checked) {
                     handleItemChangeChange("characterMap", []);
@@ -88,6 +89,7 @@ class LayoutComponent extends Component {
             <Row gutter={24}>
               <Col md={12}>
                 <CharactersToDisplayOption
+                  data-cy="charactersToDisplayOption"
                   onChange={val =>
                     handleItemChangeChange(
                       "characterMap",
@@ -103,12 +105,14 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <MinHeightOption
+                data-cy="minHeightOption"
                 onChange={val => handleUIStyleChange("minHeight", +val)}
                 value={get(item, "uiStyle.minHeight", 0)}
               />
             </Col>
             <Col md={12}>
               <MaxHeightOption
+                data-cy="maxHeightOption"
                 onChange={val => handleUIStyleChange("max_height", +val)}
                 value={get(item, "uiStyle.max_height", 0)}
               />
@@ -118,12 +122,14 @@ class LayoutComponent extends Component {
           <Row gutter={24}>
             <Col md={12}>
               <PlaceholderOption
+                data-cy="placeholderOption"
                 onChange={val => handleItemChangeChange("placeholder", val)}
                 value={item.placeholder}
               />
             </Col>
             <Col md={12}>
               <FontSizeOption
+                data-cy="fontSizeOption"
                 onChange={val => handleUIStyleChange("fontsize", val)}
                 value={get(item, "uiStyle.fontsize", "normal")}
               />

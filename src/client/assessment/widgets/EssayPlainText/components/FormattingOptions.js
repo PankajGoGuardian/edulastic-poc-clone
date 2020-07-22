@@ -36,6 +36,7 @@ class FormattingOptions extends Component {
         <Row gutter={24}>
           <Col span={6}>
             <CheckboxLabel
+              data-cy="questionEssayPlainEditCopy"
               defaultChecked={item.showCopy}
               onChange={e => handleItemChangeChange("showCopy", e.target.checked)}
             >
@@ -44,6 +45,7 @@ class FormattingOptions extends Component {
           </Col>
           <Col span={6}>
             <CheckboxLabel
+              data-cy="questionEssayPlainEditCut"
               defaultChecked={item.showCut}
               onChange={e => handleItemChangeChange("showCut", e.target.checked)}
             >
@@ -52,6 +54,7 @@ class FormattingOptions extends Component {
           </Col>
           <Col span={6}>
             <CheckboxLabel
+              data-cy="questionEssayPlainEditPaste"
               defaultChecked={item.showPaste}
               onChange={e => handleItemChangeChange("showPaste", e.target.checked)}
             >
@@ -63,6 +66,7 @@ class FormattingOptions extends Component {
     );
   }
 }
+
 
 FormattingOptions.propTypes = {
   item: PropTypes.object.isRequired,

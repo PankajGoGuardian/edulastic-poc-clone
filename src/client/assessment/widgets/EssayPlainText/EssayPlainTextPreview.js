@@ -169,14 +169,21 @@ const EssayPlainTextPreview = ({
               <EssayToolbar reviewTab={reviewTab} borderRadiusOnlyTop>
                 <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
                   {item.showCopy && (
-                    <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>
+                    <ToolbarItem data-cy="questionPlainEssayAuthorPreviewToolCopy" onClick={handleAction(COPY)}>
+                      {t("component.essayText.copy")}
+                    </ToolbarItem>
                   )}
                   {item.showCut && (
-                    <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>
+                    <ToolbarItem data-cy="questionPlainEssayAuthorPreviewToolCut" onClick={handleAction(CUT)}>
+                      {t("component.essayText.cut")}
+                    </ToolbarItem>
                   )}
                   {item.showPaste && (
-                    <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>
+                    <ToolbarItem data-cy="questionPlainEssayAuthorPreviewToolPaste" onClick={handleAction(PASTE)}>
+                      {t("component.essayText.paste")}
+                    </ToolbarItem>
                   )}
+
                   {Array.isArray(item.characterMap) && (
                     <Character
                       onSelect={char => {
@@ -224,7 +231,7 @@ const EssayPlainTextPreview = ({
             )}
 
             {!reviewTab && item.showWordCount && (
-              <EssayToolbar borderRadiusOnlyBottom>
+              <EssayToolbar data-cy="questionPlainEssayAuthorPreviewWordCount" borderRadiusOnlyBottom>
                 <FlexContainer alignItems="stretch" justifyContent="space-between" />
 
                 <Item style={wordCountStyle}>{displayWordCount}</Item>

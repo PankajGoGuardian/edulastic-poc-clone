@@ -30,6 +30,8 @@ import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+import sparkImg from "./assets/spark-math.png";
+import eurekaImg from "./assets/eureka-math.png";
 
 const PlaylistCard = ({
   _source,
@@ -47,30 +49,43 @@ const PlaylistCard = ({
   _id
 }) => {
   const grade = first(_source.grades);
+  const { skin } = _source;
+
+  let { thumbnail } = _source;
+  const isSparkMathSkin = skin === "SPARK";
+  const isPublisherSkin = skin === "PUBLISHER";
+  if (isSparkMathSkin) {
+    thumbnail = sparkImg;
+  }
+  if (isPublisherSkin) {
+    thumbnail = eurekaImg;
+  }
 
   return (
     <Container
       isPlaylist
-      src={_source.thumbnail}
+      src={thumbnail}
       onClick={moveToItem}
       title={
-        <Header src={_source.thumbnail} isPlaylist>
+        <Header src={thumbnail} isPlaylist>
           <PlaylistCardHeaderRow>
             <PlaylistSkinType />
             <Grade>Grade {grade}</Grade>
           </PlaylistCardHeaderRow>
-    
-          {allowDuplicate && <ButtonWrapper className="showHover">
-            <EduButton
-              height="32px"
-              onClick={(e) => {
-                e.stopPropagation();
-                duplicatePlayList({ _id, title: _source.title });
-              }}
-            >
-              clone
-            </EduButton>
-          </ButtonWrapper>}
+
+          {allowDuplicate && (
+            <ButtonWrapper className="showHover">
+              <EduButton
+                height="32px"
+                onClick={e => {
+                  e.stopPropagation();
+                  duplicatePlayList({ _id, title: _source.title });
+                }}
+              >
+                clone
+              </EduButton>
+            </ButtonWrapper>
+          )}
 
           <Stars isPlaylist />
           {collections.find(o => o.name === "Edulastic Certified") &&
@@ -96,8 +111,8 @@ const PlaylistCard = ({
               {collections.find(o => o.name === "Edulastic Certified") ? (
                 getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
               ) : (
-                  <IconUser color={cardTitleColor} />
-                )}
+                <IconUser color={cardTitleColor} />
+              )}
               <AuthorName data-cy="test-author-name" title={authorName}>
                 {authorName}
               </AuthorName>
@@ -105,7 +120,7 @@ const PlaylistCard = ({
           </Author>
         )}
         <StatusRow>
-          <TestStatusWrapper status={status || _source ?.status} checkUser={false}>
+          <TestStatusWrapper status={status || _source?.status} checkUser={false}>
             {({ children, ...rest }) => (
               <TestStatus data-cy="test-status" {...rest} view="tile">
                 {children}

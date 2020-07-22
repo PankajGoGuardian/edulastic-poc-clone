@@ -68,7 +68,7 @@ const Gradebook = ({
 
   const pagination = filters.status || urlHasStudent ? pseudoPageDetail : pageDetail;
   const curatedFiltersData = curateFiltersData(filtersData, filters);
-  const { curatedData, assessmentsData, studentsCount, assignmentsCount } = curateGradebookData(
+  const { curatedData, assessmentsData, studentsCount, assignmentsCount, countByStatus } = curateGradebookData(
     gradebookData,
     filtersData,
     pagination,
@@ -187,7 +187,7 @@ const Gradebook = ({
             <ArrowFilter
               data={curatedFiltersData?.statusList?.map(s => ({
                 ...s,
-                count: curatedData?.[0]?.countByStatus[s.id] || 0
+                count: countByStatus?.[s.id] || 0
               }))}
               selected={filters.status}
               onClick={selected => setFilters({ ...filters, status: selected })}

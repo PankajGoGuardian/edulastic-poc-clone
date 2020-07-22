@@ -70,11 +70,11 @@ function* fetchStudentPerformanceSaga({ payload }) {
     const newPayload = {
       studentId,
       status,
-      termId,
       ...pageDetail
     };
     if (!studentId) {
       Object.assign(newPayload, {
+        termId,
         assessmentIds: assessmentIds.join(","),
         classIds: classIds.join(","),
         grades: grades.join(","),

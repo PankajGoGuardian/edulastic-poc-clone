@@ -21,7 +21,8 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
   const assessmentsData = dataSource.map(a => ({
     ...a,
     endDate: a.class?.[0]?.endDate,
-    ...studentAssessments[a.id]
+    ...studentAssessments[a.id],
+    archived: studentAssessments[a.id]?.archived || []
   }));
 
   const columns = [
@@ -59,7 +60,18 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
     {
       title: "Score",
       align: "center",
-      render: (_, row) => row.maxScore ? `${row.score || 0}/${row.maxScore || 1}` : "-",
+      render: (_, row) => (
+        <>
+          <div>
+            {row.maxScore ? `${row.score || 0}/${row.maxScore || 1}` : "-"}
+          </div>
+          {row.archived.map(ta => (
+            <div style={{ paddingTop: "5px" }}>
+              {ta.maxScore ? `${ta.score || 0}/${ta.maxScore || 1}` : "-"}
+            </div>
+          ))}
+        </>
+      ),
       sorter: (a, b) => {
         const aScore = a.score || 0;
         const bScore = b.score || 0;
@@ -72,7 +84,18 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
       title: "Percentage",
       dataIndex: "percentScore",
       align: "center",
-      render: data => data?.trim() ? data : "-",
+      render: (data, row) => (
+        <>
+          <div>
+            {data?.trim() ? data : "-"}
+          </div>
+          {row.archived.map(ta => (
+            <div style={{ paddingTop: "5px" }}>
+              {ta.percentScore?.trim() ? ta.percentScore : "-"}
+            </div>
+          ))}
+        </>
+      ),
       sorter: (a, b) => {
         const aScore = a.score || 0;
         const bScore = b.score || 0;
@@ -111,6 +134,7 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
       columns={columns}
       dataSource={assessmentsData}
       pagination={false}
+      urlHasStudent
     />
   );
 };

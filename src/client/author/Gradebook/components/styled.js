@@ -241,13 +241,29 @@ export const StyledTable = styled(Table)`
                 font-size: 12px;
                 font-weight: 600;
                 color: ${greyThemeDark1};
+                vertical-align: ${props => props.urlHasStudent && "top"};
                 @media (min-width: ${extraDesktopWidthMax}) {
                   font-size: 14px;
                 }
               }
-              td:nth-child(n + 5) {
-                padding: 5px 0 0 0;
-              }
+              ${props => props.urlHasStudent ? `
+                td:nth-child(1) {
+                  padding-top: 7px;
+                  @media (min-width: ${extraDesktopWidthMax}) {
+                    padding-top: 10px;
+                  }
+                }
+                td:nth-child(6) {
+                  padding: 5px;
+                  @media (min-width: ${extraDesktopWidthMax}) {
+                    padding: 10px;
+                  }
+                }
+              ` : `
+                td:nth-child(n + 5) {
+                  padding: 5px 0 0 0;
+                }
+              `}
               &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
               &.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
               &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,

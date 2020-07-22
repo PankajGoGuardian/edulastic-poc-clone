@@ -8,7 +8,7 @@ import { roleuser } from "@edulastic/constants";
 import { IconClose, IconCorrect } from "@edulastic/icons";
 import { withNamespaces } from "react-i18next";
 import { compose } from "redux";
-import { EduButton,CustomModalStyled } from "@edulastic/common";
+import { EduButton, CustomModalStyled } from "@edulastic/common";
 import {
   StyledTextArea,
   PlaceHolderText,
@@ -37,15 +37,13 @@ const Item = ({ item, moveItem, isEnrolled }) => {
     moveItem(item);
   };
 
-  const {_source: source} = item;
-  const {username, firstName, lastName} = source;
-  const fullName = (`${firstName ? `${firstName} ` : ""}${lastName || ''}`) || 'Anonymous';
+  const { _source: source } = item;
+  const { username, firstName, lastName } = source;
+  const fullName = `${firstName ? `${firstName} ` : ""}${lastName || ""}` || "Anonymous";
 
   return (
     <ItemDiv style={{ cursor: !isEnrolled && "pointer" }} onClick={!isEnrolled ? handleClick : null}>
-      <ItemText>
-        {fullName}
-      </ItemText>
+      <ItemText>{fullName}</ItemText>
       <Row type="flex" align="middle">
         <Col span={18}>
           <Text>{username}</Text>
@@ -159,7 +157,8 @@ class InviteMultipleStudentModal extends Component {
       districtId: userOrgId,
       limit: 1000,
       page: 1,
-      role: "student"
+      role: "student",
+      status: 1
     };
     searchKey &&
       Object.assign(searchData, {

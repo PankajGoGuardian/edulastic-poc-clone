@@ -35,13 +35,11 @@ const Item = ({ item, moveItem, isEnrolled }) => {
 
   const { _source: source } = item;
   const { username, firstName, lastName } = source;
-  const fullName = (`${firstName ? `${firstName} ` : ""}${lastName || ''}`) || 'Anonymous';
+  const fullName = `${firstName ? `${firstName} ` : ""}${lastName || ""}` || "Anonymous";
 
   return (
     <ItemDiv style={{ cursor: !isEnrolled && "pointer" }} onClick={!isEnrolled ? handleClick : null}>
-      <ItemText>
-        {fullName}
-      </ItemText>
+      <ItemText>{fullName}</ItemText>
       <Row type="flex" align="middle">
         <Col span={18}>
           <Text>{username}</Text>
@@ -155,7 +153,8 @@ class InviteMultipleStudentModal extends Component {
       districtId: userOrgId,
       limit: 1000,
       page: 1,
-      role: "student"
+      role: "student",
+      status: 1
     };
     searchKey &&
       Object.assign(searchData, {
@@ -241,11 +240,11 @@ class InviteMultipleStudentModal extends Component {
     const allLists =
       allStudents.length > 0
         ? allStudents.map(item => {
-          const isEnrolled =
-            studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
-              .length > 0;
-          return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
-        })
+            const isEnrolled =
+              studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
+                .length > 0;
+            return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
+          })
         : null;
 
     const toEnrollLists =
@@ -316,7 +315,12 @@ class InviteMultipleStudentModal extends Component {
             <EduButton isGhost onClick={this.onCloseModal}>
               <span>{t("users.student.invitestudents.nocancel")}</span>
             </EduButton>
-            <EduButton data-cy="addStudents" onClick={() => { this.addStudents() }}>
+            <EduButton
+              data-cy="addStudents"
+              onClick={() => {
+                this.addStudents();
+              }}
+            >
               <span>{t("users.student.invitestudents.addtoclass")}</span>
             </EduButton>
           </ButtonsContainer>
@@ -393,7 +397,7 @@ class InviteMultipleStudentModal extends Component {
                   {firstNameAndLastName && [
                     <Option value="fl">{t("users.student.invitestudents.fl")}</Option>,
                     <Option value="lf">{t("users.student.invitestudents.lf")}</Option>
-                    ]}
+                  ]}
                 </SelectInputStyled>
               </Col>
             </SelUserKindDiv>
@@ -402,53 +406,53 @@ class InviteMultipleStudentModal extends Component {
                 <FormItem style={{ marginBottom: "0px" }}>
                   {placeHolderComponent}
                   {getFieldDecorator("students", {
-                      rules: [
-                        {
-                          validator: this.validateStudentsList
-                        }
-                      ]
-                    })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
+                    rules: [
+                      {
+                        validator: this.validateStudentsList
+                      }
+                    ]
+                  })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
                 </FormItem>
               </Col>
             </Row>
             {curSel === "fl" || curSel === "lf" ? (
               <p>
                 {role === roleuser.TEACHER
-                    ? `Class code (${
-                    selectedClass.code
+                  ? `Class code (${
+                      selectedClass.code
                     }) will be used as default password for these students, please ask the students to change their password once they login to their account.
                   `
-                    : `'edulastic' will be used as default password for these students, please ask the students to change
+                  : `'edulastic' will be used as default password for these students, please ask the students to change
                   their password once they login to their account.`}
               </p>
-              ) : null}
+            ) : null}
             {role === roleuser.SCHOOL_ADMIN ? (
               <Row>
                 <Col span={24}>
                   <ModalFormItem label="Select School">
                     {getFieldDecorator("institutionId", {
-                        rules: [
-                          {
-                            required: true,
-                            message: "Please select school"
-                          }
-                        ],
-                        initialValue: defaultSchoolId
-                      })(
-                        <Select getPopupContainer={triggerNode => triggerNode.parentNode} placeholder="Select school">
-                          {schools.map(school => (
-                            <Option key={school._id} value={school._id}>
-                              {school.name}
-                            </Option>
-                          ))}
-                        </Select>
-                      )}
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please select school"
+                        }
+                      ],
+                      initialValue: defaultSchoolId
+                    })(
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode} placeholder="Select school">
+                        {schools.map(school => (
+                          <Option key={school._id} value={school._id}>
+                            {school.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
                   </ModalFormItem>
                 </Col>
               </Row>
-              ) : null}
+            ) : null}
           </AddBulkStudentsViewContainer>
-          )}
+        )}
       </CustomModalStyled>
     );
   }

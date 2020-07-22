@@ -46,7 +46,7 @@ const CsvTable = ({
   }, [isCsvDownloading]);
 
   return (
-    <StyledTableWrapper ref={childrenRef} id="student_reports_table">
+    <StyledTableWrapper ref={childrenRef}>
       <Component {...restProps} dataSource={dataSource} pagination={_pagination} columns={_columns} />
     </StyledTableWrapper>
   );
@@ -57,6 +57,16 @@ const StyledTableWrapper = styled.div`
     .custom-table-tooltip {
       display: none;
     }
+    colgroup {
+      display: none;
+    }
+    table {
+      overflow-wrap: break-word;
+    }
+  }
+
+  .ant-table-layout-fixed .ant-table-scroll .ant-table-body {
+    overflow-x: hidden !important;
   }
 `;
 

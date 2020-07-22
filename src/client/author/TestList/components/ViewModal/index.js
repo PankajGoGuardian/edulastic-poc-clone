@@ -179,7 +179,8 @@ class ViewModal extends React.Component {
       O: "Other"
     };
 
-    const selectedGrades = grades.map(grade => gradesMap[grade]).filter(g => !!g);
+    const targetGrades = Array.isArray(grades) ? grades : [grades];
+    const selectedGrades = targetGrades.map(grade => gradesMap[grade]).filter(g => g);
     const subjects = _subjects ? _subjects.filter(f => !!f) : [];
 
     const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
@@ -375,7 +376,7 @@ class ViewModal extends React.Component {
               <Col span={12}>
                 <GradeLabel>Grade</GradeLabel>
                 <GradeConatiner data-cy="testcard-grades">
-                  {grades && <Tags isGrayTags tags={selectedGrades} show={2} key="grades" />}
+                  {!!selectedGrades.length && <Tags isGrayTags tags={selectedGrades} show={2} key="grades" />}
                 </GradeConatiner>
               </Col>
               <Col span={12} data-cy="testcard-subject">

@@ -475,6 +475,7 @@ class AssessmentPlayerDefault extends React.Component {
                 hasCollapseButtons={hasCollapseButtons}
                 className="scrollable-main-wrapper"
               >
+                {scratchPadMode && !LCBPreviewModal && <ScratchpadTool />}
                 {testItemState === "" && (
                   <TestItemPreview
                     LCBPreviewModal={LCBPreviewModal}
@@ -488,7 +489,6 @@ class AssessmentPlayerDefault extends React.Component {
                     setHighlights={this.saveHistory("resourceId")}
                     setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
                     scratchPadMode={scratchPadMode}
-                    showScratchpadTool={scratchPadMode && !LCBPreviewModal}
                     saveHistory={this.saveHistory("scratchpad")}
                     history={LCBPreviewModal ? scratchpadActivity.data : scratchPad}
                     previouscratchPadDimensions={LCBPreviewModal ? scratchpadActivity.dimensions : null}

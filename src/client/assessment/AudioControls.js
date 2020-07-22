@@ -1,3 +1,5 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable prefer-promise-reject-errors */
 import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { Howl, Howler } from "howler";
@@ -22,6 +24,8 @@ const ControlButtons = styled(Button)`
   margin-right: 10px;
   transition: none;
   background: ${themeColor};
+  position: relative;
+  z-index: 1500;
   &.ant-btn[disabled] {
     background: ${themeColor};
   }
@@ -40,6 +44,11 @@ const ControlButtons = styled(Button)`
     pointer-events: all;
     cursor: default;
   }
+`;
+
+const AudioButton = styled(EduButton)`
+  position: relative;
+  z-index: 1500;
 `;
 
 const AudioControls = ({
@@ -207,7 +216,7 @@ const AudioControls = ({
     </AudioButtonsWrapper>
   ) : (
     <AudioButtonsWrapper style={{ display: showAudioControls ? "none" : "flex" }} className={className}>
-      <EduButton height="40px" onClick={handlePlayPauseAudio}>
+      <AudioButton height="40px" onClick={handlePlayPauseAudio}>
         {currentPlayingDetails.qId === qId ? (
           <>
             <IconAudioPause />
@@ -221,11 +230,11 @@ const AudioControls = ({
             </>
           )
         )}
-      </EduButton>
-      <EduButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
+      </AudioButton>
+      <AudioButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
         <IconStopCircle />
         STOP
-      </EduButton>
+      </AudioButton>
     </AudioButtonsWrapper>
   );
 };

@@ -137,6 +137,7 @@ const Hints = ({
           <QuestionLabel isStudentReport={isStudentReport}>
             <span style={{ color: "#4aac8b" }}>{question.barLabel}</span> - Hint(s)
           </QuestionLabel>
+
           {validHints.map(({ value, label }, index) => (
             <HintItem isStudentReport={isStudentReport} data-cy="hint-subcontainer" key={value}>
               <HintLabel className="hint-label">
@@ -223,6 +224,8 @@ const ShowHint = styled(EduButton)`
   width: auto !important;
   background: transparent !important;
   color: ${themeColorBlue} !important;
+  position: relative;
+  z-index: 1500;
 `;
 
 const ShowMoreHint = styled.div`
@@ -232,6 +235,8 @@ const ShowMoreHint = styled.div`
   color: ${themeColorBlue};
   font-size: 0.8em;
   padding: 8px 16px;
+  position: relative;
+  z-index: 1500;
 `;
 
 const QuestionLabel = styled.div`

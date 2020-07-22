@@ -16,6 +16,7 @@ import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn, Dividerlines } from "./styled/Container";
 import FeedbackWrapper from "../FeedbackWrapper";
+import { Scratchpad } from "../../../common/components/Scratchpad";
 
 class TestItemPreview extends Component {
   static propTypes = {
@@ -234,7 +235,6 @@ class TestItemPreview extends Component {
       showCollapseBtn = false,
       activeMode,
       scratchPadMode,
-      showScratchpadTool,
       lineColor,
       deleteMode,
       lineWidth,
@@ -339,15 +339,6 @@ class TestItemPreview extends Component {
                   const widgetCount = col.widgets.length;
                   const fullHeight =
                     ((isExpressGrader || isLCBView) && (i === 0 && isOnlyPassage)) || widgetCount === 1;
-                  const scratchpadProps =
-                    showScratchpadByDefault || scratchPadMode
-                      ? {
-                          saveData: saveHistory,
-                          data: history,
-                          readOnly: hideScratchpadToolbar,
-                          showToolbar: showScratchpadTool
-                        }
-                      : null;
                   return (
                     <>
                       {(i > 0 || collapseDirection === "left") && showCollapseButtons && this.renderCollapseButtons(i)}
@@ -381,13 +372,15 @@ class TestItemPreview extends Component {
                         teachCherFeedBack={this.renderFeedback}
                         isStudentReport={isStudentReport}
                         itemLevelScoring={itemLevelScoring}
-                        scratchpadProps={scratchpadProps}
                       />
                       {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                     </>
                   );
                 })}
               </div>
+              {(showScratchpadByDefault || scratchPadMode) && (
+                <Scratchpad saveData={saveHistory} data={history} hideTools readOnly={hideScratchpadToolbar} />
+              )}
             </ScrollContext.Provider>
           </Container>
           {viewAtStudentRes && (

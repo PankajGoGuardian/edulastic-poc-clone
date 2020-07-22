@@ -1,13 +1,13 @@
 import { backgroundGrey2, themeColor } from "@edulastic/colors";
-import { CheckBoxGrp, CheckboxLabel,notification } from "@edulastic/common";
+import { CheckBoxGrp, RadioBtn, CheckboxLabel, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { Button, DatePicker, Input, Select, Spin } from "antd";
+import { Button, DatePicker, Input, Select, Spin, Radio } from "antd";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { getUser } from "../../../src/selectors/user";
+import { getUser, isOrganizationDistrictSelector } from "../../../src/selectors/user";
 import {
   getCreateCollectionStateSelector,
   getDistrictListSelector,
@@ -33,7 +33,8 @@ const AddPermissionModal = ({
   itemBankName,
   selectedPermission = {},
   isEditPermission,
-  isFetchingOrganization
+  isFetchingOrganization,
+  isOrganizationDistrict
 }) => {
   // for any role except student will have only one Object in districts
   const [fieldData, setFieldData] = useState({
@@ -42,7 +43,8 @@ const AddPermissionModal = ({
     orgType: "",
     orgDetails: [],
     role: [],
-    itemBankName
+    itemBankName,
+    accessLevel: ""
   });
 
   useEffect(() => {
@@ -59,7 +61,8 @@ const AddPermissionModal = ({
         endDate,
         csManager = "",
         opportunityId = "",
-        notes = ""
+        notes = "",
+        accessLevel = "read"
       } = selectedPermission;
       setFieldData({
         districtId,
@@ -68,6 +71,7 @@ const AddPermissionModal = ({
         orgDetails: [{ orgId, orgName, role }],
         role,
         itemBankName: collectionName,
+        accessLevel,
         ...(user.role === roleuser.EDULASTIC_ADMIN ? { startDate, endDate, csManager, opportunityId, notes } : {})
       });
       if (["SCHOOL", "USER"].includes(orgType)) {
@@ -85,31 +89,38 @@ const AddPermissionModal = ({
       }
     }
 
+    if (!isEditPermission && !fieldData.orgType) {
+      setFieldData(prevState => ({ ...prevState, accessLevel: "read" }));
+    }
+
     // setting default start and end date.
     if (!isEditPermission && user.role === "edulastic-admin") {
       const startDate = moment().valueOf();
       const endDate = moment()
         .add(1, "years")
         .valueOf();
-      setFieldData({ ...fieldData, startDate, endDate });
+      setFieldData(prevState => ({ ...prevState, startDate, endDate }));
     }
   }, []);
 
   const validateFields = () => {
     if (!fieldData.orgType) {
-      return notification({ messageKey:"pleaseSelectPersmissionLevel"});
+      return notification({ messageKey: "pleaseSelectPersmissionLevel" });
     }
     if (!fieldData.orgDetails.length) {
-      if (fieldData.orgType === "USER") return notification({ messageKey:"pleaseSelectAUser"});
-      if (fieldData.orgType === "SCHOOL") return notification({ messageKey:"pleaseSelectSchool"});
+      if (fieldData.orgType === "USER") return notification({ messageKey: "pleaseSelectAUser" });
+      if (fieldData.orgType === "SCHOOL") return notification({ messageKey: "pleaseSelectSchool" });
     }
     if (fieldData.orgType !== "USER" && !fieldData.role.length) {
-      return notification({ messageKey:"pleaseSelectAtleastOneRole"});
+      return notification({ messageKey: "pleaseSelectAtleastOneRole" });
     }
     const { orgDetails, role, ..._permissionDetails } = fieldData;
     let permissionDetails;
     if (_permissionDetails.orgType !== "USER") {
-      permissionDetails = orgDetails.map(d => ({ ...d, ..._permissionDetails, role }));
+      permissionDetails = orgDetails.map(d => {
+        delete _permissionDetails.accessLevel;
+        return { ...d, ..._permissionDetails, role };
+      });
     } else {
       permissionDetails = orgDetails.map(d => ({ ...d, ..._permissionDetails }));
     }
@@ -137,7 +148,7 @@ const AddPermissionModal = ({
 
   const handleFieldChange = (fieldName, value) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId) {
-      return notification({ messageKey:"pleaseSelectAnOrganization"});
+      return notification({ messageKey: "pleaseSelectAnOrganization" });
     }
 
     const updatedFieldData = { ...fieldData, [fieldName]: value };
@@ -148,6 +159,7 @@ const AddPermissionModal = ({
         updatedFieldData.orgDetails = [];
         updatedFieldData.role = updatedFieldData.role.filter(r => r !== "district-admin");
       } else {
+        updatedFieldData.accessLevel = isOrganizationDistrict ? "write" : "read";
         updatedFieldData.orgDetails = [];
         updatedFieldData.role = [];
       }
@@ -173,7 +185,7 @@ const AddPermissionModal = ({
 
   const handleSearch = (searchString, searchType) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId && searchType !== "DISTRICT")
-      return notification({ messageKey:"pleaseSelectDistrict"});
+      return notification({ messageKey: "pleaseSelectDistrict" });
     const data = {
       orgType: searchType,
       searchString
@@ -186,13 +198,13 @@ const AddPermissionModal = ({
     let currentDate = moment().format("DD-MM-YYYY");
     currentDate = moment(currentDate, "DD-MM-YYYY").valueOf();
     if (date < currentDate) {
-      return notification({ messageKey:"pickedDateCannotBeLesseThanCurrentDate"});
+      return notification({ messageKey: "pickedDateCannotBeLesseThanCurrentDate" });
     }
     if (fieldName === "startDate" && date >= fieldData?.endDate) {
-      return notification({ messageKey:"startDateShouldBeLessThanTheEndDate"});
+      return notification({ messageKey: "startDateShouldBeLessThanTheEndDate" });
     }
     if (fieldName === "endDate" && date <= fieldData?.startDate) {
-      return notification({ messageKey:"endDateShouldBeMoreThanThestartDate"});
+      return notification({ messageKey: "endDateShouldBeMoreThanThestartDate" });
     }
     handleFieldChange(fieldName, date);
   };
@@ -296,6 +308,19 @@ const AddPermissionModal = ({
             ))}
           </CheckBoxGrp>
         </StyledFieldRow>
+        {fieldData.orgType === "USER" && (
+          <StyledFieldRow>
+            <label>Add Content</label>
+            <Radio.Group
+              value={fieldData.accessLevel}
+              onChange={e => handleFieldChange("accessLevel", e.target.value)}
+              style={{ width: "50%" }}
+            >
+              <RadioBtn value="write">Write</RadioBtn>
+              <RadioBtn value="read">Read</RadioBtn>
+            </Radio.Group>
+          </StyledFieldRow>
+        )}
         {user.role === "edulastic-admin" && (
           <>
             <StyledFieldRow>
@@ -360,7 +385,8 @@ export default connect(
     schoolList: getSchoolListSelector(state),
     userList: getUserListSelector(state),
     districtList: getDistrictListSelector(state),
-    isFetchingOrganization: getFetchOrganizationStateSelector(state)
+    isFetchingOrganization: getFetchOrganizationStateSelector(state),
+    isOrganizationDistrict: isOrganizationDistrictSelector(state)
   }),
   { searchRequest: searchOrgaizationRequestAction }
 )(AddPermissionModal);

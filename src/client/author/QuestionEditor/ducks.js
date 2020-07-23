@@ -348,6 +348,8 @@ export const getQuestionIds = item => {
 
 const updateItemWithAlignmentDetails = (itemDetail = {}, alignments = []) => {
   itemDetail.grades = alignments[0]?.grades || [];
+  itemDetail.subjects = itemDetail.subjects || [];
+  itemDetail.curriculums = itemDetail.curriculums || [];
   alignments[0]?.subject ? itemDetail.subjects.push(alignments[0].subject) : null;
   alignments[0]?.curriculumId ? itemDetail.curriculums.push(alignments[0].curriculumId.toString()) : null;
 };

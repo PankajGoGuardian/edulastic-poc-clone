@@ -192,7 +192,6 @@ const TestListFilters = ({
   };
   const handleApply = standardIds => {
     onChange("standardIds", standardIds);
-    setShowModal(false);
   };
 
   const handleSetShowModal = () => {

@@ -12,6 +12,7 @@ import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getStandardsSelector } from "../../ducks";
 import { getQuestionType } from "../../../../../dataUtils";
 import ListItem from "../List/ListItem";
+import { isPremiumContent } from "../../../../utils";
 
 const ItemsTable = ({
   items,
@@ -118,14 +119,12 @@ const ItemsTable = ({
       type: getQuestionType(item),
       points: scoring[item._id] || helpers.getPoints(item),
       item,
-      isPremium: item?.collections?.length,
+      isPremium: isPremiumContent(item?.collections),
       standards: standards[item._id],
       audio: audioStatus(item),
       tags: item.tags,
       dok:
-        item.data &&
-        item.data.questions &&
-        (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
+        item.data && item.data.questions && (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
     };
 
     if (item.data && item.data.questions && item.data.questions.length) {

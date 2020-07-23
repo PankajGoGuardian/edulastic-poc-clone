@@ -31,6 +31,7 @@ const assignmentStatusOptions = require("./const/assignmentStatus");
 const { youtubeVideoDetails } = require("./const/howToAuthorVideos");
 const customTags = require("./const/customTags");
 const libraryFilters = require("./const/filters");
+const collections = require("./const/collections");
 const sortOptions = require("./const/sortOptions");
 
 module.exports = {
@@ -67,5 +68,6 @@ module.exports = {
   youtubeVideoDetails,
   customTags,
   libraryFilters,
+  collections,
   sortOptions
 };

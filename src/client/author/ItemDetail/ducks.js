@@ -38,7 +38,7 @@ import { changeViewAction } from "../src/actions/view";
 
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 
-import { getOrgDataSelector, isPublisherUserSelector, getUserRole } from "../src/selectors/user";
+import { getOrgDataSelector, isPublisherUserSelector, getUserRole, getIsCurator } from "../src/selectors/user";
 import {
   getAlignmentFromQuestionSelector,
   setDictAlignmentFromQuestion,
@@ -1050,8 +1050,10 @@ export function* updateItemSaga({ payload }) {
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
 
+    const isCurator = yield select(getIsCurator);
     const userRole = yield select(getUserRole);
-    if (userRole === roleuser.EDULASTIC_CURATOR) notification({ type: "success", messageKey: "itemIsSaved" });
+    if (userRole === roleuser.EDULASTIC_CURATOR || isCurator)
+      notification({ type: "success", messageKey: "itemIsSaved" });
     else notification({ type: "success", messageKey: "itemSavedSuccess" });
     yield put(changeUpdatedFlagAction(false));
     if (addToTest) {

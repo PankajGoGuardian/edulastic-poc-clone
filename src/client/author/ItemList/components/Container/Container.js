@@ -158,7 +158,7 @@ class Contaier extends Component {
 
   updateFilterState = (newSearch, sort = {}) => {
     const { updateSearchFilterState } = this.props;
-    updateSearchFilterState({ newSearch, sort });
+    updateSearchFilterState({ search: newSearch, sort });
     sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
     sessionStorage.setItem("sortBy[itemList]", JSON.stringify(sort));
   };
@@ -204,14 +204,14 @@ class Contaier extends Component {
   };
 
   handleSearchFieldChangeCurriculumId = value => {
-    const { clearDictStandards, getCurriculumStandards, search } = this.props;
+    const { clearDictStandards, getCurriculumStandards, search, sort } = this.props;
     clearDictStandards();
     const updatedSearchValue = {
       ...search,
       curriculumId: value,
       standardIds: []
     };
-    this.updateFilterState(updatedSearchValue);
+    this.updateFilterState(updatedSearchValue, sort);
     this.handleSearch(updatedSearchValue);
     getCurriculumStandards(value, search.grades, "");
   };

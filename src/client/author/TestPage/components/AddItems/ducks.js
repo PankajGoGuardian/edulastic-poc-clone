@@ -210,7 +210,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_SEARCH_FILTER_STATE:
       return {
         ...state,
-        search: { ...payload.newSearch },
+        search: { ...payload.search },
         sort: { ...payload.sort },
         needToSetFilter: true
       };
@@ -218,6 +218,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         search: { ...initalSearchState },
+        sort: { ...initialSortState },
         ...(payload || {})
       };
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:

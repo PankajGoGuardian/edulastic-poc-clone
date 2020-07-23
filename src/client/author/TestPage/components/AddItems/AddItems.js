@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { debounce, uniq, get } from "lodash";
 import { Pagination, Spin } from "antd";
 import Qs from "query-string";
-import { roleuser } from "@edulastic/constants";
+import { roleuser, sortOptions } from "@edulastic/constants";
 import { withWindowSizes, FlexContainer, notification, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
@@ -34,7 +34,9 @@ import {
   updateSearchFilterStateAction,
   clearFilterStateAction,
   filterMenuItems,
-  initalSearchState
+  initalSearchState,
+  getSortFilterStateSelector,
+  initialSortState
 } from "./ducks";
 import {
   setAndSavePassageItemsAction,
@@ -68,6 +70,7 @@ import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Containe
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import PreviewModal from "../../../src/components/common/PreviewModal";
+import SortMenu from "../../../ItemList/components/SortMenu";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -120,10 +123,18 @@ class AddItems extends PureComponent {
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
       pageNumber,
-      needToSetFilter
+      needToSetFilter,
+      sort: initSort
     } = this.props;
     const query = Qs.parse(window.location.search);
     let search = {};
+    const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[itemList]")) || {};
+    const sort = {
+      ...initSort,
+      sortBy: "popularity",
+      sortDir: "desc",
+      ...sessionSort
+    };;
 
     if (needToSetFilter) {
       const {
@@ -144,29 +155,31 @@ class AddItems extends PureComponent {
         grades: uniq([...selectedGrades, ...grades]),
         curriculumId: parseInt(curriculumId, 10) || ""
       };
-      this.updateFilterState(search);
+
+      this.updateFilterState(search, sort);
     }
     if (!curriculums.length) getCurriculums();
     getAllTags({ type: "testitem" });
-    receiveTestItems(search, parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1, limit);
+    receiveTestItems(search, sort, parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1, limit);
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, "");
     }
   }
 
-  updateFilterState = newSearch => {
+  updateFilterState = (newSearch, sort) => {
     const { updateSearchFilterState } = this.props;
-    updateSearchFilterState(newSearch);
+    updateSearchFilterState({ search: newSearch, sort });
     sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
+    sessionStorage.setItem("sortBy[itemList]", JSON.stringify(sort));
   };
 
   handleSearch = searchState => {
-    const { receiveTestItems, limit, search } = this.props;
-    receiveTestItems(searchState || search, 1, limit);
+    const { receiveTestItems, limit, search, sort } = this.props;
+    receiveTestItems(searchState || search, sort, 1, limit);
   };
 
   handleLabelSearch = e => {
-    const { limit, receiveTestItems, search } = this.props;
+    const { limit, receiveTestItems, search, sort } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -174,14 +187,14 @@ class AddItems extends PureComponent {
       ...search,
       filter
     };
-    this.updateFilterState(searchState);
-    receiveTestItems(searchState, 1, limit);
+    this.updateFilterState(searchState, sort);
+    receiveTestItems(searchState, sort, 1, limit);
   };
 
   handleClearSearch = () => {
     const { clearFilterState, receiveTestItems, limit } = this.props;
     clearFilterState({ needToSetFilter: false });
-    receiveTestItems(initalSearchState, 1, limit);
+    receiveTestItems(initalSearchState, initialSortState, 1, limit);
     setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
   };
 
@@ -233,20 +246,20 @@ class AddItems extends PureComponent {
   };
 
   handleSearchFieldChangeCurriculumId = value => {
-    const { clearDictStandards, getCurriculumStandards, search } = this.props;
+    const { clearDictStandards, getCurriculumStandards, search, sort } = this.props;
     clearDictStandards();
     const updatedSearchValue = {
       ...search,
       curriculumId: value,
       standardIds: []
     };
-    this.updateFilterState(updatedSearchValue);
+    this.updateFilterState(updatedSearchValue, sort);
     this.handleSearch(updatedSearchValue);
     getCurriculumStandards(value, search.grades, "");
   };
 
   handleSearchFieldChange = fieldName => value => {
-    const { search, clearDictStandards } = this.props;
+    const { search, clearDictStandards, sort } = this.props;
     let updatedKeys = {};
     if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
       setDefaultInterests({ [fieldName]: value });
@@ -269,19 +282,19 @@ class AddItems extends PureComponent {
         [fieldName]: value
       };
     }
-    this.updateFilterState(updatedKeys);
+    this.updateFilterState(updatedKeys, sort);
     this.handleSearch(updatedKeys);
   };
 
   searchDebounce = debounce(this.handleSearch, 500);
 
   handleSearchInputChange = tags => {
-    const { search } = this.props;
+    const { search, sort } = this.props;
     const updatedKeys = {
       ...search,
       searchString: tags
     };
-    this.updateFilterState(updatedKeys);
+    this.updateFilterState(updatedKeys, sort);
     this.searchDebounce(updatedKeys);
   };
 
@@ -301,9 +314,8 @@ class AddItems extends PureComponent {
   };
 
   handlePaginationChange = page => {
-    const { search } = this.props;
-    const { receiveTestItems, limit } = this.props;
-    receiveTestItems(search, page, limit);
+    const { search, receiveTestItems, limit, sort } = this.props;
+    receiveTestItems(search, sort, page, limit);
   };
 
   renderItems = () => {
@@ -395,6 +407,17 @@ class AddItems extends PureComponent {
     this.setState({ itemIndexForPreview: nextItemIndex });
   };
 
+  onSelectSortOption = (value, sortDir) => {
+    const { search, limit, sort, receiveTestItems } = this.props;
+    const updateSort = {
+      ...sort,
+      sortBy: value,
+      sortDir
+    };
+    this.updateFilterState(search, updateSort);
+    receiveTestItems(search, updateSort, 1, limit);
+  }
+
   get selectedItem() {
     const { items } = this.props;
     const { itemIndexForPreview } = this.state;
@@ -425,7 +448,8 @@ class AddItems extends PureComponent {
       search,
       features,
       gotoGroupItems,
-      userRole
+      userRole,
+      sort = {}
     } = this.props;
 
     const { isCurator, isPublisherAuthor } = features;
@@ -488,6 +512,7 @@ class AddItems extends PureComponent {
                     </EduButton>
                   )}
                 </FlexContainer>
+                <SortMenu options={sortOptions.itemList} onSelect={this.onSelectSortOption} sortDir={sort.sortDir} sortBy={sort.sortBy}/>
               </ItemsMenu>
 
               {!loading && (
@@ -541,6 +566,7 @@ const enhance = compose(
       testItemsList: getTestItemsSelector(state),
       selectedRows: getSelectedItemSelector(state),
       search: getSearchFilterStateSelector(state),
+      sort: getSortFilterStateSelector(state),
       features: getUserFeatures(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),

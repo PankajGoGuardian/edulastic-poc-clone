@@ -222,7 +222,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         filters: {
           ...emptyFilters
-        }
+        },
+        sort: { ...initialSortState }
       };
     case UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN:
       return {

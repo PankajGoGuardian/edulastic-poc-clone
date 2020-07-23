@@ -8,11 +8,10 @@ import { delay } from "redux-saga";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
-import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
-import { Effects, notification } from "@edulastic/common";
+import { notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
 import {
   loadQuestionsAction,
@@ -38,7 +37,14 @@ import { changeViewAction } from "../src/actions/view";
 
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 
-import { getOrgDataSelector, isPublisherUserSelector, getUserRole, getIsCurator } from "../src/selectors/user";
+import {
+  getOrgDataSelector,
+  isPublisherUserSelector,
+  getUserRole,
+  isOrganizationDistrictUserSelector,
+  getIsCurator
+} from "../src/selectors/user";
+
 import {
   getAlignmentFromQuestionSelector,
   setDictAlignmentFromQuestion,
@@ -1254,9 +1260,10 @@ function* publishTestItemSaga({ payload }) {
     if (!saveAndPublishFlow) {
       yield saveTestItemSaga();
     }
+    const isOrganizationDistrictUser = yield select(isOrganizationDistrictUserSelector);
     if (
-      (payload.status === "published" && !payload.isCurator) ||
-      ((payload.isPublisherAuthor || payload.isCurator) && testItem?.collections?.length)
+      (payload.status === "published" && !isOrganizationDistrictUser) ||
+      ((payload.isPublisherAuthor || payload.isCurator || isOrganizationDistrictUser) && testItem?.collections?.length)
     ) {
       yield call(testItemsApi.publishTestItem, payload);
 

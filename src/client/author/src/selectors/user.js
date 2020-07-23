@@ -128,7 +128,7 @@ export const getCollectionsSelector = createSelector(
 
 export const getCustomCollectionsSelector = createSelector(
   getCollectionsSelector,
-  collections => collections.filter(item => item.isCustom)
+  collections => collections.filter(item => item.isCustom || item.accessLevel === "write")
 );
 
 export const getItemBucketsSelector = createSelector(
@@ -141,7 +141,9 @@ export const getItemBucketsSelector = createSelector(
         bucketId: bucket._id,
         collectionStatus: collection.status,
         collectionName: collection.name,
-        collectionDescription: collection.description
+        collectionDescription: collection.description,
+        accessLevel: collection.accessLevel || "",
+        districtId: collection.districtId
       }))
     );
     return flatttenBuckets;
@@ -169,6 +171,19 @@ export const isPublisherUserSelector = createSelector(
   (isPublisherAuthor, isCurator) => isPublisherAuthor || isCurator
 );
 
+export const getCollectionsToAddContent = createSelector(
+  getItemBucketsSelector,
+  getUserRole,
+  isPublisherUserSelector,
+  getUserOrgId,
+  (itemBanks, userRole, isAuthorPublisher, userDistrictId) => {
+    if (isAuthorPublisher || userRole !== roleuser.DISTRICT_ADMIN) {
+      return itemBanks.filter(c => c.accessLevel === "write");
+    }
+    return itemBanks.filter(c => c.districtId === userDistrictId || c.accessLevel === "write");
+  }
+);
+
 export const showItemStatusSelector = createSelector(
   isPublisherUserSelector,
   getUserRole,
@@ -185,6 +200,11 @@ export const getSchoolsByUserRoleSelector = createSelector(
   getUserSchoolsListSelector,
   getDistrictSchoolsSelector,
   (role, userSchools, districtSchools) => (role === "teacher" ? userSchools : districtSchools)
+);
+
+export const isOrganizationDistrictUserSelector = createSelector(
+  getOrgDataSelector,
+  state => state?.districts?.[0]?.districtPermissions.includes("publisher")
 );
 
 export const isOrganizationDistrictSelector = createSelector(

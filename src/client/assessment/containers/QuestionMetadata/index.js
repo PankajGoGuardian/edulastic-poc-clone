@@ -43,7 +43,7 @@ import {
   getInterestedCurriculumsSelector,
   getOrgDataSelector,
   getUserFeatures,
-  getItemBucketsSelector
+  getCollectionsToAddContent
 } from "../../../author/src/selectors/user";
 import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
 import { getAuthorQuestionStatus } from "../../../author/sharedDucks/questions";
@@ -70,11 +70,11 @@ const QuestionMetadata = ({
   userFeatures,
   highlightCollection,
   recentCollectionsList,
-  orgCollections,
-  authorQuestionSatus = false
+  authorQuestionSatus = false,
+  collectionsToShow
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
-  const { id: qId, grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
+  const { id: qId } = questionData;
 
   useEffect(() => {
     if (curriculums.length === 0) {
@@ -106,7 +106,7 @@ const QuestionMetadata = ({
     setQuestionData(newQuestionData);
   };
 
-  const handleCollectionsSelect = (value, options) => {
+  const handleCollectionsSelect = (val, options) => {
     const data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
@@ -124,7 +124,7 @@ const QuestionMetadata = ({
       });
     }
 
-    const orgCollectionIds = orgCollections.map(o => o._id);
+    const orgCollectionIds = collectionsToShow.map(o => o._id);
 
     /** **** here were extracting out the collection which are not of current user district (if any) so that 
           while saving, collections array contains these extra collections also ***** */
@@ -138,10 +138,10 @@ const QuestionMetadata = ({
     setCollections(_collections);
   };
 
-  const handleUpdateQuestionAlignment = (index, alignment, updated = true) => {
-    const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
+  const handleUpdateQuestionAlignment = (index, _alignment, updated = true) => {
+    const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? _alignment : c));
     if (!newAlignments.length) {
-      newAlignments.push(alignment);
+      newAlignments.push(_alignment);
     }
     const newQuestionData = {
       ...questionData,
@@ -209,8 +209,8 @@ const QuestionMetadata = ({
           userFeatures={userFeatures}
           highlightCollection={highlightCollection}
           recentCollectionsList={recentCollectionsList}
-          orgCollections={orgCollections}
           bloomsTaxonomy={questionData.bloomsTaxonomy}
+          collectionsToShow={collectionsToShow}
         />
       </div>
     </ThemeProvider>
@@ -273,7 +273,7 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       highlightCollection: getHighlightCollectionSelector(state),
       recentCollectionsList: getRecentCollectionsListSelector(state),
-      orgCollections: getItemBucketsSelector(state),
+      collectionsToShow: getCollectionsToAddContent(state),
       authorQuestionSatus: getAuthorQuestionStatus(state)
     }),
     {

@@ -25,10 +25,9 @@ const SecondBlock = ({
   handleCollectionsSelect,
   handleRecentCollectionsSelect,
   collections,
-  userFeatures,
   highlightCollection,
   recentCollectionsList,
-  orgCollections
+  collectionsToShow
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const [searchValue, setSearchValue] = useState("");
@@ -66,10 +65,11 @@ const SecondBlock = ({
   };
 
   // here we are filtering out the collection which are not from current district.
-  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+  const filteredCollections = useMemo(() => collections.filter(c => collectionsToShow.some(o => o._id === c._id)), [
     collections,
-    orgCollections
+    collectionsToShow
   ]);
+
   return (
     <Container padding="20px">
       <Row gutter={24}>
@@ -145,38 +145,38 @@ const SecondBlock = ({
             </SelectInputStyled>
           </ItemBody>
         </Col>
-        {(userFeatures.isPublisherAuthor || userFeatures.isCurator) && (
-          <Col md={6}>
-            <ItemBody>
-              <FieldLabel>Collections</FieldLabel>
-              <SelectInputStyled
-                mode="multiple"
-                className="tagsSelect"
-                data-cy="collectionsSelect"
-                bg="white"
-                placeholder="Please select"
-                value={filteredCollections.flatMap(c => c.bucketIds)}
-                onChange={(value, options) => handleCollectionsSelect(value, options)}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                suffixIcon={<SelectSuffixIcon type="caret-down" />}
-                autoFocus={highlightCollection}
-              >
-                {orgCollections.map(o => (
-                  <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
-                    {`${o.collectionName} - ${o.name}`}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-            </ItemBody>
-            {recentCollectionsList?.length > 0 && (
-              <RecentCollectionsList
-                recentCollectionsList={recentCollectionsList}
-                collections={collections || []}
-                handleCollectionsSelect={handleRecentCollectionsSelect}
-              />
-            )}
-          </Col>
-        )}
+
+        <Col md={6}>
+          <ItemBody>
+            <FieldLabel>Collections</FieldLabel>
+            <SelectInputStyled
+              mode="multiple"
+              className="tagsSelect"
+              data-cy="collectionsSelect"
+              bg="white"
+              placeholder="Please select"
+              value={filteredCollections.flatMap(c => c.bucketIds)}
+              onChange={(value, options) => handleCollectionsSelect(value, options, collectionsToShow)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              suffixIcon={<SelectSuffixIcon type="caret-down" />}
+              autoFocus={highlightCollection}
+            >
+              {collectionsToShow.map(o => (
+                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                  {`${o.collectionName} - ${o.name}`}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+          </ItemBody>
+          {recentCollectionsList?.length > 0 && (
+            <RecentCollectionsList
+              recentCollectionsList={recentCollectionsList}
+              collections={collections || []}
+              handleCollectionsSelect={handleRecentCollectionsSelect}
+            />
+          )}
+        </Col>
+
         <Col md={6}>
           <ItemBody>
             <FieldLabel>{t("component.options.tags")}</FieldLabel>

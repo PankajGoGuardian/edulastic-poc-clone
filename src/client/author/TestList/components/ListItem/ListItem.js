@@ -325,11 +325,11 @@ class ListItem extends Component {
                     />
                   </ViewButtonWrapper>
                 )}
-                {isPlaylist && (userRole === roleuser.DISTRICT_ADMIN || isPublisherUser) && (
-                  <div onClick={e => e.stopPropagation()}>
-                    <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
-                  </div>
-                )}
+
+                <div onClick={e => e.stopPropagation()}>
+                  <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
+                </div>
+
                 {!isPlaylist &&
                   mode !== "embedded" &&
                   (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.TEACHER || isPublisherUser) && (
@@ -343,21 +343,19 @@ class ListItem extends Component {
                       >
                         <IconEye /> {t("component.itemlist.preview")}
                       </ViewButtonStyled>
-                      {userRole !== roleuser.TEACHER && (
-                        <AddButtonStyled
-                          onClick={e => {
-                            e.stopPropagation();
+                      <AddButtonStyled
+                        onClick={e => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        <CheckboxLabel
+                          checked={isInCart}
+                          ml="24px"
+                          onChange={() => {
+                            isInCart ? onRemoveFromCart(item) : onAddToCart(item);
                           }}
-                        >
-                          <CheckboxLabel
-                            checked={isInCart}
-                            ml="24px"
-                            onChange={() => {
-                              isInCart ? onRemoveFromCart(item) : onAddToCart(item);
-                            }}
-                          />
-                        </AddButtonStyled>
-                      )}
+                        />
+                      </AddButtonStyled>
                     </ViewButtonContainer>
                   )}
               </Outer>

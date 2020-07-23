@@ -2,11 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { compose } from "redux";
-import { Menu, Dropdown, message } from "antd";
+import { Menu, Dropdown } from "antd";
 import styled from "styled-components";
-import { roleuser } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { EduButton, Label, FlexContainer,notification } from "@edulastic/common";
+import { EduButton, Label, FlexContainer, notification } from "@edulastic/common";
 import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
@@ -20,14 +19,11 @@ const Actions = ({
   selectedItems,
   selectedTests,
   selectedPlaylists,
-  userRole,
   setAddCollectionModalVisible,
   createTestFromCart,
-  isPublisherUser,
   type,
   t
 }) => {
-  if (!(userRole === roleuser.DISTRICT_ADMIN || isPublisherUser)) return null;
   let numberOfSelectedItems = selectedItems?.length;
   if (type === "TEST") {
     numberOfSelectedItems = selectedTests?.length;
@@ -39,8 +35,8 @@ const Actions = ({
   // Keep this format as createTestFromCart is directly called in Menu item it will have a payload related to event
   const handleCreateTest = () => {
     if (!numberOfSelectedItems) {
-      return notification({ messageKey: "addItemsToCreateTest"});
-  }
+      return notification({ messageKey: "addItemsToCreateTest" });
+    }
     createTestFromCart();
   };
 

@@ -60,8 +60,7 @@ const Sidebar = ({
   windowWidth,
   isEditable,
   changePlayListTheme,
-  features = {},
-  orgCollections,
+  collectionsToShow = [],
   onChangeCollection,
   collections = []
 }) => {
@@ -69,7 +68,6 @@ const Sidebar = ({
   const subjectsList = selectsData.allSubjects;
   const [searchValue, setSearchValue] = useState("");
   const playListTitleInput = createRef();
-  const isPublishers = !!(features.isPublisherAuthor || features.isCurator);
 
   useEffect(() => {
     if (playListTitleInput.current) {
@@ -77,9 +75,9 @@ const Sidebar = ({
     }
   }, []);
 
-  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+  const filteredCollections = useMemo(() => collections.filter(c => collectionsToShow.some(o => o._id === c._id)), [
     collections,
-    orgCollections
+    collectionsToShow
   ]);
 
   const selectTags = async id => {
@@ -201,30 +199,26 @@ const Sidebar = ({
             ))}
           </SelectInputStyled>
 
-          {isPublishers && (
-            <>
-              <FieldLabel>Collections</FieldLabel>
-              <SelectInputStyled
-                showArrow
-                data-cy="collectionsSelect"
-                mode="multiple"
-                size="large"
-                margin="0px 0px 15px"
-                placeholder="Please select"
-                value={filteredCollections.flatMap(c => c.bucketIds)}
-                onChange={onChangeCollection}
-                optionFilterProp="children"
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              >
-                {orgCollections.map(o => (
-                  <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
-                    {`${o.collectionName} - ${o.name}`}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-            </>
-          )}
+          <FieldLabel>Collections</FieldLabel>
+          <SelectInputStyled
+            showArrow
+            data-cy="collectionsSelect"
+            mode="multiple"
+            size="large"
+            margin="0px 0px 15px"
+            placeholder="Please select"
+            value={filteredCollections.flatMap(c => c.bucketIds)}
+            onChange={(input, option) => onChangeCollection(input, option)}
+            optionFilterProp="children"
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
+            {collectionsToShow.map(o => (
+              <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                {`${o.collectionName} - ${o.name}`}
+              </Select.Option>
+            ))}
+          </SelectInputStyled>
 
           <FieldLabel>Tags</FieldLabel>
           <SelectInputStyled

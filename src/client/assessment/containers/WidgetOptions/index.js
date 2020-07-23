@@ -20,7 +20,8 @@ class WidgetOptions extends Component {
     cleanSections: PropTypes.func,
     advancedAreOpen: PropTypes.bool,
     showSelect: PropTypes.bool,
-    renderExtra: PropTypes.any
+    renderExtra: PropTypes.any,
+    showScoringSection: PropTypes.bool
   };
 
   static defaultProps = {
@@ -30,8 +31,9 @@ class WidgetOptions extends Component {
     advancedAreOpen: false,
     fillSections: () => {},
     cleanSections: () => {},
+    renderExtra: null,
     showSelect: true,
-    renderExtra: null
+    showScoringSection: false
   };
 
   render() {
@@ -46,19 +48,20 @@ class WidgetOptions extends Component {
       showSelect,
       renderExtra,
       item,
+      showScoringSection = false,
       showScoringSectionAnyRole
     } = this.props;
 
     return (
       <Fragment>
         {renderExtra}
-        {showScoring && (
+        {(showScoring || showScoringSection) && (
           <Question
-            section="advanced"
+            section={showScoringSection ? "main" : "advanced"} // Show scoring section in main/advanced section based on flag
             label="Scoring"
             fillSections={fillSections}
             cleanSections={cleanSections}
-            advancedAreOpen={advancedAreOpen}
+            advancedAreOpen={advancedAreOpen || showScoringSection} // Showing scoring outside of advanced is showScoringSection is true
             showScoringSectionAnyRole={showScoringSectionAnyRole}
           >
             <Scoring

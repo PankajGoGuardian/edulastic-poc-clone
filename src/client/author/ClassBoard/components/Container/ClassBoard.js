@@ -707,7 +707,13 @@ class ClassBoard extends Component {
             placeHolder="Type the action"
             onInputChange={this.handleValidateInput}
             expectedVal="SUBMIT"
-            bodyText={<div>The assignment for selected student(s) will be marked as &quot;Submitted&quot;.Once   you proceed, these students will not be able to take the assignment online.If the students have answered any questions, their responses will be saved. </div>}
+            bodyText={
+              <div>
+                The assignment for selected student(s) will be marked as &quot;Submitted&quot;.Once you proceed, these
+                students will not be able to take the assignment online.If the students have answered any questions,
+                their responses will be saved.{" "}
+              </div>
+            }
             okText="Yes, Submit"
             canUndone
           />
@@ -724,13 +730,11 @@ class ClassBoard extends Component {
             expectedVal="ABSENT"
             bodyText={
               <span>
-                You are about to Mark the selected student(s) as Absent. 
-                Student&apos;s response if present will be deleted. Do 
-                you still want to proceed?
+                You are about to Mark the selected student(s) as Absent. Student&apos;s response if present will be
+                deleted. Do you still want to proceed?
               </span>
             }
-            okText="Yes,Absent"
-            
+            okText="Yes, Absent"
           />
         )}
         {showRemoveStudentsPopup && (
@@ -745,9 +749,8 @@ class ClassBoard extends Component {
             expectedVal="REMOVE"
             bodyText={
               <span>
-                You are about to remove the selected student(s) 
-                from this assessment.Student&apos;s responses will be deleted. 
-                Do you still want to proceed?
+                You are about to remove the selected student(s) from this assessment.Student&apos;s responses will be
+                deleted. Do you still want to proceed?
               </span>
             }
             okText="Yes, Remove"

@@ -252,11 +252,6 @@ export const getCanvasAllowedInstitutionPoliciesSelector = createSelector(
   state => state.filter(s => !!s.allowCanvas)
 );
 
-export const getCleverDistrictUserSelector = createSelector(
-  getOrgDataSelector,
-  orgData => !!orgData.isCleverDistrict
-);
-
 export const getCleverLibraryUserSelector = createSelector(
   getUser,
   getOrgDataSelector,

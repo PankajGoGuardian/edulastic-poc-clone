@@ -6,19 +6,13 @@ import withRouter from "react-router-dom/withRouter";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import * as Sentry from "@sentry/browser";
 
 // components
 import { Dropdown } from "antd";
 
 import GoogleLogin from "react-google-login";
-import {
-  IconGoogleClassroom,
-  IconClever,
-  IconPlusCircle,
-  IconPencilEdit,
-  IconRemove,
-  IconAssignment
-} from "@edulastic/icons";
+import { IconGoogleClassroom, IconClever, IconPlusCircle, IconPencilEdit, IconAssignment } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
 import { canvasApi } from "@edulastic/api";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -107,7 +101,14 @@ const Header = ({
         syncCanvasModal();
       }
     } catch (err) {
-      notification({ messageKey: "errorWhileGettingAuthUri" });
+      Sentry.captureException(err);
+      notification(
+        err.status === 403 && err.data?.message
+          ? {
+              msg: err.data?.message
+            }
+          : { messageKey: "errorWhileGettingAuthUri" }
+      );
     }
   };
 
@@ -135,8 +136,8 @@ const Header = ({
 
   const showSyncButtons = type === "class" && active === 1;
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId;
-  const showGoogleSyncButton = showSyncButtons && !cleverId && (allowGoogleLogin !== false);
-  const showCanvasSyncButton = showSyncButtons && !cleverId && allowCanvasLogin;
+  const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false;
+  const showCanvasSyncButton = showSyncButtons && allowCanvasLogin;
 
   return (
     <MainHeader headingText={name} headingSubContent={headingSubContent} flexDirection="column" alignItems="flex-start">
@@ -205,7 +206,7 @@ const Header = ({
                   <IconPlusCircle />
                   <span>Add a Co-Teacher</span>
                 </MenuItems>
-                
+
                 {/*
                 <MenuItems>
                   <IconRemove />

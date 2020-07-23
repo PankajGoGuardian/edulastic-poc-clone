@@ -395,7 +395,11 @@ class PreviewModal extends React.Component {
     const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH;
 
     const isTestInRegrade = !!test?._id && (testAssignments.length && test.isUsed);
-    const isDisableEdit = !(isEditable || userRole === roleuser.EDULASTIC_CURATOR || userFeatures.isCurator);
+    const isDisableEdit = !(
+      (isEditable && isOwner) ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      userFeatures.isCurator
+    );
     const isDisableDuplicate = !(allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR);
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
 

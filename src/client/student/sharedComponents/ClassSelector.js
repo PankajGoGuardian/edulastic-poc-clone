@@ -35,6 +35,9 @@ const ClassSelector = ({ t, classList, currentGroup, changeClass, allClasses, sh
   }, [classList, currentGroup, showAllClassesOption]);
   const temporaryClassId = sessionStorage.getItem("temporaryClass");
   const tempClass = allClasses.find(clazz => clazz._id === temporaryClassId) || {};
+  const currentClass =
+    classList.length === 0 && currentGroup && isEmpty(tempClass) && allClasses.find(c => c._id === currentGroup);
+
   return (
     <Fragment>
       <AssignmentMobileButton onClick={() => setShown(!isShown)}>
@@ -67,6 +70,11 @@ const ClassSelector = ({ t, classList, currentGroup, changeClass, allClasses, sh
                   {cl.name}
                 </Select.Option>
               )
+          )}
+          {currentClass && (
+            <Select.Option key={currentClass._id} value={currentClass._id}>
+              {currentClass.name}
+            </Select.Option>
           )}
         </Select>
       </AssignmentSelectClass>

@@ -1,5 +1,5 @@
 import { themeColor, lightGrey10 } from "@edulastic/colors";
-import { EduButton, FieldLabel, SelectInputStyled, notification ,CustomModalStyled} from "@edulastic/common";
+import { EduButton, FieldLabel, SelectInputStyled, notification, CustomModalStyled } from "@edulastic/common";
 import {
   IconFolderAll,
   IconFolderDeactive,
@@ -189,11 +189,6 @@ class LeftFilter extends React.Component {
   };
 
   showDeleteConfirm = folderId => {
-    const { folders } = this.props;
-    const folderContent = folders.filter(folder => folderId === folder._id);
-    if (folderContent[0] && folderContent[0].content && folderContent[0].content.length > 0) {
-      notification({ type: "info", messageKey: "deleteFolder" });
-    }
     this.setState({ selectedFolder: folderId }, () => this.showModal("delFolder"));
   };
 
@@ -428,8 +423,9 @@ class LeftFilter extends React.Component {
             </EduButton>
           ]}
         >
-          <p style={{textAlign:"center"}}>
-            Are you sure? <br /> This will delete the folder but all the tests will remain untouched.
+          <p style={{ textAlign: "center" }}>
+            {oldFolderName && (<><b>{oldFolderName}</b> will get deleted but all tests will remain untouched. The tests can still be accessed
+            from All Assignments.</>)}
           </p>
         </CustomModalStyled>
 

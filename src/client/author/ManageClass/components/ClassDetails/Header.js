@@ -6,6 +6,7 @@ import withRouter from "react-router-dom/withRouter";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import * as Sentry from "@sentry/browser";
 
 // components
 import { Dropdown } from "antd";
@@ -144,8 +145,8 @@ const Header = ({
 
   const showSyncButtons = type === "class" && active === 1;
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId;
-  const showGoogleSyncButton = showSyncButtons && !cleverId && allowGoogleLogin !== false;
-  const showCanvasSyncButton = showSyncButtons && !cleverId && allowCanvasLogin;
+  const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false;
+  const showCanvasSyncButton = showSyncButtons && allowCanvasLogin;
 
   return (
     <MainHeader Icon={IconManage} headingText={classDetails}>

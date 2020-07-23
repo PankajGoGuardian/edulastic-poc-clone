@@ -34,7 +34,7 @@ import {
   getAssignmentTestList
 } from "../../../src/selectors/assignments";
 import { getFolderSelector, getFoldersSelector } from "../../../src/selectors/folder";
-import { getGroupList, getUserRole } from "../../../src/selectors/user";
+import { getGroupList, getUserRole, getCurrentTerm } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import {
   CaretUp,
@@ -258,10 +258,11 @@ class LeftFilter extends React.Component {
       loadAssignmentsSummary,
       loadAssignments,
       isAdvancedView,
-      onSetFilter
+      onSetFilter,
+      currentTerm
     } = this.props;
     const { visibleModal } = this.state;
-    const filters = filterState.termId ? { ...filterState, termId: "" } : filterState;
+    const filters = folder ? { ...filterState, termId: "" } : { ...filterState, termId: currentTerm };
     if (visibleModal.moveFolder) {
       const { _id } = folder;
       this.setState({ moveFolderId: _id });
@@ -281,7 +282,7 @@ class LeftFilter extends React.Component {
         loadAssignments({ filters });
       }
     }
-    if (filterState.termId) onSetFilter(filters);
+    if (filterState.termId !== filters.termId) onSetFilter(filters);
   };
 
   handleChangeNewFolderName = e => this.setState({ folderName: e.target.value });
@@ -724,7 +725,8 @@ export default connect(
     userRole: getUserRole(state),
     classList: getGroupList(state),
     teacherList: getAssignmentTeacherList(state),
-    assignmentTestList: getAssignmentTestList(state)
+    assignmentTestList: getAssignmentTestList(state),
+    currentTerm: getCurrentTerm(state)
   }),
   {
     loadAssignments: receiveAssignmentsAction,

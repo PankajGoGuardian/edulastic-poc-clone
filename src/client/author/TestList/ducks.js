@@ -93,11 +93,17 @@ export const getSelectedTestsSelector = createSelector(
   state => state.selectedTests
 );
 
+export const getSortFilterStateSelector = createSelector(
+  stateSelector,
+  state => state.sort
+);
+
 // sagas
-function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
+function* receiveTestsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
   try {
     const { items, count } = yield call(testsApi.getAll, {
       search,
+      sort,
       page,
       limit
     });
@@ -249,6 +255,11 @@ export const emptyFilters = {
   createdAt: ""
 };
 
+export const initialSortState = {
+  sortBy: "relevance",
+  sortDir: "desc"
+};
+
 // reducer
 const initialState = {
   entities: [],
@@ -260,7 +271,8 @@ const initialState = {
   limit: 20,
   count: 0,
   loading: false,
-  selectedTests: []
+  selectedTests: [],
+  sort: { ...initialSortState }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -293,7 +305,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_ALL_TEST_FILTERS:
       return {
         ...state,
-        filters: payload
+        filters: payload.search,
+        sort: payload.sort
       };
 
     case CLEAR_TEST_FILTERS:

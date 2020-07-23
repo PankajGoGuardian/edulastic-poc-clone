@@ -50,14 +50,15 @@ const updateCurriculumSequence = (id, curriculumSequence) => {
   return api.callApi(options).then(res => res.data.result);
 };
 
-const searchCurriculumSequences = ({ search, limit, page }) => {
+const searchCurriculumSequences = ({ search, sort, limit, page }) => {
   const options = {
     method: "post",
     url: `${prefix}/search/`,
     data: {
       page,
       limit,
-      search
+      search,
+      sort
     }
   };
 

@@ -1,7 +1,7 @@
 import { withWindowSizes } from "@edulastic/common";
 import { IconItemLibrary } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { roleuser } from "@edulastic/constants";
+import { roleuser, sortOptions } from "@edulastic/constants";
 import { Pagination, Spin } from "antd";
 import { debounce, omit, isEqual } from "lodash";
 import moment from "moment";
@@ -46,7 +46,9 @@ import {
   receiveTestItemsAction,
   updateSearchFilterStateAction,
   getSelectedItemSelector,
-  setApproveConfirmationOpenAction
+  setApproveConfirmationOpenAction,
+  getSortFilterStateSelector,
+  initialSortState,
 } from "../../../TestPage/components/AddItems/ducks";
 import {
   getAllTagsAction,
@@ -76,6 +78,7 @@ import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../HeaderFilter";
 import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 import ApproveConfirmModal from "../ApproveConfirmModal";
+import SortMenu from "../SortMenu";
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -99,7 +102,8 @@ class Contaier extends Component {
       history,
       interestedSubjects,
       interestedGrades,
-      interestedCurriculums: [firstCurriculum]
+      interestedCurriculums: [firstCurriculum],
+      sort: initSort = {}
     } = this.props;
     const {
       subject = interestedSubjects || [],
@@ -110,6 +114,13 @@ class Contaier extends Component {
     const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
     const { params = {} } = match;
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
+    const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[itemList]")) || {};
+    const sort = {
+      ...initSort,
+      sortBy: "popularity",
+      sortDir: "desc",
+      ...sessionSort
+    };
     const search = {
       ...initSearch,
       ...sessionFilters,
@@ -131,11 +142,11 @@ class Contaier extends Component {
       this.updateFilterState({
         ...updatedSearch,
         filter
-      });
-      receiveItems({ ...updatedSearch, filter }, 1, limit);
+      }, sort);
+      receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
     } else {
-      this.updateFilterState(search);
-      receiveItems(search, 1, limit);
+      this.updateFilterState(search, sort);
+      receiveItems(search, sort, 1, limit);
     }
     if (curriculums.length === 0) {
       getCurriculums();
@@ -145,21 +156,22 @@ class Contaier extends Component {
     }
   }
 
-  updateFilterState = newSearch => {
+  updateFilterState = (newSearch, sort = {}) => {
     const { updateSearchFilterState } = this.props;
-    updateSearchFilterState(newSearch);
+    updateSearchFilterState({ newSearch, sort });
     sessionStorage.setItem("filters[itemList]", JSON.stringify(newSearch));
+    sessionStorage.setItem("sortBy[itemList]", JSON.stringify(sort));
   };
 
   handleSearch = searchState => {
-    const { limit, receiveItems, userFeatures, search: propSearch } = this.props;
+    const { limit, receiveItems, userFeatures, search: propSearch, sort } = this.props;
     let search = searchState || propSearch;
     if (!userFeatures.isCurator) search = omit(search, "authoredByIds");
-    receiveItems(search, 1, limit);
+    receiveItems(search, sort, 1, limit);
   };
 
   handleLabelSearch = e => {
-    const { limit, receiveItems, history, search } = this.props;
+    const { limit, receiveItems, history, search, sort } = this.props;
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -173,21 +185,21 @@ class Contaier extends Component {
     this.updateFilterState({
       ...updatedSearch,
       filter
-    });
-    receiveItems({ ...updatedSearch, filter }, 1, limit);
+    }, sort);
+    receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
     history.push(`/author/items/filter/${filterType}`);
   };
 
   handleClearSearch = () => {
-    const { clearFilterState, limit, receiveItems, search = {} } = this.props;
-
+    const { clearFilterState, limit, receiveItems, search = {}, sort = {} } = this.props;
+  
     // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(search, initalSearchState)) return null;
+    if (isEqual(search, initalSearchState) && isEqual(sort, initialSortState)) return null;
 
     clearFilterState();
 
-    this.updateFilterState(initalSearchState);
-    receiveItems(initalSearchState, 1, limit);
+    this.updateFilterState(initalSearchState, initialSortState);
+    receiveItems(initalSearchState, initialSortState, 1, limit);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
   };
 
@@ -210,7 +222,8 @@ class Contaier extends Component {
       udpateDefaultSubject,
       clearDictStandards,
       getCurriculumStandards,
-      search
+      search,
+      sort
     } = this.props;
     let updatedKeys = {};
     if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
@@ -251,20 +264,20 @@ class Contaier extends Component {
       storeInLocalStorage("defaultGrades", value);
     }
 
-    this.updateFilterState(updatedKeys);
+    this.updateFilterState(updatedKeys, sort);
     this.handleSearch(updatedKeys);
   };
 
   searchDebounce = debounce(this.handleSearch, 500);
 
   handleSearchInputChange = tags => {
-    const { search } = this.props;
+    const { search, sort } = this.props;
     const updatedKeys = {
       ...search,
       searchString: tags
     };
 
-    this.updateFilterState(updatedKeys);
+    this.updateFilterState(updatedKeys, sort);
     this.searchDebounce();
   };
 
@@ -284,9 +297,9 @@ class Contaier extends Component {
   };
 
   handlePaginationChange = page => {
-    const { search } = this.props;
+    const { search, sort } = this.props;
     const { receiveItems, limit } = this.props;
-    receiveItems(search, page, limit);
+    receiveItems(search, sort, page, limit);
   };
 
   renderPagination = () => {
@@ -337,6 +350,16 @@ class Contaier extends Component {
   };
 
   toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+  onSelectSortOption = (value, sortDir) => {
+    const { search, limit, sort, receiveItems } = this.props;
+    const updateSort = {
+      ...sort,
+      sortBy: value,
+      sortDir
+    };
+    this.updateFilterState(search, updateSort);
+    receiveItems(search, updateSort, 1, limit);
+  }
 
   handleApproveItems = () => {
     const { approveOrRejectMultipleItem, selectedItems, setApproveConfirmationOpen } = this.props;
@@ -381,7 +404,8 @@ class Contaier extends Component {
       loading,
       count,
       search,
-      userRole
+      userRole,
+      sort = {}
     } = this.props;
 
     const { isShowFilter, openSidebar } = this.state;
@@ -434,6 +458,7 @@ class Contaier extends Component {
                       handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
                       type="testitem"
                     />
+                    <SortMenu options={sortOptions.itemList} onSelect={this.onSelectSortOption} sortDir={sort.sortDir} sortBy={sort.sortBy}/>
                     <Actions type="TESTITEM" />
                   </ItemsMenu>
 
@@ -498,6 +523,7 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       search: getSearchFilterStateSelector(state),
+      sort: getSortFilterStateSelector(state),
       passageItems: state.tests.passageItems || [],
       userFeatures: getUserFeatures(state),
       userRole: getUserRole(state),

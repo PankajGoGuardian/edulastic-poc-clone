@@ -62,7 +62,7 @@ function* receivePublishersSaga() {
   }
 }
 
-function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
+function* receivePlaylistsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
   try {
     const _search = { ...search };
     // If user is CE then fetch playlists created by only this CE
@@ -77,6 +77,7 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
 
     const result = yield call(curriculumSequencesApi.searchCurriculumSequences, {
       search: _search,
+      sort,
       page,
       limit
     });
@@ -145,6 +146,11 @@ export const emptyFilters = {
   createdAt: ""
 };
 
+export const initialSortState = {
+  sortBy: "relevance",
+  sortDir: "desc"
+}
+
 // reducer
 const initialState = {
   entities: [],
@@ -159,7 +165,8 @@ const initialState = {
   selectedPlayLists: [],
   filters: {
     ...emptyFilters
-  }
+  },
+  sort: { ...initialSortState }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -207,7 +214,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_ALL_PLAYLIST_FILTERS:
       return {
         ...state,
-        filters: payload
+        filters: payload.search,
+        sort: payload.sort
       };
     case CLEAR_PLAYLIST_FILTERS:
       return {
@@ -277,4 +285,9 @@ export const getPlalistFilterSelector = createSelector(
 export const getSelectedPlaylistSelector = createSelector(
   stateSelector,
   state => state.selectedPlayLists
+);
+
+export const getSortFilterStateSelector = createSelector(
+  stateSelector,
+  state => state.sort
 );

@@ -63,10 +63,11 @@ export const receiveTestItemsError = error => ({
   }
 });
 
-export const receiveTestItemsAction = (search, page, limit) => ({
+export const receiveTestItemsAction = (search, sort, page, limit) => ({
   type: RECEIVE_TEST_ITEMS_REQUEST,
   payload: {
     search,
+    sort,
     page,
     limit
   }
@@ -137,6 +138,11 @@ export const initalSearchState = {
   createdAt: ""
 };
 
+export const initialSortState = {
+  sortBy: "popularity",
+  sortDir: "desc"
+};
+
 const initialState = {
   items: [],
   error: null,
@@ -152,7 +158,8 @@ const initialState = {
   search: { ...initalSearchState },
   archivedItems: [],
   needToSetFilter: true,
-  showApproveConfirmation: false
+  showApproveConfirmation: false,
+  sort: {...initialSortState}
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -203,7 +210,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_SEARCH_FILTER_STATE:
       return {
         ...state,
-        search: { ...payload },
+        search: { ...payload.newSearch },
+        sort: { ...payload.sort },
         needToSetFilter: true
       };
     case CLEAR_SEARCH_FILTER_STATE:
@@ -295,7 +303,7 @@ export const reducer = (state = initialState, { type, payload }) => {
 
 // saga
 
-function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
+function* receiveTestItemsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
   try {
     const currentLocation = yield select(state => state.router.location.pathname);
     yield put(push(`${currentLocation}?page=${page}`));
@@ -314,6 +322,7 @@ function* receiveTestItemsSaga({ payload: { search = {}, page = 1, limit = 10 } 
     const searchTags = tags.map(tag => allTagsKeyById[tag]?.tagName || "");
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
+      sort,
       page,
       limit
     });
@@ -405,4 +414,9 @@ export const getSearchFilterStateSelector = createSelector(
 export const getShowApproveConfirmationSelector = createSelector(
   stateTestItemsSelector,
   state => state.showApproveConfirmation
+);
+
+export const getSortFilterStateSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.sort
 );

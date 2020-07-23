@@ -75,7 +75,7 @@ const PlayerHeader = ({
         <HeaderMainMenu skin style={{ height: headerHeight }}>
           <FlexContainer style={headerStyleWidthZoom}>
             <HeaderWrapper justifyContent="space-between">
-              <MainActionWrapper>
+              <MainActionWrapper alignItems="center">
                 <LogoCompact isMobile={isMobile} buttons={rightButtons} />
                 {!LCBPreviewModal && (
                   <>

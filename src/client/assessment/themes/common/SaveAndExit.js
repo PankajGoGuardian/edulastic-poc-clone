@@ -31,7 +31,7 @@ const SaveAndExit = ({
   const _pauseAllowed = useUtaPauseAllowed(utaId);
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;
   return (
-    <FlexContainer marginLeft="30px">
+    <FlexContainer marginLeft="30px" alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       {showZoomBtn && (
         <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>

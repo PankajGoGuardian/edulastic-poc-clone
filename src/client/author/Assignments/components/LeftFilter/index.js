@@ -253,14 +253,15 @@ class LeftFilter extends React.Component {
     const {
       setFolder,
       clearFolder,
-      filterState: filters,
+      filterState,
       districtId,
       loadAssignmentsSummary,
       loadAssignments,
-      isAdvancedView
+      isAdvancedView,
+      onSetFilter
     } = this.props;
     const { visibleModal } = this.state;
-
+    const filters = filterState.termId ? { ...filterState, termId: "" } : filterState;
     if (visibleModal.moveFolder) {
       const { _id } = folder;
       this.setState({ moveFolderId: _id });
@@ -280,6 +281,7 @@ class LeftFilter extends React.Component {
         loadAssignments({ filters });
       }
     }
+    if (filterState.termId) onSetFilter(filters);
   };
 
   handleChangeNewFolderName = e => this.setState({ folderName: e.target.value });
@@ -424,8 +426,12 @@ class LeftFilter extends React.Component {
           ]}
         >
           <p style={{ textAlign: "center" }}>
-            {oldFolderName && (<><b>{oldFolderName}</b> will get deleted but all tests will remain untouched. The tests can still be accessed
-            from All Assignments.</>)}
+            {oldFolderName && (
+              <>
+                <b>{oldFolderName}</b> will get deleted but all tests will remain untouched. The tests can still be
+                accessed from All Assignments.
+              </>
+            )}
           </p>
         </CustomModalStyled>
 

@@ -26,6 +26,7 @@ export const TypeContainer = styled.div`
 `;
 
 export const MetaTag = styled(Tag)`
+  height: 30px;
   background: ${themeLightGrayBgColor};
   border: none;
   color: ${greyDarken};

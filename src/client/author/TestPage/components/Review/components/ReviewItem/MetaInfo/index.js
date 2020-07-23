@@ -37,7 +37,7 @@ const MetaInfo = ({
         {item && item.data && <Standards item={item} search={{ curriculumId: "" }} reviewpage />}
         <Tags tags={tags} show={1} />
         {type && (
-          <FlexContainer>
+          <FlexContainer style={{ alignItems: "center" }}>
             {type.map(t => (
               <MetaTag key={t} marginLeft="0px">
                 {t}

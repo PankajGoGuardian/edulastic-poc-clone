@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, white, themeColor, greyThemeDark1, extraDesktopWidthMax } from "@edulastic/colors";
+import { mediumDesktopExactWidth, greyThemeDark1, themeColor, extraDesktopWidthMax, white } from "@edulastic/colors";
 import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
@@ -9,7 +9,7 @@ const WidgetTitle = styled.h2`
   display: flex;
   align-items: center;
   border-radius: 4px;
-  margin: ${props => props.margin || "0px 0px 16px"};
+  margin: ${props => props.margin || "0px 0px 26px"};
   font-weight: bold;
   ${({ titleStyle }) => titleStyle};
 `;
@@ -34,21 +34,22 @@ export const SubtitleText = styled.div`
   }
 `;
 
-const IconStyle = {
-  fill: white,
-  width: "16px",
-  height: "16px",
-  background: themeColor,
-  borderRadius: "50%",
-  padding: "3px",
-  marginLeft: "16px",
-  opacity: 0.01
-};
+const StyledQuestionIcon = styled(IconQuestion)`
+  fill: ${white};
+  background: ${themeColor};
+  border-radius: 50%;
+  padding: 3px;
+  opacity: 0.01;
+  margin-left: 16px;
+  &:hover {
+    fill: ${white};
+  }
+`;
 
 export const QuestionIcon = ({ id = "", customStyle = {} }) =>
   id && !id.includes("undefined") ? (
     <FlexContainer id={id}>
-      <IconQuestion style={{ ...IconStyle, ...customStyle }} />
+      <StyledQuestionIcon width={14} height={14} style={customStyle} />
     </FlexContainer>
   ) : null;
 

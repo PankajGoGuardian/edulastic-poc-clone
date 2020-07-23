@@ -7,7 +7,6 @@ import uuid from "uuid/v4";
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -21,8 +20,6 @@ import { updateVariables } from "../../utils/variables";
 
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
-
-const OptionsList = withPoints(MatchListPreview);
 
 const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
@@ -157,19 +154,14 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
   };
 
   const renderOptions = () => (
-    <OptionsList
+    <MatchListPreview
       item={item}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       userAnswer={
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
       showBorder
-      isCorrectAnsTab={correctTab === 0}
     />
   );
 
@@ -299,6 +291,13 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
             fillSections={fillSections}
             cleanSections={cleanSections}
             questionType={item?.title}
+            points={
+              correctTab === 0
+                ? item.validation.validResponse.score
+                : item.validation.altResponses[correctTab - 1].score
+            }
+            isCorrectAnsTab={correctTab === 0}
+            onChangePoints={handlePointsChange}
           />
         </Question>
 

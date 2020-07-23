@@ -43,7 +43,8 @@ export const SortableItemContainer = styled.div.attrs({
       styleType === "list" || styleType === "inline" ? "none" : `1px solid ${greyThemeLight}`};
 
     .froala-wrapper {
-      padding: 8px 0px;
+      padding: 5px 0px;
+      width: calc(100% - 65px); /* 65px is the combined width of hamburger and delete icons  */
     }
   }
   & div.main i.fa-align-justify {
@@ -59,10 +60,6 @@ export const SortableItemContainer = styled.div.attrs({
   input {
     border-color: transparent;
   }
-
-  .froala-wrapper {
-    width: calc(100% - 65px); /* 65px is the combined width of hamburger and delete icons  */
-  }
 `;
 
 export const DragIcon = styled.div`
@@ -73,12 +70,12 @@ export const DragIcon = styled.div`
 `;
 
 export const DragLine = styled.div`
-  width: 19px;
+  width: 16px;
   height: 3px;
   background: #878a91;
 
   &:not(:last-child) {
-    margin-bottom: 3px;
+    margin-bottom: 2.8px;
   }
 `;
 

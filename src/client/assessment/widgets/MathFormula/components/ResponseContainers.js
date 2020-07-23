@@ -50,7 +50,9 @@ class ResponseContainers extends Component {
           </Fragment>
         ))}
 
-        <CustomStyleBtn onClick={onAdd}>{t("component.options.addResponseContainer")}</CustomStyleBtn>
+        <CustomStyleBtn width="180px" onClick={onAdd}>
+          {t("component.options.addResponseContainer")}
+        </CustomStyleBtn>
       </Container>
     );
   }

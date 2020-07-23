@@ -511,7 +511,7 @@ class QuestionWrapper extends Component {
                 style={{
                   width:
                     !isPrintPreview &&
-                    `${view === EDIT && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
+                    `${view === EDIT && showQuestionMenu && !disableResponse ? "calc(100% - 250px)" : "100%"}`,
                   maxWidth: isPrintPreview && "calc(100% - 10px)",
                   display: "flex",
                   boxShadow: "none",

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
@@ -64,35 +63,6 @@ class ClozeDropDown extends Component {
       instantFeedback: item.instant_feedback,
       instructorStimulus: item.instructorStimulus
     };
-  };
-
-  handleAddAltResponses = () => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        const validAnswers = cloneDeep(draft.validation.validResponse.value);
-        validAnswers.map(answer => {
-          answer.value = "";
-          return answer;
-        });
-        draft.validation.altResponses.push({
-          score: 1,
-          value: validAnswers
-        });
-      })
-    );
-  };
-
-  handleRemoveAltResponses = index => {
-    const { setQuestionData, item } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        // eslint-disable-next-line max-len
-        if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.splice(index, 1);
-        }
-      })
-    );
   };
 
   handleOptionsChange = (name, value) => {
@@ -164,10 +134,8 @@ class ClozeDropDown extends Component {
                     item={itemForPreview}
                     stimulus={previewStimulus}
                     uiStyle={uiStyle}
-                    onAddAltResponses={this.handleAddAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
                   />
                   <CorrectAnswerOptions>
                     <CheckboxLabel

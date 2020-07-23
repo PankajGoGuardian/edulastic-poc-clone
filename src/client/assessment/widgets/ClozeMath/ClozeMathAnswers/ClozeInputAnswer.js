@@ -9,15 +9,15 @@ import { TextInputStyled } from "../../../styled/InputStyles";
 const { Panel } = Collapse;
 
 const AnswerContainer = styled.div`
-  margin-top: 16px;
   .ant-collapse-item {
     border: 1px solid ${greyThemeLight};
-    margin-bottom: 16px;
+    margin-bottom: 4px;
 
     .ant-collapse-header {
       background-color: ${greyThemeLighter};
       color: ${greyThemeDark2};
       font-weight: 600;
+      padding: 6px 16px;
     }
 
     .ant-collapse-content {

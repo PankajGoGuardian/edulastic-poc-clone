@@ -23,7 +23,6 @@ import { QuestionHeader } from "../../styled/QuestionHeader";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT, PREVIEW, SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
-import withPoints from "../../components/HOC/withPoints";
 import OrderListPreview from "./components/OrderListPreview";
 import Options from "./components/Options";
 import { getFontSize, getStemNumeration } from "../../utils/helpers";
@@ -62,8 +61,6 @@ const OptionsContainer = styled.div`
     }
   }
 `;
-
-const OptionsList = withPoints(QuillSortableList);
 
 const convertArrToObj = arr => arr.reduce((acc, curr, currIndex) => ({ ...acc, [curr]: currIndex }), {});
 
@@ -170,7 +167,7 @@ const OrderList = ({
   // fixes the issue with PointsInput taking full width
   const renderOptions = view === EDIT && scrollContainer && (
     <OptionsContainer styleType={styleType}>
-      <OptionsList
+      <QuillSortableList
         item={item}
         fontSize={fontSize}
         width="230px"
@@ -184,15 +181,12 @@ const OrderList = ({
         useDragHandle
         columns={columns}
         styleType={styleType}
-        points={correctTab === 0 ? validResponse.score : altResponses.score}
         lockToContainerEdges
         lockOffset={["10%", "10%"]}
         lockAxis={uiStyle.type === "inline" ? "x" : "y"}
         getContainer={styleType !== "inline" ? () => scrollContainer : null}
-        onChangePoints={handleUpdatePoints}
         canDelete={false}
         className="orderlist-set-correct-answer"
-        isCorrectAnsTab={correctTab === 0}
       />
     </OptionsContainer>
   );
@@ -295,6 +289,9 @@ const OrderList = ({
               fillSections={fillSections}
               cleanSections={cleanSections}
               questionType={item?.title}
+              points={correctTab === 0 ? validResponse.score : altResponses.score}
+              onChangePoints={handleUpdatePoints}
+              isCorrectAnsTab={correctTab === 0}
             />
           </Question>
 

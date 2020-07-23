@@ -278,7 +278,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
       return `
       .fr-box {
           max-width: 100%;
-          overflow: auto;
+          overflow-x: auto;
+          overflow-y: hidden;
         }
       `;
     }
@@ -290,7 +291,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
         .fr {
           &-box {
             height: ${editorHeight}px;
-            overflow: auto;
+            overflow-x: auto;
+            overflow-y: hidden;
           }
         }
       `;

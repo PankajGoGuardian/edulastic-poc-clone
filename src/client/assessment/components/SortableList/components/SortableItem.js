@@ -1,16 +1,16 @@
 import React, { memo } from "react";
 import { SortableElement } from "react-sortable-hoc";
-import { IconTrash } from "@edulastic/icons";
-import { red, themeColor, greyThemeDark2 } from "@edulastic/colors";
+import { red, greyThemeDark2 } from "@edulastic/colors";
 
 import { FlexContainer } from "@edulastic/common";
 import { SortableItemContainer } from "../../QuillSortableList/styled/SortableItemContainer";
 import DragHandle from "../../QuillSortableList/components/DragHandle";
 import FocusInput from "./FocusInput";
+import { IconTrash } from "../styled/IconTrash";
 
 const SortableItem = SortableElement(({ cyIndex, fontSize, columns = 1, value, dirty, onRemove, onChange }) => (
   <SortableItemContainer fontSize={fontSize} columns={columns} data-cy={`choice${cyIndex}`}>
-    <FlexContainer style={{ flex: 1 }}>
+    <FlexContainer alignItems="center" flex="1">
       <div className="main">
         <DragHandle index={cyIndex} />
         <div style={{ width: "100%" }}>
@@ -24,16 +24,7 @@ const SortableItem = SortableElement(({ cyIndex, fontSize, columns = 1, value, d
           />
         </div>
       </div>
-      <IconTrash
-        style={{ cursor: "pointer" }}
-        data-cy="deleteButton"
-        cIndex={cyIndex}
-        onClick={onRemove}
-        color={greyThemeDark2}
-        hoverColor={red}
-        width={20}
-        height={20}
-      />
+      <IconTrash data-cy="deleteButton" cIndex={cyIndex} onClick={onRemove} color={greyThemeDark2} hoverColor={red} />
     </FlexContainer>
   </SortableItemContainer>
 ));

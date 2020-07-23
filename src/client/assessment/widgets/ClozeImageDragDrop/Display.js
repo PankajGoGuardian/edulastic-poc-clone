@@ -493,6 +493,7 @@ class Display extends Component {
           alt={imageAlterText}
           maxHeight={maxHeight}
           maxWidth={maxWidth}
+          preview={preview}
           style={{
             position: "absolute",
             top: imageOptions.y || 0,

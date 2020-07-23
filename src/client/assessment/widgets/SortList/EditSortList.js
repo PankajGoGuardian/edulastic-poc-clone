@@ -7,7 +7,6 @@ import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
-import withPoints from "../../components/HOC/withPoints";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
@@ -16,8 +15,6 @@ import ComposeQuestion from "./ComposeQuestion";
 import ListLabels from "./ListLabels";
 import ListComponent from "./ListComponent";
 import Question from "../../components/Question";
-
-const OptionsList = withPoints(QuillSortableList);
 
 const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
@@ -91,7 +88,7 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
   };
 
   const renderOptions = () => (
-    <OptionsList
+    <QuillSortableList
       item={item}
       prefix="options"
       readOnly
@@ -104,11 +101,6 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
       onSortEnd={handleCorrectSortEnd}
       useDragHandle
       columns={1}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      onChangePoints={handlePointsChange}
-      isCorrectAnsTab={correctTab === 0}
     />
   );
 
@@ -150,6 +142,13 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
             fillSections={fillSections}
             cleanSections={cleanSections}
             questionType={item?.title}
+            isCorrectAnsTab={correctTab === 0}
+            points={
+              correctTab === 0
+                ? item.validation.validResponse.score
+                : item.validation.altResponses[correctTab - 1].score
+            }
+            onChangePoints={handlePointsChange}
           />
         </Question>
       </Paper>

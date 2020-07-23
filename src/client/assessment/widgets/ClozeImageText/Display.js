@@ -138,7 +138,8 @@ class Display extends Component {
       view,
       hideInternalOverflow,
       isPrintPreview,
-      userAnswers
+      userAnswers,
+      setAnswers
     } = this.props;
 
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
@@ -173,6 +174,7 @@ class Display extends Component {
             height={this.getHeight()}
             heighcanvasDimensionst={imageHeight}
             alt={imageAlterText}
+            setAnswers={setAnswers}
             style={{
               position: "absolute",
               top: imageOptions.y || 0,

@@ -1,7 +1,6 @@
-/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Select, Checkbox, Input } from "antd";
+import { Select } from "antd";
 import { compose } from "redux";
 import { cloneDeep, findIndex, clamp } from "lodash";
 import { withTheme } from "styled-components";
@@ -73,7 +72,7 @@ class Layout extends Component {
     const { item, responseContainers, onChange } = this.props;
     const { responseIds } = item;
     const ind = responseContainers.length;
-    let obj = undefined;
+    let obj;
     // eslint-disable-next-line no-labels
     outerLoop: if (responseIds) {
       // eslint-disable-next-line guard-for-in

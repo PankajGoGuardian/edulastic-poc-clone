@@ -98,7 +98,7 @@ class MultipleChoiceOptions extends Component {
     return (
       <Question
         section="main"
-        label={t("component.multiplechoice.multiplechoiceoptions")}
+        label={t("component.multiplechoice.createchoiceoptions")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >

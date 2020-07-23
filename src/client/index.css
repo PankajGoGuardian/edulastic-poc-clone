@@ -912,11 +912,11 @@ textinput {
   background-image: none;
   border-radius: 4px;
   cursor: pointer;
-  margin: 2px 4px;
+  margin: 0px 4px;
   position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 35px;
+  min-height: 32px;
   white-space: nowrap;
 }
 
@@ -970,16 +970,34 @@ textinput::after {
   content: "Text Input";
 }
 
+response::after,
+mathinput::after,
+mathunit::after,
+textdropdown::after,
+textinput::after {
+  text-transform: uppercase;
+  font-size: 10px;
+  color: #2f4151;
+  font-weight: 600;
+}
+
 mathinput::before,
 mathunit::before,
 textdropdown::before,
 textinput::before {
   content: attr(responseIndex);
-  background: darkgray;
+  background: #a7a7a7;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  padding: 6px 8px;
   margin-right: 8px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 *,

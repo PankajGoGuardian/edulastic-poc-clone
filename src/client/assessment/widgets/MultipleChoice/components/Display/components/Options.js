@@ -16,6 +16,7 @@ const Options = ({
   multipleResponses,
   fontSize,
   item,
+  fromSetAnswers,
   ...restProps
 }) => {
   const noOfColumns = uiStyle.columns || 1;
@@ -51,7 +52,11 @@ const Options = ({
   }
 
   const getOption = (startIndex, lastIndex) => (
-    <FlexContainer justifyContent="left" className="__prevent-page-break __print-space-reduce-options">
+    <FlexContainer
+      justifyContent="left"
+      className="__prevent-page-break __print-space-reduce-options"
+      width={fromSetAnswers && "100%"}
+    >
       {mcqOptions.slice(startIndex, lastIndex).map((option, index) => (
         <Option
           maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
@@ -66,6 +71,7 @@ const Options = ({
           styleType={styleType}
           multipleResponses={multipleResponses}
           fontSize={fontSize}
+          fromSetAnswers={fromSetAnswers}
           {...restProps}
         />
       ))}
@@ -83,7 +89,12 @@ const Options = ({
   };
 
   return (
-    <OptionsList styleType={styleType} fontSize={fontSize} className="multiplechoice-optionlist">
+    <OptionsList
+      width={fromSetAnswers && "100%"}
+      styleType={styleType}
+      fontSize={fontSize}
+      className="multiplechoice-optionlist"
+    >
       {renderOptionList()}
     </OptionsList>
   );

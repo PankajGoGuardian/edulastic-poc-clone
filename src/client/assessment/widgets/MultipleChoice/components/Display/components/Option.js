@@ -168,9 +168,8 @@ const Option = props => {
   );
 
   const showBorder = fromSetAnswers || uiStyle.type === "block";
-  // const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
+
   return (
-    // <Label width={width} smallSize={smallSize} className={className} showAnswer>
     // TODO setup label background color for each option
     <Label
       data-cy="anwer-labels"
@@ -212,15 +211,15 @@ const StyledOptionsContainer = styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-start;
-  padding: 7px 12px;
+  padding: 5px 12px;
   flex-direction: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "column" : "row")};
   align-items: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "flex-start" : "center")};
   border-radius: ${({ uiStyleType }) => (uiStyleType === "block" ? "4px" : "2px")};
 
   span.labelOnly {
-    width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "30px" : "26px")};
+    width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "37px" : "25px")};
     height: ${({ uiStyleType }) =>
-      uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "calc(100% + 2px)" : "26px"};
+      uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "calc(100% + 2px)" : "25px"};
 
     position: ${({ uiStyleType }) => (uiStyleType === "block" ? "absolute" : "")};
     left: ${({ uiStyleType }) => (uiStyleType === "block" ? "-1px" : "")};

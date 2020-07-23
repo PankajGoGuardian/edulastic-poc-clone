@@ -180,6 +180,7 @@ class Display extends Component {
       isReviewTab,
       isPrint = false,
       isPrintPreview = false,
+      setAnswers,
       view
     } = this.props;
 
@@ -258,6 +259,7 @@ class Display extends Component {
               width={this.getWidth()}
               height={this.getHeight()}
               alt={imageAlterText}
+              setAnswers={setAnswers}
               maxHeight={maxHeight}
               maxWidth={maxWidth}
               style={{

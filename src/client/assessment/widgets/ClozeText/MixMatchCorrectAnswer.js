@@ -125,7 +125,7 @@ export default MixMatchCorrectAnswer;
 const CorrectAnswer = styled.div`
   display: flex;
   align-items: stretch;
-  height: 44px;
+  height: 32px;
   margin-right: 16px;
   margin-bottom: 8px;
   .index {
@@ -134,8 +134,8 @@ const CorrectAnswer = styled.div`
     display: inline-flex;
     align-items: center;
     background: #878282;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
     align-self: stretch;
   }
   .text {
@@ -165,10 +165,11 @@ const AlterAnswer = styled.div`
       box-shadow: none;
     }
     width: 80px;
+    min-height: 32px;
   }
 
   .ant-tag {
-    padding: 4px 8px;
+    padding: 2px 8px;
     margin-right: 4px;
     white-space: pre-wrap;
   }

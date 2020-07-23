@@ -36,8 +36,7 @@ export const Label = styled.label`
   flex: 1;
   position: relative;
   display: inline-block;
-  margin-bottom: 2px;
-  border: ${({ showBorder }) => (showBorder ? "1px solid #b9b9b9" : "")};
+  margin-bottom: 4px;
   border: ${props =>
     props.showBorder &&
     (props.styleType === "primary"
@@ -52,7 +51,7 @@ export const Label = styled.label`
   max-width: ${props => props.maxWidth || "100%"};
   border-radius: ${props =>
     props.styleType === "primary" || props.uiStyle.type === "block" ? "4px" : "0px 10px 10px 0px"};
-  min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "26px" : "auto")};
+  min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "35px" : "auto")};
   box-shadow: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "none" : "none")};
   display: flex;
   align-items: center;

@@ -1,21 +1,14 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { questionTitle } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { Tab, TabContainer, Tabs, FlexContainer, ItemLevelContext, getFormattedAttrId } from "@edulastic/common";
-import { PointsInput } from "../../styled/CorrectAnswerHeader";
-import { Label } from "../../styled/WidgetOptions/Label";
-import { Subtitle } from "../../styled/Subtitle";
+import CorrectAnswers from "../../components/CorrectAnswers";
 import CorrectAnswer from "./CorrectAnswer";
-import { AlternateAnswerLink } from "../../styled/ButtonStyles";
 
-class CorrectAnswers extends Component {
+class SetCorrectAnswers extends Component {
   state = {
     currentTab: 0
   };
-
-  static contextType = ItemLevelContext;
 
   handleAddAltResponses = () => {
     const { setQuestionData, question } = this.props;
@@ -41,8 +34,7 @@ class CorrectAnswers extends Component {
     });
   };
 
-  handleRemoveAltResponses = index => e => {
-    e?.stopPropagation();
+  handleRemoveAltResponses = index => {
     const { setQuestionData, question } = this.props;
     setQuestionData(
       produce(question, draft => {
@@ -89,31 +81,9 @@ class CorrectAnswers extends Component {
     );
   };
 
-  renderAltResponsesTabs = () => {
-    const { validation, t } = this.props;
-    if (validation.altResponses && validation.altResponses.length) {
-      return validation.altResponses.map((res, i) => (
-        <Tab
-          IconPosition="right"
-          key={i}
-          close
-          type="primary"
-          onClose={this.handleRemoveAltResponses(i)}
-          label={`${t("component.correctanswers.alternate")} ${i + 1}`}
-        />
-      ));
-    }
-    return null;
-  };
-
   handleTabChange = value => {
     this.setState({ currentTab: value });
   };
-
-  get tabs() {
-    const { validation } = this.props;
-    return validation?.altResponses?.length || 0;
-  }
 
   get response() {
     const { validation } = this.props;
@@ -125,65 +95,47 @@ class CorrectAnswers extends Component {
   }
 
   render() {
-    const { stimulus, options, t, multipleResponses, uiStyle, styleType, fontSize, queTitle = "", question={} } = this.props;
+    const {
+      stimulus,
+      options,
+      multipleResponses,
+      uiStyle,
+      styleType,
+      fontSize,
+      question = {},
+      cleanSections,
+      fillSections
+    } = this.props;
     const { currentTab } = this.state;
     const title = currentTab === 0 ? "correct" : "alternative";
-    const isCorrectAnsTab = currentTab === 0;
     const { response } = this;
-    const itemLevelScoring = this.context;
+
     return (
-      <Fragment>
-        <Subtitle id={getFormattedAttrId(`${title}-${t("component.correctanswers.setcorrectanswers")}`)}>
-          {t("component.correctanswers.setcorrectanswers")}
-        </Subtitle>
-        <FlexContainer alignItems="flex-end" marginBottom="16px">
-          {itemLevelScoring || (
-            <FlexContainer flex={1} flexDirection="column" alignItems="flex-start">
-              <Label>{t("component.correctanswers.points")}</Label>
-              <PointsInput
-                id={getFormattedAttrId(`${title}-${t("component.correctanswers.points")}`)}
-                type="number"
-                data-cy="points"
-                value={response.score}
-                onChange={this.updateScore}
-                onBlur={this.updateScore}
-                disabled={false}
-                min={0}
-                max={!isCorrectAnsTab ? question?.validation?.validResponse?.score : Number.MAX_SAFE_INTEGER}
-                step={0.5}
-              />
-            </FlexContainer>
-          )}
-          <FlexContainer flex={1}>
-            {queTitle !== questionTitle.MCQ_TRUE_OR_FALSE && (
-              <AlternateAnswerLink onClick={this.handleAddAltResponses} variant="extendedFab" data-cy="alternate">
-                {`+ ${t("component.correctanswers.alternativeAnswer")}`}
-              </AlternateAnswerLink>
-            )}
-          </FlexContainer>
-        </FlexContainer>
-
-        {this.tabs >= 1 && (
-          <Tabs value={currentTab} onChange={this.handleTabChange} style={{ marginBottom: 16 }}>
-            <Tab type="primary" data_cy="correct" label={t("component.correctanswers.correct")} />
-            {this.renderAltResponsesTabs()}
-          </Tabs>
-        )}
-
-        <TabContainer padding="0px">
-          <CorrectAnswer
-            uiStyle={uiStyle}
-            stimulus={stimulus}
-            multipleResponses={multipleResponses}
-            options={options}
-            styleType={styleType}
-            fontSize={fontSize}
-            title={title}
-            response={response}
-            onUpdateValidationValue={this.updateAnswers}
-          />
-        </TabContainer>
-      </Fragment>
+      <CorrectAnswers
+        correctTab={currentTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        validation={question.validation}
+        questionType={question?.title}
+        onAdd={this.handleAddAltResponses}
+        onCloseTab={this.handleRemoveAltResponses}
+        onTabChange={this.handleTabChange}
+        onChangePoints={this.updateScore}
+        points={response.score}
+        isCorrectAnsTab={currentTab === 0}
+      >
+        <CorrectAnswer
+          uiStyle={uiStyle}
+          stimulus={stimulus}
+          multipleResponses={multipleResponses}
+          options={options}
+          styleType={styleType}
+          fontSize={fontSize}
+          title={title}
+          response={response}
+          onUpdateValidationValue={this.updateAnswers}
+        />
+      </CorrectAnswers>
     );
   }
 }
@@ -208,4 +160,4 @@ CorrectAnswers.defaultProps = {
   styleType: "default"
 };
 
-export default withNamespaces("assessment")(CorrectAnswers);
+export default withNamespaces("assessment")(SetCorrectAnswers);

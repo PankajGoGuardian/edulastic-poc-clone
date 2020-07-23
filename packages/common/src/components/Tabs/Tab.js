@@ -37,7 +37,7 @@ const Tab = ({
     </EditableTab>
   );
 
-  const closeButton = (
+  const closeButton = !active && (
     <CloseIcon IconPosition={IconPosition} className="close-icon">
       <IconClose color={active ? white : "#AAAFB5"} width={8} height={8} onClick={onClose} />
     </CloseIcon>
@@ -123,13 +123,9 @@ const Container = styled.div`
   svg {
     width: 8px;
     height: 8px;
-    fill: ${({ active }) => (active ? white : greyThemeDark2)};
     position: absolute;
     top: 10px;
     right: 5px;
-    &:hover {
-      fill: ${({ active }) => (active ? white : greyThemeDark2)};
-    }
   }
 
   @media (max-width: ${mobileWidth}) {

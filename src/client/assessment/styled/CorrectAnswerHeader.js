@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { InputNumber, Input } from "antd";
+import { InputNumber } from "antd";
 import { greyThemeLight } from "@edulastic/colors";
 
 export const CorrectAnswerHeader = styled.div`
@@ -17,21 +17,21 @@ export const CorrectAnswerHeader = styled.div`
 `;
 
 export const PointsInput = styled(InputNumber)`
-    min-width: 230px;
-    width: ${({ width }) => width || null};
-    background: #f8f8fb;
+  min-width: 230px;
+  width: ${({ width }) => width || null};
+  background: #f8f8fb;
+  border: 1px solid ${greyThemeLight};
+  padding: 0px 15px;
+  max-height: 40px;
+  min-height: 34px;
+  font-size: 11px;
+  margin-right: ${props => props.mr || "0px"};
+  position: relative;
+  z-index: 1;
+  outline: none;
+  outline-style: none;
+  box-shadow: none;
+  &:hover {
     border: 1px solid ${greyThemeLight};
-    padding: 0px 15px;
-    max-height: 40px;
-    min-height: 34px;
-    font-size: 11px;
-    margin-right: ${props => props.mr || "0px"};
-    position: relative;
-    z-index: 1;
-    outline: none;
-    outline-style: none;
-    box-shadow: none;
-    &:hover{
-      border: 1px solid ${greyThemeLight};
-    }
+  }
 `;

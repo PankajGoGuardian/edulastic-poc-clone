@@ -12,10 +12,9 @@ const { Panel } = Collapse;
 const { Option } = Select;
 
 const AnswerContainer = styled.div`
-  margin-top: 16px;
   .ant-collapse-item {
     border: 1px solid ${greyThemeLight};
-    margin-bottom: 16px;
+    margin-bottom: 4px;
 
     .ant-collapse-header {
       background-color: ${greyThemeLighter};

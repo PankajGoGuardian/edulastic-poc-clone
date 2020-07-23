@@ -19,6 +19,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import { replaceVariables } from "../../utils/variables";
 
 import { ContentArea } from "../../styled/ContentArea";
+import { AdvancedOptionContainer } from "../../styled/AdvancedOptionContainer";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
@@ -203,16 +204,18 @@ class MultipleChoice extends Component {
 
               {advancedLink}
 
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                advancedAreOpen={advancedAreOpen}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-                multipleResponses={multipleResponses}
-                item={item}
-                {...restProps}
-              />
+              <AdvancedOptionContainer>
+                <Options
+                  onChange={this.handleOptionsChange}
+                  uiStyle={uiStyle}
+                  advancedAreOpen={advancedAreOpen}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                  multipleResponses={multipleResponses}
+                  item={item}
+                  {...restProps}
+                />
+              </AdvancedOptionContainer>
             </ContentArea>
           )}
           {view === PREVIEW && (

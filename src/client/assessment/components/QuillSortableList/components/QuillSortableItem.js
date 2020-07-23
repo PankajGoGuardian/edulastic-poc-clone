@@ -31,7 +31,7 @@ const QuillSortableItem = SortableElement(
   }) => (
     <SortableItemContainer styleType={styleType} fontSize={fontSize} columns={columns}>
       {label && <Label>{label}</Label>}
-      <FlexContainer flex={1} data-cy="quillSortableItem">
+      <FlexContainer flex={1} data-cy="quillSortableItem" alignItems="center">
         <div className="main">
           <DragHandle index={indx} />
           <QuestionTextArea

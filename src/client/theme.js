@@ -708,7 +708,7 @@ export const defaultTheme = {
   },
   correctAnswers: {
     iconPlusColor: actionIconActiveColor,
-    iconCloseColor: closeColor,
+    iconCloseColor: greyThemeDark2,
     iconCloseHoverColor: "none"
   },
   correctAnswerBoxLayout: {

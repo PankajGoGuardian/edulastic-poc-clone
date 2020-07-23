@@ -10,7 +10,7 @@ export const TextInputStyled = styled(Input)`
     font-size: ${props => props.fontSize || "13px"};
     text-transform: ${props => props.transformText};
     width: ${props => props.width || "100%"};
-    height: ${props => props.height || "40px"};
+    height: ${props => props.height || "35px"};
     margin: ${props => props.margin || "0px"};
     min-height: 30px !important;
     padding: 0 15px;

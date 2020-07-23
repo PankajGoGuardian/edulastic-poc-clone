@@ -20,7 +20,7 @@ const FontOption = ({ fontSize, fontFamily, fontColor, onChangeOption }) => {
   };
 
   return (
-    <FlexContainer id="font-options" marginLeft="14px">
+    <FlexContainer id="font-options" marginLeft="14px" alignItems="center">
       <Sprite pos={-692} width={16} />
       <StyledFontPicker hideLabel onChange={onChangeFontFamilyHandler} currentFont={fontFamily} placeholder="----" />
       <StyledSelect width={34} defaultValue={fontSize} onChange={onChangeFontSizeHandler}>

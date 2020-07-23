@@ -2,21 +2,24 @@ import ItemListPage from "../../framework/author/itemList/itemListPage";
 import TestLibrary from "../../framework/author/tests/testLibraryPage";
 import FileHelper from "../../framework/util/fileHelper";
 
-const { tests } = require("../../../fixtures/spark/grade_7.json");
-const testCreationLogs = "cypress/fixtures/spark/grade_7_processed.json";
-const API_URL = Cypress.config("API_URL");
+const { tests } = require("../../../fixtures/spark/spark_test_details.json");
+
+const testCreationLogs = "cypress/fixtures/spark/spark_test_processed_100_300.json";
 
 const testLibrary = new TestLibrary();
 const itemListPage = new ItemListPage();
 const userId = "5e3273dc5f78c300083420c1";
 const subject = "Mathematics";
 const authToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTMyNzNkYzVmNzhjMzAwMDgzNDIwYzEiLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZTMyNzRhYzBmYjYyMjAwMDhmZTI2ZGQiLCJpYXQiOjE1OTU1MDExMTIsImV4cCI6MTU5NjcxMDcxMn0.FO0F6ofodol5upIDxgKccK1jVG51vNWdXPtMTte1VNA";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTMyNzNkYzVmNzhjMzAwMDgzNDIwYzEiLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZTMyNzRhYzBmYjYyMjAwMDhmZTI2ZGQiLCJpYXQiOjE1OTE5MzM4MzksImV4cCI6MTU5MzE0MzQzOX0.IjisU2OGuLyKJKZXaZ9oqH-DajJ7cqFP0qPnAZNs2mM";
 
+/* const authToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTMyNzNkYzVmNzhjMzAwMDgzNDIwYzEiLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZTMyNzRhYzBmYjYyMjAwMDhmZTI2ZGQiLCJpYXQiOjE1OTE4NzA5MTIsImV4cCI6MTU5NDQ2MjkxMn0.pRr8gIXH0pBSljZXRuxqQd6ZOFK2vom0FuzKz3ty-TE";
+ */
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
-  /*  before(() => {
+  before(() => {
     cy.writeFile(testCreationLogs, {});
-  }); */
+  });
 
   beforeEach("set routes", () => {
     cy.server();
@@ -24,7 +27,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     cy.route("POST", "**/search/tests").as("searchTest");
   });
   tests.forEach((testDetail, i) => {
-    if (i == 0) {
+    if (i >= 100 && i < 300) {
       Object.keys(testDetail).map(k => (testDetail[k] = ("" + testDetail[k]).trim()));
       const {
         // authToken,
@@ -65,13 +68,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         testLibrary.testSummary.setName(testName);
         testLibrary.testSummary.setDescription(description);
         allGrades.forEach(g => {
-          const gradeToSelect = g === "K" ? "Kindergarten" : `Grade ${g}`;
-          testLibrary.testSummary.selectGrade(gradeToSelect);
+          // const gradeToSelect = g === "K" ? "Kindergarten" : `Grade ${g}`;
+          testLibrary.testSummary.selectGrade(g);
         });
         testLibrary.testSummary.selectSubject(subject);
         testLibrary.testSummary.selectCollection(collections, true);
 
-        // testLibrary.testSummary.addTags(allTags);
+        testLibrary.testSummary.addTags(allTags);
         cy.wait(500);
 
         // add items
@@ -86,14 +89,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
           });
           testLibrary.searchFilters.getSearchTextBox().clear({ force: true });
           testLibrary.searchFilters.typeInSearchBox(itemId.substr(itemId.length - 6));
-          cy.wait(500);
-          testLibrary.testAddItem.addItemById(itemId);
-          if (i == 0) {
+          cy.get('[class*="AddRemoveBtn"]')
+            .first()
+            .click({ force: true });
+          if (i == 0)
             cy.wait("@createTest").then(xhr => {
               testId = xhr.response.body.result._id;
             });
-          }
-          cy.wait(2000);
         });
         // testLibrary.header.clickOnSaveButton(true);
         /* 
@@ -102,29 +104,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
           testLibrary.testSettings.setTestType(testType);
         }
  */
-        testLibrary.header.clickOnSaveButton(true);
-        // testLibrary.header.clickOnPublishButton();
-        // cy.wait("@search");
-        cy.wait(100).then(() => {
-          // verify itemId via API
-          cy.request({
-            method: "GET",
-            url: `${API_URL}/test/${testId}?data=true&requestLatest=true&editAndRegrade=false`,
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "application/json"
-            }
-          }).then(({ body }) => {
-            const response = body.result;
-            const allItemsInTest = response.itemGroups[0].items.map(item => item._id);
-            expect(allItemsInTest.length, "verify item count is same- ").to.eq(allItems.length);
-            allItemsInTest.forEach(itemInTest =>
-              expect(allItems, "verify item in test is from expected list").to.include(itemInTest)
-            );
-            // if both assertion passes make final status as "success";
-            status = "success";
-          });
-        });
+        // testLibrary.header.clickOnSaveButton(true);
+        testLibrary.header.clickOnPublishButton();
+
+        /*  .then(id => {
+          testId = id;
+        }); */
+        cy.wait("@search");
+        cy.wait(100).then(() => (status = "success"));
       });
 
       it(`save testId - ${Sl_No}-${testName}--${allItems.length}`, () => {

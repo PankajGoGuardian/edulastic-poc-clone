@@ -1,11 +1,14 @@
 import CypressHelper from "../util/cypressHelpers";
+import Helpers from "../util/Helpers";
 
 export default class SearchFilters {
   // *** ELEMENTS START ***
 
   getSearch = () => cy.get(".ant-input-search");
 
-  getSearchTextBox = () => cy.get('[placeholder="Search by skills and keywords"]').last();
+  getSearchBar = () => cy.contains("Search by skills and keywords").next();
+
+  getSearchTextBox = () => this.getSearchBar().find("input");
 
   // *** ELEMENTS END ***
 
@@ -26,9 +29,11 @@ export default class SearchFilters {
   };
 
   clearAll = () => {
+    const dummyCharToType = Helpers.getRamdomString(2).toUpperCase();
     this.routeSearch();
+    this.typeInSearchBox(dummyCharToType);
     cy.get('[data-cy="clearAll"]').click({ force: true });
-    return cy.wait("@search");
+    return cy.wait("@search").then(() => this.getSearchBar().should("not.contain", dummyCharToType));
   };
 
   setGrades = grades => {
@@ -75,9 +80,8 @@ export default class SearchFilters {
   typeInSearchBox = key => {
     this.routeSearch();
     this.getSearchTextBox()
-      .type("{selectall}")
-      .type(key, { force: true });
-    cy.wait(1000);
+      .type("{selectall}", { force: true })
+      .type(`${key}{enter}`, { force: true });
     this.waitForSearchResponse();
   };
 

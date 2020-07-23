@@ -54,7 +54,7 @@ export default class TestHeader {
       const testId = xhr.response.body.result._id;
       if (!edited) {
         console.log("test created with _id : ", testId);
-        cy.saveTestDetailToDelete(testId);
+        // cy.saveTestDetailToDelete(testId);
       }
       return cy.wait(100).then(() => testId);
     });

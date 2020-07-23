@@ -16,33 +16,7 @@ module.exports = (on, config) => {
       args.push("--cast-initial-screen-width=1920");
       args.push("--cast-initial-screen-height=1080");
       args.push("--start-fullscreen");
-      // temp
       args.push("--disable-dev-shm-usage");
-      args.push("--disable-background-networking");
-      args.push("--enable-features=NetworkService,NetworkServiceInProcess");
-      args.push("--disable-background-timer-throttling");
-      args.push("--disable-backgrounding-occluded-windows");
-      args.push("--disable-breakpad");
-      args.push("--disable-client-side-phishing-detection");
-      args.push("--disable-default-apps");
-      args.push("--disable-dev-shm-usage");
-      args.push("--disable-extensions");
-      args.push("--disable-features=site-per-process,TranslateUI");
-      args.push("--disable-hang-monitor");
-      args.push("--disable-ipc-flooding-protection");
-      args.push("--disable-popup-blocking");
-      args.push("--disable-prompt-on-repost");
-      args.push("--disable-renderer-backgrounding");
-      args.push("--disable-sync");
-      args.push("--force-color-profile=srgb");
-      args.push("--metrics-recording-only");
-      args.push("--no-first-run");
-      args.push("--safebrowsing-disable-auto-update");
-      args.push("--enable-automation");
-      args.push("--password-store=basic");
-      args.push("--use-mock-keychain");
-      args.push("--webview-disable-safebrowsing-support");
-      //
       return args;
     }
 

@@ -13,8 +13,9 @@ class AdminHeader extends Component {
     active: PropTypes.object.isRequired
   };
 
-  onSubTab = (key) => {
+  onSubTab = key => {
     const { history } = this.props;
+    // eslint-disable-next-line default-case
     switch (key) {
       case "Student":
         history.push(`/author/users/student`);
@@ -41,24 +42,14 @@ class AdminHeader extends Component {
     return (
       <SubHeaderWrapper>
         {active.mainMenu === "Users" && (
-          <StyledSubMenu
-            mode="horizontal"
-            defaultActiveKey={active.subMenu}
-            onTabClick={this.onSubTab}
-          >
-            {role === roleuser.DISTRICT_ADMIN && (
-              <StyledTabPane tab="District Admin" key="District Admin" />
-            )}
-            <StyledTabPane tab="School Admin" key="School Admin" />
-            <StyledTabPane tab="Teacher" key="Teacher" />
-            <StyledTabPane tab="Student" key="Student" />
+          <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
+            {role === roleuser.DISTRICT_ADMIN && <StyledTabPane tab="District Admin" key="District Admin" />}
             {/* Below repeated conditions is bcz Fragment is not working here */}
-            {isOrganizationDistrictAdmin && (
-              <StyledTabPane tab="Content Authors" key="Content Authors" />
-            )}
-            {isOrganizationDistrictAdmin && (
-              <StyledTabPane tab="Content Approvers" key="Content Approvers" />
-            )}
+            {!isOrganizationDistrictAdmin && <StyledTabPane tab="School Admin" key="School Admin" />}
+            {!isOrganizationDistrictAdmin && <StyledTabPane tab="Teacher" key="Teacher" />}
+            {!isOrganizationDistrictAdmin && <StyledTabPane tab="Student" key="Student" />}
+            {isOrganizationDistrictAdmin && <StyledTabPane tab="Content Authors" key="Content Authors" />}
+            {isOrganizationDistrictAdmin && <StyledTabPane tab="Content Approvers" key="Content Approvers" />}
           </StyledSubMenu>
         )}
       </SubHeaderWrapper>

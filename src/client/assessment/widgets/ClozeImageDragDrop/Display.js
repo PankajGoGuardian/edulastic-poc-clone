@@ -109,6 +109,7 @@ const getInitialResponses = ({ options, userSelections, configureOptions }) => {
     const _userSelections = userSelections.reduce((acc, opts) => acc.concat(opts?.optionIds || []), []);
     possibleResps = possibleResps.filter(resp => _userSelections.indexOf(resp.id) === -1);
   }
+
   return possibleResps;
 };
 
@@ -816,7 +817,5 @@ Display.defaultProps = {
   isExpressGrader: false,
   isReviewTab: false
 };
-
-Display.whyDidYouRender = true;
 
 export default withTheme(withCheckAnswerButton(Display));

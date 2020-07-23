@@ -1,8 +1,8 @@
 import React from "react";
 import { first } from "lodash";
-import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
+import { IconShare, IconUser } from "@edulastic/icons";
 import { cardTitleColor, darkGrey } from "@edulastic/colors";
-import { PremiumLabel, LikeIconStyled } from "@edulastic/common";
+import { PremiumLabel, EduButton } from "@edulastic/common";
 
 import {
   Container,
@@ -23,12 +23,15 @@ import {
   PlaylistDesc,
   PlaylistCardHeaderRow,
   PlaylistSkinType,
-  Grade
+  Grade,
+  ButtonWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+import sparkImg from "./assets/spark-math.png";
+import eurekaImg from "./assets/eureka-math.png";
 
 const PlaylistCard = ({
   _source,
@@ -40,24 +43,50 @@ const PlaylistCard = ({
   usage,
   standardsIdentifiers,
   authorName,
-  isTestLiked,
   testItemId,
-  handleLikeTest,
-  likes
+  allowDuplicate,
+  duplicatePlayList,
+  _id
 }) => {
   const grade = first(_source.grades);
+  const { skin } = _source;
+
+  let { thumbnail } = _source;
+  const isSparkMathSkin = skin === "SPARK";
+  const isPublisherSkin = skin === "PUBLISHER";
+  if (isSparkMathSkin) {
+    thumbnail = sparkImg;
+  }
+  if (isPublisherSkin) {
+    thumbnail = eurekaImg;
+  }
 
   return (
     <Container
       isPlaylist
-      src={_source.thumbnail}
+      src={thumbnail}
       onClick={moveToItem}
       title={
-        <Header src={_source.thumbnail} isPlaylist>
+        <Header src={thumbnail} isPlaylist>
           <PlaylistCardHeaderRow>
             <PlaylistSkinType />
             <Grade>Grade {grade}</Grade>
           </PlaylistCardHeaderRow>
+
+          {allowDuplicate && (
+            <ButtonWrapper className="showHover">
+              <EduButton
+                height="32px"
+                onClick={e => {
+                  e.stopPropagation();
+                  duplicatePlayList({ _id, title: _source.title });
+                }}
+              >
+                clone
+              </EduButton>
+            </ButtonWrapper>
+          )}
+
           <Stars isPlaylist />
           {collections.find(o => o.name === "Edulastic Certified") &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
@@ -109,16 +138,10 @@ const PlaylistCard = ({
           </PlaylistId>
         ) : null}
         {status !== "draft" && (
-          <>
-            <ShareIcon>
-              <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-              <IconText>{usage}</IconText>
-            </ShareIcon>
-            <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest} style={{ paddingRight: 24 }}>
-              <IconHeart color={isTestLiked ? "#ca481e" : darkGrey} width={14} height={14} />
-              <IconText>{likes}</IconText>
-            </LikeIconStyled>
-          </>
+          <ShareIcon>
+            <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+            <IconText>{usage}</IconText>
+          </ShareIcon>
         )}
       </Footer>
     </Container>

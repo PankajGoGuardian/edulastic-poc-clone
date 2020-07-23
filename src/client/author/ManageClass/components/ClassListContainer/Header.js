@@ -24,7 +24,6 @@ const Header = ({
   currentTab,
   onClickHandler,
   enableCleverSync,
-  isCleverDistrictUser,
   canvasAllowedInstitution,
   user,
   handleCanvasBulkSync
@@ -56,7 +55,13 @@ const Header = ({
       }
     } catch (err) {
       Sentry.captureException(err);
-      notification({ messageKey: "errorWhileGettingAuthUri" });
+      notification(
+        err.status === 403 && err.data?.message
+          ? {
+              msg: err.data?.message
+            }
+          : { messageKey: "errorWhileGettingAuthUri" }
+      );
     }
   };
 
@@ -97,7 +102,7 @@ const Header = ({
             <span>SYNC NOW WITH CLEVER</span>
           </EduButton>
         )}
-        {googleAllowedInstitutions.length > 0 && !(enableCleverSync || isCleverDistrictUser) && (
+        {googleAllowedInstitutions.length > 0 && !enableCleverSync && (
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"

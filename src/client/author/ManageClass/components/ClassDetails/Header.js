@@ -106,7 +106,14 @@ const Header = ({
         syncCanvasModal();
       }
     } catch (err) {
-      notification({ messageKey: "errorWhileGettingAuthUri" });
+      Sentry.captureException(err);
+      notification(
+        err.status === 403 && err.data?.message
+          ? {
+              msg: err.data?.message
+            }
+          : { messageKey: "errorWhileGettingAuthUri" }
+      );
     }
   };
 

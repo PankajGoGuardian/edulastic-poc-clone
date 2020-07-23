@@ -18,7 +18,6 @@ import Header from "./Header";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import {
   getGoogleAllowedInstitionPoliciesSelector,
-  getCleverDistrictUserSelector,
   getCleverSyncEnabledInstitutionPoliciesSelector,
   getCanvasAllowedInstitutionPoliciesSelector
 } from "../../../src/selectors/user";
@@ -40,7 +39,6 @@ const ClassList = ({
   isUserGoogleLoggedIn,
   googleAllowedInstitutions,
   setShowCleverSyncModal,
-  isCleverDistrictUser,
   cleverSyncEnabledInstitutions,
   canvasAllowedInstitution,
   handleCanvasBulkSync
@@ -213,7 +211,6 @@ const ClassList = ({
         fetchGoogleClassList={fetchClassList}
         setShowCleverSyncModal={setShowCleverSyncModal}
         enableCleverSync={cleverSyncEnabledInstitutions.length > 0}
-        isCleverDistrictUser={isCleverDistrictUser}
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
       />
@@ -286,7 +283,6 @@ const enhance = compose(
       user: getUserDetails(state),
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
-      isCleverDistrictUser: getCleverDistrictUserSelector(state),
       cleverSyncEnabledInstitutions: getCleverSyncEnabledInstitutionPoliciesSelector(state),
       canvasAllowedInstitution: getCanvasAllowedInstitutionPoliciesSelector(state)
     }),

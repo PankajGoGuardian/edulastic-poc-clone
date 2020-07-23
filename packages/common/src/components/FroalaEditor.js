@@ -592,7 +592,7 @@ const CustomEditor = ({
           this.video.showProgressBar();
           uploadToS3(video[0], aws.s3Folders.DEFAULT)
             .then(url => {
-              const embedded = `<video src='${url}' controls>Video is not supported on this browser.</video>`;
+              const embedded = `<video class="fr-draggable" src='${url}' controls>Video is not supported on this browser.</video>`;
               this.video.insert(embedded);
             })
             .catch(e => {
@@ -602,11 +602,22 @@ const CustomEditor = ({
             });
           return false;
         },
+        "video.linkError": function(link) {
+          const popup = this.popups.areVisible();
+          const layer = popup?.find(".fr-video-progress-bar-layer");
+          layer?.find(".fr-message")?.text("The video cannot be added because the address is invalid/unsupported.");
+        },
+        "video.codeError": function(code) {
+          const popup = this.popups.areVisible();
+          const layer = popup?.find(".fr-video-progress-bar-layer");
+          layer?.find(".fr-message")?.text("The video cannot be added because the embed code is invalid/unsupported.");
+        },
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
             this.edit.off();
-            this.$el.find(".input__math").css("pointer-events", "none");
-            this.$el.find("video").css("pointer-events", "none");
+            this.$el?.find(".input__math")?.css("pointer-events", "none");
+            this.$el?.find("img")?.css("pointer-events", "none");
+            this.$el?.find("video")?.css("pointer-events", "none");
           }
         },
         "toolbar.show": function() {

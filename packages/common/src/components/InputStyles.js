@@ -1,11 +1,4 @@
-import {
-  greyThemeDark2,
-  greyThemeLight,
-  greyThemeLighter,
-  themeColor,
-  themeColorBlue,
-  lightGrey12
-} from "@edulastic/colors";
+import { greyThemeDark2, greyThemeLight, greyThemeLighter, themeColor, themeColorBlue } from "@edulastic/colors";
 import { DatePicker, Input, InputNumber, Select } from "antd";
 import React from "react";
 import styled from "styled-components";
@@ -32,7 +25,7 @@ export const FieldLabel = styled.label`
 
 const inputCommonStyle = {
   backgroundColor: props => props.bg || greyThemeLighter,
-  border: props => (props.noBorder ? "0px" : `2px solid ${lightGrey12}`),
+  border: props => (props.noBorder ? "0px" : `1px solid ${greyThemeLight}`),
   color: "#6a737f",
   fontSize: props => props.fontSize || "13px",
   width: props => props.width || "100%",

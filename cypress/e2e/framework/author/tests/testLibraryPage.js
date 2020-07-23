@@ -513,7 +513,7 @@ export default class TestLibrary {
     cy.server();
     cy.route("PUT", "**/test/**").as("newVersion");
     cy.route("GET", "**/api/test/**").as("testdrafted");
-    this.getEditButton()
+    return this.getEditButton()
       .should("exist")
       .click()
       .then(() => {
@@ -524,13 +524,11 @@ export default class TestLibrary {
             assert(xhr.status === 200, "Test versioned");
           });
         });
-      });
-    return cy
-      .url()
-      .should("contain", "/old/")
-      .then(() => cy.get('[data-cy-item-index="0"]'))
-      .then(() => {
-        this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id));
+        // guard to wait till URL is updated
+        cy.url().should("contain", "/old/");
+        return cy.get('[data-cy-item-index="0"]').then(() => {
+          return this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id));
+        });
       });
   };
 

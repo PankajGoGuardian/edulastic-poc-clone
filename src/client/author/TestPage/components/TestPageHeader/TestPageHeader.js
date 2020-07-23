@@ -326,7 +326,10 @@ const TestPageHeader = ({
   const isTestContainsDraftItem = testItems.some(i => i.status === statusConstants.DRAFT);
 
   const showPublishForEC =
-    test.status === statusConstants.PUBLISHED && isTestContainsDraftItem && isEdulasticCurator && !isPlaylist;
+    test.status === statusConstants.PUBLISHED &&
+    isTestContainsDraftItem &&
+    (isEdulasticCurator || isCurator) &&
+    !isPlaylist;
   return (
     <>
       <EditTestModal
@@ -498,10 +501,9 @@ const TestPageHeader = ({
             {showShareButton &&
               owner &&
               ((showPublishButton && !isEdulasticCurator) || showPublishForEC) &&
-              isDirectOwner &&
               !isPlaylist &&
               editEnable &&
-              ((isCurator && testStatus !== statusConstants.PUBLISHED) || !isCurator) &&
+              ((isCurator && testStatus !== statusConstants.PUBLISHED) || !isCurator || showPublishForEC) &&
               !isRegradeFlow && (
                 <EduButton
                   isBlue

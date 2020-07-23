@@ -448,3 +448,77 @@ export const StyledFlexContainer = styled(FlexContainer)`
     }
   }
 `;
+
+export const QuestionDetails = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 20px;
+`;
+
+export const DetailRow = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: ${props => props.direction || "row"};
+  padding: 5px 50px 5px 0px;
+
+  &:last-child {
+    padding-right: 0px;
+  }
+
+  &.standards,
+  &.tags {
+    padding-right: 0px;
+    align-items: flex-start;
+    label {
+      min-width: 120px;
+    }
+    span {
+      font-size: 9px;
+      background: #cbd1d6;
+      color: #676e74;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      margin-right: 5px;
+      padding: 1px 10px;
+      width: unset;
+    }
+  }
+
+  &.standards {
+    span {
+      background: #d1f9eb;
+      color: #4aac8b;
+      text-transform: uppercase;
+    }
+  }
+
+  label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #aaafb5;
+    font-weight: 600;
+    margin-right: 10px;
+    min-width: ${props => props.labelWidth || "auto"};
+  }
+  span {
+    font-size: ${props => props.font || 13}px;
+    color: #434b5d;
+    width: 100%;
+    display: inline-block;
+  }
+`;
+
+export const FlexWrap = styled.div`
+  display: flex;
+  align-items: ${props => props.align || "center"};
+  justify-content: ${props => props.justify || "space-between"};
+  flex-direction: ${props => props.direction || "row"};
+  padding: 4px 15px;
+  border: ${props => props.border || "1px solid #E8E8E8"};
+  border-radius: 4px;
+  margin-bottom: 10px;
+  width: 100%;
+`;

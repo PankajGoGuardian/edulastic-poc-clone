@@ -411,6 +411,7 @@ class PreviewModal extends React.Component {
         footer={null}
         centered
         className="noOverFlowModal"
+        fullModal={fullModal}
       >
         {this.navigationBtns()}
         <HeadingWrapper>
@@ -729,6 +730,7 @@ const PreviewModalWrapper = styled(Modal)`
   top: 30px;
   padding: 0px;
   position: relative;
+  margin: ${({ fullModal }) => (fullModal ? "0px" : "20px auto")};
 
   .ant-modal-content {
     background: transparent;

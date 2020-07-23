@@ -33,6 +33,7 @@ import {
   WidgetContainer,
   ReportIssueBtn
 } from "./styled";
+import QuestionPreviewDetails from "./QuestionPreviewDetails";
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -429,8 +430,11 @@ class AuthorTestItemPreview extends Component {
    * @param {func}  saveScratchpad is from PeviewModalWithRejectNote component.
    */
   renderColumnsContentArea = ({ sectionQue, resourceCount, scratchpadData, saveScratchpad }) => {
-    const { cols, passageNavigator } = this.props;
+    const { cols, passageNavigator, isPassage, item } = this.props;
     const { collapseDirection } = this.state;
+    const { createdBy, data, maxScore } = item;
+    const { questions } = data;
+    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, id, tags } = questions[0];
 
     return cols.map((col, i) => {
       const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
@@ -441,6 +445,28 @@ class AuthorTestItemPreview extends Component {
             {i === 1 && passageNavigator}
             {i === 0 ? this.renderLeftButtons(showScratch) : this.renderRightButtons()}
             {this.renderColumns(col, i, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData)}
+            {!isPassage && (
+              <QuestionPreviewDetails
+                id={id}
+                createdBy={createdBy}
+                maxScore={maxScore}
+                depthOfKnowledge={depthOfKnowledge}
+                authorDifficulty={authorDifficulty}
+                bloomsTaxonomy={bloomsTaxonomy}
+                tags={tags}
+              />
+            )}
+            {isPassage && i === 1 && (
+              <QuestionPreviewDetails
+                id={id}
+                createdBy={createdBy}
+                maxScore={maxScore}
+                depthOfKnowledge={depthOfKnowledge}
+                authorDifficulty={authorDifficulty}
+                bloomsTaxonomy={bloomsTaxonomy}
+                tags={tags}
+              />
+            )}
           </ColumnContentArea>
           {i === 0 && cols.length > 1 && this.collapseButtons}
         </Container>

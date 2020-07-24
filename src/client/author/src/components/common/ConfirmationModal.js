@@ -1,6 +1,6 @@
 
 import { CustomModalStyled } from "@edulastic/common";
-import {  titleColor } from "@edulastic/colors";
+import { titleColor } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const ConfirmationModal = styled(CustomModalStyled)`
@@ -24,7 +24,7 @@ export const ConfirmationModal = styled(CustomModalStyled)`
       border: none;
       display: flex;
       justify-content: center;
-      padding: 25px 16px 0px;
+      padding: 15px 15px 0px;
       .ant-btn {
 
         &[disabled],

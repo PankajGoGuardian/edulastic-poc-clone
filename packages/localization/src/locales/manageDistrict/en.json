@@ -455,7 +455,7 @@
     "fullname": "Full name",
     "username": "Username",
     "role": "Role",
-    "addnewuser": "+ Add New User",
+    "addnewuser": "Add New User",
     "removestudents": "Remove Student(s)",
     "confirmtext": "Are you sure you want to remove the following student(s)?",
     "addusertoclass": "Add User to Class",

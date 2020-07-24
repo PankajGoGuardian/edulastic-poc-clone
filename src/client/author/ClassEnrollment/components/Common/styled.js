@@ -47,25 +47,15 @@ export const Field = styled.fieldset`
   width: 100%;
   padding: 0px;
 
-  legend {
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 0px;
-    border: 0px;
-    color: ${title};
+  label {
+    font-size: 11px;
   }
-
-  &:first-child {
-    margin-top: 0px;
-  }
-  .ant-calendar-picker,
-  .ant-select {
+  .ant-calendar-picker {
     width: 100%;
   }
 `;
 export const Form = styled(AntdForm)`
   background: ${white};
-  padding: 20px;
   .ant-input-affix-wrapper {
     .ant-input-prefix {
       width: 15px;

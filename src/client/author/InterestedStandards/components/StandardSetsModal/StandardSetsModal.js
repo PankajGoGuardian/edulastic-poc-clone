@@ -1,13 +1,12 @@
+import { CheckboxLabel, CustomModalStyled, EduButton, SelectInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, Select } from "antd";
+import { keyBy } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { keyBy } from "lodash";
-import { CheckboxLabel } from "@edulastic/common";
-import { Col, Modal, Select } from "antd";
 import { FlexContainer } from "../../../../assessment/themes/common";
-import { ThemeButton } from "../../../src/components/common/ThemeButton";
-import { MyStandardInput, StyledRow, SubjectContainer, SubjectSelect } from "./styled";
 import { getUserRole } from "../../../src/selectors/user";
 import { selectsData } from "../../../TestPage/components/common";
+import { StyledRow, SubjectContainer } from "./styled";
 
 const Option = Select.Option;
 
@@ -81,21 +80,22 @@ class StandardSetsModal extends Component {
     }));
 
     return (
-      <Modal
+      <CustomModalStyled
         visible={modalVisible}
         title="My Standard Sets"
         onOk={this.onConfirm}
         onCancel={this.onCloseModal}
         maskClosable={false}
+        centered
         footer={[
-          <ThemeButton type="primary" key="submit" onClick={this.onConfirm}>
+          <EduButton type="primary" key="submit" onClick={this.onConfirm}>
             Confirm
-          </ThemeButton>
+          </EduButton>
         ]}
       >
         <StyledRow>
           <Col span={24}>
-            <SubjectSelect
+            <SelectInputStyled
               placeholder="Select Subject"
               onChange={this.changeSubject}
               getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -105,12 +105,12 @@ class StandardSetsModal extends Component {
                   {el.text}
                 </Option>
               ))}
-            </SubjectSelect>
+            </SelectInputStyled>
           </Col>
         </StyledRow>
         <StyledRow>
           <Col span={24}>
-            <MyStandardInput onChange={this.changeSearch} placeholder="Search by name" />
+            <TextInputStyled onChange={this.changeSearch} placeholder="Search by name" />
           </Col>
         </StyledRow>
         <StyledRow>
@@ -131,7 +131,7 @@ class StandardSetsModal extends Component {
             </SubjectContainer>
           </Col>
         </StyledRow>
-      </Modal>
+      </CustomModalStyled>
     );
   }
 }

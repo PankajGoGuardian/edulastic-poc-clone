@@ -1,7 +1,19 @@
 import { backgroundGrey2, themeColor } from "@edulastic/colors";
-import { CheckBoxGrp, RadioBtn, CheckboxLabel, notification } from "@edulastic/common";
+import {
+  CheckBoxGrp,
+  CheckboxLabel,
+  CustomModalStyled,
+  DatePickerStyled,
+  EduButton,
+  FieldLabel,
+  notification,
+  SelectInputStyled,
+  TextAreaInputStyled,
+  TextInputStyled,
+  RadioBtn
+} from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { Button, DatePicker, Input, Select, Spin, Radio } from "antd";
+import { Col, Row, Select, Spin, Radio } from "antd";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -17,7 +29,7 @@ import {
   searchOrgaizationRequestAction
 } from "../../ducks";
 import staticData from "../../staticData";
-import { FieldRow, Heading, ModalBody, StyledModal, YesButton } from "./ImportContentModal";
+import { FieldRow, Heading, ModalBody } from "./ImportContentModal";
 
 const { roleOptions, permissionLevelOptions } = staticData;
 
@@ -129,12 +141,12 @@ const AddPermissionModal = ({
   };
 
   const Footer = [
-    <Button ghost onClick={() => handleResponse()} disabled={isCreating}>
+    <EduButton isGhost onClick={() => handleResponse()} disabled={isCreating}>
       CANCEL
-    </Button>,
-    <YesButton onClick={validateFields} loading={isCreating}>
+    </EduButton>,
+    <EduButton onClick={validateFields} loading={isCreating}>
       {isEditPermission ? "SAVE" : "APPLY"}
-    </YesButton>
+    </EduButton>
   ];
 
   const Title = [
@@ -210,12 +222,19 @@ const AddPermissionModal = ({
   };
 
   return (
-    <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => handleResponse(null)} width={400}>
+    <CustomModalStyled
+      title={Title}
+      visible={visible}
+      footer={Footer}
+      onCancel={() => handleResponse(null)}
+      width={400}
+      centered
+    >
       <ModalBody>
         {user.role === roleuser.EDULASTIC_ADMIN && (
           <StyledFieldRow>
-            <label>Organization</label>
-            <Select
+            <FieldLabel>Organization</FieldLabel>
+            <SelectInputStyled
               disabled={isEditPermission}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               style={{ width: "100%" }}
@@ -234,12 +253,12 @@ const AddPermissionModal = ({
                   {name}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </StyledFieldRow>
         )}
         <StyledFieldRow>
-          <label>Permission Level</label>
-          <Select
+          <FieldLabel>Permission Level</FieldLabel>
+          <SelectInputStyled
             disabled={isEditPermission}
             style={{ width: "100%" }}
             placeholder="Select a permission"
@@ -250,13 +269,13 @@ const AddPermissionModal = ({
             {permissionLevelOptions.map(option => (
               <Select.Option value={option.value}>{option.label}</Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </StyledFieldRow>
 
         {["SCHOOL", "USER"].includes(fieldData.orgType) && (
           <StyledFieldRow>
-            <label>{fieldData.orgType}</label>
-            <Select
+            <FieldLabel>{fieldData.orgType}</FieldLabel>
+            <SelectInputStyled
               disabled={isEditPermission}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               style={{ width: "100%" }}
@@ -288,11 +307,11 @@ const AddPermissionModal = ({
                     {`${_user.firstName} ${_user.lastName} (${_user.email})`}
                   </Select.Option>
                 ))}
-            </Select>
+            </SelectInputStyled>
           </StyledFieldRow>
         )}
         <StyledFieldRow>
-          <label>Role</label>
+          <FieldLabel>Role</FieldLabel>
           <CheckBoxGrp onChange={value => handleFieldChange("role", value)} value={fieldData.role}>
             {roleOptions.map(checkbox => (
               <CheckboxLabel
@@ -324,48 +343,51 @@ const AddPermissionModal = ({
         {user.role === "edulastic-admin" && (
           <>
             <StyledFieldRow>
-              <div className="date-picker-container">
-                <div>
-                  <label>Start Date</label>
-                  <DatePicker
+              <Row gutter={20}>
+                <Col span={12}>
+                  <FieldLabel>Start Date</FieldLabel>
+                  <DatePickerStyled
+                    style={{ width: "100%" }}
                     placeholder="Set a start date"
                     format="DD-MM-YYYY"
                     showTime
                     value={(fieldData.startDate && moment(fieldData.startDate)) || ""}
                     onChange={date => handleDate("startDate", date?.valueOf() || "")}
                   />
-                </div>
-                <div>
-                  <label>End Date</label>
-                  <DatePicker
+                </Col>
+                <Col span={12}>
+                  <FieldLabel>End Date</FieldLabel>
+                  <DatePickerStyled
+                    style={{ width: "100%" }}
                     placeholder="Set an end date"
                     format="DD-MM-YYYY"
                     showTime
                     value={(fieldData.endDate && moment(fieldData.endDate)) || ""}
                     onChange={date => handleDate("endDate", date?.valueOf() || "")}
                   />
-                </div>
-              </div>
+                </Col>
+              </Row>
             </StyledFieldRow>
             <StyledFieldRow>
-              <label>CS Manager</label>
-              <Input
+              <FieldLabel>CS Manager</FieldLabel>
+              <TextInputStyled
                 placeholder="Type the CS Manager"
                 value={fieldData.csManager || ""}
                 onChange={e => handleFieldChange("csManager", e.target.value)}
               />
             </StyledFieldRow>
             <StyledFieldRow>
-              <label>Opportunity Id</label>
-              <Input
+              <FieldLabel>Opportunity Id</FieldLabel>
+              <TextInputStyled
                 placeholder="Type the ID"
                 value={fieldData.opportunityId || ""}
                 onChange={e => handleFieldChange("opportunityId", e.target.value)}
               />
             </StyledFieldRow>
             <StyledFieldRow>
-              <label>Notes</label>
-              <Input.TextArea
+              <FieldLabel>Notes</FieldLabel>
+              <TextAreaInputStyled
+                height="80px"
                 placeholder="Type notes..."
                 value={fieldData.notes || ""}
                 onChange={e => handleFieldChange("notes", e.target.value)}
@@ -374,7 +396,7 @@ const AddPermissionModal = ({
           </>
         )}
       </ModalBody>
-    </StyledModal>
+    </CustomModalStyled>
   );
 };
 
@@ -413,9 +435,9 @@ AddPermissionModal.defaultProps = {
   userList: [],
   districtList: [],
   isFetchingOrganization: false,
-  searchRequest: () => {},
+  searchRequest: () => { },
   visible: true,
-  handleResponse: () => {},
+  handleResponse: () => { },
   itemBankName: "",
   selectedPermission: {},
   isEditPermission: false
@@ -426,21 +448,12 @@ const StyledFieldRow = styled(FieldRow)`
     margin-bottom: 0px;
   }
 
-  > span:first-child {
-    font-size: ${props => props.theme.smallFontSize};
-    text-transform: uppercase;
-  }
-
   .ant-switch {
     margin-left: 20px;
   }
 
   textarea {
     background: ${backgroundGrey2};
-  }
-
-  > .date-picker-container {
-    display: flex;
   }
 `;
 

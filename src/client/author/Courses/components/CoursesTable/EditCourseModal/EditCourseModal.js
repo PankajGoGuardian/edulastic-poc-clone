@@ -1,10 +1,9 @@
-import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Modal } from "antd";
-
-import { StyledSpinContainer, StyledSpin } from "./styled";
-import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
-
 import { courseApi } from "@edulastic/api";
+import { CustomModalStyled, EduButton, FieldLabel, TextInputStyled } from "@edulastic/common";
+import { Col, Form, Row } from "antd";
+import React from "react";
+import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
+import { StyledSpin, StyledSpinContainer } from "./styled";
 
 class EditCourseModal extends React.Component {
   constructor(props) {
@@ -25,7 +24,7 @@ class EditCourseModal extends React.Component {
   }
 
   onSaveCourse = async () => {
-    let { nameValidate, numberValidate } = this.state;
+    const { nameValidate, numberValidate } = this.state;
     const { courseData, userOrgId: districtId } = this.props;
 
     if (nameValidate.value.length == 0) {
@@ -48,7 +47,7 @@ class EditCourseModal extends React.Component {
       });
     }
 
-    //check if name is exist
+    // check if name is exist
     if (
       nameValidate.validateStatus === "success" &&
       nameValidate.value.length > 0 &&
@@ -176,7 +175,7 @@ class EditCourseModal extends React.Component {
     const { modalVisible, courseData, t } = this.props;
     const { nameValidate, numberValidate, showSpin } = this.state;
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
         title={t("course.editcourse")}
         onOk={this.onSaveCourse}
@@ -185,21 +184,21 @@ class EditCourseModal extends React.Component {
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
-            <OkButton onClick={this.onSaveCourse}>{t("course.updatecourse")}</OkButton>
+            <EduButton isGhost onClick={this.onCloseModal}>{t("common.cancel")}</EduButton>
+            <EduButton onClick={this.onSaveCourse}>{t("course.updatecourse")}</EduButton>
           </ButtonsContainer>
         ]}
       >
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label={t("course.coursename")}
               name="name"
               validateStatus={nameValidate.validateStatus}
               help={nameValidate.validateMsg}
-              required={true}
+              required
             >
-              <Input
+              <FieldLabel>{t("course.coursename")}</FieldLabel>
+              <TextInputStyled
                 placeholder={t("course.coursename")}
                 defaultValue={courseData.name}
                 onChange={this.handleCourseName}
@@ -210,13 +209,13 @@ class EditCourseModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label={t("course.coursenumber")}
               name="number"
               validateStatus={numberValidate.validateStatus}
               help={numberValidate.validateMsg}
-              required={true}
+              required
             >
-              <Input
+              <FieldLabel>{t("course.coursenumber")}</FieldLabel>
+              <TextInputStyled
                 defaultValue={courseData.number}
                 placeholder={t("course.coursenumber")}
                 onChange={this.handleCourseNumber}
@@ -229,7 +228,7 @@ class EditCourseModal extends React.Component {
             <StyledSpin size="large" />
           </StyledSpinContainer>
         )}
-      </StyledModal>
+      </CustomModalStyled>
     );
   }
 }

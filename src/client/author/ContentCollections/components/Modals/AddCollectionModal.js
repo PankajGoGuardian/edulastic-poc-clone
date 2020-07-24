@@ -1,6 +1,13 @@
 import { backgroundGrey2 } from "@edulastic/colors";
-import { EduButton, notification, EduSwitchStyled } from "@edulastic/common";
-import { Input } from "antd";
+import {
+  EduButton,
+  notification,
+  EduSwitchStyled,
+  CustomModalStyled,
+  FieldLabel,
+  TextInputStyled,
+  TextAreaInputStyled
+} from "@edulastic/common";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -10,9 +17,7 @@ import {
   editCollectionRequestAction,
   getCreateCollectionStateSelector
 } from "../../ducks";
-import { FieldRow, Heading, ModalBody, StyledModal } from "./ImportContentModal";
-
-const { TextArea } = Input;
+import { FieldRow, Heading, ModalBody } from "./ImportContentModal";
 
 const AddCollectionModal = ({
   visible,
@@ -84,34 +89,44 @@ const AddCollectionModal = ({
   };
 
   return (
-    <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => handleResponse(null)} width={400}>
+    <CustomModalStyled
+      title={Title}
+      visible={visible}
+      footer={Footer}
+      onCancel={() => handleResponse(null)}
+      width={400}
+      centered
+    >
       <ModalBody>
         <StyledFieldRow>
-          <label>Collection Name</label>
-          <Input value={fieldData.name} onChange={e => handleFieldChange("name", e.target.value)} />
+          <FieldLabel>Collection Name</FieldLabel>
+          <TextInputStyled value={fieldData.name} onChange={e => handleFieldChange("name", e.target.value)} />
         </StyledFieldRow>
         <StyledFieldRow>
-          <label>Owner</label>
-          <Input value={fieldData.owner} onChange={e => handleFieldChange("owner", e.target.value)} />
+          <FieldLabel>Owner</FieldLabel>
+          <TextInputStyled value={fieldData.owner} onChange={e => handleFieldChange("owner", e.target.value)} />
         </StyledFieldRow>
         <StyledFieldRow>
-          <label>Description</label>
-          <TextArea
+          <FieldLabel>Description</FieldLabel>
+          <TextAreaInputStyled
             rows={4}
+            height="80px"
             value={fieldData.description}
             onChange={e => handleFieldChange("description", e.target.value)}
           />
         </StyledFieldRow>
         <StyledFieldRow>
-          <span>Collection Active</span>
-          <EduSwitchStyled
-            size="small"
-            checked={fieldData.status}
-            onChange={value => handleFieldChange("status", value ? 1 : 0)}
-          />
+          <FieldLabel>
+            <span>Collection Active</span>
+            <EduSwitchStyled
+              size="small"
+              checked={fieldData.status}
+              onChange={value => handleFieldChange("status", value ? 1 : 0)}
+            />
+          </FieldLabel>
         </StyledFieldRow>
       </ModalBody>
-    </StyledModal>
+    </CustomModalStyled>
   );
 };
 
@@ -123,11 +138,6 @@ export default connect(
 const StyledFieldRow = styled(FieldRow)`
   &:last-child {
     margin-bottom: 0px;
-  }
-
-  > span:first-child {
-    font-size: ${props => props.theme.smallFontSize};
-    text-transform: uppercase;
   }
 
   .ant-switch {

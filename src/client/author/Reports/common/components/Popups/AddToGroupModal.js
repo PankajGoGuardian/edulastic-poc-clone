@@ -6,9 +6,9 @@ import { compose } from "redux";
 
 // components
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Modal, Row, Col, Spin, Select } from "antd";
-import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
-import { SelectInputStyled, EduButton, withWindowSizes, notification } from "@edulastic/common";
+import { Row, Col, Spin, Select } from "antd";
+import { IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
+import { SelectInputStyled, EduButton, withWindowSizes, notification, CustomModalStyled } from "@edulastic/common";
 
 // api, ducks, helpers
 import { enrollmentApi } from "@edulastic/api";
@@ -178,17 +178,36 @@ const AddToGroupModal = ({
   const addNewButtonWidth = windowWidth > tabletWidthNum ? "192px" : "150px";
 
   return (
-    <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
+    <StyledModal
+      title="Add / Remove students from groups"
+      visible={visible}
+      footer={[
+        <StyledCol span={24}>
+          <EduButton
+            data-cy="cancelGroup"
+            width="200px"
+            isGhost
+            onClick={onCancel}
+          >
+            Cancel
+          </EduButton>
+          <EduButton
+            data-cy="createGroup"
+            width="200px"
+            onClick={handleOnSubmit}
+            disabled={!selectedGroup.key}
+          >
+            Update Group Membership
+          </EduButton>
+        </StyledCol>
+      ]}
+      onCancel={onCancel}
+      centered
+    >
       {loading ? (
         <Spin size="small" />
       ) : (
         <Row type="flex" align="middle" gutter={[20, 15]}>
-          <StyledCol span={24} justify="space-between">
-            <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700} spacing="-1.1px">
-              Add / Remove students from groups
-            </StyledDiv>
-            <IconClose height={20} width={20} onClick={onCancel} />
-          </StyledCol>
           <StyledCol span={24} marginBottom="20px" justify="left">
             <StyledDiv fontStyle="14px/19px Open Sans" color={darkGrey2}>
               Select student group to add or remove selected students
@@ -244,7 +263,7 @@ const AddToGroupModal = ({
                 <Select.Option key={_id} value={_id}>
                   {name}
                 </Select.Option>
-              ))}
+                ))}
             </SelectInputStyled>
 
             <StyledEduButton
@@ -278,31 +297,8 @@ const AddToGroupModal = ({
               </ScrollbarContainer>
             </div>
           </StyledCol>
-
-          <StyledCol span={24}>
-            <EduButton
-              data-cy="cancelGroup"
-              height="40px"
-              width="200px"
-              isGhost
-              onClick={onCancel}
-              style={{ marginLeft: "0px" }}
-            >
-              Cancel
-            </EduButton>
-            <EduButton
-              data-cy="createGroup"
-              height="40px"
-              width="200px"
-              onClick={handleOnSubmit}
-              style={{ marginLeft: "20px" }}
-              disabled={!selectedGroup.key}
-            >
-              Update Group Membership
-            </EduButton>
-          </StyledCol>
         </Row>
-      )}
+        )}
     </StyledModal>
   );
 };
@@ -322,25 +318,12 @@ export default compose(
   )
 )(AddToGroupModal);
 
-const StyledModal = styled(Modal)`
-  min-width: 996px;
+const StyledModal = styled(CustomModalStyled)`
+  min-width: 960px;
   padding-bottom: 0px;
   .ant-modal-content {
-    width: 996px;
+    width: 960px;
 
-    .ant-modal-close {
-      display: none;
-    }
-    .ant-modal-header {
-      display: none;
-    }
-    .ant-modal-body {
-      background-color: #ffffff;
-      padding: 24px 46px 32px;
-      @media (max-width: ${largeDesktopWidth}) {
-        padding: 20px 30px 32px;
-      }
-    }
     @media (max-width: ${largeDesktopWidth}) {
       width: 707px;
     }

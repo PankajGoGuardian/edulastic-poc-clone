@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Select, Row, Input } from "antd";
-import { themeColor } from "@edulastic/colors";
 
 export const SubjectContainer = styled.div`
   max-height: 300px;

@@ -1,25 +1,24 @@
-import React, { Component } from "react";
+import { CustomModalStyled, EduButton } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import { DatePicker, Form, Icon, Input, Table } from "antd";
+import { get } from "lodash";
+import * as moment from "moment";
+import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import * as moment from "moment";
-import { get } from "lodash";
-import { roleuser } from "@edulastic/constants";
-
-import { Table, Input, Form, Icon, DatePicker, Modal, Button } from "antd";
-import {
-  StyledTableContainer,
-  StyledButton,
-  StyledDeleteButton,
-  StyledAddButton,
-  DeleteTermModalFooterDiv,
-  StyledPagination
-} from "./styled";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+// selectors
+import { createTermAction, deleteTermAction, receiveTermAction, updateTermAction } from "../../ducks";
 import CreateTermModal from "./CreateTermModal/CreateTermModal";
 import EditTermModal from "./EditTermModal/EditTermModal";
-// selectors
-import { receiveTermAction, updateTermAction, createTermAction, deleteTermAction } from "../../ducks";
-
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  DeleteTermModalFooterDiv,
+  StyledAddButton,
+  StyledButton,
+  StyledDeleteButton,
+  StyledPagination,
+  StyledTableContainer
+} from "./styled";
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -36,22 +35,22 @@ class EditableCell extends React.Component {
                 <FormItem style={{ margin: 0 }}>
                   {inputType === "text"
                     ? getFieldDecorator(dataIndex, {
-                        rules: [
-                          {
-                            required: true,
-                            message: "Please Input " + title + "!"
-                          }
-                        ],
-                        initialValue: record[dataIndex]
-                      })(<Input />)
+                      rules: [
+                        {
+                          required: true,
+                          message: `Please Input ${  title  }!`
+                        }
+                      ],
+                      initialValue: record[dataIndex]
+                    })(<Input />)
                     : getFieldDecorator(dataIndex, {
-                        rules: [{ required: true, message: "Please Input " + title + "!" }],
-                        initialValue: moment(record[dataIndex], "DD MMM YYYY")
-                      })(<DatePicker format={"DD MMM YYYY"} />)}
+                      rules: [{ required: true, message: `Please Input ${  title  }!` }],
+                      initialValue: moment(record[dataIndex], "DD MMM YYYY")
+                    })(<DatePicker format="DD MMM YYYY" />)}
                 </FormItem>
               ) : (
-                restProps.children
-              )}
+                  restProps.children
+                )}
             </td>
           );
         }}
@@ -121,20 +120,20 @@ class TermTable extends React.Component {
     ];
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     if (nextProps.termSetting.length === undefined) {
       return {
         data: []
       };
-    } else {
-      if (nextProps.loading || nextProps.creating || nextProps.deleting || nextProps.updating) {
-        return null;
-      } else {
-        return {
-          data: nextProps.termSetting
-        };
-      }
     }
+    if (nextProps.loading || nextProps.creating || nextProps.deleting || nextProps.updating) {
+      return null;
+    }
+    return {
+      data: nextProps.termSetting
+    };
+
+
   }
 
   componentDidMount() {
@@ -199,6 +198,7 @@ class TermTable extends React.Component {
       selectedKey: -1
     });
   };
+
   changePagination = pageNumber => {
     this.setState({ currentPage: pageNumber });
   };
@@ -256,7 +256,7 @@ class TermTable extends React.Component {
             pageSize={25}
             total={termsData ? termsData.length : 0}
             onChange={this.changePagination}
-            hideOnSinglePage={true}
+            hideOnSinglePage
           />
         </EditableContext.Provider>
         {createTermModalVisible && (
@@ -279,11 +279,11 @@ class TermTable extends React.Component {
         )}
         {deleteTermModalVisible && selectedKey >= 0 && (
           <div>
-            <Modal
-              style={{ textAlign: "center" }}
+            <CustomModalStyled
               title="Delete School Year"
               visible={deleteTermModalVisible}
-              destroyOnClose={true}
+              destroyOnClose
+              centered
               onCancel={() =>
                 this.setState({
                   deleteTermModalVisible: false
@@ -291,7 +291,8 @@ class TermTable extends React.Component {
               }
               footer={[
                 <DeleteTermModalFooterDiv>
-                  <Button
+                  <EduButton
+                    isGhost
                     key="back"
                     onClick={() =>
                       this.setState({
@@ -300,15 +301,17 @@ class TermTable extends React.Component {
                     }
                   >
                     No, Cancel
-                  </Button>
-                  <Button key="submit" type="primary" onClick={() => this.handleDelete(selectedKey)}>
+                  </EduButton>
+                  <EduButton key="submit" type="primary" onClick={() => this.handleDelete(selectedKey)}>
                     Yes, Delete
-                  </Button>
+                  </EduButton>
                 </DeleteTermModalFooterDiv>
               ]}
             >
-              <p>{`Are you sure you want to delete ${selectedTerm && selectedTerm.name} - school year?`}</p>
-            </Modal>
+              <p style={{ textAlign: "center" }}>
+                {`Are you sure you want to delete ${selectedTerm && selectedTerm.name} - school year?`}
+              </p>
+            </CustomModalStyled>
           </div>
         )}
       </StyledTableContainer>

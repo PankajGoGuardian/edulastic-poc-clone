@@ -5,7 +5,7 @@ import { get, find, isEmpty } from "lodash";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import StudentAutoComplete from "./StudentAutoComplete";
 import ClassAutoComplete from "./ClassAutoComplete";
-import { getUserRole, getOrgDataSelector } from "../../../../../../src/selectors/user";
+import { getUserRole, getOrgDataSelector, getCurrentTerm } from "../../../../../../src/selectors/user";
 import { receiveStudentsListAction, getStudentsListSelector } from "../../../../../../Student/ducks";
 import {
   getFiltersSelector,
@@ -51,7 +51,8 @@ const StudentProfileReportsFilters = ({
   setPerformanceBand,
   setStandardsProficiency,
   selectedClass,
-  setSelectedClass
+  setSelectedClass,
+  defaultTerm
 }) => {
   const firstPlot = useRef(true);
   const splittedPath = location.pathname.split("/");
@@ -66,7 +67,13 @@ const StudentProfileReportsFilters = ({
     SPRFilterData,
     terms
   ]);
-  const selectedTerm = useMemo(() => find(termOptions, term => term.key === urlTermId) || termOptions[0] || {}, [
+
+  const defaultTermOption = useMemo(() => find(termOptions, term => term.key === defaultTerm), [
+    termOptions,
+    defaultTerm
+  ]);
+
+  const selectedTerm = useMemo(() => find(termOptions, term => term.key === urlTermId) || defaultTermOption || {}, [
     termOptions
   ]);
   const selectedCourse = useMemo(
@@ -168,12 +175,22 @@ const StudentProfileReportsFilters = ({
         <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
       <SearchField>
-        <FilterLabel>Student</FilterLabel>
-        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} selectedClasses={selectedClasses} />
+        <FilterLabel>School Year</FilterLabel>
+        <ControlDropDown
+          by={filters.termId}
+          selectCB={onUpdateTerm}
+          data={termOptions}
+          prefix="School Year"
+          showPrefixOnSelected={false}
+        />
       </SearchField>
       <SearchField>
         <FilterLabel>Class</FilterLabel>
         <ClassAutoComplete selectedClass={selectedClass} selectCB={setSelectedClass} />
+      </SearchField>
+      <SearchField>
+        <FilterLabel>Student</FilterLabel>
+        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} selectedClasses={selectedClasses} />
       </SearchField>
       <SearchField>
         <FilterLabel>Subject</FilterLabel>
@@ -209,16 +226,6 @@ const StudentProfileReportsFilters = ({
           />
         </SearchField>
       )}
-      <SearchField>
-        <FilterLabel>School Year</FilterLabel>
-        <ControlDropDown
-          by={filters.termId}
-          selectCB={onUpdateTerm}
-          data={termOptions}
-          prefix="School Year"
-          showPrefixOnSelected={false}
-        />
-      </SearchField>
     </StyledFilterWrapper>
   );
 };
@@ -233,7 +240,8 @@ const enhance = connect(
     prevSPRFilterData: getReportsPrevSPRFilterData(state),
     loading: getReportsSPRFilterLoadingState(state),
     orgData: getOrgDataSelector(state),
-    studentList: getStudentsListSelector(state)
+    studentList: getStudentsListSelector(state),
+    defaultTerm: getCurrentTerm(state)
   }),
   {
     getSPRFilterDataRequest: getSPRFilterDataRequestAction,

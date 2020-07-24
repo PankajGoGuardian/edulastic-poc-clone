@@ -418,7 +418,7 @@ const StandardsFilters = ({
         <SearchField>
           <FilterLabel>Subject</FilterLabel>
           <DropdownFilters
-            value={filters.subject || curriculums[0].key}
+            value={filters.subject || curriculums[0]?.key}
             onChange={updateSubjectDropDownCB}
             options={curriculums}
           />

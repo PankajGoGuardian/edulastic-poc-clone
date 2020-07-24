@@ -135,7 +135,9 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: setFiltersReducer,
   [SET_TEST_ID]: setTestIdReducer,
-  [RESET_ALL_REPORTS]: state => { state = initialState; },
+  [RESET_ALL_REPORTS]: state => {
+    state = initialState;
+  },
   [SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS]: (state, { payload }) => {
     state.prevBrowseStandards = payload;
   },
@@ -152,7 +154,13 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
 
 function* getReportsStandardsBrowseStandardsRequest({ payload }) {
   try {
-    const browseStandards = yield call(reportsApi.fetchStandardMasteryBrowseStandards, payload);
+    const { curriculumId = false } = payload;
+    if (curriculumId && typeof curriculumId === "string" && curriculumId.length) {
+      payload.curriculumId = parseInt(curriculumId);
+    }
+    const browseStandards = curriculumId
+      ? yield call(reportsApi.fetchStandardMasteryBrowseStandards, payload)
+      : { data: { result: [] } };
     yield put({
       type: GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS,
       payload: { browseStandards }

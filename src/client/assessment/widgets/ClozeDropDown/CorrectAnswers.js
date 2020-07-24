@@ -24,14 +24,15 @@ class SetCorrectAnswers extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        const validAnswers = draft.validation.validResponse.value;
-        validAnswers.map(answer => {
-          answer.value = "";
-          return answer;
-        });
+        const correctAnswer = draft.validation.validResponse.value;
+        const answerToBeAdded = correctAnswer.map(answer => ({
+          ...answer,
+          value: ""
+        }));
+        draft.validation.altResponses = draft.validation.altResponses || [];
         draft.validation.altResponses.push({
           score: 1,
-          value: validAnswers
+          value: answerToBeAdded
         });
       })
     );
@@ -42,7 +43,7 @@ class SetCorrectAnswers extends Component {
 
   handleRemoveAltResponses = deletedTabIndex => {
     const { currentTab } = this.state;
-    const { onRemoveAltResponses } = this.props;
+    const { setQuestionData, item } = this.props;
 
     if (currentTab === deletedTabIndex + 1) {
       this.setState({
@@ -50,7 +51,13 @@ class SetCorrectAnswers extends Component {
       });
     }
 
-    onRemoveAltResponses(deletedTabIndex);
+    setQuestionData(
+      produce(item, draft => {
+        if (draft.validation?.altResponses?.length) {
+          draft.validation.altResponses.splice(deletedTabIndex, 1);
+        }
+      })
+    );
   };
 
   updateScore = score => {
@@ -118,7 +125,7 @@ class SetCorrectAnswers extends Component {
         onCloseTab={this.handleRemoveAltResponses}
         onTabChange={this.handleTabChange}
         onChangePoints={this.updateScore}
-        points={this.response.score}
+        points={this.response?.score}
         isCorrectAnsTab={currentTab === 0}
       >
         <TabContainer>
@@ -140,7 +147,6 @@ class SetCorrectAnswers extends Component {
 }
 
 SetCorrectAnswers.propTypes = {
-  onRemoveAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   validation: PropTypes.object,
   stimulus: PropTypes.string,

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, Fragment } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { get, isEmpty } from "lodash";
+import { get, isEmpty, pickBy } from "lodash";
 import queryString from "query-string";
 import qs from "qs";
 
@@ -9,6 +9,7 @@ import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
 
+import { Spin } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
@@ -74,7 +75,8 @@ const SingleAssessmentReportFilters = ({
   setStandardsProficiency,
   performanceBandRequired,
   isStandardProficiencyRequired = false,
-  extraFilters
+  extraFilters,
+  loading
 }) => {
   const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
   const standardProficiencyProfiles = get(SARFilterData, "data.result.scaleInfo", []);
@@ -114,12 +116,16 @@ const SingleAssessmentReportFilters = ({
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
-    // get assessment type from filter data
-    search.assessmentType = get(SARFilterData, "data.result.reportFilters.assessmentType");
-    // select common assessment as default if assessment type is not set for admins
-    if (user.role === roleuser.DISTRICT_ADMIN || user.role === roleuser.SCHOOL_ADMIN) {
-      search.assessmentType = search.assessmentType || "common assessment";
-    }
+    /**
+     * TODO: modify this to save all filters
+     *
+     * // get assessment type from filter data
+     * search.assessmentType = get(SARFilterData, "data.result.reportFilters.assessmentType");
+     * // select common assessment as default if assessment type is not set for admins
+     * if (user.role === roleuser.DISTRICT_ADMIN || user.role === roleuser.SCHOOL_ADMIN) {
+     *   search.assessmentType = search.assessmentType || "common assessment";
+     * }
+     */
     dropDownData = getDropDownData(SARFilterData, user);
 
     const defaultTermId = get(user, "orgData.defaultTermId", "");
@@ -234,50 +240,53 @@ const SingleAssessmentReportFilters = ({
     setTestId(processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : "");
   }
 
-  const updateSchoolYearDropDownCB = selected => {
-    const pathname = location.pathname;
-    const splitted = pathname.split("/");
+  const getNewPathname = () => {
+    const splitted = location.pathname.split("/");
     splitted.splice(splitted.length - 1);
-    const newPathname = `${splitted.join("/")}/`;
-    const _filters = { ...filters };
-    _filters.termId = selected.key;
-    history.push(`${newPathname}?${qs.stringify(_filters)}`);
+    return `${splitted.join("/")}/`;
+  };
 
-    const q = {
+  const updateSchoolYearDropDownCB = selected => {
+    const _filters = {
+      ...filters,
       termId: selected.key
     };
+    setFilters(_filters);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
   };
+
   const updateSubjectDropDownCB = selected => {
-    const obj = {
-      filters: {
-        ...filters,
-        subject: selected.key
-      },
-      orgDataArr: dropDownData.orgDataArr
+    const _filters = {
+      ...filters,
+      subject: selected.key
     };
-    setFilters(obj);
+    setFilters(_filters);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
   };
 
   const updateGradeDropDownCB = selected => {
-    const obj = {
-      filters: {
-        ...filters,
-        grade: selected.key
-      },
-      orgDataArr: dropDownData.orgDataArr
+    const _filters = {
+      ...filters,
+      grade: selected.key
     };
-    setFilters(obj);
+    setFilters(_filters);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
   };
   const updateCourseDropDownCB = selected => {
-    const obj = {
-      filters: {
-        ...filters,
-        courseId: selected.key
-      },
-      orgDataArr: dropDownData.orgDataArr
+    const _filters = {
+      ...filters,
+      courseId: selected.key
     };
-    setFilters(obj);
+    setFilters(_filters);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
   };
   const updateClassesDropDownCB = selected => {
     const obj = {
@@ -301,18 +310,24 @@ const SingleAssessmentReportFilters = ({
     setFilters(obj);
   };
   const updateTeachersDropDownCB = selected => {
-    const obj = {
+    const _filters = {
       ...filters,
       teacherId: selected.key
     };
-    setFilters(obj);
+    setFilters(_filters);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
   };
   const updateAssessmentTypeDropDownCB = selected => {
-    const obj = {
+    const _filters = {
       ...filters,
       assessmentType: selected.key
     };
-    setFilters(obj);
+    setFilters(_filters);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
   };
 
   const onTestIdChange = selected => {
@@ -331,13 +346,47 @@ const SingleAssessmentReportFilters = ({
     standardProficiencyProfiles
   ]);
 
-  return (
+  return loading ? (
+    <StyledFilterWrapper style={style}>
+      <Spin />
+    </StyledFilterWrapper>
+  ) : (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
         <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
       <PerfectScrollbar>
+        <SearchField>
+          <FilterLabel>School Year</FilterLabel>
+          <ControlDropDown
+            by={filters.termId}
+            selectCB={updateSchoolYearDropDownCB}
+            data={dropDownData.schoolYear}
+            prefix="School Year"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Subject</FilterLabel>
+          <ControlDropDown
+            by={filters.subject}
+            selectCB={updateSubjectDropDownCB}
+            data={staticDropDownData.subjects}
+            prefix="Subject"
+            showPrefixOnSelected={false}
+          />
+        </SearchField>
+        <SearchField>
+          <FilterLabel>Grade</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Grade"
+            className="custom-1-scrollbar"
+            by={filters.grade}
+            selectCB={updateGradeDropDownCB}
+            data={staticDropDownData.grades}
+          />
+        </SearchField>
         <SearchField>
           <FilterLabel>Assessment Name</FilterLabel>
           <AutocompleteDropDown
@@ -431,36 +480,6 @@ const SingleAssessmentReportFilters = ({
             by={filters.courseId}
             selectCB={updateCourseDropDownCB}
             data={dropDownData.courses}
-          />
-        </SearchField>
-        <SearchField>
-          <FilterLabel>Grade</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Grade"
-            className="custom-1-scrollbar"
-            by={filters.grade}
-            selectCB={updateGradeDropDownCB}
-            data={staticDropDownData.grades}
-          />
-        </SearchField>
-        <SearchField>
-          <FilterLabel>Subject</FilterLabel>
-          <ControlDropDown
-            by={filters.subject}
-            selectCB={updateSubjectDropDownCB}
-            data={staticDropDownData.subjects}
-            prefix="Subject"
-            showPrefixOnSelected={false}
-          />
-        </SearchField>
-        <SearchField>
-          <FilterLabel>School Year</FilterLabel>
-          <ControlDropDown
-            by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
-            data={dropDownData.schoolYear}
-            prefix="School Year"
-            showPrefixOnSelected={false}
           />
         </SearchField>
       </PerfectScrollbar>

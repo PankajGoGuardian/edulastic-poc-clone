@@ -3,7 +3,7 @@ import { uniqBy } from "lodash";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
 import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
-import { IconClose, IconEye, IconHeart, IconId, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
+import { IconClose, IconEye, IconHeart, IconId, IconUser, IconDynamic, IconUsers } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col } from "antd";
 import PropTypes from "prop-types";
@@ -409,7 +409,7 @@ class ListItem extends Component {
                     <CardId data-cy="test-id">{testItemId}</CardId>
                   </CardIdWrapper>
                   <IconWrapper>
-                    <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                    <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
                     <IconText>{usage}</IconText>
                   </IconWrapper>
                   {!isPlaylist && (

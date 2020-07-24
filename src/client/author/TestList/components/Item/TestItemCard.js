@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { IconHeart, IconShare, IconUser, IconDynamic } from "@edulastic/icons";
+import { IconHeart, IconUser, IconDynamic, IconUsers } from "@edulastic/icons";
 import { cardTitleColor, themeColor, darkGrey } from "@edulastic/colors";
 import { PremiumLabel, EduButton, LikeIconStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
@@ -171,7 +171,7 @@ const TestItemCard = ({
         {status !== "draft" && (
           <>
             <ShareIcon>
-              <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+              <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
               <IconText>{usage}</IconText>
             </ShareIcon>
             <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest}>

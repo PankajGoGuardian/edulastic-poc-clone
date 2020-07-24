@@ -18,7 +18,7 @@ import {
   themeColorBlue
 } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
-import { IconHeart, IconId, IconShare, IconUser } from "@edulastic/icons";
+import { IconHeart, IconId, IconUser, IconUsers } from "@edulastic/icons";
 import { Tag } from "antd";
 import styled, { css } from "styled-components";
 
@@ -446,7 +446,7 @@ export const Categories = styled.div`
   }
 `;
 
-export const ShareIcon = styled(IconShare)`
+export const ShareIcon = styled(IconUsers)`
   display: flex;
   align-items: center;
   fill: ${themeColor};

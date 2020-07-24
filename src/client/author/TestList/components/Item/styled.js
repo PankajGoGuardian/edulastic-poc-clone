@@ -168,9 +168,6 @@ export const ShareIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
-  svg {
-    transform: rotate(180deg);
-  }
 `;
 
 export const EllipsisWrapper = styled.div`

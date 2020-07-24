@@ -2,6 +2,7 @@
 import React from "react";
 import withIconStyles from "./HOC/withIconStyles";
 import SVG from "./common/SVG";
+
 <svg xmlns="http://www.w3.org/2000/svg" width="17.463" height="17.464" viewBox="0 0 17.463 17.464" />;
 const IconSend = props => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" {...props}>

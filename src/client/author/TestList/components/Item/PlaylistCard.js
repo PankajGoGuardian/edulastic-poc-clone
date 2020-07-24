@@ -1,6 +1,6 @@
 import React from "react";
 import { first } from "lodash";
-import { IconShare, IconUser } from "@edulastic/icons";
+import { IconUser, IconUsers } from "@edulastic/icons";
 import { cardTitleColor, darkGrey } from "@edulastic/colors";
 import { PremiumLabel, EduButton } from "@edulastic/common";
 
@@ -139,7 +139,7 @@ const PlaylistCard = ({
         ) : null}
         {status !== "draft" && (
           <ShareIcon>
-            <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+            <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
             <IconText>{usage}</IconText>
           </ShareIcon>
         )}

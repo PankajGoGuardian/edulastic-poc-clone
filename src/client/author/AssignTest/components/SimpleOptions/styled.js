@@ -161,6 +161,17 @@ export const Password = styled(Input)`
   &:focus {
     border-color: ${props => (props.color ? props.color : themeColor)};
   }
+
+  .ant-input-disabled,
+  .ant-input[disabled] {
+    cursor: unset;
+    color: unset;
+  }
+
+  .anticon {
+    cursor: pointer !important;
+    color: ${themeColor} !important;
+  }
 `;
 
 export const MessageSpan = styled.span`

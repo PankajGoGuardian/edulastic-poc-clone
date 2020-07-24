@@ -6,7 +6,7 @@ import { testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { createSelector } from "reselect";
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
 import { SAVE_USER_WORK } from "../../assessment/constants/actions";
-import { updateScratchpadAction } from "../../common/ducks/scratchpad";
+import { updateScratchpadAction } from "../../common/components/Scratchpad/duck";
 
 export const SUBMIT_RESPONSE = "[expressGraderAnswers] submit";
 
@@ -117,7 +117,7 @@ function* submitResponse({ payload }) {
       userResponse,
       scores
     });
-    notification({ type: "success", messageKey:"updatedResponseSuccessfully"});
+    notification({ type: "success", messageKey: "updatedResponseSuccessfully" });
     const { questionActivities } = scoreRes;
     yield put(
       gradebookTestItemAddAction(
@@ -132,7 +132,7 @@ function* submitResponse({ payload }) {
     );
   } catch (e) {
     console.error(e);
-    notification({ messageKey:"editResponseFailed"});
+    notification({ messageKey: "editResponseFailed" });
   } finally {
     yield put(submitResponseCompletedAction());
   }
@@ -162,7 +162,7 @@ function* scratchPadLoadSaga({ payload }) {
     }
   } catch (e) {
     console.error(e);
-    notification({ messageKey:"loadingScratchFailed"});
+    notification({ messageKey: "loadingScratchFailed" });
     yield put(scratchPadLoadErrorAction());
   }
 }

@@ -16,33 +16,44 @@ const SubOptions = ({ activeMode, selectedNodes, ...rest }) => {
       case drawTools.FREE_DRAW:
       case drawTools.DRAW_BREAKING_LINE:
       case drawTools.DRAW_CURVE_LINE:
-        options = [<StrokeOption {...rest} />];
+        options = [<StrokeOption {...rest} key="stroke-options" />];
         break;
       case drawTools.DRAW_SQUARE:
       case drawTools.DRAW_CIRCLE:
       case drawTools.DRAW_TRIANGLE:
-        options = [<FontOption {...rest} />, <FillColor {...rest} />, <StrokeOption {...rest} />];
+        options = [
+          <FontOption {...rest} key="font-options" />,
+          <FillColor {...rest} key="fill-color-options" />,
+          <StrokeOption {...rest} key="stroke-options" />
+        ];
         break;
       case drawTools.DRAW_TEXT:
       case drawTools.DRAW_MATH:
-        options = [<FontOption {...rest} />];
+        options = [<FontOption {...rest} hideFontFamily={activeMode === drawTools.DRAW_MATH} key="font-options" />];
         break;
       default:
         break;
     }
   } else if (selectedNodes?.includes("PathNode")) {
-    options = [<FontOption {...rest} />, <FillColor {...rest} />, <StrokeOption {...rest} />];
+    options = [
+      <FontOption {...rest} key="font-options" />,
+      <FillColor {...rest} key="fill-color-options" />,
+      <StrokeOption {...rest} key="stroke-options" />
+    ];
   } else {
     if (selectedNodes?.includes("TextNode")) {
-      options.push(<FontOption {...rest} />);
+      options.push(<FontOption {...rest} key="font-options" />);
+    }
+    if (selectedNodes?.includes("HTMLNode")) {
+      options.push(<FontOption {...rest} key="font-options" hideFontFamily />);
     }
     if (selectedNodes?.includes("BrushNode")) {
-      options.push(<StrokeOption {...rest} />);
+      options.push(<StrokeOption {...rest} key="stroke-options" />);
     }
   }
 
   if (drawTools.EDITING_TOOL === activeMode) {
-    options = [<EditingOption {...rest} disabled={isEmpty(selectedNodes)} />];
+    options = [<EditingOption {...rest} key="editing-options" disabled={isEmpty(selectedNodes)} />];
   }
 
   return (

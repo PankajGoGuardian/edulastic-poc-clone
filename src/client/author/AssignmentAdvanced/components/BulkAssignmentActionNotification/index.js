@@ -29,6 +29,7 @@ const NotificationListener = ({
   const [notificationIds, setNotificationIds] = useState([]);
   let districtId = "";
   let testId = "";
+  const { termId = "" } = JSON.parse(sessionStorage.getItem("filters[Assignments]") || "{}");
   const { testType = "" } = qs.parse(location.search);
   if (testType) {
     const locationArray = location?.pathname?.split("/") || [];
@@ -93,7 +94,7 @@ const NotificationListener = ({
         }
         if (districtId && testId && testType && action !== DOWNLOAD_GRADES_AND_RESPONSE) {
           fetchAssignmentsSummaryAction({ districtId });
-          fetchAssignmentClassList({ districtId, testId, testType });
+          fetchAssignmentClassList({ districtId, testId, testType, termId });
         }
 
         // if user at assignments home page and bulk action has been processed successfully

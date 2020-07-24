@@ -48,6 +48,7 @@ const PDFPreview = ({
   previewMode,
   isToolBarVisible,
   pdfWidth,
+  pdfHeight,
   minimized,
   history,
   pageChange,
@@ -58,8 +59,7 @@ const PDFPreview = ({
   highlighted,
   forwardedRef,
   onDragStart,
-  review,
-  setZoom
+  review
 }) => {
   const [pdfScale, scalePDF] = useState(1);
 
@@ -68,13 +68,11 @@ const PDFPreview = ({
   const PDFScaleUp = (scale = 0.25) => {
     const zoom = pdfScale < 3 ? pdfScale + scale : pdfScale;
     scalePDF(zoom);
-    setZoom(zoom);
   };
 
   const PDFScaleDown = (scale = 0.25) => {
     const zoom = pdfScale > 0.5 ? pdfScale - scale : pdfScale;
     scalePDF(zoom);
-    setZoom(zoom);
   };
 
   useLayoutEffect(() => {
@@ -137,6 +135,7 @@ const PDFPreview = ({
                   renderTextLayer={false}
                   renderAnnotationLayer={false}
                   width={pdfWidth}
+                  height={pdfHeight}
                 />
               </Document>
             )}

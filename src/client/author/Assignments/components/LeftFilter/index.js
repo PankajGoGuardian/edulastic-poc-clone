@@ -1,5 +1,5 @@
 import { themeColor, lightGrey10 } from "@edulastic/colors";
-import { EduButton, FieldLabel, SelectInputStyled, notification ,CustomModalStyled} from "@edulastic/common";
+import { EduButton, FieldLabel, SelectInputStyled, notification, CustomModalStyled } from "@edulastic/common";
 import {
   IconFolderAll,
   IconFolderDeactive,
@@ -34,7 +34,7 @@ import {
   getAssignmentTestList
 } from "../../../src/selectors/assignments";
 import { getFolderSelector, getFoldersSelector } from "../../../src/selectors/folder";
-import { getGroupList, getUserRole } from "../../../src/selectors/user";
+import { getGroupList, getUserRole, getCurrentTerm } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import {
   CaretUp,
@@ -258,14 +258,16 @@ class LeftFilter extends React.Component {
     const {
       setFolder,
       clearFolder,
-      filterState: filters,
+      filterState,
       districtId,
       loadAssignmentsSummary,
       loadAssignments,
-      isAdvancedView
+      isAdvancedView,
+      onSetFilter,
+      currentTerm
     } = this.props;
     const { visibleModal } = this.state;
-
+    const filters = folder ? { ...filterState, termId: "" } : { ...filterState, termId: currentTerm };
     if (visibleModal.moveFolder) {
       const { _id } = folder;
       this.setState({ moveFolderId: _id });
@@ -285,6 +287,7 @@ class LeftFilter extends React.Component {
         loadAssignments({ filters });
       }
     }
+    if (filterState.termId !== filters.termId) onSetFilter(filters);
   };
 
   handleChangeNewFolderName = e => this.setState({ folderName: e.target.value });
@@ -428,8 +431,13 @@ class LeftFilter extends React.Component {
             </EduButton>
           ]}
         >
-          <p style={{textAlign:"center"}}>
-            Are you sure? <br /> This will delete the folder but all the tests will remain untouched.
+          <p style={{ textAlign: "center" }}>
+            {oldFolderName && (
+              <>
+                <b>{oldFolderName}</b> will get deleted but all tests will remain untouched. The tests can still be
+                accessed from All Assignments.
+              </>
+            )}
           </p>
         </CustomModalStyled>
 
@@ -722,7 +730,8 @@ export default connect(
     userRole: getUserRole(state),
     classList: getGroupList(state),
     teacherList: getAssignmentTeacherList(state),
-    assignmentTestList: getAssignmentTestList(state)
+    assignmentTestList: getAssignmentTestList(state),
+    currentTerm: getCurrentTerm(state)
   }),
   {
     loadAssignments: receiveAssignmentsAction,

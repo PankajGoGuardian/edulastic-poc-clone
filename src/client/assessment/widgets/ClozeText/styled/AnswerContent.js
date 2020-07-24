@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { MathFormulaDisplay } from "@edulastic/common";
 
 export const AnswerContent = styled(MathFormulaDisplay)`
@@ -13,6 +13,13 @@ export const AnswerContent = styled(MathFormulaDisplay)`
   vertical-align: middle;
   text-align: center;
   min-height: 30px;
+  ${({ inPopover }) =>
+    inPopover &&
+    css`
+      white-space: normal;
+      width: unset;
+      margin-right: 0.5rem;
+    `}
 
   ${({ showIndex, inPopover }) => `
     max-width: ${showIndex ? 560 : 600}px;

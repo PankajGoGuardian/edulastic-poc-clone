@@ -5,12 +5,13 @@ import { get, isEmpty, pickBy } from "lodash";
 import queryString from "query-string";
 import qs from "qs";
 
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { Spin, Tooltip } from "antd";
+
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
 import { roleuser } from "@edulastic/constants";
 
-import { Spin } from "antd";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import {
@@ -251,10 +252,10 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       termId: selected.key
     };
-    setFilters(_filters);
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
 
   const updateSubjectDropDownCB = selected => {
@@ -262,10 +263,10 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       subject: selected.key
     };
-    setFilters(_filters);
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
 
   const updateGradeDropDownCB = selected => {
@@ -273,20 +274,20 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       grade: selected.key
     };
-    setFilters(_filters);
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
   const updateCourseDropDownCB = selected => {
     const _filters = {
       ...filters,
       courseId: selected.key
     };
-    setFilters(_filters);
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
   const updateClassesDropDownCB = selected => {
     const obj = {
@@ -314,20 +315,20 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       teacherId: selected.key
     };
-    setFilters(_filters);
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
   const updateAssessmentTypeDropDownCB = selected => {
     const _filters = {
       ...filters,
       assessmentType: selected.key
     };
-    setFilters(_filters);
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
 
   const onTestIdChange = selected => {
@@ -368,16 +369,6 @@ const SingleAssessmentReportFilters = ({
           />
         </SearchField>
         <SearchField>
-          <FilterLabel>Subject</FilterLabel>
-          <ControlDropDown
-            by={filters.subject}
-            selectCB={updateSubjectDropDownCB}
-            data={staticDropDownData.subjects}
-            prefix="Subject"
-            showPrefixOnSelected={false}
-          />
-        </SearchField>
-        <SearchField>
           <FilterLabel>Grade</FilterLabel>
           <AutocompleteDropDown
             prefix="Grade"
@@ -388,15 +379,61 @@ const SingleAssessmentReportFilters = ({
           />
         </SearchField>
         <SearchField>
-          <FilterLabel>Assessment Name</FilterLabel>
-          <AutocompleteDropDown
-            containerClassName="single-assessment-report-test-autocomplete"
-            data={processedTestIds.testIds ? processedTestIds.testIds : []}
-            by={testId}
-            prefix="Assessment Name"
-            selectCB={onTestIdChange}
+          <FilterLabel>Subject</FilterLabel>
+          <ControlDropDown
+            by={filters.subject}
+            selectCB={updateSubjectDropDownCB}
+            data={staticDropDownData.subjects}
+            prefix="Subject"
+            showPrefixOnSelected={false}
           />
         </SearchField>
+        {role !== "teacher" && (
+          <Fragment>
+            <SearchField>
+              <FilterLabel>School</FilterLabel>
+              <AutocompleteDropDown
+                prefix="School"
+                by={filters.schoolId}
+                selectCB={updateSchoolsDropDownCB}
+                data={dropDownData.schools}
+              />
+            </SearchField>
+            <SearchField>
+              <FilterLabel>Teacher</FilterLabel>
+              <AutocompleteDropDown
+                prefix="Teacher"
+                by={filters.teacherId}
+                selectCB={updateTeachersDropDownCB}
+                data={dropDownData.teachers}
+              />
+            </SearchField>
+          </Fragment>
+        )}
+        <SearchField>
+          <FilterLabel>Assessment Type</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Assessment Type"
+            by={filters.assessmentType}
+            selectCB={updateAssessmentTypeDropDownCB}
+            data={staticDropDownData.assessmentType}
+          />
+        </SearchField>
+        <Tooltip
+          title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
+          placement="right"
+        >
+          <SearchField>
+            <FilterLabel>Assessment Name</FilterLabel>
+            <AutocompleteDropDown
+              containerClassName="single-assessment-report-test-autocomplete"
+              data={processedTestIds.testIds ? processedTestIds.testIds : []}
+              by={testId}
+              prefix="Assessment Name"
+              selectCB={onTestIdChange}
+            />
+          </SearchField>
+        </Tooltip>
         {isStandardProficiencyRequired && (
           <SearchField>
             <FilterLabel>Standard Proficiency</FilterLabel>
@@ -422,45 +459,12 @@ const SingleAssessmentReportFilters = ({
           </SearchField>
         )}
         <SearchField>
-          <FilterLabel>Assessment Type</FilterLabel>
+          <FilterLabel>Course</FilterLabel>
           <AutocompleteDropDown
-            prefix="Assessment Type"
-            by={filters.assessmentType}
-            selectCB={updateAssessmentTypeDropDownCB}
-            data={staticDropDownData.assessmentType}
-          />
-        </SearchField>
-        {extraFilters}
-        {role !== "teacher" && (
-          <Fragment>
-            <SearchField>
-              <FilterLabel>School</FilterLabel>
-              <AutocompleteDropDown
-                prefix="School"
-                by={filters.schoolId}
-                selectCB={updateSchoolsDropDownCB}
-                data={dropDownData.schools}
-              />
-            </SearchField>
-            <SearchField>
-              <FilterLabel>Teacher</FilterLabel>
-              <AutocompleteDropDown
-                prefix="Teacher"
-                by={filters.teacherId}
-                selectCB={updateTeachersDropDownCB}
-                data={dropDownData.teachers}
-              />
-            </SearchField>
-          </Fragment>
-        )}
-        <SearchField>
-          <FilterLabel>Group</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Group"
-            by={filters.groupId}
-            selectCB={updateGroupsDropDownCB}
-            data={dropDownData.groups}
-            dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
+            prefix="Course"
+            by={filters.courseId}
+            selectCB={updateCourseDropDownCB}
+            data={dropDownData.courses}
           />
         </SearchField>
         <SearchField>
@@ -474,14 +478,16 @@ const SingleAssessmentReportFilters = ({
           />
         </SearchField>
         <SearchField>
-          <FilterLabel>Course</FilterLabel>
+          <FilterLabel>Group</FilterLabel>
           <AutocompleteDropDown
-            prefix="Course"
-            by={filters.courseId}
-            selectCB={updateCourseDropDownCB}
-            data={dropDownData.courses}
+            prefix="Group"
+            by={filters.groupId}
+            selectCB={updateGroupsDropDownCB}
+            data={dropDownData.groups}
+            dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
           />
         </SearchField>
+        {extraFilters}
       </PerfectScrollbar>
     </StyledFilterWrapper>
   );

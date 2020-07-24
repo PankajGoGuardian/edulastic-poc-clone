@@ -126,7 +126,11 @@ function isLocationInTestRedirectRoutes(loc) {
 
 function CheckRoutePatternsEffectContainer({ role, location, history }) {
   useEffect(() => {
-    if (role === "student" && location.pathname.startsWith("/author")) {
+    if (
+      role === "student" &&
+      location.pathname.startsWith("/author") &&
+      !location.pathname.startsWith("/author/tests/tab")
+    ) {
       history.push(location.pathname.replace("author", "home") || "/home/assignments");
     } else if (role !== "student" && role !== "parent" && location.pathname.startsWith("/home")) {
       history.push(location.pathname.replace("home", "author") || "/author/assignments");

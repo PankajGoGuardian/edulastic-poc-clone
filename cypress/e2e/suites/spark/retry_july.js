@@ -2,8 +2,8 @@ import ItemListPage from "../../framework/author/itemList/itemListPage";
 import TestLibrary from "../../framework/author/tests/testLibraryPage";
 import FileHelper from "../../framework/util/fileHelper";
 
-const { tests } = require("../../../fixtures/spark/grade_7_final.json");
-const testCreationLogs = "cypress/fixtures/spark/grade_7_final_processed.json";
+const { tests } = require("../../../fixtures/spark/grade_7_final_processed.json");
+const testCreationLogs = "cypress/fixtures/spark/grade_7_final_processed_retry.json";
 const API_URL = Cypress.config("API_URL");
 
 const testLibrary = new TestLibrary();
@@ -14,9 +14,9 @@ const authToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTMyNzNkYzVmNzhjMzAwMDgzNDIwYzEiLCJyb2xlIjoidGVhY2hlciIsImRpc3RyaWN0SWQiOiI1ZTMyNzRhYzBmYjYyMjAwMDhmZTI2ZGQiLCJpYXQiOjE1OTU1MDExMTIsImV4cCI6MTU5NjcxMDcxMn0.FO0F6ofodol5upIDxgKccK1jVG51vNWdXPtMTte1VNA";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
-  /* before(() => {
+  before(() => {
     cy.writeFile(testCreationLogs, {});
-  }); */
+  });
 
   beforeEach("set routes", () => {
     cy.server();
@@ -24,7 +24,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     cy.route("POST", "**/search/tests").as("searchTest");
   });
   tests.forEach((testDetail, i) => {
-    if (i >= 31) {
+    if (testDetail.status === "failed") {
       Object.keys(testDetail).map(k => (testDetail[k] = ("" + testDetail[k]).trim()));
       const {
         // authToken,
@@ -49,6 +49,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         .map(i => i.trim());
       let testId = undefined;
       let status = "failed";
+      let newStatus = "failed";
       let itemToSearch = undefined;
       it(`create test- ${Sl_No}-${testName}--${allItems.length}`, () => {
         // setting auth token
@@ -123,7 +124,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
               expect(allItems, "verify item in test is from expected list").to.include(itemInTest)
             );
             // if both assertion passes make final status as "success";
-            status = "success";
+            newStatus = "success";
           });
         });
       });
@@ -132,8 +133,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         cy.readFile(`${testCreationLogs}`).then(json => {
           if (!json.tests) json.tests = [];
           cy.wait(1).then(() => {
-            const test = { status, testId, ...testDetail };
-            if (status === "failed") test["failedItem"] = itemToSearch;
+            const test = { ...testDetail, newStatus, testId };
+            if (newStatus === "failed") test["failedItem"] = itemToSearch;
             json.tests.push(test);
             cy.writeFile(`${testCreationLogs}`, json);
           });

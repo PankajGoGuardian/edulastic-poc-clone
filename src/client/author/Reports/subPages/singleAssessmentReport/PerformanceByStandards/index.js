@@ -12,6 +12,7 @@ import { ControlDropDown } from "../../../common/components/widgets/controlDropD
 import { StyledCard, StyledDropDownContainer, StyledH3, StyledSignedBarContainer } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
+  getReportsSARFilterLoadingState,
   getSAFFilterSelectedStandardsProficiencyProfile,
   getSAFFilterStandardsProficiencyProfiles
 } from "../common/filterDataDucks";
@@ -291,7 +292,8 @@ PerformanceByStandards.propTypes = {
 
 const enhance = connect(
   state => ({
-    loading: getPerformanceByStandardsLoadingSelector(state),
+    loading: getPerformanceByStandardsLoadingSelector(state)
+      || getReportsSARFilterLoadingState(state),
     role: getUserRole(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),

@@ -8,7 +8,7 @@ import { downloadCSV } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
-import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { getReportsMARFilterData , getReportsMARFilterLoadingState } from "../common/filterDataDucks";
 import { compareByMap, getCompareByOptions, parseTrendData } from "../common/utils/trend";
 import Filters from "./components/table/Filters";
 import {
@@ -16,6 +16,7 @@ import {
   getReportsPeerProgressAnalysis,
   getReportsPeerProgressAnalysisLoader
 } from "./ducks";
+
 import dropDownData from "./static/json/dropDownData.json";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
@@ -149,7 +150,8 @@ const PeerProgressAnalysis = ({
 const enhance = connect(
   state => ({
     peerProgressAnalysis: getReportsPeerProgressAnalysis(state),
-    loading: getReportsPeerProgressAnalysisLoader(state),
+    loading: getReportsPeerProgressAnalysisLoader(state)
+      || getReportsMARFilterLoadingState(state),
     role: getUserRole(state),
     MARFilterData: getReportsMARFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state)

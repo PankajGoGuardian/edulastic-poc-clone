@@ -13,7 +13,7 @@ import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import { downloadCSV, filterAccordingToRole, getFormattedName } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
 import { getUserRole } from "../../../../src/selectors/user";
-import { getFiltersSelector, getReportsMARFilterData } from "../common/filterDataDucks";
+import { getFiltersSelector, getReportsMARFilterData, getReportsMARFilterLoadingState } from "../common/filterDataDucks";
 import { usefetchProgressHook } from "../common/hooks";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
 import { useGetBandData } from "./hooks";
@@ -191,7 +191,8 @@ const StudentProgress = ({
 const enhance = connect(
   state => ({
     studentProgress: getReportsStudentProgress(state),
-    loading: getReportsStudentProgressLoader(state),
+    loading: getReportsStudentProgressLoader(state)
+      || getReportsMARFilterLoadingState(state),
     MARFilterData: getReportsMARFilterData(state),
     filters: getFiltersSelector(state),
     role: getUserRole(state),

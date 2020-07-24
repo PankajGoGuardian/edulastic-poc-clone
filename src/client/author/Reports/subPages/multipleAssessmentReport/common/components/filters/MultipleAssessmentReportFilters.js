@@ -5,7 +5,7 @@ import { find, get, isEmpty, map, pickBy } from "lodash";
 import queryString from "query-string";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Spin, Tooltip } from "antd";
+import { Tooltip } from "antd";
 
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
@@ -16,7 +16,6 @@ import { MultipleSelect } from "../../../../../common/components/widgets/Multipl
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import {
   StyledFilterWrapper,
-  StyledGoButton,
   GoButtonWrapper,
   SearchField,
   ApplyFitlerLabel,
@@ -34,8 +33,7 @@ import {
   getTestIdSelector,
   setTestIdAction,
   getReportsPrevMARFilterData,
-  setPrevMARFilterDataAction,
-  getReportsMARFilterLoadingState
+  setPrevMARFilterDataAction
 } from "../../filterDataDucks";
 import { getUserRole, getUser } from "../../../../../../src/selectors/user";
 
@@ -57,10 +55,10 @@ const SingleAssessmentReportFilters = ({
   setPrevMARFilterData,
   prevMARFilterData,
   performanceBandRequired,
-  extraFilter,
-  loading
+  extraFilter
 }) => {
-  const profiles = MARFilterData?.data?.result?.bandInfo || [];
+  const testDataOverflow = get(MARFilterData, "data.result.testDataOverflow", false);
+  const profiles = get(MARFilterData, "data.result.bandInfo", []);
 
   const schoolYear = useMemo(() => {
     let _schoolYear = [];
@@ -205,6 +203,14 @@ const SingleAssessmentReportFilters = ({
     [MARFilterData, filters, testIds]
   );
 
+  const onGoClick = (_filters, _testIds) => {
+    const settings = {
+      filters: _filters ? { ..._filters } : { ...filters },
+      selectedTest: _testIds || testIds
+    };
+    _onGoClick(settings);
+  };
+
   const updateSchoolYearDropDownCB = selected => {
     const _filters = { ...filters, termId: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
@@ -220,14 +226,15 @@ const SingleAssessmentReportFilters = ({
     setFilters(_filters);
   };
   const onChangePerformanceBand = selected => {
-    const obj = {
+    const _filters = {
       filters: {
         ...filters,
         profileId: selected.key
       },
       orgDataArr: dropDownData.orgDataArr
     };
-    setFilters(obj);
+    setFilters(_filters);
+    onGoClick(_filters);
   };
   const updateGradeDropDownCB = selected => {
     const _filters = { ...filters, grade: selected.key };
@@ -244,25 +251,26 @@ const SingleAssessmentReportFilters = ({
     setFilters(_filters);
   };
   const updateClassesDropDownCB = selected => {
-    const obj = {
-      ...filters,
-      classId: selected.key
-    };
-    setFilters(obj);
+    const _filters = { ...filters, classId: selected.key };
+    history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getMARFilterDataRequest(q);
+    setFilters(_filters);
   };
   const updateGroupsDropDownCB = selected => {
-    const obj = {
-      ...filters,
-      groupId: selected.key
-    };
-    setFilters(obj);
+    const _filters = { ...filters, groupId: selected.key };
+    history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getMARFilterDataRequest(q);
+    setFilters(_filters);
   };
   const updateSchoolsDropDownCB = selected => {
-    const obj = {
+    const _filters = {
       ...filters,
       schoolId: selected.key
     };
-    setFilters(obj);
+    setFilters(_filters);
+    onGoClick(_filters);
   };
   const updateTeachersDropDownCB = selected => {
     const _filters = { ...filters, teacherId: selected.key };
@@ -279,17 +287,11 @@ const SingleAssessmentReportFilters = ({
     setFilters(_filters);
   };
 
-  const onGoClick = () => {
-    const settings = {
-      filters: { ...filters },
-      selectedTest: testIds
-    };
-    _onGoClick(settings);
-  };
-
   const onSelectTest = test => {
     const items = toggleItem(map(testIds, _test => _test.key), test.key);
-    setTestId(processedTestIds.testIds.filter(_test => !!items.includes(_test.key)));
+    const _testIds = processedTestIds.testIds.filter(_test => !!items.includes(_test.key));
+    setTestId(_testIds);
+    onGoClick(null, _testIds);
   };
 
   const onChangeTest = items => {
@@ -298,15 +300,26 @@ const SingleAssessmentReportFilters = ({
     }
   };
 
-  return loading ? (
-    <StyledFilterWrapper style={style}>
-      <Spin />
-    </StyledFilterWrapper>
-  ) : (
+  const assessmentNameFilter = (
+    <SearchField>
+      <FilterLabel>Assessment Name</FilterLabel>
+      <MultipleSelect
+        containerClassName="single-assessment-report-test-autocomplete"
+        data={processedTestIds.testIds ? processedTestIds.testIds : []}
+        valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+        by={testIds}
+        prefix="Assessment Name"
+        onSelect={onSelectTest}
+        onChange={onChangeTest}
+        placeholder="All Assessments"
+      />
+    </SearchField>
+  );
+
+  return (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
       <PerfectScrollbar>
         <SearchField>
@@ -370,24 +383,15 @@ const SingleAssessmentReportFilters = ({
             data={staticDropDownData.assessmentType}
           />
         </SearchField>
-        <Tooltip
-          title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
-          placement="right"
-        >
-          <SearchField>
-            <FilterLabel>Assessment Name</FilterLabel>
-            <MultipleSelect
-              containerClassName="single-assessment-report-test-autocomplete"
-              data={processedTestIds.testIds ? processedTestIds.testIds : []}
-              valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
-              by={testIds}
-              prefix="Assessment Name"
-              onSelect={onSelectTest}
-              onChange={onChangeTest}
-              placeholder="All Assessments"
-            />
-          </SearchField>
-        </Tooltip>
+        {testDataOverflow ? (
+          <Tooltip
+            title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
+            placement="right"
+          >
+            {assessmentNameFilter}
+          </Tooltip>
+        ) : assessmentNameFilter
+        }
         {performanceBandRequired && (
           <SearchField>
             <FilterLabel>Performance Band</FilterLabel>
@@ -443,8 +447,7 @@ const enhance = compose(
       testIds: getTestIdSelector(state),
       role: getUserRole(state),
       user: getUser(state),
-      prevMARFilterData: getReportsPrevMARFilterData(state),
-      loading: getReportsMARFilterLoadingState(state)
+      prevMARFilterData: getReportsPrevMARFilterData(state)
     }),
     {
       getMARFilterDataRequest: getMARFilterDataRequestAction,

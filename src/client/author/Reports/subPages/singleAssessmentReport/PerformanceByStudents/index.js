@@ -29,6 +29,7 @@ import {
 import { getUserRole } from "../../../../../student/Login/ducks";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
+  getReportsSARFilterLoadingState,
   getSAFFilterSelectedPerformanceBandProfile,
   getSAFFilterPerformanceBandProfiles
 } from "../common/filterDataDucks";
@@ -248,7 +249,8 @@ PerformanceByStudents.propTypes = {
 
 const withConnect = connect(
   state => ({
-    loading: getReportsPerformanceByStudentsLoader(state),
+    loading: getReportsPerformanceByStudentsLoader(state)
+      || getReportsSARFilterLoadingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),

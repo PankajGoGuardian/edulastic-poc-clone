@@ -16,6 +16,7 @@ import {
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader
 } from "./ducks";
+import { getReportsSARFilterLoadingState } from "../common/filterDataDucks";
 
 const AssessmentSummary = ({
   loading,
@@ -94,7 +95,8 @@ AssessmentSummary.propTypes = {
 const enhance = compose(
   connect(
     state => ({
-      loading: getReportsAssessmentSummaryLoader(state),
+      loading: getReportsAssessmentSummaryLoader(state)
+        || getReportsSARFilterLoadingState(state),
       isPrinting: getPrintingState(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),

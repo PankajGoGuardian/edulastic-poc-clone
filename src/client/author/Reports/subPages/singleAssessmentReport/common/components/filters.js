@@ -6,7 +6,7 @@ import queryString from "query-string";
 import qs from "qs";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Spin, Tooltip } from "antd";
+import { Tooltip } from "antd";
 
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
@@ -16,7 +16,6 @@ import { AutocompleteDropDown } from "../../../../common/components/widgets/auto
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import {
   StyledFilterWrapper,
-  StyledGoButton,
   GoButtonWrapper,
   SearchField,
   ApplyFitlerLabel,
@@ -35,8 +34,7 @@ import {
   getReportsPrevSARFilterData,
   setPrevSARFilterDataAction,
   setPerformanceBandProfileFilterAction,
-  setStandardsProficiencyProfileFilterAction,
-  getReportsSARFilterLoadingState
+  setStandardsProficiencyProfileFilterAction
 } from "../filterDataDucks";
 import { getUserRole, getUserOrgId, getUser } from "../../../../../src/selectors/user";
 
@@ -76,9 +74,9 @@ const SingleAssessmentReportFilters = ({
   setStandardsProficiency,
   performanceBandRequired,
   isStandardProficiencyRequired = false,
-  extraFilters,
-  loading
+  extraFilters
 }) => {
+  const testDataOverflow = get(SARFilterData, "data.result.testDataOverflow", false);
   const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
   const standardProficiencyProfiles = get(SARFilterData, "data.result.scaleInfo", []);
   const getTitleByTestId = urlTestId => {
@@ -241,6 +239,16 @@ const SingleAssessmentReportFilters = ({
     setTestId(processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : "");
   }
 
+  const onGoClick = (_filters, _testId) => {
+    const settings = {
+      filters: _filters ? { ..._filters } : { ...filters },
+      selectedTest: _testId
+        ? { key: _testId, title: getTitleByTestId(_testId) }
+        : { key: testId, title: getTitleByTestId(testId) }
+    };
+    _onGoClick(settings);
+  };
+
   const getNewPathname = () => {
     const splitted = location.pathname.split("/");
     splitted.splice(splitted.length - 1);
@@ -290,25 +298,32 @@ const SingleAssessmentReportFilters = ({
     setFilters(_filters);
   };
   const updateClassesDropDownCB = selected => {
-    const obj = {
+    const _filters = {
       ...filters,
       classId: selected.key
     };
-    setFilters(obj);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
   const updateGroupsDropDownCB = selected => {
-    const obj = {
+    const _filters = {
       ...filters,
       groupId: selected.key
     };
-    setFilters(obj);
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
+    setFilters(_filters);
   };
   const updateSchoolsDropDownCB = selected => {
-    const obj = {
+    const _filters = {
       ...filters,
       schoolId: selected.key
     };
-    setFilters(obj);
+    setFilters(_filters);
+    onGoClick(_filters);
   };
   const updateTeachersDropDownCB = selected => {
     const _filters = {
@@ -332,30 +347,32 @@ const SingleAssessmentReportFilters = ({
   };
 
   const onTestIdChange = selected => {
-    setTestId(selected.key);
-  };
-
-  const onGoClick = () => {
-    const settings = {
-      filters: { ...filters },
-      selectedTest: { key: testId, title: getTitleByTestId(testId) }
-    };
-    _onGoClick(settings);
+    const _testId = selected.key;
+    setTestId(_testId);
+    onGoClick(null, _testId);
   };
 
   const standardProficiencyList = useMemo(() => standardProficiencyProfiles.map(s => ({ key: s._id, title: s.name })), [
     standardProficiencyProfiles
   ]);
 
-  return loading ? (
-    <StyledFilterWrapper style={style}>
-      <Spin />
-    </StyledFilterWrapper>
-  ) : (
+  const assessmentNameFilter = (
+    <SearchField>
+      <FilterLabel>Assessment Name</FilterLabel>
+      <AutocompleteDropDown
+        containerClassName="single-assessment-report-test-autocomplete"
+        data={processedTestIds.testIds ? processedTestIds.testIds : []}
+        by={testId}
+        prefix="Assessment Name"
+        selectCB={onTestIdChange}
+      />
+    </SearchField>
+  );
+
+  return (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
       <PerfectScrollbar>
         <SearchField>
@@ -419,21 +436,15 @@ const SingleAssessmentReportFilters = ({
             data={staticDropDownData.assessmentType}
           />
         </SearchField>
-        <Tooltip
-          title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
-          placement="right"
-        >
-          <SearchField>
-            <FilterLabel>Assessment Name</FilterLabel>
-            <AutocompleteDropDown
-              containerClassName="single-assessment-report-test-autocomplete"
-              data={processedTestIds.testIds ? processedTestIds.testIds : []}
-              by={testId}
-              prefix="Assessment Name"
-              selectCB={onTestIdChange}
-            />
-          </SearchField>
-        </Tooltip>
+        {testDataOverflow ? (
+          <Tooltip
+            title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
+            placement="right"
+          >
+            {assessmentNameFilter}
+          </Tooltip>
+        ) : assessmentNameFilter
+        }
         {isStandardProficiencyRequired && (
           <SearchField>
             <FilterLabel>Standard Proficiency</FilterLabel>
@@ -503,7 +514,6 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       user: getUser(state),
       prevSARFilterData: getReportsPrevSARFilterData(state),
-      loading: getReportsSARFilterLoadingState(state),
       performanceBandProfiles: state?.performanceBandReducer?.profiles || [],
       performanceBandLoading: state?.performanceBandReducer?.loading || false,
       standardProficiencyProfiles: state?.standardsProficiencyReducer?.data || [],

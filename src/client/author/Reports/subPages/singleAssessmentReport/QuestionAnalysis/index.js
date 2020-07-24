@@ -17,6 +17,7 @@ import {
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader
 } from "./ducks";
+import { getReportsSARFilterLoadingState } from "../common/filterDataDucks";
 import dropDownData from "./static/json/dropDownData.json";
 import { getChartData, getTableData } from "./utils/transformers";
 
@@ -26,20 +27,16 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      let q = {};
+      const q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
       getQuestionAnalysis(q);
     }
   }, [settings]);
 
-  const chartData = useMemo(() => {
-    return getChartData(questionAnalysis.metricInfo);
-  }, [questionAnalysis]);
+  const chartData = useMemo(() => getChartData(questionAnalysis.metricInfo), [questionAnalysis]);
 
-  const tableData = useMemo(() => {
-    return getTableData(questionAnalysis);
-  }, [questionAnalysis, compareBy]);
+  const tableData = useMemo(() => getTableData(questionAnalysis), [questionAnalysis, compareBy]);
 
   const { compareByDropDownData, dropDownKeyToLabel } = dropDownData;
 
@@ -48,7 +45,7 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
   };
 
   const onBarClickCB = key => {
-    let _chartFilter = { ...chartFilter };
+    const _chartFilter = { ...chartFilter };
     if (_chartFilter[key]) {
       delete _chartFilter[key];
     } else {
@@ -92,7 +89,7 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
           <TableContainer>
             <StyledCard>
               <Row type="flex" justify="start" className="parent-row">
-                <Col className={"top-row-container"}>
+                <Col className="top-row-container">
                   <Row type="flex" justify="space-between" className="top-row">
                     <Col>
                       <StyledH3>
@@ -103,7 +100,7 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
                     <Col>
                       {role !== "teacher" ? (
                         <ControlDropDown
-                          prefix={"Compare by"}
+                          prefix="Compare by"
                           by={compareByDropDownData[0]}
                           selectCB={updateCompareByCB}
                           data={compareByDropDownData}
@@ -112,7 +109,7 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
                     </Col>
                   </Row>
                 </Col>
-                <Col className={"bottom-table-container"}>
+                <Col className="bottom-table-container">
                   <QuestionAnalysisTable
                     isCsvDownloading={isCsvDownloading}
                     tableData={tableData}
@@ -147,7 +144,8 @@ QuestionAnalysis.propTypes = {
 
 export default connect(
   state => ({
-    loading: getReportsQuestionAnalysisLoader(state),
+    loading: getReportsQuestionAnalysisLoader(state)
+      || getReportsSARFilterLoadingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state)

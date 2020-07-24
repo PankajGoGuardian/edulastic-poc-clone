@@ -103,6 +103,10 @@
     "message": "Uploading failed",
     "description": "Please enter valid Clever ID"
   },
+  "invalidClasslinkId": {
+    "message": "Uploading failed",
+    "description": "Please enter valid Classlink ID"
+  },
   "userNotFound": {
     "message": "No Records Found",
     "description": ""

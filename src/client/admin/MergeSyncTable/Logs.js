@@ -4,14 +4,26 @@ import { Table } from "../Common/StyledComponents";
 
 const { Column } = Table;
 
-export default function Logs({ logs, fetchLogsDataAction, districtId }) {
+export default function Logs({
+  logs,
+  fetchLogsDataAction,
+  districtId,
+  isClasslink,
+  loading
+}) {
+
+  const getLogs = () => {
+    fetchLogsDataAction({districtId, isClasslink});
+  }
+
   useEffect(() => {
-    fetchLogsDataAction(districtId);
+    getLogs();
   }, [districtId]);
+
   return (
     <>
       <Button
-        onClick={() => fetchLogsDataAction(districtId)}
+        onClick={getLogs}
         aria-label="Refresh Logs"
         title="Refresh Logs"
         style={{ marginBottom: "10px" }}
@@ -25,7 +37,7 @@ export default function Logs({ logs, fetchLogsDataAction, districtId }) {
           position: "both",
           pageSize: 10
         }}
-        loading={!logs.length}
+        loading={loading}
       >
         <Column title="ID" dataIndex="_id" key="_id" />
         <Column title="District ID" dataIndex="districtId" key="districtId" />

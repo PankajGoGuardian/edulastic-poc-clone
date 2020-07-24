@@ -5,14 +5,22 @@ import { Table } from "../Common/StyledComponents";
 const { Group: RadioGroup } = Radio;
 const { Column } = Table;
 
-export default function Sync({ schools, cleverId, syncSchools }) {
+export default function Sync({
+  schools,
+  cleverId,
+  syncSchools,
+  atlasId,
+  isClasslink
+}) {
   const [radioInput, setRadioInput] = useState("syncSelectedSchools");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const reSyncSchools = () => {
     syncSchools({
+      isClasslink,
       selectedSyncOption: radioInput,
       cleverId,
-      schoolCleverIds: selectedRowKeys
+      atlasId,
+      schoolIds: selectedRowKeys
     });
   };
 
@@ -51,7 +59,11 @@ export default function Sync({ schools, cleverId, syncSchools }) {
           bordered
         >
           <Column title="School Name" dataIndex="name" key="name" />
-          <Column title="School Clever Id" dataIndex="id" key="schoolCleverId" />
+          <Column
+            title={`School ${isClasslink ? "Classlink" : "Clever"} Id`}
+            dataIndex="id"
+            key="schoolId"
+          />
         </Table>
       </div>
     </div>

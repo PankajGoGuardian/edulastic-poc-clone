@@ -26,7 +26,7 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
   if (isLoggedInForPrivateRoute(user)) {
     switch (user.user.role) {
       case roleuser.EDULASTIC_ADMIN:
-        return <Redirect exact to="/admin/search" />;
+        return <Redirect exact to="/admin/search/clever" />;
       case roleuser.DISTRICT_ADMIN:
       case roleuser.SCHOOL_ADMIN:
       case roleuser.TEACHER:

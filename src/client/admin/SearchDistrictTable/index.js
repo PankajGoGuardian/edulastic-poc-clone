@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Popconfirm, Spin, message } from "antd";
+import { Input, Popconfirm, Spin } from "antd";
 import { notification } from "@edulastic/common";
 import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
 import { Table, Button, FlexColumn } from "../Common/StyledComponents";
@@ -9,8 +9,8 @@ const { Column } = Table;
 
 export const DISABLED_DISTRICT_SYNC_STATUS = [9, 10];
 
-const EditableAction = ({ onEditClick, districtName, onDeleteClick, disabled }) => {
-  const editTitle = `Edit ${disabled ? "disabled for" : ""} ${districtName}'s clever ID`;
+const EditableAction = ({ onEditClick, districtName, onDeleteClick, disabled, isClasslink }) => {
+  const editTitle = `Edit ${disabled ? "disabled for" : ""} ${districtName}'s ${isClasslink ? "classlink" : "clever"} ID`;
   return (
     <>
       <Button aria-label="Edit" noStyle onClick={onEditClick} disabled={disabled} title={editTitle}>
@@ -38,7 +38,7 @@ const NonEditableAction = ({ onSaveConfirm, onCancelSave }) => (
   </>
 );
 
-function UserCount({ users, getUsersDataAction, districtId, index }) {
+function UserCount({ users, getUsersDataAction, districtId, index, isClasslink }) {
   return users.loading ? (
     <Spin />
   ) : users.data ? (
@@ -50,13 +50,13 @@ function UserCount({ users, getUsersDataAction, districtId, index }) {
       ))}
     </FlexColumn>
   ) : (
-    <Button aria-label="View users" onClick={() => getUsersDataAction({ districtId, index })} noStyle>
+    <Button aria-label="View users" onClick={() => getUsersDataAction({ districtId, index, isClasslink })} noStyle>
       <IconCaretDown />
     </Button>
   );
 }
 
-const EditableCell = ({ edit, cleverId = "", onInputPressEnter, onCancel, editValue, setEditValue }) => {
+const EditableCell = ({ edit, thirdPartyId = "", onInputPressEnter, onCancel, editValue, setEditValue }) => {
   // here ref is used for the editable text input, to focus, for better a11y
   const textInput = React.createRef();
   useEffect(() => {
@@ -76,55 +76,96 @@ const EditableCell = ({ edit, cleverId = "", onInputPressEnter, onCancel, editVa
       }}
     />
   ) : (
-    cleverId
+    thirdPartyId
   );
 };
 
-export default function SearchDistrictTable({ data, updateClever, deleteDistrictId, getUsersDataAction }) {
+export default function SearchDistrictTable({
+  data,
+  updateClever,
+  deleteDistrictId,
+  getUsersDataAction,
+  updateClasslink,
+  isClasslink
+}) {
   const [editCell, setEditCell] = useState();
   const [editValue, setEditValue] = useState("");
 
-  function renderActions(text, record, index) {
-    return editCell !== record._id ? (
-      <EditableAction
-        onEditClick={() => {
-          setEditCell(record._id);
-          setEditValue(record._source.cleverId);
-        }}
-        districtName={record._source.name}
-        onDeleteClick={() => deleteDistrictId(record._id)}
-        disabled={DISABLED_DISTRICT_SYNC_STATUS.indexOf(record._source.cleverSyncStatus) !== -1}
-      />
-    ) : (
-      <NonEditableAction onSaveConfirm={() => updateCleverId(record._id)} onCancelSave={setEditCell} />
-    );
-  }
+  function updateThirdPartyId(districtId) {
+    const cleverIdRegex = RegExp(CLEVER_DISTRICT_ID_REGEX);
 
-  function updateCleverId(districtId) {
-    const idRegex = RegExp(CLEVER_DISTRICT_ID_REGEX);
-
-    if (idRegex.test(editValue)) {
+    if (isClasslink || cleverIdRegex.test(editValue)) {
       // here editCell is set so that all fields become uneditable
       setEditCell();
-      updateClever({
-        districtId,
-        cleverId: editValue
-      });
+      if (isClasslink) {
+        updateClasslink({
+          districtId,
+          atlasId: editValue
+        });
+      } else {
+        updateClever({
+          districtId,
+          cleverId: editValue
+        });
+      }
     } else {
-      notification({ messageKey: "inValiedCleverId" });
+      notification({ messageKey: isClasslink ? "invalidClasslinkId" : "inValiedCleverId" });
     }
   }
 
-  function renderCleverCell(text, record, index) {
+  function renderActions(text, record) {
+    const onEditClick = () => {
+      setEditCell(record._id);
+      if (isClasslink) {
+        setEditValue(record._source.atlasId);
+      } else {
+        setEditValue(record._source.cleverId);
+      }
+    }
+    return editCell !== record._id ? (
+      <EditableAction
+        onEditClick={onEditClick}
+        districtName={record._source.name}
+        onDeleteClick={() => deleteDistrictId({ districtId: record._id, isClasslink})}
+        disabled={isClasslink ?
+          DISABLED_DISTRICT_SYNC_STATUS.indexOf(record._source.syncStatus) !== -1 :
+          DISABLED_DISTRICT_SYNC_STATUS.indexOf(record._source.cleverSyncStatus) !== -1
+        }
+        isClasslink={isClasslink}
+      />
+    ) : (
+      <NonEditableAction
+        onSaveConfirm={() => updateThirdPartyId(record._id)}
+        onCancelSave={setEditCell}
+      />
+    );
+  }
+
+  function renderCleverCell(text, record) {
     const edit = editCell === record._id;
     const { cleverId } = record._source;
     return (
       <EditableCell
         edit={edit}
-        cleverId={cleverId}
+        thirdPartyId={cleverId}
         editValue={editValue}
         setEditValue={setEditValue}
-        onInputPressEnter={() => updateCleverId(record._id)}
+        onInputPressEnter={() => updateThirdPartyId(record._id)}
+        onCancel={setEditCell}
+      />
+    );
+  }
+
+  function renderClasslinkCell(text, record) {
+    const edit = editCell === record._id;
+    const { atlasId } = record._source;
+    return (
+      <EditableCell
+        edit={edit}
+        thirdPartyId={atlasId}
+        editValue={editValue}
+        setEditValue={setEditValue}
+        onInputPressEnter={() => updateThirdPartyId(record._id)}
         onCancel={setEditCell}
       />
     );
@@ -134,7 +175,21 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
     <Table rowKey={record => record._id} dataSource={data} pagination={false} bordered>
       <Column title="District Id" dataIndex="_id" key="districtId" />
       <Column title="District Name" dataIndex="_source.name" key="districtName" />
-      <Column render={renderCleverCell} title="Clever Id" dataIndex="_source.cleverId" key="cleverId" />
+      {isClasslink ? (
+        <Column
+          render={renderClasslinkCell}
+          title="Classlink ID"
+          dataIndex="_source.atlasId"
+          key="atlasId"
+        />
+      ): (
+        <Column
+          render={renderCleverCell}
+          title="Clever ID"
+          dataIndex="_source.cleverId"
+          key="cleverId"
+        />
+      )}
       <Column
         title="Created Date"
         dataIndex="_source.createdAt"
@@ -144,7 +199,7 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
       <Column title="Status" dataIndex="_source.status" key="status" render={status => DISTRICT_STATUS[status]} />
       <Column
         title="Sync Status"
-        dataIndex="_source.cleverSyncStatus"
+        dataIndex={isClasslink ? "_source.syncStatus" : "_source.cleverSyncStatus"}
         key="syncStatus"
         render={syncStatus => DISTRICT_SYNC_STATUS[syncStatus]}
       />
@@ -153,7 +208,13 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
         dataIndex="users"
         key="users"
         render={(users = {}, record, index) => (
-          <UserCount users={users} getUsersDataAction={getUsersDataAction} districtId={record._id} index={index} />
+          <UserCount
+            users={users}
+            getUsersDataAction={getUsersDataAction}
+            districtId={record._id}
+            index={index}
+            isClasslink={isClasslink}
+          />
         )}
       />
       <Column title="Actions" dataIndex="actions" key="actions" render={renderActions} />

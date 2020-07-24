@@ -30,7 +30,12 @@ const siderMenuData = [
   {
     icon: "team",
     label: "Clever Search",
-    href: "/admin/search"
+    href: "/admin/search/clever"
+  },
+  {
+    icon: "team",
+    label: "Classlink Search",
+    href: "/admin/search/classlink"
   },
   {
     icon: "team",

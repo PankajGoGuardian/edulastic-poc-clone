@@ -5,12 +5,12 @@ import SearchDistrictTable from "../SearchDistrictTable";
 import MergeSyncTable from "../MergeSyncTable";
 import { FirstDiv, H2, OuterDiv } from "../Common/StyledComponents";
 import {
-  fetchTableData as fetchTableDataAction,
-  updateClever as updateCleverAction,
+  updateClasslink as updateClasslinkAction,
   getTableData,
   deleteDistrictId as deleteDistrictIdAction,
   getUsersDataAction,
-  clearTableDataAction
+  clearTableDataAction,
+  fetchClasslinkTableDataAction
 } from "../SearchDistrictTable/ducks";
 import {clearMergeDataAction} from "../MergeSyncTable/ducks";
 
@@ -28,17 +28,17 @@ const listOfRadioOptions = [
     message: "Please enter valid District ID"
   },
   {
-    id: "cleverid",
-    label: "Clever Id",
-    message: "Please enter valid Clever ID"
+    id: "classlinkId",
+    label: "Classlink Id",
+    message: "Please enter valid Classlink ID"
   }
 ];
 
-function CleverSearch(props) {
+function ClasslinkSearch(props) {
   const {
     fetchTableData,
     tableData,
-    updateClever,
+    updateClasslink,
     deleteDistrictId,
     getUsersData,
     clearTableData,
@@ -55,19 +55,17 @@ function CleverSearch(props) {
       <OuterDiv>
         <H2>Search and Update District</H2>
         <FirstDiv>
-          <SearchForm
-            fetchTableData={fetchTableData}
-            searchProps={{listOfRadioOptions}}
-          />
+          <SearchForm fetchTableData={fetchTableData} searchProps={{listOfRadioOptions}} />
         </FirstDiv>
         <SearchDistrictTable
           data={tableData}
-          updateClever={updateClever}
+          updateClasslink={updateClasslink}
           deleteDistrictId={deleteDistrictId}
           getUsersDataAction={getUsersData}
+          isClasslink
         />
       </OuterDiv>
-      <MergeSyncTable />
+      <MergeSyncTable isClasslink />
     </div>
   );
 }
@@ -79,11 +77,11 @@ const mapStateToProps = state => ({
 const withConnect = connect(
   mapStateToProps,
   {
-    fetchTableData: fetchTableDataAction,
-    updateClever: updateCleverAction,
+    updateClasslink: updateClasslinkAction,
     deleteDistrictId: deleteDistrictIdAction,
     getUsersData: getUsersDataAction,
     clearTableData: clearTableDataAction,
+    fetchTableData: fetchClasslinkTableDataAction,
     clearMergeData: clearMergeDataAction
   }
 );
@@ -91,4 +89,4 @@ const withConnect = connect(
 export default compose(
   withConnect,
   memo
-)(CleverSearch);
+)(ClasslinkSearch);

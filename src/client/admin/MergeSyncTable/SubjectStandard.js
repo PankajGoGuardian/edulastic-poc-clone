@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Select } from "antd";
-import { Table } from "../Common/StyledComponents";
-import { LIST_CLEVER_SUBJECTS, DISABLE_SUBMIT_TITLE } from "../Data";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
-import { Button } from "../Common/StyledComponents";
+
+import { Table, Button } from "../Common/StyledComponents";
+import { LIST_CLEVER_SUBJECTS, DISABLE_SUBMIT_TITLE } from "../Data";
 import CancelApplyActions from "./CancelApplyActions";
 
 const { Column } = Table;
@@ -12,7 +12,7 @@ const { Option } = Select;
 export default function SubjectStandard({
   subStandardMapping,
   fetchCurriculumDataAction,
-  updateCleverSubjectAction,
+  updateSubjectAction,
   updateEdulasticSubjectAction,
   updateEdulasticStandardAction,
   addSubjectStandardRowAction,
@@ -20,21 +20,25 @@ export default function SubjectStandard({
   orgType,
   updateSubjectStdMapAction,
   deleteSubjectStdMapAction,
-  disableFields
+  disableFields,
+  isClasslink
 }) {
-  const { rows, cleverSubjectStandardMap, curriculum } = subStandardMapping;
-  const cancelApplyButtonProps = disableFields ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } : {};
+  const { rows, subjectStandardMap, curriculum } = subStandardMapping;
+  const cancelApplyButtonProps = disableFields
+    ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } :
+    {};
+
   useEffect(() => {
     fetchCurriculumDataAction();
   }, []);
 
-  function renderEdulasticStandardSet(item, _, index) {
-    const cleverSubject = item.subject;
-    const edulasticSubject = cleverSubjectStandardMap[cleverSubject]
-      ? cleverSubjectStandardMap[cleverSubject].subject
+  function renderEdulasticStandardSet(item) {
+    const {subject} = item;
+    const edulasticSubject = subjectStandardMap[subject]
+      ? subjectStandardMap[subject].subject
       : "";
-    const edulasticStandard = cleverSubjectStandardMap[cleverSubject]
-      ? cleverSubjectStandardMap[cleverSubject].standard
+    const edulasticStandard = subjectStandardMap[subject]
+      ? subjectStandardMap[subject].standard
       : "";
 
     const { [edulasticSubject]: edulasticSubjects = { list: [] } } = curriculum;
@@ -43,7 +47,7 @@ export default function SubjectStandard({
         showSearch
         style={{ width: "100%" }}
         value={edulasticStandard}
-        onChange={value => updateEdulasticStandardAction({ subject: item.subject, value })}
+        onChange={value => updateEdulasticStandardAction({ subject, value })}
       >
         {edulasticSubjects.list.map(curriculumItem => (
           <Option title={curriculumItem} key={curriculumItem} value={curriculumItem}>
@@ -54,10 +58,10 @@ export default function SubjectStandard({
     );
   }
 
-  function renderEdulasticSubject(item, _, index) {
-    const cleverSubject = item.subject;
-    const edulasticSubject = cleverSubjectStandardMap[cleverSubject]
-      ? cleverSubjectStandardMap[cleverSubject].subject
+  function renderEdulasticSubject(item) {
+    const {subject} = item;
+    const edulasticSubject = subjectStandardMap[subject]
+      ? subjectStandardMap[subject].subject
       : "";
 
     return (
@@ -65,31 +69,38 @@ export default function SubjectStandard({
         showSearch
         style={{ width: "100%" }}
         value={edulasticSubject}
-        onChange={value => updateEdulasticSubjectAction({ subject: item.subject, value })}
+        onChange={value => updateEdulasticSubjectAction({ subject, value })}
       >
-        {Object.keys(curriculum).map(subject => (
-          <Option title={subject} key={subject} value={subject}>
-            {subject}
+        {Object.keys(curriculum).map((eachSubject) => (
+          <Option
+            title={eachSubject}
+            key={eachSubject}
+            value={eachSubject}
+          >
+            {eachSubject}
           </Option>
         ))}
       </Select>
     );
   }
 
-  function renderCleverSubject(item, _, index) {
+  // TODO: add classlink subject list
+  function renderSubject(item, _, index) {
     return (
       <Select
         showSearch
         style={{ width: "100%" }}
         value={item.subject}
-        onChange={value => updateCleverSubjectAction({ index, value, prevValue: item.subject })}
+        onChange={value => updateSubjectAction({ index, value, prevValue: item.subject })}
       >
-        {LIST_CLEVER_SUBJECTS.map(subject => (
+        {
+        // isClasslink ? [] :
+        LIST_CLEVER_SUBJECTS.map(subject => (
           <Option
             title={subject}
             key={subject}
             value={subject}
-            disabled={cleverSubjectStandardMap[subject] ? true : false}
+            disabled={!!subjectStandardMap[subject]}
           >
             {subject}
           </Option>
@@ -101,7 +112,11 @@ export default function SubjectStandard({
   return (
     <>
       <Table bordered rowKey={record => record.subject} dataSource={rows} pagination={false}>
-        <Column title="Clever Subject" key="cleverSubject" render={renderCleverSubject} />
+        <Column
+          title={`${isClasslink ? 'Classlink' : 'Clever'} Subject`}
+          key="subject"
+          render={renderSubject}
+        />
         <Column title="Edulastic Subject" key="edulasticSubject" render={renderEdulasticSubject} />
         <Column title="Edulastic Standard Set" key="edulasticStandardSet" render={renderEdulasticStandardSet} />
         <Column
@@ -129,7 +144,8 @@ export default function SubjectStandard({
           updateSubjectStdMapAction({
             orgId,
             orgType,
-            cleverSubjectStandardMap
+            subjectStandardMap,
+            isClasslink
           })
         }
       />

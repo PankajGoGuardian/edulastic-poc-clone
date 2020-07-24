@@ -6,12 +6,12 @@ export const radioButtondata = {
     return [
       {
         id: this.CLEVER_ID,
-        label: "Clever id",
+        label: "Clever ID",
         message: "Please enter valid Clever ID"
       },
       {
         id: this.DISTRICT_ID,
-        label: "District Id",
+        label: "District ID",
         message: "Please enter valid District ID"
       },
       {

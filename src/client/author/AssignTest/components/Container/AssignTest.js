@@ -1,5 +1,6 @@
 import { EduButton, notification } from "@edulastic/common";
 import { assignmentPolicyOptions, roleuser, test as testConst } from "@edulastic/constants";
+import { IconAssignment } from "@edulastic/icons";
 import { Spin } from "antd";
 import produce from "immer";
 import { get, isEmpty, keyBy, omit } from "lodash";
@@ -7,7 +8,8 @@ import * as moment from "moment";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import { IconAssignment } from "@edulastic/icons";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
@@ -262,7 +264,7 @@ class AssignTest extends React.Component {
 
   render() {
     const { isAdvancedView, specificStudents, selectedDateOption } = this.state;
-    const { assignmentSettings: assignment, isTestLoading } = this.props;
+    const { assignmentSettings: assignment, isTestLoading, match } = this.props;
     const {
       classList,
       fetchStudents,
@@ -280,12 +282,17 @@ class AssignTest extends React.Component {
     if (exactMenu?.to === "myPlaylist") {
       exactMenu.to = `playlists/playlist/${_id}/use-this`;
     }
+
+    const moduleId = match.params.moduleId;
+    const _module = playlist.modules?.find(m => m?._id === moduleId);
+    const moduleTitle = _module?.title || "";
+
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
-        <MultipleAssignConfirmation assignment={assignment} isPlaylist={isPlaylist} />
+        <MultipleAssignConfirmation assignment={assignment} isPlaylist={isPlaylist} moduleTitle={moduleTitle} />
         <ListHeader
-          title={`Assign ${title || ""}`}
+          title={`Assign ${moduleTitle || title || ""}`}
           midTitle="PICK CLASSES, GROUPS OR STUDENTS"
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
@@ -335,40 +342,45 @@ class AssignTest extends React.Component {
               changeDateSelection={this.changeDateSelection}
               selectedDateOption={selectedDateOption}
             />
-          )}
+              )}
         </Container>
       </div>
     );
   }
 }
 
-export default connect(
-  state => ({
-    classList: getClassListSelector(state),
-    assignments: getAssignmentsSelector(state),
-    students: getStudentsSelector(state),
-    testSettings: getTestEntitySelector(state),
-    userOrgId: getUserOrgId(state),
-    playlist: getPlaylistSelector(state),
-    testItem: getTestSelector(state),
-    userRole: getUserRole(state),
-    isAssigning: state.authorTestAssignments.isAssigning,
-    assignmentSettings: state.assignmentSettings,
-    isTestLoading: getTestsLoadingSelector(state)
-  }),
-  {
-    loadClassList: receiveClassListAction,
-    fetchStudents: fetchGroupMembersAction,
-    fetchAssignments: fetchAssignmentsAction,
-    saveAssignment: saveAssignmentAction,
-    fetchPlaylistById: receivePlaylistByIdAction,
-    fetchTestByID: receiveTestByIdAction,
-    getDefaultTestSettings: getDefaultTestSettingsAction,
-    resetStudents: resetStudentAction,
-    updateAssignmentSettings: updateAssingnmentSettingsAction,
-    clearAssignmentSettings: clearAssignmentSettingsAction
-  }
-)(AssignTest);
+
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      classList: getClassListSelector(state),
+      assignments: getAssignmentsSelector(state),
+      students: getStudentsSelector(state),
+      testSettings: getTestEntitySelector(state),
+      userOrgId: getUserOrgId(state),
+      playlist: getPlaylistSelector(state),
+      testItem: getTestSelector(state),
+      userRole: getUserRole(state),
+      isAssigning: state.authorTestAssignments.isAssigning,
+      assignmentSettings: state.assignmentSettings,
+      isTestLoading: getTestsLoadingSelector(state)
+    }),
+    {
+      loadClassList: receiveClassListAction,
+      fetchStudents: fetchGroupMembersAction,
+      fetchAssignments: fetchAssignmentsAction,
+      saveAssignment: saveAssignmentAction,
+      fetchPlaylistById: receivePlaylistByIdAction,
+      fetchTestByID: receiveTestByIdAction,
+      getDefaultTestSettings: getDefaultTestSettingsAction,
+      resetStudents: resetStudentAction,
+      updateAssignmentSettings: updateAssingnmentSettingsAction,
+      clearAssignmentSettings: clearAssignmentSettingsAction
+    }
+  )
+);
+export default enhance(AssignTest);
 
 AssignTest.propTypes = {
   match: PropTypes.object.isRequired,

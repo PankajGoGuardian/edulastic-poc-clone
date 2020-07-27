@@ -1167,10 +1167,10 @@ function* receiveTestByIdSaga({ payload }) {
       );
     }
 
-    entity.itemGroups.forEach(itemGroup => {
-      itemGroup.items.forEach(item => {
+    entity.itemGroups.forEach((itemGroup, groupIndex) => {
+      itemGroup.items.forEach((item, itemIndex) => {
         if (createdItems?.[0]?._id === item._id || createdItems?.[0]?.previousTestItemId === item._id) {
-          item = createdItems[0];
+          entity.itemGroups[groupIndex].items[itemIndex] = createdItems[0];
           createdItems = createdItems?.slice(1) || [];
         }
       });
@@ -1180,6 +1180,7 @@ function* receiveTestByIdSaga({ payload }) {
       [...entity.itemGroups[currentGroupIndex].items, ...createdItems],
       x => x.previousTestItemId || x._id
     );
+
     const questions = getQuestions(entity.itemGroups);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));

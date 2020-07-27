@@ -345,8 +345,18 @@ const StandardsFilters = ({
       <FilterLabel>Assessment Name</FilterLabel>
       <MultipleSelect
         containerClassName="standards-gradebook-domain-autocomplete"
-        data={allTestIds}
-        valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+        data={(allTestIds || []).map(t => ({
+          ...t,
+          title: `${t.title} (ID: ${t.key?.substring(t.key.length - 5) || ""})`
+        }))}
+        valueToDisplay={
+          testIds?.length > 1
+            ? { key: "", title: "Multiple Assessment" }
+            : (testIds || []).map(t => ({
+                ...t,
+                title: `${t.title} (ID: ${t.key?.substring(t.key.length - 5) || ""})`
+              }))
+        }
         by={testIds}
         prefix="Assessment Name"
         onSelect={onSelectTest}

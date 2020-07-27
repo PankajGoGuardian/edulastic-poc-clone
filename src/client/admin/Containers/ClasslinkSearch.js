@@ -12,9 +12,9 @@ import {
   clearTableDataAction,
   fetchClasslinkTableDataAction
 } from "../SearchDistrictTable/ducks";
-import {clearMergeDataAction} from "../MergeSyncTable/ducks";
+import { clearMergeDataAction } from "../MergeSyncTable/ducks";
 
-import {SearchForm} from './SearchForm';
+import { SearchForm } from "./SearchForm";
 
 const listOfRadioOptions = [
   {
@@ -28,7 +28,7 @@ const listOfRadioOptions = [
     message: "Please enter valid District ID"
   },
   {
-    id: "classlinkId",
+    id: "atlasId",
     label: "Classlink Id",
     message: "Please enter valid Classlink ID"
   }
@@ -45,17 +45,20 @@ function ClasslinkSearch(props) {
     clearMergeData
   } = props;
 
-  useEffect(() => () => {
-    clearTableData();
-    clearMergeData();
-  }, []);
+  useEffect(
+    () => () => {
+      clearTableData();
+      clearMergeData();
+    },
+    []
+  );
 
   return (
     <div>
       <OuterDiv>
         <H2>Search and Update District</H2>
         <FirstDiv>
-          <SearchForm fetchTableData={fetchTableData} searchProps={{listOfRadioOptions}} />
+          <SearchForm fetchTableData={fetchTableData} searchProps={{ listOfRadioOptions }} />
         </FirstDiv>
         <SearchDistrictTable
           data={tableData}

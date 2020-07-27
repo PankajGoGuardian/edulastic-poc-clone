@@ -8,7 +8,7 @@ export default class PlayListSearchContainer {
 
   getStandards = () => cy.get('[class*="SearchByTab"]').contains("standards");
 
-  getKeywordsSearchBar = () => cy.get('[placeholder="Search by keywords"]').should("be.visible");
+  getKeywordsSearchBar = () => cy.contains("Search by keywords").find("input");
 
   getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
 

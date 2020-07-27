@@ -39,7 +39,7 @@ export default class PlayListHeader {
     cy.server();
     cy.route("PUT", "**/playlists/*").as("savePlayList");
     this.getReviewButton().click({ force: true });
-    return cy.wait("@savePlayList");
+    // return cy.wait("@savePlayList");
   };
 
   clickOnSettings = () => {

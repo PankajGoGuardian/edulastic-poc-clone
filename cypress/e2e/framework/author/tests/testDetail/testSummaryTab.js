@@ -65,7 +65,7 @@ export default class TestSummayTab {
     cy.get(".ant-select-dropdown-menu-item")
       .contains(subject)
       .click({ force: true });
-    this.header.clickOnDescription();
+    // this.header.clickOnDescription();
     // cy.focused().blur();
   };
 

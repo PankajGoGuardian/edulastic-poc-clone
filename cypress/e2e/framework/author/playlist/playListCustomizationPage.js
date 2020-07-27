@@ -69,10 +69,7 @@ class PlaylistCustom extends PlayListReview {
       const { x, y } = $el.get(0).getBoundingClientRect();
       cy.wrap($el.get(0)).as("target");
       cy.get("@target").trigger("dragover");
-      cy.get("@target").trigger("drop", {
-        clientX: x + opts.offsetX,
-        clientY: y + opts.offsetY
-      });
+      cy.get("@target").trigger("drop", "top");
     });
   };
 }

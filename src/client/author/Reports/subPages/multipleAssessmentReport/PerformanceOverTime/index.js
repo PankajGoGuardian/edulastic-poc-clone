@@ -34,7 +34,10 @@ const PerformanceOverTime = ({
 
   const rawData = get(performanceOverTime, "data.result", {});
   const { testData = [] } = get(MARFilterData, "data.result", {});
-  const dataWithTestInfo = augmentTestData(parseData(rawData), testData);
+  const dataWithTestInfo = filter(
+    augmentTestData(parseData(rawData), testData),
+    test => test.testName && test.testName !== "N/A" // filter out tests without testName
+  );
   const filteredTableData = filter(dataWithTestInfo, test =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true
   );

@@ -79,7 +79,9 @@ const SingleAssessmentReportFilters = ({
   isStandardProficiencyRequired = false,
   extraFilters,
   showApply,
-  setShowApply
+  setShowApply,
+  firstLoad,
+  setFirstLoad
 }) => {
   const testDataOverflow = get(SARFilterData, "data.result.testDataOverflow", false);
   const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
@@ -205,6 +207,11 @@ const SingleAssessmentReportFilters = ({
       delete urlParams.schoolId;
       delete urlParams.teacherId;
     }
+
+    if (firstLoad) {
+      setFirstLoad(false);
+    }
+
     _setFilters(urlParams);
     _setTestId(filteredUrlTestId);
 

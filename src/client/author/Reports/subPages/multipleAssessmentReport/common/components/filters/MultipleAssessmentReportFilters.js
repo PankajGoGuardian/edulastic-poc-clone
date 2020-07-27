@@ -60,7 +60,9 @@ const SingleAssessmentReportFilters = ({
   performanceBandRequired,
   extraFilter,
   showApply,
-  setShowApply
+  setShowApply,
+  firstLoad,
+  setFirstLoad
 }) => {
   const testDataOverflow = get(MARFilterData, "data.result.testDataOverflow", false);
   const profiles = get(MARFilterData, "data.result.bandInfo", []);
@@ -146,7 +148,7 @@ const SingleAssessmentReportFilters = ({
 
     const testIdsArr = [].concat(search.testIds?.split(",") || []);
 
-    const urlTestIds = testIdsArr
+    let urlTestIds = testIdsArr
       .map(key => find(dropDownData.testIdArr, test => test.key == key))
       .filter(item => item);
 
@@ -172,6 +174,11 @@ const SingleAssessmentReportFilters = ({
     if (role === roleuser.TEACHER) {
       delete urlParams.schoolId;
       delete urlParams.teacherId;
+    }
+
+    if (firstLoad) {
+      setFirstLoad(false);
+      urlTestIds = urlTestIds?.filter(t => t).length ? urlTestIds : (processedTestIds?.testIds || []).slice(0, 10);
     }
 
     _setFilters(urlParams);

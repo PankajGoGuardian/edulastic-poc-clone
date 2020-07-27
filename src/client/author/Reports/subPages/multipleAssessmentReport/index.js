@@ -5,6 +5,8 @@ import { map } from "lodash";
 import next from "immer";
 import qs from "qs";
 import { connect } from "react-redux";
+
+import { Spin } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 
@@ -38,6 +40,8 @@ const MultipleAssessmentReportContainer = props => {
     updateNavigation,
     onRefineResultsCB
   } = props;
+
+  const [firstLoad, setFirstLoad] = useState(true);
 
   useEffect(
     () => () => {
@@ -127,51 +131,59 @@ const MultipleAssessmentReportContainer = props => {
   }
 
   return (
-    <FlexContainer alignItems="flex-start">
-      <MultipleAssessmentReportFilters
-        onGoClick={onGoClick}
-        loc={pageTitle}
-        history={history}
-        location={location}
-        match={match}
-        performanceBandRequired={["/author/reports/student-progress", "/author/reports/performance-over-time"].find(x =>
-          window.location.pathname.startsWith(x)
-        )}
-        style={showFilter ? { display: "block" } : { display: "none" }}
-        extraFilter={extraFilters}
-        showApply={showApply}
-        setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
-      />
-      <FilterButton showFilter={showFilter} onClick={toggleFilter}>
-        <IconFilter />
-      </FilterButton>
-      <ReportContaner showFilter={showFilter}>
-        <Route
-          exact
-          path="/author/reports/peer-progress-analysis/"
-          render={_props => {
-            setShowHeader(true);
-            return <PeerProgressAnalysis {..._props} settings={settings} ddfilter={ddfilter} />;
-          }}
+    <>
+      {firstLoad && <Spin size="large" />}
+      <FlexContainer
+        alignItems="flex-start"
+        display={firstLoad ? "none" : "flex"}
+      >
+        <MultipleAssessmentReportFilters
+          onGoClick={onGoClick}
+          loc={pageTitle}
+          history={history}
+          location={location}
+          match={match}
+          performanceBandRequired={["/author/reports/student-progress", "/author/reports/performance-over-time"].find(x =>
+            window.location.pathname.startsWith(x)
+          )}
+          style={showFilter ? { display: "block" } : { display: "none" }}
+          extraFilter={extraFilters}
+          showApply={showApply}
+          setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
+          firstLoad={firstLoad}
+          setFirstLoad={setFirstLoad}
         />
-        <Route
-          exact
-          path="/author/reports/student-progress/"
-          render={_props => {
-            setShowHeader(true);
-            return <StudentProgress {..._props} settings={settings} pageTitle={pageTitle} ddfilter={ddfilter} />;
-          }}
-        />
-        <Route
-          exact
-          path="/author/reports/performance-over-time/"
-          render={_props => {
-            setShowHeader(true);
-            return <PerformanceOverTime {..._props} settings={settings} ddfilter={ddfilter} />;
-          }}
-        />
-      </ReportContaner>
-    </FlexContainer>
+        <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          <IconFilter />
+        </FilterButton>
+        <ReportContaner showFilter={showFilter}>
+          <Route
+            exact
+            path="/author/reports/peer-progress-analysis/"
+            render={_props => {
+              setShowHeader(true);
+              return <PeerProgressAnalysis {..._props} settings={settings} ddfilter={ddfilter} />;
+            }}
+          />
+          <Route
+            exact
+            path="/author/reports/student-progress/"
+            render={_props => {
+              setShowHeader(true);
+              return <StudentProgress {..._props} settings={settings} pageTitle={pageTitle} ddfilter={ddfilter} />;
+            }}
+          />
+          <Route
+            exact
+            path="/author/reports/performance-over-time/"
+            render={_props => {
+              setShowHeader(true);
+              return <PerformanceOverTime {..._props} settings={settings} ddfilter={ddfilter} />;
+            }}
+          />
+        </ReportContaner>
+      </FlexContainer>
+    </>
   );
 };
 

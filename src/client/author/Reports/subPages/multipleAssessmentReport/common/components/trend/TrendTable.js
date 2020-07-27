@@ -201,6 +201,9 @@ const getColumns = (
     };
   });
 
+  // filter out test data without testName
+  const filteredDynamicColumns = dynamicColumns.filter(t => t.title);
+
   const columns = [
     {
       key: compareBy.key,
@@ -216,8 +219,8 @@ const getColumns = (
             {data}
           </Link>
         ) : (
-            data
-          ),
+          data
+        ),
       sorter: (a, b) => {
         const keyword = compareByMap[compareBy.key];
         return a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase());
@@ -265,7 +268,7 @@ const getColumns = (
   ];
 
   return columns.concat(
-    dynamicColumns.sort((a, b) =>
+    filteredDynamicColumns.sort((a, b) =>
       a.startDate !== b.startDate
         ? a.startDate - b.startDate
         : a.title.toLowerCase().localeCompare(b.title.toLowerCase())
@@ -352,7 +355,7 @@ TrendTable.defaultProps = {
   heading: "",
   toolTipContent: () => null,
   isCsvDownloading: false,
-  onCsvConvert: () => { }
+  onCsvConvert: () => {}
 };
 
 export default TrendTable;

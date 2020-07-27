@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import Annotations from "./Annotations";
-import { Wrapper, ToolButton, IconPlus, IconMinus, Overlay, Popup, Content } from "./styled";
+
+import { Wrapper, ToolButton, IconPlus, IconMinus } from "./styled";
 
 const ANNOTATIONS_TOOL = "annotationsTool";
 const PLUS_TOOL = "plusTool";
@@ -31,7 +31,8 @@ const ChartEditTool = ({ item, setQuestionData }) => {
 
   return (
     <>
-      <Wrapper side="left">
+      {/* dont need T button as of https://snapwiz.atlassian.net/browse/EV-16610 */}
+      {/* <Wrapper side="left">
         <ToolButton selected={selectedTool === ANNOTATIONS_TOOL} onClick={onToolButtonClick(ANNOTATIONS_TOOL)}>
           T
           {selectedTool === ANNOTATIONS_TOOL && (
@@ -43,7 +44,7 @@ const ChartEditTool = ({ item, setQuestionData }) => {
             </Popup>
           )}
         </ToolButton>
-      </Wrapper>
+      </Wrapper> */}
       {/* TODO: Implement the zoom tool, and then enable the zoom buttons */}
       {/* <Wrapper side="right">
         <ToolButton onClick={onToolButtonClick(PLUS_TOOL)}>

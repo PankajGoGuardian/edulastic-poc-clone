@@ -12,7 +12,6 @@ import { IconMinus } from "./styled/IconMinus";
 import { IconSpanner } from "./styled/IconSpanner";
 import Equations from "./components/Equations";
 import Settings from "./components/Settings";
-import Annotations from "./components/Annotations";
 
 const FUNCTIONS_TOOL = "functionsTool";
 const SETTINGS_TOOL = "settingsTool";
@@ -159,7 +158,8 @@ class GraphEditTools extends Component {
                 )}
               </ToolButton>
             )}
-            <ToolButton
+            {/* dont need T button as of https://snapwiz.atlassian.net/browse/EV-16610 */}
+            {/* <ToolButton
               selected={selectedTool === ANNOTATIONS_TOOL}
               onClick={() => this.onToolButtonClick(ANNOTATIONS_TOOL)}
             >
@@ -174,7 +174,7 @@ class GraphEditTools extends Component {
                   </Popup>
                 </Fragment>
               )}
-            </ToolButton>
+            </ToolButton> */}
           </Wrapper>
         )}
         {side === "right" && (

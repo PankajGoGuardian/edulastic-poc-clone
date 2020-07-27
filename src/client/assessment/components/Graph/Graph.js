@@ -401,7 +401,7 @@ class Graph extends Component {
       compact = true;
     }
 
-    const { validation, stimulus, graphType } = item;
+    const { validation, stimulus } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -442,19 +442,18 @@ class Graph extends Component {
                 />
               </Question>
 
+              <Question
+                section="main"
+                label="Annotations"
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+                advancedAreOpen
+              >
+                <Annotations question={item} setQuestionData={setQuestionData} editable />
+              </Question>
+
               {advancedLink}
 
-              {graphType !== "firstQuadrant" && graphType !== "quadrants" && graphType !== "numberLinePlot" && (
-                <Question
-                  section="main"
-                  label="Annotations"
-                  cleanSections={cleanSections}
-                  fillSections={fillSections}
-                  advancedAreOpen
-                >
-                  <Annotations question={item} setQuestionData={setQuestionData} editable />
-                </Question>
-              )}
               <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>
           </React.Fragment>

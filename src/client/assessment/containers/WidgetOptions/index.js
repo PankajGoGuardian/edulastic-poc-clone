@@ -21,7 +21,9 @@ class WidgetOptions extends Component {
     advancedAreOpen: PropTypes.bool,
     showSelect: PropTypes.bool,
     renderExtra: PropTypes.any,
-    showScoringSection: PropTypes.bool
+    showScoringSection: PropTypes.bool,
+    extraInScoring: PropTypes.elementType,
+    showScoringType: PropTypes.bool
   };
 
   static defaultProps = {
@@ -33,7 +35,9 @@ class WidgetOptions extends Component {
     cleanSections: () => {},
     renderExtra: null,
     showSelect: true,
-    showScoringSection: false
+    showScoringSection: false,
+    extraInScoring: null,
+    showScoringType: true
   };
 
   render() {
@@ -49,7 +53,10 @@ class WidgetOptions extends Component {
       renderExtra,
       item,
       showScoringSection = false,
-      showScoringSectionAnyRole
+      showScoringSectionAnyRole,
+      showScoringType,
+      extraInScoring, // extraInScoring (Component required inside scoring section)
+      isCorrectAnsTab
     } = this.props;
 
     return (
@@ -71,6 +78,9 @@ class WidgetOptions extends Component {
               advancedAreOpen={advancedAreOpen}
               showSelect={showSelect}
               item={item}
+              showScoringType={showScoringType}
+              extraInScoring={extraInScoring}
+              isCorrectAnsTab={isCorrectAnsTab}
             />
           </Question>
         )}

@@ -10,40 +10,56 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../../auth
 
 import LayoutComponent from "./LayoutComponent";
 
-const Options = ({ item, fillSections, cleanSections, advancedAreOpen }) => {
-  return (
-    <WidgetOptions
+const Options = ({
+  item,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+  showScoringSection,
+  extraInScoring,
+  showScoringType,
+  isCorrectAnsTab
+}) => (
+  <WidgetOptions
+    fillSections={fillSections}
+    cleanSections={cleanSections}
+    advancedAreOpen={advancedAreOpen}
+    item={item}
+    showScoringSection={showScoringSection}
+    extraInScoring={extraInScoring}
+    showScoringType={showScoringType}
+    isCorrectAnsTab={isCorrectAnsTab}
+  >
+    <LayoutComponent
+      item={item}
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
-      item={item}
-    >
-      <LayoutComponent
-        item={item}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-        advancedAreOpen={advancedAreOpen}
-      />
-      <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
-        <Extras.Distractors />
-        <Extras.Hints />
-      </Extras>
-    </WidgetOptions>
-  );
-};
+    />
+    <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+      <Extras.Distractors />
+      <Extras.Hints />
+    </Extras>
+  </WidgetOptions>
+);
 
 Options.propTypes = {
-  setQuestionData: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  showScoringSection: PropTypes.bool,
+  extraInScoring: PropTypes.elementType,
+  showScoringType: PropTypes.bool
 };
 
 Options.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
-  advancedAreOpen: false
+  advancedAreOpen: false,
+  showScoringSection: false,
+  extraInScoring: null,
+  showScoringType: true
 };
 
 const enhance = compose(

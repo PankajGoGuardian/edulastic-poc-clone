@@ -84,6 +84,9 @@ class Scoring extends Component {
       userFeatures,
       dissociateRubricFromQuestion,
       theme,
+      showScoringType,
+      extraInScoring = null,
+      isCorrectAnsTab = true,
       item = {}
     } = this.props;
     const { showGradingRubricModal, rubricActionType } = this.state;
@@ -138,6 +141,7 @@ class Scoring extends Component {
             {t("component.options.scoring")}
           </Subtitle>
         )}
+        {extraInScoring}
         {isAutoMarkBtnVisible && (
           <Row gutter={24}>
             <Col md={12}>
@@ -146,6 +150,7 @@ class Scoring extends Component {
                 checked={isAutomarkChecked}
                 onChange={e => handleChangeValidation("automarkable", e.target.checked)}
                 size="large"
+                disabled={!isCorrectAnsTab}
               >
                 {t("component.options.automarkable")}
               </CheckboxLabel>
@@ -157,6 +162,7 @@ class Scoring extends Component {
                   checked={questionData.validation.unscored}
                   onChange={e => handleChangeValidation("unscored", e.target.checked)}
                   size="large"
+                  disabled={!isCorrectAnsTab}
                 >
                   {t("component.options.unscored")}
                 </CheckboxLabel>
@@ -186,7 +192,8 @@ class Scoring extends Component {
                 </FormGroup>
               </Col>
             )}
-            {scoringTypes.length > 1 && showSelect && (
+            {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}
+            {showScoringType && scoringTypes.length > 1 && showSelect && (
               <Col md={12}>
                 <Label>{t("component.options.scoringType")}</Label>
                 <SelectInputStyled
@@ -251,6 +258,7 @@ class Scoring extends Component {
                   setIsGradingRubric(e.target.checked);
                   if (questionData.rubrics) dissociateRubricFromQuestion();
                 }}
+                disabled={!isCorrectAnsTab}
                 size="large"
               >
                 {t("component.options.gradingRubric")}
@@ -270,6 +278,8 @@ class Scoring extends Component {
                 padding="0px 16px"
                 width="142px"
                 margin="0px 15px 0px 0px"
+                disabled={!isCorrectAnsTab}
+                ghost={!isCorrectAnsTab}
               >
                 Create New Rubric
               </CustomStyleBtn>
@@ -282,6 +292,8 @@ class Scoring extends Component {
                 padding="0px 16px"
                 width="142px"
                 margin="0px 15px 0px 0px"
+                disabled={!isCorrectAnsTab}
+                ghost={!isCorrectAnsTab}
               >
                 Use Existing Rubric
               </CustomStyleBtn>
@@ -305,12 +317,13 @@ class Scoring extends Component {
               checked={questionData?.isScoringInstructionsEnabled}
               onChange={e => handleChangeInstructions("isScoringInstructionsEnabled", e.target.checked)}
               size="large"
+              disabled={!isCorrectAnsTab}
             >
               Enable scoring instructions
             </CheckboxLabel>
           </Col>
         </Row>
-        {questionData?.isScoringInstructionsEnabled && (
+        {questionData?.isScoringInstructionsEnabled && isCorrectAnsTab && (
           <Row gutter={24}>
             <Col md={24} lg={24} xs={24}>
               <WidgetFRInput fontSize={theme?.fontSize}>
@@ -357,7 +370,9 @@ Scoring.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   noPaddingLeft: PropTypes.bool,
-  children: PropTypes.any
+  children: PropTypes.any,
+  extraInScoring: PropTypes.elementType,
+  showScoringType: PropTypes.bool
 };
 
 Scoring.defaultProps = {
@@ -367,7 +382,9 @@ Scoring.defaultProps = {
   advancedAreOpen: true,
   children: null,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  extraInScoring: null,
+  showScoringType: true
 };
 
 const enhance = compose(

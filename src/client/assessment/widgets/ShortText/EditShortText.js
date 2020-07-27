@@ -7,7 +7,6 @@ import { withNamespaces } from "@edulastic/localization";
 import { EXACT_MATCH, CONTAINS } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
-import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -15,8 +14,6 @@ import CorrectAnswer from "./components/CorrectAnswer";
 import ComposeQuestion from "./components/ComposeQuestion";
 import Options from "./components/Options";
 import Question from "../../components/Question";
-
-const OptionsList = withPoints(CorrectAnswer);
 
 const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
@@ -91,12 +88,9 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
   };
 
   const renderOptions = () => (
-    <OptionsList
+    <CorrectAnswer
       title={item.title}
       item={item}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
       onSelectChange={handleScoringTypeChange}
       onChange={handleValueChange}
       options={[
@@ -111,7 +105,6 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
       inputValue={
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
-      onChangePoints={handlePointsChange}
       isCorrectAnsTab={correctTab === 0}
     />
   );
@@ -136,11 +129,15 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
           correctTab={correctTab}
           onAdd={handleAddAnswer}
           validation={item.validation}
-          options={renderOptions()}
           onCloseTab={handleCloseTab}
           fillSections={fillSections}
           cleanSections={cleanSections}
           questionType={item?.title}
+          onChangePoints={handlePointsChange}
+          points={
+            correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
+          }
+          isCorrectAnsTab={correctTab === 0}
         />
       </Question>
 
@@ -150,7 +147,11 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
+        showScoringSection // To show scoring section regardless advanced section is open or close
         item={item}
+        extraInScoring={renderOptions()}
+        showScoringType={false} // To hide scoring method section inside scoring section
+        isCorrectAnsTab={correctTab === 0}
       />
     </ContentArea>
   );

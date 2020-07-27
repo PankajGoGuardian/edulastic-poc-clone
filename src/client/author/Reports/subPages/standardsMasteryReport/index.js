@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useRef, useMemo, useState } from "react";
-import { Route } from "react-router-dom";
+import { Route, Link } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
 import { connect } from "react-redux";
@@ -22,10 +22,16 @@ import { ReportContaner, SearchField, FilterLabel, FilterButton } from "../../co
 
 import { getReportsStandardsGradebook } from "./standardsGradebook/ducks";
 import dropDownFormat from "./standardsGradebook/static/json/dropDownFormat.json";
-import { getUserRole } from "../../../src/selectors/user";
+import { getUserRole, getInterestedCurriculumsSelector } from "../../../src/selectors/user";
 import { getFilterDropDownData } from "./standardsGradebook/utils/transformers";
 import { getDropDownData } from "./standardsPerformance/utils/transformers";
 import { getReportsStandardsFilters, getFiltersSelector } from "./common/filterDataDucks";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
+
+const standardsMasteryReports = {
+  "standards-gradebook": "Standards Gradebook",
+  "standards-performance-summary": "Standards Performance Summary"
+};
 
 const StandardsMasteryReportContainer = props => {
   const {
@@ -44,7 +50,8 @@ const StandardsMasteryReportContainer = props => {
     onRefineResultsCB,
     showFilter,
     standardsFilters,
-    filters
+    filters,
+    interestedCurriculums
   } = props;
 
   const firstRender = useRef(true);
@@ -190,6 +197,20 @@ const StandardsMasteryReportContainer = props => {
     ));
   }
 
+  if (isEmpty(interestedCurriculums)) {
+    return (
+      <NoDataNotification
+        heading={`${standardsMasteryReports[loc]} report not available`}
+        description={
+          <>
+            Standards Mastery Reports can be generated based on the Interested Standards. To setup please go to{" "}
+            <Link to="/author/profile">My Profile</Link> and select your Interested Standards.
+          </>
+        }
+      />
+    );
+  }
+
   return (
     <FlexContainer alignItems="flex-start">
       <StandardsFilters
@@ -241,7 +262,8 @@ const ConnectedStandardsMasteryReportContainer = connect(
     standardsFilters: getReportsStandardsFilters(state),
     standardsGradebook: getReportsStandardsGradebook(state),
     gradebookSettings: getReportsSMRSettings(state),
-    filters: getFiltersSelector(state)
+    filters: getFiltersSelector(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state)
   }),
   {
     setSMRSettings: setSMRSettingsAction,

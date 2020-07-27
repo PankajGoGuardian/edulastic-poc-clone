@@ -420,18 +420,18 @@ Cypress.Commands.add("deleteSchool", school => {
 
 Cypress.Commands.add("removeSchoolInTestdata", schoolId => {
   cy.readFile(`${deleteTestDataFile}`).then(json => {
-      if (json.schools) {
-        var schools = []
-        schools = json.schools.filter(function(school){
-          return school.schoolId != schoolId
-        });
-        delete json.schools
-        json.schools = []
-        json.schools = schools
-        cy.writeFile(`${deleteTestDataFile}`, json);
-      }
-  })
-})
+    if (json.schools) {
+      var schools = [];
+      schools = json.schools.filter(function(school) {
+        return school.schoolId != schoolId;
+      });
+      delete json.schools;
+      json.schools = [];
+      json.schools = schools;
+      cy.writeFile(`${deleteTestDataFile}`, json);
+    }
+  });
+});
 
 Cypress.Commands.add("saveEnrollmentDetails", response => {
   if (response) {
@@ -461,7 +461,7 @@ Cypress.Commands.add("saveSchoolToDelete", schoolJson => {
   if (schoolJson) {
     cy.readFile(`${deleteTestDataFile}`).then(json => {
       if (!json.schools) json.schools = [];
-      schoolJson['authToken'] = getAccessToken()
+      schoolJson["authToken"] = getAccessToken();
       json.schools.push(schoolJson);
       cy.writeFile(`${deleteTestDataFile}`, json);
     });
@@ -540,7 +540,7 @@ Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
       method: "POST",
       body: {
         search: {
-          subject: "",
+          subject: [],
           curriculumId: "",
           standardIds: [],
           questionType: "",
@@ -553,6 +553,10 @@ Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
           authoredByIds: [],
           filter: "AUTHORED_BY_ME",
           createdAt: ""
+        },
+        sort: {
+          sortBy: "recency",
+          sortDir: "desc"
         },
         page: 1,
         limit: NO_ITEMS_TO_DELETE

@@ -104,7 +104,7 @@ const PlayerHeader = ({
           <HeaderPracticePlayer>
             <HeaderWrapper justifyContent="space-between">
               <LogoCompact isMobile={isMobile} buttons={rightButtons} title={title} />
-              <MainActionWrapper>
+              <MainActionWrapper alignItems="center">
                 {isMobile && (
                   <QuestionSelectDropdown
                     key={currentItem}

@@ -34,6 +34,7 @@ const MultipleAssessmentReportContainer = props => {
     location,
     match,
     showFilter,
+    showApply,
     updateNavigation,
     onRefineResultsCB
   } = props;
@@ -138,6 +139,8 @@ const MultipleAssessmentReportContainer = props => {
         )}
         style={showFilter ? { display: "block" } : { display: "none" }}
         extraFilter={extraFilters}
+        showApply={showApply}
+        setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
       />
       <FilterButton showFilter={showFilter} onClick={toggleFilter}>
         <IconFilter />

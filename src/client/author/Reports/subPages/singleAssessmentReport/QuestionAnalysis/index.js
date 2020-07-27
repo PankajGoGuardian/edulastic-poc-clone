@@ -17,7 +17,6 @@ import {
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader
 } from "./ducks";
-import { getReportsSARFilterLoadingState } from "../common/filterDataDucks";
 import dropDownData from "./static/json/dropDownData.json";
 import { getChartData, getTableData } from "./utils/transformers";
 
@@ -144,8 +143,7 @@ QuestionAnalysis.propTypes = {
 
 export default connect(
   state => ({
-    loading: getReportsQuestionAnalysisLoader(state)
-      || getReportsSARFilterLoadingState(state),
+    loading: getReportsQuestionAnalysisLoader(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state)

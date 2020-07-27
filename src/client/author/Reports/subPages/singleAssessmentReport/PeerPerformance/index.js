@@ -12,7 +12,6 @@ import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import { StyledCard, StyledH3, StyledSignedBarContainer } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
-  getReportsSARFilterLoadingState,
   getSAFFilterPerformanceBandProfiles,
   getSAFFilterSelectedPerformanceBandProfile
 } from "../common/filterDataDucks";
@@ -249,8 +248,7 @@ PeerPerformance.propTypes = {
 const enhance = compose(
   connect(
     state => ({
-      loading: getReportsPeerPerformanceLoader(state)
-        || getReportsSARFilterLoadingState(state),
+      loading: getReportsPeerPerformanceLoader(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),
       selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),

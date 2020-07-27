@@ -15,7 +15,6 @@ import {
   getReportsResponseFrequencyLoader,
   getResponseFrequencyRequestAction
 } from "./ducks";
-import { getReportsSARFilterLoadingState } from "../common/filterDataDucks";
 import jsonData from "./static/json/data.json";
 
 const filterData = (data, filter) => (Object.keys(filter).length > 0 ? data.filter(item => filter[item.qType]) : data);
@@ -177,8 +176,7 @@ ResponseFrequency.propTypes = {
 
 const enhance = connect(
   state => ({
-    loading: getReportsResponseFrequencyLoader(state)
-      || getReportsSARFilterLoadingState(state),
+    loading: getReportsResponseFrequencyLoader(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     responseFrequency: getReportsResponseFrequency(state)

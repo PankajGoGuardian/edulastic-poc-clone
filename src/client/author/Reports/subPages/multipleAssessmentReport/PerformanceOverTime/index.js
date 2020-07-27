@@ -7,7 +7,7 @@ import { getUserRole } from "../../../../../student/Login/ducks";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
-import { getReportsMARFilterData, getReportsMARFilterLoadingState } from "../common/filterDataDucks";
+import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { usefetchProgressHook } from "../common/hooks";
 import analyseByData from "../common/static/json/analyseByDropDown.json";
 import ProgressChart from "./components/charts/ProgressChart";
@@ -70,8 +70,7 @@ const PerformanceOverTime = ({
 const enhance = connect(
   state => ({
     performanceOverTime: getReportsPerformanceOverTime(state),
-    loading: getReportsPerformanceOverTimeLoader(state)
-      || getReportsMARFilterLoadingState(state),
+    loading: getReportsPerformanceOverTimeLoader(state),
     MARFilterData: getReportsMARFilterData(state),
     role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state)

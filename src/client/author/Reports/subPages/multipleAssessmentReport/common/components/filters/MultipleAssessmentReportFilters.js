@@ -5,7 +5,7 @@ import { find, get, isEmpty, map, pickBy } from "lodash";
 import queryString from "query-string";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Tooltip } from "antd";
+import { Tooltip, Spin } from "antd";
 
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
@@ -16,6 +16,7 @@ import { MultipleSelect } from "../../../../../common/components/widgets/Multipl
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import {
   StyledFilterWrapper,
+  StyledGoButton,
   GoButtonWrapper,
   SearchField,
   ApplyFitlerLabel,
@@ -26,6 +27,7 @@ import { getDropDownData, filteredDropDownData, processTestIds } from "../../uti
 import { toggleItem } from "../../../../../common/util";
 
 import {
+  getReportsMARFilterLoadingState,
   getMARFilterDataRequestAction,
   getReportsMARFilterData,
   getFiltersSelector,
@@ -40,6 +42,7 @@ import { getUserRole, getUser } from "../../../../../../src/selectors/user";
 import staticDropDownData from "../../static/staticDropDownData.json";
 
 const SingleAssessmentReportFilters = ({
+  loading,
   MARFilterData,
   filters,
   testIds,
@@ -47,15 +50,17 @@ const SingleAssessmentReportFilters = ({
   role,
   style,
   getMARFilterDataRequest,
-  setFilters,
-  setTestId,
+  setFilters: _setFilters,
+  setTestId: _setTestId,
   onGoClick: _onGoClick,
   location,
   history,
   setPrevMARFilterData,
   prevMARFilterData,
   performanceBandRequired,
-  extraFilter
+  extraFilter,
+  showApply,
+  setShowApply
 }) => {
   const testDataOverflow = get(MARFilterData, "data.result.testDataOverflow", false);
   const profiles = get(MARFilterData, "data.result.bandInfo", []);
@@ -169,13 +174,15 @@ const SingleAssessmentReportFilters = ({
       delete urlParams.teacherId;
     }
 
-    setFilters(urlParams);
-    setTestId(urlTestIds);
+    _setFilters(urlParams);
+    _setTestId(urlTestIds);
 
-    _onGoClick({
-      selectedTest: urlTestIds,
-      filters: urlParams
-    });
+    if (prevMARFilterData === null) {
+      _onGoClick({
+        selectedTest: urlTestIds,
+        filters: urlParams
+      });
+    }
 
     setPrevMARFilterData(MARFilterData);
   }
@@ -203,12 +210,23 @@ const SingleAssessmentReportFilters = ({
     [MARFilterData, filters, testIds]
   );
 
-  const onGoClick = (_filters, _testIds) => {
+  const onGoClick = () => {
     const settings = {
-      filters: _filters ? { ..._filters } : { ...filters },
-      selectedTest: _testIds || testIds
+      filters: { ...filters },
+      selectedTest: testIds
     };
+    setShowApply(false);
     _onGoClick(settings);
+  };
+
+  const setFilters = _filters => {
+    setShowApply(true);
+    _setFilters(_filters);
+  };
+
+  const setTestId = _testIds => {
+    setShowApply(true);
+    _setTestId(_testIds);
   };
 
   const updateSchoolYearDropDownCB = selected => {
@@ -234,7 +252,6 @@ const SingleAssessmentReportFilters = ({
       orgDataArr: dropDownData.orgDataArr
     };
     setFilters(_filters);
-    onGoClick(_filters);
   };
   const updateGradeDropDownCB = selected => {
     const _filters = { ...filters, grade: selected.key };
@@ -270,7 +287,6 @@ const SingleAssessmentReportFilters = ({
       schoolId: selected.key
     };
     setFilters(_filters);
-    onGoClick(_filters);
   };
   const updateTeachersDropDownCB = selected => {
     const _filters = { ...filters, teacherId: selected.key };
@@ -291,7 +307,6 @@ const SingleAssessmentReportFilters = ({
     const items = toggleItem(map(testIds, _test => _test.key), test.key);
     const _testIds = processedTestIds.testIds.filter(_test => !!items.includes(_test.key));
     setTestId(_testIds);
-    onGoClick(null, _testIds);
   };
 
   const onChangeTest = items => {
@@ -326,10 +341,15 @@ const SingleAssessmentReportFilters = ({
     </SearchField>
   );
 
-  return (
+  return loading ? (
+    <StyledFilterWrapper style={style}>
+      <Spin />
+    </StyledFilterWrapper>
+  ) : (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
+        {showApply && <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>}
       </GoButtonWrapper>
       <PerfectScrollbar>
         <SearchField>
@@ -400,8 +420,9 @@ const SingleAssessmentReportFilters = ({
           >
             {assessmentNameFilter}
           </Tooltip>
-        ) : assessmentNameFilter
-        }
+        ) : (
+          assessmentNameFilter
+        )}
         {performanceBandRequired && (
           <SearchField>
             <FilterLabel>Performance Band</FilterLabel>
@@ -452,6 +473,7 @@ const SingleAssessmentReportFilters = ({
 const enhance = compose(
   connect(
     state => ({
+      loading: getReportsMARFilterLoadingState(state),
       MARFilterData: getReportsMARFilterData(state),
       filters: getFiltersSelector(state),
       testIds: getTestIdSelector(state),

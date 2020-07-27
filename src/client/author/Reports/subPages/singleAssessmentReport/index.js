@@ -34,6 +34,7 @@ const SingleAssessmentReportContainer = props => {
     resetAllReports,
     loc,
     showFilter,
+    showApply,
     history,
     location,
     match
@@ -147,6 +148,8 @@ const SingleAssessmentReportContainer = props => {
           )}
           extraFilters={extraFilters}
           style={showFilter ? { display: "block" } : { display: "none" }}
+          showApply={showApply}
+          setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
         />
         <FilterButton showFilter={showFilter} onClick={toggleFilter}>
           <IconFilter />

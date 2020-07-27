@@ -6,7 +6,7 @@ import queryString from "query-string";
 import qs from "qs";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Tooltip } from "antd";
+import { Tooltip, Spin } from "antd";
 
 import { IconGroup, IconClass } from "@edulastic/icons";
 import { greyThemeDark1 } from "@edulastic/colors";
@@ -16,6 +16,7 @@ import { AutocompleteDropDown } from "../../../../common/components/widgets/auto
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import {
   StyledFilterWrapper,
+  StyledGoButton,
   GoButtonWrapper,
   SearchField,
   ApplyFitlerLabel,
@@ -25,6 +26,7 @@ import {
 import { getDropDownData, filteredDropDownData, processTestIds } from "../utils/transformers";
 
 import {
+  getReportsSARFilterLoadingState,
   getSARFilterDataRequestAction,
   getReportsSARFilterData,
   getFiltersSelector,
@@ -56,14 +58,15 @@ const getTestIdFromURL = url => {
 };
 
 const SingleAssessmentReportFilters = ({
+  loading,
   SARFilterData,
   filters,
   testId,
   user,
   role,
   getSARFilterDataRequest,
-  setFilters,
-  setTestId,
+  setFilters: _setFilters,
+  setTestId: _setTestId,
   onGoClick: _onGoClick,
   location,
   style,
@@ -74,7 +77,9 @@ const SingleAssessmentReportFilters = ({
   setStandardsProficiency,
   performanceBandRequired,
   isStandardProficiencyRequired = false,
-  extraFilters
+  extraFilters,
+  showApply,
+  setShowApply
 }) => {
   const testDataOverflow = get(SARFilterData, "data.result.testDataOverflow", false);
   const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
@@ -200,13 +205,15 @@ const SingleAssessmentReportFilters = ({
       delete urlParams.schoolId;
       delete urlParams.teacherId;
     }
-    setFilters(urlParams);
-    setTestId(filteredUrlTestId);
+    _setFilters(urlParams);
+    _setTestId(filteredUrlTestId);
 
-    _onGoClick({
-      selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
-      filters: urlParams
-    });
+    if (prevSARFilterData === null) {
+      _onGoClick({
+        selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
+        filters: urlParams
+      });
+    }
 
     setPrevSARFilterData(SARFilterData);
   }
@@ -236,17 +243,26 @@ const SingleAssessmentReportFilters = ({
   );
 
   if (!processedTestIds.validTestId && processedTestIds.testIds.length) {
-    setTestId(processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : "");
+    _setTestId(processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : "");
   }
 
-  const onGoClick = (_filters, _testId) => {
+  const onGoClick = () => {
     const settings = {
-      filters: _filters ? { ..._filters } : { ...filters },
-      selectedTest: _testId
-        ? { key: _testId, title: getTitleByTestId(_testId) }
-        : { key: testId, title: getTitleByTestId(testId) }
+      filters: { ...filters },
+      selectedTest: { key: testId, title: getTitleByTestId(testId) }
     };
+    setShowApply(false);
     _onGoClick(settings);
+  };
+
+  const setFilters = _filters => {
+    setShowApply(true);
+    _setFilters(_filters);
+  };
+
+  const setTestId = _testId => {
+    setShowApply(true);
+    _setTestId(_testId);
   };
 
   const getNewPathname = () => {
@@ -275,6 +291,7 @@ const SingleAssessmentReportFilters = ({
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
     getSARFilterDataRequest(q);
     setFilters(_filters);
+    setShowApply(true);
   };
 
   const updateGradeDropDownCB = selected => {
@@ -323,7 +340,6 @@ const SingleAssessmentReportFilters = ({
       schoolId: selected.key
     };
     setFilters(_filters);
-    onGoClick(_filters);
   };
   const updateTeachersDropDownCB = selected => {
     const _filters = {
@@ -349,7 +365,6 @@ const SingleAssessmentReportFilters = ({
   const onTestIdChange = selected => {
     const _testId = selected.key;
     setTestId(_testId);
-    onGoClick(null, _testId);
   };
 
   const standardProficiencyList = useMemo(() => standardProficiencyProfiles.map(s => ({ key: s._id, title: s.name })), [
@@ -372,10 +387,15 @@ const SingleAssessmentReportFilters = ({
     </SearchField>
   );
 
-  return (
+  return loading ? (
+    <StyledFilterWrapper style={style}>
+      <Spin />
+    </StyledFilterWrapper>
+  ) : (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
+        {showApply && <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>}
       </GoButtonWrapper>
       <PerfectScrollbar>
         <SearchField>
@@ -446,8 +466,9 @@ const SingleAssessmentReportFilters = ({
           >
             {assessmentNameFilter}
           </Tooltip>
-        ) : assessmentNameFilter
-        }
+        ) : (
+          assessmentNameFilter
+        )}
         {isStandardProficiencyRequired && (
           <SearchField>
             <FilterLabel>Standard Proficiency</FilterLabel>
@@ -510,6 +531,7 @@ const SingleAssessmentReportFilters = ({
 const enhance = compose(
   connect(
     state => ({
+      loading: getReportsSARFilterLoadingState(state),
       SARFilterData: getReportsSARFilterData(state),
       filters: getFiltersSelector(state),
       testId: getTestIdSelector(state),

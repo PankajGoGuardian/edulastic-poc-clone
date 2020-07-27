@@ -260,6 +260,15 @@ Cypress.Commands.add("deleteTestData", () => {
           });
           delete testData.classs;
         }
+
+        // remove school assigned to user
+        if (testData.schools) {
+          testData.schools.forEach(school => {
+            cy.deleteSchool({ authToken: school.authToken, deleteBody: school });
+          });
+          delete testData.schools;
+        }
+
         // remove enrollments
 
         if (testData.enrollments) {
@@ -394,6 +403,36 @@ Cypress.Commands.add("deleteClazz", group => {
   });
 });
 
+Cypress.Commands.add("deleteSchool", school => {
+  cy.request({
+    url: `${BASE_URL}/user/institution/${school.deleteBody.schoolId}/remove`,
+    method: "PUT",
+    headers: {
+      Authorization: school.authToken,
+      "Content-Type": "application/json"
+    },
+    body: school.deleteBody
+  }).then(({ status }) => {
+    expect(status).to.eq(200);
+    cy.log("school removed with _id :", school.deleteBody.schoolId, " for userId : ", school.deleteBody.userId);
+  });
+});
+
+Cypress.Commands.add("removeSchoolInTestdata", schoolId => {
+  cy.readFile(`${deleteTestDataFile}`).then(json => {
+      if (json.schools) {
+        var schools = []
+        schools = json.schools.filter(function(school){
+          return school.schoolId != schoolId
+        });
+        delete json.schools
+        json.schools = []
+        json.schools = schools
+        cy.writeFile(`${deleteTestDataFile}`, json);
+      }
+  })
+})
+
 Cypress.Commands.add("saveEnrollmentDetails", response => {
   if (response) {
     const enroll = {};
@@ -413,6 +452,17 @@ Cypress.Commands.add("saveClassDetailToDelete", classJson => {
     cy.readFile(`${deleteTestDataFile}`).then(json => {
       if (!json.classs) json.classs = [];
       json.classs.push(classJson);
+      cy.writeFile(`${deleteTestDataFile}`, json);
+    });
+  }
+});
+
+Cypress.Commands.add("saveSchoolToDelete", schoolJson => {
+  if (schoolJson) {
+    cy.readFile(`${deleteTestDataFile}`).then(json => {
+      if (!json.schools) json.schools = [];
+      schoolJson['authToken'] = getAccessToken()
+      json.schools.push(schoolJson);
       cy.writeFile(`${deleteTestDataFile}`, json);
     });
   }

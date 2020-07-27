@@ -644,9 +644,9 @@ class ProfileBody extends React.Component {
             {user.role === roleuser.TEACHER && (
               <SchoolWrapper>
                 <SchoolLabel>My Schools</SchoolLabel>
-                <SchoolListWrapper>{this.getSchoolList()}</SchoolListWrapper>
+                <SchoolListWrapper data-cy='mySchools'>{this.getSchoolList()}</SchoolListWrapper>
                 <AddSchoolSection>
-                  <AddSchoolBtn width="190px" isBlue onClick={this.handleAddSchool} type="primary">
+                  <AddSchoolBtn data-cy="addSchool" width="190px" isBlue onClick={this.handleAddSchool} type="primary">
                     Add School
                   </AddSchoolBtn>
                 </AddSchoolSection>

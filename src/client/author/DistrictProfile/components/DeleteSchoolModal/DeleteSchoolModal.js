@@ -47,7 +47,7 @@ const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedS
       onCancel={() => toggleModal("REMOVE_SCHOOL", false)}
       width={700}
     >
-      <ModalBody>
+      <ModalBody data-cy="removeSchoolModal">
         <span>
           You are about to remove the school <strong>{selectedSchool.name}</strong>.
         </span>

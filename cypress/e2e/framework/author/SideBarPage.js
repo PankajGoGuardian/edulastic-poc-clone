@@ -82,6 +82,24 @@ export default class TeacherSideBar {
     })
   };
 
+  clickOnUser = () => {
+    cy.get(`.userinfoBtn`)
+      .click({ force: true })
+      .find('.anticon')
+      .click({ force: true })
+  }
+
+  clickMyProfile = () => {
+    this.clickOnUser()
+    cy.contains("My Profile")
+      .click({ force: true });
+    cy.get("[title='My Profile']")
+  }
+
+  clickOnManageDistrict = () => {
+    cy.get('[data-cy="Manage District').dblclick({ force: true });
+    cy.get("[title='Manage District']")
+  };
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

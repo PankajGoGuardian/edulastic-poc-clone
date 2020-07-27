@@ -283,7 +283,7 @@ const JoinSchool = ({
 
   return (
     <>
-      <JoinSchoolBody>
+      <JoinSchoolBody data-cy="joinSchoolBody">
         {requestSchoolFormVisible && (
           <BreadcrumbWrapper>
             <Breadcrumb.Item>
@@ -323,7 +323,7 @@ const JoinSchool = ({
                   {selected ? (
                     <SchoolSelected>
                       <SelectedTag>
-                        <span>{selected.schoolName || ""}</span>
+                        <span data-cy="selectedSchool">{selected.schoolName || ""}</span>
                         <IconClose data-cy="removeSelected" color={themeColor} onClick={() => setSchool(null)} />
                       </SelectedTag>
                     </SchoolSelected>
@@ -346,7 +346,7 @@ const JoinSchool = ({
                   )}
                   <Actions>
                     {(!isSignupUsingDaURL && !districtId) || fromUserProfile ? (
-                      <AnchorBtn onClick={fromUserProfile ? showRequestForm : toggleModal}>
+                      <AnchorBtn data-cy="reqNewSchoolBtn" onClick={fromUserProfile ? showRequestForm : toggleModal}>
                         {t("component.signup.teacher.requestnewschool")} »
                       </AnchorBtn>
                     ) : null}

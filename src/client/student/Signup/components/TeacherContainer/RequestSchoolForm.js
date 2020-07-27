@@ -197,6 +197,7 @@ class RequestSchoolForm extends React.Component {
                   <>
                     {console.log("countrySelect: ", country)}
                     <SelectInputStyled
+                      data-cy="state"
                       showSearch
                       placeholder="Select your state"
                       getPopupContainer={triggerNode => triggerNode.parentNode}

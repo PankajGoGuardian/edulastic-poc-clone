@@ -113,7 +113,7 @@ class Assignments extends Component {
       loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
     }
     loadFolders();
-    this.setState({ filterState: filters });
+    this.setFilterState(filters);
   }
 
   setFilterState = filterState => {

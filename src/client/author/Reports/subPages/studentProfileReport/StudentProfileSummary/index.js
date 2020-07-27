@@ -16,7 +16,8 @@ import StudentPerformancePie from "../common/components/charts/StudentPerformanc
 import {
   getBandInfoSelected,
   getReportsSPRFilterData,
-  getSelectedStandardProficiency
+  getSelectedStandardProficiency,
+  getReportsSPRFilterLoadingState
 } from "../common/filterDataDucks";
 import { useGetStudentMasteryData } from "../common/hooks";
 import { augementAssessmentChartData, getGrades, getStudentName } from "../common/utils/transformers";
@@ -55,7 +56,8 @@ const StudentProfileSummary = ({
   location,
   pageTitle,
   history,
-  t
+  t,
+  reportsSPRFilterLoadingState
 }) => {
   const { selectedStudent } = settings;
   const bandInfo = bandInfoSelected;
@@ -108,7 +110,7 @@ const StudentProfileSummary = ({
     });
   };
 
-  if (loading) {
+  if (loading || reportsSPRFilterLoadingState) {
     return <SpinLoader position="fixed" />;
   }
 
@@ -187,7 +189,8 @@ const withConnect = connect(
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
     bandInfoSelected: getBandInfoSelected(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state)
+    selectedStandardProficiency: getSelectedStandardProficiency(state),
+    reportsSPRFilterLoadingState: getReportsSPRFilterLoadingState(state)
   }),
   {
     getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction

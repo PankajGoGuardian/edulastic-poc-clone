@@ -418,8 +418,6 @@ export const NoDataContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
   font-size: 17px;
 `;
 

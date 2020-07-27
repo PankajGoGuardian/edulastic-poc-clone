@@ -25,30 +25,6 @@
   ],
   "filterDropDownData": [
     {
-      "key": "gender",
-      "title": "Gender",
-      "data": [
-        { "key": "all", "title": "All" },
-        { "key": "female", "title": "Female" },
-        { "key": "male", "title": "Male" }
-      ]
-    },
-    {
-      "key": "frlStatus",
-      "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
-    },
-    {
-      "key": "ellStatus",
-      "title": "ELL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
-    },
-    {
-      "key": "iepStatus",
-      "title": "IEP Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
-    },
-    {
       "key": "race",
       "title": "Race",
       "data": [
@@ -59,6 +35,31 @@
         { "key": "Caucasian", "title": "Caucasian" },
         { "key": "Two or More Races", "title": "Two or More Races" }
       ]
+    },
+    {
+      "key": "gender",
+      "title": "Gender",
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "female", "title": "Female" },
+        { "key": "male", "title": "Male" }
+      ]
+    },
+    {
+      "key": "ellStatus",
+      "title": "ELL Status",
+      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+    },
+    {
+      "key": "frlStatus",
+      "title": "FRL Status",
+      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+    },
+
+    {
+      "key": "iepStatus",
+      "title": "IEP Status",
+      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     }
   ]
 }

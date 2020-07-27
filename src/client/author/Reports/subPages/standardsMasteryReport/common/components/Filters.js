@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { get, isEmpty, keyBy, uniqBy } from "lodash";
 import qs from "qs";
 import PerfectScrollbar from "react-perfect-scrollbar";
+
+import { roleuser } from "@edulastic/constants";
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
 import { MultipleSelect } from "../../../../common/components/widgets/MultipleSelect";
@@ -55,7 +57,9 @@ const StandardsFilters = ({
   setPrevStandardsFilters,
   prevBrowseStandards,
   prevStandardsFilters,
-  extraFilter
+  extraFilter,
+  loc: _loc,
+  role
 }) => {
   const preSelected = user?.districtId === "5ebbbb3b03b7ad0924d19c46";
   const browseStandardsReceiveCount = useRef(0);
@@ -333,7 +337,55 @@ const StandardsFilters = ({
   const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
 
   const domainIdsArray = typeof filters.domainIds === "string" ? filters.domainIds.split(",") : filters.domainIds;
-
+  const testNameFilter = (
+    <SearchField>
+      <FilterLabel>Assessment Name</FilterLabel>
+      <MultipleSelect
+        containerClassName="standards-gradebook-domain-autocomplete"
+        data={allTestIds}
+        valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+        by={testIds}
+        prefix="Assessment Name"
+        onSelect={onSelectTest}
+        onChange={onChangeTest}
+        placeholder="All Assessments"
+      />
+    </SearchField>
+  );
+  const domainFilter = (
+    <SearchField>
+      <FilterLabel>Domain</FilterLabel>
+      <AutocompleteDropDown
+        prefix="Domain"
+        by={(domainIdsArray.length <= 1 && domainIdsArray[0]) || domains[0]}
+        selectCB={updateDomainDropDownCB}
+        data={domains}
+      />
+    </SearchField>
+  );
+  const stdProficiencyFilter = (
+    <SearchField>
+      <FilterLabel>Standard Proficiency</FilterLabel>
+      <ControlDropDown
+        by={filters.profileId || selectedProficiencyId}
+        selectCB={updateStandardProficiencyDropDownCB}
+        data={standardProficiencyList}
+        prefix="Standard Proficiency"
+        showPrefixOnSelected={false}
+      />
+    </SearchField>
+  );
+  const withTestName = [...extraFilter];
+  // Re ordering the filters as per requirment
+  if (_loc === "standards-gradebook") {
+    withTestName.unshift(testNameFilter, domainFilter, stdProficiencyFilter);
+  } else if (_loc === "standards-performance-summary") {
+    const roleBasedPlaceMent = roleuser.DA_SA_ROLE_ARRAY.includes(role) ? 2 : 0;
+    withTestName.splice(roleBasedPlaceMent, 0, testNameFilter, domainFilter);
+    withTestName.push(stdProficiencyFilter);
+  } else {
+    withTestName.push(testNameFilter, domainFilter, stdProficiencyFilter);
+  }
   return (
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
@@ -342,55 +394,13 @@ const StandardsFilters = ({
       </GoButtonWrapper>
       <PerfectScrollbar>
         <SearchField>
-          <FilterLabel>Assessment Name</FilterLabel>
-          <MultipleSelect
-            containerClassName="standards-gradebook-domain-autocomplete"
-            data={allTestIds}
-            valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
-            by={testIds}
-            prefix="Assessment Name"
-            onSelect={onSelectTest}
-            onChange={onChangeTest}
-            placeholder="All Assessments"
-          />
-        </SearchField>
-        {/* // IMPORTANT: To be implemented later */}
-        {/* <SearchField>
-        <FilterLabel>Class Section</FilterLabel>
-        <AutocompleteDropDown
-          prefix="Class Section"
-          by={filters.groupId}
-          selectCB={updateClassSectionDropDownCB}
-          data={dropDownData.classSections}
-        />
-      </SearchField>
-      <SearchField>
-        <FilterLabel>Assessment Type</FilterLabel>
-        <ControlDropDown
-          prefix="Assessment Type"
-          by={filters.assessmentType}
-          selectCB={updateAssessmentTypeDropDownCB}
-          data={filtersDropDownData.assessmentType}
-        />
-      </SearchField> */}
-        {extraFilter}
-        <SearchField>
-          <FilterLabel>Standard Proficiency</FilterLabel>
+          <FilterLabel>School Year</FilterLabel>
           <ControlDropDown
-            by={filters.profileId || selectedProficiencyId}
-            selectCB={updateStandardProficiencyDropDownCB}
-            data={standardProficiencyList}
-            prefix="Standard Proficiency"
+            by={filters.termId}
+            selectCB={updateSchoolYearDropDownCB}
+            data={schoolYear}
+            prefix="School Year"
             showPrefixOnSelected={false}
-          />
-        </SearchField>
-        <SearchField>
-          <FilterLabel>Domain</FilterLabel>
-          <AutocompleteDropDown
-            prefix="Domain"
-            by={(domainIdsArray.length <= 1 && domainIdsArray[0]) || domains[0]}
-            selectCB={updateDomainDropDownCB}
-            data={domains}
           />
         </SearchField>
         <SearchField>
@@ -413,16 +423,7 @@ const StandardsFilters = ({
             showPrefixOnSelected={false}
           />
         </SearchField>
-        <SearchField>
-          <FilterLabel>School Year</FilterLabel>
-          <ControlDropDown
-            by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
-            data={schoolYear}
-            prefix="School Year"
-            showPrefixOnSelected={false}
-          />
-        </SearchField>
+        {withTestName}
       </PerfectScrollbar>
     </StyledFilterWrapper>
   );

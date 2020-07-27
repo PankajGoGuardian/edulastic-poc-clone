@@ -94,7 +94,7 @@ ToolBar.propTypes = {
 export default ToolBar;
 
 export const Container = styled.div`
-  margin-left: 10px;
+  margin-left: 0px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -105,7 +105,7 @@ export const Container = styled.div`
 
 export const ButtonWithStyle = styled(Button)`
   border: 1px solid #FFFFFF;
-  margin-right: 3px;
+  margin-right: 5px;
   border-radius: 5px;
   ${props => props.hidden && "display:none"}
   ${({ theme, active }) => `
@@ -128,8 +128,8 @@ export const ButtonWithStyle = styled(Button)`
   `}
 
 ${({ theme, active }) =>
-    window.isIOS
-      ? `
+  window.isIOS
+    ? `
       &:focus, &:hover{
             background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
             svg{
@@ -137,7 +137,7 @@ ${({ theme, active }) =>
             }
           }
       `
-      : `
+    : `
       &:focus{
       background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
       svg{

@@ -455,7 +455,8 @@ export const QuestionDetails = styled.div`
   flex-direction: column;
   font-weight: 600;
   line-height: 20px;
-  padding: 20px;
+  padding: 20px !important;
+  width: 100%;
 `;
 
 export const DetailRow = styled.div`

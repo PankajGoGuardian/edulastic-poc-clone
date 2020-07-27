@@ -271,7 +271,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   getScrollContainerProps = showScratch => {
-    const { page, fullModal, viewComponent } = this.props;
+    const { page, fullModal, viewComponent, isPassage } = this.props;
     const commonProps = {
       style: {
         overflow: "auto"
@@ -283,7 +283,7 @@ class AuthorTestItemPreview extends Component {
     // item preview popup
     // 90px is scratchpad toolbox height
     if (viewComponent === "authorPreviewPopup") {
-      const tempHeight = fullModal ? "87vh" : "70vh";
+      const tempHeight = (isPassage && fullModal) ? "calc(100vh - 160px)" : fullModal ? "calc(100vh - 100px)" : "70vh";
       commonProps.style.height = showScratch ? `calc(${tempHeight} - 90px)` : tempHeight;
       return commonProps;
     }
@@ -297,8 +297,11 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderColumns(col, colIndex, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData) {
-    const { style, windowWidth, onlySratchpad, viewComponent, fullModal, ...restProps } = this.props;
+    const { style, windowWidth, onlySratchpad, viewComponent, fullModal, item, isPassage, ...restProps } = this.props;
     const { value, isEnableScratchpad } = this.state;
+    const { createdBy, data, maxScore } = item;
+    const { questions } = data;
+    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, id, tags } = questions[0];
 
     let subCount = 0;
     const columns = (
@@ -360,6 +363,28 @@ class AuthorTestItemPreview extends Component {
                 })}
             </React.Fragment>
           ))}
+          {!isPassage && (
+            <QuestionPreviewDetails
+              id={id}
+              createdBy={createdBy}
+              maxScore={maxScore}
+              depthOfKnowledge={depthOfKnowledge}
+              authorDifficulty={authorDifficulty}
+              bloomsTaxonomy={bloomsTaxonomy}
+              tags={tags}
+            />
+          )}
+          {isPassage && colIndex === 1 && (
+            <QuestionPreviewDetails
+              id={id}
+              createdBy={createdBy}
+              maxScore={maxScore}
+              depthOfKnowledge={depthOfKnowledge}
+              authorDifficulty={authorDifficulty}
+              bloomsTaxonomy={bloomsTaxonomy}
+              tags={tags}
+            />
+          )}
         </WidgetContainer>
       </>
     );
@@ -430,11 +455,8 @@ class AuthorTestItemPreview extends Component {
    * @param {func}  saveScratchpad is from PeviewModalWithRejectNote component.
    */
   renderColumnsContentArea = ({ sectionQue, resourceCount, scratchpadData, saveScratchpad }) => {
-    const { cols, passageNavigator, isPassage, item } = this.props;
+    const { cols, passageNavigator } = this.props;
     const { collapseDirection } = this.state;
-    const { createdBy, data, maxScore } = item;
-    const { questions } = data;
-    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, id, tags } = questions[0];
 
     return cols.map((col, i) => {
       const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
@@ -445,28 +467,6 @@ class AuthorTestItemPreview extends Component {
             {i === 1 && passageNavigator}
             {i === 0 ? this.renderLeftButtons(showScratch) : this.renderRightButtons()}
             {this.renderColumns(col, i, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData)}
-            {!isPassage && (
-              <QuestionPreviewDetails
-                id={id}
-                createdBy={createdBy}
-                maxScore={maxScore}
-                depthOfKnowledge={depthOfKnowledge}
-                authorDifficulty={authorDifficulty}
-                bloomsTaxonomy={bloomsTaxonomy}
-                tags={tags}
-              />
-            )}
-            {isPassage && i === 1 && (
-              <QuestionPreviewDetails
-                id={id}
-                createdBy={createdBy}
-                maxScore={maxScore}
-                depthOfKnowledge={depthOfKnowledge}
-                authorDifficulty={authorDifficulty}
-                bloomsTaxonomy={bloomsTaxonomy}
-                tags={tags}
-              />
-            )}
           </ColumnContentArea>
           {i === 0 && cols.length > 1 && this.collapseButtons}
         </Container>

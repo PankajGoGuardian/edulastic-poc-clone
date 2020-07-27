@@ -123,7 +123,7 @@ class PreviewModal extends React.Component {
       title: "Clone Passage Item",
       content: `This passage has ${
         passage.testItems.length
-      } Items associated with it. Would you like to clone complete passage or a single item?`,
+        } Items associated with it. Would you like to clone complete passage or a single item?`,
       onOk: () => {
         duplicateTestItem({
           data,
@@ -419,6 +419,7 @@ class PreviewModal extends React.Component {
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 0 }}
+        wrapClassName="preview-full-modal"
         isSmallSize={isSmallSize}
         width={isSmallSize || fullModal ? "100%" : "75%"}
         height={isSmallSize || fullModal ? "100%" : null}
@@ -462,7 +463,7 @@ class PreviewModal extends React.Component {
               <EduButton isBlue height="28px" justifyContent="center" onClick={this.handleSelection}>
                 {this.isAddOrRemove ? "Add To Test" : "Remove from Test"}
               </EduButton>
-            )}
+              )}
             <ButtonsWrapper
               justifyContent="flex-end"
               wrap="nowrap"
@@ -516,7 +517,7 @@ class PreviewModal extends React.Component {
                 >
                   <IconPencilEdit color={themeColor} title="Edit item" />
                 </EduButton>
-              )}
+                )}
               <EduButton
                 IconBtn
                 isGhost
@@ -623,10 +624,10 @@ class PreviewModal extends React.Component {
                   toggleReportIssue={this.toggleReportIssue}
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
-                  /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
+                    /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
                   isEditable={
-                    (isEditable && isOwner) || userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR
-                  }
+                      (isEditable && isOwner) || userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR
+                    }
                   isPassage={isPassage}
                   passageTestItems={passageTestItems}
                   handleDuplicateTestItem={this.handleDuplicateTestItem}
@@ -646,10 +647,10 @@ class PreviewModal extends React.Component {
                 {/* we may need to bring hint button back */}
                 {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
                 {showReportIssueField && (
-                  <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
-                )}
+                <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
+                  )}
               </>
-            )}
+              )}
           </QuestionWrapper>
         </ModalContentArea>
       </PreviewModalWrapper>
@@ -680,11 +681,11 @@ PreviewModal.propTypes = {
 };
 
 PreviewModal.defaultProps = {
-  checkAnswer: () => {},
-  showAnswer: () => {},
-  gotoSummary: () => {},
-  prevItem: () => {},
-  nextItem: () => {},
+  checkAnswer: () => { },
+  showAnswer: () => { },
+  gotoSummary: () => { },
+  prevItem: () => { },
+  nextItem: () => { },
   loading: false,
   isEditable: false
 };
@@ -742,7 +743,7 @@ const ProgressContainer = styled.div`
 
 const PreviewModalWrapper = styled(Modal)`
   height: ${({ isSmallSize }) => (isSmallSize ? "100%" : "auto")};
-  border-radius: 5px;
+  border-radius: ${({ fullModal }) => (fullModal ? "0px" : "5px")};
   background: #f7f7f7;
   top: 30px;
   padding: 0px;

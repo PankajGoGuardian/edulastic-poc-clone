@@ -2241,8 +2241,8 @@ div[class*="_pendo"] button {
   padding: 15px 0px;
 }
 
-.ant-modal-wrap.ant-modal-centered {
-  padding: 15px 0px;
+.ant-modal-wrap.ant-modal-centered.preview-full-modal {
+  padding: 0px;
 }
 
 .drag-drop-item-match-list:hover {

@@ -126,9 +126,15 @@ export const getCollectionsSelector = createSelector(
   state => _get(state, "user.orgData.itemBanks", [])
 );
 
+export const shouldWatchCollectionUpdates = createSelector(
+  getUserRole,
+  userRole =>
+    userRole === roleuser.TEACHER || userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+);
+
 export const getCustomCollectionsSelector = createSelector(
   getCollectionsSelector,
-  collections => collections.filter(item => item.isCustom || item.accessLevel === "write")
+  collections => collections.filter(item => (item.isCustom || item.accessLevel === "write") && item.status === 1)
 );
 
 export const getItemBucketsSelector = createSelector(

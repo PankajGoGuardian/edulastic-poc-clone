@@ -56,9 +56,9 @@ export const itemsDataTableSelector = createSelector(
       }
       return {
         count: collectionCountById[item],
-        name: itemBanksById[item].name,
-        description: itemBanksById[item].description,
-        status: itemBanksById[item].status,
+        name: itemBanksById[item]?.name,
+        description: itemBanksById[item]?.description,
+        status: itemBanksById[item]?.status,
         key: item
       };
     });

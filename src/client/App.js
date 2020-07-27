@@ -18,7 +18,7 @@ import { TokenStorage } from "@edulastic/api";
 import { Banner } from "./common/components/Banner";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import SebQuitConfirm from "./student/SebQuitConfirm";
-import { getUserNameSelector } from "./author/src/selectors/user";
+import { getUserNameSelector, shouldWatchCollectionUpdates } from "./author/src/selectors/user";
 import { fetchUserAction, isProxyUser as isProxyUserSelector } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
@@ -31,6 +31,7 @@ import NotificationListener from "./HangoutVideoCallNotification";
 import BulkActionNotificationListener from "./author/AssignmentAdvanced/components/BulkAssignmentActionNotification";
 import AppUpdateModal from "./common/components/AppUpdateModal";
 import { logoutAction } from "./author/src/actions/auth";
+import RealTimeCollectionWatch from "./RealTimeCollectionWatch";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type;
 // route wise splitting
@@ -199,7 +200,7 @@ class App extends Component {
     /**
      * NOTE:  this logic would be called multiple times, even after redirect
      */
-    const { user, tutorial, location, history, fullName, logout, isProxyUser } = this.props;
+    const { user, tutorial, location, history, fullName, logout, isProxyUser, shouldWatch } = this.props;
     if (location.hash.includes("#renderResource/close/") || location.hash.includes("#assessmentQuestions/close/")) {
       const v1Id = location.hash.split("/")[2];
       history.push(`/d/ap?eAId=${v1Id}`);
@@ -319,6 +320,7 @@ class App extends Component {
     const { showAppUpdate, canShowCliBanner } = this.state;
     return (
       <div>
+        {shouldWatch && <RealTimeCollectionWatch />}
         {userRole && <CheckRoutePatternsEffectContainer role={userRole} location={location} history={history} />}
         <AppUpdateModal visible={showAppUpdate} onRefresh={this.handleOk} />
         <OfflineNotifier />
@@ -463,9 +465,13 @@ const enhance = compose(
       user,
       tutorial: tutorial.currentTutorial,
       fullName: getUserNameSelector({ user }),
-      isProxyUser: isProxyUserSelector({ user })
+      isProxyUser: isProxyUserSelector({ user }),
+      shouldWatch: shouldWatchCollectionUpdates({ user })
     }),
-    { fetchUser: fetchUserAction, logout: logoutAction }
+    {
+      fetchUser: fetchUserAction,
+      logout: logoutAction
+    }
   )
 );
 

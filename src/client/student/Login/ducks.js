@@ -102,6 +102,8 @@ export const FETCH_USER_FAVORITES = "[user] fetch user favorites";
 export const UPDATE_USER_FAVORITES = "[user] update user favorites";
 export const SET_USER_FAVORITES = "[user] set user favorites";
 export const ADD_CLASS_TO_USER = "[user] add class to user";
+export const ADD_COLLECTION_PERMISSION = "[user] update item bank permission";
+export const REMOVE_COLLECTION_PERMISSION = "[user] remove item bank permission";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -150,6 +152,8 @@ export const setSignUpStatusAction = createAction(SET_SIGNUP_STATUS);
 export const fetchUserFailureAction = createAction(FETCH_USER_FAILURE);
 export const updatePowerTeacherAction = createAction(UPDATE_POWER_TEACHER_TOOLS_REQUEST);
 export const addClassToUserAction = createAction(ADD_CLASS_TO_USER);
+export const addItemBankPermissionAction = createAction(ADD_COLLECTION_PERMISSION);
+export const removeItemBankPermissionAction = createAction(REMOVE_COLLECTION_PERMISSION);
 
 const initialState = {
   addAccount: false,
@@ -413,6 +417,25 @@ export default createReducer(initialState, {
   },
   [ADD_CLASS_TO_USER]: (state, { payload }) => {
     state.user.orgData.classList.push(payload);
+  },
+  [ADD_COLLECTION_PERMISSION]: (state, { payload }) => {
+    const itemBanks = get(state, "user.orgData.itemBanks", []);
+    const { itemBankId, accessLevel, status } = payload;
+    const itemBankIndex = itemBanks.findIndex(item => item._id === itemBankId);
+    if (itemBankIndex > -1) {
+      state.user.orgData.itemBanks[itemBankIndex].accessLevel = accessLevel;
+      state.user.orgData.itemBanks[itemBankIndex].status = status;
+    } else {
+      state.user.orgData.itemBanks.push({ ...payload });
+    }
+  },
+  [REMOVE_COLLECTION_PERMISSION]: (state, { payload }) => {
+    const itemBanks = get(state, "user.orgData.itemBanks", []);
+    const { itemBankId } = payload;
+    const itemBankIndex = itemBanks.findIndex(item => item._id === itemBankId);
+    if (itemBankIndex > -1) {
+      state.user.orgData.itemBanks[itemBankIndex].status = 0;
+    }
   }
 });
 

@@ -19,15 +19,20 @@ const initialState = {
   requestFilters: {
     termId: "",
     courseId: "",
+    grade: "",
+    subject: "",
     performanceBandProfileId: "",
     standardsProficiencyProfileId: ""
   }
 };
 
 export const reportSPRSettingsReducer = createReducer(initialState, {
-  [SET_SPR_SETTINGS]: (state, { payload }) => { 
+  [SET_SPR_SETTINGS]: (state, { payload }) => {
     state.selectedStudent = payload.selectedStudent;
     state.requestFilters = payload.requestFilters;
-   },
-  [RESET_ALL_REPORTS]: state => { state = initialState; }
+  },
+  // eslint-disable-next-line no-unused-vars
+  [RESET_ALL_REPORTS]: state => {
+    state = initialState;
+  }
 });

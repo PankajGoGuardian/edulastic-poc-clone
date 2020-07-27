@@ -30,6 +30,10 @@ import {
   FilterLabel
 } from "../../../../../common/styled";
 
+import staticDropDownData from "../../../../singleAssessmentReport/common/static/staticDropDownData.json";
+
+const { subjects: subjectOptions, grades: gradeOptions } = staticDropDownData;
+
 const StudentProfileReportsFilters = ({
   style,
   onGoClick: _onGoClick,
@@ -54,7 +58,7 @@ const StudentProfileReportsFilters = ({
   const urlStudentId = splittedPath[splittedPath.length - 1];
   const parsedQuery = queryString.parse(location.search);
 
-  const { termId: urlTermId, courseId: urlCourseId } = parsedQuery;
+  const { termId: urlTermId, courseId: urlCourseId, grade: urlGrade, subject: urlSubject } = parsedQuery;
 
   const { studentClassData = [] } = get(SPRFilterData, "data.result", {});
   const { terms = [] } = orgData;
@@ -75,6 +79,13 @@ const StudentProfileReportsFilters = ({
     () => find(courseOptions, course => course.key === urlCourseId) || courseOptions[0] || {},
     [courseOptions]
   );
+
+  const selectedGrade = useMemo(() => find(gradeOptions, g => g.key === urlGrade) || gradeOptions[0], [urlGrade]);
+
+  const selectedSubject = useMemo(() => find(subjectOptions, s => s.key === urlSubject) || subjectOptions[0], [
+    urlSubject
+  ]);
+
   const selectedClasses = useMemo(() => (selectedClass.key ? [selectedClass.key] : []), [selectedClass]);
 
   const profiles = get(SPRFilterData, "data.result.bandInfo", []);
@@ -110,7 +121,9 @@ const StudentProfileReportsFilters = ({
       const _filters = {
         ...filters,
         termId: selectedTerm.key,
-        courseId: selectedCourse.key
+        courseId: selectedCourse.key,
+        grade: selectedGrade.key,
+        subject: selectedSubject.key
         // uncomment after making changes to chart files
         // performanceBandProfileId: selectedProfile,
         // standardsProficiencyProfileId: selectedScale
@@ -166,14 +179,6 @@ const StudentProfileReportsFilters = ({
         />
       </SearchField>
       <SearchField>
-        <FilterLabel>Class</FilterLabel>
-        <ClassAutoComplete selectedClass={selectedClass} selectCB={setSelectedClass} />
-      </SearchField>
-      <SearchField>
-        <FilterLabel>Student</FilterLabel>
-        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} selectedClasses={selectedClasses} />
-      </SearchField>
-      <SearchField>
         <FilterLabel>Course</FilterLabel>
         <ControlDropDown
           by={filters.courseId}
@@ -182,6 +187,34 @@ const StudentProfileReportsFilters = ({
           prefix="Courses"
           showPrefixOnSelected={false}
         />
+      </SearchField>
+      <SearchField>
+        <FilterLabel>Grade</FilterLabel>
+        <ControlDropDown
+          by={filters.grade}
+          selectCB={value => handleFilterChange("grade", value)}
+          data={gradeOptions}
+          prefix="Grade"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+      <SearchField>
+        <FilterLabel>Subject</FilterLabel>
+        <ControlDropDown
+          by={filters.subject}
+          selectCB={value => handleFilterChange("subject", value)}
+          data={subjectOptions}
+          prefix="Subject"
+          showPrefixOnSelected={false}
+        />
+      </SearchField>
+      <SearchField>
+        <FilterLabel>Class</FilterLabel>
+        <ClassAutoComplete selectedClass={selectedClass} selectCB={setSelectedClass} />
+      </SearchField>
+      <SearchField>
+        <FilterLabel>Student</FilterLabel>
+        <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} selectedClasses={selectedClasses} />
       </SearchField>
       {performanceBandRequired && (
         <SearchField>

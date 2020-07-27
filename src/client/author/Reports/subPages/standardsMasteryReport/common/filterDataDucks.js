@@ -41,6 +41,11 @@ export const setTestIdAction = createAction(SET_TEST_ID);
 
 export const stateSelector = state => state.reportReducer.reportStandardsFilterDataReducer;
 
+export const getReportsStandardsFiltersLoader = createSelector(
+  stateSelector,
+  state => state.loading || state.loadingStandards
+);
+
 export const getReportsStandardsBrowseStandards = createSelector(
   stateSelector,
   state => state.browseStandards
@@ -98,7 +103,9 @@ const initialState = {
     domainIds: ["All"],
     profileId: ""
   },
-  testIds: []
+  testIds: [],
+  loading: false,
+  loadingStandards: false
 };
 
 const setFiltersReducer = (state, { payload }) => {
@@ -111,14 +118,14 @@ const setTestIdReducer = (state, { payload }) => {
 
 export const reportStandardsFilterDataReducer = createReducer(initialState, {
   [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST]: state => {
-    state.loading = true;
+    state.loadingStandards = true;
   },
   [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false;
+    state.loadingStandards = false;
     state.browseStandards = payload.browseStandards;
   },
   [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false;
+    state.loadingStandards = false;
     state.error = payload.error;
   },
 

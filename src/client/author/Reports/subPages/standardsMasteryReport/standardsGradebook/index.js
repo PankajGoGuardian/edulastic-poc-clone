@@ -8,7 +8,7 @@ import StudentAssignmentModal from "../../../common/components/Popups/studentAss
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getStudentAssignments } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
-import { getFiltersSelector, getSelectedStandardProficiency } from "../common/filterDataDucks";
+import { getFiltersSelector, getSelectedStandardProficiency, getReportsStandardsFiltersLoader } from "../common/filterDataDucks";
 import { getMaxMasteryScore } from "../standardsPerformance/utils/transformers";
 import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
 import { TableContainer, UpperContainer } from "./components/styled";
@@ -160,7 +160,8 @@ const StandardsGradebook = ({
 const enhance = compose(
   connect(
     state => ({
-      loading: getReportsStandardsGradebookLoader(state),
+      loading: getReportsStandardsGradebookLoader(state)
+        || getReportsStandardsFiltersLoader(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),

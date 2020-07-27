@@ -12,7 +12,8 @@ import {
   getReportsStandardsBrowseStandards,
   getReportsStandardsFilters,
   getSelectedStandardProficiency,
-  getStandardsFiltersRequestAction
+  getStandardsFiltersRequestAction,
+  getReportsStandardsFiltersLoader
 } from "../common/filterDataDucks";
 import StandardsPerformanceChart from "./components/charts/StandardsPerformanceChart";
 import { StyledInnerRow, StyledRow } from "./components/styled";
@@ -165,7 +166,8 @@ const StandardsPerformance = ({
 const enhance = connect(
   state => ({
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
-    loading: getReportsStandardsPerformanceSummaryLoader(state),
+    loading: getReportsStandardsPerformanceSummaryLoader(state)
+      || getReportsStandardsFiltersLoader(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),

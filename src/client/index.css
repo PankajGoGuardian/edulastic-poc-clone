@@ -2253,3 +2253,12 @@ div[class*="_pendo"] button {
 .drag-drop-item-match-list:hover * {
   color: white !important;
 }
+
+.fixed-response-sub-header {
+  position: absolute;
+  width: calc(100% - 74px);
+  margin-left: 30px;
+  top: 70px;
+  left: 0;
+  z-index: 100;
+}

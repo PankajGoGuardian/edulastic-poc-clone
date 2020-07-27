@@ -361,7 +361,10 @@ const SingleAssessmentReportFilters = ({
       <FilterLabel>Assessment Name</FilterLabel>
       <AutocompleteDropDown
         containerClassName="single-assessment-report-test-autocomplete"
-        data={processedTestIds.testIds ? processedTestIds.testIds : []}
+        data={(processedTestIds.testIds || []).map(t => ({
+          ...t,
+          title: `${t.title} (ID: ${t.key?.substring(t.key.length - 5) || ""})`
+        }))}
         by={testId}
         prefix="Assessment Name"
         selectCB={onTestIdChange}

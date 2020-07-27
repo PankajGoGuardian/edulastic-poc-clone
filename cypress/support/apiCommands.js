@@ -490,7 +490,7 @@ Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
       method: "POST",
       body: {
         search: {
-          subject: "",
+          subject: [],
           curriculumId: "",
           standardIds: [],
           questionType: "",
@@ -503,6 +503,10 @@ Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
           authoredByIds: [],
           filter: "AUTHORED_BY_ME",
           createdAt: ""
+        },
+        sort: {
+          sortBy: "popularity",
+          sortDir: "desc"
         },
         page: 1,
         limit: NO_ITEMS_TO_DELETE

@@ -20,11 +20,7 @@ const MergeIdsTable = ({
   closeMergeResponse,
   disableFields
 }) => {
-  const {
-    data: mergeResponseData,
-    showData: showMergeResponseData,
-    mergeType: downloadMergeType
-  } = mergeResponse;
+  const { data: mergeResponseData, showData: showMergeResponseData, mergeType: downloadMergeType } = mergeResponse;
   const ButtonProps = disableFields ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } : {};
 
   const handleUpload = (info, mergeType) => {
@@ -72,7 +68,16 @@ const MergeIdsTable = ({
   ];
 
   const headers = isClasslink ? classlinkHeaders : cleverHeaders;
-  const title = isClasslink ? 'Classlink' : 'Clever';
+  const title = isClasslink ? "Classlink" : "Clever";
+
+  const templateHeaders = {
+    sch: ["school_id", "id"],
+    cls: ["edu_class_section_id", "clever_id"],
+    tch: ["user_id", "id"],
+    stu: ["user_id", "id"],
+    sa: ["user_id", "id"],
+    da: ["user_id", "id"]
+  };
 
   return (
     <>
@@ -90,7 +95,7 @@ const MergeIdsTable = ({
             <CSVLink
               data={mergeResponseData}
               filename={`${downloadMergeType}_match_result_${districtId}.csv`}
-              seperator=","
+              separator=","
               headers={headers}
               target="_blank"
             >
@@ -101,12 +106,8 @@ const MergeIdsTable = ({
         width="80%"
       >
         <Table rowKey={record => record.edulasticId} dataSource={mergeResponseData} pagination={false}>
-          {headers.map((each) => (
-            <Column
-              title={each.label}
-              dataIndex={each.key}
-              key={each.key}
-            />
+          {headers.map(each => (
+            <Column title={each.label} dataIndex={each.key} key={each.key} />
           ))}
         </Table>
       </Modal>
@@ -125,6 +126,24 @@ const MergeIdsTable = ({
               </Button>
               {" *.csv"}
             </Upload>
+          )}
+        />
+        <Column
+          title="Template"
+          dataIndex="isEmpty"
+          key="tempBtn"
+          render={(_, { type }) => (
+            <Button {...ButtonProps}>
+              <CSVLink
+                data={[]}
+                filename={`${type}_match.csv`}
+                separator=","
+                headers={templateHeaders[type]}
+                target="_blank"
+              >
+                <Icon type="download" /> Download Template
+              </CSVLink>
+            </Button>
           )}
         />
       </Table>

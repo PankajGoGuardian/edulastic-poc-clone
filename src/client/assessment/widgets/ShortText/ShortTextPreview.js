@@ -44,6 +44,7 @@ const ShortTextPreview = ({
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
+  const inputType = get(item, "uiStyle.input_type", "text");
 
   useEffect(() => {
     if (Array.isArray(userAnswer)) {
@@ -125,10 +126,10 @@ const ShortTextPreview = ({
               onChange={handleTextChange}
               onSelect={handleSelect}
               placeholder={item.placeholder || ""}
-              type={get(item, "uiStyle.input_type", "text")}
+              type={inputType}
               {...getSpellCheckAttributes(item.spellcheck)}
             />
-            {isCharacterMap && (
+            {isCharacterMap && inputType === "text" && (
               <Popover
                 placement="bottomLeft"
                 trigger="click"

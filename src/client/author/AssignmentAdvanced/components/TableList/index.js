@@ -138,7 +138,8 @@ const TableList = ({
   toggleDeleteAssignmentModal,
   isLoadingAssignments,
   bulkActionStatus,
-  isHeaderAction
+  isHeaderAction,
+  history
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(false);
@@ -286,6 +287,9 @@ const TableList = ({
         pagination={showPagination}
         rowSelection={rowSelection}
         loading={isLoadingAssignments}
+        onRow={row => ({
+          onClick: () => history.push(`/author/classboard/${row.assignmentId}/${row.classId}`)
+        })}
       />
       <ReleaseScoreSettingsModal
         showReleaseGradeSettings={showReleaseScoreModal}

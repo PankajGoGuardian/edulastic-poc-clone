@@ -83,6 +83,7 @@ export const Icon = styled.img`
 export const TableData = styled(Table)`
   color: ${secondaryTextColor};
   width: auto;
+  cursor: pointer;
   .ant-table-thead {
     > tr > th {
       font-weight: bold;

@@ -152,6 +152,18 @@ export default class TestSettings {
       if ($ele.hasClass("ant-switch-checked")) cy.wrap($ele).click({ force: true });
     });
 
+  setShuffleQuestions = () =>
+    this.getShuffleQuestionButton().then($ele => {
+      if (!$ele.hasClass("ant-switch-checked")) {
+        cy.wrap($ele).click({ force: true });
+      }
+    });
+
+  unSetShuffleQuestions = () =>
+    this.getShuffleQuestionButton().then($ele => {
+      if ($ele.hasClass("ant-switch-checked")) cy.wrap($ele).click({ force: true });
+    });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

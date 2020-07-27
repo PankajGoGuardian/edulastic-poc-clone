@@ -230,16 +230,16 @@ export default class GroupItemsPage {
     deliverTypeAtStudentSide.forEach((type, ind) => {
       switch (type) {
         case deliverType.ALL:
-          if (shuffle === false) CypressHelper.checkObjectEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
+          if (!shuffle) CypressHelper.checkObjectEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
           else {
-            if (!groups[ind + 1].items.length === 1)
+            if (groups[ind + 1].items.length !== 1)
               CypressHelper.checkObjectInEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
             expect(deliveredGroup[ind + 1].length).to.eq(groups[ind + 1].deliveryCount);
           }
           break;
         case deliverType.LIMITED_RANDOM:
         case deliverType.ALL_RANDOM:
-          if (!groups[ind + 1].items.length === 1)
+          if (groups[ind + 1].items.length !== 1)
             CypressHelper.checkObjectInEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
           expect(deliveredGroup[ind + 1].length).to.eq(groups[ind + 1].deliveryCount);
           break;

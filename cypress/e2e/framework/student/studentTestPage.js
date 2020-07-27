@@ -121,7 +121,7 @@ class StudentTestPage {
     if (isSkipped) {
       this.clickOnSkipOnPopUp();
     }
-    if (!onlyPreview) cy.wait("@saved");
+    if (!onlyPreview) return cy.wait("@saved");
   };
 
   clickOnPrevious() {

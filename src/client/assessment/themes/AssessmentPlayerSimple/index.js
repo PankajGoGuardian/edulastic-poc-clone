@@ -177,7 +177,6 @@ class AssessmentPlayerSimple extends React.Component {
       skippedInOrder,
       zoomLevel,
       windowWidth,
-      scratchPadData,
       showHints,
       timedAssignment = false,
       groupId,
@@ -185,8 +184,6 @@ class AssessmentPlayerSimple extends React.Component {
       utaId
     } = this.props;
     const { showExitPopup, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
-
-    const { activeMode, deleteMode, currentColor, fillColor, lineWidth } = scratchPadData;
 
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
@@ -252,12 +249,7 @@ class AssessmentPlayerSimple extends React.Component {
               previousQuestionActivities={previousQuestionActivities}
               zoomLevel={zoomLevel}
               windowWidth={windowWidth}
-              activeMode={activeMode}
               scratchPadMode={scratchPadMode}
-              lineColor={currentColor}
-              deleteMode={deleteMode}
-              lineWidth={lineWidth}
-              fillColor={fillColor}
               saveHistory={this.saveHistory("scratchpad")}
               history={scratchPad}
               changePreview={this.handleChangePreview}
@@ -299,7 +291,6 @@ const enhance = compose(
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),
-      scratchPadData: state.scratchpad,
       timedAssignment: state.test?.settings?.timedAssignment,
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag

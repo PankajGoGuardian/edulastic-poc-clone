@@ -129,12 +129,12 @@ const CurriculumHeader = ({
   } = match;
   const currentTab = cTab || "playlist";
   const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection ?._id);
+  const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
 
   const shouldHideUseThis = status === "draft";
   const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
 
-  const isPlaylistDetailsPage = window.location ?.hash === "#review";
+  const isPlaylistDetailsPage = window.location?.hash === "#review";
   const shouldShowEdit = url.includes("playlists") && isPlaylistDetailsPage && status === "draft" && !urlHasUseThis;
 
   const switchPlaylist = (
@@ -187,7 +187,7 @@ const CurriculumHeader = ({
           {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
             !shouldHideUseThis &&
             !urlHasUseThis &&
-            destinationCurriculumSequence ?._id && (
+            destinationCurriculumSequence?._id && (
               <Tooltip placement="bottom" title="DELETE">
                 <HeaderButton
                   loading={loadingDelete}
@@ -214,13 +214,24 @@ const CurriculumHeader = ({
               </HeaderButton>
             )}
 
-          {(canAllowDuplicate || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
+          {(canAllowDuplicate || isAuthor || role === roleuser.EDULASTIC_CURATOR) && (
             <Tooltip placement="bottom" title="CLONE">
-              <HeaderButton isBlue isGhost data-cy="clone" onClick={() => duplicatePlayList({ _id: destinationCurriculumSequence._id, title: destinationCurriculumSequence.title })} IconBtn>
+              <HeaderButton
+                isBlue
+                isGhost
+                data-cy="clone"
+                onClick={() =>
+                  duplicatePlayList({
+                    _id: destinationCurriculumSequence._id,
+                    title: destinationCurriculumSequence.title
+                  })
+                }
+                IconBtn
+              >
                 <IconDuplicate />
               </HeaderButton>
             </Tooltip>
-          }
+          )}
 
           {customizeInDraft && (
             <HeaderButton isBlue isGhost data-cy="cancel" onClick={discardDraftPlaylist}>
@@ -247,7 +258,7 @@ const CurriculumHeader = ({
                 trigger={["click"]}
                 getPopupContainer={trigger => trigger.parentNode}
               >
-                <IconActionButton style={{ cursor: "pointer" }} onClick={e => e.stopPropagation()}>
+                <IconActionButton style={{ cursor: "pointer", alignSelf: "center" }} onClick={e => e.stopPropagation()}>
                   <IconMoreVertical width={5} height={14} color={themeColorBlue} />
                 </IconActionButton>
               </Dropdown>

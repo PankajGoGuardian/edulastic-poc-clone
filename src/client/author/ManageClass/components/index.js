@@ -67,7 +67,7 @@ const ManageClass = ({
     fetchGroups();
     fetchArchiveGroups();
     getDictCurriculums();
-    receiveSearchCourse({ districtId });
+    receiveSearchCourse({ districtId, active: 1 });
     setIsGoogleModalVisible(false);
     setShowBanner(false);
   }, []);

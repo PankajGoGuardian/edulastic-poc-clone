@@ -72,7 +72,9 @@ class ClassCreate extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     const { form, userId, userOrgData, allTagsData, location } = this.props;
-    const { districtIds: [districtId] } = userOrgData;
+    const {
+      districtIds: [districtId]
+    } = userOrgData;
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { createClass, curriculums } = this.props;
@@ -122,16 +124,20 @@ class ClassCreate extends React.Component {
 
   searchCourse = keyword => {
     const { searchCourseList, userOrgData } = this.props;
-    const { districtIds: [districtId] } = userOrgData;
+    const {
+      districtIds: [districtId]
+    } = userOrgData;
     let searchTerms;
     const key = keyword.trim();
     if (keyword == "") {
       searchTerms = {
-        districtId
+        districtId,
+        active: 1
       };
     } else {
       searchTerms = {
         districtId,
+        active: 1,
         search: {
           name: [{ type: "cont", value: key }],
           number: [{ type: "eq", value: key }],

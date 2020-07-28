@@ -83,7 +83,7 @@ class ClassList extends React.Component {
       loadSchoolsData({ districtId: userOrgId });
     }
     if (isEmpty(courseList)) {
-      loadCourseListData({ districtId: userOrgId });
+      loadCourseListData({ districtId: userOrgId, active: 1 });
     }
 
     getAllTags({ type: "group" });

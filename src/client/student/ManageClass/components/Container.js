@@ -56,7 +56,7 @@ const ManageClassContainer = ({
   if (loading) return <Spin />;
   return (
     <>
-      <MainHeader Icon={IconManage} headingText={t("header:common.manageClassTitle")}>
+      <MainHeader Icon={IconManage} headingText={t("header:common.myClassTitle")}>
         {userRole === "parent" ? (
           <StudentSlectCommon />
         ) : (

@@ -56,7 +56,7 @@ const menuItems = [
     path: "home/skill-mastery"
   },
   {
-    label: "Manage Class",
+    label: "My Classes",
     icon: IconManage,
     path: "home/manage"
   }

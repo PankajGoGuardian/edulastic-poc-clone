@@ -1,38 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Icon } from "antd";
-import { Table } from "../Common/StyledComponents";
+import { Table, StyledFilterInput } from "../Common/StyledComponents";
 
 const { Column } = Table;
 
-export default function Logs({
-  logs,
-  fetchLogsDataAction,
-  districtId,
-  isClasslink,
-  loading
-}) {
+export default function Logs({ logs, fetchLogsDataAction, districtId, isClasslink, loading }) {
+  const [filteredLogs, setFilteredLogs] = useState([]);
 
   const getLogs = () => {
-    fetchLogsDataAction({districtId, isClasslink});
-  }
+    fetchLogsDataAction({ districtId, isClasslink });
+  };
+
+  const search = value => {
+    const newFilteredLogs = logs.filter(eachLog =>
+      Object.values(eachLog).some(logValue =>
+        String(logValue)
+          .toLowerCase()
+          .includes(value.toLowerCase())
+      )
+    );
+
+    setFilteredLogs(newFilteredLogs);
+  };
 
   useEffect(() => {
     getLogs();
   }, [districtId]);
 
+  useEffect(() => {
+    setFilteredLogs(logs);
+  }, [logs]);
+
   return (
     <>
-      <Button
-        onClick={getLogs}
-        aria-label="Refresh Logs"
-        title="Refresh Logs"
-        style={{ marginBottom: "10px" }}
-      >
+      <Button onClick={getLogs} aria-label="Refresh Logs" title="Refresh Logs" style={{ marginBottom: "10px" }}>
         <Icon type="reload" />
       </Button>
+      <StyledFilterInput placeholder="Search..." onSearch={search} />
       <Table
         rowKey={record => record._id}
-        dataSource={logs}
+        dataSource={filteredLogs}
         pagination={{
           position: "both",
           pageSize: 10

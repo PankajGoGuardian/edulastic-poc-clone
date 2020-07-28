@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { Col } from "antd";
-import withRouter from "react-router-dom/withRouter";
-import { compose } from "redux";
-import connect from "react-redux/lib/connect/connect";
-import PropTypes from "prop-types";
 import { SimpleConfirmModal } from "@edulastic/common";
 import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
-import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
+import { Col } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import connect from "react-redux/lib/connect/connect";
+import withRouter from "react-router-dom/withRouter";
+import { compose } from "redux";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { ContainerHeader, RightContent, ClassCode, ClassLink, Studentscount, CodeWrapper, CoTeacher } from "./styled";
+import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
+import { ClassCode, ClassLink, CodeWrapper, ContainerHeader, CoTeacher, RightContent, Studentscount } from "./styled";
 
 const SubHeader = ({
   name,
@@ -18,14 +19,15 @@ const SubHeader = ({
   active,
   location,
   unarchiveClass,
-  studentCount,
   owners = [],
   parent,
-  gradeSubject
+  gradeSubject,
+  studentsList
 }) => {
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
   const { exitPath } = location?.state || {};
   const typeText = type !== "class" ? "Group" : "Class";
+  const studentCount = studentsList?.filter(stu => stu.enrollmentStatus != 0)?.length;
   const totalStudent = studentCount < 10 ? <span> 0{studentCount} </span> : studentCount;
   const coTeachers =
     owners &&
@@ -106,7 +108,10 @@ SubHeader.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({ user: state?.user?.user }),
+    state => ({
+      user: state?.user?.user,
+      studentsList: get(state, "manageClass.studentsList", [])
+    }),
     {
       setAssignmentFilters: setAssignmentFiltersAction
     }

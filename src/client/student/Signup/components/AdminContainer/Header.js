@@ -1,9 +1,10 @@
 import { eastBaycolor, lightGrey4, mainTextColor, white } from "@edulastic/colors";
 import { OnWhiteBgLogo } from "@edulastic/common";
 import { Col, Dropdown, Icon as AntIcon, Menu, Row } from "antd";
+import { get } from "lodash";
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
-import Profile from "../../../assets/Profile.png";
 
 const menu = (
   <Menu>
@@ -11,11 +12,21 @@ const menu = (
     <Menu.Item>2nd menu item</Menu.Item>
   </Menu>
 );
-const Header = () => {
+const Header = ({ user }) => {
   const [isVisible, setVisible] = useState(false);
   const toggleDropdown = () => {
     setVisible(!isVisible);
   };
+  const userInfo = get(user, "user", {});
+  const { firstName, lastName, middleName, role } = userInfo;
+  const userName = `${firstName} ${middleName || "b"} ${lastName || "c"}`;
+
+  const getInitials = () => {
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
+    if (firstName) return `${firstName.substr(0, 2)}`;
+    if (lastName) return `${lastName.substr(0, 2)}`;
+  };
+
   return (
     <HeaderWrapper type="flex" align="middle">
       <Col span={12}>
@@ -31,10 +42,10 @@ const Header = () => {
             placement="topCenter"
           >
             <div>
-              <img src={Profile} alt="Profile" />
+              <PseudoDiv>{getInitials()}</PseudoDiv>
               <UserInfo>
-                <UserName>Matthew P.</UserName>
-                <UserType>Teacher</UserType>
+                <UserName>{userName || "Anonymous"}</UserName>
+                <UserType>{role}</UserType>
               </UserInfo>
               <IconDropdown
                 style={{ fontSize: 20, pointerEvents: "none" }}
@@ -49,7 +60,11 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default connect(
+  state => ({
+    user: state.user
+  })
+)(Header);
 
 const HeaderWrapper = styled(Row)`
   padding: 16px 24px;
@@ -77,11 +92,11 @@ const UserInfoButton = styled.div`
   }
 
   .headerDropdown {
-    width: 180px;
+    width: 190px;
     height: 60px;
     display: flex;
     align-items: center;
-    padding: 0px 25px 0px 60px;
+    padding-right: 25px;
     position: relative;
     font-weight: 600;
     transition: 0.2s;
@@ -105,6 +120,20 @@ const UserInfoButton = styled.div`
     border: 0px;
     color: ${white};
   }
+`;
+
+const PseudoDiv = styled.div`
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 50%;
+  background: #dddddd;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 50px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-right: 10px;
 `;
 
 const UserInfo = styled.div`

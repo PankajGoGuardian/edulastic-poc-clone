@@ -5,14 +5,12 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import Profile from "../../../assets/Profile.png";
 import { isProxyUser as isProxyUserSelector } from "../../../Login/ducks";
 
 const Header = ({ userInfo, logout, isProxyUser }) => {
   const [isVisible, setVisible] = useState(false);
   const { firstName, middleName, lastName, role } = userInfo;
   const userName = `${firstName} ${middleName || "b"} ${lastName || "c"}`;
-  console.log("userName:", userName);
 
   const menu = (
     <Menu>
@@ -22,6 +20,12 @@ const Header = ({ userInfo, logout, isProxyUser }) => {
 
   const toggleDropdown = () => {
     setVisible(!isVisible);
+  };
+
+  const getInitials = () => {
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
+    if (firstName) return `${firstName.substr(0, 2)}`;
+    if (lastName) return `${lastName.substr(0, 2)}`;
   };
 
   return (
@@ -39,7 +43,7 @@ const Header = ({ userInfo, logout, isProxyUser }) => {
             placement="topCenter"
           >
             <div>
-              <img src={Profile} alt="Profile" />
+              <PseudoDiv>{getInitials()}</PseudoDiv>
               <UserInfo>
                 <UserName>{userName || "Anonymous"}</UserName>
                 <UserType>{role}</UserType>
@@ -94,11 +98,11 @@ const UserInfoButton = styled.div`
   }
 
   .headerDropdown {
-    width: 180px;
+    width: 190px;
     height: 60px;
     display: flex;
     align-items: center;
-    padding: 0px 25px 0px 60px;
+    padding-right: 25px;
     position: relative;
     font-weight: 600;
     transition: 0.2s;
@@ -122,6 +126,20 @@ const UserInfoButton = styled.div`
     border: 0px;
     color: ${white};
   }
+`;
+
+const PseudoDiv = styled.div`
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 50%;
+  background: #dddddd;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 50px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-right: 10px;
 `;
 
 const UserInfo = styled.div`

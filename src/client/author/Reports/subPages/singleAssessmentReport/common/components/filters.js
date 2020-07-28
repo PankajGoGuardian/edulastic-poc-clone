@@ -81,7 +81,9 @@ const SingleAssessmentReportFilters = ({
   showApply,
   setShowApply,
   firstLoad,
-  setFirstLoad
+  setFirstLoad,
+  loc,
+  isCliUser
 }) => {
   const testDataOverflow = get(SARFilterData, "data.result.testDataOverflow", false);
   const performanceBandProfiles = get(SARFilterData, "data.result.bandInfo", []);
@@ -394,17 +396,35 @@ const SingleAssessmentReportFilters = ({
     </SearchField>
   );
 
-  return loading ? (
-    <StyledFilterWrapper style={style}>
-      <Spin />
-    </StyledFilterWrapper>
-  ) : (
-    <StyledFilterWrapper style={style}>
-      <GoButtonWrapper>
-        <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        {showApply && <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>}
-      </GoButtonWrapper>
-      <PerfectScrollbar>
+  let filterElements = null;
+
+  if (isCliUser) {
+    filterElements = (
+      <>
+        {testDataOverflow ? (
+          <Tooltip
+            title="Year, Grade and Subject filters need to be selected to retrieve all assessments"
+            placement="right"
+          >
+            {assessmentNameFilter}
+          </Tooltip>
+        ) : assessmentNameFilter
+        }
+        <SearchField>
+          <FilterLabel>Class</FilterLabel>
+          <AutocompleteDropDown
+            prefix="Class"
+            by={filters.classId}
+            selectCB={updateClassesDropDownCB}
+            data={dropDownData.classes}
+            dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
+          />
+        </SearchField>
+      </>
+    );
+  } else {
+    filterElements = (
+      <>
         <SearchField>
           <FilterLabel>School Year</FilterLabel>
           <ControlDropDown
@@ -529,6 +549,22 @@ const SingleAssessmentReportFilters = ({
             dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
           />
         </SearchField>
+      </>
+    );
+  }
+
+  return loading ? (
+    <StyledFilterWrapper style={style}>
+      <Spin />
+    </StyledFilterWrapper>
+  ) : (
+    <StyledFilterWrapper style={style}>
+      <GoButtonWrapper>
+        <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
+        {showApply && <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>}
+      </GoButtonWrapper>
+      <PerfectScrollbar>
+        {filterElements}
         {extraFilters}
       </PerfectScrollbar>
     </StyledFilterWrapper>

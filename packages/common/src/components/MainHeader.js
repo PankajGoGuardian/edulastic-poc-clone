@@ -71,7 +71,7 @@ const HeaderWrapper = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-    left: 70px;
+    left: ${({hideSideMenu}) => hideSideMenu ? "0" : "70px"};
     z-index: 999;
   }
   @media (max-width: ${tabletWidth}) {

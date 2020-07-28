@@ -22,7 +22,7 @@ import { StudentProfileReportContainer } from "./subPages/studentProfileReport";
 import ClassCreate from "../ManageClass/components/ClassCreate";
 
 const Container = props => {
-  const { isCsvDownloading, isPrinting, match } = props;
+  const { isCsvDownloading, isPrinting, match, hideSideMenu } = props;
   const [showHeader, setShowHeader] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [showApply, setShowApply] = useState(false);
@@ -149,6 +149,7 @@ const Container = props => {
           onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
           navigationItems={headerSettings.navigationItems}
           activeNavigationKey={reportType}
+          hideSideMenu={hideSideMenu}
         />
       )}
       <MainContentWrapper>

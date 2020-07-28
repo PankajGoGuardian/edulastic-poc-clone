@@ -118,3 +118,8 @@ export const StyledChartNavButton = styled(EduButton)`
   width: 50px;
   border-radius: 25px;
 `;
+
+export const StyledCharWrapper = styled.div`
+  display: flex;
+  margin-bottom: 50px;
+`;

@@ -26,6 +26,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
 import { ReportContaner, SearchField, FilterLabel, FilterButton } from "../../common/styled";
+import queryString from "query-string";
 
 const SingleAssessmentReportContainer = props => {
   const {
@@ -43,6 +44,7 @@ const SingleAssessmentReportContainer = props => {
   } = props;
 
   const [firstLoad, setFirstLoad] = useState(true);
+  const isCliUser = queryString.parse(location.search).cliUser;
 
   useEffect(
     () => () => {
@@ -60,7 +62,7 @@ const SingleAssessmentReportContainer = props => {
     race: "all"
   });
 
-  const computeChartNavigationLinks = (sel, filt) => {
+  const computeChartNavigationLinks = (sel, filt, isCliUser) => {
     if (navigation.locToData[loc]) {
       const arr = Object.keys(filt);
       const obj = {};
@@ -69,6 +71,7 @@ const SingleAssessmentReportContainer = props => {
         const val = filt[item] === "" ? "All" : filt[item];
         obj[item] = val;
       });
+      obj.cliUser = isCliUser;
       return next(navigation.navigation[navigation.locToData[loc].group], draft => {
         getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`);
       });
@@ -79,17 +82,21 @@ const SingleAssessmentReportContainer = props => {
   useEffect(() => {
     if (settings.selectedTest.key) {
       const arr = Object.keys(settings.requestFilters);
+      
       const obj = {};
       // eslint-disable-next-line array-callback-return
       arr.map(item => {
         const val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
         obj[item] = val;
       });
+      if (isCliUser) {
+        obj.cliUser = true;
+      }
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`;
       history.push(path);
     }
 
-    const navigationItems = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+    const navigationItems = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters, settings.cliUser);
     updateNavigation(navigationItems);
   }, [settings]);
 
@@ -105,7 +112,8 @@ const SingleAssessmentReportContainer = props => {
 
       setSARSettings({
         selectedTest: _settings.selectedTest,
-        requestFilters: obj
+        requestFilters: obj,
+        cliUser: isCliUser
       });
     }
   };
@@ -161,6 +169,7 @@ const SingleAssessmentReportContainer = props => {
             setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
+            isCliUser={isCliUser}
           />
           <FilterButton showFilter={showFilter} onClick={toggleFilter}>
             <IconFilter />

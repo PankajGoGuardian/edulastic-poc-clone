@@ -18,6 +18,7 @@ import { isProxyUser as isProxyUserSelector } from "../../student/Login/ducks";
 import { receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../DistrictPolicy/ducks";
 import ImportTest from "../ImportTest";
 import NotFound from "../../NotFound";
+import queryString from "query-string";
 
 /* lazy load routes */
 
@@ -109,15 +110,17 @@ const Author = ({
     history.location.pathname.includes("printpreview") ||
     history.location.pathname.includes("printAssessment") ||
     history.location.pathname.includes("students-report-card");
+  const searchParams = queryString.parse(history.location.search);
+  const hideSideMenu = history.location.pathname.match(new RegExp("/author/reports/.*/test/.*")) && searchParams.cliUser;
   const assessmentTabs = ["description", "addItems", "review", "settings", "worksheet", "groupItems"];
 
   return (
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
         <StyledLayout isProxyUser={isProxyUser}>
-          <MainContainer isPrintPreview={isPrintPreview}>
+          <MainContainer isPrintPreview={isPrintPreview || hideSideMenu}>
             <Spin spinning={districtProfileLoading} />
-            <SidebarCompnent isPrintPreview={isPrintPreview} isProxyUser={isProxyUser} />
+            <SidebarCompnent isPrintPreview={isPrintPreview || hideSideMenu} isProxyUser={isProxyUser} />
             <Wrapper>
               <ErrorHandler disablePage={isDisablePageInMobile(history.location.pathname)}>
                 <Suspense fallback={<Progress />}>
@@ -524,7 +527,7 @@ const Author = ({
                     <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
                     <Route exact path="/author/questions/create/:questionType" component={QuestionEditor} />
                     <Route exact path="/author/questions/edit/:questionType" component={QuestionEditor} />
-                    <Route path="/author/reports/:reportType?" component={Reports} />
+                    <Route path="/author/reports/:reportType?" render={props => <Reports {...props} hideSideMenu={hideSideMenu}/>} />
                     <Route exact path="/author/profile" component={Profile} />
                     <Route exact path="/author/subscription" component={Subscription} />
                     <Route exact path="/author/districtprofile" component={DistrictProfile} />

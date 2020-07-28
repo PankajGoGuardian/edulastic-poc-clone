@@ -16,6 +16,7 @@ const CustomizedHeaderWrapper = ({
   onDownloadCSVClickCB,
   navigationItems = [],
   activeNavigationKey = "",
+  hideSideMenu,
   t
 }) => {
   const _onShareClickCB = () => {
@@ -88,6 +89,7 @@ const CustomizedHeaderWrapper = ({
       mobileHeaderHeight={activeNavigationKey !== "standard-reports" ? 100 : ""}
       headingText={t("common.reports")}
       Icon={IconBarChart}
+      hideSideMenu={hideSideMenu}
     >
       {navigationItems.length ? (
         activeNavigationKey === "standard-reports" ? (

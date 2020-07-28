@@ -41,7 +41,7 @@ import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 import { PREVIEW } from "../constants/constantsForQuestions";
 import { getUserRole } from "../../author/src/selectors/user";
 
-const { ITEM_GROUP_DELIVERY_TYPES } = testContants;
+const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants;
 
 const modifyTestDataForPreview = test =>
   produce(test, draft => {
@@ -219,7 +219,8 @@ function* loadTest({ payload }) {
       timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
       allowedTime: testActivity?.assignmentSettings?.allowedTime,
       pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
-      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad
+      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
+      releaseScore: testActivity?.testActivity?.releaseScore
     };
 
     const answerCheckByItemId = {};
@@ -478,8 +479,14 @@ function* submitTest({ payload }) {
         push({ pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: { currentGroupId: groupId } })
       );
     }
+
     if (preventRouteChange) return;
-    return yield put(push("/home/grades"));
+    const test = yield select(state => state.test);
+
+    if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
+      return yield put(push("/home/grades"));
+    }
+    return yield put(push(`/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`));
   } catch (err) {
     if (err.status === 403) {
       console.log(err);

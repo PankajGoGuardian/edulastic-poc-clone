@@ -255,7 +255,7 @@ const getUsersDataApi = districtId =>
 const getClasslinkUsersDataApi = districtId =>
   api
     .callApi({
-      url: `${atlasPrefix}${districtId}/districtstats`,
+      url: `${atlasPrefix}${districtId}/district-stats`,
       method: "get"
     })
     .then(({ data }) => data);

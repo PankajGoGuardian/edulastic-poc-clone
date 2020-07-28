@@ -262,6 +262,9 @@ const StandardsFilters = ({
     const q = {
       termId: selected
     };
+    if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+      Object.assign(q, { schoolIds: get(user, "institutionIds", []).join(",") });
+    }
     getStandardsFiltersRequest(q);
   };
   const updateSubjectDropDownCB = selected => {

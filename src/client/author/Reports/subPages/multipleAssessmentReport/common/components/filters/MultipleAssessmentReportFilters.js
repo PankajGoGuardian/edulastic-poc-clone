@@ -91,6 +91,13 @@ const SingleAssessmentReportFilters = ({
     }
   }, []);
 
+  const getMARFilterData = (filters) => {
+    let schoolIds = ""
+    if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+      schoolIds = get(user, "institutionIds", []).join(",");
+    }
+    getMARFilterDataRequest({...filters, schoolIds});
+  } 
   let processedTestIds;
   let dropDownData;
 
@@ -241,14 +248,14 @@ const SingleAssessmentReportFilters = ({
     const _filters = { ...filters, termId: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const updateSubjectDropDownCB = selected => {
     const _filters = { ...filters, subject: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const onChangePerformanceBand = selected => {
@@ -265,28 +272,28 @@ const SingleAssessmentReportFilters = ({
     const _filters = { ...filters, grade: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const updateCourseDropDownCB = selected => {
     const _filters = { ...filters, courseId: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const updateClassesDropDownCB = selected => {
     const _filters = { ...filters, classId: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const updateGroupsDropDownCB = selected => {
     const _filters = { ...filters, groupId: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const updateSchoolsDropDownCB = selected => {
@@ -300,14 +307,14 @@ const SingleAssessmentReportFilters = ({
     const _filters = { ...filters, teacherId: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
   const updateAssessmentTypeDropDownCB = selected => {
     const _filters = { ...filters, assessmentType: selected.key };
     history.push(`${location.pathname}?${queryString.stringify(_filters)}`);
     const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
-    getMARFilterDataRequest(q);
+    getMARFilterData(q);
     setFilters(_filters);
   };
 

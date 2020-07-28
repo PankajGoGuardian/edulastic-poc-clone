@@ -78,12 +78,13 @@ const SingleAssessmentReportFilters = ({
 
   useEffect(() => {
     if (MARFilterData !== prevMARFilterData) {
-      const search = queryString.parse(location.search);
+      const search = pickBy(queryString.parse(location.search), f => f !== "All" && !isEmpty(f));
       const termId =
         search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
-      const q = {
-        termId
-      };
+      const q = { ...search, termId };
+      if (firstLoad && isEmpty(search)) {
+        q.firstLoad = true;
+      }
       if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
         Object.assign(q, { schoolIds: get(user, "institutionIds", []).join(",") });
       }
@@ -102,17 +103,19 @@ const SingleAssessmentReportFilters = ({
   let dropDownData;
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    const search = queryString.parse(location.search, { arrayFormat: "index" });
-    /**
-     * TODO: modify this to save all filters
-     *
-     * // get assessment type from filter data
-     * search.assessmentType = get(MARFilterData, "data.result.reportFilters.assessmentType");
-     * // select common assessment as default if assessment type is not set for admins
-     * if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
-     *   search.assessmentType = search.assessmentType || "common assessment";
-     * }
-     */
+    let search = queryString.parse(location.search, { arrayFormat: "index" });
+
+    // get saved filters from backend
+    const savedFilters = get(MARFilterData, "data.result.reportFilters");
+    // select common assessment as default if assessment type is not set for admins
+    if (user.role === roleuser.DISTRICT_ADMIN || user.role === roleuser.SCHOOL_ADMIN) {
+      savedFilters.assessmentType = search.assessmentType || savedFilters.assessmentType || "common assessment";
+    }
+
+    if (firstLoad) {
+      search = { ...savedFilters, ...search };
+    }
+
     dropDownData = getDropDownData(MARFilterData, user);
     const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
@@ -185,18 +188,15 @@ const SingleAssessmentReportFilters = ({
     }
 
     if (firstLoad) {
-      setFirstLoad(false);
       urlTestIds = urlTestIds?.filter(t => t).length ? urlTestIds : (processedTestIds?.testIds || []).slice(0, 10);
     }
 
     _setFilters(urlParams);
     _setTestId(urlTestIds);
 
-    if (prevMARFilterData === null) {
-      _onGoClick({
-        selectedTest: urlTestIds,
-        filters: urlParams
-      });
+    if (firstLoad) {
+      setFirstLoad(false);
+      _onGoClick({ selectedTest: urlTestIds, filters: urlParams });
     }
 
     setPrevMARFilterData(MARFilterData);

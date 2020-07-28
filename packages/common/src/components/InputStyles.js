@@ -83,6 +83,9 @@ export const TextInputStyled = styled(props => <Input maxLength={128} {...props}
       }
     }
   }
+  &::placeholder {
+    text-align: ${props => props.placeHolderAlign};
+  }
   &:focus::placeholder {
     color: transparent;
   }

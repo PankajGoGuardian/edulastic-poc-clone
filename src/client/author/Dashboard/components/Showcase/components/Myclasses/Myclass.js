@@ -80,7 +80,7 @@ const MyClasses = ({
   useEffect(() => {
     getTeacherDashboard();
     getDictCurriculums();
-    receiveSearchCourse({ districtId });
+    receiveSearchCourse({ districtId, active: 1 });
   }, []);
 
   const sortableClasses = classData

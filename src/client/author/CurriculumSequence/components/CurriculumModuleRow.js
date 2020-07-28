@@ -1,6 +1,6 @@
 import { lightGrey5, testTypeColor, themeColor, white } from "@edulastic/colors";
 import { FlexContainer, notification } from "@edulastic/common";
-import { testActivityStatus, roleuser } from "@edulastic/constants";
+import { testActivityStatus, roleuser, test as testConstants } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
 import { Avatar, Button, Dropdown, Menu, Col } from "antd";
 import moment from "moment";
@@ -57,6 +57,8 @@ import {
   HideLinkLabel,
   CaretUp
 } from "./styled";
+
+const { releaseGradeLabels } = testConstants;
 
 const IS_ASSIGNED = "ASSIGNED";
 const NOT_ASSIGNED = "ASSIGN";
@@ -220,10 +222,9 @@ class ModuleRow extends Component {
     let uta = moduleData.userTestActivities || {};
     const { classId: groupId, playlistClassList, startAssignment, resumeAssignment, playlistId, history } = this.props;
     const testId = uta.testId || moduleData.contentId;
-
     if (isAssigned) {
       // TODO: filter out the assignments in assignmentRows by classIds in case of multiple assignments
-      const { testType, assignmentId, classId, maxAttempts, status } = assignmentRows[0] || {};
+      const { testType, assignmentId, classId, maxAttempts, status, releaseScore } = assignmentRows[0] || {};
       uta = {
         testId,
         classId,
@@ -245,6 +246,9 @@ class ModuleRow extends Component {
         uta.text = "RETAKE";
         uta.action = () => startAssignment(uta);
       } else if (uta.taStatus === testActivityStatus.SUBMITTED && uta.utaAssignmentId) {
+        if (releaseScore === releaseGradeLabels.DONT_RELEASE || releaseScore === releaseGradeLabels.SCORE_ONLY) {
+          uta.hideButton = true;
+        }
         uta.text = "REVIEW";
         uta.action = () =>
           history.push({
@@ -453,7 +457,6 @@ class ModuleRow extends Component {
       customizeInDraft,
       currentAssignmentIds,
       toggleAssignments
-
     } = this.props;
     const { showModal, selectedTest } = this.state;
     const { assignTest } = this;
@@ -554,7 +557,7 @@ class ModuleRow extends Component {
                     JSON.parse(sessionStorage.getItem(`playlist/${playlistId}`)) || {};
                   const isPrevActiveContent = contentId === _contentId && module._id === _moduleId;
                   const assignmentRows = assignments.flatMap(assignment => {
-                    const { testType, _id: assignmentId, maxAttempts, assignedBy } = assignment;
+                    const { testType, _id: assignmentId, maxAttempts, assignedBy, releaseScore } = assignment;
                     return assignment.class.map(
                       ({
                         name,
@@ -564,7 +567,8 @@ class ModuleRow extends Component {
                         inGradingNumber,
                         _id: classId,
                         gradedNumber = 0,
-                        redirect = false
+                        redirect = false,
+                        releaseScore: _releaseScore
                       }) => ({
                         name,
                         status: _status,
@@ -578,7 +582,8 @@ class ModuleRow extends Component {
                         submittedCount: inGradingNumber + gradedNumber,
                         redirect,
                         assignedBy: assignedBy?.name,
-                        maxAttempts
+                        maxAttempts,
+                        releaseScore: _releaseScore || releaseScore
                       })
                     );
                   });
@@ -724,7 +729,7 @@ class ModuleRow extends Component {
                       !moduleData.hidden && (
                         <Fragment>
                           <LastColumn width={!urlHasUseThis || isStudent ? "auto" : null}>
-                            {!isParentRoleProxy && (
+                            {!isParentRoleProxy && uta.hideButton !== true && (
                               <AssignmentButton assigned={false}>
                                 <Tooltip title={uta.title}>
                                   <Button data-cy={uta.text} onClick={uta.action} disabled={uta.disabled}>

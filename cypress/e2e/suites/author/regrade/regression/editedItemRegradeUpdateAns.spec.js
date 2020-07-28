@@ -173,7 +173,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> test editing with applyi
         before("> edit test and apply regrade", () => {
           assignedtestids[optionsIndex].forEach(id => {
             testLibraryPage.visitTestById(id);
-            testLibraryPage.publishedToDraftAssigned();
+            testLibraryPage.publishedToDraftAssigned(false);
             testLibraryPage.getVersionedTestID().then(versionedtest => {
               versionedtestids[optionsIndex].push(versionedtest);
             });

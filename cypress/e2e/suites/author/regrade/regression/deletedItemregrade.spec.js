@@ -107,7 +107,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get and Convert To Draft
       testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
-      testLibraryPage.publishedToDraftAssigned();
+      testLibraryPage.publishedToDraftAssigned(false);
       testLibraryPage.getVersionedTestID().then(newTest => {
         newTestId = newTest;
         // Remove 1 item From Review Tab

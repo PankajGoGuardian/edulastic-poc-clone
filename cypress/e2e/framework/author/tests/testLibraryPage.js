@@ -509,7 +509,7 @@ export default class TestLibrary {
       .should("be.eq", testId);
   };
 
-  publishedToDraftAssigned = () => {
+  publishedToDraftAssigned = (saveVersionedTestIdReference = true) => {
     cy.server();
     cy.route("PUT", "**/test/**").as("newVersion");
     cy.route("GET", "**/api/test/**").as("testdrafted");
@@ -527,7 +527,9 @@ export default class TestLibrary {
         // guard to wait till URL is updated
         cy.url().should("contain", "/old/");
         return cy.get('[data-cy-item-index="0"]').then(() => {
-          return this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id));
+          return saveVersionedTestIdReference
+            ? this.getVersionedTestID().then(id => cy.saveTestDetailToDelete(id))
+            : true;
         });
       });
   };

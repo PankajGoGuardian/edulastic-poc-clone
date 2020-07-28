@@ -409,29 +409,27 @@ class MathFormulaPreview extends Component {
                 }
               />
             )}
-            {hasAltAnswers && previewType === SHOW && (
-              <CorrectAnswerBox
-                altAnswers
-                theme={theme}
-                answer={item.validation.altResponses
-                  .map(ans => {
-                    if (item.isUnits && item.showDropdown) {
-                      let altUnit = get(ans, "value[0].options.unit", "");
-                      if (
-                        (altUnit.search("text{") === -1 && altUnit.search("f") !== -1) ||
-                        altUnit.search(/\s/g) !== -1
-                      ) {
-                        altUnit = `\\text{${altUnit}}`;
-                      }
-                      return ans.value[0].value.search("=") === -1
-                        ? `${ans.value[0].value} ${altUnit}`
-                        : ans.value[0].value.replace(/=/gm, `\\ ${altUnit}=`);
-                    }
-                    return ans.value[0].value;
-                  })
-                  .join(", ")}
-              />
-            )}
+            {hasAltAnswers &&
+              previewType === SHOW &&
+              item?.validation?.altResponses.map((ans, index) => {
+                let answer = "";
+
+                answer = ans?.value?.[0]?.value;
+
+                if (item.isUnits && item.showDropdown) {
+                  let altUnit = get(ans, "value[0].options.unit", "");
+                  if ((altUnit.search("text{") === -1 && altUnit.search("f") !== -1) || altUnit.search(/\s/g) !== -1) {
+                    altUnit = `\\text{${altUnit}}`;
+                  }
+
+                  answer =
+                    ans.value[0].value.search("=") === -1
+                      ? `${ans.value[0].value} ${altUnit}`
+                      : ans.value[0].value.replace(/=/gm, `\\ ${altUnit}=`);
+                }
+
+                return <CorrectAnswerBox altAnswers theme={theme} answer={answer} index={index + 1} />;
+              })}
           </QuestionContentWrapper>
         </FlexContainer>
       </div>

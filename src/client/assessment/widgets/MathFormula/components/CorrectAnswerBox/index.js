@@ -8,12 +8,12 @@ import { Answer } from "./styled/Answer";
 export const formatToMathAnswer = answer =>
   answer.search("input__math") !== -1 ? answer : `<span class="input__math" data-latex="${answer}"></span>`;
 
-const CorrectAnswerBox = ({ answer = "", t, altAnswers, theme }) => {
+const CorrectAnswerBox = ({ answer = "", t, altAnswers, theme, index }) => {
   const displayAnswer = formatToMathAnswer(answer);
 
   return (
     <CorrectAnswersContainer
-      title={!altAnswers ? t("component.math.correctAnswers") : t("component.math.alternateAnswers")}
+      title={!altAnswers ? t("component.math.correctAnswers") : `${t("component.math.alternateAnswers")} ${index}`}
       minHeight="auto"
     >
       <Answer>
@@ -26,7 +26,12 @@ const CorrectAnswerBox = ({ answer = "", t, altAnswers, theme }) => {
 CorrectAnswerBox.propTypes = {
   answer: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
-  altAnswers: PropTypes.bool.isRequired
+  altAnswers: PropTypes.bool.isRequired,
+  index: PropTypes.number
+};
+
+CorrectAnswerBox.defaultProps = {
+  index: 1
 };
 
 const enhance = compose(withNamespaces("assessment"));

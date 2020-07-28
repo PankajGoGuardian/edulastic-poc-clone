@@ -17,7 +17,8 @@ const ReviewItem = ({
   selected,
   toggleExpandRow,
   rows,
-  mobile
+  mobile,
+  scoring
 }) => (
   <Fragment>
     {expand && (
@@ -38,6 +39,7 @@ const ReviewItem = ({
         collapsRow={toggleExpandRow}
         onDelete={onDelete}
         isScoringDisabled={data.main.isScoringDisabled}
+        scoring={scoring}
       />
     )}
     {!expand && (

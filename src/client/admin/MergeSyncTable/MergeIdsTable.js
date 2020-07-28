@@ -6,7 +6,7 @@ import { mapCountAsType, DISABLE_SUBMIT_TITLE } from "../Data";
 
 const { Column } = Table;
 
-const orgTypesCount = ["schoolCount", "groupCount", "saCount", "teacherCount", "studentCount", "daCount"];
+const orgTypesCount = ["schoolCount", "groupCount", "daCount", "saCount", "teacherCount", "studentCount"];
 
 const MergeIdsTable = ({
   eduCounts,
@@ -72,7 +72,7 @@ const MergeIdsTable = ({
 
   const templateHeaders = {
     sch: ["school_id", "id"],
-    cls: ["edu_class_section_id", "clever_id"],
+    cls: ["edu_class_section_id", isClasslink ? "atlas_id" : "clever_id"],
     tch: ["user_id", "id"],
     stu: ["user_id", "id"],
     sa: ["user_id", "id"],

@@ -146,6 +146,9 @@ const StandardsFilters = ({
       const _q = {
         termId: urlSchoolYear.key
       };
+      if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+        Object.assign(_q, { schoolIds: get(user, "institutionIds", []).join(",") });
+      }
       getStandardsFiltersRequest(_q);
     }
   }, []);

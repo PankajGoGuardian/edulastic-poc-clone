@@ -1,10 +1,11 @@
 import { SpinLoader } from "@edulastic/common";
 import { Col, Row } from "antd";
 import next from "immer";
-import { filter, get, includes } from "lodash";
+import { filter, get, includes, isEmpty } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import { getUserRole } from "../../../../src/selectors/user";
+import { roleuser } from "@edulastic/constants";
+import { getUserRole, getUser } from "../../../../src/selectors/user";
 import { DropDownContainer, StyledCard } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import {
@@ -45,7 +46,8 @@ const StandardsPerformance = ({
   loading,
   selectedStandardProficiency,
   filters,
-  ddfilter
+  ddfilter,
+  user
 }) => {
   const filterData = standardsFilters || [];
   const scaleInfo = selectedStandardProficiency || [];
@@ -66,13 +68,18 @@ const StandardsPerformance = ({
 
   useEffect(() => {
     const { requestFilters = {} } = settings;
-    const { termId = "", domainIds = [], grades = [], subject } = requestFilters;
+    const { termId = "", domainIds = [], grades = [], subject, schoolId } = requestFilters;
     const modifiedFilter = next(ddfilter, draft => {
       Object.keys(draft).forEach(key => {
         draft[key] = draft[key].key == "All" ? "" : draft[key].key;
       });
     });
-
+    let schoolIds = "";
+    if (isEmpty(schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+      schoolIds = get(user, "institutionIds", []).join(",");
+    } else {
+      schoolIds = schoolId;
+    }
     if (termId) {
       getStandardsPerformanceSummaryRequest({
         testIds: settings.selectedTest.map(test => test.key).join(),
@@ -81,7 +88,8 @@ const StandardsPerformance = ({
         grades: grades.join(","),
         subject,
         compareBy: tableFilters.compareBy.key,
-        ...modifiedFilter
+        ...modifiedFilter,
+        schoolIds
       });
       getStandardsFiltersRequestAction({ termId });
     }
@@ -166,13 +174,13 @@ const StandardsPerformance = ({
 const enhance = connect(
   state => ({
     standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
-    loading: getReportsStandardsPerformanceSummaryLoader(state)
-      || getReportsStandardsFiltersLoader(state),
+    loading: getReportsStandardsPerformanceSummaryLoader(state) || getReportsStandardsFiltersLoader(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
     filters: getFiltersSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
+    user: getUser(state),
     selectedStandardProficiency: getSelectedStandardProficiency(state)
   }),
   {

@@ -84,6 +84,9 @@ const SingleAssessmentReportFilters = ({
       const q = {
         termId
       };
+      if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+        Object.assign(q, { schoolIds: get(user, "institutionIds", []).join(",") });
+      }
       getMARFilterDataRequest(q);
     }
   }, []);
@@ -148,9 +151,7 @@ const SingleAssessmentReportFilters = ({
 
     const testIdsArr = [].concat(search.testIds?.split(",") || []);
 
-    let urlTestIds = testIdsArr
-      .map(key => find(dropDownData.testIdArr, test => test.key == key))
-      .filter(item => item);
+    let urlTestIds = testIdsArr.map(key => find(dropDownData.testIdArr, test => test.key == key)).filter(item => item);
 
     const obtainedFilters = {
       termId: urlSchoolYear.key,

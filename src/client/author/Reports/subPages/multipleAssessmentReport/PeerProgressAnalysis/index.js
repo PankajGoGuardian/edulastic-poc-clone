@@ -1,8 +1,9 @@
 import { SpinLoader } from "@edulastic/common";
-import { capitalize, get, head } from "lodash";
+import { capitalize, get, head, isEmpty } from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { getUserRole } from "../../../../../student/Login/ducks";
+import { roleuser } from "@edulastic/constants";
+import { getUserRole, getUserDetails } from "../../../../../student/Login/ducks";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
 import { downloadCSV } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
@@ -44,16 +45,22 @@ const options = [
   }
 ];
 
-const usefetchProgressHook = (settings, compareBy, ddfilter, fetchAction) => {
+const usefetchProgressHook = (settings, compareBy, ddfilter, fetchAction, user) => {
   useEffect(() => {
     const { requestFilters = {} } = settings;
-    const { termId = "" } = requestFilters;
-
+    const { termId = "", schoolId } = requestFilters;
+    let schoolIds = "";
+    if (isEmpty(schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+      schoolIds = get(user, "institutionIds", []).join(",");
+    } else {
+      schoolIds = schoolId;
+    }
     if (termId) {
       fetchAction({
         compareBy: compareBy.key,
         ...requestFilters,
-        ...ddfilter
+        ...ddfilter,
+        schoolIds
       });
     }
   }, [settings, compareBy.key, ddfilter]);
@@ -67,14 +74,15 @@ const PeerProgressAnalysis = ({
   ddfilter,
   settings,
   loading,
-  role
+  role,
+  user
 }) => {
   const compareByData = [...getCompareByOptions(role), ...options];
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [compareBy, setCompareBy] = useState(head(compareByData));
   const [selectedTrend, setSelectedTrend] = useState("");
 
-  usefetchProgressHook(settings, compareBy, ddfilter, getPeerProgressAnalysisRequest);
+  usefetchProgressHook(settings, compareBy, ddfilter, getPeerProgressAnalysisRequest, user);
 
   const { metricInfo = [] } = get(peerProgressAnalysis, "data.result", {});
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", []);
@@ -152,6 +160,7 @@ const enhance = connect(
     peerProgressAnalysis: getReportsPeerProgressAnalysis(state),
     loading: getReportsPeerProgressAnalysisLoader(state),
     role: getUserRole(state),
+    user: getUserDetails(state),
     MARFilterData: getReportsMARFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state)
   }),

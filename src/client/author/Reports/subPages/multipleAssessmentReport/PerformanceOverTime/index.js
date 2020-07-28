@@ -3,7 +3,7 @@ import { Col, Row } from "antd";
 import { filter, get, includes } from "lodash";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { getUserRole } from "../../../../../student/Login/ducks";
+import { getUserRole, getUserDetails } from "../../../../../student/Login/ducks";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
@@ -25,9 +25,10 @@ const PerformanceOverTime = ({
   isCsvDownloading,
   MARFilterData,
   settings,
-  loading
+  loading,
+  user
 }) => {
-  usefetchProgressHook(settings, getPerformanceOverTimeRequest);
+  usefetchProgressHook(settings, getPerformanceOverTimeRequest, user);
 
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0]);
   const [selectedTests, setSelectedTests] = useState([]);
@@ -76,6 +77,7 @@ const enhance = connect(
     loading: getReportsPerformanceOverTimeLoader(state),
     MARFilterData: getReportsMARFilterData(state),
     role: getUserRole(state),
+    user: getUserDetails(state),
     isCsvDownloading: getCsvDownloadingState(state)
   }),
   {

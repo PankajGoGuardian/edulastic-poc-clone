@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Input } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+
+import { FroalaEditor } from "@edulastic/common";
+
 import { ReportIssueContainer, ReportHeader, CloseButton, TextAreaSendButton } from "./styled";
 import { reportContentErrorAction } from "../../../../TestPage/components/AddItems/ducks";
 import { submitReviewFeedbackAction } from "../../../../ItemList/ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 const ReportIssue = ({
-  textareaRows,
   item,
   toggleReportIssue,
   reportTestItemError,
@@ -21,17 +22,12 @@ const ReportIssue = ({
 }) => {
   const [reportedComment, setReportComment] = useState("");
 
-  useEffect(() => {
-    if (visible === false) clearComment();
-  }, [visible]);
+  const setCommentValue = comment => {
+    setReportComment(comment);
+  };
 
-  useEffect(() => {
-    if (confirmationResponse) reportError();
-  }, [confirmationResponse]);
-
-  const checkForConfirmation = () => {
-    if (toggleModal && userRole === "student") toggleModal(true);
-    else reportError();
+  const clearComment = () => {
+    setReportComment("");
   };
 
   const reportError = () => {
@@ -57,14 +53,21 @@ const ReportIssue = ({
     }
   };
 
-  const setCommentValue = e => {
-    const comment = e.target.value;
-    setReportComment(comment);
+  const checkForConfirmation = () => {
+    if (toggleModal && userRole === "student") {
+      toggleModal(true);
+    } else {
+      reportError();
+    }
   };
 
-  const clearComment = () => {
-    setReportComment("");
-  };
+  useEffect(() => {
+    if (visible === false) clearComment();
+  }, [visible]);
+
+  useEffect(() => {
+    if (confirmationResponse) reportError();
+  }, [confirmationResponse]);
 
   return (
     <ReportIssueContainer>
@@ -81,17 +84,20 @@ const ReportIssue = ({
           }}
         />
       </ReportHeader>
-      <div style={{ overflow: "hidden" }}>
-        <Input.TextArea
-          rows={textareaRows}
-          placeholder="Enter content issue..."
-          value={reportedComment}
-          onChange={e => setCommentValue(e)}
-        />
-        <TextAreaSendButton disabled={!reportedComment} onClick={checkForConfirmation}>
-          Send
-        </TextAreaSendButton>
-      </div>
+
+      <FroalaEditor
+        placeholder="Enter content issue..."
+        onChange={setCommentValue}
+        value={reportedComment}
+        border="border"
+        toolbarId="report-content-issue-toolbar"
+        allowQuickInsert={false}
+        data-cy="report-content-issue-input"
+      />
+
+      <TextAreaSendButton disabled={!reportedComment} onClick={checkForConfirmation}>
+        Send
+      </TextAreaSendButton>
     </ReportIssueContainer>
   );
 };

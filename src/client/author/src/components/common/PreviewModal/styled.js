@@ -272,10 +272,11 @@ export const ReportHeader = styled.div`
 `;
 
 export const ReportIssueContainer = styled.div`
-  textarea:hover,
-  textarea:focus {
+  .fr-box:hover,
+  .fr-box:focus {
     border-color: red;
   }
+  padding-bottom: 3rem;
 `;
 
 export const CloseButton = styled(Button)`

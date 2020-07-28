@@ -15,7 +15,8 @@ const QuestionTextArea = ({
   centerContent = false,
   imageDefaultWidth,
   fontSize,
-  buttons
+  buttons,
+  allowQuickInsert
 }) => (
   <FroalaEditor
     placeholder={placeholder}
@@ -31,6 +32,7 @@ const QuestionTextArea = ({
     imageDefaultWidth={imageDefaultWidth}
     fontSize={fontSize}
     buttons={buttons}
+    allowQuickInsert={allowQuickInsert}
   />
 );
 
@@ -43,7 +45,8 @@ QuestionTextArea.propTypes = {
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
   border: PropTypes.string,
-  imageDefaultWidth: PropTypes.number
+  imageDefaultWidth: PropTypes.number,
+  allowQuickInsert: PropTypes.bool
 };
 
 QuestionTextArea.defaultProps = {
@@ -53,7 +56,8 @@ QuestionTextArea.defaultProps = {
   placeholder: "Enter a question",
   readOnly: false,
   border: "none",
-  imageDefaultWidth: 300
+  imageDefaultWidth: 300,
+  allowQuickInsert: true
 };
 
 export default memo(QuestionTextArea);

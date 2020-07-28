@@ -424,6 +424,7 @@ const CustomEditor = ({
   advancedAreOpen,
   customCharacters,
   editorHeight,
+  allowQuickInsert = true,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -496,7 +497,7 @@ const CustomEditor = ({
       htmlAllowedTags: [".*"],
       htmlAllowedAttrs: [".*"],
       htmlRemoveTags: ["script"],
-
+      quickInsertEnabled: allowQuickInsert,
       events: {
         click: function(evt) {
           const closestMathParent = evt.currentTarget.closest("span.input__math");

@@ -1318,6 +1318,60 @@ export const TAB_BUTTONS = [
         label: <CustomImage src={Group3170} width={16} height={16} role="presentation" />,
         types: ["all"],
         command: "write"
+      },
+      {
+        handler: "\\parallelogram",
+        label: <CustomImage src={Group3172} width={24} height={24} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\theta",
+        label: <CustomImage src={Group2478} width={14} height={14} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\nparallel",
+        label: <CustomImage src={Group3181} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\perp",
+        label: <CustomImage src={Group3171} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\angle",
+        label: <CustomImage src={Group2744} width={12} height={12} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\triangle",
+        label: <CustomImage src={Group3169} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\degree",
+        label: <CustomImage src={Group3173} width={8} height={8} role="presentation" />,
+        types: ["all"],
+        command: "write"
+      },
+      {
+        handler: "\\parallel",
+        label: <CustomImage src={Group3163} width={16} height={16} role="presentation" />,
+        types: ["all"],
+        command: "cmd"
+      },
+      {
+        handler: "\\text{m}\\angle",
+        label: <CustomImage src={Group6101} width={24} height={24} role="presentation" />,
+        types: ["all"],
+        command: "write"
       }
     ]
   },

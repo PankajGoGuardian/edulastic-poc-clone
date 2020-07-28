@@ -19,6 +19,9 @@ class ErrorHandler extends React.Component {
 
   componentDidCatch(error, info) {
     Sentry.captureException(error);
+    Sentry.configureScope(scope => {
+      scope.setTag("error.type", "Unexpected Error");
+    });
     // log the error to an error reporting service
     console.error(error, info);
   }
@@ -40,7 +43,16 @@ class ErrorHandler extends React.Component {
         <div style={{ textAlign: "center" }}>
           <h1> Sorry, something went wrong.</h1>
           <h2> We are working on it and we will get it fixed as soon as we can. </h2>
-          <GoBacK onClick={history.goBack}>Go Back</GoBacK>
+          <GoBacK
+            onClick={() => {
+              this.setState({
+                hasError: false
+              });
+              history.goBack();
+            }}
+          >
+            Go Back
+          </GoBacK>
         </div>
       );
     }

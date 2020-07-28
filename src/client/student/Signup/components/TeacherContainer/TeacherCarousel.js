@@ -1,10 +1,8 @@
-import React from "react";
+import { fadedGreen, themeColor } from "@edulastic/colors";
+import { Button, Carousel, Icon, Tooltip } from "antd";
 import PropTypes from "prop-types";
+import React from "react";
 import styled from "styled-components";
-import { get } from "lodash";
-import { Carousel, Icon, Button, Tooltip } from "antd";
-import { themeColor, fadedGreen } from "@edulastic/colors";
-import Profile from "../../../assets/Profile.png";
 import { getFullNameFromAsString, getInitialsFromName } from "../../../../common/utils/helpers";
 
 const PrevButton = ({ onClick }) => (
@@ -44,7 +42,7 @@ const Card = ({ teacher }) => {
           <img src={teacher.thumbnail} alt="Profile" />
         ) : (
           <CircleMark>{getInitialsFromName(teacher)}</CircleMark>
-        )}
+          )}
         <Tooltip placement="bottom" title={fullName}>
           <TeacherName>{fullName}</TeacherName>
         </Tooltip>
@@ -90,18 +88,14 @@ const carouselOptions = {
   ]
 };
 
-const TeacherCarousel = ({ teachers }) => {
-  return (
-    <CarouselWrapper>
-      <TeacherCount>{teachers.length} teacher(s) from this school use Edulastic</TeacherCount>
-      <Carousel {...carouselOptions}>
-        {teachers.map((item, index) => {
-          return <Card teacher={item._source} />;
-        })}
-      </Carousel>
-    </CarouselWrapper>
-  );
-};
+const TeacherCarousel = ({ teachers }) => (
+  <CarouselWrapper>
+    <TeacherCount>{teachers.length} teacher(s) from this school use Edulastic</TeacherCount>
+    <Carousel {...carouselOptions}>
+      {teachers.map(item => <Card teacher={item._source} />)}
+    </Carousel>
+  </CarouselWrapper>
+);
 
 export default TeacherCarousel;
 
@@ -156,15 +150,6 @@ const TeacherName = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
-
-const SchoolInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 8px;
-  font-weight: 500;
-`;
-
-const SchoolName = styled.div``;
 
 const CircleMark = styled.div`
   height: 50px;

@@ -5,13 +5,10 @@ import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { Upload, Spin } from "antd";
-import { white, greyishDarker2, largeDesktopWidth,themeColorBlue } from "@edulastic/colors";
-import { beforeUpload,notification } from "@edulastic/common";
+import { white, greyishDarker2, largeDesktopWidth, themeColorBlue } from "@edulastic/colors";
+import { beforeUpload, notification } from "@edulastic/common";
 import { uploadToS3 } from "../../../author/src/utils/upload";
-import ProfileImage from "../../assets/Profile.png";
 import { updateProfileImageAction } from "../../Login/ducks";
-
-const defaultImage = ProfileImage;
 
 class Photo extends React.Component {
   state = {
@@ -24,7 +21,7 @@ class Photo extends React.Component {
       this.setState({ loading: true });
       const { file } = info;
       if (!file.type.match(/image/g)) {
-        notification({ messageKey:"pleaseUploadFileInImageFormat"});
+        notification({ messageKey: "pleaseUploadFileInImageFormat" });
         this.setState({ loading: false });
         return;
       } if (!beforeUpload(file)) {
@@ -46,7 +43,7 @@ class Photo extends React.Component {
         loading: false
       });
     } catch (e) {
-      notification({ messageKey:"unableTOsaveThumbnail"});
+      notification({ messageKey: "unableTOsaveThumbnail" });
       this.setState({
         loading: false
       });
@@ -87,8 +84,8 @@ class Photo extends React.Component {
               ) : imageUrl ? (
                 <Image imgUrl={imageUrl} height={height} windowWidth={windowWidth} />
               ) : (
-                uploadButton
-              )}
+                    uploadButton
+                  )}
             </ImageContainer>
             <Camera mode={mode}>
               <IconPhotoCamera color={white} width="20px" />
@@ -101,7 +98,6 @@ class Photo extends React.Component {
 }
 
 Photo.propTypes = {
-  url: PropTypes.string,
   owner: PropTypes.bool,
   height: PropTypes.number,
   isEditable: PropTypes.bool,
@@ -110,7 +106,6 @@ Photo.propTypes = {
 };
 
 Photo.defaultProps = {
-  url: defaultImage,
   height: 165,
   onChangeField: () => null
 };
@@ -163,7 +158,7 @@ const ImageLoading = styled(Spin)`
 
 const Image = styled.div`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? `${props.height  }px` : "100%")};
+  height: ${props => (props.windowWidth > 993 ? `${props.height}px` : "100%")};
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;

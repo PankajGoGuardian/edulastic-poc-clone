@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { isEqual } from "lodash";
 import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -16,7 +15,6 @@ import { ContentArea } from "../../styled/ContentArea";
 import Question from "../../components/Question";
 
 import ComposeQuestion from "./ComposeQuestion";
-import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
@@ -30,14 +28,6 @@ const EditEssayRichText = ({
   advancedLink,
   advancedAreOpen
 }) => {
-  const [act, setAct] = useState(item.formattingOptions || []);
-
-  useEffect(() => {
-    if (!isEqual(act, item.formattingOptions)) {
-      setAct(item.formattingOptions);
-    }
-  });
-
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
@@ -51,14 +41,6 @@ const EditEssayRichText = ({
     <ContentArea>
       <ComposeQuestion
         item={item}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-        setQuestionData={setQuestionData}
-      />
-
-      <FormattingOptions
-        item={item}
-        act={act}
         fillSections={fillSections}
         cleanSections={cleanSections}
         setQuestionData={setQuestionData}
@@ -78,10 +60,6 @@ const EditEssayRichText = ({
           onChange={handleItemChangeChange}
           selectValue={item.showWordLimit}
           inputValue={item.maxWord}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-          advancedAreOpen={advancedAreOpen}
-          showHeading={false}
         />
 
         <Row gutter={24}>
@@ -110,6 +88,7 @@ const EditEssayRichText = ({
         item={item}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
         advancedAreOpen={advancedAreOpen}
       />
     </ContentArea>

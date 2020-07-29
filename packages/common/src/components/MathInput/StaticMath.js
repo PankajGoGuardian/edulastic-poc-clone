@@ -206,14 +206,8 @@ const StaticMath = ({
     />
   );
 
-  const mathInputFieldStyle = {
-    minWidth: style.width,
-    minHeight: style.height,
-    fontSize: style.fontSize ? style.fontSize : "inherit"
-  };
-
   return (
-    <MathInputStyles noBorder={noBorder} minWidth={style.minWidth} ref={containerRef}>
+    <MathInputStyles noBorder={noBorder} noPadding ref={containerRef} minWidth={style.width} minHeight={style.height}>
       <Popover
         content={keypad}
         trigger="click"
@@ -223,7 +217,7 @@ const StaticMath = ({
         getPopupContainer={trigger => trigger.parentNode}
       >
         <div className="input" onBlur={onBlurInput}>
-          <div className="input__math" style={mathInputFieldStyle} data-cy="answer-math-input-style">
+          <div className="input__math" data-cy="answer-math-input-style">
             <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
           </div>
           {alwaysShowKeyboard && <div className="input__keyboard">{keypad}</div>}

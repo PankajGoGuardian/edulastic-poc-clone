@@ -8,8 +8,8 @@ import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 
 const DropZoneToolbar = ({ width, height, altText, handleChange, t }) => (
-  <Row marginTop={15} type="flex" align="middle">
-    <Col span={6}>
+  <Row marginTop={30} marginBottom={30} type="flex" align="middle">
+    <Col marginBottom="0px" span={6}>
       <LargeInput
         data-cy="image-width-input"
         type="number"
@@ -19,7 +19,7 @@ const DropZoneToolbar = ({ width, height, altText, handleChange, t }) => (
         onChange={handleChange("width")}
       />
     </Col>
-    <Col span={6}>
+    <Col marginBottom="0px" span={6}>
       <LargeInput
         data-cy="image-height-input"
         type="number"
@@ -29,7 +29,7 @@ const DropZoneToolbar = ({ width, height, altText, handleChange, t }) => (
         onChange={handleChange("height")}
       />
     </Col>
-    <Col span={12}>
+    <Col marginBottom="0px" span={12}>
       <LargeInput
         data-cy="image-alternative-input"
         type="text"

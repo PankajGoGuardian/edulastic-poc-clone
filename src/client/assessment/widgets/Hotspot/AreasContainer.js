@@ -13,12 +13,9 @@ import { DRAW_MODE, DELETE_MODE } from "../../constants/constantsForQuestions";
 
 import SvgContainer from "./SvgContainer";
 import SvgDeleteContainer from "./SvgDeleteContainer";
-import { Container } from "./styled/Container";
-import { Button } from "./styled/Button";
-import { SideBar } from "./styled/SideBar";
-import { ButtonWithShadow } from "./styled/ButtonWithShadow";
+import { DrawingContainer } from "./styled/DrawingContainer";
 import { AreaText } from "./styled/AreaText";
-import { CustomStyleBtn } from "../../styled/ButtonStyles";
+import { AreaButton } from "./styled/AreaButton";
 
 const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuestionData }) => {
   const [history, setHistory] = useState([{ areas: [], points: [] }]);
@@ -84,76 +81,53 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
     setMode(newMode);
   };
 
-  const btnStyle = {
-    width: "auto",
-    height: "30px",
-    padding: "0px 10px",
-    margin: "0px 5px 10px"
-  };
-
   return (
-    <FlexContainer>
-      <div style={{ width: width + 117 }}>
-        <Container padding="0px" mt="0px" justifyContent="flex-end" childMarginRight={45}>
-          <CustomStyleBtn style={btnStyle} disabled={historyTab === 0} onClick={handleUndoClick}>
-            <IconUndo data-cy="area-undo" />
-            <AreaText>{t("component.hotspot.undo")}</AreaText>
-          </CustomStyleBtn>
-          <CustomStyleBtn
-            style={btnStyle}
-            disabled={history.length === 0 || historyTab === history.length - 1}
-            onClick={handleRedoClick}
-          >
-            <IconRedo data-cy="area-redo" />
-            <AreaText>{t("component.hotspot.redo")}</AreaText>
-          </CustomStyleBtn>
-          <CustomStyleBtn style={btnStyle} onClick={handleClearClick}>
-            <IconEraseText data-cy="area-clear" />
-            <AreaText>{t("component.hotspot.clear")}</AreaText>
-          </CustomStyleBtn>
-        </Container>
-        <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="flex-start">
-          <SideBar>
-            <ButtonWithShadow
-              data-cy="area-draw-mode"
-              onClick={handleModeChange(DRAW_MODE)}
-              active={mode === DRAW_MODE}
-            >
-              <IconDraw />
-              <AreaText>{t("component.hotspot.draw")}</AreaText>
-            </ButtonWithShadow>
-            <ButtonWithShadow
-              data-cy="area-delete-mode"
-              onClick={handleModeChange(DELETE_MODE)}
-              active={mode === DELETE_MODE}
-            >
-              <IconTrash />
-              <AreaText>{t("component.hotspot.delete")}</AreaText>
-            </ButtonWithShadow>
-          </SideBar>
-          {imageSrc &&
-            (mode === DRAW_MODE ? (
-              <SvgContainer
-                changeHistory={handleHistoryChange}
-                areas={areas}
-                history={history[historyTab]}
-                width={width}
-                height={height}
-                itemData={itemData}
-                imageSrc={imageSrc}
-              />
-            ) : (
-              <SvgDeleteContainer
-                areas={areas}
-                history={history[historyTab]}
-                width={width}
-                height={height}
-                itemData={itemData}
-                imageSrc={imageSrc}
-              />
-            ))}
-        </FlexContainer>
-      </div>
+    <FlexContainer flexDirection="column">
+      <FlexContainer marginBottom="16px" justifyContent="flex-end">
+        <AreaButton onClick={handleModeChange(DRAW_MODE)} active={mode === DRAW_MODE}>
+          <IconDraw data-cy="area-draw" />
+          <AreaText>{t("component.hotspot.draw")}</AreaText>
+        </AreaButton>
+        <AreaButton disabled={historyTab === 0} onClick={handleUndoClick}>
+          <IconUndo data-cy="area-undo" />
+          <AreaText>{t("component.hotspot.undo")}</AreaText>
+        </AreaButton>
+        <AreaButton disabled={history.length === 0 || historyTab === history.length - 1} onClick={handleRedoClick}>
+          <IconRedo data-cy="area-redo" />
+          <AreaText>{t("component.hotspot.redo")}</AreaText>
+        </AreaButton>
+        <AreaButton onClick={handleClearClick}>
+          <IconEraseText data-cy="area-clear" />
+          <AreaText>{t("component.hotspot.clear")}</AreaText>
+        </AreaButton>
+        <AreaButton onClick={handleModeChange(DELETE_MODE)} active={mode === DELETE_MODE}>
+          <IconTrash data-cy="area-delete" />
+          <AreaText>{t("component.hotspot.delete")}</AreaText>
+        </AreaButton>
+      </FlexContainer>
+      <DrawingContainer>
+        {imageSrc &&
+          (mode === DRAW_MODE ? (
+            <SvgContainer
+              changeHistory={handleHistoryChange}
+              areas={areas}
+              history={history[historyTab]}
+              width={width}
+              height={height}
+              itemData={itemData}
+              imageSrc={imageSrc}
+            />
+          ) : (
+            <SvgDeleteContainer
+              areas={areas}
+              history={history[historyTab]}
+              width={width}
+              height={height}
+              itemData={itemData}
+              imageSrc={imageSrc}
+            />
+          ))}
+      </DrawingContainer>
     </FlexContainer>
   );
 };

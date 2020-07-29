@@ -10,21 +10,15 @@ import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
-import withPoints from "../../components/HOC/withPoints";
 import { ContentArea } from "../../styled/ContentArea";
-
 import { EDIT } from "../../constants/constantsForQuestions";
-
 import HotspotPreview from "./HotspotPreview";
-
 import ComposeQuestion from "./ComposeQuestion";
 import AreasBlockTitle from "./AreasBlockTitle";
 import AttributesTitle from "./AttributesTitle";
 import Options from "./components/Options";
 import Question from "../../components/Question";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
-
-const OptionsList = withPoints(HotspotPreview);
 
 const HotspotEdit = ({
   item,
@@ -36,7 +30,7 @@ const HotspotEdit = ({
   fillSections,
   cleanSections
 }) => {
-  const { areaAttributes, multipleResponses } = item;
+  const { areaAttributes, multipleResponses, validation } = item;
 
   const [loading, setLoading] = useState(false);
 
@@ -55,6 +49,7 @@ const HotspotEdit = ({
   const [customizeTab, setCustomizeTab] = useState(0);
   const [correctTab, setCorrectTab] = useState(0);
   const [selectedIndexes, setSelectedIndexes] = useState(getAreaIndexes(areaAttributes.local));
+  const response = correctTab === 0 ? validation.validResponse : validation.altResponses;
 
   const handleCloseTab = tabIndex => {
     setQuestionData(
@@ -125,19 +120,12 @@ const HotspotEdit = ({
     );
   };
 
-  const renderOptions = () => (
-    <OptionsList
+  const renderOptions = (
+    <HotspotPreview
       item={item}
-      points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
-      }
-      onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
-      userAnswer={
-        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
-      }
+      userAnswer={correctTab === 0 ? response.value : response[correctTab - 1].value}
       view={EDIT}
-      isCorrectAnsTab={correctTab === 0}
     />
   );
 
@@ -177,11 +165,14 @@ const HotspotEdit = ({
           correctTab={correctTab}
           onAdd={handleAddAnswer}
           validation={item.validation}
-          options={renderOptions()}
+          options={renderOptions}
           onCloseTab={handleCloseTab}
           fillSections={fillSections}
           cleanSections={cleanSections}
           questionType={item?.title}
+          onChangePoints={handlePointsChange}
+          points={correctTab === 0 ? response.score : response[correctTab - 1].score}
+          isCorrectAnsTab={correctTab === 0}
         />
         <CheckboxLabel mt="15px" onChange={handleResponseMode} defaultChecked={multipleResponses}>
           {t("component.hotspot.multipleResponses")}

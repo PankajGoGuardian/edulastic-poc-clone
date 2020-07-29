@@ -105,7 +105,6 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
       inputValue={
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
-      isCorrectAnsTab={correctTab === 0}
     />
   );
 
@@ -133,10 +132,10 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
           fillSections={fillSections}
           cleanSections={cleanSections}
           questionType={item?.title}
-          onChangePoints={handlePointsChange}
           points={
             correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
           }
+          onChangePoints={handlePointsChange}
           isCorrectAnsTab={correctTab === 0}
         />
       </Question>

@@ -73,9 +73,9 @@ const getBorderColor = ({ active, checkAnswers, correct, locked, showAnswers, th
 };
 
 export const Li = styled.li`
-  width: ${({ width }) => width * 50}px;
+  width: ${({ width }) => width * 30}px;
   visibility: ${props => props.visibility};
-  height: ${({ height }) => height * 50}px;
+  height: ${({ height }) => height * 30}px;
   background: ${getItemBackground(0.5)};
   cursor: ${({ locked }) => (locked ? "not-allowed" : "pointer")};
   border-width: ${getBorderWidth};

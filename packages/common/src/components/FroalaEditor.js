@@ -253,7 +253,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
           &-box {
             background: ${greyThemeLighter};
             min-height: 102px;
-            border-radius: 0px;
+            border-radius: 2px;
             border: 1px solid ${greyThemeLight};
             display: flex;
           }

@@ -22,21 +22,12 @@ import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
 import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
-import { ValidList, qlToFroalaMapping } from "./constants/validList";
+import { ValidList } from "./constants/validList";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import Instructions from "../../components/Instructions";
 
-const getToolBarButtons = item =>
-  (item.formattingOptions || [])
-    .filter(x => x.active)
-    .map(x => {
-      const key = `${x.value}${x.param ? x.param : ""}`;
-      if (qlToFroalaMapping[key]) {
-        return qlToFroalaMapping[key];
-      }
-      return key;
-    });
+const getToolBarButtons = item => (item.formattingOptions || []).filter(x => x.active && x.value).map(x => x.value);
 
 const EssayRichTextPreview = ({
   col,

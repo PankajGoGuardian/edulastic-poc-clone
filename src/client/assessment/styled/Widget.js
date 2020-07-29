@@ -1,5 +1,4 @@
 import {
-  dashBorderColor,
   desktopWidth,
   extraDesktopWidthMax,
   fadedBlack,
@@ -19,7 +18,7 @@ export const WidgetWrapper = styled.div`
 
 export const Widget = styled.div`
   position: ${({ position }) => position || "relative"};
-  padding: 0px 20px 22px;
+  padding: 15px 20px;
   ${({ overflowHandlers }) => overflowHandlers};
   display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
   ${({ visible }) =>
@@ -81,10 +80,6 @@ export const Widget = styled.div`
         height: 35px;
       }
     }
-  }
-
-  .ant-input {
-    border: 1px solid ${dashBorderColor};
   }
 
   div.main {

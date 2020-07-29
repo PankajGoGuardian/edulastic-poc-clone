@@ -404,7 +404,7 @@
       },
       "rich": {
         "templateText": "<p><b>William Shakespeare</b> was an English poet, playwright, and actor, widely regarded as the greatest writer in the English language and the world's...</p>",
-        "formattingOptions": "Text formatting options"
+        "formattingOptions": "Toolbar"
       }
     },
     "shortText": {

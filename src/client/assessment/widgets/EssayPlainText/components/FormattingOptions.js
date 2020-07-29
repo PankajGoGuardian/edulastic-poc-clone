@@ -1,10 +1,9 @@
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { withNamespaces } from "@edulastic/localization";
-import produce from "immer";
-import PropTypes from "prop-types";
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import produce from "immer";
+import { getFormattedAttrId, CheckboxLabel } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 import Question from "../../../components/Question";
-import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -34,7 +33,7 @@ class FormattingOptions extends Component {
           {t("component.essayText.plain.formattingOptions")}
         </Subtitle>
         <Row gutter={24}>
-          <Col span={6}>
+          <Col span={24}>
             <CheckboxLabel
               data-cy="questionEssayPlainEditCopy"
               defaultChecked={item.showCopy}
@@ -43,7 +42,7 @@ class FormattingOptions extends Component {
               {t("component.essayText.copy")}
             </CheckboxLabel>
           </Col>
-          <Col span={6}>
+          <Col span={24}>
             <CheckboxLabel
               data-cy="questionEssayPlainEditCut"
               defaultChecked={item.showCut}
@@ -52,7 +51,7 @@ class FormattingOptions extends Component {
               {t("component.essayText.cut")}
             </CheckboxLabel>
           </Col>
-          <Col span={6}>
+          <Col span={24}>
             <CheckboxLabel
               data-cy="questionEssayPlainEditPaste"
               defaultChecked={item.showPaste}
@@ -66,7 +65,6 @@ class FormattingOptions extends Component {
     );
   }
 }
-
 
 FormattingOptions.propTypes = {
   item: PropTypes.object.isRequired,

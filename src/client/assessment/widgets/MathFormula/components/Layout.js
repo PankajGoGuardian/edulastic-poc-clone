@@ -8,7 +8,7 @@ import { withTheme } from "styled-components";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { math, response } from "@edulastic/constants";
-
+import { SelectInputStyled, TextInputStyled } from "@edulastic/common";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
@@ -16,7 +16,6 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import Question from "../../../components/Question";
 import FontSizeSelect from "../../../components/FontSizeSelect";
 import ResponseContainers from "./ResponseContainers";
-import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 class Layout extends Component {

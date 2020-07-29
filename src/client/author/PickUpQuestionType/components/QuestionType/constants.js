@@ -881,32 +881,35 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           { id: "test1", value: "bold", active: true },
           { id: "test2", value: "italic", active: true },
           { id: "test3", value: "underline", active: true },
-          { id: "test4", value: "strike", active: false },
-          { id: "test5", value: "header", param: 1, active: false },
-          { id: "test6", value: "header", param: 2, active: false },
-          { id: "test9", value: "|", active: true },
-          { id: "test10", value: "list", param: "ordered", active: true },
-          { id: "test11", value: "list", param: "bullet", active: true },
-          // { id: "test12", value: "align", param: "center", active: false },
-          // { id: "test13", value: "align", param: "justify", active: false },
-          { id: "test14", value: "align", param: "right", active: false },
+          { id: "test4", value: "strikeThrough", active: false },
+          { id: "test5", value: "|", active: true },
+          { id: "test6", value: "h1", active: false },
+          { id: "test7", value: "h2", active: false },
+          { id: "test8", value: "subscript", active: false },
+          { id: "test9", value: "superscript", active: false },
+          { id: "test10", value: "|", active: false },
+          { id: "test11", value: "alignLeft", active: false },
+          { id: "test12", value: "alignCenter", active: false },
+          { id: "test13", value: "alignRight", active: false },
+          { id: "test14", value: "alignJustify", active: false },
           { id: "test15", value: "|", active: false },
-          { id: "test16", value: "|", active: false },
-          { id: "test17", value: "blockquote", active: false },
-          { id: "test18", value: "script", param: "sub", active: false },
-          { id: "test19", value: "script", param: "super", active: false },
-          { id: "test20", value: "|", active: false },
-          { id: "test21", value: "indent", param: "+1", active: false },
-          { id: "test22", value: "indent", param: "-1", active: false },
-          { id: "test23", value: "|", active: false },
-          { id: "test24", value: "direction", param: "rtl", active: false },
-          { id: "test26", value: "clean", active: false },
-          { id: "test27", value: "formula", active: true },
-          { id: "test28", value: "specialCharacters", active: true },
-          { id: "test29", value: "|", active: false },
-          { id: "test21", value: "image", active: false },
-          { id: "test22", value: "link", active: false },
-          { id: "test23", value: "|", active: false }
+          { id: "test16", value: "quote", active: false },
+          { id: "test17", value: "indent", active: false },
+          { id: "test18", value: "outdent", active: false },
+          { id: "test19", value: "|", active: false },
+          { id: "test20", value: "formatOL", active: true },
+          { id: "test21", value: "formatUL", active: true },
+          { id: "test22", value: "math", active: true },
+          { id: "test23", value: "specialCharacters", active: true },
+          { id: "test24", value: "|", active: false },
+          { id: "test25", value: "insertImage", active: false },
+          { id: "test26", value: "insertLink", active: false },
+          { id: "test27", value: "table", active: false },
+          { id: "test28", value: "|", active: false },
+          { id: "test29", value: "paragraphFormat", active: false },
+          { id: "test30", value: "clearFormatting", active: false },
+          { id: "test31", value: "undo", active: false },
+          { id: "test32", value: "redo", active: false }
         ],
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -2189,7 +2192,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 140,
+          widthpx: 400,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2228,7 +2231,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 140,
+          widthpx: 400,
           heightpx: 35,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
@@ -2266,7 +2269,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 140,
+          widthpx: 80,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2308,7 +2311,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 140,
+          widthpx: 400,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2345,7 +2348,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 140,
+          widthpx: 80,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2385,8 +2388,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         customKeys: ["m", "km", "cm", "mm"],
         uiStyle: {
-          widthpx: 140,
-          heightpx: 36,
+          widthpx: 400,
+          heightpx: 35,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },

@@ -537,6 +537,7 @@ const MathFormulaAnswerMethod = ({
               {((item.template && item.templateDisplay) || useTemplate) && (
                 <StaticMath
                   {...mathInputProps}
+                  noBorder
                   latex={studentTemplate}
                   innerValues={innerValues}
                   onInput={handleChangeStaticMathInput}

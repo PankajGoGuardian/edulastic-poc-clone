@@ -22,6 +22,7 @@ import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQ
 import { getFontSize } from "../../utils/helpers";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { AnswersWrapper } from "./styled/AnswersWrapper";
+import { TokenPreviewWrapper } from "./styled/TokenPreviewWrapper";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -292,7 +293,7 @@ const TokenHighlightPreview = ({
           <QuestionTitleWrapper>
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
-          <div>
+          <TokenPreviewWrapper showBorder={view === EDIT}>
             {!isExpressGrader &&
               tokenList.map((el, i) =>
                 el.active ? (
@@ -322,7 +323,7 @@ const TokenHighlightPreview = ({
                   <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
                 )
               )}
-          </div>
+          </TokenPreviewWrapper>
           {view && view !== EDIT && <Instructions item={item} />}
           {previewTab === SHOW &&
             allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {

@@ -116,9 +116,6 @@ export const NumberInputStyled = styled(InputNumber)`
       background-color: ${props => props.bg || greyThemeLighter};
       box-shadow: none;
     }
-    .ant-input-number-input {
-      height: 38px;
-    }
   }
 `;
 
@@ -189,7 +186,7 @@ export const SelectInputStyled = styled(Select)`
       font-size: ${props => props.fontSize || "13px"};
       width: ${props => props.width || "100%"};
       height: ${props => props.height || "100%"};
-      min-height: ${props => props.height || "40px"};
+      min-height: ${props => props.height || "32px"};
       padding: ${props => props.padding || "0px"};
       border-radius: 2px;
       font-weight: 600;
@@ -199,7 +196,7 @@ export const SelectInputStyled = styled(Select)`
         .ant-select-selection__rendered {
           width: 100%;
           padding: ${props => (props.noBorder ? "0px" : "0px 30px 0px 15px")};
-          line-height: ${props => props.height || "38px"};
+          line-height: ${props => props.height || "32px"};
           margin: 0px;
           .ant-select-selection-selected-value {
             padding: 0px;

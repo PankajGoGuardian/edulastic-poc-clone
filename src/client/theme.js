@@ -78,8 +78,8 @@ const questionTextColor = "#212E3A";
 const questionTextBorderColor = "#d9d9d9";
 const questionLabelColor = "#8ed863";
 const triangleBottomColor = "#000000";
-const uploadIcon = "#E6E6E6";
-const zoneDropFontColor = "#E6E6E6";
+const uploadIcon = "#B2B2B2";
+const zoneDropFontColor = "#B2B2B2";
 const correctAnswerBoxBorderColor = "#E6E6E6";
 const zoneDropFontColorAlt = "#B1B1B1";
 const liColor = "#D8DBDE";
@@ -497,15 +497,16 @@ export const defaultTheme = {
     mathInputMathWrongBgColor: wrongBgColor,
     mathInputMathSuccessBgColor: rightIconColor,
     mathInputBgColor: greyThemeLighter,
-    mathResponseEmbedFontSize: questionTextextraFontSize,
-    mathResponseEmbedCharBgColor: questionTextColor,
+    mathResponseEmbedFontSize: questionTextnormalFontSize,
+    mathResponseEmbedCharBgColor: noAnswerIconColor,
     mathResponseEmbedCharColor: clearIconColor,
     mathResponseEmbedCharBorderColor: borderColor,
     mathResponseEmbedCharFontWeight: semiBold,
     mathResponseEmbedTextBgColor: clearIconColor,
     mathResponseFontColor: mainTextColor,
     mathResponseEmbedTextBorderColor: borderColor,
-    mathResponseEmbedTextFontWeight: bold,
+    mathResponseEmbedTextFontWeight: semiBold,
+    mathResponseEmbedTextFontSize: smallLinkFontSize,
     pointBgColor: labelStyle,
     questionHeaderFontSize: questionTextextraFontSize,
     questionHeaderSmallFontSize: questionTextsmallFontSize,
@@ -679,12 +680,14 @@ export const defaultTheme = {
     iconUploadDragActiveColor: actionIconColor,
     containerColor: containerWhite,
     containerDragActiveColor: actionIconColor,
-    zoneTitleFontSize: questionTextextraFontSize,
-    zoneTitleCommentFontSize: commentFontSize,
+    zoneTitleFontSize: smallFontSize,
+    zoneTitleCommentFontSize: extraSmallFontSize,
     zoneTitleFontWeight: bold,
     zoneTitleColor: zoneDropFontColor,
     zoneTitleAltColor: zoneDropFontColorAlt,
-    underlinedColor: themeColor
+    underlinedColor: themeColorBlue,
+    containerBorderColor: "#b9b9b9",
+    containerBackground: containerGrey
   },
   testItemPreview: {
     itemColBorderColor: borderColor,
@@ -1126,7 +1129,7 @@ export const defaultTheme = {
       buttonSvgColor: iconColor,
       buttonHoverSvgColor: themeColorHover,
       areaTextFontWeight: semiBold,
-      areaTextFontSize: questionTextnormalFontSize
+      areaTextFontSize: linkFontSize
     },
     tokenHighlight: {
       previewSmallFontSize: commentFontSize,

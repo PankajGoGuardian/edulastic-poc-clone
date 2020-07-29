@@ -11,8 +11,17 @@ import WidgetOptions from "../../containers/WidgetOptions";
 import Extras from "../../containers/Extras";
 
 import LayoutComponent from "./LayoutComponent";
+import FormattingOptions from "./FormattingOptions";
 
-const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen, handleItemChangeChange }) => {
+const Options = ({
+  item,
+  t,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+  handleItemChangeChange,
+  setQuestionData
+}) => {
   const [act, setAct] = useState(item.formattingOptions || []);
 
   useEffect(() => {
@@ -39,6 +48,14 @@ const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen, handle
         item={item}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      />
+
+      <FormattingOptions
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
         advancedAreOpen={advancedAreOpen}
       />
       <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>

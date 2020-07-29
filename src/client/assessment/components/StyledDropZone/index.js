@@ -10,47 +10,18 @@ import { Underlined } from "./styled/Underlined";
 import { Loading } from "./styled/Loading";
 import { IconUpload } from "./styled/IconUpload";
 
-const StyledDropZone = ({
-  thumb,
-  loading,
-  isDragActive,
-  t,
-  style,
-  dropzoneSettings: { name, allowedFiles, maxSize },
-  children
-}) => (
-  <Container
-    alignItems="flex-start"
-    style={style}
-    justifyContent="flex-start"
-    isDragActive={isDragActive}
-    childMarginRight={0}
-    flexDirection="column"
-  >
+const StyledDropZone = ({ loading, isDragActive, t, dropzoneSettings: { name, allowedFiles, maxSize }, children }) => (
+  <Container alignItems="center" justifyContent="center" isDragActive={isDragActive} flexDirection="column">
     {loading ? (
-      <div
-        style={{
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%"
-        }}
-      >
+      <FlexContainer flexDirection="column" justifyContent="center" alignItems="center">
         <Loading type="loading" />
-      </div>
+      </FlexContainer>
     ) : (
       <Fragment>
-        <FlexContainer
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          style={{ height: "100%", width: "100%" }}
-        >
+        <FlexContainer flexDirection="column" justifyContent="center" alignItems="center">
           <IconUpload isDragActive={isDragActive} />
           <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
-          <ZoneTitle altColor>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
+          <ZoneTitle>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
           <ZoneTitle isComment>
             {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: {allowedFiles} (
             {maxSize}KB MAX.)
@@ -63,7 +34,6 @@ const StyledDropZone = ({
 );
 
 StyledDropZone.propTypes = {
-  thumb: PropTypes.any,
   loading: PropTypes.bool.isRequired,
   isDragActive: PropTypes.any,
   t: PropTypes.func.isRequired,
@@ -71,7 +41,6 @@ StyledDropZone.propTypes = {
 };
 
 StyledDropZone.defaultProps = {
-  thumb: null,
   isDragActive: false,
   dropzoneSettings: { name: "Image", allowedFiles: "PNG, JPG, GIF", maxSize: 1024 }
 };

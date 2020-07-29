@@ -32,9 +32,8 @@ class MathFormulaAnswer extends Component {
 
     const { minWidth, expectedAnsMinHeight } = response;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
-    cssStyles.width = cssStyles.width || minWidth;
-    cssStyles.height = cssStyles.height || expectedAnsMinHeight;
-
+    cssStyles.width = cssStyles.width || `${minWidth}px`;
+    cssStyles.height = cssStyles.height || `${expectedAnsMinHeight}px`;
     // Validation data (answer)
     const { options: { unit = "" } = {} } = answer[0] || {};
 
@@ -99,6 +98,10 @@ MathFormulaAnswer.propTypes = {
   item: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   toggleAdditional: PropTypes.func
+};
+
+MathFormulaAnswer.defaultProps = {
+  toggleAdditional: () => null
 };
 
 export default withNamespaces("assessment")(MathFormulaAnswer);

@@ -64,7 +64,7 @@ const Gradebook = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [pseudoPageDetail, setPseudoPageDetail] = useState({ ...PAGE_DETAIL });
 
-  const studentId = useMemo(() => get(match.params, "studentId", ""), [match.params]);
+  const studentId = get(match.params, "studentId", "");
 
   const pagination = filters.status || urlHasStudent ? pseudoPageDetail : pageDetail;
   const curatedFiltersData = curateFiltersData(filtersData, filters);
@@ -204,8 +204,8 @@ const Gradebook = ({
           ) : (
             <TableContainer>
               <GradebookStudentTable
-                dataSource={assessmentsData}
-                studentData={curatedData[0]}
+                assessmentsData={assessmentsData}
+                studentData={curatedData}
                 windowHeight={windowHeight}
               />
               <Pagination

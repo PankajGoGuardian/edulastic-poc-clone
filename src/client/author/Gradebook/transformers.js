@@ -167,7 +167,6 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
   const { students = [], assignments = [], testActivities = [], assignmentsCount, studentsCount } = gradebookData;
   const { assessments: assessmentsList } = filtersData;
   const mappedAssessmentsById = keyBy(assessmentsList, "_id");
-  let countByStatus = {};
 
   // group test-activity by assignmentId
   const taGroups = groupBy(testActivities, "assignmentId");
@@ -235,8 +234,7 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
     d.assessments = pickBy(assessments, a => !status || status === a.status);
     // assessments count for all status
     const assessmentsArr = Object.values(assessments);
-    countByStatus = countBy(assessmentsArr, a => a.status);
-    d.countByStatus = countByStatus;
+    d.countByStatus = countBy(assessmentsArr, a => a.status);
   });
 
   const assessmentsData = assignmentsData.map(a => {
@@ -246,6 +244,14 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
   });
 
   if (urlHasStudent) {
+    // calculate overall countByStatus
+    const countByStatus = {};
+    STATUS_LIST.map(({id}) => {
+      countByStatus[id] = 0;
+      curatedData.forEach(d => {
+        countByStatus[id] += (d.countByStatus[id] || 0);
+      });
+    });
     return { ...getPaginatedData(curatedData, assessmentsData, pagination), countByStatus };
   }
 

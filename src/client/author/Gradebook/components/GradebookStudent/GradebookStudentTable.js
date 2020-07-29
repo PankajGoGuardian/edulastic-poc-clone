@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { keyBy, round } from "lodash";
+import { keyBy, round, flatMap } from "lodash";
 import moment from "moment";
 
 // components
@@ -15,15 +15,19 @@ import { STATUS_LIST, TEST_TYPE_COLOR } from "../../transformers";
 
 const statusMap = keyBy(STATUS_LIST, "id");
 
-const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }) => {
+const GradebookStudentTable = ({ t, assessmentsData = [], studentData = [] }) => {
 
-  const studentAssessments = studentData?.assessments || {};
-  const assessmentsData = dataSource.map(a => ({
-    ...a,
-    endDate: a.class?.[0]?.endDate,
-    ...studentAssessments[a.id],
-    archived: studentAssessments[a.id]?.archived || []
-  }));
+  const assMap = keyBy(assessmentsData, "id");
+  const dataSource = flatMap(studentData, d => {
+    return Object.entries(d.assessments).map(([aId, aData]) => ({
+      ...assMap[aId],
+      endDate: assMap[aId]?.class?.find(c => c.endDate && c._id === d.classId)?.endDate,
+      ...aData,
+      archived: aData.archived || [],
+      classId: d.classId,
+      key: `${aId}_${d.classId}`
+    }));
+  });
 
   const columns = [
     {
@@ -122,7 +126,7 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
       dataIndex: "id",
       align: "center",
       render: (_, row) => (
-        <Link to={`/author/classBoard/${row.id}/${row.class?.[0]?._id}`}>
+        <Link to={`/author/classBoard/${row.id}/${row.classId}`}>
           <Icon src={presentationIcon} alt="Images" />
         </Link>
       )
@@ -130,9 +134,8 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
   ];
   return (
     <StyledTable
-      rowKey="id"
       columns={columns}
-      dataSource={assessmentsData}
+      dataSource={dataSource}
       pagination={false}
       urlHasStudent
     />

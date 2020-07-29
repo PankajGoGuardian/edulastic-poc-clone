@@ -9,7 +9,7 @@ import { getMimetype } from "./misc/mimeTypes";
 import DndSimulatorDataTransfer from "./misc/dndSimulator";
 import FileHelper from "../e2e/framework/util/fileHelper";
 import "cypress-file-upload";
-
+let login_index = 1;
 const screenResolutions = Cypress.config("SCREEN_SIZES");
 const BASE_URL = Cypress.config("API_URL");
 const DEFAULT_USERS = {
@@ -150,7 +150,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
     if (Cypress.$(".footerDropdown").length > 0) {
       Cypress.$(".footerDropdown").click();
       // Cypress.$('[data-cy="footer-dropdown"]').click();
-      cy.wait(2000).then(() => {
+      cy.wait(1000).then(() => {
         Cypress.$('[data-cy="signout"]').click();
       });
     }
@@ -158,9 +158,15 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
 
   cy.clearToken();
   const login = new LoginPage();
-  cy.visit("/login");
+  cy.wait(500).then(() => {
+    cy.get("body").then(() => {
+      /* as cy.visit is having problem of failing to load page often, avoiding visit */
+      /* reload is to cancel all xhr requests to overcome detachment problem */
+      cy.url().then(url => (url.includes("/login") ? cy.reload() : cy.visit("/login")));
+    });
+  });
   cy.server();
-  cy.route("GET", "**/test-activity/**").as("testActivity");
+  cy.route("GET", "**/test-activity/**").as(`testActivity${++login_index}`);
   cy.route("GET", "**curriculum**").as("apiLoad");
   cy.route("GET", "**assignments**").as("assignment");
   cy.route("POST", "**/auth/**").as("auth");
@@ -177,8 +183,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
       cy.wait("@searchCourse");
       break;
     case "student":
-      cy.wait("@assignment");
-      cy.wait("@testActivity");
+      cy.wait(`@testActivity${login_index}`, { timeout: 45000 });
       break;
     case "publisher":
     case "curator":

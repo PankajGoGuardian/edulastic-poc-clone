@@ -383,16 +383,16 @@ class DisneyCardContainer extends Component {
                                 e,
                                 student.studentId,
                                 student.testActivityId,
-                                recentAttemptsGrouped[student.studentId][0].number + 1
+                                (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
                               )
                             }
                           >
-                            <StyledParaSS>
+                            <CenteredStyledParaSS>
                               {round(student.score || student._score, 2) || (
                                 <span style={{ marginTop: "-3px" }}>-</span>
                               )}{" "}
                               / {student.maxScore || 0}
-                            </StyledParaSS>
+                            </CenteredStyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                             </StyledParaSSS>
@@ -406,10 +406,10 @@ class DisneyCardContainer extends Component {
                               key={attempt._id || attempt.id}
                               onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
                             >
-                              <StyledParaSS>
+                              <CenteredStyledParaSS>
                                 {round(attempt.score, 2) || <span style={{ marginTop: "-3px" }}>-</span>} /{" "}
                                 {attempt.maxScore || 0}
-                              </StyledParaSS>
+                              </CenteredStyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
                               </StyledParaSSS>
@@ -460,6 +460,10 @@ const AttemptDiv = styled.div`
   }
 `;
 
+const CenteredStyledParaSS = styled(StyledParaSS)`
+  justify-content: center;
+`;
+
 const RecentAttemptsContainer = styled.div`
   position: absolute;
   top: 96px;
@@ -474,6 +478,7 @@ const RecentAttemptsContainer = styled.div`
   transition: opacity 0.7s;
   .attempt-container {
     :hover {
+      cursor: pointer;
       border: 1px solid #dadae4;
       box-shadow: 8px 4px 10px rgba(0, 0, 0, 0.1);
     }

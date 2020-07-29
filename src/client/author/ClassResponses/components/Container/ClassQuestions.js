@@ -351,7 +351,8 @@ class ClassQuestions extends Component {
       qIndex,
       scratchpadProps,
       testActivityId,
-      isPresentationMode
+      isPresentationMode,
+      t
     } = this.props;
     const testItems = this.getTestItems();
     const { expressGrader: isExpressGrader = false } = this.context;
@@ -394,6 +395,7 @@ class ClassQuestions extends Component {
           questionActivity={questionActivity}
           scratchpadProps={scratchpadProps}
           userWork={userWork}
+          t={t}
         />
       );
     });

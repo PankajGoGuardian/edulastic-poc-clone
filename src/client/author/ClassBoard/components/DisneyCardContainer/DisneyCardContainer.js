@@ -160,7 +160,7 @@ class DisneyCardContainer extends Component {
           if (_status === "redirected") {
             return <span>0</span>;
           }
-          if (_status === "absent") {
+          if (_status === "absent" || _status === "notStarted") {
             return <span style={{ marginTop: "-3px" }}>-</span>;
           }
           return <span>{round(student.score, 2) || 0}</span>;
@@ -388,7 +388,10 @@ class DisneyCardContainer extends Component {
                             }
                           >
                             <StyledParaSS>
-                              {round(student.score || student._score, 2) || 0} / {student.maxScore || 0}
+                              {round(student.score || student._score, 2) || (
+                                <span style={{ marginTop: "-3px" }}>-</span>
+                              )}{" "}
+                              / {student.maxScore || 0}
                             </StyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
@@ -404,7 +407,8 @@ class DisneyCardContainer extends Component {
                               onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
                             >
                               <StyledParaSS>
-                                {round(attempt.score, 2) || 0} / {attempt.maxScore || 0}
+                                {round(attempt.score, 2) || <span style={{ marginTop: "-3px" }}>-</span>} /{" "}
+                                {attempt.maxScore || 0}
                               </StyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { keyBy } from "lodash";
+import { keyBy, round } from "lodash";
 import moment from "moment";
 
 // components
@@ -63,11 +63,11 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
       render: (_, row) => (
         <>
           <div>
-            {row.maxScore ? `${row.score || 0}/${row.maxScore || 1}` : "-"}
+            {row.maxScore ? `${round(row.score || 0, 2)}/${row.maxScore || 1}` : "-"}
           </div>
           {row.archived.map(ta => (
             <div style={{ paddingTop: "5px" }}>
-              {ta.maxScore ? `${ta.score || 0}/${ta.maxScore || 1}` : "-"}
+              {ta.maxScore ? `${round(ta.score || 0, 2)}/${ta.maxScore || 1}` : "-"}
             </div>
           ))}
         </>

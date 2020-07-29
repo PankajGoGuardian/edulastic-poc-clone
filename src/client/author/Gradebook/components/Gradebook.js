@@ -94,6 +94,9 @@ const Gradebook = ({
     setOnComponentLoad(false);
   }, []);
 
+  // reset status filter when switching to gradebook student and back
+  useEffect(() => () => setFilters({ ...filters, status: "" }), [studentId]);
+
   useEffect(() => {
     if (!isEmpty(filters)) {
       setPageDetail({ ...PAGE_DETAIL });
@@ -101,7 +104,7 @@ const Gradebook = ({
     } else {
       setInitialFilters();
     }
-  }, [filters, studentId]);
+  }, [filters]);
 
   useEffect(() => {
     if (!onComponentLoad) {
@@ -120,9 +123,10 @@ const Gradebook = ({
   const selectedStudentIds = Array.from(new Set(selectedRows.map(r => r.split("_")[0])));
   const selectedStudents =
     urlHasStudent && studentId ? students : students.filter(s => selectedStudentIds.includes(s._id));
-  const firstStudentName = urlHasStudent && !loading
-    ? `${capitalize(students?.[0]?.firstName || "")} ${capitalize(students?.[0]?.lastName || "")}`
-    : "";
+  const firstStudentName =
+    urlHasStudent && !loading
+      ? `${capitalize(students?.[0]?.firstName || "")} ${capitalize(students?.[0]?.lastName || "")}`
+      : "";
 
   // breadcrumb data
   const breadcrumbData = [

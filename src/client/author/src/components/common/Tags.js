@@ -116,6 +116,7 @@ const Labels = styled.div`
   width: ${({ isPlaylist }) => isPlaylist && "auto"};
   margin: ${({ margin, completed, isPlaylist }) =>
     margin || `4px 0px 4px ${isPlaylist ? (completed ? "8px" : "56px") : 0}`};
+  max-width: 100%;
 `;
 
 const PopupContainer = styled.div`
@@ -148,6 +149,8 @@ const Label = styled(Tag)`
   line-height: 16px;
   margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : "3px")} 0;
   height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &.hidden-tags {
     &:hover {

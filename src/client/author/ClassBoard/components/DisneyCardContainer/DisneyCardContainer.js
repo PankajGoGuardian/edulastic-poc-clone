@@ -153,6 +153,17 @@ class DisneyCardContainer extends Component {
           status.status = "Absent";
           status.color = red;
         }
+
+        const score = _status => {
+          if (_status === "redirected") {
+            return <span>0</span>;
+          }
+          if (_status === "absent") {
+            return <span style={{ marginTop: "-3px" }}>-</span>;
+          }
+          return <span>{round(student.score, 2) || 0}</span>;
+        };
+
         const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
 
         const name = isPresentationMode ? student.fakeName : student.studentName || "Anonymous";
@@ -308,7 +319,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {round(student.score, 2) || 0} / {student.maxScore || 0}
+                        {score(student.status)}/ {student.maxScore || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>

@@ -37,7 +37,7 @@ const GradebookStudentTable = ({ t, dataSource = [], studentData, windowHeight }
           </Tooltip>
           <Tooltip title={t(`common.toolTip.${row.testType}`)}>
             <TestTypeIcon bgColor={TEST_TYPE_COLOR[row.testType]}>
-              {t(`common.${row.testType}`) || t("common.common")}
+              {t(`common.${row.testType?.split(" ")?.[0] || "assessment"}`)}
             </TestTypeIcon>
           </Tooltip>
         </FlexContainer>

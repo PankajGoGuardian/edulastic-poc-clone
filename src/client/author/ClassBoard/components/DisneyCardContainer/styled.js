@@ -269,6 +269,7 @@ export const ColorSpan = styled.span`
 `;
 
 export const StyledParaSS = styled.p`
+  display: flex;
   font-size: 20px;
   font-weight: bold;
   color: #434b5d;

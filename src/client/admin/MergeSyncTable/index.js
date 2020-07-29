@@ -196,7 +196,11 @@ function MergeSyncTable({
     orgId: districtId,
     orgType: "district",
     studentMergeAttribute: "email",
-    teacherMergeAttribute: "email"
+    teacherMergeAttribute: "email",
+    studentDeltaMergeEnabled: true,
+    studentFullMergeEnabled: true,
+    teacherDeltaMergeEnabled: true,
+    teacherFullMergeEnabled: true
   };
 
   const rosterSyncConfig = data.rosterSyncConfig || defaultRosterSyncConfig;

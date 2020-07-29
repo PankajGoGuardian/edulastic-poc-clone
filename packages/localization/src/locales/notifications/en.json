@@ -427,6 +427,10 @@
     "message": "Playlist dropped successfully",
     "description": ""
   },
+  "PlaylistAssignedSuccessfully": {
+    "message": "Module successfully assigned",
+    "description": ""
+  },
   "enterValidPassword": {
     "message": "Please add a valid password.",
     "description": ""

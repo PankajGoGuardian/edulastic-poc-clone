@@ -229,7 +229,7 @@ class SuccessPage extends React.Component {
       } else {
         // else module was assigned then show module details
         const _module = playlist.modules?.find(m => m?._id === assignedPlaylistModuleId);
-        contentData.title = _module.title;
+        contentData.title = _module?.title;
         contentData.standardIdentifiers = _module?.data?.flatMap(d => d?.standardIdentifiers);
       }
     }
@@ -272,7 +272,9 @@ class SuccessPage extends React.Component {
                   <FlexTitle>Success!</FlexTitle>
                   <FlexTextWrapper>
                     {assignment.testType === _testTypes.COMMON
-                      ? `Test ${moduleTitle || title} has been assigned to students in ${assignment.class.length} classes/groups.`
+                      ? `Test ${moduleTitle || title} has been assigned to students in ${
+                          assignment.class.length
+                        } classes/groups.`
                       : `${moduleTitle || title} has been assigned in ${assignmentStatus} status.`}
                   </FlexTextWrapper>
                   {assignment.passwordPolicy === passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
@@ -297,9 +299,9 @@ class SuccessPage extends React.Component {
                       <span onClick={this.handleAssign} style={{ color: themeColor, cursor: "pointer" }}>
                         Go to Live Class Board
                       </span>
-                          &nbsp; button.
+                      &nbsp; button.
                     </FlexText>
-                      )}
+                  )}
                   <Divider />
                 </>
               )}

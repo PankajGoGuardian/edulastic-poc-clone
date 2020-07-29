@@ -286,8 +286,9 @@ function* saveAssignment({ payload }) {
     if (!assignmentId && !payload.playlistModuleId) {
       yield put(push("/author/assignments"));
     }
-    const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
-    notification({ type: "success", msg: successMessage });
+    if (payload.playlistModuleId && !payload.testId) {
+      notification({ type: "success", messageKey: "PlaylistAssignedSuccessfully" });
+    }
     if (gSyncStatus.length) {
       notification({ type: "warn", messageKey: "shareWithGoogleClassroomFailed" });
     }

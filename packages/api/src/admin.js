@@ -168,7 +168,7 @@ const enableDisableCleverSyncApi = ({ syncEnabled, districtId }) =>
 const enableDisableClasslinkSyncApi = ({ syncEnabled, districtId }) =>
   api
     .callApi({
-      url: `${atlasPrefix}/district/${districtId}/sync-status`,
+      url: `${atlasPrefix}district/${districtId}/sync-status`,
       method: "put",
       data: {
         syncEnabled

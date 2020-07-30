@@ -668,11 +668,12 @@ class Container extends Component {
   get passageNavigator() {
     const { item, passage, view, rows, itemDeleting } = this.props;
     const passageTestItems = get(passage, "testItems", []);
+    const widgetLength = get(rows, [0, "widgets"], []).length;
 
     return (
       item.canAddMultipleItems &&
       passage &&
-      view === EDIT && (
+      view !== "metadata" && (
         <PassageNavigation>
           {passageTestItems.length > 1 && (
             <>
@@ -685,7 +686,7 @@ class Container extends Component {
               />
             </>
           )}
-          {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+          {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
             <AddRemoveButtonWrapper>
               <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
                 - ITEM

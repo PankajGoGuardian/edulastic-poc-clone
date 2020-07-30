@@ -29,7 +29,7 @@ class AdvancedTable extends Component {
         dataIndex: "title",
         sortDirections: ["descend", "ascend"],
         sorter: true,
-        width: "32%",
+        width: "28%",
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 0) }),
         className: "assignment-name",
@@ -50,7 +50,7 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        width: "6%",
+        width: "4%",
         align: "left",
         className: "assignment-name",
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 1) }),
@@ -63,10 +63,10 @@ class AdvancedTable extends Component {
             ) : row.testType === test.type.ASSESSMENT ? (
               <TypeIcon data-cy="type">A</TypeIcon>
             ) : (
-                  <TypeIcon data-cy="type" type="c">
-                    C
-                  </TypeIcon>
-                )}
+              <TypeIcon data-cy="type" type="c">
+                C
+              </TypeIcon>
+            )}
           </TypeWrapper>
         )
       },
@@ -97,7 +97,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 4) }),
-        width: "8%",
+        width: "14%",
         render: text => <div>{text} </div>
       },
       {
@@ -118,7 +118,7 @@ class AdvancedTable extends Component {
         sortOrder: false,
         onHeaderCell: col => ({ onClick: () => this.handleSort(col, 6) }),
 
-        width: "6%",
+        width: "8%",
         render: text => <div> {text} </div>
       },
       {
@@ -135,7 +135,7 @@ class AdvancedTable extends Component {
       {
         title: "",
         dataIndex: "action",
-        width: "12%",
+        width: "10%",
         render: (_, row) => {
           const {
             onOpenReleaseScoreSettings,
@@ -265,11 +265,7 @@ class AdvancedTable extends Component {
 
     if (assignmentsSummary.length < 1) {
       return (
-        <NoDataNotification
-          style={{ width: "auto" }}
-          heading="Assignments not available"
-          description={NoDataMessage}
-        />
+        <NoDataNotification style={{ width: "auto" }} heading="Assignments not available" description={NoDataMessage} />
       );
     }
 
@@ -306,8 +302,8 @@ AdvancedTable.propTypes = {
 };
 
 AdvancedTable.defaultProps = {
-  onOpenReleaseScoreSettings: () => { },
-  onSelectRow: () => { },
+  onOpenReleaseScoreSettings: () => {},
+  onSelectRow: () => {},
   history: {}
 };
 

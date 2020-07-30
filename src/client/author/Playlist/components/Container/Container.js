@@ -10,7 +10,6 @@ import * as qs from "query-string";
 import React, { Component } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import Modal from "react-responsive-modal";
 import { compose } from "redux";
 import { libraryFilters, sortOptions } from "@edulastic/constants";
 import { withNamespaces } from "react-i18next";
@@ -44,7 +43,8 @@ import {
   ScrollbarWrapper,
   ScrollBox,
   SearchModalContainer,
-  StyleChangeWrapper
+  StyleChangeWrapper,
+  MobileFilterModal
 } from "../../../TestList/components/Container/styled";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
 import { getAllTagsAction, getTestsCreatingSelector } from "../../../TestPage/ducks";
@@ -75,6 +75,7 @@ import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
 import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 import SortMenu from "../../../ItemList/components/SortMenu";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 
 function getUrlFilter(filter) {
   if (filter === "AUTHORED_BY_ME") {
@@ -190,7 +191,7 @@ class TestList extends Component {
     const { updateAllPlaylistSearchFilter } = this.props;
     sessionStorage.setItem("filters[playList]", JSON.stringify(searchState));
     sessionStorage.setItem("sort[playList]", JSON.stringify(sort));
-    updateAllPlaylistSearchFilter({search: searchState, sort});
+    updateAllPlaylistSearchFilter({ search: searchState, sort });
   };
 
   searchTest = debounce(searchState => {
@@ -373,10 +374,13 @@ class TestList extends Component {
       };
     }
     history.push(`/author/playlists/filter/${filterType}`);
-    this.updateFilterState({
-      ...updatedSearch,
-      filter
-    }, sort);
+    this.updateFilterState(
+      {
+        ...updatedSearch,
+        filter
+      },
+      sort
+    );
     receivePlaylists({
       page: 1,
       limit,
@@ -406,15 +410,20 @@ class TestList extends Component {
     });
   };
 
-  onSort = () => {
+  toggleFilter = () => {
+    const { isShowFilter } = this.state;
 
-  }
+    this.setState({
+      isShowFilter: !isShowFilter
+    });
+  };
 
   render() {
     const { page, limit, count, creating, playListFilters, t, isProxyUser, sort = {} } = this.props;
 
     const { blockStyle, isShowFilter, openSidebar } = this.state;
     const { searchString } = playListFilters;
+    const renderFilterIcon = () => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
     return (
       <>
@@ -461,7 +470,7 @@ class TestList extends Component {
               </Button>
             </FilterButton>
           </MobileFilter>
-          <Modal open={isShowFilter} onClose={this.closeSearchModal}>
+          <MobileFilterModal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestListFilters
                 isPlaylist
@@ -474,41 +483,49 @@ class TestList extends Component {
                 filterMenuItems={filterMenuItems}
               />
             </SearchModalContainer>
-          </Modal>
+          </MobileFilterModal>
           <FlexContainer>
-            <Filter>
-              <AffixWrapper isProxyUser={isProxyUser}>
-                <ScrollbarWrapper>
-                  <PerfectScrollbar>
-                    <ScrollBox>
-                      <InputTag
-                        placeholder="Search by skill and keywords"
-                        onSearchInputChange={this.handleSearchInputChange}
-                        value={searchString}
-                        disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
-                      />
-                      <TestListFilters
-                        isPlaylist
-                        search={playListFilters}
-                        handleLabelSearch={this.handleLabelSearch}
-                        onChange={this.handleFiltersChange}
-                        clearFilter={this.handleClearFilter}
-                        searchFilterOption={this.searchFilterOption}
-                        handleStandardSearch={this.handleStandardSearch}
-                        filterMenuItems={filterMenuItems}
-                      />
-                    </ScrollBox>
-                  </PerfectScrollbar>
-                </ScrollbarWrapper>
-              </AffixWrapper>
+            <Filter isShowFilter={isShowFilter}>
+              {!isShowFilter && (
+                <AffixWrapper isProxyUser={isProxyUser}>
+                  <ScrollbarWrapper>
+                    <PerfectScrollbar>
+                      <ScrollBox>
+                        <InputTag
+                          placeholder="Search by skill and keywords"
+                          onSearchInputChange={this.handleSearchInputChange}
+                          value={searchString}
+                          disabled={playListFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
+                        />
+                        <TestListFilters
+                          isPlaylist
+                          search={playListFilters}
+                          handleLabelSearch={this.handleLabelSearch}
+                          onChange={this.handleFiltersChange}
+                          clearFilter={this.handleClearFilter}
+                          searchFilterOption={this.searchFilterOption}
+                          handleStandardSearch={this.handleStandardSearch}
+                          filterMenuItems={filterMenuItems}
+                        />
+                      </ScrollBox>
+                    </PerfectScrollbar>
+                  </ScrollbarWrapper>
+                </AffixWrapper>
+              )}
             </Filter>
-            <Main>
+            <Main isShowFilter={isShowFilter}>
+              {renderFilterIcon()}
               <ItemsMenu justifyContent="space-between">
                 <PaginationInfo>
                   <span>{count}</span> PLAYLISTS FOUND
                 </PaginationInfo>
                 <HeaderFilter search={playListFilters} handleCloseFilter={this.handleFiltersChange} type="playlist" />
-                <SortMenu options={sortOptions.playList} onSelect={this.onSelectSortOption} sortDir={sort.sortDir} sortBy={sort.sortBy}/>
+                <SortMenu
+                  options={sortOptions.playList}
+                  onSelect={this.onSelectSortOption}
+                  sortDir={sort.sortDir}
+                  sortBy={sort.sortBy}
+                />
                 {blockStyle === "horizontal" && <Actions type="PLAYLIST" />}
               </ItemsMenu>
               <PerfectScrollbar style={{ padding: "0 20px" }}>

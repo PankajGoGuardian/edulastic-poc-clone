@@ -30,7 +30,8 @@ import {
   StyleChangeWrapper,
   CardBox,
   StyledCountText,
-  ItemsMenu
+  ItemsMenu,
+  MobileFilterModal
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -114,6 +115,7 @@ import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
 import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 import SortMenu from "../../../ItemList/components/SortMenu";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import ApproveConfirmModal from "../../../ItemList/components/ApproveConfirmModal";
 
 // TODO: split into mulitple components, for performance sake.
@@ -913,6 +915,14 @@ class TestList extends Component {
     </>
   );
 
+  toggleFilter = () => {
+    const { isShowFilter } = this.state;
+
+    this.setState({
+      isShowFilter: !isShowFilter
+    });
+  };
+
   render() {
     const {
       page,
@@ -978,6 +988,8 @@ class TestList extends Component {
       mName: playlist?.modules[i]?.title
     }));
 
+    const renderFilterIcon = () => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
+
     return (
       <>
         <RemoveTestModal
@@ -1031,7 +1043,7 @@ class TestList extends Component {
               </Button>
             </FilterButton>
           </MobileFilter>
-          <Modal open={isShowFilter} onClose={this.closeSearchModal}>
+          <MobileFilterModal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestListFilters
                 search={search}
@@ -1042,7 +1054,7 @@ class TestList extends Component {
                 filterMenuItems={filterMenuItems}
               />
             </SearchModalContainer>
-          </Modal>
+          </MobileFilterModal>
 
           {showManageModuleModal && (
             <Modal
@@ -1097,32 +1109,35 @@ class TestList extends Component {
           )}
 
           <FlexContainer>
-            <Filter>
-              <AffixWrapper isProxyUser={isProxyUser}>
-                <ScrollbarWrapper>
-                  <PerfectScrollbar>
-                    <ScrollBox>
-                      <InputTag
-                        placeholder="Search by skills and keywords"
-                        onSearchInputChange={this.handleSearchInputChange}
-                        size="large"
-                        value={testFilters.searchString}
-                        disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
-                      />
-                      <TestListFilters
-                        search={search}
-                        handleLabelSearch={this.handleLabelSearch}
-                        onChange={this.handleFiltersChange}
-                        clearFilter={this.handleClearFilter}
-                        searchFilterOption={this.searchFilterOption}
-                        filterMenuItems={filterMenuItems}
-                      />
-                    </ScrollBox>
-                  </PerfectScrollbar>
-                </ScrollbarWrapper>
-              </AffixWrapper>
+            <Filter isShowFilter={isShowFilter}>
+              {!isShowFilter && (
+                <AffixWrapper isProxyUser={isProxyUser}>
+                  <ScrollbarWrapper>
+                    <PerfectScrollbar>
+                      <ScrollBox>
+                        <InputTag
+                          placeholder="Search by skills and keywords"
+                          onSearchInputChange={this.handleSearchInputChange}
+                          size="large"
+                          value={testFilters.searchString}
+                          disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
+                        />
+                        <TestListFilters
+                          search={search}
+                          handleLabelSearch={this.handleLabelSearch}
+                          onChange={this.handleFiltersChange}
+                          clearFilter={this.handleClearFilter}
+                          searchFilterOption={this.searchFilterOption}
+                          filterMenuItems={filterMenuItems}
+                        />
+                      </ScrollBox>
+                    </PerfectScrollbar>
+                  </ScrollbarWrapper>
+                </AffixWrapper>
+              )}
             </Filter>
-            <Main>
+            <Main isShowFilter={isShowFilter}>
+              {renderFilterIcon()}
               <ItemsMenu justifyContent="space-between">
                 <PaginationInfo>
                   <span>{count}</span> TESTS FOUND

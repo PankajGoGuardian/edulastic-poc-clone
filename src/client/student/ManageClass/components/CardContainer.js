@@ -54,7 +54,7 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
                     <CardTitle>{name}</CardTitle>
                   </Tooltip>
                   <ClassStatus status={status}>
-                    <span>{status == "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
+                    <span>{status == "1" ? (active == "1" ? "ACTIVE" : "ARCHIVED") : "NOT ENROLLED"}</span>
                   </ClassStatus>
                 </EllipsisContainer>
               </Row>
@@ -185,7 +185,7 @@ const CollapsibleCard = styled(Collapse)`
 `;
 
 const EllipsisContainer = styled.div`
-  padding-right: ${props => (props.status ? (props.status === 1 ? "100px" : "140px") : "140px")};
+  padding-right: ${props => (props.status ? (props.status === 1 ? "105px" : "140px") : "140px")};
   display: inline-flex;
   align-items: center;
   position: relative;

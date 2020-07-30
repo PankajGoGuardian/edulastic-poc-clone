@@ -9,7 +9,10 @@ import { testsApi, analyticsApi } from "@edulastic/api";
 import { CREATE_TEST_SUCCESS, UPDATE_TEST_SUCCESS } from "../src/constants/actions";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../student/Login/ducks";
 import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../src/selectors/user";
-import { UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN } from "../TestPage/components/AddItems/ducks";
+import {
+  UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN,
+  setApproveConfirmationOpenAction
+} from "../TestPage/components/AddItems/ducks";
 
 const { SMART_FILTERS } = libraryFilters;
 export const filterMenuItems = [
@@ -210,6 +213,8 @@ function* approveOrRejectMultipleTestsSaga({ payload }) {
     } catch (error) {
       console.error(error);
       notification({ msg: error?.data?.message || `Failed to update Status` });
+    } finally {
+      yield put(setApproveConfirmationOpenAction(false));
     }
   }
 }

@@ -48,7 +48,7 @@ import {
   getSelectedItemSelector,
   setApproveConfirmationOpenAction,
   getSortFilterStateSelector,
-  initialSortState,
+  initialSortState
 } from "../../../TestPage/components/AddItems/ducks";
 import {
   getAllTagsAction,
@@ -139,10 +139,13 @@ class Contaier extends Component {
       if (filter === filterMenuItems[0].filter) {
         updatedSearch = { ...updatedSearch, status: "" };
       }
-      this.updateFilterState({
-        ...updatedSearch,
-        filter
-      }, sort);
+      this.updateFilterState(
+        {
+          ...updatedSearch,
+          filter
+        },
+        sort
+      );
       receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
     } else {
       this.updateFilterState(search, sort);
@@ -182,17 +185,20 @@ class Contaier extends Component {
         status: ""
       };
     }
-    this.updateFilterState({
-      ...updatedSearch,
-      filter
-    }, sort);
+    this.updateFilterState(
+      {
+        ...updatedSearch,
+        filter
+      },
+      sort
+    );
     receiveItems({ ...updatedSearch, filter }, sort, 1, limit);
     history.push(`/author/items/filter/${filterType}`);
   };
 
   handleClearSearch = () => {
     const { clearFilterState, limit, receiveItems, search = {}, sort = {} } = this.props;
-  
+
     // If current filter and initial filter is equal don't need to reset again
     if (isEqual(search, initalSearchState) && isEqual(sort, initialSortState)) return null;
 
@@ -350,6 +356,7 @@ class Contaier extends Component {
   };
 
   toggleSidebar = () => this.setState(prevState => ({ openSidebar: !prevState.openSidebar }));
+
   onSelectSortOption = (value, sortDir) => {
     const { search, limit, sort, receiveItems } = this.props;
     const updateSort = {
@@ -359,7 +366,7 @@ class Contaier extends Component {
     };
     this.updateFilterState(search, updateSort);
     receiveItems(search, updateSort, 1, limit);
-  }
+  };
 
   handleApproveItems = () => {
     const { approveOrRejectMultipleItem, selectedItems, setApproveConfirmationOpen } = this.props;
@@ -411,9 +418,9 @@ class Contaier extends Component {
     const { isShowFilter, openSidebar } = this.state;
     return (
       <div>
-        <ApproveConfirmModal />
         <SideContent onClick={this.toggleSidebar} open={openSidebar} showSliderBtn={false} />
         <SelectCollectionModal contentType="TESTITEM" />
+        <ApproveConfirmModal contentType="TESTITEM" />
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
@@ -458,7 +465,12 @@ class Contaier extends Component {
                       handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
                       type="testitem"
                     />
-                    <SortMenu options={sortOptions.itemList} onSelect={this.onSelectSortOption} sortDir={sort.sortDir} sortBy={sort.sortBy}/>
+                    <SortMenu
+                      options={sortOptions.itemList}
+                      onSelect={this.onSelectSortOption}
+                      sortDir={sort.sortDir}
+                      sortBy={sort.sortBy}
+                    />
                     <Actions type="TESTITEM" />
                   </ItemsMenu>
 

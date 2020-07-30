@@ -20,50 +20,61 @@ import {
   APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../src/constants/actions";
+import { getSelectedTestsSelector } from "../TestList/ducks";
+
+const mapItemsByCollectionCount = (items, itemBanks) => {
+  const itemBanksById = keyBy(itemBanks, "_id");
+  const collectionCountById = {};
+  for (const item of items) {
+    const collections = item.collections?.map(cl => cl._id) || [];
+    if (collections.length) {
+      for (const cl of collections) {
+        if (collectionCountById[cl]) {
+          collectionCountById[cl]++;
+        } else {
+          collectionCountById[cl] = 1;
+        }
+      }
+    } else if (!collectionCountById.NIL) {
+      collectionCountById.NIL = 1;
+    } else {
+      collectionCountById.NIL++;
+    }
+  }
+  const result = Object.keys(collectionCountById).map(item => {
+    if (item === "NIL") {
+      return {
+        count: collectionCountById[item],
+        name: "No Collection",
+        description: "No Collection",
+        status: 1,
+        key: item
+      };
+    }
+    return {
+      count: collectionCountById[item],
+      name: itemBanksById[item]?.name,
+      description: itemBanksById[item]?.description,
+      status: itemBanksById[item]?.status,
+      key: item
+    };
+  });
+  return result || [];
+};
 
 export const itemsDataTableSelector = createSelector(
   getTestEntitySelector,
   getCollectionsSelector,
   (state, itemBanks) => {
-    const itemBanksById = keyBy(itemBanks, "_id");
     const testItems = state.itemGroups.flatMap(group => group.items || []);
-    const collectionCountById = {};
-    for (const item of testItems) {
-      const collections = item.collections?.map(cl => cl._id) || [];
-      if (collections.length) {
-        for (const cl of collections) {
-          if (collectionCountById[cl]) {
-            collectionCountById[cl]++;
-          } else {
-            collectionCountById[cl] = 1;
-          }
-        }
-      } else if (!collectionCountById.NIL) {
-        collectionCountById.NIL = 1;
-      } else {
-        collectionCountById.NIL++;
-      }
-    }
-    const result = Object.keys(collectionCountById).map(item => {
-      if (item === "NIL") {
-        return {
-          count: collectionCountById[item],
-          name: "No Collection",
-          description: "No Collection",
-          status: 1,
-          key: item
-        };
-      }
-      return {
-        count: collectionCountById[item],
-        name: itemBanksById[item]?.name,
-        description: itemBanksById[item]?.description,
-        status: itemBanksById[item]?.status,
-        key: item
-      };
-    });
-    return result || [];
+    return mapItemsByCollectionCount(testItems, itemBanks);
   }
+);
+
+export const testsDataTableSelector = createSelector(
+  getSelectedTestsSelector,
+  getCollectionsSelector,
+  (selectedTests, itemBanks) => mapItemsByCollectionCount(selectedTests, itemBanks)
 );
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";

@@ -6,11 +6,16 @@ import { lightGrey9 } from "@edulastic/colors";
 import { Table, Tooltip } from "antd";
 import { IconInfo } from "@edulastic/icons";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-import { itemsDataTableSelector, approveOrRejectMultipleItem as approveOrRejectMultipleItemAction } from "../../ducks";
+import {
+  itemsDataTableSelector,
+  approveOrRejectMultipleItem as approveOrRejectMultipleItemAction,
+  testsDataTableSelector
+} from "../../ducks";
 import {
   setApproveConfirmationOpenAction,
   getShowApproveConfirmationSelector
 } from "../../../TestPage/components/AddItems/ducks";
+import { approveOrRejectMultipleTestsRequestAction } from "../../../TestList/ducks";
 
 const padd = num => {
   if (num < 10) {
@@ -19,16 +24,22 @@ const padd = num => {
   return num;
 };
 const ApproveConfirmModal = ({
+  contentType,
   showApproveConfirmation,
   itemsDataTable,
+  testsDataTable,
   approveOrRejectMultipleItem,
-  setApproveConfirmationOpen
+  setApproveConfirmationOpen,
+  approveOrRejectMultipleTestsRequest
 }) => {
   const [isApproving, setIsApproving] = useState(false);
+
+  const dataSource = contentType === "TEST" ? testsDataTable : itemsDataTable;
   useEffect(() => {
     setIsApproving(false);
   }, [showApproveConfirmation]);
 
+  const contentHeading = contentType === "TEST" ? "Test" : "Item";
   const columns = [
     {
       title: "Collection",
@@ -41,7 +52,7 @@ const ApproveConfirmModal = ({
               <span>{item}</span>
               <Tooltip
                 title={`${row.count} ${
-                  row.count > 1 ? `Items` : `Item`
+                  row.count > 1 ? `${contentHeading}s` : contentHeading
                 } will not be approved. Please select a collection to get approved`}
               >
                 <IconInfo color={lightGrey9} style={{ cursor: "pointer", marginLeft: "10px" }} />
@@ -53,15 +64,19 @@ const ApproveConfirmModal = ({
       }
     },
     {
-      title: "Items",
+      title: `${contentHeading} Count`,
       dataIndex: "count",
       key: "items",
-      render: count => `${padd(count)} ${count > 1 ? `Items` : `Item`}`
+      render: count => `${padd(count)} ${count > 1 ? `${contentHeading}s` : contentHeading}`
     }
   ];
 
   const handleApprove = () => {
-    approveOrRejectMultipleItem({ status: "published" });
+    if (contentType === "TEST") {
+      approveOrRejectMultipleTestsRequest({ status: "published" });
+    } else {
+      approveOrRejectMultipleItem({ status: "published" });
+    }
     setIsApproving(true);
   };
 
@@ -71,7 +86,7 @@ const ApproveConfirmModal = ({
 
   return (
     <StyledModal
-      title="Approve Items"
+      title={<p style={{ marginBottom: "20px" }}>{`Approve ${contentHeading}s`}</p>}
       visible={showApproveConfirmation}
       onCancel={handleCancel}
       maskClosable={false}
@@ -87,7 +102,7 @@ const ApproveConfirmModal = ({
       destroyOnClose
     >
       <BodyStyled>
-        <Table pagination={false} dataSource={itemsDataTable} columns={columns} />;
+        <Table pagination={false} dataSource={dataSource} columns={columns} />;
       </BodyStyled>
     </StyledModal>
   );
@@ -96,11 +111,13 @@ const ApproveConfirmModal = ({
 export default connect(
   state => ({
     itemsDataTable: itemsDataTableSelector(state),
+    testsDataTable: testsDataTableSelector(state),
     showApproveConfirmation: getShowApproveConfirmationSelector(state)
   }),
   {
     approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
-    setApproveConfirmationOpen: setApproveConfirmationOpenAction
+    setApproveConfirmationOpen: setApproveConfirmationOpenAction,
+    approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction
   }
 )(ApproveConfirmModal);
 

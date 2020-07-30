@@ -51,7 +51,8 @@ import {
   removeTestFromCartAction,
   approveOrRejectMultipleTestsRequestAction,
   getSortFilterStateSelector,
-  initialSortState
+  initialSortState,
+  getSelectedTestsSelector
 } from "../../ducks";
 import {
   getTestsCreatingSelector,
@@ -59,7 +60,10 @@ import {
   clearCreatedItemsAction,
   getAllTagsAction
 } from "../../../TestPage/ducks";
-import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
+import {
+  clearSelectedItemsAction,
+  setApproveConfirmationOpenAction
+} from "../../../TestPage/components/AddItems/ducks";
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
@@ -110,6 +114,7 @@ import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 import InputTag from "../../../ItemList/components/ItemFilter/SearchTag";
 import SideContent from "../../../Dashboard/components/SideContent/Sidecontent";
 import SortMenu from "../../../ItemList/components/SortMenu";
+import ApproveConfirmModal from "../../../ItemList/components/ApproveConfirmModal";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -883,6 +888,15 @@ class TestList extends Component {
     });
   };
 
+  handleApproveTests = () => {
+    const { approveOrRejectMultipleTestsRequest, selectedTests, setApproveConfirmationOpen } = this.props;
+    if (selectedTests.length > 1) {
+      setApproveConfirmationOpen(true);
+    } else {
+      approveOrRejectMultipleTestsRequest({ status: "published" });
+    }
+  };
+
   renderExtra = () => (
     <>
       <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
@@ -894,14 +908,7 @@ class TestList extends Component {
           buttonText="Reject"
           numberChecker={this.rejectNumberChecker}
         />
-        <CartButton
-          onClick={() => {
-            const { approveOrRejectMultipleTestsRequest } = this.props;
-            approveOrRejectMultipleTestsRequest({ status: "published" });
-          }}
-          buttonText="Approve"
-          numberChecker={this.approveNumberChecker}
-        />
+        <CartButton onClick={this.handleApproveTests} buttonText="Approve" numberChecker={this.approveNumberChecker} />
       </FeaturesSwitch>
     </>
   );
@@ -1122,7 +1129,12 @@ class TestList extends Component {
                 </PaginationInfo>
 
                 <HeaderFilter search={search} handleCloseFilter={this.handleFiltersChange} type="test" />
-                <SortMenu options={sortOptions.testList} onSelect={this.onSelectSortOption} sortDir={sort.sortDir} sortBy={sort.sortBy}/>
+                <SortMenu
+                  options={sortOptions.testList}
+                  onSelect={this.onSelectSortOption}
+                  sortDir={sort.sortDir}
+                  sortBy={sort.sortBy}
+                />
 
                 {mode === "embedded" && (
                   <BtnActionsContainer>
@@ -1164,6 +1176,7 @@ class TestList extends Component {
             </Main>
           </FlexContainer>
           <SelectCollectionModal contentType="TEST" />
+          <ApproveConfirmModal contentType="TEST" />
         </Container>
       </>
     );
@@ -1191,7 +1204,8 @@ const enhance = compose(
       testFilters: getTestsFilterSelector(state),
       features: getUserFeatures(state),
       isProxyUser: isProxyUserSelector(state),
-      sort: getSortFilterStateSelector(state)
+      sort: getSortFilterStateSelector(state),
+      selectedTests: getSelectedTestsSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1217,7 +1231,8 @@ const enhance = compose(
       clearAllFilters: clearTestFiltersAction,
       addTestToCart: addTestToCartAction,
       removeTestFromCart: removeTestFromCartAction,
-      approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction
+      approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
+      setApproveConfirmationOpen: setApproveConfirmationOpenAction
     }
   )
 );

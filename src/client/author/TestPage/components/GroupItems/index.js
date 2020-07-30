@@ -111,7 +111,7 @@ const GroupItems = ({
 
   const breadcrumbData = [
     {
-      title: "TESTS LIBRARY",
+      title: "TESTS",
       to: "/author/tests"
     },
     {

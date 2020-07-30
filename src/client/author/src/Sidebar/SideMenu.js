@@ -88,13 +88,13 @@ const menuItems = [
     path: "author/items"
   },
   {
-    label: "Test Library",
+    label: "Test",
     icon: IconTestBank,
     allowedPathPattern: [/author\/tests/],
     path: "author/tests"
   },
   {
-    label: "PlayList Library",
+    label: "Playlist",
     icon: IconPlaylist2,
     allowedPathPattern: [/author\/playlists/],
     path: "author/playlists"
@@ -426,7 +426,7 @@ class SideMenu extends Component {
                 /**
                  * show playlist based on `features` list
                  */
-                if (menu.label === "PlayList Library" && !features.playlist) {
+                if (menu.label === "Playlist" && !features.playlist) {
                   return null;
                 }
                 // to hide Dashboard from side menu if a user is DA or SA.

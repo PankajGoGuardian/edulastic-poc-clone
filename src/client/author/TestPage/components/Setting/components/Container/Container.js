@@ -10,7 +10,7 @@ import MainSetting from "../MainSetting/MainSetting";
 const Setting = ({ current, history, windowWidth, owner, isEditable = false, sebPasswordRef, showCancelButton }) => {
   const breadcrumbData = [
     {
-      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
+      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS",
       to: showCancelButton ? "/author/assignments" : "/author/tests"
     },
     {

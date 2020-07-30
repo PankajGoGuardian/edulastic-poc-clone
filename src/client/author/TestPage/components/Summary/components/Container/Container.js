@@ -83,7 +83,7 @@ const Summary = ({
 
   const breadcrumbData = [
     {
-      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
+      title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS",
       to: showCancelButton ? "/author/assignments" : "/author/tests"
     },
     {

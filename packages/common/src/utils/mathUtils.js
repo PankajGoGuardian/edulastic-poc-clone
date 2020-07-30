@@ -1,5 +1,6 @@
 /* global $ */
-import Helpers from "../helpers";
+import Helpers, { templateHasMath } from "../helpers";
+import { getMathTemplate } from "../../../../src/client/assessment/utils/variables";
 
 const addCustomClassToMath = mathHtml => {
   if (!window.$) return mathHtml;
@@ -114,6 +115,32 @@ export const getMathHtml = latex => {
   // in itemBank/testReview(collapsed view)
   katexString = addCustomClassToMath(katexString);
   return katexString;
+};
+
+export const getLatexValueFromMathTemplate = mathTemplate => {
+  if (!window.$) return mathTemplate;
+  const jqueryEl = $(`<p/>`).append(mathTemplate);
+  const mathEl = jqueryEl.find("span.input__math").get(0);
+  return mathEl ? mathEl.getAttribute("data-latex") : "";
+};
+
+/**
+ *
+ * @param {string} value
+ *
+ */
+export const convertToMathTemplate = (value = "") => {
+  // no value!!
+  if (!value || typeof value !== "string") return undefined;
+
+  // if value is already a math template
+  if (templateHasMath(value)) return value;
+
+  // Todo: use regex to check latex value, change latex to math template
+  if (value?.includes("\\")) return getMathTemplate(value);
+
+  // no need to convert normal value
+  return value;
 };
 
 export const replaceLatexesWithMathHtml = val => {

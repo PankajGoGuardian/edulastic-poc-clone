@@ -14,6 +14,8 @@ import {
   QuestionContentWrapper,
   QuestionSubLabel
 } from "@edulastic/common";
+import { getLatexValueFromMathTemplate } from "@edulastic/common/src/utils/mathUtils";
+
 import DisplayOptions from "../ClozeImageDropDown/QuestionOptions";
 
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -42,6 +44,7 @@ class ClozeDropDownDisplay extends Component {
   }
 
   selectChange = (value, index, id) => {
+    const _value = getLatexValueFromMathTemplate(value) || value;
     const {
       onChange: changeAnswers,
       userSelections,
@@ -52,12 +55,12 @@ class ClozeDropDownDisplay extends Component {
         // answers are null for all the lower indices if a higher index is answered
         // TODO fix the way answers are stored
         const changedIndex = findIndex(draft, (answer = {}) => answer?.id === id);
-        draft[index] = value;
+        draft[index] = _value;
         if (changedIndex !== -1) {
-          draft[changedIndex] = { value, index, id };
+          draft[changedIndex] = { value: _value, index, id };
         } else {
           const response = find(responseIds, res => res.id === id);
-          draft[response.index] = { value, index, id };
+          draft[response.index] = { value: _value, index, id };
         }
       })
     );

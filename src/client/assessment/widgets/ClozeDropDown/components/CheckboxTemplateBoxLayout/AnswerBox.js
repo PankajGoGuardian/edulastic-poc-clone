@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 import { MathFormulaDisplay } from "@edulastic/common";
 import { white } from "@edulastic/colors";
 import { IconWrapper } from "./styled/IconWrapper";
@@ -13,7 +14,10 @@ const AnswerBox = ({ checked, correct, userAnswer, indexStr, inPopover, showInde
         {indexStr}
       </IndexBox>
     )}
-    <AnswerContent inPopover={inPopover} dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
+    <AnswerContent
+      inPopover={inPopover}
+      dangerouslySetInnerHTML={{ __html: convertToMathTemplate(userAnswer) || "" }}
+    />
     <IconWrapper data-cy={`icon-${checked && correct}`} rightPosition={lessMinWidth ? 1 : 8}>
       {checked && correct && <RightIcon />}
       {checked && !correct && <WrongIcon />}

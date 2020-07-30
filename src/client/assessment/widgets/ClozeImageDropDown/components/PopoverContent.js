@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { response } from "@edulastic/constants";
+import { MathSpan } from "@edulastic/common";
 
 import { IconWrapper } from "./CheckboxTemplateBoxLayout/styled/IconWrapper";
 import { RightIcon } from "./CheckboxTemplateBoxLayout/styled/RightIcon";
@@ -20,7 +21,9 @@ const PopoverContent = ({ indexStr, fontSize, answered, status, checkAnswer, isE
         {indexStr}
       </span>
       <div className="text container" style={{ maxWidth: response.maxWidth }}>
-        <div style={{ whiteSpace: "normal" }}>{answered}</div>
+        <div style={{ whiteSpace: "normal" }}>
+          <MathSpan dangerouslySetInnerHTML={{ __html: answered }} />
+        </div>
         {answered && (
           <IconWrapper rightPosition={10} style={{ top: "50%", transform: "translateY(-50%)" }}>
             {status === "right" && <RightIcon />}

@@ -2,6 +2,7 @@ import React from "react";
 import Proptypes from "prop-types";
 import { Popover } from "antd";
 import { measureText, MathSpan } from "@edulastic/common";
+import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 import { Pointer } from "../../../../../styled/Pointer";
 import { Point } from "../../../../../styled/Point";
 import { Triangle } from "../../../../../styled/Triangle";
@@ -26,6 +27,7 @@ const Response = ({
   imageHeight,
   imageWidth
 }) => {
+  const userAnswer = convertToMathTemplate(answered);
   const { width: contentWidth } = measureText(answered, btnStyle);
   const textPadding = lessMinWidth ? 2 : 30;
   const indexBoxWidth = showAnswer ? 40 : 0;
@@ -40,7 +42,7 @@ const Response = ({
   const popoverContent = (
     <PopoverContent
       indexStr={indexStr}
-      answered={answered}
+      answered={userAnswer}
       status={status}
       isExpressGrader={isExpressGrader}
       checkAnswer={checkAnswer}
@@ -51,20 +53,20 @@ const Response = ({
     <CheckBox
       style={{ ...btnStyle, ...modifiedDimesion }}
       onClick={onClickHandler}
-      checked={answered}
+      checked={userAnswer}
       correct={status === "right"}
       isPrintPreview={isPrintPreview}
     >
       <span className="index">{indexStr}</span>
       <div className="text">
         <div className="clipText">
-          <MathSpan dangerouslySetInnerHTML={{ __html: answered || "" }} />
+          <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
         </div>
       </div>
       <div className="icons">
         <IconWrapper rightPosition={lessMinWidth ? "5" : "10"}>
-          {answered && status === "right" && <RightIcon />}
-          {answered && status === "wrong" && <WrongIcon />}
+          {userAnswer && status === "right" && <RightIcon />}
+          {userAnswer && status === "wrong" && <WrongIcon />}
         </IconWrapper>
         <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
           <Point />
@@ -73,7 +75,11 @@ const Response = ({
       </div>
     </CheckBox>
   );
-  return answered && (isOverContent || lessMinWidth) ? <Popover content={popoverContent}>{content}</Popover> : content;
+  return userAnswer && (isOverContent || lessMinWidth) ? (
+    <Popover content={popoverContent}>{content}</Popover>
+  ) : (
+    content
+  );
 };
 
 Response.propTypes = {

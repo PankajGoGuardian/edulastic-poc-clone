@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { white } from "@edulastic/colors";
 import { CorrectAnswersContainer } from "@edulastic/common";
+import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 
 import { getStemNumeration } from "../../../../utils/helpers";
 import Response from "./Response";
@@ -37,7 +38,7 @@ const CorrectAnswerBoxLayout = ({ userAnswers, altResponses, responseIds = [], t
         <Answer>
           <Label>{getStemNumeration(stemNumeration, response.index)}</Label>
           <Text>
-            <Response key={response.id} id={response.id} answer={getLabel(response.id)} />
+            <Response key={response.id} id={response.id} answer={convertToMathTemplate(getLabel(response.id))} />
           </Text>
         </Answer>
       ))}

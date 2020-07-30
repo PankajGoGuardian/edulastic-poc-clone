@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { MathSpan, CorrectAnswersContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { convertToMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 
 import { getStemNumeration } from "../../../../utils/helpers";
 import { CorrectAnswerBox } from "./styled/CorrectAnswerBox";
@@ -21,7 +22,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnsIndex, stemNumera
         <AnswerBox key={`correct-answer-${userAnswer.id}`}>
           <IndexBox>{getStemNumeration(stemNumeration, userAnswer.index)}</IndexBox>
           <AnswerContent>
-            <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer.value || "" }} />
+            <MathSpan dangerouslySetInnerHTML={{ __html: convertToMathTemplate(userAnswer.value) || "" }} />
           </AnswerContent>
         </AnswerBox>
       ))}

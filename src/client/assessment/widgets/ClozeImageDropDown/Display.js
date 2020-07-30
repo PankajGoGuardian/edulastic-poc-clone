@@ -11,6 +11,7 @@ import {
   QuestionLabelWrapper,
   QuestionContentWrapper
 } from "@edulastic/common";
+import { getLatexValueFromMathTemplate } from "@edulastic/common/src/utils/mathUtils";
 import { clozeImage, response } from "@edulastic/constants";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
 import AnswerDropdown from "./components/AnswerDropdown";
@@ -57,7 +58,7 @@ class Display extends Component {
     const { onChange: changeAnswers, userSelections } = this.props;
     changeAnswers(
       produce(userSelections, draft => {
-        draft[id] = value;
+        draft[id] = getLatexValueFromMathTemplate(value) || value;
       })
     );
   };

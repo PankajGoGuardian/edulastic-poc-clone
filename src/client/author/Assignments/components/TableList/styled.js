@@ -136,7 +136,7 @@ export const AssignmentTD = styled.div`
   text-align: left;
   padding-left: 0px !important;
   padding-right: 0px !important;
-  width: ${({ showFilter }) => (showFilter ? "90px" : "150px")};
+  width: 85%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -146,7 +146,6 @@ export const AssignmentTD = styled.div`
     font-size: ${props => props.theme.bodyFontSize};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    width: ${({ showFilter }) => (showFilter ? "190px" : "250px")};
     font-size: ${props => props.theme.standardFont};
   }
 `;

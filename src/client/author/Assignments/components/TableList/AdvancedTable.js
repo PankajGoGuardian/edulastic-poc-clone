@@ -27,6 +27,7 @@ class AdvancedTable extends Component {
       {
         title: "ASSIGNMENT NAME",
         dataIndex: "title",
+        align: "left",
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "28%",

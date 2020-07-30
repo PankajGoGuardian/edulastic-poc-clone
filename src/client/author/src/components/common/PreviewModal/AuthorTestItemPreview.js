@@ -299,9 +299,9 @@ class AuthorTestItemPreview extends Component {
   renderColumns(col, colIndex, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData) {
     const { style, windowWidth, onlySratchpad, viewComponent, fullModal, item, isPassage, ...restProps } = this.props;
     const { value, isEnableScratchpad } = this.state;
-    const { createdBy, data, maxScore } = item;
+    const { createdBy, data, maxScore, _id } = item;
     const { questions } = data;
-    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, id, tags } = questions[0];
+    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = questions[0];
 
     let subCount = 0;
     const columns = (
@@ -365,7 +365,7 @@ class AuthorTestItemPreview extends Component {
           ))}
           {!isPassage && (
             <QuestionPreviewDetails
-              id={id}
+              id={_id}
               createdBy={createdBy}
               maxScore={maxScore}
               depthOfKnowledge={depthOfKnowledge}
@@ -376,7 +376,7 @@ class AuthorTestItemPreview extends Component {
           )}
           {isPassage && colIndex === 1 && (
             <QuestionPreviewDetails
-              id={id}
+              id={_id}
               createdBy={createdBy}
               maxScore={maxScore}
               depthOfKnowledge={depthOfKnowledge}

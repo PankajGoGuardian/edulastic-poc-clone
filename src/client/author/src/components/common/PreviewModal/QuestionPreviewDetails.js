@@ -14,7 +14,7 @@ const QuestionPreviewDetails = ({
     <FlexWrap>
       <DetailRow font={11}>
         <label>ID: </label>
-        <span>{id || "--"}</span>
+        <span>{id?.length > 6 ? id.substr(id.length - 6) : id || "--"}</span>
       </DetailRow>
       <DetailRow>
         <label>Owner: </label>

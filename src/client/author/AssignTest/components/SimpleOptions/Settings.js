@@ -483,7 +483,7 @@ const Settings = ({
                 <AlignSwitchRight
                   disabled={disableAnswerOnPaper || freezeSettings}
                   size="small"
-                  defaultChecked={answerOnPaper}
+                  checked={answerOnPaper}
                   onChange={value => overRideSettings("answerOnPaper", value)}
                 />
               </Col>

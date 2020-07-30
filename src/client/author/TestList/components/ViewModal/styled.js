@@ -137,10 +137,6 @@ export const FooterIcon = styled.div`
   &:first-child {
     margin-left: 0px;
   }
-
-  svg {
-    transform: ${props => (props.rotate ? "rotate(180deg)" : "")};
-  }
 `;
 
 export const IconText = styled.span`

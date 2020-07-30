@@ -5,7 +5,7 @@ import {
   IconCopy,
   IconDescription,
   IconHeart,
-  IconShare,
+  IconUsers,
   IconTrashAlt,
   IconWorldWide,
   IconEye,
@@ -396,7 +396,7 @@ class ViewModal extends React.Component {
                 <IconText data-cy="testcard-collection">{collectionName}</IconText>
               </FooterIcon>
               <FooterIcon rotate>
-                <IconShare color={darkGrey} width={14} height={14} />
+                <IconUsers color={darkGrey} width={14} height={14} />
                 {analytics && <IconText>{analytics[0]?.usage || 0} </IconText>}
               </FooterIcon>
               <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest} style={{ marginLeft: "10px" }}>

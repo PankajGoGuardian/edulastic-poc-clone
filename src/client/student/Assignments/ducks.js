@@ -547,7 +547,14 @@ function* launchAssignment({ payload }) {
           }
           yield put(startAssignmentAction({ testId, assignmentId, testType, classId: groupId }));
         } else {
-          yield put(push(`/home/grades`));
+          const isCliUser = yield select(state => state.user?.isCliUser);
+          if (isCliUser) {
+            yield put(
+              push(`/home/class/${groupId}/test/${testId}/testActivityReport/${lastActivity._id}?cliUser=true`)
+            );
+          } else {
+            yield put(push(`/home/grades`));
+          }
         }
       }
     } else {
@@ -560,8 +567,8 @@ function* launchAssignment({ payload }) {
 
 function* redirectToDashboard() {
   yield put(setConfirmationForTimedAssessmentAction(null));
-  notification({msg: "Redirecting to the student dashboard"});
-  yield put(push('/home/assignments'));
+  notification({ msg: "Redirecting to the student dashboard" });
+  yield put(push("/home/assignments"));
 }
 
 // set actions watcherss

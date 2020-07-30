@@ -18,7 +18,6 @@ import { isProxyUser as isProxyUserSelector } from "../../student/Login/ducks";
 import { receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../DistrictPolicy/ducks";
 import ImportTest from "../ImportTest";
 import NotFound from "../../NotFound";
-import queryString from "query-string";
 
 /* lazy load routes */
 
@@ -93,7 +92,8 @@ const Author = ({
   loadDistrictPolicy,
   loadSchoolPolicy,
   schoolId,
-  isProxyUser
+  isProxyUser,
+  isCliUser
 }) => {
   useEffect(() => {
     if (role === roleuser.SCHOOL_ADMIN && schoolId) {
@@ -104,23 +104,28 @@ const Author = ({
     }
   }, [orgId, schoolId]);
 
+  useEffect(() => {
+    const intercomElm = document.querySelector(".intercom-lightweight-app");
+    if (intercomElm) {
+      intercomElm.style.display = isCliUser ? "none" : "block";
+    }
+  }, [isCliUser]);
+
   const themeToPass = themes.default;
 
   const isPrintPreview =
     history.location.pathname.includes("printpreview") ||
     history.location.pathname.includes("printAssessment") ||
     history.location.pathname.includes("students-report-card");
-  const searchParams = queryString.parse(history.location.search);
-  const hideSideMenu = history.location.pathname.match(new RegExp("/author/reports/.*/test/.*")) && searchParams.cliUser;
   const assessmentTabs = ["description", "addItems", "review", "settings", "worksheet", "groupItems"];
 
   return (
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
         <StyledLayout isProxyUser={isProxyUser}>
-          <MainContainer isPrintPreview={isPrintPreview || hideSideMenu}>
+          <MainContainer isPrintPreview={isPrintPreview || isCliUser}>
             <Spin spinning={districtProfileLoading} />
-            <SidebarCompnent isPrintPreview={isPrintPreview || hideSideMenu} isProxyUser={isProxyUser} />
+            <SidebarCompnent isPrintPreview={isPrintPreview || isCliUser} isProxyUser={isProxyUser} />
             <Wrapper>
               <ErrorHandler disablePage={isDisablePageInMobile(history.location.pathname)}>
                 <Suspense fallback={<Progress />}>
@@ -527,7 +532,7 @@ const Author = ({
                     <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
                     <Route exact path="/author/questions/create/:questionType" component={QuestionEditor} />
                     <Route exact path="/author/questions/edit/:questionType" component={QuestionEditor} />
-                    <Route path="/author/reports/:reportType?" render={props => <Reports {...props} hideSideMenu={hideSideMenu}/>} />
+                    <Route path="/author/reports/:reportType?" component={Reports} />
                     <Route exact path="/author/profile" component={Profile} />
                     <Route exact path="/author/subscription" component={Subscription} />
                     <Route exact path="/author/districtprofile" component={DistrictProfile} />
@@ -583,7 +588,8 @@ export default connect(
     districtProfile: get(state, ["districtProfileReducer", "data"], {}),
     districtProfileLoading: get(state, ["districtProfileReducer", "loading"], false),
     schoolId: get(state, "user.saSettingsSchool"),
-    isProxyUser: isProxyUserSelector(state)
+    isProxyUser: isProxyUserSelector(state),
+    isCliUser: get(state, "user.isCliUser", false)
   }),
   {
     loadDistrictPolicy: receiveDistrictPolicyAction,

@@ -23,7 +23,8 @@ import navigation from "../../common/static/json/navigation.json";
 import extraFilterData from "./common/static/extraFilterData.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
+import { setSARSettingsAction, getReportsSARSettings, resetSARSettingsAction } from "./ducks";
+import { updateCliUserAction } from "../../../../student/Login/ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
 import { ReportContaner, SearchField, FilterLabel, FilterButton } from "../../common/styled";
 import queryString from "query-string";
@@ -40,19 +41,24 @@ const SingleAssessmentReportContainer = props => {
     showApply,
     history,
     location,
-    match
+    match,
+    updateCliUser,
+    cliUser,
+    resetSARSettings
   } = props;
 
   const [firstLoad, setFirstLoad] = useState(true);
-  const isCliUser = queryString.parse(location.search).cliUser;
+  const [isCliUser, setCliUser] = useState(cliUser || queryString.parse(location.search).cliUser);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    if (isCliUser) {
+      updateCliUser(true);
+    }
+    return () => {
       console.log("Single Assessment Reports Component Unmount");
       resetAllReports();
-    },
-    []
-  );
+    }
+  }, []);
 
   const [ddfilter, setDdFilter] = useState({
     gender: "all",
@@ -223,10 +229,12 @@ const SingleAssessmentReportContainer = props => {
 };
 
 const ConnectedSingleAssessmentReportContainer = connect(
-  state => ({ settings: getReportsSARSettings(state) }),
+  state => ({ settings: getReportsSARSettings(state), cliUser: state.user?.isCliUser }),
   {
     setSARSettings: setSARSettingsAction,
-    resetAllReports: resetAllReportsAction
+    resetAllReports: resetAllReportsAction,
+    updateCliUser: updateCliUserAction,
+    resetSARSettings: resetSARSettingsAction
   }
 )(SingleAssessmentReportContainer);
 

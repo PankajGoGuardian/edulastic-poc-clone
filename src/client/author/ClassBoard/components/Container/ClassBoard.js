@@ -161,11 +161,17 @@ class ClassBoard extends Component {
   }
 
   componentDidMount() {
-    const { loadTestActivity, match, studentUnselectAll } = this.props;
+    const { loadTestActivity, match, studentUnselectAll, location, isCliUser, history } = this.props;
     const { assignmentId, classId } = match.params;
+    const { search } = location;
     loadTestActivity(assignmentId, classId);
     studentUnselectAll();
     window.addEventListener("scroll", this.handleScroll);
+    if (isCliUser) {
+      history.push({
+        search: search ? `${search}&cliUser=true` : `?cliUser=true`
+      })
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -612,7 +618,8 @@ class ClassBoard extends Component {
       t,
       history,
       location,
-      loadTestActivity
+      loadTestActivity,
+      isCliUser
     } = this.props;
 
     const {
@@ -776,72 +783,75 @@ class ClassBoard extends Component {
           resetView={this.resetView}
           onStudentReportCardsClick={this.onStudentReportCardsClick}
           testActivity={testActivity}
+          isCliUser={isCliUser}
         />
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb} />
-            <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
-              <PresentationToggleSwitch groupId={classId} />
-              <BothButton
-                disabled={isLoading}
-                style={{ marginLeft: "20px" }}
-                active={selectedTab === "Both"}
-                onClick={e => this.onTabChange(e, "Both")}
-              >
-                CARD VIEW
-              </BothButton>
-              <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
-                <StudentButton
-                  disabled={!firstStudentId || !isItemsVisible || isLoading}
-                  active={selectedTab === "Student"}
-                  onClick={e => {
-                    const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
-                    setCurrentTestActivityId(_testActivityId);
-                    if (!isItemsVisible) {
-                      return;
-                    }
-                    getAllTestActivitiesForStudent({
-                      studentId: firstStudentId,
-                      assignmentId,
-                      groupId: classId
-                    });
-                    this.onTabChange(e, "Student", firstStudentId, _testActivityId);
-                  }}
+            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb} isCliUser={isCliUser} />
+            {!isCliUser && (
+              <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
+                <PresentationToggleSwitch groupId={classId} />
+                <BothButton
+                  disabled={isLoading}
+                  style={{ marginLeft: "20px" }}
+                  active={selectedTab === "Both"}
+                  onClick={e => this.onTabChange(e, "Both")}
                 >
-                  STUDENTS
-                </StudentButton>
-              </WithDisableMessage>
-              <WithDisableMessage
-                disabled={hasRandomQuestions || !isItemsVisible}
-                errMessage={
-                  hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
-                }
-              >
-                <QuestionButton
-                  active={selectedTab === "questionView"}
-                  disabled={!firstStudentId || !isItemsVisible || hasRandomQuestions || isLoading}
-                  onClick={() => {
-                    const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
-                    if (!firstQuestion) {
-                      console.warn("no question activities");
-                      return;
-                    }
-                    this.setState({
-                      selectedQuestion: 0,
-                      selectedQid: firstQuestion._id,
-                      itemId: firstQuestion.testItemId,
-                      selectedTab: "questionView"
-                    });
-                    loadTestActivity(assignmentId, classId);
-                    history.push(
-                      `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
-                    );
-                  }}
+                  CARD VIEW
+                </BothButton>
+                <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+                  <StudentButton
+                    disabled={!firstStudentId || !isItemsVisible || isLoading}
+                    active={selectedTab === "Student"}
+                    onClick={e => {
+                      const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
+                      setCurrentTestActivityId(_testActivityId);
+                      if (!isItemsVisible) {
+                        return;
+                      }
+                      getAllTestActivitiesForStudent({
+                        studentId: firstStudentId,
+                        assignmentId,
+                        groupId: classId
+                      });
+                      this.onTabChange(e, "Student", firstStudentId, _testActivityId);
+                    }}
+                  >
+                    STUDENTS
+                  </StudentButton>
+                </WithDisableMessage>
+                <WithDisableMessage
+                  disabled={hasRandomQuestions || !isItemsVisible}
+                  errMessage={
+                    hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
+                  }
                 >
-                  QUESTIONS
-                </QuestionButton>
-              </WithDisableMessage>
-            </StudentButtonDiv>
+                  <QuestionButton
+                    active={selectedTab === "questionView"}
+                    disabled={!firstStudentId || !isItemsVisible || hasRandomQuestions || isLoading}
+                    onClick={() => {
+                      const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
+                      if (!firstQuestion) {
+                        console.warn("no question activities");
+                        return;
+                      }
+                      this.setState({
+                        selectedQuestion: 0,
+                        selectedQid: firstQuestion._id,
+                        itemId: firstQuestion.testItemId,
+                        selectedTab: "questionView"
+                      });
+                      loadTestActivity(assignmentId, classId);
+                      history.push(
+                        `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
+                      );
+                    }}
+                  >
+                    QUESTIONS
+                  </QuestionButton>
+                </WithDisableMessage>
+              </StudentButtonDiv>
+            )}
           </StyledFlexContainer>
           {selectedTab === "Both" && (
             <React.Fragment>
@@ -1201,7 +1211,7 @@ class ClassBoard extends Component {
                       const { assignmentId: _assignmentId, classId: _classId } = match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                      history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}`);
+                      history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${isCliUser ? "?cliUser=true" : ""}`);
                       this.setState({
                         selectedQuestion: value,
                         selectedQid: qid,
@@ -1243,7 +1253,8 @@ const enhance = compose(
       removedStudents: removedStudentsSelector(state),
       studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
-      isLoading: testActivtyLoadingSelector(state)
+      isLoading: testActivtyLoadingSelector(state),
+      isCliUser: get(state, "user.isCliUser", false)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

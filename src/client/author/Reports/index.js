@@ -22,7 +22,7 @@ import { StudentProfileReportContainer } from "./subPages/studentProfileReport";
 import ClassCreate from "../ManageClass/components/ClassCreate";
 
 const Container = props => {
-  const { isCsvDownloading, isPrinting, match, hideSideMenu } = props;
+  const { isCsvDownloading, isPrinting, match, isCliUser } = props;
   const [showHeader, setShowHeader] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [showApply, setShowApply] = useState(false);
@@ -149,16 +149,18 @@ const Container = props => {
           onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
           navigationItems={headerSettings.navigationItems}
           activeNavigationKey={reportType}
-          hideSideMenu={hideSideMenu}
+          hideSideMenu={isCliUser}
         />
       )}
       <MainContentWrapper>
-        <SubHeader
-          breadcrumbsData={headerSettings.breadcrumbData}
-          onRefineResultsCB={headerSettings.onRefineResultsCB}
-          showFilter={expandFilter}
-          title={headerSettings.title}
-        />
+        {
+          !isCliUser && <SubHeader
+            breadcrumbsData={headerSettings.breadcrumbData}
+            onRefineResultsCB={headerSettings.onRefineResultsCB}
+            showFilter={expandFilter}
+            title={headerSettings.title}
+          />
+        }
         {reportType === "custom-reports" ? (
           <Route
             exact
@@ -268,7 +270,8 @@ const enhance = connect(
   state => ({
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    premium: state?.user?.user?.features?.premium
+    premium: state?.user?.user?.features?.premium,
+    isCliUser: state?.user?.isCliUser
   }),
   {
     setPrintingStateAction,

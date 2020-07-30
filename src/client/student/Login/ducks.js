@@ -104,6 +104,7 @@ export const SET_USER_FAVORITES = "[user] set user favorites";
 export const ADD_CLASS_TO_USER = "[user] add class to user";
 export const ADD_COLLECTION_PERMISSION = "[user] update item bank permission";
 export const REMOVE_COLLECTION_PERMISSION = "[user] remove item bank permission";
+export const SET_CLI_USER = "[user] set cli user";
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
@@ -154,6 +155,7 @@ export const updatePowerTeacherAction = createAction(UPDATE_POWER_TEACHER_TOOLS_
 export const addClassToUserAction = createAction(ADD_CLASS_TO_USER);
 export const addItemBankPermissionAction = createAction(ADD_COLLECTION_PERMISSION);
 export const removeItemBankPermissionAction = createAction(REMOVE_COLLECTION_PERMISSION);
+export const updateCliUserAction = createAction(SET_CLI_USER);
 
 const initialState = {
   addAccount: false,
@@ -161,7 +163,8 @@ const initialState = {
   isAuthenticated: false,
   authenticating: true,
   signupStatus: 0,
-  currentChild: null
+  currentChild: null,
+  isCliUser: false
 };
 
 const setUser = (state, { payload }) => {
@@ -436,6 +439,9 @@ export default createReducer(initialState, {
     if (itemBankIndex > -1) {
       state.user.orgData.itemBanks[itemBankIndex].status = 0;
     }
+  },
+  [SET_CLI_USER]: (state, { payload }) => {
+    state.isCliUser = payload;
   }
 });
 

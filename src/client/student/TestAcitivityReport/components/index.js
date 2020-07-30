@@ -31,7 +31,8 @@ const ReportListContainer = ({
   testTitle,
   testFeedback,
   clearUserWork,
-  history
+  history,
+  isCliUser
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
 
@@ -73,10 +74,11 @@ const ReportListContainer = ({
         titleIcon={IconReport}
         titleText={test?.title || ""}
         history={history}
-        showExit
+        showExit={!isCliUser}
+        hideSideMenu={isCliUser}
       />
       <MainContentWrapper padding={isDocBased ? "0px" : "20px 30px"}>
-        <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
+        {!isCliUser && <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />}
         {isDocBased ? (
           <div>
             <Work key="review" review {...props} viewMode="report" />
@@ -98,7 +100,8 @@ const enhance = compose(
       testFeedback: get(state, "testFeedback", null),
       questions: getQuestionsArraySelector(state),
       questionsById: getQuestionsSelector(state),
-      testTitle: get(state, ["tests", "entity", "title"], "")
+      testTitle: get(state, ["tests", "entity", "title"], ""),
+      isCliUser: get(state, "user.isCliUser", false)
     }),
     {
       setCurrentItem: setCurrentItemAction,

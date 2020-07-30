@@ -326,9 +326,11 @@ class ListItem extends Component {
                   </ViewButtonWrapper>
                 )}
 
-                <div onClick={e => e.stopPropagation()}>
-                  <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
-                </div>
+                {isPlaylist && (
+                  <div onClick={e => e.stopPropagation()}>
+                    <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
+                  </div>
+                )}
 
                 {!isPlaylist &&
                   mode !== "embedded" &&

@@ -477,9 +477,9 @@ class QuestionWrapper extends Component {
               className="question-audio-controller"
             />
           ) : (
-            ""
-          )}
-          <div className="__print-question-main-wrapper">
+              ""
+            )}
+          <div className="__print-question-main-wrapper" style={{ height: "100%" }}>
             <QuestionContainer
               className={`fr-view question-container question-container-id-${data.id}`}
               disabled={disabled}
@@ -642,12 +642,12 @@ QuestionWrapper.defaultProps = {
   LCBPreviewModal: false,
   showFeedback: false,
   qIndex: 0,
-  clearAnswers: () => {},
-  changePreviewTab: () => {},
+  clearAnswers: () => { },
+  changePreviewTab: () => { },
   flowLayout: false,
   advancedAreOpen: false,
-  handleAdvancedOpen: () => {},
-  saveHintUsage: () => {},
+  handleAdvancedOpen: () => { },
+  saveHintUsage: () => { },
   disableResponse: false,
   isPresentationMode: false
 };

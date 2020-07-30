@@ -6,7 +6,7 @@ import { findIndex, isUndefined, get } from "lodash";
 import { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
 import { Input, Tooltip } from "antd";
-import { AnswerContext, scrollTo, EduButton } from "@edulastic/common";
+import { AnswerContext, scrollTo, EduButton, FieldLabel } from "@edulastic/common";
 import { IconFeedback } from "@edulastic/icons";
 import { test } from "@edulastic/constants";
 import { white } from "@edulastic/colors";
@@ -193,7 +193,7 @@ class StudentViewContainer extends Component {
               </StyledFooter>
             }
           >
-            <p>Leave a feedback!</p>
+            <FieldLabel>Student Feedback!</FieldLabel>
             <Input.TextArea
               data-cy="feedbackInput"
               rows={6}
@@ -251,8 +251,8 @@ class StudentViewContainer extends Component {
                 </span>
               </Tooltip>
             ) : (
-              "GIVE OVERALL FEEDBACK"
-            )}
+                "GIVE OVERALL FEEDBACK"
+              )}
           </GiveOverallFeedBackButton>
         </StyledFlexContainer>
 

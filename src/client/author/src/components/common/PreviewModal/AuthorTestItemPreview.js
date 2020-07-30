@@ -252,18 +252,20 @@ class AuthorTestItemPreview extends Component {
 
   renderRightButtons = () => {
     const { isPassage, item, goToItem, passageTestItems, page } = this.props;
+    const { derivedFromId = null, _id: itemId } = item;
+    /**
+     * in v1 migrated type, there is a derived from id on first load
+     * otherwise, it would not be able to detect the current item on first load
+     */
+    const key = derivedFromId || itemId;
+    const currentItem = passageTestItems.findIndex(id => id === key) + 1;
 
     return (
       <>
         {isPassage && passageTestItems.length > 1 && (page === "addItems" || page === "itemList") && (
           <PassageNavigation>
             <span>PASSAGE ITEMS </span>
-            <Pagination
-              total={passageTestItems.length}
-              pageSize={1}
-              current={passageTestItems.findIndex(i => i === item.versionId) + 1}
-              onChange={goToItem}
-            />
+            <Pagination total={passageTestItems.length} pageSize={1} current={currentItem} onChange={goToItem} />
           </PassageNavigation>
         )}
       </>

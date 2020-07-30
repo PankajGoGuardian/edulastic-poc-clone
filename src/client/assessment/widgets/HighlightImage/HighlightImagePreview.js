@@ -1,10 +1,7 @@
-/* eslint-disable react/prop-types */
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
-import { compose } from "redux";
 import {
   Stimulus,
-  withWindowSizes,
   QuestionNumberLabel,
   FlexContainer,
   QuestionLabelWrapper,
@@ -12,39 +9,49 @@ import {
   QuestionContentWrapper
 } from "@edulastic/common";
 
-import { withTheme } from "styled-components";
-import { withNamespaces } from "@edulastic/localization";
-
 import { PREVIEW } from "../../constants/constantsForQuestions";
 import { PreviewContainer } from "./styled/PreviewContainer";
 import DEFAULT_IMAGE from "../../assets/highlightImageBackground.svg";
 import { s3ImageBucketPath } from "../../../config";
 import Instructions from "../../components/Instructions";
 import { Scratchpad, ScratchpadTool } from "../../../common/components/Scratchpad";
+import { ImageContainer } from "./styled/ImageContainer";
+import { Image } from "./styled/Image";
 
 const HighlightImagePreview = ({
   view,
   item = {},
   smallSize,
   showQuestionNumber,
-  theme,
   viewComponent,
   clearClicked,
   hideInternalOverflow
 }) => {
   const containerRef = useRef();
   const { image } = item;
-  const [width] = useState(image ? `${image.width}px` : "auto");
-  const [height] = useState(image ? `${image.height}px` : 470);
+
+  const { width, height } = image;
+
+  const imageContainerDimensions = {
+    width: Math.max(image.x + width + 10, 700),
+    height: Math.max(image.y + height + 10, 600)
+  };
+
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
   const CDN_IMAGE_PATH = `${s3ImageBucketPath}/highlight_image_background.svg`;
-
+  // <div style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}>
   const renderImage = () => (
-    <div style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}>
-      <img src={file || CDN_IMAGE_PATH || DEFAULT_IMAGE} alt={altText} style={{ width, height }} draggable="false" />
-    </div>
+    <Image
+      src={file || CDN_IMAGE_PATH || DEFAULT_IMAGE}
+      width={width}
+      height={height}
+      x={image.x}
+      y={image.y}
+      alt={altText}
+      draggable="false"
+    />
   );
 
   const showDrawing = viewComponent === "editQuestion";
@@ -66,7 +73,9 @@ const HighlightImagePreview = ({
           </QuestionLabelWrapper>
           <QuestionContentWrapper>
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-            {renderImage()}
+            <ImageContainer width={imageContainerDimensions.width} height={imageContainerDimensions.height}>
+              {renderImage()}
+            </ImageContainer>
           </QuestionContentWrapper>
         </FlexContainer>
       </PreviewContainer>
@@ -90,10 +99,4 @@ HighlightImagePreview.defaultProps = {
   smallSize: false
 };
 
-const enhance = compose(
-  withWindowSizes,
-  withNamespaces("assessment"),
-  withTheme
-);
-
-export default enhance(HighlightImagePreview);
+export default HighlightImagePreview;

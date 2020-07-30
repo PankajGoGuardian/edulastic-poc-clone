@@ -28,8 +28,8 @@ import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender 
 import AppConfig from "../../../../../../../app-config";
 
 const v1Dimenstions = {
-  v1Height: 390,
-  v1Width: 740
+  v1Height: 432,
+  v1Width: 720
 };
 export const defaultTitleWidth = 150;
 

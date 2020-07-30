@@ -213,8 +213,8 @@ class AnnotationsRnd extends Component {
               <StyledRnd
                 key={annotation.id}
                 position={{
-                  x: x * this.widthRatio,
-                  y: y * this.heightRatio
+                  x,
+                  y
                 }}
                 size={{ height, width }}
                 onDragStop={(evt, d) => this.handleAnnotationPosition(d, annotation.id)}

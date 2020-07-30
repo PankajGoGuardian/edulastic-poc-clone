@@ -99,6 +99,12 @@ const AssessmentPlayer = ({
       window.addEventListener("popstate", window.confirmBeforeGoBack);
     }
     return () => {
+      if (!demo && !preview && window.confirmBeforeGoBack) {
+        setTimeout(() => {
+          window.removeEventListener("popstate", window.confirmBeforeGoBack);
+          delete window.confirmBeforeGoBack;
+        }, 1000);
+      }
       window.removeEventListener("beforeunload", confirmBeforeQuitting);
     };
   }, []);

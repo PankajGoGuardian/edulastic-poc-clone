@@ -63,7 +63,7 @@ const MathFormulaAnswerMethod = ({
   keypadMode, // need only for Math w/Unit in cloze Math
   customUnits, // need only for Math w/Unit in cloze Math
   containerHeight,
-  allowNumericOnly = false,
+  allowNumericOnly = null,
   isClozeMath, // this is from clozemath
   template = "",
   useTemplate, // this is from clozemath
@@ -77,7 +77,7 @@ const MathFormulaAnswerMethod = ({
   // _allowNumericOnly is set to true when question type is Expression & Formula
   const _allowNumericOnly =
     (method === methodsConst.EQUIV_SYMBOLIC &&
-      allowNumericOnly === false &&
+      allowNumericOnly === null &&
       item.title !== questionTitle.EXPRESSION_AND_FORMULA) ||
     allowNumericOnly;
 

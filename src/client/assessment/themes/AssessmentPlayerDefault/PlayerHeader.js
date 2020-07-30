@@ -105,22 +105,20 @@ const PlayerHeader = ({
                         }}
                       />
                     </Tooltip>
-                    <Tooltip placement="top" title="Next" overlayStyle={overlayStyle}>
-                      <ControlBtn.Next
-                        next
-                        skin
-                        type="primary"
-                        data-cy="next"
-                        icon={isLast ? null : "right"}
-                        onClick={e => {
-                          moveToNext();
-                          e.target.blur();
-                        }}
-                      >
-                        {isLast && <IconSend />}
-                        {isLast ? "SUBMIT" : "NEXT"}
-                      </ControlBtn.Next>
-                    </Tooltip>
+                    <ControlBtn.Next
+                      next
+                      skin
+                      type="primary"
+                      data-cy="next"
+                      icon={isLast ? null : "right"}
+                      onClick={e => {
+                        moveToNext();
+                        e.target.blur();
+                      }}
+                    >
+                      {isLast && <IconSend />}
+                      {isLast ? "SUBMIT" : "NEXT"}
+                    </ControlBtn.Next>
                   </>
                 )}
                 {!showSettingIcon && (

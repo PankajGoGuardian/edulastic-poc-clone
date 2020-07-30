@@ -97,7 +97,8 @@ class DisneyCardContainer extends Component {
       dueDate,
       detailedClasses,
       classId,
-      recentAttemptsGrouped
+      recentAttemptsGrouped,
+      testActivities
     } = this.props;
 
     const noDataNotification = () => (
@@ -156,15 +157,15 @@ class DisneyCardContainer extends Component {
           status.color = red;
         }
 
-        const score = _status => {
-          if (_status === "redirected") {
-            return <span>0</span>;
-          }
-          if (_status === "absent" || _status === "notStarted") {
+        const score = (_status, attemptScore) => {
+          /* for redirected, old attempts status will show in numbers like START = 0, SUBMITTED = 1, ABSENT = 2 */
+          if (_status === "absent" || _status === 2 || _status === "notStarted") {
             return <span style={{ marginTop: "-3px" }}>-</span>;
           }
-          return <span>{round(student.score, 2) || 0}</span>;
+          return <span>{round(attemptScore || student.score || student._score, 2) || 0}</span>;
         };
+
+        const currentTestActivity = testActivities?.find(attempt => student.studentId == attempt.userId) || {};
 
         const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
 
@@ -388,10 +389,7 @@ class DisneyCardContainer extends Component {
                             }
                           >
                             <CenteredStyledParaSS>
-                              {round(student.score || student._score, 2) || (
-                                <span style={{ marginTop: "-3px" }}>-</span>
-                              )}{" "}
-                              / {student.maxScore || 0}
+                              {score(currentTestActivity.status)} / {student.maxScore || 0}
                             </CenteredStyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
@@ -407,8 +405,7 @@ class DisneyCardContainer extends Component {
                               onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
                             >
                               <CenteredStyledParaSS>
-                                {round(attempt.score, 2) || <span style={{ marginTop: "-3px" }}>-</span>} /{" "}
-                                {attempt.maxScore || 0}
+                                {score(attempt.status, attempt.score)} / {attempt.maxScore || 0}
                               </CenteredStyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
@@ -444,7 +441,8 @@ const withConnect = connect(state => ({
   isLoading: get(state, "classResponse.loading"),
   testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state),
-  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {}
+  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {},
+  testActivities: state?.author_classboard_testActivity?.data?.testActivities || {}
 }));
 
 export default compose(

@@ -65,6 +65,7 @@ export default connect(
 
 const SwitchLable = styled.div`
   font-size: 12px;
+  align-self: center;
   color: ${themeColorBlue};
   text-transform: uppercase;
   line-height: 1;

@@ -286,18 +286,20 @@ export default class TeacherManageClassPage {
 
   clickOnDone = () => cy.get("[data-cy='done']").click();
 
-  clickOnAddStudentsButton = () => {
+  clickOnAddStudentsButton = (saveUserToDelete = true) => {
     cy.get("[data-cy='addStudents']").click();
     cy.wait("@newenrollment").then(xhr => expect(xhr.status).to.eq(200));
     return cy.wait("@enrollment").then(xhr => {
       expect(xhr.status).to.eq(200);
-      const res = xhr.responseBody;
-      const _id = [];
-      res.result.students.forEach(stu => {
-        const { _id: stuId } = stu;
-        _id.push(stuId);
-      });
-      cy.saveUserDetailToDelete({ role: "student", _id });
+      if (saveUserToDelete) {
+        const res = xhr.responseBody;
+        const _id = [];
+        res.result.students.forEach(stu => {
+          const { _id: stuId } = stu;
+          _id.push(stuId);
+        });
+        cy.saveUserDetailToDelete({ role: "student", _id });
+      }
     });
   };
 
@@ -437,7 +439,8 @@ export default class TeacherManageClassPage {
     this.getToEnrollStudents()
       .contains(username)
       .should("be.visible");
-    this.clickOnAddStudentsButton();
+
+    this.clickOnAddStudentsButton(false);
     this.clickOnDone();
   }
 
@@ -475,8 +478,6 @@ export default class TeacherManageClassPage {
   goToLastPage(){
     cy.get("body").then($body => {
       if ($body.find(".ant-table-pagination > li").length > 0) {   
-        /* const pages = $body.find(".ant-table-pagination > li").length
-        cy.get(`[title="${pages-2}"]`).click({ force: true }) */
         cy.get('[title="Next Page"]').prev().click()
       }
     })

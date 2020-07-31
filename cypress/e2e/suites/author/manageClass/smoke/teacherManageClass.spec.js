@@ -197,7 +197,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
     });
 
     it("> search and add existing student", () => {
-      const username = "search.addstu1@sw.com";
+      const username = "student2.smoke.automation@snapwiz.com";
       manageClass.getClassRowDetails(testData.create.className).then(cls => {
         const previousCount = parseInt(cls.students, 10);
         manageClass.getClassDetailsByName(testData.create.className);
@@ -285,16 +285,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.clickOnClassRowByName(className);
       manageClass.archieveClass();
 
-      sideBar.clickOnAssignment();
-      sideBar.clickOnManageClass();
-      cy.wait("@mygroups");
-
       // check in active class
-      manageClass.selectActiveClass();
+      manageClass.verifyNoClassRowByName(className);
+      
+      sideBar.clickOnDashboard()
+      sideBar.clickOnManageClass();
+      cy.wait("@mygroups")
       manageClass.verifyNoClassRowByName(className);
 
-      // check in archieve class
-      manageClass.selectArchieveClass();
+      // check in archived class
+      manageClass.selectArchieveClass()
+      manageClass.goToLastPage()
       manageClass.verifyClassRowVisibleByName(className);
     });
   });

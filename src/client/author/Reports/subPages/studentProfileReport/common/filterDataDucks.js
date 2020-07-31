@@ -121,6 +121,8 @@ const initialState = {
   filters: {
     termId: "",
     courseId: "",
+    grade: "All",
+    subject: "All",
     performanceBandProfileId: "",
     standardsProficiencyProfileId: ""
   },

@@ -71,6 +71,14 @@ const StudentProfileReportContainer = props => {
   }, [settings]);
 
   const onGoClick = _settings => {
+    const modifiedFilter = {};
+    Object.keys(_settings.filters).forEach(filterType => {
+      if (_settings.filters[filterType] === "All") {
+        modifiedFilter[filterType] = "";
+      } else {
+        modifiedFilter[filterType] = _settings.filters[filterType];
+      }
+    });
     setSPRSettings({
       requestFilters: _settings.filters,
       selectedStudent: _settings.selectedStudent

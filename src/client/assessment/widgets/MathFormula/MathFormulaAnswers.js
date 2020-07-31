@@ -272,6 +272,7 @@ class MathFormulaAnswers extends React.Component {
       >
         <MathFormulaAnswer
           item={item}
+          key={`mathanswer-${currentTab}`}
           onChangeAllowedOptions={this.handleAllowedOptions}
           answer={this.response.value}
           setQuestionData={setQuestionData}

@@ -21,7 +21,7 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import ContentSubHeader from "../../../src/components/common/AdminSubHeader/ContentSubHeader";
 import { createBucketAction, receiveBucketsAction, updateBucketAction } from "../../ducks";
 import CreateBucketModalForm from "./CreateBucketModal";
-import { StyledContentBucketsTable, StyledIconCheck, StyledIconClose, StyledIconPencilEdit } from "./styled";
+import { StyledContentBucketsTable, StyledIconCheck, StyledIconClose,Owner, StyledIconPencilEdit  } from "./styled";
 
 const menuActive = { mainMenu: "Content", subMenu: "Buckets" };
 const breadcrumbData = [
@@ -165,7 +165,13 @@ const ContentBucketsTable = ({
     {
       title: t("content.buckets.tableHeader.owner"),
       dataIndex: "owner",
-      render: (owner = "-") => owner,
+      render: (owner = "-") => { 
+        return (
+          <Tooltip placement="right" title={owner}>
+            <Owner>{owner}</Owner>
+          </Tooltip>
+        );
+      },
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const prev = get(a, "owner", "");

@@ -59,8 +59,6 @@ const Circles = ({
 
   const getBarHeight = y => Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams));
 
-  const getLength = y => Math.floor((height - margin - convertUnitToPx(y, gridParams)) / yAxisStep);
-
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
   const labelIsVisible = index =>
@@ -85,7 +83,7 @@ const Circles = ({
             height={height + margin}
           />
           {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
-          {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
+          {Array.from({ length: dot.y }).map((a, ind) => (
             <Circle
               key={`circle-inner-${ind}`}
               cx={getCenterX(index) + step / 2 + 2}

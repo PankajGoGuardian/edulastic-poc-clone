@@ -272,7 +272,8 @@ class App extends Component {
           // third-party auth
           location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
           location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
-          location.pathname.toLocaleLowerCase().includes("/auth/google")
+          location.pathname.toLocaleLowerCase().includes("/auth/google") ||
+          location.pathname.toLocaleLowerCase().includes("/auth/atlas")
         )
       ) {
         if (location.pathname.toLocaleLowerCase().includes("/home")) {

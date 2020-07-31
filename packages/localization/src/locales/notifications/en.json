@@ -1735,6 +1735,10 @@
     "message": "Clever Login failed",
     "description": ""
   },
+  "classlinkLoginFailed": {
+    "message": "Classlink Login failed",
+    "description": ""
+  },
   "failedToFetchUserData": {
     "message": "Failed to fetch user data.",
     "description": ""

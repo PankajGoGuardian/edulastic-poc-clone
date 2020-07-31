@@ -20,8 +20,9 @@ import styled from "styled-components";
 import { isDistrictPolicyAllowed, isEmailValid } from "../../../common/utils/helpers";
 import cleverIcon from "../../assets/clever-icon.svg";
 import googleIcon from "../../assets/google-btn.svg";
+import classlinkIcon from "../../assets/classlink-icon.png";
 import icon365 from "../../assets/icons8-office-365.svg";
-import { cleverLoginAction, googleLoginAction, loginAction, msoLoginAction } from "../ducks";
+import { cleverLoginAction, googleLoginAction, loginAction, msoLoginAction, classlinkLoginAction } from "../ducks";
 import { ForgotPasswordPopup } from "./forgotPasswordPopup";
 
 const FormItem = Form.Item;
@@ -89,6 +90,7 @@ class LoginContainer extends React.Component {
       generalSettings,
       googleLogin,
       cleverLogin,
+      classlinkLogin,
       msoLogin
     } = this.props;
 
@@ -161,6 +163,18 @@ class LoginContainer extends React.Component {
                       >
                         <img src={cleverIcon} alt="" />
                         {t("common.cleversigninbtn")}
+                      </ThirdPartyLoginBtn>
+                    ) : null}
+                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "atlasSignOn") ? (
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                          classlinkLogin("teacher");
+                        }}
+                      >
+                        <img src={classlinkIcon} alt="" className="classlink-icon" />
+                        {t("common.classlinksigninbtn")}
                       </ThirdPartyLoginBtn>
                     ) : null}
                   </FormHead>
@@ -248,7 +262,8 @@ const enhance = compose(
       googleLogin: googleLoginAction,
       cleverLogin: cleverLoginAction,
       msoLogin: msoLoginAction,
-      login: loginAction
+      login: loginAction,
+      classlinkLogin: classlinkLoginAction
     }
   )
 );
@@ -329,6 +344,11 @@ const ThirdPartyLoginBtn = styled(Col)`
   img {
     float: left;
     width: 14px;
+  }
+  .classlink-icon {
+    transform: scale(1.5);
+    margin-top: 2px;
+    margin-left: 1px;
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {

@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { roleuser } from "@edulastic/constants";
 import { SelectRolePopup } from "./student/SsoLogin/selectRolePopup";
-import { CleverUnauthorizedPopup } from "./student/SsoLogin/CleverUnauthorizedPopup";
+import { UnauthorizedPopup } from "./student/SsoLogin/UnauthorizedPopup";
 
 import { isLoggedInForPrivateRoute } from "./common/utils/helpers";
 
@@ -36,7 +36,7 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
     }
   }
 
-  if (location?.state?.showCleverUnauthorized) {
+  if (location?.state?.showUnauthorized) {
     return (
       <>
         <Login
@@ -46,7 +46,7 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
           orgShortName={orgShortName}
           orgType={orgType}
         />
-        <CleverUnauthorizedPopup visible footer={null} />
+        <UnauthorizedPopup visible footer={null} />
       </>
     );
   }

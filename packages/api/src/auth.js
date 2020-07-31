@@ -1,3 +1,4 @@
+import qs from "qs";
 import API from "./utils/API";
 
 const api = new API();
@@ -58,6 +59,16 @@ const cleverLogin = () =>
     })
     .then(result => result.data.result);
 
+const classlinkLogin = (params) =>
+  api
+    .callApi({
+      url: `${prefix}/login-atlas`,
+      method: "get",
+      params,
+      paramsSerializer: params => qs.stringify(params)
+    })
+    .then(result => result.data.result);
+
 const msoLogin = () =>
   api
     .callApi({
@@ -83,6 +94,16 @@ const cleverSSOLogin = data =>
       data
     })
     .then(result => result.data.result);
+
+const classlinkSSOLogin = data =>
+  api
+    .callApi({
+      url: `${prefix}/callback-sso/atlas`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+  
 
 const msoSSOLogin = data =>
   api
@@ -132,7 +153,9 @@ export default {
   googleLogin,
   googleSSOLogin,
   cleverSSOLogin,
+  classlinkSSOLogin,
   cleverLogin,
+  classlinkLogin,
   msoLogin,
   msoSSOLogin,
   checkUserExist,

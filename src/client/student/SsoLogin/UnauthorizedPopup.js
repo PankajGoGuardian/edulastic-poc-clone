@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Modal } from "antd";
 import { white } from "@edulastic/colors";
 
-const CleverUnauthorizedPopup = props => {
+const UnauthorizedPopup = props => {
   const [visible, setVisible] = useState(true);
   const { className } = props;
 
@@ -12,7 +12,7 @@ const CleverUnauthorizedPopup = props => {
       visible={visible}
       footer={null}
       className={className}
-      width={"500px"}
+      width="500px"
       maskClosable={false}
       onCancel={() => setVisible(false)}
     >
@@ -21,7 +21,7 @@ const CleverUnauthorizedPopup = props => {
   );
 };
 
-const StyledCleverUnauthorizedPopup = styled(CleverUnauthorizedPopup)`
+const StyledUnauthorizedPopup = styled(UnauthorizedPopup)`
   .ant-modal-content {
     background-color: #40444f;
     color: ${white};
@@ -47,4 +47,4 @@ const StyledCleverUnauthorizedPopup = styled(CleverUnauthorizedPopup)`
   }
 `;
 
-export { StyledCleverUnauthorizedPopup as CleverUnauthorizedPopup };
+export { StyledUnauthorizedPopup as UnauthorizedPopup };

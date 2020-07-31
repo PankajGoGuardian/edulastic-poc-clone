@@ -263,7 +263,8 @@ class DistrictPolicyForm extends Component {
       !districtPolicyData.userNameAndPassword &&
       !districtPolicyData.office365SignOn &&
       !districtPolicyData.cleverSignOn &&
-      !districtPolicyData.googleSignOn
+      !districtPolicyData.googleSignOn &&
+      !districtPolicyData.atlasSignOn
     ) {
       notification({ messageKey: "pleaseSelectOneOrMoreSignOnParticles" });
       return;
@@ -285,6 +286,7 @@ class DistrictPolicyForm extends Component {
       googleSignOn: districtPolicyData.googleSignOn,
       office365SignOn: districtPolicyData.office365SignOn,
       cleverSignOn: districtPolicyData.cleverSignOn,
+      atlasSignOn: districtPolicyData.atlasSignOn,
       teacherSignUp: districtPolicyData.teacherSignUp,
       studentSignUp: districtPolicyData.studentSignUp,
       searchAndAddStudents: districtPolicyData.searchAndAddStudents || false,
@@ -358,6 +360,9 @@ class DistrictPolicyForm extends Component {
               </CheckboxLabel>
               <CheckboxLabel checked={districtPolicy.office365SignOn} onChange={e => this.change(e, "office365SignOn")}>
                 Office365 Single signon
+              </CheckboxLabel>
+              <CheckboxLabel checked={districtPolicy.atlasSignOn} onChange={e => this.change(e, "atlasSignOn")}>
+                Classlink Single signon
               </CheckboxLabel>
               <CheckboxLabel checked={districtPolicy.cleverSignOn} onChange={e => this.change(e, "cleverSignOn")}>
                 Clever instance signon

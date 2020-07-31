@@ -373,17 +373,17 @@ export default class QuestionResponsePage {
   verifyCorrectAnswerClozeText = (card, right) => {
     card
       .contains("Correct Answer")
-      .next()
-      .find('[class^="AnswerBox"]')
+      .siblings()
       .then(ele => {
         right.forEach((choice, i) => {
           cy.wrap(ele)
             .eq(i)
             .should("have.css", "background-color", queColor.WHITE)
             .find('[class^="IndexBox"]')
-            .should("have.css", "background-color", queColor.GREEN_6)
+            .should("have.css", "background-color", queColor.GREY_3)
             .next()
-            .should("contain.text", choice);
+            .should("contain.text", choice)
+            .and("have.css", "color", queColor.BLACK);
         });
       });
   };
@@ -422,7 +422,7 @@ export default class QuestionResponsePage {
               break;
           }
         } else {
-          cy.get("@responseBox").should("have.css", "background-color", queColor.GREY_2);
+          cy.get("@responseBox").should("have.css", "background-color", queColor.GREY_4);
         }
       });
   };
@@ -431,15 +431,14 @@ export default class QuestionResponsePage {
   verifyCorrectAnswerClozeDropDown = (card, right) => {
     card
       .contains("Correct Answer")
-      .next()
-      .find(".response-btn ")
+      .siblings()
+      .find('[data-cy="styled-wrapped-component"]')
       .then(ele => {
         right.forEach((choice, i) => {
           cy.wrap(ele)
             .eq(i)
             .should("contain.text", choice)
-            .should("have.class", "check-answer")
-            .and("have.class", "showanswer");
+            .should("have.css", "color", queColor.BLACK);
         });
       });
   };
@@ -489,7 +488,7 @@ export default class QuestionResponsePage {
           cy.get("@responseBox")
             // .should("not.have.class", "check-answer")
             // .and("have.class", "wrong");
-            .should("have.css", "background-color", queColor.GREY_2);
+            .should("have.css", "background-color", queColor.GREY_4);
         }
       });
   };
@@ -513,7 +512,7 @@ export default class QuestionResponsePage {
         .find(`[class^="Icon"]`)
         .first()
         .find("svg")
-        .should("have.css", "fill", attemptType === attemptTypes.RIGHT ? queColor.RIGHT : queColor.RED_1);
+        .should("have.css", "fill", attemptType === attemptTypes.RIGHT ? queColor.GREEN_8 : queColor.LIGHT_RED);
     else
       cy.get("@quecard")
         .find('[class^="MathInputWrapper"]')
@@ -521,7 +520,7 @@ export default class QuestionResponsePage {
           "have.css",
           "background-color",
           attemptType === attemptTypes.RIGHT
-            ? queColor.GREEN_7
+            ? queColor.GREEN_8
             : attemptType === attemptTypes.WRONG
             ? queColor.LIGHT_RED
             : queColor.GREY_2

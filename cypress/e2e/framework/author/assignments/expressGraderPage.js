@@ -283,9 +283,19 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.getCellforQueNum(queNum).should("have.css", "background-color", color);
   };
 
-  verifyResponseEntryByIndexOfSelectedRow = (data, questionNumber) => {
-    if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
-    else this.getCellforQueNum(questionNumber).should("have.text", data);
+  verifyResponseEntryByIndexOfSelectedRow = (data, questionNumber, queKey) => {
+    switch (queKey) {
+      case queTypes.MATH_NUMERIC:
+        this.getCellforQueNum(questionNumber)
+          .find(".katex-html")
+          .first()
+          .should("contain.text", data);
+        break;
+      default:
+        if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
+        else this.getCellforQueNum(questionNumber).should("have.text", data);
+        break;
+    }
   };
 
   verifyScoreGrid(studentName, studentAttempts, score, perfValue, questionTypeMap) {
@@ -342,7 +352,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     const questionTableData = this.getQuestionTableResponseData({ attempt, questionTypeMap });
     Object.keys(questionTypeMap).forEach(questionNumber => {
       const { studentResponse } = questionTableData[questionNumber];
-      this.verifyResponseEntryByIndexOfSelectedRow(studentResponse, questionNumber);
+      const { queKey } = questionTypeMap[questionNumber];
+      this.verifyResponseEntryByIndexOfSelectedRow(studentResponse, questionNumber, queKey.split(".")[0]);
     });
   };
 

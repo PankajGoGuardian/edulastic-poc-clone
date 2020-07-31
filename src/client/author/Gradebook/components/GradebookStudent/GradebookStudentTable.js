@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { keyBy, round, flatMap } from "lodash";
+import { keyBy, round } from "lodash";
 import moment from "moment";
 
 // components
@@ -15,19 +15,7 @@ import { STATUS_LIST, TEST_TYPE_COLOR } from "../../transformers";
 
 const statusMap = keyBy(STATUS_LIST, "id");
 
-const GradebookStudentTable = ({ t, assessmentsData = [], studentData = [] }) => {
-
-  const assMap = keyBy(assessmentsData, "id");
-  const dataSource = flatMap(studentData, d => {
-    return Object.entries(d.assessments).map(([aId, aData]) => ({
-      ...assMap[aId],
-      endDate: assMap[aId]?.class?.find(c => c.endDate && c._id === d.classId)?.endDate,
-      ...aData,
-      archived: aData.archived || [],
-      classId: d.classId,
-      key: `${aId}_${d.classId}`
-    }));
-  });
+const GradebookStudentTable = ({ t, dataSource = [] }) => {
 
   const columns = [
     {

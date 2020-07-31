@@ -95,7 +95,7 @@ const Gradebook = ({
   }, []);
 
   // reset status filter when switching to gradebook student and back
-  useEffect(() => () => setFilters({ ...filters, status: "" }), [studentId]);
+  useEffect(() => () => setFilters({ ...INITIAL_FILTERS, ...filters, status: "" }), [studentId]);
 
   useEffect(() => {
     if (!isEmpty(filters)) {
@@ -204,8 +204,7 @@ const Gradebook = ({
           ) : (
             <TableContainer>
               <GradebookStudentTable
-                assessmentsData={assessmentsData}
-                studentData={curatedData}
+                dataSource={curatedData}
                 windowHeight={windowHeight}
               />
               <Pagination

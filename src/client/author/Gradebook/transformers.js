@@ -1,4 +1,4 @@
-import { capitalize, groupBy, keyBy, countBy, pickBy, uniq, isEmpty } from "lodash";
+import { capitalize, groupBy, keyBy, countBy, pickBy, uniq, isEmpty, flatMap } from "lodash";
 
 // constants
 import { test as testConstants, testActivityStatus } from "@edulastic/constants";
@@ -140,6 +140,28 @@ const getCuratedTestActivity = taGroup => {
   return curatedGroup[0] && { ...curatedGroup[0], archived: curatedGroup.slice(1) };
 };
 
+// function to get paginated student data for gradebook student drilldown
+const getPaginatedStudentData = (studentData, assessmentsData, pagination) => {
+  const { assignmentPage, assignmentPageSize } = pagination;
+  const assignmentPos = (assignmentPage - 1) * assignmentPageSize;
+  // re-curate to combine student assessments from multiple classes
+  const assMap = keyBy(assessmentsData, "id");
+  const studentAssessments = flatMap(studentData, d => {
+    return Object.entries(d.assessments).map(([aId, aData]) => ({
+      ...assMap[aId],
+      endDate: assMap[aId]?.class?.find(c => c.endDate && c._id === d.classId)?.endDate,
+      ...aData,
+      archived: aData.archived || [],
+      classId: d.classId,
+      key: `${aId}_${d.classId}`
+    }));
+  });
+  // paginate re-curated student assessments
+  const assignmentsCount = studentAssessments.length;
+  const curatedData = studentAssessments.slice(assignmentPos, assignmentPos + assignmentPageSize);
+  return { curatedData, assessmentsData, assignmentsCount, studentsCount: 1 };
+}
+
 // function to get paginated data when test-activity status filter is set
 const getPaginatedData = (curatedData, assessmentsData, pagination) => {
   const { studentPage, assignmentPage, studentPageSize, assignmentPageSize } = pagination;
@@ -252,7 +274,7 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
         countByStatus[id] += (d.countByStatus[id] || 0);
       });
     });
-    return { ...getPaginatedData(curatedData, assessmentsData, pagination), countByStatus };
+    return { ...getPaginatedStudentData(curatedData, assessmentsData, pagination), countByStatus };
   }
 
   if (status) {

@@ -43,6 +43,8 @@ export default class TestAssignPage {
 
   // *** ACTIONS START ***
 
+  selectClassDropdown = () => cy.get('[data-cy = "selectClass"]').click();
+
   clickOnDropDownOptionByText = option => {
     cy.wait(500);
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
@@ -57,9 +59,14 @@ export default class TestAssignPage {
   };
 
   selectClass = className => {
-    cy.get('[data-cy="selectClass"]').click();
+    this.selectClassDropdown();
     this.clickOnDropDownOptionByText(className);
     cy.focused().blur();
+  };
+
+  verifyNoClassesInDropDown = className => {
+    this.selectClassDropdown().type(className);
+    cy.get(".ant-empty-description").should("contain", "No Data");
   };
 
   selectTestType = type => {

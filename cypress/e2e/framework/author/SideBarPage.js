@@ -38,7 +38,7 @@ export default class TeacherSideBar {
 
   clickOnManageClass = () => {
     cy.server();
-    cy.route("GET", "**/group/mygroups").as("getGroups");
+    cy.route("GET", "**/group/mygroups?active=0").as("getGroups");
     cy.get('[data-cy="Manage Class"]')
       .click({ force: true })
       .click({ force: true });
@@ -76,10 +76,12 @@ export default class TeacherSideBar {
 
   clickOnConfirmPopUp = () => {
     cy.get("body").then($body => {
-      if ($body.find(".ant-modal-confirm-btns").length > 0) {   
-        cy.get(".ant-modal-confirm-btns > button").contains('Yes, Continue').click({ force: true })
+      if ($body.find(".ant-modal-confirm-btns").length > 0) {
+        cy.get(".ant-modal-confirm-btns > button")
+          .contains("Yes, Continue")
+          .click({ force: true });
       }
-    })
+    });
   };
 
   clickOnUser = () => {

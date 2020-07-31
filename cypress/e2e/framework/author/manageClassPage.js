@@ -66,6 +66,7 @@ export default class TeacherManageClassPage {
 
   getArchiveClassInDropDown = () => cy.get("li").contains("Archive Class");
 
+
   getSchoolDropDown = () => cy.get(`#institutionId`)
 
   // *** ELEMENTS END ***
@@ -158,6 +159,7 @@ export default class TeacherManageClassPage {
 
   selectStandardSets = standardSets => {
     this.getStandardSets()
+      .should("not.contain", "No Data")
       .as("selector")
       .click();
     this.clearSelections("standardSets");
@@ -329,6 +331,33 @@ export default class TeacherManageClassPage {
     cy.wait("@archieveClass")
       .its("status")
       .should("be.eq", 200);
+  };
+
+  gotoLastPage = () =>
+    cy
+      .get('[title = "Next Page"]')
+      .prev()
+      .click();
+
+  unarchiveButtonNotVisible = () => this.getunArchiveButton().should("not.be.visible");
+
+  UnarchiveClass = (className, oldSchool = "false") => {
+    cy.server();
+    cy.route("POST", "**/group/**").as("unarchieveClass");
+    this.getClassDetailsByName(className);
+    this.getunArchiveButton().click();
+    this.getUnarchiveButtonInPopup().click({ force: true });
+    if (oldSchool == true) {
+      this.getUnarchiveNotification().should(
+        "contains.text",
+        "Class is not part of the current school.",
+        "Please join the school form My Profile for unarchiving a class."
+      );
+    } else {
+      cy.wait("@unarchieveClass")
+        .its("status")
+        .should("be.eq", 200);
+    }
   };
 
   // *** ACTIONS END ***

@@ -1,6 +1,18 @@
 {
   "student-progress": [
     {
+      "key": "race",
+      "title": "Race",
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "American Indian", "title": "American Indian" },
+        { "key": "Asian", "title": "Asian" },
+        { "key": "Black or African American", "title": "Black or African American" },
+        { "key": "Caucasian", "title": "Caucasian" },
+        { "key": "Two or More Races", "title": "Two or More Races" }
+      ]
+    },
+    {
       "key": "gender",
       "title": "Gender",
       "data": [
@@ -8,11 +20,6 @@
         { "key": "female", "title": "Female" },
         { "key": "male", "title": "Male" }
       ]
-    },
-    {
-      "key": "frlStatus",
-      "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     },
     {
       "key": "ellStatus",
@@ -25,20 +32,25 @@
       "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     },
     {
-      "key": "race",
-      "title": "Race",
-      "data": [
-        { "key": "all", "title": "All" },
-        { "key": "American Indian", "title": "American Indian" },
-        { "key": "Asian", "title": "Asian" },
-        { "key": "Black or African American", "title": "Black or African American" },
-        { "key": "Caucasian", "title": "Caucasian" },
-        { "key": "Two or More Races", "title": "Two or More Races" }
-      ]
+      "key": "frlStatus",
+      "title": "FRL Status",
+      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     }
   ],
   "performance-over-time": [
     {
+      "key": "race",
+      "title": "Race",
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "American Indian", "title": "American Indian" },
+        { "key": "Asian", "title": "Asian" },
+        { "key": "Black or African American", "title": "Black or African American" },
+        { "key": "Caucasian", "title": "Caucasian" },
+        { "key": "Two or More Races", "title": "Two or More Races" }
+      ]
+    },
+    {
       "key": "gender",
       "title": "Gender",
       "data": [
@@ -46,11 +58,6 @@
         { "key": "female", "title": "Female" },
         { "key": "male", "title": "Male" }
       ]
-    },
-    {
-      "key": "frlStatus",
-      "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     },
     {
       "key": "ellStatus",
@@ -63,20 +70,25 @@
       "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     },
     {
-      "key": "race",
-      "title": "Race",
-      "data": [
-        { "key": "all", "title": "All" },
-        { "key": "American Indian", "title": "American Indian" },
-        { "key": "Asian", "title": "Asian" },
-        { "key": "Black or African American", "title": "Black or African American" },
-        { "key": "Caucasian", "title": "Caucasian" },
-        { "key": "Two or More Races", "title": "Two or More Races" }
-      ]
+      "key": "frlStatus",
+      "title": "FRL Status",
+      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     }
   ],
   "peer-progress-analysis": [
     {
+      "key": "race",
+      "title": "Race",
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "American Indian", "title": "American Indian" },
+        { "key": "Asian", "title": "Asian" },
+        { "key": "Black or African American", "title": "Black or African American" },
+        { "key": "Caucasian", "title": "Caucasian" },
+        { "key": "Two or More Races", "title": "Two or More Races" }
+      ]
+    },
+    {
       "key": "gender",
       "title": "Gender",
       "data": [
@@ -84,11 +96,6 @@
         { "key": "female", "title": "Female" },
         { "key": "male", "title": "Male" }
       ]
-    },
-    {
-      "key": "frlStatus",
-      "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     },
     {
       "key": "ellStatus",
@@ -101,16 +108,9 @@
       "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     },
     {
-      "key": "race",
-      "title": "Race",
-      "data": [
-        { "key": "all", "title": "All" },
-        { "key": "American Indian", "title": "American Indian" },
-        { "key": "Asian", "title": "Asian" },
-        { "key": "Black or African American", "title": "Black or African American" },
-        { "key": "Caucasian", "title": "Caucasian" },
-        { "key": "Two or More Races", "title": "Two or More Races" }
-      ]
+      "key": "frlStatus",
+      "title": "FRL Status",
+      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
     }
   ]
 }

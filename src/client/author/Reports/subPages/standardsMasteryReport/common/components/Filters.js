@@ -122,6 +122,9 @@ const StandardsFilters = ({
       const _q = {
         termId: urlSchoolYear.key
       };
+      if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+        Object.assign(_q, { schoolIds: get(user, "institutionIds", []).join(",") });
+      }
       getStandardsFiltersRequest(_q);
     }
   }, []);
@@ -235,6 +238,9 @@ const StandardsFilters = ({
     const q = {
       termId: selected.key
     };
+    if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+      Object.assign(q, { schoolIds: get(user, "institutionIds", []).join(",") });
+    }
     getStandardsFiltersRequest(q);
   };
   const updateSubjectDropDownCB = selected => {
@@ -342,8 +348,18 @@ const StandardsFilters = ({
       <FilterLabel>Assessment Name</FilterLabel>
       <MultipleSelect
         containerClassName="standards-gradebook-domain-autocomplete"
-        data={allTestIds}
-        valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+        data={(allTestIds || []).map(t => ({
+          ...t,
+          title: `${t.title} (ID: ${t.key?.substring(t.key.length - 5) || ""})`
+        }))}
+        valueToDisplay={
+          testIds?.length > 1
+            ? { key: "", title: "Multiple Assessment" }
+            : (testIds || []).map(t => ({
+                ...t,
+                title: `${t.title} (ID: ${t.key?.substring(t.key.length - 5) || ""})`
+              }))
+        }
         by={testIds}
         prefix="Assessment Name"
         onSelect={onSelectTest}

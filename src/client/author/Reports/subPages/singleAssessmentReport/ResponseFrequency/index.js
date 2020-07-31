@@ -34,7 +34,7 @@ const ResponseFrequency = ({
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      let q = {};
+      const q = {};
       q.testId = settings.selectedTest.key;
       q.requestFilters = { ...settings.requestFilters };
       getResponseFrequency(q);
@@ -43,24 +43,24 @@ const ResponseFrequency = ({
 
   const assessmentName = get(settings, "selectedTest.title", "");
   const obj = useMemo(() => {
-    let obj = {
+    let _obj = {
       metaData: {},
       data: [],
       filteredData: []
     };
     if (res && res.metrics && !isEmpty(res.metrics)) {
-      let arr = Object.keys(res.metrics).map((key, i) => {
+      const arr = Object.keys(res.metrics).map((key, i) => {
         res.metrics[key].uid = key;
         return res.metrics[key];
       });
 
-      obj = {
+      _obj = {
         data: [...arr],
         filteredData: [...arr],
         metaData: { testName: assessmentName }
       };
     }
-    return obj;
+    return _obj;
   }, [res]);
 
   const filteredData = useMemo(() => filterData(obj.data, filter), [filter, obj.data]);
@@ -74,7 +74,7 @@ const ResponseFrequency = ({
   };
 
   const onBarClickCB = key => {
-    let _filter = { ...filter };
+    const _filter = { ...filter };
     if (_filter[key]) {
       delete _filter[key];
     } else {

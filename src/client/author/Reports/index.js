@@ -25,6 +25,7 @@ const Container = props => {
   const { isCsvDownloading, isPrinting, match } = props;
   const [showHeader, setShowHeader] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const [showApply, setShowApply] = useState(false);
   const reportType = props?.match?.params?.reportType || "standard-reports";
   const groupName = navigation.locToData[reportType].group;
   const [navigationItems, setNavigationItems] = useState(navigation.navigation[groupName]);
@@ -66,8 +67,14 @@ const Container = props => {
     props.setCsvDownloadingStateAction(true);
   };
 
-  const onRefineResultsCB = (event, status) => {
-    setShowFilter(status);
+  const onRefineResultsCB = (event, status, type) => {
+    switch (type) {
+      case "applyButton":
+        setShowApply(status);
+        break;
+      default:
+        setShowFilter(status);
+    }
   };
 
   useEffect(() => {
@@ -185,6 +192,7 @@ const Container = props => {
               <SingleAssessmentReportContainer
                 {..._props}
                 showFilter={expandFilter}
+                showApply={showApply}
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
                 updateNavigation={setNavigationItems}
@@ -202,6 +210,7 @@ const Container = props => {
             <MultipleAssessmentReportContainer
               {..._props}
               showFilter={showFilter}
+              showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
               updateNavigation={setNavigationItems}

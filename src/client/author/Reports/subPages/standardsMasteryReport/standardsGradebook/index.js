@@ -3,12 +3,18 @@ import { Col, Row } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { getInterestedCurriculumsSelector } from "../../../../src/selectors/user";
+import { isEmpty, get } from "lodash";
+import { roleuser } from "@edulastic/constants";
+import { getInterestedCurriculumsSelector, getUser } from "../../../../src/selectors/user";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getStudentAssignments } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
-import { getFiltersSelector, getSelectedStandardProficiency, getReportsStandardsFiltersLoader } from "../common/filterDataDucks";
+import {
+  getFiltersSelector,
+  getSelectedStandardProficiency,
+  getReportsStandardsFiltersLoader
+} from "../common/filterDataDucks";
 import { getMaxMasteryScore } from "../standardsPerformance/utils/transformers";
 import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
 import { TableContainer, UpperContainer } from "./components/styled";
@@ -38,7 +44,8 @@ const StandardsGradebook = ({
   loadingStudentStandard,
   location,
   pageTitle,
-  ddfilter
+  ddfilter,
+  user
 }) => {
   const [chartFilter, setChartFilter] = useState({});
 
@@ -58,6 +65,14 @@ const StandardsGradebook = ({
         ...settings.requestFilters,
         grades: (settings.requestFilters.grades || []).join(",")
       };
+      const { schoolId } = settings.requestFilters;
+      let schoolIds = "";
+      if (isEmpty(schoolId) && get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
+        schoolIds = get(user, "institutionIds", []).join(",");
+      } else {
+        schoolIds = schoolId;
+      }
+      q.schoolIds = schoolIds;
       getStandardsGradebookRequest(q);
     }
   }, [settings]);
@@ -160,14 +175,14 @@ const StandardsGradebook = ({
 const enhance = compose(
   connect(
     state => ({
-      loading: getReportsStandardsGradebookLoader(state)
-        || getReportsStandardsFiltersLoader(state),
+      loading: getReportsStandardsGradebookLoader(state) || getReportsStandardsFiltersLoader(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),
       filters: getFiltersSelector(state),
       studentStandardData: getStudentStandardData(state),
-      loadingStudentStandard: getStudentStandardLoader(state)
+      loadingStudentStandard: getStudentStandardLoader(state),
+      user: getUser(state)
     }),
     {
       getStandardsGradebookRequest: getStandardsGradebookRequestAction,

@@ -196,6 +196,9 @@ const getColumns = (
     };
   });
 
+  // filter out test data without testName
+  const filteredDynamicColumns = dynamicColumns.filter(t => t.title);
+
   const columns = [
     {
       key: compareBy.key,
@@ -260,7 +263,7 @@ const getColumns = (
   ];
 
   return columns.concat(
-    dynamicColumns.sort((a, b) =>
+    filteredDynamicColumns.sort((a, b) =>
       a.startDate !== b.startDate
         ? a.startDate - b.startDate
         : a.title.toLowerCase().localeCompare(b.title.toLowerCase())

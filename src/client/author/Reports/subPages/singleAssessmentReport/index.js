@@ -3,6 +3,8 @@ import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
 import { connect } from "react-redux";
+
+import { Spin } from "antd";
 import { FlexContainer } from "@edulastic/common";
 
 import ResponseFrequency from "./ResponseFrequency";
@@ -33,10 +35,13 @@ const SingleAssessmentReportContainer = props => {
     resetAllReports,
     loc,
     showFilter,
+    showApply,
     history,
     location,
     match
   } = props;
+
+  const [firstLoad, setFirstLoad] = useState(true);
 
   useEffect(
     () => () => {
@@ -129,68 +134,75 @@ const SingleAssessmentReportContainer = props => {
 
   return (
     <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
-      <FlexContainer alignItems="flex-start">
-        <SingleAssessmentReportFilters
-          onGoClick={onGoClick}
-          loc={loc}
-          history={history}
-          location={location}
-          match={match}
-          performanceBandRequired={[
-            "/author/reports/assessment-summary",
-            "/author/reports/peer-performance",
-            "/author/reports/performance-by-students"
-          ].find(x => window.location.pathname.startsWith(x))}
-          isStandardProficiencyRequired={["/author/reports/performance-by-standards"].find(x =>
-            window.location.pathname.startsWith(x)
-          )}
-          extraFilters={extraFilters}
-          style={showFilter ? { display: "block" } : { display: "none" }}
-        />
-        <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
-        <ReportContaner showFilter={showFilter}>
-          <Route
-            exact
-            path="/author/reports/assessment-summary/test/:testId?"
-            render={_props => <AssessmentSummary {..._props} settings={settings} />}
-          />
-          <Route
-            exact
-            path="/author/reports/peer-performance/test/:testId?"
-            render={_props => <PeerPerformance {..._props} settings={settings} filters={ddfilter} />}
-          />
-          <Route
-            exact
-            path="/author/reports/question-analysis/test/:testId?"
-            render={_props => <QuestionAnalysis {..._props} settings={settings} />}
-          />
-          <Route
-            exact
-            path="/author/reports/response-frequency/test/:testId?"
-            render={_props => <ResponseFrequency {..._props} settings={settings} />}
-          />
-          <Route
-            exact
-            path="/author/reports/performance-by-standards/test/:testId?"
-            render={_props => (
-              <PerformanceByStandards {..._props} settings={settings} pageTitle={loc} filters={ddfilter} />
+      <>
+        {firstLoad && <Spin size="large" />}
+        <FlexContainer alignItems="flex-start" display={firstLoad ? "none" : "flex"}>
+          <SingleAssessmentReportFilters
+            onGoClick={onGoClick}
+            loc={loc}
+            history={history}
+            location={location}
+            match={match}
+            performanceBandRequired={[
+              "/author/reports/assessment-summary",
+              "/author/reports/peer-performance",
+              "/author/reports/performance-by-students"
+            ].find(x => window.location.pathname.startsWith(x))}
+            isStandardProficiencyRequired={["/author/reports/performance-by-standards"].find(x =>
+              window.location.pathname.startsWith(x)
             )}
+            extraFilters={extraFilters}
+            style={showFilter ? { display: "block" } : { display: "none" }}
+            showApply={showApply}
+            setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
+            firstLoad={firstLoad}
+            setFirstLoad={setFirstLoad}
           />
-          <Route
-            exact
-            path="/author/reports/performance-by-students/test/:testId?"
-            render={_props => (
-              <PerformanceByStudents
-                {..._props}
-                showFilter={showFilter}
-                settings={settings}
-                pageTitle={loc}
-                filters={ddfilter}
-              />
-            )}
-          />
-        </ReportContaner>
-      </FlexContainer>
+          <FilterIcon showFilter={showFilter} onClick={toggleFilter} />
+          <ReportContaner showFilter={showFilter}>
+            <Route
+              exact
+              path="/author/reports/assessment-summary/test/:testId?"
+              render={_props => <AssessmentSummary {..._props} settings={settings} />}
+            />
+            <Route
+              exact
+              path="/author/reports/peer-performance/test/:testId?"
+              render={_props => <PeerPerformance {..._props} settings={settings} filters={ddfilter} />}
+            />
+            <Route
+              exact
+              path="/author/reports/question-analysis/test/:testId?"
+              render={_props => <QuestionAnalysis {..._props} settings={settings} />}
+            />
+            <Route
+              exact
+              path="/author/reports/response-frequency/test/:testId?"
+              render={_props => <ResponseFrequency {..._props} settings={settings} />}
+            />
+            <Route
+              exact
+              path="/author/reports/performance-by-standards/test/:testId?"
+              render={_props => (
+                <PerformanceByStandards {..._props} settings={settings} pageTitle={loc} filters={ddfilter} />
+              )}
+            />
+            <Route
+              exact
+              path="/author/reports/performance-by-students/test/:testId?"
+              render={_props => (
+                <PerformanceByStudents
+                  {..._props}
+                  showFilter={showFilter}
+                  settings={settings}
+                  pageTitle={loc}
+                  filters={ddfilter}
+                />
+              )}
+            />
+          </ReportContaner>
+        </FlexContainer>
+      </>
     </FeaturesSwitch>
   );
 };

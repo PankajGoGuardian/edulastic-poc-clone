@@ -61,6 +61,7 @@ export const StyledFilterWrapper = styled.div`
   width: 230px;
   flex-shrink: 0;
   height: calc(100vh - 250px);
+  position: relative;
 
   .ant-select-selection {
     &__rendered {

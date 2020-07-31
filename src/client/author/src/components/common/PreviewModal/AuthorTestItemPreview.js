@@ -8,6 +8,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { ThemeProvider } from "styled-components";
+
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
 import { themes } from "../../../../../theme";
@@ -34,6 +35,7 @@ import {
   ReportIssueBtn
 } from "./styled";
 import QuestionPreviewDetails from "./QuestionPreviewDetails";
+import { ScratchpadTool, Scratchpad } from "../../../../../common/components/Scratchpad";
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -283,7 +285,7 @@ class AuthorTestItemPreview extends Component {
     // item preview popup
     // 90px is scratchpad toolbox height
     if (viewComponent === "authorPreviewPopup") {
-      const tempHeight = (isPassage && fullModal) ? "calc(100vh - 160px)" : fullModal ? "calc(100vh - 100px)" : "70vh";
+      const tempHeight = isPassage && fullModal ? "calc(100vh - 160px)" : fullModal ? "calc(100vh - 100px)" : "70vh";
       commonProps.style.height = showScratch ? `calc(${tempHeight} - 90px)` : tempHeight;
       return commonProps;
     }

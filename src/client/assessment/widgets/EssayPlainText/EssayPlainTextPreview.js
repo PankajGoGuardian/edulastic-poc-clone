@@ -71,12 +71,17 @@ const EssayPlainTextPreview = ({
     }
   }, [userAnswer]);
 
+  useEffect(() => {
+    if (!disableResponse) {
+      saveAnswer(text);
+    }
+  }, [text]);
+
   const handleTextChange = e => {
     const val = e.target.value;
     if (typeof val === "string") {
       setText(val);
       setWordCount(getWordCount(val));
-      saveAnswer(val);
     }
   };
 
@@ -118,9 +123,6 @@ const EssayPlainTextPreview = ({
         } else {
           val = text.slice(0, selection.start) + buffer + text.slice(selection.start);
           setText(val);
-        }
-        if (!disableResponse) {
-          saveAnswer(val);
         }
         break;
       }
@@ -201,7 +203,7 @@ const EssayPlainTextPreview = ({
             )}
             {!isPrintPreview && (
               <TextArea
-                ref={ref => {
+                inputRef={ref => {
                   node = ref;
                 }}
                 noBorder
@@ -302,7 +304,7 @@ const TextArea = styled(TextAreaInputStyled)`
   &.ant-input {
     &:focus,
     &:hover {
-      border: none;
+      border: none !important;
     }
   }
 `;

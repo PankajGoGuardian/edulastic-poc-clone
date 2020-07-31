@@ -14,7 +14,7 @@ class Options extends Component {
 
     return (
       <WidgetOptions
-        showScoring
+        showScoring={false}
         scoringTypes={[]}
         outerStyle={{ marginTop: 40 }}
         title={t("common.options.title")}

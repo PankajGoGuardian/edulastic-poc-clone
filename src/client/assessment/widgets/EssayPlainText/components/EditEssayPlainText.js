@@ -58,6 +58,7 @@ const EditEssayPlainText = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
+        showScoringSectionAnyRole
       >
         <Scoring
           scoringTypes={[]}

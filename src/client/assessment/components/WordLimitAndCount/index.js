@@ -24,9 +24,9 @@ const WordLimitAndCount = ({ onChange, selectValue, inputValue, t }) => {
     onChange("showWordLimit", val);
   };
 
-  const onChangeMaxWord = e => {
-    const val = parseInt(e?.target?.value, 10);
-    if ((!isNaN(e.target.value) && val > 0) || e.target.value === "") {
+  const onChangeMaxWord = value => {
+    const val = parseInt(value, 10);
+    if ((!isNaN(value) && val > 0) || value === "") {
       onChange("maxWord", val || "");
     }
   };

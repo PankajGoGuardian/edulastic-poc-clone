@@ -65,7 +65,7 @@ const AnswerBox = ({
 
     return validAnswers.push({
       index,
-      value: `${ans.value} ${unit}`,
+      value: `${ans.value}\\ ${unit}`,
       isMath: true
     });
   });

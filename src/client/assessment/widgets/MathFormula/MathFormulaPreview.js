@@ -403,7 +403,7 @@ class MathFormulaPreview extends Component {
                 answer={
                   item.isUnits && item.showDropdown
                     ? item.validation.validResponse.value[0].value.search("=") === -1
-                      ? `${item.validation.validResponse.value[0].value} ${correctUnit}`
+                      ? `${item.validation.validResponse.value[0].value}\\ ${correctUnit}`
                       : item.validation.validResponse.value[0].value.replace(/=/gm, `\\ ${correctUnit}=`)
                     : item.validation.validResponse.value[0].value
                 }
@@ -424,7 +424,7 @@ class MathFormulaPreview extends Component {
 
                   answer =
                     ans.value[0].value.search("=") === -1
-                      ? `${ans.value[0].value} ${altUnit}`
+                      ? `${ans.value[0].value}\\ ${altUnit}`
                       : ans.value[0].value.replace(/=/gm, `\\ ${altUnit}=`);
                 }
 

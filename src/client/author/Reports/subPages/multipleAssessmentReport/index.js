@@ -45,6 +45,8 @@ const MultipleAssessmentReportContainer = props => {
 
   const [firstLoad, setFirstLoad] = useState(true);
   const [MARFilterData, setMARFilterData] = useState({});
+  const [ddfilter, setDdFilter] = useState({});
+  const [selectedExtras, setSelectedExtras] = useState({});
 
   useEffect(
     () => () => {
@@ -59,6 +61,22 @@ const MultipleAssessmentReportContainer = props => {
       setMARFilterData({ ..._MARFilterData });
     }
   }, [showApply, _MARFilterData]);
+
+  useEffect(() => {
+    if (!showApply) {
+      setDdFilter({...selectedExtras});
+    }
+  }, [showApply, selectedExtras]);
+
+  const filterlist = extraFilterData[pageTitle] || [];
+
+  useEffect(() => {
+    const initalDdFilters = filterlist.reduce((acc, curr) => ({ ...acc, [curr.key]: "" }), {});
+    setSelectedExtras({ ...initalDdFilters });
+    if (!showApply) {
+      setDdFilter({ ...initalDdFilters });
+    }
+  }, [pageTitle]);
 
   const computeChartNavigationLinks = filt => {
     if (navigation.locToData[pageTitle]) {
@@ -117,32 +135,22 @@ const MultipleAssessmentReportContainer = props => {
     setShowApply(false);
   };
 
-  const filterlist = extraFilterData[pageTitle] || [];
-  const [ddfilter, setDdFilter] = useState({});
-  useEffect(() => {
-    setDdFilter(filterlist.reduce((acc, curr) => ({ ...acc, [curr.key]: "" }), {}));
-  }, [pageTitle]);
-
   const updateCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
+    setShowApply(true);
+    setSelectedExtras({
+      ...selectedExtras,
       [comData]: selected.key === "all" ? "" : selected.key
     });
   };
-
-  let extraFilters = [];
-  if (
-    pageTitle === "performance-over-time" ||
-    pageTitle === "peer-progress-analysis" ||
-    pageTitle === "student-progress"
-  ) {
-    extraFilters = filterlist.map(item => (
+  const pageTitleList = ["performance-over-time", "peer-progress-analysis", "student-progress"];
+  const extraFilters = pageTitleList.includes(pageTitle)
+    ? filterlist.map(item => (
       <SearchField key={item.key}>
         <FilterLabel>{item.title}</FilterLabel>
         <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
       </SearchField>
-    ));
-  }
+    ))
+    : [];
 
   return (
     <>

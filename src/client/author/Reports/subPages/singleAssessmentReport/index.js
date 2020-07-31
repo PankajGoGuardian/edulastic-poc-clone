@@ -8,6 +8,7 @@ import { Spin } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 
+import queryString from "query-string";
 import ResponseFrequency from "./ResponseFrequency";
 import AssessmentSummary from "./AssessmentSummary";
 import PeerPerformance from "./PeerPerformance";
@@ -27,7 +28,14 @@ import { setSARSettingsAction, getReportsSARSettings, resetSARSettingsAction } f
 import { updateCliUserAction } from "../../../../student/Login/ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
 import { ReportContaner, SearchField, FilterLabel, FilterButton } from "../../common/styled";
-import queryString from "query-string";
+
+const INITIAL_DD_FILTERS = {
+  gender: "all",
+  frlStatus: "all",
+  ellStatus: "all",
+  iepStatus: "all",
+  race: "all"
+};
 
 const SingleAssessmentReportContainer = props => {
   const {
@@ -49,6 +57,8 @@ const SingleAssessmentReportContainer = props => {
 
   const [firstLoad, setFirstLoad] = useState(true);
   const [isCliUser, setCliUser] = useState(cliUser || queryString.parse(location.search).cliUser);
+  const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS });
+  const [selectedExtras, setSelectedExtras] = useState({ ...INITIAL_DD_FILTERS });
 
   useEffect(() => {
     if (isCliUser) {
@@ -60,15 +70,13 @@ const SingleAssessmentReportContainer = props => {
     }
   }, []);
 
-  const [ddfilter, setDdFilter] = useState({
-    gender: "all",
-    frlStatus: "all",
-    ellStatus: "all",
-    iepStatus: "all",
-    race: "all"
-  });
+  useEffect(() => {
+    if (!showApply) {
+      setDdFilter({ ...selectedExtras });
+    }
+  }, [showApply, selectedExtras]);
 
-  const computeChartNavigationLinks = (sel, filt, isCliUser) => {
+  const computeChartNavigationLinks = (sel, filt, _isCliUser) => {
     if (navigation.locToData[loc]) {
       const arr = Object.keys(filt);
       const obj = {};
@@ -77,7 +85,7 @@ const SingleAssessmentReportContainer = props => {
         const val = filt[item] === "" ? "All" : filt[item];
         obj[item] = val;
       });
-      obj.cliUser = isCliUser;
+      obj.cliUser = _isCliUser;
       return next(navigation.navigation[navigation.locToData[loc].group], draft => {
         getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`);
       });
@@ -130,22 +138,26 @@ const SingleAssessmentReportContainer = props => {
     }
   };
 
+  const setShowApply = status => {
+    onRefineResultsCB(null, status, "applyButton");
+  };
+
   const updateCB = (event, selected, comData) => {
-    setDdFilter({
-      ...ddfilter,
+    setShowApply(true);
+    setSelectedExtras({
+      ...selectedExtras,
       [comData]: selected.key
     });
   };
-
-  let extraFilters = [];
-  if (loc === "peer-performance" || loc === "performance-by-standards" || loc === "performance-by-students") {
-    extraFilters = extraFilterData[loc].map(item => (
+  const locList = ["peer-performance", "performance-by-standards", "performance-by-students"];
+  const extraFilters = locList.includes(loc)
+    ? extraFilterData[loc].map(item => (
       <SearchField key={item.key}>
         <FilterLabel>{item.title}</FilterLabel>
         <ControlDropDown selectCB={updateCB} data={item.data} comData={item.key} by={item.data[0]} />
       </SearchField>
-    ));
-  }
+    ))
+    : [];
 
   return (
     <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
@@ -172,7 +184,7 @@ const SingleAssessmentReportContainer = props => {
             extraFilters={extraFilters}
             style={showFilter ? { display: "block" } : { display: "none" }}
             showApply={showApply}
-            setShowApply={status => onRefineResultsCB(null, status, "applyButton")}
+            setShowApply={setShowApply}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
             isCliUser={isCliUser}

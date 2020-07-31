@@ -212,7 +212,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 */
       question.selectScoringType(SCORING_TYPE.EXACT);
       question.selectScoringType(SCORING_TYPE.PARTIAL);
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
       // question.getMinScore().verifyNumInput(1);
@@ -493,7 +493,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
  */
       question.selectScoringType(SCORING_TYPE.EXACT);
       question.selectScoringType(SCORING_TYPE.PARTIAL);
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
       // question.getMinScore().verifyNumInput(1);
@@ -1041,15 +1041,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     it(" > [mcq_std_scoring]:test => default alternate answer check with exact scoring type", () => {
       question.header.edit();
 
-      //disable multi response
+      // disable multi response
       question.getMultipleResponse().click();
 
       question.checkChoiceSelected(queData.choices[0]);
 
       question.checkChoiceNotSelected(queData.alterate[0]);
-      //set correct answer point as "2"
+      // set correct answer point as "2"
       question.getPoints().type("{selectall}2");
-      //add a alternate answer - score by default 1
+      // add a alternate answer - score by default 1
       question.selectAlternatetab();
 
       question.checkChoiceSelected(queData.alterate[0]);
@@ -1083,10 +1083,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     it(" > [mcq_std_scoring]:test => default alternate answer check with partial scoring type", () => {
       question.header.edit();
 
-      //enable multi response
+      // enable multi response
       question.getMultipleResponse().click();
 
-      //add a alternate answer - score by default 1
+      // add a alternate answer - score by default 1
       question.selectAlternatetab();
 
       question.checkChoiceSelected(queData.alterate[0]);
@@ -1112,14 +1112,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .and("contain", queData.alterate[1]);
     });
     it(" > [mcq_std_scoring]:test => check priority of correct answer during evaluation", () => {
-      //in case both alternate and correct asnwer is chosen evaluation will be done with respect to correct answer
+      // in case both alternate and correct asnwer is chosen evaluation will be done with respect to correct answer
       const preview = question.header.preview();
       question.header.edit();
 
       question.checkChoiceSelected(queData.choices[0]);
 
       question.selectChoice(queData.choices[1]);
-      //add a alternate answer - score by default 1
+      // add a alternate answer - score by default 1
       question.selectAlternatetab();
 
       question.checkChoiceSelected(queData.alterate[0]);

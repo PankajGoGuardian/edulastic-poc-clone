@@ -1,4 +1,4 @@
-/// <reference types="Cypress" />
+// / <reference types="Cypress" />
 import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
 import MCQMultiplePage from "../../../../framework/author/itemList/questionType/mcq/mcqMultiplePage.js";
@@ -219,7 +219,7 @@ describe(`${FileHelper.getSpecName(
  */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
 
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
@@ -500,7 +500,7 @@ describe(`${FileHelper.getSpecName(
  */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
       // question.getCheckAnsAttempt().verifyNumInput(1);
       // question.getMinScore().verifyNumInput(1);
 
@@ -887,21 +887,21 @@ describe(`${FileHelper.getSpecName(
 
     it("Select multiple correct answer with exact score", () => {
       question.header.edit();
-      //set score as 3
+      // set score as 3
       question.getPoints().type("{selectall}3");
 
-      //select multiple correct answer
+      // select multiple correct answer
 
       question.selectChoice(queData.correct[0]);
 
       question.selectChoice(queData.alterate[0]);
 
-      //set score as 3
+      // set score as 3
       question.getPoints().type("{selectall}3");
 
-      //check answer in preview
+      // check answer in preview
       const preview = editItem.header.preview();
-      //select multiple correct answer
+      // select multiple correct answer
       question.selectAnswerChoice(queData.correct[0]);
       question.selectAnswerChoice(queData.alterate[0]);
 
@@ -945,7 +945,7 @@ describe(`${FileHelper.getSpecName(
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
 
-      //give wrong answer and validate
+      // give wrong answer and validate
 
       question.selectAnswerChoice(queData.correct[0]);
       question.selectAnswerChoice(queData.correct[1]);
@@ -962,12 +962,12 @@ describe(`${FileHelper.getSpecName(
     });
 
     it("Select partial correct answer", () => {
-      //change the scoring tye to partial
+      // change the scoring tye to partial
       question.header.edit();
 
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      //verify with partial correct answer
+      // verify with partial correct answer
       const preview = editItem.header.preview();
 
       question.selectAnswerChoice(queData.correct[0]);
@@ -986,7 +986,7 @@ describe(`${FileHelper.getSpecName(
         .then(() => {
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
-      //give all correct answer and validate
+      // give all correct answer and validate
 
       question.selectAnswerChoice(queData.correct[0]);
       question.selectAnswerChoice(queData.correct[1]);
@@ -1013,13 +1013,13 @@ describe(`${FileHelper.getSpecName(
 
       question.deselectChoice(queData.alterate[0]);
 
-      //add a alternate answer - score by default 1
+      // add a alternate answer - score by default 1
       question.addAlternate();
 
       question.selectChoice(queData.alterate[0]);
 
       question.selectChoice(queData.alterate[1]);
-      //set scoring type exact
+      // set scoring type exact
       question.selectScoringType(SCORING_TYPE.EXACT);
       const preview = question.header.preview();
       preview
@@ -1043,16 +1043,16 @@ describe(`${FileHelper.getSpecName(
         .and("contain", queData.alterate[0])
         .and("contain", queData.alterate[1]);
 
-      //set alternate answer point as 2
+      // set alternate answer point as 2
       question.header.edit();
       question.getPoints().type("{selectall}1");
       question.selectAlternatetab();
       question.getPoints().type("{selectall}2");
 
-      //set scoring type to partial
+      // set scoring type to partial
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      //check partial score for alternate answer
+      // check partial score for alternate answer
       question.header.preview();
       question.selectAnswerChoice(queData.alterate[0]);
       question.selectAnswerChoice(queData.choices[4]);
@@ -1073,7 +1073,7 @@ describe(`${FileHelper.getSpecName(
       question.checkChoiceSelected(queData.correct[0]);
 
       question.checkChoiceSelected(queData.correct[1]);
-      //change the score to 2
+      // change the score to 2
       question.getPoints().type("{selectall}2");
       question.selectScoringType(SCORING_TYPE.PARTIAL);
       question.getPanalty().type("{selectall}1");
@@ -1092,7 +1092,7 @@ describe(`${FileHelper.getSpecName(
       question.checkChoiceSelected(queData.correct[1]);
       question.getPoints().type("{selectall}3.6");
 
-      //for no rounding
+      // for no rounding
       question.selectRoundingType("Round down");
       question.header.preview();
       question.selectAnswerChoice(queData.correct[0]);
@@ -1108,7 +1108,7 @@ describe(`${FileHelper.getSpecName(
       question.checkChoiceSelected(queData.correct[1]);
       question.getPoints().type("{selectall}3.6");
 
-      //with score rounding
+      // with score rounding
       question.selectRoundingType("None");
       question.header.preview();
       question.selectAnswerChoice(queData.correct[0]);
@@ -1127,7 +1127,7 @@ describe(`${FileHelper.getSpecName(
 
       question.getPoints().type("{selectall}3.6");
 
-      //for no rounding
+      // for no rounding
       question.selectRoundingType("Round down");
       question.header.preview();
       question.selectAnswerChoice(queData.correct[0]);
@@ -1145,7 +1145,7 @@ describe(`${FileHelper.getSpecName(
       question.checkChoiceSelected(queData.correct[1]);
       question.getPoints().type("{selectall}3.6");
 
-      //with score rounding
+      // with score rounding
       question.selectRoundingType("None");
       question.header.preview();
       question.selectAnswerChoice(queData.correct[0]);

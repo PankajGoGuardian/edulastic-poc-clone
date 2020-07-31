@@ -89,9 +89,7 @@ class MCQStandardPage {
   getPoints = () => cy.get('[data-cy="points"]');
 
   addAlternate() {
-    cy.get("body")
-      .contains("Alternative Answer")
-      // .should("be.visible")
+    cy.get("[data-cy='alternate']")
       .click({ force: true });
     return this;
   }

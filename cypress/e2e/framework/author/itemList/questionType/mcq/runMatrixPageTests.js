@@ -95,7 +95,7 @@ const runMatrixPageTests = queData => {
       // delete alternate
       question.deleteAlternate();
 
-      question.getAlternateTabs().should("have.length", 0);
+      question.checkAlternateTabNotVisible();
 
       // check muplti response
       question.getMultipleResponse().click();

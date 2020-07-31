@@ -217,7 +217,7 @@ describe(`${FileHelper.getSpecName(
  */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
 
       // question.getCheckAnsAttempt().verifyNumInput(1);
       // question.getMinScore().verifyNumInput(1);
@@ -475,7 +475,7 @@ describe(`${FileHelper.getSpecName(
  */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
-      question.getPanalty().verifyNumInput(1);
+      question.getPanalty().verifyNumInput(0.5);
       // question.getCheckAnsAttempt().verifyNumInput(1);
       // question.getMinScore().verifyNumInput(1);
 
@@ -1011,7 +1011,7 @@ describe(`${FileHelper.getSpecName(
       question.selectAnswerChoice(queData.correct[0]);
       question.selectAnswerChoice(queData.alterate[0]);
       question.selectAnswerChoice(queData.alterate[1]);
-      preview.checkScore("1.5/2");
+      preview.checkScore("0/2");
 
       preview
         .getClear()

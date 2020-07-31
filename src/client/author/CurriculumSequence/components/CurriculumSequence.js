@@ -367,8 +367,8 @@ class CurriculumSequence extends Component {
       activeRightPanel,
       role,
       isStudent,
-      setShowRightPanel,
       current,
+      setShowRightPanel,
       toggleManageContent,
       checkPreviouslyCustomized
     } = this.props;
@@ -376,7 +376,6 @@ class CurriculumSequence extends Component {
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
 
     const isManageContentActive = activeRightPanel === "manageContent";
-    setShowRightPanel(true);
 
     // if (isManageContentActive && manageContentDirty) {
     //   message.warn("Changes left unsaved. Please save it first");
@@ -400,6 +399,7 @@ class CurriculumSequence extends Component {
         }
       });
     } else {
+      setShowRightPanel(true);
       toggleManageContent(contentName);
     }
   };
@@ -453,8 +453,8 @@ class CurriculumSequence extends Component {
     const isAuthoringFlowReview = current === "review";
     if (isAuthoringFlowReview) {
       setActiveRightPanelView("manageContent");
-    } else if (!urlHasUseThis) {
-      setShowRightPanel(true);
+    } else {
+      setShowRightPanel(!!urlHasUseThis);
       setActiveRightPanelView("summary");
     }
   }

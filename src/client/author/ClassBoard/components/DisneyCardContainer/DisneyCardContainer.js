@@ -95,7 +95,8 @@ class DisneyCardContainer extends Component {
       dueDate,
       detailedClasses,
       classId,
-      recentAttemptsGrouped
+      recentAttemptsGrouped,
+      testActivities
     } = this.props;
 
     const noDataNotification = () => (
@@ -153,6 +154,16 @@ class DisneyCardContainer extends Component {
           status.status = "Absent";
           status.color = red;
         }
+
+        const score = (_status, attemptScore) => {
+          /* for redirected, old attempts status will show in numbers like START = 0, SUBMITTED = 1, ABSENT = 2 */
+          if (_status === "absent" || _status === 2 || _status === "notStarted") {
+            return <span style={{ marginTop: "-3px" }}>-</span>;
+          }
+          return <span>{round(attemptScore || student.score || student._score, 2) || 0}</span>;
+        };
+
+        const currentTestActivity = testActivities?.find(attempt => student.studentId == attempt.userId) || {};
 
         const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
 
@@ -309,7 +320,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {round(student.score, 2) || 0} / {student.maxScore || 0}
+                        {score(student.status)}/ {student.maxScore || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>
@@ -342,7 +353,7 @@ class DisneyCardContainer extends Component {
                     })}
                 </PaginationInfoT>
               </div>
-              {recentAttemptsGrouped?.[student.studentId]?.length > 0 &&
+              {(recentAttemptsGrouped?.[student.studentId]?.length > 0 || student.status === "redirected") &&
                 hoverActiveStudentActive === student.studentId && (
                   <RecentAttemptsContainer>
                     <PaginationInfoS>
@@ -352,19 +363,42 @@ class DisneyCardContainer extends Component {
                           <StyledParaFF>{responseLink}</StyledParaFF>
                         </StyledFlexDiv>
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
-                          <AttemptDiv>
+                          {student.status === "redirected" && (
+                            <AttemptDiv>
+                              <StyledParaSSS>&nbsp;</StyledParaSSS>
+                              <StyledParaSS style={{ fontSize: "12px" }}>Not Started</StyledParaSS>
+                              <p style={{ fontSize: "12px" }}>
+                                Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 2}
+                              </p>
+                            </AttemptDiv>
+                          )}
+                          <AttemptDiv
+                            className="attempt-container"
+                            onClick={e =>
+                              viewResponses(
+                                e,
+                                student.studentId,
+                                student.testActivityId,
+                                (recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1
+                              )
+                            }
+                          >
                             <StyledParaSS>
-                              {round(student.score || student._score, 2) || 0} / {student.maxScore || 0}
+                              {score(currentTestActivity.status)} / {student.maxScore || 0}
                             </StyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                             </StyledParaSSS>
-                            <p>Attempt {recentAttemptsGrouped[student.studentId][0].number + 1}</p>
+                            <p>Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 1}</p>
                           </AttemptDiv>
                           {recentAttemptsGrouped?.[student.studentId].map(attempt => (
-                            <AttemptDiv key={attempt._id || attempt.id}>
+                            <AttemptDiv
+                              className="attempt-container"
+                              key={attempt._id || attempt.id}
+                              onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
+                            >
                               <StyledParaSS>
-                                {round(attempt.score, 2) || 0} / {attempt.maxScore || 0}
+                                {score(attempt.status, attempt.score)} / {attempt.maxScore || 0}
                               </StyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%
@@ -403,7 +437,8 @@ const withConnect = connect(state => ({
   isLoading: get(state, "classResponse.loading"),
   testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state),
-  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {}
+  recentAttemptsGrouped: state?.author_classboard_testActivity?.data?.recentTestActivitiesGrouped || {},
+  testActivities: state?.author_classboard_testActivity?.data?.testActivities || {}
 }));
 
 export default compose(

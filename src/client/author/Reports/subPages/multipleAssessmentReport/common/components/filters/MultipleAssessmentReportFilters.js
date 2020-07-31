@@ -92,13 +92,13 @@ const SingleAssessmentReportFilters = ({
     }
   }, []);
 
-  const getMARFilterData = (filters) => {
-    let schoolIds = ""
+  const getMARFilterData = _filters => {
+    let schoolIds = "";
     if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
       schoolIds = get(user, "institutionIds", []).join(",");
     }
-    getMARFilterDataRequest({...filters, schoolIds});
-  } 
+    getMARFilterDataRequest({ ..._filters, schoolIds });
+  };
   let processedTestIds;
   let dropDownData;
 
@@ -230,7 +230,6 @@ const SingleAssessmentReportFilters = ({
       filters: { ...filters },
       selectedTest: testIds
     };
-    setShowApply(false);
     _onGoClick(settings);
   };
 

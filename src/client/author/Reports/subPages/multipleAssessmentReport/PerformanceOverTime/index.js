@@ -7,7 +7,6 @@ import { getUserRole, getUserDetails } from "../../../../../student/Login/ducks"
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getCsvDownloadingState } from "../../../ducks";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
-import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { usefetchProgressHook } from "../common/hooks";
 import analyseByData from "../common/static/json/analyseByDropDown.json";
 import ProgressChart from "./components/charts/ProgressChart";
@@ -75,7 +74,6 @@ const enhance = connect(
   state => ({
     performanceOverTime: getReportsPerformanceOverTime(state),
     loading: getReportsPerformanceOverTimeLoader(state),
-    MARFilterData: getReportsMARFilterData(state),
     role: getUserRole(state),
     user: getUserDetails(state),
     isCsvDownloading: getCsvDownloadingState(state)

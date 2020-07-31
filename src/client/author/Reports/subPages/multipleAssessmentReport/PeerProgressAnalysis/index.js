@@ -9,7 +9,6 @@ import { downloadCSV } from "../../../common/util";
 import { getCsvDownloadingState } from "../../../ducks";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
-import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { compareByMap, getCompareByOptions, parseTrendData } from "../common/utils/trend";
 import Filters from "./components/table/Filters";
 import {
@@ -161,7 +160,6 @@ const enhance = connect(
     loading: getReportsPeerProgressAnalysisLoader(state),
     role: getUserRole(state),
     user: getUserDetails(state),
-    MARFilterData: getReportsMARFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state)
   }),
   {

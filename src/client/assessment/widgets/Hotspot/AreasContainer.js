@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep, isEqual } from "lodash";
-
+import produce from "immer";
 import { FlexContainer } from "@edulastic/common";
 import { IconEraseText, IconRedo, IconUndo, IconDraw, IconTrash } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -53,7 +53,17 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
 
     setHistoryTab(newHistory.length - 1);
 
-    setQuestionData({ ...itemData, areas: newAreas });
+    setQuestionData(
+      produce(itemData, draft => {
+        draft.areas = newAreas;
+        draft.validation.validResponse.value = [];
+        if (draft.validation.altResponses) {
+          draft.validation.altResponses.forEach(altResponse => {
+            altResponse.value = [];
+          });
+        }
+      })
+    );
   };
 
   const handleUndoClick = () => {

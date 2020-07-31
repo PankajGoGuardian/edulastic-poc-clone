@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import produce from "immer";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -30,10 +31,17 @@ const SvgDeleteContainer = React.memo(({ itemData, width, height, imageSrc, setQ
 
   const handleDelete = i => () => {
     setOverPolygon(null);
-    setQuestionData({
-      ...itemData,
-      areas: areas.filter((area, index) => i !== index)
-    });
+    setQuestionData(
+      produce(itemData, draft => {
+        draft.areas = areas.filter((area, index) => i !== index);
+        draft.validation.validResponse.value = [];
+        if (draft.validation.altResponses) {
+          draft.validation.altResponses.forEach(altResponse => {
+            altResponse.value = [];
+          });
+        }
+      })
+    );
   };
 
   return (

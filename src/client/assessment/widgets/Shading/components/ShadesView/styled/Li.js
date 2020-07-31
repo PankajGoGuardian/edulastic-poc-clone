@@ -31,21 +31,6 @@ const getItemBackground = (alpha, hoverBg = false) => ({
   return hoverBg ? theme.widgets.shading.liBgHoverColor : theme.widgets.shading.liBgColor;
 };
 
-const getIcon = ({ showAnswers, correct, locked, checkAnswers, active }) => {
-  const isCheckTick = checkAnswers && active && !locked && correct;
-  const isShowTick = showAnswers && correct && !locked;
-  const isCheckCross = checkAnswers && active && !locked && !correct;
-  const isShowCross = showAnswers && !correct && active && !locked;
-
-  if (isCheckTick || isShowTick) {
-    return "\\f00c";
-  }
-  if (isCheckCross || isShowCross) {
-    return "\\f00d";
-  }
-  return "";
-};
-
 const getBorderWidth = ({ active, checkAnswers, correct, locked, border }) => {
   if (border !== "full") {
     return 0;
@@ -97,17 +82,5 @@ export const Li = styled.li`
       z-index: 11;
       border: 3px solid ${props.theme.widgets.shading.liBorderHoverColor};
     `}
-  }
-  &::before {
-    font-family: ${props => props.theme.widgets.shading.liIconFontFamily};
-    content: "${getIcon}";
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 20;
-    font-size: ${props => props.theme.widgets.shading.liIconFontSize};
-    transform: translate(-50%, -50%);
-    color: ${props => props.theme.widgets.shading.liIconColor};
   }
 `;

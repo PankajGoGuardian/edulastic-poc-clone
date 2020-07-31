@@ -17,8 +17,6 @@ import {
   setFiltersAction,
   getSPRFilterDataRequestAction,
   getReportsSPRFilterData,
-  setPbIdAction,
-  setSpIdAction,
   setSelectedClassAction,
   setStudentAction
 } from "../../filterDataDucks";
@@ -26,7 +24,6 @@ import { getFilterOptions } from "../../utils/transformers";
 import { getFullNameFromAsString } from "../../../../../../../common/utils/helpers";
 import {
   StyledFilterWrapper,
-  StyledGoButton,
   GoButtonWrapper,
   SearchField,
   ApplyFitlerLabel,
@@ -48,8 +45,6 @@ const StudentProfileReportsFilters = ({
   standardProficiencyRequired,
   setFilters,
   setStudent,
-  setPerformanceBand,
-  setStandardsProficiency,
   selectedClass,
   setSelectedClass,
   defaultTerm
@@ -142,27 +137,14 @@ const StudentProfileReportsFilters = ({
     }
   };
 
-  const onUpdateTerm = ({ key }) => {
+  const handleFilterChange = (field, { key }) => {
     const obj = {
       ...filters,
-      termId: key
+      [field]: key
     };
     setFilters(obj);
-  };
-  const onUpdateCourse = ({ key }) => {
-    const obj = {
-      ...filters,
-      courseId: key
-    };
-    setFilters(obj);
-  };
-
-  const onChangePerformanceBand = ({ key }) => setPerformanceBand(key);
-  const onChangeStandardsProficiency = ({ key }) => setStandardsProficiency(key);
-
-  const onGoClick = () => {
     const settings = {
-      filters: { ...filters },
+      filters: obj,
       selectedStudent: student
     };
     _onGoClick(settings);
@@ -172,13 +154,12 @@ const StudentProfileReportsFilters = ({
     <StyledFilterWrapper style={style}>
       <GoButtonWrapper>
         <ApplyFitlerLabel>Filters</ApplyFitlerLabel>
-        <StyledGoButton onClick={onGoClick}>APPLY</StyledGoButton>
       </GoButtonWrapper>
       <SearchField>
         <FilterLabel>School Year</FilterLabel>
         <ControlDropDown
           by={filters.termId}
-          selectCB={onUpdateTerm}
+          selectCB={value => handleFilterChange("termId", value)}
           data={termOptions}
           prefix="School Year"
           showPrefixOnSelected={false}
@@ -193,10 +174,10 @@ const StudentProfileReportsFilters = ({
         <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={student} selectedClasses={selectedClasses} />
       </SearchField>
       <SearchField>
-        <FilterLabel>Subject</FilterLabel>
+        <FilterLabel>Course</FilterLabel>
         <ControlDropDown
           by={filters.courseId}
-          selectCB={onUpdateCourse}
+          selectCB={value => handleFilterChange("courseId", value)}
           data={courseOptions}
           prefix="Courses"
           showPrefixOnSelected={false}
@@ -207,7 +188,7 @@ const StudentProfileReportsFilters = ({
           <FilterLabel>Performance Band</FilterLabel>
           <ControlDropDown
             by={filters.performanceBandProfileId}
-            selectCB={onChangePerformanceBand}
+            selectCB={value => handleFilterChange("performanceBandProfileId", value)}
             data={profiles.map(p => ({ key: p._id, title: p.name }))}
             prefix="Performance Band"
             showPrefixOnSelected={false}
@@ -219,7 +200,7 @@ const StudentProfileReportsFilters = ({
           <FilterLabel>Standard Proficiency</FilterLabel>
           <ControlDropDown
             by={filters.standardsProficiencyProfileId}
-            selectCB={onChangeStandardsProficiency}
+            selectCB={value => handleFilterChange("standardsProficiencyProfileId", value)}
             data={standardProficiencyList}
             prefix="Standard Proficiency"
             showPrefixOnSelected={false}
@@ -249,9 +230,7 @@ const enhance = connect(
     receiveStudentsListAction,
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
-    setSelectedClass: setSelectedClassAction,
-    setPerformanceBand: setPbIdAction,
-    setStandardsProficiency: setSpIdAction
+    setSelectedClass: setSelectedClassAction
   }
 );
 

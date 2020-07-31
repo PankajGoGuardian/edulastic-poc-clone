@@ -20,8 +20,6 @@ const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR = "[reports] get reports spr st
 const SET_FILTERS = "[reports] set spr filters";
 const SET_STUDENT_ID = "[reports] set spr student";
 const SET_SELECTED_CLASS = "[reports] set selected class";
-const SET_PB_ID = "[reports] set performance band id";
-const SET_SP_ID = "[reports] set standards proficiency id";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -31,8 +29,6 @@ export const setPrevSPRFilterDataAction = createAction(SET_REPORTS_PREV_SPR_FILT
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setStudentAction = createAction(SET_STUDENT_ID);
 export const setSelectedClassAction = createAction(SET_SELECTED_CLASS);
-export const setSpIdAction = createAction(SET_SP_ID);
-export const setPbIdAction = createAction(SET_PB_ID);
 
 export const getSPRStudentDataRequestAction = createAction(GET_REPORTS_SPR_STUDENT_DATA_REQUEST);
 
@@ -160,18 +156,13 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [SET_SELECTED_CLASS]: (state, { payload }) => {
     state.selectedClass = payload;
   },
-  [SET_PB_ID]: (state, { payload }) => {
-    state.filters.performanceBandProfileId = payload;
-  },
-  [SET_SP_ID]: (state, { payload }) => {
-    state.filters.standardsProficiencyProfileId = payload;
-  },
   [SET_REPORTS_PREV_SPR_FILTER_DATA]: (state, { payload }) => {
     state.prevSPRFilterData = payload;
   },
   [RESET_REPORTS_SPR_FILTER_DATA]: state => {
     state.SPRFilterData = {};
   },
+  // eslint-disable-next-line no-unused-vars
   [RESET_ALL_REPORTS]: state => {
     state = initialState;
   },

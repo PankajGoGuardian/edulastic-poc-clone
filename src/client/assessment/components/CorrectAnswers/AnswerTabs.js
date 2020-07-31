@@ -4,7 +4,7 @@ import { FlexContainer, Tab, Tabs } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClose } from "./styled/IconClose";
 
-const AnswerTabs = ({ t, onTabChange, onCloseTab, correctTab, validation }) => {
+const AnswerTabs = ({ t, onTabChange, onCloseTab, correctTab, validation, mixAndMatch }) => {
   const hasAlt = !isEmpty(validation?.altResponses);
   if (!hasAlt) {
     return null;
@@ -27,7 +27,9 @@ const AnswerTabs = ({ t, onTabChange, onCloseTab, correctTab, validation }) => {
   );
 
   // +1 is correctAnswer, numOfAnswers is always greater than 1.
-  const numOfAnswers = (validation?.altResponses?.length || 0) + 1;
+  // mixAndMatch from Text Entry item, we need to show only one
+  // alternative answer tab if mixAndMatch is true.
+  const numOfAnswers = (mixAndMatch ? 1 : validation?.altResponses?.length || 0) + 1;
   const tabs = new Array(numOfAnswers).fill(true).map((_, i) => {
     const tabLabel = i === 0 ? t("component.correctanswers.correct") : renderLabel(i);
     return <Tab key={i} label={tabLabel} type="primary" />;

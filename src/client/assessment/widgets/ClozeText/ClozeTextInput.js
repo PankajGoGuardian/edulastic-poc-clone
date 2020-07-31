@@ -103,8 +103,6 @@ const ClozeTextInput = ({ resprops, id }) => {
     height: btnStyle.height
   };
 
-  const setInputRef = node => console.log(node);
-
   return (
     <CustomInput key={id}>
       <AutoExpandInput
@@ -119,7 +117,6 @@ const ClozeTextInput = ({ resprops, id }) => {
         style={{ ...btnStyle, padding: "4px 10px" }}
         placeholder={btnStyle.placeholder}
         characterMap={item.characterMap}
-        setRef={setInputRef}
       />
 
       {item.characterMap && (

@@ -160,6 +160,7 @@ class SetCorrectAnswers extends Component {
     if (validation.mixAndMatch && currentTab > 0) {
       return (
         <MixMatchCorrectAnswer
+          item={item}
           uiStyle={uiStyle}
           validResponse={validation.validResponse}
           alternateResponse={validation.altResponses}
@@ -212,7 +213,7 @@ class SetCorrectAnswers extends Component {
         onChangePoints={this.updateScore}
         points={this.response.score}
         isCorrectAnsTab={currentTab === 0}
-        hidePoint={item?.validation?.mixAndMatch && currentTab > 0}
+        mixAndMatch={item?.validation?.mixAndMatch}
       >
         <TabContainer>{this.renderResponses}</TabContainer>
       </CorrectAnswers>

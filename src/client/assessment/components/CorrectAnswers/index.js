@@ -26,9 +26,10 @@ class CorrectAnswers extends Component {
       cleanSections,
       validation,
       onAdd,
-      hidePoint,
+      mixAndMatch,
       ...rest
     } = this.props;
+    const hidePoint = mixAndMatch && correctTab > 0;
 
     return (
       <div
@@ -41,6 +42,7 @@ class CorrectAnswers extends Component {
         <FlexContainer justifyContent="space-between" marginBottom="16px">
           <FlexContainer flexDirection="column">
             <AnswerTabs
+              mixAndMatch={mixAndMatch}
               onTabChange={onTabChange}
               onCloseTab={onCloseTab}
               correctTab={correctTab}

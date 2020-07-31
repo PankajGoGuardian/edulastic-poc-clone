@@ -302,12 +302,14 @@ class Scoring extends Component {
         )}
 
         {questionData.rubrics && userFeatures.gradingrubrics && (
-          <StyledTag>
-            <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
-            <span onClick={() => dissociateRubricFromQuestion()}>
-              <Icon type="close" />
-            </span>
-          </StyledTag>
+          <RubricsContainer>
+            <StyledTag>
+              <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
+              <span onClick={() => dissociateRubricFromQuestion()}>
+                <Icon type="close" />
+              </span>
+            </StyledTag>
+          </RubricsContainer>
         )}
 
         <Row gutter={24} mb="0">
@@ -406,6 +408,10 @@ const enhance = compose(
 );
 
 export default enhance(Scoring);
+
+export const RubricsContainer = styled.div`
+  margin-bottom: 20px;
+`;
 
 export const StyledTag = styled.div`
   display: inline-block;

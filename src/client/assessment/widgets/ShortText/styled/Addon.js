@@ -10,9 +10,9 @@ export const Addon = styled.div`
   user-select: none;
   position: absolute;
   right: 1px;
-  top: 2px;
+  top: 1px;
   width: 30px;
-  height: 36px;
+  height: 30px;
 
   :hover {
     background: ${grey};

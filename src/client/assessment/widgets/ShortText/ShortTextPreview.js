@@ -57,10 +57,13 @@ const ShortTextPreview = ({
     }
   }, [userAnswer]);
 
+  useEffect(() => {
+    saveAnswer(text);
+  }, [text]);
+
   const handleTextChange = e => {
     const val = e.target.value;
     setText(val);
-    saveAnswer(val);
   };
 
   const handleSelect = e => {

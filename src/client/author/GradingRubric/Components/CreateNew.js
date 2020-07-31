@@ -95,7 +95,7 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable }) =>
 
       <RubricFooter>
         {isEditable && (
-          <CustomStyleBtn margin="0px" onClick={handleAddCriteria}>
+          <CustomStyleBtn margin="0px" onClick={handleAddCriteria} width="175px">
             <span>
               <Icon type="plus" />
             </span>

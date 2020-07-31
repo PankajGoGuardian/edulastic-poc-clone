@@ -1,15 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { Menu, Dropdown, Button, message, Tooltip } from 'antd';
+import { Menu, Dropdown, Button, message, Tooltip } from "antd";
 import { IconDownEmptyArrow, IconArrowLeft } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
-const SortMenu = ({
-  options,
-  onSelect,
-  sortBy,
-  sortDir
-}) => {
+const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
   const sortBy2 = options.find(i => i.value === sortBy);
   const handleMenuClick = e => onSelect(e.key, sortDir);
   const onSort = () => onSelect(sortBy2.value, sortDir === "desc" ? "asc" : "desc");
@@ -17,26 +12,26 @@ const SortMenu = ({
   const menu = (
     <Menu onClick={handleMenuClick}>
       {options.map(option => (
-        <Menu.Item key={option.value}>
-          {option.text}
-        </Menu.Item>
+        <Menu.Item key={option.value}>{option.text}</Menu.Item>
       ))}
     </Menu>
   );
   return (
     <FlexContainer>
-      <StyledLabel onClick={onSort}>Sort by <StyledSortIcon dir={sortDir}/></StyledLabel>
+      <StyledLabel data-cy="sort-button" onClick={onSort}>
+        Sort by <StyledSortIcon dir={sortDir} />
+      </StyledLabel>
       <StyledDropdown overlay={menu}>
-        <Button>
+        <Button data-cy="sort-dropdown">
           {sortBy2?.text} <IconDownEmptyArrow />
         </Button>
       </StyledDropdown>
     </FlexContainer>
-  ) 
+  );
 };
 
 const StyledSortIcon = styled(IconArrowLeft)`
-  transform: ${({dir}) => dir === 'desc' ? "rotate(-90deg)" : "rotate(90deg)"};
+  transform: ${({ dir }) => (dir === "desc" ? "rotate(-90deg)" : "rotate(90deg)")};
 `;
 
 const StyledLabel = styled.span`

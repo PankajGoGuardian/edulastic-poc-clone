@@ -1,6 +1,7 @@
 import CypressHelper from "../util/cypressHelpers";
 import { DOK } from "../constants/questionAuthoring";
 import Helpers from "../util/Helpers";
+import { sortOptions } from "../constants/questionTypes";
 
 export default class SearchFilters {
   // *** ELEMENTS START ***
@@ -52,6 +53,10 @@ export default class SearchFilters {
 
   getFilterButtonByAttr = attr => cy.get(`[data-cy="${attr}"]`);
 
+  getSortButton = () => cy.get('[data-cy="sort-button"]');
+
+  getSortDropdown = () => cy.get('[data-cy="sort-dropdown"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -63,19 +68,26 @@ export default class SearchFilters {
 
   waitForSearchResponse = () => cy.wait("@search").then(xhr => expect(xhr.status).to.eq(200));
 
-  getAuthoredByMe = () => {
+  getAuthoredByMe = (setSortOptions = true, option) => {
     this.routeSearch();
     cy.xpath("//li[text()='Authored by me']").click();
-    cy.wait(1000);
     this.waitForSearchResponse();
+    if (setSortOptions) {
+      this.setSortButtonInDescOrder();
+      this.setSortOption(option);
+    }
   };
 
-  clearAll = () => {
+  clearAll = (setSortOptions = true, option) => {
     const dummyCharToType = Helpers.getRamdomString(2).toUpperCase();
     this.routeSearch();
     this.typeInSearchBox(dummyCharToType);
     cy.get('[data-cy="clearAll"]').click({ force: true });
     cy.wait("@search").then(() => this.getSearchBar().should("not.contain", dummyCharToType));
+    if (setSortOptions) {
+      this.setSortButtonInDescOrder();
+      this.setSortOption(option);
+    }
   };
 
   setGrades = grades => {
@@ -159,6 +171,34 @@ export default class SearchFilters {
         .should("have.length", 0);
     });
   };
+
+  setSortButtonInDescOrder = () =>
+    this.getSortButton()
+      .find("svg")
+      .then($ele => {
+        if ($ele.attr("dir") === "asc")
+          cy.wrap($ele)
+            .click({ force: true })
+            .then(() => this.waitForSearchResponse());
+      });
+
+  setSortButtonInAsceOrder = () =>
+    this.getSortButton()
+      .find("svg")
+      .then($ele => {
+        if ($ele.attr("dir") === "des")
+          cy.wrap($ele)
+            .click({ force: true })
+            .then(() => this.waitForSearchResponse());
+      });
+
+  setSortOption = (option = sortOptions.Recency) =>
+    this.getSortDropdown().then($ele => {
+      if ($ele.text().trim() !== option) {
+        this.selectOptionInSortDropDown(option);
+        this.waitForSearchResponse();
+      }
+    });
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -266,5 +306,12 @@ export default class SearchFilters {
   verfifyActivePageIs = pageNo =>
     this.getPaginationButtonByPageIndex(pageNo).should("have.class", "ant-pagination-item-active");
 
+  selectOptionInSortDropDown = option => {
+    this.getSortDropdown().click({ force: true });
+    cy.wait(300);
+    cy.get(".ant-dropdown-menu-item").then($ele => {
+      cy.wrap($ele.filter((i, ele) => Cypress.$(ele).text() === option)).click({ force: true });
+    });
+  };
   // *** APPHELPERS END ***
 }

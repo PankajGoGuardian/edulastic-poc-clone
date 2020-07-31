@@ -132,6 +132,14 @@ export const COLLECTION = {
   public: "Public Library"
 };
 
+export const sortOptions = {
+  relevance: "Relevance",
+  Popularity: "Popularity",
+  Recency: "Recency",
+  Name: "Name",
+  Likes: "Likes"
+};
+
 export const questionTypeMap = {
   "Multiple Choice": [
     "Multiple choice - standard",

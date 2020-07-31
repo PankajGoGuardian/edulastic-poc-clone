@@ -126,7 +126,7 @@ const menuItems = [
   }
 ];
 
-const libraryItems = ["library", "Item Bank", "Test Library", "PlayList Library"];
+const libraryItems = ["library", "Item Bank", "Test", "Playlist"];
 
 // Only "My Playlist" and assignment screens are visible in mobile
 const allowedPathInMobile = ["assignments", "playlists/playlist"];

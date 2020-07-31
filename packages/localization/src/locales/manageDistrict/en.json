@@ -35,6 +35,8 @@
     "student": "Student",
     "section": "Section",
     "deactivateschool": "Deactivate School",
+    "approveSchool": "Approve School",
+    "unapproveSchool": "Un-approve School",
     "createnewschool": "Create New School >",
     "updateschool": "Update School >",
     "components": {

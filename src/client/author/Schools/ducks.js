@@ -2,9 +2,9 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { schoolApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { get, keyBy } from "lodash";
+import * as Sentry from "@sentry/browser";
 
 const RECEIVE_SCHOOLS_REQUEST = "[school] receive data request";
 const RECEIVE_SCHOOLS_SUCCESS = "[school] receive data success";
@@ -18,6 +18,8 @@ const CREATE_SCHOOLS_ERROR = "[school] create data error";
 const DELETE_SCHOOLS_REQUEST = "[school] delete data request";
 const DELETE_SCHOOLS_SUCCESS = "[school] delete data success";
 const DELETE_SCHOOLS_ERROR = "[school] delete data error";
+const UPDATE_SCHOOL_APPROVAL_REQUEST = "[school] update school approval request";
+const UPDATE_SCHOOL_APPROVAL_STATUS_SUCCESS = "[school] update school approval status success";
 
 export const receiveSchoolsAction = createAction(RECEIVE_SCHOOLS_REQUEST);
 export const receiveSchoolsSuccessAction = createAction(RECEIVE_SCHOOLS_SUCCESS);
@@ -31,8 +33,10 @@ export const createSchoolsErrorAction = createAction(CREATE_SCHOOLS_ERROR);
 export const deleteSchoolsAction = createAction(DELETE_SCHOOLS_REQUEST);
 export const deleteSchoolsSuccessAction = createAction(DELETE_SCHOOLS_SUCCESS);
 export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
+export const updateSchoolApprovalRequestAction = createAction(UPDATE_SCHOOL_APPROVAL_REQUEST);
+export const updateSchoolApprovalStatusSuccess = createAction(UPDATE_SCHOOL_APPROVAL_STATUS_SUCCESS);
 
-//selectors
+// selectors
 const stateSchoolsSelector = state => state.schoolsReducer;
 export const getSchoolsSelector = createSelector(
   stateSchoolsSelector,
@@ -65,11 +69,11 @@ export const reducer = createReducer(initialState, {
       let school = {};
       school = { ...row };
 
-      school["districtId"] = row._source.districtId;
+      school.districtId = row._source.districtId;
       school.name = row._source.name;
       if (row._source.hasOwnProperty("location")) {
         const location = row._source.location;
-        Object.keys(location).map((key, value) => {
+        Object.keys(location).map(key => {
           school[key] = location[key];
         });
       }
@@ -113,7 +117,8 @@ export const reducer = createReducer(initialState, {
           ...payload.location
         };
         return { ...school, ...newData };
-      } else return school;
+      }
+      return school;
     });
 
     state.update = payload;
@@ -158,16 +163,14 @@ export const reducer = createReducer(initialState, {
           isFitFiltered = false;
           break;
         }
-      } else {
-        if (
-          createdSchoolData[keys[i]]
-            .toString()
-            .toLowerCase()
-            .indexOf(searchData[keys[i]].value.toString().toLowerCase()) < 0
-        ) {
-          isFitFiltered = false;
-          break;
-        }
+      } else if (
+        createdSchoolData[keys[i]]
+          .toString()
+          .toLowerCase()
+          .indexOf(searchData[keys[i]].value.toString().toLowerCase()) < 0
+      ) {
+        isFitFiltered = false;
+        break;
       }
     }
 
@@ -218,6 +221,14 @@ export const reducer = createReducer(initialState, {
   [DELETE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.deleting = false;
     state.deleteError = payload.error;
+  },
+  [UPDATE_SCHOOL_APPROVAL_STATUS_SUCCESS]: (state, { payload }) => {
+    const { schoolIds, isApprove } = payload;
+    state.data.forEach(school => {
+      if (schoolIds.includes(school._id)) {
+        school.isApproved = isApprove;
+      }
+    });
   }
 });
 
@@ -228,7 +239,7 @@ function* receiveSchoolsSaga({ payload }) {
     yield put(receiveSchoolsSuccessAction(schools));
   } catch (err) {
     const errorMessage = "Receive Schools is failing!";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(receiveSchoolsErrorAction({ error: errorMessage }));
   }
 }
@@ -239,7 +250,7 @@ function* updateSchoolsSaga({ payload }) {
     yield put(updateSchoolsSuccessAction(updateSchool));
   } catch (err) {
     const errorMessage = "Update School is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(updateSchoolsErrorAction({ error: errorMessage }));
   }
 }
@@ -256,7 +267,7 @@ function* createSchoolsSaga({ payload }) {
     );
   } catch (err) {
     const errorMessage = "Create School is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(createSchoolsErrorAction({ error: errorMessage }));
   }
 }
@@ -265,12 +276,24 @@ function* deleteSchoolsSaga({ payload }) {
   try {
     // for (let i = 0; i < payload.length; i++) {
     yield call(schoolApi.deleteSchool, payload);
-    notification({ type: "success", messagKey:"schoolSucessfullyDeactivated"});
+    notification({ type: "success", messagKey: "schoolSucessfullyDeactivated" });
     yield put(deleteSchoolsSuccessAction(payload.schoolIds));
   } catch (err) {
     const errorMessage = "Delete School is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(deleteSchoolsErrorAction({ deleteError: errorMessage }));
+  }
+}
+
+function* updateSchoolApprovalRequestSaga({ payload }) {
+  try {
+    yield call(schoolApi.updateSchoolApprovalStatus, payload);
+    yield put(updateSchoolApprovalStatusSuccess(payload));
+    notification({ type: "success", msg: "School approval status updated successfully." });
+  } catch (err) {
+    notification({ msg: "Failed to update School approval status" });
+    console.error(err);
+    Sentry.captureException(err);
   }
 }
 
@@ -279,4 +302,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(UPDATE_SCHOOLS_REQUEST, updateSchoolsSaga)]);
   yield all([yield takeEvery(CREATE_SCHOOLS_REQUEST, createSchoolsSaga)]);
   yield all([yield takeEvery(DELETE_SCHOOLS_REQUEST, deleteSchoolsSaga)]);
+  yield all([yield takeEvery(UPDATE_SCHOOL_APPROVAL_REQUEST, updateSchoolApprovalRequestSaga)]);
 }

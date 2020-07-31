@@ -26,16 +26,18 @@ import {
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { getUserOrgId, getUserOrgName, getUserRole } from "../../../src/selectors/user";
 // actions
-import { createSchoolsAction, deleteSchoolsAction, getSchoolsSelector, receiveSchoolsAction, updateSchoolsAction } from "../../ducks";
+import {
+  createSchoolsAction,
+  deleteSchoolsAction,
+  getSchoolsSelector,
+  receiveSchoolsAction,
+  updateSchoolsAction,
+  updateSchoolApprovalRequestAction
+} from "../../ducks";
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
 import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
 import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
-import {
-  StyledHeaderColumn,
-  StyledSchoolTable,
-  StyledSortIcon,
-  StyledSortIconDiv
-} from "./styled";
+import { StyledHeaderColumn, StyledSchoolTable, StyledSortIcon, StyledSortIconDiv } from "./styled";
 
 const Option = Select.Option;
 
@@ -139,8 +141,9 @@ class SchoolsTable extends React.Component {
   };
 
   changeActionMode = e => {
-    const { selectedRowKeys } = this.state;
-    const { t } = this.props;
+    const { selectedRowKeys, dataSource } = this.state;
+    const { t, updateSchoolApprovalRequest } = this.props;
+    const selectedSchoolsData = dataSource.filter(({ _id }) => selectedRowKeys.includes(_id));
 
     if (e.key === "edit school") {
       if (selectedRowKeys.length == 0) {
@@ -156,6 +159,22 @@ class SchoolsTable extends React.Component {
       } else {
         notification({ msg: t("school.validations.deleteschool") });
       }
+    } else if (e.key === "approve school") {
+      if (selectedRowKeys.length === 0) {
+        return notification({ msg: "Please select atleast one school" });
+      }
+      if (selectedSchoolsData.some(({ isApproved }) => isApproved)) {
+        return notification({ msg: "Please select Not Approve schools only" });
+      }
+      updateSchoolApprovalRequest({ schoolIds: selectedRowKeys, isApprove: true });
+    } else if (e.key === "unapprove school") {
+      if (selectedRowKeys.length === 0) {
+        return notification({ msg: "Please select atleast one school" });
+      }
+      if (selectedSchoolsData.some(({ isApproved }) => !isApproved)) {
+        return notification({ msg: "Please select Approved schools only" });
+      }
+      updateSchoolApprovalRequest({ schoolIds: selectedRowKeys, isApprove: false });
     }
   };
 
@@ -567,7 +586,7 @@ class SchoolsTable extends React.Component {
               <span>{t("school.notapproved")}</span>
             ) : (
               <span>{t("school.approved")}</span>
-              )}
+            )}
           </React.Fragment>
         )
       },
@@ -673,9 +692,13 @@ class SchoolsTable extends React.Component {
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit school">{t("school.editschool")}</Menu.Item>
-        {role === roleuser.DISTRICT_ADMIN ? (
+        {role === roleuser.DISTRICT_ADMIN && (
           <Menu.Item key="deactivate school">{t("school.deactivateschool")}</Menu.Item>
-        ) : null}
+        )}
+        {role === roleuser.DISTRICT_ADMIN && <Menu.Item key="approve school">{t("school.approveSchool")}</Menu.Item>}
+        {role === roleuser.DISTRICT_ADMIN && (
+          <Menu.Item key="unapprove school">{t("school.unapproveSchool")}</Menu.Item>
+        )}
       </Menu>
     );
 
@@ -749,7 +772,7 @@ class SchoolsTable extends React.Component {
                 <Option value="true">{t("school.approved")}</Option>
                 <Option value="false">{t("school.notapproved")}</Option>
               </SelectInputStyled>
-              )}
+            )}
           </Col>
           <Col span={6} style={{ display: "flex" }}>
             {i < 2 && (
@@ -763,7 +786,6 @@ class SchoolsTable extends React.Component {
                 {t("common.addfilter")}
               </EduButton>
             )}
-
 
             {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
               <EduButton width="50%" height="32px" type="primary" onClick={e => this.removeFilter(e, i)}>
@@ -878,7 +900,8 @@ const enhance = compose(
       loadSchoolsData: receiveSchoolsAction,
       createSchool: createSchoolsAction,
       updateSchool: updateSchoolsAction,
-      deleteSchool: deleteSchoolsAction
+      deleteSchool: deleteSchoolsAction,
+      updateSchoolApprovalRequest: updateSchoolApprovalRequestAction
     }
   )
 );

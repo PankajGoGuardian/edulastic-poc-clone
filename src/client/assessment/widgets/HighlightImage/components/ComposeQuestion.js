@@ -194,6 +194,7 @@ class ComposeQuestion extends Component {
           value={item.stimulus}
           border="border"
         />
+
         <DropZoneToolbar width={+width} height={+height} altText={altText} handleChange={handleImageToolbarChange} />
 
         {thumb ? (

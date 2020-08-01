@@ -2,7 +2,6 @@
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
 import Helpers from "../../../../util/Helpers";
-import { DRAWING_TOOLS } from "../../../../constants/questionAuthoring";
 
 class HighlightImage {
   constructor() {
@@ -12,21 +11,6 @@ class HighlightImage {
 
   checkFontSize(fontSize) {
     this.header.preview();
-    // Helpers.getElement("adaptiveButtonList")
-    //   .find('[data-cy="undo"]')
-    //   .should("have.css", "font-size")
-    //   .and("eq", fontSize);
-
-    // Helpers.getElement("adaptiveButtonList")
-    //   .find('[data-cy="redo"]')
-    //   .should("have.css", "font-size")
-    //   .and("eq", fontSize);
-
-    // Helpers.getElement("adaptiveButtonList")
-    //   .find('[data-cy="clear"]')
-    //   .should("have.css", "font-size")
-    //   .and("eq", fontSize);
-
     cy.get('[data-cy="styled-wrapped-component"]')
       .first()
       .should("have.css", "font-size")
@@ -68,11 +52,18 @@ class HighlightImage {
 
   addImageAlternative = altText => {
     cy.get('[data-cy="image-alternative-input"]')
+      .find(".ant-input")
       .click()
       .clear()
       .type(altText)
       .should("have.value", altText);
     return this;
+  };
+
+  getMathInputBox = () => cy.get('[data-cy="answer-math-input-field"]');
+
+  verifyAlternativeTextInImage = value => {
+    cy.get(`[alt="${value}"]`).should("exist");
   };
 
   clickAddColor = () => {
@@ -119,22 +110,14 @@ class HighlightImage {
 
   getImagePreview = () => cy.get('[data-cy="previewImage"]');
 
-  getDrawableElementInPreview = () => cy.get('[class^="MathDraw"]').prev();
+  getDrawableElementInPreview = () => cy.get('[id="zwibbler-main"]');
 
   getDrawedElements = () => cy.get('[class^="SvgDraw__Path"]');
 
-  getDrawingTools = () => cy.get(".drawing-tool-button");
+  getDrawingTools = name => cy.get(`[id=${name}]`);
 
   selectDrawingToolsByName = name => {
-    switch (name) {
-      case DRAWING_TOOLS.BREAKING_LINE:
-        this.getDrawingTools()
-          .eq(3)
-          .click();
-        break;
-      default:
-        break;
-    }
+    this.getDrawingTools(name).click();
   };
 }
 

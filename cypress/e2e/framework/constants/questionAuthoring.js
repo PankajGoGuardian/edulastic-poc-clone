@@ -32,7 +32,7 @@ export const STEM = {
 export const methods = {
   EQUIV_SYMBOLIC: "Symbolically Equivalent",
   EQUIV_LITERAL: "Literally Equivalent",
-  //EQUIV_VALUE: "Equivalent value",
+  // EQUIV_VALUE: "Equivalent value",
   // IS_SIMPLIFIED: "Check if expression is simplified",
   // IS_FACTORISED: "Check if expression is factored",
   // IS_EXPANDED: "Check if expression is expanded",
@@ -57,5 +57,14 @@ export const DIFFICULTY = {
 };
 
 export const DRAWING_TOOLS = {
-  BREAKING_LINE: "breaking line"
+  FREE_DRAW: "freeDraw",
+  BREAKING_LINE: "drawBreakingLine",
+  CURVE_LINE: "drawCurveLine",
+  SQUARE: "drawSquare",
+  CIRCLE: "drawСircle",
+  TRIANGLE: "drawTriangle",
+  TEXT: "drawTriangle",
+  MATH: "drawMath",
+  MEASURE_TOOL: "drawMeasureTool",
+  EDIT_TOOL: "EditingTools"
 };

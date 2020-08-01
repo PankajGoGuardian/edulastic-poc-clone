@@ -31,7 +31,7 @@ class SidebarPage {
   };
 
   clickOnManageClass = () => {
-    cy.get('[data-cy="Manage Class"]')
+    cy.get('[data-cy="My Classes"]')
       .click({ force: true })
       .click({ force: true });
   };

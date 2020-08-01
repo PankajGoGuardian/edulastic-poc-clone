@@ -66,6 +66,7 @@ export default class TeacherManageClassPage {
 
   getArchiveClassInDropDown = () => cy.get("li").contains("Archive Class");
 
+  getunArchiveButton = () => cy.get("span").contains("UNARCHIVE");
 
   getSchoolDropDown = () => cy.get(`#institutionId`)
 
@@ -343,25 +344,6 @@ export default class TeacherManageClassPage {
 
   unarchiveButtonNotVisible = () => this.getunArchiveButton().should("not.be.visible");
 
-  UnarchiveClass = (className, oldSchool = "false") => {
-    cy.server();
-    cy.route("POST", "**/group/**").as("unarchieveClass");
-    this.getClassDetailsByName(className);
-    this.getunArchiveButton().click();
-    this.getUnarchiveButtonInPopup().click({ force: true });
-    if (oldSchool == true) {
-      this.getUnarchiveNotification().should(
-        "contains.text",
-        "Class is not part of the current school.",
-        "Please join the school form My Profile for unarchiving a class."
-      );
-    } else {
-      cy.wait("@unarchieveClass")
-        .its("status")
-        .should("be.eq", 200);
-    }
-  };
-
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -452,32 +434,32 @@ export default class TeacherManageClassPage {
       .contains("span", className)
       .should("not.exist");
 
-  unArchieveClassByName(className,success = true) {
+  unArchieveClassByName(className, success = true) {
     cy.route("POST", "**/search/users").as("searchUser");
     this.clickOnClassRowByName(className)
     cy.wait("@searchUser")
     this.clickUnArchive(success)
   }
 
-  clickUnArchive(success = true){
+  clickUnArchive(success = true) {
     cy.route("POST", "**/unarchive").as("unarchive");
-    cy.contains("span", "UNARCHIVE").click({ force: true })
+    this.getunArchiveButton().click({ force: true });
     cy.get(`.ant-modal-body >`).contains("span", "Unarchive").click({ force: true })
-    if(success){
+    if (success) {
       cy.wait("@unarchive").then((xhr) => {
         expect(xhr.status).to.eq(200)
       })
-    }else{
+    } else {
       cy.wait("@unarchive").then((xhr) => {
-          expect(xhr.status,"Expected to join the school before unarchiving class").to.eq(403)
-          expect(xhr.responseBody.message).to.have.string("Class is not part of the current school.")
-        })              
+        expect(xhr.status, "Expected to join the school before unarchiving class").to.eq(403)
+        expect(xhr.responseBody.message).to.have.string("Class is not part of the current school.")
+      })
     }
   }
 
-  goToLastPage(){
+  goToLastPage() {
     cy.get("body").then($body => {
-      if ($body.find(".ant-table-pagination > li").length > 0) {   
+      if ($body.find(".ant-table-pagination > li").length > 0) {
         cy.get('[title="Next Page"]').prev().click()
       }
     })

@@ -136,7 +136,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Unarchive Class`, () =
       manageClass.clickOnClassStatusDropdown();
       manageClass.selectArchieveClass();
       manageClass.gotoLastPage();
-      manageClass.UnarchiveClass(classData.className);
+      manageClass.unArchieveClassByName(classData.className);
     });
 
     it("Assign a test and attempt from student", () => {
@@ -178,7 +178,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Unarchive Class`, () =
       manageClass.selectArchieveClass();
       manageClass.selectActiveClass();
       manageClass.selectArchieveClass();
-      manageClass.UnarchiveClass(archivedClass, true);
+      manageClass.unArchieveClassByName(archivedClass, false);
     });
   });
 });

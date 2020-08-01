@@ -12,7 +12,7 @@ export default class QuestionResponsePage {
 
   getQuestionMaxScore = card => this.getScoreInput(card).next();
 
-  getFeedbackArea = card => card.contains("Leave a feedback!").next();
+  getFeedbackArea = card => card.contains("Student Feedback!").next();
 
   getOverallFeedback = () => cy.get('[data-cy="overallFeedback"]');
 
@@ -199,35 +199,38 @@ export default class QuestionResponsePage {
 
   updateScoreAndFeedbackForStudent = (studentName, score, feedback, inExpGrader = false) => {
     cy.server();
-    cy.route("PUT", "**/feedback").as("feedback");
-    cy.route("PUT", "**/response-entry-and-score").as("scoreEntry");
-    cy.route("PUT", "**/feedback").as("feedback");
-
     const stringAdjust = inExpGrader ? "" : "{esc}";
+    this.getScoreInput(this.getQuestionContainerByStudent(studentName)).then($Currestscore => {
+      const currentScore = Cypress.$($Currestscore).attr("value");
+      if (!(typeof score === "undefined" || score === "" || `${score}` === currentScore)) {
+        cy.wait(1000);
+        cy.route("PUT", "**/response-entry-and-score").as("scoreEntry");
 
-    if (!(typeof score === "undefined" || score === "")) {
-      this.getScoreInput(this.getQuestionContainerByStudent(studentName)).type(
-        `{selectall}{del}${score}${stringAdjust}`,
-        {
-          force: true
-        }
-      );
-      inExpGrader ? cy.contains("Leave a feedback!").click() : undefined;
-      cy.wait("@scoreEntry").then(xhr => {
-        expect(xhr.status, `score update ${xhr.status === 200 ? "success" : "fialed"}`).to.eq(200);
-      });
+        this.getScoreInput(this.getQuestionContainerByStudent(studentName)).type(
+          `{selectall}{del}${score}${stringAdjust}`,
+          {
+            force: true
+          }
+        );
+        inExpGrader ? cy.contains("Student Feedback!").click() : undefined;
+        cy.wait("@scoreEntry").then(xhr => {
+          expect(xhr.status, `score update ${xhr.status === 200 ? "success" : "fialed"}`).to.eq(200);
+        });
 
-      this.getScoreInput(this.getQuestionContainerByStudent(studentName)).should($score => {
-        const value = Cypress.$($score).attr("value");
-        expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
-      });
-    }
+        this.getScoreInput(this.getQuestionContainerByStudent(studentName)).should($score => {
+          const value = Cypress.$($score).attr("value");
+          expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);
+        });
+      }
+    });
 
     if (feedback) {
+      cy.wait(1000);
+      cy.route("PUT", "**/feedback").as("feedback");
       this.getFeedbackArea(this.getQuestionContainerByStudent(studentName)).type(
         `{selectall}${feedback}${stringAdjust}`
       );
-      inExpGrader ? cy.contains("Leave a feedback!").click() : undefined;
+      inExpGrader ? cy.contains("Student Feedback!").click() : undefined;
       cy.wait("@feedback").then(xhr => {
         expect(xhr.status, `feed back update ${xhr.status === 200 ? "success" : "fialed"}`).to.eq(200);
       });

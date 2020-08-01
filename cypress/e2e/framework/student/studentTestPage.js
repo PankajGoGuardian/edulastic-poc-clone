@@ -173,6 +173,12 @@ class StudentTestPage {
 
   submitTest = () => {
     this.clickSubmitButton();
+    cy.url().then(url => {
+      if (!url.includes("/home/grades"))
+        cy.get('[data-cy="Grades"]')
+          .click({ force: true })
+          .click({ force: true });
+    });
     return cy.url().should("include", "/home/grades");
   };
 
@@ -548,6 +554,8 @@ class StudentTestPage {
     cy.server();
     cy.route("POST", "**/test-activity/**").as("saved");
     cy.get(".fr-element")
+      .should("be.visible")
+      .first()
       .type(content)
       .then(() => cy.get("body").click());
     cy.wait("@saved", { timeout: 45000 }); // it will trigger at interval of 30000ms

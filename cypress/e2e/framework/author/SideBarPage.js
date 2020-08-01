@@ -32,7 +32,7 @@ export default class TeacherSideBar {
 
   clickOnReport = () =>
     cy
-      .get('[data-cy="Skill Report"]')
+      .get('[data-cy="Insights"]')
       // .click({ force: true })
       .click({ force: true });
 
@@ -63,7 +63,7 @@ export default class TeacherSideBar {
     // TODO: below is temp fix and wait is not added- look for this while fixing
     cy.route("POST", "**browse-standards").as("search-standards");
     cy.wait(5000); // waiting for mongo to elastic search sync delay
-    cy.get('[data-cy="Test Library"]').dblclick({ force: true });
+    cy.get('[data-cy="Test"]').dblclick({ force: true });
     cy.wait("@searchTest");
   };
 

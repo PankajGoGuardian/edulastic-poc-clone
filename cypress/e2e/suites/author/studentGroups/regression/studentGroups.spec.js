@@ -27,23 +27,23 @@ const studentAssignment = new AssignmentsPage();
 
 const students = {
   1: {
-    email: "student.1.studentgroup@automation.com",
+    email: "student.1.studentgroup@snapwiz.com",
     studentName: "studentGroup, student.1"
   },
   2: {
-    email: "student.2.studentgroup@automation.com",
-    studentName: "studentGroup, student.2"
+    email: "student.0.studentgroup@snapwiz.com",
+    studentName: "studentGroup, student.0"
   },
   3: {
-    email: "student.3.studentgroup@automation.com",
+    email: "student.3.studentgroup@snapwiz.com",
     studentName: "studentGroup, student.3"
   },
   4: {
-    email: "student.4.studentgroup@automation.com",
+    email: "student.4.studentgroup@snapwiz.com",
     studentName: "studentGroup, student.4"
   },
   5: {
-    email: "student.5.studentgroup@automation.com",
+    email: "student.5.studentgroup@snapwiz.com",
     studentName: "studentGroup, student.5"
   }
 };
@@ -70,13 +70,13 @@ const groups = {
   }
 };
 
-const teacher = "teacher.1.studentgroup@automation.com";
+const teacher = "teacher.studentgroup@automation.com";
 const password = "automation";
-const classNameEdit = "Automation Class - studentGroup teacher.1";
-const testIdForReport = "5e8af25af51ccb00082a12a6";
+const classNameEdit = "Automation Class - StudentGroup";
+const testIdForReport = "5f2410926390ea0008f47387";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () => {
-  let testId = "5f032956f157f10007fb2cfc";
+  let testId = "5f24169e2016b90008b3438b";
   const studentGroup1 = [students[1], students[2]];
   const studentGroup1Edit = [students[3], students[4]];
   const studentGroup2 = [students[3], students[4]];
@@ -87,8 +87,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
   before(() => {
     cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
     cy.login("teacher", teacher, password);
-    // testLibrary.createTest().then(_id => {
-    //   testId = _id;
+    //testLibrary.createTest().then(_id => {
+    //testId = _id;
     // });
   });
 
@@ -164,7 +164,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
         groupPopup.clickOnUpdate();
       });
 
-      it("> verify verify added students in group pop up", () => {
+      it("> verify added students in group pop up", () => {
         pbsReport.clickOnActionAddToGroup();
         // groupPopup.selectGroup(groups[1].name);
         [...studentGroup1, ...studentGroup1Edit].forEach(student =>

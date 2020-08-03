@@ -12,7 +12,7 @@ const SubToolBox = ({ activeMode, ...rest }) => {
   const { label, desc } = properties;
 
   return (
-    <SubToolBoxContainer id="tool-properties">
+    <SubToolBoxContainer id="tool-properties" alignItems="center">
       <FlexContainer flex={1} alignItems="flex-start" flexDirection="column">
         <ToolTitle>
           <span>{label}</span> Tool

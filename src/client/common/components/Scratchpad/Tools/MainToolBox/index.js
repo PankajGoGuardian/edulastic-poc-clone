@@ -6,7 +6,7 @@ import RightButtons from "./RightButtons";
 import { MainToolBoxContainer } from "../styled";
 
 const MainToolBox = props => (
-  <MainToolBoxContainer id="main-tool" justifyContent="space-between">
+  <MainToolBoxContainer id="main-tool" justifyContent="space-between" alignItems="center">
     <FlexContainer>
       <LeftButtons {...props} />
       <MidButtons {...props} />

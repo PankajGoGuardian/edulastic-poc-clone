@@ -118,15 +118,15 @@ class MathInput extends React.PureComponent {
   sanitizeLatex = v => v.replace(/&amp;/g, "&");
 
   handleKeypress = e => {
-    const { restrictKeys, allowNumericOnly,value=""} = this.props;
+    const { restrictKeys, allowNumericOnly, value = "" } = this.props;
     if (allowNumericOnly) {
-      const isDynamicVar = value &&  value[value.length-1] === "@";
-      if(isDynamicVar){
-         if(!e.key.match(/[a-zA-Z]/g)){
+      const isDynamicVar = value && value[value.length - 1] === "@";
+      if (isDynamicVar) {
+        if (!e.key.match(/[a-zA-Z]/g)) {
           e.preventDefault();
           e.stopPropagation();
-         }
-         return;
+        }
+        return;
       }
 
       if (!e.key.match(/[0-9+-.%^@/]/g)) {
@@ -290,7 +290,8 @@ class MathInput extends React.PureComponent {
         showDropdown={showDropdown}
         onChangeKeypad={onChangeKeypad}
         onInput={(key, command) => this.onInput(key, command)}
-        docBasedKeypadStyles={isDocbasedSection && `position: fixed; right: 30px;`}
+        docBasedKeypadStyles={isDocbasedSection && `right: 30px; width:100%;`}
+        isDocbasedSection={isDocbasedSection}
       />
     );
     const visibleKeypad = !alwaysHideKeyboard && !alwaysShowKeyboard && mathKeyboardVisible;

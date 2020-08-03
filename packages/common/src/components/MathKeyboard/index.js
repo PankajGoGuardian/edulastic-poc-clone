@@ -112,7 +112,7 @@ class MathKeyboard extends React.PureComponent {
   }
 
   render() {
-    const { onInput, showResponse, showDropdown, docBasedKeypadStyles } = this.props;
+    const { onInput, showResponse, showDropdown, docBasedKeypadStyles, isDocbasedSection } = this.props;
     const { type } = this.state;
 
     return (
@@ -125,9 +125,11 @@ class MathKeyboard extends React.PureComponent {
           method={type}
           onChangeKeypad={this.handleGroupSelect}
         />
-        {type === "qwerty" && <Keyboard onInput={onInput} />}
-        {type !== "qwerty" && type !== "all" && <MainKeyboard onInput={onInput} btns={this.keyboardButtons} />}
-        {type !== "qwerty" && type === "all" && <FullKeybord onInput={onInput} />}
+        {type === "qwerty" && <Keyboard isDocbasedSection={isDocbasedSection} onInput={onInput} />}
+        {type !== "qwerty" && type !== "all" && (
+          <MainKeyboard isDocbasedSection={isDocbasedSection} onInput={onInput} btns={this.keyboardButtons} />
+        )}
+        {type !== "qwerty" && type === "all" && <FullKeybord isDocbasedSection={isDocbasedSection} onInput={onInput} />}
       </MathKeyboardContainer>
     );
   }

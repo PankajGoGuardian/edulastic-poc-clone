@@ -69,18 +69,18 @@ const QuestionMath = ({ onUpdate, question }) => {
 
   const onChangeAllowedOptions = (option, variables) => {
     onUpdate({
-      [`${option}`]: variables || null
+      [`${option}`]: variables
     });
   };
 
   const onChangeKeypad = keypad => {
-    let data = {
+    const data = {
       symbols: [keypad]
     };
     onUpdate(data);
   };
 
-  const { validResponse: validResponse } = question.validation;
+  const { validResponse } = question.validation;
   const { score } = validResponse;
   const value = validResponse.value[0];
 
@@ -91,6 +91,7 @@ const QuestionMath = ({ onUpdate, question }) => {
           <MathFormulaAnswerMethod
             labelValue="Correct Answer"
             allowedVariables={question.allowedVariables || ""}
+            allowNumericOnly={question.allowNumericOnly}
             onChange={handleAnswerChange}
             onChangeAllowedOptions={onChangeAllowedOptions}
             onChangeKeypad={onChangeKeypad}

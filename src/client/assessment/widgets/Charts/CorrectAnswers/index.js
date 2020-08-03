@@ -1,23 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
-import { Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { Tabs, Tab } from "@edulastic/common";
 
 import Question from "../../../components/Question";
-import { Subtitle } from "../../../styled/Subtitle";
-import { Row } from "./styled/Grid";
+import CorrectAnswers from "../../../components/CorrectAnswers";
 
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { CorrectAnswerHeader, PointsInput } from "../../../styled/CorrectAnswerHeader";
-import { AlternateAnswerLink } from "../../../styled/ButtonStyles";
-
-const CorrectAnswers = ({
+const SetCorrectAnswers = ({
   t,
   onTabChange,
-  validation,
   chartPreview,
   fillSections,
   cleanSections,
@@ -35,15 +25,11 @@ const CorrectAnswers = ({
     }
   };
 
-  const handleCloseAlter = index => evt => {
-    evt?.stopPropagation();
-    onCloseTab(index - 1);
+  const handleCloseAlter = () => {
+    onCloseTab(currentTab - 1);
   };
 
   const handleClickTab = index => onTabChange(index);
-
-  const tabs = new Array(validation.altResponses ? validation.altResponses.length + 1 : 0).fill(true);
-  const isAlt = !isEmpty(validation.altResponses);
 
   return (
     <Question
@@ -52,55 +38,26 @@ const CorrectAnswers = ({
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
-        {t("component.correctanswers.setcorrectanswers")}
-      </Subtitle>
-
-      <Row gutter={24}>
-        <Col md={12}>
-          <CorrectAnswerHeader>
-            <Label>{t("component.correctanswers.points")}</Label>
-            <PointsInput
-              id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
-              type="number"
-              value={points}
-              onChange={handleChangePoint}
-              step={0.5}
-              min={0.5}
-              max={!isCorrectAnsTab ? item?.validation?.validResponse?.score : Number.MAX_SAFE_INTEGER}
-            />
-          </CorrectAnswerHeader>
-        </Col>
-        <Col md={12}>
-          <AlternateAnswerLink onClick={onAdd}>
-            {`+ ${t("component.correctanswers.alternativeAnswer")}`}
-          </AlternateAnswerLink>
-        </Col>
-      </Row>
-      {isAlt && (
-        <Tabs value={currentTab} onChange={handleClickTab}>
-          {tabs.map((_, i) => {
-            const label =
-              i === 0 ? t("component.correctanswers.correct") : `${t("component.correctanswers.alternate")} ${i}`;
-            return (
-              <Tab
-                key={`alter-tab-${i}`}
-                close={i !== 0}
-                onClose={handleCloseAlter(i)}
-                label={label}
-                IconPosition="right"
-                type="primary"
-              />
-            );
-          })}
-        </Tabs>
-      )}
-      {chartPreview}
+      <CorrectAnswers
+        correctTab={currentTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        validation={item.validation}
+        questionType={item?.title}
+        onAdd={onAdd}
+        onCloseTab={handleCloseAlter}
+        onTabChange={handleClickTab}
+        onChangePoints={handleChangePoint}
+        points={points}
+        isCorrectAnsTab={isCorrectAnsTab}
+      >
+        {chartPreview}
+      </CorrectAnswers>
     </Question>
   );
 };
 
-CorrectAnswers.propTypes = {
+SetCorrectAnswers.propTypes = {
   onTabChange: PropTypes.func.isRequired,
   onChangePoints: PropTypes.func.isRequired,
   onCloseTab: PropTypes.func.isRequired,
@@ -115,10 +72,10 @@ CorrectAnswers.propTypes = {
   item: PropTypes.object.isRequired
 };
 
-CorrectAnswers.defaultProps = {
+SetCorrectAnswers.defaultProps = {
   chartPreview: null,
   fillSections: () => {},
   cleanSections: () => {}
 };
 
-export default withNamespaces("assessment")(CorrectAnswers);
+export default withNamespaces("assessment")(SetCorrectAnswers);

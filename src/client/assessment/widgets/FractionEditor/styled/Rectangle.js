@@ -6,8 +6,8 @@ export default styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-top: 2px solid ${white};
-  border-right: 2px solid ${white};
+  border-top: 4px solid ${white};
+  border-right: 4px solid ${white};
   max-width: 200px;
   transition: all 0.5s;
   &:hover {

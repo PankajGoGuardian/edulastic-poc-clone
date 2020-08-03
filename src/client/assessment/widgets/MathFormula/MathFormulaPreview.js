@@ -330,10 +330,7 @@ class MathFormulaPreview extends Component {
                 style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
                 width="100%"
               >
-                <MathInputWrapper
-                  bg={isPrintPreview ? white : statusColor}
-                  minWidth={this.isStatic ? cssStyles.width : "100%"}
-                >
+                <MathInputWrapper bg={isPrintPreview ? white : statusColor} minWidth={cssStyles.width}>
                   {this.isStatic && !disableResponse && (
                     <StaticMath
                       symbols={item.symbols}

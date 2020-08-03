@@ -38,7 +38,7 @@ export const Bar = styled.rect`
 `;
 
 const getRightColor = (hoverState, color, deleteMode = false) =>
-  hoverState ? (deleteMode ? red : darkBlue) : color || themeColor;
+  hoverState ? (deleteMode ? red : darkBlue) : color || greyThemeDark2;
 
 export const ActiveBar = styled.rect`
   cursor: pointer;

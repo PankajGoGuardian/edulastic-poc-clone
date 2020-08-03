@@ -192,7 +192,7 @@ const Button = styled(CustomStyleBtn).attrs(() => ({
   padding: "5px",
   justifyContent: "flex-start"
 }))`
-  box-shadow: ${({ shadowColor }) => `inset 0 0 1em ${shadowColor || "#00b2ff"}`};
+  box-shadow: ${({ shadowColor }) => `inset 0 0 1em ${shadowColor || "#434B5D"}`};
 
   & span {
     white-space: normal;

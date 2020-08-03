@@ -19,14 +19,20 @@ import IconImage from "./image";
 import IconTable from "./table";
 import IconRedo from "./redo";
 import IconUndo from "./undo";
+import IconStrike from "./strike";
+import IconHeader1 from "./header1";
+import IconHeader2 from "./header2";
+import IconClearFormat from "./ClearFormat";
+import IconLink from "./IconLink";
+import IconSpecialCharacter from "./SpecialCharacter";
 
 export default {
   bold: IconBold,
   italic: IconItalic,
   underline: IconUnderline,
-  strikeThrough: () => "st",
-  h1: () => "h1",
-  h2: () => "h2",
+  strikeThrough: IconStrike,
+  h1: IconHeader1,
+  h2: IconHeader2,
   div: IconDiv,
   formatOL: IconOrdered,
   formatUL: IconBullet,
@@ -40,11 +46,11 @@ export default {
   indent: IconIndent,
   outdent: IconOutdent,
   paragraphFormat: IconDirectionRtl,
-  clearFormatting: () => "FC",
+  clearFormatting: IconClearFormat,
   math: IconFormula,
-  specialCharacters: () => "S",
+  specialCharacters: IconSpecialCharacter,
   insertImage: IconImage,
-  insertLink: () => "li",
+  insertLink: IconLink,
   table: IconTable,
   undo: IconUndo,
   redo: IconRedo

@@ -19,6 +19,7 @@ const AnswerContainer = styled.div`
       background-color: ${greyThemeLighter};
       color: ${greyThemeDark2};
       font-weight: 600;
+      padding: 6px 16px;
     }
 
     .ant-collapse-content {

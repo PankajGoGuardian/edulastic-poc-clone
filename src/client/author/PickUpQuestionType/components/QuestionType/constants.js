@@ -2192,7 +2192,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 400,
+          widthpx: 140,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2231,7 +2231,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 400,
+          widthpx: 140,
           heightpx: 35,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
@@ -2311,7 +2311,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           }
         },
         uiStyle: {
-          widthpx: 400,
+          widthpx: 140,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"
         },
@@ -2388,7 +2388,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         customKeys: ["m", "km", "cm", "mm"],
         uiStyle: {
-          widthpx: 400,
+          widthpx: 140,
           heightpx: 35,
           type: "floating-keyboard",
           responseFontScale: "Normal (100%)"

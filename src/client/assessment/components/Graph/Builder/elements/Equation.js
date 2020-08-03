@@ -251,7 +251,7 @@ class Implicit {
     let z = 0;
     let p = 0;
     let n = 0;
-    let k = true;
+    const k = true;
     let fin = true;
     for (let i = 0; i < 4; i++) {
       if (!isFinite(r.eval[i])) {
@@ -261,7 +261,7 @@ class Implicit {
       else if (r.eval[i] > 0.0) p++;
       else z++;
     }
-    r.status = { pos: p, neg: n, zero: z, valid: k, empty: !k || ((z + 1) | p | n) >= 4, fin: fin };
+    r.status = { pos: p, neg: n, zero: z, valid: k, empty: !k || ((z + 1) | p | n) >= 4, fin };
   };
 
   interpolate = (p1, p2, fa, fb) => {
@@ -282,7 +282,7 @@ class Implicit {
     for (let i = 0; i < this.openList.length; i++) {
       this.segments.push(this.openList[i].start);
       this.segments = this.segments.concat(this.openList[i].points.toArray());
-      //this.segments.push(this.openList[i].end);
+      // this.segments.push(this.openList[i].end);
     }
     this.openList = [];
   };
@@ -318,14 +318,14 @@ class Implicit {
       }
     }
 
-    var sign;
+    let sign;
     if (
       !isNaN(this.func(10, 10)) &&
       !isNaN(this.func(-10, 10)) &&
       !isNaN(this.func(10, -10)) &&
       !isNaN(this.func(-10, -10))
     ) {
-      let value = this.func(10, 10) + this.func(-10, 10) + this.func(10, -10) + this.func(-10, -10);
+      const value = this.func(10, 10) + this.func(-10, 10) + this.func(10, -10) + this.func(-10, -10);
 
       if (this.oppSign(tl, tr) && Math.abs(this.func(this.interpolate(x1, x2, tl, tr), y1)) > 1) {
         if ((y1 + y2) / 2 < 0) {
@@ -390,7 +390,7 @@ class Implicit {
         }
       }
     } else {
-      var test;
+      let test;
       if (this.oppSign(tl, tr)) test = this.func(this.interpolate(x1, x2, tl, tr), y1);
       if (this.oppSign(tr, br)) test = this.func(x2, this.interpolate(y1, y2, tr, br));
       if (this.oppSign(br, bl)) test = this.func(this.interpolate(x1, x2, bl, br), y2);
@@ -430,8 +430,7 @@ class Implicit {
                   this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + sign2 * tr), k !== 0);
                   this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + sign2 * br), k !== 0);
                 }
-              } else {
-                if (!isNaN(const2)) {
+              } else if (!isNaN(const2)) {
                   if ((x1 + x2) / 2 > 0) sign2 = 1;
                   else sign2 = -1;
                   this.pts[k++] = new Point(sign2 * (12 + br), (y1 + y2) / 2, k !== 0);
@@ -442,9 +441,8 @@ class Implicit {
                   this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + tr), k !== 0);
                   this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + br), k !== 0);
                 }
-              }
               return VALID;
-            } else {
+            } 
               if (pos === 2 || neg === 2) {
                 if (tl === 0.0) {
                   if (tr === 0.0) return this.createLine(x1, y1, x2, y1);
@@ -458,10 +456,10 @@ class Implicit {
                 if (tl === 0.0 && br === 0.0) return this.createLine(x1, y1, x2, y2);
               }
               return EMPTY;
-            }
+            
           }
           return VALID;
-        } else {
+        } 
           if (isNaN(y1) || !isFinite(y1) || isNaN(y2) || !isFinite(y2)) {
             return EMPTY;
           }
@@ -472,7 +470,7 @@ class Implicit {
           if (this.oppSign(tr, br)) this.pts[k++] = new Point(x2, this.interpolate(y1, y2, tr, br), k !== 0, true);
           if (this.oppSign(br, bl)) this.pts[k++] = new Point(this.interpolate(x1, x2, bl, br), y2, k !== 0, true);
           if (this.oppSign(bl, tl)) this.pts[k++] = new Point(x1, this.interpolate(y1, y2, tl, bl), k !== 0, true);
-        }
+        
         return VALID;
       default:
         return EMPTY;
@@ -729,7 +727,7 @@ function create(board, object) {
   try {
     const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, id, {
       ...defaultConfig,
-      ...getColorParams(priorityColor || "#00b2ff"),
+      ...getColorParams(priorityColor || "#434B5D"),
       dash
     });
     cv.update();
@@ -761,7 +759,7 @@ function getConfig(equation) {
     label: equation.labelHTML || false,
     pointsLabel: equation.pointsLabel || false,
     apiLatex: equation.apiLatex
-    //testPoints: equation.testPoints
+    // testPoints: equation.testPoints
   };
 }
 

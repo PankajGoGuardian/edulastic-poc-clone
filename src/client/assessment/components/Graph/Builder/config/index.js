@@ -18,8 +18,8 @@ const quadrantsDefaultConfig = {
     x: {
       name: "",
       withLabel: false,
-      strokeColor: "#00b0ff",
-      highlightStrokeColor: "#00b0ff",
+      strokeColor: "#434B5D",
+      highlightStrokeColor: "#434B5D",
       strokeWidth: 2,
       label: {
         position: "rt",
@@ -46,8 +46,8 @@ const quadrantsDefaultConfig = {
     y: {
       name: "",
       withLabel: false,
-      strokeColor: "#00b0ff",
-      highlightStrokeColor: "#00b0ff",
+      strokeColor: "#434B5D",
+      highlightStrokeColor: "#434B5D",
       strokeWidth: 2,
       label: {
         position: "rt",

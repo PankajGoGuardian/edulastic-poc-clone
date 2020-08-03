@@ -412,7 +412,7 @@ class GraphDisplay extends Component {
         maxArrow: uiStyle.xMaxArrow,
         minArrow: uiStyle.xMinArrow,
         commaInLabel: uiStyle.xCommaInLabel,
-        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#00b0ff",
+        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#434B5D",
         tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false
       },
       yAxesParameters: {
@@ -522,7 +522,7 @@ class GraphDisplay extends Component {
         minArrow: uiStyle.xMinArrow,
         drawZero: uiStyle.drawLabelZero,
         commaInLabel: uiStyle.xCommaInLabel,
-        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#00b0ff",
+        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#434B5D",
         tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false
       },
       yAxesParameters: {
@@ -632,7 +632,7 @@ class GraphDisplay extends Component {
         maxArrow: uiStyle.xMaxArrow,
         minArrow: uiStyle.xMinArrow,
         commaInLabel: uiStyle.xCommaInLabel,
-        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#00b0ff",
+        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#434B5D",
         tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false
       },
       yAxesParameters: {

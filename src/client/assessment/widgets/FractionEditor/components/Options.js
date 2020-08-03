@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-// import get from "lodash/get";
-import { Select, Modal, message } from "antd";
+import { Select, Modal } from "antd";
 import { notification } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
@@ -53,7 +52,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
   const handleDimensionChange = (prop, value) => {
     const regex = new RegExp("^[1-9]+([0-9]*)$", "g");
     if (!regex.test(value)) {
-      notification({ messageKey:"valuesCanOnlyBeGreaterThanZero"});
+      notification({ messageKey: "valuesCanOnlyBeGreaterThanZero" });
       return null;
     }
     setQuestionData(
@@ -91,19 +90,19 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             <Option value="rectangles">Rectangles</Option>
           </SelectInputStyled>
         </Col>
+        <Col span={12}>
+          <Label>Count</Label>
+          <Input
+            type="number"
+            min={1}
+            value={fractionProperties.count}
+            placeholder="Fraction count"
+            onBlur={value => handleDimensionChange("count", +value)}
+          />
+        </Col>
       </Row>
       {fractionType === "circles" ? (
         <Row gutter={24}>
-          <Col span={12}>
-            <Label>Count</Label>
-            <Input
-              type="number"
-              min={1}
-              value={fractionProperties.count}
-              placeholder="Fraction count"
-              onBlur={value => handleDimensionChange("count", +value)}
-            />
-          </Col>
           <Col span={12}>
             <Label>Sectors</Label>
             <Input
@@ -118,17 +117,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
         </Row>
       ) : (
         <Row gutter={24}>
-          <Col span={8}>
-            <Label>Count</Label>
-            <Input
-              type="number"
-              min={1}
-              value={fractionProperties.count}
-              placeholder="Fraction count"
-              onBlur={value => handleDimensionChange("count", +value)}
-            />
-          </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Label>Rows</Label>
             <Input
               type="number"
@@ -139,7 +128,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
               min={1}
             />
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Label>Columns</Label>
             <Input
               type="number"

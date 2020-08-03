@@ -45,7 +45,6 @@ class ClozeInputAnswer extends Component {
           bordered={false}
           expandIconPosition="right"
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
-          style={{ fontSize: "16px" }}
         >
           {answers.map(answer => {
             const response = responseContainers.find(respCont => respCont.id === answer.id);

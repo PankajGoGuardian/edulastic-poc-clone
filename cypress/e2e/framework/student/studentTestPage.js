@@ -173,6 +173,7 @@ class StudentTestPage {
 
   submitTest = () => {
     this.clickSubmitButton();
+    cy.get('[data-cy="Grades"]');
     cy.url().then(url => {
       if (!url.includes("/home/grades"))
         cy.get('[data-cy="Grades"]')

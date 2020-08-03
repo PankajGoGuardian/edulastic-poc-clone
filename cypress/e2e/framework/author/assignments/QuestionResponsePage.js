@@ -12,7 +12,7 @@ export default class QuestionResponsePage {
 
   getQuestionMaxScore = card => this.getScoreInput(card).next();
 
-  getFeedbackArea = card => card.contains("Student Feedback!").next();
+  getFeedbackArea = card => card.find('[data-cy="feedBackInput"]');
 
   getOverallFeedback = () => cy.get('[data-cy="overallFeedback"]');
 
@@ -208,9 +208,7 @@ export default class QuestionResponsePage {
 
         this.getScoreInput(this.getQuestionContainerByStudent(studentName)).type(
           `{selectall}{del}${score}${stringAdjust}`,
-          {
-            force: true
-          }
+          { force: true }
         );
         inExpGrader ? cy.contains("Student Feedback!").click() : undefined;
         cy.wait("@scoreEntry").then(xhr => {
@@ -228,7 +226,8 @@ export default class QuestionResponsePage {
       cy.wait(1000);
       cy.route("PUT", "**/feedback").as("feedback");
       this.getFeedbackArea(this.getQuestionContainerByStudent(studentName)).type(
-        `{selectall}${feedback}${stringAdjust}`
+        `{selectall}${feedback}${stringAdjust}`,
+        { force: true }
       );
       inExpGrader ? cy.contains("Student Feedback!").click() : undefined;
       cy.wait("@feedback").then(xhr => {

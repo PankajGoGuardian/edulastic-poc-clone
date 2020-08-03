@@ -27,6 +27,7 @@ const slice = createSlice({
       state.loading = false;
       state.assignment = payload;
       state.originalAssignment = payload;
+      state.updateSettings = {};
     },
     updateAssignmentClassSettingsError: state => {
       state.assignment = state.originalAssignment;

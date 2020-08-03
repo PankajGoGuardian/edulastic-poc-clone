@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { white, inputBorder } from "@edulastic/colors";
 import { MathInput } from "@edulastic/common";
 
@@ -35,4 +35,12 @@ export const MathAnswer = styled(MathInput)`
       }
     }
   }
+
+  ${({ isDocbasedSection }) =>
+    isDocbasedSection &&
+    css`
+      .math-keyboard-popover {
+        left: 0 !important;
+      }
+    `}
 `;

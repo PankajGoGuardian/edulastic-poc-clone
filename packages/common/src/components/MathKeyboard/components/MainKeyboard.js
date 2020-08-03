@@ -11,15 +11,15 @@ const {
 } = math;
 
 const limitRow = 3;
-const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
+const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
   const [boards, updateBoards] = useState({});
   const [current, updateCurrent] = useState(0);
   const numOfKeys = btns.length;
 
   useEffect(() => {
     const keybuttons = cloneDeep(btns);
-
     let keysPerRow = 4;
+
     if (numOfKeys > 12 && numOfKeys <= 15) {
       keysPerRow = 5;
     }
@@ -29,6 +29,10 @@ const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
 
     if (fullKeybord) {
       keysPerRow = 6;
+    }
+
+    if (isDocbasedSection) {
+      keysPerRow = 4;
     }
 
     const rows = chunk(keybuttons, keysPerRow);
@@ -56,6 +60,7 @@ const MainKeyboard = ({ btns, onInput, fullKeybord }) => {
   };
 
   const currentBoard = boards[current] || [];
+
   return (
     <Wrapper>
       <PrevButton onClick={onClickPrev} hidden={current <= 0} />

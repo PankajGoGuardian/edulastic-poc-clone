@@ -296,7 +296,8 @@ class MathInput extends React.PureComponent {
         showDropdown={showDropdown}
         onChangeKeypad={onChangeKeypad}
         onInput={(key, command) => this.onInput(key, command)}
-        docBasedKeypadStyles={isDocbasedSection && `position: fixed; right: 30px;`}
+        docBasedKeypadStyles={isDocbasedSection && `right: 30px; width:100%;`}
+        isDocbasedSection={isDocbasedSection}
       />
     );
     const visibleKeypad = !alwaysHideKeyboard && !alwaysShowKeyboard && mathKeyboardVisible;

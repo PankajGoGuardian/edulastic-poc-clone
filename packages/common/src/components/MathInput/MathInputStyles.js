@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { mobileWidth, greyThemeLight, greyishBorder } from "@edulastic/colors";
 
 export const MathInputStyles = styled.div`
@@ -154,9 +154,14 @@ export const MathInputStyles = styled.div`
     }
   }
 
-  .math-keyboard-popover {
-    animation: ${({ isDocbasedSection }) => isDocbasedSection && "none"};
-  }
+  ${({ isDocbasedSection }) =>
+    isDocbasedSection &&
+    css`
+      .math-keyboard-popover {
+        animation: none;
+        max-width: 100%;
+      }
+    `}
 `;
 
 export default MathInputStyles;

@@ -72,13 +72,14 @@ const MathFormulaAnswerMethod = ({
   isClozeMathWithUnit = false,
   t
 }) => {
-  // Initial value of allowNumericOnly is not set (false)
-  // Setting _allowNumericOnly when the value is not set (false) and method is equivSymbolic
-  // _allowNumericOnly is set to true when question type is Expression & Formula
+  /**
+   * Setting _allowNumericOnly when the value is not set (null) and method is equivSymbolic
+   * _allowNumericOnly is set to true when question type is Numeric Entry
+   */
   const _allowNumericOnly =
     (method === methodsConst.EQUIV_SYMBOLIC &&
       allowNumericOnly === null &&
-      item.title !== questionTitle.EXPRESSION_AND_FORMULA) ||
+      item.title === questionTitle.NUMERIC_ENTRY) ||
     allowNumericOnly;
 
   const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {

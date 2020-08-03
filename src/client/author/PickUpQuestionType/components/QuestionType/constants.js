@@ -2209,7 +2209,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: MTFractions,
       stimulus: "",
       data: {
-        title: "Numeric Entry",
+        title: questionTitle.NUMERIC_ENTRY,
         isMath: true,
         stimulus: "",
         template: EMBED_RESPONSE,

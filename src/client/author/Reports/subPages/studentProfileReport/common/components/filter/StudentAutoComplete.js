@@ -27,7 +27,8 @@ const StudentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { districtId, institutionIds } = userOrgData;
+    const { districtIds, institutionIds } = userOrgData;
+    const districtId = districtIds?.[0];
     const q = {
       limit: 20,
       page: 0,

@@ -7,5 +7,9 @@ module.exports = {
   minWidthShowAnswer: 111,
   indexSizeSmallBox: 10,
   clozeTextMaxWidth: 600,
-  popoverMaxWidth: 400
+  popoverMaxWidth: 400,
+  v1DocBased:{
+    width:695,
+    height:842
+  } 
 };

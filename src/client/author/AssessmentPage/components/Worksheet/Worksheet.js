@@ -13,6 +13,7 @@ import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, Button } from "antd";
 import { IconGraphRightArrow } from "@edulastic/icons";
+import { response } from "@edulastic/constants";
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
@@ -536,7 +537,7 @@ class WorksheetComponent extends React.Component {
       currentPage: _currentPageInState
     } = this.state;
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState;
-
+    const { width: v1Width, height: v1Height } = response.v1DocBased;
     let { answersById } = this.props;
     if (studentWorkAnswersById) {
       answersById = studentWorkAnswersById;
@@ -549,9 +550,10 @@ class WorksheetComponent extends React.Component {
     const leftColumnWidth = minimized ? 0 : windowWidth > 1024 ? 215 : 195;
     // 350+(15 extra space) IS THE TOTAL WIDTH OF RIGHT QUESTION AREA
     const rightColumnWidth = windowWidth > 1024 ? 365 : 295;
-    const pdfWidth = windowWidth - rightColumnWidth - leftColumnWidth;
+    const pdfWidth =
+      questions.length && questions[0].isV1Migrated ? v1Width : windowWidth - rightColumnWidth - leftColumnWidth;
+    const pdfHeight = questions.length && questions[0].isV1Migrated ? v1Height : undefined;
     const reportMode = viewMode && viewMode === "report";
-
     return (
       <WorksheetWrapper reportMode={reportMode} testMode={testMode} extraPaddingTop={extraPaddingTop}>
         <Modal
@@ -645,11 +647,11 @@ class WorksheetComponent extends React.Component {
               questions={questions}
               questionsById={questionsById}
               answersById={answersById}
-              setZoom={this.setZoom}
               viewMode={viewMode}
               reportMode={reportMode}
               isToolBarVisible={isToolBarVisible}
               pdfWidth={pdfWidth - 100}
+              pdfHeight={pdfHeight}
               minimized={minimized}
               pageChange={this.handleChangePage}
               testMode={testMode}

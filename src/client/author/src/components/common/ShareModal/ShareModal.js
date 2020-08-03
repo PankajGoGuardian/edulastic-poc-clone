@@ -108,7 +108,7 @@ class ShareModal extends React.Component {
     const testId = match.params.id;
     const isDA = userRole === roleuser.DISTRICT_ADMIN;
     if (isDA) {
-      this.setState({ sharedType: sharedKeysObj.DISTRICT, permission: "VIEW" });
+      this.setState({ permission: "VIEW" });
     }
     if (testId && testId !== "undefined")
       getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });

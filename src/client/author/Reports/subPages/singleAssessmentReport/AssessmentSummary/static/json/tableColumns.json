@@ -156,6 +156,7 @@
         "title": "School",
         "dataIndex": "schoolName",
         "key": "schoolName",
+        "fixed": "left",
         "width": 250,
         "align": "left"
       },

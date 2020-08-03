@@ -93,7 +93,7 @@ const SortableQuestionItem = SortableElement(
         testMode={testMode}
       />
     </div>
-    )
+  )
 );
 
 const defaultQuestionValue = {
@@ -356,7 +356,6 @@ class Questions extends React.Component {
     const { updateQuestion, updateRecentStandards } = this.props;
     let { recentStandardsList } = this.props;
     const question = this.currentQuestion;
-
     const nextQuestion = updateQuesionData(question, data);
     updateQuestion(nextQuestion);
     const { alignment = [] } = nextQuestion;
@@ -515,7 +514,7 @@ class Questions extends React.Component {
                     testMode={testMode}
                     onHighlightQuestion={onHighlightQuestion}
                   />
-                  )
+                )
               )}
             </PerfectScrollbar>
           </QuestionWidgetWrapper>

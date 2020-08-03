@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { groupBy } from "lodash";
+import { groupBy, uniqBy } from "lodash";
 import next from "immer";
 import { StyledTable } from "../styled";
 
@@ -33,8 +33,8 @@ export const AssessmentStatisticTable = props => {
     }
 
     const arr = Object.keys(hMap).map(key => {
-      const __data = hMap[key];
-      const obj = { ...__data[0] };
+      const __data = uniqBy(hMap[key], o => `${o.assignmentId}_${o.groupId}`);
+      const obj = { ...__data[0], key };
 
       let maxAssessmentDate = 0;
       let sumTotalScore = 0;
@@ -118,7 +118,7 @@ export const AssessmentStatisticTable = props => {
   };
 
   const getColumns = _tableType =>
-    next(columnData[_tableType.key].columns, columns => {
+    next([...columnData[_tableType.key].columns], columns => {
       if (role === "teacher") {
         columns.splice(0, 1);
         columns[0].sorter = sortAlphabets("groupName");
@@ -186,7 +186,6 @@ export const AssessmentStatisticTable = props => {
         component={StyledTable}
         columns={table.columns}
         dataSource={table.tableData}
-        rowKey="groupId"
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         tableToRender={PrintableTable}

@@ -370,8 +370,10 @@ class DisneyCardContainer extends Component {
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
                           {student.status === "redirected" && (
                             <AttemptDiv>
-                              <StyledParaSSS>&nbsp;</StyledParaSSS>
-                              <StyledParaSS style={{ fontSize: "12px" }}>Not Started</StyledParaSS>
+                              <CenteredStyledParaSS>- / {student.maxScore || 0}</CenteredStyledParaSS>
+                              <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
+                                Not Started
+                              </StyledParaSS>
                               <p style={{ fontSize: "12px" }}>
                                 Attempt {(recentAttemptsGrouped[student.studentId]?.[0]?.number || 0) + 2}
                               </p>

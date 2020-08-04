@@ -82,7 +82,6 @@ const SingleAssessmentReportFilters = ({
   setShowApply,
   firstLoad,
   setFirstLoad,
-  loc,
   isCliUser
 }) => {
   const testDataOverflow = get(SARFilterData, "data.result.testDataOverflow", false);
@@ -348,6 +347,9 @@ const SingleAssessmentReportFilters = ({
       ...filters,
       schoolId: selected.key
     };
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`);
+    const q = pickBy(_filters, f => f !== "All" && !isEmpty(f));
+    getSARFilterDataRequest(q);
     setFilters(_filters);
   };
   const updateTeachersDropDownCB = selected => {

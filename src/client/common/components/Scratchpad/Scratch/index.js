@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import isEmpty from "lodash/isEmpty";
 import { drawTools } from "@edulastic/constants";
-import { WithResources, MathModal, ScrollContext, getMathHtml } from "@edulastic/common";
+import { WithResources, MathModal, ScrollContext, getMathHtml, AssessmentPlayerContext } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
 import ToolBox from "../Tools";
 import {
@@ -55,6 +55,7 @@ const Scratchpad = ({
   const [zwibbler, setZwibbler] = useState();
   const [clipBoard, updateClipBoard] = useState();
   const [showMathModal, setShowMathModal] = useState(false);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
   const isDeleteMode = useRef();
   const zwibblerContainer = useRef();
   const zwibblerRef = useRef();
@@ -63,6 +64,8 @@ const Scratchpad = ({
   const hideToolBar = readOnly || hideTools;
 
   const { getScrollElement } = useContext(ScrollContext);
+  const { isStudentAttempt } = useContext(AssessmentPlayerContext);
+
   const scrollContainerHeight = getScrollElement()?.scrollHeight;
   const scrollContainerWidth = getScrollElement()?.scrollWidth;
 
@@ -270,7 +273,6 @@ const Scratchpad = ({
         readOnly,
         setFocus: !isLCBView // Zwibbler will be unable to intercept any keyboard commands
       });
-
       newZwibbler.on("node-clicked", node => {
         if (isDeleteMode.current) {
           newZwibbler.deleteNode(node);
@@ -302,11 +304,22 @@ const Scratchpad = ({
   }, [clearClicked]);
 
   useEffect(() => {
-    // load saved user work from backend
-    if (data && zwibbler && readOnly) {
-      zwibbler.load(data);
+    // load saved user work from backend initially
+    if (zwibbler && data) {
+      /**
+       * during student attempt (assessment player, practice player)
+       * @see https://snapwiz.atlassian.net/browse/EV-17241
+       */
+      if (isStudentAttempt && !initialDataLoaded) {
+        zwibbler.load(data);
+        setInitialDataLoaded(true);
+      }
+      // in readOnly mode views (lcb, express grader, etc.)
+      else if (readOnly) {
+        zwibbler.load(data);
+      }
     }
-  }, [data]);
+  }, [data, zwibbler]);
 
   return (
     <ScratchpadContainer ref={zwibblerContainer}>

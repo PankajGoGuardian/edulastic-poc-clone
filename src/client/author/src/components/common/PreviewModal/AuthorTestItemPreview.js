@@ -251,7 +251,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderRightButtons = () => {
-    const { isPassage, item, goToItem, passageTestItems, page } = this.props;
+    const { isPassage, item, goToItem, passageTestItems = [], page } = this.props;
     const { derivedFromId = null, _id: itemId } = item;
     /**
      * in v1 migrated type, there is a derived from id on first load

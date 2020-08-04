@@ -302,8 +302,9 @@ class AuthorTestItemPreview extends Component {
     const { style, windowWidth, onlySratchpad, viewComponent, fullModal, item, isPassage, ...restProps } = this.props;
     const { value, isEnableScratchpad } = this.state;
     const { createdBy, data, maxScore, _id } = item;
-    const { questions } = data;
-    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = questions[0];
+    const { questions = [] } = data;
+    const [firstQuestion = {}] = questions;
+    const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = firstQuestion;
 
     let subCount = 0;
     const columns = (

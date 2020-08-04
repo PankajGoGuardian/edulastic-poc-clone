@@ -7,10 +7,9 @@ class EssayPlainTextPage {
     this.header = new Header();
   }
 
-// question Authoring
-  
-  // getQuestionEditor = () => cy.get(".fr-element").eq(0); Can be removed if below line works fine
-  getQuestionEditor = () => cy.get('[data-cy="compose-question-quill-component"]');
+  // question Authoring
+
+  getQuestionEditor = () => cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]');
 
   // Action formatting options
   getCopyCheckBox = () => cy.get('[data-cy="questionEssayPlainEditCopy"]');
@@ -56,7 +55,7 @@ class EssayPlainTextPage {
 
   getWordCount = () => cy.get('[data-cy="questionPlainEssayAuthorPreviewWordCount"]');
 
-// ACTION STARTS
+  // ACTION STARTS
 
   clcikOnCopy = () => this.getCopy().click();
 
@@ -64,7 +63,7 @@ class EssayPlainTextPage {
 
   clickOnCut = () => this.getCut().click();
 
-// ACTION ENDS
+  // ACTION ENDS
 }
 
 export default EssayPlainTextPage;

@@ -1,12 +1,14 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import EssayShortTextPage from "../../../../framework/author/itemList/questionType/writtenAndSpoken/essayShortTextPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" type question`, () => {
   const queData = {
     group: "Writing",
-    queType: "Short text",
+    queType: questionType.ESSAY_SHORT,
     queText: "What is the capital of India?",
     extlink: "www.testdomain.com",
     testtext: "testtext",
@@ -16,12 +18,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
     rgb2: "rgb(252, 224, 232)"
   };
 
-  const ALLOW_METHOD = { exact: "Exact Match", partial: "Any text containing" };
+  // const ALLOW_METHOD = { exact: "Exact Match", partial: "Any text containing" };
 
   const question = new EssayShortTextPage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
-  let preview;
 
   before(() => {
     cy.login();
@@ -40,7 +40,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
       question.header.edit();
       question
         .getQuestionEditor()
-        .clear()
         .type(queData.queText)
         .should("have.text", queData.queText);
 
@@ -51,63 +50,29 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
     });
 
     it(" > [essay_short_s2] => preview - validate ans with exact match option", () => {
-      preview = editItem.header.preview();
-
+      const preview = editItem.header.preview();
       // verify right ans
-      question.getTextEditor().type(queData.correct);
+      question.getAnswerBox().type(queData.correct);
 
-      preview.checkOnCheckAnswer();
+      preview.checkScore("1/1");
 
-      preview.getScore().should("contain", "Score 1/1");
+      preview.getClear().click();
 
-      question.ansHighLightAsRight(queData.rgb1);
+      preview.getShowAnswer().click();
 
-      preview.clickOnClear();
+      preview.getClear().click();
+
+      // question.ansHighLightAsRight(queData.rgb1);
 
       // verify wrong ans
-      question
-        .getTextEditor()
-        .clear()
-        .type(queData.testtext);
+      question.getAnswerBox().type(queData.testtext);
 
-      preview.checkOnCheckAnswer();
+      preview.checkScore("0/1");
 
-      preview.getScore().should("contain", "Score 0/1");
+      // question.ansHighLightAsWrong(queData.rgb2);
 
-      question.ansHighLightAsWrong(queData.rgb2);
-
-      preview.clickOnClear();
+      preview.getClear().click();
     });
-    //  TODO
-    it(" > [essay_short_s3] => preview - validate ans with partial match option", () => {
-      // change setting to partial matchs
-      question.header.edit();
-      //editItem.getEditButton().click();
-      question.selectAllowType(ALLOW_METHOD.partial);
-      // question.header.save();
-
-      preview = editItem.header.preview();
-      // verify right ans
-      question.getTextEditor().type(`${queData.correct} ${queData.testtext}`);
-
-      preview.checkOnCheckAnswer();
-
-      preview.getScore().should("contain", "Score 1/1");
-
-      question.ansHighLightAsRight();
-
-      preview.clickOnClear();
-      // verify wrong ans
-      question
-        .getTextEditor()
-        .clear()
-        .type(queData.testtext);
-
-      preview.checkOnCheckAnswer();
-
-      preview.getScore().should("contain", "Score 0/1");
-
-      question.ansHighLightAsWrong();
-    });
+    validateSolutionBlockTests(queData.group, queData.queType);
   });
 });

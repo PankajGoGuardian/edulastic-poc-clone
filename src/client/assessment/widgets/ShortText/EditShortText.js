@@ -89,6 +89,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
 
   const renderOptions = () => (
     <CorrectAnswer
+      data-cy="correctAnswerShortText"
       title={item.title}
       item={item}
       onSelectChange={handleScoringTypeChange}
@@ -111,6 +112,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
   return (
     <ContentArea>
       <ComposeQuestion
+        data-cy="composeQuestionArea"
         item={item}
         fillSections={fillSections}
         cleanSections={cleanSections}
@@ -118,12 +120,14 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
       />
 
       <Question
+        data-cy="questionArea"
         section="main"
         label={t("component.shortText.correctAnswers")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
         <CorrectAnswers
+          data-cy="CorrectAnswersArea"
           onTabChange={setCorrectTab}
           correctTab={correctTab}
           onAdd={handleAddAnswer}
@@ -143,6 +147,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
       {advancedLink}
 
       <Options
+        data-cy="Options"
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}

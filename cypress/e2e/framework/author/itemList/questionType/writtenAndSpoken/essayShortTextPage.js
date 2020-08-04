@@ -8,8 +8,9 @@ class EssayShortTextPage {
     this.header = new Header();
   }
 
-  // getQuestionEditor = () => cy.get(".fr-element").eq(0); Can be removed if below line works fine
-  getQuestionEditor = () => cy.get('[data-cy="compose-question-quill-component"]');
+  getQuestionEditor = () => cy.get(".fr-element").eq(0);
+
+  getCorrectValue = () => cy.get('[wrap="wrap"]').find('[type="text"]');
 
   // scoring block -> move to common utitly
   getScoreInput = () => cy.get('[data-cy="maxscore"]');
@@ -17,10 +18,6 @@ class EssayShortTextPage {
   getGradingRubricModal = () => cy.get('[data-cy="GradingRubricModal"]');
 
   getScoringInstructions = () => cy.get('[data-cy="scoringInstructions"]');
-
-  getSetShowWordLimit = () => cy.get('[data-cy="setShowWordLimit"]');
-
-  getShowWordCount = () => cy.get('[data-cy="showWordCount"]');
 
   getBrowserSpellCheckOption = () => cy.get('[data-cy="browserSpellCheckOption"]');
 
@@ -33,17 +30,12 @@ class EssayShortTextPage {
 
   getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
 
-
   // on preview
+  getAnswerBox = () => cy.get('[data-cy="essayShortAuthorPreview"]');
+
   // ACTION STARTS
 
-  clcikOnCopy = () => this.getCopy().click();
-
-  clickOnpaste = () => this.getPaste().click();
-
-  clickOnCut = () => this.getCut().click();
-
-// ACTION ENDS
+  // ACTION ENDS
 }
 
 export default EssayShortTextPage;

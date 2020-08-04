@@ -9,8 +9,7 @@ class EssayRichTextPage {
     this.header = new Header();
   }
 
-  // getQuestionEditor = () => cy.get(".fr-element").eq(0); Can be removed if below line works fine
-  getQuestionEditor = () => cy.get('[data-cy="compose-question-quill-component"]');
+  getQuestionEditor = () => cy.get(".fr-element").eq(0);
   // Text formatting options
 
   // scoring block -> move to common utitly
@@ -40,6 +39,9 @@ class EssayRichTextPage {
   getFontSizeOption = () => cy.get('[data-cy="fontSizeOption"]');
 
   // on preview
+  getTextEditor = () => cy.get('*[class^="EssayRichTextPreview"]').find('[contenteditable="true"]');
+
+  getWordCount = () => cy.get('[data-cy="questionRichEssayAuthorPreviewWordCount"]');
 
   // ACTION STARTS
   createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
@@ -59,12 +61,6 @@ class EssayRichTextPage {
       }
     });
   }
-
-  clcikOnCopy = () => this.getCopy().click();
-
-  clickOnpaste = () => this.getPaste().click();
-
-  clickOnCut = () => this.getCut().click();
 
   // ACTION ENDS
 }

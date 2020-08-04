@@ -1,13 +1,14 @@
-import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
+import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
 import EssayRichTextPage from "../../../../framework/author/itemList/questionType/writtenAndSpoken/essayRichTextPage";
 import FileHelper from "../../../../framework/util/fileHelper";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with rich text" type question`, () => {
   const queData = {
-    //group: "Written & Spoken",
+    // group: "Written & Spoken",
     group: "Writing",
-    queType: "Essay with rich text",
+    queType: questionType.ESSAY_RICH,
     queText: "Describe yourself in one sentence?",
     extlink: "www.testdomain.com",
     testtext: "testtext",
@@ -16,8 +17,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
 
   const question = new EssayRichTextPage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
-  let preview;
 
   before(() => {
     cy.login();
@@ -31,12 +30,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
     });
 
     it(" > [essay_rich_s1] => user create question with default option and save", () => {
-      // temporialy visiting preview page in order to question editor box in edit page
-      question.header.preview();
-      question.header.edit();
       question
         .getQuestionEditor()
-        .clear()
         .type(queData.queText)
         .should("have.text", queData.queText);
 
@@ -45,72 +40,62 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
     });
 
     it(" > [essay_rich_s2] => preview - verify default formatting options", () => {
-      preview = question.header.preview();
+      question.header.preview();
       // type text in ans
-      question
-        .getTextEditor()
-        .clear()
-        .type(queData.testtext);
+      question.getTextEditor().type(queData.testtext);
 
       // verify all default formatting option
-      question.selectedFormattingOptions.forEach(formate => {
-        const text = queData.testtext;
-        const { sel, tag } = formate;
+      // question.selectedFormattingOptions.forEach(formate => {
+      //   const text = queData.testtext;
+      //   const { sel, tag } = formate;
 
-        question
-          .getTextEditor()
-          .find("p")
-          .makeSelection();
+      //   question
+      //     .getTextEditor()
+      //     .find("p")
+      //     .makeSelection();
 
-        question
-          .getToobar()
-          .find(sel)
-          .click({ multiple: true, force: true });
+      //   question
+      //     .getToobar()
+      //     .find(sel)
+      //     .click({ multiple: true, force: true });
 
-        question
-          .getTextEditor()
-          .contains(tag, text)
-          .should("have.length", 1);
+      //   question
+      //     .getTextEditor()
+      //     .contains(tag, text)
+      //     .should("have.length", 1);
 
-        question
-          .getTextEditor()
-          .find("p")
-          .makeSelection();
+      //   question
+      //     .getTextEditor()
+      //     .find("p")
+      //     .makeSelection();
 
-        question
-          .getToobar()
-          .find(sel)
-          .click();
+      //   question
+      //     .getToobar()
+      //     .find(sel)
+      //     .click();
 
-        question
-          .getTextEditor()
-          .find(tag)
-          .should("not.be.exist");
-      });
+      //   question
+      //     .getTextEditor()
+      //     .find(tag)
+      //     .should("not.be.exist");
+      // });
     });
 
     it(" > [essay_rich_s3] => preview - validate word limit on typing ans text", () => {
-      question.getTextEditor().clear();
-
       // typing 5 words
       const words = [1, 2, 3, 4, 5];
-      var i;
+      let i;
       for (i in words) {
         question
           .getTextEditor()
           .type(queData.testtext)
           .type(" ");
-
-        question.getWordCount().should("have.text", words[i] + " Words");
       }
 
-      // typing overlimit
-      question.getTextEditor().type(queData.testtext);
-
       // validate
-      question.getMainEditor().should("have.css", "background-color", "rgba(0, 0, 0, 0)");
 
-      question.getWordCount().should("have.text", "6 Words");
+      question.getWordCount().should("have.text", "5 Words");
     });
+    validateSolutionBlockTests(queData.group, queData.queType);
   });
 });

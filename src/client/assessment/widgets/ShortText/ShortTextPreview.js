@@ -121,6 +121,7 @@ const ShortTextPreview = ({
 
           <InputWrapper>
             <TextInputStyled
+              data-cy="essayShortAuthorPreview"
               value={text}
               pr="35px"
               bg={background}

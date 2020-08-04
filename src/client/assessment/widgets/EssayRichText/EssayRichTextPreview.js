@@ -158,7 +158,9 @@ const EssayRichTextPreview = ({
               (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
                 <EssayToolbar borderRadiusOnlyBottom>
                   <FlexContainer />
-                  <Item style={wordCountStyle}>{displayWordCount}</Item>
+                  <Item data-cy="questionRichEssayAuthorPreviewWordCount" style={wordCountStyle}>
+                    {displayWordCount}
+                  </Item>
                 </EssayToolbar>
               )}
           </EssayRichTextContainer>

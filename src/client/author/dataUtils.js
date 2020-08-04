@@ -1,11 +1,11 @@
 import React from "react";
-import { get, keyBy, uniqBy, uniq } from "lodash";
+import { get, keyBy, uniqBy, uniq, memoize } from "lodash";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { questionType } from "@edulastic/constants";
+import { questionType as questionTypes } from "@edulastic/constants";
 import { UserIcon } from "./ItemList/components/Item/styled";
 import { EdulasticVerified } from "./TestList/components/ListItem/styled";
 
-const { PASSAGE } = questionType;
+const { PASSAGE } = questionTypes;
 
 export const hasUserGotAccessToPremiumItem = (itemCollections = [], orgCollections = [], returnFlag = true) => {
   const itemCollectionsMap = keyBy(itemCollections, o => o._id);
@@ -97,6 +97,10 @@ export const getPlaylistAuthorName = item => {
   return ``;
 };
 
+const getTitleFromQuestionType = memoize(questionType =>
+  questionTypes.selectsData.find(data => data.value === questionType)
+);
+
 export const getQuestionType = item => {
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
@@ -110,7 +114,13 @@ export const getQuestionType = item => {
   if (questions.length > 1 || resources.length) {
     return ["MULTIPART"];
   }
-  return questions[0] && questions[0].title ? [questions[0].title] : [];
+
+  /**
+   * Trying to find the question title from questionType (used in q-type search dropdown)
+   * https://snapwiz.atlassian.net/browse/EV-17163
+   * */
+  const _questionTypeTitle = getTitleFromQuestionType(questions[0]?.type)?.text;
+  return _questionTypeTitle ? [_questionTypeTitle] : questions[0]?.title ? [questions[0].title] : [];
 };
 
 /**

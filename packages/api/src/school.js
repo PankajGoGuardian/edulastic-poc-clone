@@ -69,7 +69,7 @@ const searchSchoolsByName = ({ districtId, schoolName }) =>
 const updateSchoolApprovalStatus = payload =>
   api
     .callApi({
-      url: `${prefix}/update/approval-status`,
+      url: `${prefix}/bulk/approval-status`,
       method: "put",
       data: payload
     })

@@ -2,6 +2,7 @@ export const userPickFields = [
   // changes made here should be also made in backend end file "src/models/user.js"
   // put it in alphabetical order
   "_id",
+  "v1Id",
   "cleverId",
   "currentSignUpState",
   "districtIds",

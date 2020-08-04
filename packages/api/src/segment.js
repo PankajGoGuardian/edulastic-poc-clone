@@ -16,7 +16,8 @@ const getUserDetails = ({
   orgData: { districts = [] }
 }) => {
   // setting first district details for student other user role will have only one district
-  const { districtId = "", districtName: district="", districtState: state=""} = districts?.[0] || {};
+  const { districtId = "", districtName: district="", districtState: state="", v1Id} = districts?.[0] || {};
+  const schoolId = get(orgData, "schools[0].v1Id", "") || get(orgData, "schools[0]._id", "");
   return {
     domain: window.document.domain,
     email,
@@ -25,10 +26,13 @@ const getUserDetails = ({
     clever,
     clever_district,
     gm,
-    groupId: districtId,
-    schoolId: get(orgData, "schools[0]._id", ""),
+    // this is not Groups._id
+    // https://segment.com/docs/connections/spec/group/
+    // its districtId
+    groupId: v1Id || districtId,
+    schoolId,
     school: get(orgData, "schools[0].name", ""),
-    districtId,
+    districtId: v1Id || districtId,
     district,
     state
   }
@@ -41,12 +45,14 @@ const analyticsIdentify = ({ user }) => {
   if (user) {
     const {
       role = "",
-      _id: userId,
+      _id,
+      v1Id,
       features = { premiumUser: false },
       firstName,
       lastName,
       orgData: { defaultGrades: [grade = "", ,] = [], defaultSubjects: [subject = "", ,] = [] }
     } = user;
+    const userId = v1Id || _id;
     if (allowedRoles.includes(role) && window.analytics) {
       // Passing user_hash to have secure communication
       window.analytics.identify(
@@ -66,7 +72,7 @@ const analyticsIdentify = ({ user }) => {
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
             user_hash: createHmac("sha256", AppConfig.segmentHashSecret)
-              .update(userId)
+              .update(userId.toString())
               .digest("hex")
           }
         }
@@ -80,7 +86,8 @@ const unloadIntercom = ({ user }) => {
     return;
   }
   if (user) {
-    const { role = "", _id: userId } = user;
+    const { role = "", _id, v1Id } = user;
+    const userId = v1Id || _id;
     if (allowedRoles.includes(role) && window.analytics) {
       window.analytics.identify(
         userId,
@@ -92,7 +99,7 @@ const unloadIntercom = ({ user }) => {
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
             user_hash: createHmac("sha256", AppConfig.segmentHashSecret)
-              .update(userId)
+              .update(userId.toString())
               .digest("hex")
           }
         }

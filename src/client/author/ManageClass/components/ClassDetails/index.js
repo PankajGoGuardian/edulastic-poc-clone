@@ -62,7 +62,7 @@ const ClassDetails = ({
   isFetchingCanvasData
 }) => {
   const { editPath, exitPath } = location?.state || {};
-  const { name, type, cleverId, institutionId } = selectedClass;
+  const { name, type, cleverId, institutionId, districtId } = selectedClass;
   const typeText = type !== "class" ? "group" : "class";
 
   // sync checks for institution
@@ -257,6 +257,7 @@ const ClassDetails = ({
               history={history}
               cleverId={cleverId}
               searchAndAddStudents={searchAndAddStudents}
+              districtId={districtId}
             />
             <StudentsList
               selectStudent

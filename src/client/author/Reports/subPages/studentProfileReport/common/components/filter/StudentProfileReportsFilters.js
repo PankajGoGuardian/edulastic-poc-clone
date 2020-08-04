@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo } from "react";
 import queryString from "query-string";
 import { connect } from "react-redux";
-import { get, find, isEmpty } from "lodash";
+import { get, find, isEmpty, pickBy } from "lodash";
+import qs from "qs";
+
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import StudentAutoComplete from "./StudentAutoComplete";
 import ClassAutoComplete from "./ClassAutoComplete";
@@ -51,9 +53,9 @@ const StudentProfileReportsFilters = ({
   setStudent,
   selectedClass,
   setSelectedClass,
-  defaultTerm
+  defaultTerm,
+  history
 }) => {
-  const firstPlot = useRef(true);
   const splittedPath = location.pathname.split("/");
   const urlStudentId = splittedPath[splittedPath.length - 1];
   const parsedQuery = queryString.parse(location.search);
@@ -117,36 +119,33 @@ const StudentProfileReportsFilters = ({
           title: getFullNameFromAsString(classRecord)
         });
       }
-
-      const _filters = {
-        ...filters,
-        termId: selectedTerm.key,
-        courseId: selectedCourse.key,
-        grade: selectedGrade.key,
-        subject: selectedSubject.key
-        // uncomment after making changes to chart files
-        // performanceBandProfileId: selectedProfile,
-        // standardsProficiencyProfileId: selectedScale
-      };
-      const _student = { ...student };
-      setFilters(_filters);
-
-      if (firstPlot.current) {
-        _onGoClick({ filters: { ..._filters }, selectedStudent: _student });
-      }
     }
 
-    firstPlot.current = false;
+    const _filters = {
+      ...filters,
+      termId: selectedTerm.key,
+      courseId: selectedCourse.key,
+      grade: selectedGrade.key,
+      subject: selectedSubject.key
+      // uncomment after making changes to chart files
+      // performanceBandProfileId: selectedProfile,
+      // standardsProficiencyProfileId: selectedScale
+    };
+    const _student = { ...student };
+    setFilters(_filters);
+    _onGoClick({ filters: _filters, selectedStudent: _student });
   }
 
   const onStudentSelect = item => {
     if (item && item.key) {
       setStudent(item);
+      const _reportPath = splittedPath.slice(0, splittedPath.length - 1).join("/");
+      const _filters = { ...filters, ...pickBy(parsedQuery, f => f !== "All" && !isEmpty(f)) };
+      history.push(`${_reportPath}/${item.key}?${qs.stringify(_filters)}`);
       getSPRFilterDataRequest({
         termId: filters.termId,
         studentId: item.key
       });
-      _onGoClick({ filters: { ...filters }, selectedStudent: item });
     }
   };
 

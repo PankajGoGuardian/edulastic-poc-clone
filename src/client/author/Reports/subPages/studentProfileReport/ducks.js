@@ -14,16 +14,19 @@ export const getReportsSPRSettings = createSelector(
   state => state
 );
 
+const defaultStudent = { key: "", title: "" };
+const defaultFilters = {
+  termId: "",
+  courseId: "",
+  grade: "",
+  subject: "",
+  performanceBandProfileId: "",
+  standardsProficiencyProfileId: ""
+};
+
 const initialState = {
-  selectedStudent: { key: "", title: "" },
-  requestFilters: {
-    termId: "",
-    courseId: "",
-    grade: "",
-    subject: "",
-    performanceBandProfileId: "",
-    standardsProficiencyProfileId: ""
-  }
+  selectedStudent: { ...defaultStudent },
+  requestFilters: { ...defaultFilters }
 };
 
 export const reportSPRSettingsReducer = createReducer(initialState, {
@@ -33,6 +36,7 @@ export const reportSPRSettingsReducer = createReducer(initialState, {
   },
   // eslint-disable-next-line no-unused-vars
   [RESET_ALL_REPORTS]: state => {
-    state = initialState;
+    state.selectedStudent = { ...defaultStudent };
+    state.requestFilters = { ...defaultFilters };
   }
 });

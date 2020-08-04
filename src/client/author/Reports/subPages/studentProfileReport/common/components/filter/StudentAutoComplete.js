@@ -56,7 +56,6 @@ const StudentAutoComplete = ({
   };
   const onSelect = key => {
     const value = getFullName(studentList.find(s => s._id === key));
-    console.log(key);
     setSearchTerms({ text: value, selectedText: value, selectedKey: key });
     selectCB({ key, title: value });
   };

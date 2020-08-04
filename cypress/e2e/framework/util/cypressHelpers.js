@@ -65,12 +65,7 @@ export default class CypressHelper {
     console.log("time here", dateTime);
     cy.wait(300);
     if (time) {
-      const [date, time] = dateTime.toLocaleString().split(",");
-      const formattedDate = date
-        .split("/")
-        .reverse()
-        .join("-");
-      const datetimeToSet = `${formattedDate}${time}`;
+      const datetimeToSet = Cypress.moment(dateTime).format("YYYY-MM-DD hh:mm:ss a");
       cy.get(".ant-calendar-date-input-wrap")
         .find("input")
         .clear()

@@ -167,7 +167,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
         testLibrary.assignPage.selectStudent(students[1].stuName);
 
         const start = new Date();
-        start.setMinutes(start.getMinutes() + 10);
+        start.setDate(start.getDate() + 1);
         testLibrary.assignPage.setStartDate(start);
         testLibrary.assignPage.clickOnAssign();
         cy.contains("Success!");

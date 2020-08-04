@@ -12,7 +12,7 @@ import {
 } from "../../../../common/components/ConfirmationModal/styled";
 import { StyledSelect } from "../../../../common/styled";
 
-import { getCollectionsSelector, getItemBucketsSelector } from "../../../src/selectors/user";
+import { getCollectionsToAddContent } from "../../../src/selectors/user";
 
 const CollectionsSelectModal = ({
   isVisible,
@@ -108,8 +108,7 @@ const StyledCollectionsSelectModal = styled(CollectionsSelectModal)`
 
 const ConnectedStyledCollectionsSelectModal = connect(
   state => ({
-    collections: getCollectionsSelector(state),
-    orgCollections: getItemBucketsSelector(state)
+    orgCollections: getCollectionsToAddContent(state)
   }),
   {}
 )(StyledCollectionsSelectModal);

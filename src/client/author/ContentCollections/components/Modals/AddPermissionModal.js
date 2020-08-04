@@ -127,6 +127,11 @@ const AddPermissionModal = ({
       return notification({ messageKey: "pleaseSelectAtleastOneRole" });
     }
     const { orgDetails, role, ..._permissionDetails } = fieldData;
+    if (roleuser.EDULASTIC_ADMIN === user.role) {
+      if (!_permissionDetails.csManager) delete _permissionDetails.csManager;
+      if (!_permissionDetails.opportunityId) delete _permissionDetails.opportunityId;
+      if (!_permissionDetails.notes) delete _permissionDetails.notes;
+    }
     let permissionDetails;
     if (_permissionDetails.orgType !== "USER") {
       permissionDetails = orgDetails.map(d => {
@@ -435,9 +440,9 @@ AddPermissionModal.defaultProps = {
   userList: [],
   districtList: [],
   isFetchingOrganization: false,
-  searchRequest: () => { },
+  searchRequest: () => {},
   visible: true,
-  handleResponse: () => { },
+  handleResponse: () => {},
   itemBankName: "",
   selectedPermission: {},
   isEditPermission: false

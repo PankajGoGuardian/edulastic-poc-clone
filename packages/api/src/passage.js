@@ -25,6 +25,15 @@ const update = ({ _id, ...data }) =>
     })
     .then(result => result.data.result);
 
+const duplicate = ({ passageId, testItemIds }) =>
+  api
+    .callApi({
+      url: `${prefix}/${passageId}/duplicate`,
+      method: "post",
+      data: { testItemIds }
+    })
+    .then(result => result.data.result);
+
 const getById = _id =>
   api
     .callApi({
@@ -36,5 +45,6 @@ const getById = _id =>
 export default {
   create,
   update,
-  getById
+  getById,
+  duplicate
 };

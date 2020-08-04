@@ -116,13 +116,26 @@ class PreviewModal extends React.Component {
     if (!passage) {
       return duplicateTestItem({ data, testId, test, match, isTest, itemId, regradeFlow });
     }
+
+    const { testItemPreviewData } = this.props;
+
     Modal.confirm({
       title: "Clone Passage Item",
       content: `This passage has ${
         passage.testItems.length
       } Items associated with it. Would you like to clone complete passage or a single item?`,
       onOk: () => {
-        duplicateTestItem({ data, testId, test, match, isTest, itemId, regradeFlow, passage });
+        duplicateTestItem({
+          data,
+          testId,
+          test,
+          match,
+          isTest,
+          itemId,
+          regradeFlow,
+          passage,
+          currentItem: testItemPreviewData?._id
+        });
         Modal.destroyAll();
         this.closeModal();
       },

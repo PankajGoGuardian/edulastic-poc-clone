@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
-import { get, omit } from "lodash";
+import { get } from "lodash";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { notification } from "@edulastic/common";
 import * as Sentry from "@sentry/browser";
@@ -81,24 +81,20 @@ export function reducer(state = initialState, { type, payload }) {
 
 function* duplicateItemRequestSaga({ payload }) {
   try {
-    const { data, testId, test, isTest, regradeFlow, duplicateWholePassage } = payload;
+    const { data, testId, test, isTest, regradeFlow, duplicateWholePassage, currentItem } = payload;
     const { passage } = payload;
     const itemId = data.id;
-    let duplicatedItem = null;
-    if (passage && duplicateWholePassage) {
-      // duplicating item along with its passage
-      const { _id: oldPassageId, __v, ...dataToSend } = passage;
-      // duplicating item
-      duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId);
-      // creating a fresh passage with old content but only newly duplicated item
-      const duplicatedPassage = yield call(passageApi.create, { ...dataToSend, testItems: [duplicatedItem._id] });
-      const { _id: duplicateItemId, ...item } = duplicatedItem;
-      // updating new passageId with newly duplicated item
-      yield call(testItemsApi.update, { id: duplicateItemId, item: { ...item, passageId: duplicatedPassage._id } });
-    } else if (passage && !duplicateWholePassage) {
-      // duplicating a single item in a passage and need to add this item to the passage
-      duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId);
-      yield call(passageApi.update, { ...omit(passage, "__v"), testItems: [...passage.testItems, duplicatedItem._id] });
+    let duplicatedItem = {};
+    if (passage) {
+      // Current item selected in preview modal or all test items based on duplicateWholePassage (flag)
+      const testItemsToDuplicate = duplicateWholePassage ? passage.testItems : currentItem ? [currentItem] : [];
+      // To duplicate passage we require passageId and testItemsIds
+      const duplicatedPassage = yield call(passageApi.duplicate, {
+        passageId: passage?._id,
+        testItemIds: testItemsToDuplicate
+      });
+      // using first item to show when redirected to itemDetails page
+      duplicatedItem._id = duplicatedPassage?.testItems?.[0];
     } else {
       duplicatedItem = yield call(testItemsApi.duplicateTestItem, itemId);
     }

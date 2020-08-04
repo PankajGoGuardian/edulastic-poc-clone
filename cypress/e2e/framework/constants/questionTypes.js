@@ -126,7 +126,8 @@ export const questionGroup = {
 export const CALCULATOR = {
   BASIC: "BASIC",
   SCIENTIFIC: "SCIENTIFIC",
-  GRAPH: "GRAPHING"
+  GRAPH: "GRAPHING",
+  NONE: "NONE"
 };
 
 export const COLLECTION = {

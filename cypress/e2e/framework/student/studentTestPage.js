@@ -946,25 +946,28 @@ class StudentTestPage {
   assertCalcType = type => {
     switch (type) {
       case CALCULATOR.SCIENTIFIC:
-        this.getScientificCalc().should("exist");
         this.getScientificCalc()
+          .should("exist")
           .prev()
           .click({ force: true });
         break;
       case CALCULATOR.BASIC:
-        this.getBasicCalc().should("exist");
         this.getBasicCalc()
+          .should("exist")
           .prev()
           .click({ force: true });
         break;
       case CALCULATOR.GRAPH:
-        this.getGraphCalc().should("exist");
         this.getGraphCalc()
+          .should("exist")
           .prev()
           .click({ force: true });
         break;
-      default:
+      case CALCULATOR.NONE:
         this.getCalculatorButton().should("not.exist");
+        break;
+      default:
+        assert.fail(1, 2, "calulator type did not match in student test page");
     }
   };
 

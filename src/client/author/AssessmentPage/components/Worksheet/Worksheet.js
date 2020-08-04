@@ -154,7 +154,7 @@ class WorksheetComponent extends React.Component {
     }
   };
 
-  handleAddAnnotation = question => {
+  handleAddAnnotation = (question, offsetWidth, offsetHeight) => {
     const { annotations, setTestData } = this.props;
     const annotation = {
       uuid: uuid(),
@@ -175,7 +175,7 @@ class WorksheetComponent extends React.Component {
     newAnnotations.push(annotation);
 
     const updatedAssessment = {
-      annotations: newAnnotations
+      annotations: newAnnotations.map(a => ({ ...a, offsetWidth, offsetHeight }))
     };
 
     setTestData(updatedAssessment);

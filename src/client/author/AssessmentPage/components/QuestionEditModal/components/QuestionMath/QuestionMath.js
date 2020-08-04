@@ -21,8 +21,13 @@ const QuestionMath = ({ onUpdate, question }) => {
   const handleAnswerChange = (prop, value) => {
     const { validation } = question;
     const nextValidation = cloneDeep(validation);
-
-    nextValidation.validResponse.value[0][prop] = value;
+    if (prop === "method" && nextValidation.validResponse.value[0][prop] !== value) {
+      nextValidation.validResponse.value[0] = {
+        [prop]: value
+      };
+    } else {
+      nextValidation.validResponse.value[0][prop] = value;
+    }
 
     if (prop === "value") {
       const isNumeric = v => /^\d+$/.test(v);

@@ -20,7 +20,8 @@ class ErrorHandler extends React.Component {
   componentDidCatch(error, info) {
     Sentry.captureException(error);
     Sentry.configureScope(scope => {
-      scope.setTag("error.type", "Unexpected Error");
+      scope.setExtras(info);
+      scope.setTag("error.type", "UnexpectedError");
     });
     // log the error to an error reporting service
     console.error(error, info);

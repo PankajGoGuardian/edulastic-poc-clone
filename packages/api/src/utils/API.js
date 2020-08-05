@@ -152,16 +152,33 @@ export default class API {
         return response;
       },
       data => {
-        if (data && data.response && data.response.status) {
-          if (data.response.status === 401) {
-            // log in to sentry
-            Sentry.withScope(scope => {
-              scope.setLevel("error");
-              scope.setFingerprint(["Forced Redirection"]);
-              Sentry.captureException(new Error("User forced to log out due to uncaught error"));
-              Sentry.captureMessage(JSON.stringify(data.response));
-            });
+        const err = new Error(
+          `API failed while trying to fetch: ${data.response?.config?.url || "NA"}: message: ${data.response?.data
+            ?.message || "NA"}`
+        );
 
+        // make the response available so anyone can read it.
+        err.status = data.response?.status;
+        err.response = data.response;
+
+        if (data && data.response && data.response.status) {
+          // log in to sentry
+          Sentry.withScope(scope => {
+            scope.setLevel("error");
+            scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
+            Sentry.captureException(err);
+            Sentry.captureMessage(
+              JSON.stringify({
+                res: data.response?.data || {},
+                ref: data.response?.headers?.["x-server-ref"],
+                req: data.response?.config?.data
+              })
+            );
+          });
+          if (data.response.status === 401) {
+            Sentry.withScope(scope => {
+              scope.setFingerprint(["Forced Redirection"]);
+            });
             // Needs proper fixing, patching it to fix infinite reload
             const loginRedirectUrl = localStorage.getItem("loginRedirectUrl");
             localStorage.clear();
@@ -172,7 +189,8 @@ export default class API {
             window.location.href = "/login";
           }
         }
-        return Promise.reject(data.response);
+
+        return Promise.reject(err);
       }
     );
   }

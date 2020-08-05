@@ -37,7 +37,7 @@ export default class PlayListLibrary {
 
   getRemoveDropByName = name => cy.get(`[data-cy="remove-${name}"]`);
 
-  getPLaylistLibraryTitle = () => cy.get('[title="Playlist Library"]');
+  getPLaylistLibraryTitle = () => cy.get('[title="Playlist"]');
 
   // *** ELEMENTS END ***
   // *** ACTIONS START ***

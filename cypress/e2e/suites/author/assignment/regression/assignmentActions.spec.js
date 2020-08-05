@@ -323,7 +323,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         });
         it("> verify navigation", () => {
           cy.url().should("contain", `author/reports/performance-by-students/test/${newTestId}`);
-          cy.get('[title="Reports"]').should("exist");
+          cy.get('[title="Insights"]').should("exist");
         });
       });
       context("> unassign", () => {

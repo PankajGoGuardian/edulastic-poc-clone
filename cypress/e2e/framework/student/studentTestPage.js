@@ -875,11 +875,13 @@ class StudentTestPage {
 
   verifyNoOfQuestions = NoOfQues => {
     this.getQueDropDown()
+      .as("question-dropdown")
       .click({ force: true })
       .parent()
       .next()
       .find("li")
       .should("have.length", NoOfQues);
+    cy.get("@question-dropdown").click({ force: true });
   };
 
   // getQuestionText = () => cy.get('[data-cy="styled-wrapped-component"]');

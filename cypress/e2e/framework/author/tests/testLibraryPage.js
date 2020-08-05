@@ -122,7 +122,7 @@ export default class TestLibrary {
 
   getDescriptionOnTestCardById = id => this.getTestCardById(id).find('[data-cy="test-description"]');
 
-  getTestlibraryTitle = () => cy.get('[title="Test Library"]');
+  getTestlibraryTitle = () => cy.get('[title="Test"]');
 
   getDescriptionOnTestCardPopUp = () => cy.get('[data-cy="testcard-description"]').next();
 

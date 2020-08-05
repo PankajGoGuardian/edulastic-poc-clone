@@ -73,7 +73,7 @@ export default class SearchFilters {
     cy.xpath("//li[text()='Authored by me']").click();
     this.waitForSearchResponse();
     if (setSortOptions) {
-      this.setSortButtonInDescOrder();
+      this.setSortButtonInAsceOrder();
       this.setSortOption(option);
     }
   };
@@ -85,7 +85,7 @@ export default class SearchFilters {
     cy.get('[data-cy="clearAll"]').click({ force: true });
     cy.wait("@search").then(() => this.getSearchBar().should("not.contain", dummyCharToType));
     if (setSortOptions) {
-      this.setSortButtonInDescOrder();
+      this.setSortButtonInAsceOrder();
       this.setSortOption(option);
     }
   };
@@ -186,7 +186,7 @@ export default class SearchFilters {
     this.getSortButton()
       .find("svg")
       .then($ele => {
-        if ($ele.attr("dir") === "des")
+        if ($ele.attr("dir") === "desc")
           cy.wrap($ele)
             .click({ force: true })
             .then(() => this.waitForSearchResponse());
@@ -295,12 +295,14 @@ export default class SearchFilters {
 
   expandFilters = () =>
     this.getFilterButton().then($elem => {
-      if ($elem.attr("color") === "#1AB394") cy.wrap($elem).click({ force: true });
+      if (Cypress.$('[data-cy="clearAll"]').length === 0) cy.wrap($elem).click({ force: true });
+      cy.get('[data-cy="clearAll"]').should("be.visible");
     });
 
   collapseFilters = () =>
     this.getFilterButton().then($elem => {
-      if ($elem.attr("color") === "#fff") cy.wrap($elem).click({ force: true });
+      if (Cypress.$('[data-cy="clearAll"]').length === 1) cy.wrap($elem).click({ force: true });
+      cy.get('[data-cy="clearAll"]').should("not.exist");
     });
 
   verfifyActivePageIs = pageNo =>

@@ -117,10 +117,10 @@ export const curateFiltersData = (filtersData, filters) => {
 // curate percentScore, status & lastActivityDAte for testActivity
 const getCuratedTestActivity = taGroup => {
   const curatedGroup = taGroup.map(ta => {
-    const { status, graded, startDate, endDate, score = 0, maxScore = 1 } = ta;
+    const { status, graded, startDate, endDate, score = 0, maxScore = 1, redirect } = ta;
     const laDate = endDate || startDate || 0;
     if (status === testActivityStatus.START) {
-      return { laDate, status: "START", score, maxScore };
+      return { laDate, status: "START", score, maxScore, redirect };
     }
     if (status === testActivityStatus.SUBMITTED) {
       return {
@@ -128,14 +128,24 @@ const getCuratedTestActivity = taGroup => {
         status: graded === "GRADED" ? "GRADED" : "SUBMITTED",
         percentScore: `${Math.round((100 * score) / maxScore)}%`,
         score,
-        maxScore
+        maxScore,
+        redirect
       };
     }
     if (status === testActivityStatus.ABSENT) {
-      return { laDate, status: "ABSENT", percentScore: "0%", score, maxScore };
+      return { laDate, status: "ABSENT", percentScore: "0%", score, maxScore, redirect };
     }
     return null;
   });
+  // if last attempted ta is redirected, show a ta with status "NOT STARTED"
+  if (curatedGroup[0].redirect) {
+    return {
+      laDate: curatedGroup[0].laDate,
+      status: "NOT STARTED",
+      percentScore: " ",
+      archived: curatedGroup
+    };
+  }
   // return last attempted ta with others as archived
   return curatedGroup[0] && { ...curatedGroup[0], archived: curatedGroup.slice(1) };
 };

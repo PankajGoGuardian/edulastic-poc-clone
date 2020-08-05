@@ -1438,6 +1438,23 @@ function* updateTestDocBasedSaga({ payload }) {
       payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
     });
 
+    // Updating the annotation question Id references using updated item question ids.
+    if (updatedItem.data?.questions?.length && payload.data?.annotations?.length) {
+      const versionedQIdMap = {};
+      updatedItem.data.questions.forEach(question => {
+        const oldQId = question.previousQuestionId;
+        const newQId = question.id;
+        if (!!oldQId && oldQId !== newQId) {
+          versionedQIdMap[oldQId] = newQId;
+        }
+      });
+      if (Object.keys(versionedQIdMap).length) {
+        payload.data.annotations.forEach(annotation => {
+          annotation.questionId = versionedQIdMap[annotation.questionId];
+        });
+      }
+    }
+
     const newAssessment = {
       ...payload.data,
       itemGroups: [{ ...payload.data.itemGroups[0], items: [{ _id: testItemId, ...updatedItem }] }]

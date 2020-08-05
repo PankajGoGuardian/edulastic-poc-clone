@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
+import { call, put, all, takeEvery, takeLatest } from "redux-saga/effects";
 import { notification } from "@edulastic/common";
 import { libraryFilters } from "@edulastic/constants";
 import { curriculumSequencesApi, userContextApi, TokenStorage as Storage } from "@edulastic/api";
@@ -64,19 +64,8 @@ function* receivePublishersSaga() {
 
 function* receivePlaylistsSaga({ payload: { search = {}, sort = {}, page = 1, limit = 10 } }) {
   try {
-    const _search = { ...search };
-    // If user is CE then fetch playlists created by only this CE
-    const { _id: userId, permissions: userPermissions = [] } = yield select(state => state.user.user) || {};
-    if (userPermissions.includes("curator")) {
-      if (_search.authoredByIds) {
-        _search.authoredByIds.push(userId);
-      } else {
-        _search.authoredByIds = [userId];
-      }
-    }
-
     const result = yield call(curriculumSequencesApi.searchCurriculumSequences, {
-      search: _search,
+      search,
       sort,
       page,
       limit
@@ -149,7 +138,7 @@ export const emptyFilters = {
 export const initialSortState = {
   sortBy: "relevance",
   sortDir: "desc"
-}
+};
 
 // reducer
 const initialState = {

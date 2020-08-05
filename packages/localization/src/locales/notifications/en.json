@@ -556,7 +556,7 @@
     "description": ""
   },
   "presentationMode": {
-    "message": "  Presentation mode is ON. You can present assessment data without revealing student identity.",
+    "message": "  Presentation mode is ON. You can present assignment data without revealing student identity.",
     "description": ""
   },
   "SelectTwoOrMoreStudents": {

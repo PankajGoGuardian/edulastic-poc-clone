@@ -1,5 +1,4 @@
 import React from "react";
-import { Switch, message, Button } from "antd";
 import { notification } from "@edulastic/common";
 import { connect } from "react-redux";
 import { get } from "lodash";
@@ -11,13 +10,12 @@ import { togglePresentationModeAction } from "../../src/actions/testActivity";
 const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, groupId }) => {
   const toggleCurrentMode = () => {
     togglePresentationMode();
-    if (!isPresentationMode)
-      notification({ type: "info", messageKey: "presentationMode"});
+    if (!isPresentationMode) notification({ type: "info", messageKey: "presentationMode" });
   };
 
   const title = !isPresentationMode
     ? "Presentation Mode will anonymize the names of students"
-    : " Presentation Mode will get OFF";
+    : " Disable Presentation Mode";
   return (
     <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden" groupId={groupId}>
       <StyledButton title={title} onClick={toggleCurrentMode}>

@@ -276,7 +276,7 @@ function* deleteSchoolsSaga({ payload }) {
   try {
     // for (let i = 0; i < payload.length; i++) {
     yield call(schoolApi.deleteSchool, payload);
-    notification({ type: "success", messagKey: "schoolSucessfullyDeactivated" });
+    notification({ type: "success", messageKey:"schoolSucessfullyDeactivated"});
     yield put(deleteSchoolsSuccessAction(payload.schoolIds));
   } catch (err) {
     const errorMessage = "Delete School is failing";

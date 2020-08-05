@@ -3,7 +3,6 @@ import { createSelector } from "reselect";
 import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
 import { keyBy, get, omit } from "lodash";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { receiveClassEnrollmentListAction } from "../ClassEnrollment/ducks";
 import { UPDATE_POWER_TEACHER_TOOLS_SUCCESS } from "../../student/Login/ducks";
@@ -259,7 +258,7 @@ export const reducer = createReducer(initialState, {
         if (usernames.includes(_source?.email) || usernames.includes(_source?.username)) {
           _user._source.isPowerTeacher = enable;
         }
-        state.data.result[id] = _user; 
+        state.data.result[id] = _user;
       });
     }
   }
@@ -272,7 +271,7 @@ function* receiveSchoolAdminSaga({ payload }) {
     yield put(receiveSchoolAdminSuccessAction(data));
   } catch (err) {
     const errorMessage = "Receive SchoolAdmins is failing!";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(receiveSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -281,10 +280,10 @@ function* updateSchoolAdminSaga({ payload }) {
   try {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
-    notification({ type: "success", messageKey:"userUpdatedSuccessfully"});
+    notification({ type: "success", messageKey: "userUpdatedSuccessfully" });
   } catch ({ data: { message: errMsg } }) {
     const errorMessage = "Update User is failing";
-    notification({msg:errMsg || errorMessage});
+    notification({ msg: errMsg || errorMessage });
     yield put(updateSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -322,10 +321,10 @@ function* createSchoolAdminSaga({ payload }) {
       default:
         msg = "Created Successfully";
     }
-    notification({ type: "success", msg});
+    notification({ type: "success", msg });
   } catch (err) {
     const errorMessage = err.data.message || "Create new user is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(createSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -340,10 +339,10 @@ function* deleteSchoolAdminSaga({ payload }) {
     if (isFetchClassEnrollmentList) {
       yield put(receiveClassEnrollmentListAction(payload.listReq));
     }
-    notification({ type: "success", messagKey:"userSucessfullyDeactivated"});
+    notification({ type: "success", messageKey: "userSucessfullyDeactivated" });
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }));
   }
 }
@@ -366,7 +365,7 @@ function* addBulkTeacherAdminSaga({ payload }) {
     yield put(addBulkTeacherAdminSuccessAction({ res, _bulkTeachers }));
   } catch (err) {
     const errorMessage = "Add Bulk Teacher is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(addBulkTeacherAdminErrorAction({ bulkAddError: errorMessage }));
   }
 }

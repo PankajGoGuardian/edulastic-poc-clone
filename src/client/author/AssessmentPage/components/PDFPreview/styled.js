@@ -13,23 +13,23 @@ export const PDFPreviewWrapper = styled.div`
   transition: padding 0.2s ease-in;
   height: ${props =>
     `calc(100vh - ${
-      props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
-    }px)`};
+    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
+    }px) - 43px`};
   .scrollbar-container {
     border-radius: 5px;
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props =>
-      `calc(100vh - ${
-        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
-      }px)`};
+    `calc(100vh - ${
+    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
+    }px) - 43px`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props =>
-      `calc(100vh - ${
-        props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
-      }px)`};
+    `calc(100vh - ${
+    props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
+    }px) - 43px`};
   }
 `;
 

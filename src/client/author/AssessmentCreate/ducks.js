@@ -1,6 +1,5 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { message } from "antd";
 import { call, put, all, takeLatest, select } from "redux-saga/effects";
 import nanoid from "nanoid";
 import { push } from "react-router-redux";
@@ -10,7 +9,7 @@ import { get, without, omit } from "lodash";
 
 import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
 import { aws, roleuser, test as testConstant } from "@edulastic/constants";
-import { helpers,notification } from "@edulastic/common";
+import { helpers, notification } from "@edulastic/common";
 import { uploadToS3 } from "../src/utils/upload";
 import {
   createBlankTest,
@@ -97,8 +96,10 @@ const defaultTestItem = {
 
 const defaultPageStructure = [
   {
-    URL: "blank",
-    pageNo: 1
+    pageId: helpers.uuid(),
+    URL: "https://cdn.edulastic.com/default/blank_doc-3425532845-1501676954359.pdf",
+    pageNo: 1,
+    rotate: 0
   }
 ];
 
@@ -121,7 +122,7 @@ function* createAssessmentSaga({ payload }) {
     }
   } catch (error) {
     const errorMessage = error.message || "Upload PDF is failing";
-    notification({ msg: errorMessage});
+    notification({ msg: errorMessage });
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
   }
@@ -131,7 +132,7 @@ function* createAssessmentSaga({ payload }) {
     }
   } catch (error) {
     const errorMessage = "Create test item is failing";
-    notification({ msg: errorMessage});
+    notification({ msg: errorMessage });
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
   }
@@ -152,8 +153,23 @@ function* createAssessmentSaga({ payload }) {
           pageNo: index + 1
         }));
     } else {
-      pageStructure = defaultPageStructure;
+
+      const pdfLoadingTask = pdfjs.getDocument(defaultPageStructure[0].URL);
+
+      const { numPages } = yield pdfLoadingTask.promise;
+      amountOfPDFPages = numPages;
+
+      pageStructure = new Array(amountOfPDFPages)
+        .fill({
+          URL: defaultPageStructure[0].URL,
+          pageId: helpers.uuid()
+        })
+        .map((page, index) => ({
+          ...page,
+          pageNo: index + 1
+        }));
     }
+
 
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
@@ -269,7 +285,7 @@ function* createAssessmentSaga({ payload }) {
     } else {
       errorMessage = "Create assessment is failing";
     }
-    notification({ msg: errorMessage});
+    notification({ msg: errorMessage });
     yield put(createAssessmentErrorAction({ error: errorMessage }));
   }
 }
@@ -282,7 +298,7 @@ function* uploadToDriveSaga({ payload }) {
     const fileURI = res.Location;
     yield put(createAssessmentRequestAction({ fileURI }));
   } catch (err) {
-    notification({ messageKey:"uploadFailed"});
+    notification({ messageKey: "uploadFailed" });
   }
 }
 

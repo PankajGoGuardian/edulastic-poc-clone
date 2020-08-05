@@ -4,6 +4,7 @@ import { Document, Page } from "react-pdf";
 import { Dropdown, Menu, Modal } from "antd";
 
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from "./styled";
+import { BLANK_URL } from "../Worksheet/Worksheet";
 
 const createContextMenu = ({
   index,
@@ -20,49 +21,49 @@ const createContextMenu = ({
   setConfirmRotate,
   setDeleteConfirmation
 }) => (
-  <Menu>
-    <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
-    <Menu.Divider />
-    <Menu.Item onClick={onMoveUp} disabled={index === 0}>
-      Move Up
+    <Menu>
+      <Menu.Item onClick={onInsertBlankPage}>Insert Blank Page</Menu.Item>
+      <Menu.Divider />
+      <Menu.Item onClick={onMoveUp} disabled={index === 0}>
+        Move Up
     </Menu.Item>
-    <Menu.Item onClick={onMoveDown} disabled={index === total - 1}>
-      Move Down
+      <Menu.Item onClick={onMoveDown} disabled={index === total - 1}>
+        Move Down
     </Menu.Item>
-    <Menu.Divider />
-    <Menu.Item
-      onClick={
-        hasAnnotations
-          ? () => {
+      <Menu.Divider />
+      <Menu.Item
+        onClick={
+          hasAnnotations
+            ? () => {
               setConfirmRotate(true);
               setRotateDirection("clockwise");
             }
-          : onRotate("clockwise")
-      }
-    >
-      Rotate clockwise
+            : onRotate("clockwise")
+        }
+      >
+        Rotate clockwise
     </Menu.Item>
-    <Menu.Item
-      onClick={
-        hasAnnotations
-          ? () => {
+      <Menu.Item
+        onClick={
+          hasAnnotations
+            ? () => {
               setConfirmRotate(true);
               setRotateDirection("counterclockwise");
             }
-          : onRotate("counterclockwise")
-      }
-    >
-      Rotate counterclockwise
+            : onRotate("counterclockwise")
+        }
+      >
+        Rotate counterclockwise
     </Menu.Item>
-    <Menu.Divider />
-    <Menu.Item
-      disabled={disableDelete}
-      onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}
-    >
-      Delete
+      <Menu.Divider />
+      <Menu.Item
+        disabled={disableDelete}
+        onClick={url || hasAnnotations ? () => setDeleteConfirmation(true, index) : onDelete}
+      >
+        Delete
     </Menu.Item>
-  </Menu>
-);
+    </Menu>
+  );
 
 const ThumbnailsItem = ({
   page,
@@ -101,6 +102,8 @@ const ThumbnailsItem = ({
     url
   });
 
+  const pageNumber = url === BLANK_URL ? 1 : page;
+
   return (
     <>
       <Modal
@@ -125,7 +128,7 @@ const ThumbnailsItem = ({
           <PagePreview rotate={rotate}>
             {url && (
               <Document file={url} renderMode="canvas">
-                <Page pageNumber={page} renderTextLayer={false} />
+                <Page pageNumber={pageNumber} renderTextLayer={false} />
               </Document>
             )}
           </PagePreview>

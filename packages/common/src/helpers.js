@@ -1,5 +1,4 @@
 /* eslint-disable */
-import uuid from "uuid/v4";
 import { get, round, isNaN } from "lodash";
 import { notification } from "@edulastic/common";
 import { fileApi } from "@edulastic/api";
@@ -35,6 +34,20 @@ export const ALPHABET = [
   "Y",
   "Z"
 ];
+
+const REGEXP = /[xy]/g;
+const PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+
+/**
+ * Generate a univierally unique identifier
+ *
+ * @return {String}
+ */
+const uuid = () => PATTERN.replace(REGEXP, (c) => {
+  let r = Math.random()*16|0;
+  let v = c == 'x' ? r : (r&0x3|0x8);
+  return v.toString(16);
+});
 
 const getDisplayName = WrappedComponent => WrappedComponent.displayName || WrappedComponent.name || "Component";
 
@@ -794,5 +807,6 @@ export default {
   getFormattedAttrId,
   getSelectionRect,
   toggleIntercomDisplay,
-  executePromisesInSequence
+  executePromisesInSequence,
+  uuid
 };

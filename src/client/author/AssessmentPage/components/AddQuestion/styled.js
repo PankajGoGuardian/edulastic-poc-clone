@@ -1,14 +1,13 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, mainBgColor, themeColor, sectionBorder, smallDesktopWidth } from "@edulastic/colors";
+import { white, themeColor, sectionBorder, smallDesktopWidth } from "@edulastic/colors";
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
   width: 320px;
   bottom: 0;
   padding: 15px 0;
-  background: ${mainBgColor};
 
   @media (max-width: ${smallDesktopWidth}) {
     width: 270px;

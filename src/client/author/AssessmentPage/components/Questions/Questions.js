@@ -66,11 +66,18 @@ const SortableQuestionItem = SortableElement(
     highlighted,
     testMode,
     onHighlightQuestion,
-    questionIndex
+    questionIndex,
+    setCurrentAnnotationTool
   }) => (
     <div
-      onClick={() => onHighlightQuestion(data.id)}
-      onFocus={() => onHighlightQuestion(data.id)}
+      onClick={() => {
+          setCurrentAnnotationTool('cursor');
+          onHighlightQuestion(data.id);
+        }}
+      onFocus={() => {
+          setCurrentAnnotationTool('cursor');
+          onHighlightQuestion(data.id);
+        }}
       style={{ display: "flex", marginBottom: "6px", padding: (testMode || review) && "0px 3px" }}
     >
       {!testMode && !review && <DragHandle review={review} />}
@@ -91,6 +98,7 @@ const SortableQuestionItem = SortableElement(
         onDragStart={() => onDragStart(data.id)}
         highlighted={highlighted}
         testMode={testMode}
+        setCurrentAnnotationTool={setCurrentAnnotationTool}
       />
     </div>
   )
@@ -466,7 +474,8 @@ class Questions extends React.Component {
       review,
       testMode,
       reportMode,
-      onHighlightQuestion
+      onHighlightQuestion,
+      setCurrentAnnotationTool
     } = this.props;
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
     let shouldModalBeVisibile = true;
@@ -513,6 +522,7 @@ class Questions extends React.Component {
                     highlighted={highlighted === question.id}
                     testMode={testMode}
                     onHighlightQuestion={onHighlightQuestion}
+                    setCurrentAnnotationTool={setCurrentAnnotationTool}
                   />
                 )
               )}

@@ -84,7 +84,11 @@ class QuestionItem extends React.Component {
     }
   };
 
-  handleDragEnd = () => this.setState({ dragging: false });
+  handleDragEnd = () => {
+    const { setCurrentAnnotationTool } = this.props;
+    if (setCurrentAnnotationTool) setCurrentAnnotationTool('cursor');
+    this.setState({ dragging: false })
+  };
 
   renderMultipleChoiceAnswer = (value, options) => {
     const labels = value.reduce((result, current) => {
@@ -284,7 +288,7 @@ class QuestionItem extends React.Component {
   renderScore = qId => {
     const { feedback = {}, previousFeedback = [], data } = this.props;
     const maxScore = get(data, "validation.validResponse.score", 0);
-    const { score, feedback: teacherComments, graded, skipped, ...rest } =
+    const { score, feedback: teacherComments, graded, skipped } =
       previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || data.activity || {};
 
     return (
@@ -309,7 +313,7 @@ class QuestionItem extends React.Component {
       return null;
     }
     const {
-      data: { id, qIndex, type } = {},
+      data: { id, type } = {},
       questionIndex,
       review,
       viewMode,

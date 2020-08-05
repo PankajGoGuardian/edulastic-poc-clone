@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 import produce from "immer";
@@ -8,17 +8,22 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
-import { withWindowSizes, notification } from "@edulastic/common";
+import { withWindowSizes, notification, helpers } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, Button } from "antd";
+
+import { setTestDataAction, setCurrentAnnotationToolAction, updateAnnotationToolsPropertiesAction, undoAnnotationsAction, redoAnnotationsAction } from "../../../TestPage/ducks";
+
 import { IconGraphRightArrow } from "@edulastic/icons";
 import { response } from "@edulastic/constants";
-import { setTestDataAction } from "../../../TestPage/ducks";
+
 import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
-import { WorksheetWrapper, MinimizeButton } from "./styled";
+import { WorksheetWrapper, PDFAnnotationToolsWrapper, MinimizeButton } from "./styled";
+// import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
+
 import { loadQuestionsAction } from "../../../sharedDucks/questions";
 
 import { saveUserWorkAction } from "../../../../assessment/actions/userWork";
@@ -32,6 +37,7 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction
 } from "../../../AssessmentCreate/ducks";
+import PDFAnnotationTools from "../PDFAnnotationTools";
 
 const swap = (array, i, j) => {
   const copy = array.slice();
@@ -39,15 +45,18 @@ const swap = (array, i, j) => {
   return copy;
 };
 
+export const BLANK_URL = "https://cdn.edulastic.com/default/blank_doc-3425532845-1501676954359.pdf";
+
 const defaultPage = {
-  URL: "blank",
+  pageId: helpers.uuid(),
+  URL: BLANK_URL,
   pageNo: 1,
   rotate: 0
 };
 
 const createPage = (pageNumber, url) => ({
   ...defaultPage,
-  URL: url || "blank",
+  URL: url || BLANK_URL,
   pageNo: pageNumber
 });
 
@@ -157,7 +166,7 @@ class WorksheetComponent extends React.Component {
   handleAddAnnotation = (question, offsetWidth, offsetHeight) => {
     const { annotations, setTestData } = this.props;
     const annotation = {
-      uuid: uuid(),
+      uuid: helpers.uuid(),
       type: "point",
       class: "Annotation",
       toolbarMode: "question",
@@ -181,10 +190,11 @@ class WorksheetComponent extends React.Component {
     setTestData(updatedAssessment);
   };
 
+  // Add Blank Page 
   handleAppendBlankPage = () => {
     const { pageStructure } = this.props;
 
-    const lastPageIndex = pageStructure.length - 1;
+    const lastPageIndex = pageStructure.length;
     this.addBlankPage(lastPageIndex);
   };
 
@@ -325,8 +335,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page
+            ? pageIndex + 1
+            : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -369,8 +379,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page
+            ? pageIndex + 1
+            : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -502,7 +512,6 @@ class WorksheetComponent extends React.Component {
     });
   };
 
-  // setup for scratchpad ends
   render() {
     const {
       annotations,
@@ -523,6 +532,14 @@ class WorksheetComponent extends React.Component {
       extraPaddingTop,
       onPageChange,
       uploadToDrive,
+      currentAnnotationTool,
+      setCurrentAnnotationTool,
+      annotationToolsProperties,
+      updateToolProperties,
+      undoAnnotationsOperation,
+      redoAnnotationsOperation,
+      isAnnotationsStackEmpty = false,
+      pdfAnnotations = [],
       currentPage: _currentPageInProps
     } = this.props;
 
@@ -554,80 +571,92 @@ class WorksheetComponent extends React.Component {
       questions.length && questions[0].isV1Migrated ? v1Width : windowWidth - rightColumnWidth - leftColumnWidth;
     const pdfHeight = questions.length && questions[0].isV1Migrated ? v1Height : undefined;
     const reportMode = viewMode && viewMode === "report";
+    const editMode = viewMode === "edit";
+
     return (
-      <WorksheetWrapper reportMode={reportMode} testMode={testMode} extraPaddingTop={extraPaddingTop}>
-        <Modal
-          visible={deleteConfirmation}
-          title="Confirm Page Deletion"
-          onCancel={() => this.setDeleteConfirmation(false)}
-          footer={[
-            <StyledCancelBtn onClick={() => this.setDeleteConfirmation(false)}>No</StyledCancelBtn>,
-            <StyledSubmitBtn
-              key="back"
-              onClick={() => {
-                this.handleDeletePage(selected);
-                this.setDeleteConfirmation(false);
-              }}
-            >
-              Yes
-            </StyledSubmitBtn>
-          ]}
-        >
-          Are you sure that you want to delete this page?
-        </Modal>
-        <Modal
-          width={700}
-          visible={uploadModal}
-          onCancel={() => this.setState({ uploadModal: false, isAddPdf: false })}
-          footer={null}
-        >
-          <DropArea
-            loading={creating}
-            onUpload={this.handleUploadPDF}
-            onCreateBlank={this.handleCreateBlankAssessment}
-            percent={percentageUploaded}
-            fileInfo={fileInfo}
-            isAddPdf={isAddPdf}
-            cancelUpload={this.cancelUpload}
-            uploadToDrive={uploadToDrive}
-          />
-        </Modal>
-
-        {!minimized && (
-          <Thumbnails
-            annotations={annotations}
-            list={pageStructure}
-            currentPage={currentPage}
-            onReupload={this.handleReupload}
-            onAddPdf={this.handleAddPdf}
-            onPageChange={this.handleChangePage}
-            onAddBlankPage={this.handleAppendBlankPage}
-            onDeletePage={this.handleDeletePage}
-            setDeleteConfirmation={this.setDeleteConfirmation}
-            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
-            onMovePageUp={this.handleMovePageUp}
-            onMovePageDown={this.handleMovePageDown}
-            onInsertBlankPage={this.handleInsertBlankPage}
-            onRotate={this.handleRotate}
-            viewMode={viewMode}
-            review={review}
-            testMode={testMode}
-            reportMode={reportMode}
-            isToolBarVisible={isToolBarVisible}
-            toggleToolBarVisiblity={this.toggleToolBarVisiblity}
-            noCheck={noCheck}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {editMode && (<PDFAnnotationToolsWrapper>
+          <PDFAnnotationTools
+            setCurrentTool={setCurrentAnnotationTool}
+            currentTool={currentAnnotationTool}
+            togglePdfThumbnails={this.toggleMinimized}
             minimized={minimized}
-            toggleMinimized={this.toggleMinimized}
+            annotationToolsProperties={annotationToolsProperties}
+            updateToolProperties={updateToolProperties}
+            isAnnotationsStackEmpty={isAnnotationsStackEmpty}
+            isAnnotationsEmpty={pdfAnnotations.filter(a => !a?.questionId)?.length === 0}
+            undoAnnotationsOperation={undoAnnotationsOperation}
+            redoAnnotationsOperation={redoAnnotationsOperation}
           />
-        )}
+        </PDFAnnotationToolsWrapper>)}
 
-        {minimized && (
-          <MinimizeButton onClick={this.toggleMinimized} minimized={minimized}>
-            <IconGraphRightArrow />
-          </MinimizeButton>
-        )}
+        <WorksheetWrapper reportMode={reportMode} testMode={testMode} extraPaddingTop={extraPaddingTop} editMode={editMode} editModePadding={editMode ? "65px" : "0px"}>
+          <Modal
+            visible={deleteConfirmation}
+            title="Confirm Page Deletion"
+            onCancel={() => this.setDeleteConfirmation(false)}
+            footer={[
+              <StyledCancelBtn onClick={() => this.setDeleteConfirmation(false)}>No</StyledCancelBtn>,
+              <StyledSubmitBtn
+                key="back"
+                onClick={() => {
+                  this.handleDeletePage(selected);
+                  this.setDeleteConfirmation(false);
+                }}
+              >
+                Yes
+              </StyledSubmitBtn>
+            ]}
+          >
+            Are you sure that you want to delete this page?
+          </Modal>
+          <Modal
+            width={700}
+            visible={uploadModal}
+            onCancel={() => this.setState({ uploadModal: false, isAddPdf: false })}
+            footer={null}
+          >
+            <DropArea
+              loading={creating}
+              onUpload={this.handleUploadPDF}
+              onCreateBlank={this.handleCreateBlankAssessment}
+              percent={percentageUploaded}
+              fileInfo={fileInfo}
+              isAddPdf={isAddPdf}
+              cancelUpload={this.cancelUpload}
+              uploadToDrive={uploadToDrive}
+            />
+          </Modal>
 
-        <Fragment>
+          {!minimized && (
+            <Thumbnails
+              annotations={annotations}
+              list={pageStructure}
+              currentPage={currentPage}
+              onReupload={this.handleReupload}
+              onAddPdf={this.handleAddPdf}
+              onPageChange={this.handleChangePage}
+              onAddBlankPage={this.handleAppendBlankPage}
+              onDeletePage={this.handleDeletePage}
+              setDeleteConfirmation={this.setDeleteConfirmation}
+              onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+              onMovePageUp={this.handleMovePageUp}
+              onMovePageDown={this.handleMovePageDown}
+              onInsertBlankPage={this.handleInsertBlankPage}
+              onRotate={this.handleRotate}
+              viewMode={viewMode}
+              review={review}
+              testMode={testMode}
+              reportMode={reportMode}
+              isToolBarVisible={isToolBarVisible}
+              toggleToolBarVisiblity={this.toggleToolBarVisiblity}
+              noCheck={noCheck}
+              minimized={minimized}
+              toggleMinimized={this.toggleMinimized}
+            />
+          )}
+
+
           <div
             style={{
               position: "relative",
@@ -659,29 +688,34 @@ class WorksheetComponent extends React.Component {
               highlighted={highlightedQuestion}
               forwardedRef={this.pdfRef}
               review={review}
+              currentAnnotationTool={currentAnnotationTool}
+              setCurrentAnnotationTool={setCurrentAnnotationTool}
+              annotationToolsProperties={annotationToolsProperties}
             />
           </div>
-        </Fragment>
-        <Questions
-          noCheck={noCheck}
-          list={questions}
-          review={review}
-          viewMode={viewMode}
-          questionsById={questionsById}
-          answersById={answersById}
-          highlighted={highlightedQuestion}
-          onDragStart={this.onDragStart}
-          onHighlightQuestion={this.handleHighlightQuestion}
-          lockToContainerEdges
-          lockOffset={["10%", "0%"]}
-          lockAxis="y"
-          useDragHandle
-          onSortEnd={this.onSortEnd}
-          testMode={testMode}
-          isDocBased={isDocBased}
-          reportMode={reportMode}
-        />
-      </WorksheetWrapper>
+
+          <Questions
+            noCheck={noCheck}
+            list={questions}
+            review={review}
+            viewMode={viewMode}
+            questionsById={questionsById}
+            answersById={answersById}
+            highlighted={highlightedQuestion}
+            onDragStart={this.onDragStart}
+            onHighlightQuestion={this.handleHighlightQuestion}
+            lockToContainerEdges
+            lockOffset={["10%", "0%"]}
+            lockAxis="y"
+            useDragHandle
+            onSortEnd={this.onSortEnd}
+            testMode={testMode}
+            isDocBased={isDocBased}
+            reportMode={reportMode}
+            setCurrentAnnotationTool={setCurrentAnnotationTool}
+          />
+        </WorksheetWrapper>
+      </div>
     );
   }
 }
@@ -707,7 +741,7 @@ const enhance = compose(
       scratchPad: get(
         state,
         `userWork.present[${
-          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
+        ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
         }].scratchpad`,
         null
       ),
@@ -721,7 +755,11 @@ const enhance = compose(
       creating: getAssessmentCreatingSelector(state),
       percentageUploaded: percentageUploadedSelector(state),
       fileInfo: fileInfoSelector(state),
-      answersById: state.answers
+      answersById: state.answers,
+      currentAnnotationTool: state.tests.currentAnnotationTool,
+      annotationToolsProperties: state.tests.annotationToolsProperties,
+      isAnnotationsStackEmpty: state.tests.annotationsStack?.length === 0,
+      pdfAnnotations: state.tests.entity?.annotations
     }),
     {
       saveUserWork: saveUserWorkAction,
@@ -731,7 +769,11 @@ const enhance = compose(
       redoScratchPad: ActionCreators.redo,
       setTestData: setTestDataAction,
       setQuestionsById: loadQuestionsAction,
-      uploadToDrive: uploadToDriveAction
+      uploadToDrive: uploadToDriveAction,
+      setCurrentAnnotationTool: setCurrentAnnotationToolAction,
+      updateToolProperties: updateAnnotationToolsPropertiesAction,
+      undoAnnotationsOperation: undoAnnotationsAction,
+      redoAnnotationsOperation: redoAnnotationsAction
     }
   )
 );

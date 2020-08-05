@@ -106,11 +106,11 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
           maxScore: isLimitedDeliveryType ? 1 : scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(
-                { ...o, isLimitedDeliveryType },
-                o.data.questions,
-                helpers.getPoints(o),
-                scoring[o._id]
-              )
+              { ...o, isLimitedDeliveryType },
+              o.data.questions,
+              helpers.getPoints(o),
+              scoring[o._id]
+            )
             : {}
         }));
       } else itemGroup.items = [];
@@ -215,10 +215,16 @@ export const SET_DEFAULT_SETTINGS_LOADING = "[test] deafult settings loading";
 export const SET_AUTOSELECT_ITEMS_FETCHING_STATUS = "[test] set autoselect items fetching status";
 export const SET_REGRADING_STATE = "[test] set regrading state";
 export const SET_EDIT_ENABLE = "[test] set enable edit state";
+export const SET_CURRENT_ANNOTATION_TOOL = "[SnapQuiz] annotation tools";
+export const UPDATE_ANNOTATION_TOOLS_PROPERTIES = "[SnapQuiz] update annotation tools properties";
+export const SET_ANNOTATIONS_STACK = "[SnapQuiz] reset undo stack and redo stack";
+export const UNDO_ANNOTATONS_OPERATION = "[SnapQuiz] UNDO annotations operation";
+export const REDO_ANNOTATONS_OPERATION = "[SnapQuiz] REDO annotations operation";
 export const TOGGLE_TEST_LIKE = "[test] toggle test like";
 export const UPDATE_TEST_LIKE_COUNT = "[test] update test like count";
 export const UPDATE_TEST_ITEM_LIKE_COUNT = "[test] update test review item like count";
 export const RESET_UPDATED_TEST_STATE = "[test] reset test updated state";
+
 
 // actions
 
@@ -252,10 +258,15 @@ export const setDefaultSettingsLoadingAction = createAction(SET_DEFAULT_SETTINGS
 export const setAutoselectItemsFetchingStatusAction = createAction(SET_AUTOSELECT_ITEMS_FETCHING_STATUS);
 export const setRegradingStateAction = createAction(SET_REGRADING_STATE);
 export const setEditEnableAction = createAction(SET_EDIT_ENABLE);
+export const setCurrentAnnotationToolAction = createAction(SET_CURRENT_ANNOTATION_TOOL);
+export const updateAnnotationToolsPropertiesAction = createAction(UPDATE_ANNOTATION_TOOLS_PROPERTIES);
+export const undoAnnotationsAction = createAction(UNDO_ANNOTATONS_OPERATION);
+export const redoAnnotationsAction = createAction(REDO_ANNOTATONS_OPERATION);
 export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE);
 export const updateTestLikeCountAction = createAction(UPDATE_TEST_LIKE_COUNT);
 export const updateTestItemLikeCountAction = createAction(UPDATE_TEST_ITEM_LIKE_COUNT);
 export const resetUpdatedStateAction = createAction(RESET_UPDATED_TEST_STATE);
+
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false, playlistId = undefined) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -352,6 +363,7 @@ export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TES
 export const addNewTagAction = createAction(ADD_NEW_TAG);
 export const setDefaultTestTypeProfilesAction = createAction(SET_DEFAULT_TEST_TYPE_PROFILES);
 export const deleteAnnotationAction = createAction(DELETE_ANNOTATION);
+export const setUndoStackAction = createAction(SET_ANNOTATIONS_STACK);
 
 export const defaultImage = "https://cdn2.edulastic.com/default/default-test-1.jpg";
 
@@ -638,7 +650,10 @@ const initialState = {
   currentGroupIndex: 0,
   isFetchingAutoselectItems: false,
   regrading: false,
-  editEnable: false
+  editEnable: false,
+  currentAnnotationTool: "cursor",
+  annotationToolsProperties: {},
+  annotationsStack: []
 };
 
 export const testTypeAsProfileNameType = {
@@ -657,15 +672,15 @@ const getDefaultScales = (state, payload) => {
     {};
   const performanceBand = isEmpty(state.entity.performanceBand)
     ? {
-        name: bandId.name,
-        _id: bandId._id
-      }
+      name: bandId.name,
+      _id: bandId._id
+    }
     : state.entity.performanceBand;
   const standardGradingScale = isEmpty(state.entity.standardGradingScale)
     ? {
-        name: standardId.name,
-        _id: standardId._id
-      }
+      name: standardId.name,
+      _id: standardId._id
+    }
     : state.entity.standardGradingScale;
   return {
     performanceBand,
@@ -998,6 +1013,39 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         editEnable: payload
       };
+
+    case SET_CURRENT_ANNOTATION_TOOL:
+      return {
+        ...state,
+        currentAnnotationTool: payload
+      };
+    case UPDATE_ANNOTATION_TOOLS_PROPERTIES:
+      return {
+        ...state,
+        annotationToolsProperties: produce(state.annotationToolsProperties, propertiesByKey => {
+          if (propertiesByKey[payload.key]) {
+            propertiesByKey[payload.key] = { ...propertiesByKey[payload.key], ...payload?.value };
+          } else {
+            propertiesByKey[payload.key] = payload.value;
+          }
+        })
+      };
+    case SET_ANNOTATIONS_STACK:
+      return {
+        ...state,
+        annotationsStack: []
+      };
+    case UNDO_ANNOTATONS_OPERATION:
+      return produce(state, draft => {
+        const annotation = draft.entity.annotations.pop();
+        draft.annotationsStack.push(annotation);
+      });
+    case REDO_ANNOTATONS_OPERATION:
+      return produce(state, draft => {
+        const annotation = draft.annotationsStack.pop();
+        draft.entity.annotations.push(annotation);
+      });
+
     case UPDATE_TEST_LIKE_COUNT:
       return {
         ...state,
@@ -1166,6 +1214,7 @@ function* receiveTestByIdSaga({ payload }) {
         })
       );
     }
+
 
     entity.itemGroups.forEach((itemGroup, groupIndex) => {
       itemGroup.items.forEach((item, itemIndex) => {
@@ -2139,14 +2188,14 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
       itemGroup.type === ITEM_GROUP_TYPES.STATIC
         ? null
         : {
-            limit: itemGroup.deliverItemsCount,
-            search: {
-              collectionId: itemGroup.collectionDetails._id,
-              standardId: itemGroup.standardDetails.standardId,
-              nInItemIds: allStaticGroupItemIds,
-              ...optionalFields
-            }
-          },
+          limit: itemGroup.deliverItemsCount,
+          search: {
+            collectionId: itemGroup.collectionDetails._id,
+            standardId: itemGroup.standardDetails.standardId,
+            nInItemIds: allStaticGroupItemIds,
+            ...optionalFields
+          }
+        },
     isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT,
     groupName: itemGroup.groupName,
     index

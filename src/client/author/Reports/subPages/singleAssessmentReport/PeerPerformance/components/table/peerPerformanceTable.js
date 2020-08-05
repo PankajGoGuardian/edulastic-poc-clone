@@ -174,7 +174,7 @@ export const PeerPerformanceTable = ({
       colouredCellsNo = validBandCols;
     }
     arr[arr.length - 1].sorter = sortNumbers(arr[arr.length - 1].key);
-    if (role === "teacher" && compareBy === "groupId") {
+    if (role === "teacher" && (compareBy === "groupId" || compareBy === "group")) {
       arr.splice(1, 2);
     }
   });

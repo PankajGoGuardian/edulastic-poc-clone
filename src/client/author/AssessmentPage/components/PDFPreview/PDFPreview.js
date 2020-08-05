@@ -39,9 +39,9 @@ const handleDrop = (page, cb, annotationContainer, zoom=1) => ({ question }, e) 
   );
 };
 
-const getNumberStyles = (x, y, width, height) => ({
+const getNumberStyles = (x, y, width, height, scale) => ({
   position: "absolute",
-  top: height ? `${(y / height) * 100}%` : `${y}px`,
+  top: height ? `${((y / height) * 100) / scale}%` : `${y}px`,
   left: width ? `${(x / width) * 100}%` : `${x}px`
 });
 
@@ -162,7 +162,7 @@ const PDFPreview = ({
                   className="annotation-item"
                   key={uuid}
                   onClick={handleHighlight(questionId)}
-                  style={getNumberStyles(x, y, offsetWidth || pdfWidth, offsetHeight || pdfHeight)}
+                  style={getNumberStyles(x, y, offsetWidth || pdfWidth, offsetHeight || pdfHeight, pdfScale)}
                 >
                   <QuestionItem
                     key={questionId}
@@ -181,6 +181,7 @@ const PDFPreview = ({
                     viewMode={viewMode}
                     annotations
                     pdfPreview
+                    isAnnotation
                   />
                 </div>
               ))}

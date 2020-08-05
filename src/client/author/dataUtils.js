@@ -105,22 +105,26 @@ export const getQuestionType = item => {
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
   const hasPassage = resources.some(_item => _item.type === PASSAGE) || item.passageId;
-  if (hasPassage) {
-    // All questions that are linked to passage should show type as passage and question type attached to passage
-    return questions.length > 1
-      ? [PASSAGE.toUpperCase(), "MULTIPART"]
-      : [PASSAGE.toUpperCase(), questions[0] && questions[0].title];
-  }
-  if (questions.length > 1 || resources.length) {
-    return ["MULTIPART"];
-  }
 
   /**
    * Trying to find the question title from questionType (used in q-type search dropdown)
    * https://snapwiz.atlassian.net/browse/EV-17163
    * */
   const _questionTypeTitle = getTitleFromQuestionType(questions[0]?.type)?.text;
-  return _questionTypeTitle ? [_questionTypeTitle] : questions[0]?.title ? [questions[0].title] : [];
+  const questionTitle = _questionTypeTitle || questions[0]?.title || "";
+
+  if (hasPassage) {
+    // All questions that are linked to passage should show type as passage and question type attached to passage
+    return questions.length > 1
+      ? [PASSAGE.toUpperCase(), "MULTIPART"]
+      : questionTitle
+      ? [PASSAGE.toUpperCase(), questionTitle]
+      : [PASSAGE.toUpperCase()];
+  }
+  if (questions.length > 1 || resources.length) {
+    return ["MULTIPART"];
+  }
+  return questionTitle ? [questionTitle] : [];
 };
 
 /**

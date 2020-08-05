@@ -78,7 +78,7 @@ const ReportListContainer = ({
         hideSideMenu={isCliUser}
       />
       <MainContentWrapper padding={isDocBased ? "0px" : "20px 30px"}>
-        {!isCliUser && <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />}
+        <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} isCliUser={isCliUser} />
         {isDocBased ? (
           <div>
             <Work key="review" review {...props} viewMode="report" />

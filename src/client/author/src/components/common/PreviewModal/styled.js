@@ -17,6 +17,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: space-between;
   width: ${({ width }) => width || "100%"};
+  height: 690px;
   transition: width 0.5s;
   &.scratchpad-wrapper {
     input {
@@ -34,7 +35,7 @@ export const ReportIssueBtn = styled(EduButton)`
 export const WidgetContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100% !important;
   display: flex;
   flex-wrap: wrap;
   align-items: ${({ alignItems = "" }) => alignItems || ""};

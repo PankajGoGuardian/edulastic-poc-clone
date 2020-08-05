@@ -3,7 +3,7 @@ import { uniqBy } from "lodash";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
 import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
-import { IconClose, IconEye, IconHeart, IconId, IconUser, IconDynamic, IconUsers } from "@edulastic/icons";
+import { IconClose, IconEye, IconHeart, IconId, IconUser, IconDynamic, IconUsers, IconPlus } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col } from "antd";
 import PropTypes from "prop-types";
@@ -13,9 +13,9 @@ import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { getAuthorCollectionMap, flattenPlaylistStandards, showPremiumLabelOnContent } from "../../../dataUtils";
 import {
-  AddButtonStyled,
   ViewButton as ViewButtonContainer,
-  ViewButtonStyled
+  ViewButtonStyled,
+  AddRemoveButton
 } from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
 import { getUserRole, isPublisherUserSelector, getCollectionsSelector, getUserId } from "../../../src/selectors/user";
@@ -45,7 +45,8 @@ import {
   TagsWrapper,
   TestStatus,
   ViewButtonWrapper,
-  DynamicIconWrapper
+  DynamicIconWrapper,
+  AddRemove
 } from "./styled";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import { sharedTypeMap } from "../Item/Item";
@@ -327,8 +328,19 @@ class ListItem extends Component {
                 )}
 
                 {isPlaylist && (
-                  <div onClick={e => e.stopPropagation()}>
-                    <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
+                  <div
+                    onClick={e => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <AddRemove selectedToCart={checked}>
+                      <CheckboxLabel
+                        style={{ display: "none" }}
+                        onChange={e => handleCheckboxAction(e, item._id)}
+                        checked={checked}
+                      />
+                      {checked ? <IconClose /> : <IconPlus />}
+                    </AddRemove>
                   </div>
                 )}
 
@@ -345,19 +357,15 @@ class ListItem extends Component {
                       >
                         <IconEye /> {t("component.itemlist.preview")}
                       </ViewButtonStyled>
-                      <AddButtonStyled
+                      <AddRemoveButton
                         onClick={e => {
+                          isInCart ? onRemoveFromCart(item) : onAddToCart(item);
                           e.stopPropagation();
                         }}
+                        selectedToCart={isInCart}
                       >
-                        <CheckboxLabel
-                          checked={isInCart}
-                          ml="24px"
-                          onChange={() => {
-                            isInCart ? onRemoveFromCart(item) : onAddToCart(item);
-                          }}
-                        />
-                      </AddButtonStyled>
+                        {isInCart ? <IconClose /> : <IconPlus />}
+                      </AddRemoveButton>
                     </ViewButtonContainer>
                   )}
               </Outer>

@@ -54,7 +54,10 @@ const Hints = ({
     }
   };
 
-  const showMoreHints = () => updateShowCount(showCount + 1);
+  const showMoreHints = e => {
+    e.stopPropagation();
+    updateShowCount(showCount + 1);
+  };
 
   useEffect(() => {
     if (itemIndex === 0 && showCount === 0 && showHints) {
@@ -225,7 +228,7 @@ const ShowHint = styled(EduButton)`
   background: transparent !important;
   color: ${themeColorBlue} !important;
   position: relative;
-  z-index: 1020;
+  z-index: 998; /* header has z-index 999 */
 `;
 
 const ShowMoreHint = styled.div`
@@ -236,7 +239,7 @@ const ShowMoreHint = styled.div`
   font-size: 0.8em;
   padding: 8px 16px;
   position: relative;
-  z-index: 1020;
+  z-index: 998; /* header has z-index 999 */
 `;
 
 const QuestionLabel = styled.div`

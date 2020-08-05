@@ -33,7 +33,8 @@ const ResponseContainers = ({
     const responseContainerLeft = smallSize ? container.left / 2 : container.left;
     const top = smallSize ? container.top / 2 : container.top;
     const width = container.width || response.minWidth;
-    const height = isWrapText ? "auto" : container.height || "auto";
+    // setting min-height so no need to set auto, height 35px is default (required) value getting set in display section
+    const height = isWrapText ? "35px" : container.height || "35px";
     const btnStyle = {
       position: "absolute",
       top: isPrintMode ? `${(top / imageHeight) * 100}%` : top,

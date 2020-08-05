@@ -70,9 +70,9 @@ function exactMatchEvaluator({ validation = {}, userResponse = [] }) {
   const allCorrect = obj => obj.allCorrect;
   const bestMatch = evaluations.find(allCorrect);
   if (bestMatch) {
-    const { maxScore, evaluation } = bestMatch;
+    const { currentScore, maxScore, evaluation } = bestMatch;
     return {
-      score: maxScore,
+      score: currentScore,
       maxScore,
       evaluation
     };

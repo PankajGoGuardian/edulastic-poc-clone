@@ -150,10 +150,11 @@ function exactMatchEvaluator(_ref2) {
   var bestMatch = evaluations.find(allCorrect);
 
   if (bestMatch) {
-    var _maxScore2 = bestMatch.maxScore,
+    var currentScore = bestMatch.currentScore,
+        _maxScore2 = bestMatch.maxScore,
         _evaluation = bestMatch.evaluation;
     return {
-      score: _maxScore2,
+      score: currentScore,
       maxScore: _maxScore2,
       evaluation: _evaluation
     };

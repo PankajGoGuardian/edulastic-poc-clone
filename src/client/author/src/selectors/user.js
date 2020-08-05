@@ -186,7 +186,9 @@ export const getCollectionsToAddContent = createSelector(
     if (isAuthorPublisher || userRole !== roleuser.DISTRICT_ADMIN) {
       return itemBanks.filter(c => c.accessLevel === "write");
     }
-    return itemBanks.filter(c => c.districtId === userDistrictId || c.accessLevel === "write");
+    return itemBanks.filter(
+      c => (c.districtId === userDistrictId && c.accessLevel !== "read") || c.accessLevel === "write"
+    );
   }
 );
 

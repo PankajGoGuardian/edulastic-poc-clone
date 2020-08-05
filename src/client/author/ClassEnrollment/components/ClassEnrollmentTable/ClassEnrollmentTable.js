@@ -434,7 +434,7 @@ class ClassEnrollmentTable extends React.Component {
       // sortField,
       // order
     };
-    if (showActive) Object.assign(data, { active: 1 });
+    if (showActive) Object.assign(data, { status: 1 });
     if (userDetails) {
       Object.assign(data, { institutionIds: userDetails.institutionIds });
     }

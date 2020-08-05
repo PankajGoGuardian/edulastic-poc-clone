@@ -45,7 +45,7 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_CLASSENROLLMENT_LIST_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    state.data = payload.activeUsers;
+    state.data = payload.result;
     state.totalUsers = payload.total;
   },
   [RECEIVE_CLASSENROLLMENT_LIST_ERROR]: (state, { payload }) => {
@@ -59,8 +59,8 @@ function* receiveClassEnrollmentListSaga({ payload }) {
   try {
     const data = yield call(enrollmentApi.fetchClassEnrollmentUsers, payload);
     const { total, result } = data;
-    const activeUsers = result.filter(o => o.status === "1" || o.status == 1);
-    yield put(receiveClassEnrollmentListSuccessAction({ activeUsers, total }));
+    // const activeUsers = result.filter(o => o.status === "1" || o.status == 1);
+    yield put(receiveClassEnrollmentListSuccessAction({ result, total }));
   } catch (err) {
     const errorMessage = "Receive Enrollment Classes is failing!";
     notification({ msg: errorMessage });

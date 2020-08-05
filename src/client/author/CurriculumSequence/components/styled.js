@@ -39,6 +39,11 @@ export const AssignmentRowContainer = styled.div`
   }
 `;
 
+export const Bullet = styled.li`
+  font-size: 20px;
+  margin-top: -7px;
+`;
+
 export const DragHandle = styled.div`
   color: ${themeColor};
   background: ${white};

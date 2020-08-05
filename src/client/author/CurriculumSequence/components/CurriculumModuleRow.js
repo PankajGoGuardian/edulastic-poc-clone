@@ -1,4 +1,4 @@
-import { lightGrey5, testTypeColor, themeColor, white } from "@edulastic/colors";
+import { testTypeColor, themeColor, white } from "@edulastic/colors";
 import { FlexContainer, notification } from "@edulastic/common";
 import { testActivityStatus, roleuser, test as testConstants } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVisualization, IconTrash } from "@edulastic/icons";
@@ -8,7 +8,7 @@ import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
 import { useDrop } from "react-dnd";
-import { FaBars, FaChevronRight } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
@@ -55,7 +55,8 @@ import {
   Assignment,
   ModuleWrapper,
   HideLinkLabel,
-  CaretUp
+  CaretUp,
+  Bullet
 } from "./styled";
 
 const { releaseGradeLabels } = testConstants;
@@ -887,7 +888,7 @@ class ModuleRow extends Component {
                       <AssignmentRowContainer>
                         <ModuleFocused />
                         <DragHandle>
-                          <FaChevronRight color={lightGrey5} />
+                          <Bullet />
                         </DragHandle>
                         <div className="item" style={{ width: "calc(100% - 35px)" }}>
                           <Assignment

@@ -1,6 +1,8 @@
 import { EduButton, MainContentWrapper } from "@edulastic/common";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { capitalize } from "lodash";
+
 // TODO: Update SVG imports here
 import IMG1 from "../../static/1.png";
 import IMG2 from "../../static/2.png";
@@ -89,32 +91,32 @@ const availablePlans = [
 
 const featuresData = [
   {
-    imgSrc:IMG4,
+    imgSrc: IMG4,
     title: "In-depth Reporting",
     description: "Show student growth over time. Analyze answer distractor. See complete student mastery profile."
   },
   {
-    imgSrc:IMG5,
+    imgSrc: IMG5,
     title: "Read Aloud",
     description: "Choose students to have questions and answer choices read to them."
   },
   {
-    imgSrc:IMG6,
+    imgSrc: IMG6,
     title: "Collaboration",
     description: "Work on assessment as a team before they're published."
   },
   {
-    imgSrc:IMG7,
+    imgSrc: IMG7,
     title: "Advanced Assessment Options",
     description: "Shuffle question order for each student. Show student actions but hide correct answers."
   },
   {
-    imgSrc:IMG8,
+    imgSrc: IMG8,
     title: "Rubric Scoring",
     description: "Create and share rubrics school or district wide."
   },
   {
-    imgSrc:IMG9,
+    imgSrc: IMG9,
     title: "Presentation Mode",
     description: "Review answers and common mistake with the class without showing names."
   }
@@ -161,7 +163,8 @@ const SubscriptionMain = props => {
     subEndDate,
     openPaymentServiceModal,
     openHasLicenseKeyModal,
-    openPurchaseLicenseModal
+    openPurchaseLicenseModal,
+    subType
   } = props;
 
   const licenseExpiryDate = formatDate(subEndDate);
@@ -174,7 +177,9 @@ const SubscriptionMain = props => {
         <CurrentPlanContainer onClick={() => setShowPlans(false)}>
           <Container>
             <Title padding="0 30px 0 0">Your Current Plan:</Title>
-            <Description>{isSubscribed && licenseExpiryDate ? "Premium Version" : "Free Plan"}</Description>
+            <Description>
+              {isSubscribed && licenseExpiryDate ? `${capitalize(subType)} Version` : "Free Plan"}
+            </Description>
           </Container>
           <PlanStatus>
             {isSubscribed && licenseExpiryDate ? (
@@ -207,7 +212,7 @@ const SubscriptionMain = props => {
               )}
 
               <GridContainer>
-                {featuresData.map(({ title, description },index) => (
+                {featuresData.map((_, index) => (
                   <FlexCard>
                     <InnerWrapper>
                       <Img src={featuresData[index].imgSrc} />
@@ -229,14 +234,16 @@ const SubscriptionMain = props => {
                 </EduButton>
               </ActionsWrapper>
             )}
-            <StyledParagraph isSubscribed={isSubscribed}>
-              interested in buying multiple teacher premium subscriptions or upgrading to enterprise?
-              {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
-              <a href="https://edulastic.com/teacher-premium/" target="_blank" rel="noopener noreferrer">
-                {" "}
-                click here.
-              </a>
-            </StyledParagraph>
+            {subType !== "enterprise" && (
+              <StyledParagraph isSubscribed={isSubscribed}>
+                interested in buying multiple teacher premium subscriptions or upgrading to enterprise?
+                {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
+                <a href="https://edulastic.com/teacher-premium/" target="_blank" rel="noopener noreferrer">
+                  {" "}
+                  click here.
+                </a>
+              </StyledParagraph>
+            )}
           </>
         )}
         {showPlans && (

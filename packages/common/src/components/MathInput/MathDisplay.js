@@ -7,7 +7,7 @@ import MathSpan from "../MathSpan";
 
 const MathDisplayWrapper = styled.span`
   .input__math {
-    padding: 2px 5px 3px;
+    padding: 4px;
     border-radius: 2px;
     border: 1px solid ${greyThemeLight};
     background: ${greyThemeLighter};
@@ -15,7 +15,7 @@ const MathDisplayWrapper = styled.span`
     margin-bottom: 2px;
     display: inline-flex;
     min-width: ${({ styles }) => (styles.width ? styles.width : "auto")};
-    height: ${({ styles }) => styles.height || "auto"};
+    min-height: ${({ styles }) => styles.height || "auto"};
     vertical-align: middle;
     align-items: ${({ styles }) => styles.alignItems};
   }

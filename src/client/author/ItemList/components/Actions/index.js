@@ -9,7 +9,7 @@ import { EduButton, Label, FlexContainer, notification } from "@edulastic/common
 import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
-import { getUserRole, isPublisherUserSelector } from "../../../src/selectors/user";
+import { getUserRole, isPublisherUserSelector, getCollectionsToAddContent } from "../../../src/selectors/user";
 import { createTestFromCartAction } from "../../ducks";
 import { getSelectedTestsSelector } from "../../../TestList/ducks";
 import { setAddCollectionModalVisibleAction } from "../../../ContentBuckets/ducks";
@@ -22,8 +22,12 @@ const Actions = ({
   setAddCollectionModalVisible,
   createTestFromCart,
   type,
-  t
+  t,
+  collectionsToWrite
 }) => {
+  if (!collectionsToWrite?.length) {
+    return null;
+  }
   let numberOfSelectedItems = selectedItems?.length;
   if (type === "TEST") {
     numberOfSelectedItems = selectedTests?.length;
@@ -81,7 +85,8 @@ const mapStateToProps = state => ({
   userRole: getUserRole(state),
   isPublisherUser: isPublisherUserSelector(state),
   selectedTests: getSelectedTestsSelector(state),
-  selectedPlaylists: getSelectedPlaylistSelector(state)
+  selectedPlaylists: getSelectedPlaylistSelector(state),
+  collectionsToWrite: getCollectionsToAddContent(state)
 });
 
 const withConnect = connect(

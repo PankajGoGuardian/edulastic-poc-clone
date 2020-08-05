@@ -8,7 +8,7 @@ import { getAdditionalDataSelector } from "../../ClassBoard/ducks";
 import { getUserRole } from "../../../student/Login/ducks";
 import { getUserOrgId } from "../../src/selectors/user";
 
-const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb, isCliUser }) => {
+const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb, isCliUser, fromUrl }) => {
   if (breadCrumb) {
     return (
       <PaginationInfo xs={24} md={8}>
@@ -29,7 +29,11 @@ const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb, isCliUser }) 
 
   return (
     <PaginationInfo xs={24} md={8}>
-      <RecentLink to={isCliUser ? `/author/reports/assessment-summary/test/${data?.testId}` : "/author/assignments"}>{isCliUser ? "REPORTS" : "ASSIGNMENTS"}</RecentLink>
+      <RecentLink
+        to={isCliUser ? fromUrl || `/author/reports/assessment-summary/test/${data?.testId}` : "/author/assignments"}
+      >
+        {isCliUser ? "REPORTS" : "ASSIGNMENTS"}
+      </RecentLink>
       {!isCliUser && data?.testName && (
         <>
           &nbsp;/&nbsp;

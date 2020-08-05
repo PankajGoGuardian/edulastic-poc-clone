@@ -92,11 +92,23 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
       }
       return 0;
     };
-    rawColumns[0].render = (text, record) => (
-      <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.questionId}`}>
-        {text}
-      </Link>
-    );
+    rawColumns[0].render = (text, record) => {
+      const { pathname, search } = window.location;
+      return (
+        <Link
+          to={{
+            pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${
+              record.questionId
+            }`,
+            state: {
+              from: `${pathname}${search}`
+            }
+          }}
+        >
+          {text}
+        </Link>
+      );
+    };
 
     rawColumns[1].render = text => {
       if (Array.isArray(text)) {

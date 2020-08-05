@@ -24,11 +24,21 @@ export const ResponseFrequencyTable = ({
    */
 
   columns[0].sorter = (a, b) => Number(a.qLabel.substring(1)) - Number(b.qLabel.substring(1));
-  columns[0].render = (text, record) => (
-    <Link to={`/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.uid}`}>
-      {text}
-    </Link>
-  );
+  columns[0].render = (text, record) => {
+    const { pathname, search } = window.location;
+    return (
+      <Link
+        to={{
+          pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.uid}`,
+          state: {
+            from: `${pathname}${search}`
+          }
+        }}
+      >
+        {text}
+      </Link>
+    );
+  };
 
   columns[2].render = data => {
     if (data && Array.isArray(data)) {

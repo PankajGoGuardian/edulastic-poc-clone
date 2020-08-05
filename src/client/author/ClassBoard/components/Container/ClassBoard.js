@@ -163,14 +163,15 @@ class ClassBoard extends Component {
   componentDidMount() {
     const { loadTestActivity, match, studentUnselectAll, location, isCliUser, history } = this.props;
     const { assignmentId, classId } = match.params;
-    const { search } = location;
+    const { search, state } = location;
     loadTestActivity(assignmentId, classId);
     studentUnselectAll();
     window.addEventListener("scroll", this.handleScroll);
     if (isCliUser) {
       history.push({
-        search: search ? `${search}&cliUser=true` : `?cliUser=true`
-      })
+        search: search ? `${search}&cliUser=true` : `?cliUser=true`,
+        state
+      });
     }
   }
 
@@ -787,7 +788,11 @@ class ClassBoard extends Component {
         />
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb} isCliUser={isCliUser} />
+            <ClassBreadBrumb
+              breadCrumb={location?.state?.breadCrumb}
+              isCliUser={isCliUser}
+              fromUrl={location?.state?.from}
+            />
             {!isCliUser && (
               <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
                 <PresentationToggleSwitch groupId={classId} />
@@ -1211,7 +1216,11 @@ class ClassBoard extends Component {
                       const { assignmentId: _assignmentId, classId: _classId } = match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                      history.push(`/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${isCliUser ? "?cliUser=true" : ""}`);
+                      history.push(
+                        `/author/classboard/${_assignmentId}/${_classId}/question-activity/${qid}${
+                          isCliUser ? "?cliUser=true" : ""
+                        }`
+                      );
                       this.setState({
                         selectedQuestion: value,
                         selectedQid: qid,

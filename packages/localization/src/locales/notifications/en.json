@@ -883,6 +883,10 @@
     "message": "Google Class import is Complete",
     "description": ""
   },
+  "googleClassImportInProgress": {
+    "message": "Google class sync is in progress",
+    "description": ""
+  },
   "syncWithCanvasIsComplete": {
     "message": "Sync with Canavs is Complete.",
     "description": ""

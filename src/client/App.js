@@ -29,6 +29,7 @@ import V1Redirect from "./author/V1Redirect";
 import Kid from "./kid/app";
 import NotificationListener from "./HangoutVideoCallNotification";
 import BulkActionNotificationListener from "./author/AssignmentAdvanced/components/BulkAssignmentActionNotification";
+import ClassSyncNotification from "./author/Classes/components/ClassSyncNotification";
 import AppUpdateModal from "./common/components/AppUpdateModal";
 import { logoutAction } from "./author/src/actions/auth";
 import RealTimeCollectionWatch from "./RealTimeCollectionWatch";
@@ -350,13 +351,18 @@ class App extends Component {
                 path="/author"
                 component={Author}
                 redirectPath={redirectRoute}
-                notification={roleuser.DA_SA_ROLE_ARRAY.includes(userRole) ? BulkActionNotificationListener : null}
+                notifications={
+                  roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+                    ? [BulkActionNotificationListener]
+                    : (roleuser.TEACHER === userRole
+                      ? [ClassSyncNotification]
+                      : null)}
               />
               <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
               <PrivateRoute
                 path="/home"
                 component={Dashboard}
-                notification={NotificationListener}
+                notifications={[NotificationListener]}
                 redirectPath={redirectRoute}
               />
               <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />

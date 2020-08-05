@@ -116,6 +116,9 @@ export const GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR = "[manageClass] Class Not Found"
 export const UNARCHIVE_CLASS_REQUEST = "[manageClass] unarchive class";
 export const UNARCHIVE_CLASS_REQUEST_SUCCESS = "[manageClass] unarchive class success";
 export const UNARCHIVE_CLASS_REQUEST_FAILED = "[manageClass] unarchive class failed";
+
+export const REMOVE_CLASS_SYNC_NOTIFICATION = "[manageClass] remove class sync notification";
+
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
@@ -184,6 +187,8 @@ export const unarchiveClassSuccessAction = createAction(UNARCHIVE_CLASS_REQUEST_
 export const unarchiveClassFailedAction = createAction(UNARCHIVE_CLASS_REQUEST_FAILED);
 
 export const setClassNotFoundErrorAction = createAction(GOOGLE_SYNC_CLASS_NOT_FOUND_ERROR);
+
+export const removeClassSyncNotificationAction = createAction(REMOVE_CLASS_SYNC_NOTIFICATION);
 
 // initial State
 const initialState = {
@@ -600,16 +605,8 @@ function* syncClass({ payload }) {
       return notification({ messageKey: "classNameIsMissing" });
     }
     yield put(setSyncClassLoadingAction(true));
-    const response = yield call(googleApi.syncClass, payload);
-    if (response) {
-      Object.keys(response).forEach(gCode => {
-        const group = payload.classList.find(o => o.enrollmentCode === gCode);
-        response[gCode].groupName = group.name;
-      });
-      yield put(setGroupSyncDataAction(response));
-    }
-    yield put(setSyncClassLoadingAction(false));
-    yield put(fetchGroupsAction());
+    yield call(googleApi.syncClass, payload);
+    notification({ type: "success", messageKey: "googleClassImportInProgress" });
   } catch (e) {
     yield put(setSyncClassLoadingAction(false));
     notification({ messageKey: "classSyncFailed" });
@@ -621,13 +618,9 @@ function* syncClassUsingCode({ payload }) {
   try {
     const { googleCode, groupId: classId, institutionId } = payload;
     yield put(setSyncClassLoadingAction(true));
-    const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId, institutionId });
+    yield call(googleApi.syncClass, { googleCode, groupId: classId, institutionId });
     yield put(setSyncClassLoadingAction(false));
-    if (resp.status === 403) {
-      return notification({ msg: `Google Classroom ${payload.googleCode} is already synced in another group` });
-    }
-    yield put(fetchStudentsByIdAction({ classId }));
-    notification({ type: "success", messageKey: "googleClassImportComplete" });
+    notification({ type: "success", messageKey: "googleClassImportInProgress" });
   } catch (e) {
     if (e?.data?.message === "No class found") {
       yield put(setClassNotFoundErrorAction(true));
@@ -743,6 +736,16 @@ function* unarchiveClass({ payload }) {
   }
 }
 
+// remove class sync completed notification from firebase
+function* removeClassSyncNotification() {
+  try {
+    yield call(googleApi.removeClassSyncNotification);
+    console.log(`Class sync notification removed.`)
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -762,6 +765,7 @@ export function* watcherSaga() {
     yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga),
     yield takeLatest(FETCH_CLEVER_CLASS_LIST_REQUEST, fetchCleverClassListRequestSaga),
     yield takeLatest(SYNC_CLASS_LIST_WITH_CLEVER, syncClassListWithCleverSaga),
-    yield takeLatest(UNARCHIVE_CLASS_REQUEST, unarchiveClass)
+    yield takeLatest(UNARCHIVE_CLASS_REQUEST, unarchiveClass),
+    yield takeLatest(REMOVE_CLASS_SYNC_NOTIFICATION, removeClassSyncNotification)
   ]);
 }

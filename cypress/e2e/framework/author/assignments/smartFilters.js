@@ -117,7 +117,8 @@ export default class SmartFilters {
     }
   };
 
-  deleteFolder = (folderName, isValid = true) => {
+  // Fix test in accordance with EV-15966
+  deleteFolder = folderName => {
     cy.server();
     cy.route("DELETE", "**/user-folder/**").as("deleteFolder");
 
@@ -130,16 +131,15 @@ export default class SmartFilters {
       .first()
       .click({ force: true });
 
-    if (isValid) {
-      cy.get('[data-cy="submit"]')
-        .first()
-        .click({ force: true });
-      cy.wait("@deleteFolder").then(xhr => expect(xhr.status).to.eq(200));
-      this.verifyFolderNotVisible(folderName);
-    } else {
-      cy.contains("Only empty folders can be deleted").should("be.visible");
-      // cy.contains("span", "Cancel").click();
-    }
+    cy.contains(
+      `${folderName} will get deleted but all tests will remain untouched. The tests can still be accessed from All Assignments.`
+    ).should("be.visible");
+
+    cy.get('[data-cy="submit"]')
+      .first()
+      .click({ force: true });
+    cy.wait("@deleteFolder").then(xhr => expect(xhr.status).to.eq(200));
+    this.verifyFolderNotVisible(folderName);
   };
 
   createNewFolder = (folderName, isValid = true) => {

@@ -227,6 +227,7 @@ class AssignmentAdvanced extends Component {
 
         <ListHeader
           title={assingment.title || "Loading..."}
+          titleWidth="1120px"
           hasButton={false}
           renderExtra={() => (
             <Dropdown

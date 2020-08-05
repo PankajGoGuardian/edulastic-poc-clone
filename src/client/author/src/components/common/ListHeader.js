@@ -52,7 +52,8 @@ const ListHeader = ({
   titleIcon,
   userFeatures,
   newTest,
-  toggleSidebar
+  toggleSidebar,
+  titleWidth
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
 
@@ -69,7 +70,7 @@ const ListHeader = ({
   };
 
   return (
-    <MainHeader Icon={titleIcon} headingText={title}>
+    <MainHeader titleMaxWidth={titleWidth} Icon={titleIcon} headingText={title}>
       {midTitle && (
         <MidTitleWrapper>
           <Title>{midTitle}</Title>

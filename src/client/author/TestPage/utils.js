@@ -1,6 +1,8 @@
 import { flatMap, flatten, map, groupBy, some, sumBy, uniqBy, get } from "lodash";
 import { helpers } from "@edulastic/common";
-import { test as testConstants } from "@edulastic/constants";
+import { test as testConstants, collections } from "@edulastic/constants";
+
+const { nonPremiumCollections = {} } = collections;
 
 const { getQuestionLevelScore, getPoints } = helpers;
 
@@ -53,7 +55,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       }
     }
     if (summary.standards.length > 0) {
-      let standardSummary = groupBy(summary.standards, "curriculumId");
+      const standardSummary = groupBy(summary.standards, "curriculumId");
       const standardSumm = map(standardSummary, (objects, curriculumId) => {
         const obj = groupBy(objects, "identifier");
         const standardObj = map(obj, (elements, identifier) => ({
@@ -125,7 +127,7 @@ export const createGroupSummary = test => {
   return summary;
 };
 
-//Kidergarten should out put as the first grade and other should be the last grade.
+// Kidergarten should out put as the first grade and other should be the last grade.
 // Eg: grades = ["1","2","K","O"]
 export const sortGrades = grades => {
   if (!grades || !grades.length) {
@@ -143,6 +145,20 @@ export const sortGrades = grades => {
     sortedGrades = [...sortedGrades, "o"];
   }
   return sortedGrades;
+};
+
+/**
+ * Checks if the item is premium content or not.
+ * Any item which has collections excluding edulastic certified and engage ny
+ * is premium content
+ * @param {Array<Object>} _collections
+ * @returns {Boolean} isPremium
+ */
+export const isPremiumContent = (_collections = []) => {
+  const nonPremiumIds = Object.keys(nonPremiumCollections);
+  const isPremium = collection => !nonPremiumIds.includes(collection._id);
+  const result = _collections.filter(isPremium);
+  return result.length > 0;
 };
 
 export default {

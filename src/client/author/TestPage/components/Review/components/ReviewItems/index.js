@@ -5,6 +5,7 @@ import { helpers } from "@edulastic/common";
 import SortableList from "./SortableList";
 import { getQuestionType } from "../../../../../dataUtils";
 import { StyledSpinnerContainer } from "./styled";
+import { isPremiumContent } from "../../../../utils";
 
 const ReviewItems = ({
   items,
@@ -67,7 +68,7 @@ const ReviewItems = ({
       type: getQuestionType(item),
       points: scoring[item._id] || helpers.getPoints(item),
       item,
-      isPremium: item?.collections?.length,
+      isPremium: isPremiumContent(item?.collections || []),
       standards: standards[item._id],
       audio: audioStatus(item),
       tags: item.tags,

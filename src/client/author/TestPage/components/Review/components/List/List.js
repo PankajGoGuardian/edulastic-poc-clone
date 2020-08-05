@@ -5,6 +5,7 @@ import { get } from "lodash";
 import { getQuestionType } from "../../../../../dataUtils";
 
 import ListItem from "./ListItem";
+import { isPremiumContent } from "../../../../utils";
 
 const List = SortableContainer(
   ({
@@ -33,13 +34,10 @@ const List = SortableContainer(
 
     const audioStatus = item => {
       const questionItems = get(item, "data.questions", []);
-      const getAllTTS = questionItems
-        .filter(questionItem => questionItem.tts)
-        .map(questionItem => questionItem.tts);
+      const getAllTTS = questionItems.filter(questionItem => questionItem.tts).map(questionItem => questionItem.tts);
       const audio = {};
       if (getAllTTS.length) {
-        const ttsSuccess =
-          getAllTTS.filter(questionItem => questionItem.taskStatus !== "COMPLETED").length === 0;
+        const ttsSuccess = getAllTTS.filter(questionItem => questionItem.taskStatus !== "COMPLETED").length === 0;
         audio.ttsSuccess = ttsSuccess;
       }
       return audio;
@@ -56,7 +54,7 @@ const List = SortableContainer(
               shared: "0",
               likes: "0",
               type: getQuestionType(testItems[i]),
-              isPremium: testItems[i]?.collections?.length,
+              isPremium: isPremiumContent(testItems[i]?.collections),
               item: testItems[i],
               tags: testItems[i].tags,
               audio: audioStatus(testItems[i]),

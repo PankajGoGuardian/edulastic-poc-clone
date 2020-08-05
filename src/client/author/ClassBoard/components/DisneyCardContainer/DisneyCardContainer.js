@@ -162,7 +162,10 @@ class DisneyCardContainer extends Component {
           if (_status === "absent" || _status === 2 || _status === "notStarted") {
             return <span style={{ marginTop: "-3px" }}>-</span>;
           }
-          return <span>{round(attemptScore || student.score || student._score, 2) || 0}</span>;
+          if (attemptScore >= 0) {
+            return <span>{round(attemptScore) || 0}</span>;
+          }
+          return <span>{round(student.score || student._score, 2) || 0}</span>;
         };
 
         const currentTestActivity = testActivities?.find(attempt => student.studentId == attempt.userId) || {};
@@ -325,7 +328,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {score(student.status)}/ {student.maxScore || 0}
+                        {score(currentTestActivity.status || student.status)} / {student.maxScore || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>

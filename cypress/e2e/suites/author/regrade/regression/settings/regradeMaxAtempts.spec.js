@@ -171,7 +171,7 @@ tests:{
         });
         it("> verify card view", () => {
           attemptsdata1.forEach((stu, ind) => {
-            lcb.getStudentScoreByIndex(ind).should("contain.text", `0 / 2`);
+            lcb.verifyScoreByStudentIndex(ind, 0, 2);
             lcb.verifyQuestionCards(ind, [attemptTypes.WRONG]);
           });
         });
@@ -347,7 +347,7 @@ tests:{
           });
           it("> verify card view", () => {
             attemptData.forEach((stu, ind) => {
-              lcb.getStudentScoreByIndex(ind).should("contain.text", `0 / 2`);
+              lcb.verifyScoreByStudentIndex(ind, 0, 2);
               lcb.verifyQuestionCards(ind, [attemptTypes.WRONG]);
             });
           });

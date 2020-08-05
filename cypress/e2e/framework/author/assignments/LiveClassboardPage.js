@@ -331,6 +331,8 @@ class LiveClassboardPage {
   verifyStudentCard(studentName, status, score, performance, queAttempt, email) {
     const queCards = Object.keys(queAttempt).map(queNum => queAttempt[queNum]);
     this.getCardIndex(studentName).then(index => {
+      let [totalScore, maxScore] = score.split("/").map(ele => ele.trim());
+      if ([studentSide.ABSENT, studentSide.NOT_STARTED].indexOf(status) !== -1) totalScore = `-`;
       /*  // TODO : remove log once flow is commplted
       console.log(
         "stduent stats :: ",
@@ -340,7 +342,7 @@ class LiveClassboardPage {
       this.getStudentNameByName(studentName).should("have.attr", "title", email);
       this.getAvatarNameByStudentName(studentName).should("have.attr", "title", email);
       this.verifyStudentStatusIsByIndex(index, status);
-      this.getStudentScoreByIndex(index).should("have.text", score);
+      this.verifyScoreByStudentIndex(index, totalScore, maxScore);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
       if ([studentSide.NOT_STARTED, studentSide.ABSENT].indexOf(status) === -1) {
@@ -619,6 +621,8 @@ class LiveClassboardPage {
       return studentNames;
     });
 
+  verifyScoreByStudentIndex = (index, totalScore, maxScore) =>
+    this.getStudentScoreByIndex(index).should("have.text", `${totalScore} / ${maxScore}`);
   // *** APPHELPERS END ***
 }
 

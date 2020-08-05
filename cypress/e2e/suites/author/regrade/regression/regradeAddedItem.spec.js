@@ -286,14 +286,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} test editing with applyin
                     });
 
                     it(`> verif lcb card view-`, () => {
-                      lcb
-                        .getStudentScoreByIndex(statusIndex)
-                        .should(
-                          "contain.text",
-                          `${data.teacher[status][`${option}`][`${attempt}`].acieved} / ${
-                            data.teacher[status][`${option}`][`${attempt}`].total
-                          }`
-                        );
+                      lcb.verifyScoreByStudentIndex(
+                        statusIndex,
+                        data.teacher[status][`${option}`][`${attempt}`].acieved,
+                        data.teacher[status][`${option}`][`${attempt}`].total
+                      );
 
                       lcb
                         .getQuestionsByIndex(0)
@@ -372,12 +369,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} test editing with applyin
 
                         it(`> verif lcb card view-`, () => {
                           lcb.clickOnCardViewTab();
-                          lcb
-                            .getStudentScoreByIndex(statusIndex)
-                            .should(
-                              "contain.text",
-                              `${manualPoints} / ${data.teacher[status][`${option}`][`${attempt}`].total}`
-                            );
+                          lcb.verifyScoreByStudentIndex(
+                            statusIndex,
+                            manualPoints,
+                            data.teacher[status][`${option}`][`${attempt}`].total
+                          );
                         });
                       });
                     }

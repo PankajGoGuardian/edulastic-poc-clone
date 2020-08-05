@@ -76,6 +76,7 @@ export const queColor = {
   RED_2: "rgb(253, 224, 233)",
   LIGHT_RED: "rgb(253, 224, 233)",
   LIGHT_RED1: "rgb(250, 225, 233)",
+  LIGHT_RED2: "rgb(242, 87, 131)",
   RED_1: "rgb(221, 46, 68)",
   PLAIN_GREEN: "rgb(0, 128, 0)",
   GREEN: "rgb(23, 116, 240)",

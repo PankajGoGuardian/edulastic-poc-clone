@@ -505,28 +505,27 @@ export default class QuestionResponsePage {
   };
 
   verifyResponseByAttemptMathNumeric = (card, attempt, attemptType, itemPreview = false) => {
-    if (attemptType !== attemptTypes.SKIP)
+    if (attemptType !== attemptTypes.SKIP) {
       cy.get("@quecard")
         .find('[class^="MathInputWrapper"]')
         .should("contain.text", attempt);
-    if (itemPreview)
       cy.get("@quecard")
         .find(`[class^="Icon"]`)
         .first()
         .find("svg")
-        .should("have.css", "fill", attemptType === attemptTypes.RIGHT ? queColor.GREEN_8 : queColor.LIGHT_RED);
-    else
-      cy.get("@quecard")
-        .find('[class^="MathInputWrapper"]')
-        .should(
-          "have.css",
-          "background-color",
-          attemptType === attemptTypes.RIGHT
-            ? queColor.GREEN_8
-            : attemptType === attemptTypes.WRONG
-            ? queColor.LIGHT_RED
-            : queColor.GREY_2
-        );
+        .should("have.css", "fill", attemptType === attemptTypes.RIGHT ? queColor.GREEN_8 : queColor.LIGHT_RED2);
+    }
+    cy.get("@quecard")
+      .find('[class^="MathInputWrapper"]')
+      .should(
+        "have.css",
+        "background-color",
+        attemptType === attemptTypes.RIGHT
+          ? queColor.GREEN_8
+          : attemptType === attemptTypes.WRONG
+          ? queColor.LIGHT_RED
+          : queColor.GREY_2
+      );
   };
 
   verifyResponseEssayRich = (card, attempt, attemptType) => {

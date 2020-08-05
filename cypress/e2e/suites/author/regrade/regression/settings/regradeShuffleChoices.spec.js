@@ -184,7 +184,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
 
           it("> verify card view", () => {
             studentdata.forEach((stu, ind) => {
-              lcb.getStudentScoreByIndex(ind).should("contain.text", `2 / 2`);
+              lcb.verifyScoreByStudentIndex(ind, 2, 2);
               lcb.verifyQuestionCards(ind, _.values(stu.attempt));
             });
           });
@@ -383,7 +383,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
 
           it("> verify card view", () => {
             studentdata.forEach((stu, ind) => {
-              lcb.getStudentScoreByIndex(ind).should("contain.text", `2 / 2`);
+              lcb.verifyScoreByStudentIndex(ind, 2, 2);
               lcb.verifyQuestionCards(ind, _.values(stu.attempt));
             });
           });

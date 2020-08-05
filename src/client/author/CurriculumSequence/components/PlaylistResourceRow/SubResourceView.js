@@ -42,7 +42,7 @@ export const SubResourceView = ({
   const hasResources = itemData?.resources?.length > 0;
 
   return (
-    <FlexContainer width="calc(100% - 25px)" justifyContent="flex-start" marginLeft="20px" data-cy="subResourceView">
+    <FlexContainer width="100%" justifyContent="flex-start" marginTop="5px" data-cy="subResourceView">
       {hasResources && (
         <ModuleDataName isReview isResource>
           <ResourceLabel>resources</ResourceLabel>

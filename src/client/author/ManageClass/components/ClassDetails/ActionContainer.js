@@ -63,7 +63,8 @@ const ActionContainer = ({
   loadSchoolPolicy,
   policy,
   searchAndAddStudents,
-  enableStudentGroups
+  enableStudentGroups,
+  districtId
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -116,7 +117,7 @@ const ActionContainer = ({
             if (values.dob) {
               values.dob = moment(values.dob).format("x");
             }
-            const std = { ...selectedStudent[0], ...values };
+            const std = { ...selectedStudent[0], ...values, districtId };
             const userId = std._id || std.userId;
             std.currentSignUpState = "DONE";
             std.username = values.email;
@@ -161,10 +162,9 @@ const ActionContainer = ({
             const tempName = split(fullName, " ");
             const firstName = tempName[0];
             const lastName = tempName[1];
-            const {districtIds: [userDistrictId]} = orgData;
             values.classCode = selectedClass.code;
             values.role = "student";
-            values.districtId = userDistrictId;
+            values.districtId = districtId;
             values.institutionIds = orgData.institutionIds;
             values.firstName = firstName;
             values.lastName = lastName;
@@ -201,7 +201,7 @@ const ActionContainer = ({
       case "enableSpeech":
         if (isEmpty(selectedStudent)) {
           notification({ messageKey: "selectOneOrMoreStudentsToenebaleTextToSpeech" });
-          return ;
+          return;
         }
         if (changeTTS) {
           const isEnabled = selectedStudent.find(std => std.tts === "yes");
@@ -221,8 +221,7 @@ const ActionContainer = ({
         const isDisabled = selectedStudent.find(std => std.tts === "no");
         if (isDisabled) {
           notification({ messageKey: "atleastOneOfSelectedStudentsIsAlreadyDisabled" });
-          return ;
-          
+          return;
         }
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
@@ -250,8 +249,8 @@ const ActionContainer = ({
           return;
         }
         if (selectedStudent.length > 1) {
-          notification({ messageKey: "pleaseSelectOnlyOneStudent"});
-          return; 
+          notification({ messageKey: "pleaseSelectOnlyOneStudent" });
+          return;
         }
         toggleModal("add");
         setEditStudentStatues(true);

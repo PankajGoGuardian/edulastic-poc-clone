@@ -329,7 +329,7 @@ class AddItems extends PureComponent {
         <NoDataNotification
           heading="Items Not Available"
           description='There are currently no items available for this filter. 
-          You can create new item by clicking the "CREATE ITEM" button.'
+          You can create new item by clicking the "CREATE NEW ITEM" button.'
         />
       );
     }

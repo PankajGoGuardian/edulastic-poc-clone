@@ -10,7 +10,7 @@ import {
   QuestionSubLabel as SubLabel,
   MathFormulaDisplay
 } from "@edulastic/common";
-import { themeColor, mainTextColor, backgroundGrey, greyThemeLighter, title } from "@edulastic/colors";
+import { themeColor, mainTextColor, backgroundGrey, greyThemeLighter, title, themeColorBlue } from "@edulastic/colors";
 import { getFontSize } from "../../utils/helpers";
 import { Label } from "../../styled/WidgetOptions/Label";
 
@@ -137,7 +137,6 @@ const Hints = ({
           <QuestionLabel isStudentReport={isStudentReport}>
             <span style={{ color: "#4aac8b" }}>{question.barLabel}</span> - Hint
           </QuestionLabel>
-          {console.log("question", question)}
           {validHints.map(({ value, label }, index) => (
             <HintItem isStudentReport={isStudentReport} data-cy="hint-subcontainer" key={value}>
               <HintLabel className="hint-label">
@@ -219,6 +218,13 @@ const HintContent = styled.div`
 
 const ShowHint = styled(EduButton)`
   margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
+  border: none;
+  box-shadow: none;
+  width: auto !important;
+  background: transparent !important;
+  color: ${themeColorBlue} !important;
+  position: relative;
+  z-index: 1500;
 `;
 
 const ShowMoreHint = styled.div`
@@ -228,6 +234,8 @@ const ShowMoreHint = styled.div`
   color: ${themeColor};
   font-size: 0.8em;
   padding: 8px 16px;
+  position: relative;
+  z-index: 1500;
 `;
 
 const QuestionLabel = styled.div`

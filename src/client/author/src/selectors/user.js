@@ -318,3 +318,8 @@ export const getInterestedCurriculumsByOrgType = createSelector(
     return interestedCurriculums;
   }
 );
+
+export const isDistrictUserSelector = createSelector(
+  getOrgDataSelector,
+  state => state?.districts?.[0]?.districtPermissions && state?.districts?.[0]?.districtPermissions.length === 0
+);

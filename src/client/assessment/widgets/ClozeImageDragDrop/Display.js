@@ -108,6 +108,7 @@ const getInitialResponses = ({ options, userSelections, configureOptions }) => {
     const _userSelections = userSelections.reduce((acc, opts) => acc.concat(opts?.optionIds || []), []);
     possibleResps = possibleResps.filter(resp => _userSelections.indexOf(resp.id) === -1);
   }
+
   return possibleResps;
 };
 

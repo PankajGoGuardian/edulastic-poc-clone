@@ -163,7 +163,7 @@ class MathInput extends React.PureComponent {
     saveAnswer(text.replace(/\\square/g, "\\square "));
   };
 
-  onInput = (key, command = "cmd") => {
+  onInput = (key, command = "cmd", numToMove) => {
     const { mathField } = this.state;
 
     if (!mathField) return;
@@ -205,6 +205,13 @@ class MathInput extends React.PureComponent {
         break;
       default:
         mathField[command](key);
+    }
+
+    // move cursor into start of key(latex)
+    if (command === "write" && numToMove) {
+      for (let i = 0; i < numToMove; i++) {
+        mathField.keystroke("Left");
+      }
     }
 
     mathField.focus();
@@ -289,7 +296,7 @@ class MathInput extends React.PureComponent {
         showResponse={showResponse}
         showDropdown={showDropdown}
         onChangeKeypad={onChangeKeypad}
-        onInput={(key, command) => this.onInput(key, command)}
+        onInput={(key, command, numToMove) => this.onInput(key, command, numToMove)}
         docBasedKeypadStyles={isDocbasedSection && `right: 30px; width:100%;`}
         isDocbasedSection={isDocbasedSection}
       />

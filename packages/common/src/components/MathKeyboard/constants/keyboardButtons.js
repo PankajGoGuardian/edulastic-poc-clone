@@ -142,11 +142,12 @@ const BASIC = [
     command: "cmd"
   },
   {
-    handler: "{\\mathrm{}}\\frac{\\mathrm{}}{\\mathrm{}}",
+    handler: "{}\\frac{}{}",
     labelcy: "mixedFraction",
     value: "mixedFraction",
     label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
     types: ["basic"],
+    numToMove: 3,
     command: "write"
   },
   {
@@ -278,11 +279,12 @@ const INTERMEDIATE = [
     command: "cmd"
   },
   {
-    handler: "{\\mathrm{}}\\frac{\\mathrm{}}{\\mathrm{}}",
+    handler: "{}\\frac{}{}",
     labelcy: "mixedFraction",
     value: "mixedFraction",
     label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
     types: ["intermediate"],
+    numToMove: 3,
     command: "write"
   },
   {
@@ -1113,10 +1115,11 @@ export const TAB_BUTTONS = [
         command: "cmd"
       },
       {
-        handler: "{\\mathrm{}}\\frac{\\mathrm{}}{\\mathrm{}}",
+        handler: "{}\\frac{}{}",
         labelcy: "mixedFraction",
         value: "mixedFraction",
         label: <CustomImage src={MixedFraction} width={25} height={40} role="presentation" />,
+        numToMove: 3,
         types: ["all"],
         command: "write"
       },

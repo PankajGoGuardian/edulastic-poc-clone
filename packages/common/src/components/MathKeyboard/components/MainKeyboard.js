@@ -39,9 +39,9 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
     updateBoards(chunk(rows, limitRow));
   }, [btns]);
 
-  const handleClick = (handler, command) => () => {
+  const handleClick = (handler, command, numToMove) => () => {
     if (handler && command) {
-      onInput(handler, command);
+      onInput(handler, command, numToMove);
     }
   };
 
@@ -67,7 +67,7 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
       <div data-cy="virtual-keyboard-buttons">
         {currentBoard.map((row, rowIndex) => (
           <Row key={rowIndex} data-cy={`button-row-${rowIndex}`}>
-            {row.map(({ label, handler, command = "cmd" }, i) => {
+            {row.map(({ label, handler, command = "cmd", numToMove }, i) => {
               let fontRate = 1;
               if (typeof label === "string" && label.length > 4) {
                 fontRate = 4.5 / label.length;
@@ -77,7 +77,7 @@ const MainKeyboard = ({ btns, onInput, fullKeybord, isDocbasedSection }) => {
                 <Button
                   key={i}
                   fontSizeRate={fontRate}
-                  onClick={handleClick(handler, command)}
+                  onClick={handleClick(handler, command, numToMove)}
                   data-cy={`virtual-keyboard-${handler}`}
                 >
                   <Label>{label}</Label>

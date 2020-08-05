@@ -522,7 +522,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
       if (score === undefined) {
         return [true, "Score needs to be set"];
       }
-      if (parseInt(score, 10) === 0) {
+      if (parseFloat(score, 10) === 0) {
         return [true, "Score cannot be zero"];
       }
     }

@@ -134,7 +134,7 @@ class AddItems extends PureComponent {
       sortBy: "popularity",
       sortDir: "desc",
       ...sessionSort
-    };;
+    };
 
     if (needToSetFilter) {
       const {
@@ -341,7 +341,7 @@ class AddItems extends PureComponent {
         <NoDataNotification
           heading="Items Not Available"
           description='There are currently no items available for this filter. 
-          You can create new item by clicking the "CREATE ITEM" button.'
+          You can create new item by clicking the "CREATE NEW ITEM" button.'
         />
       );
     }
@@ -416,7 +416,7 @@ class AddItems extends PureComponent {
     };
     this.updateFilterState(search, updateSort);
     receiveTestItems(search, updateSort, 1, limit);
-  }
+  };
 
   get selectedItem() {
     const { items } = this.props;
@@ -512,7 +512,12 @@ class AddItems extends PureComponent {
                     </EduButton>
                   )}
                 </FlexContainer>
-                <SortMenu options={sortOptions.itemList} onSelect={this.onSelectSortOption} sortDir={sort.sortDir} sortBy={sort.sortBy}/>
+                <SortMenu
+                  options={sortOptions.itemList}
+                  onSelect={this.onSelectSortOption}
+                  sortDir={sort.sortDir}
+                  sortBy={sort.sortBy}
+                />
               </ItemsMenu>
 
               {!loading && (

@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import get from "lodash/get";
 import { withRouter } from "react-router";
-import { roleuser } from "@edulastic/constants";
 import Item from "../Item/Item";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { getTestItemsSelector, getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
@@ -11,7 +10,7 @@ import { addItemToCartAction } from "../../ducks";
 import { getUserId, getInterestedCurriculumsSelector, getUserRole } from "../../../src/selectors/user";
 import { previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
 import PreviewModal from "../../../src/components/common/PreviewModal";
-import { resetItemScoreAction } from '../../../src/ItemScore/ducks'
+import { resetItemScoreAction } from "../../../src/ItemScore/ducks";
 
 const ItemListContainer = ({
   items,
@@ -33,7 +32,7 @@ const ItemListContainer = ({
       <NoDataNotification
         heading="Items Not Available"
         description={
-          'There are currently no items available for this filter. You can create new item by clicking the "CREATE ITEM" button.'
+          'There are currently no items available for this filter. You can create new item by clicking the "NEW ITEM" button.'
         }
       />
     );
@@ -70,7 +69,7 @@ const ItemListContainer = ({
   /**
    * Syncs the current item returned from passage API, after paginating,
    * with the local state used to show current item
-   * @param {string} id item id associated with passage, that is to be displayed 
+   * @param {string} id item id associated with passage, that is to be displayed
    */
   const updateCurrentItemFromPassagePagination = id => {
     const hasSameItemId = item => item._id === id;

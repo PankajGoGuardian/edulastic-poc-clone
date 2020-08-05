@@ -328,7 +328,7 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                     <StyledFlexDiv>
                       <StyledParaSS data-cy="studentScore">
-                        {score(currentTestActivity.status || student.status)} / {student.maxScore || 0}
+                        {score(currentTestActivity.status || student.status)} &nbsp;/ {student.maxScore || 0}
                       </StyledParaSS>
                       {responseLink}
                     </StyledFlexDiv>
@@ -373,7 +373,7 @@ class DisneyCardContainer extends Component {
                         <StyledFlexDiv style={{ justifyContent: "flex-start" }}>
                           {student.status === "redirected" && (
                             <AttemptDiv>
-                              <CenteredStyledParaSS>- / {student.maxScore || 0}</CenteredStyledParaSS>
+                              <CenteredStyledParaSS>- &nbsp;/ {student.maxScore || 0}</CenteredStyledParaSS>
                               <StyledParaSS style={{ fontSize: "12px", justifyContent: "center" }}>
                                 Not Started
                               </StyledParaSS>
@@ -394,7 +394,7 @@ class DisneyCardContainer extends Component {
                             }
                           >
                             <CenteredStyledParaSS>
-                              {score(currentTestActivity.status)} / {student.maxScore || 0}
+                              {score(currentTestActivity.status)} &nbsp;/ {student.maxScore || 0}
                             </CenteredStyledParaSS>
                             <StyledParaSSS>
                               {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
@@ -410,7 +410,7 @@ class DisneyCardContainer extends Component {
                               onClick={e => viewResponses(e, attempt.userId, attempt._id, attempt.number)}
                             >
                               <CenteredStyledParaSS>
-                                {score(attempt.status, attempt.score)} / {attempt.maxScore || 0}
+                                {score(attempt.status, attempt.score)} &nbsp;/ {attempt.maxScore || 0}
                               </CenteredStyledParaSS>
                               <StyledParaSSS>
                                 {attempt.score > 0 ? round((attempt.score / attempt.maxScore) * 100, 2) : 0}%

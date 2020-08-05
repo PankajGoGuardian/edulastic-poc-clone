@@ -217,6 +217,7 @@ export const StyledTableButton = styled.a`
 export const StyledPagination = styled(Pagination)`
   align-self: flex-end;
   margin-top: 15px;
+  margin-right: 30px;
 `;
 
 export const ButtonsContainer = styled.div`

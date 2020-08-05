@@ -1,7 +1,7 @@
 import test from "ava";
 import { multipleChoice as mcqEvaluator } from "../src/index";
 
-import { emObj1, emObj2, emObj3, emObj4, emObj5, pmObj1, pmObj2, pmObj3, pmObj4, pmObj5 } from "./data/mcq";
+import { emObj1, emObj2, emObj3, emObj4, emObj5, emObj6, pmObj1, pmObj2, pmObj3, pmObj4, pmObj5 } from "./data/mcq";
 
 test("#MCQ:exactMatch no user answer", async t => {
   // case 1
@@ -81,4 +81,12 @@ test("#MCQ:partialMatch partial match with correct answer with penalty", async t
   t.is(result10.maxScore, 1, "incorrect maxScore");
   t.is(result10.score, 0, "incorrect score");
   t.deepEqual(result10.evaluation, { 0: true, 1: false }, "incorrect evaluation");
+});
+
+test("#MCQ:exactMatch user answer matching with alternate answer", async t => {
+  // case 11
+  const result5 = mcqEvaluator(emObj6);
+  t.is(result5.maxScore, 2, "incorrect maxScore");
+  t.is(result5.score, 1, "incorrect score");
+  t.deepEqual(result5.evaluation, { 0: true }, "incorrect evaluation");
 });

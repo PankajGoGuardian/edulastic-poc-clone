@@ -28,6 +28,15 @@ var PARTIAL_MATCH = _scoring.ScoringType.PARTIAL_MATCH,
 var ROUND_DOWN = _rounding.rounding.ROUND_DOWN,
     NONE = _rounding.rounding.NONE;
 
+function getMaxScoreFromValidAnswers(answers) {
+  var getMaxScore = function getMaxScore(maxScore, obj) {
+    maxScore = Math.max(maxScore, obj.score);
+    return maxScore;
+  };
+
+  return answers.reduce(getMaxScore, 0);
+}
+
 function getEvaluations(_ref) {
   var _ref$validation = _ref.validation,
       validation = _ref$validation === void 0 ? {} : _ref$validation,
@@ -39,6 +48,7 @@ function getEvaluations(_ref) {
       altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon;
   var answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
   var evaluations = [];
+  var maxScore = getMaxScoreFromValidAnswers(answers);
 
   var _iterator = _createForOfIteratorHelper(answers),
       _step;
@@ -95,7 +105,7 @@ function getEvaluations(_ref) {
         totalCount: totalCount,
         allCorrect: allCorrect,
         currentScore: currentScore,
-        maxScore: answerScore,
+        maxScore: maxScore,
         evaluation: currentEvaluation
       });
     }
@@ -140,10 +150,11 @@ function exactMatchEvaluator(_ref2) {
   var bestMatch = evaluations.find(allCorrect);
 
   if (bestMatch) {
-    var _maxScore2 = bestMatch.maxScore,
+    var currentScore = bestMatch.currentScore,
+        _maxScore2 = bestMatch.maxScore,
         _evaluation = bestMatch.evaluation;
     return {
-      score: _maxScore2,
+      score: currentScore,
       maxScore: _maxScore2,
       evaluation: _evaluation
     };

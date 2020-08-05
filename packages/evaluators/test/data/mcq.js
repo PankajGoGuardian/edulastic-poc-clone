@@ -93,6 +93,22 @@ export const emObj5 = {
     ]
   }
 };
+export const emObj6 = {
+  userResponse: ["4e1a6779-7ba4-4ebf-8b71-b1d3193a5728"],
+  validation: {
+    scoringType: "exactMatch",
+    validResponse: {
+      score: 2,
+      value: ["6795d549-90a4-444e-b494-597d5f0bd9d4"]
+    },
+    altResponses: [
+      {
+        score: 1,
+        value: ["4e1a6779-7ba4-4ebf-8b71-b1d3193a5728"]
+      }
+    ]
+  }
+};
 
 // partial match object 1 no answer
 export const pmObj1 = {

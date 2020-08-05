@@ -6,11 +6,19 @@ import { rounding as constantsForRoundingOff } from "./const/rounding";
 const { PARTIAL_MATCH, EXACT_MATCH } = ScoringType;
 const { ROUND_DOWN, NONE } = constantsForRoundingOff;
 
+function getMaxScoreFromValidAnswers(answers) {
+  const getMaxScore = (maxScore, obj) => {
+    maxScore = Math.max(maxScore, obj.score);
+    return maxScore;
+  };
+  return answers.reduce(getMaxScore, 0);
+}
+
 function getEvaluations({ validation = {}, userResponse = [] }) {
   const { validResponse = {}, altResponses = [] } = validation;
   const answers = [validResponse, ...altResponses];
   const evaluations = [];
-
+  const maxScore = getMaxScoreFromValidAnswers(answers);
   for (const answer of answers) {
     const { score: answerScore, value = [] } = answer;
     if (!value.length) {
@@ -41,7 +49,7 @@ function getEvaluations({ validation = {}, userResponse = [] }) {
       totalCount,
       allCorrect,
       currentScore,
-      maxScore: answerScore,
+      maxScore,
       evaluation: currentEvaluation
     });
   }
@@ -62,9 +70,9 @@ function exactMatchEvaluator({ validation = {}, userResponse = [] }) {
   const allCorrect = obj => obj.allCorrect;
   const bestMatch = evaluations.find(allCorrect);
   if (bestMatch) {
-    const { maxScore, evaluation } = bestMatch;
+    const { currentScore, maxScore, evaluation } = bestMatch;
     return {
-      score: maxScore,
+      score: currentScore,
       maxScore,
       evaluation
     };

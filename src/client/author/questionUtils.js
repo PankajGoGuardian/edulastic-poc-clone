@@ -386,11 +386,12 @@ const answerValidator = {
   [questionType.CLASSIFICATION](answers) {
     const isEmptyArray = arr => arr.length === 0;
     const values = answers.map(ans => ans.value);
+    // At least one column should have correct answer
     const hasEmpty =
       !values.length ||
       values.some(val => {
         const responseIdArrays = Object.values(val);
-        return !responseIdArrays.length || responseIdArrays.some(isEmptyArray);
+        return responseIdArrays.length ? responseIdArrays.every(isEmptyArray) : true;
       });
     return hasEmpty;
   },

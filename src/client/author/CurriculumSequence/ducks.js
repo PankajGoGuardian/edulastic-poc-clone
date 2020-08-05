@@ -1272,7 +1272,7 @@ function* addRecommendationsSaga({ payload }) {
     const workData = yield select(getDifferentiationWorkSelector);
     const structuredData = structureWorkData(workData, statusData);
     yield put(setDifferentiationWorkAction(structuredData));
-    yield call(notification, { msg: response.message });
+    yield call(notification, { type: "success", msg: response.message });
     yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {
     console.error(err);

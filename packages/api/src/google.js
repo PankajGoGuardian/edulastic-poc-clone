@@ -29,9 +29,17 @@ const postGoogleClassRoomAnnouncement = data =>
       data
     })
     .then(result => result.data.result);
-
+const removeClassSyncNotification = () => {
+  api
+    .callApi({
+      url: `${prefix}/remove-sync-notification`,
+      method: "delete"
+    })
+    .then(result => result.data.result);
+}
 export default {
   getCourseList,
   syncClass,
-  postGoogleClassRoomAnnouncement
+  postGoogleClassRoomAnnouncement,
+  removeClassSyncNotification
 };

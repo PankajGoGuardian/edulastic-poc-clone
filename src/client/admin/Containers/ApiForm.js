@@ -9,14 +9,12 @@ import { submit } from "../Components/ApiForm/apis";
 const ApiForm = () => {
   const [id, setId] = useState();
   const handleOnChange = _id => setId(_id);
-  const onClose = () => setId();
   const handleOnSave = data => {
     const option = apiForms.find(ar => ar.id === id);
     submit(data, option.endPoint, option.method).then(res => {
       if (res?.result) {
         if (res.result.success || res.status === 200) {
           notification({ type: "success", msg: res?.result?.message, message: "apiFormSucc" });
-          onClose();
         } else {
           notification({ msg: res?.result?.message, message: "apiFormErr" });
         }

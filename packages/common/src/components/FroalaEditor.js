@@ -75,13 +75,23 @@ FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-
 const symbols = ["all"];
 const { defaultNumberPad } = math;
 
-FroalaEditor.VIDEO_PROVIDERS.push({
-  test_regex: /^.+(screencast-o-matic.com)\/[^_&]+/,
-  url_regex: "",
-  url_text: "",
-  html: '<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>',
-  provider: "screencast"
-});
+FroalaEditor.VIDEO_PROVIDERS.push(
+  {
+    test_regex: /^.+(screencast-o-matic.com)\/[^_&]+/,
+    url_regex: "",
+    url_text: "",
+    html: '<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>',
+    provider: "screencast"
+  },
+  {
+    test_regex: /^.+(drive.google.com)\/(file)\/(d)\/[^_&]+/,
+    url_regex: /(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:drive\.google\.com)\/(?:file)\/(?:d)\/?([0-9a-zA-Z_\-]+)(.+)?/g,
+    url_text: "https://drive.google.com/file/d/$1/preview",
+    html: `<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>`,
+    provider: "google-drive"
+  }
+);
+
 const buttons = [
   "bold",
   "italic",

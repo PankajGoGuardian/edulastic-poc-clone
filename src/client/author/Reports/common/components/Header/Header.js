@@ -17,12 +17,9 @@ const CustomizedHeaderWrapper = ({
   navigationItems = [],
   activeNavigationKey = "",
   hideSideMenu,
+  isCliUser,
   t
 }) => {
-  const _onShareClickCB = () => {
-    onShareClickCB();
-  };
-
   const _onPrintClickCB = () => {
     onPrintClickCB();
   };
@@ -33,14 +30,19 @@ const CustomizedHeaderWrapper = ({
 
   const isSmallDesktop = windowWidth >= parseInt(tabletWidth, 10) && windowWidth <= parseInt(smallDesktopWidth, 10);
 
+  let filterNavigationItems = navigationItems;
+  if (isCliUser) {
+    filterNavigationItems = navigationItems.filter(item => item.key !== "peer-performance");
+  }
   const availableNavItems = isSmallDesktop
-    ? navigationItems.filter(ite => ite.key === activeNavigationKey)
-    : navigationItems;
+    ? filterNavigationItems.filter(ite => ite.key === activeNavigationKey)
+    : filterNavigationItems;
 
   const ActionButtonWrapper = isSmallDesktop ? Menu : Fragment;
   const ActionButton = isSmallDesktop ? Menu.Item : EduButton;
+  
   const navMenu = isSmallDesktop
-    ? navigationItems
+    ? filterNavigationItems
       .filter(ite => ite.key !== activeNavigationKey)
       .map(ite => (
         <ActionButton key={ite.key}>

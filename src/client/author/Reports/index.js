@@ -150,6 +150,7 @@ const Container = props => {
           navigationItems={headerSettings.navigationItems}
           activeNavigationKey={reportType}
           hideSideMenu={isCliUser}
+          isCliUser={isCliUser}
         />
       )}
       <MainContentWrapper>

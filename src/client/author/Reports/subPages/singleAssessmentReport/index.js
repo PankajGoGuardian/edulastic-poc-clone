@@ -51,8 +51,7 @@ const SingleAssessmentReportContainer = props => {
     location,
     match,
     updateCliUser,
-    cliUser,
-    resetSARSettings
+    cliUser
   } = props;
 
   const [firstLoad, setFirstLoad] = useState(true);
@@ -187,11 +186,10 @@ const SingleAssessmentReportContainer = props => {
             setShowApply={setShowApply}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
-            isCliUser={isCliUser}
           />
-          <FilterButton showFilter={showFilter} onClick={toggleFilter}>
+          {!isCliUser && <FilterButton showFilter={showFilter} onClick={toggleFilter}>
             <IconFilter />
-          </FilterButton>
+          </FilterButton>}
           <ReportContaner showFilter={showFilter}>
             <Route
               exact

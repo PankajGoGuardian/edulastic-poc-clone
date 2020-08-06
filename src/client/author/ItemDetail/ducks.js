@@ -896,7 +896,7 @@ export function* deleteItemSaga({ payload }) {
     yield put(setItemDeletingAction(false));
     console.error(e);
     if (e.status === 403) {
-      return notification({ msg: e.data.message });
+      return notification({ msg: e.response.data.message });
     }
     notification({ messageKey: "deletingItemFailed" });
   }
@@ -1311,7 +1311,7 @@ function* publishTestItemSaga({ payload }) {
   } catch (e) {
     Sentry.captureException(e);
     console.warn("publish error", e);
-    const { message: errorMessage = "Failed to publish item" } = e.data;
+    const { message: errorMessage = "Failed to publish item" } = e.response.data;
     notification({ msg: errorMessage });
   }
 }

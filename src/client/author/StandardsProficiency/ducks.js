@@ -1,6 +1,5 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
 import { getUserOrgId } from "../src/selectors/user";
@@ -117,7 +116,7 @@ export const reducer = createReducer(initialState, {
   [UPDATE_STANDARDS_PROFICIENCY_REQUEST]: state => {
     state.updating = true;
   },
-  [UPDATE_STANDARDS_PROFICIENCY_SUCCESS]: (state, { payload }) => {
+  [UPDATE_STANDARDS_PROFICIENCY_SUCCESS]: state => {
     state.updating = false;
   },
   [UPDATE_STANDARDS_PROFICIENCY_ERROR]: (state, { payload }) => {
@@ -127,7 +126,7 @@ export const reducer = createReducer(initialState, {
   [CREATE_STANDARDS_PROFICIENCY_REQUEST]: state => {
     state.creating = true;
   },
-  [CREATE_STANDARDS_PROFICIENCY_SUCCESS]: (state, { payload }) => {
+  [CREATE_STANDARDS_PROFICIENCY_SUCCESS]: state => {
     state.creating = false;
   },
   [CREATE_STANDARDS_PROFICIENCY_ERROR]: (state, { payload }) => {
@@ -182,7 +181,7 @@ function* receiveStandardsProficiencySaga({ payload }) {
     yield put(receiveStandardsProficiencySuccessAction(standardsProficiency));
   } catch (err) {
     const errorMessage = "Receive StandardsProficiency is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(receiveStandardsProficiencyErrorAction({ error: errorMessage }));
   }
 }
@@ -193,7 +192,7 @@ function* updateStandardsProficiencySaga({ payload }) {
     yield put(updateStandardsProficiencySuccessAction(updateStandardsProficiency));
   } catch (err) {
     const errorMessage = "Update StandardsProficiency is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(updateStandardsProficiencyErrorAction({ error: errorMessage }));
   }
 }
@@ -209,7 +208,7 @@ function* createStandardsProficiencySaga({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Update StandardsProficiency is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(updateStandardsProficiencyErrorAction({ error: errorMessage }));
   }
 }
@@ -219,12 +218,12 @@ function* deleteStandardsProficiencySaga({ payload: _id }) {
     const districtId = yield select(getUserOrgId);
     yield call(settingsApi.deleteStandardsProficiency, _id, districtId);
     yield put(receiveStandardsProficiencyAction());
-    notification({ type: "success", messageKey:"teacherUpdatedSuccessfully"});
+    notification({ type: "success", messageKey: "teacherUpdatedSuccessfully" });
   } catch (err) {
     if (err.status === 409) {
-      yield put(deleteStandardsProficiencyErrorAction({ type: err.data["0"] }));
+      yield put(deleteStandardsProficiencyErrorAction({ type: err.response.data["0"] }));
     } else {
-      notification({ messageKey:"deletingStandardsProficiencyFailed"});
+      notification({ messageKey: "deletingStandardsProficiencyFailed" });
     }
   }
 }

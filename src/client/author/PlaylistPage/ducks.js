@@ -775,7 +775,7 @@ function* updatePlaylistSaga({ payload }) {
   } catch (err) {
     let messageKey = "updatePlaylistErr";
     if (err?.data?.permissions) {
-      if (err.data.permissions?.length && err.data.permissions.includes("read")) {
+      if (err.response.data.permissions?.length && err.response.data.permissions.includes("read")) {
         messageKey = "updatePlaylistErrViewOnlyAccess";
       } else {
         messageKey = "updatePlaylistErrNoAccess";

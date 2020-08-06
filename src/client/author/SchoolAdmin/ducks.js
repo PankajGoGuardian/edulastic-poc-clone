@@ -323,7 +323,7 @@ function* createSchoolAdminSaga({ payload }) {
     }
     notification({ type: "success", msg });
   } catch (err) {
-    const errorMessage = err.data.message || "Create new user is failing";
+    const errorMessage = err.response.data.message || "Create new user is failing";
     notification({ msg: errorMessage });
     yield put(createSchoolAdminErrorAction({ error: errorMessage }));
   }

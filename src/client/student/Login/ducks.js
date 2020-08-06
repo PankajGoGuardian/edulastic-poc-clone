@@ -974,7 +974,7 @@ function* googleLogin({ payload }) {
     const res = yield call(authApi.googleLogin);
     window.location.href = res;
   } catch (e) {
-    notification({ msg: e.data && e.data.message ? e.data.message : "Google Login failed" });
+    notification({ msg: e.response?.data?.message ? e.response.data.message : "Google Login failed" });
   }
 }
 
@@ -1230,7 +1230,7 @@ function* requestNewPasswordSaga({ payload }) {
     });
   } catch (e) {
     console.error(e);
-    notification({ msg: e && e.data ? e.data.message : "Failed to request new password." });
+    notification({ msg: e?.response?.data?.message ? e.response.data.message : "Failed to request new password." });
     yield put({
       type: REQUEST_NEW_PASSWORD_FAILED
     });
@@ -1246,7 +1246,7 @@ function* resetPasswordUserSaga({ payload }) {
       yield put(push("/login"));
     }
   } catch (e) {
-    notification({ msg: e && e.data ? e.data.message : "Failed to user data." });
+    notification({ msg: e?.response?.data?.message ? e.response.data.message : "Failed to user data." });
     yield put(push("/login"));
   }
 }
@@ -1261,7 +1261,7 @@ function* resetPasswordRequestSaga({ payload }) {
     yield put(signupSuccessAction(result));
     localStorage.removeItem("loginRedirectUrl");
   } catch (e) {
-    notification({ msg: e && e.data ? e.data.message : "Failed to reset password." });
+    notification({ msg: e?.response?.data?.message ? e.response.data.message : "Failed to reset password." });
     yield put({
       type: RESET_PASSWORD_FAILED
     });
@@ -1348,7 +1348,7 @@ function* removeSchoolSaga({ payload }) {
     yield put({ type: REMOVE_SCHOOL_FAILED });
     console.error(e);
     if (e.status === 403) {
-      notification({ msg: e.data });
+      notification({ msg: e.response.data });
     } else {
       notification({ messageKey: "failedToRemoveRequestedSchool" });
     }
@@ -1410,9 +1410,9 @@ function* studentSignupCheckClasscodeSaga({ payload }) {
     yield call(authApi.validateClassCode, payload.reqData);
   } catch (e) {
     if (payload.errorCallback) {
-      payload.errorCallback(e.data.message);
+      payload.errorCallback(e.response.data.message);
     } else {
-      notification({ msg: e.data.message });
+      notification({ msg: e.response.data.message });
     }
   }
 }

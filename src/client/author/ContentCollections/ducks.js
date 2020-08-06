@@ -1,9 +1,8 @@
 import { createSelector } from "reselect";
 import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
-import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { collectionsApi, contentImportApi } from "@edulastic/api";
-import { uploadToS3 , notification } from "@edulastic/common";
+import { uploadToS3, notification } from "@edulastic/common";
 import { push } from "react-router-redux";
 import { aws } from "@edulastic/constants";
 import { UPLOAD_STATUS, JOB_STATUS } from "../ImportTest/ducks";
@@ -203,7 +202,7 @@ export const reducer = createReducer(initialState, {
 function* createCollectionRequestSaga({ payload }) {
   try {
     const collection = yield call(collectionsApi.createNewCollection, payload.data);
-    notification({ type: "success", messageKey:"collectionCreatedSuccessfully"});
+    notification({ type: "success", messageKey: "collectionCreatedSuccessfully" });
     yield put(createCollectionSuccessAction(collection));
     yield put(
       fetchCollectionListRequestAction({
@@ -214,15 +213,15 @@ function* createCollectionRequestSaga({ payload }) {
     console.error(err);
     yield put(createCollectionFailedAction());
     let errorMessage = "Failed to create the Collection.";
-    if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    notification({ msg:errorMessage});
+    if ([403, 422].includes(err.response.data.statusCode)) errorMessage = err.response.data.message;
+    notification({ msg: errorMessage });
   }
 }
 
 function* editCollectionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.editCollection, payload);
-    notification({ type: "success", messageKey:"collectionUpdatedSuccessfully"});
+    notification({ type: "success", messageKey: "collectionUpdatedSuccessfully" });
     const collection = {
       ...payload.data,
       _id: payload.id
@@ -231,8 +230,8 @@ function* editCollectionRequestSaga({ payload }) {
   } catch (err) {
     console.error(err);
     let errorMessage = "Failed to update the Collection.";
-    if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    notification({ msg:errorMessage});
+    if ([403, 422].includes(err.response.data.statusCode)) errorMessage = err.response.data.message;
+    notification({ msg: errorMessage });
   }
 }
 
@@ -252,7 +251,7 @@ function* fetchPermissionsRequestSaga({ payload }) {
     yield put(fetchPermissionsSuccessAction(permissions));
   } catch (err) {
     console.error(err);
-    notification({ messageKey:"UnableToGetPersmissions"});
+    notification({ messageKey: "UnableToGetPersmissions" });
     yield put(fetchPermissionsFailedAction());
   }
 }
@@ -261,12 +260,12 @@ function* addPermissionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.addPermission, payload);
     yield put(fetchPermissionsRequestAction(payload.bankId));
-    notification({ type: "success", msg: `Permission added successfully for ${payload.collectionName}.`});
+    notification({ type: "success", msg: `Permission added successfully for ${payload.collectionName}.` });
   } catch (err) {
     console.error(err);
     let errorMessage = "Error occured while adding permision.";
-    if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    notification({ msg:errorMessage});
+    if ([403, 422].includes(err.response.data.statusCode)) errorMessage = err.response.data.message;
+    notification({ msg: errorMessage });
   }
 }
 
@@ -274,12 +273,12 @@ function* editPermissionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.editPermission, payload);
     yield put(fetchPermissionsRequestAction(payload.bankId));
-    notification({ type: "success", messageKey:"persmissionEditedSuccessfully"});
+    notification({ type: "success", messageKey: "persmissionEditedSuccessfully" });
   } catch (err) {
     console.error(err);
     let errorMessage = "Unable to edit Permission.";
-    if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
-    notification({ msg:errorMessage});
+    if ([403, 422].includes(err.response.data.statusCode)) errorMessage = err.response.data.message;
+    notification({ msg: errorMessage });
   }
 }
 
@@ -297,10 +296,10 @@ function* deletePermissionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.deletePermission, payload);
     yield put(deletePermissionSuccessAction(payload.id));
-    notification({ type: "success", messageKey:"persmissionDeactivatedSuccessfully"});
+    notification({ type: "success", messageKey: "persmissionDeactivatedSuccessfully" });
   } catch (err) {
     console.error(err);
-    notification({ messageKey:"UnableToDeactivatePermission"});
+    notification({ messageKey: "UnableToDeactivatePermission" });
   }
 }
 
@@ -336,13 +335,13 @@ export function* importTestToCollectionSaga({ payload }) {
     } else {
       yield put(importTestToCollectionFailedAction("Failed uploading"));
       yield put(setIsContentImportingAction(false));
-      notification({ messageKey:"uploadCsvErr"});
+      notification({ messageKey: "uploadCsvErr" });
     }
   } catch (e) {
     console.log(e);
     yield put(importTestToCollectionFailedAction(e?.data || {}));
     yield put(setIsContentImportingAction(false));
-    notification({ messageKey:"errorWhileImportingCollectionData"});
+    notification({ messageKey: "errorWhileImportingCollectionData" });
   }
 }
 
@@ -367,7 +366,7 @@ function* getContentImportProgressSaga({ payload: jobIds }) {
     }
   } catch (e) {
     console.log({ e });
-    return notification({ messageKey:"failedToFetchProgressStatus"});
+    return notification({ messageKey: "failedToFetchProgressStatus" });
   }
 }
 

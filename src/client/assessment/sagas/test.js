@@ -161,7 +161,7 @@ function* loadTest({ payload }) {
           }
         } catch (err) {
           if (err?.status === 403) {
-            yield put(setPasswordStatusAction(err.data.message));
+            yield put(setPasswordStatusAction(err.response.data.message));
           } else {
             yield put(setPasswordStatusAction("validation failed"));
           }
@@ -419,7 +419,7 @@ function* loadTest({ payload }) {
       }
       const userRole = yield select(getUserRole);
       if (userRole === roleuser.STUDENT) {
-        notification({ msg: err.data.message || "Failed loading the test" });
+        notification({ msg: err.response.data.message || "Failed loading the test" });
         return yield put(push("/home/assignments"));
       }
     }
@@ -506,7 +506,7 @@ function* submitTest({ payload }) {
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId: "" }
       });
-      notification({ msg: err.data });
+      notification({ msg: err.response.data });
     }
   } finally {
     yield put({

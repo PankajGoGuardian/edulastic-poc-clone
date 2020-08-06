@@ -48,7 +48,7 @@ const ResponseContainers = ({
         ? showDashedBorder
           ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
           : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
-        : 0,
+        : "unset",
       borderRadius: 5,
       display: "flex",
       padding: "5px"

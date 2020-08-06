@@ -552,7 +552,6 @@ class Display extends Component {
           options={options}
         />
       );
-
     const previewContainerWidth = canvasWidth > maxWidth ? canvasWidth : maxWidth;
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
@@ -569,7 +568,7 @@ class Display extends Component {
         >
           {renderAnnotations()}
           {renderImage()}
-          {(isSnapFitValues || view === EDIT) && showDropItemBorder && (
+          {(isSnapFitValues || view === EDIT) && (
             <ResponseContainers
               responseContainers={responseContainers}
               showDropItemBorder={showDropItemBorder}

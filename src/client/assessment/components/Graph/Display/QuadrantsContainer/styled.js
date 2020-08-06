@@ -97,7 +97,6 @@ export const Title = WithMathFormula(styled.div`
 
 export const JSXBoxWrapper = styled.div`
   position: relative;
-  overflow: auto;
   width: ${props => `${props.width}px`};
   flex-shrink: 0;
 `;

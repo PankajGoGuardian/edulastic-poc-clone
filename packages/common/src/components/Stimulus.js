@@ -21,7 +21,7 @@ const Stimulus = withTheme(
     }
 
     & *:not(a) {
-      color: ${({ theme }) => theme.questionTextColor} !important;
+      color: ${({ theme }) => theme.questionTextColor};
     }
 
     & .input__math,

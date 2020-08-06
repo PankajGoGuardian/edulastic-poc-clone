@@ -102,7 +102,8 @@ export {
   getImageUrl,
   getSelectionRect,
   getFormattedAttrId,
-  toggleIntercomDisplay
+  toggleIntercomDisplay,
+  sanitizeString
 } from "./src/helpers";
 
 // contexts

@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
-import uuid from "uuid/v4";
 import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -13,15 +12,19 @@ import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, Button } from "antd";
 
-import { setTestDataAction, setCurrentAnnotationToolAction, updateAnnotationToolsPropertiesAction, undoAnnotationsAction, redoAnnotationsAction } from "../../../TestPage/ducks";
-
-import { IconGraphRightArrow } from "@edulastic/icons";
 import { response } from "@edulastic/constants";
+import {
+  setTestDataAction,
+  setCurrentAnnotationToolAction,
+  updateAnnotationToolsPropertiesAction,
+  undoAnnotationsAction,
+  redoAnnotationsAction
+} from "../../../TestPage/ducks";
 
 import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
-import { WorksheetWrapper, PDFAnnotationToolsWrapper, MinimizeButton } from "./styled";
+import { WorksheetWrapper, PDFAnnotationToolsWrapper } from "./styled";
 // import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 
 import { loadQuestionsAction } from "../../../sharedDucks/questions";
@@ -163,7 +166,7 @@ class WorksheetComponent extends React.Component {
     }
   };
 
-  handleAddAnnotation = (question, offsetWidth, offsetHeight) => {
+  handleAddAnnotation = question => {
     const { annotations, setTestData } = this.props;
     const annotation = {
       uuid: helpers.uuid(),
@@ -184,13 +187,13 @@ class WorksheetComponent extends React.Component {
     newAnnotations.push(annotation);
 
     const updatedAssessment = {
-      annotations: newAnnotations.map(a => ({ ...a, offsetWidth, offsetHeight }))
+      annotations: newAnnotations
     };
 
     setTestData(updatedAssessment);
   };
 
-  // Add Blank Page 
+  // Add Blank Page
   handleAppendBlankPage = () => {
     const { pageStructure } = this.props;
 
@@ -335,8 +338,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -379,8 +382,8 @@ class WorksheetComponent extends React.Component {
         annotation.page === pageIndex + 1
           ? nextIndex + 1
           : annotation.page === nextIndex + 1
-            ? pageIndex + 1
-            : annotation.page
+          ? pageIndex + 1
+          : annotation.page
     }));
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
 
@@ -575,22 +578,30 @@ class WorksheetComponent extends React.Component {
 
     return (
       <div style={{ display: "flex", flexDirection: "column" }}>
-        {editMode && (<PDFAnnotationToolsWrapper>
-          <PDFAnnotationTools
-            setCurrentTool={setCurrentAnnotationTool}
-            currentTool={currentAnnotationTool}
-            togglePdfThumbnails={this.toggleMinimized}
-            minimized={minimized}
-            annotationToolsProperties={annotationToolsProperties}
-            updateToolProperties={updateToolProperties}
-            isAnnotationsStackEmpty={isAnnotationsStackEmpty}
-            isAnnotationsEmpty={pdfAnnotations.filter(a => !a?.questionId)?.length === 0}
-            undoAnnotationsOperation={undoAnnotationsOperation}
-            redoAnnotationsOperation={redoAnnotationsOperation}
-          />
-        </PDFAnnotationToolsWrapper>)}
+        {editMode && (
+          <PDFAnnotationToolsWrapper>
+            <PDFAnnotationTools
+              setCurrentTool={setCurrentAnnotationTool}
+              currentTool={currentAnnotationTool}
+              togglePdfThumbnails={this.toggleMinimized}
+              minimized={minimized}
+              annotationToolsProperties={annotationToolsProperties}
+              updateToolProperties={updateToolProperties}
+              isAnnotationsStackEmpty={isAnnotationsStackEmpty}
+              isAnnotationsEmpty={pdfAnnotations.filter(a => !a?.questionId)?.length === 0}
+              undoAnnotationsOperation={undoAnnotationsOperation}
+              redoAnnotationsOperation={redoAnnotationsOperation}
+            />
+          </PDFAnnotationToolsWrapper>
+        )}
 
-        <WorksheetWrapper reportMode={reportMode} testMode={testMode} extraPaddingTop={extraPaddingTop} editMode={editMode} editModePadding={editMode ? "65px" : "0px"}>
+        <WorksheetWrapper
+          reportMode={reportMode}
+          testMode={testMode}
+          extraPaddingTop={extraPaddingTop}
+          editMode={editMode}
+          editModePadding={editMode ? "65px" : "0px"}
+        >
           <Modal
             visible={deleteConfirmation}
             title="Confirm Page Deletion"
@@ -655,7 +666,6 @@ class WorksheetComponent extends React.Component {
               toggleMinimized={this.toggleMinimized}
             />
           )}
-
 
           <div
             style={{
@@ -741,7 +751,7 @@ const enhance = compose(
       scratchPad: get(
         state,
         `userWork.present[${
-        ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
+          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
         }].scratchpad`,
         null
       ),

@@ -13,36 +13,28 @@ import { PDFPreviewWrapper, Preview, ZoomControlCotainer, PDFZoomControl } from 
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import PDFViewer from "../PDFViewer";
 
-
-const handleDrop = (page, cb, annotationContainer, zoom=1) => ({ question }, e) => {
-
+const handleDrop = (page, cb, zoom = 1) => ({ question }, e) => {
   const {
     nativeEvent: { offsetX, offsetY }
   } = e;
   const data = JSON.parse(question);
 
-  const x = zoom!=0 ? (offsetX)/zoom : offsetX;
-  const y = zoom!=0 ? (offsetY)/zoom : offsetY;
+  const x = zoom != 0 ? offsetX / zoom : offsetX;
+  const y = zoom != 0 ? offsetY / zoom : offsetY;
 
-  const { offsetWidth, offsetHeight } = annotationContainer.current;
-  
-  cb(
-  {
+  cb({
     x,
     y,
     page,
     questionId: data.id,
     qIndex: data.index
-  },
-    offsetWidth,
-    offsetHeight
-  );
+  });
 };
 
-const getNumberStyles = (x, y, width, height, scale) => ({
+const getNumberStyles = (x, y) => ({
   position: "absolute",
-  top: height ? `${((y / height) * 100) / scale}%` : `${y}px`,
-  left: width ? `${(x / width) * 100}%` : `${x}px`
+  top: `${y}px`,
+  left: `${x}px`
 });
 
 const PDFPreview = ({
@@ -56,8 +48,6 @@ const PDFPreview = ({
   viewMode,
   previewMode,
   isToolBarVisible,
-  pdfWidth,
-  pdfHeight,
   minimized,
   history,
   pageChange,
@@ -74,10 +64,8 @@ const PDFPreview = ({
   annotationToolsProperties,
   annotationsStack
 }) => {
-  const [pdfScale, scalePDF] = useState(1);
-
   const previewContainer = useRef();
-  const annotationContainer = useRef();
+  const [pdfScale, scalePDF] = useState(1);
 
   const PDFScaleUp = (scale = 0.25) => {
     const zoom = pdfScale < 3 ? pdfScale + scale : pdfScale;
@@ -137,10 +125,9 @@ const PDFPreview = ({
       <PerfectScrollbar ref={forwardedRef}>
         <Droppable
           types={["question"]}
-          onDrop={handleDrop(currentPage, onDropAnnotation, annotationContainer, pdfScale)}
-          style={{ top: 0, display: "block", width: 'fit-content', margin: 'auto' }}
+          onDrop={handleDrop(currentPage, onDropAnnotation, pdfScale)}
+          style={{ top: 0, display: "block", width: "fit-content", margin: "auto" }}
         >
-
           {page.URL === "blank" && <Preview onClick={handleRemoveHighlight} ref={previewContainer} />}
 
           {page.URL !== "blank" && (
@@ -152,17 +139,18 @@ const PDFPreview = ({
               annotationsStack={annotationsStack}
               currentPage={currentPage}
               authoringMode={viewMode === "edit"}
-            />)}
+            />
+          )}
 
-          <AnnotationsContainer className="annotations-container" zoom={pdfScale} ref={annotationContainer}>
+          <AnnotationsContainer className="annotations-container" zoom={pdfScale}>
             {annotations
               .filter(item => item.toolbarMode === "question" && item.page === currentPage)
-              .map(({ uuid, qIndex, x, y, questionId, offsetWidth, offsetHeight }) => (
+              .map(({ uuid, qIndex, x, y, questionId }) => (
                 <div
                   className="annotation-item"
                   key={uuid}
                   onClick={handleHighlight(questionId)}
-                  style={getNumberStyles(x, y, offsetWidth || pdfWidth, offsetHeight || pdfHeight, pdfScale)}
+                  style={getNumberStyles(x, y)}
                 >
                   <QuestionItem
                     key={questionId}
@@ -173,7 +161,7 @@ const PDFPreview = ({
                     answer={answersById[questionId]}
                     previewMode={viewMode === "edit" ? "clear" : previewMode}
                     onDragStart={() => {
-                      setCurrentAnnotationTool('cursor');
+                      setCurrentAnnotationTool("cursor");
                       onDragStart(questionId);
                     }}
                     testMode={testMode}
@@ -181,7 +169,6 @@ const PDFPreview = ({
                     viewMode={viewMode}
                     annotations
                     pdfPreview
-                    isAnnotation
                   />
                 </div>
               ))}

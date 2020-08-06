@@ -86,8 +86,8 @@ class QuestionItem extends React.Component {
 
   handleDragEnd = () => {
     const { setCurrentAnnotationTool } = this.props;
-    if (setCurrentAnnotationTool) setCurrentAnnotationTool('cursor');
-    this.setState({ dragging: false })
+    if (setCurrentAnnotationTool) setCurrentAnnotationTool("cursor");
+    this.setState({ dragging: false });
   };
 
   renderMultipleChoiceAnswer = (value, options) => {
@@ -324,8 +324,7 @@ class QuestionItem extends React.Component {
       testMode,
       pdfPreview,
       annotations,
-      reportActivity,
-      isAnnotation
+      reportActivity
     } = this.props;
 
     const check =
@@ -363,7 +362,6 @@ class QuestionItem extends React.Component {
               dragging={dragging}
               highlighted={highlighted}
               pdfPreview={pdfPreview}
-              isAnnotation={isAnnotation}
               // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
             >
               {questionIndex}

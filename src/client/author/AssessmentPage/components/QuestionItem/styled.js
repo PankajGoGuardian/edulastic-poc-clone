@@ -50,10 +50,7 @@ export const QuestionNumber = styled.span`
   box-shadow: ${({ highlighted, pdfPreview }) => pdfPreview && highlighted && `0 0 10px 0 ${themeColor}`};
 
   @media (max-width: ${smallDesktopWidth}) {
-    font-size: ${({ isAnnotation }) => (isAnnotation ? "12px" : "16px")};
-    width: ${({ isAnnotation }) => (isAnnotation ? "20px" : "32px")};
-    height: ${({ isAnnotation }) => (isAnnotation ? "20px" : "32px")};
-    line-height: ${({ isAnnotation }) => (isAnnotation ? "18px" : "30px")};
+    font-size: 16px;
   }
 `;
 

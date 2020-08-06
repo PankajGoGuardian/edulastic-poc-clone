@@ -56,10 +56,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
     cy.login("teacher", user.email, user.password);
   });
 
-  beforeEach(() => {
-    cy.server();
-    cy.route("GET", "**mygroups?active**").as("mygroups");
-  });
+  // beforeEach(() => {
+  //   cy.server();
+  //   cy.route("GET", "**mygroups?active**").as("mygroups");
+  // });
 
   context("> create new class", () => {
     const { className, grade, subject, standardSet } = testData.create;
@@ -120,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.fillClassDetails(className, startDate, endDate, grade, subject, standardSet);
       manageClass.clickOnSaveClass();
       sideBar.clickOnManageClass();
-      cy.wait("@mygroups");
+      // cy.wait("@mygroups");
       manageClass.getClassRowDetails(className).then(cls => {
         expect(cls.name).to.eq(className);
         expect(cls.grades).to.contain(grade);
@@ -146,7 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.fillStudentDetails(username, name, user.password);
       manageClass.clickOnAddUserButton().then(() => {
         sideBar.clickOnManageClass();
-        cy.wait("@mygroups");
+        // cy.wait("@mygroups");
         manageClass.getClassRowDetails(testData.create.className).then(cls => {
           expect(cls.students).to.eq("1");
         });
@@ -187,7 +187,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
           manageClass.clickOnAddStudents();
           manageClass.addMultipleStudent(users, userType[uType]).then(() => {
             sideBar.clickOnManageClass();
-            cy.wait("@mygroups");
+            // cy.wait("@mygroups");
             manageClass.getClassRowDetails(testData.create.className).then(c => {
               expect(c.students).to.eq(`${previousCount + 2}`);
             });
@@ -204,7 +204,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
         manageClass.clickOnAddStudents();
         manageClass.searchStudentAndAdd(username);
         sideBar.clickOnManageClass();
-        cy.wait("@mygroups");
+        // cy.wait("@mygroups");
         manageClass.getClassRowDetails(testData.create.className).then(c => {
           expect(c.students).to.eq(`${previousCount + 1}`);
         });
@@ -228,7 +228,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.fillClassDetails(className, startDate, endDate, grade, subject, standardSet, true);
       manageClass.clickOnUpdateClass();
       sideBar.clickOnManageClass();
-      cy.wait("@mygroups");
+      // cy.wait("@mygroups");
 
       manageClass.getClassRowDetails(className).then(cls => {
         expect(cls.name).to.eq(className);
@@ -248,7 +248,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
       manageClass.clickOnUpdateClass();
       sideBar.clickOnAssignment();
       sideBar.clickOnManageClass();
-      cy.wait("@mygroups");
+      // cy.wait("@mygroups");
       manageClass.getClassRowDetails(classNameEdit).then(cls => {
         expect(cls.name).to.eq(classNameEdit);
         expect(cls.grades).to.contain(randomGrade);
@@ -276,7 +276,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
 
     it("> verify on active class list", () => {
       sideBar.clickOnManageClass();
-      cy.wait("@mygroups");
+      // cy.wait("@mygroups");
       manageClass.selectActiveClass();
       manageClass.verifyClassRowVisibleByName(className);
     });
@@ -287,15 +287,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
 
       // check in active class
       manageClass.verifyNoClassRowByName(className);
-      
-      sideBar.clickOnDashboard()
+
+      sideBar.clickOnDashboard();
       sideBar.clickOnManageClass();
-      cy.wait("@mygroups")
+      // cy.wait("@mygroups")
       manageClass.verifyNoClassRowByName(className);
 
       // check in archived class
-      manageClass.selectArchieveClass()
-      manageClass.goToLastPage()
+      manageClass.selectArchieveClass();
+      manageClass.goToLastPage();
       manageClass.verifyClassRowVisibleByName(className);
     });
   });

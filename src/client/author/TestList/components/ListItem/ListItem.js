@@ -18,7 +18,13 @@ import {
   AddRemoveButton
 } from "../../../ItemList/components/Item/styled";
 import Tags from "../../../src/components/common/Tags";
-import { getUserRole, isPublisherUserSelector, getCollectionsSelector, getUserId } from "../../../src/selectors/user";
+import {
+  getUserRole,
+  isPublisherUserSelector,
+  getCollectionsSelector,
+  getUserId,
+  getCollectionsToAddContent
+} from "../../../src/selectors/user";
 import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector, toggleTestLikeAction } from "../../ducks";
 import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -179,7 +185,8 @@ class ListItem extends Component {
       isPublisherUser,
       orgCollections = [],
       currentUserId,
-      isTestLiked
+      isTestLiked,
+      collectionToWrite
     } = this.props;
     const { analytics = [] } = isPlaylist ? _source : item;
     const likes = analytics?.[0]?.likes || "0";
@@ -327,7 +334,7 @@ class ListItem extends Component {
                   </ViewButtonWrapper>
                 )}
 
-                {isPlaylist && (
+                {isPlaylist && collectionToWrite?.length > 0 && (
                   <ViewButtonContainer
                     onClick={e => {
                       e.stopPropagation();
@@ -368,15 +375,17 @@ class ListItem extends Component {
                       >
                         <IconEye /> {t("component.itemlist.preview")}
                       </ViewButtonStyled>
-                      <AddRemoveButton
-                        onClick={e => {
-                          isInCart ? onRemoveFromCart(item) : onAddToCart(item);
-                          e.stopPropagation();
-                        }}
-                        selectedToCart={isInCart}
-                      >
-                        {isInCart ? <IconClose /> : <IconPlus />}
-                      </AddRemoveButton>
+                      {collectionToWrite?.length > 0 && (
+                        <AddRemoveButton
+                          onClick={e => {
+                            isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                            e.stopPropagation();
+                          }}
+                          selectedToCart={isInCart}
+                        >
+                          {isInCart ? <IconClose /> : <IconPlus />}
+                        </AddRemoveButton>
+                      )}
                     </ViewButtonContainer>
                   )}
               </Outer>
@@ -457,7 +466,8 @@ const enhance = compose(
       orgCollections: getCollectionsSelector(state),
       userRole: getUserRole(state),
       isPublisherUser: isPublisherUserSelector(state),
-      currentUserId: getUserId(state)
+      currentUserId: getUserId(state),
+      collectionToWrite: getCollectionsToAddContent(state)
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

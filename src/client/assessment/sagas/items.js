@@ -200,7 +200,7 @@ function* saveUserResponse({ payload }) {
       const { isPlaylist = false } = payload;
       if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       yield put(push("/home/assignments"));
-      notification({ msg: err.data });
+      notification({ msg: err.response.data });
     } else {
       notification({ messageKey: "failedSavingAnswer" });
     }

@@ -14,7 +14,6 @@ class AddCoTeacher extends React.Component {
   static propTypes = {
     handleCancel: PropTypes.func.isRequired,
     teachers: PropTypes.array.isRequired,
-    selectedStudent: PropTypes.array.isRequired,
     isOpen: PropTypes.bool
   };
 
@@ -37,10 +36,10 @@ class AddCoTeacher extends React.Component {
   }
 
   onChangeHandler = id => {
-    this.setState({
-      ...this.state,
+    this.setState(prevState => ({
+      ...prevState,
       coTeacherId: id
-    });
+    }));
   };
 
   onSearchHandler = value => {
@@ -60,7 +59,7 @@ class AddCoTeacher extends React.Component {
     const { handleCancel, selectedClass } = this.props;
     const { _id: classId } = selectedClass;
 
-    const result = groupApi
+    groupApi
       .addCoTeacher({
         groupId: classId,
         coTeacherId
@@ -73,7 +72,7 @@ class AddCoTeacher extends React.Component {
         }
       })
       .catch(err => {
-        notification({ msg: err.data.message });
+        notification({ msg: err.response.data.message });
       });
   }, 1000);
 
@@ -148,7 +147,6 @@ class AddCoTeacher extends React.Component {
 export default connect(
   state => ({
     userOrgId: getUserOrgId(state),
-    selectedStudent: get(state, "manageClass.selectedStudent", []),
     userInfo: get(state.user, "user", {}),
     teachers: get(state, "teacherReducer.data", []),
     primaryTeacherId: getUserIdSelector(state)

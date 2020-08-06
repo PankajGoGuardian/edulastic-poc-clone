@@ -318,14 +318,14 @@ function* saveAssignment({ payload }) {
     // enable button if call fails
     yield put(setAssignmentSavingAction(false));
     if (err.status === 409) {
-      if (err.data.commonStudents && err.data.commonStudents.length) {
-        return yield put(updateAssignFailDataAction(err.data));
+      if (err.response.data.commonStudents?.length) {
+        return yield put(updateAssignFailDataAction(err.response.data));
       }
       return yield put(toggleHasDuplicateAssignmentPopupAction(true));
     }
     yield put(toggleHasCommonAssignmentsPopupAction(false));
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
-    if (err.status === 403 && err.data.message === "NO_CLASS_FOUND_AFTER_REMOVING_DUPLICATES") {
+    if (err.status === 403 && err.response.data.message === "NO_CLASS_FOUND_AFTER_REMOVING_DUPLICATES") {
       yield put(updateAssingnmentSettingsAction({ class: [] }));
       return notification({ msg: "No classes found after removing the duplicates. Select one or more to assign." });
     }

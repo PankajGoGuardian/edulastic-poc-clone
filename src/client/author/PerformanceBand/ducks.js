@@ -1,11 +1,10 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { createSelector } from "reselect";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { createAction, createReducer } from "redux-starter-kit";
-import { getUserOrgId } from "../src/selectors/user";
 import { get, omit } from "lodash";
+import { getUserOrgId } from "../src/selectors/user";
 
 const RECEIVE_PERFORMANCE_BAND_REQUEST = "[Performance Band] receive data request";
 const RECEIVE_PERFORMANCE_BAND_SUCCESS = "[Performance Band] receive data success";
@@ -58,11 +57,11 @@ export const getPerformanceBandList = createSelector(
         { name: "Basic", aboveOrAtStandard: true, from: 70, to: 50, key: 1 },
         { name: "Below Basic", aboveOrAtStandard: true, from: 50, to: 0, key: 2 }
       ];
-    } else if (state.data.hasOwnProperty("performanceBand")) {
-      return state.data.performanceBand;
-    } else {
-      return [];
     }
+    if (Object.prototype.hasOwnProperty.call(state.data, "performanceBand")) {
+      return state.data.performanceBand;
+    }
+    return [];
   }
 );
 
@@ -105,7 +104,7 @@ export const reducer = createReducer(initialState, {
   [UPDATE_PERFORMANCE_BAND_REQUEST]: state => {
     state.updating = true;
   },
-  [UPDATE_PERFORMANCE_BAND_SUCCESS]: (state, { payload }) => {
+  [UPDATE_PERFORMANCE_BAND_SUCCESS]: state => {
     state.updating = false;
   },
   [UPDATE_PERFORMANCE_BAND_ERROR]: (state, { payload }) => {
@@ -117,7 +116,7 @@ export const reducer = createReducer(initialState, {
   },
   [CREATE_PERFORMANCE_BAND_SUCCESS]: (state, { payload }) => {
     state.creating = false;
-    payload.performanceBand.map((row, index) => {
+    payload.performanceBand.forEach((row, index) => {
       row.key = index;
     });
     state.data = payload;
@@ -172,7 +171,7 @@ function* receivePerformanceBandSaga({ payload }) {
     yield put(receivePerformanceBandSuccessAction(performanceBand));
   } catch (err) {
     const errorMessage = "Receive PerformanceBand is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(receivePerformanceBandErrorAction({ error: errorMessage }));
   }
 }
@@ -190,11 +189,11 @@ function* updatePerformanceBandSaga({ payload: _id }) {
     // }
     const updatePerformanceBand = yield call(settingsApi.updatePerformanceBand, data);
     yield put(updatePerformanceBandSuccessAction(updatePerformanceBand));
-    //yield put(receivePerformanceBandAction());
+    // yield put(receivePerformanceBandAction());
   } catch (err) {
     console.error(err);
     const errorMessage = "Update PerformanceBand is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(updatePerformanceBandErrorAction({ error: errorMessage }));
   }
 }
@@ -207,7 +206,7 @@ function* createPerformanceBandSaga({ payload }) {
     yield put(setEditingIndexAction(createPerformanceBand._id));
   } catch (err) {
     const errorMessage = "Create PerformanceBand is failing";
-    notification({msg:errorMessage});
+    notification({ msg: errorMessage });
     yield put(createPerformanceBandErrorAction({ error: errorMessage }));
   }
 }
@@ -216,17 +215,17 @@ function* deletePerformanceBandSaga({ payload }) {
   yield put(setLoadingAction(true));
   const districtId = yield select(getUserOrgId);
   try {
-    const createPerformanceBand = yield call(settingsApi.deletePerformanceBand, payload, districtId);
+    yield call(settingsApi.deletePerformanceBand, payload, districtId);
     yield put(setLoadingAction(false));
     yield put(receivePerformanceBandAction());
-    notification({ type: "success", messageKey:"performanceBandProfileDeleted"});
+    notification({ type: "success", messageKey: "performanceBandProfileDeleted" });
   } catch (err) {
     yield put(setLoadingAction(false));
     if (err.status === 409) {
-      yield put(deletePerformanceBandErrorAction({ type: err.data["0"] }));
+      yield put(deletePerformanceBandErrorAction({ type: err.response.data["0"] }));
     } else {
       const errorMessage = "Deleting PerformanceBand is failing";
-      notification({msg:errorMessage});
+      notification({ msg: errorMessage });
       yield put(createPerformanceBandErrorAction({ error: errorMessage }));
     }
   }

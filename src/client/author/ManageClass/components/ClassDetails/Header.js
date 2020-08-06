@@ -103,9 +103,9 @@ const Header = ({
     } catch (err) {
       Sentry.captureException(err);
       notification(
-        err.status === 403 && err.data?.message
+        err.status === 403 && err.response.data?.message
           ? {
-              msg: err.data?.message
+              msg: err.response.data?.message
             }
           : { messageKey: "errorWhileGettingAuthUri" }
       );

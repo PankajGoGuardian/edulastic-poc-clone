@@ -330,7 +330,7 @@ function* makeApiRequest(idsForFetch = [], showNotification = false, forUseThis 
       yield put(updateCurriculumSequenceAction(items));
     }
   } catch (error) {
-    if (error.data?.statusCode === 403) {
+    if (error.response.data?.statusCode === 403) {
       /**
        * if permission is denied while trying to access MyPlaylist, then
        * show any one of the recently used playlists.
@@ -1143,7 +1143,7 @@ function* fetchDifferentiationStudentListSaga({ payload }) {
     yield put(updateDifferentiationStudentListAction(studentList));
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data.message });
+    yield call(notification, { msg: err.response.data.message });
   }
 }
 
@@ -1213,7 +1213,7 @@ function* fetchDifferentiationWorkSaga({ payload }) {
     console.error(err);
     yield put(setDifferentiationWorkAction({}));
     yield put(updateFetchWorkLoadingStateAction(false));
-    yield call(notification, { msg: err.data.message });
+    yield call(notification, { msg: err.response.data.message });
   }
 }
 
@@ -1241,7 +1241,7 @@ function* addRecommendationsSaga({ payload }) {
     yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data.message });
+    yield call(notification, { msg: err.response.data.message });
   }
 }
 

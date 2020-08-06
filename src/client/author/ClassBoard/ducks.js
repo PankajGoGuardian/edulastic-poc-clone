@@ -14,7 +14,6 @@ import {
   setIsPausedAction,
   updateRemovedStudentsAction,
   updateClassStudentsAction,
-  setCurrentTestActivityIdAction,
   setStudentsGradeBookAction,
   setAllTestActivitiesForStudentAction,
   updateSubmittedStudentsAction,
@@ -125,7 +124,7 @@ export function* receiveTestActivitySaga({ payload }) {
     if (autoselectItemsCount) {
       // students can have different test items so generating student data for each student with its testItems
       const studentsDataWithTestItems = students.map(student => {
-        const activity = gradebookData.testActivities.find(activity => activity.userId === student._id);
+        const activity = gradebookData.testActivities.find(a => a.userId === student._id);
         let allItems = [];
         if (activity) {
           allItems = activity.itemsToDeliverInGroup
@@ -186,7 +185,7 @@ function* releaseScoreSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    const msg = err.data.message || "Update release score is failed";
+    const msg = err.response.data.message || "Update release score is failed";
     yield call(notification, { msg });
   }
 }
@@ -197,13 +196,13 @@ function* markAsDoneSaga({ payload }) {
     yield put(updateAssignmentStatusAction("DONE"));
     yield call(notification, { type: "success", msg: "Successfully marked as done" });
   } catch (err) {
-    if (err && err.status == 422 && err.data && err.data.message) {
-      yield call(notification, { msg: err.data.message });
+    if (err && err.status == 422 && err.response.data && err.response.data.message) {
+      yield call(notification, { msg: err.response.data.message });
     } else {
       if (err?.data?.message === "Assignment does not exist anymore") {
         yield put(redirectToAssignmentsAction(""));
       }
-      yield call(notification, { msg: err.data?.message || "Mark as done is failed" });
+      yield call(notification, { msg: err.response.data?.message || "Mark as done is failed" });
     }
   }
 }
@@ -229,7 +228,7 @@ function* openAssignmentSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data?.message || "Failed to open" });
+    yield call(notification, { msg: err.response.data?.message || "Failed to open" });
   }
 }
 
@@ -246,7 +245,7 @@ function* closeAssignmentSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data?.message || "Failed to close" });
+    yield call(notification, { msg: err.response.data?.message || "Failed to close" });
   }
 }
 
@@ -271,7 +270,7 @@ function* markAbsentSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data.message || "Mark absent students failed" });
+    yield call(notification, { msg: err.response.data.message || "Mark absent students failed" });
   }
 }
 
@@ -284,7 +283,7 @@ function* markAsSubmittedSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data.message || "Mark as submit failed" });
+    yield call(notification, { msg: err.response.data.message || "Mark as submit failed" });
   }
 }
 
@@ -300,7 +299,7 @@ function* togglePauseAssignment({ payload }) {
     if (e?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    const msg = e.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`;
+    const msg = e.response.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`;
     yield call(notification, { msg });
   }
 }
@@ -323,7 +322,7 @@ function* removeStudentsSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data.message || "Remove students failed" });
+    yield call(notification, { msg: err.response.data.message || "Remove students failed" });
   }
 }
 
@@ -336,7 +335,7 @@ function* addStudentsSaga({ payload }) {
     if (err?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.data.message || "Add students failed" });
+    yield call(notification, { msg: err.response.data.message || "Add students failed" });
   }
 }
 
@@ -358,11 +357,12 @@ function* downloadGradesAndResponseSaga({ payload }) {
   try {
     const data = yield call(classBoardApi.downloadGrades, payload);
     const userName = yield select(getUserNameSelector);
+    // eslint-disable-next-line no-use-before-define
     const testName = yield select(testNameSelector);
     const fileName = `${testName}_${userName}.csv`;
     downloadCSV(fileName, data);
   } catch (e) {
-    yield call(notification, { msg: e.data?.message || "Download failed" });
+    yield call(notification, { msg: e.response.data?.message || "Download failed" });
   }
 }
 
@@ -392,7 +392,7 @@ function* canvasSyncGradesSaga({ payload }) {
     yield call(notification, { type: "success", msg: "Grades synced with canvas successfully." });
   } catch (err) {
     console.error(err);
-    yield call(notification, { msg: err.data.message || "Failed to sync grades with canvas." });
+    yield call(notification, { msg: err.response.data.message || "Failed to sync grades with canvas." });
   }
 }
 
@@ -436,12 +436,12 @@ export const getClassResponseSelector = createSelector(
 
 export const getHasRandomQuestionselector = createSelector(
   getClassResponseSelector,
-  test => hasRandomQuestions(test?.itemGroups || [])
+  _test => hasRandomQuestions(_test?.itemGroups || [])
 );
 
 export const getTotalPoints = createSelector(
   getClassResponseSelector,
-  test => test?.summary?.totalPoints
+  _test => _test?.summary?.totalPoints
 );
 
 export const getCurrentTestActivityIdSelector = createSelector(
@@ -470,18 +470,11 @@ export const getAssignmentPasswordDetailsSelector = createSelector(
 
 export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQuestionActivities) => {
   const questionMap = {};
-  let testItemsDataKeyed = {};
-  let originalQuestionActivitiesKeyed = {};
-
-  if (itemsSummary) {
-    testItemsDataKeyed = keyBy(itemsSummary, "_id");
-  }
 
   if (originalQuestionActivities) {
     // originalQuestionActivitiesKeyed = keyBy(originalQuestionActivities, "_id");
     const originalQuestionActivitiesGrouped = groupBy(originalQuestionActivities, "testItemId");
     for (const itemId of Object.keys(originalQuestionActivitiesGrouped)) {
-      const item = originalQuestionActivitiesGrouped[itemId];
       const manuallyGradedPresent = originalQuestionActivitiesGrouped[itemId].find(x => x.graded === false);
       /**
        * even if at-least 1 questionActivity with graded false
@@ -497,8 +490,6 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
         }));
       }
     }
-
-    originalQuestionActivitiesKeyed = keyBy(_values(originalQuestionActivitiesGrouped).flat(), "_id");
   }
 
   for (const entity of entities) {
@@ -569,6 +560,7 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
       }
     }
   }
+  // eslint-disable-next-line guard-for-in
   for (const question in questionMap) {
     questionMap[question].avgTimeSpent = questionMap[question].timeSpent / questionMap[question].attemptsNum;
   }

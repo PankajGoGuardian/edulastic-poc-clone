@@ -33,12 +33,7 @@ import CorrectAnswers from "./components/CorrectAnswers";
 import Instructions from "../../components/Instructions";
 import getMaxMinWidth from "./getMaxMinWidth";
 
-const {
-  maxWidth: choiceDefaultMaxW,
-  minWidth: choiceDefaultMinW,
-  minHeight: choiceDefaultMinH,
-  maxHeight: choiceDefaultMaxH
-} = ChoiceDimensions;
+const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW, minHeight: choiceDefaultMinH } = ChoiceDimensions;
 
 const ClassificationPreview = ({
   view,
@@ -312,7 +307,7 @@ const ClassificationPreview = ({
     maxWidth: dragItemMaxWidth,
     minWidth: dragItemMinWidth,
     minHeight: choiceDefaultMinH,
-    maxHeight: choiceDefaultMaxH,
+    maxHeight: "auto", // Changing max height to auto, to avoid trimmed image
     width: choiceWdith + 10
   };
 

@@ -293,9 +293,13 @@ class Graph extends Component {
     setQuestionData({ ...item, annotation: options });
   };
 
-  handleCanvasChange = options => {
+  handleCanvasChange = (canvas, uiStyle) => {
     const { setQuestionData, item } = this.props;
-    setQuestionData({ ...item, canvas: options });
+    let newItem = { ...item, canvas };
+    if (uiStyle) {
+      newItem = { ...newItem, uiStyle };
+    }
+    setQuestionData(newItem);
   };
 
   handleBgImgChange = bgImgOptions => {

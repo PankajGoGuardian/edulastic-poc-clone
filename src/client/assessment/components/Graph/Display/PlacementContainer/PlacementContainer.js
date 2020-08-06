@@ -207,8 +207,18 @@ class PlacementContainer extends PureComponent {
     } = this.props;
 
     const { resourcesLoaded } = this.state;
+    // we should create a graph with whole settings for the first time.
+    // @see https://snapwiz.atlassian.net/browse/EV-17315
+    const settings = {
+      graphParameters: canvas,
+      gridParameters: gridParams,
+      axesParameters: {
+        x: xAxesParameters,
+        y: yAxesParameters
+      }
+    };
 
-    this._graph = makeBorder(this._graphId, graphType);
+    this._graph = makeBorder(this._graphId, graphType, settings);
 
     const defaultColor = theme.widgets.chart.labelStrokeColor;
     const bgColor = theme.widgets.graphPlacement.backgroundShapes;
@@ -222,30 +232,11 @@ class PlacementContainer extends PureComponent {
 
       this._graph.resizeContainer(layout.width, layout.height);
 
-      this._graph.setGraphParameters({
-        ...defaultGraphParameters(),
-        ...canvas
-      });
-
       this._graph.setPointParameters({
         ...defaultPointParameters(),
         ...pointParameters
       });
 
-      this._graph.setAxesParameters({
-        x: {
-          ...defaultAxesParameters(),
-          ...xAxesParameters
-        },
-        y: {
-          ...yAxesParameters
-        }
-      });
-
-      this._graph.setGridParameters({
-        ...defaultGridParameters(),
-        ...gridParams
-      });
       this._graph.setBgImage(bgImgOptions);
       if (resourcesLoaded) {
         const bgShapeValues = backgroundShapes.values.map(el => ({

@@ -240,13 +240,24 @@ class GraphContainer extends PureComponent {
     const { tools } = toolbar;
     const { resourcesLoaded } = this.state;
 
-    this._graph = makeBorder(this._graphId, graphData.graphType);
+    // we should create a graph with whole settings for the first time.
+    // @see https://snapwiz.atlassian.net/browse/EV-17315
+    const settings = {
+      graphParameters: canvas,
+      gridParameters: gridParams,
+      axesParameters: {
+        x: xAxesParameters,
+        y: yAxesParameters
+      }
+    };
 
-    if (!this.drawingObjectsAreVisible) {
-      this._graph.setTool(tools[0]);
-    }
+    this._graph = makeBorder(this._graphId, graphData.graphType, settings);
 
     if (this._graph) {
+      if (!this.drawingObjectsAreVisible) {
+        this._graph.setTool(tools[0]);
+      }
+
       this._graph.createEditButton(this.handleElementSettingsMenuOpen);
       this._graph.setDisableResponse(disableResponse);
 
@@ -257,10 +268,7 @@ class GraphContainer extends PureComponent {
       }
 
       this._graph.resizeContainer(layout.width, layout.height);
-      this._graph.setGraphParameters({
-        ...defaultGraphParameters(),
-        ...canvas
-      });
+
       this._graph.setPointParameters({
         ...defaultPointParameters(),
         ...pointParameters
@@ -268,19 +276,6 @@ class GraphContainer extends PureComponent {
 
       this.setPriorityColors();
 
-      this._graph.setAxesParameters({
-        x: {
-          ...defaultAxesParameters(),
-          ...xAxesParameters
-        },
-        y: {
-          ...yAxesParameters
-        }
-      });
-      this._graph.setGridParameters({
-        ...defaultGridParameters(),
-        ...gridParams
-      });
       this._graph.setBgImage(bgImgOptions);
       if (resourcesLoaded) {
         const bgShapeValues = backgroundShapes.values.map(el => ({

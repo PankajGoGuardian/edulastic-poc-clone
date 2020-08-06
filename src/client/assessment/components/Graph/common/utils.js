@@ -80,3 +80,5 @@ export const getAdjustedV1AnnotationCoordinatesForDB = (adjustedHeightWidth, lay
     height: calcSizeHeight
   };
 };
+
+export const calcDistance = (min, max) => (Math.abs(min) + Math.abs(max)) / 10;

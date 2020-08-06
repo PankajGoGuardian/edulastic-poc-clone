@@ -219,7 +219,7 @@ class MathFormulaPreview extends Component {
 
   render() {
     const {
-      evaluation,
+      evaluation: mathEvaluation,
       item,
       type: previewType,
       showQuestionNumber,
@@ -237,7 +237,7 @@ class MathFormulaPreview extends Component {
     const { innerValues } = this.state;
 
     const latex = this.getValidLatex(this.props);
-
+    const evaluation = Array.isArray(mathEvaluation) ? mathEvaluation : [];
     const hasAltAnswers =
       item && item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);

@@ -14,12 +14,13 @@ import {
   backgroundGrey,
   lightGrey11,
   greyThemeDark1,
+  smallDesktopWidth,
   extraDesktopWidthMax,
   themeColorBlue
 } from "@edulastic/colors";
 
 export const StudentLabel = styled.div`
-  margin: 10px;
+  margin: 10px 10px 10px 20px;
   padding: 10px;
   display: flex;
   align-items: center;
@@ -27,6 +28,9 @@ export const StudentLabel = styled.div`
   font-weight: 600;
   height: 48px;
   background-color: ${backgroundGrey};
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 30px;
+  }
 `;
 
 export const FilterButton = styled(Button)`
@@ -201,6 +205,28 @@ export const AssignmentTD = styled.div`
 export const StyledTable = styled(Table)`
   .ant-table {
     .ant-table-content {
+      .ant-table-scroll {
+        .ant-table-header {
+          background: white;
+          th {
+            border: none;
+            background: white;
+            padding: 8px;
+            .ant-table-column-sorters {
+              display: inline;
+            }
+            .ant-table-column-title {
+              font-size: 10px;
+              font-weight: 700;
+              color: ${lightGrey11};
+              text-transform: uppercase;
+              @media (min-width: ${extraDesktopWidthMax}) {
+                font-size: 12px;
+              }
+            }
+          }
+        }
+      }
       .ant-table-body {
         table {
           border: none;
@@ -246,7 +272,9 @@ export const StyledTable = styled(Table)`
                   font-size: 14px;
                 }
               }
-              ${props => props.urlHasStudent ? `
+              ${props =>
+                props.urlHasStudent
+                  ? `
                 td:nth-child(1) {
                   padding-top: 7px;
                   @media (min-width: ${extraDesktopWidthMax}) {
@@ -259,7 +287,8 @@ export const StyledTable = styled(Table)`
                     padding: 10px;
                   }
                 }
-              ` : `
+              `
+                  : `
                 td:nth-child(n + 5) {
                   padding: 5px 0 0 0;
                 }

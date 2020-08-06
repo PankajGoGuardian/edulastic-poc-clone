@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { isEmpty, get, capitalize } from "lodash";
@@ -151,6 +151,7 @@ const Gradebook = ({
       <MainHeader
         Icon={IconInterface}
         headingText="Gradebook"
+        titleMinWidth="auto"
         justify="space-between"
         headingSubContent={
           urlHasStudent && (
@@ -203,10 +204,7 @@ const Gradebook = ({
             </TableContainer>
           ) : (
             <TableContainer>
-              <GradebookStudentTable
-                dataSource={curatedData}
-                windowHeight={windowHeight}
-              />
+              <GradebookStudentTable dataSource={curatedData} windowHeight={windowHeight} />
               <Pagination
                 current={pagination.assignmentPage}
                 pageSize={pagination.assignmentPageSize}

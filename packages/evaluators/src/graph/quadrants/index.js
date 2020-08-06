@@ -1,6 +1,11 @@
 import axios from "axios";
 import { IgnoreLabels, IgnoreRepeatedShapes, ShapeTypes } from "./constants";
 import CompareShapes from "./compareShapes";
+import { ScoringType } from "../../const/scoring";
+
+
+
+const {EXACT_MATCH,PARTIAL_MATCH} = ScoringType;
 
 const evaluateApi = data =>
   axios
@@ -353,7 +358,7 @@ const eqnToObject = validResponse => {
 };
 
 const evaluator = async ({ userResponse, validation }) => {
-  const { validResponse, altResponses, ignore_repeated_shapes, ignoreLabels } = validation;
+  const { validResponse, altResponses, ignore_repeated_shapes, ignoreLabels,scoringType=EXACT_MATCH,penalty=0 } = validation;
 
   let score = 0;
   let maxScore = 1;
@@ -373,11 +378,22 @@ const evaluator = async ({ userResponse, validation }) => {
     } else {
       result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
     }
-
+    maxScore = Math.max(answer.score, maxScore);
+    if(scoringType === PARTIAL_MATCH){
+      const anscount = (answer && answer.value && answer.value.length) || 1;
+      const rewardPoints = maxScore / anscount;
+      const penaltyPoints = penalty / anscount;
+      const resultDetails = (result && result.details) || [];
+      const correctAns = resultDetails.filter(({result})=> !!result).length;
+      const wrongAns = resultDetails.length - correctAns;
+      const partialScore = rewardPoints * correctAns - wrongAns * penaltyPoints;
+      score = Math.max(score, partialScore);
+  }else{
     if (result.commonResult) {
       score = Math.max(answer.score, score);
     }
-    maxScore = Math.max(answer.score, maxScore);
+  }
+    
     evaluation[index] = result;
   }
 

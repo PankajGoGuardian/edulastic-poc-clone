@@ -307,7 +307,7 @@ export const AddRemove = styled.label`
   align-items: center;
   cursor: pointer;
   width: 40px;
-  height: 40px;
+  height: 36px;
   color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
   border: 1px solid ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
   border-radius: 5px;

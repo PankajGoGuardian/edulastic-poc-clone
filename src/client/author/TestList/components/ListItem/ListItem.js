@@ -1,7 +1,7 @@
 import { assignmentApi } from "@edulastic/api";
 import { uniqBy } from "lodash";
 import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
-import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled } from "@edulastic/common";
+import { CheckboxLabel, MathFormulaDisplay, PremiumTag, LikeIconStyled, EduButton } from "@edulastic/common";
 import { roleuser, test } from "@edulastic/constants";
 import { IconClose, IconEye, IconHeart, IconId, IconUser, IconDynamic, IconUsers, IconPlus } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -328,11 +328,19 @@ class ListItem extends Component {
                 )}
 
                 {isPlaylist && (
-                  <div
+                  <ViewButtonContainer
                     onClick={e => {
                       e.stopPropagation();
                     }}
                   >
+                    <EduButton
+                      style={{ marginRight: "10px" }}
+                      isGhost
+                      data-cy="view"
+                      onClick={e => this.moveToItem(e, `/author/playlists`)}
+                    >
+                      Details
+                    </EduButton>
                     <AddRemove selectedToCart={checked}>
                       <CheckboxLabel
                         style={{ display: "none" }}
@@ -341,12 +349,15 @@ class ListItem extends Component {
                       />
                       {checked ? <IconClose /> : <IconPlus />}
                     </AddRemove>
-                  </div>
+                  </ViewButtonContainer>
                 )}
 
                 {!isPlaylist &&
                   mode !== "embedded" &&
-                  (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.TEACHER || isPublisherUser) && (
+                  (userRole === roleuser.DISTRICT_ADMIN ||
+                    userRole === roleuser.SCHOOL_ADMIN ||
+                    userRole === roleuser.TEACHER ||
+                    isPublisherUser) && (
                     <ViewButtonContainer>
                       <ViewButtonStyled
                         data-cy="view"

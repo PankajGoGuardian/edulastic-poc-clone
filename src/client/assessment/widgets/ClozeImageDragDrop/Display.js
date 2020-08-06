@@ -574,7 +574,7 @@ class Display extends Component {
         >
           {renderAnnotations()}
           {renderImage()}
-          {(isSnapFitValues || view === EDIT) && showDropItemBorder && (
+          {(isSnapFitValues || view === EDIT) && (
             <ResponseContainers
               responseContainers={responseContainers}
               showDropItemBorder={showDropItemBorder}

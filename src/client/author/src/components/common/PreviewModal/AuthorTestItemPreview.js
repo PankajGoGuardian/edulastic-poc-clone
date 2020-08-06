@@ -463,7 +463,7 @@ class AuthorTestItemPreview extends Component {
 
     return cols.map((col, i) => {
       const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-      const showScratch = col.widgets.some(w => w.type === questionType.HIGHLIGHT_IMAGE) || !!saveScratchpad;
+      const showScratch = (col.widgets || []).some(w => w.type === questionType.HIGHLIGHT_IMAGE) || !!saveScratchpad;
       return (
         <Container width={!collapseDirection ? col.dimension : hideColumn ? "0px" : "100%"}>
           <ColumnContentArea>

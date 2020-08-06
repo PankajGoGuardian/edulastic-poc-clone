@@ -109,7 +109,7 @@ export default class QuestionEditModal extends React.Component {
         ]}
         overlayId="docBasedModalOverlay"
       >
-        <StyledBodyContainer>
+        <StyledBodyContainer type={type}>
           {this.renderForm(type)}
           <StandardSelectWrapper>
             <StandardSet qId={id} alignment={question.alignment} onUpdate={onUpdate} isDocBased showIconBrowserBtn />
@@ -166,6 +166,7 @@ export default class QuestionEditModal extends React.Component {
 
 const StyledBodyContainer = styled.div`
   max-height: 50vh;
+  min-height: ${props => props.type == MATH && "360px"};
   padding-bottom: 10px;
   overflow: visible;
 

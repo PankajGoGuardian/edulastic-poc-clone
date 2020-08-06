@@ -433,7 +433,7 @@ const TestPageHeader = ({
                     isBlue
                     isGhost
                     IconBtn={!isPublishers}
-                    title="Publish Test"
+                    title="Publish and Assign later"
                     data-cy="publish"
                     onClick={handlePublish}
                     disabled={disableButtons}

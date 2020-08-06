@@ -139,7 +139,7 @@ export const initalSearchState = {
 };
 
 export const initialSortState = {
-  sortBy: "popularity",
+  sortBy: "recency",
   sortDir: "desc"
 };
 
@@ -159,7 +159,7 @@ const initialState = {
   archivedItems: [],
   needToSetFilter: true,
   showApproveConfirmation: false,
-  sort: {...initialSortState}
+  sort: { ...initialSortState }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {

@@ -117,7 +117,7 @@ class Contaier extends Component {
     const sessionSort = JSON.parse(sessionStorage.getItem("sortBy[itemList]")) || {};
     const sort = {
       ...initSort,
-      sortBy: "popularity",
+      sortBy: "recency",
       sortDir: "desc",
       ...sessionSort
     };

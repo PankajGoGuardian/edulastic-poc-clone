@@ -261,7 +261,7 @@ export const emptyFilters = {
 };
 
 export const initialSortState = {
-  sortBy: "relevance",
+  sortBy: "recency",
   sortDir: "desc"
 };
 

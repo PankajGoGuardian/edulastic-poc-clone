@@ -164,7 +164,7 @@ class TestList extends Component {
 
     const sort = {
       ...initSort,
-      sortBy: "relevance",
+      sortBy: "recency",
       sortDir: "desc",
       ...sessionSortFilters
     };

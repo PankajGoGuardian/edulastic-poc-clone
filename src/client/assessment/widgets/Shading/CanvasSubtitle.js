@@ -62,6 +62,7 @@ class CanvasSubtitle extends Component {
             </Label>
 
             <TextInputStyled
+              data-cy="rowCount"
               size="large"
               value={rowCount}
               type="number"
@@ -75,6 +76,7 @@ class CanvasSubtitle extends Component {
             </Label>
 
             <TextInputStyled
+              data-cy="colCount"
               size="large"
               value={columnCount}
               min={0}
@@ -91,6 +93,7 @@ class CanvasSubtitle extends Component {
             </Label>
 
             <TextInputStyled
+              data-cy="cellWidth"
               size="large"
               value={cell_width}
               type="number"
@@ -104,6 +107,7 @@ class CanvasSubtitle extends Component {
             </Label>
 
             <TextInputStyled
+              data-cy="cellHeight"
               size="large"
               value={cell_height}
               min={1}

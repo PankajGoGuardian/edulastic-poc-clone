@@ -99,13 +99,16 @@ export const queColor = {
   BLUE: "rgba(26, 179, 148, 0.5)",
   BLUE_1: "rgb(87, 107, 169)",
   BLUE_2: "rgb(63, 132, 229)",
+  BLUE_3: "rgb(26, 115, 232)",
   WHITE: "rgb(255, 255, 255)",
   WHITE_1: "rgb(248, 248, 248)",
   ORANGE: "rgb(255, 165, 0)",
   ORANGE_1: "rgb(243, 147, 0)",
   ORANGE_2: "rgb(255, 233, 168)",
   ORANGE_3: "rgb(251, 250, 224)",
-  BLACK: "rgb(33, 46, 58)"
+  BLACK: "rgb(33, 46, 58)",
+  SHADING_CLEAR : "rgb(216, 219, 222)",
+  SHADING_SELECT : "rgba(216, 219, 222, 0.5)"
 };
 
 export const questionGroup = {

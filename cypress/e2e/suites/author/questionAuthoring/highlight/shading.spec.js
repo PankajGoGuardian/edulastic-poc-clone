@@ -2,8 +2,7 @@ import EditItemPage from "../../../../framework/author/itemList/itemDetail/editP
 import ShadingPage from "../../../../framework/author/itemList/questionType/highlight/shadingPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
-import { queColor } from "../../../../framework/constants/questionTypes";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type question`, () => {
   describe(" > Shading", () => {
@@ -18,17 +17,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     const question = new ShadingPage();
     const editItem = new EditItemPage();
-    const itemList = new ItemListPage();
     let preview;
 
     before(() => {
       cy.login();
     });
 
-    const RED = queColor.RED_1;
-    const GREEN = queColor.RIGHT;
-    const CLEAR = queColor.GREEN_2;
-    const BLUE = queColor.BLUE;
+    const RED = "rgb(253, 224, 232)";
+    const GREEN = "rgb(226, 252, 243)";
+    const CLEAR = "rgb(216, 219, 222)";
+    const BLUE = "rgba(216, 219, 222, 0.5)";
 
     context(" > Create basic question and validate.", () => {
       before("visit items page and select question type", () => {
@@ -39,25 +37,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
       it(" > [shad_s1] : user create question with default option and save", () => {
         // enter question
-        question
-          .getQuestionEditor()
-          .clear()
-          .type(queData.queText)
-          .should("have.text", queData.queText);
-        // set correct ans
-        question
-          .getCorrectAnsRowByIndex(0)
-          .find("li")
-          .first()
-          .click({ force: true })
-          .should("not.have.css", "background-color", "transparent");
-
-        question
-          .getCorrectAnsRowByIndex(0)
-          .find("li")
-          .last()
-          .click({ force: true })
-          .should("not.have.css", "background-color", "transparent");
+        question.enterQuestionText(queData.queText)
+          
+        // set correct ans - first and last
+        question.setCorrectAnswerByIndex(0)
+        question.setCorrectAnswerByIndex(5)
 
         // save que
         question.header.save();
@@ -66,89 +50,93 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       it(" > [shad_s2] : preview and validate with right/wrong ans", () => {
         preview = editItem.header.preview();
         // enter right ans
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .first()
-          .as("first")
-          .click({ force: true });
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .last()
-          .as("last")
-          .click({ force: true });
-
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(5)
         preview.checkScore("1/1");
-
-        cy.get("@first").should("have.css", "background-color", GREEN);
-
-        cy.get("@last").should("have.css", "background-color", GREEN);
-
-        preview
-          .getClear()
-          .click()
-          .then(() => {
-            question
-              .getCorrectAnsRowByIndexOnPreview(0)
-              .find("li")
-              .then($cells => {
-                cy.wrap($cells).each(ele => {
-                  expect(ele).to.have.css("background-color", CLEAR);
-                });
-              });
-          });
+        question.verifyCellColorInPreview(0,GREEN)
+        question.verifyCellColorInPreview(5,GREEN)
+        question.clickClearInPreview()
 
         // enter partial correct ans
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .eq(0)
-          .as("wrong")
-          .click();
-
+        question.clickCellInPreview(0)
         preview.checkScore("0/1");
-
-        cy.get("@wrong").should("have.css", "background-color", GREEN);
-
-        preview.getClear().click();
+        question.verifyCellColorInPreview(0,GREEN)
+        question.clickClearInPreview()
 
         // enter wrong ans1
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .eq(1)
-          .as("wrong1")
-          .click();
-
+        question.clickCellInPreview(1)
         preview.checkScore("0/1");
-
-        cy.get("@wrong1").should("have.css", "background-color", RED);
-
-        preview.getClear().click();
+        question.verifyCellColorInPreview(1,RED)
+        question.clickClearInPreview()
 
         // show ans
-        preview
-          .getShowAnswer()
-          .click()
-          .then(() => {
-            cy.get("body")
-              .contains("Correct Answer")
-              .parent()
-              .find("li")
-              .first()
-              // cy.get("@first").
-              .should("have.css", "background-color", GREEN);
-            cy.get("body")
-              .contains("Correct Answer")
-              .parent()
-              .find("li")
-              .last()
-              //cy.get("@last")
-              .should("have.css", "background-color", GREEN);
-          });
+        question.checkShowAnswers([0,5])
       });
     });
+
+    context(" > Canvas options", () => {
+      before("visit items page and select question type", () => {
+        editItem.createNewItem();
+        // create new que and select type
+        editItem.chooseQuestion(queData.group, queData.queType);
+      });
+
+      it(" > Increase and decrease row count", () => {
+        // enter question
+        question.enterQuestionText(queData.queText)
+
+        question.enterRowCount(3)
+        question.verifyRowCount(3)
+
+        question.enterRowCount(1)
+        question.verifyRowCount(1)
+      });
+
+      it(" > Increase and decrease column count", () => {
+
+        question.enterColCount(3)
+        question.verifyColCount(3)
+
+        question.enterColCount(6)
+        question.verifyColCount(6)
+      });
+
+      it(" > Increase and decrease cell height", () => {
+
+        question.enterCellHeight(4)
+        question.verifyCellHeight("120px")
+
+        question.enterCellHeight(2)
+        question.verifyCellHeight("60px")
+
+      });
+
+      it(" > Increase and decrease cell width", () => {
+
+        question.enterCellWidth(4)
+        question.verifyCellWidth("120px")
+
+        question.enterCellWidth(2)
+        question.verifyCellWidth("60px")
+
+      });
+
+      it(" > Lock shaded cell", () => {
+
+        // Check true
+        question.clickQuestionShadeCell(0)
+        question.clickLockCellCheckbox()
+        question.verifyCellLockedInAnswer(0,true)
+        question.verifyCellLockedInPreview(0,true)
+
+        // Check false
+        editItem.header.edit();
+        question.clickLockCellCheckbox()
+        question.verifyCellLockedInAnswer(0,false)
+        question.verifyCellLockedInPreview(0,false)
+      });
+    });
+
 
     context(" > Advanced Options", () => {
       before("visit items page and select question type", () => {
@@ -170,45 +158,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       describe(" > Layout", () => {
         describe(" > Hide cells", () => {
           it(" > should be able to hide an each cell", () => {
-            question
-              .getCellsRowByIndexInLayout(0)
-              .find("li")
-              .each($el => {
-                cy.wrap($el)
-                  .click()
-                  .should("have.css", "background-color")
-                  .and("eq", BLUE);
-              });
-
+            
+            question.clickCellsToHide([0,1,2,3,4,5], true)
+            question.verifyCellsHiddenInAnswer([0,1,2,3,4,5], true)
             editItem.header.preview();
-            question
-              .getCorrectAnsRowByIndexOnPreview(0)
-              .find("li")
-              .each($el => {
-                cy.wrap($el)
-                  .should("have.attr", "visibility")
-                  .and("eq", "hidden");
-              });
+            question.verifyCellsHiddenInPreview([0,1,2,3,4,5], true)
           });
           it(" > should be able to unhide an each cell", () => {
-            question
-              .getCellsRowByIndexInLayout(0)
-              .find("li")
-              .each($el => {
-                cy.wrap($el)
-                  .click()
-                  .should("have.css", "background-color")
-                  .and("eq", CLEAR);
-              });
+            question.clickCellsToHide([0,1,2,3,4,5], false)
+            question.verifyCellsHiddenInAnswer([0,1,2,3,4,5], false)
             editItem.header.preview();
-            question
-              .getCorrectAnsRowByIndexOnPreview(0)
-              .find("li")
-              .each($el => {
-                cy.wrap($el)
-                  .should("have.attr", "visibility")
-                  .and("eq", "visible");
-              });
+            question.verifyCellsHiddenInPreview([0,1,2,3,4,5], false)
           });
         });
         it(" > should be able to select border type: Outer", () => {
@@ -224,7 +184,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           question
             .getCellContainerInPreview()
             .should("have.css", "border")
-            .and("eq", "2px solid rgb(6, 148, 72)");
+            .and("eq", "2px solid rgb(47, 65, 81)");
         });
         it(" > should be able to select border type: Full", () => {
           // const select = question.getBorderTypeSelect();
@@ -244,7 +204,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
             .each($el => {
               cy.wrap($el)
                 .should("have.css", "border-width")
-                .and("eq", "2px");
+                .and("eq", "1px");
             });
         });
         it(" > should be able to select border type: None", () => {
@@ -277,9 +237,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
             .getMaxSelection()
             .scrollIntoView()
 
-            //.invoke("attr", "type", "text")
+            // .invoke("attr", "type", "text")
 
-            .type(`selectall${maxSelectionValue}`)
+            .type(`${maxSelectionValue}`)
 
             .should("have.value", `0${maxSelectionValue}`);
 
@@ -417,7 +377,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       });
     });
 
-    context(" > Scoring block test", () => {
+    context("Hint and solution block testing", () => {
+      validateSolutionBlockTests(queData.group, queData.queType);
+    });
+
+    context(" > Score by count method", () => {
+
       before("visit items page and select question type", () => {
         editItem.createNewItem();
 
@@ -427,299 +392,334 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
       afterEach(() => {
         preview = editItem.header.preview();
-        preview
-          .getClear()
-          .click()
-          .then(() => {
-            question
-              .getCorrectAnsRowByIndexOnPreview(0)
-              .find("li")
-              .then($cells => {
-                cy.wrap($cells).each(ele => {
-                  expect(ele).to.have.css("background-color", CLEAR);
-                });
-              });
-          });
-
+        question.clickClearInPreview()
         editItem.header.edit();
         // editItem.showAdvancedOptions(); //
       });
 
-      it(" > Test with alternate answer", () => {
-        // enter question
-        // question
-        //   .getQuestionEditor()
-        //   .clear()
-        //   .type(queData.queText)
-        //   .should("have.text", queData.queText);
-
-        // set correct ans
-        question
-          .getCorrectAnsRowByIndex(0)
-          .find("li")
-          .first()
-          .click()
-          .should("not.have.css", "background-color", "transparent");
-
-        question
-          .getCorrectAnsRowByIndex(0)
-          .find("li")
-          .last()
-          .click()
-          .should("not.have.css", "background-color", "transparent");
-
-        question
-          .getPoints()
-          .clear()
-          .type("{selectall}4");
-
-        question.addAlternate();
-        question.switchOnAlternateAnswer();
-
-        question
-          .getPoints()
-          .clear()
-          .type("{selectall}6");
-
-        question
-          .getCorrectAnsRowByIndex(0)
-          .find("li")
-          .last()
-          .click();
-
-        question
-          .getCorrectAnsRowByIndex(0)
-          .find("li")
-          .eq(1)
-          .click();
-
-        question
-          .getCorrectAnsRowByIndex(0)
-          .find("li")
-          .eq(2)
-          .click();
+      it(" > Test scoring by count with exact match", () => {
+        question.selectMethod("byCount")
+        question.enterCount(3)
+        question.enterPoints("4")
+        question.selectScoringType("Exact match");
 
         preview = editItem.header.preview();
-        // enter right ans
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .first()
-          .as("first")
-          .click();
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .last()
-          .as("last")
-          .click();
+        // With two cells
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(5)
 
-        preview.checkScore("4/6");
+        preview.checkScore("0/4");
 
-        cy.get("@first").should("have.css", "background-color", GREEN);
+        question.verifyCellColorInPreview(0,GREEN)
+        question.verifyCellColorInPreview(5,GREEN)
 
-        cy.get("@last").should("have.css", "background-color", GREEN);
+        question.clickClearInPreview()
 
-        preview
-          .getClear()
-          .click()
-          .then(() => {
-            question
-              .getCorrectAnsRowByIndexOnPreview(0)
-              .find("li")
-              .then($cells => {
-                cy.wrap($cells).each(ele => {
-                  expect(ele).to.have.css("background-color", CLEAR);
-                });
-              });
-          });
+        // With three cells
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .last()
-          .as("first")
-          .click();
+        preview.checkScore("4/4");
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .eq(1)
-          .as("second")
-          .click();
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .eq(2)
-          .as("third")
-          .click();
+        question.clickClearInPreview()
 
-        preview.checkScore("6/6");
+        // With four cells
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+        question.clickCellInPreview(0)
 
-        cy.get("@first").should("have.css", "background-color", GREEN);
+        preview.checkScore("0/4");
 
-        cy.get("@second").should("have.css", "background-color", GREEN);
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+      })
 
-        cy.get("@third").should("have.css", "background-color", GREEN);
+      it(" > Test scoring by count with partial match", () => {
 
-        preview
-          .getClear()
-          .click()
-          .then(() => {
-            question
-              .getCorrectAnsRowByIndexOnPreview(0)
-              .find("li")
-              .then($cells => {
-                cy.wrap($cells).each(ele => {
-                  expect(ele).to.have.css("background-color", CLEAR);
-                });
-              });
-          });
-
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .last()
-          .as("last")
-          .click();
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .first()
-          .as("first")
-          .click();
-
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .eq(1)
-          .as("second")
-          .click();
-
-        preview.checkScore("0/6");
-
-        cy.get("@first").should("have.css", "background-color", GREEN);
-
-        cy.get("@second").should("have.css", "background-color", RED);
-
-        cy.get("@last").should("have.css", "background-color", GREEN);
-      });
-
-      it.skip(" > Test with max score", () => {
-        question
-          .getMaxScore()
-          .clear()
-          .type(1);
-
-        preview = editItem.header.preview();
-        // enter right ans
-        question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
-          .find("li")
-          .first()
-          .as("first")
-          .click();
-        question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
-          .find("li")
-          .last()
-          .as("last")
-          .click();
-
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 0/10");
-
-            cy.get("@first").should("have.css", "background-color", GREEN);
-
-            cy.get("@last").should("have.css", "background-color", GREEN);
-          });
-      });
-
-      it.skip(" > Test with min score if attempted", () => {
-        question.getMaxScore().clear();
-
-        question.getEnableAutoScoring().click();
-
-        question.getMinScore().type(1);
+        question.selectScoringType("Partial match");
 
         preview = editItem.header.preview();
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
-          .find("li")
-          .last()
-          .as("last")
-          .click();
-        question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
-          .find("li")
-          .first()
-          .as("first")
-          .click();
+        // With two cells and partial
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(5)
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
-          .find("li")
-          .eq(1)
-          .as("second")
-          .click();
+        preview.checkScore("2.67/4");
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 1/6");
+        question.verifyCellColorInPreview(0,GREEN)
+        question.verifyCellColorInPreview(5,GREEN)
 
-            cy.get("@first").should("have.css", "background-color", GREEN);
+        question.clickClearInPreview()
 
-            cy.get("@second").should("have.css", "background-color", GREEN);
+        // With three cells and partial
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
 
-            cy.get("@last").should("have.css", "background-color", GREEN);
-          });
-      });
+        preview.checkScore("4/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
+
+        question.clickClearInPreview()
+
+        // With four cells and partial
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+        question.clickCellInPreview(0)
+
+        preview.checkScore("4/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+      })
 
       it(" > Test with penalty and partial match", () => {
         question.selectScoringType("Partial match");
 
         // question.getMinScore().clear();
 
-        question.getPanalty().type(3);
+        question.getPanalty().type(2);
 
         preview = editItem.header.preview();
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .first()
-          .as("first")
-          .click();
+        // With two cells with partial and penalty
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(0)
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .eq(1)
-          .as("second")
-          .click();
+        preview.checkScore("2.67/4");
 
-        question
-          .getCorrectAnsRowByIndexOnPreview(0)
-          .find("li")
-          .eq(2)
-          .as("fourth")
-          .click();
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(0,GREEN)
 
-        preview.checkScore("3/6");
+        question.clickClearInPreview()
 
-        cy.get("@first").should("have.css", "background-color", RED);
+        // With three cells with partial and penalty
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
 
-        cy.get("@second").should("have.css", "background-color", GREEN);
+        preview.checkScore("4/4");
 
-        cy.get("@fourth").should("have.css", "background-color", GREEN);
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
+
+        question.clickClearInPreview()
+
+        // With four cells with partial and penalty
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+        question.clickCellInPreview(0)
+
+        preview.checkScore("3.33/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+
+        editItem.header.edit();
+        question.selectRoundingOption("Round down")
+        preview = editItem.header.preview();
+
+        // With two cells with partial and penalty and round
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(0)
+
+        preview.checkScore("2/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(0,GREEN)
+
+        question.clickClearInPreview()
+
+        // With four cells with partial and penalty and round
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+        question.clickCellInPreview(0)
+
+        preview.checkScore("3/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+
+      })
+
+      it(" > Test scoring by count with alternate answer", () => {
+
+        question.addAlternate();
+        question.switchOnAlternateAnswer();
+        question.selectMethod("byLocation")
+
+        question.enterPoints("3")
+
+        question.setCorrectAnswerByIndex(5)
+        question.setCorrectAnswerByIndex(0)
+
+        preview = editItem.header.preview();
+        // enter right ans
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(0)
+
+        preview.checkScore("3/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(0,GREEN)
+      })
+    });
+
+    context.only(" > Score by location method", () => {
+
+      before("visit items page and select question type", () => {
+        editItem.createNewItem();
+
+        // create new que and select type
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
+
+      afterEach(() => {
+        preview = editItem.header.preview();
+        question.clickClearInPreview()
+
+        editItem.header.edit();
+        // editItem.showAdvancedOptions(); //
+      });
+
+      it(" > Test scoring with alternate answer", () => {
+        // set correct ans
+        question.setCorrectAnswerByIndex(0)
+        question.setCorrectAnswerByIndex(5)
+
+        question.enterPoints("4")
+
+        question.addAlternate();
+        question.switchOnAlternateAnswer();
+
+        question.enterPoints("4")
+
+        question.setCorrectAnswerByIndex(5)
+        question.setCorrectAnswerByIndex(1)
+        question.setCorrectAnswerByIndex(2)
+
+        preview = editItem.header.preview();
+        // enter right ans
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(0)
+
+        preview.checkScore("4/4");
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(0,GREEN)
+
+        question.clickClearInPreview()
+
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+
+        preview.checkScore("4/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(2,GREEN)
+
+        question.clickClearInPreview()
+
+        question.clickCellInPreview(5)
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(1)
+
+        preview.checkScore("0/4");
+
+        question.verifyCellColorInPreview(5,GREEN)
+        question.verifyCellColorInPreview(0,GREEN)
+        question.verifyCellColorInPreview(1,RED)
+
+      });
+
+      it(" > Test scoring by count with partial match and penalty", () => {
+        question.selectScoringType("Partial match")
+        preview = editItem.header.preview();
+
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+
+        preview.checkScore("2.67/4");
+
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+        question.verifyCellColorInPreview(2,GREEN)
+
+        editItem.header.edit();
+        question.selectRoundingOption("None")
+
+        question.enterPenalty(2);
+
+        preview = editItem.header.preview();
+
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+
+        preview.checkScore("2/4");
+
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+        question.verifyCellColorInPreview(2,GREEN)
+      });
+
+      it(" > Test rounding with penalty and partial match and round down", () => {
+
+        question.selectRoundingOption("Round down");
+        question.enterPenalty(0);
+        preview = editItem.header.preview();
+
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+
+        preview.checkScore("2/4");
+
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+        question.verifyCellColorInPreview(2,GREEN)
+
+        editItem.header.edit();
+        question.enterPenalty(2);
+
+        preview = editItem.header.preview();
+
+        question.clickCellInPreview(0)
+        question.clickCellInPreview(1)
+        question.clickCellInPreview(2)
+        question.clickCellInPreview(3)
+
+        preview.checkScore("1/4");
+
+        question.verifyCellColorInPreview(1,GREEN)
+        question.verifyCellColorInPreview(0,RED)
+        question.verifyCellColorInPreview(2,GREEN)
+        question.verifyCellColorInPreview(3,RED)
+
+      })
+
     });
   });
 });

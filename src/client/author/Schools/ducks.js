@@ -72,7 +72,7 @@ export const reducer = createReducer(initialState, {
       school.districtId = row._source.districtId;
       school.name = row._source.name;
       if (row._source.hasOwnProperty("location")) {
-        const location = row._source.location;
+        const location = row._source?.location || {};
         Object.keys(location).map(key => {
           school[key] = location[key];
         });
@@ -276,7 +276,7 @@ function* deleteSchoolsSaga({ payload }) {
   try {
     // for (let i = 0; i < payload.length; i++) {
     yield call(schoolApi.deleteSchool, payload);
-    notification({ type: "success", messageKey:"schoolSucessfullyDeactivated"});
+    notification({ type: "success", messageKey: "schoolSucessfullyDeactivated" });
     yield put(deleteSchoolsSuccessAction(payload.schoolIds));
   } catch (err) {
     const errorMessage = "Delete School is failing";

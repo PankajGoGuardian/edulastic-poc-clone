@@ -622,7 +622,10 @@ class LiveClassboardPage {
     });
 
   verifyScoreByStudentIndex = (index, totalScore, maxScore) =>
-    this.getStudentScoreByIndex(index).should("have.text", `${totalScore} / ${maxScore}`);
+    this.getStudentScoreByIndex(index).then($ele =>
+      expect($ele.text().replace(/\u00a0/g, " "), "verify student card score").to.eq(`${totalScore} / ${maxScore}`)
+    );
+
   // *** APPHELPERS END ***
 }
 

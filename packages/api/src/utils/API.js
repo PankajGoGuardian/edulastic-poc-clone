@@ -162,19 +162,20 @@ export default class API {
         err.response = data.response;
 
         if (data && data.response && data.response.status) {
-          // log in to sentry
-          Sentry.withScope(scope => {
-            scope.setLevel("error");
-            scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
-            Sentry.captureException(err);
-            Sentry.captureMessage(
-              JSON.stringify({
-                res: data.response?.data || {},
-                ref: data.response?.headers?.["x-server-ref"],
-                req: data.response?.config?.data
-              })
-            );
-          });
+          // log in to sentry, exclude low priority status
+          if (![400].includes(data.response.status))
+            Sentry.withScope(scope => {
+              scope.setLevel("error");
+              scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
+              Sentry.captureException(err);
+              Sentry.captureMessage(
+                JSON.stringify({
+                  res: data.response?.data || {},
+                  ref: data.response?.headers?.["x-server-ref"],
+                  req: data.response?.config?.data
+                })
+              );
+            });
           if (data.response.status === 401) {
             Sentry.withScope(scope => {
               scope.setFingerprint(["Forced Redirection"]);

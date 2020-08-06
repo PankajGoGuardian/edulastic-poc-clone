@@ -11,10 +11,10 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, info) {
     // log the error to an error reporting service
-    Sentry.captureException(error);
-    Sentry.configureScope(scope => {
-      scope.setExtras(info);
-      scope.setTag("error.type", "UnexpectedError");
+    Sentry.withScope(scope => {
+      Sentry.captureException(error);
+      scope.setExtra("componentStack", info);
+      scope.setTag("issueType", "UnexpectedError");
     });
     // log the error to an error reporting service
     console.error(error, info);

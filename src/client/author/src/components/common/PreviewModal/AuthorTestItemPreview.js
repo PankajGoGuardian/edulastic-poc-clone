@@ -440,7 +440,7 @@ class AuthorTestItemPreview extends Component {
       const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
       if (hideColumn) return "";
       // show scratch => multipart with heighlightImage, heighlightImage, and reject mode.
-      const showScratch = col.widgets.some(w => w.type === questionType.HIGHLIGHT_IMAGE) || !!saveScratchpad;
+      const showScratch = (col.widgets || []).some(w => w.type === questionType.HIGHLIGHT_IMAGE) || !!saveScratchpad;
 
       return (
         // width of divider 25px

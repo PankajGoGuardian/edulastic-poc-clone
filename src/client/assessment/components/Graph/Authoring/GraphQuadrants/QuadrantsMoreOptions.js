@@ -1,5 +1,6 @@
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
+import { evaluationType } from "@edulastic/constants";
 import { Select } from "antd";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
@@ -20,6 +21,7 @@ import Tools from "../../common/Tools";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import { GraphDisplay } from "../../Display";
 
+const types = [evaluationType.exactMatch, evaluationType.partialMatch];
 class QuadrantsMoreOptions extends Component {
   constructor(props) {
     super(props);
@@ -249,7 +251,7 @@ class QuadrantsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <ScoreSettings
-            showSelect={false}
+            scoringTypes={types}
             setValidation={setValidation}
             graphData={graphData}
             advancedAreOpen={advancedAreOpen}

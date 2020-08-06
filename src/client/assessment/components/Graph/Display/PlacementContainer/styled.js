@@ -1,9 +1,10 @@
 import styled, { css } from "styled-components";
-import { secondaryTextColor, white } from "@edulastic/colors";
+import { secondaryTextColor, white, greyishBorder } from "@edulastic/colors";
 import { WithMathFormula } from "@edulastic/common";
 
 export const StyledToolsContainer = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
+  margin-bottom: 12px;
 `;
 
 export const GraphToolbar = styled.div`
@@ -117,14 +118,6 @@ export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
-
-  .jxgbox {
-    .fr-box {
-      min-width: 50px;
-      min-height: 13px;
-      border: dotted 1px black;
-    }
-  }
 `;
 
 const borderStyle = css`
@@ -137,7 +130,7 @@ const borderStyle = css`
 export const JSXBoxWrapper = styled.div`
   position: relative;
   overflow: ${({ showBorder }) => (showBorder ? "hidden" : "auto")};
-  width: ${props => `${props.width}px`};
+  width: ${props => `${props.width + 5}px`};
   ${borderStyle}
 `;
 
@@ -150,6 +143,19 @@ export const JSXBox = styled.div`
   margin: ${props => (props.margin ? props.margin : 0)}px;
   ${borderStyle}
 
+  .fr-box {
+    border-radius: 4px;
+    &.drag-drop {
+      border: 1px solid ${greyishBorder};
+      &.incorrect {
+        border: 1px solid ${props => props.theme.widgets.graphPlacement.wrongBgColor};
+      }
+      &.correct {
+        border: 1px solid ${props => props.theme.widgets.graphPlacement.rightBgColor};
+      }
+    }
+  }
+
   text {
     fill: ${props => props.theme.widgets.chart.labelStrokeColor};
   }
@@ -161,16 +167,8 @@ export const JSXBox = styled.div`
 
   .drag-drop-content {
     p {
-      font-size: 10px;
+      font-size: 14px;
       line-height: 1;
-    }
-
-    .drag-drop-icon {
-      height: 18px;
-      width: 18px;
-      border-radius: 9px;
-
-      position: relative;
     }
   }
 
@@ -183,9 +181,13 @@ export const JSXBox = styled.div`
     color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
 
     .drag-drop-icon {
-      background-color: transparent;
       fill: ${props => props.theme.widgets.graphPlacement.rightIconColor};
-      margin: 0 2px;
+    }
+    .drag-drop-content-triangle::before {
+      border-top: 8px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.rightBgColor};
+    }
+    .drag-drop-content-triangle::after {
+      border-top: 7px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.rightBgColor};
     }
   }
 
@@ -193,16 +195,62 @@ export const JSXBox = styled.div`
     > :first-child {
       width: calc(100% - 18px);
     }
-
     background-color: ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
     color: ${props => props.theme.widgets.graphPlacement.descriptionColor};
-
     .drag-drop-icon {
-      background-color: transparent;
       fill: ${props => props.theme.widgets.graphPlacement.wrongIconColor};
-      margin: 0 2px;
+    }
+    .drag-drop-content-triangle::before {
+      border-top: 8px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
+    }
+    .drag-drop-content-triangle::after {
+      border-top: 7px solid ${props => !props.isPrintPreview && props.theme.widgets.graphPlacement.wrongBgColor};
     }
   }
+`;
+
+export const JSXBoxWithDropValues = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+`;
+
+export const DragDropValuesContainer = styled.div`
+  position: relative;
+  min-height: 100px;
+  min-width: 100%;
+  width: ${({ width }) => (width ? `${width}px` : "100%")};
+  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
+  padding: 15px 25px 22px;
+  margin-top: 20px;
+
+  .drag-drop-value {
+    overflow: hidden;
+    p {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    img.fr-dii {
+      max-height: 50px !important;
+      width: 100%;
+      max-width: 120px !important;
+      user-select: none;
+    }
+  }
+
+  .froala-wrapper {
+    margin: auto;
+  }
+`;
+
+export const DragDropTitle = styled.div`
+  height: ${props => props.height}px;
+  line-height: ${props => props.height}px;
+  font-size: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontSize};
+  font-weight: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontWeight};
+  width: 100%;
+  text-align: center;
 `;
 
 export const LabelTop = WithMathFormula(styled.div`
@@ -238,6 +286,22 @@ export const LabelRight = WithMathFormula(styled.div`
   width: 100%;
   padding-left: 40px;
 `);
+
+export const DragDropContainer = WithMathFormula(
+  styled.div`
+    margin: auto 0;
+    width: 100%;
+  `
+);
+
+export const Title = WithMathFormula(styled.div`
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.5em;
+  display: block;
+  padding: 1em 0;
+`);
+
 export const LabelLeft = WithMathFormula(styled.div`
   height: 1.4rem;
   line-height: 1rem;
@@ -251,68 +315,3 @@ export const LabelLeft = WithMathFormula(styled.div`
   width: 100%;
   padding-right: 40px;
 `);
-
-export const Title = WithMathFormula(styled.div`
-  text-align: center;
-  font-weight: 600;
-  font-size: 1.5em;
-  display: block;
-  padding: 1em 0;
-`);
-
-export const JSXBoxWithDropValues = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-`;
-
-export const DragDropValuesContainer = styled.div`
-  position: relative;
-  min-width: ${props => props.width}px;
-  min-height: ${props => props.minHeight}px;
-  height: ${props => props.height}px;
-  background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
-
-  .drag-drop-value {
-    background: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
-    white-space: nowrap;
-    border-radius: 4px;
-    padding: 0 5px;
-    display: flex !important;
-    overflow: hidden;
-
-    p {
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    img.fr-dii {
-      max-height: 50px !important;
-      width: 100%;
-      max-width: 120px !important;
-      user-drag: none;
-      user-select: none;
-    }
-  }
-
-  .froala-wrapper {
-    margin: auto;
-  }
-`;
-
-export const DragDropTitle = styled.div`
-  height: ${props => props.height}px;
-  line-height: ${props => props.height}px;
-  font-size: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontSize};
-  font-weight: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontWeight};
-  width: 100%;
-  text-align: center;
-`;
-
-export const DragDropContainer = WithMathFormula(
-  styled.div`
-    margin: auto 0;
-    width: 100%;
-  `
-);

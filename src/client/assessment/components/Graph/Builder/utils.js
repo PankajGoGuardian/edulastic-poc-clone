@@ -421,7 +421,15 @@ export function flat2nestedConfig(config) {
   return config && config.length
     ? Object.values(
         config.reduce((acc, element) => {
-          const { id, type, subElement = false, text = null, dashed = false, customOptions = {} } = element;
+          const {
+            id,
+            type,
+            subElement = false,
+            text = null,
+            dashed = false,
+            customOptions = {},
+            dimensions = {}
+          } = element;
 
           if (type === CONSTANT.TOOLS.EQUATION) {
             acc[id] = element;
@@ -448,6 +456,9 @@ export function flat2nestedConfig(config) {
                 acc[id].pointIsVisible = element.pointIsVisible;
                 acc[id].labelIsVisible = element.labelIsVisible;
                 acc[id].baseColor = element.baseColor;
+              }
+              if (type === CONSTANT.TOOLS.DRAG_DROP) {
+                acc[id].dimensions = dimensions;
               }
             } else {
               acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);

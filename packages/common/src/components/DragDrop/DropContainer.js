@@ -2,12 +2,13 @@ import { greyThemeLighter, themeColorBlue } from "@edulastic/colors";
 import { isObject } from "lodash";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDrop } from "react-dnd";
 
 const DropContainer = ({
   style,
   drop,
+  hover,
   children,
   index,
   borderColor,
@@ -24,18 +25,33 @@ const DropContainer = ({
       }
       if (typeof drop === "function") {
         const itemPos = monitor.getClientOffset();
+        const itemOffset = monitor.getSourceClientOffset();
         const { data, size } = item;
         let itemRect = {};
         if (isObject(size) && isObject(itemPos)) {
           itemRect = { ...item.size, ...itemPos };
         }
-        drop({ data, itemRect }, index);
+        drop({ data, itemRect, itemOffset }, index);
       }
     },
+    // hover(item, monitor) {
+    //   const { data, size: itemRect } = item;
+    //   const itemOffset = monitor.getSourceClientOffset();
+    //   if (hover) {
+    //     // hover(data, itemRect, itemOffset);
+    //     hover(monitor.isOver({ shallow: true }));
+    //   }
+    // },
     collect: monitor => ({
       isOver: monitor.isOver()
     })
   });
+
+  useEffect(() => {
+    if (hover) {
+      hover(isOver);
+    }
+  }, [hover, isOver]);
 
   const overrideBorderColor = isOver ? themeColorBlue : borderColor || "transparent";
 

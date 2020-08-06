@@ -1,71 +1,31 @@
 import React, { useMemo } from "react";
-import { Rnd } from "react-rnd";
 import PropTypes from "prop-types";
+import styled from "styled-components";
+import { DragDrop, FlexContainer } from "@edulastic/common";
+import { white, greyishBorder } from "@edulastic/colors";
 
 import elementDimensions from "../../../../hooks/elementDimensions";
 import { DragDropContainer } from "./styled";
 
-export function Responses({
-  values,
-  bounds,
-  handleDragDropValuePosition,
-  handleDragDropValue,
-  scale,
-  width,
-  scrollHandler,
-  valueHeight
-}) {
-  // Get height of each response
+export function Responses({ values, width, valueHeight }) {
   const dimensions = useMemo(() => elementDimensions(values, [values]));
   const heights = dimensions.map(obj => Math.max(obj.scrollHeight, valueHeight));
+  const widths = dimensions.map(obj => Math.max(obj.scrollWidth, width));
 
-  /**
-   * Calculates the accumulated height of responses having index less than current index
-   * @param {number} index
-   */
-  function getResponseOffsetTop(index) {
-    const arr = heights.slice(0, index);
-    return arr.reduce((acc, num) => acc + num, 0);
-  }
-
-  return values.map((value, i) => {
-    const offsetTop = getResponseOffsetTop(i);
-    const position = { x: 5, y: offsetTop };
-    const size = { width: width - 10, height: Math.max(dimensions[i].scrollHeight, valueHeight) };
-
-    function handleDragStop(evt, d) {
-      if (window.isIOS) {
-        document.body.removeEventListener("touchmove", scrollHandler);
-      }
-      handleDragDropValuePosition(d, value);
-    }
-
-    function handOnDrag(e, d) {
-      if (window.isIOS) {
-        document.body.addEventListener("touchmove", scrollHandler, { passive: false });
-        document.body.scrollTop = 0;
-      }
-      handleDragDropValue(d, value);
-    }
-
-    return (
-      <Rnd
-        key={value.id}
-        position={position}
-        size={size}
-        onDragStop={handleDragStop}
-        onDrag={handOnDrag}
-        style={{ zIndex: 10 }}
-        disableDragging={false}
-        enableResizing={false}
-        bounds={bounds}
-        className="drag-drop-value"
-        scale={scale}
-      >
-        <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
-      </Rnd>
-    );
-  });
+  return (
+    <FlexContainer flexWrap="wrap" justifyContent="flex-start">
+      {values.map((value, i) => {
+        const size = { width: widths[i], height: heights[i] };
+        return (
+          <DragItem id={`response-item-${i}`} key={value.id} data={value} size={size}>
+            <DragItemInner {...size}>
+              <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
+            </DragItemInner>
+          </DragItem>
+        );
+      })}
+    </FlexContainer>
+  );
 }
 
 Responses.propTypes = {
@@ -82,6 +42,22 @@ Responses.propTypes = {
 Responses.defaultProps = {
   bounds: "",
   scale: 1,
-  width: 150,
-  valueHeight: 50
+  width: 140,
+  valueHeight: 32
 };
+
+const DragItem = styled(DragDrop.DragItem)`
+  margin: 2px;
+`;
+
+const DragItemInner = styled.div`
+  display: flex;
+  align-items: center;
+  background: ${white};
+  text-align: center;
+  border: 1px solid ${greyishBorder};
+  border-radius: 4px;
+  z-index: 10;
+  width: ${({ width }) => width}px;
+  height: ${({ height }) => height}px;
+`;

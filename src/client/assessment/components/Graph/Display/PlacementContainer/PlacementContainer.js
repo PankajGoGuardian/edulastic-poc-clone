@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import { WithResources } from "@edulastic/common";
+import { DragDrop, WithResources } from "@edulastic/common";
 
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
@@ -37,26 +37,28 @@ import AppConfig from "../../../../../../../app-config";
 
 const valueHeightHashMap = {
   "1": {
-    width: 150,
-    height: 50
+    width: 80,
+    height: 32
   },
   "1.5": {
-    width: 175,
-    height: 70
+    width: 120,
+    height: 48
   },
   "1.75": {
-    width: 200,
-    height: 90
+    width: 140,
+    height: 56
   },
   "2.5": {
-    width: 250,
-    height: 120
+    width: 200,
+    height: 80
   },
   "3": {
-    width: 300,
-    height: 150
+    width: 240,
+    height: 96
   }
 };
+
+const { DragPreview, DropContainer } = DragDrop;
 
 const getColoredElems = (elements, compareResult, theme) => {
   const { rightIconColor } = theme.widgets.graphPlacement;
@@ -181,10 +183,11 @@ class PlacementContainer extends PureComponent {
       .replace(".", "")}`;
     this._graph = null;
 
-    this.state = { resourcesLoaded: false };
+    this.state = { resourcesLoaded: false, showPoint: false };
 
     this.onReset = this.onReset.bind(this);
     this.updateValues = this.updateValues.bind(this);
+    this.graphContainerRef = React.createRef();
   }
 
   componentDidMount() {
@@ -499,16 +502,6 @@ class PlacementContainer extends PureComponent {
     }
   };
 
-  onAddDragDropValue = (dragDropValue, x, y) => {
-    if (this._graph.addDragDropValue(dragDropValue, x, y)) {
-      this.updateValues();
-    }
-  };
-
-  onDrawDragDropValue = (dragDropValue, x, y) => {
-    this._graph.drawDragDropValue(dragDropValue, x, y);
-  };
-
   getDragDropValues = () => {
     const { list, elements } = this.props;
     return list.filter(elem => !elements.some(el => elem.id === el.id));
@@ -533,6 +526,29 @@ class PlacementContainer extends PureComponent {
     this.setElementsToGraph();
   };
 
+  getDragValueOffset = offset => {
+    if (this.graphContainerRef.current && offset) {
+      const element = this.graphContainerRef.current;
+      const { x, y } = element.getBoundingClientRect();
+      const px = offset.x - x;
+      const py = offset.y - y;
+      return { x: px, y: py };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  handleDropValue = ({ itemOffset, data, itemRect }) => {
+    const d = this.getDragValueOffset(itemOffset);
+    const { width, height } = itemRect;
+    if (this._graph.addDragDropValue(data, d.x + width / 4, d.y + height, { width, height })) {
+      this.updateValues();
+    }
+  };
+
+  handleDraggingValue = isOver => {
+    this.setState({ showPoint: isOver });
+  };
+
   render() {
     const {
       layout,
@@ -546,6 +562,7 @@ class PlacementContainer extends PureComponent {
       zoomLevel,
       isPrintPreview
     } = this.props;
+    const { showPoint } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
 
@@ -576,20 +593,7 @@ class PlacementContainer extends PureComponent {
           )}
           <div className="__prevent-page-break">
             <JSXBoxWithDropValues className={dragDropBoundsClassName}>
-              {!disableResponse && (
-                <DragDropValues
-                  scale={zoomLevel}
-                  height={layout.height}
-                  margin={margin}
-                  values={this.getDragDropValues()}
-                  width={valueDimensions.width}
-                  valueHeight={valueDimensions.height}
-                  onAddDragDropValue={this.onAddDragDropValue}
-                  onDrawDragDropValue={this.onDrawDragDropValue}
-                  dragDropBoundsClassName={dragDropBoundsClassName}
-                />
-              )}
-              <JSXBoxWrapper width={+layout.width + 40} showBorder={hasAnnotation}>
+              <JSXBoxWrapper width={+layout.width} showBorder={hasAnnotation}>
                 {annotation && annotation.labelTop && (
                   <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
                 )}
@@ -602,14 +606,26 @@ class PlacementContainer extends PureComponent {
                 {annotation && annotation.labelBottom && (
                   <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
                 )}
-                <JSXBox
-                  data-cy="jxgbox"
-                  id={this._graphId}
-                  className="jxgbox"
-                  margin={margin}
-                  showBorder={!hasAnnotation}
-                  isPrintPreview={isPrintPreview}
-                />
+                <div ref={this.graphContainerRef}>
+                  <DropContainer drop={this.handleDropValue} hover={this.handleDraggingValue}>
+                    <JSXBox
+                      data-cy="jxgbox"
+                      id={this._graphId}
+                      className="jxgbox"
+                      margin={margin}
+                      showBorder={!hasAnnotation}
+                      isPrintPreview={isPrintPreview}
+                    />
+                  </DropContainer>
+                </div>
+                {!disableResponse && (
+                  <DragDropValues
+                    values={this.getDragDropValues()}
+                    width={valueDimensions.width}
+                    valueHeight={valueDimensions.height}
+                    layoutWidth={+layout.width}
+                  />
+                )}
                 <AnnotationRnd
                   noBorder={view !== EDIT}
                   question={graphData}
@@ -619,6 +635,7 @@ class PlacementContainer extends PureComponent {
               </JSXBoxWrapper>
             </JSXBoxWithDropValues>
           </div>
+          <DragPreview showPoint={showPoint} />
         </GraphWrapper>
       </div>
     );

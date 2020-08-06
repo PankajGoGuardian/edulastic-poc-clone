@@ -1,19 +1,20 @@
 .drag-drop {
-  width: unset;
-  cursor: pointer;
+  width: auto;
   font-family: unset !important;
   font-size: 14px !important;
-  transform: translate(0, 10px);
+  transform: translate(-25%, -14px);
 }
 
 .drag-drop .delete-drag-drop {
   opacity: 1;
   position: absolute;
-  height: 15px;
-  width: 15px;
-  top: -8px;
-  right: -15px;
+  height: 16px;
+  width: 12px;
+  top: 50%;
+  right: 0px;
+  fill: #878a91;
   transition: 0.2s ease fill;
+  transform: translate(50%, -50%);
 }
 
 .drag-drop .delete-drag-drop:hover {
@@ -31,8 +32,45 @@
   align-items: center;
   text-align: center;
   overflow: hidden;
-  height: 100%;
-  width: auto;
-  opacity: 0;
-  max-width: 70px;
+  border-radius: 5px;
+}
+
+.drag-drop .drag-drop-icon {
+  width: 10px;
+  height: 10px;
+  margin-right: 10px;
+}
+
+.drag-drop .drag-drop-content .drag-drop-content-triangle {
+  position: absolute;
+  left: calc(25% - 6px);
+  z-index: 1000;
+  bottom: 0px;
+}
+
+.drag-drop .drag-drop-content .drag-drop-content-triangle::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid #434b5d;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 0px;
+}
+.drag-drop .drag-drop-content .drag-drop-content-triangle::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 1px;
+  width: 0;
+  height: 0;
+
+  border-top: 7px solid white;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 0px;
 }

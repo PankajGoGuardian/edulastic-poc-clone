@@ -92,6 +92,8 @@ FroalaEditor.VIDEO_PROVIDERS.push(
   }
 );
 
+FroalaEditor.VIDEO_EMBED_REGEX = /^\W*((<iframe.*><\/iframe>)|(<embed.*>))\W*$/i;
+
 const buttons = [
   "bold",
   "italic",

@@ -193,10 +193,10 @@ class AxisSegmentsContainer extends PureComponent {
   }
 
   getDefaultTool() {
-    const { tools } = this.props;
+    const { tools = [] } = this.props;
 
     return {
-      name: tools[0] || undefined,
+      name: (Array.isArray(tools) && tools[0]) || undefined,
       index: 0,
       groupIndex: -1
     };

@@ -9,6 +9,10 @@ export const MathInputStyles = styled.div`
     position: relative;
   }
 
+  .math-keyboard-popover {
+    top: ${props => props.docBasedQType == "math" && "40px !important"};
+  }
+
   .input__math {
     height: 100%;
     width: 100%;

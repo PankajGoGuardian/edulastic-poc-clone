@@ -66,7 +66,7 @@ export default class QuestionEditModal extends React.Component {
       case CLOZE_DROP_DOWN:
         return <QuestionDropdown {...props} />;
       case MATH:
-        return <QuestionMath {...props} />;
+        return <QuestionMath docBasedQType={type} {...props} />;
       case ESSAY_PLAIN_TEXT:
         return <QuestionEssay {...props} />;
       default:

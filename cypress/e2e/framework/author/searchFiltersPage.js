@@ -73,7 +73,7 @@ export default class SearchFilters {
     cy.xpath("//li[text()='Authored by me']").click();
     this.waitForSearchResponse();
     if (setSortOptions) {
-      this.setSortButtonInAsceOrder();
+      this.setSortButtonInDescOrder();
       this.setSortOption(option);
     }
   };
@@ -85,7 +85,7 @@ export default class SearchFilters {
     cy.get('[data-cy="clearAll"]').click({ force: true });
     cy.wait("@search").then(() => this.getSearchBar().should("not.contain", dummyCharToType));
     if (setSortOptions) {
-      this.setSortButtonInAsceOrder();
+      this.setSortButtonInDescOrder();
       this.setSortOption(option);
     }
   };
@@ -114,13 +114,6 @@ export default class SearchFilters {
   sharedWithMe = () => {
     cy.get('[data-icon="share-alt"]').click({ force: true });
     cy.wait("@search");
-    cy.wait(1000);
-  };
-
-  getAuthoredByMe = () => {
-    this.routeSearch();
-    cy.xpath("//li[text()='Authored by me']").click();
-    this.waitForSearchResponse();
     cy.wait(1000);
   };
 

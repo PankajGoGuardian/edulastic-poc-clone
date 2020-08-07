@@ -13,6 +13,7 @@ import {
   extraDesktopWidthMax
 } from "@edulastic/colors";
 import { IconBook, IconGraduationCap } from "@edulastic/icons";
+import { removeCommentsFromHtml } from "../../../../common/utils/helpers";
 
 const CurriculumSubHeader = ({
   isStudent,
@@ -87,7 +88,7 @@ const CurriculumSubHeader = ({
                 </SubHeaderModuleProgressTagContainer>
               </SubHeaderModuleProgressContainer>
             </ModuleProgres>
-            <SubHeaderDescription dangerouslySetInnerHTML={{ __html: description }} />
+            <SubHeaderDescription dangerouslySetInnerHTML={{ __html: removeCommentsFromHtml(description) }} />
           </SubHeaderTitleContainer>
           <RightColumn>
             <SubHeaderInfoCardWrapper>

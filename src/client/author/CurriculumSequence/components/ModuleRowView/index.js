@@ -3,7 +3,7 @@ import { Dropdown, Icon, Menu, Col } from "antd";
 import { IconMoreVertical, IconVerified } from "@edulastic/icons";
 import { lightGrey5, themeColor, themeColorLighter } from "@edulastic/colors";
 import { StyledLabel, StyledTag } from "../../../Reports/common/styled";
-import { Tooltip } from "../../../../common/utils/helpers";
+import { Tooltip, removeCommentsFromHtml } from "../../../../common/utils/helpers";
 import ProgressBars from "./ProgressBars";
 import {
   IconActionButton,
@@ -159,7 +159,9 @@ const ModuleRowView = props => {
           {description && (
             <ModuleDescription
               collapsed={collapsed}
-              dangerouslySetInnerHTML={{ __html: collapsed ? toPreviewDescription : description }}
+              dangerouslySetInnerHTML={{
+                __html: removeCommentsFromHtml(collapsed ? toPreviewDescription : description)
+              }}
             />
           )}
         </Col>

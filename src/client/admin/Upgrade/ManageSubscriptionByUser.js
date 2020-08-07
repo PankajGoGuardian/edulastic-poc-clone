@@ -15,7 +15,7 @@ const SearchUsersByEmailIdsForm = Form.create({ name: "searchUsersByEmailIdsForm
         if (!err) {
           searchUsersByEmailIdAction({
             // here empty spaces and ↵ spaces are removed
-            emails: emailIds.replace(/\s/g, "").split(",")
+            identifiers: emailIds.replace(/\s/g, "").split(",")
           });
         }
       });
@@ -27,7 +27,7 @@ const SearchUsersByEmailIdsForm = Form.create({ name: "searchUsersByEmailIdsForm
           {getFieldDecorator("emailIds", {
             rules: [{ required: true }],
             initialValue: ""
-          })(<TextArea rows={4} placeholder="Enter Comma separated User Email IDs..." />)}
+          })(<TextArea rows={4} placeholder="Enter Comma separated User Email IDs or User IDs..." />)}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
@@ -62,7 +62,7 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
 
   return validEmailIdsList ? (
     <>
-      <h2>The list of validated Email ID's are :</h2>
+      <h2>The list of validated Users are :</h2>
       <Table
         columns={columns}
         rowKey={record => record._id}

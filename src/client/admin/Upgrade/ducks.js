@@ -182,7 +182,7 @@ const reducer = combineReducers({
 const {
   searchUpdateDistrict: searchUpdateDistrictApi,
   manageSubscription: manageSubscriptionApi,
-  searchUsersByEmailIds: searchUsersByEmailIdsApi,
+  searchUsersByEmailsOrIds: searchUsersByEmailsOrIdsApi,
   searchSchoolsById: searchSchoolsByIdApi,
   saveOrgPermissionsApi
 } = adminApi;
@@ -227,7 +227,7 @@ function* upgradeUserData({ payload }) {
 
 function* searchUsersByEmailIds({ payload }) {
   try {
-    const item = yield call(searchUsersByEmailIdsApi, payload);
+    const item = yield call(searchUsersByEmailsOrIdsApi, payload);
     if (item.result) {
       if (!item.result.data.length) {
         notification({ messageKey: "userNotFound" });

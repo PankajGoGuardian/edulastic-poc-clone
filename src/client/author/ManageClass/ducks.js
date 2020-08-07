@@ -333,11 +333,16 @@ const removeStudentsSuccess = (state, { payload: studentIds }) => {
   const studentIdHash = keyBy(studentIds);
   // here we are mutating the enrollment status to 0 for all the deleted students so that table is refreshed
   // setting current time to show the not enrolled date (as the newly removed user will have the same date as today)
+  // mutating the username to add .deactivate in the end to match with database data
   // after refresh or fetching new data the correct updated date will come for students
   state.studentsList.forEach((student, index) => {
     if (studentIdHash[student._id]) {
-      state.studentsList[index].enrollmentStatus = "0";
-      state.studentsList[index].enrollmentUpdatedAt = new Date().getTime();
+      const studentDetails = state.studentsList[index];
+      if (!studentDetails.username?.includes(".deactivate")) {
+        studentDetails.username = `${studentDetails.username}.deactivate`;
+      }
+      studentDetails.enrollmentStatus = "0";
+      studentDetails.enrollmentUpdatedAt = new Date().getTime();
     }
   });
 };

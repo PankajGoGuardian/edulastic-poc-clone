@@ -74,7 +74,8 @@ const Settings = ({
   freezeSettings = false,
   features,
   hideTestLevelOptions = false,
-  hideClassLevelOptions = false
+  hideClassLevelOptions = false,
+  calculatorProvider
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -217,8 +218,9 @@ const Settings = ({
     { key: "enableScratchpad", value: enableScratchpad }
   ].filter(a => features[a.key]);
 
+  const checkForCalculator = premium && calculatorProvider !== "DESMOS";
   const calculatorKeysAvailable =
-    (premium && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
+    (checkForCalculator && calculatorKeys.filter(i => [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i))) ||
     calculatorKeys;
 
   return (
@@ -821,6 +823,7 @@ export default connect(
     userRole: getUserRole(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
     premium: state?.user?.user?.features?.premium,
+    calculatorProvider: state?.user?.user?.features?.calculatorProvider,
     totalItems: state?.tests?.entity?.isDocBased
       ? state?.tests?.entity?.summary?.totalQuestions
       : state?.tests?.entity?.summary?.totalItems,

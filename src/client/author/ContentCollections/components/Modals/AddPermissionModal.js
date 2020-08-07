@@ -200,13 +200,16 @@ const AddPermissionModal = ({
     setFieldData({ ...fieldData, orgDetails });
   };
 
-  const handleSearch = (searchString, searchType) => {
+  const handleSearch = (searchString, searchType, size) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId && searchType !== "DISTRICT")
       return notification({ messageKey: "pleaseSelectDistrict" });
     const data = {
       orgType: searchType,
       searchString
     };
+    if (size) {
+      data.size = size;
+    }
     if (searchType !== "DISTRICT") data.districtId = fieldData.districtId;
     searchRequest(data);
   };
@@ -247,17 +250,22 @@ const AddPermissionModal = ({
               placeholder="Search for an organization"
               notFoundContent={isFetchingOrganization ? <Spin size="small" /> : null}
               value={fieldData.districtId}
-              onFocus={() => handleSearch("", "DISTRICT")}
+              onSearch={d => handleSearch(d, "DISTRICT", 50)}
+              onFocus={() => !fieldData.districtName && handleSearch("", "DISTRICT", 50)}
               onChange={handleSelectDistrict}
-              filterOption={(inputValue, option) =>
-                option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
-              }
+              filterOption={false}
             >
-              {districtList.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id} name={name}>
-                  {name}
-                </Select.Option>
-              ))}
+              {(isFetchingOrganization ? [] : districtList)
+                .sort((a, b) => {
+                  const _aName = (a.name || "").toLowerCase();
+                  const _bName = (b.name || "").toLowerCase();
+                  return _aName.localeCompare(_bName);
+                })
+                .map(({ _id, name }) => (
+                  <Select.Option key={_id} value={_id} name={name}>
+                    {name}
+                  </Select.Option>
+                ))}
             </SelectInputStyled>
           </StyledFieldRow>
         )}
@@ -296,22 +304,34 @@ const AddPermissionModal = ({
               }
             >
               {fieldData.orgType === "SCHOOL" &&
-                schoolList.map(school => (
-                  <Select.Option value={school._id} key={school._id} orgName={school.name}>
-                    {school.name}
-                  </Select.Option>
-                ))}
+                schoolList
+                  .sort((a, b) => {
+                    const _aName = (a.name || "").toLowerCase();
+                    const _bName = (b.name || "").toLowerCase();
+                    return _aName.localeCompare(_bName);
+                  })
+                  .map(school => (
+                    <Select.Option value={school._id} key={school._id} orgName={school.name}>
+                      {school.name}
+                    </Select.Option>
+                  ))}
               {fieldData.orgType === "USER" &&
-                userList.map(_user => (
-                  <Select.Option
-                    value={_user._id}
-                    key={_user._id}
-                    orgName={`${_user.firstName} ${_user.lastName}`}
-                    role={_user.role}
-                  >
-                    {`${_user.firstName} ${_user.lastName} (${_user.email})`}
-                  </Select.Option>
-                ))}
+                userList
+                  .sort((a, b) => {
+                    const _aName = `${a.firstName || ""} ${a.lastName || ""}`.toLowerCase();
+                    const _bName = `${b.firstName || ""} ${b.lastName || ""}`.toLowerCase();
+                    return _aName.localeCompare(_bName);
+                  })
+                  .map(_user => (
+                    <Select.Option
+                      value={_user._id}
+                      key={_user._id}
+                      orgName={`${_user.firstName} ${_user.lastName}`}
+                      role={_user.role}
+                    >
+                      {`${_user.firstName} ${_user.lastName} (${_user.email})`}
+                    </Select.Option>
+                  ))}
             </SelectInputStyled>
           </StyledFieldRow>
         )}

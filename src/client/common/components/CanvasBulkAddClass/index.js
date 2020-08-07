@@ -259,9 +259,12 @@ const CanvasBulkAddClass = ({
           <Select
             showSearch
             style={{ width: "100%" }}
-            filterOption={(input, option) =>
-              option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              if (option.props.children && option.props.children.toLowerCase)
+                return (option.props.children || "").toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+              return false;
+            }}
             mode="multiple"
             value={row.standardSets.map(s => s.id) || []}
             placeholder="Select Standards"

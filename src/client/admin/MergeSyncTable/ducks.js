@@ -5,6 +5,7 @@ import { notification } from "@edulastic/common";
 import { adminApi } from "@edulastic/api";
 import _get from "lodash.get";
 import { omit } from "lodash";
+import * as Sentry from "@sentry/browser";
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = "[admin] SEARCH_EXISTING_DATA_API";
@@ -73,8 +74,12 @@ const initialState = {
 const fetchExistingDataReducer = createReducer(initialState, {
   [CLEAR_MERGE_DATA]: () => initialState,
   [FETCH_EXISTING_DATA_SUCCESS]: (state, { payload }) => {
-    const {isClasslink, ...dataPayload} = payload;
-    const subjectStandardMap = _get(dataPayload.data, ["rosterSyncConfig", isClasslink ? "subjectStandardMap" : "cleverSubjectStandardMap"], {});
+    const { isClasslink, ...dataPayload } = payload;
+    const subjectStandardMap = _get(
+      dataPayload.data,
+      ["rosterSyncConfig", isClasslink ? "subjectStandardMap" : "cleverSubjectStandardMap"],
+      {}
+    );
     state.searchData = dataPayload;
     state.subStandardMapping.subjectStandardMap = subjectStandardMap;
     state.subStandardMapping.rows = Object.keys(subjectStandardMap).map(key => ({ subject: key }));
@@ -129,14 +134,14 @@ const fetchExistingDataReducer = createReducer(initialState, {
     rows.splice(index, 1);
     delete subjectStandardMap[subject];
   },
-  [FETCH_LOGS_DATA]: (state) => {
+  [FETCH_LOGS_DATA]: state => {
     state.subStandardMapping.logsLoading = true;
   },
   [LOGS_DATA_SUCCESS]: (state, { payload }) => {
     state.subStandardMapping.logs = payload.result;
     state.subStandardMapping.logsLoading = false;
   },
-  [LOGS_DATA_FAILED]: (state) => {
+  [LOGS_DATA_FAILED]: state => {
     state.subStandardMapping.logsLoading = false;
   },
   [RECEIVE_MERGED_ID]: (state, { payload: { data, mergeType } }) => {
@@ -196,9 +201,7 @@ const {
 } = adminApi;
 
 function* fetchExistingData({ payload }) {
-  const {
-    isClasslink
-  } = payload;
+  const { isClasslink } = payload;
   try {
     let item;
     if (isClasslink) {
@@ -218,7 +221,7 @@ function* fetchExistingData({ payload }) {
 }
 
 function* fetchApplyDeltaSync({ payload }) {
-  const {isClasslink, ...data} = payload;
+  const { isClasslink, ...data } = payload;
   try {
     let item;
     if (isClasslink) {
@@ -238,13 +241,7 @@ function* fetchSchoolsSync({ payload }) {
   let item;
   const SYNC_SELECTED_SCHOOLS = "syncSelectedSchools";
   try {
-    const {
-      selectedSyncOption,
-      isClasslink,
-      cleverId,
-      atlasId,
-      schoolIds
-    } = payload;
+    const { selectedSyncOption, isClasslink, cleverId, atlasId, schoolIds } = payload;
     if (isClasslink) {
       const dataPayload = {
         atlasId,
@@ -255,7 +252,7 @@ function* fetchSchoolsSync({ payload }) {
       } else {
         item = yield call(completeAtlasDistrictSync, dataPayload);
       }
-    } else  {
+    } else {
       const dataPayload = {
         cleverId,
         schoolCleverIds: schoolIds
@@ -270,15 +267,19 @@ function* fetchSchoolsSync({ payload }) {
       result: { success, message: infoMessage }
     } = item;
     const messageKey = success ? "success" : "error";
-    notification({ msg: infoMessage, type: messageKey});
-  } catch ({ data: { message: errMsg } }) {
+    notification({ msg: infoMessage, type: messageKey });
+  } catch (err) {
+    const {
+      data: { message: errMsg }
+    } = err.response;
+    Sentry.captureException(err);
     notification({ msg: errMsg });
   }
 }
 
 function* fetchClassNamesSync({ payload }) {
   try {
-    const {isClasslink, ...dataPayload} = payload;
+    const { isClasslink, ...dataPayload } = payload;
     if (isClasslink) {
       yield call(fetchAtlasClassNamesSyncApi, dataPayload);
     } else {
@@ -292,14 +293,7 @@ function* fetchClassNamesSync({ payload }) {
 
 function* fetchEnableDisableSync({ payload }) {
   try {
-    const {
-      syncEnabled,
-      districtName = "",
-      districtId,
-      cleverId,
-      atlasId,
-      isClasslink = false
-    } = payload;
+    const { syncEnabled, districtName = "", districtId, cleverId, atlasId, isClasslink = false } = payload;
     let item;
     const newPayload = omit(payload, ["districtName", "cleverId", "atlasId", "isClasslink"]);
     if (isClasslink) {
@@ -307,13 +301,19 @@ function* fetchEnableDisableSync({ payload }) {
     } else {
       item = yield call(enableDisableCleverSyncApi, newPayload);
     }
-    const searchPayload = {districtId, cleverId, atlasId, isClasslink};
+    const searchPayload = { districtId, cleverId, atlasId, isClasslink };
     if (item.success) {
       yield call(fetchExistingData, { payload: searchPayload });
       if (syncEnabled) {
-        notification({ type: "success", msg: `Enabled ${isClasslink ? 'classlink' : 'clever'} sync for ${districtName}` });
+        notification({
+          type: "success",
+          msg: `Enabled ${isClasslink ? "classlink" : "clever"} sync for ${districtName}`
+        });
       } else {
-        notification({ type: "success", msg: `Disabled ${isClasslink ? 'classlink' : 'clever'} sync for ${districtName}` });
+        notification({
+          type: "success",
+          msg: `Disabled ${isClasslink ? "classlink" : "clever"} sync for ${districtName}`
+        });
       }
     } else {
       notification({ msg: item.message });
@@ -334,7 +334,7 @@ function* fetchCurriculumData({ payload }) {
 
 function* uploadCSVSaga({ payload }) {
   try {
-    const {isClasslink, ...dataPayload} = payload;
+    const { isClasslink, ...dataPayload } = payload;
     let response;
     if (isClasslink) {
       response = yield call(uploadCSVtoAtlas, dataPayload);
@@ -346,12 +346,7 @@ function* uploadCSVSaga({ payload }) {
       return notification({ msg: responseMsg });
     }
     notification({ type: "success", msg: responseMsg });
-    const {
-      cleverId,
-      atlasId,
-      districtId,
-      mergeType
-    } = payload;
+    const { cleverId, atlasId, districtId, mergeType } = payload;
     yield put(receiveMergeIdsAction({ data, mergeType }));
     yield put(
       searchExistingDataApi({
@@ -368,14 +363,15 @@ function* uploadCSVSaga({ payload }) {
 
 function* updateSubjectStandardSaga({ payload }) {
   try {
-    const {isClasslink, subjectStandardMap, ...dataPayload} = payload;
+    const { isClasslink, subjectStandardMap, ...dataPayload } = payload;
     let item;
     if (isClasslink) {
-      item = yield call(updateAtlasSubjectStandardApi,
-        { ...dataPayload, subjectStandardMap});
+      item = yield call(updateAtlasSubjectStandardApi, { ...dataPayload, subjectStandardMap });
     } else {
-      item = yield call(updateCleverSubjectStandardApi,
-        { ...dataPayload, cleverSubjectStandardMap: subjectStandardMap});
+      item = yield call(updateCleverSubjectStandardApi, {
+        ...dataPayload,
+        cleverSubjectStandardMap: subjectStandardMap
+      });
     }
     if (item.data) {
       notification({ type: "success", messageKey: "subjectStandardMapping" });
@@ -387,7 +383,7 @@ function* updateSubjectStandardSaga({ payload }) {
 
 function* fetchLogsData({ payload }) {
   try {
-    const {isClasslink, districtId} = payload;
+    const { isClasslink, districtId } = payload;
     let item;
     if (isClasslink) {
       item = yield call(logsAtlasDataApi, districtId);

@@ -6,6 +6,7 @@ import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash"
 import { notification } from "@edulastic/common";
 import { test, testActivity, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
 import { isNullOrUndefined } from "util";
+import * as Sentry from "@sentry/browser";
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -193,7 +194,11 @@ function* releaseScoreSaga({ payload }) {
     yield call(classBoardApi.releaseScore, payload);
     yield call(notification, { type: "success", msg: "Successfully updated the release score settings" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     const msg = err.response.data.message || "Update release score is failed";
@@ -207,10 +212,14 @@ function* markAsDoneSaga({ payload }) {
     yield put(updateAssignmentStatusAction("DONE"));
     yield call(notification, { type: "success", msg: "Successfully marked as done" });
   } catch (err) {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
     if (err && err.status == 422 && err.response.data && err.response.data.message) {
       yield call(notification, { msg: err.response.data.message });
     } else {
-      if (err?.data?.message === "Assignment does not exist anymore") {
+      if (errorMessage === "Assignment does not exist anymore") {
         yield put(redirectToAssignmentsAction(""));
       }
       yield call(notification, { msg: err.response.data?.message || "Mark as done is failed" });
@@ -236,7 +245,11 @@ function* openAssignmentSaga({ payload }) {
     }
     yield call(notification, { type: "success", msg: "Success" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     yield call(notification, { msg: err.response.data?.message || "Failed to open" });
@@ -252,11 +265,15 @@ function* closeAssignmentSaga({ payload }) {
     yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId));
     yield call(notification, { type: "success", msg: "Success" });
   } catch (err) {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
     yield put(setProgressStatusAction(false));
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.response.data?.message || "Failed to close" });
+    yield call(notification, { msg: errorMessage || "Failed to close" });
   }
 }
 
@@ -265,10 +282,14 @@ function* saveOverallFeedbackSaga({ payload }) {
     yield call(testActivityApi.saveOverallFeedback, payload);
     yield call(notification, { type: "success", msg: "feedback saved" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err?.data?.message || "Saving failed" });
+    yield call(notification, { msg: errorMessage || "Saving failed" });
   }
 }
 
@@ -278,10 +299,14 @@ function* markAbsentSaga({ payload }) {
     yield put(updateStudentActivityAction(payload.students));
     yield call(notification, { type: "success", msg: "Successfully marked as absent" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.response.data.message || "Mark absent students failed" });
+    yield call(notification, { msg: errorMessage || "Mark absent students failed" });
   }
 }
 
@@ -291,10 +316,14 @@ function* markAsSubmittedSaga({ payload }) {
     yield put(updateSubmittedStudentsAction(response.updatedTestActivities));
     yield call(notification, { type: "success", msg: "Successfully marked as submitted" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err.response.data.message || "Mark as submit failed" });
+    yield call(notification, { msg: errorMessage || "Mark as submit failed" });
   }
 }
 
@@ -306,11 +335,15 @@ function* togglePauseAssignment({ payload }) {
       payload.value ? "paused." : "open and available for students to work."
     }`;
     yield call(notification, { type: "success", msg });
-  } catch (e) {
-    if (e?.data?.message === "Assignment does not exist anymore") {
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    const msg = e.response.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`;
+    const msg = errorMessage || `${payload.value ? "Pause" : "Resume"} assignment failed`;
     yield call(notification, { msg });
   }
 }
@@ -320,6 +353,7 @@ function* fetchStudentsByClassSaga({ payload }) {
     const { students = [] } = yield call(enrollmentApi.fetch, payload.classId);
     yield put(updateClassStudentsAction(students));
   } catch (err) {
+    Sentry.captureException(err);
     console.error("Receive students from class failed");
   }
 }
@@ -330,7 +364,11 @@ function* removeStudentsSaga({ payload }) {
     yield put(updateRemovedStudentsAction(students));
     yield call(notification, { type: "success", msg: "Successfully removed" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     yield call(notification, { msg: err.response.data.message || "Remove students failed" });
@@ -343,7 +381,11 @@ function* addStudentsSaga({ payload }) {
     yield put(setStudentsGradeBookAction(students));
     yield call(notification, { type: "success", msg: "Successfully added" });
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
     yield call(notification, { msg: err.response.data.message || "Add students failed" });
@@ -356,10 +398,14 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     const result = yield call(classBoardApi.testActivitiesForStudent, { assignmentId, groupId, studentId });
     yield put(setAllTestActivitiesForStudentAction(result));
   } catch (err) {
-    if (err?.data?.message === "Assignment does not exist anymore") {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    if (errorMessage === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(notification, { msg: err?.data?.message || "Fetching all test activities failed" });
+    yield call(notification, { msg: errorMessage || "Fetching all test activities failed" });
   }
 }
 
@@ -371,8 +417,12 @@ function* downloadGradesAndResponseSaga({ payload }) {
     const testName = yield select(testNameSelector);
     const fileName = `${testName}_${userName}.csv`;
     downloadCSV(fileName, data);
-  } catch (e) {
-    yield call(notification, { msg: e.response.data?.message || "Download failed" });
+  } catch (err) {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    yield call(notification, { msg: errorMessage || "Download failed" });
   }
 }
 
@@ -391,6 +441,7 @@ function* regeneratePasswordSaga({ payload }) {
       })
     );
   } catch (e) {
+    Sentry.captureException(e);
     console.log(e);
     yield call(notification, { msg: "Regenerate password failed" });
   }
@@ -401,8 +452,11 @@ function* canvasSyncGradesSaga({ payload }) {
     yield call(canvasApi.canvasGradesSync, payload);
     yield call(notification, { type: "success", msg: "Grades synced with canvas successfully." });
   } catch (err) {
-    console.error(err);
-    yield call(notification, { msg: err.response.data.message || "Failed to sync grades with canvas." });
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    yield call(notification, { msg: errorMessage || "Failed to sync grades with canvas." });
   }
 }
 
@@ -504,19 +558,11 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
 
   for (const entity of entities) {
     const { questionActivities = [] } = entity;
-    for (let {
-      _id,
-      notStarted,
-      skipped,
-      timeSpent,
-      testItemId,
-      score,
-      maxScore,
-      graded,
-      qLabel,
-      barLabel,
-      pendingEvaluation
-    } of questionActivities.filter(x => !x.disabled)) {
+    for (const _activity of questionActivities.filter(x => !x.disabled)) {
+      const { _id, testItemId, score, maxScore, graded, qLabel, barLabel, timeSpent, pendingEvaluation } = _activity;
+
+      let { notStarted, skipped } = _activity;
+
       let skippedx = false;
       if (!questionMap[_id]) {
         questionMap[_id] = {

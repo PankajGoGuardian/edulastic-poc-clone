@@ -1,6 +1,7 @@
 import { createSlice } from "redux-starter-kit";
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
+import * as Sentry from "@sentry/browser";
 import { notification } from "@edulastic/common";
 import { omitBy, isUndefined, isEmpty, invert, set, get } from "lodash";
 import { assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
@@ -137,10 +138,13 @@ function* loadAssignmentSaga({ payload }) {
       data.calcType = calcType;
     }
     yield put(slice.actions.loadAssignmentSucess(data));
-  } catch (e) {
-    console.warn("error", e, e.stack);
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
     yield put(slice.actions.stopLoading());
-    notification({ msg: e?.data?.message || "Loading assignment failed" });
+    notification({ msg: errorMessage || "Loading assignment failed" });
   }
 }
 
@@ -190,11 +194,13 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
     yield call(assignmentApi.updateClassSettings, { assignmentId, classId, settings });
     yield put(slice.actions.updateAssignmentClassSettingsSucess());
     notification({ type: "success", messageKey: "settingsUpdatedSuccessfully" });
-  } catch (e) {
-    console.log(e, "------");
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
     yield put(slice.actions.updateAssignmentClassSettingsError());
-    notification({ msg: e?.data?.message || "Updating assignment settings failed" });
-    console.warn("error", e, e.stack);
+    notification({ msg: errorMessage || "Updating assignment settings failed" });
   }
 }
 

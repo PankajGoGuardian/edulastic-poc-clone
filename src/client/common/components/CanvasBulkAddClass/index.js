@@ -70,7 +70,7 @@ const CanvasBulkAddClass = ({
   useEffect(() => {
     if (canvasCourseList.length) {
       const allCourseIds = canvasCourseList.map(c => c.id);
-      getCanvasSectionListRequest({ allCourseIds, institution });
+      getCanvasSectionListRequest({ allCourseIds, institutionId: institution });
     }
   }, [canvasCourseList]);
 

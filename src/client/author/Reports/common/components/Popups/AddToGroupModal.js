@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import * as Sentry from "@sentry/browser";
 
 // components
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -137,7 +138,11 @@ const AddToGroupModal = ({
       try {
         await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
         notification({ type: "success", msg: `Students removed from ${groupTypeText} ${name} successfully` });
-      } catch ({ data: { message: errorMessage } }) {
+      } catch (err) {
+        const {
+          data: { message: errorMessage }
+        } = err.response;
+        Sentry.captureException(err);
         notification({ msg: errorMessage });
       }
       setStudentsToRemove([]);
@@ -183,20 +188,10 @@ const AddToGroupModal = ({
       visible={visible}
       footer={[
         <StyledCol span={24}>
-          <EduButton
-            data-cy="cancelGroup"
-            width="200px"
-            isGhost
-            onClick={onCancel}
-          >
+          <EduButton data-cy="cancelGroup" width="200px" isGhost onClick={onCancel}>
             Cancel
           </EduButton>
-          <EduButton
-            data-cy="createGroup"
-            width="200px"
-            onClick={handleOnSubmit}
-            disabled={!selectedGroup.key}
-          >
+          <EduButton data-cy="createGroup" width="200px" onClick={handleOnSubmit} disabled={!selectedGroup.key}>
             Update Group Membership
           </EduButton>
         </StyledCol>
@@ -263,7 +258,7 @@ const AddToGroupModal = ({
                 <Select.Option key={_id} value={_id}>
                   {name}
                 </Select.Option>
-                ))}
+              ))}
             </SelectInputStyled>
 
             <StyledEduButton
@@ -298,7 +293,7 @@ const AddToGroupModal = ({
             </div>
           </StyledCol>
         </Row>
-        )}
+      )}
     </StyledModal>
   );
 };

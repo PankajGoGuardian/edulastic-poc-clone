@@ -106,11 +106,11 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
           maxScore: isLimitedDeliveryType ? 1 : scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(
-              { ...o, isLimitedDeliveryType },
-              o.data.questions,
-              helpers.getPoints(o),
-              scoring[o._id]
-            )
+                { ...o, isLimitedDeliveryType },
+                o.data.questions,
+                helpers.getPoints(o),
+                scoring[o._id]
+              )
             : {}
         }));
       } else itemGroup.items = [];
@@ -225,7 +225,6 @@ export const UPDATE_TEST_LIKE_COUNT = "[test] update test like count";
 export const UPDATE_TEST_ITEM_LIKE_COUNT = "[test] update test review item like count";
 export const RESET_UPDATED_TEST_STATE = "[test] reset test updated state";
 
-
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -266,7 +265,6 @@ export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE);
 export const updateTestLikeCountAction = createAction(UPDATE_TEST_LIKE_COUNT);
 export const updateTestItemLikeCountAction = createAction(UPDATE_TEST_ITEM_LIKE_COUNT);
 export const resetUpdatedStateAction = createAction(RESET_UPDATED_TEST_STATE);
-
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false, playlistId = undefined) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -672,15 +670,15 @@ const getDefaultScales = (state, payload) => {
     {};
   const performanceBand = isEmpty(state.entity.performanceBand)
     ? {
-      name: bandId.name,
-      _id: bandId._id
-    }
+        name: bandId.name,
+        _id: bandId._id
+      }
     : state.entity.performanceBand;
   const standardGradingScale = isEmpty(state.entity.standardGradingScale)
     ? {
-      name: standardId.name,
-      _id: standardId._id
-    }
+        name: standardId.name,
+        _id: standardId._id
+      }
     : state.entity.standardGradingScale;
   return {
     performanceBand,
@@ -1215,7 +1213,6 @@ function* receiveTestByIdSaga({ payload }) {
       );
     }
 
-
     entity.itemGroups.forEach((itemGroup, groupIndex) => {
       itemGroup.items.forEach((item, itemIndex) => {
         if (createdItems?.[0]?._id === item._id || createdItems?.[0]?.previousTestItemId === item._id) {
@@ -1531,10 +1528,12 @@ function* updateRegradeDataSaga({ payload }) {
     yield call(assignmentApi.regrade, payload);
     notification({ type: "success", messageKey: "successUpdate" });
     yield put(push(`/author/regrade/${payload.newTestId}/success`));
-  } catch (e) {
-    Sentry.captureException(e);
-    const errorMessage = e?.data?.message || "Update test is failing";
-    notification({ msg: errorMessage });
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+    notification({ msg: errorMessage || "Update test is failing" });
   } finally {
     yield put(setRegradingStateAction(false));
   }
@@ -1550,15 +1549,17 @@ function* shareTestSaga({ payload }) {
       })
     );
     notification({ type: "success", messageKey: "sharedPlaylist" });
-  } catch (e) {
-    Sentry.captureException(e);
-    console.warn(e);
-    const errorMessage = "Sharing failed";
-    const hasInvalidMails = e?.data?.invalidEmails?.length > 0;
+  } catch (err) {
+    const {
+      data: { message: errorMessage, invalidEmails = [] }
+    } = err.response;
+    Sentry.captureException(err);
+    const hasInvalidMails = invalidEmails.length > 0;
     if (hasInvalidMails) {
-      return notification({ msg: `Invalid mails found (${e?.data?.invalidEmails.join(", ")})` });
+      return notification({ msg: `Invalid mails found (${invalidEmails.join(", ")})` });
     }
-    notification({ msg: e?.data?.message || errorMessage });
+
+    notification({ msg: errorMessage || "Sharing failed" });
   }
 }
 
@@ -1852,11 +1853,13 @@ function* setTestDataAndUpdateSaga({ payload }) {
         yield put(setTestDataAction(newPayload));
       }
     }
-  } catch (e) {
-    Sentry.captureException(e);
-    console.error(e);
-    const errorMessage = e?.data?.message || "Auto Save of Test is failing";
-    notification({ msg: errorMessage });
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+
+    notification({ msg: errorMessage || "Auto Save of Test is failing" });
   }
 }
 
@@ -2069,17 +2072,19 @@ function* duplicateTestSaga({ payload }) {
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`));
     yield put(setTestsLoadingAction(false));
     yield put(receiveTestByIdAction(data._id, true));
-  } catch (e) {
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
     yield put(setTestsLoadingAction(false));
-    console.warn("error", e, e.stack);
-    Sentry.captureException(e);
     yield put(setEditEnableAction(false));
-    if (onRegrade === true && e?.status === 403) {
+    if (onRegrade === true && err?.status === 403) {
       yield put(setTestDataAction({ isUsed: false }));
       yield put(setCreateSuccessAction());
       return notification({ msg: "Duplicating the test permission denied and failed to regrade" });
     }
-    return notification({ msg: e?.data?.message || "Failed to duplicate test" });
+    return notification({ msg: errorMessage || "Failed to duplicate test" });
   }
 }
 
@@ -2188,14 +2193,14 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
       itemGroup.type === ITEM_GROUP_TYPES.STATIC
         ? null
         : {
-          limit: itemGroup.deliverItemsCount,
-          search: {
-            collectionId: itemGroup.collectionDetails._id,
-            standardId: itemGroup.standardDetails.standardId,
-            nInItemIds: allStaticGroupItemIds,
-            ...optionalFields
-          }
-        },
+            limit: itemGroup.deliverItemsCount,
+            search: {
+              collectionId: itemGroup.collectionDetails._id,
+              standardId: itemGroup.standardDetails.standardId,
+              nInItemIds: allStaticGroupItemIds,
+              ...optionalFields
+            }
+          },
     isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT,
     groupName: itemGroup.groupName,
     index

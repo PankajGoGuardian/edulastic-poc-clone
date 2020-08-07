@@ -486,10 +486,17 @@ class SideMenu extends Component {
             </Menu>
             <MenuFooter>
               <QuestionButton isCollapsed={isCollapsed}>
-                <IconContainer className={isCollapsed ? "active" : ""}>
-                  <HelpIcon />
-                </IconContainer>
-                <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
+                <a
+                  href="https://edulastic.zendesk.com/hc/en-us"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "flex", width: "100%", justifyContent: isCollapsed && "center" }}
+                >
+                  <IconContainer className={isCollapsed ? "active" : ""}>
+                    <HelpIcon />
+                  </IconContainer>
+                  <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
+                </a>
               </QuestionButton>
               <UserInfoButton
                 isVisible={isVisible}

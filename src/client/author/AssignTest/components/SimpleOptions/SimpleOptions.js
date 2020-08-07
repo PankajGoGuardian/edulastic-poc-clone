@@ -197,7 +197,6 @@ class SimpleOptions extends React.Component {
         students: studentsByGroupId[_id].map(i => i._id),
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
-        termId: get(groupById, `${_id}.termId`, ""),
         specificStudents: true
       };
     });

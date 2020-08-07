@@ -181,7 +181,6 @@ class SimpleOptions extends React.Component {
         students: [...get(item, "students", []), studentId],
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
-        termId: get(groupById, `${_id}.termId`, ""),
         specificStudents: true
       };
     });

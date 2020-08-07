@@ -70,7 +70,7 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       width: "20%",
       align: "left",
-      sorter: (a, b) => a.firstName > b.firstName,
+      sorter: (a, b) => (b.lastName || "").localeCompare(a.lastName || ""),
       render: (_, { firstName, lastName }) => (
         <span>
           {`${lastName ? `${lastName}, ` : ""}${firstName === "Anonymous" || firstName === "" ? "-" : firstName}`}

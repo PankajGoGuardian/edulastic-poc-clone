@@ -5,9 +5,14 @@ import React, { memo } from "react";
 import { withNamespaces } from "react-i18next";
 import { ActionBtnWrapper } from "./styled";
 
-const SubscriptionHeader = ({ openComparePlanModal, openPaymentServiceModal, isSubscribed, t }) => (
+const SubscriptionHeader = ({
+  openComparePlanModal,
+  openPaymentServiceModal,
+  showUpgradeOptions,
+  t
+}) => (
   <MainHeader Icon={IconSubscriptionHighlight} headingText={t("common.subscriptionTitle")}>
-    {!isSubscribed && (
+    {showUpgradeOptions && (
       <ActionBtnWrapper>
         <EduButton isBlue isGhost width="195px" onClick={openComparePlanModal}>
           COMPARE PLANS
@@ -23,7 +28,7 @@ const SubscriptionHeader = ({ openComparePlanModal, openPaymentServiceModal, isS
 SubscriptionHeader.propTypes = {
   openComparePlanModal: PropTypes.func.isRequired,
   openPaymentServiceModal: PropTypes.func.isRequired,
-  isSubscribed: PropTypes.bool.isRequired
+  showUpgradeOptions: PropTypes.bool.isRequired
 };
 
 export default memo(withNamespaces("header")(SubscriptionHeader));

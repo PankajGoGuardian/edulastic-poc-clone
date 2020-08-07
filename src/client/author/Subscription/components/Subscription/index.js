@@ -183,12 +183,18 @@ const Subscription = props => {
 
   const isSubscribed = subType === "premium" || subType === "enterprise" || isSuccess;
 
+  const TEN_DAYS = 864000000;
+  const isAboutToExpire = subEndDate ? ((Date.now() + TEN_DAYS) > subEndDate) : false;
+  const needsRenewal = isSubscribed && isAboutToExpire;
+
+  const showUpgradeOptions = !isSubscribed || needsRenewal;
+
   return (
     <Wrapper>
       <SubscriptionHeader
         openComparePlanModal={openComparePlanModal}
         openPaymentServiceModal={openPaymentServiceModal}
-        isSubscribed={isSubscribed}
+        showUpgradeOptions={showUpgradeOptions}
       />
 
       <SubscriptionMain
@@ -207,7 +213,7 @@ const Subscription = props => {
       </CompareModal>
 
       <PaymentServiceModal
-        visible={paymentServiceModal && !isSuccess}
+        visible={paymentServiceModal && (isAboutToExpire || !isSuccess)}
         closeModal={closePaymentServiceModal}
         verificationPending={verificationPending}
         stripePaymentAction={stripePaymentAction}

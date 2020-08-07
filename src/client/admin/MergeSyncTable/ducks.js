@@ -1,11 +1,11 @@
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { put, takeEvery, call, all } from "redux-saga/effects";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { adminApi } from "@edulastic/api";
 import _get from "lodash.get";
 import { omit } from "lodash";
+import * as Sentry from "@sentry/browser";
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = "[admin] SEARCH_EXISTING_DATA_API";
@@ -111,7 +111,7 @@ const fetchExistingDataReducer = createReducer(initialState, {
     } = state;
     cleverSubjectStandardMap[subject].standard = value;
   },
-  [ADD_SUBJECT_STANDARD_ROW_ACTION]: (state, _) => {
+  [ADD_SUBJECT_STANDARD_ROW_ACTION]: state => {
     const {
       subStandardMapping: { rows }
     } = state;
@@ -211,8 +211,12 @@ function* fetchSchoolsSync({ payload }) {
       result: { success, message: infoMessage }
     } = item;
     const messageKey = success ? "success" : "error";
-    message[messageKey](infoMessage);
-  } catch ({ data: { message: errMsg } }) {
+    notification({ msg: infoMessage, type: messageKey });
+  } catch (err) {
+    const {
+      data: { message: errMsg }
+    } = err.response;
+    Sentry.captureException(err);
     notification({ msg: errMsg });
   }
 }

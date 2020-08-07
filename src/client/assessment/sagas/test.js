@@ -480,10 +480,12 @@ function* submitTest({ payload }) {
     if (preventRouteChange) return;
     return yield put(push("/home/grades"));
   } catch (err) {
+    Sentry.captureException(err);
+    const {
+      data: { message: errorMessage }
+    } = err.response;
     if (err.status === 403) {
-      console.log(err);
-      Sentry.captureException(err);
-      if (err?.data?.message === "assignment already submitted") {
+      if (errorMessage === "assignment already submitted") {
         return yield put(push("/home/grades"));
       }
       yield put(push("/home/assignments"));

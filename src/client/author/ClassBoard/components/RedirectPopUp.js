@@ -72,7 +72,9 @@ const RedirectPopUp = ({
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
   const [qDeliveryState, setQDeliveryState] = useState("ALL");
-  const [showPrevAttempt, setshowPrevAttempt] = useState( isPremiumUser ? "FEEDBACK_ONLY" : "STUDENT_RESPONSE_AND_FEEDBACK");
+  const [showPrevAttempt, setshowPrevAttempt] = useState(
+    isPremiumUser ? "FEEDBACK_ONLY" : "STUDENT_RESPONSE_AND_FEEDBACK"
+  );
   const [allowedTime, setAllowedTime] = useState(additionalData.allowedTime || 1);
   useEffect(() => {
     const setRedirectStudents = {};
@@ -137,7 +139,7 @@ const RedirectPopUp = ({
             closePopup(true);
           })
           .catch(err => {
-            notification({ msg: err?.data?.message });
+            notification({ msg: err?.response?.data?.message || "Unknown Error" });
             closePopup();
           });
       } else {
@@ -245,21 +247,21 @@ const RedirectPopUp = ({
           ) : (
             isPremiumUser && (
               <Col span={12}>
-              <FieldLabel>Questions delivery</FieldLabel>
-              <SelectInputStyled
-                data-cy="questionDelivery"
-                defaultValue={qDeliveryState}
-                onChange={val => setQDeliveryState(val)}
-                style={{ width: "100%" }}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-              >
-                {Object.keys(QuestionDelivery).map(item => (
-                  <Option key="1" value={item}>
-                    {QuestionDelivery[item]}
-                  </Option>
-                ))}
-              </SelectInputStyled>
-            </Col>
+                <FieldLabel>Questions delivery</FieldLabel>
+                <SelectInputStyled
+                  data-cy="questionDelivery"
+                  defaultValue={qDeliveryState}
+                  onChange={val => setQDeliveryState(val)}
+                  style={{ width: "100%" }}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  {Object.keys(QuestionDelivery).map(item => (
+                    <Option key="1" value={item}>
+                      {QuestionDelivery[item]}
+                    </Option>
+                  ))}
+                </SelectInputStyled>
+              </Col>
             )
           )}
           <Col span={12}>
@@ -334,6 +336,9 @@ const RedirectPopUp = ({
   );
 };
 
-export default connect(state => ({
-  isPremiumUser: get(state, ["user", "user", "features", "premium"], false),
-}), null)(RedirectPopUp);
+export default connect(
+  state => ({
+    isPremiumUser: get(state, ["user", "user", "features", "premium"], false)
+  }),
+  null
+)(RedirectPopUp);

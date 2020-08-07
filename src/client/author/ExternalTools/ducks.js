@@ -1,6 +1,5 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { message } from "antd";
 import { notification } from "@edulastic/common";
 import { settingsApi } from "@edulastic/api";
 import { takeEvery, call, put, all } from "redux-saga/effects";
@@ -26,25 +25,11 @@ const initialState = {
   data: []
 };
 
-const initialFormData = {
-  toolName: "",
-  toolType: "",
-  settings: {
-    consumerKey: "",
-    sharedSecret: "",
-    privacy: "",
-    configurationType: "",
-    matchBy: "",
-    domain: "",
-    customParams: ""
-  }
-};
-
 export const reducer = createReducer(initialState, {
   [FETCH_EXTERNAL_TOOL_PROVIDER_SUCCESS]: (state, { payload }) => {
     state.data = payload;
   },
-  [FETCH_EXTERNAL_TOOL_PROVIDER_FAILURE]: (state, { payload }) => {
+  [FETCH_EXTERNAL_TOOL_PROVIDER_FAILURE]: state => {
     state.data = [];
   },
   [UPDATE_EXTERNAL_TOOL_PROVIDER]: (state, { payload }) => {
@@ -58,7 +43,7 @@ function* fetchExternalToolProviderSaga({ payload }) {
     const toolsList = yield call(settingsApi.getExternalTools, payload);
     yield put(fetchExternalToolProviderSuccessAction(toolsList));
   } catch (err) {
-    notification({ messageKey:"unableToGetList"});
+    notification({ messageKey: "unableToGetList" });
     yield put(fetchExternalToolProviderFailureAction());
   }
 }
@@ -76,8 +61,8 @@ function* saveExternalToolProviderSaga({ payload }) {
       yield put(fetchExternalToolProviderSuccessAction(toolsList));
     }
   } catch (err) {
-    const errorMessage = err?.data?.message;
-    notification({ msg:errorMessage || "Unable to save Tool"});
+    const errorMessage = err?.response?.data?.message || "Unknown Error";
+    notification({ msg: errorMessage || "Unable to save Tool" });
   }
 }
 
@@ -87,7 +72,7 @@ function* deleteExternalToolProviderSaga({ payload }) {
     const toolsList = yield call(settingsApi.deleteExternalTools, { orgId, externalToolId: id });
     yield put(fetchExternalToolProviderSuccessAction(toolsList));
   } catch (err) {
-    notification({ messageKey:"unableToDeleteTool"});
+    notification({ messageKey: "unableToDeleteTool" });
   }
 }
 

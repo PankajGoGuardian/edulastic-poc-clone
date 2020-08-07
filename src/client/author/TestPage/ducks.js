@@ -1477,10 +1477,12 @@ function* updateRegradeDataSaga({ payload }) {
     yield call(assignmentApi.regrade, payload);
     notification({ type: "success", messageKey: "successUpdate" });
     yield put(push(`/author/regrade/${payload.newTestId}/success`));
-  } catch (e) {
-    Sentry.captureException(e);
-    const errorMessage = e?.data?.message || "Update test is failing";
-    notification({ msg: errorMessage });
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+    notification({ msg: errorMessage || "Update test is failing" });
   } finally {
     yield put(setRegradingStateAction(false));
   }
@@ -1496,15 +1498,17 @@ function* shareTestSaga({ payload }) {
       })
     );
     notification({ type: "success", messageKey: "sharedPlaylist" });
-  } catch (e) {
-    Sentry.captureException(e);
-    console.warn(e);
-    const errorMessage = "Sharing failed";
-    const hasInvalidMails = e?.data?.invalidEmails?.length > 0;
+  } catch (err) {
+    const {
+      data: { message: errorMessage, invalidEmails = [] }
+    } = err.response;
+    Sentry.captureException(err);
+    const hasInvalidMails = invalidEmails.length > 0;
     if (hasInvalidMails) {
-      return notification({ msg: `Invalid mails found (${e?.data?.invalidEmails.join(", ")})` });
+      return notification({ msg: `Invalid mails found (${invalidEmails.join(", ")})` });
     }
-    notification({ msg: e?.data?.message || errorMessage });
+
+    notification({ msg: errorMessage || "Sharing failed" });
   }
 }
 
@@ -1798,11 +1802,13 @@ function* setTestDataAndUpdateSaga({ payload }) {
         yield put(setTestDataAction(newPayload));
       }
     }
-  } catch (e) {
-    Sentry.captureException(e);
-    console.error(e);
-    const errorMessage = e?.data?.message || "Auto Save of Test is failing";
-    notification({ msg: errorMessage });
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+
+    notification({ msg: errorMessage || "Auto Save of Test is failing" });
   }
 }
 
@@ -2015,17 +2021,19 @@ function* duplicateTestSaga({ payload }) {
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`));
     yield put(setTestsLoadingAction(false));
     yield put(receiveTestByIdAction(data._id, true));
-  } catch (e) {
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
     yield put(setTestsLoadingAction(false));
-    console.warn("error", e, e.stack);
-    Sentry.captureException(e);
     yield put(setEditEnableAction(false));
-    if (onRegrade === true && e?.status === 403) {
+    if (onRegrade === true && err?.status === 403) {
       yield put(setTestDataAction({ isUsed: false }));
       yield put(setCreateSuccessAction());
       return notification({ msg: "Duplicating the test permission denied and failed to regrade" });
     }
-    return notification({ msg: e?.data?.message || "Failed to duplicate test" });
+    return notification({ msg: errorMessage || "Failed to duplicate test" });
   }
 }
 

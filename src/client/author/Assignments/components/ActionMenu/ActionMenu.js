@@ -60,9 +60,12 @@ const ActionMenu = ({
         const duplicateTestId = testItem._id;
         history.push(`/author/tests/${duplicateTestId}`);
       })
-      .catch(e => {
-        notification({ msg: e?.data?.message || "User does not have duplicate permission." });
-        Sentry.captureException(e);
+      .catch(err => {
+        const {
+          data: { message: errorMessage }
+        } = err.response;
+        Sentry.captureException(err);
+        notification({ msg: errorMessage || "User does not have duplicate permission." });
       });
   };
 

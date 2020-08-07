@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import * as Sentry from "@sentry/browser";
 
 // components
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -137,7 +138,11 @@ const AddToGroupModal = ({
       try {
         await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
         notification({ type: "success", msg: `Students removed from ${groupTypeText} ${name} successfully` });
-      } catch ({ data: { message: errorMessage } }) {
+      } catch (err) {
+        const {
+          data: { message: errorMessage }
+        } = err.response;
+        Sentry.captureException(err);
         notification({ msg: errorMessage });
       }
       setStudentsToRemove([]);

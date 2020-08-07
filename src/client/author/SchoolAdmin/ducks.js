@@ -4,6 +4,7 @@ import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
 import { keyBy, get, omit } from "lodash";
 import { notification } from "@edulastic/common";
+import * as Sentry from "@sentry/browser";
 import { receiveClassEnrollmentListAction } from "../ClassEnrollment/ducks";
 import { UPDATE_POWER_TEACHER_TOOLS_SUCCESS } from "../../student/Login/ducks";
 
@@ -270,6 +271,7 @@ function* receiveSchoolAdminSaga({ payload }) {
     const data = yield call(userApi.fetchUsers, payload);
     yield put(receiveSchoolAdminSuccessAction(data));
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = "Receive SchoolAdmins is failing!";
     notification({ msg: errorMessage });
     yield put(receiveSchoolAdminErrorAction({ error: errorMessage }));
@@ -281,9 +283,12 @@ function* updateSchoolAdminSaga({ payload }) {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
     notification({ type: "success", messageKey: "userUpdatedSuccessfully" });
-  } catch ({ data: { message: errMsg } }) {
-    const errorMessage = "Update User is failing";
-    notification({ msg: errMsg || errorMessage });
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+    notification({ msg: errorMessage || "Update User is failing" });
     yield put(updateSchoolAdminErrorAction({ error: errorMessage }));
   }
 }
@@ -323,6 +328,7 @@ function* createSchoolAdminSaga({ payload }) {
     }
     notification({ type: "success", msg });
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = err.response.data.message || "Create new user is failing";
     notification({ msg: errorMessage });
     yield put(createSchoolAdminErrorAction({ error: errorMessage }));
@@ -341,6 +347,7 @@ function* deleteSchoolAdminSaga({ payload }) {
     }
     notification({ type: "success", messagKey: "userSucessfullyDeactivated" });
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = "Delete SchoolAdmin is failing";
     notification({ msg: errorMessage });
     yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }));
@@ -364,6 +371,7 @@ function* addBulkTeacherAdminSaga({ payload }) {
       });
     yield put(addBulkTeacherAdminSuccessAction({ res, _bulkTeachers }));
   } catch (err) {
+    Sentry.captureException(err);
     const errorMessage = "Add Bulk Teacher is failing";
     notification({ msg: errorMessage });
     yield put(addBulkTeacherAdminErrorAction({ bulkAddError: errorMessage }));

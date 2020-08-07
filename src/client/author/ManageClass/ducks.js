@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import { notification } from "@edulastic/common";
 import { get, findIndex, keyBy } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi, canvasApi, cleverApi } from "@edulastic/api";
-
+import * as Sentry from "@sentry/browser";
 import { push } from "connected-react-router";
 import { receiveTeacherDashboardAction } from "../Dashboard/duck";
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
@@ -451,6 +451,7 @@ function* fetchClassList({ payload }) {
     yield put(setGoogleCourseListAction(result.courseDetails));
     yield put(fetchClassListStatusAction(false));
   } catch (e) {
+    Sentry.captureException(e);
     const errorMessage = "fetching classlist failed";
     notification({ msg: errorMessage });
     yield put(fetchClassListStatusAction(false));
@@ -466,6 +467,7 @@ function* fetchStudentsByClassId({ payload }) {
     yield put(fetchStudentsByIdSuccessAction(students));
     yield put(setClassAction(group));
   } catch (error) {
+    Sentry.captureException(error);
     yield put(fetchStudentsByIdErrorAction(error));
   }
 }
@@ -488,7 +490,11 @@ function* receiveCreateClassRequest({ payload }) {
     yield put(createClassSuccessAction(result));
     yield put(addGroupAction(result));
     yield put(addClassToUserAction(result));
-  } catch ({ data: { message: errorMessage } }) {
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
     notification({ msg: errorMessage });
     yield put(createClassFailedAction({ message: errorMessage }));
   }
@@ -525,7 +531,11 @@ function* receiveAddStudentRequest({ payload }) {
       yield put(addStudentFailedAction("add student to class failed"));
     }
   } catch (error) {
-    const msg = get(error, "data.message", "User already part of this class section");
+    Sentry.captureException(error);
+    const {
+      data: { message: errorMessage }
+    } = error.response;
+    const msg = errorMessage || "User already part of this class section";
     notification({ msg });
     yield put(addStudentFailedAction(error));
   }
@@ -550,6 +560,7 @@ function* changeUserTTSRequest({ payload }) {
     yield put(userTTSRequestSuccessAction(newStdList));
     notification({ type: "success", msg });
   } catch (error) {
+    Sentry.captureException(error);
     notification({ messageKey: "errorOccurredWhileEnablingOrDisablingTextToSpeech" });
   }
 }
@@ -561,6 +572,7 @@ function* resetPasswordRequest({ payload }) {
     notification({ type: "success", msg });
     yield put(resetPasswordSuccessAction(result.data));
   } catch (error) {
+    Sentry.captureException(error);
     notification({ messageKey: "resetPasswordRequestFailing" });
     yield put(resetPasswordFaildedAction());
   }
@@ -573,6 +585,7 @@ function* removeStudentsRequest({ payload }) {
     notification({ type: "success", msg });
     yield put(removeStudentsSuccessAction(payload.studentIds));
   } catch (error) {
+    Sentry.captureException(error);
     yield put(removeStudentsFaildedAction(error));
   }
 }
@@ -589,6 +602,7 @@ function* updateStudentRequest({ payload }) {
     const msg = "Successfully Updated student.";
     notification({ type: "success", msg });
   } catch (error) {
+    Sentry.captureException(error);
     notification({ messageKey: "updateAstudentRequestFailing" });
     yield put(updateStudentFaildedAction());
   }
@@ -605,6 +619,7 @@ function* syncClass({ payload }) {
     yield call(googleApi.syncClass, payload);
     notification({ type: "success", messageKey: "googleClassImportInProgress" });
   } catch (e) {
+    Sentry.captureException(e);
     yield put(setSyncClassLoadingAction(false));
     notification({ messageKey: "classSyncFailed" });
     console.log(e);
@@ -618,14 +633,17 @@ function* syncClassUsingCode({ payload }) {
     yield call(googleApi.syncClass, { googleCode, groupId: classId, institutionId });
     yield put(setSyncClassLoadingAction(false));
     notification({ type: "success", messageKey: "googleClassImportInProgress" });
-  } catch (e) {
-    if (e?.data?.message === "No class found") {
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+    if (errorMessage === "No class found") {
       yield put(setClassNotFoundErrorAction(true));
     } else {
       notification({ messageKey: "classSyncFailed" });
     }
     yield put(setSyncClassLoadingAction(false));
-    console.log(e);
   }
 }
 
@@ -639,6 +657,7 @@ function* getCanvasCourseListRequestSaga({ payload }) {
       yield put(getCanvasCourseListSuccessAction(courseList));
     }
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     yield put(getCanvasCourseListFailedAction());
     notification({ messageKey: "failedToGetCourseList" });
@@ -653,6 +672,7 @@ function* getCanvasSectionListRequestSaga({ payload }) {
       notification({ type: "info", messageKey: "noCourseSectionFound" });
     }
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     yield put(getCanvasSectionListFailedAction());
     notification({ messageKey: "failedToGetCourseSectionList" });
@@ -668,6 +688,7 @@ function* syncClassWithCanvasSaga({ payload }) {
     yield put(fetchStudentsByIdAction({ classId }));
     notification({ type: "success", messageKey: "syncWithCanvasIsComplete" });
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     notification({ messageKey: "classSyncWithCanvasFailed" });
     yield put(setSyncClassLoadingAction(false));
@@ -682,6 +703,7 @@ function* fetchCleverClassListRequestSaga() {
       notification({ type: "info", messageKey: "noClassessfoundInCleverAccount" });
     }
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     yield put(fetchCleverClassListFailedAction());
     notification({ messageKey: "failedToFetchCleverClasses" });
@@ -712,6 +734,7 @@ function* syncClassListWithCleverSaga({ payload }) {
       // no default
     }
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     notification({ messageKey: "syncWithCleverFailed" });
   }
@@ -727,9 +750,10 @@ function* unarchiveClass({ payload }) {
     if (exitPath) yield put(push("/"));
     yield put(push(exitPath || "/author/manageClass"));
   } catch (err) {
+    Sentry.captureException(err);
     console.error(err);
     yield put(unarchiveClassFailedAction());
-    notification({ msg: err?.data?.message || `Unarchiving ${groupTypeText} failed.` });
+    notification({ msg: err?.response?.data?.message || `Unarchiving ${groupTypeText} failed.` });
   }
 }
 
@@ -737,8 +761,9 @@ function* unarchiveClass({ payload }) {
 function* removeClassSyncNotification() {
   try {
     yield call(googleApi.removeClassSyncNotification);
-    console.log(`Class sync notification removed.`)
+    console.log(`Class sync notification removed.`);
   } catch (e) {
+    Sentry.captureException(e);
     console.log(e);
   }
 }

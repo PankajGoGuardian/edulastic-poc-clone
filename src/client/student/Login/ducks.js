@@ -7,6 +7,7 @@ import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage, settingsApi, segmentApi, schoolApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
 import * as firebase from "firebase/app";
+import * as Sentry from "@sentry/browser";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import {
@@ -1075,11 +1076,15 @@ function* cleverSSOLogin({ payload }) {
   try {
     const res = yield call(authApi.cleverSSOLogin, _payload);
     yield put(getUserDataAction(res));
-  } catch (e) {
-    if (e?.data?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
-      yield put(push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" }));
+  } catch (err) {
+    const {
+      data: { message: errorMessage }
+    } = err.response;
+    Sentry.captureException(err);
+    if (errorMessage === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
+      yield put(push({ pathname: getSignOutUrl(), state: { showUnauthorized: true }, hash: "#login" }));
     } else {
-      notification({ msg: e?.data?.message || "Clever Login failed" });
+      notification({ msg: errorMessage || "Clever Login failed" });
       yield put(push(getSignOutUrl()));
     }
     removeSignOutUrl();

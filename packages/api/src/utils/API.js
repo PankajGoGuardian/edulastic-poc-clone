@@ -182,6 +182,7 @@ export default class API {
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
             Sentry.withScope(scope => {
+              scope.setTag("issueType", "ForcedRedirection");
               scope.setFingerprint(["Forced Redirection"]);
             });
             // Needs proper fixing, patching it to fix infinite reload

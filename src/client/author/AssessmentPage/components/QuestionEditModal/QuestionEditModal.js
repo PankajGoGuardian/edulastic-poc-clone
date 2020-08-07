@@ -66,7 +66,7 @@ export default class QuestionEditModal extends React.Component {
       case CLOZE_DROP_DOWN:
         return <QuestionDropdown {...props} />;
       case MATH:
-        return <QuestionMath {...props} />;
+        return <QuestionMath docBasedQType={type} {...props} />;
       case ESSAY_PLAIN_TEXT:
         return <QuestionEssay {...props} />;
       default:
@@ -109,7 +109,7 @@ export default class QuestionEditModal extends React.Component {
         ]}
         overlayId="docBasedModalOverlay"
       >
-        <StyledBodyContainer type={type}>
+        <StyledBodyContainer>
           {this.renderForm(type)}
           <StandardSelectWrapper>
             <StandardSet qId={id} alignment={question.alignment} onUpdate={onUpdate} isDocBased showIconBrowserBtn />
@@ -166,7 +166,6 @@ export default class QuestionEditModal extends React.Component {
 
 const StyledBodyContainer = styled.div`
   max-height: 50vh;
-  min-height: ${props => props.type == MATH && "360px"};
   padding-bottom: 10px;
   overflow: visible;
 

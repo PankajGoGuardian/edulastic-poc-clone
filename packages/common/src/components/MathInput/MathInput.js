@@ -275,7 +275,8 @@ class MathInput extends React.PureComponent {
       customKeys,
       hideKeypad,
       onInnerFieldClick,
-      isDocbasedSection = false
+      isDocbasedSection = false,
+      docBasedQType
     } = this.props;
 
     const { mathFieldFocus: showKeyboard, nativeKeyboard } = this.state;
@@ -320,6 +321,7 @@ class MathInput extends React.PureComponent {
         isDocbasedSection={isDocbasedSection}
         ref={this.containerRef}
         onKeyUp={onKeyUp}
+        docBasedQType={docBasedQType}
       >
         <Popover
           content={keypad}

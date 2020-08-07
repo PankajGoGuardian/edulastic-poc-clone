@@ -110,15 +110,14 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, testId, duplicateTestItem, test, match, isTest = !!testId, passage } = this.props;
+    const { data, testId, duplicateTestItem, test, match, isTest = !!testId, passage, item = {} } = this.props;
     const itemId = data.id;
     const regradeFlow = match.params.oldId && match.params.oldId !== "undefined";
     if (!passage) {
       return duplicateTestItem({ data, testId, test, match, isTest, itemId, regradeFlow });
     }
 
-    const { testItemPreviewData } = this.props;
-
+    const { _id: currentItem = "" } = item;
     Modal.confirm({
       title: "Clone Passage Item",
       content: `This passage has ${
@@ -134,7 +133,7 @@ class PreviewModal extends React.Component {
           itemId,
           regradeFlow,
           passage,
-          currentItem: testItemPreviewData?._id
+          currentItem
         });
         Modal.destroyAll();
         this.closeModal();

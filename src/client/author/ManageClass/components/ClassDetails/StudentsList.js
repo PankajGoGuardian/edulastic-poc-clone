@@ -68,7 +68,8 @@ const StudentsList = ({
       dataIndex: "name",
       defaultSortOrder: "descend",
       width: "20%",
-      sorter: (a, b) => a.firstName > b.firstName,
+      align: "left",
+      sorter: (a, b) => (b.lastName || "").localeCompare(a.lastName || ""),
       render: (_, { firstName, lastName }) => (
         <span>
           {`${lastName ? `${lastName}, ` : ""}${firstName === "Anonymous" || firstName === "" ? "-" : firstName}`}

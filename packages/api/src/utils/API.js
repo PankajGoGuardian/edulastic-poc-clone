@@ -168,7 +168,6 @@ export default class API {
             scope.setLevel("error");
             scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
             Sentry.captureException(err);
-            scope.setFingerprint(["UnexpectedError"]);
             scope.setTag("issueType", "UnexpectedError");
             Sentry.captureMessage(
               JSON.stringify({
@@ -183,7 +182,6 @@ export default class API {
           if (data.response.status === 401) {
             Sentry.withScope(scope => {
               scope.setTag("issueType", "ForcedRedirection");
-              scope.setFingerprint(["Forced Redirection"]);
             });
             // Needs proper fixing, patching it to fix infinite reload
             const loginRedirectUrl = localStorage.getItem("loginRedirectUrl");

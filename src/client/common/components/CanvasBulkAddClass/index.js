@@ -260,8 +260,8 @@ const CanvasBulkAddClass = ({
             showSearch
             style={{ width: "100%" }}
             filterOption={(input, option) => {
-              if (option.props.children && option.props.children.toLowerCase)
-                return (option.props.children || "").toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              if (option.props.children && typeof option.props.children === "string")
+                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
               return false;
             }}
@@ -292,9 +292,12 @@ const CanvasBulkAddClass = ({
       render: (_, row, ind) => (
         <Select
           showSearch
-          filterOption={(input, option) =>
-            option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+          filterOption={(input, option) => {
+            if (option.props.children && typeof option.props.children === "string")
+              return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+            return false;
+          }}
           style={{ width: "100%" }}
           value={row.courseId || undefined}
           placeholder="Select Course"
@@ -338,9 +341,12 @@ const CanvasBulkAddClass = ({
           <StyledSelect
             width="170px"
             showSearch
-            filterOption={(input, option) =>
-              option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              if (option.props.children && typeof option.props.children === "string")
+                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+              return false;
+            }}
             placeholder="Select Institution"
             getPopupContainer={triggerNode => triggerNode.parentNode}
             value={institution}

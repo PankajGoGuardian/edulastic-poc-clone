@@ -210,9 +210,12 @@ const ClassSelectModal = ({
           return (
             <StyledSelect
               showSearch
-              filterOption={(input, option) =>
-                option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+              filterOption={(input, option) => {
+                if (option.props.children && typeof option.props.children === "string")
+                  return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+                return false;
+              }}
               mode="multiple"
               value={data}
               placeholder="Select Standards"
@@ -263,9 +266,12 @@ const ClassSelectModal = ({
               minWidth: "75px"
             }}
             labelInValue
-            filterOption={(input, option) =>
-              option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            filterOption={(input, option) => {
+              if (option.props.children && typeof option.props.children === "string")
+                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+              return false;
+            }}
             value={(data && { key: data }) || {}}
             placeholder="Select Course"
             disabled={row.disabled}
@@ -298,9 +304,12 @@ const ClassSelectModal = ({
       <StyledSelect
         width="170px"
         showSearch
-        filterOption={(input, option) =>
-          option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
+        filterOption={(input, option) => {
+          if (option.props.children && typeof option.props.children === "string")
+            return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+
+          return false;
+        }}
         placeholder="Select Institution"
         getPopupContainer={triggerNode => triggerNode.parentNode}
         value={institutionId}

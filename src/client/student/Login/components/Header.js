@@ -37,28 +37,25 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName,
       {isSignupUsingDaURL &&
       (!isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") &&
         !isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")) ? (
-          <div className="teacher-student-restricted-message">
-            {`${t("common.policyviolation").split(".")[0]}.`}
-            <br />
-            {`${t("common.policyviolation").split(".")[1]}.`}
-          </div>
+        <div className="teacher-student-restricted-message">
+          {`${t("common.policyviolation").split(".")[0]}.`}
+          <br />
+          {`${t("common.policyviolation").split(".")[1]}.`}
+        </div>
       ) : (
-        // Remove this check to enable it on /login page.
-        isSignupUsingDaURL && (
-          <>
-            <DontHaveAccountText>{t("common.donthaveanaccount")}</DontHaveAccountText>
-            <Link
-              to={
-                isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
-                isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")
-                  ? getDistrictGetStartedUrl(orgShortName, orgType)
-                  : getPartnerGetStartedUrl(Partners)
-              }
-            >
-              {t("common.signupbtn")}
-            </Link>
-          </>
-        )
+        <>
+          <DontHaveAccountText>{t("common.donthaveanaccount")}</DontHaveAccountText>
+          <Link
+            to={
+              isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
+              isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")
+                ? getDistrictGetStartedUrl(orgShortName, orgType)
+                : getPartnerGetStartedUrl(Partners)
+            }
+          >
+            {t("common.signupbtn")}
+          </Link>
+        </>
       )}
     </Col>
   </RegistrationHeader>

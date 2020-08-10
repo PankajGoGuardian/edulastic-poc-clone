@@ -965,7 +965,7 @@ function* googleSSOLogin({ payload }) {
     const res = yield call(authApi.googleSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    notification({ msg: get(e, "data.message", "Google Login failed") });
+    notification({ msg: get(e, "response.data.message", "Google Login failed") });
 
     yield put(push(getSignOutUrl()));
     removeSignOutUrl();
@@ -1010,7 +1010,7 @@ function* msoLogin({ payload }) {
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
   } catch (e) {
-    notification({ msg: get(e, "data.message", "MSO Login failed") });
+    notification({ msg: get(e, "response.data.message", "MSO Login failed") });
   }
 }
 
@@ -1034,7 +1034,7 @@ function* msoSSOLogin({ payload }) {
     const res = yield call(authApi.msoSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    notification({ msg: get(e, "data.message", "MSO Login failed") });
+    notification({ msg: get(e, "response.data.message", "MSO Login failed") });
 
     yield put(push(getSignOutUrl()));
     removeSignOutUrl();
@@ -1142,7 +1142,7 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.selectAccessToken(_user._id, _user.role);
     yield put(signupSuccessAction(_user));
   } catch (e) {
-    notification({ msg: get(e, "data.message", "Failed to update user please try again.") });
+    notification({ msg: get(e, "response.data.message", "Failed to update user please try again.") });
   }
 }
 

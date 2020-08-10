@@ -255,12 +255,12 @@ const StandardsFilters = ({
   const updateSchoolYearDropDownCB = selected => {
     const obj = {
       ...filters,
-      termId: selected
+      termId: selected.key
     };
     setFilters(obj);
 
     const q = {
-      termId: selected
+      termId: selected.key
     };
     if (get(user, "role", "") === roleuser.SCHOOL_ADMIN) {
       Object.assign(q, { schoolIds: get(user, "institutionIds", []).join(",") });

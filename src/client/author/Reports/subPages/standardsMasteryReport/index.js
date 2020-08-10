@@ -153,9 +153,9 @@ const StandardsMasteryReportContainer = props => {
     return dropDownFormat.filterDropDownData;
   }, [standardsGradebook]);
 
-  const filterData = get(standardsFilters, "data.result", []);
-  const [dynamicDropDownData, filterInitState] = useMemo(() => getDropDownData(filterData.orgData, role), [
-    filterData.orgData,
+  const orgData = get(standardsFilters, "orgData", []);
+  const [dynamicDropDownData, filterInitState] = useMemo(() => getDropDownData(orgData, role), [
+    orgData,
     dropDownFormat.filterDropDownData,
     role
   ]);

@@ -273,7 +273,7 @@ const tagMapping = {
 export const sanitizeForReview = stimulus => {
   if (!window.$) return stimulus;
   if (!stimulus || !stimulus.trim().length) return question.DEFAULT_STIMULUS;
-  const jqueryEl = $("<p>").append(stimulus);
+  const jqueryEl = $("<p>").append(sanitizeString(stimulus));
   // remove br tag also
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
@@ -312,6 +312,11 @@ export const sanitizeForReview = stimulus => {
     } else if (video) {
       elem.replaceWith("[video]");
     }
+  });
+
+  jqueryEl.find("iframe").each(function() {
+    const elem = $(this);
+    elem.replaceWith(["[resource]"]);
   });
 
   jqueryEl.find("a").each(function() {

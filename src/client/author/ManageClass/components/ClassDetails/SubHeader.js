@@ -1,6 +1,6 @@
 import { SimpleConfirmModal } from "@edulastic/common";
 import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
-import { Col } from "antd";
+import { Col, Tooltip } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
@@ -9,7 +9,16 @@ import withRouter from "react-router-dom/withRouter";
 import { compose } from "redux";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
-import { ClassCode, ClassLink, CodeWrapper, ContainerHeader, CoTeacher, RightContent, Studentscount } from "./styled";
+import {
+  ClassCode,
+  ClassLink,
+  CodeWrapper,
+  ContainerHeader,
+  CoTeacher,
+  RightContent,
+  Studentscount,
+  PopCoTeachers
+} from "./styled";
 
 const SubHeader = ({
   name,
@@ -22,7 +31,8 @@ const SubHeader = ({
   owners = [],
   parent,
   gradeSubject,
-  studentsList
+  studentsList,
+  lastTeacher
 }) => {
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
   const { exitPath } = location?.state || {};
@@ -35,6 +45,12 @@ const SubHeader = ({
       .filter(owner => owner.id !== parent.id)
       .map(owner => owner.name)
       .join(",");
+  const teacher = owners
+    .filter(owner => owner.id !== parent.id)
+    .slice(0, 1)
+    .map(owner => owner.name);
+  const coTeacher = owners.filter(owner => owner.id !== parent.id).slice(1, lastTeacher);
+  const multipleTeachers = coTeacher.map(owner => owner.name).join(",");
 
   const handleUnarchiveClass = () => {
     unarchiveClass({ groupId: _id, exitPath, isGroup: type !== "class" });
@@ -54,7 +70,7 @@ const SubHeader = ({
           <Studentscount lg={6} span={24}>
             TOTAL STUDENTS <span>{totalStudent || 0}</span>
           </Studentscount>
-          <Col lg={6} span={24}>
+          <Col lg={8} span={24}>
             {coTeachers && coTeachers.length ? (
               <FeaturesSwitch
                 inputFeatures="addCoTeacher"
@@ -65,7 +81,12 @@ const SubHeader = ({
                 span={12}
               >
                 <CoTeacher>
-                  CO-TEACHER<span>{coTeachers}</span>
+                  CO-TEACHER{' '}<span>{teacher}</span>
+                  {coTeacher.length >= 1 ? (
+                    <Tooltip title={multipleTeachers} placement="right">
+                      <PopCoTeachers>+ {coTeacher.length}</PopCoTeachers>
+                    </Tooltip>
+                  ) : null}
                 </CoTeacher>
               </FeaturesSwitch>
             ) : (

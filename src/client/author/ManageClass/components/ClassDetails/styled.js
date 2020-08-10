@@ -282,12 +282,25 @@ export const Studentscount = styled(Col)`
   }
 `;
 export const CoTeacher = styled(Studentscount)`
+  display: flex;
+  width: 100%;
   margin-top: 4px;
-  margin-left: 35px;
   span {
     font-size: 15px;
-    margin-top: -2px;
+    margin-top: -5px;
   }
+`;
+export const PopCoTeachers = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 22px;
+  height: 17px;
+  background-color: ${themeColorLighter};
+  color: ${white};
+  margin-top: 1px;
+  margin-left: 5px;
+  border-radius: 2px;
+  cursor: pointer;
 `;
 
 export const MainContainer = styled.div`

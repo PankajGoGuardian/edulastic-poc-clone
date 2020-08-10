@@ -165,7 +165,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
       payload.status === "published" &&
       (!payload.collections || (payload.collections && !payload.collections.length))
     ) {
-      notification({ messageKey: "testNotAssociatedWithCollection" });
+      notification({ type: "warn", messageKey: "testNotAssociatedWithCollection" });
       return;
     }
     yield call(testsApi.updateTestStatus, payload);

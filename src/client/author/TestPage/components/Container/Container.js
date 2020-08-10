@@ -705,7 +705,7 @@ class Container extends PureComponent {
     }
     if (userFeatures.isPublisherAuthor || userFeatures.isCurator || isOrganizationDistrictUser) {
       if (test.collections?.length === 0) {
-        notification({ messageKey: "testNotAssociatedWithCollection" });
+        notification({ type: "warn", messageKey: "testNotAssociatedWithCollection" });
         return false;
       }
       if (

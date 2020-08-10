@@ -28,11 +28,7 @@ import Tags from "../../../src/components/common/Tags";
 const { allGrades, allSubjects } = selectsData;
 
 const findTeacherName = row => {
-  const {
-    owners = [],
-    primaryTeacherId,
-    parent: { id: teacherId }
-  } = row;
+  const { owners = [], primaryTeacherId, parent: { id: teacherId } = {} } = row;
   const teacher = find(owners, owner => owner.id === (primaryTeacherId || teacherId));
   return teacher ? teacher.name : owners.length ? owners[0].name : "";
 };

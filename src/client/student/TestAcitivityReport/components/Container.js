@@ -57,8 +57,9 @@ const ReportListContent = ({
 
   const {
     qType,
-    scratchPad: { scratchpad: scratchpadUsed = false, dimensions: previousDimensions = {} } = {}
+    scratchPad: { scratchpad: scratchpadUsed = false, dimensions: previousDimensions = {}, attachments } = {}
   } = questionActivity;
+
   const showScratchpadByDefault = qType === "highlightImage" && scratchpadUsed;
   const previouscratchPadDimensions = showScratchpadByDefault ? previousDimensions : null;
   const history = showScratchpadByDefault ? userWork : {};
@@ -88,6 +89,7 @@ const ReportListContent = ({
               previouscratchPadDimensions={previouscratchPadDimensions}
               showScratchpadByDefault={showScratchpadByDefault}
               history={history}
+              attachments={attachments}
               itemLevelScoring={item?.itemLevelScoring}
             />
             {/* we may need to bring hint button back */}

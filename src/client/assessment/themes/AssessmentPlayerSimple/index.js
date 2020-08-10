@@ -172,6 +172,7 @@ class AssessmentPlayerSimple extends React.Component {
       previewPlayer,
       scratchPad,
       crossAction,
+      attachments,
       previousQuestionActivities,
       bookmarksInOrder,
       skippedInOrder,
@@ -251,6 +252,8 @@ class AssessmentPlayerSimple extends React.Component {
               windowWidth={windowWidth}
               scratchPadMode={scratchPadMode}
               saveHistory={this.saveHistory("scratchpad")}
+              saveAttachments={this.saveHistory("attachments")}
+              attachments={attachments}
               history={scratchPad}
               changePreview={this.handleChangePreview}
             />
@@ -286,6 +289,7 @@ const enhance = compose(
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
       scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
       highlights: get(state, `userWork.present[${ownProps?.passage?._id}].resourceId`, null),
+      attachments: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].attachments`, null),
       crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
       userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),

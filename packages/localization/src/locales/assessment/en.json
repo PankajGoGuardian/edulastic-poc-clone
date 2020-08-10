@@ -980,6 +980,11 @@
     },
     "fractionEditor": {
       "showAnnotations": "Show Annotations"
+    },
+    "uploadfile": {
+      "composeQuestion": "Question",
+      "enterQuestion": "Enter your question",
+      "files": "Files"
     }
   }
 }

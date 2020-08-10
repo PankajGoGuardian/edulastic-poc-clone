@@ -37,6 +37,7 @@ import { Drawing } from "./Drawing";
 import { EssayPlainText } from "../widgets/EssayPlainText";
 import { EssayRichText } from "../widgets/EssayRichText";
 import FractionEditor from "../widgets/FractionEditor";
+import UploadFile from "../widgets/UploadFile";
 
 import withAnswerSave from "./HOC/withAnswerSave";
 import { MatrixChoice } from "../widgets/MatrixChoice";
@@ -291,6 +292,8 @@ const getQuestion = type => {
       return DummyQuestion;
     case questionType.CODING:
       return Coding;
+    case questionType.UPLOAD_FILE:
+      return UploadFile;
     default:
       return null;
   }
@@ -477,8 +480,8 @@ class QuestionWrapper extends Component {
               className="question-audio-controller"
             />
           ) : (
-              ""
-            )}
+            ""
+          )}
           <div className="__print-question-main-wrapper" style={{ height: "100%" }}>
             <QuestionContainer
               className={`fr-view question-container question-container-id-${data.id}`}
@@ -642,12 +645,12 @@ QuestionWrapper.defaultProps = {
   LCBPreviewModal: false,
   showFeedback: false,
   qIndex: 0,
-  clearAnswers: () => { },
-  changePreviewTab: () => { },
+  clearAnswers: () => {},
+  changePreviewTab: () => {},
   flowLayout: false,
   advancedAreOpen: false,
-  handleAdvancedOpen: () => { },
-  saveHintUsage: () => { },
+  handleAdvancedOpen: () => {},
+  saveHintUsage: () => {},
   disableResponse: false,
   isPresentationMode: false
 };

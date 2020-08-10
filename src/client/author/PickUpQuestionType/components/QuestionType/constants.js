@@ -13,77 +13,78 @@ import {
 } from "../../../../assessment/constants/constantsForQuestions";
 
 // Multiple Choice
-import MCStandard from "../../../src/assets/multiple-choice/standard.svg";
-import MCMultipleResponses from "../../../src/assets/multiple-choice/multiple-response.svg";
-import MCTrueFalse from "../../../src/assets/multiple-choice/true-false.svg";
-import MCBlockLayout from "../../../src/assets/multiple-choice/block-layout.svg";
-import MCMatrixStandard from "../../../src/assets/multiple-choice/matrix-standard.svg";
-import MCMatrixInline from "../../../src/assets/multiple-choice/matrix-inline.svg";
-import MCMatrixLabels from "../../../src/assets/multiple-choice/matrix-labels.svg";
+import MCStandard from "../../../src/assets/multiple-choice/standard-blue.svg";
+import MCMultipleResponses from "../../../src/assets/multiple-choice/multiple-response-blue.svg";
+import MCTrueFalse from "../../../src/assets/multiple-choice/true-false-blue.svg";
+import MCBlockLayout from "../../../src/assets/multiple-choice/block-layout-blue.svg";
+import MCMatrixStandard from "../../../src/assets/multiple-choice/matrix-standard-blue.svg";
+import MCMatrixInline from "../../../src/assets/multiple-choice/matrix-inline-blue.svg";
+import MCMatrixLabels from "../../../src/assets/multiple-choice/matrix-labels-blue.svg";
 
 // Fill In blanks
-import FBClozeDragDrop from "../../../src/assets/fill-in-blanks/cloze-drag-drop.svg";
-import FBClozeDropDown from "../../../src/assets/fill-in-blanks/cloze-dropdown.svg";
-import FBClozeText from "../../../src/assets/fill-in-blanks/cloze-text.svg";
-import FBClozeImgDragDrop from "../../../src/assets/fill-in-blanks/img-drag-drop.svg";
-import FBClozeImgDropDown from "../../../src/assets/fill-in-blanks/img-dropdown.svg";
-import FBClozeImgText from "../../../src/assets/fill-in-blanks/img-text.svg";
+import FBClozeDragDrop from "../../../src/assets/fill-in-blanks/cloze-drag-drop-blue.svg";
+import FBClozeDropDown from "../../../src/assets/fill-in-blanks/cloze-dropdown-blue.svg";
+import FBClozeText from "../../../src/assets/fill-in-blanks/cloze-text-blue.svg";
+import FBClozeImgDragDrop from "../../../src/assets/fill-in-blanks/img-drag-drop-blue.svg";
+import FBClozeImgDropDown from "../../../src/assets/fill-in-blanks/img-dropdown-blue.svg";
+import FBClozeImgText from "../../../src/assets/fill-in-blanks/img-text-blue.svg";
+import FBClozeEditingTask from "../../../src/assets/fill-in-blanks/editing-task-blue.svg";
 
 // Classy Match
-import CMClassification from "../../../src/assets/classy-match/classification.svg";
-import CMMatch from "../../../src/assets/classy-match/match.svg";
-import CMOrderList from "../../../src/assets/classy-match/order-list.svg";
-import CMSortList from "../../../src/assets/classy-match/sort-list.svg";
+import CMClassification from "../../../src/assets/classy-match/classification-blue.svg";
+import CMMatch from "../../../src/assets/classy-match/match-blue.svg";
+import CMOrderList from "../../../src/assets/classy-match/order-list-blue.svg";
+import CMSortList from "../../../src/assets/classy-match/sort-list-blue.svg";
 
 // Written Spoken
-import WSEssayRichText from "../../../src/assets/written-spoken/essay-rich-text.svg";
-import WSEssayPlainText from "../../../src/assets/written-spoken/essay-plain-text.svg";
-import WSShortText from "../../../src/assets/written-spoken/short-text.svg";
+import WSEssayRichText from "../../../src/assets/written-spoken/essay-rich-text-blue.svg";
+import WSEssayPlainText from "../../../src/assets/written-spoken/essay-plain-text-blue.svg";
+import WSShortText from "../../../src/assets/written-spoken/short-text-blue.svg";
 // import WSAudioPlayer from '../../assets/written-spoken/audio-player.svg';
 // import WSVideoPlayer from '../../assets/written-spoken/video-player.svg';
 
 // Highlight
-import HLHightlight from "../../../src/assets/highlight/highlight-img.svg";
-import HLHotspot from "../../../src/assets/highlight/hotspot.svg";
-import HLShading from "../../../src/assets/highlight/shading.svg";
-import HLTokenHighlight from "../../../src/assets/highlight/token-highlight.svg";
+import HLHightlight from "../../../src/assets/highlight/highlight-img-blue.svg";
+import HLHotspot from "../../../src/assets/highlight/hotspot-blue.svg";
+import HLShading from "../../../src/assets/highlight/shading-blue.svg";
+import HLTokenHighlight from "../../../src/assets/highlight/token-highlight-blue.svg";
 
 // Math
-import MTFormula from "../../../src/assets/math/math-formula.svg";
-import MTFractions from "../../../src/assets/math/math-fractions.svg";
-import MTFillInBlanks from "../../../src/assets/math/math-fill-blanks.svg";
-import MTText from "../../../src/assets/math/math-text.svg";
-import MTMatrices from "../../../src/assets/math/math-matrices.svg";
-import MTUnits from "../../../src/assets/math/math-units.svg";
-import MTEssay from "../../../src/assets/math/math-essay.svg";
+import MTFormula from "../../../src/assets/math/math-formula-blue.svg";
+import MTFractions from "../../../src/assets/math/math-fractions-blue.svg";
+import MTFillInBlanks from "../../../src/assets/math/math-fill-blanks-blue.svg";
+import MTText from "../../../src/assets/math/math-text-blue.svg";
+import MTMatrices from "../../../src/assets/math/math-matrices-blue.svg";
+import MTUnits from "../../../src/assets/math/math-units-blue.svg";
+import MTEssay from "../../../src/assets/math/math-essay-blue.svg";
 // import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
-import MTCombinationClozeText from "../../../src/assets/math/math-multipart-cloze.svg";
-import MTCombinationMulti from "../../../src/assets/math/math-multipart-combination.svg";
+import MTCombinationClozeText from "../../../src/assets/math/math-multipart-cloze-blue.svg";
+import MTCombinationMulti from "../../../src/assets/math/math-multipart-combination-blue.svg";
 
 // Graphing
-import GRGraphing from "../../../src/assets/graphing/graphing.svg";
-import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant.svg";
+import GRGraphing from "../../../src/assets/graphing/graphing-blue.svg";
+import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant-blue.svg";
 import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
-import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
-import GRFractionEditor from "../../../src/assets/graphing/fraction-editor.svg";
+import GRNumberLinePlot from "../../../src/assets/graphing/line-plot-blue.svg";
+import GRFractionEditor from "../../../src/assets/graphing/fraction-editor-blue.svg";
 
 // Charts
-import LinePlot from "../../../src/assets/charts/line-plot.svg";
-import DotPlot from "../../../src/assets/charts/dot-plot.svg";
-import LinePlotNumberLine from "../../../src/assets/charts/line-plot-number-line.svg";
-import DotPlotNumberLine from "../../../src/assets/charts/dot-plot-number-line.svg";
-import Histogram from "../../../src/assets/charts/histogram.svg";
-import BarChart from "../../../src/assets/charts/bar-chart.svg";
-import LineChart from "../../../src/assets/charts/line-chart.svg";
+import LinePlotCategories from "../../../src/assets/charts/line-plot-categories-blue.svg";
+import DotPlotCategories from "../../../src/assets/charts/dot-plot-categories-blue.svg";
+import LinePlotNumberLine from "../../../src/assets/charts/line-plot-number-line-blue.svg";
+import DotPlotNumberLine from "../../../src/assets/charts/dot-plot-number-line-blue.svg";
+import Histogram from "../../../src/assets/charts/histogram-blue.svg";
+import BarChart from "../../../src/assets/charts/bar-chart-blue.svg";
+import LineChart from "../../../src/assets/charts/line-chart-blue.svg";
 
 // Video&Passages
-import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
-import SQPassage from "../../../src/assets/video-and-passages/passage01.png";
-import MQPassage from "../../../src/assets/video-and-passages/passage02.png";
-import TextResource from "../../../src/assets/video-and-passages/text.svg";
+import VPVideoPlayer from "../../../src/assets/video-and-passages/video-player-blue.svg";
+import SQPassage from "../../../src/assets/video-and-passages/passage01_blue.svg";
+import MQPassage from "../../../src/assets/video-and-passages/passage02_blue.svg";
+import TextResource from "../../../src/assets/video-and-passages/text-blue.svg";
 
 // Rulers & Calculators
-import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
+import Protractor from "../../../src/assets/rulers-calculators/protractor-blue.svg";
 
 export const getCards = (onSelectQuestionType, isPassage = false) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math;
@@ -367,7 +368,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "charts",
-      cardImage: DotPlot,
+      cardImage: DotPlotCategories,
       data: {
         title: "Dot Plot - Categories",
         firstMount: true,
@@ -563,7 +564,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "charts",
-      cardImage: LinePlot,
+      cardImage: LinePlotCategories,
       data: {
         title: "Line Plot - Categories",
         firstMount: true,
@@ -949,6 +950,22 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: ""
           },
           altResponses: []
+        },
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "edit",
+      cardImage: WSShortText,
+      data: {
+        title: "Upload File",
+        stimulus: "",
+        type: questionType.UPLOAD_FILE,
+        files: [],
+        validation: {
+          validResponse: { score: 1 },
+          maxScore: 1
         },
         hints: [{ value: uuids[0], label: "" }]
       },
@@ -1573,7 +1590,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "fill-blanks",
-      cardImage: FBClozeDropDown,
+      cardImage: FBClozeEditingTask,
       stimulus: "Pick the right options in the dropdown below",
       data: {
         title: "Editing Task",

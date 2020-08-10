@@ -241,6 +241,7 @@ class AssessmentPlayerDefault extends React.Component {
       settings,
       previewPlayer,
       scratchPad,
+      attachments,
       highlights,
       crossAction,
       toggleBookmark,
@@ -490,6 +491,8 @@ class AssessmentPlayerDefault extends React.Component {
                     setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
                     scratchPadMode={scratchPadMode}
                     saveHistory={this.saveHistory("scratchpad")}
+                    saveAttachments={this.saveHistory("attachments")}
+                    attachments={attachments}
                     history={LCBPreviewModal ? scratchpadActivity.data : scratchPad}
                     previouscratchPadDimensions={LCBPreviewModal ? scratchpadActivity.dimensions : null}
                     preview={preview}
@@ -520,6 +523,8 @@ class AssessmentPlayerDefault extends React.Component {
                     setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
                     scratchPadMode={scratchPadMode}
                     saveHistory={this.saveHistory("scratchpad")}
+                    saveAttachments={this.saveHistory("attachments")}
+                    attachments={attachments}
                     history={scratchPad}
                     saveHintUsage={this.saveHintUsage}
                     changePreviewTab={this.handleChangePreview}
@@ -582,6 +587,7 @@ const enhance = compose(
       preview: state.view.preview,
       questions: state.assessmentplayerQuestions.byId,
       scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].scratchpad`, null),
+      attachments: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].attachments`, null),
       highlights: get(state, `userWork.present[${ownProps?.passage?._id}].resourceId`, null),
       crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].crossAction`, null),
       userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}]`, {}),

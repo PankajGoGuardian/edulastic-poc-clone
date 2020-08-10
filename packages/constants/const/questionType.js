@@ -29,6 +29,7 @@ const TOKEN_HIGHLIGHT = "tokenhighlight";
 const HOTSPOT = "hotspot";
 const SHADING = "shading";
 const HIGHLIGHT_IMAGE = "highlightImage";
+const UPLOAD_FILE = "uploadFile";
 const DRAWING = "drawing";
 const LINE_CHART = "line";
 const BAR_CHART = "bar";
@@ -84,6 +85,7 @@ const selectsData = [
   { value: HOTSPOT, text: "Hotspot" },
   { value: SHADING, text: "Shading" },
   { value: HIGHLIGHT_IMAGE, text: "Drawing Response" },
+  { value: UPLOAD_FILE, text: "Upload File" },
   { value: LINE_CHART, text: "Line Chart" },
   { value: BAR_CHART, text: "Bar Chart" },
   { value: HISTOGRAM, text: "Histogram" },
@@ -105,7 +107,7 @@ const selectsData = [
   { value: MULTIPART, text: "Multipart" }
 ];
 
-const manuallyGradableQn = [FORMULA_ESSAY, HIGHLIGHT_IMAGE, ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT];
+const manuallyGradableQn = [FORMULA_ESSAY, HIGHLIGHT_IMAGE, UPLOAD_FILE, ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT];
 
 module.exports = {
   SHORT_TEXT,
@@ -137,6 +139,7 @@ module.exports = {
   HOTSPOT,
   SHADING,
   HIGHLIGHT_IMAGE,
+  UPLOAD_FILE,
   BAR_CHART,
   HISTOGRAM,
   DOT_PLOT,

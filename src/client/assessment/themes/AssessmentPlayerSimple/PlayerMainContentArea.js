@@ -36,6 +36,8 @@ const PlayerContentArea = ({
   windowWidth,
   scratchPadMode,
   saveHistory,
+  saveAttachments,
+  attachments,
   history,
   evaluation,
   highlights,
@@ -76,6 +78,8 @@ const PlayerContentArea = ({
                 scratchPadMode={scratchPadMode}
                 saveHistory={saveHistory}
                 history={history}
+                saveAttachments={saveAttachments}
+                attachments={attachments}
                 viewComponent="practicePlayer"
                 enableMagnifier={enableMagnifier}
                 updateScratchpadtoStore
@@ -93,6 +97,8 @@ const PlayerContentArea = ({
                 scratchPadMode={scratchPadMode}
                 saveHistory={saveHistory}
                 history={history}
+                saveAttachments={saveAttachments}
+                attachments={attachments}
                 evaluation={evaluation}
                 enableMagnifier={enableMagnifier}
                 changePreviewTab={changePreview}

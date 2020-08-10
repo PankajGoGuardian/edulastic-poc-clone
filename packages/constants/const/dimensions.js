@@ -8,8 +8,8 @@ module.exports = {
   indexSizeSmallBox: 10,
   clozeTextMaxWidth: 600,
   popoverMaxWidth: 400,
-  v1DocBased:{
-    width:695,
-    height:842
-  } 
+  v1DocBased: {
+    width: 712,
+    height: 792
+  }
 };

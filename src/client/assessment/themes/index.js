@@ -27,6 +27,7 @@ import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
 import { hideHintsAction } from "../actions/userInteractions";
 import UnansweredPopup from "./common/UnansweredPopup";
 import { regradedRealtimeAssignmentAction } from "../../student/sharedDucks/AssignmentModule/ducks";
+import { userWorkSelector } from "../../student/sharedDucks/TestItem";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -178,8 +179,40 @@ const AssessmentContainer = ({
     changePreview(previewTab);
   }, [userPrevAnswer, answersById, items]);
 
+  const hasUserWork = () => {
+    const { userWork = {} } = restProps;
+    const itemId = items[currentItem]?._id; // the id of current item shown during attempt
+    if (!itemId) {
+      // umm, something wrong with component, item id is empty, function should not evaluate
+      return false;
+    }
+    const currentItemWork = { ...userWork?.[itemId] };
+    /**
+     * highlight image has scratchpad saved as false,
+     * if assignment is resumed, but scratchpad was not used previously
+     */
+    if (currentItemWork.scratchpad !== undefined) {
+      const scratchpadUsed = currentItemWork.scratchpad !== false;
+      // delete the property so it does not contribute while checking isEmpty below
+      delete currentItemWork.scratchpad;
+      if (scratchpadUsed) {
+        return true;
+      }
+    }
+
+    return !isEmpty(currentItemWork);
+  };
+
   const getUnAnsweredQuestions = () => {
     const questions = items[currentItem]?.data?.questions || [];
+    /**
+     * if user used scratchpad or other tools like cross out
+     * consider item as attempted
+     * @see https://snapwiz.atlassian.net/browse/EV-17309
+     */
+    if (hasUserWork()) {
+      return [];
+    }
     return questions.filter(q => {
       const qAnswers = answersById[q.id];
       switch (q.type) {
@@ -554,7 +587,8 @@ const enhance = compose(
       showMagnifier: state.test.showMagnifier,
       enableMagnifier: state.testPlayer.enableMagnifier,
       regradedAssignment: get(state, "studentAssignment.regradedAssignment"),
-      userId: get(state, "user.user._id")
+      userId: get(state, "user.user._id"),
+      userWork: userWorkSelector(state)
     }),
     {
       saveUserResponse,

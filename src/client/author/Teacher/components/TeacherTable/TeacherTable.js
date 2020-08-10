@@ -27,7 +27,6 @@ import {
   MainContainer,
   RightFilterDiv,
   StyledButton,
-  StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer
@@ -542,7 +541,6 @@ class TeacherTable extends Component {
       search,
       districtId: userOrgId,
       role: "teacher",
-      limit: 25,
       page: currentPage,
       institutionId: location.institutionId || ""
       // uncomment after elastic search is fixed
@@ -581,18 +579,14 @@ class TeacherTable extends Component {
       selectedAdminsForDeactivate,
       showMergeTeachersModal,
       filtersData,
-      currentPage,
       refineButtonActive,
       showActive
     } = this.state;
 
     const {
       adminUsersData: result,
-      totalUsers,
       userOrgId,
       updateAdminUser,
-      pageNo,
-      setPageNo,
       teacherDetailsModalVisible,
       history,
       t
@@ -690,18 +684,18 @@ class TeacherTable extends Component {
                         height="32px"
                       />
                     ) : (
-                        <SelectInputStyled
-                          placeholder={filterStrDD[filtersColumn].placeholder}
-                          onChange={v => this.changeStatusValue(v, i)}
-                          value={filterStr !== "" ? filterStr : undefined}
-                          height="32px"
-                        >
-                          {filterStrDD[filtersColumn].list.map(_item => (
-                            <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
-                              {_item.title}
-                            </Option>
+                      <SelectInputStyled
+                        placeholder={filterStrDD[filtersColumn].placeholder}
+                        onChange={v => this.changeStatusValue(v, i)}
+                        value={filterStr !== "" ? filterStr : undefined}
+                        height="32px"
+                      >
+                        {filterStrDD[filtersColumn].list.map(_item => (
+                          <Option key={_item.title} value={_item.value} disabled={_item.disabled}>
+                            {_item.title}
+                          </Option>
                           ))}
-                        </SelectInputStyled>
+                      </SelectInputStyled>
                       )}
                   </Col>
                   <Col span={6} style={{ display: "flex" }}>
@@ -765,21 +759,7 @@ class TeacherTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={false}
-          />
-          <StyledPagination
-            defaultCurrent={1}
-            current={currentPage}
-            pageSize={25}
-            total={totalUsers}
-            onChange={page => this.setPageNo(page)}
-            hideOnSinglePage
-            pagination={{
-              current: pageNo,
-              total: totalUsers,
-              pageSize: 25,
-              onChange: page => setPageNo(page)
-            }}
+            pagination={{ pageSize: 25, hideOnSinglePage: true }}
           />
         </TableContainer>
         {

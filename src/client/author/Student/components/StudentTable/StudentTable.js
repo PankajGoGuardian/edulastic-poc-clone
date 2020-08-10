@@ -23,7 +23,6 @@ import {
   MainContainer,
   RightFilterDiv,
   StyledButton,
-  StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer
@@ -584,7 +583,6 @@ class StudentTable extends Component {
       search,
       districtId: userOrgId,
       role: "student",
-      limit: 25,
       page: currentPage
       // uncomment after elastic search is fixed
       // sortField,
@@ -621,7 +619,6 @@ class StudentTable extends Component {
       selectedAdminsForDeactivate,
       showMergeStudentsModal,
       filtersData,
-      currentPage,
       refineButtonActive
     } = this.state;
 
@@ -632,13 +629,8 @@ class StudentTable extends Component {
 
     const {
       adminUsersData: result,
-      totalUsers,
       userOrgId,
       updateAdminUser,
-      pageNo,
-      setPageNo,
-      // schoolsData,
-      // classList,
       studentDetailsModalVisible,
       addStudentsToOtherClassData,
       setAddStudentsToOtherClassVisiblity,
@@ -819,21 +811,7 @@ class StudentTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={false}
-          />
-          <StyledPagination
-            defaultCurrent={1}
-            current={currentPage}
-            pageSize={25}
-            total={totalUsers}
-            onChange={page => this.setPageNo(page)}
-            hideOnSinglePage
-            pagination={{
-              current: pageNo,
-              total: totalUsers,
-              pageSize: 25,
-              onChange: page => setPageNo(page)
-            }}
+            pagination={{ pageSize: 25, hideOnSinglePage: true }}
           />
         </TableContainer>
         {inviteStudentModalVisible && (

@@ -78,7 +78,8 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
   groupId = getAssignmentClassId(assignment, groupId, classIds);
   const redirects = classes.filter(
     x =>
-      x.redirect && ((x.specificStudents && x.students.includes(userId)) || (!x.specificStudents && x._id === groupId))
+      x.redirect &&
+      ((x.students.length > 0 && x.students.includes(userId)) || (!x.students.length && x._id === groupId))
   );
 
   assignment.class = assignment.class.map(c => {
@@ -225,8 +226,8 @@ export const getAllAssignmentsSelector = createSelector(
           clazz =>
             clazz.redirect !== true &&
             (!currentGroup || currentGroup === clazz._id) &&
-            ((classIds.includes(clazz._id) && !clazz.specificStudents) ||
-              (clazz.specificStudents && clazz.students.includes(currentUserId)))
+            ((classIds.includes(clazz._id) && !clazz.students.length) ||
+              (clazz.students.length && clazz.students.includes(currentUserId)))
         );
         return allClassess.map(clazz => ({
           ...assignment,

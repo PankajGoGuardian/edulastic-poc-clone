@@ -120,7 +120,6 @@ const RedirectPopUp = ({
       if (_selected.length) {
         const redirectAssignment = {
           _id: groupId,
-          specificStudents: type !== "entire",
           students: type === "entire" ? [] : _selected,
           showPreviousAttempt: showPrevAttempt,
           questionsDelivery: qDeliveryState,

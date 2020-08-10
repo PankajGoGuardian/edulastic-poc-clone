@@ -225,7 +225,7 @@ export const curateGradebookData = (gradebookData, filtersData, pagination, stat
           if (
             c._id === classId &&
             !c.exStudents?.includes(sId) &&
-            (!c.specificStudents || (c.specificStudents && c.students?.includes(sId)))
+            (!c?.students?.length || (c?.students?.length && c.students?.includes(sId)))
           ) {
             assessments[a._id] = {
               assignmentId: a._id,

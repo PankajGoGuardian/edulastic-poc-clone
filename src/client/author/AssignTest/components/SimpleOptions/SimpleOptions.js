@@ -84,18 +84,7 @@ class SimpleOptions extends React.Component {
   };
 
   onChange = (field, value) => {
-    const {
-      onClassFieldChange,
-      group,
-      assignment,
-      updateOptions,
-      toggleSpecificStudents,
-      isReleaseScorePremium,
-      userRole
-    } = this.props;
-    if (field === "specificStudents") {
-      return toggleSpecificStudents(value);
-    }
+    const { onClassFieldChange, group, assignment, updateOptions, isReleaseScorePremium, userRole } = this.props;
     if (field === "class") {
       const { classData, termId } = onClassFieldChange(value, group);
       const nextAssignment = produce(assignment, state => {
@@ -177,7 +166,7 @@ class SimpleOptions extends React.Component {
       return {
         _id,
         name: get(groupById, `${_id}.name`, ""),
-        assignedCount: get(item, "class,students,length", 0) + 1,
+        assignedCount: get(item, "students.length", 0) + 1,
         students: [...get(item, "students", []), studentId],
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
@@ -210,8 +199,7 @@ class SimpleOptions extends React.Component {
         students: studentsByGroupId[_id] || [],
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
-        termId: get(groupById, `${_id}.termId`, ""),
-        specificStudents: true
+        termId: get(groupById, `${_id}.termId`, "")
       };
     });
     const nextAssignment = produce(assignment, state => {
@@ -228,8 +216,7 @@ class SimpleOptions extends React.Component {
         delete item.students;
         return {
           ...item,
-          assignedCount: groupById[item._id].studentCount,
-          specificStudents: false
+          assignedCount: groupById[item._id].studentCount
         };
       });
     });
@@ -243,19 +230,16 @@ class SimpleOptions extends React.Component {
     const nextAssignment = produce(assignment, state => {
       state.class = assignment.class.map(item => {
         if (item._id === groupId) {
-          let specificStudents = true;
           let assignedCount = item.assignedCount - 1;
           if (assignedCount === 0) {
             assignedCount = keyBy(group, "_id")[groupId].studentCount;
-            specificStudents = false;
           }
           const newItem = {
             ...item,
             students: (item.students || []).filter(student => student !== studentId),
-            assignedCount,
-            specificStudents
+            assignedCount
           };
-          if (!specificStudents) {
+          if (assignedCount === 0) {
             delete newItem.students;
           }
           return newItem;
@@ -276,7 +260,6 @@ class SimpleOptions extends React.Component {
       assignment,
       updateOptions,
       userRole,
-      specificStudents,
       changeDateSelection,
       selectedDateOption,
       freezeSettings,
@@ -301,7 +284,6 @@ class SimpleOptions extends React.Component {
               fetchStudents={fetchStudents}
               selectedGroups={classIds}
               group={group}
-              specificStudents={specificStudents}
             />
             <StudentSelector
               selectedGroups={classIds}
@@ -311,8 +293,6 @@ class SimpleOptions extends React.Component {
               selectAllStudents={this.selectAllStudents}
               unselectAllStudents={this.unselectAllStudents}
               handleRemoveStudents={this.handleRemoveStudents}
-              onChange={this.onChange}
-              specificStudents={specificStudents}
             />
           </StyledRow>
 

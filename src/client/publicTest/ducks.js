@@ -48,8 +48,8 @@ export const getAllAssignmentsSelector = createSelector(
         clazz =>
           clazz.redirect !== true &&
           (!currentGroup || currentGroup === clazz._id) &&
-          ((classIds.includes(clazz._id) && !clazz.specificStudents) ||
-            (clazz.specificStudents && clazz.students.includes(currentUserId)))
+          ((classIds.includes(clazz._id) && !clazz?.students?.length) ||
+            (clazz?.students?.length && clazz.students.includes(currentUserId)))
       );
       return allClassess.map(clazz => ({
         ...assignment,

@@ -10,18 +10,14 @@ const dropdownStyle = {
   boxShadow: "0 3px 10px 0 rgba(0, 0, 0, 0.1)"
 };
 
-const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, specificStudents }) => (
+const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
   <React.Fragment>
     <Col span={12}>
       <FieldLabel>CLASS/GROUP SECTION</FieldLabel>
       <SelectInputStyled
         showSearch
         data-cy="selectClass"
-        placeholder={
-          specificStudents
-            ? "Select a class here first and then students in the field below"
-            : "Select a class to assign"
-        }
+        placeholder="Select a class to assign"
         mode="multiple"
         optionFilterProp="children"
         cache="false"

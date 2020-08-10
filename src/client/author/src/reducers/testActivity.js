@@ -301,9 +301,9 @@ const reducer = (state = initialState, { type, payload }) => {
       });
       return nextState;
     case REALTIME_GRADEBOOK_REDIRECT: {
-      const { specificStudents, students } = payload;
+      const { students } = payload;
       nextState = produce(state, _st => {
-        if (specificStudents && students.length > 0) {
+        if (students.length > 0) {
           const studentIndexes = students
             .map(studentId => _st.entities.findIndex(x => x.studentId === studentId))
             .filter(x => x > -1);

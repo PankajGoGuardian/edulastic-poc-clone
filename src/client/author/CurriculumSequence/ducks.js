@@ -1477,7 +1477,6 @@ export function* watcherSaga() {
  * @property {String} openPolicy
  * @property {String} closePolicy
  * @property {Class[]} class
- * @property {Boolean} specificStudents
  * @property {string} testId
  */
 
@@ -1510,7 +1509,6 @@ const getDefaultAssignData = () => ({
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
-  specificStudents: false,
   students: [],
   testId: ""
 });

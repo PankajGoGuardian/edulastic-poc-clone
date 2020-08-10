@@ -301,7 +301,7 @@ class AuthorTestItemPreview extends Component {
   renderColumns(col, colIndex, sectionQue, resourceCount, showScratch, saveScratchpad, scratchpadData) {
     const { style, windowWidth, onlySratchpad, viewComponent, fullModal, item, isPassage, ...restProps } = this.props;
     const { value, isEnableScratchpad } = this.state;
-    const { createdBy, data, maxScore, _id } = item;
+    const { createdBy, data = {}, maxScore, _id } = item;
     const { questions = [] } = data;
     const [firstQuestion = {}] = questions;
     const { authorDifficulty, depthOfKnowledge, bloomsTaxonomy, tags } = firstQuestion;

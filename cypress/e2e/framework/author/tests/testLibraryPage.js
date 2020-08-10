@@ -193,10 +193,7 @@ export default class TestLibrary {
     this.getCreateNewTestButton()
       .click()
       .then(() => {
-        if (fromAssignmentsPage)
-          cy.get("a")
-            .contains(" Or Author a Test >>")
-            .click({ force: true });
+        if (fromAssignmentsPage) cy.contains(" Or Author a Test >>").click({ force: true });
         cy.contains("button", "CREATE TEST").click();
       });
   };

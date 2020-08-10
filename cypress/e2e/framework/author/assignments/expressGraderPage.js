@@ -2,6 +2,9 @@ import { attemptTypes, questionTypeKey as queTypes, queColor } from "../../const
 import LiveClassboardPage from "./LiveClassboardPage";
 import StudentTestPage from "../../student/studentTestPage";
 
+const TEI_Attempt = "TEI";
+const CR_Questions = "Constructed Response";
+const skippedResponse = "-";
 export default class ExpressGraderPage extends LiveClassboardPage {
   constructor() {
     super();
@@ -188,10 +191,6 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   getQuestionTableResponseData = ({ attempt, questionTypeMap }) => {
     const questinoWiseData = {};
-    const TEI_Attempt = "TEI";
-    const CR_Questions = "Constructed Response";
-    const skippedResponse = "-";
-
     Object.keys(attempt).forEach(queNo => {
       const attemptType = attempt[queNo];
       const { queKey, attemptData, choices } = questionTypeMap[queNo];
@@ -284,6 +283,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   };
 
   verifyResponseEntryByIndexOfSelectedRow = (data, questionNumber, queKey) => {
+    if (data === skippedResponse) this.getCellforQueNum(questionNumber).should("have.text", data);
+    else {
     switch (queKey) {
       case queTypes.MATH_NUMERIC:
         this.getCellforQueNum(questionNumber)
@@ -295,6 +296,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         if (Array.isArray(data)) this.getCellforQueNum(questionNumber).should("have.text", data.join(`,`));
         else this.getCellforQueNum(questionNumber).should("have.text", data);
         break;
+    }
     }
   };
 

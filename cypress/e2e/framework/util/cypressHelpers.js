@@ -84,6 +84,18 @@ export default class CypressHelper {
     cy.wait(300);
   };
 
+  static setCustomBrowserDate = ({ dateToForward = 0, monthToForward = 0, yearToForward = 0 }) => {
+    const date = new Date();
+    return cy.clock(
+      Date.UTC(
+        date.getUTCFullYear() + yearToForward,
+        date.getUTCMonth() + monthToForward,
+        date.getUTCDate() + dateToForward
+      ),
+      ["Date"]
+    );
+  };
+
   static getShortId = item => item.slice(item.length - 5);
 
   static checkObjectEquality = (obj1, obj2, message = "Equal") => {

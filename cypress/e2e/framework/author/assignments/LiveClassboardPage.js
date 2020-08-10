@@ -32,7 +32,7 @@ class LiveClassboardPage {
     return cy.get(selector);
   };
 
-  getAllStudentStatus = () => cy.get('[data-cy="studentStatus"]');
+  getAllStudentStatus = () => cy.get('[data-cy="studentName"]').next();
 
   getStudentStatusByIndex = index => this.getAllStudentStatus().eq(index);
 
@@ -369,11 +369,21 @@ class LiveClassboardPage {
 
   verifyStudentStatusIsByIndex = (index, status, isManualGraded = false) => {
     if (!isManualGraded)
-      this.getStudentStatusByIndex(index).should(
-        "have.text",
-        status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status
-      );
-    else this.getStudentStatusByIndex(index).should("have.text", status);
+      this.getStudentStatusByIndex(index).should($ele => {
+        const studentStatus = Cypress.$($ele)
+          .text()
+          .toLowerCase()
+          .trim();
+        expect(studentStatus).to.eq((status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status).toLowerCase());
+      });
+    else
+      this.getStudentStatusByIndex(index).should($ele => {
+        const studentStatus = Cypress.$($ele)
+          .text()
+          .toLowerCase()
+          .trim();
+        expect(studentStatus).to.eq(status.toLowerCase());
+      });
   };
 
   verifyRedirectIcon = student => {

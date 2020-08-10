@@ -115,6 +115,13 @@ export default class TestAssignPage {
       }
     });
 
+  deselectAnsweOnPaper = () =>
+    this.getAnswerOnPaper().then($swich => {
+      if ($swich.hasClass("ant-switch-checked")) {
+        cy.wrap($swich).click();
+      }
+    });
+
   deselectShuffleQuestions = () =>
     this.getShuffleQue().then($swich => {
       if ($swich.hasClass("ant-switch-checked")) {

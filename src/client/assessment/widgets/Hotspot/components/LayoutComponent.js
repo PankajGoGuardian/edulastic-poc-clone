@@ -32,6 +32,7 @@ class LayoutComponent extends Component {
             </Col>
             <Col md={12}>
               <FontSizeOption
+                data-cy="fontSizeSelect"
                 onChange={val => changeUIStyle("fontsize", val)}
                 value={get(item, "uiStyle.fontsize", "normal")}
               />

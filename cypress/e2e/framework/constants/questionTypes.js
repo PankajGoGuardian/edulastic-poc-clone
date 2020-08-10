@@ -107,8 +107,10 @@ export const queColor = {
   ORANGE_2: "rgb(255, 233, 168)",
   ORANGE_3: "rgb(251, 250, 224)",
   BLACK: "rgb(33, 46, 58)",
-  SHADING_CLEAR : "rgb(216, 219, 222)",
-  SHADING_SELECT : "rgba(216, 219, 222, 0.5)"
+  SHADING_CLEAR: "rgb(216, 219, 222)",
+  SHADING_SELECT: "rgba(216, 219, 222, 0.5)",
+  HOTSPOT_CLEAR: "rgb(0, 176, 255)",
+  HOTSPOT_SELECT: "rgb(0, 123, 179)"
 };
 
 export const questionGroup = {

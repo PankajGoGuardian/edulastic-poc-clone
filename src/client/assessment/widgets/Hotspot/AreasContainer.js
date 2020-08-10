@@ -94,7 +94,7 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
   return (
     <FlexContainer flexDirection="column">
       <FlexContainer marginBottom="16px" justifyContent="flex-end">
-        <AreaButton onClick={handleModeChange(DRAW_MODE)} active={mode === DRAW_MODE}>
+        <AreaButton data-cy="area-draw-mode" onClick={handleModeChange(DRAW_MODE)} active={mode === DRAW_MODE}>
           <IconDraw data-cy="area-draw" />
           <AreaText>{t("component.hotspot.draw")}</AreaText>
         </AreaButton>
@@ -110,7 +110,7 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
           <IconEraseText data-cy="area-clear" />
           <AreaText>{t("component.hotspot.clear")}</AreaText>
         </AreaButton>
-        <AreaButton onClick={handleModeChange(DELETE_MODE)} active={mode === DELETE_MODE}>
+        <AreaButton data-cy="area-delete-mode" onClick={handleModeChange(DELETE_MODE)} active={mode === DELETE_MODE}>
           <IconTrash data-cy="area-delete" />
           <AreaText>{t("component.hotspot.delete")}</AreaText>
         </AreaButton>

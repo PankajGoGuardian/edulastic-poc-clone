@@ -21,7 +21,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, answersIndex, stemNumer
         if (answer) {
           const values = answer.optionIds?.map(id => idValueMap[id]) || [];
           return (
-            <AnswerBox key={answer.responseBoxID}>
+            <AnswerBox key={answer.responseBoxID} data-cy="answerBox">
               <IndexBox>{getStemNumeration(stemNumeration, answer.containerIndex)}</IndexBox>
               <AnswerContent>
                 <MathSpan dangerouslySetInnerHTML={{ __html: values.join(", ") }} />

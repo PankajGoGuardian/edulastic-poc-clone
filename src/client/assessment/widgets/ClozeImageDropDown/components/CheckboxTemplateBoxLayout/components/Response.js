@@ -52,6 +52,7 @@ const Response = ({
   const content = (
     <CheckBox
       style={{ ...btnStyle, ...modifiedDimesion }}
+      data-cy="checkAnswer"
       onClick={onClickHandler}
       checked={userAnswer}
       correct={status === "right"}

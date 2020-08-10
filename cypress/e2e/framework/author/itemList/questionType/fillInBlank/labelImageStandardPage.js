@@ -231,7 +231,7 @@ class LabelImageStandardPage {
       .should("have.length", 0);
   };
 
-  getAnswerBoxInPreviewByIndex = index => cy.get('[class="text container"]').eq(index);
+  getAnswerBoxInPreviewByIndex = index => cy.get('[data-cy="drag-item"]').eq(index);
 
   getEditChoiceByindex = index => this.getChoiceByIndex(index).find("p");
 
@@ -258,7 +258,7 @@ class LabelImageStandardPage {
 
   checkAddedAnswers = (index, text) => this.getAddedAnsByindex(index).should("contain.text", text);
 
-  getPointsEditor = () => cy.get('[data-cy="point-field"]');
+  getPointsEditor = () => cy.get('[data-cy="points"]');
 
   updatePoints = points => this.getPointsEditor().type(`{selectall}${points}`);
 
@@ -270,9 +270,17 @@ class LabelImageStandardPage {
       .contains("label");
 
   addAlternate() {
-    cy.get('[data-cy="alternative"]').click();
+    cy.get('[data-cy="alternate"]').click();
     return this;
   }
+
+  switchOnAlternateAnswer = () => {
+    cy.get('[data-cy="tabs"]')
+      .find("span")
+      .contains("Alternate")
+      .click();
+    return this;
+  };
 
   // advance options
   clickOnAdvancedOptions = () =>
@@ -309,6 +317,8 @@ class LabelImageStandardPage {
 
   getResponsesBoardContainer = Index => cy.get(`#drop-container-${Index}`);
 
+  getDropDownContainerInPreview = Index => cy.get(`[data-cy="checkAnswer"]`).eq(Index);
+
   getPointers = () => cy.get('[data-cy="pointers"]');
 
   getAddAnnotationButton = () => cy.get('[data-cy="addAnnotation"]');
@@ -323,10 +333,21 @@ class LabelImageStandardPage {
 
   VerifyAnswerBoxColorByIndex = (index, attempt) => {
     if (attempt == "correct") {
-      this.getAnswerBoxInPreviewByIndex(index).should("have.css", "background-color", queColor.LIGHT_GREEN);
+      this.getResponsesBoardContainer(index)
+        .find(`div`)
+        .first()
+        .should("have.css", "background-color", queColor.LIGHT_GREEN);
     } else if (attempt == "wrong") {
-      this.getAnswerBoxInPreviewByIndex(index).should("have.css", "background-color", queColor.LIGHT_RED);
+      this.getResponsesBoardContainer(index)
+        .find(`div`)
+        .first()
+        .should("have.css", "background-color", queColor.LIGHT_RED);
     }
+  };
+
+  verifyDropDownColorByIndexInPreview = (index, attempt) => {
+    this.getDropDownContainerInPreview(index).should("have.css", "background-color"
+      , attempt === "correct" ? queColor.LIGHT_GREEN : queColor.LIGHT_RED);
   };
 
   selectPointerStyle = value => {
@@ -358,6 +379,15 @@ class LabelImageStandardPage {
       this.getResponsesBoardContainer(index).should("not.be.visible");
     } else {
       this.getResponsesBoardContainer(index).should("be.visible");
+    }
+  };
+
+  verifyDropContainerBorderVisible = (index, isAvailable = true) => {
+    if (!isAvailable) {
+      // No border
+      this.getResponsesBoardContainer(index).should("have.css", "border", "0px none rgb(68, 68, 68)");
+    } else {
+      this.getResponsesBoardContainer(index).should("have.css", "border", "1px solid rgb(185, 185, 185)");
     }
   };
 

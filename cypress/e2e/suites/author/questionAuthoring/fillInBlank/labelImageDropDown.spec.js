@@ -22,7 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     imagePosTop: "50",
     imageAlternate: "Background",
     testColor: "#d49c9c",
-    testColor_rgb : "rgb(212, 156, 156)"
+    testColor_rgb: "rgb(212, 156, 156)"
   };
 
   const scoringBlock = new ScoringBlock();
@@ -201,7 +201,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         // question.setAnswerOnBoard(2, 0);
         preview.checkScore("3/3");
         for (let i = 0; i < 2; i++) {
-          question.VerifyAnswerBoxColorByIndex(i, "correct");
+          question.verifyDropDownColorByIndexInPreview(i, "correct");
         }
       });
 
@@ -213,7 +213,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         // question.setAnswerOnBoard(2, 1);
         preview.checkScore("0/3");
         for (let i = 0; i < 2; i++) {
-          question.VerifyAnswerBoxColorByIndex(i, "wrong");
+          question.verifyDropDownColorByIndexInPreview(i, "wrong");
         }
       });
 
@@ -225,7 +225,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .getShowAnswer()
           .click()
           .then(() => {
-            cy.contains("h2", "Correct Answer")
+            cy.contains("Correct Answer")
               .should("be.visible")
               .next()
               .contains("span", queData.choices[0])
@@ -431,7 +431,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         // question.setAnswerOnBoard(2, 0);
         preview.checkScore("3/3");
         for (let i = 0; i < 2; i++) {
-          question.VerifyAnswerBoxColorByIndex(i, "correct");
+          question.verifyDropDownColorByIndexInPreview(i, "correct");
         }
       });
 
@@ -443,7 +443,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         // question.setAnswerOnBoard(2, 1);
         preview.checkScore("0/3");
         for (let i = 0; i < 2; i++) {
-          question.VerifyAnswerBoxColorByIndex(i, "wrong");
+          question.verifyDropDownColorByIndexInPreview(i, "wrong");
         }
       });
 
@@ -455,7 +455,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .getShowAnswer()
           .click()
           .then(() => {
-            cy.contains("h2", "Correct Answer")
+            cy.contains("Correct Answer")
               .should("be.visible")
               .next()
               .contains("span", queData.choices[0])
@@ -520,8 +520,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.setAnswerOnBoard(0, 0);
       question.setAnswerOnBoard(1, 1);
       preview.checkScore("2/4");
-      question.VerifyAnswerBoxColorByIndex(0, "correct");
-      question.VerifyAnswerBoxColorByIndex(1, "wrong");
+      question.verifyDropDownColorByIndexInPreview(0, "correct");
+      question.verifyDropDownColorByIndexInPreview(1, "wrong");
     });
 
     it(" > test score with partial match and penality", () => {
@@ -535,8 +535,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.setAnswerOnBoard(0, 0);
       question.setAnswerOnBoard(1, 1);
       preview.checkScore("1.5/4");
-      question.VerifyAnswerBoxColorByIndex(0, "correct");
-      question.VerifyAnswerBoxColorByIndex(1, "wrong");
+      question.verifyDropDownColorByIndexInPreview(0, "correct");
+      question.verifyDropDownColorByIndexInPreview(1, "wrong");
     });
 
     it(" > test score with partial match ,penality and Rounding, ", () => {
@@ -557,14 +557,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.setAnswerOnBoard(0, 0);
       question.setAnswerOnBoard(1, 1);
       preview.checkScore("2/5");
-      question.VerifyAnswerBoxColorByIndex(0, "correct");
-      question.VerifyAnswerBoxColorByIndex(1, "wrong");
+      question.verifyDropDownColorByIndexInPreview(0, "correct");
+      question.verifyDropDownColorByIndexInPreview(1, "wrong");
     });
 
     it(" > test score with alternate answer", () => {
       const preview = editItem.header.preview();
       preview.header.edit();
       question.addAlternate();
+      question.switchOnAlternateAnswer();
       question.updatePoints(4);
       scoringBlock.selectScoringType(SCORING_TYPE.EXACT);
       question.setAnswerOnBoard(0, 1);
@@ -573,8 +574,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       question.setAnswerOnBoard(0, 1);
       question.setAnswerOnBoard(1, 1);
       preview.checkScore("4/5");
-      question.VerifyAnswerBoxColorByIndex(0, "correct");
-      question.VerifyAnswerBoxColorByIndex(1, "correct");
+      question.verifyDropDownColorByIndexInPreview(0, "correct");
+      question.verifyDropDownColorByIndexInPreview(1, "correct");
     });
   });
 

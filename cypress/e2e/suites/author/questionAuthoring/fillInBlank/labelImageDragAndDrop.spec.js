@@ -26,7 +26,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     imagePosTop: "50",
     imageAlternate: "Background",
     testColor: "#d49c9c",
-    testColor_rgb : "rgb(212, 156, 156)",
+    testColor_rgb: "rgb(212, 156, 156)",
     maxRes: "2"
   };
 
@@ -147,14 +147,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .click()
           .find("input")
           .should("not.be.checked");
-        question.verifyDropContainerIsVisible(0, false);
+        question.verifyDropContainerBorderVisible(0, false);
 
         question
           .getShowDropAreaCheck()
           .click()
           .find("input")
           .should("be.checked");
-        question.verifyDropContainerIsVisible(0);
+        question.verifyDropContainerBorderVisible(0);
       });
     });
 
@@ -312,8 +312,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .getShowAnswer()
           .click()
           .then(() => {
-            queData.choices.forEach(ch => {
-              cy.get(".correctanswer-box").should("contain.text", ch);
+            queData.choices.forEach((ch, index) => {
+              cy.get(`[data-cy="answerBox"]`)
+                .eq(index)
+                .find(`span`)
+                .should("contain.text", ch);
             });
           });
       });
@@ -455,14 +458,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .click()
           .find("input")
           .should("not.be.checked");
-        question.verifyDropContainerIsVisible(0, false);
+        question.verifyDropContainerBorderVisible(0, false);
 
         question
           .getShowDropAreaCheck()
           .click()
           .find("input")
           .should("be.checked");
-        question.verifyDropContainerIsVisible(0);
+        question.verifyDropContainerBorderVisible(0);
       });
     });
 
@@ -619,8 +622,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .getShowAnswer()
           .click({ force: true })
           .then(() => {
-            queData.choices.forEach(ch => {
-              cy.get(".correctanswer-box").should("contain.text", ch);
+            queData.choices.forEach((ch, index) => {
+              cy.get(`[data-cy="answerBox"]`)
+                .eq(index)
+                .find(`span`)
+                .should("contain.text", ch);
             });
           });
       });
@@ -712,6 +718,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       const preview = editItem.header.preview();
       preview.header.edit();
       question.addAlternate();
+      question.switchOnAlternateAnswer();
       question.updatePoints(2);
       question.dragAndDropResponseToBoard(0);
       question.dragAndDropResponseToBoard(1);

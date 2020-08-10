@@ -105,6 +105,7 @@ export default class CypressHelper {
     cy
       .get(".ant-notification-notice-message")
       .should("contain", msg)
+      .should("be.visible")
       .then($ele => {
         $ele.detach();
       });

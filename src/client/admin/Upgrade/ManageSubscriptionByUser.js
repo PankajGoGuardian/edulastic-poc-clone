@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col, Form, Radio, Input, Button } from "antd";
+
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { radioButtonUserData } from "../Data";
 import { Table } from "../Common/StyledComponents";
@@ -8,14 +9,29 @@ import { renderSubscriptionType } from "../Common/SubTypeTag";
 const { TextArea } = Input;
 const { Group: RadioGroup } = Radio;
 
+const getValidatedIdsStr = (ids, validIdsList) => {
+  // curate validIds from validIdsList
+  const validUserIds = validIdsList.map(el => el._id);
+  const validEmailIds = validIdsList.map(el => el._source.email);
+  // calculate valid count str
+  const validCount = ids.filter(id => validUserIds.includes(id) || validEmailIds.includes(id)).length;
+  return ids.length ? `${validCount} out of ${ids.length} validated` : "";
+};
+
+const getIdsStrToList = ids =>
+  (ids || "")
+    .replace(/\s/g, "")
+    .split(",")
+    .filter(id => id);
+
 const SearchUsersByEmailIdsForm = Form.create({ name: "searchUsersByEmailIdsForm" })(
-  ({ form: { getFieldDecorator, validateFields }, searchUsersByEmailIdAction }) => {
+  ({ form: { getFieldDecorator, getFieldValue, validateFields }, searchUsersByEmailIdAction, validEmailIdsList }) => {
     const handleSubmit = evt => {
       validateFields((err, { emailIds }) => {
         if (!err) {
           searchUsersByEmailIdAction({
             // here empty spaces and ↵ spaces are removed
-            identifiers: emailIds.replace(/\s/g, "").split(",")
+            identifiers: getIdsStrToList(emailIds)
           });
         }
       });
@@ -33,6 +49,9 @@ const SearchUsersByEmailIdsForm = Form.create({ name: "searchUsersByEmailIdsForm
           <Button type="primary" htmlType="submit">
             Validate
           </Button>
+          <span style={{ margin: "0 10px", fontWeight: "600" }}>
+            {getValidatedIdsStr(getIdsStrToList(getFieldValue("emailIds")), validEmailIdsList || [])}
+          </span>
         </Form.Item>
       </Form>
     );
@@ -41,6 +60,13 @@ const SearchUsersByEmailIdsForm = Form.create({ name: "searchUsersByEmailIdsForm
 
 const ValidEmailIdsTable = ({ validEmailIdsList }) => {
   const columns = [
+    {
+      title: "S. No.",
+      dataIndex: "index",
+      render: data => data + 1,
+      width: 80,
+      align: "center"
+    },
     {
       title: "User ID",
       dataIndex: "_id"
@@ -66,7 +92,7 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       <Table
         columns={columns}
         rowKey={record => record._id}
-        dataSource={validEmailIdsList}
+        dataSource={validEmailIdsList.map((el, index) => ({ ...el, index }))}
         pagination={false}
         bordered
       />
@@ -132,7 +158,10 @@ export default function ManageSubscriptionByUser({
 }) {
   return (
     <>
-      <SearchUsersByEmailIdsForm searchUsersByEmailIdAction={searchUsersByEmailIdAction} />
+      <SearchUsersByEmailIdsForm
+        searchUsersByEmailIdAction={searchUsersByEmailIdAction}
+        validEmailIdsList={validEmailIdsList}
+      />
       <ValidEmailIdsTable validEmailIdsList={validEmailIdsList} />
       <SubmitUserForm
         upgradeUserSubscriptionAction={upgradeUserSubscriptionAction}

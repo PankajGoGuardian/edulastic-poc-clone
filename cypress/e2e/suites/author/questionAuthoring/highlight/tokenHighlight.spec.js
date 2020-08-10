@@ -5,12 +5,11 @@ import TokenHighlightPage from "../../../../framework/author/itemList/questionTy
 import PreviewItemPage from "../../../../framework/author/itemList/itemDetail/previewPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highlight" type question`, () => {
   const queData = {
     group: "Highlight",
-    queType: "Token highlight",
+    queType: "Sentence Response",
     queText: "Highlight the correct part?",
     template: [
       "This is first paragraph. And of two sentences.",
@@ -28,15 +27,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
   const question = new TokenHighlightPage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
   const preview = new PreviewItemPage();
 
-  const RED_BG = "rgba(238, 22, 88, 0.15)";
-  const RED_BD = "rgb(221, 46, 68)";
-  const GREEN_BG = "rgb(132, 205, 54)";
-  const GREEN_BD = "rgb(94, 181, 0)";
+  const RED_BG = "rgb(253, 224, 233)";
+  const RED_BD = "rgba(255, 255, 255, 0)";
+  const GREEN_BG = "rgb(226, 252, 243)";
+  const GREEN_BD = "rgba(255, 255, 255, 0)";
 
-  const ACTIVE = "rgb(135, 138, 145)";
+  const ACTIVE = "rgb(26, 115, 232)";
   const ACTIVEWORD = "active-word";
 
   before(() => {
@@ -154,16 +152,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           .click({ force: true })
           .should("have.class", ACTIVEWORD);
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .wait(1000)
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 1/1");
-            cy.get("@answered")
-              .should("have.css", "background-color", GREEN_BG)
-              .and("have.css", "border-color", GREEN_BD);
-          });
+        preview.checkScore("1/1");
+        cy.get("@answered")
+          .should("have.css", "background-color", GREEN_BG)
+          .and("have.css", "border-color", GREEN_BD);
 
         preview.getClear().click();
 
@@ -175,15 +167,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           .click({ force: true })
           .should("have.class", ACTIVEWORD);
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 0/1");
-            cy.get("@answered")
-              .should("have.css", "background-color", RED_BG)
-              .and("have.css", "border-color", RED_BD);
-          });
+        preview.checkScore("0/1");
+        cy.get("@answered")
+          .should("have.css", "background-color", RED_BG)
+          .and("have.css", "border-color", RED_BD);
 
         preview.getClear().click();
       });
@@ -214,19 +201,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           });
         });
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 1/1");
-            queData.correct.sentence.forEach(text => {
-              question
-                .getAllTokenOnPreview()
-                .contains("span", text)
-                .should("have.css", "background-color", GREEN_BG)
-                .and("have.css", "border-color", GREEN_BD);
-            });
-          });
+        preview.checkScore("1/1");
+        queData.correct.sentence.forEach(text => {
+          question
+            .getAllTokenOnPreview()
+            .contains("span", text)
+            .should("have.css", "background-color", GREEN_BG)
+            .and("have.css", "border-color", GREEN_BD);
+        });
 
         // clear
         preview.getClear().click();
@@ -239,15 +221,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           .click()
           .should("have.class", ACTIVEWORD);
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 0/1");
-            cy.get("@answered")
-              .should("have.css", "background-color", RED_BG)
-              .and("have.css", "border-color", RED_BD);
-          });
+        preview.checkScore("0/1");
+        cy.get("@answered")
+          .should("have.css", "background-color", RED_BG)
+          .and("have.css", "border-color", RED_BD);
 
         preview.getClear().click();
       });
@@ -278,19 +255,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           });
         });
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 1/1");
-            queData.correct.word.forEach(text => {
-              question
-                .getAllTokenOnPreview()
-                .contains("span", text)
-                .should("have.css", "background-color", GREEN_BG)
-                .and("have.css", "border-color", GREEN_BD);
-            });
-          });
+        preview.checkScore("1/1");
+        queData.correct.word.forEach(text => {
+          question
+            .getAllTokenOnPreview()
+            .contains("span", text)
+            .should("have.css", "background-color", GREEN_BG)
+            .and("have.css", "border-color", GREEN_BD);
+        });
 
         // clear
         preview.getClear().click();
@@ -303,15 +275,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           .click()
           .should("have.class", ACTIVEWORD);
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 0/1");
-            cy.get("@answered")
-              .should("have.css", "background-color", RED_BG)
-              .and("have.css", "border-color", RED_BD);
-          });
+        preview.checkScore("0/1");
+        cy.get("@answered")
+          .should("have.css", "background-color", RED_BG)
+          .and("have.css", "border-color", RED_BD);
 
         preview.getClear().click();
       });
@@ -372,7 +339,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
           .click();
 
         select.scrollIntoView().should("contain", name);
-        question.checkFontSize("16px");
+        question.checkFontSize("14px");
       });
       it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
@@ -429,7 +396,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
         question
           .getMaxSelection()
-          //.should("be.visible")
+          // .should("be.visible")
           .type(`{selectall}${maxSelection}`)
           .should("have.value", `${maxSelection}`);
 

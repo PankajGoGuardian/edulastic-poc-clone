@@ -17,13 +17,19 @@ const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
     {
       title: "UserName",
       key: "username",
-      width: "40%",
+      width: "30%",
       dataIndex: "username"
+    },
+    {
+      title: "Role",
+      key: "username",
+      width: "15%",
+      dataIndex: "role"
     },
     {
       title: "Status",
       key: "status",
-      width: "35%",
+      width: "30%",
       dataIndex: "status"
     }
   ];

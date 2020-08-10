@@ -44,14 +44,14 @@ const ClassSyncNotificationListener = ({ user, removeClassSyncDetails, fetchStud
 
   const showUserNotifications = docs => {
     uniqBy(docs, "__id").map(doc => {
-      const { status, studentsSaved, counter, groupId } = doc;
+      const { status, studentsSaved, counter, groupId, message } = doc;
 
       if((status === "completed" || counter === 0) && !notificationIds.includes(doc.__id)){
         setNotificationIds([...notificationIds, doc.__id]);
         // show sync complete notification
         notification({
-          msg: "Class sync task completed.",
-          type: "success",
+          msg: message || "Class sync task completed.",
+          type: message ? "error" : "success",
           onClose: () => {closeNotification(event, doc.__id, {groupId, studentsSaved})}
         });
       }

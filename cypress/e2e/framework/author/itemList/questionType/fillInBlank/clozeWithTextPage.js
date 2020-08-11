@@ -16,7 +16,7 @@ class ClozeWithTextPage {
   getQuestionEditor = () => cy.get(".fr-element").eq(0);
 
   addAlternate() {
-    cy.get('[data-cy="alternative"]').click();
+    cy.get('[data-cy="alternate"]').click();
 
     return this;
   }
@@ -73,7 +73,7 @@ class ClozeWithTextPage {
       .eq(index)
       .should("be.visible");
 
-  getShowAnsBoxOnPreview = () => cy.get(".correctanswer-box").should("be.visible");
+  getShowAnsBoxOnPreview = () => cy.get(`[data-cy="answerBox"]`).should("be.visible");
 
   getSetAns = () => cy.get(".jsx-parser").find(".ant-input");
 

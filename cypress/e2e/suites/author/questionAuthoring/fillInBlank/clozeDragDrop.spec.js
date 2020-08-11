@@ -201,7 +201,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
 
       it(" > Click on Check answer", () => {
-        preview.checkScore("1/1");
+        preview.checkScore("2/2");
       });
 
       it(" > Click on Show Answers", () => {
@@ -209,8 +209,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .getShowAnswer()
           .click()
           .then(() => {
-            cy.contains("h2", "Correct Answer")
-              .parent()
+            cy.get(`[data-cy="answerBox"]`)
+              .find("div")
+              .first()
               .find("span", queData.choices[0])
               .should("be.visible");
           });
@@ -392,10 +393,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("not.checked");
         question.header.preview();
         question.verifyShuffledChoices(queData.choices);
-        question.header.edit();
       });
 
       it(" > Click on + symbol", () => {
+        question.header.edit();
         question.addAlternative().then(() => {
           question.getAddedAlternateTab().should("be.visible");
           question
@@ -445,13 +446,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
     });
 
     it(" > Test scoring with alternate answer", () => {
-      question.updatePoints(2);
+      question.updatePoints(4);
       question.setAnswerToResponseBox(queData.forScoring[0], 0, 0);
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
 
       question.getAddAlternative().click();
       question.getAddedAlternateTab().click();
-      question.updatePoints(6);
+      question.updatePoints(3);
 
       question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
@@ -461,7 +462,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[0], 0, 0);
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
 
-      preview.checkScore("2/6");
+      preview.checkScore("4/4");
       question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
       question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_GREEN);
 
@@ -470,7 +471,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
       question.setAnswerToResponseBox(queData.forScoring[2], 1, 1);
 
-      preview.checkScore("6/6");
+      preview.checkScore("3/4");
       question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
       question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_GREEN);
     });
@@ -482,14 +483,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
       question.selectScoringType("Partial match");
       question.selectRoundingType("Round down");
-      question.updatePenalty(3.5);
+      question.updatePenalty(1);
 
       preview = question.header.preview();
 
       question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
       question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
 
-      preview.checkScore("1/6");
+      preview.checkScore("1/4");
       question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
       question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_RED);
       preview.header.edit();
@@ -500,7 +501,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       question.setAnswerToResponseBox(queData.forScoring[1], 0, 1);
       question.setAnswerToResponseBox(queData.forScoring[0], 1, 0);
 
-      preview.checkScore("2/6");
+      preview.checkScore("0/4");
       question.getPreviewAnswerBoxContainerByIndex(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
       question.getPreviewAnswerBoxContainerByIndex(1).should("have.css", "background-color", queColor.LIGHT_RED);
     });

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -32,6 +32,7 @@ const UploadFilePreview = ({
   attachments
 }) => {
   const answerContextConfig = useContext(AnswerContext);
+  const [localAttachments, setLocalAttachment] = useState([]);
   const handleTextChange = comment => {
     saveAnswer(comment);
   };
@@ -39,11 +40,17 @@ const UploadFilePreview = ({
   const uploadFinished = files => {
     if (saveAttachments) {
       saveAttachments([...(attachments || []), ...files]);
+    } else {
+      setLocalAttachment([...(localAttachments || []), ...files]);
     }
   };
 
   const deleteAttachment = index => {
-    saveAttachments((attachments || []).filter((_, i) => i !== index));
+    if (saveAttachments) {
+      saveAttachments((attachments || []).filter((_, i) => i !== index));
+    } else {
+      setLocalAttachment((localAttachments || []).filter((_, i) => i !== index));
+    }
   };
 
   // if answerContextConfig comes from LCB/EG pages
@@ -93,8 +100,14 @@ const UploadFilePreview = ({
           {!isReadOnly && <Uploader onCompleted={uploadFinished} mt="26px" item={item} />}
 
           <SubTitle>Attachments</SubTitle>
-          {!isEmpty(attachments) && (
-            <FilesView files={attachments} cols={3} onDelete={deleteAttachment} mt="12px" hideDelete={isReadOnly} />
+          {(!isEmpty(attachments) || !isEmpty(localAttachments)) && (
+            <FilesView
+              cols={3}
+              mt="12px"
+              hideDelete={isReadOnly}
+              onDelete={deleteAttachment}
+              files={saveAttachments ? attachments : localAttachments}
+            />
           )}
 
           <Instructions item={item} />

@@ -169,8 +169,7 @@ class SimpleOptions extends React.Component {
         assignedCount: get(item, "students.length", 0) + 1,
         students: [...get(item, "students", []), studentId],
         grade: get(groupById, `${_id}.grades`, ""),
-        subject: get(groupById, `${_id}.subject`, ""),
-        specificStudents: true
+        subject: get(groupById, `${_id}.subject`, "")
       };
     });
     const nextAssignment = produce(assignment, state => {

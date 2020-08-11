@@ -41,18 +41,20 @@ const shareTypes = {
   PUBLIC: "Everyone",
   DISTRICT: "District",
   SCHOOL: "School",
-  INDIVIDUAL: "Individuals"
+  INDIVIDUAL: "Individuals",
+  "LINK SHARING": "Link Sharing"
 };
 
 const sharedKeysObj = {
   PUBLIC: "PUBLIC",
   DISTRICT: "DISTRICT",
   SCHOOL: "SCHOOL",
-  INDIVIDUAL: "INDIVIDUAL"
+  INDIVIDUAL: "INDIVIDUAL",
+  "LINK SHARING": "LINK SHARING"
 };
 
-const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
-const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL"];
+const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL", "LINK SHARING"];
+const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL", "LINK SHARING"];
 
 const { Option } = AutoComplete;
 class ShareModal extends React.Component {
@@ -298,6 +300,8 @@ class ShareModal extends React.Component {
     let sharedTypeMessage = "The entire Edulastic Community";
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
     else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
+    else if (sharedType === "LINK SHARING")
+      sharedTypeMessage = `Anyone with a link can use the Test. Invited users also find it under "Shared with Me" in the library`;
     return (
       <SharingModal width="700px" footer={null} visible={isVisible} onCancel={this.handleClose} centered>
         <ModalContainer>
@@ -509,7 +513,6 @@ const ShareLabel = styled.span`
 const ShareMessageWrapper = styled.div`
   text-transform: uppercase;
   height: 35px;
-  line-height: 35px;
 `;
 
 const ShareList = styled.div`

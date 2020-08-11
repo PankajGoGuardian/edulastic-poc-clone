@@ -9,6 +9,7 @@ import withRouter from "react-router-dom/withRouter";
 import { compose } from "redux";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
+import { getUserId } from "../../../src/selectors/user";
 import {
   ClassCode,
   ClassLink,
@@ -29,9 +30,9 @@ const SubHeader = ({
   location,
   unarchiveClass,
   owners = [],
-  parent,
   gradeSubject,
   studentsList,
+  userId,
   lastTeacher
 }) => {
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false);
@@ -40,17 +41,14 @@ const SubHeader = ({
   const studentCount = studentsList?.filter(stu => stu.enrollmentStatus != 0)?.length;
   const totalStudent = studentCount < 10 ? <span> 0{studentCount} </span> : studentCount;
   const coTeachers =
-    owners &&
+    owners ?
     owners
-      .filter(owner => owner.id !== parent.id)
-      .map(owner => owner.name)
-      .join(",");
-  const teacher = owners
-    .filter(owner => owner.id !== parent.id)
-    .slice(0, 1)
-    .map(owner => owner.name);
-  const coTeacher = owners.filter(owner => owner.id !== parent.id).slice(1, lastTeacher);
-  const multipleTeachers = coTeacher.map(owner => owner.name).join(",");
+      .filter(owner => owner.id !== userId)
+      .map(owner => owner.name) : [];
+  
+  const teacher = coTeachers.slice(0, 1);
+  const otherTeachers = coTeachers.slice(1, lastTeacher);
+  const otherTeacherNames = otherTeachers.join(", ");
 
   const handleUnarchiveClass = () => {
     unarchiveClass({ groupId: _id, exitPath, isGroup: type !== "class" });
@@ -82,9 +80,9 @@ const SubHeader = ({
               >
                 <CoTeacher>
                   CO-TEACHER{' '}<span>{teacher}</span>
-                  {coTeacher.length >= 1 ? (
-                    <Tooltip title={multipleTeachers} placement="right">
-                      <PopCoTeachers>+ {coTeacher.length}</PopCoTeachers>
+                  {otherTeachers.length >= 1 ? (
+                    <Tooltip title={otherTeacherNames} placement="right">
+                      <PopCoTeachers>+ {otherTeachers.length}</PopCoTeachers>
                     </Tooltip>
                   ) : null}
                 </CoTeacher>
@@ -96,7 +94,9 @@ const SubHeader = ({
         </CodeWrapper>
       )}
       <RightContent>
-        {active !== 1 && <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>}
+        {active !== 1 && (
+          <ClassLink onClick={() => setShowUnarchiveModal(true)}>UNARCHIVE</ClassLink>
+        )}
         {showUnarchiveModal && (
           <SimpleConfirmModal
             visible={showUnarchiveModal}
@@ -130,7 +130,7 @@ const enhance = compose(
   withRouter,
   connect(
     state => ({
-      user: state?.user?.user,
+      userId: getUserId(state),
       studentsList: get(state, "manageClass.studentsList", [])
     }),
     {

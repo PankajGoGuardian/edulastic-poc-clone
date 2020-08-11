@@ -150,11 +150,6 @@ class AssignTest extends React.Component {
       notification({ messageKey: "endDate" });
     } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
       notification({ messageKey: "dueDateShouldNotBeGreaterThanEndDate" });
-    } else if (
-      assignment?.class[0]?.students?.length > 0 &&
-      assignment.class.every(_class => !_class?.students?.length)
-    ) {
-      notification({ messageKey: "selectStudent" });
     } else {
       let updatedAssignment = { ...assignment };
       if (!selectedDateOption) {

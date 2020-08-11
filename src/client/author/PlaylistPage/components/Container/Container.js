@@ -178,7 +178,8 @@ class Container extends PureComponent {
     }
 
     const orgCollectionIds = orgCollections.map(o => o._id);
-    const extraCollections = playlist.collections.filter(c => !orgCollectionIds.includes(c._id));
+    const extraCollections = (playlist.collections || []).filter(c => !orgCollectionIds.includes(c._id));
+
     setData({ ...playlist, collections: [...collectionArray, ...extraCollections] });
   };
 

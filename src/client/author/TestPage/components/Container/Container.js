@@ -167,8 +167,8 @@ class Container extends PureComponent {
   };
 
   gotoTab = tab => {
-    const { history, match, location, currentTab, pageNumber } = this.props;
-    const { regradeFlow = false, previousTestId = "" } = location ?.state || {};
+    const { history, match, location } = this.props;
+    const { regradeFlow = false, previousTestId = "" } = location?.state || {};
     const { showCancelButton } = this.state;
     const id = match.params.id && match.params.id != "undefined" && match.params.id;
     const oldId = match.params.oldId && match.params.oldId != "undefined" && match.params.oldId;
@@ -216,7 +216,7 @@ class Container extends PureComponent {
       }
       if (createdItems.length > 0) {
         setEditEnable(true);
-        if (_location ?.state ?.showItemAddedMessage) {
+        if (_location?.state?.showItemAddedMessage) {
           const msg = (
             <span>
               New item has been created and added to the current test. Click{" "}
@@ -233,7 +233,7 @@ class Container extends PureComponent {
       if (match.params.id && match.params.id != "undefined") {
         this.setState({ testLoaded: false });
         receiveTestById(match.params.id, true, editAssigned);
-      } else if (!_location ?.state ?.persistStore) {
+      } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
         this.gotoTab("description");
         clearTestAssignments([]);
@@ -290,17 +290,17 @@ class Container extends PureComponent {
 
     if (userRole !== roleuser.STUDENT) {
       if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
-        const testItem = test.itemGroups ?.[0].items ?.[0] || {};
+        const testItem = test.itemGroups?.[0].items?.[0] || {};
         const testItemId = typeof testItem === "object" ? testItem._id : testItem;
         receiveItemDetailById(testItemId);
       }
       const { editAssigned = false } = history.location.state || {};
 
-      if (editAssigned && test ?._id && !testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
+      if (editAssigned && test?._id && !testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
         this.onEnableEdit(true);
       }
-      if (editAssigned && test ?._id && !editEnable && test.isInEditAndRegrade && !isTestLoading) {
-        const canEdit = test.authors ?.some(x => x._id === userId);
+      if (editAssigned && test?._id && !editEnable && test.isInEditAndRegrade && !isTestLoading) {
+        const canEdit = test.authors?.some(x => x._id === userId);
         if (canEdit) {
           setEditEnable(true);
         }
@@ -309,7 +309,7 @@ class Container extends PureComponent {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ testLoaded: true });
       }
-      if (userRole === roleuser.EDULASTIC_CURATOR && prevProps ?.test ?._id !== test ?._id) {
+      if (userRole === roleuser.EDULASTIC_CURATOR && prevProps?.test?._id !== test?._id) {
         getDefaultTestSettings(test);
       }
     } else if (userRole === roleuser.STUDENT) {
@@ -360,7 +360,7 @@ class Container extends PureComponent {
       editEnable
     } = this.props;
     const { authors, itemGroups = [] } = test;
-    if (!test ?.title ?.trim() ?.length) {
+    if (!test?.title?.trim()?.length) {
       notification({ type: "warn", messageKey: "pleaseEnterName" });
       return;
     }
@@ -424,7 +424,7 @@ class Container extends PureComponent {
     }
 
     const orgCollectionIds = orgCollections.map(o => o._id);
-    const extraCollections = test.collections.filter(c => !orgCollectionIds.includes(c._id));
+    const extraCollections = (test.collections || []).filter(c => !orgCollectionIds.includes(c._id));
     setData({ collections: [...collectionArray, ...extraCollections] });
   };
 
@@ -479,7 +479,7 @@ class Container extends PureComponent {
     const { showCancelButton = false } = history.location.state || this.state || {};
     const { isShowFilter } = this.state;
     const current = currentTab;
-    console.log('currentTab', currentTab);
+    console.log("currentTab", currentTab);
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const isOwner =
       (authors && authors.some(x => x._id === userId)) ||
@@ -552,7 +552,7 @@ class Container extends PureComponent {
             current={current}
             showCancelButton={showCancelButton}
           />
-          );
+        );
       case "settings":
         return (
           <Content>
@@ -627,7 +627,7 @@ class Container extends PureComponent {
       userRole,
       userFeatures
     } = this.props;
-    if (!test ?.title ?.trim() ?.length) {
+    if (!test?.title?.trim()?.length) {
       notification({ messageKey: "nameFieldRequired" });
       return;
     }
@@ -645,7 +645,7 @@ class Container extends PureComponent {
     if (test._id) {
       // Push `isInEditAndRegrade` flag in test if a user intentionally editing an assigned in progess test.
       if (
-        (history.location.state ?.editAssigned || testAssignments.length) &&
+        (history.location.state?.editAssigned || testAssignments.length) &&
         test.isUsed &&
         userRole !== roleuser.EDULASTIC_CURATOR &&
         !userFeatures.isCurator
@@ -704,7 +704,7 @@ class Container extends PureComponent {
       return false;
     }
     if (userFeatures.isPublisherAuthor || userFeatures.isCurator) {
-      if (test.collections ?.length === 0) {
+      if (test.collections?.length === 0) {
         notification({ messageKey: "testNotAssociatedWithCollection" });
         return false;
       }
@@ -858,7 +858,7 @@ class Container extends PureComponent {
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
     const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
-    const isOwner = authors ?.some(x => x._id === userId);
+    const isOwner = authors?.some(x => x._id === userId);
     const showPublishButton =
       (testStatus !== statusConstants.PUBLISHED && testId && (isOwner || isCurator)) || editEnable;
     const showShareButton = !!testId;
@@ -902,7 +902,7 @@ class Container extends PureComponent {
           onSave={isDocBased ? this.handleDocBasedSave : this.handleSave}
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
-          title={test ?.title || ""}
+          title={test?.title || ""}
           creating={creating}
           showEditButton={showEditButton}
           owner={isOwner || isCurator || !testId}
@@ -964,7 +964,7 @@ const enhance = compose(
       studentAssignments: getAllAssignmentsSelector(state),
       loadingAssignments: get(state, "publicTest.loadingAssignments"),
       editEnable: get(state, "tests.editEnable"),
-      pageNumber: state ?.testsAddItems ?.page || 1
+      pageNumber: state?.testsAddItems?.page || 1
     }),
     {
       createTest: createTestAction,

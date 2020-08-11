@@ -102,6 +102,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
           .then(() => {
             question
               .getShowAnsBoxOnPreview()
+              .find(`span`)
               .contains(queData.correctAns)
               .should("be.visible");
           });

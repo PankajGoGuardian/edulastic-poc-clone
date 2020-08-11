@@ -400,7 +400,7 @@ class ClozeDragDropDisplay extends Component {
     };
 
     const correctAnswerBoxLayout = (
-      <div style={{ ...responseBoxStyle, margin: 0 }}>
+      <div style={{ ...responseBoxStyle, margin: 0 }} data-cy="answerBox">
         <CorrectAnswerBoxLayout
           centerText
           hasGroupResponses={hasGroupResponses}

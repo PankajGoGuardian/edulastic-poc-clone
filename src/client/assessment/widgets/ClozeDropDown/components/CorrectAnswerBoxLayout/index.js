@@ -35,7 +35,7 @@ const CorrectAnswerBoxLayout = ({ userAnswers, altResponses, responseIds = [], t
       title={!isEmpty(altResponses) ? t("component.cloze.altAnswers") : t("component.cloze.correctAnswer")}
     >
       {responseIds.map(response => (
-        <Answer>
+        <Answer data-cy="correctAnswer">
           <Label>{getStemNumeration(stemNumeration, response.index)}</Label>
           <Text>
             <Response key={response.id} id={response.id} answer={convertToMathTemplate(getLabel(response.id))} />

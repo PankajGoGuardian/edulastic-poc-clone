@@ -144,7 +144,7 @@ class ClozeDragDropPage {
 
   getShuffleOptionCheck = () => cy.contains("span", "Shuffle Options").parent();
 
-  getAddAlternative = () => cy.get('[data-cy="alternative"]');
+  getAddAlternative = () => cy.get('[data-cy="alternate"]');
 
   getAddedAlternateTab = () => cy.contains("span", "Alternate 1");
 

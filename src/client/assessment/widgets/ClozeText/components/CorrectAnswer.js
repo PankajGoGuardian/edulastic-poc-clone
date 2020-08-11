@@ -20,6 +20,7 @@ export const Answer = ({ answer, getStemNumeration, stemNumeration }) => {
   return (
     <CorrectAnswerBox
       className="answer-list"
+      data-cy="answerBox"
       key={answer.id}
       onMouseEnter={() => togglePopover(true)}
       onMouseLeave={() => togglePopover(false)}

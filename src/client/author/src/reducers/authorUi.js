@@ -16,7 +16,7 @@ const reducer = (state = initialState, { type, payload }) => {
    * cannot set default value {} to argument
    * sometimes null values are passed
    */
-  const { compoentName } = payload || {};
+  const { componentName } = payload || {};
 
   switch (type) {
     case TOGGLE_MENU:
@@ -30,18 +30,18 @@ const reducer = (state = initialState, { type, payload }) => {
         isResponsive: !state.isResponsive
       };
     case ADD_LOADING_COMPONENT:
-      if (compoentName) {
+      if (componentName) {
         return produce(state, draft => {
           draft.currentlyLoading = draft.currentlyLoading || [];
-          draft.currentlyLoading.push(compoentName);
+          draft.currentlyLoading.push(componentName);
         });
       }
       return state;
     case REMOVE_LOADING_COMPONENT:
-      if (compoentName) {
-        if (state.currentlyLoading?.includes(compoentName)) {
+      if (componentName) {
+        if (state.currentlyLoading?.includes(componentName)) {
           return produce(state, draft => {
-            const index = draft.currentlyLoading.findIndex(comp => comp === compoentName);
+            const index = draft.currentlyLoading.findIndex(comp => comp === componentName);
             if (index !== -1) {
               draft.currentlyLoading.splice(index, 1);
             }

@@ -1545,7 +1545,7 @@ function* loadQuestionPreviewAttachmentsSaga({ payload }) {
 
 function* saveAndPublishItemSaga() {
   try {
-    yield put(addLoadingComponentAction({ compoentName: "saveAndPublishItem" }));
+    yield put(addLoadingComponentAction({ componentName: "saveAndPublishItem" }));
     yield put({ type: SAVE_QUESTION_REQUEST, payload: { saveAndPublishFlow: true } });
     const { payload } = yield take([SAVE_QUESTION_ERROR, PROCEED_TO_PUBLISH_ITEM]);
     if (payload.error) {
@@ -1564,7 +1564,7 @@ function* saveAndPublishItemSaga() {
   } catch (error) {
     Sentry.captureException(e);
   } finally {
-    yield put(removeLoadingComponentAction({ compoentName: "saveAndPublishItem" }));
+    yield put(removeLoadingComponentAction({ componentName: "saveAndPublishItem" }));
     return null;
   }
 }

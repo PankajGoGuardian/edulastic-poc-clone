@@ -16,6 +16,7 @@ module.exports = (on, config) => {
       args.push("--cast-initial-screen-width=1920");
       args.push("--cast-initial-screen-height=1080");
       args.push("--start-fullscreen");
+      args.push("--disable-dev-shm-usage");
 
       return args;
     }

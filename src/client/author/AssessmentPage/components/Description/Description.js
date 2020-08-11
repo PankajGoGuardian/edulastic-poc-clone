@@ -42,7 +42,7 @@ const Description = ({ setData, getItemsSubjectAndGrade, assessment, itemsSubjec
     }
 
     const orgCollectionIds = orgCollections.map(o => o._id);
-    const extraCollections = assessment.collections.filter(c => !orgCollectionIds.includes(c._id));
+    const extraCollections = (assessment.collections || []).filter(c => !orgCollectionIds.includes(c._id));
     setData({ ...assessment, collections: [...collectionArray, ...extraCollections] });
   };
 

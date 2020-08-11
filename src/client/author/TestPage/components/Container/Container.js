@@ -425,7 +425,7 @@ class Container extends PureComponent {
     }
 
     const orgCollectionIds = collectionsToShow.map(o => o._id);
-    const extraCollections = test.collections.filter(c => !orgCollectionIds.includes(c._id));
+    const extraCollections = (test.collections || []).filter(c => !orgCollectionIds.includes(c._id));
     setData({ collections: [...collectionArray, ...extraCollections] });
   };
 

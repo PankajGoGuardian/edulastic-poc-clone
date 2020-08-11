@@ -1,5 +1,5 @@
 {
-  "reporterEnabled": "mochawesome,cypress-image-snapshot/reporter,mocha-junit-reporter",
+  "reporterEnabled": "mochawesome,mocha-junit-reporter",
   "mochawesomeReporterOptions": {
     "reportDir": "cypress/reports",
     "overwrite": false,

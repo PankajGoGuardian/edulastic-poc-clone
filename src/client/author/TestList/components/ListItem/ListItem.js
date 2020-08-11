@@ -80,11 +80,20 @@ class ListItem extends Component {
     isOpenModal: false
   };
 
-  moveToItem = (e, url = "") => {
+  moveToItem = e => {
     e && e.stopPropagation();
-    const { history, item, match, mode } = this.props;
-    if (mode !== "embedded") {
-      history.push(`${url || match.url}/${item._id}#review`);
+    const { history, item, mode, isPlaylist } = this.props;
+    if (mode === "embedded") return;
+    if (isPlaylist) {
+      history.push(`/author/playlists/${item._id}#review`);
+    } else {
+      const tab = item.title ? "review" : "description";
+      history.push({
+        pathname: `/author/tests/tab/${tab}/id/${item._id}`,
+        state: {
+          editTestFlow: true
+        }
+      });
     }
   };
 
@@ -257,11 +266,7 @@ class ListItem extends Component {
           testId={currentTestId}
           closeTestPreviewModal={this.hidePreviewModal}
         />
-        <Container
-          onClick={
-            isPlaylist ? e => this.moveToItem(e, `/author/playlists`) : mode === "embedded" ? "" : this.openModal
-          }
-        >
+        <Container onClick={isPlaylist ? e => this.moveToItem(e) : mode === "embedded" ? "" : this.openModal}>
           <ContentWrapper>
             <Col span={24}>
               <Outer>
@@ -340,12 +345,7 @@ class ListItem extends Component {
                       e.stopPropagation();
                     }}
                   >
-                    <EduButton
-                      style={{ marginRight: "10px" }}
-                      isGhost
-                      data-cy="view"
-                      onClick={e => this.moveToItem(e, `/author/playlists`)}
-                    >
+                    <EduButton style={{ marginRight: "10px" }} isGhost data-cy="view" onClick={e => this.moveToItem(e)}>
                       Details
                     </EduButton>
                     <AddRemove selectedToCart={checked}>

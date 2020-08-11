@@ -58,7 +58,8 @@ import {
   getCollectionsSelector,
   getUserFeatures,
   getCollectionsToAddContent,
-  isOrganizationDistrictUserSelector
+  isOrganizationDistrictUserSelector,
+  getWritableCollectionsSelector
 } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -73,7 +74,7 @@ import GroupItems from "../GroupItems";
 import MainWorksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
-import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
+import { allowDuplicateCheck, allowContentEditCheck } from "../../../src/utils/permissionCheck";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { hasUserGotAccessToPremiumItem, setDefaultInterests } from "../../../dataUtils";
 import { getCurrentGroup, getClassIds } from "../../../../student/Reports/ducks";
@@ -471,7 +472,8 @@ class Container extends PureComponent {
       currentTab,
       userRole,
       editEnable,
-      userFeatures
+      userFeatures,
+      collections
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
@@ -485,7 +487,7 @@ class Container extends PureComponent {
       (authors && authors.some(x => x._id === userId)) ||
       !params.id ||
       userRole === roleuser.EDULASTIC_CURATOR ||
-      userFeatures.isCurator;
+      (userFeatures.isCurator && allowContentEditCheck(test.collections, collections));
     const isEditable = isOwner && (editEnable || testStatus === statusConstants.DRAFT);
 
     const props = {
@@ -778,9 +780,11 @@ class Container extends PureComponent {
   };
 
   onEnableEdit = onRegrade => {
-    const { test, userId, duplicateTest, currentTab, userRole, setEditEnable, userFeatures } = this.props;
+    const { test, userId, duplicateTest, currentTab, userRole, setEditEnable, userFeatures, collections } = this.props;
     const { _id: testId, authors, title, isUsed } = test;
-    const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
+    const isCurator =
+      (allowContentEditCheck(test.collections, collections) && userFeatures.isCurator) ||
+      userRole === roleuser.EDULASTIC_CURATOR;
     const canEdit = (authors && authors.some(x => x._id === userId)) || isCurator;
     setEditEnable(true);
     if (canEdit) {
@@ -849,7 +853,8 @@ class Container extends PureComponent {
       currentTab,
       testAssignments,
       userRole,
-      editEnable
+      editEnable,
+      writableCollections
     } = this.props;
     if (userRole === roleuser.STUDENT) {
       return null;
@@ -857,7 +862,8 @@ class Container extends PureComponent {
     const { showShareModal, isShowFilter } = this.state;
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
-    const isCurator = userFeatures.isCurator || userRole === roleuser.EDULASTIC_CURATOR;
+    const hasCollectionAccess = allowContentEditCheck(test.collections, writableCollections);
+    const isCurator = (hasCollectionAccess && userFeatures.isCurator) || userRole === roleuser.EDULASTIC_CURATOR;
     const isOwner = authors?.some(x => x._id === userId);
     const showPublishButton =
       (testStatus !== statusConstants.PUBLISHED && testId && (isOwner || isCurator)) || editEnable;
@@ -925,6 +931,7 @@ class Container extends PureComponent {
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
+          hasCollectionAccess={hasCollectionAccess}
         />
         {this.renderContent()}
       </>
@@ -956,6 +963,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       isReleaseScorePremium: getReleaseScorePremiumSelector(state),
       collections: getCollectionsSelector(state),
+      writableCollections: getWritableCollectionsSelector(state),
       userFeatures: getUserFeatures(state),
       testAssignments: getAssignmentsSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),

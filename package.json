@@ -20,6 +20,8 @@
     "format-check": "prettier --check 'src/client/**/*.js' !src/client/public/**/*.js",
     "execute": "ts-node --compiler-options '{react-outside-event\"lib\":[\"ESNext\"]}' ",
     "build": "node --max-old-space-size=4096 node_modules/poi/bin/cli.js --prod --parallel",
+    "dev:extension": "webpack-dev-server --open --config src/chrome-extension/webpack.config.js",
+    "build:extension": "webpack --config src/chrome-extension/webpack.config.js",
     "start": "APP_MODE_DEV=1 node --max-old-space-size=4096 node_modules/poi/bin/cli.js --serve --open",
     "doc:start": "DOC_MODE=1 APP_MODE_DEV=1 poi src/doc/index.html --serve --open",
     "prod-serve": "serve -s dist -p 3001",
@@ -81,6 +83,7 @@
     "froala-editor": "3.1.0",
     "history": "^4.7.2",
     "howler": "^2.1.2",
+    "html-webpack-plugin": "^4.3.0",
     "jsxgraph": "^0.99.7",
     "keyboardevent-key-polyfill": "^1.1.0",
     "loadjs": "^4.2.0",
@@ -231,9 +234,11 @@
     "sass-extract-loader": "^1.1.0",
     "sass-loader": "^7.1.0",
     "serve": "^10.1.2",
+    "socket.io-client": "^2.3.0",
     "style-loader": "^0.23.1",
     "test-data-bot": "^0.6.0",
     "webpack-bundle-analyzer": "^3.0.3",
+    "webpack-cli": "^3.3.12",
     "webpack-stats-plugin": "^0.2.1"
   },
   "ava": {

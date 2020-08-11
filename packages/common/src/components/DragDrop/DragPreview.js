@@ -48,14 +48,20 @@ const CustomDragLayer = ({ showPoint }) => {
   }));
 
   // ------------- vertical drag scroll start -----------------
-  const scrollContext = useContext(ScrollContext);
-  const scrollEl = scrollContext.getScrollElement();
+  const { scrollWindowInsteadContainer, getScrollElement = () => null } = useContext(ScrollContext);
+  const scrollEl = getScrollElement();
+  /**
+   * in edit mode we need to scroll on the window
+   * using scrollBy on the container does not make the page scroll in edit mode
+   * @see https://snapwiz.atlassian.net/browse/EV-17407
+   */
 
   if (scrollEl) {
     const containerTop = scrollEl.offsetTop + 20;
     const containerBottom = scrollEl.offsetTop + scrollEl.offsetHeight - 50; // window.innerHeight - 50;
     const yOffset = get(currentOffset, "y", null);
     const scrollByVertical = yOffset < containerTop ? -10 : 10;
+    const target = scrollWindowInsteadContainer ? window : scrollEl;
     if (
       !verticalInterval.current &&
       scrollByVertical &&
@@ -63,8 +69,9 @@ const CustomDragLayer = ({ showPoint }) => {
       (yOffset < containerTop || yOffset > containerBottom)
     ) {
       verticalInterval.current = setInterval(() => {
-        scrollEl.scrollBy({
-          top: scrollByVertical
+        target.scrollBy({
+          top: scrollByVertical,
+          behavior: "smooth"
         });
       }, 50);
     } else if (verticalInterval.current && ((yOffset > containerTop && yOffset < containerBottom) || !yOffset)) {

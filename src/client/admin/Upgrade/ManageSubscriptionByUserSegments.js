@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Form, Button as AntdButton, Select, Input } from "antd";
 import moment from "moment";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
@@ -18,13 +18,14 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
   ({
     form: { getFieldDecorator, validateFields, setFieldsValue, setFields },
     manageUserSegmentsData: {
-      partialPremiumData: { subscription = {} },
+      partialPremiumData = {},
       gradeSubject
     },
     upgradePartialPremiumUserAction,
     setGradeSubjectValue,
     addGradeSubjectRow,
-    deleteGradeSubjectRow
+    deleteGradeSubjectRow,
+    getSubscriptionAction
   }) => {
     const {
       subType = "partial_premium",
@@ -35,7 +36,9 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
       notes,
       subStartDate,
       subEndDate
-    } = subscription;
+    } = partialPremiumData;
+    const [districtIdInput, setDistrictId] = useState();
+    const [schoolIdInput, setSchoolId] = useState();
     const handleSubmit = evt => {
       validateFields(
         (
@@ -48,6 +51,12 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
             ...rest
           }
         ) => {
+          if(districtIdValue || schoolIdValue) {
+            if(districtIdInput !== districtIdValue || schoolIdValue !== schoolIdInput)
+            getSubscriptionAction({districtId: districtIdValue, schoolId: schoolIdValue})
+            setDistrictId(districtIdValue);
+            setSchoolId(schoolIdValue);
+          }
           if (!err) {
             if ((districtIdValue && schoolIdValue) || (!districtIdValue && !schoolIdValue)) {
               const errorMessage = "either district or school id is required";
@@ -81,6 +90,8 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
                 });
               }
               upgradePartialPremiumUserAction(subscriptionData);
+              setDistrictId(null);
+              setSchoolId(null);
             } else {
               notification({ messageKey: "selectGradeAndSubject" });
             }
@@ -103,7 +114,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
     const renderGrade = (item, _, index) => (
       <Select
         value={item.grade}
-        style={{ width: 300 }}
+        style={{ width: 250 }}
         placeholder="Please select"
         getPopupContainer={triggerNode => triggerNode.parentNode}
         onChange={value =>
@@ -125,7 +136,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
     const renderSubject = (item, _, index) => (
       <Select
         value={item.subject}
-        style={{ width: 300 }}
+        style={{ width: 250 }}
         placeholder="Please select"
         onChange={value =>
           setGradeSubjectValue({
@@ -175,6 +186,9 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
         >
           <Column title="Grade" key="grade" render={renderGrade} />
           <Column title="Subject" key="edulasticSubject" render={renderSubject} />
+          <Column title="Start Date" render={() => <span>{moment(subStartDate).format("DD MMM, YYYY")}</span>} />
+          <Column title="End Date" render={() => <span>{moment(subEndDate).format("DD MMM, YYYY")}</span>} />
+          <Column title="Notes" render={() => <span>{notes}</span>} />
           <Column
             title={
               <Button title="Add a row" aria-label="Add a Row" noStyle onClick={addGradeSubjectRow}>

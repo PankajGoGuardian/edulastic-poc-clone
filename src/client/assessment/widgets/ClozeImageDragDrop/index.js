@@ -28,6 +28,7 @@ import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { WithWindowScroll } from "./WithWindowScroll";
 
 const EmptyWrapper = styled.div`
   overflow-x: auto;
@@ -131,120 +132,122 @@ class ClozeImageDragDrop extends Component {
     return (
       <div>
         {view === "edit" && (
-          <ContentArea>
-            <React.Fragment>
-              <div className="authoring">
-                <Authoring
-                  item={itemForEdit}
-                  theme={theme}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                  setQuestionData={setQuestionData}
-                />
-                <Question
-                  section="main"
-                  label={t("component.correctanswers.setcorrectanswers")}
-                  fillSections={fillSections}
-                  position="unset" // position should be unset to make sure auto-scroll works
-                  cleanSections={cleanSections}
-                >
-                  <CorrectAnswers
-                    key={duplicatedResponses || showDraghandle || shuffleOptions}
-                    validation={item.validation}
-                    configureOptions={{
-                      duplicatedResponses,
-                      showDraghandle,
-                      shuffleOptions,
-                      transparentResponses
-                    }}
-                    options={previewDisplayOptions}
-                    imageAlterText={item.imageAlterText}
-                    responses={item.responses}
-                    imageUrl={item.imageUrl}
-                    imageWidth={item.imageWidth}
-                    imageHeight={item.imageHeight}
-                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                    uiStyle={uiStyle}
-                    backgroundColor={item.background}
-                    maxRespCount={item.maxRespCount}
+          <WithWindowScroll>
+            <ContentArea>
+              <React.Fragment>
+                <div className="authoring">
+                  <Authoring
+                    item={itemForEdit}
+                    theme={theme}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    questionId={item.id}
-                    imageOptions={item.imageOptions}
-                    item={item}
+                    setQuestionData={setQuestionData}
                   />
-                  <CorrectAnswerOptions>
-                    <CheckboxLabel
-                      data-cy="multi-check"
-                      onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
-                      defaultChecked={duplicatedResponses}
-                      mb="10px"
-                    >
-                      {t("component.cloze.imageDragDrop.duplicatedresponses")}
-                    </CheckboxLabel>
-                    <CheckboxLabel
-                      data-cy="drag-check"
-                      onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
-                      defaultChecked={showDraghandle}
-                      mb="10px"
-                    >
-                      {t("component.cloze.imageDragDrop.showdraghandle")}
-                    </CheckboxLabel>
-                    <CheckboxLabel
-                      data-cy="shuffle-check"
-                      onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
-                      defaultChecked={shuffleOptions}
-                      mb="10px"
-                    >
-                      {t("component.cloze.imageDragDrop.shuffleoptions")}
-                    </CheckboxLabel>
-                    <CheckboxLabel
-                      data-cy="transparent-check"
-                      onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
-                      defaultChecked={transparentResponses}
-                      mb="10px"
-                    >
-                      {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-                    </CheckboxLabel>
-                  </CorrectAnswerOptions>
-                  <MaxRespCountWrapper>
-                    <MaxRespCountInput
-                      data-cy="drag-drop-image-max-res"
-                      min={1}
-                      max={10}
-                      defaultValue={item.maxRespCount}
-                      onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                  <Question
+                    section="main"
+                    label={t("component.correctanswers.setcorrectanswers")}
+                    fillSections={fillSections}
+                    position="unset" // position should be unset to make sure auto-scroll works
+                    cleanSections={cleanSections}
+                  >
+                    <CorrectAnswers
+                      key={duplicatedResponses || showDraghandle || shuffleOptions}
+                      validation={item.validation}
+                      configureOptions={{
+                        duplicatedResponses,
+                        showDraghandle,
+                        shuffleOptions,
+                        transparentResponses
+                      }}
+                      options={previewDisplayOptions}
+                      imageAlterText={item.imageAlterText}
+                      responses={item.responses}
+                      imageUrl={item.imageUrl}
+                      imageWidth={item.imageWidth}
+                      imageHeight={item.imageHeight}
+                      showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                      uiStyle={uiStyle}
+                      backgroundColor={item.background}
+                      maxRespCount={item.maxRespCount}
+                      fillSections={fillSections}
+                      cleanSections={cleanSections}
+                      questionId={item.id}
+                      imageOptions={item.imageOptions}
+                      item={item}
                     />
-                    <Label>{t("component.cloze.imageDragDrop.maximumresponses")}</Label>
-                  </MaxRespCountWrapper>
-                </Question>
+                    <CorrectAnswerOptions>
+                      <CheckboxLabel
+                        data-cy="multi-check"
+                        onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
+                        defaultChecked={duplicatedResponses}
+                        mb="10px"
+                      >
+                        {t("component.cloze.imageDragDrop.duplicatedresponses")}
+                      </CheckboxLabel>
+                      <CheckboxLabel
+                        data-cy="drag-check"
+                        onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
+                        defaultChecked={showDraghandle}
+                        mb="10px"
+                      >
+                        {t("component.cloze.imageDragDrop.showdraghandle")}
+                      </CheckboxLabel>
+                      <CheckboxLabel
+                        data-cy="shuffle-check"
+                        onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
+                        defaultChecked={shuffleOptions}
+                        mb="10px"
+                      >
+                        {t("component.cloze.imageDragDrop.shuffleoptions")}
+                      </CheckboxLabel>
+                      <CheckboxLabel
+                        data-cy="transparent-check"
+                        onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
+                        defaultChecked={transparentResponses}
+                        mb="10px"
+                      >
+                        {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+                      </CheckboxLabel>
+                    </CorrectAnswerOptions>
+                    <MaxRespCountWrapper>
+                      <MaxRespCountInput
+                        data-cy="drag-drop-image-max-res"
+                        min={1}
+                        max={10}
+                        defaultValue={item.maxRespCount}
+                        onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                      />
+                      <Label>{t("component.cloze.imageDragDrop.maximumresponses")}</Label>
+                    </MaxRespCountWrapper>
+                  </Question>
 
-                <Question
-                  section="main"
-                  label={t("common.options.annotations")}
+                  <Question
+                    section="main"
+                    label={t("common.options.annotations")}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                  >
+                    <Annotations question={item} setQuestionData={setQuestionData} editable />
+                  </Question>
+                </div>
+
+                {advancedLink}
+
+                <Options
+                  onChange={this.handleOptionsChange}
+                  uiStyle={uiStyle}
+                  responses={item.responses}
+                  outerStyle={{
+                    padding: "30px 120px"
+                  }}
+                  advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
-                >
-                  <Annotations question={item} setQuestionData={setQuestionData} editable />
-                </Question>
-              </div>
-
-              {advancedLink}
-
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                responses={item.responses}
-                outerStyle={{
-                  padding: "30px 120px"
-                }}
-                advancedAreOpen={advancedAreOpen}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-                item={item}
-              />
-            </React.Fragment>
-          </ContentArea>
+                  item={item}
+                />
+              </React.Fragment>
+            </ContentArea>
+          </WithWindowScroll>
         )}
         {view === "preview" && (
           <Wrapper>

@@ -40,6 +40,7 @@ import CMSortList from "../../../src/assets/classy-match/sort-list-blue.svg";
 import WSEssayRichText from "../../../src/assets/written-spoken/essay-rich-text-blue.svg";
 import WSEssayPlainText from "../../../src/assets/written-spoken/essay-plain-text-blue.svg";
 import WSShortText from "../../../src/assets/written-spoken/short-text-blue.svg";
+import WSUploadFile from "../../../src/assets/written-spoken/upload-file-blue.svg";
 // import WSAudioPlayer from '../../assets/written-spoken/audio-player.svg';
 // import WSVideoPlayer from '../../assets/written-spoken/video-player.svg';
 
@@ -64,7 +65,7 @@ import MTCombinationMulti from "../../../src/assets/math/math-multipart-combinat
 // Graphing
 import GRGraphing from "../../../src/assets/graphing/graphing-blue.svg";
 import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant-blue.svg";
-import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
+import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop-blue.svg";
 import GRNumberLinePlot from "../../../src/assets/graphing/line-plot-blue.svg";
 import GRFractionEditor from "../../../src/assets/graphing/fraction-editor-blue.svg";
 
@@ -85,6 +86,9 @@ import TextResource from "../../../src/assets/video-and-passages/text-blue.svg";
 
 // Rulers & Calculators
 import Protractor from "../../../src/assets/rulers-calculators/protractor-blue.svg";
+
+// Others
+import CodingImage from "../../../src/assets/others/coding.svg";
 
 export const getCards = (onSelectQuestionType, isPassage = false) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math;
@@ -957,7 +961,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "edit",
-      cardImage: WSShortText,
+      cardImage: WSUploadFile,
       data: {
         title: "Upload File",
         stimulus: "",
@@ -2596,7 +2600,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "other",
-      cardImage: MCBlockLayout,
+      cardImage: CodingImage,
       data: {
         title: "Coding",
         type: questionType.CODING,

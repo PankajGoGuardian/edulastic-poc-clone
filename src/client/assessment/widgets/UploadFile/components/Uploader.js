@@ -10,7 +10,7 @@ import { allowedFiles, MAX_SIZE, MAX_COUNT } from "./constants";
 
 const folder = aws.s3Folders.DEFAULT;
 
-const Uploader = ({ onCompleted, mt, item }) => {
+const Uploader = ({ onCompleted, mt }) => {
   const [filesToUpload, setFilesToUpload] = useState([]);
   const toHandleUpload = useRef();
   const inputRef = useRef();
@@ -111,7 +111,7 @@ const Uploader = ({ onCompleted, mt, item }) => {
   };
 
   const progressArr = filesToUpload.filter(f => f.status !== "canceled");
-  const disableUpload = item.files?.length >= MAX_COUNT || !isEmpty(progressArr);
+  const disableUpload = !isEmpty(progressArr);
 
   return (
     <FlexContainer justifyContent="flex-start" mt={mt} flexDirection="column" width="100%">
@@ -132,7 +132,6 @@ const Uploader = ({ onCompleted, mt, item }) => {
 };
 
 Uploader.propTypes = {
-  item: PropTypes.object.isRequired,
   onCompleted: PropTypes.func,
   mt: PropTypes.string
 };

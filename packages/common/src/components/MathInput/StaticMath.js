@@ -44,6 +44,8 @@ const StaticMath = ({
     if (!mathField || !mathField.innerFields || !mathField.innerFields.length) {
       return;
     }
+
+    if (!window.MathQuill) return;
     const MQ = window.MathQuill.getInterface(2);
 
     const goTo = fieldIndex => {
@@ -167,6 +169,7 @@ const StaticMath = ({
   });
 
   useEffect(() => {
+    if (!window.MathQuill) return;
     const MQ = window.MathQuill.getInterface(2);
     if (mathFieldRef.current) {
       try {

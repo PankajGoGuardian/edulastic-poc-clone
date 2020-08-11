@@ -319,7 +319,7 @@ function* saveAssignment({ payload }) {
     // enable button if call fails
     yield put(setAssignmentSavingAction(false));
     if (err.status === 409) {
-      if (err.response.data.commonStudents?.length) {
+      if (err.response.data?.commonStudents?.length) {
         return yield put(updateAssignFailDataAction(err.response.data));
       }
       return yield put(toggleHasDuplicateAssignmentPopupAction(true));

@@ -4,10 +4,6 @@ import { Quill } from "react-quill";
 const Embed = Quill.import("blots/block/embed");
 
 class MathInputCmp extends Embed {
-  state = {
-    mathField: null
-  };
-
   static create() {
     const node = super.create();
     node.setAttribute("contenteditable", false);
@@ -21,9 +17,14 @@ class MathInputCmp extends Embed {
 
   constructor(domNode, value) {
     super(domNode, value);
-    const MQ = window.MathQuill.getInterface(2);
-    const mathField = MQ.StaticMath(domNode.childNodes[1]);
-    mathField.latex(value);
+    let mathField = {
+      latex: () => {}
+    };
+    if (window.MathQuill) {
+      const MQ = window.MathQuill.getInterface(2);
+      mathField = MQ.StaticMath(domNode.childNodes[1]);
+      mathField.latex(value);
+    }
     this.state = {
       mathField
     };

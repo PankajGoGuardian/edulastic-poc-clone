@@ -58,7 +58,7 @@ const styles = {
   listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 }
 };
 
-const getInitialAnswer = list => {
+const getInitialAnswer = (list = []) => {
   const ans = {};
   list.forEach(l => {
     ans[l.value] = null;

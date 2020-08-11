@@ -263,9 +263,9 @@ const AssessmentContainer = ({
               return isEmpty(d);
             }
             if (Array.isArray(d)) {
-              return isEmpty(d || d.value);
+              return isEmpty(d || d?.value);
             }
-            return isEmpty(d.value);
+            return isEmpty(d?.value);
           });
         }
         case questionType.CLASSIFICATION: {

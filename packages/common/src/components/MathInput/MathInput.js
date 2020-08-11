@@ -68,6 +68,7 @@ class MathInput extends React.PureComponent {
 
   componentDidMount() {
     const { defaultFocus, value } = this.props;
+    if (!window.MathQuill) return;
     const MQ = window.MathQuill.getInterface(2);
 
     MQ.registerEmbed("response", () => ({

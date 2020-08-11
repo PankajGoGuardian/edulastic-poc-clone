@@ -117,23 +117,23 @@ const Option = props => {
         case "number":
           return inx + 1;
         case "lower-alpha":
-          return ALPHABET[inx].toLowerCase();
+          return (ALPHABET[inx] || "").toLowerCase();
         case "upper-alpha":
         default:
-          return ALPHABET[inx].toUpperCase();
+          return (ALPHABET[inx] || "").toUpperCase();
       }
     } else if (uiStyle.type === "standard") {
       switch (uiStyle.stemNumeration) {
         case "number":
           return inx + 1;
         case "lower-alpha":
-          return ALPHABET[inx].toLowerCase();
+          return (ALPHABET[inx] || "").toLowerCase();
         case "upper-alpha":
         default:
-          return ALPHABET[inx].toUpperCase();
+          return (ALPHABET[inx] || "").toUpperCase();
       }
     } else {
-      return ALPHABET[inx].toUpperCase();
+      return (ALPHABET[inx] || "").toUpperCase();
     }
   };
 

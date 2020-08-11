@@ -155,7 +155,7 @@ const AlignmentRow = ({
       const curriculumFromStandard = data.standard.id
         ? formattedCuriculums.find(c => c.value === data.standard.id)
         : {};
-      _subject = curriculumFromStandard.subject;
+      _subject = curriculumFromStandard?.subject;
     }
     createUniqGradeAndSubjects([...data.grades, ...gradesFromElo], subject);
     editAlignment(alignmentIndex, {

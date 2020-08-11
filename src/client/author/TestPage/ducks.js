@@ -1485,9 +1485,11 @@ function* updateTestDocBasedSaga({ payload }) {
       itemLevelScoring: false
     };
 
-    const { testId, ...updatedItem } = yield call(updateItemDocBasedSaga, {
+    const response = yield call(updateItemDocBasedSaga, {
       payload: { id: testItemId, data: updatedTestItem, keepData: true, redirect: false }
     });
+
+    const { testId, ...updatedItem } = response || {};
 
     // Updating the annotation question Id references using updated item question ids.
     if (updatedItem.data?.questions?.length && payload.data?.annotations?.length) {

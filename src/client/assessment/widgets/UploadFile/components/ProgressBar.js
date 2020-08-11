@@ -14,7 +14,13 @@ import gifIcon from "../icons/gif.svg";
 import pdfIcon from "../icons/pdf.svg";
 import pngIcon from "../icons/png.svg";
 import xlsIcon from "../icons/xls.svg";
-import { JPEG, PNG, GIF, DOC, DOCX, PDF, XLS, XLSX } from "./constants";
+import htmlIcon from "../icons/html.svg";
+import mp3Icon from "../icons/mp3.svg";
+import mp4Icon from "../icons/mp4.svg";
+import pptIcon from "../icons/ppt.svg";
+import swfICon from "../icons/swf.svg";
+import zipIcon from "../icons/zip.svg";
+import { JPEG, PNG, GIF, DOC, DOCX, PDF, XLS, XLSX, HTML, MP3, MP4, PPT, PPTX, SWF, ZIP } from "./constants";
 
 const Link = styled.a`
   color: ${greyThemeDark1};
@@ -55,6 +61,19 @@ const ProgressBar = ({ index, cols = 2, hidebar, hideDelete, data, onCancel }) =
       case XLS:
       case XLSX:
         return xlsIcon;
+      case HTML:
+        return htmlIcon;
+      case MP3:
+        return mp3Icon;
+      case MP4:
+        return mp4Icon;
+      case PPT:
+      case PPTX:
+        return pptIcon;
+      case SWF:
+        return swfICon;
+      case ZIP:
+        return zipIcon;
       default:
         break;
     }

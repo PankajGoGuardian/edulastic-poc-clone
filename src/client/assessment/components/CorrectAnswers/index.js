@@ -3,6 +3,7 @@ import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import { questionTitle } from "@edulastic/constants";
 import { AlternateAnswerLink } from "../../styled/ButtonStyles";
 import PointBlock from "./PointBlock";
 import AnswerTabs from "./AnswerTabs";
@@ -27,6 +28,7 @@ class CorrectAnswers extends Component {
       validation,
       onAdd,
       mixAndMatch,
+      questionType,
       ...rest
     } = this.props;
     const hidePoint = mixAndMatch && correctTab > 0;
@@ -50,7 +52,7 @@ class CorrectAnswers extends Component {
             />
             {!hidePoint && <PointBlock {...rest} correctAnsScore={validation?.validResponse?.score} />}
           </FlexContainer>
-          {!hidePoint && (
+          {questionType !== questionTitle.MCQ_TRUE_OR_FALSE && !hidePoint && (
             <FlexContainer alignItems="flex-end">
               <AlternateAnswerLink onClick={onAdd} color="primary" variant="extendedFab" data-cy="alternate">
                 {`+ ${t("component.correctanswers.alternativeAnswer")}`}
@@ -76,7 +78,7 @@ CorrectAnswers.propTypes = {
   options: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  questionType: PropTypes.any.isRequired,
+  questionType: PropTypes.string,
   hidePoint: PropTypes.bool
 };
 
@@ -85,7 +87,8 @@ CorrectAnswers.defaultProps = {
   children: undefined,
   hidePoint: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  questionType: ""
 };
 
 export default withNamespaces("assessment")(CorrectAnswers);

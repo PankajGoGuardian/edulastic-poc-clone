@@ -31,10 +31,10 @@ const handleDrop = (page, cb, zoom = 1) => ({ question }, e) => {
   });
 };
 
-const getNumberStyles = (x, y) => ({
+const getNumberStyles = (x, y, scale) => ({
   position: "absolute",
-  top: `${y}px`,
-  left: `${x}px`
+  top: `${y * scale}px`,
+  left: `${x * scale}px`
 });
 
 const PDFPreview = ({
@@ -142,7 +142,7 @@ const PDFPreview = ({
             />
           )}
 
-          <AnnotationsContainer className="annotations-container" zoom={pdfScale}>
+          <AnnotationsContainer className="annotations-container">
             {annotations
               .filter(item => item.toolbarMode === "question" && item.page === currentPage)
               .map(({ uuid, qIndex, x, y, questionId }) => (
@@ -150,7 +150,7 @@ const PDFPreview = ({
                   className="annotation-item"
                   key={uuid}
                   onClick={handleHighlight(questionId)}
-                  style={getNumberStyles(x, y)}
+                  style={getNumberStyles(x, y, pdfScale)}
                 >
                   <QuestionItem
                     key={questionId}
@@ -169,6 +169,7 @@ const PDFPreview = ({
                     viewMode={viewMode}
                     annotations
                     pdfPreview
+                    zoom={pdfScale >= 2 ? 2 : pdfScale}
                   />
                 </div>
               ))}

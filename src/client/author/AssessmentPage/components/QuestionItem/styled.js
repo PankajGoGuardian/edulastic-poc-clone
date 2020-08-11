@@ -48,6 +48,7 @@ export const QuestionNumber = styled.span`
   transition: all 300ms;
   cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
   box-shadow: ${({ highlighted, pdfPreview }) => pdfPreview && highlighted && `0 0 10px 0 ${themeColor}`};
+  transform: scale(${({ zoom }) => zoom || 1});
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 16px;

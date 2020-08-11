@@ -308,7 +308,17 @@ const saveOrgPermissionsApi = ({ permissions, districtId }) =>
     })
     .then(({ data }) => data);
 
+  const getSubscription = ({ districtId, schoolId }) =>
+    api
+      .callApi({
+        url: `/subscription`,
+        method: "get",
+        params: { districtId, schoolId }
+      })
+      .then(({ data }) => data.result);
+
 export default {
+  getSubscription,
   searchUpdateDistrict,
   updateDistrictCleverId,
   updateDistrictClasslinkId,

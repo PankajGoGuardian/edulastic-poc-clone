@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col, Form, Radio, Input, Button } from "antd";
-
+import moment from "moment";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { radioButtonUserData } from "../Data";
 import { Table } from "../Common/StyledComponents";
@@ -75,6 +75,20 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       title: "Subscription Type",
       dataIndex: "subscription",
       render: renderSubscriptionType
+    },
+    {
+      title: "Role",
+      dataIndex: "_source.role"
+    },
+    {
+      title: "Start Date",
+      dataIndex: "subscription",
+      render: (subscription) => <span>{subscription?.subStartDate ? moment(subscription.subStartDate).format("DD MMM, YYYY") : "-" }</span>
+    },
+    {
+      title: "End Date",
+      dataIndex: "subscription",
+      render: (subscription) => <span>{subscription?.subStartDate ? moment(subscription?.subEndDate).format("DD MMM, YYYY") : "-" }</span>
     },
     {
       title: "Email ID",

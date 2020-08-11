@@ -15,6 +15,7 @@ const SEARCH_SCHOOLS_BY_ID = "[admin-upgrade] SEARCH_SCHOOLS_BY_ID";
 const BULK_SCHOOLS_SUBSCRIBE = "[admin-upgrade] BULK_SCHOOLS_SUBSCRIBE";
 const UPGRADE_PARTIAL_PREMIUM_USER = "[admin-upgrade] UPGRADE_PARTIAL_PREMIUM_USER";
 const SAVE_ORG_PERMISSIONS = "[admin] save org permissions";
+const GET_SUBSCRIPTION = "[admin] get subscription"
 
 // ACTION CREATORS
 export const getDistrictDataAction = createAction(GET_DISTRICT_DATA);
@@ -25,6 +26,7 @@ export const searchSchoolsByIdAction = createAction(SEARCH_SCHOOLS_BY_ID);
 export const bulkSchoolsSubscribeAction = createAction(BULK_SCHOOLS_SUBSCRIBE);
 export const upgradePartialPremiumUserAction = createAction(UPGRADE_PARTIAL_PREMIUM_USER);
 export const saveOrgPermissionsAction = createAction(SAVE_ORG_PERMISSIONS);
+export const getSubscriptionAction = createAction(GET_SUBSCRIPTION);
 
 // SLICE's
 export const manageSubscriptionsBydistrict = createSlice({
@@ -143,6 +145,10 @@ export const manageSubscriptionsByUserSegments = createSlice({
     },
     deleteGradeSubjectRow: (state, { payload: index }) => {
       state.gradeSubject.splice(index, 1);
+    },
+    setSubsciptions : (state, { payload }) => {
+      state.partialPremiumData = payload || {};
+      state.gradeSubject = payload?.gradeSubject || [];
     }
   }
 });
@@ -180,6 +186,7 @@ const reducer = combineReducers({
 
 // API's
 const {
+  getSubscription,
   searchUpdateDistrict: searchUpdateDistrictApi,
   manageSubscription: manageSubscriptionApi,
   searchUsersByEmailsOrIds: searchUsersByEmailsOrIdsApi,
@@ -289,6 +296,16 @@ function* saveOrgPermissionsSaga({ payload }) {
   }
 }
 
+
+function* getSubscriptionSaga({ payload }) {
+  try {
+    const subscription = yield call(getSubscription, payload);
+    yield put(manageSubscriptionsByUserSegments.actions.setSubsciptions(subscription))
+  } catch (err) {
+    yield call(notification, { type: "error", msg: "Failed to load subscriptions" });
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -298,7 +315,8 @@ function* watcherSaga() {
     yield takeEvery(SEARCH_SCHOOLS_BY_ID, searchSchoolsById),
     yield takeEvery(BULK_SCHOOLS_SUBSCRIBE, bulkSchoolsSubscribe),
     yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
-    yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga)
+    yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga),
+    yield takeEvery(GET_SUBSCRIPTION, getSubscriptionSaga)
   ]);
 }
 

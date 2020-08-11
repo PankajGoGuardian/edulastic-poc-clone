@@ -1,5 +1,5 @@
 import { backgroundGrey2, themeColor } from "@edulastic/colors";
-import { CheckBoxGrp, CheckboxLabel,notification } from "@edulastic/common";
+import { CheckBoxGrp, CheckboxLabel, notification } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { Button, DatePicker, Input, Select, Spin } from "antd";
 import moment from "moment";
@@ -97,14 +97,14 @@ const AddPermissionModal = ({
 
   const validateFields = () => {
     if (!fieldData.orgType) {
-      return notification({ messageKey:"pleaseSelectPersmissionLevel"});
+      return notification({ messageKey: "pleaseSelectPersmissionLevel" });
     }
     if (!fieldData.orgDetails.length) {
-      if (fieldData.orgType === "USER") return notification({ messageKey:"pleaseSelectAUser"});
-      if (fieldData.orgType === "SCHOOL") return notification({ messageKey:"pleaseSelectSchool"});
+      if (fieldData.orgType === "USER") return notification({ messageKey: "pleaseSelectAUser" });
+      if (fieldData.orgType === "SCHOOL") return notification({ messageKey: "pleaseSelectSchool" });
     }
     if (fieldData.orgType !== "USER" && !fieldData.role.length) {
-      return notification({ messageKey:"pleaseSelectAtleastOneRole"});
+      return notification({ messageKey: "pleaseSelectAtleastOneRole" });
     }
     const { orgDetails, role, ..._permissionDetails } = fieldData;
     let permissionDetails;
@@ -137,7 +137,7 @@ const AddPermissionModal = ({
 
   const handleFieldChange = (fieldName, value) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId) {
-      return notification({ messageKey:"pleaseSelectAnOrganization"});
+      return notification({ messageKey: "pleaseSelectAnOrganization" });
     }
 
     const updatedFieldData = { ...fieldData, [fieldName]: value };
@@ -171,13 +171,16 @@ const AddPermissionModal = ({
     setFieldData({ ...fieldData, orgDetails });
   };
 
-  const handleSearch = (searchString, searchType) => {
+  const handleSearch = (searchString, searchType, size) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId && searchType !== "DISTRICT")
-      return notification({ messageKey:"pleaseSelectDistrict"});
+      return notification({ messageKey: "pleaseSelectDistrict" });
     const data = {
       orgType: searchType,
       searchString
     };
+    if (size) {
+      data.size = size;
+    }
     if (searchType !== "DISTRICT") data.districtId = fieldData.districtId;
     searchRequest(data);
   };
@@ -186,13 +189,13 @@ const AddPermissionModal = ({
     let currentDate = moment().format("DD-MM-YYYY");
     currentDate = moment(currentDate, "DD-MM-YYYY").valueOf();
     if (date < currentDate) {
-      return notification({ messageKey:"pickedDateCannotBeLesseThanCurrentDate"});
+      return notification({ messageKey: "pickedDateCannotBeLesseThanCurrentDate" });
     }
     if (fieldName === "startDate" && date >= fieldData?.endDate) {
-      return notification({ messageKey:"startDateShouldBeLessThanTheEndDate"});
+      return notification({ messageKey: "startDateShouldBeLessThanTheEndDate" });
     }
     if (fieldName === "endDate" && date <= fieldData?.startDate) {
-      return notification({ messageKey:"endDateShouldBeMoreThanThestartDate"});
+      return notification({ messageKey: "endDateShouldBeMoreThanThestartDate" });
     }
     handleFieldChange(fieldName, date);
   };
@@ -211,17 +214,22 @@ const AddPermissionModal = ({
               placeholder="Search for an organization"
               notFoundContent={isFetchingOrganization ? <Spin size="small" /> : null}
               value={fieldData.districtId}
-              onFocus={() => handleSearch("", "DISTRICT")}
+              onSearch={d => handleSearch(d, "DISTRICT", 50)}
+              onFocus={() => !fieldData.districtName && handleSearch("", "DISTRICT", 50)}
               onChange={handleSelectDistrict}
-              filterOption={(inputValue, option) =>
-                option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
-              }
+              filterOption={false}
             >
-              {districtList.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id} name={name}>
-                  {name}
-                </Select.Option>
-              ))}
+              {(isFetchingOrganization ? [] : districtList)
+                .sort((a, b) => {
+                  const _aName = (a.name || "").toLowerCase();
+                  const _bName = (b.name || "").toLowerCase();
+                  return _aName.localeCompare(_bName);
+                })
+                .map(({ _id, name }) => (
+                  <Select.Option key={_id} value={_id} name={name}>
+                    {name}
+                  </Select.Option>
+                ))}
             </Select>
           </StyledFieldRow>
         )}
@@ -260,22 +268,34 @@ const AddPermissionModal = ({
               }
             >
               {fieldData.orgType === "SCHOOL" &&
-                schoolList.map(school => (
-                  <Select.Option value={school._id} key={school._id} orgName={school.name}>
-                    {school.name}
-                  </Select.Option>
-                ))}
+                schoolList
+                  .sort((a, b) => {
+                    const _aName = (a.name || "").toLowerCase();
+                    const _bName = (b.name || "").toLowerCase();
+                    return _aName.localeCompare(_bName);
+                  })
+                  .map(school => (
+                    <Select.Option value={school._id} key={school._id} orgName={school.name}>
+                      {school.name}
+                    </Select.Option>
+                  ))}
               {fieldData.orgType === "USER" &&
-                userList.map(_user => (
-                  <Select.Option
-                    value={_user._id}
-                    key={_user._id}
-                    orgName={`${_user.firstName} ${_user.lastName}`}
-                    role={_user.role}
-                  >
-                    {`${_user.firstName} ${_user.lastName} (${_user.email})`}
-                  </Select.Option>
-                ))}
+                userList
+                  .sort((a, b) => {
+                    const _aName = `${a.firstName || ""} ${a.lastName || ""}`.toLowerCase();
+                    const _bName = `${b.firstName || ""} ${b.lastName || ""}`.toLowerCase();
+                    return _aName.localeCompare(_bName);
+                  })
+                  .map(_user => (
+                    <Select.Option
+                      value={_user._id}
+                      key={_user._id}
+                      orgName={`${_user.firstName} ${_user.lastName}`}
+                      role={_user.role}
+                    >
+                      {`${_user.firstName} ${_user.lastName} (${_user.email})`}
+                    </Select.Option>
+                  ))}
             </Select>
           </StyledFieldRow>
         )}

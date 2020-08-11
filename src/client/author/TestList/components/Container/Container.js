@@ -1116,11 +1116,9 @@ class TestList extends Component {
                     <PerfectScrollbar>
                       <ScrollBox>
                         <InputTag
-                          placeholder="Search by skills and keywords"
                           onSearchInputChange={this.handleSearchInputChange}
                           size="large"
                           value={testFilters.searchString}
-                          disabled={testFilters.filter === libraryFilters.SMART_FILTERS.FAVORITES}
                         />
                         <TestListFilters
                           search={search}

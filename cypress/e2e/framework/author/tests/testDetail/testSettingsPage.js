@@ -35,6 +35,10 @@ export default class TestSettings {
 
   getQuitPassord = () => cy.get('[placeholder="Quit Password"]');
 
+  getMarkAsDoneAutomatically = () => cy.get("#mark-as-done").find('[value="automatically"]');
+
+  getMarkAsDoneManually = () => cy.get("#mark-as-done").find('[value="manually"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -175,6 +179,10 @@ export default class TestSettings {
     this.getShuffleChoiceButton().then($ele => {
       if ($ele.hasClass("ant-switch-checked")) cy.wrap($ele).click({ force: true });
     });
+
+  setMarkAsDoneAutomatically = () => this.getMarkAsDoneAutomatically().click();
+
+  setMarkAsDoneManually = () => this.getMarkAsDoneManually().click();
 
   // *** ACTIONS END ***
 

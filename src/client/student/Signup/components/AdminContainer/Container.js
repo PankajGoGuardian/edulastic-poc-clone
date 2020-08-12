@@ -27,7 +27,7 @@ import {
   DesktopVieLinks,
   DesktopViewCopyright
 } from "../../styled";
-import { signupAction } from "../../../Login/ducks";
+import { signupAction, googleLoginAction,msoLoginAction } from "../../../Login/ducks";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -41,9 +41,10 @@ import { Partners } from "../../../../common/utils/static/partnerData";
 import adminBg from "../../../assets/bg-adm.png";
 import googleIcon from "../../../assets/google-btn.svg";
 import icon365 from "../../../assets/icons8-office-365.svg";
-import { withWindowSizes, OnDarkBgLogo,notification  } from "@edulastic/common";
-import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../../author/src/constants/others";
-import { IconLock, IconUser, IconMail } from "@edulastic/icons";
+
+import { withWindowSizes, OnDarkBgLogo,notification  } from "@edulastic/common";	
+import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../../author/src/constants/others";	
+import { IconLock, IconUser, IconMail } from "@edulastic/icons";	
 import { themeColor, white } from "@edulastic/colors";
 
 const FormItem = Form.Item;
@@ -69,7 +70,7 @@ class AdminSignup extends React.Component {
           password,
           email,
           name,
-          role: "admin",
+          role: "teacher",
           errorCallback: this.errorCallback
         });
       }
@@ -119,7 +120,9 @@ class AdminSignup extends React.Component {
     const {
       form: { getFieldDecorator, getFieldError },
       t,
-      windowWidth
+      windowWidth,
+      googleLoginAction,
+      msoLoginAction
     } = this.props;
 
     const formItemLayout = {
@@ -184,10 +187,21 @@ class AdminSignup extends React.Component {
                       <h3 align="center">
                         <b>{t("component.signup.signupboxheading")}</b>
                       </h3>
-                      <ThirdPartyLoginBtn span={20} offset={2}>
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                            googleLoginAction({ role: "teacher" });
+                          }}
+                      >
                         <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
                       </ThirdPartyLoginBtn>
-                      <ThirdPartyLoginBtn span={20} offset={2}>
+                      <ThirdPartyLoginBtn
+                        span={20}
+                        offset={2}
+                        onClick={() => {
+                        msoLoginAction({ role: "teacher" });}}
+                      >
                         <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
                       </ThirdPartyLoginBtn>
                       <InfoBox span={20} offset={2}>
@@ -299,7 +313,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     null,
-    { signup: signupAction }
+    { signup: signupAction,googleLoginAction,msoLoginAction}
   )
 );
 

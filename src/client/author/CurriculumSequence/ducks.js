@@ -1587,7 +1587,8 @@ const initialState = {
   showSumary: true,
   showRightPanel: true,
   customizeInDraft: false,
-  currentAssignmentIds: []
+  currentAssignmentIds: [],
+  isConfirmedCustomization: false
 };
 
 /**
@@ -2150,6 +2151,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
     state.activeRightPanel = payload;
+    if (payload === "manageContent") {
+      state.isConfirmedCustomization = true;
+    }
   },
   [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
     state.signedRequest = payload;
@@ -2174,6 +2178,7 @@ export default createReducer(initialState, {
     }
 
     state.destinationDirty = false;
+    state.isConfirmedCustomization = false;
   },
   [SET_DESTINATION_ORIGINAL]: (state, { payload }) => {
     state.originalData = payload;
@@ -2181,6 +2186,7 @@ export default createReducer(initialState, {
   [RESET_DESTINATION_FLAGS]: state => {
     state.activeRightPanel = "summary";
     state.destinationDirty = false;
+    state.isConfirmedCustomization = false;
   },
   [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {
     state.isVideoResourcePreviewModal = payload;

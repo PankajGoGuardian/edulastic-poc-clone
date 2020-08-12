@@ -370,7 +370,8 @@ class CurriculumSequence extends Component {
       current,
       setShowRightPanel,
       toggleManageContent,
-      checkPreviouslyCustomized
+      checkPreviouslyCustomized,
+      isConfirmedCustomization
     } = this.props;
     const { authors } = destinationCurriculumSequence;
     const canEdit = authors?.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
@@ -382,7 +383,14 @@ class CurriculumSequence extends Component {
     //   return;
     // }
     const isAuthoringFlowReview = current === "review";
-    if (!isManageContentActive && !canEdit && !isStudent && contentName === "manageContent" && !isAuthoringFlowReview) {
+    if (
+      !isConfirmedCustomization &&
+      !isManageContentActive &&
+      !canEdit &&
+      !isStudent &&
+      contentName === "manageContent" &&
+      !isAuthoringFlowReview
+    ) {
       Modal.confirm({
         title: "Do you want to Customize ?",
         content:
@@ -848,7 +856,8 @@ const enhance = compose(
       currentUserId: state?.user?.user?._id,
       isVideoResourcePreviewModal: state.curriculumSequence?.isVideoResourcePreviewModal,
       showRightPanel: state.curriculumSequence?.showRightPanel,
-      customizeInDraft: state.curriculumSequence?.customizeInDraft
+      customizeInDraft: state.curriculumSequence?.customizeInDraft,
+      isConfirmedCustomization: state.curriculumSequence?.isConfirmedCustomization
     }),
     {
       onGuideChange: changeGuideAction,

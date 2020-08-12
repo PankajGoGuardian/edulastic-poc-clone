@@ -21,7 +21,7 @@ class ErrorHandler extends React.Component {
     Sentry.withScope(scope => {
       Sentry.captureException(error);
       scope.setExtra("componentStack", info);
-      scope.setTag("issueType", "UnexpectedError");
+      scope.setTag("issueType", "UnexpectedErrorRuntime");
     });
     // log the error to an error reporting service
     console.error(error, info);

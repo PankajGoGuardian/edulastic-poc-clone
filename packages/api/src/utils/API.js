@@ -162,12 +162,12 @@ export default class API {
         err.response = data.response;
 
         // log in to sentry, exclude low priority status
-        if (![400].includes(data.response.status))
+        if (![400, 403].includes(err.status))
           Sentry.withScope(scope => {
             scope.setLevel("error");
             scope.setTag("ref", data.response?.headers?.["x-server-ref"]);
             Sentry.captureException(err);
-            scope.setTag("issueType", "UnexpectedError");
+            scope.setTag("issueType", "UnexpectedErrorAPI");
             Sentry.captureMessage(
               JSON.stringify({
                 res: data.response?.data || {},

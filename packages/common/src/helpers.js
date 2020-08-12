@@ -757,6 +757,15 @@ const executePromisesInSequence = promises =>
     Promise.resolve([])
   );
 
+// some migrated questions has html symbols like &lt;
+// we need to replace them with html code.
+
+export const sanitizeString = str =>
+  (str || "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"');
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,
@@ -778,5 +787,6 @@ export default {
   getFormattedAttrId,
   getSelectionRect,
   toggleIntercomDisplay,
-  executePromisesInSequence
+  executePromisesInSequence,
+  sanitizeString
 };

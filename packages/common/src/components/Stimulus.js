@@ -1,5 +1,5 @@
 import styled, { withTheme } from "styled-components";
-import { desktopWidth, title } from "@edulastic/colors";
+import { desktopWidth } from "@edulastic/colors";
 import { fonts } from "@edulastic/constants";
 
 import { withMathFormula } from "../HOC/withMathFormula";
@@ -18,7 +18,10 @@ const Stimulus = withTheme(
     & * {
       user-select: ${props => (props.userSelect ? "text !important" : "none")};
       -webkit-touch-callout: none;
-      color: ${({ theme }) => theme.questionTextColor} !important;
+    }
+
+    & *:not(a) {
+      color: ${({ theme }) => theme.questionTextColor};
     }
 
     & .input__math,

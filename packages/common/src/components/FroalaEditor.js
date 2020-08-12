@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { cloneDeep, debounce, isEmpty } from "lodash";
 import { message } from "antd";
-import { notification } from "@edulastic/common";
+import { notification, sanitizeString } from "@edulastic/common";
 import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
@@ -75,13 +75,25 @@ FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-
 const symbols = ["all"];
 const { defaultNumberPad } = math;
 
-FroalaEditor.VIDEO_PROVIDERS.push({
-  test_regex: /^.+(screencast-o-matic.com)\/[^_&]+/,
-  url_regex: "",
-  url_text: "",
-  html: '<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>',
-  provider: "screencast"
-});
+FroalaEditor.VIDEO_PROVIDERS.push(
+  {
+    test_regex: /^.+(screencast-o-matic.com)\/[^_&]+/,
+    url_regex: "",
+    url_text: "",
+    html: '<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>',
+    provider: "screencast"
+  },
+  {
+    test_regex: /^.+(drive.google.com)\/(file)\/(d)\/[^_&]+/,
+    url_regex: /(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:drive\.google\.com)\/(?:file)\/(?:d)\/?([0-9a-zA-Z_\-]+)(.+)?/g,
+    url_text: "https://drive.google.com/file/d/$1/preview",
+    html: `<iframe width="640" height="360" src="{url}" frameborder="0" allowfullscreen></iframe>`,
+    provider: "google-drive"
+  }
+);
+
+FroalaEditor.VIDEO_EMBED_REGEX = /^\W*((<iframe.*><\/iframe>)|(<embed.*>))\W*$/i;
+
 const buttons = [
   "bold",
   "italic",
@@ -271,10 +283,10 @@ const BackgroundStyleWrapper = styled.div.attrs({
         }
       `;
     } else {
-    /**
-     * need to show scroll if math content overflows
-     * @see https://snapwiz.atlassian.net/browse/EV-10575
-     */
+      /**
+       * need to show scroll if math content overflows
+       * @see https://snapwiz.atlassian.net/browse/EV-10575
+       */
       return `
       .fr-box {
           max-width: 100%;
@@ -615,7 +627,9 @@ const CustomEditor = ({
         blur: function() {
           if (initOnClick) {
             this.hasFocus = false;
-            this.toolbar.hide();
+            if (this.toolbar) {
+              this.toolbar.hide();
+            }
           }
         },
         "commands.after": function(cmd) {
@@ -923,9 +937,15 @@ const CustomEditor = ({
       return;
     }
 
-    if (prevValue === value) return;
-    setPrevValue(value);
-    setContent(replaceLatexesWithMathHtml(value));
+    if (prevValue === value) {
+      return;
+    }
+    let htmlStr = value;
+    if (theme.isV1Migrated) {
+      htmlStr = sanitizeString(value);
+    }
+    setPrevValue(htmlStr);
+    setContent(replaceLatexesWithMathHtml(htmlStr));
   }, [value]);
 
   return (

@@ -34,7 +34,8 @@ import {
   getItemIdSelector,
   getItemSelector,
   proceedPublishingItemAction,
-  savePassageAction
+  savePassageAction,
+  saveAndPublishItemAction
 } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector, changeUpdatedFlagAction } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
@@ -131,7 +132,7 @@ class Container extends Component {
     }, 0);
   };
 
-  handleSave = debounce(() => {
+  handleSaveQuestion = () => {
     const {
       saveQuestion,
       savePassage,
@@ -152,7 +153,16 @@ class Container extends Component {
     saveQuestion(testId, isTestFlow, isEditFlow);
     removeAnswers();
     if (setAuthoredByMeFilter) setAuthoredByMeFilter();
-  }, 1000);
+  };
+
+  handleSave = debounce(this.handleSaveQuestion, 1000);
+
+  handleSaveAndPublish = () => {
+    const { saveAndPublishItem } = this.props;
+    if (typeof saveAndPublishItem === "function") {
+      saveAndPublishItem();
+    }
+  };
 
   handleChangePreviewTab = previewTab => {
     const { checkAnswer, showAnswer, changePreview, preview } = this.props;
@@ -343,6 +353,15 @@ class Container extends Component {
     );
   };
 
+  get showSaveAndPublishButton() {
+    const { itemFromState, isTestFlow } = this.props;
+    const { multipartItem, passageId, _id = "new" } = itemFromState;
+    if (!isTestFlow && _id === "new" && !itemFromState.item && !multipartItem && !passageId) {
+      return true;
+    }
+    return false;
+  }
+
   header = () => {
     const {
       view,
@@ -394,6 +413,8 @@ class Container extends Component {
         {...commonProps}
         onCancel={this.cancelEdit}
         onSave={this.handleSave}
+        showSaveAndPublishButton={this.showSaveAndPublishButton}
+        onSaveAndPublish={this.handleSaveAndPublish}
         renderRightSide={view === "edit" ? this.renderButtons : () => {}}
         withLabels
         onSaveScrollTop={onSaveScrollTop}
@@ -433,7 +454,6 @@ class Container extends Component {
 
     const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;
-
     return (
       <EditorContainer ref={this.innerDiv}>
         {/* TODO: message can be seen only when react-router-dom detects changes */}
@@ -553,6 +573,7 @@ const enhance = compose(
       changeView: changeViewAction,
       saveQuestion: saveQuestionAction,
       proceedSave: proceedPublishingItemAction,
+      saveAndPublishItem: saveAndPublishItemAction,
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,
       showAnswer: showAnswerAction,

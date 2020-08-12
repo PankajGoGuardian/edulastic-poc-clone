@@ -109,6 +109,8 @@ export const SET_DEFAULT_TEST_DATA = "[tests] set default test data";
 // ui
 export const TOGGLE_MENU = "[homeUI] toggle menu";
 export const RESPONSIVE_TOGGLE_MENU = "[homeUI] responsive toggle menu";
+export const ADD_LOADING_COMPONENT = "[authorUi] add loading component";
+export const REMOVE_LOADING_COMPONENT = "[authorUi] remove loading component";
 
 // Dictionaries
 export const RECEIVE_DICT_CURRICULUMS_REQUEST = "[dictionaries] receive curriculums request";

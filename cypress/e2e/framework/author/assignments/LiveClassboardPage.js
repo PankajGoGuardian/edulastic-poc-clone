@@ -633,7 +633,9 @@ class LiveClassboardPage {
 
   verifyScoreByStudentIndex = (index, totalScore, maxScore) =>
     this.getStudentScoreByIndex(index).then($ele =>
-      expect($ele.text().replace(/\u00a0/g, " "), "verify student card score").to.eq(`${totalScore} / ${maxScore}`)
+      expect($ele.text().replace(/\u00a0/g, " "), `verify student card score for student index ${index + 1}`).to.eq(
+        `${totalScore} / ${maxScore}`
+      )
     );
 
   // *** APPHELPERS END ***

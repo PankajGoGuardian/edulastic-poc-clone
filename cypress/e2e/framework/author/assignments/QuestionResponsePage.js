@@ -178,15 +178,13 @@ export default class QuestionResponsePage {
   };
 
   verifyScore = (card, points, attemptData, attemptType, questionType) => {
-    /* this.getScoreInput(card)
-      .as("scoreinputbox")
-      .should("have.value", correct ? points.toString() : "0");
- */
     const score = this.getScoreByAttempt(attemptData, points, questionType, attemptType);
+    this.verifyScoreAndPointsByCard(card, score, points);
+  };
 
+  verifyScoreAndPointsByCard = (card, score, points) => {
     this.getScoreInput(card)
       .as("scoreinputbox")
-      // .should("have.value", score.toString());
       .should($score => {
         const value = Cypress.$($score).attr("value");
         expect(value, `verify score on response card, expected-${score}, found-${value}`).to.eq(`${score}`);

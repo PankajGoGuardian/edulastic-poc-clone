@@ -39,6 +39,12 @@ export default class TestAssignPage {
 
   getQuitPassord = () => cy.get('[placeholder="Quit Password"]');
 
+  getEvalTypesDropDown = () =>
+    cy
+      .get('[inputfeatures="assessmentSuperPowersCheckAnswerTries"]')
+      .next()
+      .find(".ant-select-arrow-icon");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -181,6 +187,7 @@ export default class TestAssignPage {
   setCheckAnsTries = tries => cy.get('[placeholder="Number of tries"]').type(`{selectall}${tries}`);
 
   clickOnEvalByType = type => {
+    this.getEvalTypesDropDown().click({ force: true });
     cy.get(`[ data-cy=${type}]`).click({ force: true });
   };
 

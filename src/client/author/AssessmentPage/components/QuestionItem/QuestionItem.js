@@ -189,7 +189,9 @@ class QuestionItem extends React.Component {
   };
 
   renderContent = (highlighted, boundingRect) => {
-    let { data, saveAnswer, viewMode, onCreateOptions, evaluation, userAnswer, previewMode } = this.props;
+    const { data, saveAnswer, viewMode, onCreateOptions, userAnswer, previewMode } = this.props;
+    let { evaluation } = this.props;
+
     if (!evaluation) {
       evaluation = data?.activity?.evaluation;
     }
@@ -323,7 +325,8 @@ class QuestionItem extends React.Component {
       testMode,
       pdfPreview,
       annotations,
-      reportActivity
+      reportActivity,
+      zoom
     } = this.props;
 
     const check =
@@ -361,6 +364,7 @@ class QuestionItem extends React.Component {
               dragging={dragging}
               highlighted={highlighted}
               pdfPreview={pdfPreview}
+              zoom={zoom}
               // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
             >
               {questionIndex}

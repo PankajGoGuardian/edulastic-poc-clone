@@ -17,6 +17,9 @@ import { StatusLabel } from "../../../Assignments/components/TableList/styled";
 import { CustomIcon } from "../styled";
 
 const AssignmentsClasses = ({ moduleId, contentId, assignmentRows, handleActionClick }) => {
+  if (!assignmentRows.length) {
+    return null;
+  }
   const data = assignmentRows?.map((assignment, index) => ({ key: index, ...assignment }));
 
   const renderTextCell = text => (
@@ -131,6 +134,7 @@ const AssignmentsClasses = ({ moduleId, contentId, assignmentRows, handleActionC
       )
     }
   ];
+
   return (
     <AssignmentsClassesContainer
       onClick={e => {

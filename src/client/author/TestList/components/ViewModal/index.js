@@ -27,7 +27,8 @@ import {
   getCollectionsSelector,
   getUserIdSelector,
   getUserRole,
-  isPublisherUserSelector
+  isPublisherUserSelector,
+  getWritableCollectionsSelector
 } from "../../../src/selectors/user";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 import {
@@ -67,6 +68,7 @@ import {
   TestTitleWrapper,
   DynamicIconWrapper
 } from "./styled";
+import { allowContentEditCheck } from "../../../src/utils/permissionCheck";
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -130,7 +132,8 @@ class ViewModal extends React.Component {
       isDynamic,
       handleLikeTest,
       isTestLiked,
-      collectionName
+      collectionName,
+      writableCollections
     } = this.props;
     const {
       title = "",
@@ -190,6 +193,7 @@ class ViewModal extends React.Component {
       (sharedWith?.find(x => x._id === userId) && permission === "EDIT") ||
       isEdulasticCurator;
 
+    const hasCollectionAccess = allowContentEditCheck(_collections, writableCollections);
     const contanier = (
       <>
         <ModalTitle>
@@ -240,7 +244,7 @@ class ViewModal extends React.Component {
                   </EduButton>
                 )}
 
-                {status === "inreview" ? (
+                {status === "inreview" && hasCollectionAccess ? (
                   <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
                     <EduButton
                       isGhost
@@ -272,7 +276,7 @@ class ViewModal extends React.Component {
                 ) : null}
               </ButtonContainer>
             )}
-            {!publicAccess && (
+            {!publicAccess && hasCollectionAccess && (
               <ButtonContainer>
                 {status === "inreview" || status === "rejected" ? (
                   <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
@@ -308,18 +312,22 @@ class ViewModal extends React.Component {
                   <span>ASSIGN</span>
                 </EduButton>
               )}
-              {permission !== "VIEW" && !isEdulasticCurator && !publicAccess && status !== "published" && (
-                <EduButton
-                  height="40px"
-                  width="100%"
-                  justifyContent="center"
-                  data-cy="edit/assign-button"
-                  onClick={onEdit}
-                >
-                  <IconPencilEdit height={14} />
-                  <span>EDIT</span>
-                </EduButton>
-              )}
+              {permission !== "VIEW" &&
+                !isEdulasticCurator &&
+                !publicAccess &&
+                status !== "published" &&
+                hasCollectionAccess && (
+                  <EduButton
+                    height="40px"
+                    width="100%"
+                    justifyContent="center"
+                    data-cy="edit/assign-button"
+                    onClick={onEdit}
+                  >
+                    <IconPencilEdit height={14} />
+                    <span>EDIT</span>
+                  </EduButton>
+                )}
               {status === "published" && !isEdulasticCurator && !publicAccess && !isPublisherUser && (
                 <EduButton
                   height="40px"
@@ -499,7 +507,8 @@ export default connect(
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),
-    isPublisherUser: isPublisherUserSelector(state)
+    isPublisherUser: isPublisherUserSelector(state),
+    writableCollections: getWritableCollectionsSelector(state)
   }),
   {}
 )(ViewModal);

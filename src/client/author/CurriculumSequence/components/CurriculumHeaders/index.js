@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { roleuser } from "@edulastic/constants";
 import { Tooltip, Modal, Dropdown, Menu } from "antd";
@@ -20,6 +22,8 @@ import { IconActionButton } from "../styled";
 import StudentPlayListHeader from "../../../../student/sharedComponents/Header/PlayListHeader";
 import PlaylistPageNav from "../PlaylistPageNav";
 import SwitchPlaylist from "./SwitchPlaylist";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { allowContentEditCheck } from "../../../src/utils/permissionCheck";
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
@@ -111,7 +115,8 @@ const CurriculumHeader = ({
   publishPlaylistInDraft,
   discardDraftPlaylist,
   canAllowDuplicate,
-  duplicatePlayList
+  duplicatePlayList,
+  writableCollections
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const {
@@ -121,7 +126,7 @@ const CurriculumHeader = ({
     collections: _playlistCollections = [],
     _id
   } = destinationCurriculumSequence;
-
+  const hasCollectionAccess = allowContentEditCheck(_playlistCollections, writableCollections);
   // figure out which tab contents to render || just render default playlist
   const {
     params: { currentTab: cTab },
@@ -288,12 +293,14 @@ const CurriculumHeader = ({
                 <span>USE THIS</span>
               </HeaderButton>
             )}
-          {features.isCurator && (status === "inreview" || status === "rejected") && (
+          {features.isCurator && (status === "inreview" || status === "rejected") && hasCollectionAccess && (
             <HeaderButton isBlue onClick={onApproveClick}>
               APPROVE
             </HeaderButton>
           )}
-          {features.isCurator && status === "inreview" && <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>}
+          {features.isCurator && status === "inreview" && hasCollectionAccess && (
+            <HeaderButton onClick={onRejectClick}>REJECT</HeaderButton>
+          )}
         </CurriculumHeaderButtons>
 
         {/* <ResolvedMobileHeaderWrapper>
@@ -312,4 +319,11 @@ const CurriculumHeader = ({
   return <Fragment />;
 };
 
-export default withRouter(CurriculumHeader);
+const enhance = compose(
+  withRouter,
+  connect(state => ({
+    writableCollections: getCollectionsSelector(state)
+  }))
+);
+
+export default enhance(CurriculumHeader);

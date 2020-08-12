@@ -137,6 +137,15 @@ export const getCustomCollectionsSelector = createSelector(
   collections => collections.filter(item => (item.isCustom || item.accessLevel === "write") && item.status === 1)
 );
 
+export const getWritableCollectionsSelector = createSelector(
+  getCustomCollectionsSelector,
+  getUserOrgId,
+  (collections, districtId) =>
+    collections.filter(
+      item => (item.districtId === districtId && item.accessLevel !== "read") || item.accessLevel === "write"
+    )
+);
+
 export const getItemBucketsSelector = createSelector(
   getCustomCollectionsSelector,
   state => {

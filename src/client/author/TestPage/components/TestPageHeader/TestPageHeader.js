@@ -145,7 +145,8 @@ const TestPageHeader = ({
   validateTest,
   setDisableAlert,
   playlistHasDraftTests,
-  isCurator
+  isCurator,
+  hasCollectionAccess
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -444,7 +445,7 @@ const TestPageHeader = ({
                 )
               )
             ) : null}
-            {features.isCurator && testStatus === "inreview" && (
+            {features.isCurator && testStatus === "inreview" && hasCollectionAccess && (
               <EduButton
                 isBlue
                 title={isPlaylist ? "Reject Playlist" : "Reject Test"}
@@ -456,7 +457,7 @@ const TestPageHeader = ({
               </EduButton>
             )}
 
-            {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
+            {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && hasCollectionAccess && (
               <EduButton
                 isBlue
                 title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}

@@ -12,19 +12,19 @@ export const ThumbnailsWrapper = styled.div`
   height: ${props =>
     `calc(100vh - ${
       props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xs + 41 : props.theme.HeaderHeight.xs
-    }px)`};
+    }px) - 43px`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props =>
       `calc(100vh - ${
         props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.md + 41 : props.theme.HeaderHeight.md
-      }px)`};
+      }px) - 43px`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props =>
       `calc(100vh - ${
         props.testMode ? "70" : props.reportMode ? props.theme.HeaderHeight.xl + 41 : props.theme.HeaderHeight.xl
-      }px)`};
+      }px) - 43px`};
     min-width: 200px;
     max-width: 200px;
   }

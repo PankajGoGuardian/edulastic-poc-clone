@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useLayoutEffect, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Document, Page } from "react-pdf";
 import { connect } from "react-redux";
 import { Droppable } from "react-drag-and-drop";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -12,20 +11,30 @@ import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview, ZoomControlCotainer, PDFZoomControl } from "./styled";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
+import PDFViewer from "../PDFViewer";
 
-const handleDrop = (page, cb) => ({ question }, e) => {
+const handleDrop = (page, cb, annotationContainer, zoom = 1) => ({ question }, e) => {
   const {
     nativeEvent: { offsetX, offsetY }
   } = e;
   const data = JSON.parse(question);
 
-  cb({
-    x: offsetX - 16,
-    y: offsetY - 16,
-    page,
-    questionId: data.id,
-    qIndex: data.index
-  });
+  const x = zoom != 0 ? offsetX / zoom : offsetX;
+  const y = zoom != 0 ? offsetY / zoom : offsetY;
+
+  const { offsetWidth, offsetHeight } = annotationContainer.current;
+
+  cb(
+    {
+      x,
+      y,
+      page,
+      questionId: data.id,
+      qIndex: data.index
+    },
+    offsetWidth,
+    offsetHeight
+  );
 };
 
 const getNumberStyles = (x, y) => ({
@@ -38,13 +47,11 @@ const PDFPreview = ({
   page,
   currentPage,
   annotations,
-  onDocumentLoad,
   onDropAnnotation,
   onHighlightQuestion,
   questionsById,
   answersById,
   viewMode,
-  renderExtra = "",
   previewMode,
   isToolBarVisible,
   pdfWidth,
@@ -59,7 +66,11 @@ const PDFPreview = ({
   highlighted,
   forwardedRef,
   onDragStart,
-  review
+  review,
+  currentAnnotationTool,
+  setCurrentAnnotationTool,
+  annotationToolsProperties,
+  annotationsStack
 }) => {
   const [pdfScale, scalePDF] = useState(1);
 
@@ -123,25 +134,24 @@ const PDFPreview = ({
       <PerfectScrollbar ref={forwardedRef}>
         <Droppable
           types={["question"]}
-          onDrop={handleDrop(currentPage, onDropAnnotation)}
-          style={{ top: 0, display: "block" }}
+          onDrop={handleDrop(currentPage, onDropAnnotation, annotationContainer, pdfScale)}
+          style={{ top: 0, display: "block", width: "fit-content", margin: "auto" }}
         >
-          <Preview onClick={handleRemoveHighlight} ref={previewContainer}>
-            {page.URL !== "blank" && (
-              <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
-                <Page
-                  pageNumber={page.pageNo}
-                  scale={pdfScale}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                  width={pdfWidth}
-                  height={pdfHeight}
-                />
-              </Document>
-            )}
-            {renderExtra}
-          </Preview>
-          <AnnotationsContainer className="annotations-container" zoom={pdfScale}>
+          {page.URL === "blank" && <Preview onClick={handleRemoveHighlight} ref={previewContainer} />}
+
+          {page.URL !== "blank" && (
+            <PDFViewer
+              page={page}
+              pdfScale={pdfScale}
+              currentAnnotationTool={currentAnnotationTool}
+              annotationToolsProperties={annotationToolsProperties}
+              annotationsStack={annotationsStack}
+              currentPage={currentPage}
+              authoringMode={viewMode === "edit"}
+            />
+          )}
+
+          <AnnotationsContainer className="annotations-container" zoom={pdfScale} ref={annotationContainer}>
             {annotations
               .filter(item => item.toolbarMode === "question" && item.page === currentPage)
               .map(({ uuid, qIndex, x, y, questionId }) => (
@@ -159,7 +169,10 @@ const PDFPreview = ({
                     data={questionsById[questionId]}
                     answer={answersById[questionId]}
                     previewMode={viewMode === "edit" ? "clear" : previewMode}
-                    onDragStart={() => onDragStart(questionId)}
+                    onDragStart={() => {
+                      setCurrentAnnotationTool("cursor");
+                      onDragStart(questionId);
+                    }}
                     testMode={testMode}
                     highlighted={highlighted === questionId}
                     viewMode={viewMode}
@@ -189,6 +202,7 @@ const AnnotationsContainer = Styled.div`
   top: 0;
   position: absolute;
   transform-origin: left top;
+  pointer-events: none;
   transform: scale(${props => props.zoom || 1});
 `;
 
@@ -196,7 +210,6 @@ PDFPreview.propTypes = {
   page: PropTypes.object.isRequired,
   currentPage: PropTypes.number.isRequired,
   annotations: PropTypes.array,
-  onDocumentLoad: PropTypes.func.isRequired,
   onDropAnnotation: PropTypes.func.isRequired,
   onHighlightQuestion: PropTypes.func.isRequired
 };
@@ -206,6 +219,11 @@ PDFPreview.defaultProps = {
 };
 
 export default connect(
-  state => ({ previewMode: getPreviewSelector(state) }),
-  { removeAnswers: removeUserAnswerAction }
+  state => ({
+    previewMode: getPreviewSelector(state),
+    annotationsStack: state.tests.annotationsStack
+  }),
+  {
+    removeAnswers: removeUserAnswerAction
+  }
 )(withRouter(PDFPreview));

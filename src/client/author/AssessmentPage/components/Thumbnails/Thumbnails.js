@@ -3,12 +3,8 @@ import PropTypes from "prop-types";
 import { Dropdown, Menu } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
+import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList } from "./styled";
 import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
-import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList, ToolBarToggleBtn } from "./styled";
-import { IconPencilEdit } from "@edulastic/icons";
-import { white, themeColor } from "@edulastic/colors";
-import { IconGraphRightArrow } from "@edulastic/icons";
-import { MinimizeButton } from "../Worksheet/styled";
 
 const menu = (onReupload, onAddBlank, onDeleteBlank, pdfPageLength = 1, onAddPdf) => (
   <Menu>
@@ -40,18 +36,11 @@ const Thumbnails = ({
   testMode,
   reportMode,
   currentPage,
-  isToolBarVisible,
-  toggleToolBarVisiblity,
-  noCheck,
-  toggleMinimized,
-  minimized
+  noCheck
 }) => {
   const onChangePage = page => () => onPageChange(page);
   return (
     <ThumbnailsWrapper reportMode={reportMode} testMode={testMode} review={review}>
-      <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
-        <IconGraphRightArrow />
-      </MinimizeButton>
       <PerfectScrollbar>
         <ThumbnailsList>
           {list.map((item, key) => (

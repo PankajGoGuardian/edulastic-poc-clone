@@ -84,7 +84,11 @@ class QuestionItem extends React.Component {
     }
   };
 
-  handleDragEnd = () => this.setState({ dragging: false });
+  handleDragEnd = () => {
+    const { setCurrentAnnotationTool } = this.props;
+    if (setCurrentAnnotationTool) setCurrentAnnotationTool("cursor");
+    this.setState({ dragging: false });
+  };
 
   renderMultipleChoiceAnswer = (value, options) => {
     const labels = value.reduce((result, current) => {
@@ -158,7 +162,7 @@ class QuestionItem extends React.Component {
         answerRenderer = this.renderMathAnswer;
         break;
       default:
-        answerRenderer = () => { };
+        answerRenderer = () => {};
     }
 
     const alternateResponses = this.props?.data?.validation?.altResponses || [];
@@ -245,10 +249,10 @@ class QuestionItem extends React.Component {
       return Object.values(evaluation).every(value => value);
     }
     return false;
-  }
+  };
 
   renderAnswerIndicator = type => {
-    let { evaluation } = this.props
+    let { evaluation } = this.props;
     if (!evaluation) {
       evaluation = this.props?.data?.activity?.evaluation;
     }
@@ -256,9 +260,7 @@ class QuestionItem extends React.Component {
       return null;
     }
 
-    let correct = isObject(evaluation)
-      ? this.getIndicatorFromEvaluation(evaluation)
-      : evaluation;
+    let correct = isObject(evaluation) ? this.getIndicatorFromEvaluation(evaluation) : evaluation;
 
     if (type === CLOZE_DROP_DOWN) {
       correct = evaluation && evaluation["0"];
@@ -284,7 +286,7 @@ class QuestionItem extends React.Component {
   renderScore = qId => {
     const { feedback = {}, previousFeedback = [], data } = this.props;
     const maxScore = get(data, "validation.validResponse.score", 0);
-    const { score, feedback: teacherComments, graded, skipped, ...rest } =
+    const { score, feedback: teacherComments, graded, skipped } =
       previousFeedback.find(pf => pf.qid === qId) || feedback[qId] || data.activity || {};
 
     return (
@@ -309,7 +311,7 @@ class QuestionItem extends React.Component {
       return null;
     }
     const {
-      data: { id, qIndex, type } = {},
+      data: { id, type } = {},
       questionIndex,
       review,
       viewMode,
@@ -359,7 +361,7 @@ class QuestionItem extends React.Component {
               dragging={dragging}
               highlighted={highlighted}
               pdfPreview={pdfPreview}
-            // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
+              // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
             >
               {questionIndex}
             </QuestionNumber>

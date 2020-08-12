@@ -8,6 +8,9 @@ import { removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { roleuser } from "@edulastic/constants";
 import { SelectRolePopup } from "./student/SsoLogin/selectRolePopup";
 import { CleverUnauthorizedPopup } from "./student/SsoLogin/CleverUnauthorizedPopup";
+import  StudentSignup from "./student/Signup/components/StudentContainer";
+import AdminSignup  from "./student/Signup/components/AdminContainer/Container";
+import TeacherSignup from "./student/Signup/components/TeacherContainer/Container"
 
 import { isLoggedInForPrivateRoute } from "./common/utils/helpers";
 
@@ -19,7 +22,7 @@ const Login = lazy(() => import(/* webpackChunkName: "login" */ "./student/Login
 const SsoLogin = lazy(() => import(/* webpackChunkName:"SSo Login" */ "./student/SsoLogin"));
 
 const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType }) => {
-  if (location.hash !== "#signup" && location.hash !== "#login") {
+  if (!["#signup", "#login", "#register/close/student", "#register/close/teacher", "#register/close/admin"].includes(location.hash)) {
     window.location.hash = "#login";
   }
 
@@ -75,24 +78,34 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
 
   removeFromLocalStorage("defaultGrades");
   removeFromLocalStorage("defaultSubject");
-
-  return location.hash === "#signup" ? (
-    <GetStarted
-      isSignupUsingDaURL={isSignupUsingDaURL}
-      generalSettings={generalSettings}
-      districtPolicy={districtPolicy}
-      orgShortName={orgShortName}
-      orgType={orgType}
-    />
-  ) : (
-    <Login
-      isSignupUsingDaURL={isSignupUsingDaURL}
-      generalSettings={generalSettings}
-      districtPolicy={districtPolicy}
-      orgShortName={orgShortName}
-      orgType={orgType}
-    />
-  );
+  switch (location.hash) {
+    case "#signup":
+      return (
+        <GetStarted
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          generalSettings={generalSettings}
+          districtPolicy={districtPolicy}
+          orgShortName={orgShortName}
+          orgType={orgType}
+        />
+      );
+    case "#register/close/student":
+      return <StudentSignup />;
+    case "#register/close/admin":
+      return <AdminSignup />;
+    case "#register/close/teacher":
+      return <TeacherSignup />;
+    default:
+      return (
+        <Login
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          generalSettings={generalSettings}
+          districtPolicy={districtPolicy}
+          orgShortName={orgShortName}
+          orgType={orgType}
+        />
+      );
+  }
 };
 Auth.propTypes = {
   location: PropTypes.object.isRequired

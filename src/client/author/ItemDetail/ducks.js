@@ -1243,7 +1243,7 @@ function* publishTestItemSaga({ payload }) {
 
     // if alignment data is not present, set the flag to open the modal, and wait for
     // an action from the modal.
-    if (!isMultipartOrPassageType && !standardPresent && !saveAndPublishFlow) {
+    if (!isMultipartOrPassageType && !standardPresent) {
       yield put(togglePublishWarningModalAction(true));
       // action dispatched by the modal.
       const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);

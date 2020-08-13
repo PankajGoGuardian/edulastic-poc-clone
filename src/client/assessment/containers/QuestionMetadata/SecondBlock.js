@@ -73,7 +73,7 @@ const SecondBlock = ({
   return (
     <Container padding="20px">
       <Row gutter={24}>
-        <Col md={6}>
+        <Col md={8}>
           <ItemBody>
             <FieldLabel>{t("component.options.depthOfKnowledge")}</FieldLabel>
             <SelectInputStyled
@@ -98,7 +98,7 @@ const SecondBlock = ({
             </SelectInputStyled>
           </ItemBody>
         </Col>
-        <Col md={6}>
+        <Col md={8}>
           <ItemBody>
             <FieldLabel>{t("component.options.difficultyLevel")}</FieldLabel>
             <SelectInputStyled
@@ -123,7 +123,7 @@ const SecondBlock = ({
             </SelectInputStyled>
           </ItemBody>
         </Col>
-        <Col md={6}>
+        <Col md={8}>
           <ItemBody>
             <FieldLabel>{t("component.options.blooomTaxonomy")}</FieldLabel>
             <SelectInputStyled
@@ -145,8 +145,9 @@ const SecondBlock = ({
             </SelectInputStyled>
           </ItemBody>
         </Col>
-
-        <Col md={6}>
+      </Row>
+      <Row gutter={24}>
+        <Col md={8}>
           <ItemBody>
             <FieldLabel>Collections</FieldLabel>
             <SelectInputStyled
@@ -177,7 +178,7 @@ const SecondBlock = ({
           )}
         </Col>
 
-        <Col md={6}>
+        <Col md={8}>
           <ItemBody>
             <FieldLabel>{t("component.options.tags")}</FieldLabel>
             {searchValue.length && !searchValue.trim().length ? (

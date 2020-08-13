@@ -121,9 +121,14 @@ export const getUserOrgData = createSelector(
   state => _get(state, "user.orgData", {})
 );
 
-export const getCollectionsSelector = createSelector(
+export const getOrgItemBanksSelector = createSelector(
   stateSelector,
   state => _get(state, "user.orgData.itemBanks", [])
+);
+
+export const getCollectionsSelector = createSelector(
+  getOrgItemBanksSelector,
+  state => state.filter(item => item.status === 1)
 );
 
 export const shouldWatchCollectionUpdates = createSelector(
@@ -134,7 +139,7 @@ export const shouldWatchCollectionUpdates = createSelector(
 
 export const getCustomCollectionsSelector = createSelector(
   getCollectionsSelector,
-  collections => collections.filter(item => (item.isCustom || item.accessLevel === "write") && item.status === 1)
+  collections => collections.filter(item => item.isCustom || item.accessLevel === "write")
 );
 
 export const getWritableCollectionsSelector = createSelector(

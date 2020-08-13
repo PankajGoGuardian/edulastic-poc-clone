@@ -400,21 +400,30 @@ export default class QuestionResponsePage {
 
           switch (attemptType) {
             case attemptTypes.RIGHT:
-              cy.get("@responseBox").should("have.css", "background-color", queColor.LIGHT_GREEN);
+              cy.get("@responseBox")
+                .should("have.css", "background-color", queColor.LIGHT_GREEN)
+                .find("svg")
+                .should("have.css", "fill", queColor.GREEN_2);
 
               break;
 
             case attemptTypes.WRONG:
-              cy.get("@responseBox").should("have.css", "background-color", queColor.LIGHT_RED);
+              cy.get("@responseBox")
+                .should("have.css", "background-color", queColor.LIGHT_RED)
+                .find("svg")
+                .should("have.css", "fill", queColor.LIGHT_RED2);
 
               break;
 
             case attemptTypes.PARTIAL_CORRECT:
-              cy.get("@responseBox").should(
+              cy.get("@responseBox")
+                .should(
                 "have.css",
                 "background-color",
                 right[i] === attempt[i] ? queColor.LIGHT_GREEN : queColor.LIGHT_RED
-              );
+                )
+                .find("svg")
+                .should("have.css", "fill", attempt[i] === right[i] ? queColor.GREEN_2 : queColor.LIGHT_RED2);
 
               break;
 
@@ -460,14 +469,17 @@ export default class QuestionResponsePage {
             case attemptTypes.RIGHT:
               cy.get("@responseBox")
                 // .should("have.class", "right")
-                .should("have.css", "background-color", queColor.LIGHT_GREEN);
-
+                .should("have.css", "background-color", queColor.LIGHT_GREEN)
+                .find("svg")
+                .should("have.css", "fill", queColor.GREEN_8);
               break;
 
             case attemptTypes.WRONG:
               cy.get("@responseBox")
                 // .should("have.class", "wrong")
-                .should("have.css", "background-color", queColor.LIGHT_RED);
+                .should("have.css", "background-color", queColor.LIGHT_RED)
+                .find("svg")
+                .should("have.css", "fill", queColor.LIGHT_RED2);
 
               break;
 
@@ -478,7 +490,9 @@ export default class QuestionResponsePage {
                   "have.css",
                   "background-color",
                   attempt[i] === right[i] ? queColor.LIGHT_GREEN : queColor.LIGHT_RED
-                );
+                )
+                .find("svg")
+                .should("have.css", "fill", attempt[i] === right[i] ? queColor.GREEN_8 : queColor.LIGHT_RED2);
               break;
 
             default:
@@ -519,7 +533,7 @@ export default class QuestionResponsePage {
         "have.css",
         "background-color",
         attemptType === attemptTypes.RIGHT
-          ? queColor.GREEN_8
+          ? queColor.LIGHT_GREEN
           : attemptType === attemptTypes.WRONG
           ? queColor.LIGHT_RED
           : queColor.GREY_2

@@ -91,6 +91,7 @@ export const filteredDropDownData = (SARFilterData, user, currentFilter) => {
   let schoolIdArr = processSchoolIds(orgDataArr);
   if (user.role === roleuser.SCHOOL_ADMIN) {
     schoolIdArr = get(user, "orgData.schools", []).map(({ _id, name }) => ({ key: _id, title: name }));
+    schoolIdArr.unshift({ key: "All", title: "All Schools" });
   }
 
   // For Teacher Id
@@ -190,26 +191,28 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role, us
 export const transformMetricForStudentGroups = (groups, metricInfo) => {
   const studentGroupsMap = {};
   groups.forEach(group => {
-    if(group.groupType === "custom") {
-      if(group.students) {
+    if (group.groupType === "custom") {
+      if (group.students) {
         group.students.forEach(id => {
-          if(!studentGroupsMap[id]) {
-            studentGroupsMap[id] = []
+          if (!studentGroupsMap[id]) {
+            studentGroupsMap[id] = [];
           }
           studentGroupsMap[id].push({
-            groupId : group.groupId,
-            groupName : group.groupName
-          })
-        })
+            groupId: group.groupId,
+            groupName: group.groupName
+          });
+        });
       }
     }
   });
-  // filter student based on student groups and replace group info with student group info in meticInfo 
-  const metics = []
+  // filter student based on student groups and replace group info with student group info in meticInfo
+  const metics = [];
   metricInfo.forEach(info => {
-   if(studentGroupsMap[info.studentId]) {
-     metics.push(...studentGroupsMap[info.studentId].map(({groupId, groupName}) => ({...info,groupId, groupName})))
-   }
- })
- return metics;
-}
+    if (studentGroupsMap[info.studentId]) {
+      metics.push(
+        ...studentGroupsMap[info.studentId].map(({ groupId, groupName }) => ({ ...info, groupId, groupName }))
+      );
+    }
+  });
+  return metics;
+};

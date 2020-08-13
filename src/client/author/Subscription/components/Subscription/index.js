@@ -154,6 +154,7 @@ const Subscription = props => {
     verificationPending,
     subscription,
     isPremiumAccount,
+    isSubscriptionExpired,
     verifyAndUpgradeLicense,
     stripePaymentAction,
     isSuccess = false,
@@ -185,9 +186,9 @@ const Subscription = props => {
 
   const TEN_DAYS = 864000000;
   const isAboutToExpire = subEndDate ? ((Date.now() + TEN_DAYS) > subEndDate) : false;
-  const needsRenewal = isSubscribed && isAboutToExpire;
 
-  const showUpgradeOptions = !isSubscribed || needsRenewal;
+  const showRenewalOptions = (isPremiumAccount && isAboutToExpire) || (!isPremiumAccount && isSubscriptionExpired);
+  const showUpgradeOptions = !isSubscribed;
 
   return (
     <Wrapper>
@@ -195,6 +196,7 @@ const Subscription = props => {
         openComparePlanModal={openComparePlanModal}
         openPaymentServiceModal={openPaymentServiceModal}
         showUpgradeOptions={showUpgradeOptions}
+        showRenewalOptions={showRenewalOptions}
       />
 
       <SubscriptionMain
@@ -244,6 +246,7 @@ export default connect(
   state => ({
     verificationPending: state?.subscription?.verificationPending,
     subscription: state?.subscription?.subscriptionData?.subscription,
+    isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
     isSuccess: state?.subscription?.subscriptionData?.success,
     isPremiumAccount: state?.user?.user?.features?.premium,
     user: state.user.user

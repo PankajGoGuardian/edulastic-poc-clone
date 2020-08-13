@@ -37,7 +37,7 @@ const QuestionPreviewDetails = ({
       </DetailRow>
       <DetailRow direction="column">
         <label>Bloom’s Taxonomy</label>
-        <span>{bloomsTaxonomy || "--"}</span>
+        <span style={{ textTransform: "capitalize" }}>{bloomsTaxonomy || "--"}</span>
       </DetailRow>
     </FlexWrap>
 

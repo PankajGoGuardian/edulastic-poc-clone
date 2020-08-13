@@ -27,12 +27,17 @@ before("create testData file", () => {
  * @before - we need this while developping tests, any interruption in mid of execution causes data not to delete and impacts consecutive runs in some case when there is static data dependencies.
  * @after - we need to this when running in CI(Jenkins/docker), so that running consecutive suites are not blocked when any API error out for DELETE
  */
-const cleanupHook = executionEnv === "CI" ? after : before;
+// const cleanupHook = executionEnv === "CI" ? after : before;
 
-cleanupHook("delete test data", () => {
-  cy.deleteTestData();
-});
+// cleanupHook("delete test data", () => {
+//   cy.deleteTestData();
+// });
 
+if (executionEnv !== "CI") {
+  before("delete test data", () => {
+    cy.deleteTestData();
+  });
+}
 /*
  *  init global routes for each* test
  */

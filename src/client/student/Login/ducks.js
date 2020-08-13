@@ -23,6 +23,7 @@ import { getUser } from "../../author/src/selectors/user";
 import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 import { JOIN_CLASS_REQUEST_SUCCESS } from "../ManageClass/ducks";
 import "firebase/auth";
+import { addLoadingComponentAction, removeLoadingComponentAction } from "../../author/src/actions/authorUi";
 
 // types
 export const LOGIN = "[auth] login";
@@ -515,6 +516,7 @@ function getCurrentFirebaseUser() {
 }
 
 function* login({ payload }) {
+  yield put(addLoadingComponentAction({ componentName: "loginButton" }));
   const _payload = { ...payload };
   const generalSettings = yield select(signupGeneralSettingsSelector);
   if (generalSettings) {
@@ -585,6 +587,8 @@ function* login({ payload }) {
       errorMessage = data.message;
     }
     notification({ msg: errorMessage });
+  } finally {
+    yield put(removeLoadingComponentAction({ componentName: "loginButton" }));
   }
 }
 

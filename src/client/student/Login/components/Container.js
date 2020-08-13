@@ -11,7 +11,7 @@ import {
 import { IconLock, IconMail } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Checkbox, Col, Form, Input, Row } from "antd";
-import { trim } from "lodash";
+import { trim, get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -89,7 +89,8 @@ class LoginContainer extends React.Component {
       generalSettings,
       googleLogin,
       cleverLogin,
-      msoLogin
+      msoLogin,
+      loadingComponents
     } = this.props;
 
     const { forgotPasswordVisible } = this.state;
@@ -210,7 +211,12 @@ class LoginContainer extends React.Component {
                             <ForgetPassword style={{ marginTop: 1 }} onClick={this.onForgotPasswordClick}>
                               <span>{t("common.forgotpasswordtext")}</span>
                             </ForgetPassword>
-                            <LoginButton data-cy="login" type="primary" htmlType="submit">
+                            <LoginButton
+                              loading={loadingComponents.includes("loginButton")}
+                              data-cy="login"
+                              type="primary"
+                              htmlType="submit"
+                            >
                               {t("common.signinbtn")}
                             </LoginButton>
                           </FormItem>
@@ -243,7 +249,9 @@ const LoginForm = Form.create()(LoginContainer);
 const enhance = compose(
   withNamespaces("login"),
   connect(
-    null,
+    state => ({
+      loadingComponents: get(state, ["authorUi", "currentlyLoading"], [])
+    }),
     {
       googleLogin: googleLoginAction,
       cleverLogin: cleverLoginAction,

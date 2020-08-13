@@ -195,9 +195,6 @@ const SingleAssessmentReportFilters = ({
       assessmentType: urlAssessmentType.key
     };
 
-    if (user.role === roleuser.SCHOOL_ADMIN) {
-      obtainedFilters.schoolId = get(user, "orgData.schools", [])[0]?._id;
-    }
     dropDownData = filteredDropDownData(SARFilterData, user, obtainedFilters);
     processedTestIds = processTestIds(dropDownData, obtainedFilters, urlTestId.key, role, user);
 

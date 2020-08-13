@@ -32,6 +32,7 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
         return <Redirect exact to="/admin/search/clever" />;
       case roleuser.DISTRICT_ADMIN:
       case roleuser.SCHOOL_ADMIN:
+        return <Redirect exact to="/author/assignments" />;
       case roleuser.TEACHER:
         return <Redirect exact to="/author/dashboard" />;
       case roleuser.STUDENT:

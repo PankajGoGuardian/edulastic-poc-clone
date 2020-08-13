@@ -391,13 +391,18 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     yield put(setAllTestActivitiesForStudentAction(result));
   } catch (err) {
     Sentry.captureException(err);
-    const {
-      data: { message: errorMessage }
-    } = err.response;
-    if (errorMessage === "Assignment does not exist anymore") {
-      yield put(redirectToAssignmentsAction(""));
+
+    if (err.response) {
+      const {
+        data: { message: errorMessage }
+      } = err.response;
+      if (errorMessage === "Assignment does not exist anymore") {
+        yield put(redirectToAssignmentsAction(""));
+      }
+      yield call(notification, { msg: errorMessage || "Fetching all test activities failed" });
+    } else {
+      yield call(notification, { msg: "Fetching all test activities failed" });
     }
-    yield call(notification, { msg: errorMessage || "Fetching all test activities failed" });
   }
 }
 

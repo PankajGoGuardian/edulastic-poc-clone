@@ -459,6 +459,10 @@ const AttemptDiv = styled.div`
   }
 `;
 
+const CenteredStyledParaSS = styled(StyledParaSS)`
+  justify-content: center;
+`;
+
 const RecentAttemptsContainer = styled.div`
   position: absolute;
   top: 98px;

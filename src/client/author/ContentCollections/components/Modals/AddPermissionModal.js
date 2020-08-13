@@ -297,14 +297,13 @@ const AddPermissionModal = ({
               placeholder={fieldData.orgType === "SCHOOL" ? "Please select school" : "Please select user"}
               notFoundContent={isFetchingOrganization ? <Spin size="small" /> : null}
               value={fieldData.orgDetails.map(o => o.orgId)}
-              onFocus={() => handleSearch("", fieldData.orgType)}
+              onSearch={d => handleSearch(d, fieldData.orgType, 50)}
+              onFocus={() => !fieldData.orgDetails.length && handleSearch("", fieldData.orgType, 50)}
               onChange={handleSchoolUserSelect}
-              filterOption={(inputValue, option) =>
-                option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
-              }
+              filterOption={false}
             >
               {fieldData.orgType === "SCHOOL" &&
-                schoolList
+                (isFetchingOrganization ? [] : schoolList)
                   .sort((a, b) => {
                     const _aName = (a.name || "").toLowerCase();
                     const _bName = (b.name || "").toLowerCase();
@@ -316,7 +315,7 @@ const AddPermissionModal = ({
                     </Select.Option>
                   ))}
               {fieldData.orgType === "USER" &&
-                userList
+                (isFetchingOrganization ? [] : userList)
                   .sort((a, b) => {
                     const _aName = `${a.firstName || ""} ${a.lastName || ""}`.toLowerCase();
                     const _bName = `${b.firstName || ""} ${b.lastName || ""}`.toLowerCase();

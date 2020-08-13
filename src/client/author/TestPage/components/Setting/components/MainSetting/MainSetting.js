@@ -340,7 +340,8 @@ class MainSetting extends Component {
       enableScratchpad = true,
       freezeSettings = false,
       hasInstruction = false,
-      instruction = ""
+      instruction = "",
+      enableSkipAlert = false
     } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
@@ -390,7 +391,8 @@ class MainSetting extends Component {
 
     const accessibilityData = [
       { key: "showMagnifier", value: showMagnifier },
-      { key: "enableScratchpad", value: enableScratchpad }
+      { key: "enableScratchpad", value: enableScratchpad },
+      { key: "enableSkipAlert", value: enableSkipAlert }
     ].filter(a => features[a.key]);
 
     const checkForCalculator = premium && calculatorProvider !== "DESMOS";

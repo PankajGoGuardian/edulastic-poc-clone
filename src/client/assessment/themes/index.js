@@ -115,6 +115,8 @@ const AssessmentContainer = ({
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
+  const { enableSkipAlert = false } = testSettings || {};
+
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
 
   // start assessment
@@ -309,13 +311,15 @@ const AssessmentContainer = ({
           locState: history?.location?.state,
           callback: () => changePreview(previewTab)
         });
-      } else {
+      } else if (enableSkipAlert) {
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
           index,
           context
         });
+      } else {
+        gotoQuestion(index, true);
       }
     }
   };
@@ -337,13 +341,15 @@ const AssessmentContainer = ({
           urlToGo: `${url}/${"test-summary"}`,
           locState: { ...history?.location?.state, fromSummary: true }
         });
-      } else {
+      } else if (enableSkipAlert) {
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(({ barLabel, qSubLabel }) => `${barLabel.substr(1)}${qSubLabel}`),
           index: Number(currentItem) + 1,
           context: "next"
         });
+      } else {
+        moveToNext(null, true);
       }
     }
     if (enableMagnifier) {
@@ -516,7 +522,7 @@ const AssessmentContainer = ({
           The assignment has been modified by Instructor. Please restart the assignment.
         </Modal>
       )}
-      {unansweredPopupSetting.show && (
+      {unansweredPopupSetting.show && enableSkipAlert && (
         <UnansweredPopup
           visible
           title=""

@@ -210,12 +210,14 @@ const Settings = ({
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
-    enableScratchpad = tempTestSettings.enableScratchpad
+    enableScratchpad = tempTestSettings.enableScratchpad,
+    enableSkipAlert = tempTestSettings.enableSkipAlert || false
   } = assignmentSettings;
   const playerSkinType = assignmentSettings.playerSkinType || testSettings.playerSkinType;
   const accessibilityData = [
     { key: "showMagnifier", value: showMagnifier },
-    { key: "enableScratchpad", value: enableScratchpad }
+    { key: "enableScratchpad", value: enableScratchpad },
+    { key: "enableSkipAlert", value: enableSkipAlert }
   ].filter(a => features[a.key]);
 
   const checkForCalculator = premium && calculatorProvider !== "DESMOS";

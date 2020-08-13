@@ -220,6 +220,7 @@ function* loadTest({ payload }) {
       allowedTime: testActivity?.assignmentSettings?.allowedTime,
       pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
       enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad,
+      enableSkipAlert: testActivity?.assignmentSettings?.enableSkipAlert,
       releaseScore: testActivity?.testActivity?.releaseScore
     };
 

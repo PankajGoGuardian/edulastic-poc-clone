@@ -825,7 +825,10 @@ export const PlusIcon = styled.div`
 
 const QuestionWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  .report {
+    flex: 0 0 100%;
+  }
 `;
 
 const ModalContentArea = styled.div`

@@ -272,6 +272,7 @@ export const ReportHeader = styled.div`
 `;
 
 export const ReportIssueContainer = styled.div`
+  width: 100%;
   .fr-box:hover,
   .fr-box:focus {
     border-color: red;

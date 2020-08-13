@@ -476,7 +476,8 @@ function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
         payload: { generalSettings, districtPolicy }
       });
       if (generalSettings.orgType === "district") {
-        yield put(push(`/${generalSettings.orgType}/${generalSettings.shortName}`));
+        const [, districtLogin] = window.location.pathname?.split("/");
+        yield put(push(`/${districtLogin || "districtLogin"}/${generalSettings.shortName}`));
       }
     } else {
       throw payload.error.message;

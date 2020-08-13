@@ -264,7 +264,7 @@ class App extends Component {
           location.pathname.toLocaleLowerCase().includes("/signup") ||
           location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
           location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
-          (path[0] && ["district", "school"].includes(path[0].toLocaleLowerCase())) ||
+          (path[0] && ["district", "school", "districtlogin"].includes(path[0].toLocaleLowerCase())) ||
           location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
           location.pathname.toLocaleLowerCase().includes("/fwd") ||
           location.pathname.toLocaleLowerCase().includes("/resetpassword") ||
@@ -351,9 +351,10 @@ class App extends Component {
                 notifications={
                   roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
                     ? [BulkActionNotificationListener]
-                    : (roleuser.TEACHER === userRole
-                      ? [ClassSyncNotification]
-                      : null)}
+                    : roleuser.TEACHER === userRole
+                    ? [ClassSyncNotification]
+                    : null
+                }
               />
               <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
               <PrivateRoute
@@ -376,6 +377,12 @@ class App extends Component {
                 component={DistrictRoutes}
                 redirectPath={defaultRoute}
                 orgType="district"
+              />
+              <LoggedOutRoute
+                path="/districtLogin/:orgShortName"
+                component={DistrictRoutes}
+                redirectPath={defaultRoute}
+                orgType="districtLogin"
               />
               <LoggedOutRoute
                 path="/school/:orgShortName"

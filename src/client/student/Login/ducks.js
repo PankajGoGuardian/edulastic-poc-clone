@@ -202,7 +202,8 @@ const getCurrentPath = () => {
     location.pathname.toLowerCase() === "/studentsignup" ||
     location.pathname.toLowerCase() === "/adminsignup" ||
     location.pathname.toLowerCase() === "/inviteteacher" ||
-    (path[0] && path[0] === "district")
+    (path[0] && path[0] === "district") ||
+    (path[0] && path[0] === "districtlogin")
   ) {
     return "";
   }
@@ -754,14 +755,22 @@ const getLoggedOutUrl = () => {
   if (pathname === "/studentsignup") {
     return "/studentsignup";
   }
+  if (pathname === "/login" && window.location.hash.includes("register")) {
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  }
   if (pathname === "/adminsignup") {
     return "/adminsignup";
   }
-  if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+  if (
+    path[0] &&
+    (path[0].toLocaleLowerCase() === "district" || path[0].toLocaleLowerCase() === "districtlogin") &&
+    path[1]
+  ) {
     const arr = [...path];
     arr.shift();
     const restOfPath = arr.join("/");
-    return `/district/${restOfPath}`;
+    const [, districtLogin] = window.location.pathname?.split("/");
+    return `/${districtLogin || "districtLogin"}/${restOfPath}`;
   }
   if (path[0] && path[0].toLocaleLowerCase() === "school" && path[1]) {
     const arr = [...path];

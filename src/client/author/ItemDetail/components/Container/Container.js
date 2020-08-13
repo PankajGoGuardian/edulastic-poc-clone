@@ -289,9 +289,16 @@ class Container extends Component {
 
   handleAddToPassage = (type, tabIndex) => {
     const { isTestFlow, match, addWidgetToPassage } = this.props;
+    /**
+     * there are two possibilites for getting item id during test flow
+     * route 1: "/author/tests/:testId/createItem/:itemId"
+     *  itemId := match.params.itemId
+     * route 2: "/author/items/:id/item-detail/test/:testId"
+     *  itemId := match.params.id
+     */
     addWidgetToPassage({
       isTestFlow,
-      itemId: isTestFlow ? match.params.itemId : match.params.id,
+      itemId: isTestFlow && match?.params?.itemId ? match.params.itemId : match.params.id,
       testId: match.params.testId,
       type,
       tabIndex

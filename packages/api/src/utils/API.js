@@ -33,14 +33,18 @@ const getLoggedOutUrl = () => {
   if (pathname === "/studentsignup") {
     return "/studentsignup";
   }
+  if (pathname === "/login" && window.location.hash.includes("register")) {
+    return `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  }
   if (pathname === "/adminsignup") {
     return "/adminsignup";
   }
-  if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+  if (path[0] && ["district", "districtlogin"].includes(path[0].toLocaleLowerCase()) && path[1]) {
     const arr = [...path];
     arr.shift();
     const restOfPath = arr.join("/");
-    return `/district/${restOfPath}`;
+    const [, districtLogin] = window.location.pathname?.split("/");
+    return `/${districtLogin || "districtLogin"}/${restOfPath}`;
   }
   if (pathname === "/resetpassword") {
     return window.location.href.split(window.location.origin)[1];

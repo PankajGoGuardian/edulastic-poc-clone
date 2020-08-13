@@ -45,6 +45,8 @@ export default class TestAssignPage {
       .next()
       .find(".ant-select-arrow-icon");
 
+  getStudentPlayerskin = () => cy.get('[data-cy="playerSkinType"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -354,6 +356,19 @@ export default class TestAssignPage {
     this.getNavigateToTestLibraryPage().click({ force: true });
     cy.url().should("contain", `author/tests?`);
     cy.get(`[data-cy="createNew"]`).should("exist");
+  };
+
+  showAdvancedSettings = () =>
+    cy.get('[data-cy="advanced-option"]').then($ele => {
+      if (Cypress.$($ele).text() === "SHOW ADVANCED OPTIONS") cy.wrap($ele).click({ force: true });
+    });
+
+  selectStudentPlayerSkinByOption = option => {
+    this.showAdvancedSettings();
+    this.getStudentPlayerskin().click({ force: true });
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains(option)
+      .click({ force: true });
   };
 
   // *** ACTIONS END ***

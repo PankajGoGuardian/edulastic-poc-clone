@@ -165,3 +165,11 @@ export const EVAL_METHODS = {
   PARTIAL_WITH_PENALTY: "PARTIAL_CREDIT",
   ITEM_LEVEL: "ITEM_LEVEL_EVALUATION"
 };
+
+export const ASSESSMENT_PLAYERS = {
+  EDULASTIC: "Edulastic",
+  PARCC: "TestNav",
+  SBAC: "SBAC",
+  CMAS: "Colorado - CMAS",
+  CASSPP: "California - CASSPP"
+};

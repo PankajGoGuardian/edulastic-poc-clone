@@ -1,5 +1,4 @@
 import TestHeader from "./header";
-
 export default class TestSettings {
   constructor() {
     this.header = new TestHeader();
@@ -38,6 +37,8 @@ export default class TestSettings {
   getMarkAsDoneAutomatically = () => cy.get("#mark-as-done").find('[value="automatically"]');
 
   getMarkAsDoneManually = () => cy.get("#mark-as-done").find('[value="manually"]');
+
+  getStudentPlayerSkin = () => cy.get('[data-cy="playerSkinType"]');
 
   // *** ELEMENTS END ***
 
@@ -184,6 +185,18 @@ export default class TestSettings {
 
   setMarkAsDoneManually = () => this.getMarkAsDoneManually().click();
 
+  showAdvancedSettings = () =>
+    cy.get('[data-cy="advanced-option"]').then($ele => {
+      if (Cypress.$($ele).text() === "SHOW ADVANCED OPTIONS") cy.wrap($ele).click({ force: true });
+    });
+
+  selectStudentPlayerSkinByOption = option => {
+    this.showAdvancedSettings();
+    this.getStudentPlayerSkin().click({ force: true });
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains(option)
+      .click({ force: true });
+  };
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

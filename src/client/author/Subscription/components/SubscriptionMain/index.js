@@ -178,7 +178,9 @@ const SubscriptionMain = props => {
           <Container>
             <Title padding="0 30px 0 0">Your Current Plan:</Title>
             <Description>
-              {isSubscribed && licenseExpiryDate ? `${capitalize(subType.replace(/_/g, " "))} Version` : "Free Plan"}
+              {isSubscribed && subType && licenseExpiryDate
+                ? `${capitalize(subType.replace(/_/g, " "))} Version`
+                : "Free Plan"}
             </Description>
           </Container>
           <PlanStatus>

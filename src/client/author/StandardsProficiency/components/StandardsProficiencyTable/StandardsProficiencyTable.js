@@ -181,7 +181,7 @@ class StandardsProficiencyTable extends React.Component {
       updateData.decay = calcDecayingAttr;
     } else if (calcType === "MOVING_AVERAGE") {
       const { calcMovingAvrAttr } = this.state;
-      updateData.calcAttribute = calcMovingAvrAttr || this.props.decay;
+      updateData.calcAttribute = calcMovingAvrAttr || this.props.noOfAssessments;
       updateData.noOfAssessments = calcMovingAvrAttr || this.props.noOfAssessments;
     } else {
       updateData.calcAttribute = 0;

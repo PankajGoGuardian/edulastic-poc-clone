@@ -1,9 +1,11 @@
 import { EduButton, MainHeader } from "@edulastic/common";
 import { IconSubscriptionHighlight } from "@edulastic/icons";
-import { red } from "@edulastic/colors";
+import { darkOrange1 } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import React, { memo } from "react";
 import { withNamespaces } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { ActionBtnWrapper } from "./styled";
 
 const SubscriptionHeader = ({
@@ -26,15 +28,14 @@ const SubscriptionHeader = ({
         </EduButton>
       ) : showRenewalOptions ? (
         <EduButton
-          isBlue
-          width="215px"
           onClick={openPaymentServiceModal}
+          type="primary"
+          isBlue
+          style={{ marginLeft: "5px", backgroundColor: darkOrange1, border: "none" }}
+          data-cy="manageClass"
         >
-          <i
-            className="fa fa-exclamation-circle"
-            aria-hidden="true"
-          />
-          <span style={{ color: red }}>RENEW SUBSCRIPTION</span>
+          <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
+          <span>RENEW SUBSCRIPTION</span>
         </EduButton>
       ) : null}
     </ActionBtnWrapper>

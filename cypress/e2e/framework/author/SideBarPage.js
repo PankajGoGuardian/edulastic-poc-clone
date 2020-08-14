@@ -17,7 +17,7 @@ export default class TeacherSideBar {
   clickOnPlayListLibrary = () => {
     cy.server();
     cy.route("POST", "**/playlists/search/").as("playListSearch");
-    cy.get('[data-cy="PlayList Library"]').dblclick({ force: true });
+    cy.get('[data-cy="Playlist"]').dblclick({ force: true });
     cy.wait("@playListSearch");
   };
 
@@ -61,7 +61,7 @@ export default class TeacherSideBar {
     cy.server();
     cy.route("POST", "**/tests").as("searchTest");
     // TODO: below is temp fix and wait is not added- look for this while fixing
-    cy.route("POST", "**browse-standards").as("search-standards");
+    cy.route("POST", "**browse-standards").as("search-standards-itembank");
     cy.wait(5000); // waiting for mongo to elastic search sync delay
     cy.get('[data-cy="Test"]').dblclick({ force: true });
     cy.wait("@searchTest");
@@ -87,20 +87,19 @@ export default class TeacherSideBar {
   clickOnUser = () => {
     cy.get(`.userinfoBtn`)
       .click({ force: true })
-      .find('.anticon')
-      .click({ force: true })
-  }
+      .find(".anticon")
+      .click({ force: true });
+  };
 
   clickMyProfile = () => {
-    this.clickOnUser()
-    cy.contains("My Profile")
-      .click({ force: true });
-    cy.get("[title='My Profile']")
-  }
+    this.clickOnUser();
+    cy.contains("My Profile").click({ force: true });
+    cy.get("[title='My Profile']");
+  };
 
   clickOnManageDistrict = () => {
     cy.get('[data-cy="Manage District').dblclick({ force: true });
-    cy.get("[title='Manage District']")
+    cy.get("[title='Manage District']");
   };
   // *** ACTIONS END ***
 

@@ -189,6 +189,7 @@ const AssessmentPlayerSkinWrapper = ({
           style={getStyle()}
           playerSkin={playerSkinType}
           isSidebarVisible={isSidebarVisible}
+          data-cy={test.playerSkinTypes[playerSkinType]}
         >
           {children}
         </StyledMainContainer>
@@ -229,7 +230,7 @@ const StyledMainContainer = styled.div`
   }
   ${({ playerSkin }) =>
     playerSkin.toLowerCase() === test.playerSkinValues.parcc.toLowerCase() ||
-      playerSkin.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
+    playerSkin.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
       ? `
     .question-tab-container {
       padding-top: 0!important;

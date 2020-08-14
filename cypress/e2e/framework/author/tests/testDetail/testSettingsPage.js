@@ -40,6 +40,8 @@ export default class TestSettings {
 
   getStudentPlayerSkin = () => cy.get('[data-cy="playerSkinType"]');
 
+  getPerformanceBandDropDown = () => cy.get('[data-cy="performance-band"]').find(".ant-select-selection");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -192,10 +194,13 @@ export default class TestSettings {
 
   selectStudentPlayerSkinByOption = option => {
     this.showAdvancedSettings();
-    this.getStudentPlayerSkin().click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(option)
-      .click({ force: true });
+    this.getStudentPlayerskin().click({ force: true });
+    this.selectOptionInDropDown(option);
+  };
+
+  selectPerformanceBand = band => {
+    this.getPerformanceBandDropDown().click({ force: true });
+    this.selectOptionInDropDown(band);
   };
   // *** ACTIONS END ***
 
@@ -212,5 +217,11 @@ export default class TestSettings {
       "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
     );
   };
+
+  selectOptionInDropDown = option =>
+    cy
+      .get(".ant-select-dropdown-menu-item")
+      .contains(option)
+      .click({ force: true });
   // *** APPHELPERS END ***
 }

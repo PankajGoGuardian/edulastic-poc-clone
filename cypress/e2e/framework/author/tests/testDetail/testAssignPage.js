@@ -47,6 +47,8 @@ export default class TestAssignPage {
 
   getStudentPlayerskin = () => cy.get('[data-cy="playerSkinType"]');
 
+  getPerformanceBandDropDown = () => cy.get('[data-cy="performance-band"]').find(".ant-select-selection");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -245,11 +247,12 @@ export default class TestAssignPage {
       cy.wait("@assigned").then(xhr => {
         assert(
           xhr.status === 409,
-          `assigning the assignment - ${xhr.status === 409 ? "Warning" : JSON.stringify(xhr.responseBody)}`);
+          `assigning the assignment - ${xhr.status === 409 ? "Warning" : JSON.stringify(xhr.responseBody)}`
+        );
         if (duplicate.duplicate === true) this.proceedWithDuplicate();
         else this.proceedWithNoDuplicate();
-      })
-    };
+      });
+    }
     if (!duplicate.willNotAssign) {
       cy.wait("@assigned").then(xhr => {
         assert(
@@ -266,7 +269,7 @@ export default class TestAssignPage {
       }
       return cy.wait(1).then(() => assignmentIdObj);
     }
-    return this
+    return this;
   };
 
   // OVER RIDE TEST SETTING
@@ -366,9 +369,12 @@ export default class TestAssignPage {
   selectStudentPlayerSkinByOption = option => {
     this.showAdvancedSettings();
     this.getStudentPlayerskin().click({ force: true });
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(option)
-      .click({ force: true });
+    this.selectOptionInDropDown(option);
+  };
+
+  selectPerformanceBand = band => {
+    this.getPerformanceBandDropDown().click({ force: true });
+    this.selectOptionInDropDown(band);
   };
 
   // *** ACTIONS END ***
@@ -394,6 +400,14 @@ export default class TestAssignPage {
       "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
     );
   };
+
+  selectOptionInDropDown = option =>
+    cy
+      .get(".ant-select-dropdown-menu-item")
+      .contains(option)
+      .click({ force: true });
+
+  verifySelectedPerformanceBand = band => this.getPerformanceBandDropDown().should("contain.text", band);
 
   // *** APPHELPERS END ***
 }

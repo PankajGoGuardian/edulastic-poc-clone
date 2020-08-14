@@ -233,10 +233,14 @@ export default class TestAssignPage {
     cy.route("POST", "**/assignments").as("assigned");
     cy.contains("ASSIGN").click();
     if (Object.entries(duplicate).length > 0) {
-      cy.wait("@assigned");
-      if (duplicate.duplicate === true) this.proceedWithDuplicate();
-      else this.proceedWithNoDuplicate();
-    }
+      cy.wait("@assigned").then(xhr => {
+        assert(
+          xhr.status === 409,
+          `assigning the assignment - ${xhr.status === 409 ? "Warning" : JSON.stringify(xhr.responseBody)}`);
+        if (duplicate.duplicate === true) this.proceedWithDuplicate();
+        else this.proceedWithNoDuplicate();
+      })
+    };
     if (!duplicate.willNotAssign) {
       cy.wait("@assigned").then(xhr => {
         assert(
@@ -253,9 +257,7 @@ export default class TestAssignPage {
       }
       return cy.wait(1).then(() => assignmentIdObj);
     }
-    return CypressHelper.verifyAntMesssage(
-      "No classes found after removing the duplicates. Select one or more to assign."
-    );
+    return this
   };
 
   // OVER RIDE TEST SETTING

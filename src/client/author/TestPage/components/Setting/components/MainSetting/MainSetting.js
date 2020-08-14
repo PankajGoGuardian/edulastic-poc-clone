@@ -422,7 +422,7 @@ class MainSetting extends Component {
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
               {!isDocBased && features.premium && (
-                <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+                <AdvancedButton data-cy="advanced-option" onClick={this.advancedHandler} show={showAdvancedOption}>
                   {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
                   <IconCaretDown color={themeColor} width={11} height={6} />
                 </AdvancedButton>
@@ -991,6 +991,7 @@ class MainSetting extends Component {
                     <Title>Student Player Skin</Title>
                     <Body smallSize={isSmallSize}>
                       <SelectInputStyled
+                        data-cy="playerSkinType"
                         value={playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
                         disabled={!owner || !isEditable}
                         onChange={this.updateTestData("playerSkinType")}

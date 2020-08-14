@@ -754,7 +754,7 @@ const Settings = ({
               />
             </DivBlock>
             {premium && (
-              <AdvancedButton onClick={advancedHandler} show={showAdvancedOption}>
+              <AdvancedButton data-cy="advanced-option" onClick={advancedHandler} show={showAdvancedOption}>
                 {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
                 <IconCaretDown color={themeColor} width={11} height={6} />
               </AdvancedButton>

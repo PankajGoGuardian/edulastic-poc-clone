@@ -158,3 +158,18 @@ export const REPORT_HEADERS = {
     }
   }
 };
+
+export const EVAL_METHODS = {
+  ALL_OR_NOTHING: "ALL_OR_NOTHING",
+  PARTIAL: "PARTIAL_CREDIT_IGNORE_INCORRECT",
+  PARTIAL_WITH_PENALTY: "PARTIAL_CREDIT",
+  ITEM_LEVEL: "ITEM_LEVEL_EVALUATION"
+};
+
+export const ASSESSMENT_PLAYERS = {
+  EDULASTIC: "Edulastic",
+  PARCC: "TestNav",
+  SBAC: "SBAC",
+  CMAS: "Colorado - CMAS",
+  CASSPP: "California - CASSPP"
+};

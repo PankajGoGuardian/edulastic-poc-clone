@@ -1,5 +1,4 @@
 import TestHeader from "./header";
-
 export default class TestSettings {
   constructor() {
     this.header = new TestHeader();
@@ -34,6 +33,14 @@ export default class TestSettings {
   getSafeExamBrowserSwitch = () => cy.get("#require-safe-exame-browser").find("button");
 
   getQuitPassord = () => cy.get('[placeholder="Quit Password"]');
+
+  getMarkAsDoneAutomatically = () => cy.get("#mark-as-done").find('[value="automatically"]');
+
+  getMarkAsDoneManually = () => cy.get("#mark-as-done").find('[value="manually"]');
+
+  getStudentPlayerSkin = () => cy.get('[data-cy="playerSkinType"]');
+
+  getPerformanceBandDropDown = () => cy.get('[data-cy="performance-band"]').find(".ant-select-selection");
 
   // *** ELEMENTS END ***
 
@@ -176,6 +183,25 @@ export default class TestSettings {
       if ($ele.hasClass("ant-switch-checked")) cy.wrap($ele).click({ force: true });
     });
 
+  setMarkAsDoneAutomatically = () => this.getMarkAsDoneAutomatically().click();
+
+  setMarkAsDoneManually = () => this.getMarkAsDoneManually().click();
+
+  showAdvancedSettings = () =>
+    cy.get('[data-cy="advanced-option"]').then($ele => {
+      if (Cypress.$($ele).text() === "SHOW ADVANCED OPTIONS") cy.wrap($ele).click({ force: true });
+    });
+
+  selectStudentPlayerSkinByOption = option => {
+    this.showAdvancedSettings();
+    this.getStudentPlayerskin().click({ force: true });
+    this.selectOptionInDropDown(option);
+  };
+
+  selectPerformanceBand = band => {
+    this.getPerformanceBandDropDown().click({ force: true });
+    this.selectOptionInDropDown(band);
+  };
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -191,5 +217,11 @@ export default class TestSettings {
       "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
     );
   };
+
+  selectOptionInDropDown = option =>
+    cy
+      .get(".ant-select-dropdown-menu-item")
+      .contains(option)
+      .click({ force: true });
   // *** APPHELPERS END ***
 }

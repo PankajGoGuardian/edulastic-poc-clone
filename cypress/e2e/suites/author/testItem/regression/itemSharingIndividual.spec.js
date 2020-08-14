@@ -82,7 +82,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.clickOnEditItemOnPreview();
-          mcqTrueFalsePage.getPoints().should("have.value", "10");
+          mcqTrueFalsePage.getPoints().should("have.value", "10.0");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
@@ -169,7 +169,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.clickOnEditItemOnPreview();
-          mcqTrueFalsePage.getPoints().should("not.contain.value", "15");
+          mcqTrueFalsePage.getPoints().should("not.contain.value", "15.0");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
@@ -256,7 +256,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.clickOnEditItemOnPreview();
-          mcqTrueFalsePage.getPoints().should("not.contain.value", "15");
+          mcqTrueFalsePage.getPoints().should("not.contain.value", "15.0");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
@@ -361,7 +361,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing using publ
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index]);
           previewItem.clickOnEditItemOnPreview();
-          mcqTrueFalsePage.getPoints().should("have.value", "20");
+          mcqTrueFalsePage.getPoints().should("have.value", "20.0");
           mcqTrueFalsePage.header.save(true);
           mcqTrueFalsePage.header.clickOnPublishItem();
         });

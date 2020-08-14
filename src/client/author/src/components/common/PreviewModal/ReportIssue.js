@@ -70,7 +70,7 @@ const ReportIssue = ({
   }, [confirmationResponse]);
 
   return (
-    <ReportIssueContainer>
+    <ReportIssueContainer className="report">
       <ReportHeader>
         <span>
           <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />

@@ -33,7 +33,7 @@ const getLoggedOutUrl = () => {
   if (pathname === "/studentsignup") {
     return "/studentsignup";
   }
-  if (pathname === "/login" && window.location.hash.includes("register")) {
+  if (pathname === "/login" && (window.location.hash.includes("register") || window.location.hash.includes("signup"))) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`;
   }
   if (pathname === "/adminsignup") {

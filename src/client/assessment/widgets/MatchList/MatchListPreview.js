@@ -242,7 +242,7 @@ const MatchListPreview = ({
       }
       answers[list[itemTo.index].value] = _item.value;
     } else if (Object.values(answers).includes(_item.value)) {
-      answers[list[sourceIndex].value] = null;
+      answers[(list?.[sourceIndex]?.value)] = null;
       dItems.push(_item);
     }
 

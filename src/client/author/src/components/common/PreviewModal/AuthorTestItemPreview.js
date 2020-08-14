@@ -336,7 +336,7 @@ class AuthorTestItemPreview extends Component {
           {showScratch && isEnableScratchpad && (
             <Scratchpad hideTools saveData={saveScratchpad} data={scratchpadData} />
           )}
-          {col.widgets.map((widget, i) => (
+          {col?.widgets?.map((widget, i) => (
             <React.Fragment key={i}>
               {col.tabs &&
                 !!col.tabs.length &&

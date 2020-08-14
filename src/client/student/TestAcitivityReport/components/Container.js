@@ -53,7 +53,7 @@ const ReportListContent = ({
   const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "check";
   const closeModal = () => setModal(false);
   const hasCollapseButtons =
-    itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
+    itemRows?.length > 1 && itemRows.flatMap(_item => _item?.widgets)?.find(_item => _item?.widgetType === "resource");
 
   const {
     qType,

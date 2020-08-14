@@ -1,6 +1,6 @@
 import React from "react";
-import { Form, Icon, Radio, Button, message, Row } from "antd";
-import { EduButton,notification, RadioBtn } from "@edulastic/common";
+import { Form, Icon, Button, Row } from "antd";
+import { notification, RadioBtn } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -29,7 +29,6 @@ import {
   RadioWrap
 } from "./styled";
 import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
-
 
 import {
   updateStandardsProficiencyAction,
@@ -101,7 +100,7 @@ class StandardsProficiencyTable extends React.Component {
   handleAdd = () => {
     const { data, editingKey } = this.state;
     if (data.length >= 5) {
-      notification({ messageKey:"maximumFiveLevels"});
+      notification({ messageKey: "maximumFiveLevels" });
       return;
     }
 
@@ -133,7 +132,7 @@ class StandardsProficiencyTable extends React.Component {
   handleDelete = key => {
     const data = [...this.state.data];
     if (data.length <= 3) {
-       notification({ messageKey:"minimumThreeLevel"});
+      notification({ messageKey: "minimumThreeLevel" });
       return;
     }
     const newData = data.filter(item => item.key !== key);
@@ -173,15 +172,17 @@ class StandardsProficiencyTable extends React.Component {
       calcType,
       orgType: "district"
     };
-
     if (calcType === "DECAYING_AVERAGE") {
-      const { calcDecayingAttr } = this.state;
+      const calcDecayingAttr = this.state.calcDecayingAttr || this.props.decay;
+      if (!calcDecayingAttr && calcDecayingAttr !== 0) {
+        return notification({ messageKey: "DecayError" });
+      }
       updateData.calcAttribute = calcDecayingAttr;
       updateData.decay = calcDecayingAttr;
     } else if (calcType === "MOVING_AVERAGE") {
       const { calcMovingAvrAttr } = this.state;
-      updateData.calcAttribute = calcMovingAvrAttr;
-      updateData.noOfAssessments = calcMovingAvrAttr;
+      updateData.calcAttribute = calcMovingAvrAttr || this.props.decay;
+      updateData.noOfAssessments = calcMovingAvrAttr || this.props.noOfAssessments;
     } else {
       updateData.calcAttribute = 0;
     }

@@ -71,6 +71,7 @@ const PDFPreview = ({
   annotationsStack
 }) => {
   const previewContainer = useRef();
+  const annotationContainer = useRef();
   const [pdfScale, scalePDF] = useState(1);
 
   const PDFScaleUp = (scale = 0.25) => {

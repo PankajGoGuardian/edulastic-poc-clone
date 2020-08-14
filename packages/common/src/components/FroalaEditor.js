@@ -617,7 +617,6 @@ const CustomEditor = ({
         },
         initialized: function() {
           this.hasFocus = false;
-          this._original_html = value;
         },
         focus: function() {
           if (initOnClick) {

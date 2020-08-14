@@ -159,7 +159,7 @@ class EditClassModal extends Component {
         institutionId = "",
         institutionName = "",
         grades,
-        tags,
+        tags = [],
         endDate,
         course = {}
       } = {}
@@ -221,10 +221,10 @@ class EditClassModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>{t("common.cancel")}</EduButton>
-            <EduButton onClick={this.onSaveClass}>
-              {t("class.components.addclass.saveclass")}
+            <EduButton isGhost onClick={this.onCloseModal}>
+              {t("common.cancel")}
             </EduButton>
+            <EduButton onClick={this.onSaveClass}>{t("class.components.addclass.saveclass")}</EduButton>
           </ButtonsContainer>
         ]}
       >
@@ -332,8 +332,8 @@ class EditClassModal extends Component {
                       {`${searchValue} (Create new Tag)`}
                     </Select.Option>
                   ) : (
-                      ""
-                    )}
+                    ""
+                  )}
                   {allTagsData.map(({ tagName, _id }) => (
                     <Select.Option key={_id} value={_id} title={tagName}>
                       {tagName}

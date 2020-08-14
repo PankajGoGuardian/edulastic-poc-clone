@@ -163,10 +163,10 @@ export function* createTestFromCart({ payload: { testName } }) {
    */
   let questionGrades = uniq(
     testItems
-      .flatMap(x => x.data.questions)
-      .flatMap(x => x.alignment || [])
-      .flatMap(x => x.domains)
-      .flatMap(x => x.standards)
+      .flatMap(x => x?.data?.questions)
+      .flatMap(x => (x && x.alignment) || [])
+      .flatMap(x => (x && x.domains) || [])
+      .flatMap(x => (x && x.standards) || [])
       .flatMap(x => (x.grades && x.grades < 13 ? x.grades : []))
   );
   if (questionGrades.length === 0) {

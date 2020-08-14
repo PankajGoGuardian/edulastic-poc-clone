@@ -16,14 +16,7 @@ import {
   receiveSchoolPolicyAction,
   updateDistrictPolicyAction
 } from "../../ducks";
-import {
-  HelperText,
-  StyledElementDiv,
-  StyledFormDiv,
-  StyledFormItem,
-  StyledLabel,
-  StyledRow
-} from "./styled";
+import { HelperText, StyledElementDiv, StyledFormDiv, StyledFormItem, StyledLabel, StyledRow } from "./styled";
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
@@ -40,7 +33,7 @@ function validURL(value) {
       errorMsg: ""
     };
 
-  const pattern = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/);
+  const pattern = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z0-9]{2,})+/);
 
   const spiltArray = value.split(/[\s,]+/);
   for (let i = 0; i < spiltArray.length; i++) {
@@ -330,12 +323,12 @@ class DistrictPolicyForm extends Component {
     const thirdPartyValue = districtPolicy.googleClassroom
       ? _3RDPARTYINTEGRATION.googleClassroom
       : districtPolicy.canvas
-        ? _3RDPARTYINTEGRATION.canvas
-        : districtPolicy.schoology
-          ? _3RDPARTYINTEGRATION.schoology
-          : districtPolicy.classlink
-            ? _3RDPARTYINTEGRATION.classlink
-            : _3RDPARTYINTEGRATION.none;
+      ? _3RDPARTYINTEGRATION.canvas
+      : districtPolicy.schoology
+      ? _3RDPARTYINTEGRATION.schoology
+      : districtPolicy.classlink
+      ? _3RDPARTYINTEGRATION.classlink
+      : _3RDPARTYINTEGRATION.none;
     let saveBtnStr = "Save";
     if (Object.prototype.hasOwnProperty.call(districtPolicy, "_id")) {
       saveBtnStr = "Save";
@@ -498,8 +491,14 @@ class DistrictPolicyForm extends Component {
             </RadioGrp>
           </StyledRow>
           <StyledRow>
-            <StyledLabel>Enforced District Sign-On<br/> policy: </StyledLabel>
-            <RadioGrp onChange={this.enforceDistrictSignonPolicy} value={districtPolicy?.enforceDistrictSignonPolicy ? "yes" : "no"}>
+            <StyledLabel>
+              Enforced District Sign-On
+              <br /> policy:{" "}
+            </StyledLabel>
+            <RadioGrp
+              onChange={this.enforceDistrictSignonPolicy}
+              value={districtPolicy?.enforceDistrictSignonPolicy ? "yes" : "no"}
+            >
               <RadioBtn value="yes">Yes</RadioBtn>
               <RadioBtn value="no">No</RadioBtn>
             </RadioGrp>

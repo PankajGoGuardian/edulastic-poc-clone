@@ -179,7 +179,7 @@ const SubscriptionMain = props => {
             <Title padding="0 30px 0 0">Current Plan</Title>
             <Description>
               {isSubscribed && subType && licenseExpiryDate
-                ? `${capitalize(subType.replace(/_/g, " "))} Version`
+                ? `${subType === "partial_premium" ? "Enterprise" : capitalize(subType.replace(/_/g, " "))} Version`
                 : "Free Plan"}
             </Description>
           </Container>

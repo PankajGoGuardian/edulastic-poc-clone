@@ -41,7 +41,7 @@ function validURL(value) {
       errorMsg: ""
     };
 
-  const pattern = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/);
+  const pattern = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z0-9]{2,})+/);
 
   const spiltArray = value.split(/[\s,]+/);
   for (let i = 0; i < spiltArray.length; i++) {

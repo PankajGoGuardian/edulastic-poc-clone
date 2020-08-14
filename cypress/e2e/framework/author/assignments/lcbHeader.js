@@ -17,6 +17,8 @@ export default class LCBHeader {
 
   getStudentReportButton = () => cy.get('[data-cy="studentReportCard"]');
 
+  getMarkAsDone = () => cy.get('[data-cy="markAsDone"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -83,7 +85,7 @@ export default class LCBHeader {
     cy.server();
     cy.route("PUT", /mark-as-done/i).as("markDone");
     this.getDropDown().click({ force: true });
-    cy.get('[data-cy="markAsDone"]').click({ force: true });
+    this.getMarkAsDone().click({ force: true });
     cy.wait("@markDone").then(xhr => assert(xhr.status === 200, `verify mark as done request ${xhr.status}`));
   };
 

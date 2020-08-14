@@ -1064,6 +1064,8 @@ class StudentTestPage {
 
   waitWhileAttempt = hours => cy.wait(CypressHelper.hoursToSeconds(hours) * 1000);
 
+  verifyAssesmentPlayerSkin = skin => cy.get(`[data-cy="${skin}"]`).should("be.visible");
+
   // *** APPHELPERS END ***
 }
 export default StudentTestPage;

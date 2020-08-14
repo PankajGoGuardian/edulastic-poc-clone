@@ -54,7 +54,7 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
   ];
   return (
     <>
-      <Title style={{ justifyContent: "space-between", marginBottom: "10px" }}>
+      <Title data-cy="performance-band" style={{ justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Performance Bands</span>
         <SelectInputStyled
           style={{ width: "250px" }}

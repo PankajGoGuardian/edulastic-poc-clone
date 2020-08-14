@@ -236,14 +236,16 @@ const SubscriptionMain = props => {
                 </EduButton>
               </ActionsWrapper>
             )}
-            <StyledParagraph isSubscribed={isSubscribed}>
-              interested in buying multiple teacher premium subscriptions or upgrading to enterprise?
-              {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
-              <a href="https://edulastic.com/teacher-premium/" target="_blank" rel="noopener noreferrer">
-                {" "}
-                click here.
-              </a>
-            </StyledParagraph>
+            {subType !== "enterprise" && (
+              <StyledParagraph isSubscribed={isSubscribed}>
+                interested in buying multiple teacher premium subscriptions or upgrading to enterprise?
+                {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
+                <a href="https://edulastic.com/teacher-premium/" target="_blank" rel="noopener noreferrer">
+                  {" "}
+                  click here.
+                </a>
+              </StyledParagraph>
+            )}
           </>
         )}
         {showPlans && (

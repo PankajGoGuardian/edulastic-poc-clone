@@ -52,7 +52,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
         cy.login("student", Student1.email, Student1.pass);
 
         assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
-        studentTestPage.assertCalcType();
+        studentTestPage.assertCalcType("NONE");
         studentTestPage.clickOnExitTest();
       });
     });

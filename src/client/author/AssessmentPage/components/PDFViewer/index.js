@@ -16,7 +16,8 @@ const PDFViewer = ({
   currentPage,
   authoringMode
 }) => {
-  const { pageNo, URL, pageId } = page;
+  const { pageNo, URL, rotate } = page;
+
   const pageNumber = URL === BLANK_URL ? 1 : pageNo;
   const viewerRef = useRef(null);
   const containerRef = useRef(null);
@@ -124,6 +125,7 @@ const PDFViewer = ({
   useEffect(() => {
     if (!docLoading && pdfDocument && viewerRef.current && URL === pdfDocument?._transport?._params?.url) {
       viewerRef.current.innerHTML = "";
+
       const _page = UI.createPage(pageNumber);
       viewerRef.current.appendChild(_page);
       // TODO: dont rely on currentPage number as documentId !!!
@@ -131,11 +133,11 @@ const PDFViewer = ({
         documentId: currentPage,
         pdfDocument,
         scale: pdfScale || 1.33,
-        rotate: 0
+        rotate: rotate || 0
       };
       UI.renderPage(pageNumber, RENDER_OPTIONS);
     }
-  }, [docLoading, pdfDocument, currentPage, pdfScale, annotationsStack.length]);
+  }, [docLoading, pdfDocument, currentPage, pdfScale, rotate, annotationsStack.length]);
 
   if (docLoading) {
     return (

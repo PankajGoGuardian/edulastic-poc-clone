@@ -129,10 +129,10 @@ const TokenHighlightPreview = ({
 
   useEffect(() => {
     if (previewTab === SHOW || disableResponse) {
-      if (answers.filter(answer => answer.selected).length !== 0) {
+      if (answers && answers.filter(answer => answer.selected)?.length !== 0) {
         setAnswers([
-          ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
-          ...answers.filter((answer, i) => answer.selected && validArray[i].selected !== answer.selected)
+          ...validArray.filter((answer, i) => answers[i]?.selected === answer.selected),
+          ...answers.filter((answer, i) => answer.selected && validArray[i]?.selected !== answer.selected)
         ]);
       }
     } else if (previewTab === CLEAR && !isCheck) {

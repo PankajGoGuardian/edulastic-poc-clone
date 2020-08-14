@@ -1,7 +1,5 @@
-// / <reference types="Cypress" />
-import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
-import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
-import MCQMultiplePage from "../../../../framework/author/itemList/questionType/mcq/mcqMultiplePage.js";
+import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
+import MCQMultiplePage from "../../../../framework/author/itemList/questionType/mcq/mcqMultiplePage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import {
   SCORING_TYPE,
@@ -10,8 +8,8 @@ import {
   FONT_SIZE,
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
-import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js";
-import { questionType } from "../../../../framework/constants/questionTypes.js";
+import validateSolutionBlockTests from "../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests";
+import { questionType } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -29,12 +27,7 @@ describe(`${FileHelper.getSpecName(
   };
   const question = new MCQMultiplePage();
   const editItem = new EditItemPage();
-  const itemList = new ItemListPage();
   const text = "testtext";
-  const formates = question.formates;
-
-  let testItemId;
-
   before(() => {
     cy.login();
   });
@@ -53,79 +46,6 @@ describe(`${FileHelper.getSpecName(
         .clear()
         .type(queData.queText)
         .should("contain", queData.queText);
-      /* 
-      // add ext link
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.link()
-        .click();
-
-      cy.focused().type(queData.extlink)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .contains(queData.formattext)
-        .should('have.attr', 'href', queData.extlink);
-
-      // add formula
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formula);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.formula()
-        .click();
-
-      cy.focused()
-        .type(queData.formula)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .find('.ql-formula')
-        .should('have.attr', 'data-value', queData.formula);
- */
-      /*  // add formatting
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      formates.forEach(formate => {
-        const text = queData.formattext;
-        const { sel, tag } = formate;
-
-        question
-          .getQuestionEditor()
-          .find("p")
-          .makeSelection();
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .contains(tag, text)
-          .should("have.length", 1);
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .find(tag)
-          .should("not.be.exist");
-      }); */
     });
 
     it(" > [Tc_268]:test => Multiple choices options", () => {
@@ -200,50 +120,20 @@ describe(`${FileHelper.getSpecName(
 
     it(" > [Tc_270]:test => Advanced Options", () => {
       question.clickOnAdvancedOptions();
-
-      // scoring
-      // question.getMaxScore().verifyNumInput(1);
-
-      /* question
-        .getEnableAutoScoring()
-        .click()
-        .then($el => {
-          cy.wrap($el).should("have.class", "ant-checkbox-checked");
-
-          question
-            .getCheckAnswerCheckbox()
-            .click()
-            .should("have.class", "ant-checkbox-checked")
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
- */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question.getPanalty().verifyNumInput(0.5);
-
-      // question.getCheckAnsAttempt().verifyNumInput(1);
-
-      // question.getMinScore().verifyNumInput(1);
-
       question
         .getUnscore()
         .click()
         .then($el2 => {
           cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-
-          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
         .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
-      // });
-
-      /* question
-        .getEnableAutoScoring()
-        .click()
-        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
     it(" > [Tc_271]:test => Display", () => {
@@ -288,7 +178,6 @@ describe(`${FileHelper.getSpecName(
 
     it(" > [Tc_272]:test => Save question", () => {
       editItem.header.save();
-      // cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
@@ -308,7 +197,7 @@ describe(`${FileHelper.getSpecName(
   });
 
   context(" > User edit the question.", () => {
-    const queData = {
+    const queDataEdited = {
       group: "Multiple Choice",
       queType: "Multiple choice - multiple response",
       queText: "editIndian state known as garden spice is:",
@@ -332,81 +221,8 @@ describe(`${FileHelper.getSpecName(
       question
         .getQuestionEditor()
         .clear()
-        .type(queData.queText)
-        .should("contain", queData.queText);
-      /*    
-      // add ext link
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.link()
-        .click();
-
-      cy.focused().type(queData.extlink)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .contains(queData.formattext)
-        .should('have.attr', 'href', queData.extlink);
-
-      // add formula
-      question.getQuestionEditor()
-        .clear()
-        .type(queData.formula);
-
-      question.getQuestionEditor().find('p')
-        .makeSelection();
-
-      question.editToolBar.formula()
-        .click();
-
-      cy.focused()
-        .type(queData.formula)
-        .type('{enter}');
-
-      question.getQuestionEditor()
-        .find('.ql-formula')
-        .should('have.attr', 'data-value', queData.formula);
-    */
-      /*  // add formatting
-      question
-        .getQuestionEditor()
-        .clear()
-        .type(queData.formattext);
-
-      formates.forEach(formate => {
-        const text = queData.formattext;
-        const { sel, tag } = formate;
-
-        question
-          .getQuestionEditor()
-          .find("p")
-          .makeSelection();
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .contains(tag, text)
-          .should("have.length", 1);
-
-        question.editToolBar
-          .frToolbar()
-          .find(sel)
-          .click();
-
-        question
-          .getQuestionEditor()
-          .find(tag)
-          .should("not.be.exist");
-      }); */
+        .type(queDataEdited.queText)
+        .should("contain", queDataEdited.queText);
     });
 
     it(" > [Tc_275]:test => Multiple choices options", () => {
@@ -414,8 +230,8 @@ describe(`${FileHelper.getSpecName(
       question
         .getChoiceByIndex(0)
         .clear()
-        .type(queData.choices[0])
-        .should("contain", queData.choices[0]);
+        .type(queDataEdited.choices[0])
+        .should("contain", queDataEdited.choices[0]);
 
       // delete all choices
       question
@@ -427,7 +243,7 @@ describe(`${FileHelper.getSpecName(
         .should("have.length", 0);
 
       // add new
-      const { choices } = queData;
+      const { choices } = queDataEdited;
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
@@ -481,48 +297,20 @@ describe(`${FileHelper.getSpecName(
 
     it(" > [Tc_277]:test => Advanced Options", () => {
       question.clickOnAdvancedOptions();
-
-      // scoring
-      // question.getMaxScore().verifyNumInput(1);
-
-      /*   question
-        .getEnableAutoScoring()
-        .click()
-        .then($el => {
-          cy.wrap($el).should("have.class", "ant-checkbox-checked");
-
-          question
-            .getCheckAnswerCheckbox()
-            .click()
-            .should("have.class", "ant-checkbox-checked")
-            .click()
-            .should("not.have.class", "ant-checkbox-checked");
- */
       question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question.getPanalty().verifyNumInput(0.5);
-      // question.getCheckAnsAttempt().verifyNumInput(1);
-      // question.getMinScore().verifyNumInput(1);
-
       question
         .getUnscore()
         .click()
         .then($el2 => {
           cy.wrap($el2).should("have.class", "ant-checkbox-checked");
-
-          // question.getMinScore().should("have.attr", "disabled");
         });
 
       question
         .getUnscore()
         .click()
         .should("not.have.class", "ant-checkbox-checked");
-      // });
-
-      /*  question
-        .getEnableAutoScoring()
-        .click()
-        .should("not.have.class", "ant-checkbox-checked"); */
     });
 
     it(" > [Tc_278]:test => Display", () => {
@@ -583,14 +371,6 @@ describe(`${FileHelper.getSpecName(
 
       preview.header.edit();
     });
-
-    /* it(" > [Tc_281]:test => Delete question from item", () => {
-      editItem
-        .getDelButton()
-        .should("have.length", 1)
-        .click()
-        .should("have.length", 0);
-    }); */
   });
 
   context(" > [sanity]:test => Create question using different options and validate", () => {
@@ -625,33 +405,14 @@ describe(`${FileHelper.getSpecName(
       question.selectChoice(queData.correct[0]);
 
       question.selectChoice(queData.alterate[0]);
-      /* question
-        .getAllAnsChoicesLabel()
-        .eq(1)
-        .click()
-        .closest("label")
-        .find("input")
-        .should("not.be.checked"); */
-
       // save
       question.header.save();
     });
 
     it(" > [mcq_multi_test1]:test => Create question with 2 correct ans and validate with exact & partial match", () => {
       question.header.edit();
-      // .getEditButton()
-      // .click();
-
-      // advanced
-      // question.clickOnAdvancedOptions();
-
-      // question.getEnableAutoScoring().click();
-
       // >> exact match
       question.selectScoringType(SCORING_TYPE.EXACT);
-
-      // save
-      // question.header.save();
 
       // preview and show ans
       const preview = question.header.preview();
@@ -660,8 +421,6 @@ describe(`${FileHelper.getSpecName(
         .getShowAnswer()
         .click()
         .then(() => {
-          // cy.get("label.wrong").should("have.length", queData.choices.length - 2);
-
           cy.get("label.right")
             .should("have.length", 2)
             .and("contain", queData.correct[0])
@@ -723,15 +482,8 @@ describe(`${FileHelper.getSpecName(
 
       // partial match
       preview.header.edit();
-      // .getEditButton()
-      // .click();
-
-      // question.clickOnAdvancedOptions();
 
       question.selectScoringType(SCORING_TYPE.PARTIAL);
-
-      // save
-      // question.header.save();
 
       // show ans
       question.header.preview();
@@ -1045,7 +797,7 @@ describe(`${FileHelper.getSpecName(
 
       // set alternate answer point as 2
       question.header.edit();
-      question.getPoints().type("{selectall}1");
+      question.getPoints().type("{selectall}3");
       question.selectAlternatetab();
       question.getPoints().type("{selectall}2");
 
@@ -1056,7 +808,7 @@ describe(`${FileHelper.getSpecName(
       question.header.preview();
       question.selectAnswerChoice(queData.alterate[0]);
       question.selectAnswerChoice(queData.choices[4]);
-      preview.checkScore("1/2");
+      preview.checkScore("1/3");
       cy.get("label.right")
         .should("have.length", 1)
         .and("contain", queData.alterate[0]);

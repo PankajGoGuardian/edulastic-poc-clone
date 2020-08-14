@@ -45,7 +45,7 @@ class MathInput extends React.PureComponent {
       shouldHideKeyboard = false;
     }
 
-    if (e.target.nodeName === "LI" && e.target.attributes[0]?.nodeValue === "option") {
+    if (e.target?.nodeName === "LI" && e.target?.attributes?.[0]?.nodeValue === "option") {
       shouldHideKeyboard = false;
     }
     if (
@@ -69,6 +69,7 @@ class MathInput extends React.PureComponent {
   componentDidMount() {
     const { defaultFocus, value } = this.props;
     if (!window.MathQuill) return;
+
     const MQ = window.MathQuill.getInterface(2);
 
     MQ.registerEmbed("response", () => ({

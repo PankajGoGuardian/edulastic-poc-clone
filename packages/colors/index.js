@@ -143,6 +143,7 @@ export const yellow2 = "#ffd500";
 
 export const orange = "#FFA200";
 export const darkOrange = "#F9942D";
+export const darkOrange1 = "#EB954B";
 
 export const btnBg = "#277df1";
 export const btnBgActive = "#5196f3";

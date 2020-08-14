@@ -4,11 +4,13 @@ import { Link } from "react-router-dom";
 import { withNamespaces } from "react-i18next";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Popover,Tooltip } from "antd";
+import { Popover, Tooltip } from "antd";
 
-import { red, white, themeColor } from "@edulastic/colors";
+import { white, themeColor, darkOrange1 } from "@edulastic/colors";
 import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
-import { IconClockDashboard, IconHangouts ,IconManage } from "@edulastic/icons";
+import { IconClockDashboard, IconHangouts, IconManage } from "@edulastic/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 import { slice } from "../../../Subscription/ducks";
 // TODO: Change to SVG
@@ -52,7 +54,7 @@ const HeaderSection = ({
   };
 
   const TEN_DAYS = 864000000;
-  const isAboutToExpire = subEndDate ? ((Date.now() + TEN_DAYS) > subEndDate) : false;
+  const isAboutToExpire = subEndDate ? Date.now() + TEN_DAYS > subEndDate : false;
 
   const needsRenewal = (premium && isAboutToExpire) || (!premium && isSubscriptionExpired);
   const showPopup = needsRenewal || !premium;
@@ -60,7 +62,7 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
       <FlexContainer>
-        <Tooltip title="Launch Google Meet"> 
+        <Tooltip title="Launch Google Meet">
           <StyledEduButton IconBtn isBlue data-cy="launch-google-meet" onClick={launchHangout} isGhost>
             <IconHangouts color={themeColor} height={21} width={19} />
           </StyledEduButton>
@@ -82,17 +84,22 @@ const HeaderSection = ({
               onClick={() => setvisible(true)}
               visible={visible}
             >
-              <EduButton isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
-                <i
-                  className={needsRenewal ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"}
-                  aria-hidden="true"
-                />
-                {needsRenewal ? (
-                  <span style={{ color: red }}>RENEW SUBSCRIPTION</span>
-                ) : (
-                  "UNLOCK MORE FEATURES"
-                )}
-              </EduButton>
+              {needsRenewal ? (
+                <EduButton
+                  type="primary"
+                  isBlue
+                  style={{ marginLeft: "5px", backgroundColor: darkOrange1, border: "none" }}
+                  data-cy="manageClass"
+                >
+                  <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
+                  <span>RENEW SUBSCRIPTION</span>
+                </EduButton>
+              ) : (
+                <EduButton isBlue style={{ marginLeft: "5px" }} data-cy="manageClass">
+                  <i className="fa fa-unlock-alt" aria-hidden="true" />
+                  UNLOCK MORE FEATURES
+                </EduButton>
+              )}
             </Popover>
           </PopoverWrapper>
         )}

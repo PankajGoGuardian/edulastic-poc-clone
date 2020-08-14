@@ -153,7 +153,7 @@ const AlignmentRow = ({
     let { subject: _subject } = data;
     if (!_subject) {
       const curriculumFromStandard = data.standard.id
-        ? formattedCuriculums.find(c => c.value === data.standard.id)
+        ? formattedCuriculums.find(c => c.value === data.standard.id) || {}
         : {};
       _subject = curriculumFromStandard.subject;
     }

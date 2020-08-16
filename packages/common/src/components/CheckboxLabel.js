@@ -28,8 +28,8 @@ export const CheckboxStyle = styled(Checkbox)`
       .ant-checkbox-inner {
         border-color: ${greyThemeLight};
         background: ${greyThemeLighter};
-        width: 18px;
-        height: 18px;
+        width: ${({ size }) => size || "18px"};
+        height: ${({ size }) => size || "18px"};
         &:after {
           left: 28%;
         }

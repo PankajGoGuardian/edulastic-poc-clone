@@ -279,6 +279,8 @@ export const RENAME_FOLDER_ERROR = "[folder] rename folder error";
 
 export const SET_FOLDER = "[folder] set folder";
 export const CLEAR_FOLDER = "[folder] clear folder";
+
+export const SET_ITEMS_TO_ADD = "[folder] set items to move";
 // -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //
 
 // playlist

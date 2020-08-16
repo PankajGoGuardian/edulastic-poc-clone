@@ -1,4 +1,4 @@
-import { clone, remove, findIndex } from "lodash";
+import { clone, remove, findIndex, isEmpty } from "lodash";
 import {
   RECEIVE_FOLDER_REQUEST,
   RECEIVE_FOLDER_SUCCESS,
@@ -12,14 +12,17 @@ import {
   RENAME_FOLDER_ERROR,
   ADD_MOVE_FOLDER_SUCCESS,
   SET_FOLDER,
-  CLEAR_FOLDER
+  CLEAR_FOLDER,
+  SET_ITEMS_TO_ADD
 } from "../constants/actions";
 
 const initialState = {
   entities: [],
+  selectedItems: [],
   error: null,
   loading: false,
   creating: false,
+  isOpenAddItemModal: false,
   entity: {}
 };
 
@@ -65,7 +68,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case ADD_MOVE_FOLDER_SUCCESS: {
       // params and result are always expected from action.
       const { result, params } = payload;
-      const { sourceFolderId } = params ?.[0];
+      const { sourceFolderId } = params?.[0];
       let currentFolderContent = [];
       // Update folder.entities to reflect the moved assignments.
       const entities = state.entities.map(entity => {
@@ -88,6 +91,7 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities,
+        isOpenAddItemModal: false,
         // entity should have the assignments for displaying inside entity.content
         entity: {
           ...state.entity,
@@ -138,6 +142,12 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: {}
+      };
+    case SET_ITEMS_TO_ADD:
+      return {
+        ...state,
+        selectedItems: payload,
+        isOpenAddItemModal: !isEmpty(payload)
       };
     default:
       return state;

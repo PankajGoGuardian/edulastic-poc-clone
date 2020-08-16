@@ -42,7 +42,7 @@ import {
   getTestsItemsCountSelector,
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
-  initalSearchState,
+  initialSearchState,
   receiveTestItemsAction,
   updateSearchFilterStateAction,
   getSelectedItemSelector,
@@ -200,12 +200,12 @@ class Contaier extends Component {
     const { clearFilterState, limit, receiveItems, search = {}, sort = {} } = this.props;
 
     // If current filter and initial filter is equal don't need to reset again
-    if (isEqual(search, initalSearchState) && isEqual(sort, initialSortState)) return null;
+    if (isEqual(search, initialSearchState) && isEqual(sort, initialSortState)) return null;
 
     clearFilterState();
 
-    this.updateFilterState(initalSearchState, initialSortState);
-    receiveItems(initalSearchState, initialSortState, 1, limit);
+    this.updateFilterState(initialSearchState, initialSortState);
+    receiveItems(initialSearchState, initialSortState, 1, limit);
     setDefaultInterests({ subject: [], grades: [], curriculumId: "" });
   };
 
@@ -232,6 +232,9 @@ class Contaier extends Component {
       sort
     } = this.props;
     let updatedKeys = {};
+    if (fieldName === "folderId") {
+      return this.handleSearch({ ...initialSearchState, [fieldName]: value });
+    }
     if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
       setDefaultInterests({ [fieldName]: value });
     }

@@ -4,12 +4,14 @@ import {
   ADD_MOVE_FOLDER_REQUEST,
   DELETE_FOLDER_REQUEST,
   RENAME_FOLDER_REQUEST,
+  SET_ITEMS_TO_ADD,
   SET_FOLDER,
   CLEAR_FOLDER
 } from "../constants/actions";
 
-export const receiveFolderAction = () => ({
-  type: RECEIVE_FOLDER_REQUEST
+export const receiveFolderAction = payload => ({
+  type: RECEIVE_FOLDER_REQUEST,
+  payload
 });
 
 export const receiveCreateFolderAction = payload => ({
@@ -39,4 +41,9 @@ export const setFolderAction = payload => ({
 
 export const clearFolderAction = () => ({
   type: CLEAR_FOLDER
+});
+
+export const setItemsMoveFolderAction = payload => ({
+  type: SET_ITEMS_TO_ADD,
+  payload
 });

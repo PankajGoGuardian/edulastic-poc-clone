@@ -248,7 +248,7 @@ export const ViewButtonStyled = styled(Button)`
   }
 `;
 
-export const AddButtonStyled = styled(ButtonStyle)`
+export const CheckboxWrapper = styled.div`
   padding: 0px;
   height: auto;
   width: auto;

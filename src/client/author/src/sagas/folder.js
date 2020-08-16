@@ -21,9 +21,9 @@ import {
   RENAME_FOLDER_ERROR
 } from "../constants/actions";
 
-function* receiveGetFoldersRequest() {
+function* receiveGetFoldersRequest({ payload }) {
   try {
-    const entities = yield call(folderApi.fetchFolders);
+    const entities = yield call(folderApi.fetchFolders, payload);
     yield put({
       type: RECEIVE_FOLDER_SUCCESS,
       payload: { entities }

@@ -1,4 +1,4 @@
-import { omit } from "lodash";
+import { omit, get } from "lodash";
 
 import API from "./utils/API";
 
@@ -14,8 +14,8 @@ const getAll = data =>
       data
     })
     .then(result => {
-      const items = result.data.result.hits.hits.map(el => ({ _id: el._id, ...el._source }));
-      const count = result.data.result.hits.total;
+      const items = get(result, "data.result.hits.hits", []).map(el => ({ _id: el._id, ...el._source }));
+      const count = get(result, "data.result.hits.total", 0);
       return { items, count };
     });
 

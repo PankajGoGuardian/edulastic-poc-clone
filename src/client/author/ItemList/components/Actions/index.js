@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { compose } from "redux";
+import { isEmpty } from "lodash";
 import { Menu, Dropdown } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -10,6 +11,7 @@ import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { getUserRole, isPublisherUserSelector, getCollectionsToAddContent } from "../../../src/selectors/user";
+import { setItemsMoveFolderAction } from "../../../src/actions/folder";
 import { createTestFromCartAction } from "../../ducks";
 import { getSelectedTestsSelector } from "../../../TestList/ducks";
 import { setAddCollectionModalVisibleAction } from "../../../ContentBuckets/ducks";
@@ -20,14 +22,12 @@ const Actions = ({
   selectedTests,
   selectedPlaylists,
   setAddCollectionModalVisible,
+  setItemsMoveFolder,
   createTestFromCart,
   type,
   t,
   collectionsToWrite
 }) => {
-  if (!collectionsToWrite?.length) {
-    return null;
-  }
   let numberOfSelectedItems = selectedItems?.length;
   if (type === "TEST") {
     numberOfSelectedItems = selectedTests?.length;
@@ -44,19 +44,38 @@ const Actions = ({
     createTestFromCart();
   };
 
+  const toggleMoveFolderModal = () => {
+    if (setItemsMoveFolder) {
+      // question item does not have name or title,
+      // so will pass item index for now
+      if (type === "TESTITEM") {
+        setItemsMoveFolder(selectedItems?.map((x, i) => ({ itemId: x, name: `item ${i + 1}` })));
+      }
+      if (type === "TEST") {
+        setItemsMoveFolder(selectedTests?.map(x => ({ itemId: x._id, name: x.title })));
+      }
+    }
+  };
+
   const menu = (
     <DropMenu>
-      {type === "TESTITEM" && (
+      {!isEmpty(collectionsToWrite) && type === "TESTITEM" && (
         <MenuItems onClick={handleCreateTest}>
           <span>Create a Test</span>
         </MenuItems>
       )}
-      <MenuItems onClick={() => setAddCollectionModalVisible(true)}>
-        <span>Add to Collection</span>
-      </MenuItems>
-      <MenuItems>
-        <span>Remove from Collection</span>
-      </MenuItems>
+      <MenuItems onClick={() => toggleMoveFolderModal()}>Add to Folder</MenuItems>
+      <MenuItems>Remove from Folder</MenuItems>
+      {!isEmpty(collectionsToWrite) && (
+        <MenuItems onClick={() => setAddCollectionModalVisible(true)}>
+          <span>Add to Collection</span>
+        </MenuItems>
+      )}
+      {!isEmpty(collectionsToWrite) && (
+        <MenuItems>
+          <span>Remove from Collection</span>
+        </MenuItems>
+      )}
     </DropMenu>
   );
 
@@ -93,7 +112,8 @@ const withConnect = connect(
   mapStateToProps,
   {
     setAddCollectionModalVisible: setAddCollectionModalVisibleAction,
-    createTestFromCart: createTestFromCartAction
+    createTestFromCart: createTestFromCartAction,
+    setItemsMoveFolder: setItemsMoveFolderAction
   }
 );
 

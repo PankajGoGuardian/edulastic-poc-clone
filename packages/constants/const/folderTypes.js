@@ -1,0 +1,14 @@
+const TEST = "TEST";
+const ITEM = "ITEM";
+const PLAYLIST = "PLAYLIST";
+const ASSIGNMENT = "ASSIGNMENT";
+
+const FOLDER_TYPES = [TEST, ITEM, PLAYLIST, ASSIGNMENT];
+
+module.exports = {
+  TEST,
+  ITEM,
+  PLAYLIST,
+  ASSIGNMENT,
+  FOLDER_TYPES
+};

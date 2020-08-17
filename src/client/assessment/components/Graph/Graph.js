@@ -401,7 +401,7 @@ class Graph extends Component {
       compact = true;
     }
 
-    const { validation, stimulus, graphType } = item;
+    const { validation, stimulus, uiStyle, graphType } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -419,7 +419,7 @@ class Graph extends Component {
                 cleanSections={cleanSections}
                 advancedAreOpen
                 setCanvas={this.handleCanvasChange}
-                fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
+                fontSize={getFontSize(mapFontName[(uiStyle?.currentFontSize)])}
               />
               <Question
                 section="main"
@@ -476,7 +476,7 @@ class Graph extends Component {
                   <StyledStimulus
                     data-cy="questionHeader"
                     dangerouslySetInnerHTML={{ __html: stimulus }}
-                    fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
+                    fontSize={getFontSize(mapFontName[(uiStyle?.currentFontSize)])}
                   />
                 </QuestionTitleWrapper>
                 {item.canvas && item.uiStyle && (

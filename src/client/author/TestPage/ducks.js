@@ -443,7 +443,7 @@ export const getDisableAnswerOnPaperSelector = createSelector(
   getTestEntitySelector,
   _test =>
     // disable answer on paper feature for deliveryType:LIMITED_RANDOM or group.type:AUTOSELECT
-    _test.itemGroups.some(
+    _test?.itemGroups?.some(
       group =>
         group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM || group.type === ITEM_GROUP_TYPES.AUTOSELECT
     )
@@ -543,8 +543,8 @@ export const getTestItemsRowsSelector = createSelector(
   getTestSelector,
   state =>
     state.itemGroups
-      .flatMap(itemGroup => itemGroup.items || [])
-      .map(item => {
+      ?.flatMap(itemGroup => itemGroup.items || [])
+      ?.map(item => {
         if (!item || !item.rows) return [];
         return item.rows.map(row => ({
           ...row,

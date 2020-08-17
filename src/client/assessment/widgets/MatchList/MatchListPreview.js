@@ -59,9 +59,10 @@ const styles = {
 
 const getInitialAnswer = list => {
   const ans = {};
-  list.forEach(l => {
-    ans[l.value] = null;
-  });
+  Array.isArray(list) &&
+    list.forEach(l => {
+      ans[l.value] = null;
+    });
   return ans;
 };
 
@@ -409,7 +410,7 @@ const MatchListPreview = ({
           <div data-cy="previewWrapper" style={wrapperStyle} className="match-list-preview-wrapper __no-flex-on-print">
             <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
               {list.map((ite, i) => (
-                <div className="__prevent-page-break" style={{width: "100%"}}>
+                <div className="__prevent-page-break" style={{ width: "100%" }}>
                   <AnswerItem
                     key={i}
                     style={styles.listItemContainerStyle}

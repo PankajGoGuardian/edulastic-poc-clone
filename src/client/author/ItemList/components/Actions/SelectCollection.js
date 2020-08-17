@@ -27,14 +27,12 @@ const SelectCollectionModal = ({
   selectedPlaylists,
   test
 }) => {
-  const handleCancel = () => {
-    return setAddCollectionModalVisible(false);
-  };
+  const handleCancel = () => setAddCollectionModalVisible(false);
 
-  const addedItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+  const addedItems = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || []);
   const itemsKeyed = keyBy(addedItems, "_id");
   const handleAddToCollection = ({ _id, itemBankId, name, collectionName }) => {
-    let contentIds = selectedItems.map(_id => itemsKeyed[_id]?._id);
+    let contentIds = selectedItems.map(__id => itemsKeyed[__id]?._id);
     if (contentType === "PLAYLIST") {
       contentIds = selectedPlaylists;
     }
@@ -42,7 +40,7 @@ const SelectCollectionModal = ({
       contentIds = selectedTests.map(item => item._id);
     }
     if (!contentIds.length) {
-      notification({ messageKey: "addAtleastOneItemToTest"});
+      notification({ messageKey: "addAtleastOneItemToTest" });
       return handleCancel();
     }
     saveItemsToBucket({
@@ -65,24 +63,22 @@ const SelectCollectionModal = ({
       destroyOnClose
     >
       <BodyStyled>
-        {buckets.map(bucket => {
-          return (
-            <ModuleContainer
-              key={bucket.bucketId}
-              onClick={() =>
-                handleAddToCollection({
-                  _id: bucket.bucketId,
-                  name: bucket.name,
-                  itemBankId: bucket._id,
-                  collectionName: bucket.collectionName
-                })
-              }
-            >
-              <ModuleLabel>{bucket.collectionName}: </ModuleLabel>
-              <ModuleName>{bucket.name}</ModuleName>
-            </ModuleContainer>
-          );
-        })}
+        {buckets.map(bucket => (
+          <ModuleContainer
+            key={bucket.bucketId}
+            onClick={() =>
+              handleAddToCollection({
+                _id: bucket.bucketId,
+                name: bucket.name,
+                itemBankId: bucket._id,
+                collectionName: bucket.collectionName
+              })
+            }
+          >
+            <ModuleLabel>{bucket.collectionName}: </ModuleLabel>
+            <ModuleName>{bucket.name}</ModuleName>
+          </ModuleContainer>
+        ))}
       </BodyStyled>
     </StyledModal>
   );

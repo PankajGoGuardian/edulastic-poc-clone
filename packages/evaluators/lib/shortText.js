@@ -33,7 +33,7 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, validAnswer
     }
   }
 
-  altAnswers.forEach(function (ite) {
+  altAnswers?.forEach(function (ite) {
     var altValue = ite.value,
         altScore = ite.score,
         altMatch = ite.matchingRule;

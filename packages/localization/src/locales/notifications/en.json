@@ -1882,5 +1882,9 @@
   "pleaseSelectUserToDisablePowerTools": {
     "message": "Please select user to disable power tools",
     "description": ""
+  },
+  "cliCustomStudentUserNotExist": {
+    "message": "Custom student doesn't have test activity",
+    "description": ""
   }
 }

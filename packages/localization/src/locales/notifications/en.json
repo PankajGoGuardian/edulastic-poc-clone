@@ -1635,6 +1635,10 @@
     "message": "Minimum three levels are required.",
     "description": ""
   },
+  "DecayError": {
+    "message": "Decay must be provided.",
+    "description": ""
+  },
   "deactivatedUserSelected": {
     "message": "Deactivated users selected, please select active students only",
     "description": ""

@@ -172,9 +172,11 @@ class StandardsProficiencyTable extends React.Component {
       calcType,
       orgType: "district"
     };
-
     if (calcType === "DECAYING_AVERAGE") {
-      const { calcDecayingAttr } = this.state;
+      const calcDecayingAttr = this.state.calcDecayingAttr || this.props.decay;
+      if (!calcDecayingAttr && calcDecayingAttr !== 0) {
+        return notification({ messageKey: "DecayError" });
+      }
       updateData.calcAttribute = calcDecayingAttr;
       updateData.decay = calcDecayingAttr;
     } else if (calcType === "MOVING_AVERAGE") {

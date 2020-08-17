@@ -147,36 +147,42 @@ const SecondBlock = ({
         </Col>
       </Row>
       <Row gutter={24}>
-        <Col md={8}>
-          <ItemBody>
-            <FieldLabel>Collections</FieldLabel>
-            <SelectInputStyled
-              mode="multiple"
-              className="tagsSelect"
-              data-cy="collectionsSelect"
-              bg="white"
-              placeholder="Please select"
-              value={filteredCollections.flatMap(c => c.bucketIds)}
-              onChange={(value, options) => handleCollectionsSelect(value, options, collectionsToShow)}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              suffixIcon={<SelectSuffixIcon type="caret-down" />}
-              autoFocus={highlightCollection}
-            >
-              {collectionsToShow.map(o => (
-                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
-                  {`${o.collectionName} - ${o.name}`}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </ItemBody>
-          {recentCollectionsList?.length > 0 && (
-            <RecentCollectionsList
-              recentCollectionsList={recentCollectionsList}
-              collections={collections || []}
-              handleCollectionsSelect={handleRecentCollectionsSelect}
-            />
-          )}
-        </Col>
+        {(collectionsToShow.length > 0 || recentCollectionsList?.length > 0) && (
+          <Col md={8}>
+            {collectionsToShow.length > 0 && (
+              <ItemBody>
+                <FieldLabel>Collections</FieldLabel>
+                <SelectInputStyled
+                  mode="multiple"
+                  className="tagsSelect"
+                  data-cy="collectionsSelect"
+                  bg="white"
+                  placeholder="Please select"
+                  value={filteredCollections.flatMap(c => c.bucketIds)}
+                  onChange={(value, options) => handleCollectionsSelect(value, options, collectionsToShow)}
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  suffixIcon={<SelectSuffixIcon type="caret-down" />}
+                  autoFocus={highlightCollection}
+                >
+                  {collectionsToShow.map(o => (
+                    <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                      {`${o.collectionName} - ${o.name}`}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </ItemBody>
+            )}
+            {recentCollectionsList?.length > 0 && (
+              <RecentCollectionsList
+                recentCollectionsList={recentCollectionsList}
+                collections={collections || []}
+                handleCollectionsSelect={handleRecentCollectionsSelect}
+              />
+            )}
+          </Col>
+        )}
 
         <Col md={8}>
           <ItemBody>

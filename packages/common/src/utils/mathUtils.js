@@ -50,7 +50,8 @@ const sanitizeLatex = latex => {
     .replace(/\\begin{almatrix}/g, "\\left\\{\\begin{array}{l}")
     .replace(/\\end{almatrix}/g, "\\end{array}\\right.")
     .replace(/\\begin{armatrix}/g, "\\left.\\begin{array}{r}")
-    .replace(/\\end{armatrix}/g, "\\end{array}\\right\\}");
+    .replace(/\\end{armatrix}/g, "\\end{array}\\right\\}")
+    .replace(/\\begin{array}{}\\end{array}/g, "");
 
   if (_latex.substr(-1) === "\\") {
     _latex = _latex.slice(0, -1);
@@ -104,7 +105,6 @@ export const getMathHtml = latex => {
    * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
    */
   _latex = addSpaceMatrixFraction(_latex);
-
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false,
     displayMode: true

@@ -446,6 +446,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
 
     context(" > verify student responses pop ups", () => {
+      before("Change toggle button to score view", () => {
+        expressg.setToggleToScore();
+      });
+
       beforeEach(() => {
         expressg.clickOnExit();
       });

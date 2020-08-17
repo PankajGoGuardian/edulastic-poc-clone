@@ -29,7 +29,7 @@ const SelectCollectionModal = ({
 }) => {
   const handleCancel = () => setAddCollectionModalVisible(false);
 
-  const addedItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+  const addedItems = test?.itemGroups?.flatMap(itemGroup => itemGroup.items || []);
   const itemsKeyed = keyBy(addedItems, "_id");
   const handleAddToCollection = ({ _id, itemBankId, name, collectionName }) => {
     let contentIds = selectedItems.map(id => itemsKeyed[id]?._id);

@@ -129,7 +129,7 @@ export const getTestGradeAndSubject = (group, testGrades, testSubjects, testTags
 };
 // user is created ? then he is author not authored and in authors list he is co-author
 const authorType = (userId, { createdBy, authors }) => {
-  if (userId === createdBy._id) {
+  if (userId === createdBy?._id) {
     return "author";
   }
   if (authors.some(item => item._id === userId)) {
@@ -1151,7 +1151,7 @@ export const getIsOverrideFreezeSelector = createSelector(
     if (!_test.freezeSettings) {
       return false;
     }
-    if (_test.authors.some(author => author._id === userId)) {
+    if (_test?.authors?.some(author => author._id === userId)) {
       return false;
     }
     return true;

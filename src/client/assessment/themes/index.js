@@ -363,7 +363,7 @@ const AssessmentContainer = ({
   let passage = {};
   if (testItem.passageId && passages) {
     passage = passages.find(p => p._id === testItem.passageId);
-    itemRows = [passage.structure, ...itemRows];
+    itemRows = [passage?.structure, ...itemRows];
   }
 
   const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows]);

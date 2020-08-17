@@ -522,7 +522,7 @@ const MathFormulaAnswerMethod = ({
   return (
     <Container data-cy="math-formula-answer" style={{ height: containerHeight }}>
       <Row gutter={24}>
-        {!methodOptions.includes("notExpected") && (
+        {!methodOptions?.includes("notExpected") && (
           <Col span={24}>
             <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper docBasedQType={docBasedQType}>

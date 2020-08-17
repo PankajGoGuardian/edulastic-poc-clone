@@ -217,8 +217,8 @@ export const redirectToStudentPage = (assignments, history, startAssignment, res
   } else {
     // if test is archieved/ in draft,
     // then check for assignments. if not assignment then redirect to student dashbord else navigate to student attempt page
-    const isTestInDraft = test.status === testConstants.statusConstants.DRAFT;
-    const isTestArchieved = test.status === testConstants.statusConstants.ARCHIVED;
+    const isTestInDraft = test?.status === testConstants.statusConstants.DRAFT;
+    const isTestArchieved = test?.status === testConstants.statusConstants.ARCHIVED;
     let msgType = "";
     if (isTestArchieved) {
       msgType = "ARCHIVED";

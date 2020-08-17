@@ -2130,9 +2130,18 @@ function* updateTestAndNavigate({ payload }) {
     let { pathname } = payload;
     const { fadeSidebar = false, regradeFlow, previousTestId, testId, isEditing, isDuplicating } = payload;
     const data = yield select(getTestSelector);
+    const role = yield select(getUserRole);
     const hasUnsavedChanges = yield select(state => state?.tests?.updated);
     if (hasUnsavedChanges) {
       const isTestCreated = testId && testId !== "undefined";
+      if (
+        !isTestCreated &&
+        data.testType === test.type.COMMON &&
+        roleuser.DA_SA_ROLE_ARRAY.includes(role) &&
+        !data.testContentVisibility
+      ) {
+        data.testContentVisibility = test.testContentVisibility.ALWAYS;
+      }
       const _test = !isTestCreated ? yield createTest(data) : {};
       if ((isEditing || isDuplicating) && isTestCreated) {
         yield updateTestSaga({ payload: { data, id: testId } });

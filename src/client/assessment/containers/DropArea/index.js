@@ -1,6 +1,6 @@
 import React from "react";
 import produce from "immer";
-import { get, findIndex, isObject } from "lodash";
+import { get, findIndex } from "lodash";
 import PropTypes from "prop-types";
 import { helpers } from "@edulastic/common";
 import { response as responseConst, clozeImage } from "@edulastic/constants";
@@ -45,21 +45,21 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
           /**
            * correct answer will be an object for clozeImageText and clozeImageDropdown
            */
-          if (isObject(draft.validation.validResponse.value)) {
+          if (draft.validation.validResponse?.value?.hasOwnProperty(id)) {
             delete draft.validation.validResponse.value[id];
-          } else {
+          } else if (draft.validation.validResponse?.value?.length) {
             draft.validation.validResponse.value.splice(deletedIndex, 1);
           }
 
           draft.validation.altResponses = draft.validation.altResponses.map(resp => {
-            if (isObject(resp.value)) {
+            if (resp?.value?.hasOwnProperty(id)) {
               delete resp.value[id];
-            } else {
+            } else if (resp?.value?.length) {
               resp.value.splice(deletedIndex, 1);
             }
             return resp;
           });
-          if (draft.options && isDropDown) {
+          if (isDropDown && draft.options && draft.options.length) {
             draft.options.splice(deletedIndex, 1);
           }
         })

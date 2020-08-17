@@ -271,7 +271,7 @@ class MathFormulaPreview extends Component {
     }
 
     const testItemCorrectValues = testItem
-      ? item?.validation?.validResponse?.value?.map(validResponse => validResponse.value)
+      ? item?.validation?.validResponse?.value?.map(validResponse => validResponse?.value)
       : [];
 
     const customKeys = get(item, "customKeys", []);

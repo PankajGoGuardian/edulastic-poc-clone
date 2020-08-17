@@ -49,9 +49,9 @@ class CardWrapper extends Component {
       onAddToCart
     } = this.props;
 
-    const itemId = _id.substr(_id.length - 6);
+    const itemId = _id?.substr(_id.length - 6);
 
-    const isTestLiked = (!isPlaylist && item ?.alreadyLiked) || false;
+    const isTestLiked = (!isPlaylist && item?.alreadyLiked) || false;
 
     if (blockStyle === "tile") {
       return (

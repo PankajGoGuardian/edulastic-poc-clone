@@ -60,9 +60,10 @@ const styles = {
 
 const getInitialAnswer = (list = []) => {
   const ans = {};
-  list.forEach(l => {
-    ans[l.value] = null;
-  });
+  Array.isArray(list) &&
+    list.forEach(l => {
+      ans[l.value] = null;
+    });
   return ans;
 };
 

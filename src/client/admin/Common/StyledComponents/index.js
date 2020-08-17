@@ -18,14 +18,13 @@ export const LogoCompact = styled(IconLogoCompact)`
 `;
 
 export const Button = styled.button`
-  ${props =>
-    props.noStyle &&
-    `
-    background:none;
-    border:none;
-    border:0;
-    border-radius:0
+  ${props => props.noStyle && `
+    background: none;
+    border: none;
+    border: 0;
+    border-radius: 0;
   `}
+  outline: 0;
   opacity: ${props => (props.disabled ? "0.2" : "1")};
   cursor: pointer;
 `;

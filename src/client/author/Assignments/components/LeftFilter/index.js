@@ -281,6 +281,7 @@ class LeftFilter extends React.Component {
         )}
 
         <Folders
+          showAllItems
           isAdvancedView={isAdvancedView}
           onSelectFolder={this.handleSelectFolder}
           folderType={folderTypes.ASSIGNMENT}

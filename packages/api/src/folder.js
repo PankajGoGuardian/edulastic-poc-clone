@@ -40,10 +40,18 @@ const renameFolder = ({ folderId, data }) =>
     data
   });
 
+const removeItemFromFolder = ({ folderId, data }) =>
+  api.callApi({
+    url: `${prefix}/${folderId}/content-delete`,
+    method: "put",
+    data
+  });
+
 export default {
   fetchFolders,
   createFolder,
   deleteFolder,
   renameFolder,
-  addMoveContent
+  addMoveContent,
+  removeItemFromFolder
 };

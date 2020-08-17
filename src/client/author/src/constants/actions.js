@@ -277,10 +277,16 @@ export const RENAME_FOLDER_REQUEST = "[folder] rename folder request";
 export const RENAME_FOLDER_SUCCESS = "[folder] rename folder success";
 export const RENAME_FOLDER_ERROR = "[folder] rename folder error";
 
+export const REMOVAL_ITEMS_FROM_FOLDER_REQUEST = "[folder] remove items from a folder request";
+export const REMOVAL_ITEMS_FROM_FOLDER_SUCCESS = "[folder] remove items from a folder success";
+export const REMOVAL_ITEMS_FROM_FOLDER_ERROR = "[folder] remove items from a folder error";
+
 export const SET_FOLDER = "[folder] set folder";
 export const CLEAR_FOLDER = "[folder] clear folder";
 
 export const SET_ITEMS_TO_ADD = "[folder] set items to move";
+export const TOGGLE_REMOVE_ITEMS_FROM_FOLDER = "[folder] open remove items from folder modal";
+export const TOGGLE_MOVE_ITEMS_TO_FOLDER = "[folder] move items to a folder";
 // -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //
 
 // playlist

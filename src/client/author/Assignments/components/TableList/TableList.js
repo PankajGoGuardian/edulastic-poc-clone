@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import { Link, withRouter } from "react-router-dom";
 import { Dropdown, Tooltip, Spin, Menu } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -18,7 +18,7 @@ import ActionMenu from "../ActionMenu/ActionMenu";
 import { getItemsInFolders, getSelectedItems } from "../../../src/selectors/folder";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-import { setItemsMoveFolderAction } from "../../../src/actions/folder";
+import { toggleRemoveItemsFolderAction, toggleMoveItemsFolderAction } from "../../../src/actions/folder";
 
 import {
   Container,
@@ -112,7 +112,8 @@ const TableList = ({
   togglePrintModal,
   userRole,
   userClassList,
-  setItemsToMoveFolder
+  toggleAddItemFolderModal,
+  toggleRemovalFolderModal
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -323,10 +324,13 @@ const TableList = ({
     } else if (e.target && selectedIndex !== -1) {
       selectedItems.splice(selectedIndex, 1);
       setLocalItems([...selectedItems]);
-    } else if (!e.target && setItemsToMoveFolder) {
+    } else if (!e.target && toggleAddItemFolderModal) {
       // this case is from action button in each item
       setLocalItems([row]);
-      setItemsToMoveFolder([row]);
+      toggleAddItemFolderModal({
+        items: [row],
+        isOpen: true
+      });
     }
   };
 
@@ -339,8 +343,25 @@ const TableList = ({
   };
 
   const toggleMoveFolderModal = () => {
-    if (setItemsToMoveFolder) {
-      setItemsToMoveFolder(selectedItems);
+    if (toggleAddItemFolderModal) {
+      toggleAddItemFolderModal({
+        items: selectedItems,
+        isOpen: true
+      });
+    }
+  };
+
+  const handleRemoveItemsFromFolder = row => {
+    if (!isEmpty(row)) {
+      toggleRemovalFolderModal({
+        items: [row],
+        isOpen: true
+      });
+    } else if (!isEmpty(selectedItems)) {
+      toggleRemovalFolderModal({
+        items: selectedItems,
+        isOpen: true
+      });
     }
   };
 
@@ -429,7 +450,7 @@ const TableList = ({
         const menu = (
           <Menu>
             <Menu.Item onClick={() => toggleMoveFolderModal()}>Add to Folder</Menu.Item>
-            <Menu.Item>Remove from Folder</Menu.Item>
+            <Menu.Item onClick={() => handleRemoveItemsFromFolder()}>Remove from Folder</Menu.Item>
           </Menu>
         );
         return (
@@ -464,6 +485,7 @@ const TableList = ({
                 assignmentTest,
                 togglePrintModal,
                 addItemToFolder: handleSelectRow(row),
+                removeItemsFromFolder: () => handleRemoveItemsFromFolder(row),
                 canEdit: row.canEdit && !(row.hasAdminAssignments && userRole === roleuser.TEACHER),
                 userClassList,
                 canUnassign: !(row.hasAdminAssignments && userRole === roleuser.TEACHER)
@@ -585,7 +607,8 @@ const enhance = compose(
       userClassList: getGroupList(state)
     }),
     {
-      setItemsToMoveFolder: setItemsMoveFolderAction
+      toggleRemovalFolderModal: toggleRemoveItemsFolderAction,
+      toggleAddItemFolderModal: toggleMoveItemsFolderAction
     }
   )
 );

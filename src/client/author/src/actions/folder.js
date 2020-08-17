@@ -6,7 +6,10 @@ import {
   RENAME_FOLDER_REQUEST,
   SET_ITEMS_TO_ADD,
   SET_FOLDER,
-  CLEAR_FOLDER
+  CLEAR_FOLDER,
+  TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
+  TOGGLE_MOVE_ITEMS_TO_FOLDER,
+  REMOVAL_ITEMS_FROM_FOLDER_REQUEST
 } from "../constants/actions";
 
 export const receiveFolderAction = payload => ({
@@ -45,5 +48,20 @@ export const clearFolderAction = () => ({
 
 export const setItemsMoveFolderAction = payload => ({
   type: SET_ITEMS_TO_ADD,
+  payload
+});
+
+export const toggleRemoveItemsFolderAction = payload => ({
+  type: TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
+  payload
+});
+
+export const toggleMoveItemsFolderAction = payload => ({
+  type: TOGGLE_MOVE_ITEMS_TO_FOLDER,
+  payload
+});
+
+export const removeItemsFromFolderAction = payload => ({
+  type: REMOVAL_ITEMS_FROM_FOLDER_REQUEST,
   payload
 });

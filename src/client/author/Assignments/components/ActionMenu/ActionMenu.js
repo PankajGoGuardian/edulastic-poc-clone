@@ -26,6 +26,7 @@ const ActionMenu = ({
   toggleDeleteModal = () => {},
   togglePrintModal = () => {},
   addItemToFolder = () => {},
+  removeItemsFromFolder = () => {},
   row = {},
   userId = "",
   userRole = "",
@@ -95,7 +96,7 @@ const ActionMenu = ({
         <Menu.Item data-cy="assign" key="add-to-folder" onClick={addItemToFolder}>
           Add to Folder
         </Menu.Item>
-        <Menu.Item data-cy="remove-from-folder" key="remove-from-folder">
+        <Menu.Item data-cy="remove-from-folder" key="remove-from-folder" onClick={removeItemsFromFolder}>
           Remove from Folder
         </Menu.Item>
         <Menu.Item data-cy="assign" key="assign">

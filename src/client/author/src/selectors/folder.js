@@ -10,17 +10,22 @@ export const getFoldersSelector = createSelector(
 
 export const getFolderSelector = createSelector(
   stateSelector,
-  state => state.entity
+  state => state.entity || {}
 );
 
 export const getSelectedItems = createSelector(
   stateSelector,
-  state => state.selectedItems
+  state => state.selectedItems || []
 );
 
-export const isOpenAddItemsModal = createSelector(
+export const isOpenAddItemsModalSelector = createSelector(
   stateSelector,
   state => state.isOpenAddItemModal
+);
+
+export const isOpenRemovalModalSelector = createSelector(
+  stateSelector,
+  state => state.isOpenRemovalModal
 );
 
 export const getItemsInFolders = createSelector(

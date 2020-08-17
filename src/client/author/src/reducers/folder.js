@@ -1,4 +1,4 @@
-import { clone, remove, findIndex, isEmpty } from "lodash";
+import { clone, remove, findIndex } from "lodash";
 import {
   RECEIVE_FOLDER_REQUEST,
   RECEIVE_FOLDER_SUCCESS,
@@ -11,9 +11,10 @@ import {
   RENAME_FOLDER_SUCCESS,
   RENAME_FOLDER_ERROR,
   ADD_MOVE_FOLDER_SUCCESS,
+  TOGGLE_REMOVE_ITEMS_FROM_FOLDER,
+  TOGGLE_MOVE_ITEMS_TO_FOLDER,
   SET_FOLDER,
-  CLEAR_FOLDER,
-  SET_ITEMS_TO_ADD
+  CLEAR_FOLDER
 } from "../constants/actions";
 
 const initialState = {
@@ -23,6 +24,7 @@ const initialState = {
   loading: false,
   creating: false,
   isOpenAddItemModal: false,
+  isOpenRemovalModal: false,
   entity: {}
 };
 
@@ -143,11 +145,17 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {}
       };
-    case SET_ITEMS_TO_ADD:
+    case TOGGLE_REMOVE_ITEMS_FROM_FOLDER:
       return {
         ...state,
-        selectedItems: payload,
-        isOpenAddItemModal: !isEmpty(payload)
+        selectedItems: payload.items,
+        isOpenRemovalModal: payload.isOpen
+      };
+    case TOGGLE_MOVE_ITEMS_TO_FOLDER:
+      return {
+        ...state,
+        selectedItems: payload.items,
+        isOpenAddItemModal: payload.isOpen
       };
     default:
       return state;

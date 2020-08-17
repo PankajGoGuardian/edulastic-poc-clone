@@ -233,7 +233,7 @@ class Contaier extends Component {
     } = this.props;
     let updatedKeys = {};
     if (fieldName === "folderId") {
-      return this.handleSearch({ ...initialSearchState, [fieldName]: value });
+      return this.handleSearch({ ...initialSearchState, [fieldName]: value, filter: "FOLDERS" });
     }
     if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
       setDefaultInterests({ [fieldName]: value });

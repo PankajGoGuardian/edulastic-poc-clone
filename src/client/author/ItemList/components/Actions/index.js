@@ -11,7 +11,7 @@ import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { getUserRole, isPublisherUserSelector, getCollectionsToAddContent } from "../../../src/selectors/user";
-import { setItemsMoveFolderAction } from "../../../src/actions/folder";
+import { toggleRemoveItemsFolderAction, toggleMoveItemsFolderAction } from "../../../src/actions/folder";
 import { createTestFromCartAction } from "../../ducks";
 import { getSelectedTestsSelector } from "../../../TestList/ducks";
 import { setAddCollectionModalVisibleAction } from "../../../ContentBuckets/ducks";
@@ -22,7 +22,8 @@ const Actions = ({
   selectedTests,
   selectedPlaylists,
   setAddCollectionModalVisible,
-  setItemsMoveFolder,
+  toggleAddItemModal,
+  toggleRemovalModal, // open a modal to remove items from a folder
   createTestFromCart,
   type,
   t,
@@ -44,16 +45,34 @@ const Actions = ({
     createTestFromCart();
   };
 
+  const getItemsToMoveOrRemoveFromFolder = () => {
+    let itemsToAdd = [];
+    // question item does not have name or title,
+    // so will pass item index for now
+    if (type === "TESTITEM") {
+      itemsToAdd = selectedItems?.map((x, i) => ({ itemId: x, name: `item ${i + 1}` }));
+    }
+    if (type === "TEST") {
+      itemsToAdd = selectedTests?.map(x => ({ itemId: x._id, name: x.title }));
+    }
+    return itemsToAdd;
+  };
+
   const toggleMoveFolderModal = () => {
-    if (setItemsMoveFolder) {
-      // question item does not have name or title,
-      // so will pass item index for now
-      if (type === "TESTITEM") {
-        setItemsMoveFolder(selectedItems?.map((x, i) => ({ itemId: x, name: `item ${i + 1}` })));
-      }
-      if (type === "TEST") {
-        setItemsMoveFolder(selectedTests?.map(x => ({ itemId: x._id, name: x.title })));
-      }
+    if (toggleAddItemModal && !isEmpty(selectedItems)) {
+      toggleAddItemModal({
+        items: getItemsToMoveOrRemoveFromFolder(),
+        isOpen: true
+      });
+    }
+  };
+
+  const openRemoveItemsFromFolderModal = () => {
+    if (toggleRemovalModal && !isEmpty(selectedItems)) {
+      toggleRemovalModal({
+        items: getItemsToMoveOrRemoveFromFolder(),
+        isOpen: true
+      });
     }
   };
 
@@ -65,7 +84,7 @@ const Actions = ({
         </MenuItems>
       )}
       <MenuItems onClick={() => toggleMoveFolderModal()}>Add to Folder</MenuItems>
-      <MenuItems>Remove from Folder</MenuItems>
+      <MenuItems onClick={openRemoveItemsFromFolderModal}>Remove from Folder</MenuItems>
       {!isEmpty(collectionsToWrite) && (
         <MenuItems onClick={() => setAddCollectionModalVisible(true)}>
           <span>Add to Collection</span>
@@ -113,7 +132,8 @@ const withConnect = connect(
   {
     setAddCollectionModalVisible: setAddCollectionModalVisibleAction,
     createTestFromCart: createTestFromCartAction,
-    setItemsMoveFolder: setItemsMoveFolderAction
+    toggleRemovalModal: toggleRemoveItemsFolderAction,
+    toggleAddItemModal: toggleMoveItemsFolderAction
   }
 );
 

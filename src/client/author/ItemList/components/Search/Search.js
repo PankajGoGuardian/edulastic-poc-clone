@@ -132,7 +132,7 @@ const Search = ({
 
   const selectedCurriculam = formattedCuriculums.find(fc => fc.value === curriculumId);
   if (filter === SMART_FILTERS.FOLDERS) {
-    return <Folders onSelectFolder={onSearchFieldChange("folderId")} hideLabel folderType={folderTypes.ITEM} />;
+    return <Folders onSelectFolder={onSearchFieldChange("folderId")} folderType={folderTypes.ITEM} />;
   }
 
   return (

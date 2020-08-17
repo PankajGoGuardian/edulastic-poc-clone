@@ -164,7 +164,7 @@ export const ModalTitle = styled.div`
   }
 `;
 
-export const MoveFolderActionModal = styled(CustomModalStyled)`
+export const Modal = styled(CustomModalStyled)`
   min-width: 560px;
   .ant-modal-body {
     padding: 20px 0px;

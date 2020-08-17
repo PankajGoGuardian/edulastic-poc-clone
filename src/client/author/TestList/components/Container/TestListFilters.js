@@ -308,7 +308,7 @@ const TestListFilters = ({
             </>
           );
         })}
-      {isFolderSearch && <Folders onSelectFolder={handleSelectFolder} hideLabel folderType={folderTypes.TEST} />}
+      {isFolderSearch && <Folders onSelectFolder={handleSelectFolder} folderType={folderTypes.TEST} />}
     </Container>
   );
 };

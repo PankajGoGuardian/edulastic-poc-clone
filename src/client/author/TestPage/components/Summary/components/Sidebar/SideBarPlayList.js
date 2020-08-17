@@ -199,26 +199,30 @@ const Sidebar = ({
             ))}
           </SelectInputStyled>
 
-          <FieldLabel>Collections</FieldLabel>
-          <SelectInputStyled
-            showArrow
-            data-cy="collectionsSelect"
-            mode="multiple"
-            size="large"
-            margin="0px 0px 15px"
-            placeholder="Please select"
-            value={filteredCollections.flatMap(c => c.bucketIds)}
-            onChange={(input, option) => onChangeCollection(input, option)}
-            optionFilterProp="children"
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {collectionsToShow.map(o => (
-              <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
-                {`${o.collectionName} - ${o.name}`}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
+          {collectionsToShow.length > 0 && (
+            <>
+              <FieldLabel>Collections</FieldLabel>
+              <SelectInputStyled
+                showArrow
+                data-cy="collectionsSelect"
+                mode="multiple"
+                size="large"
+                margin="0px 0px 15px"
+                placeholder="Please select"
+                value={filteredCollections.flatMap(c => c.bucketIds)}
+                onChange={(input, option) => onChangeCollection(input, option)}
+                optionFilterProp="children"
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {collectionsToShow.map(o => (
+                  <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                    {`${o.collectionName} - ${o.name}`}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </>
+          )}
 
           <FieldLabel>Tags</FieldLabel>
           <SelectInputStyled

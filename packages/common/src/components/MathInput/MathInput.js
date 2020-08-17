@@ -233,7 +233,7 @@ class MathInput extends React.PureComponent {
 
   focus = () => {
     const { mathField } = this.state;
-    mathField.focus();
+    if (mathField) mathField.focus();
   };
 
   toggleNativeKeyBoard = () => {

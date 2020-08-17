@@ -139,7 +139,7 @@ const ListItem = ({
           </FlexContainer>
         </FlexContainer>
       ) : (
-        items.map(({ item: _item }, index) => (
+        (items || []).map(({ item: _item }, index) => (
           <FlexContainer className="expanded-rows" justifyContent="space-between" alignItems="flex-start">
             <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
               {isEditable && !collapseView && (

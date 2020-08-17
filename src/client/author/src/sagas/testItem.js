@@ -156,7 +156,8 @@ function* evaluateAnswers({ payload }) {
       }
     } else {
       const answers = yield select(state => _get(state, "answers", {}));
-      const { itemLevelScore, itemLevelScoring = false } = yield select(state => state.itemDetail.item);
+      const items = yield select(state => state.itemDetail.item);
+      const { itemLevelScore = 0, itemLevelScoring = false } = items || {};
       const questions = yield select(getQuestionsSelector);
       const { evaluation, score, maxScore } = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
       yield put({

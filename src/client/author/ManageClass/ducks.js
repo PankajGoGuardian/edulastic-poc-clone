@@ -642,9 +642,9 @@ function* syncClassUsingCode({ payload }) {
     yield put(setSyncClassLoadingAction(false));
     notification({ type: "success", messageKey: "googleClassImportInProgress" });
   } catch (err) {
-    const {
-      data: { message: errorMessage }
-    } = err.response;
+    const { data = {} } = err.response || {};
+    const { message: errorMessage } = data;
+
     Sentry.captureException(err);
     if (errorMessage === "No class found") {
       yield put(setClassNotFoundErrorAction(true));

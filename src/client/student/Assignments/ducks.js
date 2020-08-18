@@ -136,7 +136,7 @@ export const filterSelector = state => state.studentAssignment.filter;
  *  Close manual can display assignment by checking the startDate is less than current date and close when closed in class object is true
  *
  */
-export const isLiveAssignment = (assignment, classIds) => {
+export const isLiveAssignment = (assignment, classIds, userId) => {
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
@@ -147,10 +147,16 @@ export const isLiveAssignment = (assignment, classIds) => {
   // when attempts over no need to check for any other condition to hide assignment from assignments page
   if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2)) return false;
   if (!endDate) {
-    endDate = (_maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
-      .endDate;
+    const currentUserGroups = groups.filter(
+      clazz =>
+        (classIds.includes(clazz._id) && !clazz.students.length) ||
+        (clazz.students.length && clazz.students.includes(userId))
+    );
+    endDate = (
+      _maxBy(currentUserGroups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {}
+    ).endDate;
     const currentClass =
-      groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
+      currentUserGroups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
     if (!endDate) {
       // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
       if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE && assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE) {
@@ -210,7 +216,7 @@ export const getAllAssignmentsSelector = createSelector(
   getCurrentGroup,
   getClassIds,
   getUserId,
-  (assignmentsObj, reportsObj, currentGroup, classIds, currentUserId) => {
+  (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
@@ -227,7 +233,7 @@ export const getAllAssignmentsSelector = createSelector(
             clazz.redirect !== true &&
             (!currentGroup || currentGroup === clazz._id) &&
             ((classIds.includes(clazz._id) && !clazz.students.length) ||
-              (clazz.students.length && clazz.students.includes(currentUserId)))
+              (clazz.students.length && clazz.students.includes(userId)))
         );
         return allClassess.map(clazz => ({
           ...assignment,
@@ -238,7 +244,7 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.pauseAllowed !== undefined && !assignment.redir ? { pauseAllowed: clazz.pauseAllowed } : {})
         }));
       })
-      .filter(assignment => isLiveAssignment(assignment, classIds));
+      .filter(assignment => isLiveAssignment(assignment, classIds, userId));
 
     return sortBy(assignments, [partial(assignmentSortByDueDate, groupedReports)]);
   }

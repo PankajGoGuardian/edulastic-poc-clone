@@ -45,7 +45,12 @@ const sanitizeLatex = latex => {
     .replace(new RegExp("#", "g"), " \\#")
     .replace(/overarc/g, "overgroup")
     .replace(/\\parallelogram/g, "\\text{▱}")
-    .replace(/\\undersim/g, "\\underset{\\sim}");
+    .replace(/\\undersim/g, "\\underset{\\sim}")
+    .replace(/\\begin{almatrix}/g, "\\left\\{\\begin{array}{l}")
+    .replace(/\\end{almatrix}/g, "\\end{array}\\right.")
+    .replace(/\\begin{armatrix}/g, "\\left.\\begin{array}{r}")
+    .replace(/\\end{armatrix}/g, "\\end{array}\\right\\}")
+    .replace(/\\begin{array}{}\\end{array}/g, "");
 
   if (_latex.substr(-1) === "\\") {
     _latex = _latex.slice(0, -1);
@@ -94,7 +99,6 @@ export const getMathHtml = latex => {
    * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
    */
   _latex = addSpaceMatrixFraction(_latex);
-
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false,
     displayMode: true
@@ -168,9 +172,8 @@ export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
 // mathQuill does't added extra space after '/square' key, which is needed to inerpret as square box
 // it might be a bug for MathQuill lib
 // handling default addition of mathquill keywords
-export const reformatMathInputLatex = latex => {
-  return latex
+export const reformatMathInputLatex = latex =>
+  latex
     .replace(/\\square/g, "\\square ")
-    .replace(/\\min /g, "min") //avoiding \min keyword added with mathquill latex
-    .replace(/\\deg /g, "deg"); //avoiding \deg keyword added with mathquill latex
-};
+    .replace(/\\min /g, "min") // avoiding \min keyword added with mathquill latex
+    .replace(/\\deg /g, "deg"); // avoiding \deg keyword added with mathquill latex

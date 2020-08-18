@@ -235,7 +235,7 @@ class AuthorAssignmentPage {
     if (assignmentid) cy.url().should("contain", `author/classboard/${assignmentid}`);
     else cy.url().should("contain", "author/classboard/");
     cy.wait("@assignment");
-    return cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+    return cy.get('[data-cy="studentName"]', { timeout: 30000 }).should("have.length.greaterThan", 0);
   };
 
   clickOnExpressGraderByTestId = (testId, assignmentid) => {

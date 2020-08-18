@@ -1,7 +1,24 @@
+import { notification } from "@edulastic/common";
 import API from "./utils/API";
 
 const api = new API();
+const blankApi = new API("", " ");
 const prefix = "/attachments";
+
+const isValidURL = str => {
+  const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\\/]))?/;
+  return regex.test(str);
+};
+
+const loadScratchFromUrl = dataUrl =>
+  blankApi
+    .callApi({
+      url: dataUrl,
+      method: "get"
+    })
+    .catch(() => {
+      notification({ messageKey: "unableToRetrieve" });
+    });
 
 const loadAttachment = attachmentId =>
   api
@@ -9,7 +26,18 @@ const loadAttachment = attachmentId =>
       url: `${prefix}/${attachmentId}`,
       method: "get"
     })
-    .then(result => result.data.result);
+    .then(async result => {
+      const attachment = result.data.result;
+      if (attachment?.data?.scratchpad && isValidURL(attachment?.data?.scratchpad)) {
+        try {
+          const { data } = await loadScratchFromUrl(attachment?.data?.scratchpad);
+          attachment.data.scratchpad = data;
+        } catch (error) {
+          attachment.data.scratchpad = "";
+        }
+      }
+      return attachment;
+    });
 
 const saveAttachment = data =>
   api
@@ -27,7 +55,20 @@ const loadAllAttachments = filter =>
       method: "get",
       params: filter
     })
-    .then(result => result.data.result);
+    .then(async result => {
+      const { attachments, users } = result.data.result;
+      for (const attachment of attachments) {
+        if (attachment?.data?.scratchpad && isValidURL(attachment?.data?.scratchpad)) {
+          try {
+            const { data } = await loadScratchFromUrl(attachment?.data?.scratchpad);
+            attachment.data.scratchpad = data;
+          } catch (error) {
+            attachment.data.scratchpad = "";
+          }
+        }
+      }
+      return { attachments, users };
+    });
 
 const updateAttachment = data =>
   api.callApi({

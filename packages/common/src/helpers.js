@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { get, round, isNaN } from "lodash";
+import { get, round, isNaN, isString } from "lodash";
 import { notification } from "@edulastic/common";
 import { fileApi } from "@edulastic/api";
 import { aws, question } from "@edulastic/constants";
@@ -106,6 +106,12 @@ function convertBlobToFile(blob) {
   return null;
 }
 
+function convertStringToFile(str) {
+  const blob = new Blob([str], { type: "text/plain;charset=utf-8" });
+  const file = new File([blob], `scratchpad-${Date.now()}.text`);
+  return file;
+}
+
 const s3Folders = Object.values(aws.s3Folders);
 /**
  * upload a file to s3 using signed url
@@ -123,6 +129,12 @@ export const uploadToS3 = async (file, folder) => {
   if (isBlobData(fileToUpload)) {
     fileToUpload = convertBlobToFile(file); // create new file with the BLOB data
   }
+  if (isString(file)) {
+    // this case will come from scratchpad
+    // create new file with the string
+    fileToUpload = convertStringToFile(file);
+  }
+
   const { name: fileName } = fileToUpload;
   const result = await fileApi.getSignedUrl(fileName, folder);
   const formData = new FormData();

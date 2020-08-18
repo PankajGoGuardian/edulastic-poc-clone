@@ -244,7 +244,7 @@ const MathFormulaAnswerMethod = ({
           return (
             <CheckOption
               dataCy="answer-ignore-leading-and-trailing-spaces"
-              optionKey="literal:ignoreLeadingAndTrailingSpaces"
+              optionKey="ignoreLeadingAndTrailingSpaces"
               options={options}
               onChange={changeOptions}
               label={t("component.math.literalIgnoreLeadingAndTrailingSpaces")}
@@ -304,7 +304,7 @@ const MathFormulaAnswerMethod = ({
           return (
             <CheckOption
               dataCy="answer-treat-multiple-spaces-as-one"
-              optionKey="literal:treatMultipleSpacesAsOne"
+              optionKey="treatMultipleSpacesAsOne"
               options={options}
               onChange={changeOptions}
               label={t("component.math.literalTreatMultipleSpacesAsOne")}

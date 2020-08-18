@@ -15,6 +15,7 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
     <Col span={12}>
       <Label>{t("component.shortText.selectLabel")}</Label>
       <SelectInputStyled
+        data-cy="scoringOption"
         size="large"
         value={selectValue}
         onChange={onSelectChange}

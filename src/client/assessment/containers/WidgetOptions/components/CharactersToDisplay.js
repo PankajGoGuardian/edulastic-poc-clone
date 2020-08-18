@@ -7,7 +7,7 @@ import CommonInput from "./common/CommonInput";
 
 const CharactersToDisplay = ({ t, ...restProps }) => (
   <Fragment>
-    <Label>{t("component.options.charactersToDisplay")}</Label>
+    <Label data-cy="charactersToDisplay">{t("component.options.charactersToDisplay")}</Label>
     <CommonInput {...restProps} />
   </Fragment>
 );

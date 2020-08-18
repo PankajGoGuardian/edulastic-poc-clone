@@ -75,7 +75,7 @@ const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 export const filterSelector = state => state.studentReport.filter;
 
-const isReport = (assignment, classIds) => {
+const isReport = (assignment, classIds, userId) => {
   // either user has ran out of attempts
   // or assignments is past dueDate
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
@@ -83,12 +83,18 @@ const isReport = (assignment, classIds) => {
   let { endDate } = assignment;
   const { class: groups = [], classId: currentGroup } = assignment;
   if (!endDate) {
-    endDate = (maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
-      .endDate;
+    const currentUserGroups = groups.filter(
+      clazz =>
+        (classIds.includes(clazz._id) && !clazz.students.length) ||
+        (clazz.students.length && clazz.students.includes(userId))
+    );
+    endDate = (
+      maxBy(currentUserGroups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {}
+    ).endDate;
     if (!endDate) {
       // IF POLICIES ARE MANUAL CLOSE UNTIL AUTHOR REDIRECT END DATE WILL BE undefined
       const currentClass =
-        groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
+        currentUserGroups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
       if (currentClass.closed !== undefined) return currentClass.closed;
     }
   }
@@ -141,7 +147,7 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {})
         }));
       })
-      .filter(assignment => isReport(assignment, classIds));
+      .filter(assignment => isReport(assignment, classIds, userId));
 
     return assignments.sort((a, b) => {
       const a_report = a.reports.find(report => !report.archived);

@@ -129,6 +129,15 @@ const AssessmentContainer = ({
   }, []);
 
   useEffect(() => {
+    if (!loading && items.length === 0) {
+      Modal.info({
+        title: "It looks like there aren't any Items in this test.",
+        okText: "Close"
+      });
+    }
+  }, [loading]);
+
+  useEffect(() => {
     lastTime.current = Date.now();
     window.localStorage.assessmentLastTime = lastTime.current;
     setCurrentItem(Number(qid));

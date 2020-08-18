@@ -28,9 +28,9 @@ const HighlightImagePreview = ({
   hideInternalOverflow
 }) => {
   const containerRef = useRef();
-  const { image } = item;
+  const { image = {} } = item;
 
-  const { width, height } = image;
+  const { width = 0, height = 0 } = image;
 
   const imageContainerDimensions = {
     width: Math.max(image.x + width + 10, 700),

@@ -33,7 +33,7 @@ const QuestionMath = ({ onUpdate, question, docBasedQType }) => {
       const isNumeric = v => /^\d+$/.test(v);
 
       if (!isNumeric(value)) {
-        delete nextValidation.validResponse.value[0].options.significantDecimalPlaces;
+        delete nextValidation?.validResponse?.value?.[0]?.options?.significantDecimalPlaces;
       }
     }
 

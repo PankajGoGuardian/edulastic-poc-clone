@@ -1,10 +1,11 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import * as Sentry from "@sentry/browser";
-import { notification } from "@edulastic/common";
+import { uploadToS3, notification } from "@edulastic/common";
 import { maxBy, isEmpty } from "lodash";
 import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
-import { assignmentPolicyOptions } from "@edulastic/constants";
+import { assignmentPolicyOptions, aws } from "@edulastic/constants";
+
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 import {
   RECEIVE_ITEM_REQUEST,
@@ -20,6 +21,8 @@ import {
 } from "../constants/actions";
 import { getPreviousAnswersListSelector } from "../selectors/answers";
 import { redirectPolicySelector } from "../selectors/test";
+
+const defaultUploadFolder = aws.s3Folders.DEFAULT;
 
 function* receiveItemSaga({ payload }) {
   try {
@@ -138,8 +141,9 @@ function* saveUserResponse({ payload }) {
     yield call(testItemActivityApi.create, activity, autoSave, pausing);
     const userId = yield select(state => state?.user?.user?._id);
     if (shouldSaveOrUpdateAttachment) {
+      const scratchpadUri = yield call(uploadToS3, _userWork.scratchpad, defaultUploadFolder);
       const update = {
-        data: { scratchpad: _userWork.scratchpad },
+        data: { scratchpad: scratchpadUri },
         referrerId: userTestActivityId,
         userId,
         type: "scratchpad",

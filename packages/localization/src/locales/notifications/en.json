@@ -1886,5 +1886,9 @@
   "cliCustomStudentUserNotExist": {
     "message": "Custom student doesn't have test activity",
     "description": ""
+  },
+  "unableToRetrieve": {
+    "message": "Unable to retrieve relevant information. Please contact support.",
+    "description": ""
   }
 }

@@ -256,8 +256,7 @@ function* loadTest({ payload }) {
 
       let lastAttemptedQuestion = questionActivities[0] || {};
       const previousQActivitiesById = groupBy(previousQuestionActivities, "testItemId");
-      const scratchPadData = {};
-      const prevScratchPadData = {};
+
       previousQuestionActivities.forEach(item => {
         allPrevAnswers = {
           ...allPrevAnswers,
@@ -267,9 +266,6 @@ function* loadTest({ payload }) {
           ...allEvaluation,
           [item.qid]: item.evaluation
         };
-        if (item.scratchPad) {
-          prevScratchPadData[item.testItemId] = item.scratchPad;
-        }
       });
 
       yield put({
@@ -292,7 +288,7 @@ function* loadTest({ payload }) {
       const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
         referrerId: testActivityId
       });
-
+      const scratchPadData = {};
       attachments.forEach(attachment => {
         scratchPadData[attachment.referrerId2] = attachment.data;
       });

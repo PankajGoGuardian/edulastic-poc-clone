@@ -1127,7 +1127,7 @@ export function* updateItemDocBasedSaga({ payload }) {
     }
 
     let test = yield select(getTestEntitySelector);
-    test = { ...test, itemGroups: [{ ...test.itemGroups[0], items: [item] }] };
+    test = { ...test, itemGroups: [{ ...test?.itemGroups?.[0], items: [item] }] };
     yield put(setTestDataAction(test));
     const alignments = yield select(getDictionariesAlignmentsSelector);
     const { standards = [] } = alignments[0];

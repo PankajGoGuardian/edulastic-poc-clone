@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import produce from "immer";
 import PropTypes from "prop-types";
-import { cloneDeep, set, get, forEach, find, findIndex, isEmpty } from "lodash";
+import { cloneDeep, set, get, forEach, find, findIndex, isEmpty, isObject } from "lodash";
 import { math } from "@edulastic/constants";
 import CorrectAnswers from "../../../components/CorrectAnswers";
 import MathFormulaAnswer from "./ClozeMathAnswer";
@@ -108,6 +108,11 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     forEach(validAnswers, answer => {
       if (answer[0].id === methodId) {
         answer[methodIndex][prop] = value;
+        // reset the previous options whenever method changes
+        // @see https://snapwiz.atlassian.net/browse/EV-17804
+        if (prop === "method" && isObject(answer[methodIndex]?.options)) {
+          answer[methodIndex].options = {};
+        }
       }
     });
     set(newItem, `validation.validResponse.value`, validAnswers);
@@ -206,6 +211,11 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     forEach(newItem.validation.altResponses[answerIndex].value, answer => {
       if (answer[0].id === methodId) {
         answer[methodIndex][prop] = value;
+        // reset the previous options whenever method changes
+        // @see https://snapwiz.atlassian.net/browse/EV-17804
+        if (prop === "method" && isObject(answer[methodIndex]?.options)) {
+          answer[methodIndex].options = {};
+        }
       }
     });
     setQuestionData(newItem);
@@ -320,6 +330,11 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           answer.options[prop] = value;
         } else {
           answer[prop] = value;
+        }
+        // reset the previous options whenever method changes
+        // @see https://snapwiz.atlassian.net/browse/EV-17804
+        if (prop === "method" && isObject(answer.options)) {
+          answer.options = {};
         }
       }
     });

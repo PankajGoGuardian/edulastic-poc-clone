@@ -22,6 +22,7 @@ const QuestionSelectDropdown = ({
   const dropdownWrapper = useRef(null);
   const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
   const showSubmit = sessionStorage.getItem("testAttemptReviewVistedId") === utaId;
+  const scrollableContainer = document.getElementById("assessment-player-default-scroll");
   return (
     <SelectContainer
       ref={dropdownWrapper}
@@ -31,7 +32,7 @@ const QuestionSelectDropdown = ({
       className="question-select-dropdown"
     >
       <Select
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={triggerNode => scrollableContainer || triggerNode.parentNode}
         value={currentItem}
         data-cy="options"
         onChange={value => {

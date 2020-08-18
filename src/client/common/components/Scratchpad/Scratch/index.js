@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import isEmpty from "lodash/isEmpty";
 import { drawTools } from "@edulastic/constants";
-import { WithResources, MathModal, ScrollContext, getMathHtml, AssessmentPlayerContext } from "@edulastic/common";
+import { WithResources, MathModal, getMathHtml, AssessmentPlayerContext, AnswerContext } from "@edulastic/common";
 import { ScratchpadContainer, ZwibblerMain } from "./styled";
 import ToolBox from "../Tools";
 import {
@@ -47,7 +47,6 @@ const Scratchpad = ({
   saveData,
   data,
   readOnly,
-  disableResize,
   hideTools,
   clearClicked // this is from highlight image
 }) => {
@@ -61,25 +60,8 @@ const Scratchpad = ({
   const mathNodeRef = useRef();
   isDeleteMode.current = deleteMode;
   const hideToolBar = readOnly || hideTools;
-
-  const { getScrollElement } = useContext(ScrollContext);
   const { isStudentAttempt } = useContext(AssessmentPlayerContext);
-
-  const scrollContainerHeight = getScrollElement()?.scrollHeight;
-  const scrollContainerWidth = getScrollElement()?.scrollWidth;
-
-  useEffect(() => {
-    if (!disableResize) {
-      const zwibblerHeight = scrollContainerHeight ? `${scrollContainerHeight}px` : "100%";
-      if (zwibblerContainer.current && zwibblerHeight) {
-        zwibblerContainer.current.style.height = zwibblerHeight;
-        if (zwibbler) {
-          zwibbler.resize();
-        }
-      }
-    }
-  }, [scrollContainerHeight, scrollContainerWidth]);
-
+  const { isAnswerModifiable, expressGrader } = useContext(AnswerContext);
   const isLineMode = lineTypes.includes(activeMode);
 
   const toggleProtractor = () => {
@@ -320,9 +302,15 @@ const Scratchpad = ({
     }
   }, [data, zwibbler]);
 
+  useEffect(() => {
+    if (expressGrader && zwibbler) {
+      zwibbler.setConfig("readOnly", !isAnswerModifiable);
+    }
+  }, [isAnswerModifiable, expressGrader]);
+
   return (
     <ScratchpadContainer ref={zwibblerContainer}>
-      {!hideToolBar && <ToolBox />}
+      {(!hideToolBar || (isAnswerModifiable && expressGrader)) && <ToolBox />}
       <ZwibblerMain
         deleteMode={deleteMode}
         id="zwibbler-main"
@@ -371,14 +359,12 @@ Scratchpad.propTypes = {
   saveData: PropTypes.func,
   data: PropTypes.string,
   hideTools: PropTypes.bool,
-  readOnly: PropTypes.bool,
-  disableResize: PropTypes.bool
+  readOnly: PropTypes.bool
 };
 
 Scratchpad.defaultProps = {
   saveData: () => null,
   readOnly: false,
-  disableResize: false,
   hideTools: false,
   data: ""
 };

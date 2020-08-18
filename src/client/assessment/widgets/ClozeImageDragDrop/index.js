@@ -38,8 +38,6 @@ const EmptyWrapper = styled.div`
 class ClozeImageDragDrop extends Component {
   static contextType = AnswerContext;
 
-  static contextType = AnswerContext;
-
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);

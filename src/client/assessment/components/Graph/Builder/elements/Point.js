@@ -28,7 +28,7 @@ function create(board, object, settings = {}) {
 
   const hideColor = pointIsVisible ? null : "transparent";
 
-  const point = board.$board.create("point", [x, y], {
+  const point = board?.$board?.create("point", [x, y], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...getColorParams(hideColor || priorityColor || board.priorityColor || baseColor),
     label: {

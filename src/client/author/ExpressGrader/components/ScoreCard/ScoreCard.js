@@ -31,7 +31,7 @@ class ScoreCard extends Component {
     const { testActivity: students } = this.props;
 
     students.forEach(student => {
-      const isCorrect = student.questionActivities.find(qa => qa._id === question._id).correct;
+      const isCorrect = student?.questionActivities?.find(qa => qa._id === question._id)?.correct;
       if (isCorrect) {
         correctAnswers++;
       }

@@ -555,7 +555,7 @@ class QuestionWrapper extends Component {
                             onClickHandler={() => {
                               // load the data from server and then show
                               loadScratchPad({
-                                testActivityId: data.activity.testActivityId,
+                                testActivityId: data?.activity?.testActivityId,
                                 testItemId: data.activity.testItemId,
                                 qActId: data.activity.qActId || data.activity._id,
                                 callback: () => showStudentWork()

@@ -10,7 +10,7 @@ import LiveClassboardPage from "../../../../../framework/author/assignments/Live
 import ExpressGraderPage from "../../../../../framework/author/assignments/expressGraderPage";
 import ReportsPage from "../../../../../framework/student/reportsPage";
 
-describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuffle questions'`, () => {
+describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'evaluation methods'`, () => {
   const testlibaryPage = new TestLibrary();
   const regrade = new Regrade();
   const studentTestPage = new StudentTestPage();
@@ -116,8 +116,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
           assignmentId2 = assignObj[testId2];
         });
 
-        [...attemptsdata1, ...attemptsdata2].forEach(studentdata => {
-          const { email, status, attempt } = studentdata;
+        [...attemptsdata1, ...attemptsdata2].forEach(({ email, status, attempt }) => {
           studentTestPage.attemptAssignment(email, status, attempt, questionTypeMap);
         });
       });
@@ -141,12 +140,12 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
         regrade.applyRegrade();
       });
 
-      context(`> verify student side`, () => {
-        [...attemptsdata1, ...attemptsdata2].forEach((studentdata, index) => {
-          const { email, overidden, status } = studentdata;
-          const score = overidden ? "1" : "0";
-          const percent = overidden ? "50" : "0";
-          it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+      context(`> verify regraded eval method at student side`, () => {
+        [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }, index) => {
+          const [score, percent, titleAdjust, evalMethod] = overidden
+            ? ["1", "50", "", EVAL_METHODS.PARTIAL]
+            : ["0", "0", "not ", EVAL_METHODS.ALL_OR_NOTHING];
+          it(`> for student ${status} with '${titleAdjust}overidden' assignment, expected-'${evalMethod.toLowerCase()}'`, () => {
             cy.login("student", email);
             if (status !== studentSide.SUBMITTED) {
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1);
@@ -171,8 +170,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
 
           it("> verify card view", () => {
             studentdata.forEach(({ overidden }, ind) => {
-              const score = overidden ? "1" : "0";
-              const attempt = overidden ? attemptTypes.PARTIAL_CORRECT : attemptTypes.WRONG;
+              const [score, attempt] = overidden ? ["1", attemptTypes.PARTIAL_CORRECT] : ["0", attemptTypes.WRONG];
 
               lcb.verifyScoreByStudentIndex(ind, score, 2);
               lcb.verifyQuestionCards(ind, [attempt]);
@@ -203,8 +201,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
             lcb.header.clickOnExpressGraderTab();
             expressGraderPage.setToggleToScore();
             studentdata.forEach(({ name, overidden }) => {
-              const score = overidden ? "1" : "0";
-              const attempType = overidden ? attemptTypes.PARTIAL_CORRECT : attemptTypes.WRONG;
+              const [score, attempType] = overidden ? ["1", attemptTypes.PARTIAL_CORRECT] : ["0", attemptTypes.WRONG];
               expressGraderPage.getGridRowByStudent(name);
               expressGraderPage.getScoreforQueNum("Q1").should("have.text", score);
               expressGraderPage.verifyCellColorForQuestion("Q1", attempType);
@@ -285,10 +282,10 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
         regrade.applyRegrade();
       });
 
-      context(`> verify student side`, () => {
-        [...attemptsdata1, ...attemptsdata2].forEach((studentdata, index) => {
-          const { email, overidden, status } = studentdata;
-          it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+      context(`> verify regraded eval method at student side`, () => {
+        [...attemptsdata1, ...attemptsdata2].forEach(({ email, overidden, status }, index) => {
+          const titleAdjust = overidden ? "" : "not ";
+          it(`> for student ${status} with '${titleAdjust}overidden' assignment, expected-'all_or_nothing'`, () => {
             cy.login("student", email);
             if (status !== studentSide.SUBMITTED) {
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2);

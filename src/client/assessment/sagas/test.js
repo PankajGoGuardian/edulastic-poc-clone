@@ -493,8 +493,9 @@ function* submitTest({ payload }) {
   } catch (err) {
     Sentry.captureException(err);
     const {
-      data: { message: errorMessage }
-    } = err.response;
+      data = {}
+    } = err.response || {};
+    const { message: errorMessage } = data
     if (err.status === 403) {
       if (errorMessage === "assignment already submitted") {
         return yield put(push("/home/grades"));

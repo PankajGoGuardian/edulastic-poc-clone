@@ -181,7 +181,7 @@ class GraphContainer extends PureComponent {
   getDefaultTool() {
     const { toolbar } = this.props;
     const { tools } = toolbar;
-    return tools[0];
+    return tools?.[0];
   }
 
   handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
@@ -602,8 +602,8 @@ class GraphContainer extends PureComponent {
   }
 
   get getDrawingObjects() {
-    const { toolbar, elements } = this.props;
-    const { drawingObjects } = toolbar;
+    const { toolbar = {}, elements } = this.props;
+    const { drawingObjects = [] } = toolbar;
     const { selectedDrawingObject } = this.state;
 
     return drawingObjects.map(item => ({

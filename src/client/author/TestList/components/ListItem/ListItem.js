@@ -216,7 +216,7 @@ class ListItem extends Component {
 
     const isDynamic =
       !isPlaylist &&
-      item.itemGroups.some(
+      item?.itemGroups?.some(
         group =>
           group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
           group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM

@@ -877,7 +877,7 @@ class Container extends PureComponent {
       !showEditButton &&
       !showDuplicateButton &&
       (testStatus === "draft" || editEnable);
-    const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
+    const testItems = (itemGroups || []).flatMap(itemGroup => itemGroup.items || []);
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 
     const gradeSubject = { grades, subjects };

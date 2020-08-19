@@ -219,13 +219,14 @@ class Item extends Component {
       showPremiumLabelOnContent(isPlaylist ? _source.collections : collections, orgCollections) &&
       !isPublisherUser &&
       !(_source ?.createdBy ?._id === currentUserId);
-    const isOwner = (isPlaylist ? _source.authors : item.authors).find(x => x._id === currentUserId);
+    const authors = isPlaylist ? _source.authors : item.authors
+    const isOwner = (authors || []).find(x => x._id === currentUserId);
     const allowDuplicate =
       allowDuplicateCheck(isPlaylist ? _source.collections : collections, orgCollections, isPlaylist ? "playList" : "test") || isOwner;
 
     const isDynamic =
       !isPlaylist &&
-      item.itemGroups.some(
+      item?.itemGroups?.some(
         group =>
           group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
           group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM

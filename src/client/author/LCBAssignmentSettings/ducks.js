@@ -41,6 +41,8 @@ const slice = createSlice({
     changeAttribute: (state, { payload }) => {
       const { key, value } = payload;
       if (["startDate", "endDate", "dueDate"].includes(key)) {
+        state.assignment = state.assignment || {}
+        state.assignment.class = state.assignment.class || []
         state.assignment.class[0][key] = value.valueOf();
         state.updateSettings[key] = value.valueOf();
       } else {

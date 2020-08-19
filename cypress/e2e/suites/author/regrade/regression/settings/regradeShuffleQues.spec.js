@@ -130,37 +130,24 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
 
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.NOT_STARTED)
-          .forEach(studentdata => {
-            const { email, status, attempt, overidden } = studentdata;
+          .forEach(({ email, status, attempt, overidden }) => {
+            const { queKey, attemptData: aData } = queData;
             cy.login("student", email);
-
             studentTestPage.assignmentPage.clickOnAssigmentByTestId(test1).then(deliveredItemGroups => {
-              const deliveredSeq = groupItemsPage.getItemDeliverySeq(
-                deliveredItemGroups,
-                groups,
-                /* shuffle for overidden */
-                overidden ? true : false
-              );
-
+              const deliveredSeq = groupItemsPage.getItemDeliverySeq(deliveredItemGroups, groups, overidden);
+              /* shuffle for overidden */
               deliveredSeq.forEach((id, ind) => {
                 /* getting exact item delivered at current question index */
                 const currentQuesIndex = itemSeqInTest.indexOf(id);
-                studentTestPage.attemptQuestion(
-                  queData.queKey.split(".")[0],
-                  _.values(attempt)[currentQuesIndex],
-                  queData.attemptData
-                );
+                studentTestPage.attemptQuestion(queKey.split(".")[0], _.values(attempt)[currentQuesIndex], aData);
 
                 /* handling next() after last question + student status */
                 if (ind !== itemSeqInTest.length - 1)
-                  studentTestPage.clickOnNext(
-                    false,
-                    _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP ? true : false
-                  );
+                  studentTestPage.clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP);
                 else if (status === studentSide.SUBMITTED)
                   /* submit */
                   studentTestPage
-                    .clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP ? true : false)
+                    .clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP)
                     .then(() => studentTestPage.submitTest());
                 else studentTestPage.clickOnExitTest(); /* exit */
               });
@@ -187,20 +174,14 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
         regrade.applyRegrade();
       });
 
-      context(`> verify student side`, () => {
+      context(`> verify regraded shuffled question setting at student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status === studentSide.IN_PROGRESS)
-          .forEach((studentdata, index) => {
-            const { email, overidden } = studentdata;
-            it(`> for student ${studentdata.status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
+          .forEach(({ email, overidden, status }, index) => {
+            it(`> for student ${status} with '${overidden ? "" : "not "}overidden' assignment`, () => {
               cy.login("student", email);
-
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1).then(deliveredItemGroups => {
-                const deliveredSeq = groupItemsPage.getItemDeliverySeq(
-                  deliveredItemGroups,
-                  groups,
-                  overidden ? true : false
-                );
+                const deliveredSeq = groupItemsPage.getItemDeliverySeq(deliveredItemGroups, groups, overidden);
 
                 /* overidden class2 student will have shuffled */
                 /* not overidden class1 student will not have shuffled */
@@ -208,10 +189,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
                 deliveredSeq.forEach((id, ind) => {
                   const currentQuesIndex = itemSeqInTest.indexOf(id);
                   studentTestPage.getQuestionText().should("contain", `Q${currentQuesIndex + 1}${queData.queString}`);
-                  studentTestPage.clickOnNext(
-                    false,
-                    _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP ? true : false
-                  );
+                  studentTestPage.clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP);
                 });
                 studentTestPage.submitTest();
               });
@@ -219,11 +197,10 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
           });
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status === studentSide.NOT_STARTED)
-          .forEach((studentdata, index) => {
-            const { email, overidden } = studentdata;
-            it(`> for student ${studentdata.status} with '${overidden ? "" : "not"}overidden' assignment`, () => {
+          .forEach(({ email, overidden, status }, index) => {
+            it(`> for student ${status} with '${overidden ? "" : "not"}overidden' assignment`, () => {
               cy.login("student", email);
-
+              const { queKey, attemptData: aData } = queData;
               assignmentsPage.clickOnAssigmentByTestId(versionedTest1).then(deliveredItemGroups => {
                 const deliveredSeq = groupItemsPage.getItemDeliverySeq(deliveredItemGroups, groups, true);
 
@@ -231,16 +208,9 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
                 deliveredSeq.forEach((id, ind) => {
                   const currentQuesIndex = itemSeqInTest.indexOf(id);
                   studentTestPage.getQuestionText().should("contain", `Q${currentQuesIndex + 1}${queData.queString}`);
-                  studentTestPage.attemptQuestion(
-                    queData.queKey.split(".")[0],
-                    _.values(attempt)[currentQuesIndex],
-                    queData.attemptData
-                  );
+                  studentTestPage.attemptQuestion(queKey.split(".")[0], _.values(attempt)[currentQuesIndex], aData);
 
-                  studentTestPage.clickOnNext(
-                    false,
-                    _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP ? true : false
-                  );
+                  studentTestPage.clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP);
                 });
                 studentTestPage.submitTest();
               });
@@ -305,7 +275,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
             lcb.clickOnRedirectSubmit();
           });
 
-          it("> verify student", () => {
+          it("> verify student, expected to have shuffled questions", () => {
             cy.login("student", studentdata[0].email);
             assignmentsPage
               .clickOnAssigmentByTestId(versionedTest1, { isFirstAttempt: false })
@@ -371,34 +341,23 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
         /* attempt and keep student according to required status */
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status !== studentSide.NOT_STARTED)
-          .forEach(studentdata => {
-            const { email, status, attempt, overidden } = studentdata;
+          .forEach(({ email, status, attempt, overidden }) => {
+            const { attemptData: aData, queKey } = queData;
             cy.login("student", email);
 
             studentTestPage.assignmentPage.clickOnAssigmentByTestId(test2).then(deliveredItemGroups => {
-              const deliveredSeq = groupItemsPage.getItemDeliverySeq(
-                deliveredItemGroups,
-                groups,
-                overidden ? false : true
-              );
+              const deliveredSeq = groupItemsPage.getItemDeliverySeq(deliveredItemGroups, groups, !overidden);
 
               deliveredSeq.forEach((id, ind) => {
                 const currentQuesIndex = itemSeqInTest.indexOf(id);
-                studentTestPage.attemptQuestion(
-                  queData.queKey.split(".")[0],
-                  _.values(attempt)[currentQuesIndex],
-                  queData.attemptData
-                );
+                studentTestPage.attemptQuestion(queKey.split(".")[0], _.values(attempt)[currentQuesIndex], aData);
 
                 if (ind !== itemSeqInTest.length - 1)
-                  studentTestPage.clickOnNext(
-                    false,
-                    _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP ? true : false
-                  );
+                  studentTestPage.clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP);
                 else if (status === studentSide.SUBMITTED)
                   /* submit */
                   studentTestPage
-                    .clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP ? true : false)
+                    .clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP)
                     .then(() => studentTestPage.submitTest());
                 else studentTestPage.clickOnExitTest(); /* exit */
               });
@@ -424,31 +383,21 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
         regrade.applyRegrade();
       });
 
-      context(`> verify student side`, () => {
+      context(`> verify regraded shuffle question setting at student side`, () => {
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status === studentSide.IN_PROGRESS)
-          .forEach((studentdata, index) => {
-            it(`> for student ${studentdata.status} with '${
-              studentdata.overidden ? " " : "not "
-            }overidden' assignment`, () => {
-              const { email, overidden } = studentdata;
+          .forEach(({ email, overidden, status }, index) => {
+            const [titleAdjust, isShuffled] = overidden ? [" ", "not shuffled"] : ["not ", "shuffled"];
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment,expecte-'${isShuffled}'`, () => {
               cy.login("student", email);
-
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2).then(deliveredItemGroups => {
-                const deliveredSeq = groupItemsPage.getItemDeliverySeq(
-                  deliveredItemGroups,
-                  groups,
-                  overidden ? false : true
-                );
+                const deliveredSeq = groupItemsPage.getItemDeliverySeq(deliveredItemGroups, groups, !overidden);
 
                 studentTestPage.getQuestionByIndex(0, true);
                 deliveredSeq.forEach((id, ind) => {
                   const currentQuesIndex = itemSeqInTest.indexOf(id);
                   studentTestPage.getQuestionText().should("contain", `Q${currentQuesIndex + 1}${queData.queString}`);
-                  studentTestPage.clickOnNext(
-                    false,
-                    _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP ? true : false
-                  );
+                  studentTestPage.clickOnNext(false, _.values(attempt)[currentQuesIndex] === attemptTypes.SKIP);
                 });
                 studentTestPage.submitTest();
               });
@@ -456,26 +405,20 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
           });
         [...attemptsdata1, ...attemptsdata2]
           .filter(({ status }) => status === studentSide.NOT_STARTED)
-          .forEach((studentdata, classIndex) => {
-            it(`> for student ${studentdata.status} with '${
-              studentdata.overidden ? " " : "not "
-            }overidden' assignment`, () => {
-              const { email } = studentdata;
+          .forEach(({ email, status, overidden }, classIndex) => {
+            const titleAdjust = overidden ? " " : "not ";
+            it(`> for student ${status} with '${titleAdjust}overidden' assignment, expected-'shuffled'`, () => {
+              const { attemptData: aData, queKey } = queData;
               cy.login("student", email);
-
               assignmentsPage.clickOnAssigmentByTestId(versionedTest2).then(deliveredItemGroups => {
                 const deliveredSeq = groupItemsPage.getItemDeliverySeq(deliveredItemGroups, groups);
 
                 deliveredSeq.forEach((id, ind) => {
                   const currentQuesIndex = itemSeqInTest.indexOf(id);
                   studentTestPage.getQuestionText().should("contain", `Q${currentQuesIndex + 1}${queData.queString}`);
-                  studentTestPage.attemptQuestion(
-                    queData.queKey.split(".")[0],
-                    _.values(attempt)[ind],
-                    queData.attemptData
-                  );
+                  studentTestPage.attemptQuestion(queKey.split(".")[0], _.values(attempt)[ind], aData);
 
-                  studentTestPage.clickOnNext(false, ind === itemSeqInTest.length - 1 ? true : false);
+                  studentTestPage.clickOnNext(false, ind === itemSeqInTest.length - 1);
                 });
                 studentTestPage.submitTest();
               });
@@ -539,7 +482,7 @@ describe(`>${FileHelper.getSpecName(Cypress.spec.name)}> regrade settings- 'shuf
             lcb.clickOnRedirectSubmit();
           });
 
-          it("> verify student", () => {
+          it("> verify student, expected to have shuffled questions", () => {
             cy.login("student", studentdata[0].email);
             assignmentsPage
               .clickOnAssigmentByTestId(versionedTest2, { isFirstAttempt: false })

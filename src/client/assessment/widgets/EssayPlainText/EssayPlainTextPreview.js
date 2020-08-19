@@ -148,6 +148,8 @@ const EssayPlainTextPreview = ({
   const numberOfRows = get(item, "uiStyle.numberOfRows", 10);
   const isV1Multipart = get(col, "isV1Multipart", false);
   const fontSize = theme.fontSize || getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const { minHeight = "" } = item?.uiStyle || {};
+  const { max_height: maxHeight = "" } = item?.uiStyle || {}; // Todo: Field name needs to be corrected in DB
   const background =
     item.maxWord < wordCount
       ? theme.widgets.essayPlainText.textInputLimitedBgColor
@@ -208,6 +210,8 @@ const EssayPlainTextPreview = ({
                 }}
                 noBorder
                 height="auto"
+                minHeight={minHeight}
+                maxHeight={maxHeight}
                 fontSize={fontSize}
                 bg={background}
                 rows={numberOfRows} // textarea number of rows
@@ -306,5 +310,7 @@ const TextArea = styled(TextAreaInputStyled)`
     &:hover {
       border: none !important;
     }
+    min-height: ${({ minHeight }) => minHeight && `${minHeight}px`};
+    max-height: ${({ maxHeight }) => maxHeight && `${maxHeight}px`};
   }
 `;

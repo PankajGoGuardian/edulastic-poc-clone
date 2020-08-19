@@ -190,7 +190,6 @@ const CurriculumHeader = ({
 
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
           {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) &&
-            !shouldHideUseThis &&
             !urlHasUseThis &&
             destinationCurriculumSequence ?._id && (
               <Tooltip placement="bottom" title="DELETE">
@@ -244,7 +243,7 @@ const CurriculumHeader = ({
             </HeaderButton>
           )}
 
-          {isManageContentActive && !shouldHideUseThis && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
+          {isManageContentActive && (!showUseThisButton || customizeInDraft) && !shouldShowEdit && (
             <HeaderButton isBlue data-cy="save" onClick={savePlaylist} IconBtn={!isDesktop}>
               <IconSave />
               {isDesktop && "SAVE"}
@@ -271,7 +270,7 @@ const CurriculumHeader = ({
             </>
           )}
 
-          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && !shouldHideUseThis && (
+          {(shouldShowEdit || isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
             <Tooltip placement="bottom" title="EDIT">
               <HeaderButton
                 isBlue

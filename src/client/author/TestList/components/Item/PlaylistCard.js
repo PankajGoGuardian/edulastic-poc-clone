@@ -30,8 +30,6 @@ import Tags from "../../../src/components/common/Tags";
 import { TestStatus } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
-import sparkImg from "./assets/spark-math.png";
-import eurekaImg from "./assets/eureka-math.png";
 
 const PlaylistCard = ({
   _source,
@@ -49,17 +47,7 @@ const PlaylistCard = ({
   _id
 }) => {
   const grade = first(_source.grades);
-  const { skin } = _source;
-
-  let { thumbnail } = _source;
-  const isSparkMathSkin = skin === "SPARK";
-  const isPublisherSkin = skin === "PUBLISHER";
-  if (isSparkMathSkin) {
-    thumbnail = sparkImg;
-  }
-  if (isPublisherSkin) {
-    thumbnail = eurekaImg;
-  }
+  const { thumbnail } = _source;
 
   return (
     <Container

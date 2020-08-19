@@ -201,8 +201,8 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
       );
     };
 
-    const renderStartDate = (date, record) => {
-      return record.schoolId === currentEditableRow ? (
+    const renderStartDate = (date, record) =>
+      record.schoolId === currentEditableRow ? (
         <DatePicker
           value={moment(editedStartDate)}
           onChange={startDate =>
@@ -215,26 +215,24 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
       ) : (
         moment(date).format("YYYY-MM-DD")
       );
-    };
 
-    const renderEndDate = (date, record) => {
-      return record.schoolId === currentEditableRow ? (
+    const renderEndDate = (date, record) =>
+      record.schoolId === currentEditableRow ? (
         <DatePicker
           value={moment(editedEndDate)}
           onChange={endDate =>
             setEditableRowFieldValues({
               fieldName: "subEndDate",
-              value: endDate.valueOf()
+              value: endDate?.valueOf()
             })
           }
         />
       ) : (
         moment(date).format("YYYY-MM-DD")
       );
-    };
 
-    const renderNotes = (note, record) => {
-      return record.schoolId === currentEditableRow ? (
+    const renderNotes = (note, record) =>
+      record.schoolId === currentEditableRow ? (
         <Input.TextArea
           value={editedNotes}
           onChange={evt =>
@@ -247,10 +245,9 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
       ) : (
         note
       );
-    };
 
-    const renderSubscription = (subscription, record) => {
-      return record.schoolId === currentEditableRow ? (
+    const renderSubscription = (subscription, record) =>
+      record.schoolId === currentEditableRow ? (
         <Select
           style={{ width: 120 }}
           value={editedSubType || "free"}
@@ -267,7 +264,6 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
       ) : (
         renderSubscriptionType(subscription)
       );
-    };
     const noOfSelectedSchools = selectedSchools.length;
 
     return (

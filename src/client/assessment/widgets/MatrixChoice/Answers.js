@@ -23,7 +23,7 @@ class Answers extends Component {
     setQuestionData(
       produce(item, draft => {
         let value;
-        const rowIds = draft.responseIds[rowIndex];
+        const rowIds = draft?.responseIds[rowIndex];
 
         if (!isAlt) {
           value = draft.validation.validResponse.value;

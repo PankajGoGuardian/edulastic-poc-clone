@@ -1206,7 +1206,7 @@ class ClassBoard extends Component {
                         value: index,
                         disabled: x.disabled || x.scoringDisabled,
                         id: x._id,
-                        qLabel: `Question ${x.barLabel.slice(1)}`
+                        qLabel: `Question ${x?.barLabel?.slice(1)}`
                       }))
                       .filter(x => !x.disabled)
                       .map(({ value, qLabel }) => ({ value, name: qLabel }))}

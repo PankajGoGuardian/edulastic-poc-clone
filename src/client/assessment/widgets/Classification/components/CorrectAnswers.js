@@ -24,7 +24,7 @@ const CorrectAnswers = ({
     const res = produce(answers, draft => {
       Object.keys(draft).forEach(key => {
         const responseIds = draft[key];
-        const responses = responseIds.map(id => {
+        const responses = responseIds?.map(id => {
           const option = possibleResponse.find(resp => resp.id === id);
           if (option) {
             return option.value;

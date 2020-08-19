@@ -42,7 +42,7 @@ const shouldAutoSave = itemRows => {
     formulaessay: 1
   };
   for (const row of itemRows) {
-    for (const widget of row.widgets || []) {
+    for (const widget of row?.widgets || []) {
       if (widget.widgetType === "question" && autoSavableTypes[widget.type]) {
         return true;
       }

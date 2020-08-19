@@ -135,7 +135,8 @@ class AssessmentPlayerDocBased extends React.Component {
       selectedTheme,
       previewPlayer,
       settings,
-      playerSkinType
+      playerSkinType,
+      groupId
     } = this.props;
 
     const item = items[0];
@@ -187,6 +188,7 @@ class AssessmentPlayerDocBased extends React.Component {
                 extraPaddingTop={extraPaddingTop}
                 onPageChange={cpage => this.setState({ currentPage: cpage })}
                 currentPage={currentPage}
+                groupId={groupId}
               />
             )}
             {!previewPlayer && (

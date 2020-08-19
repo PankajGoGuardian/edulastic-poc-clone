@@ -22,12 +22,14 @@ export default class FormChoice extends React.Component {
 
   handleSelect = nextValue => () => {
     const {
-      question: { multipleResponses: multipleResponses },
-      answer
+      question: { multipleResponses },
+      answer,
+      saveQuestionResponse
     } = this.props;
 
     if (!multipleResponses) {
       this.saveValue([nextValue]);
+      saveQuestionResponse();
       return;
     }
 
@@ -42,6 +44,7 @@ export default class FormChoice extends React.Component {
     }
 
     this.saveValue(toggledValue);
+    saveQuestionResponse();
   };
 
   saveValue = currentValue => {
@@ -77,7 +80,7 @@ export default class FormChoice extends React.Component {
     const {
       question: {
         options,
-        multipleResponses: multipleResponses,
+        multipleResponses,
         validation: {
           validResponse: { value }
         }
@@ -102,7 +105,7 @@ export default class FormChoice extends React.Component {
 
   renderForm = mode => {
     const {
-      question: { options, multipleResponses: multipleResponses },
+      question: { options, multipleResponses },
       evaluation,
       view,
       answer,

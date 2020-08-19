@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import { findDOMNode } from "react-dom";
+import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
@@ -67,7 +68,10 @@ const SortableQuestionItem = SortableElement(
     testMode,
     onHighlightQuestion,
     questionIndex,
-    setCurrentAnnotationTool
+    setCurrentAnnotationTool,
+    groupId,
+    qId,
+    clearHighlighted
   }) => (
     <div
       onClick={() => {
@@ -99,6 +103,9 @@ const SortableQuestionItem = SortableElement(
         highlighted={highlighted}
         testMode={testMode}
         setCurrentAnnotationTool={setCurrentAnnotationTool}
+        groupId={groupId}
+        qId={qId}
+        clearHighlighted={clearHighlighted}
       />
     </div>
   )
@@ -475,7 +482,10 @@ class Questions extends React.Component {
       testMode,
       reportMode,
       onHighlightQuestion,
-      setCurrentAnnotationTool
+      setCurrentAnnotationTool,
+      groupId,
+      qId,
+      clearHighlighted
     } = this.props;
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
     let shouldModalBeVisibile = true;
@@ -523,6 +533,9 @@ class Questions extends React.Component {
                     testMode={testMode}
                     onHighlightQuestion={onHighlightQuestion}
                     setCurrentAnnotationTool={setCurrentAnnotationTool}
+                    clearHighlighted={clearHighlighted}
+                    groupId={groupId}
+                    qId={qId}
                   />
                 )
               )}
@@ -565,6 +578,7 @@ class Questions extends React.Component {
 }
 
 const enhance = compose(
+  withRouter,
   connect(
     state => ({
       recentStandardsList: getRecentStandardsListSelector(state),

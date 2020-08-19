@@ -38,6 +38,12 @@ export default class FormText extends React.Component {
     return <QuestionText>{value}</QuestionText>;
   };
 
+  handleBlur = () => {
+    const { clearHighlighted, saveQuestionResponse } = this.props;
+    clearHighlighted();
+    saveQuestionResponse();
+  }
+
   renderForm = () => {
     const { answer, view, highlighted = false } = this.props;
     return (
@@ -46,6 +52,7 @@ export default class FormText extends React.Component {
         value={answer}
         style={{ width: ["check", "show"].includes(view) && "210px" }}
         onChange={this.handleChange}
+        onBlur={this.handleBlur}
         ref={el => highlighted && el?.focus()}
       />
     );

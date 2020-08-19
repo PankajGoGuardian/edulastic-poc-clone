@@ -515,6 +515,8 @@ class WorksheetComponent extends React.Component {
     });
   };
 
+  clearHighlighted = () => this.setState({highlightedQuestion: null});
+
   render() {
     const {
       annotations,
@@ -543,7 +545,9 @@ class WorksheetComponent extends React.Component {
       redoAnnotationsOperation,
       isAnnotationsStackEmpty = false,
       pdfAnnotations = [],
-      currentPage: _currentPageInProps
+      currentPage: _currentPageInProps,
+      match = {},
+      groupId
     } = this.props;
 
     const {
@@ -556,6 +560,8 @@ class WorksheetComponent extends React.Component {
       isToolBarVisible,
       currentPage: _currentPageInState
     } = this.state;
+    
+    const {qid} = match.params || {};
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState;
     const { width: v1Width, height: v1Height } = response.v1DocBased;
     let { answersById } = this.props;
@@ -723,6 +729,9 @@ class WorksheetComponent extends React.Component {
             isDocBased={isDocBased}
             reportMode={reportMode}
             setCurrentAnnotationTool={setCurrentAnnotationTool}
+            groupId={groupId}
+            qId={qid}
+            clearHighlighted={this.clearHighlighted}
           />
         </WorksheetWrapper>
       </div>

@@ -215,7 +215,7 @@ class Container extends Component {
           to: "/author/tests"
         },
         {
-          title: testName || state.testName,
+          title: testName || state?.testName,
           to: testPath,
           onClick: toggleModalAction,
           state: { persistStore: true }

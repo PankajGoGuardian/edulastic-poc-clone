@@ -153,7 +153,7 @@ class Signup extends React.Component {
           email: "error"
         }
       }));
-    } else if (error.askPassword) {
+    } else if ((error || {}).askPassword) {
       if (error.passwordMatch === false) {
         notification({ messageKey: "passwordIsIncorrect" });
       }

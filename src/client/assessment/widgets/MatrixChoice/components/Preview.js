@@ -29,7 +29,7 @@ const Preview = ({
       changeView(CLEAR);
     }
 
-    const { responseIds } = item;
+    const { responseIds= [] } = item;
     const rowIds = responseIds[rowIndex];
     const responseId = rowIds[columnIndex];
     newAnswer.value[responseId] = checked;

@@ -546,9 +546,9 @@ export const getTestItemsRowsSelector = createSelector(
       ?.flatMap(itemGroup => itemGroup.items || [])
       ?.map(item => {
         if (!item || !item.rows) return [];
-        return item.rows.map(row => ({
+        return item?.rows?.map(row => ({
           ...row,
-          widgets: row.widgets.map(widget => {
+          widgets: row?.widgets?.map(widget => {
             let referencePopulate = {
               data: null
             };
@@ -1223,7 +1223,7 @@ function* receiveTestByIdSaga({ payload }) {
     });
 
     entity.itemGroups[currentGroupIndex].items = uniqBy(
-      [...entity.itemGroups[currentGroupIndex].items, ...createdItems],
+      [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
       x => x.previousTestItemId || x._id
     );
 
@@ -1492,7 +1492,7 @@ function* updateTestDocBasedSaga({ payload }) {
     const { testId, ...updatedItem } = response || {};
 
     // Updating the annotation question Id references using updated item question ids.
-    if (updatedItem.data?.questions?.length && payload.data?.annotations?.length) {
+    if (updatedItem?.data?.questions?.length && payload?.data?.annotations?.length) {
       const versionedQIdMap = {};
       updatedItem.data.questions.forEach(question => {
         const oldQId = question.previousQuestionId;

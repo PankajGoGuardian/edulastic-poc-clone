@@ -6,7 +6,7 @@ import SortableItem from "./SortableItem";
 
 const SortableList = SortableContainer(({ items, handleActiveChange }) => (
   <QlFormats>
-    {items.map((value, index) => (
+    {items?.map((value, index) => (
       <SortableItem
         data-cy={`QuestionEssayRichEditFormatOption${value.value}-${value.id}`}
         item={value}

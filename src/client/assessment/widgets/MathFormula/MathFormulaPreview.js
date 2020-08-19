@@ -394,7 +394,7 @@ class MathFormulaPreview extends Component {
               </FlexContainer>
             )}
             {view && view !== EDIT && <Instructions item={item} />}
-            {previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
+            {previewType === SHOW && item?.validation?.validResponse?.value?.[0].value !== undefined && (
               <CorrectAnswerBox
                 theme={theme}
                 answer={

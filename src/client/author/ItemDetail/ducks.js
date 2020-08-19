@@ -346,9 +346,9 @@ export const getTestItemStatusSelector = createSelector(
 
 export const getRows = item =>
   item.rows &&
-  item.rows.map(row => ({
+  item?.rows?.map(row => ({
     ...row,
-    widgets: row.widgets.map(widget => {
+    widgets: row?.widgets?.map(widget => {
       let referencePopulate = {
         data: null
       };

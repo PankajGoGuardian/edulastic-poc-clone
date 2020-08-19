@@ -244,7 +244,7 @@ class TestItemPreview extends Component {
     const { collapseDirection } = this.state;
     let questionCount = 0;
     cols
-      .filter(item => item.widgets.length > 0)
+      .filter(item => item?.widgets?.length > 0)
       .forEach(({ widgets = [] }) => {
         questionCount += widgets.length;
       });

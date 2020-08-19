@@ -389,7 +389,7 @@ class PreviewModal extends React.Component {
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
-    const { authors = [], rows, data = {} } = item;
+    const { authors = [], rows, data = {} } = item || {};
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
